@@ -1,7 +1,7 @@
 {
   "name": "Generator",
-  "id": "899028246731755335",
-  "api": "1.0.0",
-  "main": "code.js",
-  "ui": "ui.html"
+  "id":   "899028246731755335",
+  "api":  "1.0.0",
+  "main": "output/main.js",
+  "ui":   "output/ui.html"
 }
