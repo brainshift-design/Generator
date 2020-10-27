@@ -22,11 +22,9 @@ document.addEventListener('pointermove', function(e)
 {
     if (document.resizing)
     {
-        parent.postMessage({ pluginMessage: { 
-            cmd:    'resizeWindow', 
-            width:  window.innerWidth, 
-            height: document.startH + e.clientY - document.startY
-        } }, '*');
+        resizeWindow(
+            window.innerWidth, 
+            document.startH + e.clientY - document.startY);
     }
     else
     {
@@ -45,3 +43,16 @@ document.addEventListener('pointerup', function(e)
         document.body.releasePointerCapture(e.pointerId);
     }
 });
+
+
+function resizeWindow(width, height)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'resizeWindow', 
+        width:  width,
+        height: height
+    }}, '*');
+
+    saveState();
+}

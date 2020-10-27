@@ -37,6 +37,34 @@ body
 
 
 
+function loadState(state)
+{
+    resizeWindow(
+        window.innerWidth, 
+        state.windowHeight);
+}    
+
+
+function save(key, value)
+{
+    parent.postMessage({ pluginMessage:
+    { 
+        cmd:   'save', 
+        key:   key,
+        value: value
+    }}, '*');
+}
+
+
+function saveState()
+{
+    save('state',
+    {
+        windowHeight: window.innerHeight
+    });
+}
+
+
 document.canResize = false;
 document.resizing  = false;
 
@@ -61,11 +89,9 @@ document.addEventListener('pointermove', function(e)
 {
     if (document.resizing)
     {
-        parent.postMessage({ pluginMessage: { 
-            cmd:    'resizeWindow', 
-            width:  window.innerWidth, 
-            height: document.startH + e.clientY - document.startY
-        } }, '*');
+        resizeWindow(
+            window.innerWidth, 
+            document.startH + e.clientY - document.startY);
     }
     else
     {
@@ -86,7 +112,33 @@ document.addEventListener('pointerup', function(e)
 });
 
 
+function resizeWindow(width, height)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'resizeWindow', 
+        width:  width,
+        height: height
+    }}, '*');
 
+    saveState();
+}
+
+
+parent.postMessage({ pluginMessage: 
+{ 
+    cmd:    'loadState',
+    onLoad: 'loadState'
+}}, '*');
+
+
+onmessage = (e) =>
+{
+    var msg = e.data.pluginMessage;
+
+    if (msg.cmd == 'loadState')
+        loadState(msg.state);
+}
 
 
 
