@@ -1,42 +1,3 @@
-<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
-
-<style>
-
-
-body
-{
-    margin: 0;
-}
-
-#container
-{
-    display: table-column;
-}
-
-
-
-
-</style>
-
-<div id='container'>
-
-    <h1>Generator</h1>
-
-</div>
-
-
-
-
-
-<script>
-
-////////////////////////////////////////////////////
-
-
-
-
-
 document.canResize = false;
 document.resizing  = false;
 
@@ -84,14 +45,3 @@ document.addEventListener('pointerup', function(e)
         document.body.releasePointerCapture(e.pointerId);
     }
 });
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////
-
-</script>

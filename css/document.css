@@ -1,0 +1,10 @@
+body
+{
+    margin: 0;
+}
+
+#container
+{
+    display: table-column;
+}
+
