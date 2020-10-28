@@ -25,12 +25,13 @@ figma.ui.onmessage = msg => {
                 var wndHeight = yield figma.clientStorage.getAsync('windowHeight');
                 if (wndHeight == null)
                     wndHeight = 400;
-                figma.ui.resize(windowWidth, wndHeight);
+                figma.ui.resize(windowWidth, Math.max(0, wndHeight));
             });
         })();
     }
     else if (msg.cmd === 'resizeWindow') {
-        figma.ui.resize(windowWidth, msg.height);
-        figma.clientStorage.setAsync('windowHeight', msg.height);
+        var wndHeight = Math.max(0, msg.height);
+        figma.ui.resize(windowWidth, wndHeight);
+        figma.clientStorage.setAsync('windowHeight', wndHeight);
     }
 };
