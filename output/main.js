@@ -7,28 +7,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const windowWidth = 240;
 figma.showUI(__html__);
-figma.ui.resize(240, 400);
+figma.ui.resize(windowWidth, 0);
 figma.ui.onmessage = msg => {
     if (msg.cmd === 'save')
         figma.clientStorage.setAsync(msg.key, msg.value);
     else if (msg.cmd === 'loadState') {
         (function () {
             return __awaiter(this, void 0, void 0, function* () {
+                // load state
                 var state = yield figma.clientStorage.getAsync('state');
-                if (state == null) {
-                    state =
-                        {
-                            windowHeight: 400
-                        };
-                }
-                figma.ui.postMessage({
-                    cmd: 'loadState',
-                    state: state
-                });
+                if (state == null)
+                    state = {};
+                // ...
+                // resize window
+                var wndHeight = yield figma.clientStorage.getAsync('windowHeight');
+                if (wndHeight == null)
+                    wndHeight = 400;
+                figma.ui.resize(windowWidth, wndHeight);
             });
         })();
     }
-    else if (msg.cmd === 'resizeWindow')
-        figma.ui.resize(msg.width, msg.height);
+    else if (msg.cmd === 'resizeWindow') {
+        figma.ui.resize(windowWidth, msg.height);
+        figma.clientStorage.setAsync('windowHeight', msg.height);
+    }
 };

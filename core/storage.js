@@ -21,6 +21,6 @@ function saveState()
 {
     save('state',
     {
-        windowHeight: window.innerHeight
+        //windowHeight: window.innerHeight
     });
 }

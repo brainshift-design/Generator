@@ -60,7 +60,7 @@ function saveState()
 {
     save('state',
     {
-        windowHeight: window.innerHeight
+        //windowHeight: window.innerHeight
     });
 }
 
@@ -88,11 +88,7 @@ document.addEventListener('pointerdown', function(e)
 document.addEventListener('pointermove', function(e)
 {
     if (document.resizing)
-    {
-        resizeWindow(
-            window.innerWidth, 
-            document.startH + e.clientY - document.startY);
-    }
+        resizeWindow(document.startH + e.clientY - document.startY);
     else
     {
         document.canResize = document.body.clientHeight - e.clientY <= 8;
@@ -112,17 +108,19 @@ document.addEventListener('pointerup', function(e)
 });
 
 
-function resizeWindow(width, height)
+function resizeWindow( height)
 {
     parent.postMessage({ pluginMessage: 
     { 
         cmd:    'resizeWindow', 
-        width:  width,
         height: height
     }}, '*');
 
-    saveState();
 }
+
+
+//save('state', null);
+//save('windowHeight', null);
 
 
 parent.postMessage({ pluginMessage: 
@@ -135,9 +133,6 @@ parent.postMessage({ pluginMessage:
 onmessage = (e) =>
 {
     var msg = e.data.pluginMessage;
-
-    if (msg.cmd == 'loadState')
-        loadState(msg.state);
 }
 
 

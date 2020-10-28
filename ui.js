@@ -1,3 +1,7 @@
+//save('state', null);
+//save('windowHeight', null);
+
+
 parent.postMessage({ pluginMessage: 
 { 
     cmd:    'loadState',
@@ -8,7 +12,4 @@ parent.postMessage({ pluginMessage:
 onmessage = (e) =>
 {
     var msg = e.data.pluginMessage;
-
-    if (msg.cmd == 'loadState')
-        loadState(msg.state);
 }

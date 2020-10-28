@@ -1,5 +1,8 @@
+const windowWidth = 240;
+
 figma.showUI(__html__);
-figma.ui.resize(240, 400);
+figma.ui.resize(windowWidth, 0);
+
 
 figma.ui.onmessage = msg => 
 {
@@ -10,25 +13,21 @@ figma.ui.onmessage = msg =>
     {
         (async function()
         {
+            // load state
             var state = await figma.clientStorage.getAsync('state');
+            if (state == null) state = {};
+            // ...
 
-            if (state == null)
-            {
-                state = 
-                {
-                    windowHeight: 400
-                };
-            }
-
-            figma.ui.postMessage(
-            {
-                cmd:   'loadState',
-                state: state
-            });
-
+            // resize window
+            var wndHeight = await figma.clientStorage.getAsync('windowHeight');
+            if (wndHeight == null) wndHeight = 400;
+            figma.ui.resize(windowWidth, wndHeight);
         })();
     }
 
     else if (msg.cmd === 'resizeWindow')
-        figma.ui.resize(msg.width, msg.height);
+    {
+        figma.ui.resize(windowWidth, msg.height);
+        figma.clientStorage.setAsync('windowHeight', msg.height);
+    }
 };

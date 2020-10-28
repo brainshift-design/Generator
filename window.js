@@ -21,11 +21,7 @@ document.addEventListener('pointerdown', function(e)
 document.addEventListener('pointermove', function(e)
 {
     if (document.resizing)
-    {
-        resizeWindow(
-            window.innerWidth, 
-            document.startH + e.clientY - document.startY);
-    }
+        resizeWindow(document.startH + e.clientY - document.startY);
     else
     {
         document.canResize = document.body.clientHeight - e.clientY <= 8;
@@ -45,14 +41,12 @@ document.addEventListener('pointerup', function(e)
 });
 
 
-function resizeWindow(width, height)
+function resizeWindow( height)
 {
     parent.postMessage({ pluginMessage: 
     { 
         cmd:    'resizeWindow', 
-        width:  width,
         height: height
     }}, '*');
 
-    saveState();
 }
