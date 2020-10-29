@@ -7,9 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const windowWidth = 240;
 figma.showUI(__html__);
-figma.ui.resize(windowWidth, 0);
 figma.ui.onmessage = msg => {
     if (msg.cmd === 'save')
         figma.clientStorage.setAsync(msg.key, msg.value);
@@ -22,16 +20,21 @@ figma.ui.onmessage = msg => {
                     state = {};
                 // ...
                 // resize window
+                var wndWidth = yield figma.clientStorage.getAsync('windowWidth');
                 var wndHeight = yield figma.clientStorage.getAsync('windowHeight');
+                if (wndWidth == null)
+                    wndWidth = 400;
                 if (wndHeight == null)
-                    wndHeight = 400;
-                figma.ui.resize(windowWidth, Math.max(0, wndHeight));
+                    wndHeight = 300;
+                figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             });
         })();
     }
     else if (msg.cmd === 'resizeWindow') {
-        var wndHeight = Math.max(0, msg.height);
-        figma.ui.resize(windowWidth, wndHeight);
-        figma.clientStorage.setAsync('windowHeight', wndHeight);
+        var width = Math.max(0, msg.width);
+        var height = Math.max(0, msg.height);
+        figma.ui.resize(width, height);
+        figma.clientStorage.setAsync('windowWidth', width);
+        figma.clientStorage.setAsync('windowHeight', height);
     }
 };

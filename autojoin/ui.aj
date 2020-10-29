@@ -10,6 +10,16 @@ html/ui_2.html
 
     core/storage.js
 
+    components/Input.js
+    components/Output.js
+    
+    parameters/Parameter.js
+    parameters/ValueParam.js
+
+    operators/Operator.js
+    operators/OpRect.js
+    operators/OpSpread.js
+
     window.js
     ui.js
 
