@@ -83,6 +83,15 @@ class Output
 }
 
 
+class Connection
+{
+    constructor()
+    {
+        
+    }
+}
+
+
 class Parameter
 {
     type;
@@ -106,17 +115,38 @@ extends Parameter
 
 class Operator
 {
-    type;
+    _type;
+    _id;
     
-    parameters = {};
+    params  = new Array();
     
-    inputs     = {};
-    outputs    = {};
+    inputs  = new Array();
+    outputs = new Array();
 
-    
+    graph   = null;
+
+
     constructor(type)
     {
-        this.type = type;
+        this._type = type;
+        this._id   = type; // this is a temp until the op becomes a graph node
+    }
+
+    get type() { return this._type; }
+    get id()   { return this._id;   }
+
+    setId(newId)
+    {
+        if (this.graph.nodes.indexOf(newId) >= 0)
+            return false; // graph already contains a node with this id
+
+        this._id = newId;
+        return true;
+    }
+
+    update()
+    {
+
     }
 }
 
@@ -127,6 +157,19 @@ extends Operator
     constructor()
     {
         super('rect');
+
+        var w = new ValueParam('Width',  0, Number.MAX_SAFE_INTEGER);
+        var h = new ValueParam('Height', 0, Number.MAX_SAFE_INTEGER);
+
+        this.params.push(w);
+        this.params.push(h);
+    }
+
+    update()
+    {
+        // TODO add an "update this rect" instruction to the update list,
+        // maybe through super.update('instruction')
+        super.update();
     }
 }
 
@@ -137,6 +180,65 @@ extends Operator
     constructor()
     {
         super('spread');
+    }
+}
+
+
+function updateCanvas()
+{
+    // build updated geometry description, with info about
+    // whether to modify or recreate (for example, spread density change = modify,
+    // spread count change = recreate, and this might be detailed further)
+
+
+    // pass this info to the canvas
+}
+
+
+class Graph
+{
+    nodes       = new Array();
+    #activeNode = null;
+
+    add(node)
+    {
+        this.nodes.push(node);
+        
+        node._id   = this.getNewId(node.type);
+        node.graph = this;
+    }
+
+
+    get activeNode() { return this.#activeNode; }
+    set activeNode(node)
+    {
+        this.#activeNode = node;
+        updateCanvas(this); // send this graph to be created in the canvas
+    }
+
+
+    getNewId(type)
+    {
+        var maxNum = 0;
+
+        for (const node of this.nodes)
+        {
+            if (   node.id.length < type.length
+                || node.id.substring(0, type.length) !== type)
+                continue;
+
+            var num = parseInt(node.id.substring(type.length));
+            if (num == 0) num = 1;
+
+            maxNum = Math.max(num, maxNum);
+        }
+
+        if (maxNum == 0)
+            return type;
+
+        maxNum++;
+
+        return type + maxNum;
     }
 }
 
@@ -241,6 +343,7 @@ function checkResize(x, y)
 
 
 //save('state', null);
+//save('windowWidth', null);
 //save('windowHeight', null);
 
 
@@ -256,6 +359,16 @@ onmessage = (e) =>
     var msg = e.data.pluginMessage;
 }
 
+
+/////////////////////////////////////////////////////////
+
+
+var graph = new Graph();
+
+graph.add(new OpRect());
+
+graph.activeNode = graph.nodes[graph.nodes.length-1];
+updateCanvas(graph);
 
 
 

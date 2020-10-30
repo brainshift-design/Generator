@@ -12,6 +12,7 @@ html/ui_2.html
 
     components/Input.js
     components/Output.js
+    components/Connection.js
     
     parameters/Parameter.js
     parameters/ValueParam.js
@@ -19,6 +20,9 @@ html/ui_2.html
     operators/Operator.js
     operators/OpRect.js
     operators/OpSpread.js
+
+    canvas.js
+    graph.js
 
     window.js
     ui.js
