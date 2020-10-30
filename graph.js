@@ -3,12 +3,14 @@ class Graph
     nodes       = new Array();
     #activeNode = null;
 
-    add(node)
+    addNode(node)
     {
         this.nodes.push(node);
         
-        node._id   = this.getNewId(node.type);
-        node.graph = this;
+        node._id    = this.getNewId(node.type);
+        node._graph = this;
+
+        document.body.appendChild(node.div);        
     }
 
 

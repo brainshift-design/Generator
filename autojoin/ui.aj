@@ -1,6 +1,7 @@
 html/ui_0.html
 
     css/document.css
+    css/slider.css
 
 html/ui_1.html
 
@@ -8,6 +9,7 @@ html/ui_2.html
 
     def.js
 
+    core/lib.js
     core/storage.js
 
     components/Input.js
@@ -20,6 +22,9 @@ html/ui_2.html
     operators/Operator.js
     operators/OpRect.js
     operators/OpSpread.js
+
+    ui/slider.js
+    ui/slider textbox.js
 
     canvas.js
     graph.js

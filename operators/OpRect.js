@@ -1,15 +1,18 @@
 class   OpRect
 extends Operator
 {
+    #width;
+    #height;
+
     constructor()
     {
         super('rect');
 
-        var w = new ValueParam('Width',  0, Number.MAX_SAFE_INTEGER);
-        var h = new ValueParam('Height', 0, Number.MAX_SAFE_INTEGER);
+        this.#width = new ValueParam('Width',  0, Number.MAX_SAFE_INTEGER);
+        this.addParam(this.#width);
 
-        this.params.push(w);
-        this.params.push(h);
+        this.#height = new ValueParam('Height', 0, Number.MAX_SAFE_INTEGER);
+        this.addParam(this.#height);
     }
 
     update()

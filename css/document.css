@@ -8,3 +8,8 @@ body
     display: table-column;
 }
 
+div
+{
+    margin:  0;
+    padding: 0;
+}
