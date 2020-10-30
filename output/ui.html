@@ -23,12 +23,11 @@ div
 
 .slider
 {
-    background:     'white';
     padding:        0;
     width:          74px;
     height:         24px;
     border:         1px solid transparent;
-    border-bottom:  1px solid rgba(0, 0, 0, 0.08);
+    border-bottom:  1px solid rgba(0, 0, 0, 0.1);
     border-radius:  2px;
     overflow:       hidden;
 }    
@@ -92,6 +91,26 @@ function getDigitCount(i)
 {
     var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
     return l + 1;
+}
+
+
+function isDigit(key)
+{
+    var is = 
+           key >= '0' 
+        && key <= '9';
+
+    return is;
+}
+
+function isHexLetter(key)
+{
+    var is =
+           key.length == 1
+        && (   key >= 'A' && key <= 'F'
+            || key >= 'a' && key <= 'f');
+
+    return is;
 }
 
 
@@ -253,18 +272,51 @@ function saveState()
 
 class Input
 {
-    constructor()
+    _op;
+    
+    #dataType;
+
+    #connection;
+
+    constructor(dataType)
     {
-        
+        this.#dataType = dataType;
+    }
+
+    get connection() { return this.#connection; }
+    set connection(conn)
+    {
+        this.#connection = conn;
     }
 }
 
 
 class Output
 {
-    constructor()
+    _op;
+
+    #dataType;
+
+    #connections = {};
+
+    constructor(dataType)
     {
-        
+        this.#dataType = dataType;
+    }
+
+    get connections() { return this.#connections; }
+
+    addConnection(conn)
+    {
+        this.#connections.push(conn);
+    }
+
+    removeConnection(conn)
+    {
+        var index = this.#connections.indexOf(conn);
+
+        if (index >= 0)
+            this.#connections.slice(index, 1);
     }
 }
 
@@ -326,12 +378,12 @@ class Operator
 
 
     _id;
-    _graph  = null;
+    _graph = null;
     
-    params  = new Array();
+    params = new Array();
     
-    inputs  = new Array();
-    outputs = new Array();
+    inputs = new Array();
+    output;
 
 
     div; // container for the op's controls
@@ -411,9 +463,9 @@ class Operator
         label.style.display      = 'inline-block';
         label.style.width        = 'calc(100% - 2px)';
         label.style.height       = 15;
-        label.style.background   = '#1891FB66';
+        label.style.background   = '#a3d3fd';
         label.style.borderRadius = '4px 4px 0 0';
-        label.style.color        = 'white';
+        label.style.color        = 'black';
         
         this.div.appendChild(label);
     }
@@ -438,6 +490,7 @@ class Operator
     
     get id() { return this._id;   }
 
+
     setId(newId)
     {
         if (this.graph.nodes.indexOf(newId) >= 0)
@@ -445,12 +498,6 @@ class Operator
 
         this._id = newId;
         return true;
-    }
-
-
-    updateUI()
-    {
-
     }
 
 
@@ -490,23 +537,26 @@ extends Operator
 class   OpSpread 
 extends Operator
 {
+    #radius;
+    #density;
+
     constructor()
     {
         super('spread');
+
+        this.#radius = new ValueParam('Radius',  0, Number.MAX_SAFE_INTEGER);
+        this.addParam(this.#radius);
+
+        this.#density = new ValueParam('Density', 0, Number.MAX_SAFE_INTEGER);
+        this.addParam(this.#density);
     }
-}
 
-
-function initSliderChildren(slider)
-{
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'sliderBar';
-
-    slider.text = document.createElement('div');
-    slider.text.className = 'sliderText';
-
-    slider.appendChild(slider.bar);
-    slider.appendChild(slider.text);
+    update()
+    {
+        // TODO add an "update this spread" instruction to the update list,
+        // maybe through super.update('instruction')
+        super.update();
+    }
 }
 
 
@@ -542,7 +592,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.style.display     = 'inline';
         
     slider.mouseOver         = false;
-    slider.buttonDown0        = false;
+    slider.buttonDown0       = false;
         
     slider.clickSize         = 4;
     slider.moved             = false;
@@ -787,6 +837,19 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 }
 
 
+function initSliderChildren(slider)
+{
+    slider.bar = document.createElement('div');
+    slider.bar.className = 'sliderBar';
+
+    slider.text = document.createElement('div');
+    slider.text.className = 'sliderText';
+
+    slider.appendChild(slider.bar);
+    slider.appendChild(slider.text);
+}
+
+
 function onSliderClickTimer(slider)
 {
     if (!document.menuHadFocus)
@@ -964,7 +1027,9 @@ class Graph
         node._id    = this.getNewId(node.type);
         node._graph = this;
 
-        document.body.appendChild(node.div);        
+        document.body.appendChild(node.div);
+
+        this.activeNode = node;
     }
 
 
@@ -1125,9 +1190,9 @@ onmessage = (e) =>
 var graph = new Graph();
 
 graph.addNode(new OpRect());
+//graph.addNode(new OpSpread());
 
-graph.activeNode = graph.nodes[graph.nodes.length-1];
-updateCanvas(graph);
+//updateCanvas(graph);
 
 
 

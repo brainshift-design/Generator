@@ -1,16 +1,3 @@
-function initSliderChildren(slider)
-{
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'sliderBar';
-
-    slider.text = document.createElement('div');
-    slider.text.className = 'sliderText';
-
-    slider.appendChild(slider.bar);
-    slider.appendChild(slider.text);
-}
-
-
 function initSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
@@ -43,7 +30,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.style.display     = 'inline';
         
     slider.mouseOver         = false;
-    slider.buttonDown0        = false;
+    slider.buttonDown0       = false;
         
     slider.clickSize         = 4;
     slider.moved             = false;
@@ -285,6 +272,19 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     //
 
     slider.update();
+}
+
+
+function initSliderChildren(slider)
+{
+    slider.bar = document.createElement('div');
+    slider.bar.className = 'sliderBar';
+
+    slider.text = document.createElement('div');
+    slider.text.className = 'sliderText';
+
+    slider.appendChild(slider.bar);
+    slider.appendChild(slider.text);
 }
 
 

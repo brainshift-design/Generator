@@ -14,6 +14,26 @@ function getDigitCount(i)
 }
 
 
+function isDigit(key)
+{
+    var is = 
+           key >= '0' 
+        && key <= '9';
+
+    return is;
+}
+
+function isHexLetter(key)
+{
+    var is =
+           key.length == 1
+        && (   key >= 'A' && key <= 'F'
+            || key >= 'a' && key <= 'f');
+
+    return is;
+}
+
+
 function getNumberString(num, dec)
 {
     var str = Number(num).toFixed(dec).toString();

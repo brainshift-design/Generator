@@ -5,12 +5,12 @@ class Operator
 
 
     _id;
-    _graph  = null;
+    _graph = null;
     
-    params  = new Array();
+    params = new Array();
     
-    inputs  = new Array();
-    outputs = new Array();
+    inputs = new Array();
+    output;
 
 
     div; // container for the op's controls
@@ -90,9 +90,9 @@ class Operator
         label.style.display      = 'inline-block';
         label.style.width        = 'calc(100% - 2px)';
         label.style.height       = 15;
-        label.style.background   = '#1891FB66';
+        label.style.background   = '#a3d3fd';
         label.style.borderRadius = '4px 4px 0 0';
-        label.style.color        = 'white';
+        label.style.color        = 'black';
         
         this.div.appendChild(label);
     }
@@ -117,6 +117,7 @@ class Operator
     
     get id() { return this._id;   }
 
+
     setId(newId)
     {
         if (this.graph.nodes.indexOf(newId) >= 0)
@@ -124,12 +125,6 @@ class Operator
 
         this._id = newId;
         return true;
-    }
-
-
-    updateUI()
-    {
-
     }
 
 

@@ -22,6 +22,6 @@ onmessage = (e) =>
 var graph = new Graph();
 
 graph.addNode(new OpRect());
+//graph.addNode(new OpSpread());
 
-graph.activeNode = graph.nodes[graph.nodes.length-1];
-updateCanvas(graph);
+//updateCanvas(graph);

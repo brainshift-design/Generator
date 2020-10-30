@@ -10,7 +10,9 @@ class Graph
         node._id    = this.getNewId(node.type);
         node._graph = this;
 
-        document.body.appendChild(node.div);        
+        document.body.appendChild(node.div);
+
+        this.activeNode = node;
     }
 
 
