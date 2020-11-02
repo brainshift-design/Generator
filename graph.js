@@ -7,7 +7,7 @@ class Graph
     {
         this.nodes.push(node);
         
-        node._id    = this.getNewId(node.type);
+        node._id    = this.getNewId(node);
         node._graph = this;
 
         document.body.appendChild(node.div);
@@ -24,24 +24,27 @@ class Graph
     }
 
 
-    getNewId(type)
+    getNewId(_node)
     {
         var maxNum = 0;
-
+        
         for (const node of this.nodes)
         {
+            if (node == _node)
+                continue;
+                
             if (   node.id.length < type.length
                 || node.id.substring(0, type.length) !== type)
                 continue;
-
+                
             var num = parseInt(node.id.substring(type.length));
-            if (num == 0) num = 1;
-
+                if (num == 0) num = 1;
+                
             maxNum = Math.max(num, maxNum);
         }
 
         if (maxNum == 0)
-            return type;
+            return _node.type;
 
         maxNum++;
 

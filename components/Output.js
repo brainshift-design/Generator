@@ -3,26 +3,34 @@ class Output
     _op;
 
     #dataType;
+    _data;
+    
+    connectedInputs = {};
 
-    #connections = {};
 
     constructor(dataType)
     {
         this.#dataType = dataType;
     }
 
-    get connections() { return this.#connections; }
 
-    addConnection(conn)
+    connect(input)
     {
-        this.#connections.push(conn);
+        this.connectedInputs.push(input);
     }
 
-    removeConnection(conn)
+    disconnect(input)
     {
-        var index = this.#connections.indexOf(conn);
+        var index = this.connectedInputs.indexOf(input);
 
         if (index >= 0)
-            this.#connections.slice(index, 1);
+            this.connectedInputs.slice(index, 1);
+    }
+
+
+    get data() 
+    {
+        this._op.update();
+        return this._data;
     }
 }

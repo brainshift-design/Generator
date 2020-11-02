@@ -6,7 +6,8 @@
 
 body
 {
-    margin: 0;
+    margin:           0;
+    background-color: #e5e5e5;
 }
 
 #container
@@ -23,13 +24,14 @@ div
 
 .slider
 {
-    padding:        0;
-    width:          74px;
-    height:         24px;
-    border:         1px solid transparent;
-    border-bottom:  1px solid rgba(0, 0, 0, 0.1);
-    border-radius:  2px;
-    overflow:       hidden;
+    padding:          0;
+    width:            74px;
+    height:           24px;
+    border:           1px solid transparent;
+    border-bottom:    1px solid rgba(0, 0, 0, 0.1);
+    border-radius:    2px;
+    overflow:         hidden;
+    background-color: white;
 }    
 
 .sliderBar
@@ -296,27 +298,35 @@ class Output
     _op;
 
     #dataType;
+    _data;
+    
+    connectedInputs = {};
 
-    #connections = {};
 
     constructor(dataType)
     {
         this.#dataType = dataType;
     }
 
-    get connections() { return this.#connections; }
 
-    addConnection(conn)
+    connect(input)
     {
-        this.#connections.push(conn);
+        this.connectedInputs.push(input);
     }
 
-    removeConnection(conn)
+    disconnect(input)
     {
-        var index = this.#connections.indexOf(conn);
+        var index = this.connectedInputs.indexOf(input);
 
         if (index >= 0)
-            this.#connections.slice(index, 1);
+            this.connectedInputs.slice(index, 1);
+    }
+
+
+    get data() 
+    {
+        this._op.update();
+        return this._data;
     }
 }
 
@@ -333,26 +343,36 @@ class Connection
 class Parameter
 {
     #type;
+    get type() { return this.#type; }
+    
+    _op;
+    get op() { return this._op; }
+
     _control;
+    get control() { return this._control; }
 
     constructor(type)
     {
         this.#type = type;
     }
-
-    get type()    { return this.#type;    }
-    get control() { return this._control; }
 }
 
 
 class   ValueParam
 extends Parameter
 {
-    constructor(name, min, max)
+    #value;
+
+    get value() { return this._control.value; }
+    set value(val) { this._control.setValue(val); }
+
+
+    constructor(name, min, max, val)
     {
         super('value');
 
         this._control = document.createElement('div');
+        this._control.param = this;
 
         initSlider(
             this._control,
@@ -361,13 +381,21 @@ extends Parameter
             name, 
             min,
             max,
-            50,   // default
+            val,  // default
             0.01, // drag scale
             1,    // wheel step
             0,    // decimals
             0,    // acceleration
             '');  // suffix
+
+
+        this._control.addEventListener('onchange', function(e)
+        {
+            updateCanvas();
+        });
     }
+
+    
 }
 
 
@@ -376,10 +404,13 @@ class Operator
     #type;
     get type() { return this.#type; }
 
-
     _id;
+    get id() { return this._id; }
+
     _graph = null;
+    get graph() { return this._graph; }
     
+
     params = new Array();
     
     inputs = new Array();
@@ -403,10 +434,10 @@ class Operator
         this.div = document.createElement('div');
         this.div.op = this;
 
-        this.div.style.display   = 'inline-block';
-        this.div.style.position  = 'absolute';
-        this.div.style.width     = 100;
-        this.div.style.height    = 'auto';
+        this.div.style.display  = 'inline-block';
+        this.div.style.position = 'absolute';
+        this.div.style.width    = 100;
+        this.div.style.height   = 'auto';
         //this.div.style.border = '1px solid red';
         
         this.div.dragging = false;
@@ -478,18 +509,34 @@ class Operator
     }
 
 
+    addInput(input)
+    {
+        input._op = this;
+        this.inputs.push(input);
+    }
+
+
+    setOutput(output)
+    {
+        if (this.output != null)
+            this.output._op = null;
+
+        output._op = this;
+        this.output = output;
+    }
+
+
     addParam(param)
     {
         this.params.push(param);
-
+        
+        param._op = this;
         param.control.style.display = 'inline-block';
         
         this.div.appendChild(param.control);
     }
  
     
-    get id() { return this._id;   }
-
 
     setId(newId)
     {
@@ -503,7 +550,6 @@ class Operator
 
     update()
     {
-
     }
 }
 
@@ -518,17 +564,25 @@ extends Operator
     {
         super('rect');
 
-        this.#width = new ValueParam('Width',  0, Number.MAX_SAFE_INTEGER);
+        this.setOutput(new Output('rect'));
+
+        this.#width = new ValueParam('width',  0, Number.MAX_SAFE_INTEGER, 50);
         this.addParam(this.#width);
 
-        this.#height = new ValueParam('Height', 0, Number.MAX_SAFE_INTEGER);
+        this.#height = new ValueParam('height', 0, Number.MAX_SAFE_INTEGER, 50);
         this.addParam(this.#height);
     }
 
     update()
-    {
-        // TODO add an "update this rect" instruction to the update list,
-        // maybe through super.update('instruction')
+    {   
+        this.output._data = 
+        {
+            id:     this.id,
+            type:   this.type,
+            width:  this.#width .value,
+            height: this.#height.value
+        };
+
         super.update();
     }
 }
@@ -557,6 +611,19 @@ extends Operator
         // maybe through super.update('instruction')
         super.update();
     }
+}
+
+
+function initSliderChildren(slider)
+{
+    slider.bar = document.createElement('DIV');
+    slider.bar.className = 'sliderBar';
+
+    slider.text = document.createElement('DIV');
+    slider.text.className = 'sliderText';
+
+    slider.appendChild(slider.bar);
+    slider.appendChild(slider.text);
 }
 
 
@@ -592,7 +659,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.style.display     = 'inline';
         
     slider.mouseOver         = false;
-    slider.buttonDown0       = false;
+    slider.buttonDown0        = false;
         
     slider.clickSize         = 4;
     slider.moved             = false;
@@ -618,7 +685,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     {
         if (e.button == 0)
         {
-            e.preventDefault(); // this is fine since I capture the pointer anyway
+            e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
 
             slider.buttonDown0  = true;
@@ -635,7 +702,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
             slider.clickTimer = setTimeout(function() 
             {
-                //slider.clickId = e.pointerId;
                 onSliderClickTimer(slider); 
             }, 500);
         }
@@ -676,8 +742,22 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         {
             slider.buttonDown0 = false;
             slider.unlockPointer(e.pointerId);
+
             slider.style.border = '1px solid rgba(0, 0, 0, 0.1)';
         }
+    });
+
+    
+    slider.addEventListener('pointerenter', function(e)
+    {
+        slider.style.cursor = 'ew-resize';
+    });
+
+    slider.addEventListener('pointerout', function(e)
+    {
+        slider.style.border       = '1px solid transparent';
+        slider.style.borderBottom = '1px solid rgba(0, 0, 0, 0.1)';
+        slider.style.cursor       = 'default';
     });
 
 
@@ -686,22 +766,24 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         var rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
-        e.clientX >= rect.left
-        && e.clientX <  rect.right
-        && e.clientY >= rect.top
-        && e.clientY <  rect.bottom;
-        
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top
+            && e.clientY <  rect.bottom;
+
         slider.clientX = e.clientX;
-        
+
         if (slider.buttonDown0)
         {
+            slider.style.border = '1px solid #18A0FB';
+
             if (slider.isPointerLocked())
             {
                 slider.movedX += e.movementX;
                 
                 var dx       = slider.sx - slider.movedX;
                 var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                
+    
                 // TODO: if (log) do log scaling
                 slider.setValue(slider.sv - dx*slider.dragScale*adaptive);
             }
@@ -710,31 +792,27 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
                 if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
                 {
                     slider.moved = true;
-                    slider.lockPointer();//e.pointerId);
+                    slider.lockPointer();
                 }
             }
         }
-        
+        else
+            slider.style.border = '1px solid rgba(0, 0, 0, 0.1)';
+
         slider.update();
     });
-    
+
     slider.addEventListener('mousewheel', function(e)
     {
         slider.setValue(slider.value + (e.wheelDeltaY > 0 ? 1 : -1) * slider.wheelStep);
     });
 
-    
+
     slider.addEventListener('keydown', function(e)
     {
         if (   e.code == 'Enter'
-        || e.code == 'NumpadEnter')
+            || e.code == 'NumpadEnter')
             slider.showTextbox();
-
-        else if (e.code == 'ArrowRight')
-            slider.setValue(slider.value + (1+slider.dec));
-
-        else if (e.code == 'ArrowLeft')
-            slider.setValue(slider.value - (1+slider.dec));
     });
 
 
@@ -753,17 +831,17 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             while (value > slider.max) value -= slider.max - slider.min;
         }
         else
-        value = Math.min(Math.max(slider.min, value), slider.max);
+            value = Math.min(Math.max(slider.min, value), slider.max);
         
-        
+
         slider.value = value;
-        
-        
-        var v  = value / (slider.max - slider.min);
+
+
+        var v = value / (slider.max - slider.min);
         var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
-        
+
         slider.bar.style.background = slider.valueColor;
-        
+
         if (v >= 0)
         {
             slider.bar.style.left  = 1 + slider.offsetLeft + Math.round(cx);
@@ -774,14 +852,14 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
             slider.bar.style.width = -v * slider.clientWidth;
         }
-        
+
         slider.bar.style.background =
-        slider.value >= 0
-        ? slider.valueColor
-        : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
-        
+            slider.value >= 0
+            ? slider.valueColor
+            : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
+
         slider.bar.style.height = slider.clientHeight;
-        
+
         slider.text.innerHTML = slider.name + "&nbsp;&nbsp;" + getNumberString(value, slider.dec) + slider.suffix;
 
         slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
@@ -799,34 +877,30 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     }
 
 
-    slider.lockPointer = function()//pointerId)
+    slider.lockPointer = function()
     {
         slider.requestPointerLock =    
                slider.requestPointerLock 
             || slider.mozRequestPointerLock;
 
         slider.requestPointerLock();
-        //slider.setPointerCapture(pointerId);
         clearTimeout(slider.clickTimer);
 
         slider.movedX = 0;
         slider.sx     = 0;
     };
 
-    slider.unlockPointer = function()//pointerId)
+    slider.unlockPointer = function()
     {
         document.exitPointerLock =    
                document.exitPointerLock    
             || document.mozExitPointerLock;
 
         document.exitPointerLock();
-        //slider.releasePointerCapture(pointerId);
     };
 
-    slider.isPointerLocked = function()//pointerId)
+    slider.isPointerLocked = function()
     {
-        //return slider.hasPointerCapture(pointerId);
-
         return (document.pointerLockElement    === slider 
              || document.mozPointerLockElement === slider);
     }
@@ -834,19 +908,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     //
 
     slider.update();
-}
-
-
-function initSliderChildren(slider)
-{
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'sliderBar';
-
-    slider.text = document.createElement('div');
-    slider.text.className = 'sliderText';
-
-    slider.appendChild(slider.bar);
-    slider.appendChild(slider.text);
 }
 
 
@@ -953,7 +1014,7 @@ function initSliderTextbox(slider)
         var val = parseFloat(e.clipboardData.getData('text/plain'));
         val = Math.min(Math.max(slider.min, val), slider.max);
 
-        slider.textbox.value = val;
+        slider.textbox.value = isNaN(val) ? '' : val;
     });
 
     slider.textbox.addEventListener('focusout', function()
@@ -964,10 +1025,8 @@ function initSliderTextbox(slider)
     
     slider.textbox.finish = function(success)
     {
-        if (success)
-            slider.setValue(Number(slider.textbox.value), false);
-        else
-            slider.setValue(Number(slider.textbox.savedValue), true);
+        if (success) slider.setValue(Number(slider.textbox.value     ), false);
+        else         slider.setValue(Number(slider.textbox.savedValue), true );
 
         slider.textbox.blur();
 
@@ -1006,12 +1065,11 @@ function initSliderTextbox(slider)
 
 function updateCanvas()
 {
-    // build updated geometry description, with info about
-    // whether to modify or recreate (for example, spread density change = modify,
-    // spread count change = recreate, and this might be detailed further)
-
-
-    // pass this info to the canvas
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:  'updateCanvas',
+        data: graph.activeNode.output.data
+    }}, '*');
 }
 
 
@@ -1024,7 +1082,7 @@ class Graph
     {
         this.nodes.push(node);
         
-        node._id    = this.getNewId(node.type);
+        node._id    = this.getNewId(node);
         node._graph = this;
 
         document.body.appendChild(node.div);
@@ -1041,24 +1099,27 @@ class Graph
     }
 
 
-    getNewId(type)
+    getNewId(_node)
     {
         var maxNum = 0;
-
+        
         for (const node of this.nodes)
         {
+            if (node == _node)
+                continue;
+                
             if (   node.id.length < type.length
                 || node.id.substring(0, type.length) !== type)
                 continue;
-
+                
             var num = parseInt(node.id.substring(type.length));
-            if (num == 0) num = 1;
-
+                if (num == 0) num = 1;
+                
             maxNum = Math.max(num, maxNum);
         }
 
         if (maxNum == 0)
-            return type;
+            return _node.type;
 
         maxNum++;
 
@@ -1192,7 +1253,6 @@ var graph = new Graph();
 graph.addNode(new OpRect());
 //graph.addNode(new OpSpread());
 
-//updateCanvas(graph);
 
 
 

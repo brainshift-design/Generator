@@ -3,10 +3,13 @@ class Operator
     #type;
     get type() { return this.#type; }
 
-
     _id;
+    get id() { return this._id; }
+
     _graph = null;
+    get graph() { return this._graph; }
     
+
     params = new Array();
     
     inputs = new Array();
@@ -30,10 +33,10 @@ class Operator
         this.div = document.createElement('div');
         this.div.op = this;
 
-        this.div.style.display   = 'inline-block';
-        this.div.style.position  = 'absolute';
-        this.div.style.width     = 100;
-        this.div.style.height    = 'auto';
+        this.div.style.display  = 'inline-block';
+        this.div.style.position = 'absolute';
+        this.div.style.width    = 100;
+        this.div.style.height   = 'auto';
         //this.div.style.border = '1px solid red';
         
         this.div.dragging = false;
@@ -105,18 +108,34 @@ class Operator
     }
 
 
+    addInput(input)
+    {
+        input._op = this;
+        this.inputs.push(input);
+    }
+
+
+    setOutput(output)
+    {
+        if (this.output != null)
+            this.output._op = null;
+
+        output._op = this;
+        this.output = output;
+    }
+
+
     addParam(param)
     {
         this.params.push(param);
-
+        
+        param._op = this;
         param.control.style.display = 'inline-block';
         
         this.div.appendChild(param.control);
     }
  
     
-    get id() { return this._id;   }
-
 
     setId(newId)
     {
@@ -130,6 +149,5 @@ class Operator
 
     update()
     {
-
     }
 }

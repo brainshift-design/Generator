@@ -90,7 +90,7 @@ function initSliderTextbox(slider)
         var val = parseFloat(e.clipboardData.getData('text/plain'));
         val = Math.min(Math.max(slider.min, val), slider.max);
 
-        slider.textbox.value = val;
+        slider.textbox.value = isNaN(val) ? '' : val;
     });
 
     slider.textbox.addEventListener('focusout', function()
@@ -101,10 +101,8 @@ function initSliderTextbox(slider)
     
     slider.textbox.finish = function(success)
     {
-        if (success)
-            slider.setValue(Number(slider.textbox.value), false);
-        else
-            slider.setValue(Number(slider.textbox.savedValue), true);
+        if (success) slider.setValue(Number(slider.textbox.value     ), false);
+        else         slider.setValue(Number(slider.textbox.savedValue), true );
 
         slider.textbox.blur();
 

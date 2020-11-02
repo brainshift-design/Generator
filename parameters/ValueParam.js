@@ -1,11 +1,18 @@
 class   ValueParam
 extends Parameter
 {
-    constructor(name, min, max)
+    #value;
+
+    get value() { return this._control.value; }
+    set value(val) { this._control.setValue(val); }
+
+
+    constructor(name, min, max, val)
     {
         super('value');
 
         this._control = document.createElement('div');
+        this._control.param = this;
 
         initSlider(
             this._control,
@@ -14,11 +21,19 @@ extends Parameter
             name, 
             min,
             max,
-            50,   // default
+            val,  // default
             0.01, // drag scale
             1,    // wheel step
             0,    // decimals
             0,    // acceleration
             '');  // suffix
+
+
+        this._control.addEventListener('onchange', function(e)
+        {
+            updateCanvas();
+        });
     }
+
+    
 }

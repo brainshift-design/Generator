@@ -23,5 +23,3 @@ var graph = new Graph();
 
 graph.addNode(new OpRect());
 //graph.addNode(new OpSpread());
-
-//updateCanvas(graph);

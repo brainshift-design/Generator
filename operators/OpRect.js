@@ -8,17 +8,25 @@ extends Operator
     {
         super('rect');
 
-        this.#width = new ValueParam('Width',  0, Number.MAX_SAFE_INTEGER);
+        this.setOutput(new Output('rect'));
+
+        this.#width = new ValueParam('width',  0, Number.MAX_SAFE_INTEGER, 50);
         this.addParam(this.#width);
 
-        this.#height = new ValueParam('Height', 0, Number.MAX_SAFE_INTEGER);
+        this.#height = new ValueParam('height', 0, Number.MAX_SAFE_INTEGER, 50);
         this.addParam(this.#height);
     }
 
     update()
-    {
-        // TODO add an "update this rect" instruction to the update list,
-        // maybe through super.update('instruction')
+    {   
+        this.output._data = 
+        {
+            id:     this.id,
+            type:   this.type,
+            width:  this.#width .value,
+            height: this.#height.value
+        };
+
         super.update();
     }
 }
