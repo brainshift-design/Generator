@@ -64,12 +64,34 @@ div
 
 <div id='container'>
 
-    <h1>Generator</h1>
 
 </div>
 
 
 
+
+
+<script id='generateWorker' type='javascript/worker'>
+
+
+
+onmessage = function(e)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:  'updateCanvas',
+        data: e.data.graph.activeNode.output.data
+    }}, '*');
+};
+
+
+// function updateCanvas()
+// {
+
+// }
+
+
+</script>
 
 
 <script>
@@ -78,6 +100,165 @@ div
 
 
 
+
+
+const resizeEdgeWidth = 8;
+
+document.canResizeX = false;
+document.canResizeY = false;
+
+document.resizingX  = false;
+document.resizingY  = false;
+
+document.startX     = 0;
+document.startY     = 0;
+
+document.startH     = 0;
+document.startW     = 0;
+
+
+document.addEventListener('pointerdown', function(e)
+{
+    if (   document.canResizeX
+        || document.canResizeY)
+    {
+        if (document.canResizeX) document.resizingX = true;
+        if (document.canResizeY) document.resizingY = true;
+
+        document.startX   = e.clientX;
+        document.startY   = e.clientY;
+
+        document.startW   = window.innerWidth;
+        document.startH   = window.innerHeight;
+
+        document.body.setPointerCapture(e.pointerId);
+    }
+});
+
+
+document.addEventListener('pointermove', function(e)
+{
+    if (   document.resizingX
+        && document.resizingY)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.startH + e.clientY - document.startY);
+    }
+    else if (document.resizingX)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.body.clientHeight);
+    }
+    else if (document.resizingY)
+    {
+        resizeWindow(
+            document.body.clientWidth,
+            document.startH + e.clientY - document.startY);
+    }
+    else
+        checkResize(e.clientX, e.clientY);
+});
+
+
+document.addEventListener('pointerup', function(e)
+{
+    if (   document.resizingX
+        || document.resizingY)
+    {
+        document.resizingX = false;
+        document.resizingY = false;
+        
+        checkResize(e.clientX, e.clientY);
+        document.body.releasePointerCapture(e.pointerId);
+    }
+});
+
+
+function resizeWindow(width, height)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'resizeWindow', 
+        width:  width,
+        height: height
+    }}, '*');
+
+}
+
+
+function checkResize(x, y)
+{
+    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+
+         if (document.canResizeX
+          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
+    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
+    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
+    else                          document.body.style.cursor = 'auto';
+}
+
+
+class Graph
+{
+    nodes       = new Array();
+    #activeNode = null;
+
+    addNode(node)
+    {
+        this.nodes.push(node);
+        
+        node._id    = this.getNewId(node);
+        node._graph = this;
+
+        document.body.appendChild(node.div);
+
+        this.activeNode = node;
+    }
+
+
+    get activeNode() { return this.#activeNode; }
+    set activeNode(node)
+    {
+        this.#activeNode = node;
+        var data = node.output.data;
+
+        if (data !== undefined)
+            updateCanvas();
+    }
+
+
+    getNewId(_node)
+    {
+        var type = _node.type;
+
+        var maxNum = 0;
+        
+        for (const node of this.nodes)
+        {
+            if (node == _node)
+                continue;
+                
+            if (   node.id.length < type.length
+                || node.id.substring(0, type.length) !== type)
+                continue;
+                
+            var num = parseInt(node.id.substring(type.length));
+                if (num == 0) num = 1;
+                
+            maxNum = Math.max(num, maxNum);
+        }
+
+        if (maxNum == 0)
+            return type;
+
+        maxNum++;
+
+        return type + maxNum;
+    }
+}
 
 
 const R = 0, G = 1, B = 2, A = 3;
@@ -586,6 +767,65 @@ function saveState()
 }
 
 
+class Parameter
+{
+    #type;
+    get type() { return this.#type; }
+    
+    _op;
+    get op() { return this._op; }
+
+    _control;
+    get control() { return this._control; }
+
+    constructor(type)
+    {
+        this.#type = type;
+    }
+}
+
+
+class   ValueParam
+extends Parameter
+{
+    #value;
+
+    get value() { return this._control.value; }
+    set value(val) { this._control.setValue(val); }
+
+
+    constructor(name, min, max, val)
+    {
+        super('value');
+
+        this._control = document.createElement('div');
+        this._control.param = this;
+
+        initSlider(
+            this._control,
+            100,  // width
+            20,   // height
+            name, 
+            min,
+            max,
+            val,  // default
+            0.01, // drag scale
+            1,    // wheel step
+            0,    // decimals
+            0,    // acceleration
+            '');  // suffix
+
+
+        this._control.addEventListener('onchange', function(e)
+        {
+            updateCanvas();
+        });
+    }
+
+    
+}
+
+
 class Input
 {
     _op;
@@ -666,65 +906,6 @@ class Connection
     {
         
     }
-}
-
-
-class Parameter
-{
-    #type;
-    get type() { return this.#type; }
-    
-    _op;
-    get op() { return this._op; }
-
-    _control;
-    get control() { return this._control; }
-
-    constructor(type)
-    {
-        this.#type = type;
-    }
-}
-
-
-class   ValueParam
-extends Parameter
-{
-    #value;
-
-    get value() { return this._control.value; }
-    set value(val) { this._control.setValue(val); }
-
-
-    constructor(name, min, max, val)
-    {
-        super('value');
-
-        this._control = document.createElement('div');
-        this._control.param = this;
-
-        initSlider(
-            this._control,
-            100,  // width
-            20,   // height
-            name, 
-            min,
-            max,
-            val,  // default
-            0.01, // drag scale
-            1,    // wheel step
-            0,    // decimals
-            0,    // acceleration
-            '');  // suffix
-
-
-        this._control.addEventListener('onchange', function(e)
-        {
-            updateCanvas();
-        });
-    }
-
-    
 }
 
 
@@ -1429,172 +1610,23 @@ function initSliderTextbox(slider)
 }
 
 
+var worker = new Worker(
+    window.URL.createObjectURL(
+        new Blob([generateWorker.textContent])));
+      
+
 function updateCanvas()
 {
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:  'updateCanvas',
-        data: graph.activeNode.output.data
-    }}, '*');
+    postGenerateMessage();
 }
 
 
-class Graph
+function postGenerateMessage()
 {
-    nodes       = new Array();
-    #activeNode = null;
-
-    addNode(node)
+    worker.postMessage(
     {
-        this.nodes.push(node);
-        
-        node._id    = this.getNewId(node);
-        node._graph = this;
-
-        document.body.appendChild(node.div);
-
-        this.activeNode = node;
-    }
-
-
-    get activeNode() { return this.#activeNode; }
-    set activeNode(node)
-    {
-        this.#activeNode = node;
-        var data = node.output.data;
-
-        if (data !== undefined)
-            updateCanvas();
-    }
-
-
-    getNewId(_node)
-    {
-        var type = _node.type;
-
-        var maxNum = 0;
-        
-        for (const node of this.nodes)
-        {
-            if (node == _node)
-                continue;
-                
-            if (   node.id.length < type.length
-                || node.id.substring(0, type.length) !== type)
-                continue;
-                
-            var num = parseInt(node.id.substring(type.length));
-                if (num == 0) num = 1;
-                
-            maxNum = Math.max(num, maxNum);
-        }
-
-        if (maxNum == 0)
-            return type;
-
-        maxNum++;
-
-        return type + maxNum;
-    }
-}
-
-
-const resizeEdgeWidth = 8;
-
-document.canResizeX = false;
-document.canResizeY = false;
-
-document.resizingX  = false;
-document.resizingY  = false;
-
-document.startX     = 0;
-document.startY     = 0;
-
-document.startH     = 0;
-document.startW     = 0;
-
-
-document.addEventListener('pointerdown', function(e)
-{
-    if (   document.canResizeX
-        || document.canResizeY)
-    {
-        if (document.canResizeX) document.resizingX = true;
-        if (document.canResizeY) document.resizingY = true;
-
-        document.startX   = e.clientX;
-        document.startY   = e.clientY;
-
-        document.startW   = window.innerWidth;
-        document.startH   = window.innerHeight;
-
-        document.body.setPointerCapture(e.pointerId);
-    }
-});
-
-
-document.addEventListener('pointermove', function(e)
-{
-    if (   document.resizingX
-        && document.resizingY)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.startH + e.clientY - document.startY);
-    }
-    else if (document.resizingX)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.body.clientHeight);
-    }
-    else if (document.resizingY)
-    {
-        resizeWindow(
-            document.body.clientWidth,
-            document.startH + e.clientY - document.startY);
-    }
-    else
-        checkResize(e.clientX, e.clientY);
-});
-
-
-document.addEventListener('pointerup', function(e)
-{
-    if (   document.resizingX
-        || document.resizingY)
-    {
-        document.resizingX = false;
-        document.resizingY = false;
-        
-        checkResize(e.clientX, e.clientY);
-        document.body.releasePointerCapture(e.pointerId);
-    }
-});
-
-
-function resizeWindow(width, height)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'resizeWindow', 
-        width:  width,
-        height: height
-    }}, '*');
-
-}
-
-
-function checkResize(x, y)
-{
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
-
-         if (document.canResizeX
-          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
-    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
-    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
-    else                          document.body.style.cursor = 'auto';
+        graph: ''
+    });
 }
 
 
@@ -1619,18 +1651,17 @@ onmessage = (e) =>
 /////////////////////////////////////////////////////////
 
 
-var graph = new Graph();
 
-var opRect    = new OpRect();
-var opSpread1 = new OpSpread();
-var opSpread2 = new OpSpread();
+// var opRect    = new OpRect();
+// var opSpread1 = new OpSpread();
+// var opSpread2 = new OpSpread();
 
-graph.addNode(opRect);
-graph.addNode(opSpread1);
-graph.addNode(opSpread2);
+// graph.addNode(opRect);
+// graph.addNode(opSpread1);
+// graph.addNode(opSpread2);
 
-opRect   .output.connect(opSpread1.inputs[0]);
-opSpread1.output.connect(opSpread2.inputs[0]);
+// opRect   .output.connect(opSpread1.inputs[0]);
+// opSpread1.output.connect(opSpread2.inputs[0]);
 
 
 

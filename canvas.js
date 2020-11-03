@@ -1,8 +1,18 @@
+var worker = new Worker(
+    window.URL.createObjectURL(
+        new Blob([generateWorker.textContent])));
+      
+
 function updateCanvas()
 {
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:  'updateCanvas',
-        data: graph.activeNode.output.data
-    }}, '*');
+    postGenerateMessage();
+}
+
+
+function postGenerateMessage()
+{
+    worker.postMessage(
+    {
+        graph: ''
+    });
 }

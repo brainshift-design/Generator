@@ -5,21 +5,25 @@ html/ui_0.html
 
 html/ui_1.html
 
+    output/worker.html
+
 html/ui_2.html
 
     def.js
+    window.js
+    
+    Graph.js
 
     core/lib.js
     core/math.js
     core/storage.js
-
-    components/Input.js
-    components/Output.js
-    components/Connection.js
     
     parameters/Parameter.js
     parameters/ValueParam.js
 
+    operators/Input.js
+    operators/Output.js
+    operators/Connection.js
     operators/Operator.js
     operators/OpRect.js
     operators/OpSpread.js
@@ -28,9 +32,7 @@ html/ui_2.html
     ui/slider textbox.js
 
     canvas.js
-    graph.js
 
-    window.js
     ui.js
 
 html/ui_3.html
