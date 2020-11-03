@@ -77,11 +77,16 @@ div
 
 onmessage = function(e)
 {
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:  'updateCanvas',
-        data: e.data.graph.activeNode.output.data
-    }}, '*');
+    if (e.data.msg === 'generate')
+    {
+        console.log(e.data.graph);
+    }
+
+    // parent.postMessage({ pluginMessage: 
+    // { 
+    //     cmd:  'updateCanvas',
+    //     data: e.data.graph.activeNode.output.data
+    // }}, '*');
 };
 
 
@@ -838,6 +843,8 @@ class Input
     {
         this.#dataType = dataType;
     }
+    
+    get connected() { return this.connectedOutput != null; }
 
     get data()
     {
@@ -846,8 +853,6 @@ class Input
             ? this.connectedOutput.data
             : null);
     }
-
-    get connected() { return this.connectedOutput != null; }
 }
 
 
@@ -894,8 +899,7 @@ class Output
 
     get data() 
     {
-        this._op.update();
-        return this._data;
+        return this._op.generate();
     }
 }
 
@@ -1059,9 +1063,7 @@ class Operator
     }
 
 
-    update()
-    {
-    }
+    generate() { return []; }
 }
 
 
@@ -1086,20 +1088,31 @@ extends Operator
     }
 
 
-    update()
-    {   
-        this.output._data = 
+    // update()
+    // {   
+    //     this.output._data = 
+    //     [{
+    //         id:     this.id,
+    //         type:   this.type,
+    //         x:      0,
+    //         y:      0,
+    //         width:  this.#width .value,
+    //         height: this.#height.value
+    //     }];
+    // }
+
+
+    generate()
+    {
+        return this.output._data = 
         [{
             id:     this.id,
             type:   this.type,
-            x:      0,
-            y:      0,
             width:  this.#width .value,
-            height: this.#height.value
+            height: this.#height.value,
+
+            inputs: []
         }];
-
-
-        super.update();
     }
 }
 
@@ -1127,36 +1140,50 @@ extends Operator
     }
 
 
-    update()
-    {
-        this.#random.seed = 1824557;
-        this.output._data = [];
+    // update()
+    // {
+    //     this.#random.seed = 1824557;
+    //     this.output._data = [];
 
         
-        var input = this.inputs[0];
-        if (!input.connected) return;
+    //     var input = this.inputs[0];
+    //     if (!input.connected) return;
             
 
-        for (var i = 0; i < this.#count.value; i++)
-        {
-            var a = this.#random.next() * Tau;
-            var d = this.#random.next() * this.#radius.value;
+    //     for (var i = 0; i < this.#count.value; i++)
+    //     {
+    //         var a = this.#random.next() * Tau;
+    //         var d = this.#random.next() * this.#radius.value;
 
-            var v = vector(a, d);
+    //         var v = vector(a, d);
 
-            for (var j = 0; j < input.data.length; j++)
-            {
-                var item = Object.assign({}, input.data[j]);
+    //         for (var j = 0; j < input.data.length; j++)
+    //         {
+    //             var item = Object.assign({}, input.data[j]);
 
-                item.x += v.x;
-                item.y += v.y;
+    //             item.x += v.x;
+    //             item.y += v.y;
 
-                this.output._data.push(item);
-            }
-        }
-        
+    //             this.output._data.push(item);
+    //         }
+    //     }
+    // }
 
-        super.update();
+
+    generate()
+    {
+        var input = this.inputs[0];
+        if (!input.connected) return;
+
+        return this.output._data = 
+        [{
+            id:     this.id,
+            type:   this.type,
+            count:  this.#count .value,
+            radius: this.#radius.value,
+
+            inputs: [input.data]
+        }];
     }
 }
 
@@ -1625,7 +1652,8 @@ function postGenerateMessage()
 {
     worker.postMessage(
     {
-        graph: ''
+        msg:   'generate',
+        graph: JSON.stringify(graph.activeNode.output.data)
     });
 }
 
@@ -1642,26 +1670,28 @@ parent.postMessage({ pluginMessage:
 }}, '*');
 
 
-onmessage = (e) =>
-{
-    var msg = e.data.pluginMessage;
-}
+// onmessage = (e) =>
+// {
+//     var msg = e.data.pluginMessage;
+// }
+
 
 
 /////////////////////////////////////////////////////////
 
 
+var graph = new Graph();
 
-// var opRect    = new OpRect();
-// var opSpread1 = new OpSpread();
-// var opSpread2 = new OpSpread();
+var opRect    = new OpRect();
+var opSpread1 = new OpSpread();
+var opSpread2 = new OpSpread();
 
-// graph.addNode(opRect);
-// graph.addNode(opSpread1);
-// graph.addNode(opSpread2);
+graph.addNode(opRect);
+graph.addNode(opSpread1);
+graph.addNode(opSpread2);
 
-// opRect   .output.connect(opSpread1.inputs[0]);
-// opSpread1.output.connect(opSpread2.inputs[0]);
+opRect   .output.connect(opSpread1.inputs[0]);
+opSpread1.output.connect(opSpread2.inputs[0]);
 
 
 

@@ -148,7 +148,5 @@ class Operator
     }
 
 
-    update()
-    {
-    }
+    generate() { return []; }
 }

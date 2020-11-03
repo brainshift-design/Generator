@@ -13,6 +13,7 @@ function postGenerateMessage()
 {
     worker.postMessage(
     {
-        graph: ''
+        msg:   'generate',
+        graph: JSON.stringify(graph.activeNode.output.data)
     });
 }

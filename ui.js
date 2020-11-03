@@ -10,23 +10,25 @@ parent.postMessage({ pluginMessage:
 }}, '*');
 
 
-onmessage = (e) =>
-{
-    var msg = e.data.pluginMessage;
-}
+// onmessage = (e) =>
+// {
+//     var msg = e.data.pluginMessage;
+// }
+
 
 
 /////////////////////////////////////////////////////////
 
 
+var graph = new Graph();
 
-// var opRect    = new OpRect();
-// var opSpread1 = new OpSpread();
-// var opSpread2 = new OpSpread();
+var opRect    = new OpRect();
+var opSpread1 = new OpSpread();
+var opSpread2 = new OpSpread();
 
-// graph.addNode(opRect);
-// graph.addNode(opSpread1);
-// graph.addNode(opSpread2);
+graph.addNode(opRect);
+graph.addNode(opSpread1);
+graph.addNode(opSpread2);
 
-// opRect   .output.connect(opSpread1.inputs[0]);
-// opSpread1.output.connect(opSpread2.inputs[0]);
+opRect   .output.connect(opSpread1.inputs[0]);
+opSpread1.output.connect(opSpread2.inputs[0]);

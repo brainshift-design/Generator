@@ -41,7 +41,6 @@ class Output
 
     get data() 
     {
-        this._op.update();
-        return this._data;
+        return this._op.generate();
     }
 }

@@ -21,35 +21,49 @@ extends Operator
     }
 
 
-    update()
-    {
-        this.#random.seed = 1824557;
-        this.output._data = [];
+    // update()
+    // {
+    //     this.#random.seed = 1824557;
+    //     this.output._data = [];
 
         
-        var input = this.inputs[0];
-        if (!input.connected) return;
+    //     var input = this.inputs[0];
+    //     if (!input.connected) return;
             
 
-        for (var i = 0; i < this.#count.value; i++)
-        {
-            var a = this.#random.next() * Tau;
-            var d = this.#random.next() * this.#radius.value;
+    //     for (var i = 0; i < this.#count.value; i++)
+    //     {
+    //         var a = this.#random.next() * Tau;
+    //         var d = this.#random.next() * this.#radius.value;
 
-            var v = vector(a, d);
+    //         var v = vector(a, d);
 
-            for (var j = 0; j < input.data.length; j++)
-            {
-                var item = Object.assign({}, input.data[j]);
+    //         for (var j = 0; j < input.data.length; j++)
+    //         {
+    //             var item = Object.assign({}, input.data[j]);
 
-                item.x += v.x;
-                item.y += v.y;
+    //             item.x += v.x;
+    //             item.y += v.y;
 
-                this.output._data.push(item);
-            }
-        }
-        
+    //             this.output._data.push(item);
+    //         }
+    //     }
+    // }
 
-        super.update();
+
+    generate()
+    {
+        var input = this.inputs[0];
+        if (!input.connected) return;
+
+        return this.output._data = 
+        [{
+            id:     this.id,
+            type:   this.type,
+            count:  this.#count .value,
+            radius: this.#radius.value,
+
+            inputs: [input.data]
+        }];
     }
 }

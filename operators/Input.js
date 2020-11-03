@@ -10,6 +10,8 @@ class Input
     {
         this.#dataType = dataType;
     }
+    
+    get connected() { return this.connectedOutput != null; }
 
     get data()
     {
@@ -18,6 +20,4 @@ class Input
             ? this.connectedOutput.data
             : null);
     }
-
-    get connected() { return this.connectedOutput != null; }
 }
