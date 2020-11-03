@@ -46,6 +46,15 @@ function msgResizeWindow(msg) {
 }
 function msgUpdateCanvas(msg) {
     removeGeneratedObjects();
+    generateObjects(msg);
+}
+function removeGeneratedObjects() {
+    for (const node of figma.currentPage.children) {
+        if (node.getPluginData('#GEN') === '#GEN')
+            node.remove();
+    }
+}
+function generateObjects(msg) {
     for (const item of msg.data) {
         if (item.type == 'rect') {
             const rect = figma.createRectangle();
@@ -57,11 +66,5 @@ function msgUpdateCanvas(msg) {
             rect.resize(Math.max(0.01, item.width), Math.max(0.01, item.height));
             figma.currentPage.appendChild(rect);
         }
-    }
-}
-function removeGeneratedObjects() {
-    for (const node of figma.currentPage.children) {
-        if (node.getPluginData('#GEN') === '#GEN')
-            node.remove();
     }
 }

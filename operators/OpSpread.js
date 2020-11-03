@@ -4,6 +4,7 @@ extends Operator
     #count;
     #radius;
 
+    #random = new Random();
 
     constructor()
     {
@@ -22,24 +23,24 @@ extends Operator
 
     update()
     {
-        randomSeed = 1894557;
+        this.#random.seed = 1824557;
         this.output._data = [];
-        
 
-        if (!this.inputs[0].connected)
-            return;
+        
+        var input = this.inputs[0];
+        if (!input.connected) return;
             
 
         for (var i = 0; i < this.#count.value; i++)
         {
-            var a = random() * Tau;
-            var d = random() * this.#radius.value;
+            var a = this.#random.next() * Tau;
+            var d = this.#random.next() * this.#radius.value;
 
             var v = vector(a, d);
 
-            for (var j = 0; j < this.inputs[0].data.length; j++)
+            for (var j = 0; j < input.data.length; j++)
             {
-                var item = Object.assign({}, this.inputs[0].data[j]);
+                var item = Object.assign({}, input.data[j]);
 
                 item.x += v.x;
                 item.y += v.y;

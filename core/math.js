@@ -1,7 +1,5 @@
 const Tau = Math.PI * 2;
 
-var randomSeed = 0xb9ef7ca4;
-
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
@@ -296,14 +294,19 @@ function xrotate(angle)
 
 
 
-function random()
+class Random
 {
-    randomSeed = (randomSeed + 0x7ED55D16) + (randomSeed << 12);
-    randomSeed = (randomSeed ^ 0xC761C23C) ^ (randomSeed >> 19);
-    randomSeed = (randomSeed + 0x165667B1) + (randomSeed <<  5);
-    randomSeed = (randomSeed + 0xD3A2646C) ^ (randomSeed <<  9);
-    randomSeed = (randomSeed + 0xFD7046C5) + (randomSeed <<  3);
-    randomSeed = (randomSeed ^ 0xB55A4F09) ^ (randomSeed >> 16);
+    seed = 0xb9ef7ca4;
 
-    return randomSeed / -0x7fffffff;
+    next()
+    {
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+
+        return this.seed / -0x7fffffff;
+    }
 }

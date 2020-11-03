@@ -50,7 +50,22 @@ function msgResizeWindow(msg)
 function msgUpdateCanvas(msg)
 {
     removeGeneratedObjects();
+    generateObjects(msg);
+}
 
+
+function removeGeneratedObjects()
+{
+    for (const node of figma.currentPage.children)
+    {
+        if (node.getPluginData('#GEN') === '#GEN')
+            node.remove();
+    }
+}
+
+
+function generateObjects(msg)
+{
     for (const item of msg.data)
     {
         if (item.type == 'rect')
@@ -71,15 +86,5 @@ function msgUpdateCanvas(msg)
 
             figma.currentPage.appendChild(rect);
         }
-    }
-}
-
-
-function removeGeneratedObjects()
-{
-    for (const node of figma.currentPage.children)
-    {
-        if (node.getPluginData('#GEN') === '#GEN')
-            node.remove();
     }
 }
