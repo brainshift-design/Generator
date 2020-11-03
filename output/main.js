@@ -45,20 +45,23 @@ function msgResizeWindow(msg) {
     figma.clientStorage.setAsync('windowHeight', height);
 }
 function msgUpdateCanvas(msg) {
+    removeGeneratedObjects();
+    for (const item of msg.data) {
+        if (item.type == 'rect') {
+            const rect = figma.createRectangle();
+            rect.setPluginData('#GEN', '#GEN');
+            rect.name = item.id;
+            rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+            rect.x = item.x;
+            rect.y = item.y;
+            rect.resize(Math.max(0.01, item.width), Math.max(0.01, item.height));
+            figma.currentPage.appendChild(rect);
+        }
+    }
+}
+function removeGeneratedObjects() {
     for (const node of figma.currentPage.children) {
         if (node.getPluginData('#GEN') === '#GEN')
             node.remove();
-    }
-    //
-    if (msg.data.type == 'rect') {
-        const rect = figma.createRectangle();
-        rect.setPluginData('#GEN', '#GEN');
-        rect.x = 0;
-        rect.y = 0;
-        rect.name = msg.data.id;
-        rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
-        //rect.cornerRadius = 2 / zoom;
-        rect.resize(msg.data.width, msg.data.height);
-        figma.currentPage.appendChild(rect);
     }
 }

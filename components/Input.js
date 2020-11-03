@@ -4,16 +4,20 @@ class Input
     
     #dataType;
 
-    #connection;
+    connectedOutput;
 
     constructor(dataType)
     {
         this.#dataType = dataType;
     }
 
-    get connection() { return this.#connection; }
-    set connection(conn)
+    get data()
     {
-        this.#connection = conn;
+        return (
+            this.connected
+            ? this.connectedOutput.data
+            : null);
     }
+
+    get connected() { return this.connectedOutput != null; }
 }

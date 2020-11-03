@@ -10,6 +10,7 @@ html/ui_2.html
     def.js
 
     core/lib.js
+    core/math.js
     core/storage.js
 
     components/Input.js

@@ -10,9 +10,9 @@ class Operator
     get graph() { return this._graph; }
     
 
-    params = new Array();
+    params = [];
     
-    inputs = new Array();
+    inputs = [];
     output;
 
 
@@ -96,6 +96,7 @@ class Operator
         label.style.background   = '#a3d3fd';
         label.style.borderRadius = '4px 4px 0 0';
         label.style.color        = 'black';
+        label.style.textAlign    = 'center';
         
         this.div.appendChild(label);
     }

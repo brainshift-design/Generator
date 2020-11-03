@@ -43,7 +43,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.style.display     = 'inline';
         
     slider.mouseOver         = false;
-    slider.buttonDown0        = false;
+    slider.buttonDown0       = false;
         
     slider.clickSize         = 4;
     slider.moved             = false;

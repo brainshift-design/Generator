@@ -20,12 +20,17 @@ class Graph
     set activeNode(node)
     {
         this.#activeNode = node;
-        updateCanvas(this); // send this graph to be created in the canvas
+        var data = node.output.data;
+
+        if (data !== undefined)
+            updateCanvas();
     }
 
 
     getNewId(_node)
     {
+        var type = _node.type;
+
         var maxNum = 0;
         
         for (const node of this.nodes)
@@ -44,7 +49,7 @@ class Graph
         }
 
         if (maxNum == 0)
-            return _node.type;
+            return type;
 
         maxNum++;
 
