@@ -157,6 +157,15 @@ class Operator
     {
         this.div.style.left = x;
         this.div.style.top  = y;
+
+        for (const input of this.inputs)
+        {
+            if (input.connected) 
+                input.connection.updateWire();
+        }
+
+        if (this.output.connected)
+            this.output.connection.updateWire();
     }
 
 

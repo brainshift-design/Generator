@@ -6,7 +6,12 @@ class Input
 
     #dataType;
 
+
     connectedOutput;
+    connection;
+
+    get connected() { return this.connectedOutput != null; }
+
 
     constructor(dataType)
     {
@@ -14,10 +19,9 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
-    }
+    }    
     
-    get connected() { return this.connectedOutput != null; }
-
+    
     get data()
     {
         return (

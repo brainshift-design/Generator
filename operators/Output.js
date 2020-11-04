@@ -7,9 +7,13 @@ class Output
     #dataType;
     _data;
     
+    
     connectedInputs = [];
+    connections     = [];
     
-    
+    get connected() { return this.connectedInputs.length > 0; }
+
+
     constructor(dataType)
     {
         this.#dataType = dataType;
@@ -18,6 +22,7 @@ class Output
         this.control.className = 'output';
     }
     
+
     get data() 
     {
         return this._op.generate();

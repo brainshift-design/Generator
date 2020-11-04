@@ -872,13 +872,20 @@ class Graph
         if (output.connectedInput != null)
             this.disconnect(output.connectedInput);
 
+
         output.connectedInputs.push(input);
         input.connectedOutput = output;
 
-        var conn = new Connection(input, input.connectedOutput);
+
+        var conn = new Connection(output, input);
+
+        input .connection = conn;
+        output.connection = conn;
+        
         this.connections.push(conn);
         graphView.appendChild(conn.wire);
         
+
         updateCanvas();
     }
 
@@ -886,7 +893,7 @@ class Graph
     disconnect(input)
     {
         if (input.connectedOutput == null)
-            return;
+            return false;
 
         var iConn = this.connections.findIndex(c => c.input == input && c.output == input.connectedOutput);
         graphView.removeChild(this.connections[iConn].wire);
@@ -894,9 +901,15 @@ class Graph
         
         var iInput = input.connectedOutput.connectedInputs.indexOf(input);
         input.connectedOutput.connectedInputs.splice(iInput, 1);
-        input.connectedOutput = null;
+        
+        input.connection                 = null;
+        input.connectedOutput.connection = null;
+
+        input.connectedOutput            = null;
 
         updateCanvas();
+    
+        return true;
     }
 }
 
@@ -1484,7 +1497,12 @@ class Input
 
     #dataType;
 
+
     connectedOutput;
+    connection;
+
+    get connected() { return this.connectedOutput != null; }
+
 
     constructor(dataType)
     {
@@ -1492,10 +1510,9 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
-    }
+    }    
     
-    get connected() { return this.connectedOutput != null; }
-
+    
     get data()
     {
         return (
@@ -1515,9 +1532,13 @@ class Output
     #dataType;
     _data;
     
+    
     connectedInputs = [];
+    connections     = [];
     
-    
+    get connected() { return this.connectedInputs.length > 0; }
+
+
     constructor(dataType)
     {
         this.#dataType = dataType;
@@ -1526,6 +1547,7 @@ class Output
         this.control.className = 'output';
     }
     
+
     get data() 
     {
         return this._op.generate();
@@ -1535,20 +1557,39 @@ class Output
 
 class Connection
 {
-    input;
     output;
+    input;
 
     wire;
 
-    constructor(input, output)
+
+    constructor(output, input)
     {
-        this.input  = input;
         this.output = output;
+        this.input  = input;
 
         this.wire = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
-        this.wire.style.stroke      = '#18A0FB';
-        this.wire.style.strokeWidth = 2;
+        this.wire.line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        this.wire.appendChild(this.wire.line);
+
+        this.wire.line.style.stroke      = '#18A0FB';
+        this.wire.line.style.strokeWidth = 1;
+    }
+
+
+    updateWire()
+    {
+        this.wire.setAttribute('width',  document.body.clientWidth );
+        this.wire.setAttribute('height', document.body.clientHeight);
+
+        var outRect = this.output.control.getBoundingClientRect();
+        var inRect  = this.input .control.getBoundingClientRect();
+
+        this.wire.line.setAttribute('x1', outRect.left + outRect.width /2);
+        this.wire.line.setAttribute('y1', outRect.top  + outRect.height/2);
+        this.wire.line.setAttribute('x2', inRect .left + inRect .width /2);
+        this.wire.line.setAttribute('y2', inRect .top  + inRect .height/2);
     }
 }
 
@@ -1712,6 +1753,15 @@ class Operator
     {
         this.div.style.left = x;
         this.div.style.top  = y;
+
+        for (const input of this.inputs)
+        {
+            if (input.connected) 
+                input.connection.updateWire();
+        }
+
+        if (this.output.connected)
+            this.output.connection.updateWire();
     }
 
 

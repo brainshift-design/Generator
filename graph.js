@@ -91,13 +91,20 @@ class Graph
         if (output.connectedInput != null)
             this.disconnect(output.connectedInput);
 
+
         output.connectedInputs.push(input);
         input.connectedOutput = output;
 
-        var conn = new Connection(input, input.connectedOutput);
+
+        var conn = new Connection(output, input);
+
+        input .connection = conn;
+        output.connection = conn;
+        
         this.connections.push(conn);
         graphView.appendChild(conn.wire);
         
+
         updateCanvas();
     }
 
@@ -105,7 +112,7 @@ class Graph
     disconnect(input)
     {
         if (input.connectedOutput == null)
-            return;
+            return false;
 
         var iConn = this.connections.findIndex(c => c.input == input && c.output == input.connectedOutput);
         graphView.removeChild(this.connections[iConn].wire);
@@ -113,8 +120,14 @@ class Graph
         
         var iInput = input.connectedOutput.connectedInputs.indexOf(input);
         input.connectedOutput.connectedInputs.splice(iInput, 1);
-        input.connectedOutput = null;
+        
+        input.connection                 = null;
+        input.connectedOutput.connection = null;
+
+        input.connectedOutput            = null;
 
         updateCanvas();
+    
+        return true;
     }
 }
