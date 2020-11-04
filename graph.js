@@ -14,7 +14,14 @@ class Graph
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
     {
+        if (this.#activeNode != null)
+            this.#activeNode.div.style.boxShadow = 'none';
+
         this.#activeNode = node;
+        
+        if (this.#activeNode != null)
+            this.#activeNode.div.style.boxShadow = '0 0 0 2px #18A0FB';
+
         updateCanvas();
     }
 

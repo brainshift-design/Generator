@@ -43,7 +43,7 @@ class Operator
     {
         this.#type = type;
         this._id   = type; // this is a temp until the op becomes a graph node
-
+        
         this.createDiv();
     }    
     
@@ -52,12 +52,13 @@ class Operator
     {
         this.div = document.createElement('div');
         this.div.op = this;
-
-        this.div.style.display  = 'inline-block';
-        this.div.style.position = 'absolute';
-        this.div.style.width    = 100;
-        this.div.style.height   = 'auto';
-        //this.div.style.border = '1px solid red';
+        
+        this.div.style.display      = 'inline-block';
+        this.div.style.position     = 'absolute';
+        this.div.style.width        = 100;
+        this.div.style.height       = 'auto';
+        this.div.style.overflow     = 'hidden';
+        this.div.style.borderRadius = '4px 4px 0 0';
         
         this.div.dragging = false;
         
@@ -109,16 +110,21 @@ class Operator
            
         this.label.style.fontFamily   = 'Inter';
         this.label.style.fontSize     = '11';
-        this.label.style.paddingLeft  = '4px';
+        this.label.style.padding      = '3px 4px 0 0';
         this.label.style.display      = 'inline-block';
         this.label.style.width        = 'calc(100% - 2px)';
         this.label.style.height       = 20;
         this.label.style.background   = '#a3d3fd';
-        this.label.style.borderRadius = '4px 4px 0 0';
         this.label.style.color        = 'black';
         this.label.style.textAlign    = 'center';
         
         this.div.appendChild(this.label);
+
+        this.label.addEventListener('dblclick', function(e)
+        {
+            console.log('doubleclick');
+            this.parentNode.op.graph.activeNode = this.parentNode.op;
+        });
     }
     
 

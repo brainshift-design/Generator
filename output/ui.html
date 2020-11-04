@@ -41,7 +41,6 @@ div
     padding:          0;
     width:            74px;
     height:           24px;
-    border:           1px solid transparent;
     border-bottom:    1px solid rgba(0, 0, 0, 0.1);
     border-radius:    2px;
     overflow:         hidden;
@@ -64,7 +63,7 @@ div
 
 .slider:hover
 {
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
 }    
 
 .slider:focus
@@ -76,6 +75,8 @@ div
 
 button
 {
+    font-family:   Inter;
+    font-size:     11px;
     width:         30;
     height:        30;
     background:    white;
@@ -685,7 +686,14 @@ class Graph
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
     {
+        if (this.#activeNode != null)
+            this.#activeNode.div.style.boxShadow = 'none';
+
         this.#activeNode = node;
+        
+        if (this.#activeNode != null)
+            this.#activeNode.div.style.boxShadow = '0 0 0 2px #18A0FB';
+
         updateCanvas();
     }
 
@@ -1452,7 +1460,7 @@ class Operator
     {
         this.#type = type;
         this._id   = type; // this is a temp until the op becomes a graph node
-
+        
         this.createDiv();
     }    
     
@@ -1461,12 +1469,13 @@ class Operator
     {
         this.div = document.createElement('div');
         this.div.op = this;
-
-        this.div.style.display  = 'inline-block';
-        this.div.style.position = 'absolute';
-        this.div.style.width    = 100;
-        this.div.style.height   = 'auto';
-        //this.div.style.border = '1px solid red';
+        
+        this.div.style.display      = 'inline-block';
+        this.div.style.position     = 'absolute';
+        this.div.style.width        = 100;
+        this.div.style.height       = 'auto';
+        this.div.style.overflow     = 'hidden';
+        this.div.style.borderRadius = '4px 4px 0 0';
         
         this.div.dragging = false;
         
@@ -1518,16 +1527,21 @@ class Operator
            
         this.label.style.fontFamily   = 'Inter';
         this.label.style.fontSize     = '11';
-        this.label.style.paddingLeft  = '4px';
+        this.label.style.padding      = '3px 4px 0 0';
         this.label.style.display      = 'inline-block';
         this.label.style.width        = 'calc(100% - 2px)';
         this.label.style.height       = 20;
         this.label.style.background   = '#a3d3fd';
-        this.label.style.borderRadius = '4px 4px 0 0';
         this.label.style.color        = 'black';
         this.label.style.textAlign    = 'center';
         
         this.div.appendChild(this.label);
+
+        this.label.addEventListener('dblclick', function(e)
+        {
+            console.log('doubleclick');
+            this.parentNode.op.graph.activeNode = this.parentNode.op;
+        });
     }
     
 

@@ -1,5 +1,7 @@
 button
 {
+    font-family:   Inter;
+    font-size:     11px;
     width:         30;
     height:        30;
     background:    white;
