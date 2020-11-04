@@ -1,17 +1,18 @@
 class Graph
 {
-    nodes       = new Array();
+    nodes = new Array();
 
     #activeNode = null;
+
+    mutex = false;
+    defer = false;
+
 
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
     {
         this.#activeNode = node;
-        var data = node.output.data;
-
-        if (data !== undefined)
-            updateCanvas();
+        updateCanvas();
     }
 
 

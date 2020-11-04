@@ -4,8 +4,6 @@ extends Operator
     #count;
     #radius;
 
-    //random = new Random();
-
 
     constructor()
     {
@@ -24,8 +22,8 @@ extends Operator
         if (!this.valid)
         {
             var input = this.inputs[0];
-            if (!input.connected) return [];
-
+            if (!input.connected) return {};
+            
             this.output._data = 
             {
                 id:     this.id,
@@ -35,7 +33,7 @@ extends Operator
                 seed:   1824557,
                 inputs: [input.data]
             };
-    
+            
             super.generate();
         }
 

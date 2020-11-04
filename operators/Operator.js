@@ -16,7 +16,18 @@ class Operator
     output;
 
 
-    valid = false; // this is the flag for regeneration
+    #valid = false; // this is the flag for regeneration
+
+    set valid(val) { this.#valid = val; }
+    get valid() 
+    {
+        var valid = this.#valid;
+
+        for (const input of this.inputs)
+            valid &= input.valid;
+
+        return valid;
+    }
 
 
     div; // container for the op's controls

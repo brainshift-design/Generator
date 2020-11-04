@@ -12,18 +12,13 @@ onmessage = function(e)
 };
 
 
-function generate(node, result = null)
+function generate(node)
 {
-    if (result == null)
-        result = [];
-    
     switch (node.type)
     {
-        case 'rect'  : result = generateRect  (node); break;
-        case 'spread': result = generateSpread(node, result); break;
+        case 'rect'  : return generateRect  (node);
+        case 'spread': return generateSpread(node);
     }    
-
-    return result;
 }
 
 
@@ -40,27 +35,29 @@ function generateRect(node)
 }
 
 
-function generateSpread(node, result)
+function generateSpread(node)
 {
-    var input = result;
-    result = [];
-    
+    var input = generate(node.inputs[0]);
+
+
     var rnd = new Random(node.seed);
+
+    result = [];
 
     for (var i = 0; i < node.count; i++)
     {
         var a = rnd.next() * Tau;
         var d = rnd.next() * node.radius;
-
+        
         var v = vector(a, d);
-
+        
         for (var j = 0; j < input.length; j++)
         {
             var item = Object.assign({}, input[j]);
-
+            
             item.x += v.x;
             item.y += v.y;
-
+            
             result.push(item);
         }
     }

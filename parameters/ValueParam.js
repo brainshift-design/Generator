@@ -35,6 +35,4 @@ extends Parameter
             updateCanvas();
         });
     }
-
-    
 }
