@@ -242,6 +242,11 @@ button svg
     margin:        auto;
 }
 
+.input:hover
+{
+    box-shadow: 0 0 0 1px #18A0FB inset;
+}
+
 .output
 {
     width:         10px;
@@ -252,6 +257,12 @@ button svg
     top:           6px;
     margin:        auto;
 }
+
+.output:hover
+{
+    box-shadow: 0 0 0 1px #18A0FB inset;
+}
+
 
 
 </style>
@@ -770,9 +781,10 @@ function checkResize(x, y)
 
 class Graph
 {
-    nodes = new Array();
-
+    nodes = [];
     #activeNode = null;
+
+    connections = [];
 
     mutex = false;
     defer = false;
@@ -793,33 +805,6 @@ class Graph
             this.#activeNode.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
         updateCanvas();
-    }
-
-
-    addNode(node)
-    {
-        this.nodes.push(node);
-
-        node.setGraph(this);
-        node.setId(this.getNewId(node)); // TODO: not checking return value here
-
-        graphView.appendChild(node.div);
-
-        this.activeNode = node;
-    }
-
-
-    createNode(type)
-    {
-        var node;
-
-        switch (type)
-        {
-            case 'rect':   node = new OpRect();   break;
-            case 'spread': node = new OpSpread(); break;
-        }
-
-        this.addNode(node);
     }
 
 
@@ -852,6 +837,66 @@ class Graph
         maxNum++;
 
         return type + maxNum;
+    }
+    
+    
+    createNode(type)
+    {
+        var node;
+
+        switch (type)
+        {
+            case 'rect':   node = new OpRect();   break;
+            case 'spread': node = new OpSpread(); break;
+        }
+        
+        this.addNode(node);
+    }
+
+
+    addNode(node)
+    {
+        this.nodes.push(node);
+
+        node.setGraph(this);
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+
+        graphView.appendChild(node.div);
+
+        this.activeNode = node;
+    }
+    
+
+    connect(output, input)
+    {
+        if (output.connectedInput != null)
+            this.disconnect(output.connectedInput);
+
+        output.connectedInputs.push(input);
+        input.connectedOutput = output;
+
+        var conn = new Connection(input, input.connectedOutput);
+        this.connections.push(conn);
+        graphView.appendChild(conn.wire);
+        
+        updateCanvas();
+    }
+
+
+    disconnect(input)
+    {
+        if (input.connectedOutput == null)
+            return;
+
+        var iConn = this.connections.findIndex(c => c.input == input && c.output == input.connectedOutput);
+        graphView.removeChild(this.connections[iConn].wire);
+        this.connections.splice(iConn, 1);
+        
+        var iInput = input.connectedOutput.connectedInputs.indexOf(input);
+        input.connectedOutput.connectedInputs.splice(iInput, 1);
+        input.connectedOutput = null;
+
+        updateCanvas();
     }
 }
 
@@ -1471,42 +1516,16 @@ class Output
     _data;
     
     connectedInputs = [];
-
-
+    
+    
     constructor(dataType)
     {
         this.#dataType = dataType;
-
+        
         this.control = document.createElement('div');
         this.control.className = 'output';
     }
-
-
-    connect(input)
-    {
-        if (input.connectedOutput != null)
-            input.connectedOutput.disconnect(input);
-
-        this.connectedInputs.push(input);
-        input.connectedOutput = this;
-
-        updateCanvas();
-    }
-
-    disconnect(input)
-    {
-        var index = this.connectedInputs.indexOf(input);
-
-        if (index >= 0)
-        {
-            this.connectedInputs[index].connectedOutput = null;
-            this.connectedInputs.slice(index, 1);
-
-            updateCanvas();
-        }
-    }
-
-
+    
     get data() 
     {
         return this._op.generate();
@@ -1516,9 +1535,20 @@ class Output
 
 class Connection
 {
-    constructor()
+    input;
+    output;
+
+    wire;
+
+    constructor(input, output)
     {
-        
+        this.input  = input;
+        this.output = output;
+
+        this.wire = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+        this.wire.style.stroke      = '#18A0FB';
+        this.wire.style.strokeWidth = 2;
     }
 }
 
@@ -2657,8 +2687,8 @@ graph.addNode(opRect);
 graph.addNode(opSpread1);
 graph.addNode(opSpread2);
 
-opRect   .output.connect(opSpread1.inputs[0]);
-opSpread1.output.connect(opSpread2.inputs[0]);
+graph.connect(opRect.output, opSpread1.inputs[0]);
+graph.connect(opSpread1.output, opSpread2.inputs[0]);
 
 
 

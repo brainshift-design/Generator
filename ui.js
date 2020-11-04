@@ -35,5 +35,5 @@ graph.addNode(opRect);
 graph.addNode(opSpread1);
 graph.addNode(opSpread2);
 
-opRect   .output.connect(opSpread1.inputs[0]);
-opSpread1.output.connect(opSpread2.inputs[0]);
+graph.connect(opRect.output, opSpread1.inputs[0]);
+graph.connect(opSpread1.output, opSpread2.inputs[0]);

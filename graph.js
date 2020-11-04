@@ -1,8 +1,9 @@
 class Graph
 {
-    nodes = new Array();
-
+    nodes = [];
     #activeNode = null;
+
+    connections = [];
 
     mutex = false;
     defer = false;
@@ -23,33 +24,6 @@ class Graph
             this.#activeNode.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
         updateCanvas();
-    }
-
-
-    addNode(node)
-    {
-        this.nodes.push(node);
-
-        node.setGraph(this);
-        node.setId(this.getNewId(node)); // TODO: not checking return value here
-
-        graphView.appendChild(node.div);
-
-        this.activeNode = node;
-    }
-
-
-    createNode(type)
-    {
-        var node;
-
-        switch (type)
-        {
-            case 'rect':   node = new OpRect();   break;
-            case 'spread': node = new OpSpread(); break;
-        }
-
-        this.addNode(node);
     }
 
 
@@ -82,5 +56,65 @@ class Graph
         maxNum++;
 
         return type + maxNum;
+    }
+    
+    
+    createNode(type)
+    {
+        var node;
+
+        switch (type)
+        {
+            case 'rect':   node = new OpRect();   break;
+            case 'spread': node = new OpSpread(); break;
+        }
+        
+        this.addNode(node);
+    }
+
+
+    addNode(node)
+    {
+        this.nodes.push(node);
+
+        node.setGraph(this);
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+
+        graphView.appendChild(node.div);
+
+        this.activeNode = node;
+    }
+    
+
+    connect(output, input)
+    {
+        if (output.connectedInput != null)
+            this.disconnect(output.connectedInput);
+
+        output.connectedInputs.push(input);
+        input.connectedOutput = output;
+
+        var conn = new Connection(input, input.connectedOutput);
+        this.connections.push(conn);
+        graphView.appendChild(conn.wire);
+        
+        updateCanvas();
+    }
+
+
+    disconnect(input)
+    {
+        if (input.connectedOutput == null)
+            return;
+
+        var iConn = this.connections.findIndex(c => c.input == input && c.output == input.connectedOutput);
+        graphView.removeChild(this.connections[iConn].wire);
+        this.connections.splice(iConn, 1);
+        
+        var iInput = input.connectedOutput.connectedInputs.indexOf(input);
+        input.connectedOutput.connectedInputs.splice(iInput, 1);
+        input.connectedOutput = null;
+
+        updateCanvas();
     }
 }
