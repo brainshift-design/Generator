@@ -193,25 +193,64 @@ button svg
     display: inline-block;
 }
 
+.nodeHeader
+{
+    background:  #a3d3fd;
+    display:     flex;
+    width:       100%;
+}
+
 .nodeLabel
 {
     font-family: Inter;
     font-size:   11;
     padding:     3px 4px 0 0;
-    display:     inline-block;
+    display:     table-cell;
     width:       calc(100% - 2px);
     height:      20;
-    background:  #a3d3fd;
     color:       black;
     text-align:  center;
 }
 
+
+.inputControls
+{
+    width:      20px;
+    height:     22px;
+    display:    inline-block;
+    text-align: center;
+}
+
+
+.outputControls
+{
+    width:      20px;
+    height:     22px;
+    display:    inline-block;
+    text-align: center;
+}
+
+
 .input
 {
-    width:         16;
-    height:        16;
+    width:         10px;
+    height:        10px;
     background:    white;
-    border-radius: 8;
+    border-radius: 5px;
+    position:      relative;
+    top:           6px;
+    margin:        auto;
+}
+
+.output
+{
+    width:         10px;
+    height:        10px;
+    background:    white;
+    border-radius: 5px;
+    position:      relative;
+    top:           6px;
+    margin:        auto;
 }
 
 
@@ -1426,6 +1465,8 @@ class Output
 {
     _op;
 
+    control;
+
     #dataType;
     _data;
     
@@ -1435,6 +1476,9 @@ class Output
     constructor(dataType)
     {
         this.#dataType = dataType;
+
+        this.control = document.createElement('div');
+        this.control.className = 'output';
     }
 
 
@@ -1500,15 +1544,15 @@ class Operator
     
     inputs = [];
     output;
-
-
+    
+    
     #valid = false; // this is the flag for regeneration
-
+    
     set valid(val) { this.#valid = val; }
     get valid() 
     {
         var valid = this.#valid;
-
+        
         for (const input of this.inputs)
             valid &= input.valid;
 
@@ -1516,8 +1560,12 @@ class Operator
     }
 
 
-    div; // container for the op's controls
+    div;
+    inner;
+    header;
     label;
+    inputControls;
+    outputControls;
 
 
     constructor(type)
@@ -1596,18 +1644,37 @@ class Operator
         });
 
 
-        this.createDivLabel();
+        this.createDivHeader();
     }     
+
+
+    createDivHeader()
+    {
+        this.header = document.createElement('div');
+        this.header.className = 'nodeHeader';
+
+        this.inputControls = document.createElement('div');
+        this.inputControls.className = 'inputControls';
+        this.header.appendChild(this.inputControls);
+
+        this.createDivLabel();
+
+        this.outputControls = document.createElement('div');
+        this.outputControls.className = 'outputControls';
+        this.header.appendChild(this.outputControls);
+
+        this.inner.appendChild(this.header);
+    }
 
 
     createDivLabel()
     {
         this.label = document.createElement('div');
-        
+
         this.label.className = 'nodeLabel';
         this.label.innerHTML = this.id;
           
-        this.inner.appendChild(this.label);
+        this.header.appendChild(this.label);
     }
     
 
@@ -1622,17 +1689,21 @@ class Operator
     {
         input._op = this;
         this.inputs.push(input);
-        this.label.appendChild(input.control);
+        this.inputControls.appendChild(input.control);
     }
 
 
     setOutput(output)
     {
         if (this.output != null)
+        {
+            this.outputControls.removeChild(this.output.control);
             this.output._op = null;
+        }
 
         output._op = this;
         this.output = output;
+        this.outputControls.appendChild(output.control);
     }
 
 
@@ -2010,7 +2081,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.text.innerHTML = slider.name + "&nbsp;&nbsp;" + getNumberString(value, slider.dec) + slider.suffix;
 
         slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
-        slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2) + 1;
+        slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);
 
         if (   fireChangeEvent
             && slider.enableChangeEvent)

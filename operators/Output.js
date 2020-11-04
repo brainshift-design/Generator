@@ -2,6 +2,8 @@ class Output
 {
     _op;
 
+    control;
+
     #dataType;
     _data;
     
@@ -11,6 +13,9 @@ class Output
     constructor(dataType)
     {
         this.#dataType = dataType;
+
+        this.control = document.createElement('div');
+        this.control.className = 'output';
     }
 
 

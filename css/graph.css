@@ -29,23 +29,62 @@
     display: inline-block;
 }
 
+.nodeHeader
+{
+    background:  #a3d3fd;
+    display:     flex;
+    width:       100%;
+}
+
 .nodeLabel
 {
     font-family: Inter;
     font-size:   11;
     padding:     3px 4px 0 0;
-    display:     inline-block;
+    display:     table-cell;
     width:       calc(100% - 2px);
     height:      20;
-    background:  #a3d3fd;
     color:       black;
     text-align:  center;
 }
 
+
+.inputControls
+{
+    width:      20px;
+    height:     22px;
+    display:    inline-block;
+    text-align: center;
+}
+
+
+.outputControls
+{
+    width:      20px;
+    height:     22px;
+    display:    inline-block;
+    text-align: center;
+}
+
+
 .input
 {
-    width:         16;
-    height:        16;
+    width:         10px;
+    height:        10px;
     background:    white;
-    border-radius: 8;
+    border-radius: 5px;
+    position:      relative;
+    top:           6px;
+    margin:        auto;
+}
+
+.output
+{
+    width:         10px;
+    height:        10px;
+    background:    white;
+    border-radius: 5px;
+    position:      relative;
+    top:           6px;
+    margin:        auto;
 }

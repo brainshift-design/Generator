@@ -19,15 +19,15 @@ class Operator
     
     inputs = [];
     output;
-
-
+    
+    
     #valid = false; // this is the flag for regeneration
-
+    
     set valid(val) { this.#valid = val; }
     get valid() 
     {
         var valid = this.#valid;
-
+        
         for (const input of this.inputs)
             valid &= input.valid;
 
@@ -35,8 +35,12 @@ class Operator
     }
 
 
-    div; // container for the op's controls
+    div;
+    inner;
+    header;
     label;
+    inputControls;
+    outputControls;
 
 
     constructor(type)
@@ -115,18 +119,37 @@ class Operator
         });
 
 
-        this.createDivLabel();
+        this.createDivHeader();
     }     
+
+
+    createDivHeader()
+    {
+        this.header = document.createElement('div');
+        this.header.className = 'nodeHeader';
+
+        this.inputControls = document.createElement('div');
+        this.inputControls.className = 'inputControls';
+        this.header.appendChild(this.inputControls);
+
+        this.createDivLabel();
+
+        this.outputControls = document.createElement('div');
+        this.outputControls.className = 'outputControls';
+        this.header.appendChild(this.outputControls);
+
+        this.inner.appendChild(this.header);
+    }
 
 
     createDivLabel()
     {
         this.label = document.createElement('div');
-        
+
         this.label.className = 'nodeLabel';
         this.label.innerHTML = this.id;
           
-        this.inner.appendChild(this.label);
+        this.header.appendChild(this.label);
     }
     
 
@@ -141,17 +164,21 @@ class Operator
     {
         input._op = this;
         this.inputs.push(input);
-        this.label.appendChild(input.control);
+        this.inputControls.appendChild(input.control);
     }
 
 
     setOutput(output)
     {
         if (this.output != null)
+        {
+            this.outputControls.removeChild(this.output.control);
             this.output._op = null;
+        }
 
         output._op = this;
         this.output = output;
+        this.outputControls.appendChild(output.control);
     }
 
 
