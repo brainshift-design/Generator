@@ -4,6 +4,8 @@ extends Operator
     #count;
     #radius;
 
+    seed = 0;
+
 
     constructor()
     {
@@ -17,20 +19,28 @@ extends Operator
     }
 
 
+    setGraph(graph)
+    {
+        super.setGraph(graph);
+        this.seed = this.graph.random.seed;
+        this.graph.random.next();
+    }
+
+    
     generate()
     {
         if (!this.valid)
         {
             var input = this.inputs[0];
             if (!input.connected) return {};
-            
+
             this.output._data = 
             {
                 id:     this.id,
                 type:   this.type,
                 count:  this.#count .value,
                 radius: this.#radius.value,
-                seed:   1824557,
+                seed:   this.seed,
                 inputs: [input.data]
             };
             

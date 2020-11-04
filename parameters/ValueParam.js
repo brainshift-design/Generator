@@ -33,6 +33,7 @@ extends Parameter
         {
             this.param.op.valid = false;
             updateCanvas();
+            this.param.op.graph.mutex = true;            
         });
     }
 }

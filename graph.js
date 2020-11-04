@@ -7,6 +7,9 @@ class Graph
     mutex = false;
     defer = false;
 
+    random = new Random();
+    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
+
 
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
@@ -20,7 +23,7 @@ class Graph
     {
         this.nodes.push(node);
         
-        node._graph = this;
+        node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
         document.body.appendChild(node.div);

@@ -579,6 +579,9 @@ class Graph
     mutex = false;
     defer = false;
 
+    random = new Random();
+    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
+
 
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
@@ -592,7 +595,7 @@ class Graph
     {
         this.nodes.push(node);
         
-        node._graph = this;
+        node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
         document.body.appendChild(node.div);
@@ -1203,6 +1206,7 @@ extends Parameter
         {
             this.param.op.valid = false;
             updateCanvas();
+            this.param.op.graph.mutex = true;            
         });
     }
 }
@@ -1300,6 +1304,11 @@ class Operator
 
     _graph = null;
     get graph() { return this._graph; }
+
+    setGraph(graph)
+    {
+        this._graph = graph;
+    }
     
 
     params = [];
@@ -1511,6 +1520,8 @@ extends Operator
     #count;
     #radius;
 
+    seed = 0;
+
 
     constructor()
     {
@@ -1524,20 +1535,28 @@ extends Operator
     }
 
 
+    setGraph(graph)
+    {
+        super.setGraph(graph);
+        this.seed = this.graph.random.seed;
+        this.graph.random.next();
+    }
+
+    
     generate()
     {
         if (!this.valid)
         {
             var input = this.inputs[0];
             if (!input.connected) return {};
-            
+
             this.output._data = 
             {
                 id:     this.id,
                 type:   this.type,
                 count:  this.#count .value,
                 radius: this.#radius.value,
-                seed:   1824557,
+                seed:   this.seed,
                 inputs: [input.data]
             };
             

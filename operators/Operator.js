@@ -8,6 +8,11 @@ class Operator
 
     _graph = null;
     get graph() { return this._graph; }
+
+    setGraph(graph)
+    {
+        this._graph = graph;
+    }
     
 
     params = [];
