@@ -16,6 +16,7 @@ html/ui_2.html
 
     core/lib.js
     core/math.js
+    core/random.js
     core/storage.js
     
     parameters/Parameter.js

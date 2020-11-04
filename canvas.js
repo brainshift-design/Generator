@@ -5,15 +5,22 @@ var worker = new Worker(
 
 function updateCanvas()
 {
-    postGenerateMessage();
-}
-
-
-function postGenerateMessage()
-{
     worker.postMessage(
     {
-        msg:   'generate',
-        graph: JSON.stringify(graph.activeNode.output.data)
+        msg:    'generate',
+        graph:  graph.activeNode.output.data
     });
 }
+
+
+worker.onmessage = function(e)
+{
+    if (e.data.cmd == 'updateCanvas')
+    {
+        parent.postMessage({ pluginMessage: 
+        { 
+            cmd:  'updateCanvas',
+            data: e.data.objects
+        }}, '*');
+    }
+};

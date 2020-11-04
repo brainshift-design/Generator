@@ -1,20 +1,8 @@
 class Graph
 {
     nodes       = new Array();
+
     #activeNode = null;
-
-    addNode(node)
-    {
-        this.nodes.push(node);
-        
-        node._id    = this.getNewId(node);
-        node._graph = this;
-
-        document.body.appendChild(node.div);
-
-        this.activeNode = node;
-    }
-
 
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
@@ -24,6 +12,19 @@ class Graph
 
         if (data !== undefined)
             updateCanvas();
+    }
+
+
+    addNode(node)
+    {
+        this.nodes.push(node);
+        
+        node._graph = this;
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+
+        document.body.appendChild(node.div);
+
+        this.activeNode = node;
     }
 
 
@@ -43,8 +44,10 @@ class Graph
                 continue;
                 
             var num = parseInt(node.id.substring(type.length));
-                if (num == 0) num = 1;
-                
+            
+            if (isNaN(num) || num == 0) 
+                num = 1;
+            
             maxNum = Math.max(num, maxNum);
         }
 

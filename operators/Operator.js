@@ -16,7 +16,11 @@ class Operator
     output;
 
 
+    valid = false; // this is the flag for regeneration
+
+
     div; // container for the op's controls
+    label;
 
 
     constructor(type)
@@ -83,22 +87,22 @@ class Operator
 
     createDivLabel()
     {
-        var label = document.createElement('div');
+        this.label = document.createElement('div');
         
-        label.innerHTML          = this.id;
+        this.label.innerHTML          = this.id;
            
-        label.style.fontFamily   = 'Inter';
-        label.style.fontSize     = '11';
-        label.style.paddingLeft  = '4px';
-        label.style.display      = 'inline-block';
-        label.style.width        = 'calc(100% - 2px)';
-        label.style.height       = 15;
-        label.style.background   = '#a3d3fd';
-        label.style.borderRadius = '4px 4px 0 0';
-        label.style.color        = 'black';
-        label.style.textAlign    = 'center';
+        this.label.style.fontFamily   = 'Inter';
+        this.label.style.fontSize     = '11';
+        this.label.style.paddingLeft  = '4px';
+        this.label.style.display      = 'inline-block';
+        this.label.style.width        = 'calc(100% - 2px)';
+        this.label.style.height       = 20;
+        this.label.style.background   = '#a3d3fd';
+        this.label.style.borderRadius = '4px 4px 0 0';
+        this.label.style.color        = 'black';
+        this.label.style.textAlign    = 'center';
         
-        this.div.appendChild(label);
+        this.div.appendChild(this.label);
     }
     
 
@@ -140,13 +144,19 @@ class Operator
 
     setId(newId)
     {
-        if (this.graph.nodes.indexOf(newId) >= 0)
+        if (this._graph.nodes.findIndex(node => node.id == newId) >= 0)
             return false; // graph already contains a node with this id
 
         this._id = newId;
+        this.label.innerHTML = newId;
+
         return true;
     }
 
 
-    generate() { return []; }
+    generate() 
+    { 
+        this.valid = true; 
+        return {}; 
+    }
 }

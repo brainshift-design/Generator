@@ -31,6 +31,7 @@ extends Parameter
 
         this._control.addEventListener('onchange', function(e)
         {
+            this.param.op.valid = false;
             updateCanvas();
         });
     }

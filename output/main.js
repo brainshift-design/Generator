@@ -56,15 +56,17 @@ function removeGeneratedObjects() {
 }
 function generateObjects(msg) {
     for (const item of msg.data) {
-        if (item.type == 'rect') {
-            const rect = figma.createRectangle();
-            rect.setPluginData('#GEN', '#GEN');
-            rect.name = item.id;
-            rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
-            rect.x = item.x;
-            rect.y = item.y;
-            rect.resize(Math.max(0.01, item.width), Math.max(0.01, item.height));
-            figma.currentPage.appendChild(rect);
-        }
+        if (item.type == 'rect')
+            generateRect(item);
     }
+}
+function generateRect(item) {
+    const rect = figma.createRectangle();
+    rect.setPluginData('#GEN', '#GEN');
+    rect.name = item.id;
+    rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    rect.x = item.x;
+    rect.y = item.y;
+    rect.resize(Math.max(0.01, item.width), Math.max(0.01, item.height));
+    figma.currentPage.appendChild(rect);
 }

@@ -75,25 +75,97 @@ div
 
 
 
+class Random
+{
+    seed;
+
+
+    constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+
+
+    next()
+    {
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+
+        return this.seed / -0x7fffffff;
+    }
+}
+
+
 onmessage = function(e)
 {
     if (e.data.msg === 'generate')
     {
-        console.log(e.data.graph);
-    }
+        var objects = generate(e.data.graph);
 
-    // parent.postMessage({ pluginMessage: 
-    // { 
-    //     cmd:  'updateCanvas',
-    //     data: e.data.graph.activeNode.output.data
-    // }}, '*');
+        postMessage({ 
+            cmd:    'updateCanvas',
+            objects: objects
+        });
+    }
 };
 
 
-// function updateCanvas()
-// {
+function generate(node, result = null)
+{
+    if (result == null)
+        result = [];
+    
+    switch (node.type)
+    {
+        case 'rect'  : result = generateRect  (node); break;
+        case 'spread': result = generateSpread(node, result); break;
+    }    
 
-// }
+    return result;
+}
+
+
+function generateRect(node)
+{   
+    return [{
+        id:     node.id,
+        type:   node.type,
+        x:      0,
+        y:      0,
+        width:  node.width,
+        height: node.height
+    }];
+}
+
+
+function generateSpread(node, result)
+{
+    var input = result;
+    result = [];
+    
+    var rnd = new Random(node.seed);
+
+    for (var i = 0; i < node.count; i++)
+    {
+        var a = rnd.next() * Tau;
+        var d = rnd.next() * node.radius;
+
+        var v = vector(a, d);
+
+        for (var j = 0; j < input.length; j++)
+        {
+            var item = Object.assign({}, input[j]);
+
+            item.x += v.x;
+            item.y += v.y;
+
+            result.push(item);
+        }
+    }
+
+    return result;
+}
 
 
 </script>
@@ -209,20 +281,8 @@ function checkResize(x, y)
 class Graph
 {
     nodes       = new Array();
+
     #activeNode = null;
-
-    addNode(node)
-    {
-        this.nodes.push(node);
-        
-        node._id    = this.getNewId(node);
-        node._graph = this;
-
-        document.body.appendChild(node.div);
-
-        this.activeNode = node;
-    }
-
 
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
@@ -232,6 +292,19 @@ class Graph
 
         if (data !== undefined)
             updateCanvas();
+    }
+
+
+    addNode(node)
+    {
+        this.nodes.push(node);
+        
+        node._graph = this;
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+
+        document.body.appendChild(node.div);
+
+        this.activeNode = node;
     }
 
 
@@ -251,8 +324,10 @@ class Graph
                 continue;
                 
             var num = parseInt(node.id.substring(type.length));
-                if (num == 0) num = 1;
-                
+            
+            if (isNaN(num) || num == 0) 
+                num = 1;
+            
             maxNum = Math.max(num, maxNum);
         }
 
@@ -725,10 +800,13 @@ function xrotate(angle)
 
 
 
-
 class Random
 {
-    seed = 0xb9ef7ca4;
+    seed;
+
+
+    constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+
 
     next()
     {
@@ -823,6 +901,7 @@ extends Parameter
 
         this._control.addEventListener('onchange', function(e)
         {
+            this.param.op.valid = false;
             updateCanvas();
         });
     }
@@ -931,7 +1010,11 @@ class Operator
     output;
 
 
+    valid = false; // this is the flag for regeneration
+
+
     div; // container for the op's controls
+    label;
 
 
     constructor(type)
@@ -998,22 +1081,22 @@ class Operator
 
     createDivLabel()
     {
-        var label = document.createElement('div');
+        this.label = document.createElement('div');
         
-        label.innerHTML          = this.id;
+        this.label.innerHTML          = this.id;
            
-        label.style.fontFamily   = 'Inter';
-        label.style.fontSize     = '11';
-        label.style.paddingLeft  = '4px';
-        label.style.display      = 'inline-block';
-        label.style.width        = 'calc(100% - 2px)';
-        label.style.height       = 15;
-        label.style.background   = '#a3d3fd';
-        label.style.borderRadius = '4px 4px 0 0';
-        label.style.color        = 'black';
-        label.style.textAlign    = 'center';
+        this.label.style.fontFamily   = 'Inter';
+        this.label.style.fontSize     = '11';
+        this.label.style.paddingLeft  = '4px';
+        this.label.style.display      = 'inline-block';
+        this.label.style.width        = 'calc(100% - 2px)';
+        this.label.style.height       = 20;
+        this.label.style.background   = '#a3d3fd';
+        this.label.style.borderRadius = '4px 4px 0 0';
+        this.label.style.color        = 'black';
+        this.label.style.textAlign    = 'center';
         
-        this.div.appendChild(label);
+        this.div.appendChild(this.label);
     }
     
 
@@ -1055,15 +1138,21 @@ class Operator
 
     setId(newId)
     {
-        if (this.graph.nodes.indexOf(newId) >= 0)
+        if (this._graph.nodes.findIndex(node => node.id == newId) >= 0)
             return false; // graph already contains a node with this id
 
         this._id = newId;
+        this.label.innerHTML = newId;
+
         return true;
     }
 
 
-    generate() { return []; }
+    generate() 
+    { 
+        this.valid = true; 
+        return {}; 
+    }
 }
 
 
@@ -1080,39 +1169,29 @@ extends Operator
 
         this.setOutput(new Output('rect'));
 
-        this.#width = new ValueParam('width',  0.01, Number.MAX_SAFE_INTEGER, 10);
-        this.addParam(this.#width);
-
-        this.#height = new ValueParam('height', 0.01, Number.MAX_SAFE_INTEGER, 10);
-        this.addParam(this.#height);
+        this.addParam(this.#width  = new ValueParam('width',  0.01, Number.MAX_SAFE_INTEGER, 10));
+        this.addParam(this.#height = new ValueParam('height', 0.01, Number.MAX_SAFE_INTEGER, 10));
     }
-
-
-    // update()
-    // {   
-    //     this.output._data = 
-    //     [{
-    //         id:     this.id,
-    //         type:   this.type,
-    //         x:      0,
-    //         y:      0,
-    //         width:  this.#width .value,
-    //         height: this.#height.value
-    //     }];
-    // }
 
 
     generate()
     {
-        return this.output._data = 
-        [{
-            id:     this.id,
-            type:   this.type,
-            width:  this.#width .value,
-            height: this.#height.value,
+        if (!this.valid)
+        {
+            this.output._data = 
+            {
+                id:     this.id,
+                type:   this.type,
+                width:  this.#width .value,
+                height: this.#height.value,
 
-            inputs: []
-        }];
+                inputs: []
+            };
+    
+            super.generate();
+        }
+        
+        return this.output._data;
     }
 }
 
@@ -1123,67 +1202,42 @@ extends Operator
     #count;
     #radius;
 
-    #random = new Random();
+    //random = new Random();
+
 
     constructor()
     {
         super('spread');
 
-        this.addInput(new Input('rect'));
+        this.addInput (new Input ('rect'));
         this.setOutput(new Output('rect'));
         
-        this.#count = new ValueParam('count',  1, Number.MAX_SAFE_INTEGER, 2);
-        this.addParam(this.#count);
-
-        this.#radius = new ValueParam('radius', 0.01, Number.MAX_SAFE_INTEGER, 100);
-        this.addParam(this.#radius);
+        this.addParam(this.#count  = new ValueParam('count',  1,    Number.MAX_SAFE_INTEGER,   2));
+        this.addParam(this.#radius = new ValueParam('radius', 0.01, Number.MAX_SAFE_INTEGER, 100));
     }
-
-
-    // update()
-    // {
-    //     this.#random.seed = 1824557;
-    //     this.output._data = [];
-
-        
-    //     var input = this.inputs[0];
-    //     if (!input.connected) return;
-            
-
-    //     for (var i = 0; i < this.#count.value; i++)
-    //     {
-    //         var a = this.#random.next() * Tau;
-    //         var d = this.#random.next() * this.#radius.value;
-
-    //         var v = vector(a, d);
-
-    //         for (var j = 0; j < input.data.length; j++)
-    //         {
-    //             var item = Object.assign({}, input.data[j]);
-
-    //             item.x += v.x;
-    //             item.y += v.y;
-
-    //             this.output._data.push(item);
-    //         }
-    //     }
-    // }
 
 
     generate()
     {
-        var input = this.inputs[0];
-        if (!input.connected) return;
+        if (!this.valid)
+        {
+            var input = this.inputs[0];
+            if (!input.connected) return [];
 
-        return this.output._data = 
-        [{
-            id:     this.id,
-            type:   this.type,
-            count:  this.#count .value,
-            radius: this.#radius.value,
+            this.output._data = 
+            {
+                id:     this.id,
+                type:   this.type,
+                count:  this.#count .value,
+                radius: this.#radius.value,
+                seed:   1824557,
+                inputs: [input.data]
+            };
+    
+            super.generate();
+        }
 
-            inputs: [input.data]
-        }];
+        return this.output._data;
     }
 }
 
@@ -1644,18 +1698,25 @@ var worker = new Worker(
 
 function updateCanvas()
 {
-    postGenerateMessage();
-}
-
-
-function postGenerateMessage()
-{
     worker.postMessage(
     {
-        msg:   'generate',
-        graph: JSON.stringify(graph.activeNode.output.data)
+        msg:    'generate',
+        graph:  graph.activeNode.output.data
     });
 }
+
+
+worker.onmessage = function(e)
+{
+    if (e.data.cmd == 'updateCanvas')
+    {
+        parent.postMessage({ pluginMessage: 
+        { 
+            cmd:  'updateCanvas',
+            data: e.data.objects
+        }}, '*');
+    }
+};
 
 
 //save('state', null);
@@ -1684,14 +1745,14 @@ var graph = new Graph();
 
 var opRect    = new OpRect();
 var opSpread1 = new OpSpread();
-var opSpread2 = new OpSpread();
+// var opSpread2 = new OpSpread();
 
 graph.addNode(opRect);
 graph.addNode(opSpread1);
-graph.addNode(opSpread2);
+// graph.addNode(opSpread2);
 
-opRect   .output.connect(opSpread1.inputs[0]);
-opSpread1.output.connect(opSpread2.inputs[0]);
+// opRect   .output.connect(opSpread1.inputs[0]);
+// opSpread1.output.connect(opSpread2.inputs[0]);
 
 
 
