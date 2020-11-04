@@ -36,12 +36,18 @@ div
 }
 
 
+.node:hover
+{
+    box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
+}
+
+
 .slider
 {
     padding:          0;
     width:            74px;
     height:           24px;
-    border-bottom:    1px solid rgba(0, 0, 0, 0.1);
+    /* border-bottom:    1px solid rgba(0, 0, 0, 0.1); */
     border-radius:    2px;
     overflow:         hidden;
     background-color: white;
@@ -153,6 +159,59 @@ button svg
     padding-right:       30;
     box-shadow:          0 0 0 2px #18A0FB;
     outline:             none;
+}
+
+
+.node
+{
+    display:       block;
+    position:      absolute;
+    width:         100px;
+    height:        auto;
+    border-radius: 4px 4px 0 0;
+    padding: 0;
+}
+
+.nodeInner:hover
+{
+    box-shadow: 0 0 0 1px #18A0FB;
+}
+
+.nodeInner
+{
+    display:       block;
+    position:      relative;
+    width:         100px;
+    height:        auto;
+    overflow:      hidden;
+    border-radius: 4px 4px 0 0;
+    padding: 0;
+}    
+
+.node .slider
+{
+    display: inline-block;
+}
+
+.nodeLabel
+{
+    font-family: Inter;
+    font-size:   11;
+    padding:     3px 4px 0 0;
+    display:     inline-block;
+    width:       calc(100% - 2px);
+    height:      20;
+    background:  #a3d3fd;
+    color:       black;
+    text-align:  center;
+}
+
+.input
+{
+    width:         16;
+    height:        16;
+    background:    white;
+    border-radius: 8;
 }
 
 
@@ -701,7 +760,7 @@ class Graph
     addNode(node)
     {
         this.nodes.push(node);
-        
+
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
@@ -1337,6 +1396,8 @@ class Input
 {
     _op;
     
+    control;
+
     #dataType;
 
     connectedOutput;
@@ -1344,6 +1405,9 @@ class Input
     constructor(dataType)
     {
         this.#dataType = dataType;
+
+        this.control = document.createElement('div');
+        this.control.className = 'input';
     }
     
     get connected() { return this.connectedOutput != null; }
@@ -1468,18 +1532,18 @@ class Operator
     createDiv()
     {
         this.div = document.createElement('div');
-        this.div.op = this;
-        
-        this.div.style.display      = 'inline-block';
-        this.div.style.position     = 'absolute';
-        this.div.style.width        = 100;
-        this.div.style.height       = 'auto';
-        this.div.style.overflow     = 'hidden';
-        this.div.style.borderRadius = '4px 4px 0 0';
-        
-        this.div.dragging = false;
-        
+
+        this.div.className = 'node';
+        this.div.op        = this;
+        this.div.dragging  = false;
     
+
+        this.inner = document.createElement('div');
+        this.inner.className = 'nodeInner';
+
+        this.div.appendChild(this.inner);
+
+
         this.div.addEventListener('pointerdown', function(e) 
         {
             if (e.button == 0)
@@ -1515,6 +1579,23 @@ class Operator
         });
         
         
+        this.div.addEventListener('dblclick', function(e)
+        {
+            this.op.graph.activeNode = this.op;
+        });
+
+
+        this.div.addEventListener('pointerenter', function(e)
+        {
+            this.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+        });
+
+        this.div.addEventListener('pointerleave', function(e)
+        {
+            this.op.inner.style.boxShadow = 'none';
+        });
+
+
         this.createDivLabel();
     }     
 
@@ -1523,25 +1604,10 @@ class Operator
     {
         this.label = document.createElement('div');
         
-        this.label.innerHTML          = this.id;
-           
-        this.label.style.fontFamily   = 'Inter';
-        this.label.style.fontSize     = '11';
-        this.label.style.padding      = '3px 4px 0 0';
-        this.label.style.display      = 'inline-block';
-        this.label.style.width        = 'calc(100% - 2px)';
-        this.label.style.height       = 20;
-        this.label.style.background   = '#a3d3fd';
-        this.label.style.color        = 'black';
-        this.label.style.textAlign    = 'center';
-        
-        this.div.appendChild(this.label);
-
-        this.label.addEventListener('dblclick', function(e)
-        {
-            console.log('doubleclick');
-            this.parentNode.op.graph.activeNode = this.parentNode.op;
-        });
+        this.label.className = 'nodeLabel';
+        this.label.innerHTML = this.id;
+          
+        this.inner.appendChild(this.label);
     }
     
 
@@ -1556,6 +1622,7 @@ class Operator
     {
         input._op = this;
         this.inputs.push(input);
+        this.label.appendChild(input.control);
     }
 
 
@@ -1576,7 +1643,7 @@ class Operator
         param._op = this;
         param.control.style.display = 'inline-block';
         
-        this.div.appendChild(param.control);
+        this.inner.appendChild(param.control);
     }
  
     
@@ -1776,7 +1843,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.sx           = e.clientX;
             slider.sv           = slider.value;
 
-            slider.style.border = '1px solid #18A0FB';
+            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
                         
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -1824,7 +1891,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.buttonDown0 = false;
             slider.unlockPointer(e.pointerId);
 
-            slider.style.border = '1px solid rgba(0, 0, 0, 0.1)';
+            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
         }
     });
 
@@ -1836,9 +1903,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.border       = '1px solid transparent';
-        slider.style.borderBottom = '1px solid rgba(0, 0, 0, 0.1)';
-        slider.style.cursor       = 'default';
+        slider.style.boxShadow = '0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset';
+        slider.style.cursor    = 'default';
     });
 
 
@@ -1856,7 +1922,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
         if (slider.buttonDown0)
         {
-            slider.style.border = '1px solid #18A0FB';
+            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
 
             if (slider.isPointerLocked())
             {
@@ -1878,7 +1944,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             }
         }
         else
-            slider.style.border = '1px solid rgba(0, 0, 0, 0.1)';
+            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
         slider.update();
     });

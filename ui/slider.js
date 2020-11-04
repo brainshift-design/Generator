@@ -79,7 +79,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.sx           = e.clientX;
             slider.sv           = slider.value;
 
-            slider.style.border = '1px solid #18A0FB';
+            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
                         
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -127,7 +127,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.buttonDown0 = false;
             slider.unlockPointer(e.pointerId);
 
-            slider.style.border = '1px solid rgba(0, 0, 0, 0.1)';
+            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
         }
     });
 
@@ -139,9 +139,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.border       = '1px solid transparent';
-        slider.style.borderBottom = '1px solid rgba(0, 0, 0, 0.1)';
-        slider.style.cursor       = 'default';
+        slider.style.boxShadow = '0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset';
+        slider.style.cursor    = 'default';
     });
 
 
@@ -159,7 +158,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
         if (slider.buttonDown0)
         {
-            slider.style.border = '1px solid #18A0FB';
+            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
 
             if (slider.isPointerLocked())
             {
@@ -181,7 +180,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             }
         }
         else
-            slider.style.border = '1px solid rgba(0, 0, 0, 0.1)';
+            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
         slider.update();
     });

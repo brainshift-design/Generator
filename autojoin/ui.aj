@@ -4,6 +4,7 @@ html/ui_0.html
     css/slider.css
     css/button.css
     css/select.css
+    css/graph.css
 
 html/ui_1.html
 

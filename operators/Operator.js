@@ -51,18 +51,18 @@ class Operator
     createDiv()
     {
         this.div = document.createElement('div');
-        this.div.op = this;
-        
-        this.div.style.display      = 'inline-block';
-        this.div.style.position     = 'absolute';
-        this.div.style.width        = 100;
-        this.div.style.height       = 'auto';
-        this.div.style.overflow     = 'hidden';
-        this.div.style.borderRadius = '4px 4px 0 0';
-        
-        this.div.dragging = false;
-        
+
+        this.div.className = 'node';
+        this.div.op        = this;
+        this.div.dragging  = false;
     
+
+        this.inner = document.createElement('div');
+        this.inner.className = 'nodeInner';
+
+        this.div.appendChild(this.inner);
+
+
         this.div.addEventListener('pointerdown', function(e) 
         {
             if (e.button == 0)
@@ -98,6 +98,23 @@ class Operator
         });
         
         
+        this.div.addEventListener('dblclick', function(e)
+        {
+            this.op.graph.activeNode = this.op;
+        });
+
+
+        this.div.addEventListener('pointerenter', function(e)
+        {
+            this.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+        });
+
+        this.div.addEventListener('pointerleave', function(e)
+        {
+            this.op.inner.style.boxShadow = 'none';
+        });
+
+
         this.createDivLabel();
     }     
 
@@ -106,25 +123,10 @@ class Operator
     {
         this.label = document.createElement('div');
         
-        this.label.innerHTML          = this.id;
-           
-        this.label.style.fontFamily   = 'Inter';
-        this.label.style.fontSize     = '11';
-        this.label.style.padding      = '3px 4px 0 0';
-        this.label.style.display      = 'inline-block';
-        this.label.style.width        = 'calc(100% - 2px)';
-        this.label.style.height       = 20;
-        this.label.style.background   = '#a3d3fd';
-        this.label.style.color        = 'black';
-        this.label.style.textAlign    = 'center';
-        
-        this.div.appendChild(this.label);
-
-        this.label.addEventListener('dblclick', function(e)
-        {
-            console.log('doubleclick');
-            this.parentNode.op.graph.activeNode = this.parentNode.op;
-        });
+        this.label.className = 'nodeLabel';
+        this.label.innerHTML = this.id;
+          
+        this.inner.appendChild(this.label);
     }
     
 
@@ -139,6 +141,7 @@ class Operator
     {
         input._op = this;
         this.inputs.push(input);
+        this.label.appendChild(input.control);
     }
 
 
@@ -159,7 +162,7 @@ class Operator
         param._op = this;
         param.control.style.display = 'inline-block';
         
-        this.div.appendChild(param.control);
+        this.inner.appendChild(param.control);
     }
  
     

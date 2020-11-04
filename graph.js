@@ -29,7 +29,7 @@ class Graph
     addNode(node)
     {
         this.nodes.push(node);
-        
+
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
