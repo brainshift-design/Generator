@@ -2,15 +2,29 @@ body
 {
     margin:           0;
     background-color: #e5e5e5;
-}
-
-#container
-{
-    display: table-column;
+    user-select: none;
 }
 
 div
 {
     margin:  0;
     padding: 0;
+}
+
+#graphView
+{
+    display:  block;
+    overflow: hidden;
+    height: calc(100% - 38px);
+    position: relative;
+}
+
+#controlBar
+{
+    display:          block;
+    height:           38px;
+    line-height:      38px;
+    background-color: white;
+    /* vertical-align:   middle; */
+    padding:          0 4 0 4;
 }

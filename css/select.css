@@ -1,0 +1,43 @@
+
+.figmaSelect
+{
+    font-family:         Inter;
+    font-size:           11;
+    vertical-align:      middle;
+    padding-left:        6;
+    padding-right:       30;
+    padding-top:         2;
+    margin-right:        6;
+    margin-top:          1;
+    height:              24px;
+    line-height:         22px;
+    border:              none;
+    border-radius:       0.5px;
+    overflow:            hidden;
+    -webkit-appearance:  none;
+    appearance:          none;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.4"/> </svg>');
+    background-position: calc(100% - 17px) 50%;
+    background-repeat:   no-repeat;
+    display:             inline-block;
+}
+
+.figmaSelect:hover
+{
+    box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1);
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
+    background-position: calc(100% - 7px) 50%;
+    background-repeat:   no-repeat;
+    padding-right:       30;
+}
+
+.figmaSelect:focus
+{
+    padding-left:        6;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
+    background-position: calc(100% - 6px) 50%;
+    background-repeat:   no-repeat;
+    padding-right:       30;
+    box-shadow:          0 0 0 2px #18A0FB;
+    outline:             none;
+}

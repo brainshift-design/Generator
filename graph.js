@@ -26,9 +26,23 @@ class Graph
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
-        document.body.appendChild(node.div);
+        graphView.appendChild(node.div);
 
         this.activeNode = node;
+    }
+
+
+    createNode(type)
+    {
+        var node;
+
+        switch (type)
+        {
+            case 'rect':   node = new OpRect();   break;
+            case 'spread': node = new OpSpread(); break;
+        }
+
+        this.addNode(node);
     }
 
 

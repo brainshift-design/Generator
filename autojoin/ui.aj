@@ -2,6 +2,8 @@ html/ui_0.html
 
     css/document.css
     css/slider.css
+    css/button.css
+    css/select.css
 
 html/ui_1.html
 
@@ -31,6 +33,7 @@ html/ui_2.html
 
     ui/slider.js
     ui/slider textbox.js
+    ui/select.js
 
     canvas.js
 

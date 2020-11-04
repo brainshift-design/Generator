@@ -2,6 +2,11 @@
 //save('windowWidth', null);
 //save('windowHeight', null);
 
+initSelect(presets,
+[
+    {value: '', text: 'untitled'},
+]);
+
 
 parent.postMessage({ pluginMessage: 
 { 
