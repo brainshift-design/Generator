@@ -102,7 +102,7 @@ class Graph
         output.connection = conn;
         
         this.connections.push(conn);
-        graphView.appendChild(conn.wire);
+        wires.appendChild(conn.wire);
         
 
         updateCanvas();

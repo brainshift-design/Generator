@@ -30,10 +30,13 @@ var graph = new Graph();
 var opRect    = new OpRect();
 var opSpread1 = new OpSpread();
 var opSpread2 = new OpSpread();
+var opSpread3 = new OpSpread();
 
 graph.addNode(opRect);
 graph.addNode(opSpread1);
 graph.addNode(opSpread2);
+graph.addNode(opSpread3);
 
 graph.connect(opRect.output, opSpread1.inputs[0]);
 graph.connect(opSpread1.output, opSpread2.inputs[0]);
+graph.connect(opSpread2.output, opSpread3.inputs[0]);
