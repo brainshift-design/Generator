@@ -1,8 +1,6 @@
 class Graph
 {
-    nodes = [];
-    #activeNode = null;
-
+    nodes       = [];
     connections = [];
 
     mutex = false;
@@ -11,7 +9,15 @@ class Graph
     random = new Random();
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
 
+    overInput  = null;
+    overOutput = null;
 
+    tempConn   = null;
+
+
+
+    #activeNode = null;
+    
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
     {
@@ -92,7 +98,7 @@ class Graph
             this.disconnect(output.connectedInput);
 
 
-        output.connectedInputs.push(input);
+        output.connectedInputs.push(input); // 1
         input.connectedOutput = output;
 
 
@@ -101,10 +107,10 @@ class Graph
         input .connection = conn;
         output.connection = conn;
         
-        this.connections.push(conn);
+        this.connections.push(conn); // 2
         wires.appendChild(conn.wire);
         
-
+        conn.updateWire();
         updateCanvas();
     }
 
@@ -129,5 +135,32 @@ class Graph
         updateCanvas();
     
         return true;
+    }
+
+
+    startConnectionFromOutput(output)
+    {
+        this.tempConn = new Connection(output, null);
+
+        this.connections.push(this.tempConn);
+        wires.appendChild(this.tempConn.wire);    
+    }
+
+
+    startConnectionFromInput(input)
+    {
+        this.tempConn = new Connection(null, input);
+
+        this.connections.push(this.tempConn);
+        wires.appendChild(this.tempConn.wire);    
+    }
+
+
+    cancelConnection()
+    {
+        wires.removeChild(this.tempConn.wire);    
+        this.connections.splice(this.connections.indexOf(this.tempConn), 1);
+
+        this.tempConn = null;
     }
 }

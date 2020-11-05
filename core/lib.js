@@ -80,7 +80,7 @@ function containsChild(parent, child)
 }
 
 
-function forwardEvent(element, event)
+function forwardEvent(event, element)
 {
     var e = new event.constructor(event.type, event);
     element.dispatchEvent(e);

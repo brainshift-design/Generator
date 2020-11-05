@@ -69,7 +69,9 @@ class Operator
 
         this.div.addEventListener('pointerdown', function(e) 
         {
-            if (e.button == 0)
+            if (   e.button == 0
+                && !graph.overOutput
+                && !graph.overInput)
             {
                 this.sx  = e.clientX;
                 this.sy  = e.clientY;

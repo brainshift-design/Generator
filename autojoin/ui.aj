@@ -36,6 +36,7 @@ html/ui_2.html
     ui/slider textbox.js
     ui/select.js
 
+    graphView.js
     canvas.js
 
     ui.js

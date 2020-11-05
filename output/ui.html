@@ -786,9 +786,7 @@ function checkResize(x, y)
 
 class Graph
 {
-    nodes = [];
-    #activeNode = null;
-
+    nodes       = [];
     connections = [];
 
     mutex = false;
@@ -797,7 +795,15 @@ class Graph
     random = new Random();
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
 
+    overInput  = null;
+    overOutput = null;
 
+    tempConn   = null;
+
+
+
+    #activeNode = null;
+    
     get activeNode() { return this.#activeNode; }
     set activeNode(node)
     {
@@ -878,7 +884,7 @@ class Graph
             this.disconnect(output.connectedInput);
 
 
-        output.connectedInputs.push(input);
+        output.connectedInputs.push(input); // 1
         input.connectedOutput = output;
 
 
@@ -887,10 +893,10 @@ class Graph
         input .connection = conn;
         output.connection = conn;
         
-        this.connections.push(conn);
+        this.connections.push(conn); // 2
         wires.appendChild(conn.wire);
         
-
+        conn.updateWire();
         updateCanvas();
     }
 
@@ -915,6 +921,33 @@ class Graph
         updateCanvas();
     
         return true;
+    }
+
+
+    startConnectionFromOutput(output)
+    {
+        this.tempConn = new Connection(output, null);
+
+        this.connections.push(this.tempConn);
+        wires.appendChild(this.tempConn.wire);    
+    }
+
+
+    startConnectionFromInput(input)
+    {
+        this.tempConn = new Connection(null, input);
+
+        this.connections.push(this.tempConn);
+        wires.appendChild(this.tempConn.wire);    
+    }
+
+
+    cancelConnection()
+    {
+        wires.removeChild(this.tempConn.wire);    
+        this.connections.splice(this.connections.indexOf(this.tempConn), 1);
+
+        this.tempConn = null;
     }
 }
 
@@ -1001,7 +1034,7 @@ function containsChild(parent, child)
 }
 
 
-function forwardEvent(element, event)
+function forwardEvent(event, element)
 {
     var e = new event.constructor(event.type, event);
     element.dispatchEvent(e);
@@ -1497,14 +1530,15 @@ extends Parameter
 class Input
 {
     _op;
+    #dataType;
     
     control;
-
-    #dataType;
-
-
-    connectedOutput;
-    connection;
+  
+    connectedOutput = null;
+    connection      = null;
+    
+    connecting      = false;
+    
 
     get connected() { return this.connectedOutput != null; }
 
@@ -1515,9 +1549,14 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
+
+        this.control.addEventListener('pointerdown', e => e.preventDefault());
+
+        this.control.addEventListener('pointerenter', e => this._op.graph.overInput = this);
+        this.control.addEventListener('pointerleave', e => this._op.graph.overInput = null);
     }    
     
-    
+
     get data()
     {
         return (
@@ -1531,15 +1570,16 @@ class Input
 class Output
 {
     _op;
+    #dataType;
+    
+    _data;
 
     control;
-
-    #dataType;
-    _data;
     
+    connectedInputs = []; // 1
+    connections     = []; // 2
     
-    connectedInputs = [];
-    connections     = [];
+    connecting      = false;
     
     get connected() { return this.connectedInputs.length > 0; }
 
@@ -1550,6 +1590,9 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
+
+        this.control.addEventListener('pointerenter', e => this._op.graph.overOutput = this);
+        this.control.addEventListener('pointerleave', e => this._op.graph.overOutput = null);
     }
     
 
@@ -1619,11 +1662,53 @@ class Connection
             + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
             + ' '   +  (x2                ) + ',' + y2);
 
+        this.wire.outBall.style.visibility = 'visible';
         this.wire.outBall.setAttribute('cx', x1);
         this.wire.outBall.setAttribute('cy', y1);
 
+        this.wire.inBall.style.visibility = 'visible';
         this.wire.inBall.setAttribute('cx', x2);
         this.wire.inBall.setAttribute('cy', y2);
+    }
+
+
+    updateWireFromOutput(x, y)
+    {
+        var outRect = this.output.control.getBoundingClientRect();
+
+        var x1 = outRect.left + outRect.width /2;
+        var y1 = outRect.top  + outRect.height/2;
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x1               ) + ',' + y1
+            + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
+            + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
+            + ' '   +  (x                ) + ',' + y);
+
+        this.wire.outBall.setAttribute('cx', x1);
+        this.wire.outBall.setAttribute('cy', y1);
+
+        this.wire.inBall.style.visibility = 'hidden';
+    }
+
+
+    updateWireFromInput(x, y)
+    {
+        var inRect = this.input.control.getBoundingClientRect();
+
+        var x2 = inRect.left + inRect.width /2;
+        var y2 = inRect.top  + inRect.height/2;
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x               ) + ',' + y
+            + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
+            + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
+            + ' '   +  (x2              ) + ',' + y2);
+
+        this.wire.inBall.setAttribute('cx', x2);
+        this.wire.inBall.setAttribute('cy', y2);
+
+        this.wire.outBall.style.visibility = 'hidden';
     }
 }
 
@@ -1699,7 +1784,9 @@ class Operator
 
         this.div.addEventListener('pointerdown', function(e) 
         {
-            if (e.button == 0)
+            if (   e.button == 0
+                && !graph.overOutput
+                && !graph.overInput)
             {
                 this.sx  = e.clientX;
                 this.sy  = e.clientY;
@@ -2684,6 +2771,56 @@ function onSelectClickTimer(select)
 }
 
 
+graphView.addEventListener('pointerdown', e =>
+{
+    if (graph.overOutput)
+    {
+        graph.overOutput.connecting = true;
+        graph.startConnectionFromOutput(graph.overOutput);
+    }
+    else if (graph.overInput)
+    {
+        graph.overInput.connecting = true;
+        graph.startConnectionFromInput(graph.overInput);
+    }
+});
+
+graphView.addEventListener('pointerup', e =>
+{
+    if (graph.tempConn)
+    {
+        if (graph.tempConn.output) 
+        {
+            graph.tempConn.output.connecting = false;
+
+            if (graph.overInput)
+                graph.connect(graph.tempConn.output, graph.overInput);
+
+            graph.cancelConnection();
+        }
+        else if (graph.tempConn.input) 
+        {
+            graph.tempConn.input.connecting = false;
+
+            if (graph.overOutput)
+                graph.connect(graph.overOutput, graph.tempConn.input);
+
+            graph.cancelConnection();
+        }
+    }
+});
+
+graphView.addEventListener('pointermove', e =>
+{
+    if (graph.tempConn)
+    {
+             if (graph.tempConn.output) graph.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        else if (graph.tempConn.input ) graph.tempConn.updateWireFromInput (e.clientX, e.clientY);
+    }
+});
+
+
+
 var worker = new Worker(
     window.URL.createObjectURL(
         new Blob([generateWorker.textContent])));
@@ -2773,9 +2910,9 @@ graph.addNode(opSpread1);
 graph.addNode(opSpread2);
 graph.addNode(opSpread3);
 
-graph.connect(opRect.output, opSpread1.inputs[0]);
-graph.connect(opSpread1.output, opSpread2.inputs[0]);
-graph.connect(opSpread2.output, opSpread3.inputs[0]);
+// graph.connect(opRect.output, opSpread1.inputs[0]);
+// graph.connect(opSpread1.output, opSpread2.inputs[0]);
+// graph.connect(opSpread2.output, opSpread3.inputs[0]);
 
 
 

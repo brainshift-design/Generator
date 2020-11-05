@@ -1,15 +1,16 @@
 class Output
 {
     _op;
+    #dataType;
+    
+    _data;
 
     control;
-
-    #dataType;
-    _data;
     
+    connectedInputs = []; // 1
+    connections     = []; // 2
     
-    connectedInputs = [];
-    connections     = [];
+    connecting      = false;
     
     get connected() { return this.connectedInputs.length > 0; }
 
@@ -20,6 +21,9 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
+
+        this.control.addEventListener('pointerenter', e => this._op.graph.overOutput = this);
+        this.control.addEventListener('pointerleave', e => this._op.graph.overOutput = null);
     }
     
 
