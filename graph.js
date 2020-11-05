@@ -3,7 +3,8 @@ class Graph
     nodes = [];
 
     mutex = false;
-    defer = false;
+
+    deferOutputs = [];
 
     random = new Random();
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
@@ -69,8 +70,7 @@ class Graph
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
         graphView.appendChild(node.div);
-
-        this.activeNode = node;
+        node.makeActive();
     }
     
 
@@ -90,9 +90,9 @@ class Graph
         wires.appendChild(conn.wire);
         conn.updateWire();
         
-        input._op.valid = false;
+        input.op.valid = false;
         
-        regenerateNode(this.activeNode.output);
+        regenerateNode(output.op.activeNodeInChain);
 
         return true;
     }
@@ -114,9 +114,10 @@ class Graph
 
         input.connectedOutput = null;
 
-        input._op.valid = false;
+        input.op.valid = false;
 
-        regenerateNode(activeNode.output);
+        regenerateNode(output.op.activeNodeOnChain);
+        regenerateNode(input .op.activeNodeOnChain);
     
         return true;
     }

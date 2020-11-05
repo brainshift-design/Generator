@@ -5,11 +5,11 @@ var worker = new Worker(
 
 worker.onmessage = function(e)
 {
-    if (e.data.cmd == 'regenerateNode')
+    if (e.data.cmd == 'regenerateNodeOutput')
     {
         parent.postMessage({ pluginMessage: 
         { 
-            cmd:   'regenerateNode',
+            cmd:   'regenerateNodeOutput',
             nodeId: e.data.nodeId,
             data:   e.data.objects
         }}, '*');
@@ -17,33 +17,40 @@ worker.onmessage = function(e)
         graph.mutex = false;
 
 
-        if (graph.defer)
+        if (graph.deferOutputs.length > 0)
         {
-            graph.defer = false;
-            regenerateNodeOutput(graph.activeNode.output);
+            var deferOutputs = Array.from(graph.deferOutputs);
+            graph.deferOutputs = [];
+
+            regenerateNodeOutputs(deferOutputs);
         }
     }
 };
       
 
-function regenerateNodeOutput(output)
+function regenerateNodeOutputs(outputs)
 {
     if (graph.mutex)
     {
-        graph.defer = true;
+        for (const output of outputs)
+            graph.deferOutputs.push(output);
+
         return;
     }
     
     graph.mutex = true;
     
-    
-    if (!isEmptyObject(output.data))
+
+    for (const output of outputs)
     {
-        worker.postMessage(
+        if (!isEmptyObject(output.data))
         {
-            msg:   'regenerateNode',
-            nodeId: output._op.id,
-            data:   output.data
-        });
+            worker.postMessage(
+            {
+                msg:   'regenerateNodeOutput',
+                nodeId: output._op.id,
+                data:   output.data
+            });
+        }
     }
 }

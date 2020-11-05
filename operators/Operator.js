@@ -22,7 +22,6 @@ class Operator
     
 
     _active = false;
-    
     get active() { return this._active; }
 
     makeActive() // only true
@@ -34,7 +33,7 @@ class Operator
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
         if (this.output)
-            regenerateNodeOutput(this.output);
+            regenerateNodeOutputs(this.output);
     }
 
     makePassive()
@@ -73,6 +72,35 @@ class Operator
             for (const input of this.output.connectedInputs)
                 input.op.makePassiveRight();            
         }
+    }
+
+
+    get activeNodeInChain() { return this.getActiveNodeInChain(null); }
+
+    getActiveNodeInChain(callerOp = null)
+    {
+        if (this.active)
+            return this;
+
+        for (const input of this.inputs)
+        {
+            if (   input.connected
+                && input.connectedOutput.op != callerOp)
+            {
+                const active = input.op.getActiveNodeInChain(this);
+                if (active) return active;
+            }
+        }
+
+        if (   this.output
+            && this.output.connected
+            && this.output.op != callerOp)
+        {
+            const active = output.op.getActiveNodeInChain(this);
+            if (active) return active;
+        }
+
+        return null;
     }
 
 

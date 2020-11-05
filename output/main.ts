@@ -6,10 +6,10 @@ figma.ui.onmessage = msg =>
     if (msg.cmd === 'save')
         figma.clientStorage.setAsync(msg.key, msg.value);
 
-    else if (msg.cmd === 'loadState'     ) msgLoadState     (msg);
-    else if (msg.cmd === 'resizeWindow'  ) msgResizeWindow  (msg);
-    else if (msg.cmd === 'removeOutput'  ) msgRemoveOutput  (msg);
-    else if (msg.cmd === 'regenerateNode') msgRegenerateNode(msg);
+    else if (msg.cmd === 'loadState'           ) msgLoadState           (msg);
+    else if (msg.cmd === 'resizeWindow'        ) msgResizeWindow        (msg);
+    else if (msg.cmd === 'removeOutput'        ) msgRemoveOutput        (msg);
+    else if (msg.cmd === 'regenerateNodeOutput') msgRegenerateNodeOutput(msg);
 };
 
 
@@ -50,27 +50,15 @@ function msgResizeWindow(msg)
 
 function msgRemoveOutput(msg)
 {
-    removeGeneratedObjects(msg.nodeId);
-}
-
-
-function msgRegenerateNode(msg)
-{
-    regenerateObjects(msg);
-}
-
-
-function removeGeneratedObjects(nodeId)
-{
     for (const obj of figma.currentPage.children)
     {
-        if (madeByNode(obj, nodeId))
+        if (madeByNode(obj, msg.nodeId))
             obj.remove();
     }
 }
 
 
-function regenerateObjects(msg)
+function msgRegenerateNodeOutput(msg)
 {
     for (const item of msg.data)
     {

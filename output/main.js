@@ -17,8 +17,8 @@ figma.ui.onmessage = msg => {
         msgResizeWindow(msg);
     else if (msg.cmd === 'removeOutput')
         msgRemoveOutput(msg);
-    else if (msg.cmd === 'regenerateNode')
-        msgRegenerateNode(msg);
+    else if (msg.cmd === 'regenerateNodeOutput')
+        msgRegenerateNodeOutput(msg);
 };
 function msgLoadState(msg) {
     (function () {
@@ -47,18 +47,12 @@ function msgResizeWindow(msg) {
     figma.clientStorage.setAsync('windowHeight', height);
 }
 function msgRemoveOutput(msg) {
-    removeGeneratedObjects(msg.nodeId);
-}
-function msgRegenerateNode(msg) {
-    regenerateObjects(msg);
-}
-function removeGeneratedObjects(nodeId) {
     for (const obj of figma.currentPage.children) {
-        if (madeByNode(obj, nodeId))
+        if (madeByNode(obj, msg.nodeId))
             obj.remove();
     }
 }
-function regenerateObjects(msg) {
+function msgRegenerateNodeOutput(msg) {
     for (const item of msg.data) {
         if (item.type == 'rect')
             regenerateRect(item);

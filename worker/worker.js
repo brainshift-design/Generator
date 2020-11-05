@@ -1,11 +1,11 @@
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateNode')
+    if (e.data.msg === 'regenerateNodeOutput')
     {
         var objects = generate(e.data.data);
 
         postMessage({ 
-            cmd:    'regenerateNode',
+            cmd:    'regenerateNodeOutput',
             nodeId:  e.data.nodeId,
             objects: objects
         });
