@@ -1,48 +1,49 @@
 var worker = new Worker(
     window.URL.createObjectURL(
         new Blob([generateWorker.textContent])));
+
+
+worker.onmessage = function(e)
+{
+    if (e.data.cmd == 'regenerateNode')
+    {
+        parent.postMessage({ pluginMessage: 
+        { 
+            cmd:   'regenerateNode',
+            nodeId: e.data.nodeId,
+            data:   e.data.objects
+        }}, '*');
+
+        graph.mutex = false;
+
+
+        if (graph.defer)
+        {
+            graph.defer = false;
+            regenerateNodeOutput(graph.activeNode.output);
+        }
+    }
+};
       
 
-function updateCanvas()
+function regenerateNodeOutput(output)
 {
     if (graph.mutex)
     {
         graph.defer = true;
         return;
     }
-
+    
     graph.mutex = true;
-
-
-    var updateData = graph.activeNode.output.data;
-
-    if (!isEmptyObject(updateData))
+    
+    
+    if (!isEmptyObject(output.data))
     {
         worker.postMessage(
         {
-            msg:    'generate',
-            graph:  updateData
+            msg:   'regenerateNode',
+            nodeId: output._op.id,
+            data:   output.data
         });
     }
 }
-
-
-worker.onmessage = function(e)
-{
-    if (e.data.cmd == 'updateCanvas')
-    {
-        parent.postMessage({ pluginMessage: 
-        { 
-            cmd:  'updateCanvas',
-            data: e.data.objects
-        }}, '*');
-
-        graph.mutex = false;
-
-        if (graph.defer)
-        {
-            graph.defer = false;
-            updateCanvas();
-        }
-    }
-};

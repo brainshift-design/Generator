@@ -12,26 +12,8 @@ class Graph
     overOutput = null;
 
     tempConn   = null;
-
-
-
-    #activeNode = null;
     
-    get activeNode() { return this.#activeNode; }
-    set activeNode(node)
-    {
-        if (this.#activeNode != null)
-            this.#activeNode.div.style.boxShadow = 'none';
-
-        this.#activeNode = node;
-        
-        if (this.#activeNode != null)
-            this.#activeNode.div.style.boxShadow = '0 0 0 2px #18A0FB';
-
-        updateCanvas();
-    }
-
-
+    
     getNewId(_node)
     {
         var type = _node.type;
@@ -75,6 +57,7 @@ class Graph
         }
         
         this.addNode(node);
+        node.makeActive();
     }
 
 
@@ -103,11 +86,13 @@ class Graph
 
         input .connection = conn;
         output.connection = conn;
-        
+
         wires.appendChild(conn.wire);
         conn.updateWire();
-
-        updateCanvas();
+        
+        input._op.valid = false;
+        
+        regenerateNode(this.activeNode.output);
 
         return true;
     }
@@ -129,7 +114,9 @@ class Graph
 
         input.connectedOutput = null;
 
-        updateCanvas();
+        input._op.valid = false;
+
+        regenerateNode(activeNode.output);
     
         return true;
     }

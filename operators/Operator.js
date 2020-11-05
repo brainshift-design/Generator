@@ -20,8 +20,63 @@ class Operator
     inputs = [];
     output;
     
+
+    _active = false;
     
-    #valid = false; // this is the flag for regeneration
+    get active() { return this._active; }
+
+    makeActive() // only true
+    {
+        this.makeLeftPassive();
+        this.makeRightPassive();        
+
+        this._active = true;
+        this.div.style.boxShadow = '0 0 0 2px #18A0FB';
+
+        if (this.output)
+            regenerateNodeOutput(this.output);
+    }
+
+    makePassive()
+    {
+        if (this.active)
+        {
+            this.div.style.boxShadow = 'none';
+
+            parent.postMessage({ pluginMessage: 
+            { 
+                cmd:   'removeOutput',
+                nodeId: this.id
+            }}, '*');
+        }
+
+        this._active = false;
+    }
+    
+    makeLeftPassive()
+    {
+        this.makePassive();
+
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                input.op.makePassiveLeft();            
+        }
+    }
+
+    makeRightPassive()
+    {
+        this.makePassive();
+        
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+                input.op.makePassiveRight();            
+        }
+    }
+
+
+    #valid  = false; // this is the flag for regeneration
     
     set valid(val) { this.#valid = val; }
     get valid() 

@@ -4,6 +4,7 @@ graphView.addEventListener('pointerdown', e =>
     {
         graph.overOutput.connecting = true;
         graph.startConnectionFromOutput(graph.overOutput);
+        graph.tempConn.updateWireFromOutput(e.clientX, e.clientY);
     }
     else if (graph.overInput)
     {
@@ -17,6 +18,7 @@ graphView.addEventListener('pointerdown', e =>
         {
             graph.overInput.connecting = true;
             graph.startConnectionFromInput(graph.overInput);
+            graph.tempConn.updateWireFromInput (e.clientX, e.clientY)
         }
     }
 });

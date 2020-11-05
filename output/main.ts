@@ -6,9 +6,10 @@ figma.ui.onmessage = msg =>
     if (msg.cmd === 'save')
         figma.clientStorage.setAsync(msg.key, msg.value);
 
-    else if (msg.cmd === 'loadState'   ) msgLoadState(msg);
-    else if (msg.cmd === 'resizeWindow') msgResizeWindow(msg);
-    else if (msg.cmd === 'updateCanvas') msgUpdateCanvas(msg);
+    else if (msg.cmd === 'loadState'     ) msgLoadState     (msg);
+    else if (msg.cmd === 'resizeWindow'  ) msgResizeWindow  (msg);
+    else if (msg.cmd === 'removeOutput'  ) msgRemoveOutput  (msg);
+    else if (msg.cmd === 'regenerateNode') msgRegenerateNode(msg);
 };
 
 
@@ -47,18 +48,24 @@ function msgResizeWindow(msg)
 }
 
 
-function msgUpdateCanvas(msg)
+function msgRemoveOutput(msg)
 {
-    removeGeneratedObjects();
+    removeGeneratedObjects(msg.nodeId);
+}
+
+
+function msgRegenerateNode(msg)
+{
+    removeGeneratedObjects(msg.nodeId);
     generateObjects(msg);
 }
 
 
-function removeGeneratedObjects()
+function removeGeneratedObjects(nodeId)
 {
     for (const node of figma.currentPage.children)
     {
-        if (node.getPluginData('#GEN') === '#GEN')
+        if (node.getPluginData('#GEN') === '#GEN_' + nodeId)
             node.remove();
     }
 }
@@ -77,7 +84,7 @@ function generateObjects(msg)
 function generateRect(item)
 {
     const rect = figma.createRectangle();
-    rect.setPluginData('#GEN', '#GEN');
+    rect.setPluginData('#GEN', '#GEN_' + item.nodeId);
 
     rect.name  = item.id;
 

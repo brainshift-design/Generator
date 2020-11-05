@@ -321,12 +321,13 @@ class Random
 
 onmessage = function(e)
 {
-    if (e.data.msg === 'generate')
+    if (e.data.msg === 'regenerateNode')
     {
-        var objects = generate(e.data.graph);
+        var objects = generate(e.data.data);
 
         postMessage({ 
-            cmd:    'updateCanvas',
+            cmd:    'regenerateNode',
+            nodeId:  e.data.nodeId,
             objects: objects
         });
     }
@@ -346,8 +347,9 @@ function generate(node)
 function generateRect(node)
 {   
     return [{
-        id:     node.id,
+        id:     node.type,
         type:   node.type,
+        nodeId: node.id,
         x:      0,
         y:      0,
         width:  node.width,

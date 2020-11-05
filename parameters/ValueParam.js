@@ -32,7 +32,7 @@ extends Parameter
         this._control.addEventListener('onchange', function(e)
         {
             this.param.op.valid = false;
-            updateCanvas();
+            regenerateNodeOutput(graph.activeNode.output);
             this.param.op.graph.mutex = true;            
         });
     }
