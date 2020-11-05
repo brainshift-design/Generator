@@ -7,8 +7,7 @@ class Output
 
     control;
     
-    connectedInputs = []; // 1
-    connections     = []; // 2
+    connectedInputs = [];
     
     connecting      = false;
     

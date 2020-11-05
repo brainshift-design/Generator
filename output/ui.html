@@ -195,7 +195,7 @@ button svg
 
 .nodeHeader
 {
-    background:  #a3d3fd;
+    background:  #BEDFFF;
     display:     flex;
     width:       100%;
 }
@@ -786,8 +786,7 @@ function checkResize(x, y)
 
 class Graph
 {
-    nodes       = [];
-    connections = [];
+    nodes = [];
 
     mutex = false;
     defer = false;
@@ -883,40 +882,38 @@ class Graph
         if (output.connectedInput != null)
             this.disconnect(output.connectedInput);
 
-
-        output.connectedInputs.push(input); // 1
+        output.connectedInputs.push(input);
         input.connectedOutput = output;
 
-
-        var conn = new Connection(output, input);
+        const conn = new Connection(output, input);
 
         input .connection = conn;
         output.connection = conn;
         
-        this.connections.push(conn); // 2
         wires.appendChild(conn.wire);
-        
         conn.updateWire();
+
         updateCanvas();
+
+        return true;
     }
 
 
-    disconnect(input)
+    disconnect(input, remove = true)
     {
-        if (input.connectedOutput == null)
-            return false;
+        var output = input.connectedOutput;
+        if (!output) return false;
 
-        var iConn = this.connections.findIndex(c => c.input == input && c.output == input.connectedOutput);
-        graphView.removeChild(this.connections[iConn].wire);
-        this.connections.splice(iConn, 1);
-        
-        var iInput = input.connectedOutput.connectedInputs.indexOf(input);
-        input.connectedOutput.connectedInputs.splice(iInput, 1);
-        
-        input.connection                 = null;
-        input.connectedOutput.connection = null;
+        if (remove)
+            wires.removeChild(input.connection.wire);
 
-        input.connectedOutput            = null;
+        var inputIndex = output.connectedInputs.indexOf(input);
+        output.connectedInputs.splice(inputIndex, 1);
+        
+        input .connection     = null;
+        output.connection     = null;
+
+        input.connectedOutput = null;
 
         updateCanvas();
     
@@ -927,8 +924,6 @@ class Graph
     startConnectionFromOutput(output)
     {
         this.tempConn = new Connection(output, null);
-
-        this.connections.push(this.tempConn);
         wires.appendChild(this.tempConn.wire);    
     }
 
@@ -936,8 +931,6 @@ class Graph
     startConnectionFromInput(input)
     {
         this.tempConn = new Connection(null, input);
-
-        this.connections.push(this.tempConn);
         wires.appendChild(this.tempConn.wire);    
     }
 
@@ -945,8 +938,6 @@ class Graph
     cancelConnection()
     {
         wires.removeChild(this.tempConn.wire);    
-        this.connections.splice(this.connections.indexOf(this.tempConn), 1);
-
         this.tempConn = null;
     }
 }
@@ -1576,8 +1567,7 @@ class Output
 
     control;
     
-    connectedInputs = []; // 1
-    connections     = []; // 2
+    connectedInputs = [];
     
     connecting      = false;
     
@@ -1882,7 +1872,10 @@ class Operator
         }
 
         if (this.output.connected)
-            this.output.connection.updateWire();
+        {
+            for (const input of this.output.connectedInputs)
+                input.connection.updateWire();
+        }
     }
 
 
@@ -2780,8 +2773,17 @@ graphView.addEventListener('pointerdown', e =>
     }
     else if (graph.overInput)
     {
-        graph.overInput.connecting = true;
-        graph.startConnectionFromInput(graph.overInput);
+        if (graph.overInput.connectedOutput)
+        {
+            graph.tempConn = graph.overInput.connection;
+            graph.disconnect(graph.overInput, false);
+            graph.tempConn.input = null;
+        }
+        else
+        {
+            graph.overInput.connecting = true;
+            graph.startConnectionFromInput(graph.overInput);
+        }
     }
 });
 
@@ -2899,20 +2901,6 @@ parent.postMessage({ pluginMessage:
 
 
 var graph = new Graph();
-
-var opRect    = new OpRect();
-var opSpread1 = new OpSpread();
-var opSpread2 = new OpSpread();
-var opSpread3 = new OpSpread();
-
-graph.addNode(opRect);
-graph.addNode(opSpread1);
-graph.addNode(opSpread2);
-graph.addNode(opSpread3);
-
-// graph.connect(opRect.output, opSpread1.inputs[0]);
-// graph.connect(opSpread1.output, opSpread2.inputs[0]);
-// graph.connect(opSpread2.output, opSpread3.inputs[0]);
 
 
 

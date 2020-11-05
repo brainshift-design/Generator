@@ -1,7 +1,6 @@
 class Graph
 {
-    nodes       = [];
-    connections = [];
+    nodes = [];
 
     mutex = false;
     defer = false;
@@ -97,40 +96,38 @@ class Graph
         if (output.connectedInput != null)
             this.disconnect(output.connectedInput);
 
-
-        output.connectedInputs.push(input); // 1
+        output.connectedInputs.push(input);
         input.connectedOutput = output;
 
-
-        var conn = new Connection(output, input);
+        const conn = new Connection(output, input);
 
         input .connection = conn;
         output.connection = conn;
         
-        this.connections.push(conn); // 2
         wires.appendChild(conn.wire);
-        
         conn.updateWire();
+
         updateCanvas();
+
+        return true;
     }
 
 
-    disconnect(input)
+    disconnect(input, remove = true)
     {
-        if (input.connectedOutput == null)
-            return false;
+        var output = input.connectedOutput;
+        if (!output) return false;
 
-        var iConn = this.connections.findIndex(c => c.input == input && c.output == input.connectedOutput);
-        graphView.removeChild(this.connections[iConn].wire);
-        this.connections.splice(iConn, 1);
-        
-        var iInput = input.connectedOutput.connectedInputs.indexOf(input);
-        input.connectedOutput.connectedInputs.splice(iInput, 1);
-        
-        input.connection                 = null;
-        input.connectedOutput.connection = null;
+        if (remove)
+            wires.removeChild(input.connection.wire);
 
-        input.connectedOutput            = null;
+        var inputIndex = output.connectedInputs.indexOf(input);
+        output.connectedInputs.splice(inputIndex, 1);
+        
+        input .connection     = null;
+        output.connection     = null;
+
+        input.connectedOutput = null;
 
         updateCanvas();
     
@@ -141,8 +138,6 @@ class Graph
     startConnectionFromOutput(output)
     {
         this.tempConn = new Connection(output, null);
-
-        this.connections.push(this.tempConn);
         wires.appendChild(this.tempConn.wire);    
     }
 
@@ -150,8 +145,6 @@ class Graph
     startConnectionFromInput(input)
     {
         this.tempConn = new Connection(null, input);
-
-        this.connections.push(this.tempConn);
         wires.appendChild(this.tempConn.wire);    
     }
 
@@ -159,8 +152,6 @@ class Graph
     cancelConnection()
     {
         wires.removeChild(this.tempConn.wire);    
-        this.connections.splice(this.connections.indexOf(this.tempConn), 1);
-
         this.tempConn = null;
     }
 }

@@ -7,8 +7,17 @@ graphView.addEventListener('pointerdown', e =>
     }
     else if (graph.overInput)
     {
-        graph.overInput.connecting = true;
-        graph.startConnectionFromInput(graph.overInput);
+        if (graph.overInput.connectedOutput)
+        {
+            graph.tempConn = graph.overInput.connection;
+            graph.disconnect(graph.overInput, false);
+            graph.tempConn.input = null;
+        }
+        else
+        {
+            graph.overInput.connecting = true;
+            graph.startConnectionFromInput(graph.overInput);
+        }
     }
 });
 

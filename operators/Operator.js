@@ -167,7 +167,10 @@ class Operator
         }
 
         if (this.output.connected)
-            this.output.connection.updateWire();
+        {
+            for (const input of this.output.connectedInputs)
+                input.connection.updateWire();
+        }
     }
 
 
