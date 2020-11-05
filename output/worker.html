@@ -334,26 +334,27 @@ onmessage = function(e)
 };
 
 
-function generate(node)
+function generate(obj)
 {
-    switch (node.type)
+    switch (obj.type)
     {
-        case 'rect'  : return generateRect  (node);
-        case 'spread': return generateSpread(node);
+        case 'rect'  : return generateRect  (obj);
+        case 'spread': return generateSpread(obj);
     }    
 }
 
 
-function generateRect(node)
+function generateRect(obj)
 {   
     return [{
-        id:     node.type,
-        type:   node.type,
-        nodeId: node.id,
-        x:      0,
-        y:      0,
-        width:  node.width,
-        height: node.height
+        id:     obj.type,
+        type:   obj.type,
+        nodeId: obj.id,
+        itemId: obj.id + '_0',
+        x:      Number.NaN,
+        y:      Number.NaN,
+        width:  obj.width,
+        height: obj.height
     }];
 }
 
@@ -361,7 +362,6 @@ function generateRect(node)
 function generateSpread(node)
 {
     var input = generate(node.inputs[0]);
-
 
     var rnd = new Random(node.seed);
 
@@ -377,7 +377,8 @@ function generateSpread(node)
         for (var j = 0; j < input.length; j++)
         {
             var item = Object.assign({}, input[j]);
-            
+            item.itemId = item.nodeId + '_' + j;
+
             item.x += v.x;
             item.y += v.y;
             

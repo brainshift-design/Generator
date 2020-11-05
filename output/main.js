@@ -50,28 +50,48 @@ function msgRemoveOutput(msg) {
     removeGeneratedObjects(msg.nodeId);
 }
 function msgRegenerateNode(msg) {
-    removeGeneratedObjects(msg.nodeId);
-    generateObjects(msg);
+    regenerateObjects(msg);
 }
 function removeGeneratedObjects(nodeId) {
-    for (const node of figma.currentPage.children) {
-        if (node.getPluginData('#GEN') === '#GEN_' + nodeId)
-            node.remove();
+    for (const obj of figma.currentPage.children) {
+        if (madeByNode(obj, nodeId))
+            obj.remove();
     }
 }
-function generateObjects(msg) {
+function regenerateObjects(msg) {
     for (const item of msg.data) {
         if (item.type == 'rect')
-            generateRect(item);
+            regenerateRect(item);
     }
 }
-function generateRect(item) {
-    const rect = figma.createRectangle();
-    rect.setPluginData('#GEN', '#GEN_' + item.nodeId);
-    rect.name = item.id;
-    rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
-    rect.x = item.x;
-    rect.y = item.y;
-    rect.resize(Math.max(0.01, item.width), Math.max(0.01, item.height));
-    figma.currentPage.appendChild(rect);
+function regenerateRect(item) {
+    const existing = figma.currentPage.children.findIndex(obj => obj.getPluginData('#GEN') === '#GEN_' + item.itemId);
+    var rect;
+    if (existing < 0) {
+        rect = figma.createRectangle();
+        rect.setPluginData('#GEN', '#GEN_' + item.itemId);
+        rect.name = item.id;
+        rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+        rect.x = 0;
+        rect.y = 0;
+        figma.currentPage.appendChild(rect);
+    }
+    else {
+        rect = figma.currentPage.children[existing];
+        if (!isNaN(item.x) && rect.x != item.x)
+            rect.x = item.x;
+        if (!isNaN(item.y) && rect.y != item.y)
+            rect.y = item.y;
+    }
+    if (rect.width != item.width
+        || rect.height != item.height) {
+        rect.resize(Math.max(0.01, item.width), Math.max(0.01, item.height));
+    }
+}
+function madeByNode(obj, nodeId) {
+    const tag = obj.getPluginData('#GEN');
+    const nodeTag = '#GEN_' + nodeId;
+    if (nodeTag.length < tag.length)
+        return false;
+    return tag.substring(0, nodeTag.length) === nodeTag;
 }
