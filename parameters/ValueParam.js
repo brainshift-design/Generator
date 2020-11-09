@@ -34,7 +34,10 @@ extends Parameter
             var op = this.param.op;
 
             op.valid = false;
-            regenerateOutputs([op.activeNodeInChain.output]);
+
+            if (op.activeNodeInChain.output)
+                regenerateOutputs([op.activeNodeInChain.output]);
+    
             op.graph.mutex = true;            
         });
     }

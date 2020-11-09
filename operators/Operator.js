@@ -94,17 +94,22 @@ class Operator
             if (   input.connected
                 && input.connectedOutput.op != callerOp)
             {
-                const active = input.op.getActiveNodeInChain(this);
+                const active = input.connectedOutput.op.getActiveNodeInChain(this);
                 if (active) return active;
             }
         }
 
         if (   this.output
-            && this.output.connected
-            && this.output.op != callerOp)
+            && this.output.connected)
         {
-            const active = output.op.getActiveNodeInChain(this);
-            if (active) return active;
+            for (const input of this.output.connectedInputs)
+            {
+                if (input.op != callerOp)
+                {
+                    const active = input.op.getActiveNodeInChain(this);
+                    if (active) return active;
+                }
+            }
         }
 
         return null;
