@@ -55,6 +55,8 @@ class Graph
         {
             case 'rect':   node = new OpRect();   break;
             case 'spread': node = new OpSpread(); break;
+            case 'row':    node = new OpRow();    break;
+            case 'column': node = new OpColumn(); break;
         }
         
         this.addNode(node);
@@ -146,5 +148,11 @@ class Graph
     {
         wires.removeChild(this.tempConn.wire);    
         this.tempConn = null;
+    }
+
+
+    nodeFromId(id)
+    {
+        return this.nodes.find(n => n.id === id);
     }
 }

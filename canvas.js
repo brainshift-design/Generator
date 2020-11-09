@@ -7,13 +7,32 @@ worker.onmessage = function(e)
 {
     if (e.data.cmd == 'regenerateObjects')
     {
+        const node = graph.nodeFromId(e.data.nodeId);
+        var removeList = [];
+    
+        for (const obj of node.cachedObjects)
+        {
+            if (!e.data.objects.find(o => o.itemId === obj.itemId))
+                removeList.push(obj);    
+        }
+
+        if (removeList.length > 0)
+        {
+            parent.postMessage({ pluginMessage: 
+            { 
+                cmd:   'removeObjectList',
+                data:   removeList
+            }}, '*');
+        }
+
         parent.postMessage({ pluginMessage: 
         { 
             cmd:   'regenerateObjects',
             nodeId: e.data.nodeId,
             data:   e.data.objects
-        }}, '*');
+        }}, '*');    
 
+        node.cachedObjects = e.data.objects;
         graph.mutex = false;
 
         
@@ -32,6 +51,8 @@ function regenerateOutputs(outputs)
 {
     if (graph.mutex)
     {
+        graph.deferOutputs = [];
+
         for (const output of outputs)
             graph.deferOutputs.push(output);
 

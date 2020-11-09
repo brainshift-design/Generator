@@ -172,7 +172,13 @@ function isEmptyObject(obj)
 }
 
 
-function clone(obj)
+function shallowCopy(obj)
 {
     return Object.assign({}, obj);
+}
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
 }

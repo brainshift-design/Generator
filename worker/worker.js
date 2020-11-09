@@ -19,6 +19,8 @@ function generate(obj)
     {
         case 'rect'  : return generateRect  (obj);
         case 'spread': return generateSpread(obj);
+        case 'row'   : return generateRow   (obj);
+        case 'column': return generateColumn(obj);
     }    
 }
 
@@ -29,12 +31,62 @@ function generateRect(obj)
         id:     obj.type,
         type:   obj.type,
         nodeId: obj.id,
-        itemId: obj.id + '_0',
-        x:      Number.NaN,
-        y:      Number.NaN,
+        itemId: 'rect_0',
+        x:      0,//Number.NaN,
+        y:      0,//Number.NaN,
         width:  obj.width,
         height: obj.height
     }];
+}
+
+
+function generateRow(node)
+{
+    var input = generate(node.inputs[0]);
+
+    result = [];
+
+    for (var i = 0, x = 0; i < node.count; i++)
+    {
+        for (var j = 0; j < input.length; j++)
+        {
+            var item = deepCopy(input[j]);
+            item.itemId = 'row_' + i + '_' + j;
+
+            item.x += x;
+            
+            x += item.width + node.gap;
+            
+            result.push(item);
+        }
+    }
+
+    return result;
+}
+
+
+function generateColumn(node)
+{
+    var input = generate(node.inputs[0]);
+
+    result = [];
+
+    for (var i = 0, y = 0; i < node.count; i++)
+    {
+        for (var j = 0; j < input.length; j++)
+        {
+            var item = deepCopy(input[j]);
+            item.itemId = 'column_' + i + '_' + j;
+
+            item.y += y;
+            
+            y += item.height + node.gap;
+            
+            result.push(item);
+        }
+    }
+
+    return result;
 }
 
 
@@ -55,8 +107,8 @@ function generateSpread(node)
         
         for (var j = 0; j < input.length; j++)
         {
-            var item = clone(input[j]);
-            item.itemId = item.nodeId + '_' + j;
+            var item = deepCopy(input[j]);
+            item.itemId = 'spread_' + i + '_' + j;
 
             item.x += v.x;
             item.y += v.y;

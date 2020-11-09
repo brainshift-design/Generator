@@ -8,11 +8,7 @@ class Operator
     
     _graph = null;
     get graph() { return this._graph; }
-    
-    setGraph(graph)
-    {
-        this._graph = graph;
-    }
+    setGraph(graph) { this._graph = graph; }
     
     
     params = [];
@@ -20,6 +16,7 @@ class Operator
     inputs = [];
     output;
     
+    cachedObjects = [];
     
     #valid = false; // this is the flag for regeneration
 
@@ -73,7 +70,7 @@ class Operator
 
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:   'removeObjects',
+                cmd:   'removeNodeObjects',
                 nodeId: this.id
             }}, '*');
         }

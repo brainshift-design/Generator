@@ -31,6 +31,8 @@ html/ui_2.html
     operators/Operator.js
     operators/OpRect.js
     operators/OpSpread.js
+    operators/OpRow.js
+    operators/OpColumn.js
 
     ui/slider.js
     ui/slider textbox.js
