@@ -18,21 +18,18 @@ extends Operator
 
     generate()
     {
-        if (!this.valid)
-        {
-            this.output._data = 
-            {
-                id:     this.id,
-                type:   this.type,
-                width:  this.#width .value,
-                height: this.#height.value,
+        if (this.valid) return;
 
-                inputs: []
-            };
-    
-            super.generate();
-        }
-        
-        return this.output._data;
+        this.output._data = 
+        {
+            id:     this.id,
+            type:   this.type,
+            width:  this.#width .value,
+            height: this.#height.value,
+
+            inputs: []
+        };
+
+        super.generate();
     }
 }

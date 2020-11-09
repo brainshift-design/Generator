@@ -163,6 +163,9 @@ function numToString(num, dec)
 
 function isEmptyObject(obj)
 {
+    if (obj == null)
+        return false;
+        
     return (
            Object.keys(obj).length === 0 
         && obj.constructor === Object);

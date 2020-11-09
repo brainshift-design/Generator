@@ -29,24 +29,22 @@ extends Operator
     
     generate()
     {
-        if (!this.valid)
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+        if (!input.connected) return;
+
+        this.output._data = 
         {
-            var input = this.inputs[0];
-            if (!input.connected) return {};
+            id:     this.id,
+            type:   this.type,
+            count:  this.#count .value,
+            radius: this.#radius.value,
+            seed:   this.seed,
 
-            this.output._data = 
-            {
-                id:     this.id,
-                type:   this.type,
-                count:  this.#count .value,
-                radius: this.#radius.value,
-                seed:   this.seed,
-                inputs: [input.data]
-            };
-            
-            super.generate();
-        }
+            inputs: [input.data]
+        };
 
-        return this.output._data;
+        super.generate();
     }
 }

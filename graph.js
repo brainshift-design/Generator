@@ -70,7 +70,6 @@ class Graph
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
         graphView.appendChild(node.div);
-        node.makeActive();
     }
     
 
@@ -89,13 +88,15 @@ class Graph
 
         input .connection = conn;
         output.connection = conn;
-
+        
         wires.appendChild(conn.wire);
         conn.updateWire();
         
+        output.op.makePassive();
         input.op.valid = false;
-        
-        regenerateOutputs([output]);
+    
+        if (input.op.activeNodeInChain.output)
+            regenerateOutputs([input.op.activeNodeInChain.output]);
 
         return true;
     }

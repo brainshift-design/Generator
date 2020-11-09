@@ -5,7 +5,7 @@ class Output
     _op;
     get op() { return this._op; }
     
-    _data;
+    _data = {};
 
     control;
     
@@ -23,13 +23,16 @@ class Output
         this.control = document.createElement('div');
         this.control.className = 'output';
 
-        this.control.addEventListener('pointerenter', e => this._op.graph.overOutput = this);
-        this.control.addEventListener('pointerleave', e => this._op.graph.overOutput = null);
+        this.control.addEventListener('pointerenter', e => this.op.graph.overOutput = this);
+        this.control.addEventListener('pointerleave', e => this.op.graph.overOutput = null);
     }
     
 
     get data() 
     {
-        return this._op.generate();
+        if (!this.op.valid)
+            this.op.generate();
+
+        return this._data;
     }
 }

@@ -6,10 +6,10 @@ figma.ui.onmessage = msg =>
     if (msg.cmd === 'save')
         figma.clientStorage.setAsync(msg.key, msg.value);
 
-    else if (msg.cmd === 'loadState'       ) msgLoadState           (msg);
-    else if (msg.cmd === 'resizeWindow'    ) msgResizeWindow        (msg);
-    else if (msg.cmd === 'removeOutput'    ) msgRemoveOutput        (msg);
-    else if (msg.cmd === 'regenerateOutput') msgRegenerateNodeOutput(msg);
+    else if (msg.cmd === 'loadState'        ) msgLoadState        (msg);
+    else if (msg.cmd === 'resizeWindow'     ) msgResizeWindow     (msg);
+    else if (msg.cmd === 'removeObjects'    ) msgRemoveObjects    (msg);
+    else if (msg.cmd === 'regenerateObjects') msgRegenerateObjects(msg);
 };
 
 
@@ -48,7 +48,7 @@ function msgResizeWindow(msg)
 }
 
 
-function msgRemoveOutput(msg)
+function msgRemoveObjects(msg)
 {
     for (const obj of figma.currentPage.children)
     {
@@ -58,7 +58,7 @@ function msgRemoveOutput(msg)
 }
 
 
-function msgRegenerateNodeOutput(msg)
+function msgRegenerateObjects(msg)
 {
     for (const item of msg.data)
     {
@@ -74,6 +74,8 @@ function regenerateRect(item)
         obj.getPluginData('#GEN') === '#GEN_' + item.itemId);
 
     var rect;
+
+    var cx, cy;
 
     if (existing < 0)
     {
@@ -92,14 +94,25 @@ function regenerateRect(item)
 
         if (!isNaN(item.x) && rect.x != item.x) rect.x = item.x;
         if (!isNaN(item.y) && rect.y != item.y) rect.y = item.y;
+
+        cx = rect.x + rect.width /2;
+        cy = rect.y + rect.height/2; 
+
+        // will be finished later
     }    
 
-    if (   rect.width != item.width
+    if (   rect.width  != item.width
         || rect.height != item.height)
     {
         rect.resize(
             Math.max(0.01, item.width ), 
             Math.max(0.01, item.height));
+    }
+
+    if (existing >= 0) // finishing up
+    {
+        rect.x = cx - rect.width /2;
+        rect.y = cy - rect.height/2;
     }
 }
 
@@ -108,9 +121,6 @@ function madeByNode(obj, nodeId)
 {
     const tag     = obj.getPluginData('#GEN');
     const nodeTag = '#GEN_' + nodeId;
-
-    if (nodeTag.length < tag.length) 
-        return false;
     
-    return tag.substring(0, nodeTag.length) === nodeTag;
+    return tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag;
 }

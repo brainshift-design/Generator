@@ -5,17 +5,18 @@ var worker = new Worker(
 
 worker.onmessage = function(e)
 {
-    if (e.data.cmd == 'regenerateNodeOutput')
+    if (e.data.cmd == 'regenerateObjects')
     {
         parent.postMessage({ pluginMessage: 
         { 
-            cmd:   'regenerateNodeOutput',
+            cmd:   'regenerateObjects',
             nodeId: e.data.nodeId,
             data:   e.data.objects
         }}, '*');
 
         graph.mutex = false;
 
+        
         if (graph.deferOutputs.length > 0)
         {
             var deferOutputs = Array.from(graph.deferOutputs);
@@ -38,7 +39,7 @@ function regenerateOutputs(outputs)
     }
     
     graph.mutex = true;
-    
+    var posted = false;
 
     for (const output of outputs)
     {
@@ -46,10 +47,15 @@ function regenerateOutputs(outputs)
         {
             worker.postMessage(
             {
-                msg:   'regenerateOutput',
+                msg:   'regenerateObjects',
                 nodeId: output.op.id,
                 data:   output.data
             });
+
+            posted = true;
         }
     }
+
+    if (!posted)
+        graph.mutex = false;
 }

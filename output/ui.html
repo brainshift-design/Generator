@@ -608,12 +608,12 @@ class Random
 
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateOutput')
+    if (e.data.msg === 'regenerateObjects')
     {
         var objects = generate(e.data.data);
 
         postMessage({ 
-            cmd:    'regenerateOutput',
+            cmd:    'regenerateObjects',
             nodeId:  e.data.nodeId,
             objects: objects
         });
@@ -859,7 +859,6 @@ class Graph
         node.setId(this.getNewId(node)); // TODO: not checking return value here
 
         graphView.appendChild(node.div);
-        node.makeActive();
     }
     
 
@@ -878,13 +877,15 @@ class Graph
 
         input .connection = conn;
         output.connection = conn;
-
+        
         wires.appendChild(conn.wire);
         conn.updateWire();
         
+        output.op.makePassive();
         input.op.valid = false;
-        
-        regenerateOutputs([output]);
+    
+        if (input.op.activeNodeInChain.output)
+            regenerateOutputs([input.op.activeNodeInChain.output]);
 
         return true;
     }
@@ -1103,6 +1104,9 @@ function numToString(num, dec)
 
 function isEmptyObject(obj)
 {
+    if (obj == null)
+        return false;
+        
     return (
            Object.keys(obj).length === 0 
         && obj.constructor === Object);
@@ -1548,8 +1552,8 @@ class Input
 
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
-        this.control.addEventListener('pointerenter', e => this._op.graph.overInput = this);
-        this.control.addEventListener('pointerleave', e => this._op.graph.overInput = null);
+        this.control.addEventListener('pointerenter', () => this.op.graph.overInput = this);
+        this.control.addEventListener('pointerleave', () => this.op.graph.overInput = null);
     }    
     
 
@@ -1570,7 +1574,7 @@ class Output
     _op;
     get op() { return this._op; }
     
-    _data;
+    _data = {};
 
     control;
     
@@ -1588,14 +1592,17 @@ class Output
         this.control = document.createElement('div');
         this.control.className = 'output';
 
-        this.control.addEventListener('pointerenter', e => this._op.graph.overOutput = this);
-        this.control.addEventListener('pointerleave', e => this._op.graph.overOutput = null);
+        this.control.addEventListener('pointerenter', e => this.op.graph.overOutput = this);
+        this.control.addEventListener('pointerleave', e => this.op.graph.overOutput = null);
     }
     
 
     get data() 
     {
-        return this._op.generate();
+        if (!this.op.valid)
+            this.op.generate();
+
+        return this._data;
     }
 }
 
@@ -1714,27 +1721,31 @@ class Operator
 {
     #type;
     get type() { return this.#type; }
-
+    
     _id;
     get id() { return this._id; }
-
+    
     _graph = null;
     get graph() { return this._graph; }
-
+    
     setGraph(graph)
     {
         this._graph = graph;
     }
     
-
+    
     params = [];
     
     inputs = [];
     output;
     
+    
+    #valid = false; // this is the flag for regeneration
 
+    
     _active = false;
     get active() { return this._active; }
+
 
     makeActive() // only true
     {
@@ -1744,8 +1755,33 @@ class Operator
         this._active = true;
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
-        if (this.output)
+        if (!this.valid && this.output)
             regenerateOutputs([this.output]);
+    }
+
+    
+    makeLeftPassive()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+            {
+                input.connectedOutput.op.makePassive();
+                input.connectedOutput.op.makeLeftPassive();            
+            }
+        }
+    }
+
+    makeRightPassive()
+    {
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+            {
+                input.op.makePassive();
+                input.op.makeRightPassive();            
+            }
+        }
     }
 
     makePassive()
@@ -1756,37 +1792,15 @@ class Operator
 
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:   'removeOutput',
+                cmd:   'removeObjects',
                 nodeId: this.id
             }}, '*');
         }
 
         this._active = false;
     }
+
     
-    makeLeftPassive()
-    {
-        this.makePassive();
-
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                input.op.makePassiveLeft();            
-        }
-    }
-
-    makeRightPassive()
-    {
-        this.makePassive();
-        
-        if (this.output)
-        {
-            for (const input of this.output.connectedInputs)
-                input.op.makePassiveRight();            
-        }
-    }
-
-
     get activeNodeInChain() { return this.getActiveNodeInChain(null); }
 
     getActiveNodeInChain(callerOp = null)
@@ -1816,15 +1830,16 @@ class Operator
     }
 
 
-    #valid  = false; // this is the flag for regeneration
-    
     set valid(val) { this.#valid = val; }
     get valid() 
     {
         var valid = this.#valid;
         
         for (const input of this.inputs)
-            valid &= input.valid;
+        {
+            if (input.connected)
+                valid &= input.connectedOutput.op.valid;
+        }
 
         return valid;
     }
@@ -1901,7 +1916,7 @@ class Operator
         
         this.div.addEventListener('dblclick', function(e)
         {
-            this.op.graph.activeNode = this.op;
+            this.op.makeActive();
         });
 
 
@@ -2018,7 +2033,6 @@ class Operator
     generate() 
     { 
         this.valid = true; 
-        return {}; 
     }
 }
 
@@ -2043,22 +2057,19 @@ extends Operator
 
     generate()
     {
-        if (!this.valid)
-        {
-            this.output._data = 
-            {
-                id:     this.id,
-                type:   this.type,
-                width:  this.#width .value,
-                height: this.#height.value,
+        if (this.valid) return;
 
-                inputs: []
-            };
-    
-            super.generate();
-        }
-        
-        return this.output._data;
+        this.output._data = 
+        {
+            id:     this.id,
+            type:   this.type,
+            width:  this.#width .value,
+            height: this.#height.value,
+
+            inputs: []
+        };
+
+        super.generate();
     }
 }
 
@@ -2094,25 +2105,23 @@ extends Operator
     
     generate()
     {
-        if (!this.valid)
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+        if (!input.connected) return;
+
+        this.output._data = 
         {
-            var input = this.inputs[0];
-            if (!input.connected) return {};
+            id:     this.id,
+            type:   this.type,
+            count:  this.#count .value,
+            radius: this.#radius.value,
+            seed:   this.seed,
 
-            this.output._data = 
-            {
-                id:     this.id,
-                type:   this.type,
-                count:  this.#count .value,
-                radius: this.#radius.value,
-                seed:   this.seed,
-                inputs: [input.data]
-            };
-            
-            super.generate();
-        }
+            inputs: [input.data]
+        };
 
-        return this.output._data;
+        super.generate();
     }
 }
 
@@ -2922,17 +2931,18 @@ var worker = new Worker(
 
 worker.onmessage = function(e)
 {
-    if (e.data.cmd == 'regenerateNodeOutput')
+    if (e.data.cmd == 'regenerateObjects')
     {
         parent.postMessage({ pluginMessage: 
         { 
-            cmd:   'regenerateNodeOutput',
+            cmd:   'regenerateObjects',
             nodeId: e.data.nodeId,
             data:   e.data.objects
         }}, '*');
 
         graph.mutex = false;
 
+        
         if (graph.deferOutputs.length > 0)
         {
             var deferOutputs = Array.from(graph.deferOutputs);
@@ -2955,7 +2965,7 @@ function regenerateOutputs(outputs)
     }
     
     graph.mutex = true;
-    
+    var posted = false;
 
     for (const output of outputs)
     {
@@ -2963,12 +2973,17 @@ function regenerateOutputs(outputs)
         {
             worker.postMessage(
             {
-                msg:   'regenerateOutput',
+                msg:   'regenerateObjects',
                 nodeId: output.op.id,
                 data:   output.data
             });
+
+            posted = true;
         }
     }
+
+    if (!posted)
+        graph.mutex = false;
 }
 
 

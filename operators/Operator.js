@@ -2,27 +2,31 @@ class Operator
 {
     #type;
     get type() { return this.#type; }
-
+    
     _id;
     get id() { return this._id; }
-
+    
     _graph = null;
     get graph() { return this._graph; }
-
+    
     setGraph(graph)
     {
         this._graph = graph;
     }
     
-
+    
     params = [];
     
     inputs = [];
     output;
     
+    
+    #valid = false; // this is the flag for regeneration
 
+    
     _active = false;
     get active() { return this._active; }
+
 
     makeActive() // only true
     {
@@ -32,8 +36,33 @@ class Operator
         this._active = true;
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
-        if (this.output)
+        if (!this.valid && this.output)
             regenerateOutputs([this.output]);
+    }
+
+    
+    makeLeftPassive()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+            {
+                input.connectedOutput.op.makePassive();
+                input.connectedOutput.op.makeLeftPassive();            
+            }
+        }
+    }
+
+    makeRightPassive()
+    {
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+            {
+                input.op.makePassive();
+                input.op.makeRightPassive();            
+            }
+        }
     }
 
     makePassive()
@@ -44,37 +73,15 @@ class Operator
 
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:   'removeOutput',
+                cmd:   'removeObjects',
                 nodeId: this.id
             }}, '*');
         }
 
         this._active = false;
     }
+
     
-    makeLeftPassive()
-    {
-        this.makePassive();
-
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                input.op.makePassiveLeft();            
-        }
-    }
-
-    makeRightPassive()
-    {
-        this.makePassive();
-        
-        if (this.output)
-        {
-            for (const input of this.output.connectedInputs)
-                input.op.makePassiveRight();            
-        }
-    }
-
-
     get activeNodeInChain() { return this.getActiveNodeInChain(null); }
 
     getActiveNodeInChain(callerOp = null)
@@ -104,15 +111,16 @@ class Operator
     }
 
 
-    #valid  = false; // this is the flag for regeneration
-    
     set valid(val) { this.#valid = val; }
     get valid() 
     {
         var valid = this.#valid;
         
         for (const input of this.inputs)
-            valid &= input.valid;
+        {
+            if (input.connected)
+                valid &= input.connectedOutput.op.valid;
+        }
 
         return valid;
     }
@@ -189,7 +197,7 @@ class Operator
         
         this.div.addEventListener('dblclick', function(e)
         {
-            this.op.graph.activeNode = this.op;
+            this.op.makeActive();
         });
 
 
@@ -306,6 +314,5 @@ class Operator
     generate() 
     { 
         this.valid = true; 
-        return {}; 
     }
 }
