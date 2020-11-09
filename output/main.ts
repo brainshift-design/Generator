@@ -6,10 +6,10 @@ figma.ui.onmessage = msg =>
     if (msg.cmd === 'save')
         figma.clientStorage.setAsync(msg.key, msg.value);
 
-    else if (msg.cmd === 'loadState'           ) msgLoadState           (msg);
-    else if (msg.cmd === 'resizeWindow'        ) msgResizeWindow        (msg);
-    else if (msg.cmd === 'removeOutput'        ) msgRemoveOutput        (msg);
-    else if (msg.cmd === 'regenerateNodeOutput') msgRegenerateNodeOutput(msg);
+    else if (msg.cmd === 'loadState'       ) msgLoadState           (msg);
+    else if (msg.cmd === 'resizeWindow'    ) msgResizeWindow        (msg);
+    else if (msg.cmd === 'removeOutput'    ) msgRemoveOutput        (msg);
+    else if (msg.cmd === 'regenerateOutput') msgRegenerateNodeOutput(msg);
 };
 
 

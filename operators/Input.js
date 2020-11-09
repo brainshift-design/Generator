@@ -1,7 +1,9 @@
 class Input
 {
-    _op;
     #dataType;
+
+    _op;
+    get op() { return this._op; }
     
     control;
   

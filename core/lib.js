@@ -167,3 +167,9 @@ function isEmptyObject(obj)
            Object.keys(obj).length === 0 
         && obj.constructor === Object);
 }
+
+
+function clone(obj)
+{
+    return Object.assign({}, obj);
+}

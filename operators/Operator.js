@@ -33,7 +33,7 @@ class Operator
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
         if (this.output)
-            regenerateNodeOutputs(this.output);
+            regenerateOutputs([this.output]);
     }
 
     makePassive()

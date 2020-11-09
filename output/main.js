@@ -17,7 +17,7 @@ figma.ui.onmessage = msg => {
         msgResizeWindow(msg);
     else if (msg.cmd === 'removeOutput')
         msgRemoveOutput(msg);
-    else if (msg.cmd === 'regenerateNodeOutput')
+    else if (msg.cmd === 'regenerateOutput')
         msgRegenerateNodeOutput(msg);
 };
 function msgLoadState(msg) {

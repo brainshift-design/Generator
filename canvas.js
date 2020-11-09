@@ -16,19 +16,18 @@ worker.onmessage = function(e)
 
         graph.mutex = false;
 
-
         if (graph.deferOutputs.length > 0)
         {
             var deferOutputs = Array.from(graph.deferOutputs);
             graph.deferOutputs = [];
 
-            regenerateNodeOutputs(deferOutputs);
+            regenerateOutputs(deferOutputs);
         }
     }
 };
       
 
-function regenerateNodeOutputs(outputs)
+function regenerateOutputs(outputs)
 {
     if (graph.mutex)
     {
@@ -47,8 +46,8 @@ function regenerateNodeOutputs(outputs)
         {
             worker.postMessage(
             {
-                msg:   'regenerateNodeOutput',
-                nodeId: output._op.id,
+                msg:   'regenerateOutput',
+                nodeId: output.op.id,
                 data:   output.data
             });
         }

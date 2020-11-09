@@ -76,8 +76,11 @@ class Graph
 
     connect(output, input)
     {
-        if (output.connectedInput != null)
-            this.disconnect(output.connectedInput);
+        if (input.connectedOutput == output)
+            return false;
+            
+        if (input.connectedOutput != null)
+            this.disconnect(input);
 
         output.connectedInputs.push(input);
         input.connectedOutput = output;
@@ -92,7 +95,7 @@ class Graph
         
         input.op.valid = false;
         
-        regenerateNode(output.op.activeNodeInChain);
+        regenerateOutputs([output]);
 
         return true;
     }
@@ -116,8 +119,9 @@ class Graph
 
         input.op.valid = false;
 
-        regenerateNode(output.op.activeNodeOnChain);
-        regenerateNode(input .op.activeNodeOnChain);
+        regenerateOutputs([
+            output, 
+            input.op.activeNodeInChain.output]);
     
         return true;
     }

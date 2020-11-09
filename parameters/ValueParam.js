@@ -31,9 +31,11 @@ extends Parameter
 
         this._control.addEventListener('onchange', function(e)
         {
-            this.param.op.valid = false;
-            regenerateNodeOutputs(graph.activeNode.output);
-            this.param.op.graph.mutex = true;            
+            var op = this.param.op;
+
+            op.valid = false;
+            regenerateOutputs([op.activeNodeInChain.output]);
+            op.graph.mutex = true;            
         });
     }
 }

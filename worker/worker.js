@@ -1,11 +1,11 @@
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateNodeOutput')
+    if (e.data.msg === 'regenerateOutput')
     {
         var objects = generate(e.data.data);
 
         postMessage({ 
-            cmd:    'regenerateNodeOutput',
+            cmd:    'regenerateOutput',
             nodeId:  e.data.nodeId,
             objects: objects
         });
@@ -55,7 +55,7 @@ function generateSpread(node)
         
         for (var j = 0; j < input.length; j++)
         {
-            var item = Object.assign({}, input[j]);
+            var item = clone(input[j]);
             item.itemId = item.nodeId + '_' + j;
 
             item.x += v.x;

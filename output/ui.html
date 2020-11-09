@@ -608,12 +608,12 @@ class Random
 
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateNodeOutput')
+    if (e.data.msg === 'regenerateOutput')
     {
         var objects = generate(e.data.data);
 
         postMessage({ 
-            cmd:    'regenerateNodeOutput',
+            cmd:    'regenerateOutput',
             nodeId:  e.data.nodeId,
             objects: objects
         });
@@ -663,7 +663,7 @@ function generateSpread(node)
         
         for (var j = 0; j < input.length; j++)
         {
-            var item = Object.assign({}, input[j]);
+            var item = clone(input[j]);
             item.itemId = item.nodeId + '_' + j;
 
             item.x += v.x;
@@ -865,8 +865,11 @@ class Graph
 
     connect(output, input)
     {
-        if (output.connectedInput != null)
-            this.disconnect(output.connectedInput);
+        if (input.connectedOutput == output)
+            return false;
+            
+        if (input.connectedOutput != null)
+            this.disconnect(input);
 
         output.connectedInputs.push(input);
         input.connectedOutput = output;
@@ -881,7 +884,7 @@ class Graph
         
         input.op.valid = false;
         
-        regenerateNode(output.op.activeNodeInChain);
+        regenerateOutputs([output]);
 
         return true;
     }
@@ -905,8 +908,9 @@ class Graph
 
         input.op.valid = false;
 
-        regenerateNode(output.op.activeNodeOnChain);
-        regenerateNode(input .op.activeNodeOnChain);
+        regenerateOutputs([
+            output, 
+            input.op.activeNodeInChain.output]);
     
         return true;
     }
@@ -1102,6 +1106,12 @@ function isEmptyObject(obj)
     return (
            Object.keys(obj).length === 0 
         && obj.constructor === Object);
+}
+
+
+function clone(obj)
+{
+    return Object.assign({}, obj);
 }
 
 
@@ -1501,9 +1511,11 @@ extends Parameter
 
         this._control.addEventListener('onchange', function(e)
         {
-            this.param.op.valid = false;
-            regenerateNodeOutputs(graph.activeNode.output);
-            this.param.op.graph.mutex = true;            
+            var op = this.param.op;
+
+            op.valid = false;
+            regenerateOutputs([op.activeNodeInChain.output]);
+            op.graph.mutex = true;            
         });
     }
 }
@@ -1511,8 +1523,10 @@ extends Parameter
 
 class Input
 {
-    _op;
     #dataType;
+
+    _op;
+    get op() { return this._op; }
     
     control;
   
@@ -1551,8 +1565,10 @@ class Input
 
 class Output
 {
-    _op;
     #dataType;
+
+    _op;
+    get op() { return this._op; }
     
     _data;
 
@@ -1729,7 +1745,7 @@ class Operator
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
         if (this.output)
-            regenerateNodeOutputs(this.output);
+            regenerateOutputs([this.output]);
     }
 
     makePassive()
@@ -2917,19 +2933,18 @@ worker.onmessage = function(e)
 
         graph.mutex = false;
 
-
         if (graph.deferOutputs.length > 0)
         {
             var deferOutputs = Array.from(graph.deferOutputs);
             graph.deferOutputs = [];
 
-            regenerateNodeOutputs(deferOutputs);
+            regenerateOutputs(deferOutputs);
         }
     }
 };
       
 
-function regenerateNodeOutputs(outputs)
+function regenerateOutputs(outputs)
 {
     if (graph.mutex)
     {
@@ -2948,8 +2963,8 @@ function regenerateNodeOutputs(outputs)
         {
             worker.postMessage(
             {
-                msg:   'regenerateNodeOutput',
-                nodeId: output._op.id,
+                msg:   'regenerateOutput',
+                nodeId: output.op.id,
                 data:   output.data
             });
         }
