@@ -1,5 +1,7 @@
 worker/worker_0.html
 
+    util.js
+    
     core/lib.js
     core/math.js
     core/random.js

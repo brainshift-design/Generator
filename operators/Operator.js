@@ -17,7 +17,7 @@ class Operator
     output;
     
     cachedObjects = [];
-    
+
     #valid = false; // this is the flag for regeneration
 
     
@@ -33,7 +33,7 @@ class Operator
         this._active = true;
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
-        if (!this.valid && this.output)
+        if (this.output)
             regenerateOutputs([this.output]);
     }
 
@@ -67,21 +67,16 @@ class Operator
         if (this.active)
         {
             this.div.style.boxShadow = 'none';
-
-            parent.postMessage({ pluginMessage: 
-            { 
-                cmd:   'removeNodeObjects',
-                nodeId: this.id
-            }}, '*');
+            removeNodeOutput(this);
         }
 
         this._active = false;
     }
 
     
-    get activeNodeInChain() { return this.getActiveNodeInChain(null); }
+    get activeNodeInTree() { return this.getActiveNodeInTree(null); }
 
-    getActiveNodeInChain(callerOp = null)
+    getActiveNodeInTree(callerOp = null)
     {
         if (this.active)
             return this;
@@ -91,7 +86,7 @@ class Operator
             if (   input.connected
                 && input.connectedOutput.op != callerOp)
             {
-                const active = input.connectedOutput.op.getActiveNodeInChain(this);
+                const active = input.connectedOutput.op.getActiveNodeInTree(this);
                 if (active) return active;
             }
         }
@@ -103,7 +98,7 @@ class Operator
             {
                 if (input.op != callerOp)
                 {
-                    const active = input.op.getActiveNodeInChain(this);
+                    const active = input.op.getActiveNodeInTree(this);
                     if (active) return active;
                 }
             }
@@ -163,8 +158,8 @@ class Operator
         this.div.addEventListener('pointerdown', function(e) 
         {
             if (   e.button == 0
-                && !graph.overOutput
-                && !graph.overInput)
+                && !graphView.overOutput
+                && !graphView.overInput)
             {
                 this.sx  = e.clientX;
                 this.sy  = e.clientY;
@@ -316,5 +311,36 @@ class Operator
     generate() 
     { 
         this.valid = true; 
+    }
+
+
+    isBefore(node)
+    {
+        if (   !this.output
+            || !this.output.connected)
+            return false;
+
+        for (const input of output.connectedInputs)
+        {
+            if (input.op == node)        return true;
+            if (input.op.isBefore(node)) return true;
+        }
+
+        return false;
+    }
+
+
+    isAfter(node)
+    {
+        if (this.inputs.length == 0)
+            return false;
+
+        for (const input of inputs)
+        {
+            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op.isAfter(node)) return true;
+        }
+
+        return false;
     }
 }

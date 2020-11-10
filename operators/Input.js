@@ -25,8 +25,8 @@ class Input
 
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
-        this.control.addEventListener('pointerenter', () => this.op.graph.overInput = this);
-        this.control.addEventListener('pointerleave', () => this.op.graph.overInput = null);
+        this.control.addEventListener('pointerenter', () => graphView.overInput = this);
+        this.control.addEventListener('pointerleave', () => graphView.overInput = null);
     }    
     
 

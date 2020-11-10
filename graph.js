@@ -9,11 +9,6 @@ class Graph
     random = new Random();
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
 
-    overInput  = null;
-    overOutput = null;
-
-    tempConn   = null;
-    
     
     getNewId(_node)
     {
@@ -97,8 +92,8 @@ class Graph
         output.op.makePassive();
         input.op.valid = false;
     
-        if (input.op.activeNodeInChain.output)
-            regenerateOutputs([input.op.activeNodeInChain.output]);
+        if (input.op.activeNodeInTree.output)
+            regenerateOutputs([input.op.activeNodeInTree.output]);
 
         return true;
     }
@@ -106,6 +101,12 @@ class Graph
 
     disconnect(input, remove = true)
     {
+        // first remove the current output
+
+        removeNodeOutput(input.op.activeNodeInTree);
+
+        // then disconnect
+
         var output = input.connectedOutput;
         if (!output) return false;
 
@@ -120,34 +121,19 @@ class Graph
 
         input.connectedOutput = null;
 
-        input.op.valid = false;
+        output.op.valid = false;
+        input .op.valid = false;
 
+        if (!output.op.activeNodeInTree)
+            output.op.makeActive();
+
+        input.op.activeNodeInTree.makeActive();
+        
         regenerateOutputs([
             output, 
-            input.op.activeNodeInChain.output]);
+            input.op.activeNodeInTree.output]);
     
         return true;
-    }
-
-
-    startConnectionFromOutput(output)
-    {
-        this.tempConn = new Connection(output, null);
-        wires.appendChild(this.tempConn.wire);    
-    }
-
-
-    startConnectionFromInput(input)
-    {
-        this.tempConn = new Connection(null, input);
-        wires.appendChild(this.tempConn.wire);    
-    }
-
-
-    cancelConnection()
-    {
-        wires.removeChild(this.tempConn.wire);    
-        this.tempConn = null;
     }
 
 

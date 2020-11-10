@@ -13,6 +13,7 @@ html/ui_1.html
 html/ui_2.html
 
     def.js
+    util.js
     window.js
     
     Graph.js

@@ -290,68 +290,6 @@ button svg
 
 
 
-const R = 0, G = 1, B = 2, A = 3;
-const Eps = 0.0000001;
-
-function nozero(x)
-{
-    return x != 0 ? x : Eps;
-}
-
-
-function getDigitCount(i)
-{
-    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
-    return l + 1;
-}
-
-
-function isDigit(key)
-{
-    var is = 
-           key >= '0' 
-        && key <= '9';
-
-    return is;
-}
-
-function isHexLetter(key)
-{
-    var is =
-           key.length == 1
-        && (   key >= 'A' && key <= 'F'
-            || key >= 'a' && key <= 'f');
-
-    return is;
-}
-
-
-function getNumberString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (i < str.length && str[i] !== '.' && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-    str = str.substring(0, i--);
-    
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
-    str = str.substring(0, i--);
-    
-    return str;
-}    
-
-
 function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
@@ -474,6 +412,88 @@ function deepCopy(obj)
 {
     return JSON.parse(JSON.stringify(obj));
 }
+
+
+function createSvg(element)
+{
+    return document.createElementNS('http://www.w3.org/2000/svg', element);
+}
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
+const R = 0, G = 1, B = 2, A = 3;
+const Eps = 0.0000001;
+
+function nozero(x)
+{
+    return x != 0 ? x : Eps;
+}
+
+
+function getDigitCount(i)
+{
+    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+    return l + 1;
+}
+
+
+function isDigit(key)
+{
+    var is = 
+           key >= '0' 
+        && key <= '9';
+
+    return is;
+}
+
+function isHexLetter(key)
+{
+    var is =
+           key.length == 1
+        && (   key >= 'A' && key <= 'F'
+            || key >= 'a' && key <= 'f');
+
+    return is;
+}
+
+
+function getNumberString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (i < str.length && str[i] !== '.' && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+    str = str.substring(0, i--);
+    
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
+    str = str.substring(0, i--);
+    
+    return str;
+}    
 
 
 const Tau = Math.PI * 2;
@@ -845,7 +865,7 @@ function generateRow(node)
     {
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'row_' + i + '_' + j;
 
             item.x += x;
@@ -870,7 +890,7 @@ function generateColumn(node)
     {
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'column_' + i + '_' + j;
 
             item.y += y;
@@ -902,7 +922,7 @@ function generateSpread(node)
         
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'spread_' + i + '_' + j;
 
             item.x += v.x;
@@ -926,327 +946,6 @@ function generateSpread(node)
 
 
 
-
-
-const resizeEdgeWidth = 8;
-
-document.canResizeX = false;
-document.canResizeY = false;
-
-document.resizingX  = false;
-document.resizingY  = false;
-
-document.startX     = 0;
-document.startY     = 0;
-
-document.startH     = 0;
-document.startW     = 0;
-
-
-document.addEventListener('pointerdown', function(e)
-{
-    if (   document.canResizeX
-        || document.canResizeY)
-    {
-        if (document.canResizeX) document.resizingX = true;
-        if (document.canResizeY) document.resizingY = true;
-
-        document.startX   = e.clientX;
-        document.startY   = e.clientY;
-
-        document.startW   = window.innerWidth;
-        document.startH   = window.innerHeight;
-
-        document.body.setPointerCapture(e.pointerId);
-    }
-});
-
-
-document.addEventListener('pointermove', function(e)
-{
-    if (   document.resizingX
-        && document.resizingY)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.startH + e.clientY - document.startY);
-    }
-    else if (document.resizingX)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.body.clientHeight);
-    }
-    else if (document.resizingY)
-    {
-        resizeWindow(
-            document.body.clientWidth,
-            document.startH + e.clientY - document.startY);
-    }
-    else
-        checkResize(e.clientX, e.clientY);
-});
-
-
-document.addEventListener('pointerup', function(e)
-{
-    if (   document.resizingX
-        || document.resizingY)
-    {
-        document.resizingX = false;
-        document.resizingY = false;
-        
-        checkResize(e.clientX, e.clientY);
-        document.body.releasePointerCapture(e.pointerId);
-    }
-});
-
-
-function resizeWindow(width, height)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'resizeWindow', 
-        width:  width,
-        height: height
-    }}, '*');
-
-}
-
-
-function checkResize(x, y)
-{
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
-
-         if (document.canResizeX
-          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
-    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
-    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
-    else                          document.body.style.cursor = 'auto';
-}
-
-
-class Graph
-{
-    nodes = [];
-
-    mutex = false;
-
-    deferOutputs = [];
-
-    random = new Random();
-    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
-
-    overInput  = null;
-    overOutput = null;
-
-    tempConn   = null;
-    
-    
-    getNewId(_node)
-    {
-        var type = _node.type;
-
-        var maxNum = 0;
-        
-        for (const node of this.nodes)
-        {
-            if (node == _node)
-                continue;
-                
-            if (   node.id.length < type.length
-                || node.id.substring(0, type.length) !== type)
-                continue;
-                
-            var num = parseInt(node.id.substring(type.length));
-            
-            if (isNaN(num) || num == 0) 
-                num = 1;
-            
-            maxNum = Math.max(num, maxNum);
-        }
-
-        if (maxNum == 0)
-            return type;
-
-        maxNum++;
-
-        return type + maxNum;
-    }
-    
-    
-    createNode(type)
-    {
-        var node;
-
-        switch (type)
-        {
-            case 'rect':   node = new OpRect();   break;
-            case 'spread': node = new OpSpread(); break;
-            case 'row':    node = new OpRow();    break;
-            case 'column': node = new OpColumn(); break;
-        }
-        
-        this.addNode(node);
-        node.makeActive();
-    }
-
-
-    addNode(node)
-    {
-        this.nodes.push(node);
-
-        node.setGraph(this);
-        node.setId(this.getNewId(node)); // TODO: not checking return value here
-
-        graphView.appendChild(node.div);
-    }
-    
-
-    connect(output, input)
-    {
-        if (input.connectedOutput == output)
-            return false;
-            
-        if (input.connectedOutput != null)
-            this.disconnect(input);
-
-        output.connectedInputs.push(input);
-        input.connectedOutput = output;
-
-        const conn = new Connection(output, input);
-
-        input .connection = conn;
-        output.connection = conn;
-        
-        wires.appendChild(conn.wire);
-        conn.updateWire();
-        
-        output.op.makePassive();
-        input.op.valid = false;
-    
-        if (input.op.activeNodeInChain.output)
-            regenerateOutputs([input.op.activeNodeInChain.output]);
-
-        return true;
-    }
-
-
-    disconnect(input, remove = true)
-    {
-        var output = input.connectedOutput;
-        if (!output) return false;
-
-        if (remove)
-            wires.removeChild(input.connection.wire);
-
-        var inputIndex = output.connectedInputs.indexOf(input);
-        output.connectedInputs.splice(inputIndex, 1);
-        
-        input .connection     = null;
-        output.connection     = null;
-
-        input.connectedOutput = null;
-
-        input.op.valid = false;
-
-        regenerateOutputs([
-            output, 
-            input.op.activeNodeInChain.output]);
-    
-        return true;
-    }
-
-
-    startConnectionFromOutput(output)
-    {
-        this.tempConn = new Connection(output, null);
-        wires.appendChild(this.tempConn.wire);    
-    }
-
-
-    startConnectionFromInput(input)
-    {
-        this.tempConn = new Connection(null, input);
-        wires.appendChild(this.tempConn.wire);    
-    }
-
-
-    cancelConnection()
-    {
-        wires.removeChild(this.tempConn.wire);    
-        this.tempConn = null;
-    }
-
-
-    nodeFromId(id)
-    {
-        return this.nodes.find(n => n.id === id);
-    }
-}
-
-
-const R = 0, G = 1, B = 2, A = 3;
-const Eps = 0.0000001;
-
-function nozero(x)
-{
-    return x != 0 ? x : Eps;
-}
-
-
-function getDigitCount(i)
-{
-    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
-    return l + 1;
-}
-
-
-function isDigit(key)
-{
-    var is = 
-           key >= '0' 
-        && key <= '9';
-
-    return is;
-}
-
-function isHexLetter(key)
-{
-    var is =
-           key.length == 1
-        && (   key >= 'A' && key <= 'F'
-            || key >= 'a' && key <= 'f');
-
-    return is;
-}
-
-
-function getNumberString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (i < str.length && str[i] !== '.' && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-    str = str.substring(0, i--);
-    
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
-    str = str.substring(0, i--);
-    
-    return str;
-}    
 
 
 function setStyle(id, properties)
@@ -1371,6 +1070,333 @@ function deepCopy(obj)
 {
     return JSON.parse(JSON.stringify(obj));
 }
+
+
+function createSvg(element)
+{
+    return document.createElementNS('http://www.w3.org/2000/svg', element);
+}
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
+const resizeEdgeWidth = 8;
+
+document.canResizeX = false;
+document.canResizeY = false;
+
+document.resizingX  = false;
+document.resizingY  = false;
+
+document.startX     = 0;
+document.startY     = 0;
+
+document.startH     = 0;
+document.startW     = 0;
+
+
+document.addEventListener('pointerdown', function(e)
+{
+    if (   document.canResizeX
+        || document.canResizeY)
+    {
+        if (document.canResizeX) document.resizingX = true;
+        if (document.canResizeY) document.resizingY = true;
+
+        document.startX   = e.clientX;
+        document.startY   = e.clientY;
+
+        document.startW   = window.innerWidth;
+        document.startH   = window.innerHeight;
+
+        document.body.setPointerCapture(e.pointerId);
+    }
+});
+
+
+document.addEventListener('pointermove', function(e)
+{
+    if (   document.resizingX
+        && document.resizingY)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.startH + e.clientY - document.startY);
+    }
+    else if (document.resizingX)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.body.clientHeight);
+    }
+    else if (document.resizingY)
+    {
+        resizeWindow(
+            document.body.clientWidth,
+            document.startH + e.clientY - document.startY);
+    }
+    else
+        checkResize(e.clientX, e.clientY);
+});
+
+
+document.addEventListener('pointerup', function(e)
+{
+    if (   document.resizingX
+        || document.resizingY)
+    {
+        document.resizingX = false;
+        document.resizingY = false;
+        
+        checkResize(e.clientX, e.clientY);
+        document.body.releasePointerCapture(e.pointerId);
+    }
+});
+
+
+function resizeWindow(width, height)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'resizeWindow', 
+        width:  width,
+        height: height
+    }}, '*');
+
+}
+
+
+function checkResize(x, y)
+{
+    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+
+         if (document.canResizeX
+          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
+    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
+    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
+    else                          document.body.style.cursor = 'auto';
+}
+
+
+class Graph
+{
+    nodes = [];
+
+    mutex = false;
+
+    deferOutputs = [];
+
+    random = new Random();
+    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
+
+    
+    getNewId(_node)
+    {
+        var type = _node.type;
+
+        var maxNum = 0;
+        
+        for (const node of this.nodes)
+        {
+            if (node == _node)
+                continue;
+                
+            if (   node.id.length < type.length
+                || node.id.substring(0, type.length) !== type)
+                continue;
+                
+            var num = parseInt(node.id.substring(type.length));
+            
+            if (isNaN(num) || num == 0) 
+                num = 1;
+            
+            maxNum = Math.max(num, maxNum);
+        }
+
+        if (maxNum == 0)
+            return type;
+
+        maxNum++;
+
+        return type + maxNum;
+    }
+    
+    
+    createNode(type)
+    {
+        var node;
+
+        switch (type)
+        {
+            case 'rect':   node = new OpRect();   break;
+            case 'spread': node = new OpSpread(); break;
+            case 'row':    node = new OpRow();    break;
+            case 'column': node = new OpColumn(); break;
+        }
+        
+        this.addNode(node);
+        node.makeActive();
+    }
+
+
+    addNode(node)
+    {
+        this.nodes.push(node);
+
+        node.setGraph(this);
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+
+        graphView.appendChild(node.div);
+    }
+    
+
+    connect(output, input)
+    {
+        if (input.connectedOutput == output)
+            return false;
+            
+        if (input.connectedOutput != null)
+            this.disconnect(input);
+
+        output.connectedInputs.push(input);
+        input.connectedOutput = output;
+
+        const conn = new Connection(output, input);
+
+        input .connection = conn;
+        output.connection = conn;
+        
+        wires.appendChild(conn.wire);
+        conn.updateWire();
+        
+        output.op.makePassive();
+        input.op.valid = false;
+    
+        if (input.op.activeNodeInTree.output)
+            regenerateOutputs([input.op.activeNodeInTree.output]);
+
+        return true;
+    }
+
+
+    disconnect(input, remove = true)
+    {
+        // first remove the current output
+
+        removeNodeOutput(input.op.activeNodeInTree);
+
+        // then disconnect
+
+        var output = input.connectedOutput;
+        if (!output) return false;
+
+        if (remove)
+            wires.removeChild(input.connection.wire);
+
+        var inputIndex = output.connectedInputs.indexOf(input);
+        output.connectedInputs.splice(inputIndex, 1);
+        
+        input .connection     = null;
+        output.connection     = null;
+
+        input.connectedOutput = null;
+
+        output.op.valid = false;
+        input .op.valid = false;
+
+        if (!output.op.activeNodeInTree)
+            output.op.makeActive();
+
+        input.op.activeNodeInTree.makeActive();
+        
+        regenerateOutputs([
+            output, 
+            input.op.activeNodeInTree.output]);
+    
+        return true;
+    }
+
+
+    nodeFromId(id)
+    {
+        return this.nodes.find(n => n.id === id);
+    }
+}
+
+
+const R = 0, G = 1, B = 2, A = 3;
+const Eps = 0.0000001;
+
+function nozero(x)
+{
+    return x != 0 ? x : Eps;
+}
+
+
+function getDigitCount(i)
+{
+    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+    return l + 1;
+}
+
+
+function isDigit(key)
+{
+    var is = 
+           key >= '0' 
+        && key <= '9';
+
+    return is;
+}
+
+function isHexLetter(key)
+{
+    var is =
+           key.length == 1
+        && (   key >= 'A' && key <= 'F'
+            || key >= 'a' && key <= 'f');
+
+    return is;
+}
+
+
+function getNumberString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (i < str.length && str[i] !== '.' && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+    str = str.substring(0, i--);
+    
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
+    str = str.substring(0, i--);
+    
+    return str;
+}    
 
 
 const Tau = Math.PI * 2;
@@ -1773,8 +1799,8 @@ extends Parameter
 
             op.valid = false;
 
-            if (op.activeNodeInChain.output)
-                regenerateOutputs([op.activeNodeInChain.output]);
+            if (op.activeNodeInTree.output)
+                regenerateOutputs([op.activeNodeInTree.output]);
     
             op.graph.mutex = true;            
         });
@@ -1809,8 +1835,8 @@ class Input
 
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
-        this.control.addEventListener('pointerenter', () => this.op.graph.overInput = this);
-        this.control.addEventListener('pointerleave', () => this.op.graph.overInput = null);
+        this.control.addEventListener('pointerenter', () => graphView.overInput = this);
+        this.control.addEventListener('pointerleave', () => graphView.overInput = null);
     }    
     
 
@@ -1849,8 +1875,8 @@ class Output
         this.control = document.createElement('div');
         this.control.className = 'output';
 
-        this.control.addEventListener('pointerenter', e => this.op.graph.overOutput = this);
-        this.control.addEventListener('pointerleave', e => this.op.graph.overOutput = null);
+        this.control.addEventListener('pointerenter', e => graphView.overOutput = this);
+        this.control.addEventListener('pointerleave', e => graphView.overOutput = null);
     }
     
 
@@ -1869,6 +1895,8 @@ class Connection
     output;
     input;
 
+    savedInput = null;
+
     wire;
 
 
@@ -1877,26 +1905,26 @@ class Connection
         this.output = output;
         this.input  = input;
 
-        this.wire = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        this.wire = createSvg('svg');
         this.wire.style.position = 'absolute';
         this.wire.style.left     = 0;
         this.wire.style.top      = 0;
         this.wire.style.width    = '100%';
         this.wire.style.height   = '100vh';
 
-        this.wire.curve = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
         this.wire.curve.style.stroke      = '#18A0FB';
         this.wire.curve.style.strokeWidth = 1.2;
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
-        this.wire.outBall = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        this.wire.outBall = createSvg('circle');
         this.wire.outBall.style.fill     = '#18A0FB';
         this.wire.outBall.style.position = 'absolute';
         this.wire.outBall.style.r        = 3;
 
-        this.wire.inBall = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        this.wire.inBall = createSvg('circle');
         this.wire.inBall.style.fill     = '#18A0FB';
         this.wire.inBall.style.position = 'absolute';
         this.wire.inBall.style.r        = 3;
@@ -1923,11 +1951,11 @@ class Connection
             + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
             + ' '   +  (x2                ) + ',' + y2);
 
-        this.wire.outBall.style.visibility = 'visible';
+        show(this.wire.outBall);
         this.wire.outBall.setAttribute('cx', x1);
         this.wire.outBall.setAttribute('cy', y1);
 
-        this.wire.inBall.style.visibility = 'visible';
+        show(this.wire.inBall);
         this.wire.inBall.setAttribute('cx', x2);
         this.wire.inBall.setAttribute('cy', y2);
     }
@@ -1949,7 +1977,7 @@ class Connection
         this.wire.outBall.setAttribute('cx', x1);
         this.wire.outBall.setAttribute('cy', y1);
 
-        this.wire.inBall.style.visibility = 'hidden';
+        hide(this.wire.inBall);
     }
 
 
@@ -1969,7 +1997,7 @@ class Connection
         this.wire.inBall.setAttribute('cx', x2);
         this.wire.inBall.setAttribute('cy', y2);
 
-        this.wire.outBall.style.visibility = 'hidden';
+        hide(this.wire.outBall);
     }
 }
 
@@ -1993,7 +2021,7 @@ class Operator
     output;
     
     cachedObjects = [];
-    
+
     #valid = false; // this is the flag for regeneration
 
     
@@ -2009,7 +2037,7 @@ class Operator
         this._active = true;
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
-        if (!this.valid && this.output)
+        if (this.output)
             regenerateOutputs([this.output]);
     }
 
@@ -2043,21 +2071,16 @@ class Operator
         if (this.active)
         {
             this.div.style.boxShadow = 'none';
-
-            parent.postMessage({ pluginMessage: 
-            { 
-                cmd:   'removeNodeObjects',
-                nodeId: this.id
-            }}, '*');
+            removeNodeOutput(this);
         }
 
         this._active = false;
     }
 
     
-    get activeNodeInChain() { return this.getActiveNodeInChain(null); }
+    get activeNodeInTree() { return this.getActiveNodeInTree(null); }
 
-    getActiveNodeInChain(callerOp = null)
+    getActiveNodeInTree(callerOp = null)
     {
         if (this.active)
             return this;
@@ -2067,7 +2090,7 @@ class Operator
             if (   input.connected
                 && input.connectedOutput.op != callerOp)
             {
-                const active = input.connectedOutput.op.getActiveNodeInChain(this);
+                const active = input.connectedOutput.op.getActiveNodeInTree(this);
                 if (active) return active;
             }
         }
@@ -2079,7 +2102,7 @@ class Operator
             {
                 if (input.op != callerOp)
                 {
-                    const active = input.op.getActiveNodeInChain(this);
+                    const active = input.op.getActiveNodeInTree(this);
                     if (active) return active;
                 }
             }
@@ -2139,8 +2162,8 @@ class Operator
         this.div.addEventListener('pointerdown', function(e) 
         {
             if (   e.button == 0
-                && !graph.overOutput
-                && !graph.overInput)
+                && !graphView.overOutput
+                && !graphView.overInput)
             {
                 this.sx  = e.clientX;
                 this.sy  = e.clientY;
@@ -2293,6 +2316,37 @@ class Operator
     { 
         this.valid = true; 
     }
+
+
+    isBefore(node)
+    {
+        if (   !this.output
+            || !this.output.connected)
+            return false;
+
+        for (const input of output.connectedInputs)
+        {
+            if (input.op == node)        return true;
+            if (input.op.isBefore(node)) return true;
+        }
+
+        return false;
+    }
+
+
+    isAfter(node)
+    {
+        if (this.inputs.length == 0)
+            return false;
+
+        for (const input of inputs)
+        {
+            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op.isAfter(node)) return true;
+        }
+
+        return false;
+    }
 }
 
 
@@ -2367,7 +2421,13 @@ extends Operator
         if (this.valid) return;
 
         var input = this.inputs[0];
-        if (!input.connected) return;
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
 
         this.output._data = 
         {
@@ -2409,7 +2469,14 @@ extends Operator
         if (this.valid) return;
 
         var input = this.inputs[0];
-        if (!input.connected) return;
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
+
 
         this.output._data = 
         {
@@ -2420,6 +2487,7 @@ extends Operator
 
             inputs: [input.data]
         };
+
 
         super.generate();
     }
@@ -2450,7 +2518,13 @@ extends Operator
         if (this.valid) return;
 
         var input = this.inputs[0];
-        if (!input.connected) return;
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
 
         this.output._data = 
         {
@@ -3204,65 +3278,103 @@ function onSelectClickTimer(select)
 }
 
 
+graphView.overInput  = null;
+graphView.overOutput = null;
+
+graphView.tempConn = null;
+
+
 graphView.addEventListener('pointerdown', e =>
 {
-    if (graph.overOutput)
+    if (graphView.overOutput)
     {
-        graph.overOutput.connecting = true;
-        graph.startConnectionFromOutput(graph.overOutput);
-        graph.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        graphView.overOutput.connecting = true;
+        graphView.startConnectionFromOutput(graphView.overOutput);
+        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
     }
-    else if (graph.overInput)
+    else if (graphView.overInput)
     {
-        if (graph.overInput.connectedOutput)
+        if (graphView.overInput.connectedOutput) // pretend to disconnect
         {
-            graph.tempConn = graph.overInput.connection;
-            graph.disconnect(graph.overInput, false);
-            graph.tempConn.input = null;
+            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+            graphView.tempConn.savedInput = graphView.overInput;
+            hide(graphView.overInput.connection.wire);
+            hide(graphView.overInput.connection.wire.outBall);
         }
         else
         {
-            graph.overInput.connecting = true;
-            graph.startConnectionFromInput(graph.overInput);
-            graph.tempConn.updateWireFromInput (e.clientX, e.clientY)
+            graphView.overInput.connecting = true;
+            graphView.startConnectionFromInput(graphView.overInput);
+            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
         }
     }
 });
 
 graphView.addEventListener('pointerup', e =>
 {
-    if (graph.tempConn)
+    if (graphView.tempConn)
     {
-        if (graph.tempConn.output) 
+        if (graphView.tempConn.output) 
         {
-            graph.tempConn.output.connecting = false;
-
-            if (graph.overInput)
-                graph.connect(graph.tempConn.output, graph.overInput);
-
-            graph.cancelConnection();
+            graphView.tempConn.output.connecting = false;
+            
+            if (graphView.overInput)
+            {
+                if (graphView.tempConn.savedInput == graphView.overInput)
+                {
+                    show(graphView.overInput.connection.wire);
+                    show(graphView.overInput.connection.wire.outBall);
+                }
+                else
+                    graph.connect(graphView.tempConn.output, graphView.overInput);
+            }
+            else if (graphView.tempConn.savedInput)
+                graph.disconnect(graphView.tempConn.savedInput)
+            
+            graphView.cancelConnection();
         }
-        else if (graph.tempConn.input) 
+        else if (graphView.tempConn.input) 
         {
-            graph.tempConn.input.connecting = false;
+            graphView.tempConn.input.connecting = false;
+            
+            if (graphView.overOutput)
+                graph.connect(graphView.overOutput, graphView.tempConn.input);
 
-            if (graph.overOutput)
-                graph.connect(graph.overOutput, graph.tempConn.input);
-
-            graph.cancelConnection();
+            graphView.cancelConnection();
         }
     }
 });
 
 graphView.addEventListener('pointermove', e =>
 {
-    if (graph.tempConn)
+    if (graphView.tempConn)
     {
-             if (graph.tempConn.output) graph.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-        else if (graph.tempConn.input ) graph.tempConn.updateWireFromInput (e.clientX, e.clientY);
+             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
     }
 });
 
+
+graphView.startConnectionFromOutput = output =>
+{
+    graphView.tempConn = new Connection(output, null);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.startConnectionFromInput = input =>
+{
+    graphView.tempConn = new Connection(null, input);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.cancelConnection = () =>
+{
+    wires.removeChild(graphView.tempConn.wire);    
+    graphView.tempConn = null;
+};
 
 
 var worker = new Worker(
@@ -3287,8 +3399,8 @@ worker.onmessage = function(e)
         {
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:   'removeObjectList',
-                data:   removeList
+                cmd: 'removeObjectList',
+                data: removeList
             }}, '*');
         }
 

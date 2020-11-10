@@ -2,68 +2,6 @@
 
 
 
-const R = 0, G = 1, B = 2, A = 3;
-const Eps = 0.0000001;
-
-function nozero(x)
-{
-    return x != 0 ? x : Eps;
-}
-
-
-function getDigitCount(i)
-{
-    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
-    return l + 1;
-}
-
-
-function isDigit(key)
-{
-    var is = 
-           key >= '0' 
-        && key <= '9';
-
-    return is;
-}
-
-function isHexLetter(key)
-{
-    var is =
-           key.length == 1
-        && (   key >= 'A' && key <= 'F'
-            || key >= 'a' && key <= 'f');
-
-    return is;
-}
-
-
-function getNumberString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (i < str.length && str[i] !== '.' && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-    str = str.substring(0, i--);
-    
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
-    str = str.substring(0, i--);
-    
-    return str;
-}    
-
-
 function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
@@ -186,6 +124,88 @@ function deepCopy(obj)
 {
     return JSON.parse(JSON.stringify(obj));
 }
+
+
+function createSvg(element)
+{
+    return document.createElementNS('http://www.w3.org/2000/svg', element);
+}
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
+const R = 0, G = 1, B = 2, A = 3;
+const Eps = 0.0000001;
+
+function nozero(x)
+{
+    return x != 0 ? x : Eps;
+}
+
+
+function getDigitCount(i)
+{
+    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+    return l + 1;
+}
+
+
+function isDigit(key)
+{
+    var is = 
+           key >= '0' 
+        && key <= '9';
+
+    return is;
+}
+
+function isHexLetter(key)
+{
+    var is =
+           key.length == 1
+        && (   key >= 'A' && key <= 'F'
+            || key >= 'a' && key <= 'f');
+
+    return is;
+}
+
+
+function getNumberString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (i < str.length && str[i] !== '.' && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+    str = str.substring(0, i--);
+    
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
+    str = str.substring(0, i--);
+    
+    return str;
+}    
 
 
 const Tau = Math.PI * 2;
@@ -557,7 +577,7 @@ function generateRow(node)
     {
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'row_' + i + '_' + j;
 
             item.x += x;
@@ -582,7 +602,7 @@ function generateColumn(node)
     {
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'column_' + i + '_' + j;
 
             item.y += y;
@@ -614,7 +634,7 @@ function generateSpread(node)
         
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'spread_' + i + '_' + j;
 
             item.x += v.x;

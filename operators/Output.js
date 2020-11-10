@@ -23,8 +23,8 @@ class Output
         this.control = document.createElement('div');
         this.control.className = 'output';
 
-        this.control.addEventListener('pointerenter', e => this.op.graph.overOutput = this);
-        this.control.addEventListener('pointerleave', e => this.op.graph.overOutput = null);
+        this.control.addEventListener('pointerenter', e => graphView.overOutput = this);
+        this.control.addEventListener('pointerleave', e => graphView.overOutput = null);
     }
     
 

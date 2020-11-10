@@ -35,8 +35,8 @@ extends Parameter
 
             op.valid = false;
 
-            if (op.activeNodeInChain.output)
-                regenerateOutputs([op.activeNodeInChain.output]);
+            if (op.activeNodeInTree.output)
+                regenerateOutputs([op.activeNodeInTree.output]);
     
             op.graph.mutex = true;            
         });

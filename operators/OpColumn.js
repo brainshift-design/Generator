@@ -22,7 +22,13 @@ extends Operator
         if (this.valid) return;
 
         var input = this.inputs[0];
-        if (!input.connected) return;
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
 
         this.output._data = 
         {

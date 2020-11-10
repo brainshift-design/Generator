@@ -72,12 +72,12 @@ function msgRemoveObjectList(msg)
 
 function msgRegenerateObjects(msg)
 {
-    //msgRemoveNodeObjects(msg);
-
     for (const item of msg.data)
     {
-        if (item.type == 'rect')
-            regenerateRect(item);
+        switch (item.type)
+        {
+            case 'rect': regenerateRect(item); break;
+        }
     }
 }
 
@@ -89,13 +89,11 @@ function regenerateRect(item)
 
     var rect;
 
-    //var cx, cy;
-
     if (existing < 0)
     {
         rect = figma.createRectangle()
         rect.setPluginData('#GEN', '#GEN_' + item.itemId);
-        rect.name  = item.itemId; //item.id;
+        rect.name  = item.itemId;
         rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
         rect.x     = item.x;
         rect.y     = item.y;
@@ -108,14 +106,6 @@ function regenerateRect(item)
 
         rect.x = item.x;
         rect.y = item.y;
-
-        // if (!isNaN(item.x) && rect.x != item.x) rect.x = item.x;
-        // if (!isNaN(item.y) && rect.y != item.y) rect.y = item.y;
-
-        // cx = rect.x + rect.width /2;
-        // cy = rect.y + rect.height/2; 
-
-        // will be finished later
     }    
 
     if (   rect.width  != item.width
@@ -125,12 +115,6 @@ function regenerateRect(item)
             Math.max(0.01, item.width ), 
             Math.max(0.01, item.height));
     }
-
-    // if (existing >= 0) // finishing up
-    // {
-    //     rect.x = cx - rect.width /2;
-    //     rect.y = cy - rect.height/2;
-    // }
 }
 
 

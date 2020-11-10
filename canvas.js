@@ -20,8 +20,8 @@ worker.onmessage = function(e)
         {
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:   'removeObjectList',
-                data:   removeList
+                cmd: 'removeObjectList',
+                data: removeList
             }}, '*');
         }
 

@@ -1,58 +1,97 @@
+graphView.overInput  = null;
+graphView.overOutput = null;
+
+graphView.tempConn = null;
+
+
 graphView.addEventListener('pointerdown', e =>
 {
-    if (graph.overOutput)
+    if (graphView.overOutput)
     {
-        graph.overOutput.connecting = true;
-        graph.startConnectionFromOutput(graph.overOutput);
-        graph.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        graphView.overOutput.connecting = true;
+        graphView.startConnectionFromOutput(graphView.overOutput);
+        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
     }
-    else if (graph.overInput)
+    else if (graphView.overInput)
     {
-        if (graph.overInput.connectedOutput)
+        if (graphView.overInput.connectedOutput) // pretend to disconnect
         {
-            graph.tempConn = graph.overInput.connection;
-            graph.disconnect(graph.overInput, false);
-            graph.tempConn.input = null;
+            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+            graphView.tempConn.savedInput = graphView.overInput;
+            hide(graphView.overInput.connection.wire);
+            hide(graphView.overInput.connection.wire.outBall);
         }
         else
         {
-            graph.overInput.connecting = true;
-            graph.startConnectionFromInput(graph.overInput);
-            graph.tempConn.updateWireFromInput (e.clientX, e.clientY)
+            graphView.overInput.connecting = true;
+            graphView.startConnectionFromInput(graphView.overInput);
+            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
         }
     }
 });
 
 graphView.addEventListener('pointerup', e =>
 {
-    if (graph.tempConn)
+    if (graphView.tempConn)
     {
-        if (graph.tempConn.output) 
+        if (graphView.tempConn.output) 
         {
-            graph.tempConn.output.connecting = false;
-
-            if (graph.overInput)
-                graph.connect(graph.tempConn.output, graph.overInput);
-
-            graph.cancelConnection();
+            graphView.tempConn.output.connecting = false;
+            
+            if (graphView.overInput)
+            {
+                if (graphView.tempConn.savedInput == graphView.overInput)
+                {
+                    show(graphView.overInput.connection.wire);
+                    show(graphView.overInput.connection.wire.outBall);
+                }
+                else
+                    graph.connect(graphView.tempConn.output, graphView.overInput);
+            }
+            else if (graphView.tempConn.savedInput)
+                graph.disconnect(graphView.tempConn.savedInput)
+            
+            graphView.cancelConnection();
         }
-        else if (graph.tempConn.input) 
+        else if (graphView.tempConn.input) 
         {
-            graph.tempConn.input.connecting = false;
+            graphView.tempConn.input.connecting = false;
+            
+            if (graphView.overOutput)
+                graph.connect(graphView.overOutput, graphView.tempConn.input);
 
-            if (graph.overOutput)
-                graph.connect(graph.overOutput, graph.tempConn.input);
-
-            graph.cancelConnection();
+            graphView.cancelConnection();
         }
     }
 });
 
 graphView.addEventListener('pointermove', e =>
 {
-    if (graph.tempConn)
+    if (graphView.tempConn)
     {
-             if (graph.tempConn.output) graph.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-        else if (graph.tempConn.input ) graph.tempConn.updateWireFromInput (e.clientX, e.clientY);
+             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
     }
 });
+
+
+graphView.startConnectionFromOutput = output =>
+{
+    graphView.tempConn = new Connection(output, null);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.startConnectionFromInput = input =>
+{
+    graphView.tempConn = new Connection(null, input);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.cancelConnection = () =>
+{
+    wires.removeChild(graphView.tempConn.wire);    
+    graphView.tempConn = null;
+};

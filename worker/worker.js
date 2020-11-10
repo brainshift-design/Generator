@@ -50,7 +50,7 @@ function generateRow(node)
     {
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'row_' + i + '_' + j;
 
             item.x += x;
@@ -75,7 +75,7 @@ function generateColumn(node)
     {
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'column_' + i + '_' + j;
 
             item.y += y;
@@ -107,7 +107,7 @@ function generateSpread(node)
         
         for (var j = 0; j < input.length; j++)
         {
-            var item = deepCopy(input[j]);
+            var item = shallowCopy(input[j]);
             item.itemId = 'spread_' + i + '_' + j;
 
             item.x += v.x;
