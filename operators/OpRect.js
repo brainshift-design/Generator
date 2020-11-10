@@ -22,10 +22,13 @@ extends Operator
 
         this.output._data = 
         {
-            id:     this.id,
-            type:   this.type,
-            width:  this.#width .value,
-            height: this.#height.value,
+            id:      this.id,
+            type:    this.type,
+
+            x:       0,
+            y:       0,
+            width:   this.#width .value,
+            height:  this.#height.value,
 
             inputs: []
         };

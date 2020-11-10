@@ -24,7 +24,7 @@ extends Operator
         var input = this.inputs[0];
 
         if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
+            || isEmptyObject(input.connectedOutput.data))
         {
             this.output._data = {};
             return;
@@ -35,6 +35,7 @@ extends Operator
         {
             id:    this.id,
             type:  this.type,
+
             count: this.#count.value,
             gap:   this.#gap  .value,
 

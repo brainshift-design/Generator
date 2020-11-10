@@ -32,8 +32,8 @@ function generateRect(obj)
         type:   obj.type,
         nodeId: obj.id,
         itemId: 'rect_0',
-        x:      0,//Number.NaN,
-        y:      0,//Number.NaN,
+        x:      obj.x,
+        y:      obj.y,
         width:  obj.width,
         height: obj.height
     }];
@@ -42,7 +42,8 @@ function generateRect(obj)
 
 function generateRow(node)
 {
-    var input = generate(node.inputs[0]);
+    var input  = generate(node.inputs[0]);
+    var bounds = getBounds(input);
 
     result = [];
 
@@ -58,7 +59,7 @@ function generateRow(node)
             result.push(item);
         }
         
-        x += item.width + node.gap;
+        x += bounds.w + node.gap;
     }
 
     return result;
@@ -67,7 +68,8 @@ function generateRow(node)
 
 function generateColumn(node)
 {
-    var input = generate(node.inputs[0]);
+    var input  = generate(node.inputs[0]);
+    var bounds = getBounds(input);
 
     result = [];
 
@@ -83,7 +85,7 @@ function generateColumn(node)
             result.push(item);
         }
         
-        y += item.height + node.gap;
+        y += bounds.h + node.gap;
     }
 
     return result;
@@ -92,17 +94,18 @@ function generateColumn(node)
 
 function generateSpread(node)
 {
-    var input = generate(node.inputs[0]);
+    var input  = generate(node.inputs[0]);
+    var bounds = getBounds(input);
 
     var rnd = new Random(node.seed);
 
     result = [];
 
+    var a = 0;
+
     for (var i = 0; i < node.count; i++)
     {
-        var a = rnd.next() * Tau;
         var d = rnd.next() * node.radius;
-        
         var v = vector(a, d);
         
         for (var j = 0; j < input.length; j++)
@@ -115,7 +118,32 @@ function generateSpread(node)
             
             result.push(item);
         }
+
+        a += Tau * phi;
     }
 
     return result;
+}
+
+
+function getBounds(objects)
+{
+    var boundsL = Number.MAX_VALUE;
+    var boundsT = Number.MAX_VALUE;
+    var boundsR = Number.MIN_VALUE;
+    var boundsB = Number.MIN_VALUE;
+    
+    for (const obj of objects)
+    {
+        boundsL = Math.min(boundsL, obj.x);
+        boundsT = Math.min(boundsT, obj.y);
+        boundsR = Math.max(boundsR, obj.x + obj.width);
+        boundsB = Math.max(boundsB, obj.y + obj.height);
+    }
+
+    return {
+        x: boundsL, 
+        y: boundsT,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
 }
