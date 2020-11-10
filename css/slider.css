@@ -7,6 +7,7 @@
     border-radius:    2px;
     overflow:         hidden;
     background-color: white;
+    text-align:       center;
 }    
 
 .sliderBar
@@ -17,10 +18,11 @@
 
 .slider .sliderText
 {
-    position:       absolute;
+    position:       relative;
     font-family:    Inter;
     font-size:      11;
     pointer-events: none;
+    top:            3px;
 }
 
 .slider:hover

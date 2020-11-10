@@ -220,7 +220,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.value = value;
 
 
-        var v = value / (slider.max - slider.min);
+        var v  = value / (slider.max - slider.min);
         var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         slider.bar.style.background = slider.valueColor;
@@ -250,8 +250,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             
         slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
 
-        slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
-        slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);
+        // slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
+        // slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);
 
         if (   fireChangeEvent
             && slider.enableChangeEvent)

@@ -43,9 +43,11 @@ extends Operator
         this.output._data = 
         {
             id:     this.id,
-            type:   this.type,
+            type:   this.opType,
+
             count:  this.#count .value,
             radius: this.#radius.value,
+            
             seed:   this.seed,
 
             inputs: [input.data]

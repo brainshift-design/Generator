@@ -12,8 +12,8 @@ extends Operator
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count',  4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+        this.addParam(this.#count = new NumberParam('count', 4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
     }
 
 
@@ -33,7 +33,7 @@ extends Operator
         this.output._data = 
         {
             id:    this.id,
-            type:  this.type,
+            type:  this.opType,
             count: this.#count.value,
             gap:   this.#gap  .value,
 

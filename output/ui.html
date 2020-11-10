@@ -51,6 +51,7 @@ div
     border-radius:    2px;
     overflow:         hidden;
     background-color: white;
+    text-align:       center;
 }    
 
 .sliderBar
@@ -61,10 +62,11 @@ div
 
 .slider .sliderText
 {
-    position:       absolute;
+    position:       relative;
     font-family:    Inter;
     font-size:      11;
     pointer-events: none;
+    top:            3px;
 }
 
 .slider:hover
@@ -2486,13 +2488,13 @@ extends Operator
 
         this.output._data = 
         {
-            id:      this.id,
-            type:    this.type,
+            id:     this.id,
+            type:   this.opType,
 
-            x:       0,
-            y:       0,
-            width:   this.#width .value,
-            height:  this.#height.value,
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value,
 
             inputs: []
         };
@@ -2538,7 +2540,7 @@ extends Operator
         this.output._data = 
         {
             id:    this.id,
-            type:  this.type,
+            type:  this.opType,
 
             count: this.#count.value,
             gap:   this.#gap  .value,
@@ -2566,8 +2568,8 @@ extends Operator
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count',  4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+        this.addParam(this.#count = new NumberParam('count', 4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
     }
 
 
@@ -2587,7 +2589,7 @@ extends Operator
         this.output._data = 
         {
             id:    this.id,
-            type:  this.type,
+            type:  this.opType,
             count: this.#count.value,
             gap:   this.#gap  .value,
 
@@ -2644,9 +2646,11 @@ extends Operator
         this.output._data = 
         {
             id:     this.id,
-            type:   this.type,
+            type:   this.opType,
+
             count:  this.#count .value,
             radius: this.#radius.value,
+            
             seed:   this.seed,
 
             inputs: [input.data]
@@ -2699,7 +2703,7 @@ extends Operator
         this.output._data = 
         {
             id:    this.id,
-            type:  this.type,
+            type:  this.opType,
             
             min:   this.#min  .value,
             max:   this.#max  .value,
@@ -2933,7 +2937,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.value = value;
 
 
-        var v = value / (slider.max - slider.min);
+        var v  = value / (slider.max - slider.min);
         var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         slider.bar.style.background = slider.valueColor;
@@ -2963,8 +2967,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             
         slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
 
-        slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
-        slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);
+        // slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
+        // slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);
 
         if (   fireChangeEvent
             && slider.enableChangeEvent)

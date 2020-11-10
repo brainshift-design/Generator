@@ -25,7 +25,7 @@ extends Operator
         this.output._data = 
         {
             id:    this.id,
-            type:  this.type,
+            type:  this.opType,
             
             min:   this.#min  .value,
             max:   this.#max  .value,
