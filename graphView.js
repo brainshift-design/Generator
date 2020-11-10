@@ -46,6 +46,11 @@ graphView.addEventListener('pointerup', e =>
                     show(graphView.overInput.connection.wire);
                     show(graphView.overInput.connection.wire.outBall);
                 }
+                else if (graphView.tempConn.savedInput)
+                {
+                    graph.disconnect(graphView.tempConn.savedInput);
+                    graph.connect(graphView.tempConn.output, graphView.overInput);
+                }
                 else
                     graph.connect(graphView.tempConn.output, graphView.overInput);
             }
@@ -54,6 +59,7 @@ graphView.addEventListener('pointerup', e =>
             
             graphView.cancelConnection();
         }
+        
         else if (graphView.tempConn.input) 
         {
             graphView.tempConn.input.connecting = false;
