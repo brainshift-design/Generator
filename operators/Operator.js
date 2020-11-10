@@ -1,8 +1,17 @@
+/*
+    data types:
+        OBJ
+        NUM
+*/
+
 class Operator
 {
-    #type;
-    get type() { return this.#type; }
+    #opType;
+    get opType() { return this.#opType; }
     
+    #dataType;
+    get dataType() { return this.#dataType; }
+
     _id;
     get id() { return this._id; }
     
@@ -14,7 +23,7 @@ class Operator
     params = [];
     
     inputs = [];
-    output;
+    output = null;
     
     cachedObjects = [];
 
@@ -131,16 +140,26 @@ class Operator
     outputControls;
 
 
-    constructor(type)
+    constructor(opType, dataType)
     {
-        this.#type = type;
-        this._id   = type; // this is a temp until the op becomes a graph node
+        this.#opType   = opType;   // this is the operator type
+        this.#dataType = dataType; // this is the op's main data type
+
+        this._id = opType; // this is a temp until the op becomes a graph node
         
-        this.createDiv();
+        var headerColor = 0;
+
+        switch (dataType)
+        {
+            case 'OBJ': headerColor = '#BEDFFF'; break;
+            case 'NUM': headerColor = '#ddd';    break;
+        }
+            
+        this.createDiv(headerColor);
     }    
     
     
-    createDiv()
+    createDiv(headerColor)
     {
         this.div = document.createElement('div');
 
@@ -209,14 +228,15 @@ class Operator
         });
 
 
-        this.createDivHeader();
+        this.createDivHeader(headerColor);
     }     
 
 
-    createDivHeader()
+    createDivHeader(headerColor)
     {
         this.header = document.createElement('div');
         this.header.className = 'nodeHeader';
+        this.header.style.backgroundColor = headerColor;
 
         this.inputControls = document.createElement('div');
         this.inputControls.className = 'inputControls';
@@ -291,7 +311,7 @@ class Operator
         param._op = this;
         param.control.style.display = 'inline-block';
         
-        this.inner.appendChild(param.control);
+        this.inner.appendChild(param.div);
     }
  
     

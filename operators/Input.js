@@ -2,9 +2,12 @@ class Input
 {
     #dataType;
 
-    _op;
+    _op = null;
     get op() { return this._op; }
     
+    _param = null;
+    get param() { return this._param; }
+
     control;
   
     connectedOutput = null;
@@ -22,6 +25,7 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
+        this.control.style.pointerEvents = 'auto';
 
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 

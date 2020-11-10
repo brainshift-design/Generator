@@ -2,8 +2,11 @@ class Output
 {
     #dataType;
 
-    _op;
+    _op = null;
     get op() { return this._op; }
+
+    _param = null;
+    get param() { return this._param; }
     
     _data = {};
 
@@ -22,6 +25,7 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
+        this.control.style.pointerEvents = 'auto';
 
         this.control.addEventListener('pointerenter', e => graphView.overOutput = this);
         this.control.addEventListener('pointerleave', e => graphView.overOutput = null);

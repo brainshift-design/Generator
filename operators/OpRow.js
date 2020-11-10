@@ -7,13 +7,13 @@ extends Operator
 
     constructor()
     {
-        super('row');
+        super('row', 'OBJ');
 
-        this.addInput (new Input ('rect'));
-        this.setOutput(new Output('rect'));
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new ValueParam('count', 1, Number.MAX_SAFE_INTEGER,  4));
-        this.addParam(this.#gap   = new ValueParam('gap',   0, Number.MAX_SAFE_INTEGER, 10));
+        this.addParam(this.#count = new NumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
     }
 
 

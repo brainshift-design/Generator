@@ -6,8 +6,12 @@
 <div id='controlBar'>
 
     <div id='presets'></div>
+
+    <button class='button' id='btnCreateNumber' onclick='graph.createNode("number"); this.blur();'>Num</button>
+    <button class='button' id='btnCreateRandom' onclick='graph.createNode("random"); this.blur();'>Rnd</button>
     <button class='button' id='btnCreateRect'   onclick='graph.createNode("rect");   this.blur();'>Rct</button>
     <button class='button' id='btnCreateRow'    onclick='graph.createNode("row");    this.blur();'>Row</button>
     <button class='button' id='btnCreateColumn' onclick='graph.createNode("column"); this.blur();'>Col</button>
     <button class='button' id='btnCreateSpread' onclick='graph.createNode("spread"); this.blur();'>Spr</button>
+
 </div>

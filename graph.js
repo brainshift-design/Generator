@@ -48,6 +48,8 @@ class Graph
 
         switch (type)
         {
+            case 'number': node = new OpNumber(); break;
+            case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'spread': node = new OpSpread(); break;
             case 'row':    node = new OpRow();    break;

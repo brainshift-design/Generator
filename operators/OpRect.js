@@ -7,12 +7,12 @@ extends Operator
 
     constructor()
     {
-        super('rect');
+        super('rect', 'OBJ');
 
-        this.setOutput(new Output('rect'));
+        this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#width  = new ValueParam('width',  0.01, Number.MAX_SAFE_INTEGER, 10));
-        this.addParam(this.#height = new ValueParam('height', 0.01, Number.MAX_SAFE_INTEGER, 10));
+        this.addParam(this.#width  = new NumberParam('width',  10, 0.01));
+        this.addParam(this.#height = new NumberParam('height', 10, 0.01));
     }
 
 

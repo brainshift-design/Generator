@@ -46,7 +46,7 @@ div
 {
     padding:          0;
     width:            74px;
-    height:           24px;
+    height:           25px;
     /* border-bottom:    1px solid rgba(0, 0, 0, 0.1); */
     border-radius:    2px;
     overflow:         hidden;
@@ -240,6 +240,7 @@ button svg
     position:      relative;
     top:           6px;
     margin:        auto;
+    box-shadow:    0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .input:hover
@@ -256,6 +257,7 @@ button svg
     position:      relative;
     top:           6px;
     margin:        auto;
+    box-shadow:    0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .output:hover
@@ -279,10 +281,14 @@ button svg
 <div id='controlBar'>
 
     <div id='presets'></div>
+
+    <button class='button' id='btnCreateNumber' onclick='graph.createNode("number"); this.blur();'>Num</button>
+    <button class='button' id='btnCreateRandom' onclick='graph.createNode("random"); this.blur();'>Rnd</button>
     <button class='button' id='btnCreateRect'   onclick='graph.createNode("rect");   this.blur();'>Rct</button>
     <button class='button' id='btnCreateRow'    onclick='graph.createNode("row");    this.blur();'>Row</button>
     <button class='button' id='btnCreateColumn' onclick='graph.createNode("column"); this.blur();'>Col</button>
     <button class='button' id='btnCreateSpread' onclick='graph.createNode("spread"); this.blur();'>Spr</button>
+
 </div>
 
 
@@ -1269,6 +1275,8 @@ class Graph
 
         switch (type)
         {
+            case 'number': node = new OpNumber(); break;
+            case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'spread': node = new OpSpread(); break;
             case 'row':    node = new OpRow();    break;
@@ -1778,20 +1786,35 @@ class Parameter
     #type;
     get type() { return this.#type; }
     
-    _op;
-    get op() { return this._op; }
-
-    _control;
-    get control() { return this._control; }
+    _op;      get op()      { return this._op;      }
+    _control; get control() { return this._control; }
+    _div;     get div()     { return this._div;     }
+    _divIO;   get divIO()   { return this._divIO;   }
 
     constructor(type)
     {
         this.#type = type;
+
+        this._div = document.createElement('div');
+        this.div.style.position = 'relative';
+        this.div.style.padding  = 0;
+        this.div.style.width    = '100%';
+
+        this._divIO = document.createElement('div');
+        this.divIO.style.position      = 'absolute';
+        this.divIO.style.width         = '100%';
+        this.divIO.style.height        = '100vh';
+        this.divIO.style.padding       = 0;
+        this.divIO.style.margin        = 0;
+        this.divIO.style.pointerEvents = 'none';
+        this.divIO.zIndex              = 10;
+
+        this.div.appendChild(this.divIO);
     }
 }
 
 
-class   ValueParam
+class   NumberParam
 extends Parameter
 {
     #value;
@@ -1800,15 +1823,20 @@ extends Parameter
     set value(val) { this._control.setValue(val); }
 
 
-    constructor(name, min, max, val)
+    input; 
+    output;
+
+
+    constructor(name, val = 0, min = Number.MIN_VALUE, max = Number.MAX_VALUE)
     {
-        super('value');
+        super('number');
 
         this._control = document.createElement('div');
-        this._control.param = this;
+        this.control.param = this;
+        this.control.zIndex = 0;
 
         initSlider(
-            this._control,
+            this.control,
             100,  // width
             20,   // height
             name, 
@@ -1821,7 +1849,25 @@ extends Parameter
             0,    // acceleration
             '');  // suffix
 
+        this.div.appendChild(this.control);
 
+        this.input = new Input ('number');
+        this.input._param = this;
+        this.input.control.style.float = 'left';
+        this.input.control.style.position = 'relative';
+        this.input.control.style.left = 3;
+        this.input.control.style.top  = 5;
+        //this.input.control.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.12)';
+        this.divIO.appendChild(this.input.control);
+
+        this.output = new Output('number');
+        this.output._param = this;
+        this.output.control.style.float = 'right';
+        this.output.control.style.right = 3;
+        this.output.control.style.top   = 5;
+        //this.output.control.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.12)';
+        this.divIO.appendChild(this.output.control);
+            
         this._control.addEventListener('onchange', function(e)
         {
             var op = this.param.op;
@@ -1841,9 +1887,12 @@ class Input
 {
     #dataType;
 
-    _op;
+    _op = null;
     get op() { return this._op; }
     
+    _param = null;
+    get param() { return this._param; }
+
     control;
   
     connectedOutput = null;
@@ -1861,6 +1910,7 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
+        this.control.style.pointerEvents = 'auto';
 
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
@@ -1883,8 +1933,11 @@ class Output
 {
     #dataType;
 
-    _op;
+    _op = null;
     get op() { return this._op; }
+
+    _param = null;
+    get param() { return this._param; }
     
     _data = {};
 
@@ -1903,6 +1956,7 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
+        this.control.style.pointerEvents = 'auto';
 
         this.control.addEventListener('pointerenter', e => graphView.overOutput = this);
         this.control.addEventListener('pointerleave', e => graphView.overOutput = null);
@@ -1974,19 +2028,28 @@ class Connection
         var x2 = inRect .left + inRect .width /2;
         var y2 = inRect .top  + inRect .height/2;
 
+        var color;
+
+             if (op)    color = '#18A0FB';
+        else if (param) color = '#444';
+
         this.wire.curve.setAttribute('d',
                'M ' +  (x1                ) + ',' + y1
             + ' C ' +  (x1 + (x2 - x1)*2/5  ) + ',' + y1
             + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
             + ' '   +  (x2                ) + ',' + y2);
 
+        this.wire.curve.setAttribute('stroke', color);
+
         show(this.wire.outBall);
         this.wire.outBall.setAttribute('cx', x1);
         this.wire.outBall.setAttribute('cy', y1);
+        this.wire.outBall.setAttribute('fill', color);
 
         show(this.wire.inBall);
         this.wire.inBall.setAttribute('cx', x2);
         this.wire.inBall.setAttribute('cy', y2);
+        this.wire.inBall.setAttribute('fill', color);
     }
 
 
@@ -2031,11 +2094,20 @@ class Connection
 }
 
 
+/*
+    data types:
+        OBJ
+        NUM
+*/
+
 class Operator
 {
-    #type;
-    get type() { return this.#type; }
+    #opType;
+    get opType() { return this.#opType; }
     
+    #dataType;
+    get dataType() { return this.#dataType; }
+
     _id;
     get id() { return this._id; }
     
@@ -2047,7 +2119,7 @@ class Operator
     params = [];
     
     inputs = [];
-    output;
+    output = null;
     
     cachedObjects = [];
 
@@ -2164,16 +2236,26 @@ class Operator
     outputControls;
 
 
-    constructor(type)
+    constructor(opType, dataType)
     {
-        this.#type = type;
-        this._id   = type; // this is a temp until the op becomes a graph node
+        this.#opType   = opType;   // this is the operator type
+        this.#dataType = dataType; // this is the op's main data type
+
+        this._id = opType; // this is a temp until the op becomes a graph node
         
-        this.createDiv();
+        var headerColor = 0;
+
+        switch (dataType)
+        {
+            case 'OBJ': headerColor = '#BEDFFF'; break;
+            case 'NUM': headerColor = '#ddd';    break;
+        }
+            
+        this.createDiv(headerColor);
     }    
     
     
-    createDiv()
+    createDiv(headerColor)
     {
         this.div = document.createElement('div');
 
@@ -2242,14 +2324,15 @@ class Operator
         });
 
 
-        this.createDivHeader();
+        this.createDivHeader(headerColor);
     }     
 
 
-    createDivHeader()
+    createDivHeader(headerColor)
     {
         this.header = document.createElement('div');
         this.header.className = 'nodeHeader';
+        this.header.style.backgroundColor = headerColor;
 
         this.inputControls = document.createElement('div');
         this.inputControls.className = 'inputControls';
@@ -2324,7 +2407,7 @@ class Operator
         param._op = this;
         param.control.style.display = 'inline-block';
         
-        this.inner.appendChild(param.control);
+        this.inner.appendChild(param.div);
     }
  
     
@@ -2388,12 +2471,12 @@ extends Operator
 
     constructor()
     {
-        super('rect');
+        super('rect', 'OBJ');
 
-        this.setOutput(new Output('rect'));
+        this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#width  = new ValueParam('width',  0.01, Number.MAX_SAFE_INTEGER, 10));
-        this.addParam(this.#height = new ValueParam('height', 0.01, Number.MAX_SAFE_INTEGER, 10));
+        this.addParam(this.#width  = new NumberParam('width',  10, 0.01));
+        this.addParam(this.#height = new NumberParam('height', 10, 0.01));
     }
 
 
@@ -2419,64 +2502,6 @@ extends Operator
 }
 
 
-class   OpSpread 
-extends Operator
-{
-    #count;
-    #radius;
-
-    seed = 0;
-
-
-    constructor()
-    {
-        super('spread');
-
-        this.addInput (new Input ('rect'));
-        this.setOutput(new Output('rect'));
-        
-        this.addParam(this.#count  = new ValueParam('count',  1,    Number.MAX_SAFE_INTEGER,   2));
-        this.addParam(this.#radius = new ValueParam('radius', 0.01, Number.MAX_SAFE_INTEGER, 100));
-    }
-
-
-    setGraph(graph)
-    {
-        super.setGraph(graph);
-        this.seed = this.graph.random.seed;
-        this.graph.random.next();
-    }
-
-    
-    generate()
-    {
-        if (this.valid) return;
-
-        var input = this.inputs[0];
-
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
-        {
-            this.output._data = {};
-            return;
-        }
-
-        this.output._data = 
-        {
-            id:     this.id,
-            type:   this.type,
-            count:  this.#count .value,
-            radius: this.#radius.value,
-            seed:   this.seed,
-
-            inputs: [input.data]
-        };
-
-        super.generate();
-    }
-}
-
-
 class   OpRow
 extends Operator
 {
@@ -2486,13 +2511,13 @@ extends Operator
 
     constructor()
     {
-        super('row');
+        super('row', 'OBJ');
 
-        this.addInput (new Input ('rect'));
-        this.setOutput(new Output('rect'));
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new ValueParam('count', 1, Number.MAX_SAFE_INTEGER,  4));
-        this.addParam(this.#gap   = new ValueParam('gap',   0, Number.MAX_SAFE_INTEGER, 10));
+        this.addParam(this.#count = new NumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
     }
 
 
@@ -2536,13 +2561,13 @@ extends Operator
 
     constructor()
     {
-        super('column');
+        super('column', 'OBJ');
 
-        this.addInput (new Input ('rect'));
-        this.setOutput(new Output('rect'));
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new ValueParam('count', 1, Number.MAX_SAFE_INTEGER,  4));
-        this.addParam(this.#gap   = new ValueParam('gap',   0, Number.MAX_SAFE_INTEGER, 10));
+        this.addParam(this.#count = new NumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
     }
 
 
@@ -2567,6 +2592,118 @@ extends Operator
             gap:   this.#gap  .value,
 
             inputs: [input.data]
+        };
+
+        super.generate();
+    }
+}
+
+
+class   OpSpread 
+extends Operator
+{
+    #count;
+    #radius;
+
+    seed = 0;
+
+
+    constructor()
+    {
+        super('spread', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count  = new NumberParam('count', 2, 1));
+        this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
+    }
+
+
+    setGraph(graph)
+    {
+        super.setGraph(graph);
+        this.seed = this.graph.random.seed;
+        this.graph.random.next();
+    }
+
+    
+    generate()
+    {
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
+
+        this.output._data = 
+        {
+            id:     this.id,
+            type:   this.type,
+            count:  this.#count .value,
+            radius: this.#radius.value,
+            seed:   this.seed,
+
+            inputs: [input.data]
+        };
+
+        super.generate();
+    }
+}
+
+
+class   OpNumber
+extends Operator
+{
+    #value;
+
+
+    constructor()
+    {
+        super('number', 'NUM');
+
+        this.addParam(this.#value = new NumberParam(''));
+    }
+}
+
+
+class   OpRandom
+extends Operator
+{
+    #min;
+    #max;
+    #scale;
+
+
+    constructor()
+    {
+        super('random', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#min   = new NumberParam('min'));
+        this.addParam(this.#max   = new NumberParam('max'));
+        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            id:    this.id,
+            type:  this.type,
+            
+            min:   this.#min  .value,
+            max:   this.#max  .value,
+            scale: this.#scale.value
         };
 
         super.generate();
@@ -2819,7 +2956,12 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
         slider.bar.style.height = slider.clientHeight;
 
-        slider.text.innerHTML = slider.name + "&nbsp;&nbsp;" + getNumberString(value, slider.dec) + slider.suffix;
+        slider.text.innerHTML = '';
+        
+        if (slider.name.length > 0)
+            slider.text.innerHTML += slider.name + "&nbsp;&nbsp;";
+            
+        slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
 
         slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
         slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);

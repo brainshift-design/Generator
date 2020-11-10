@@ -243,7 +243,12 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
         slider.bar.style.height = slider.clientHeight;
 
-        slider.text.innerHTML = slider.name + "&nbsp;&nbsp;" + getNumberString(value, slider.dec) + slider.suffix;
+        slider.text.innerHTML = '';
+        
+        if (slider.name.length > 0)
+            slider.text.innerHTML += slider.name + "&nbsp;&nbsp;";
+            
+        slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
 
         slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
         slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);

@@ -23,17 +23,26 @@ html/ui_2.html
     core/random.js
     core/storage.js
     
+    
     parameters/Parameter.js
-    parameters/ValueParam.js
+    parameters/NumberParam.js
+
 
     operators/Input.js
     operators/Output.js
     operators/Connection.js
     operators/Operator.js
+
     operators/OpRect.js
-    operators/OpSpread.js
+    
     operators/OpRow.js
     operators/OpColumn.js
+
+    operators/OpSpread.js
+    
+    operators/OpNumber.js
+    operators/OpRandom.js
+
 
     ui/slider.js
     ui/slider textbox.js

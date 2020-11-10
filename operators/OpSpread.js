@@ -9,13 +9,13 @@ extends Operator
 
     constructor()
     {
-        super('spread');
+        super('spread', 'OBJ');
 
-        this.addInput (new Input ('rect'));
-        this.setOutput(new Output('rect'));
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count  = new ValueParam('count',  1,    Number.MAX_SAFE_INTEGER,   2));
-        this.addParam(this.#radius = new ValueParam('radius', 0.01, Number.MAX_SAFE_INTEGER, 100));
+        this.addParam(this.#count  = new NumberParam('count', 2, 1));
+        this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
     }
 
 
