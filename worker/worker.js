@@ -55,10 +55,10 @@ function generateRow(node)
 
             item.x += x;
             
-            x += item.width + node.gap;
-            
             result.push(item);
         }
+        
+        x += item.width + node.gap;
     }
 
     return result;
@@ -80,10 +80,10 @@ function generateColumn(node)
 
             item.y += y;
             
-            y += item.height + node.gap;
-            
             result.push(item);
         }
+        
+        y += item.height + node.gap;
     }
 
     return result;

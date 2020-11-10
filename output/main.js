@@ -22,7 +22,9 @@ figma.ui.onmessage = msg => {
         case 'removeNodeObjects':
             msgRemoveNodeObjects(msg);
             break;
-        //case 'removeObjectList':  msgRemoveObjectList (msg); break;
+        case 'removeObjectList':
+            msgRemoveObjectList(msg);
+            break;
         case 'regenerateObjects':
             msgRegenerateObjects(msg);
             break;

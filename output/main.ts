@@ -9,7 +9,7 @@ figma.ui.onmessage = msg =>
         case 'loadState':         msgLoadState        (msg); break;
         case 'resizeWindow':      msgResizeWindow     (msg); break; 
         case 'removeNodeObjects': msgRemoveNodeObjects(msg); break; 
-        //case 'removeObjectList':  msgRemoveObjectList (msg); break;
+        case 'removeObjectList':  msgRemoveObjectList (msg); break;
         case 'regenerateObjects': msgRegenerateObjects(msg); break;
     }
 };
