@@ -15,45 +15,51 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerdown', function(e) 
     {
+        for (const n of graph.nodes)
+            n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
+
+        node.div.style.zIndex = Number.MAX_SAFE_INTEGER;
+
+        
         if (   e.button == 0
             && !graphView.overOutput
             && !graphView.overInput)
         {
-            e.target.op.sx  = e.clientX;
-            e.target.op.sy  = e.clientY;
-            e.target.op.slx = e.target.op.offsetLeft;
-            e.target.op.sly = e.target.op.offsetTop;
+            node.div.sx  = e.clientX;
+            node.div.sy  = e.clientY;
+            node.div.slx = node.div.offsetLeft;
+            node.div.sly = node.div.offsetTop;
 
-            e.target.dragging = true;
-            e.target.setPointerCapture(e.pointerId);
+            node.div.dragging = true;
+            node.div.setPointerCapture(e.pointerId);
         }
     });
 
     node.div.addEventListener('pointermove', function(e) 
     {
-        if (e.target.dragging)
+        if (node.div.dragging)
         {
             setDivPosition(
-                e.target.op,
-                e.target.op.slx + e.clientX - e.target.op.sx,
-                e.target.op.sly + e.clientY - e.target.op.sy);
+                node.div.op,
+                node.div.slx + e.clientX - node.div.sx,
+                node.div.sly + e.clientY - node.div.sy);
         };
     });
 
     node.div.addEventListener('pointerup', function(e) 
     {
         if (   e.button == 0
-            && e.target.dragging)
+            && node.div.dragging)
         {
-            e.target.dragging = false;
-            e.target.releasePointerCapture(e.pointerId);
+            node.div.dragging = false;
+            node.div.releasePointerCapture(e.pointerId);
         }
     });
     
     
     node.div.addEventListener('dblclick', function(e)
     {
-        e.target.op.makeActive();
+        node.makeActive();
     });
 
 
@@ -96,11 +102,13 @@ function createDivLabel(node)
 {
     node.label = document.createElement('div');
     node.label.className = 'nodeLabel';
-    node.label.op = node;
+    node.label.op        = node;
+    node.label.zIndex    = Number.MAX_SAFE_INTEGER;
     
-    node.label.addEventListener('dblclick', e =>
+    node.label.addEventListener('dblclick', () =>
     {
-        e.target.op.showLabelTextbox();
+        console.log('dblclick');
+        node.showLabelTextbox();
     });
     
     node.header.appendChild(node.label);
