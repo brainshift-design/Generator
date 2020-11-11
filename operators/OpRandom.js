@@ -4,6 +4,7 @@ extends Operator
     #min;
     #max;
     #scale;
+    #seed;
 
 
     constructor()
@@ -15,6 +16,7 @@ extends Operator
         this.addParam(this.#min   = new NumberParam('min'));
         this.addParam(this.#max   = new NumberParam('max'));
         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new NumberParam('seed'));
 
         this.#min.control.addEventListener('onchange', () =>
         {
@@ -41,7 +43,8 @@ extends Operator
             
             min:   this.#min  .value,
             max:   this.#max  .value,
-            scale: this.#scale.value
+            scale: this.#scale.value,
+            seed:  this.#seed .value
         };
 
         super.generate();

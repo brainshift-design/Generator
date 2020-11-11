@@ -899,9 +899,9 @@ function generate(obj)
     switch (obj.type)
     {
         case 'rect'  : return generateRect  (obj);
-        case 'spread': return generateSpread(obj);
         case 'row'   : return generateRow   (obj);
         case 'column': return generateColumn(obj);
+        case 'spread': return generateSpread(obj);
     }    
 }
 
@@ -1914,7 +1914,10 @@ extends Parameter
     output;
 
 
-    constructor(name, val = 0, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
+    constructor(name, 
+                val = 0, 
+                min = Number.MIN_SAFE_INTEGER, 
+                max = Number.MAX_SAFE_INTEGER)
     {
         super('NUM');
 
@@ -2136,8 +2139,8 @@ class Connection
 
         var color;
 
-             if (op)    color = ACTIVE_OBJ_COLOR;
-        else if (param) color = ACTIVE_NUM_COLOR; //'#444';
+             if (this.op)    color = ACTIVE_OBJ_COLOR;
+        else if (this.param) color = ACTIVE_NUM_COLOR; //'#444';
 
         this.wire.curve.setAttribute('d',
                'M ' +  (x1                ) + ',' + y1
@@ -2261,7 +2264,8 @@ class Operator
         this._active = true;
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
-        if (this.output)
+        if (   this.output
+            && this.output.dataType == 'OBJ')
             regenerateOutputs([this.output]);
     }
 
@@ -2951,6 +2955,7 @@ extends Operator
     #min;
     #max;
     #scale;
+    #seed;
 
 
     constructor()
@@ -2962,6 +2967,7 @@ extends Operator
         this.addParam(this.#min   = new NumberParam('min'));
         this.addParam(this.#max   = new NumberParam('max'));
         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new NumberParam('seed'));
 
         this.#min.control.addEventListener('onchange', () =>
         {
@@ -2988,7 +2994,8 @@ extends Operator
             
             min:   this.#min  .value,
             max:   this.#max  .value,
-            scale: this.#scale.value
+            scale: this.#scale.value,
+            seed:  this.#seed .value
         };
 
         super.generate();
@@ -3781,37 +3788,46 @@ graphView.addEventListener('pointerup', e =>
 {
     if (graphView.tempConn)
     {
-        if (graphView.tempConn.output) 
+        if (graphView.tempConn.output) // FROM OUTPUT
         {
-            graphView.tempConn.output.connecting = false;
+            var output     = graphView.tempConn.output;
+            var input      = graphView.overInput;
+            var savedInput = graphView.tempConn.savedInput;
             
-            if (graphView.overInput)
+            output.connecting = false;
+            
+            if (   input
+                && input.dataType == output.dataType) // TO INPUT
             {
-                if (graphView.tempConn.savedInput == graphView.overInput)
+                if (input == savedInput) // reconnect old
                 {
-                    show(graphView.overInput.connection.wire);
-                    show(graphView.overInput.connection.wire.outBall);
+                    show(input.connection.wire);
+                    show(input.connection.wire.outBall);
                 }
-                else if (graphView.tempConn.savedInput)
+                else if (savedInput) // disconnect old, connect new
                 {
-                    graph.disconnect(graphView.tempConn.savedInput);
-                    graph.connect(graphView.tempConn.output, graphView.overInput);
+                    graph.disconnect(savedInput);
+                    graph.connect(output, input);
                 }
-                else
-                    graph.connect(graphView.tempConn.output, graphView.overInput);
+                else // connect new
+                    graph.connect(output, input);
             }
-            else if (graphView.tempConn.savedInput)
-                graph.disconnect(graphView.tempConn.savedInput)
+            else if (savedInput)
+                graph.disconnect(savedInput)
             
             graphView.cancelConnection();
         }
         
-        else if (graphView.tempConn.input) 
+        else if (graphView.tempConn.input) // FROM INPUT
         {
-            graphView.tempConn.input.connecting = false;
+            var input  = graphView.tempConn.input;
+            var output = graphView.overOutput;
+
+            input.connecting = false;
             
-            if (graphView.overOutput)
-                graph.connect(graphView.overOutput, graphView.tempConn.input);
+            if (   output
+                && output.dataType == input.dataType) // TO OUTPUT
+                graph.connect(output, input); // connect new
 
             graphView.cancelConnection();
         }

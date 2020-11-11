@@ -8,7 +8,7 @@ html/ui_0.html
 
 html/ui_1.html
 
-    output/worker.html
+    output/generate.html
 
 html/ui_2.html
 

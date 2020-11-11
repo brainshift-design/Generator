@@ -11,7 +11,10 @@ extends Parameter
     output;
 
 
-    constructor(name, val = 0, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
+    constructor(name, 
+                val = 0, 
+                min = Number.MIN_SAFE_INTEGER, 
+                max = Number.MAX_SAFE_INTEGER)
     {
         super('NUM');
 

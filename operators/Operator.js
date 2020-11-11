@@ -47,7 +47,8 @@ class Operator
         this._active = true;
         this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
-        if (this.output)
+        if (   this.output
+            && this.output.dataType == 'OBJ')
             regenerateOutputs([this.output]);
     }
 

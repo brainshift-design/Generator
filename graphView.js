@@ -36,37 +36,46 @@ graphView.addEventListener('pointerup', e =>
 {
     if (graphView.tempConn)
     {
-        if (graphView.tempConn.output) 
+        if (graphView.tempConn.output) // FROM OUTPUT
         {
-            graphView.tempConn.output.connecting = false;
+            var output     = graphView.tempConn.output;
+            var input      = graphView.overInput;
+            var savedInput = graphView.tempConn.savedInput;
             
-            if (graphView.overInput)
+            output.connecting = false;
+            
+            if (   input
+                && input.dataType == output.dataType) // TO INPUT
             {
-                if (graphView.tempConn.savedInput == graphView.overInput)
+                if (input == savedInput) // reconnect old
                 {
-                    show(graphView.overInput.connection.wire);
-                    show(graphView.overInput.connection.wire.outBall);
+                    show(input.connection.wire);
+                    show(input.connection.wire.outBall);
                 }
-                else if (graphView.tempConn.savedInput)
+                else if (savedInput) // disconnect old, connect new
                 {
-                    graph.disconnect(graphView.tempConn.savedInput);
-                    graph.connect(graphView.tempConn.output, graphView.overInput);
+                    graph.disconnect(savedInput);
+                    graph.connect(output, input);
                 }
-                else
-                    graph.connect(graphView.tempConn.output, graphView.overInput);
+                else // connect new
+                    graph.connect(output, input);
             }
-            else if (graphView.tempConn.savedInput)
-                graph.disconnect(graphView.tempConn.savedInput)
+            else if (savedInput)
+                graph.disconnect(savedInput)
             
             graphView.cancelConnection();
         }
         
-        else if (graphView.tempConn.input) 
+        else if (graphView.tempConn.input) // FROM INPUT
         {
-            graphView.tempConn.input.connecting = false;
+            var input  = graphView.tempConn.input;
+            var output = graphView.overOutput;
+
+            input.connecting = false;
             
-            if (graphView.overOutput)
-                graph.connect(graphView.overOutput, graphView.tempConn.input);
+            if (   output
+                && output.dataType == input.dataType) // TO OUTPUT
+                graph.connect(output, input); // connect new
 
             graphView.cancelConnection();
         }

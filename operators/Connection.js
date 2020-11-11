@@ -55,8 +55,8 @@ class Connection
 
         var color;
 
-             if (op)    color = ACTIVE_OBJ_COLOR;
-        else if (param) color = ACTIVE_NUM_COLOR; //'#444';
+             if (this.op)    color = ACTIVE_OBJ_COLOR;
+        else if (this.param) color = ACTIVE_NUM_COLOR; //'#444';
 
         this.wire.curve.setAttribute('d',
                'M ' +  (x1                ) + ',' + y1

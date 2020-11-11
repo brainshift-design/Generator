@@ -1,4 +1,4 @@
-worker/worker_0.html
+generate/generate_0.html
 
     util.js
     
@@ -6,6 +6,6 @@ worker/worker_0.html
     core/math.js
     core/random.js
     
-    worker/worker.js
+    generate/generate.js
 
-worker/worker_1.html
+generate/generate_1.html

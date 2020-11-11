@@ -18,9 +18,9 @@ function generate(obj)
     switch (obj.type)
     {
         case 'rect'  : return generateRect  (obj);
-        case 'spread': return generateSpread(obj);
         case 'row'   : return generateRow   (obj);
         case 'column': return generateColumn(obj);
+        case 'spread': return generateSpread(obj);
     }    
 }
 
