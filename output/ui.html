@@ -250,10 +250,10 @@ button svg
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
-.input:hover
+/* .input:hover
 {
     box-shadow: 0 0 0 1px #18A0FB inset;
-}
+} */
 
 .output
 {
@@ -270,10 +270,10 @@ button svg
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
-.output:hover
+/* .output:hover
 {
     box-shadow: 0 0 0 1px #18A0FB inset;
-}
+} */
 
 #wires
 {
@@ -447,6 +447,18 @@ function removeNodeOutput(node)
         cmd:   'removeNodeObjects',
         nodeId: node.id
     }}, '*');
+}
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
 }
 
 
@@ -989,7 +1001,13 @@ function getBounds(objects)
 ////////////////////////////////////////////////////
 
 
+const OBJ_COLOR = '#bedfff';
+const NUM_COLOR = '#ddd';
 
+const ACTIVE_OBJ_COLOR = '#18a0fb';
+const ACTIVE_NUM_COLOR = 'rgba(0, 0, 0, 0.3)';
+
+const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
 
 
 function setStyle(id, properties)
@@ -1136,6 +1154,18 @@ function removeNodeOutput(node)
 }
 
 
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
 const resizeEdgeWidth = 8;
 
 document.canResizeX = false;
@@ -1279,11 +1309,11 @@ class Graph
     }
     
     
-    createNode(type)
+    createNode(opType)
     {
         var node;
 
-        switch (type)
+        switch (opType)
         {
             case 'number': node = new OpNumber(); break;
             case 'random': node = new OpRandom(); break;
@@ -1838,7 +1868,7 @@ extends Parameter
 
     constructor(name, val = 0, min = Number.MIN_VALUE, max = Number.MAX_VALUE)
     {
-        super('number');
+        super('NUM');
 
         this._control = document.createElement('div');
         this.control.param = this;
@@ -1860,7 +1890,7 @@ extends Parameter
 
         this.div.appendChild(this.control);
 
-        this.input = new Input ('number');
+        this.input = new Input ('NUM');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -1868,7 +1898,7 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.output = new Output('number');
+        this.output = new Output('NUM');
         this.output._param = this;
         this.output.control.style.float     = 'right';
         this.output.control.style.position  = 'absolute';
@@ -1893,7 +1923,8 @@ extends Parameter
 
 class Input
 {
-    #dataType;
+    #dataType;     
+    get dataType() { return this.#dataType; }
 
     _op = null;
     get op() { return this._op; }
@@ -1918,11 +1949,21 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
+        this.control.input = this;
     
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
-        this.control.addEventListener('pointerenter', () => graphView.overInput = this);
-        this.control.addEventListener('pointerleave', () => graphView.overInput = null);
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overInput = this;
+            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+        });
+
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overInput = null;
+            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        });
     }    
     
 
@@ -1938,12 +1979,13 @@ class Input
 
 class Output
 {
-    #dataType;
+    #dataType;     
+    get dataType() { return this.#dataType; }
 
-    _op = null;
+    _op = null; 
     get op() { return this._op; }
-
-    _param = null;
+    
+    _param = null; 
     get param() { return this._param; }
     
     _data = {};
@@ -1963,9 +2005,19 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
+        this.control.output = this;
 
-        this.control.addEventListener('pointerenter', e => graphView.overOutput = this);
-        this.control.addEventListener('pointerleave', e => graphView.overOutput = null);
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overOutput = this;
+            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
+        });
+
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overOutput = null;
+            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        });
     }
     
 
@@ -2075,6 +2127,12 @@ class Connection
         this.wire.outBall.setAttribute('cx', x1);
         this.wire.outBall.setAttribute('cy', y1);
 
+        var col = colorFromDataType(this.output.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
+
         hide(this.wire.inBall);
     }
 
@@ -2094,6 +2152,12 @@ class Connection
 
         this.wire.inBall.setAttribute('cx', x2);
         this.wire.inBall.setAttribute('cy', y2);
+
+        var col = colorFromDataType(this.input.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
 
         hide(this.wire.outBall);
     }
@@ -2249,14 +2313,7 @@ class Operator
 
         this._id = opType; // this is a temp until the op becomes a graph node
         
-        var headerColor = 0;
-
-        switch (dataType)
-        {
-            case 'OBJ': headerColor = '#BEDFFF'; break;
-            case 'NUM': headerColor = '#ddd';    break;
-        }
-            
+        var headerColor = colorFromDataType(dataType, false);
         this.createDiv(headerColor);
     }    
     

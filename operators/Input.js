@@ -1,6 +1,7 @@
 class Input
 {
-    #dataType;
+    #dataType;     
+    get dataType() { return this.#dataType; }
 
     _op = null;
     get op() { return this._op; }
@@ -25,11 +26,21 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
+        this.control.input = this;
     
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
-        this.control.addEventListener('pointerenter', () => graphView.overInput = this);
-        this.control.addEventListener('pointerleave', () => graphView.overInput = null);
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overInput = this;
+            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+        });
+
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overInput = null;
+            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        });
     }    
     
 

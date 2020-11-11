@@ -13,7 +13,7 @@ extends Parameter
 
     constructor(name, val = 0, min = Number.MIN_VALUE, max = Number.MAX_VALUE)
     {
-        super('number');
+        super('NUM');
 
         this._control = document.createElement('div');
         this.control.param = this;
@@ -35,7 +35,7 @@ extends Parameter
 
         this.div.appendChild(this.control);
 
-        this.input = new Input ('number');
+        this.input = new Input ('NUM');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -43,7 +43,7 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.output = new Output('number');
+        this.output = new Output('NUM');
         this.output._param = this;
         this.output.control.style.float     = 'right';
         this.output.control.style.position  = 'absolute';

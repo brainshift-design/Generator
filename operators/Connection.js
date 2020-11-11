@@ -94,6 +94,12 @@ class Connection
         this.wire.outBall.setAttribute('cx', x1);
         this.wire.outBall.setAttribute('cy', y1);
 
+        var col = colorFromDataType(this.output.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
+
         hide(this.wire.inBall);
     }
 
@@ -113,6 +119,12 @@ class Connection
 
         this.wire.inBall.setAttribute('cx', x2);
         this.wire.inBall.setAttribute('cy', y2);
+
+        var col = colorFromDataType(this.input.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
 
         hide(this.wire.outBall);
     }

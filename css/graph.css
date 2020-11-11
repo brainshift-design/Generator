@@ -84,10 +84,10 @@
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
-.input:hover
+/* .input:hover
 {
     box-shadow: 0 0 0 1px #18A0FB inset;
-}
+} */
 
 .output
 {
@@ -104,10 +104,10 @@
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
-.output:hover
+/* .output:hover
 {
     box-shadow: 0 0 0 1px #18A0FB inset;
-}
+} */
 
 #wires
 {

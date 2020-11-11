@@ -42,11 +42,11 @@ class Graph
     }
     
     
-    createNode(type)
+    createNode(opType)
     {
         var node;
 
-        switch (type)
+        switch (opType)
         {
             case 'number': node = new OpNumber(); break;
             case 'random': node = new OpRandom(); break;

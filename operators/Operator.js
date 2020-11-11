@@ -147,14 +147,7 @@ class Operator
 
         this._id = opType; // this is a temp until the op becomes a graph node
         
-        var headerColor = 0;
-
-        switch (dataType)
-        {
-            case 'OBJ': headerColor = '#BEDFFF'; break;
-            case 'NUM': headerColor = '#ddd';    break;
-        }
-            
+        var headerColor = colorFromDataType(dataType, false);
         this.createDiv(headerColor);
     }    
     
