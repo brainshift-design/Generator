@@ -102,24 +102,51 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        output.connectedInputs.push(input);
-        input.connectedOutput = output;
+        if (output.op && input.op)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
 
-        const conn = new Connection(output, input);
+            const conn = new Connection(output, input);
 
-        input .connection = conn;
-        output.connection = conn;
+            input .connection = conn;
+            output.connection = conn;
+            
+            wires.appendChild(conn.wire);
+            conn.updateWire();
+            
+            output.op.makePassive();
+            input.op.valid = false;
         
-        wires.appendChild(conn.wire);
-        conn.updateWire();
-        
-        output.op.makePassive();
-        input.op.valid = false;
-    
-        if (input.op.activeNodeInTree.output)
-            regenerateOutputs([input.op.activeNodeInTree.output]);
+            if (input.op.activeNodeInTree.output)
+                regenerateOutputs([input.op.activeNodeInTree.output]);
 
-        return true;
+            return true;
+        }
+        
+        else if (output.param && input.param)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
+
+            const conn = new Connection(output, input);
+
+            input .connection = conn;
+            output.connection = conn;
+            
+            wires.appendChild(conn.wire);
+            conn.updateWire();
+            
+            input.param.op.valid = false;
+        
+            if (input.param.op.activeNodeInTree.output)
+                regenerateOutputs([input.param.op.activeNodeInTree.output]);
+
+            return true;
+        }
+
+
+        return false;
     }
 
 
@@ -145,8 +172,8 @@ class Graph
 
         input.connectedOutput = null;
 
-        output.op.valid = false;
-        input .op.valid = false;
+        output.op.valid       = false;
+        input .op.valid       = false;
 
         if (!output.op.activeNodeInTree)
             output.op.makeActive();

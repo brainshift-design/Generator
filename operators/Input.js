@@ -3,11 +3,8 @@ class Input
     #dataType;     
     get dataType() { return this.#dataType; }
 
-    _op = null;
-    get op() { return this._op; }
-    
-    _param = null;
-    get param() { return this._param; }
+    _op    = null; get op   () { return this._op;    }
+    _param = null; get param() { return this._param; }
 
     control;
   

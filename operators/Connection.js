@@ -22,18 +22,18 @@ class Connection
 
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
-        this.wire.curve.style.stroke      = '#18A0FB';
+        //this.wire.curve.style.stroke      = '#18A0FB';
         this.wire.curve.style.strokeWidth = 1.2;
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
         this.wire.outBall = createSvg('circle');
-        this.wire.outBall.style.fill     = '#18A0FB';
+        //this.wire.outBall.style.fill     = '#18A0FB';
         this.wire.outBall.style.position = 'absolute';
         this.wire.outBall.style.r        = 3;
 
         this.wire.inBall = createSvg('circle');
-        this.wire.inBall.style.fill     = '#18A0FB';
+        //this.wire.inBall.style.fill     = '#18A0FB';
         this.wire.inBall.style.position = 'absolute';
         this.wire.inBall.style.r        = 3;
 
@@ -55,8 +55,11 @@ class Connection
 
         var color;
 
-             if (this.op)    color = ACTIVE_OBJ_COLOR;
-        else if (this.param) color = ACTIVE_NUM_COLOR; //'#444';
+        switch (this.output.dataType)
+        {
+            case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
+            case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
+        }
 
         this.wire.curve.setAttribute('d',
                'M ' +  (x1                ) + ',' + y1
