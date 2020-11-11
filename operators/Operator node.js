@@ -59,7 +59,13 @@ function createDiv(node, headerColor)
     
     node.div.addEventListener('dblclick', function(e)
     {
-        node.makeActive();
+        var bounds = node.label.getBoundingClientRect();
+
+        if (   e.clientX >= bounds.left && e.clientX < bounds.right
+            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
+            node.showLabelTextbox();
+        else
+            node.makeActive();
     });
 
 
@@ -103,13 +109,6 @@ function createDivLabel(node)
     node.label = document.createElement('div');
     node.label.className = 'nodeLabel';
     node.label.op        = node;
-    node.label.zIndex    = Number.MAX_SAFE_INTEGER;
-    
-    node.label.addEventListener('dblclick', () =>
-    {
-        console.log('dblclick');
-        node.showLabelTextbox();
-    });
     
     node.header.appendChild(node.label);
 

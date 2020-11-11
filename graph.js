@@ -76,18 +76,18 @@ class Graph
 
             const gap = 30;
             node.div.style.left = bounds.x + bounds.w + gap;
-            
-            // I subtract the full height of the node here as they grow down, so this
-            // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
+            node.div.style.top  = bounds.y;
         }
-        else
+        else // 0
         {
             this.nodes.push(node);
             graphView.appendChild(node.div);
 
             node.div.style.left = 100;
-            node.div.style.top  = graphView.offsetHeight/2 - node.div.offsetHeight;// /2;
+
+            // I subtract the full height of the node here as they grow down, so this
+            // gives a nice random-ish offset for the first line of nodes
+            node.div.style.top  = graphView.offsetHeight/2 - node.div.offsetHeight;
         }
 
     }
