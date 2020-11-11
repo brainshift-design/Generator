@@ -118,7 +118,10 @@ function setDivPosition(node, x, y)
     node.div.style.top  = y;
 
     for (const input of node.inputs)
-        if (input.connected) input.connection.updateWire();
+    {
+        if (input.connected) 
+            input.connection.updateWire();
+    }
 
     if (   node.output 
         && node.output.connected)
@@ -129,7 +132,7 @@ function setDivPosition(node, x, y)
 
     for (const param of node.params)
     {
-        if (param.input .connected) param.input .connection.updateWire();
-        if (param.output.connected) param.output.connection.updateWire();
+        if (param.input .connected) 
+            param.input .connection.updateWire();
     }
 }

@@ -102,7 +102,7 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (output.op && input.op)
+        if (input.op)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -124,7 +124,7 @@ class Graph
             return true;
         }
         
-        else if (output.param && input.param)
+        else if (input.param)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -154,7 +154,8 @@ class Graph
     {
         // first remove the current output
 
-        removeNodeOutput(input.op.activeNodeInTree);
+        if (input.op)
+            removeNodeOutput(input.op.activeNodeInTree);
 
         // then disconnect
 
@@ -172,18 +173,26 @@ class Graph
 
         input.connectedOutput = null;
 
-        output.op.valid       = false;
-        input .op.valid       = false;
+
+        output.op.valid = false;
 
         if (!output.op.activeNodeInTree)
             output.op.makeActive();
 
-        input.op.activeNodeInTree.makeActive();
-        
+
+        var inputOp;
+
+             if (input.op   ) inputOp = input.op;
+        else if (input.param) inputOp = input.param.op;
+
+        inputOp.valid = false;
+        inputOp.activeNodeInTree.makeActive();
+
         regenerateOutputs([
             output, 
-            input.op.activeNodeInTree.output]);
-    
+            inputOp.activeNodeInTree.output]);
+
+            
         return true;
     }
 

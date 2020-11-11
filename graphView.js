@@ -60,7 +60,7 @@ graphView.addEventListener('pointerup', e =>
                 else // connect new
                     graph.connect(output, input);
             }
-            else if (savedInput)
+            else if (savedInput) // disconnect old
                 graph.disconnect(savedInput)
             
             graphView.cancelConnection();

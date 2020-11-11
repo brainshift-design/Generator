@@ -1042,7 +1042,7 @@ const OBJ_COLOR = '#bedfff';
 const NUM_COLOR = '#ddd';
 
 const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = '#777';
+const ACTIVE_NUM_COLOR = '#787878';
 
 const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
 
@@ -1406,7 +1406,7 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (output.op && input.op)
+        if (input.op)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -1428,7 +1428,7 @@ class Graph
             return true;
         }
         
-        else if (output.param && input.param)
+        else if (input.param)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -1458,7 +1458,8 @@ class Graph
     {
         // first remove the current output
 
-        removeNodeOutput(input.op.activeNodeInTree);
+        if (input.op)
+            removeNodeOutput(input.op.activeNodeInTree);
 
         // then disconnect
 
@@ -1476,18 +1477,26 @@ class Graph
 
         input.connectedOutput = null;
 
-        output.op.valid       = false;
-        input .op.valid       = false;
+
+        output.op.valid = false;
 
         if (!output.op.activeNodeInTree)
             output.op.makeActive();
 
-        input.op.activeNodeInTree.makeActive();
-        
+
+        var inputOp;
+
+             if (input.op   ) inputOp = input.op;
+        else if (input.param) inputOp = input.param.op;
+
+        inputOp.valid = false;
+        inputOp.activeNodeInTree.makeActive();
+
         regenerateOutputs([
             output, 
-            input.op.activeNodeInTree.output]);
-    
+            inputOp.activeNodeInTree.output]);
+
+            
         return true;
     }
 
@@ -1938,7 +1947,6 @@ extends Parameter
 
 
     input; 
-    output;
 
 
     constructor(name, 
@@ -1976,14 +1984,6 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.output = new Output('NUM');
-        this.output._param = this;
-        this.output.control.style.float     = 'right';
-        this.output.control.style.position  = 'absolute';
-        this.output.control.style.top       = '50%';
-        this.output.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.output.control);
-            
         this._control.addEventListener('onchange', function(e)
         {
             var op = this.param.op;
@@ -2603,7 +2603,10 @@ function setDivPosition(node, x, y)
     node.div.style.top  = y;
 
     for (const input of node.inputs)
-        if (input.connected) input.connection.updateWire();
+    {
+        if (input.connected) 
+            input.connection.updateWire();
+    }
 
     if (   node.output 
         && node.output.connected)
@@ -2614,8 +2617,8 @@ function setDivPosition(node, x, y)
 
     for (const param of node.params)
     {
-        if (param.input .connected) param.input .connection.updateWire();
-        if (param.output.connected) param.output.connection.updateWire();
+        if (param.input .connected) 
+            param.input .connection.updateWire();
     }
 }
 
@@ -2970,6 +2973,8 @@ extends Operator
     constructor()
     {
         super('number', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
 
         this.addParam(this.#value = new NumberParam(''));
     }
@@ -3839,7 +3844,7 @@ graphView.addEventListener('pointerup', e =>
                 else // connect new
                     graph.connect(output, input);
             }
-            else if (savedInput)
+            else if (savedInput) // disconnect old
                 graph.disconnect(savedInput)
             
             graphView.cancelConnection();
