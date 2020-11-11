@@ -2,8 +2,8 @@
 {
     padding:          0;
     width:            74px;
-    height:           25px;
-    /* border-bottom:    1px solid rgba(0, 0, 0, 0.1); */
+    height:           26px;
+    box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset;
     border-radius:    2px;
     overflow:         hidden;
     background-color: white;
