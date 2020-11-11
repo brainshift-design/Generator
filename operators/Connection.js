@@ -60,7 +60,7 @@ class Connection
 
         this.wire.curve.setAttribute('d',
                'M ' +  (x1                ) + ',' + y1
-            + ' C ' +  (x1 + (x2 - x1)*2/5  ) + ',' + y1
+            + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
             + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
             + ' '   +  (x2                ) + ',' + y2);
 

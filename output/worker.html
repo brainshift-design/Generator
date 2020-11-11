@@ -668,10 +668,10 @@ function generateSpread(node)
 
 function getBounds(objects)
 {
-    var boundsL = Number.MAX_VALUE;
-    var boundsT = Number.MAX_VALUE;
-    var boundsR = Number.MIN_VALUE;
-    var boundsB = Number.MIN_VALUE;
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
     
     for (const obj of objects)
     {

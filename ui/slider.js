@@ -216,7 +216,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         else
             value = Math.min(Math.max(slider.min, value), slider.max);
         
-
         slider.value = value;
 
 
