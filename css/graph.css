@@ -58,21 +58,19 @@
 
 .inputControls
 {
-    width:      20px;
-    height:     25px;
-    position:   relative;
-    display:    inline-block;
-    text-align: center;
+    width:        20px;
+    height:       25px;
+    float:        left;
+    margin-right: auto;
 }
 
 
 .outputControls
 {
-    width:      20px;
-    height:     25px;
-    position:   relative;
-    display:    inline-block;
-    text-align: center;
+    width:       20px;
+    height:      25px;
+    float:       right;
+    margin-left: auto;
 }
 
 
