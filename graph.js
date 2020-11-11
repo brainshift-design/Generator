@@ -66,8 +66,30 @@ class Graph
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
         
-        this.nodes.push(node);
-        graphView.appendChild(node.div);
+        
+        if (this.nodes.length > 0)
+        {
+            const bounds = graphView.getNodeBounds();
+            
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            const gap = 30;
+            node.div.style.left = bounds.x + bounds.w + gap;
+            
+            // I subtract the full height of the node here as they grow down, so this
+            // gives a nice random-ish offset for the first line of nodes
+            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
+        }
+        else
+        {
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            node.div.style.left = 100;
+            node.div.style.top  = graphView.offsetHeight/2 - node.div.offsetHeight;// /2;
+        }
+
     }
     
 

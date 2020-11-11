@@ -1334,8 +1334,30 @@ class Graph
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
         
-        this.nodes.push(node);
-        graphView.appendChild(node.div);
+        
+        if (this.nodes.length > 0)
+        {
+            const bounds = graphView.getNodeBounds();
+            
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            const gap = 30;
+            node.div.style.left = bounds.x + bounds.w + gap;
+            
+            // I subtract the full height of the node here as they grow down, so this
+            // gives a nice random-ish offset for the first line of nodes
+            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
+        }
+        else
+        {
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            node.div.style.left = 100;
+            node.div.style.top  = graphView.offsetHeight/2 - node.div.offsetHeight;// /2;
+        }
+
     }
     
 
@@ -3548,6 +3570,7 @@ graphView.addEventListener('pointerdown', e =>
     }
 });
 
+
 graphView.addEventListener('pointerup', e =>
 {
     if (graphView.tempConn)
@@ -3589,6 +3612,7 @@ graphView.addEventListener('pointerup', e =>
     }
 });
 
+
 graphView.addEventListener('pointermove', e =>
 {
     if (graphView.tempConn)
@@ -3617,6 +3641,31 @@ graphView.cancelConnection = () =>
 {
     wires.removeChild(graphView.tempConn.wire);    
     graphView.tempConn = null;
+};
+
+
+graphView.getNodeBounds = () =>
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    for (const node of graph.nodes)
+    {
+        var bounds = node.div.getBoundingClientRect();
+
+        boundsL = Math.min(boundsL, bounds.left  );
+        boundsT = Math.min(boundsT, bounds.top   );
+        boundsR = Math.max(boundsR, bounds.right );
+        boundsB = Math.max(boundsB, bounds.bottom);
+    }
+
+    return {
+        x: boundsL, 
+        y: boundsT,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
 };
 
 

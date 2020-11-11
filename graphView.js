@@ -31,6 +31,7 @@ graphView.addEventListener('pointerdown', e =>
     }
 });
 
+
 graphView.addEventListener('pointerup', e =>
 {
     if (graphView.tempConn)
@@ -72,6 +73,7 @@ graphView.addEventListener('pointerup', e =>
     }
 });
 
+
 graphView.addEventListener('pointermove', e =>
 {
     if (graphView.tempConn)
@@ -100,4 +102,29 @@ graphView.cancelConnection = () =>
 {
     wires.removeChild(graphView.tempConn.wire);    
     graphView.tempConn = null;
+};
+
+
+graphView.getNodeBounds = () =>
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    for (const node of graph.nodes)
+    {
+        var bounds = node.div.getBoundingClientRect();
+
+        boundsL = Math.min(boundsL, bounds.left  );
+        boundsT = Math.min(boundsT, bounds.top   );
+        boundsR = Math.max(boundsR, bounds.right );
+        boundsB = Math.max(boundsB, bounds.bottom);
+    }
+
+    return {
+        x: boundsL, 
+        y: boundsT,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
 };
