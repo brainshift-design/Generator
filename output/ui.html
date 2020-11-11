@@ -36,10 +36,34 @@ div
 }
 
 
-.node:hover
+input[type=text]
 {
-    box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
+    font-size:     11;
+    font-family:   Inter;
+    height:        28px;
+    padding-top:   1;
+    border:        none;
+    box-shadow:    0px 1px 0px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5px;
+    cursor:        default;
 }
+
+input[type=text]:hover
+{
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+input[type=text]:focus
+{
+    box-shadow: 0 0 0 1px #18A0FB;
+    outline: none;
+}
+
+input[type=text]::selection
+{
+    background-color: #b9e2fe;
+}
+
 
 
 .slider
@@ -60,12 +84,12 @@ div
     pointer-events: none;
 }
 
-.slider .sliderText
+.sliderText
 {
-    position:       relative;
     font-family:    Inter;
     font-size:      11;
     pointer-events: none;
+    position:       relative;
     top:            3px;
 }
 
@@ -191,28 +215,35 @@ button svg
     padding: 0;
 }    
 
-.node .slider
-{
-    display: inline-block;
-}
-
 .nodeHeader
 {
     background:  #BEDFFF;
     display:     flex;
     width:       100%;
+    position:    relative;
 }
 
 .nodeLabel
 {
     font-family: Inter;
     font-size:   11;
-    padding:     6px 0 0 0;
-    display:     table-cell;
-    width:       calc(100% - 2px);
-    height:      20;
+    padding:     0;
+    margin:      0;
+    display:     inline-block;
+    height:      14;
     color:       black;
     text-align:  center;
+    position:    absolute;
+    left:        50%;
+    top:         50%;
+    transform:   translateX(-50%) translateY(-50%);
+}
+
+
+.nodeLabelTextbox
+{
+    font-family:    Inter;
+    font-size:      11;
 }
 
 
@@ -1006,7 +1037,7 @@ const OBJ_COLOR = '#bedfff';
 const NUM_COLOR = '#ddd';
 
 const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = 'rgba(0, 0, 0, 0.3)';
+const ACTIVE_NUM_COLOR = '#777';
 
 const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
 
@@ -2203,6 +2234,11 @@ class Operator
 
     _id;
     get id() { return this._id; }
+    set id(id)
+    {
+        this._id = id;
+        this.label.innerHTML = id;
+    }
     
     _graph = null;
     get graph() { return this._graph; }
@@ -2337,131 +2373,10 @@ class Operator
         this._id = opType; // this is a temp until the op becomes a graph node
         
         var headerColor = colorFromDataType(dataType, false);
-        this.createDiv(headerColor);
+        createDiv(this, headerColor);
     }    
     
     
-    createDiv(headerColor)
-    {
-        this.div = document.createElement('div');
-
-        this.div.className = 'node';
-        this.div.op        = this;
-        this.div.dragging  = false;
-    
-
-        this.inner = document.createElement('div');
-        this.inner.className = 'nodeInner';
-
-        this.div.appendChild(this.inner);
-
-
-        this.div.addEventListener('pointerdown', function(e) 
-        {
-            if (   e.button == 0
-                && !graphView.overOutput
-                && !graphView.overInput)
-            {
-                this.sx  = e.clientX;
-                this.sy  = e.clientY;
-                this.slx = this.offsetLeft;
-                this.sly = this.offsetTop;
-    
-                this.dragging = true;
-                this.setPointerCapture(e.pointerId);
-            }
-        });
-    
-        this.div.addEventListener('pointermove', function(e) 
-        {
-            if (this.dragging)
-            {
-                this.op.setDivPosition(
-                    this.slx + e.clientX - this.sx,
-                    this.sly + e.clientY - this.sy);
-            };
-        });
-    
-        this.div.addEventListener('pointerup', function(e) 
-        {
-            if (   e.button == 0
-                && this.dragging)
-            {
-                this.dragging = false;
-                this.releasePointerCapture(e.pointerId);
-            }
-        });
-        
-        
-        this.div.addEventListener('dblclick', function(e)
-        {
-            this.op.makeActive();
-        });
-
-
-        this.div.addEventListener('pointerenter', function(e)
-        {
-            this.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
-        });
-
-        this.div.addEventListener('pointerleave', function(e)
-        {
-            this.op.inner.style.boxShadow = 'none';
-        });
-
-
-        this.createDivHeader(headerColor);
-    }     
-
-
-    createDivHeader(headerColor)
-    {
-        this.header = document.createElement('div');
-        this.header.className = 'nodeHeader';
-        this.header.style.backgroundColor = headerColor;
-
-        this.inputControls = document.createElement('div');
-        this.inputControls.className = 'inputControls';
-        this.header.appendChild(this.inputControls);
-
-        this.createDivLabel();
-
-        this.outputControls = document.createElement('div');
-        this.outputControls.className = 'outputControls';
-        this.header.appendChild(this.outputControls);
-
-        this.inner.appendChild(this.header);
-    }
-
-
-    createDivLabel()
-    {
-        this.label = document.createElement('div');
-        this.label.className = 'nodeLabel';
-        this.header.appendChild(this.label);
-    }
-    
-
-    setDivPosition(x, y)
-    {
-        this.div.style.left = x;
-        this.div.style.top  = y;
-
-        for (const input of this.inputs)
-        {
-            if (input.connected) 
-                input.connection.updateWire();
-        }
-
-        if (   this.output 
-            && this.output.connected)
-        {
-            for (const input of this.output.connectedInputs)
-                input.connection.updateWire();
-        }
-    }
-
-
     addInput(input)
     {
         input._op = this;
@@ -2542,6 +2457,282 @@ class Operator
         }
 
         return false;
+    }
+}
+
+
+function createDiv(node, headerColor)
+{
+    node.div = document.createElement('div');
+
+    node.div.className = 'node';
+    node.div.op        = node;
+    node.div.dragging  = false;
+
+
+    node.inner = document.createElement('div');
+    node.inner.className = 'nodeInner';
+
+    node.div.appendChild(node.inner);
+
+
+    node.div.addEventListener('pointerdown', function(e) 
+    {
+        if (   e.button == 0
+            && !graphView.overOutput
+            && !graphView.overInput)
+        {
+            e.target.op.sx  = e.clientX;
+            e.target.op.sy  = e.clientY;
+            e.target.op.slx = e.target.op.offsetLeft;
+            e.target.op.sly = e.target.op.offsetTop;
+
+            e.target.dragging = true;
+            e.target.setPointerCapture(e.pointerId);
+        }
+    });
+
+    node.div.addEventListener('pointermove', function(e) 
+    {
+        if (e.target.dragging)
+        {
+            setDivPosition(
+                e.target.op,
+                e.target.op.slx + e.clientX - e.target.op.sx,
+                e.target.op.sly + e.clientY - e.target.op.sy);
+        };
+    });
+
+    node.div.addEventListener('pointerup', function(e) 
+    {
+        if (   e.button == 0
+            && e.target.dragging)
+        {
+            e.target.dragging = false;
+            e.target.releasePointerCapture(e.pointerId);
+        }
+    });
+    
+    
+    node.div.addEventListener('dblclick', function(e)
+    {
+        e.target.op.makeActive();
+    });
+
+
+    node.div.addEventListener('pointerenter', function(e)
+    {
+        e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+    });
+
+    node.div.addEventListener('pointerleave', function(e)
+    {
+        e.target.op.inner.style.boxShadow = 'none';
+    });
+
+
+    createDivHeader(node, headerColor);
+}     
+
+
+function createDivHeader(node, headerColor)
+{
+    node.header = document.createElement('div');
+    node.header.className = 'nodeHeader';
+    node.header.style.backgroundColor = headerColor;
+
+    node.inputControls = document.createElement('div');
+    node.inputControls.className = 'inputControls';
+    node.header.appendChild(node.inputControls);
+
+    createDivLabel(node);
+
+    node.outputControls = document.createElement('div');
+    node.outputControls.className = 'outputControls';
+    node.header.appendChild(node.outputControls);
+
+    node.inner.appendChild(node.header);
+}
+
+
+function createDivLabel(node)
+{
+    node.label = document.createElement('div');
+    node.label.className = 'nodeLabel';
+    node.label.op = node;
+    
+    node.label.addEventListener('dblclick', e =>
+    {
+        e.target.op.showLabelTextbox();
+    });
+    
+    node.header.appendChild(node.label);
+
+    initLabelTextbox(node);
+}
+
+
+function setDivPosition(node, x, y)
+{
+    node.div.style.left = x;
+    node.div.style.top  = y;
+
+    for (const input of node.inputs)
+    {
+        if (input.connected) 
+            input.connection.updateWire();
+    }
+
+    if (   node.output 
+        && node.output.connected)
+    {
+        for (const input of node.output.connectedInputs)
+            input.connection.updateWire();
+    }
+}
+
+
+function initLabelTextbox(node)
+{
+    node.textbox = document.createElement('INPUT');
+    node.textbox.setAttribute('type', 'text'); 
+    node.textbox.className  = 'nodeLabelTextbox';
+    node.textbox.spellcheck = false;
+    
+    node.textbox.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'KeyC'
+            && e.ctrlKey)
+        {
+            e.preventDefault();
+            document.execCommand("copy");
+        }
+        else if (e.code == 'KeyV'
+              && e.ctrlKey)
+        {
+            e.preventDefault();
+            document.execCommand("paste");
+        }
+        
+        else if (e.code == 'Enter'
+              || e.code == 'NumpadEnter')
+        {
+            if (!graph.nodes.find(n => n.id == node.textbox.value))
+                node.textbox.finish(true);
+        }
+
+        else if (e.code == 'Escape')
+            node.textbox.finish(false);
+
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+            
+            var tabs  = document.querySelectorAll('.node, .figmaSelect, #hexValue, button');
+            var index = node.tabIndex;
+
+            for (var i = 0; i < tabs.length; i++) 
+            {
+                if (   e.shiftKey && tabs[i].tabIndex == index - 1
+                    ||               tabs[i].tabIndex == index + 1) 
+                {
+                    if (tabs[i].className == 'node')
+                        tabs[i].showTextbox();
+                    else 
+                    {
+                        document.activeElement.blur();
+                        tabs[i].focus();
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        // else 
+        // {
+        //     if (   e.key.length == 1
+        //         && !isDigit(e.key)
+        //         && e.key != '.'
+        //         && !(   (   e.code == 'Minus'
+        //                  || e.code == 'NumpadSubtract')
+        //              && node.min < 0))
+        //         e.preventDefault();
+
+        //     var t = node.textbox;
+
+        //     var curVal = t.value;
+
+        //     curVal = 
+        //           curVal.substring(0, t.selectionStart) 
+        //         + curVal.substring(t.selectionEnd, curVal.length);
+
+        //     var nextVal = parseFloat(curVal + e.key);
+
+        //     if (   nextVal < node.min - 0.001
+        //         || nextVal > node.max)
+        //         e.preventDefault();            
+        // }
+    });
+
+
+    // node.textbox.addEventListener('input', function()
+    // {
+    //     node.setValue(Number(node.textbox.value));
+    // });
+
+    node.textbox.addEventListener('paste', function(e)
+    {
+        e.preventDefault();
+
+        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        val = Math.min(Math.max(node.min, val), node.max);
+
+        node.textbox.value = isNaN(val) ? '' : val;
+    });
+
+    node.textbox.addEventListener('focusout', function()
+    {
+        node.header.removeChild(node.textbox);
+        node.clicked = false;
+    });
+    
+    node.textbox.finish = function(success)
+    {
+        if (success) 
+        {
+            if (node.textbox.value != '')
+                node.id = node.textbox.value;
+        }
+
+        node.textbox.blur();
+
+        if (node.inFocus)
+            node.focus();
+    };    
+    
+    
+    node.showLabelTextbox = function()
+    {
+        node.inFocus = 
+                node == document.activeElement
+            && !node.clicked;
+    
+        node.textbox.style.width     = node.header.offsetWidth  - 2;
+        node.textbox.style.height    = node.header.offsetHeight - 4;
+        node.textbox.style.position  = 'absolute';
+        node.textbox.style.left      = '50%';
+        node.textbox.style.top       = '50%';
+        node.textbox.style.transform = 'translateX(-50%) translateY(-50%)';
+        node.textbox.style.textAlign = 'center';
+    
+        node.textbox.value      = node.id;
+        node.textbox.savedValue = node.textbox.value;
+        
+        node.header.appendChild(node.textbox);
+        
+        node.textbox.focus();
+        node.textbox.select();
     }
 }
 
@@ -3047,9 +3238,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             
         slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
 
-        // slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
-        // slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);
-
         if (   fireChangeEvent
             && slider.enableChangeEvent)
             slider.dispatchEvent(slider.onchange);
@@ -3101,8 +3289,7 @@ function onSliderClickTimer(slider)
     if (!document.menuHadFocus)
     {
         slider.moved = true;
-        slider.lockPointer();//slider.clickId);
-        //slider.clickId = null;
+        slider.lockPointer();
     }
 }
 
@@ -3111,7 +3298,7 @@ function initSliderTextbox(slider)
 {
     slider.textbox = document.createElement('INPUT');
     slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderTextbox';
+    slider.textbox.className = 'sliderText';
     
     slider.textbox.addEventListener('keydown', function(e)
     {
@@ -3232,7 +3419,7 @@ function initSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 2px #18A0FB';
+        slider.textbox.style.boxShadow = '0 0 0 1px #18A0FB';
         slider.textbox.style.outline   = 'none';
     
         slider.textbox.style.textAlign = 'center';

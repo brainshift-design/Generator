@@ -249,9 +249,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             
         slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
 
-        // slider.text.style.left = slider.offsetLeft + Math.floor((slider.clientWidth  - slider.text.offsetWidth ) / 2);
-        // slider.text.style.top  = slider.offsetTop  + Math.floor((slider.clientHeight - slider.text.offsetHeight) / 2);
-
         if (   fireChangeEvent
             && slider.enableChangeEvent)
             slider.dispatchEvent(slider.onchange);
@@ -303,7 +300,6 @@ function onSliderClickTimer(slider)
     if (!document.menuHadFocus)
     {
         slider.moved = true;
-        slider.lockPointer();//slider.clickId);
-        //slider.clickId = null;
+        slider.lockPointer();
     }
 }

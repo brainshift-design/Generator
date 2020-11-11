@@ -14,6 +14,11 @@ class Operator
 
     _id;
     get id() { return this._id; }
+    set id(id)
+    {
+        this._id = id;
+        this.label.innerHTML = id;
+    }
     
     _graph = null;
     get graph() { return this._graph; }
@@ -148,131 +153,10 @@ class Operator
         this._id = opType; // this is a temp until the op becomes a graph node
         
         var headerColor = colorFromDataType(dataType, false);
-        this.createDiv(headerColor);
+        createDiv(this, headerColor);
     }    
     
     
-    createDiv(headerColor)
-    {
-        this.div = document.createElement('div');
-
-        this.div.className = 'node';
-        this.div.op        = this;
-        this.div.dragging  = false;
-    
-
-        this.inner = document.createElement('div');
-        this.inner.className = 'nodeInner';
-
-        this.div.appendChild(this.inner);
-
-
-        this.div.addEventListener('pointerdown', function(e) 
-        {
-            if (   e.button == 0
-                && !graphView.overOutput
-                && !graphView.overInput)
-            {
-                this.sx  = e.clientX;
-                this.sy  = e.clientY;
-                this.slx = this.offsetLeft;
-                this.sly = this.offsetTop;
-    
-                this.dragging = true;
-                this.setPointerCapture(e.pointerId);
-            }
-        });
-    
-        this.div.addEventListener('pointermove', function(e) 
-        {
-            if (this.dragging)
-            {
-                this.op.setDivPosition(
-                    this.slx + e.clientX - this.sx,
-                    this.sly + e.clientY - this.sy);
-            };
-        });
-    
-        this.div.addEventListener('pointerup', function(e) 
-        {
-            if (   e.button == 0
-                && this.dragging)
-            {
-                this.dragging = false;
-                this.releasePointerCapture(e.pointerId);
-            }
-        });
-        
-        
-        this.div.addEventListener('dblclick', function(e)
-        {
-            this.op.makeActive();
-        });
-
-
-        this.div.addEventListener('pointerenter', function(e)
-        {
-            this.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
-        });
-
-        this.div.addEventListener('pointerleave', function(e)
-        {
-            this.op.inner.style.boxShadow = 'none';
-        });
-
-
-        this.createDivHeader(headerColor);
-    }     
-
-
-    createDivHeader(headerColor)
-    {
-        this.header = document.createElement('div');
-        this.header.className = 'nodeHeader';
-        this.header.style.backgroundColor = headerColor;
-
-        this.inputControls = document.createElement('div');
-        this.inputControls.className = 'inputControls';
-        this.header.appendChild(this.inputControls);
-
-        this.createDivLabel();
-
-        this.outputControls = document.createElement('div');
-        this.outputControls.className = 'outputControls';
-        this.header.appendChild(this.outputControls);
-
-        this.inner.appendChild(this.header);
-    }
-
-
-    createDivLabel()
-    {
-        this.label = document.createElement('div');
-        this.label.className = 'nodeLabel';
-        this.header.appendChild(this.label);
-    }
-    
-
-    setDivPosition(x, y)
-    {
-        this.div.style.left = x;
-        this.div.style.top  = y;
-
-        for (const input of this.inputs)
-        {
-            if (input.connected) 
-                input.connection.updateWire();
-        }
-
-        if (   this.output 
-            && this.output.connected)
-        {
-            for (const input of this.output.connectedInputs)
-                input.connection.updateWire();
-        }
-    }
-
-
     addInput(input)
     {
         input._op = this;

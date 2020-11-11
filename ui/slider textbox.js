@@ -2,7 +2,7 @@ function initSliderTextbox(slider)
 {
     slider.textbox = document.createElement('INPUT');
     slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderTextbox';
+    slider.textbox.className = 'sliderText';
     
     slider.textbox.addEventListener('keydown', function(e)
     {
@@ -123,7 +123,7 @@ function initSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 2px #18A0FB';
+        slider.textbox.style.boxShadow = '0 0 0 1px #18A0FB';
         slider.textbox.style.outline   = 'none';
     
         slider.textbox.style.textAlign = 'center';

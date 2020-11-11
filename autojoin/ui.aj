@@ -32,6 +32,8 @@ html/ui_2.html
     operators/Output.js
     operators/Connection.js
     operators/Operator.js
+    operators/Operator node.js
+    operators/Operator textbox.js
 
     operators/OpRect.js
     
