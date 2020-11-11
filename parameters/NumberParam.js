@@ -37,20 +37,19 @@ extends Parameter
 
         this.input = new Input ('number');
         this.input._param = this;
-        this.input.control.style.float = 'left';
-        this.input.control.style.position = 'relative';
-        this.input.control.style.left = 3;
-        this.input.control.style.top  = 5;
-        //this.input.control.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.12)';
-        this.divIO.appendChild(this.input.control);
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
 
         this.output = new Output('number');
         this.output._param = this;
-        this.output.control.style.float = 'right';
-        this.output.control.style.right = 3;
-        this.output.control.style.top   = 5;
-        //this.output.control.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.12)';
-        this.divIO.appendChild(this.output.control);
+        this.output.control.style.float     = 'right';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
             
         this._control.addEventListener('onchange', function(e)
         {

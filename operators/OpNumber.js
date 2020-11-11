@@ -3,7 +3,6 @@ extends Operator
 {
     #value;
 
-
     constructor()
     {
         super('number', 'NUM');

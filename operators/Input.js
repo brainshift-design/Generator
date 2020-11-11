@@ -25,8 +25,7 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
-        this.control.style.pointerEvents = 'auto';
-
+    
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
         this.control.addEventListener('pointerenter', () => graphView.overInput = this);

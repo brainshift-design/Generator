@@ -206,7 +206,7 @@ button svg
 {
     font-family: Inter;
     font-size:   11;
-    padding:     3px 4px 0 0;
+    padding:     6px 0 0 0;
     display:     table-cell;
     width:       calc(100% - 2px);
     height:      20;
@@ -218,7 +218,8 @@ button svg
 .inputControls
 {
     width:      20px;
-    height:     22px;
+    height:     25px;
+    position:   relative;
     display:    inline-block;
     text-align: center;
 }
@@ -227,7 +228,8 @@ button svg
 .outputControls
 {
     width:      20px;
-    height:     22px;
+    height:     25px;
+    position:   relative;
     display:    inline-block;
     text-align: center;
 }
@@ -235,14 +237,17 @@ button svg
 
 .input
 {
-    width:         10px;
-    height:        10px;
-    background:    white;
-    border-radius: 5px;
-    position:      relative;
-    top:           6px;
-    margin:        auto;
-    box-shadow:    0 0 0 1px rgba(0, 0, 0, 0.12);
+    width:          10px;
+    height:         10px;
+    background:     white;
+    border-radius:  5px;
+    margin:         0;
+    position:       absolute;
+    top:            50%;
+    transform:      translateY(-50%);
+    left:           3px;
+    pointer-events: auto;
+    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .input:hover
@@ -252,14 +257,17 @@ button svg
 
 .output
 {
-    width:         10px;
-    height:        10px;
-    background:    white;
-    border-radius: 5px;
-    position:      relative;
-    top:           6px;
-    margin:        auto;
-    box-shadow:    0 0 0 1px rgba(0, 0, 0, 0.12);
+    width:          10px;
+    height:         10px;
+    background:     white;
+    border-radius:  5px;
+    margin:         0;
+    position:       absolute;
+    top:            50%;
+    transform:      translateY(-50%);
+    right:          3px;
+    pointer-events: auto;
+    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .output:hover
@@ -1241,7 +1249,7 @@ class Graph
     
     getNewId(_node)
     {
-        var type = _node.type;
+        var opType = _node.opType;
 
         var maxNum = 0;
         
@@ -1250,11 +1258,11 @@ class Graph
             if (node == _node)
                 continue;
                 
-            if (   node.id.length < type.length
-                || node.id.substring(0, type.length) !== type)
+            if (   node.id.length < opType.length
+                || node.id.substring(0, opType.length) !== opType)
                 continue;
                 
-            var num = parseInt(node.id.substring(type.length));
+            var num = parseInt(node.id.substring(opType.length));
             
             if (isNaN(num) || num == 0) 
                 num = 1;
@@ -1263,11 +1271,11 @@ class Graph
         }
 
         if (maxNum == 0)
-            return type;
+            return opType;
 
         maxNum++;
 
-        return type + maxNum;
+        return opType + maxNum;
     }
     
     
@@ -1280,9 +1288,9 @@ class Graph
             case 'number': node = new OpNumber(); break;
             case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
-            case 'spread': node = new OpSpread(); break;
             case 'row':    node = new OpRow();    break;
             case 'column': node = new OpColumn(); break;
+            case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);
@@ -1292,11 +1300,10 @@ class Graph
 
     addNode(node)
     {
-        this.nodes.push(node);
-
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
-
+        
+        this.nodes.push(node);
         graphView.appendChild(node.div);
     }
     
@@ -1791,7 +1798,7 @@ class Parameter
     _op;      get op()      { return this._op;      }
     _control; get control() { return this._control; }
     _div;     get div()     { return this._div;     }
-    _divIO;   get divIO()   { return this._divIO;   }
+    //_divIO;   get divIO()   { return this._divIO;   }
 
     constructor(type)
     {
@@ -1802,16 +1809,16 @@ class Parameter
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
 
-        this._divIO = document.createElement('div');
-        this.divIO.style.position      = 'absolute';
-        this.divIO.style.width         = '100%';
-        this.divIO.style.height        = '100vh';
-        this.divIO.style.padding       = 0;
-        this.divIO.style.margin        = 0;
-        this.divIO.style.pointerEvents = 'none';
-        this.divIO.zIndex              = 10;
+        // this._divIO = document.createElement('div');
+        // this.divIO.style.position      = 'absolute';
+        // this.divIO.style.width         = '100%';
+        // this.divIO.style.height        = '100vh';
+        // this.divIO.style.padding       = 0;
+        // this.divIO.style.margin        = 0;
+        // this.divIO.style.pointerEvents = 'none';
+        // this.divIO.zIndex              = 10;
 
-        this.div.appendChild(this.divIO);
+        //this.div.appendChild(this.divIO);
     }
 }
 
@@ -1855,20 +1862,19 @@ extends Parameter
 
         this.input = new Input ('number');
         this.input._param = this;
-        this.input.control.style.float = 'left';
-        this.input.control.style.position = 'relative';
-        this.input.control.style.left = 3;
-        this.input.control.style.top  = 5;
-        //this.input.control.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.12)';
-        this.divIO.appendChild(this.input.control);
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
 
         this.output = new Output('number');
         this.output._param = this;
-        this.output.control.style.float = 'right';
-        this.output.control.style.right = 3;
-        this.output.control.style.top   = 5;
-        //this.output.control.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.12)';
-        this.divIO.appendChild(this.output.control);
+        this.output.control.style.float     = 'right';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
             
         this._control.addEventListener('onchange', function(e)
         {
@@ -1912,8 +1918,7 @@ class Input
 
         this.control = document.createElement('div');
         this.control.className = 'input';
-        this.control.style.pointerEvents = 'auto';
-
+    
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
         this.control.addEventListener('pointerenter', () => graphView.overInput = this);
@@ -1958,7 +1963,6 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
-        this.control.style.pointerEvents = 'auto';
 
         this.control.addEventListener('pointerenter', e => graphView.overOutput = this);
         this.control.addEventListener('pointerleave', e => graphView.overOutput = null);
@@ -2353,10 +2357,7 @@ class Operator
     createDivLabel()
     {
         this.label = document.createElement('div');
-
         this.label.className = 'nodeLabel';
-        this.label.innerHTML = this.id;
-          
         this.header.appendChild(this.label);
     }
     
@@ -2372,7 +2373,8 @@ class Operator
                 input.connection.updateWire();
         }
 
-        if (this.output.connected)
+        if (   this.output 
+            && this.output.connected)
         {
             for (const input of this.output.connectedInputs)
                 input.connection.updateWire();
@@ -2416,7 +2418,7 @@ class Operator
 
     setId(newId)
     {
-        if (this._graph.nodes.findIndex(node => node.id == newId) >= 0)
+        if (this._graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
         this._id = newId;
@@ -2665,7 +2667,6 @@ class   OpNumber
 extends Operator
 {
     #value;
-
 
     constructor()
     {

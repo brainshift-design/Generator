@@ -25,7 +25,6 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
-        this.control.style.pointerEvents = 'auto';
 
         this.control.addEventListener('pointerenter', e => graphView.overOutput = this);
         this.control.addEventListener('pointerleave', e => graphView.overOutput = null);

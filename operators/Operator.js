@@ -255,10 +255,7 @@ class Operator
     createDivLabel()
     {
         this.label = document.createElement('div');
-
         this.label.className = 'nodeLabel';
-        this.label.innerHTML = this.id;
-          
         this.header.appendChild(this.label);
     }
     
@@ -274,7 +271,8 @@ class Operator
                 input.connection.updateWire();
         }
 
-        if (this.output.connected)
+        if (   this.output 
+            && this.output.connected)
         {
             for (const input of this.output.connectedInputs)
                 input.connection.updateWire();
@@ -318,7 +316,7 @@ class Operator
 
     setId(newId)
     {
-        if (this._graph.nodes.findIndex(node => node.id == newId) >= 0)
+        if (this._graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
         this._id = newId;

@@ -12,7 +12,7 @@ class Graph
     
     getNewId(_node)
     {
-        var type = _node.type;
+        var opType = _node.opType;
 
         var maxNum = 0;
         
@@ -21,11 +21,11 @@ class Graph
             if (node == _node)
                 continue;
                 
-            if (   node.id.length < type.length
-                || node.id.substring(0, type.length) !== type)
+            if (   node.id.length < opType.length
+                || node.id.substring(0, opType.length) !== opType)
                 continue;
                 
-            var num = parseInt(node.id.substring(type.length));
+            var num = parseInt(node.id.substring(opType.length));
             
             if (isNaN(num) || num == 0) 
                 num = 1;
@@ -34,11 +34,11 @@ class Graph
         }
 
         if (maxNum == 0)
-            return type;
+            return opType;
 
         maxNum++;
 
-        return type + maxNum;
+        return opType + maxNum;
     }
     
     
@@ -51,9 +51,9 @@ class Graph
             case 'number': node = new OpNumber(); break;
             case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
-            case 'spread': node = new OpSpread(); break;
             case 'row':    node = new OpRow();    break;
             case 'column': node = new OpColumn(); break;
+            case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);
@@ -63,11 +63,10 @@ class Graph
 
     addNode(node)
     {
-        this.nodes.push(node);
-
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
-
+        
+        this.nodes.push(node);
         graphView.appendChild(node.div);
     }
     

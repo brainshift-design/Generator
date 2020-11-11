@@ -40,7 +40,7 @@
 {
     font-family: Inter;
     font-size:   11;
-    padding:     3px 4px 0 0;
+    padding:     6px 0 0 0;
     display:     table-cell;
     width:       calc(100% - 2px);
     height:      20;
@@ -52,7 +52,8 @@
 .inputControls
 {
     width:      20px;
-    height:     22px;
+    height:     25px;
+    position:   relative;
     display:    inline-block;
     text-align: center;
 }
@@ -61,7 +62,8 @@
 .outputControls
 {
     width:      20px;
-    height:     22px;
+    height:     25px;
+    position:   relative;
     display:    inline-block;
     text-align: center;
 }
@@ -69,14 +71,17 @@
 
 .input
 {
-    width:         10px;
-    height:        10px;
-    background:    white;
-    border-radius: 5px;
-    position:      relative;
-    top:           6px;
-    margin:        auto;
-    box-shadow:    0 0 0 1px rgba(0, 0, 0, 0.12);
+    width:          10px;
+    height:         10px;
+    background:     white;
+    border-radius:  5px;
+    margin:         0;
+    position:       absolute;
+    top:            50%;
+    transform:      translateY(-50%);
+    left:           3px;
+    pointer-events: auto;
+    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .input:hover
@@ -86,14 +91,17 @@
 
 .output
 {
-    width:         10px;
-    height:        10px;
-    background:    white;
-    border-radius: 5px;
-    position:      relative;
-    top:           6px;
-    margin:        auto;
-    box-shadow:    0 0 0 1px rgba(0, 0, 0, 0.12);
+    width:          10px;
+    height:         10px;
+    background:     white;
+    border-radius:  5px;
+    margin:         0;
+    position:       absolute;
+    top:            50%;
+    transform:      translateY(-50%);
+    right:          3px;
+    pointer-events: auto;
+    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .output:hover
