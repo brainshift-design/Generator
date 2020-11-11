@@ -189,6 +189,11 @@ button svg
 }
 
 
+#graphView
+{
+    z-index: 0;
+}
+
 .node
 {
     display:       block;
@@ -310,9 +315,8 @@ button svg
 
 #wires
 {
-    left:           0;
-    top:            0;
     pointer-events: none;
+    z-index: 2000000000;
 }
 
 
@@ -1366,7 +1370,6 @@ class Graph
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
         
-        
         if (this.nodes.length > 0)
         {
             const bounds = graphView.getNodeBounds();
@@ -1383,13 +1386,15 @@ class Graph
             this.nodes.push(node);
             graphView.appendChild(node.div);
 
+            node.div.style.zIndex = graph.nodes.length-1;
             node.div.style.left = 100;
 
             // I subtract the full height of the node here as they grow down, so this
             // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top  = graphView.offsetHeight/2 - node.div.offsetHeight;
+            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
         }
 
+        putNodeOnTop(node);
     }
     
 
@@ -2131,8 +2136,8 @@ class Connection
 
         var color;
 
-             if (op)    color = '#18A0FB';
-        else if (param) color = '#444';
+             if (op)    color = ACTIVE_OBJ_COLOR;
+        else if (param) color = ACTIVE_NUM_COLOR; //'#444';
 
         this.wire.curve.setAttribute('d',
                'M ' +  (x1                ) + ',' + y1
@@ -2467,11 +2472,7 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerdown', function(e) 
     {
-        for (const n of graph.nodes)
-            n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
-
-        node.div.style.zIndex = Number.MAX_SAFE_INTEGER;
-
+        putNodeOnTop(node);
         
         if (   e.button == 0
             && !graphView.overOutput
@@ -3064,6 +3065,16 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('pointerdown', function(e)
     {
+        var opDiv = 
+               slider.parentNode
+            && slider.parentNode.parentNode
+            && slider.parentNode.parentNode.parentNode
+            ? slider.parentNode.parentNode.parentNode
+            : null;
+
+        if (opDiv && opDiv.className == 'node') putNodeOnTop(opDiv.op);
+
+
         if (e.button == 0)
         {
             e.preventDefault(); // this is fine since I lock the pointer anyway
@@ -3862,6 +3873,15 @@ graphView.getNodeBounds = () =>
         w: boundsR - boundsL,
         h: boundsB - boundsT };
 };
+
+
+function putNodeOnTop(node)
+{
+    for (const n of graph.nodes)
+        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
+
+    node.div.style.zIndex = graph.nodes.length-1;
+}
 
 
 var worker = new Worker(

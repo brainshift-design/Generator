@@ -67,6 +67,16 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('pointerdown', function(e)
     {
+        var opDiv = 
+               slider.parentNode
+            && slider.parentNode.parentNode
+            && slider.parentNode.parentNode.parentNode
+            ? slider.parentNode.parentNode.parentNode
+            : null;
+
+        if (opDiv && opDiv.className == 'node') putNodeOnTop(opDiv.op);
+
+
         if (e.button == 0)
         {
             e.preventDefault(); // this is fine since I lock the pointer anyway

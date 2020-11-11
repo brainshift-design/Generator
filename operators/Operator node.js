@@ -15,11 +15,7 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerdown', function(e) 
     {
-        for (const n of graph.nodes)
-            n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
-
-        node.div.style.zIndex = Number.MAX_SAFE_INTEGER;
-
+        putNodeOnTop(node);
         
         if (   e.button == 0
             && !graphView.overOutput

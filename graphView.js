@@ -128,3 +128,12 @@ graphView.getNodeBounds = () =>
         w: boundsR - boundsL,
         h: boundsB - boundsT };
 };
+
+
+function putNodeOnTop(node)
+{
+    for (const n of graph.nodes)
+        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
+
+    node.div.style.zIndex = graph.nodes.length-1;
+}

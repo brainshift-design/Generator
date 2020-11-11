@@ -1,3 +1,8 @@
+#graphView
+{
+    z-index: 0;
+}
+
 .node
 {
     display:       block;
@@ -119,7 +124,6 @@
 
 #wires
 {
-    left:           0;
-    top:            0;
     pointer-events: none;
+    z-index: 2000000000;
 }
