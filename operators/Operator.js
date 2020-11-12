@@ -49,7 +49,7 @@ class Operator
 
         if (   this.output
             && this.output.dataType == 'OBJ')
-            regenerateOutputs([this.output]);
+            regenerate([this.output]);
     }
 
     

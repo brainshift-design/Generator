@@ -540,27 +540,26 @@ class Random
 
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateObjects')
+    if (e.data.msg === 'regenerate')
     {
-        var objects = generate(e.data.data);
-
         postMessage({ 
-            cmd:    'regenerateObjects',
+            cmd:    'regenerate',
             nodeId:  e.data.nodeId,
-            objects: objects
+            data:    generate(e.data.data)
         });
     }
 };
 
 
-function generate(obj)
+function generate(data)
 {
-    switch (obj.type)
+    switch (data.type)
     {
-        case 'rect'  : return generateRect  (obj);
-        case 'row'   : return generateRow   (obj);
-        case 'column': return generateColumn(obj);
-        case 'spread': return generateSpread(obj);
+        case 'number': return generateNumber(
+        case 'rect'  : return generateRect  (data);
+        case 'row'   : return generateRow   (data);
+        case 'column': return generateColumn(data);
+        case 'spread': return generateSpread(data);
     }    
 }
 

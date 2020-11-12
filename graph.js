@@ -119,7 +119,7 @@ class Graph
             input.op.valid = false;
         
             if (input.op.activeNodeInTree.output)
-                regenerateOutputs([input.op.activeNodeInTree.output]);
+                regenerate([input.op.activeNodeInTree.output]);
 
             return true;
         }
@@ -140,7 +140,7 @@ class Graph
             input.param.op.valid = false;
         
             if (input.param.op.activeNodeInTree.output)
-                regenerateOutputs([input.param.op.activeNodeInTree.output]);
+                regenerate([input.param.op.activeNodeInTree.output]);
 
             return true;
         }
@@ -188,7 +188,7 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-        regenerateOutputs([
+        regenerate([
             output, 
             inputOp.activeNodeInTree.output]);
 

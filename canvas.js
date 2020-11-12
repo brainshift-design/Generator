@@ -5,7 +5,7 @@ var worker = new Worker(
 
 worker.onmessage = function(e)
 {
-    if (e.data.cmd == 'regenerateObjects')
+    if (e.data.cmd == 'regenerate')
     {
         const node = graph.nodeFromId(e.data.nodeId);
         var removeList = [];
@@ -20,14 +20,14 @@ worker.onmessage = function(e)
         {
             parent.postMessage({ pluginMessage: 
             { 
-                cmd: 'removeObjectList',
+                cmd: 'removeList',
                 data: removeList
             }}, '*');
         }
 
         parent.postMessage({ pluginMessage: 
         { 
-            cmd:   'regenerateObjects',
+            cmd:   'regenerate',
             nodeId: e.data.nodeId,
             data:   e.data.objects
         }}, '*');    
@@ -41,13 +41,13 @@ worker.onmessage = function(e)
             var deferOutputs = Array.from(graph.deferOutputs);
             graph.deferOutputs = [];
 
-            regenerateOutputs(deferOutputs);
+            regenerate(deferOutputs);
         }
     }
 };
       
 
-function regenerateOutputs(outputs)
+function regenerate(outputs)
 {
     if (graph.mutex)
     {
@@ -68,7 +68,7 @@ function regenerateOutputs(outputs)
         {
             worker.postMessage(
             {
-                msg:   'regenerateObjects',
+                msg:   'regenerate',
                 nodeId: output.op.id,
                 data:   output.data
             });

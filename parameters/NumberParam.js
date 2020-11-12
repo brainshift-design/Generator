@@ -52,7 +52,7 @@ extends Parameter
             op.valid = false;
 
             if (op.activeNodeInTree.output)
-                regenerateOutputs([op.activeNodeInTree.output]);
+                regenerate([op.activeNodeInTree.output]);
     
             op.graph.mutex = true;            
         });

@@ -881,27 +881,26 @@ class Random
 
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateObjects')
+    if (e.data.msg === 'regenerate')
     {
-        var objects = generate(e.data.data);
-
         postMessage({ 
-            cmd:    'regenerateObjects',
+            cmd:    'regenerate',
             nodeId:  e.data.nodeId,
-            objects: objects
+            data:    generate(e.data.data)
         });
     }
 };
 
 
-function generate(obj)
+function generate(data)
 {
-    switch (obj.type)
+    switch (data.type)
     {
-        case 'rect'  : return generateRect  (obj);
-        case 'row'   : return generateRow   (obj);
-        case 'column': return generateColumn(obj);
-        case 'spread': return generateSpread(obj);
+        case 'number': return generateNumber(
+        case 'rect'  : return generateRect  (data);
+        case 'row'   : return generateRow   (data);
+        case 'column': return generateColumn(data);
+        case 'spread': return generateSpread(data);
     }    
 }
 
@@ -1423,7 +1422,7 @@ class Graph
             input.op.valid = false;
         
             if (input.op.activeNodeInTree.output)
-                regenerateOutputs([input.op.activeNodeInTree.output]);
+                regenerate([input.op.activeNodeInTree.output]);
 
             return true;
         }
@@ -1444,7 +1443,7 @@ class Graph
             input.param.op.valid = false;
         
             if (input.param.op.activeNodeInTree.output)
-                regenerateOutputs([input.param.op.activeNodeInTree.output]);
+                regenerate([input.param.op.activeNodeInTree.output]);
 
             return true;
         }
@@ -1492,7 +1491,7 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-        regenerateOutputs([
+        regenerate([
             output, 
             inputOp.activeNodeInTree.output]);
 
@@ -1991,7 +1990,7 @@ extends Parameter
             op.valid = false;
 
             if (op.activeNodeInTree.output)
-                regenerateOutputs([op.activeNodeInTree.output]);
+                regenerate([op.activeNodeInTree.output]);
     
             op.graph.mutex = true;            
         });
@@ -2290,7 +2289,7 @@ class Operator
 
         if (   this.output
             && this.output.dataType == 'OBJ')
-            regenerateOutputs([this.output]);
+            regenerate([this.output]);
     }
 
     
@@ -2792,13 +2791,14 @@ extends Operator
 
         this.output._data = 
         {
-            id:     this.id,
-            type:   this.opType,
+            id:       this.id,
+            dataType: this.dataType,
+            opType:   this.opType,
 
-            x:      0,
-            y:      0,
-            width:  this.#width .value,
-            height: this.#height.value,
+            x:        0,
+            y:        0,
+            width:    this.#width .value,
+            height:   this.#height.value,
 
             inputs: []
         };
@@ -3939,7 +3939,7 @@ var worker = new Worker(
 
 worker.onmessage = function(e)
 {
-    if (e.data.cmd == 'regenerateObjects')
+    if (e.data.cmd == 'regenerate')
     {
         const node = graph.nodeFromId(e.data.nodeId);
         var removeList = [];
@@ -3954,14 +3954,14 @@ worker.onmessage = function(e)
         {
             parent.postMessage({ pluginMessage: 
             { 
-                cmd: 'removeObjectList',
+                cmd: 'removeList',
                 data: removeList
             }}, '*');
         }
 
         parent.postMessage({ pluginMessage: 
         { 
-            cmd:   'regenerateObjects',
+            cmd:   'regenerate',
             nodeId: e.data.nodeId,
             data:   e.data.objects
         }}, '*');    
@@ -3975,13 +3975,13 @@ worker.onmessage = function(e)
             var deferOutputs = Array.from(graph.deferOutputs);
             graph.deferOutputs = [];
 
-            regenerateOutputs(deferOutputs);
+            regenerate(deferOutputs);
         }
     }
 };
       
 
-function regenerateOutputs(outputs)
+function regenerate(outputs)
 {
     if (graph.mutex)
     {
@@ -4002,7 +4002,7 @@ function regenerateOutputs(outputs)
         {
             worker.postMessage(
             {
-                msg:   'regenerateObjects',
+                msg:   'regenerate',
                 nodeId: output.op.id,
                 data:   output.data
             });
