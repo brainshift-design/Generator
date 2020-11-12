@@ -15,7 +15,8 @@ function generate(data)
 {
     switch (data.type)
     {
-        case 'number': return generateNumber(
+        case 'number': return generateNumber(data);
+        case 'random': return generateRandom(data);
         case 'rect'  : return generateRect  (data);
         case 'row'   : return generateRow   (data);
         case 'column': return generateColumn(data);
