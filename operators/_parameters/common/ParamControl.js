@@ -1,9 +1,8 @@
-class Parameter
+class ParamControl
 {
-    #type;
-    get type() { return this.#type; }
-    
-    _op;      get op()      { return this._op;      }
+    #type;    get type()    { return this.#type;    }
+    _node;    get node()    { return this._node;    }
+
     _control; get control() { return this._control; }
     _div;     get div()     { return this._div;     }
 

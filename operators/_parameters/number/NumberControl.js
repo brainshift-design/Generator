@@ -1,5 +1,5 @@
-class   NumberParam
-extends Parameter
+class   NumberControl
+extends ParamControl
 {
     #value;
 

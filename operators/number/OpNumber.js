@@ -11,4 +11,11 @@ extends Operator
 
         this.addParam(this.#value = new NumberParam(''));
     }
+
+
+    generate()
+    {
+        this.output._data = this.#value.value;
+        super.generate();
+    }
 }
