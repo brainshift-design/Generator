@@ -7,13 +7,13 @@ extends Operator
 
     constructor()
     {
-        super('column', 'OBJ');
+        super('row', 'OBJ');
 
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count', 4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
+        this.addParam(this.#count = new NumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
     }
 
 
@@ -21,25 +21,38 @@ extends Operator
     {
         if (this.valid) return;
 
-        var input = this.inputs[0];
+        const input  = this.inputs[0];
+        const output = this.output;
 
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
+        if (!input.connected)
         {
-            this.output._data = {};
+            output._data = {};
             return;
         }
 
-        this.output._data = 
+    
+        const objects = input.data;
+        const bounds = getObjectBounds(objects);
+
+
+        output._data = [];
+    
+        for (var i = 0, y = 0; i < this.#count.value; i++)
         {
-            id:    this.id,
-            type:  this.opType,
-            count: this.#count.value,
-            gap:   this.#gap  .value,
+            for (var j = 0; j < objects.length; j++)
+            {
+                const obj = shallowCopy(objects[j]);
+                obj.itemId = 'column_' + i + '_' + j;
+   
+                obj.y += y;
+                
+                output._data.push(obj);
+            }
+            
+            y += bounds.h + this.#gap.value;
+        }
 
-            inputs: [input.data]
-        };
-
+        
         super.generate();
     }
 }

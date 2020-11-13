@@ -21,18 +21,15 @@ extends Operator
         if (this.valid) return;
 
         this.output._data = 
-        {
-            id:       this.id,
-            dataType: this.dataType,
-            opType:   this.opType,
+        [{
+            type:   'rect',
+            itemId: this.id + '_0',
 
-            x:        0,
-            y:        0,
-            width:    this.#width .value,
-            height:   this.#height.value,
-
-            inputs: []
-        };
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value
+        }];
 
         super.generate();
     }

@@ -1,3 +1,6 @@
+const graph = new Graph();
+
+
 onmessage = function(e)
 {
     if (e.data.msg === 'regenerate')
@@ -25,51 +28,51 @@ function generate(data)
 }
 
 
-function generateRect(obj)
-{   
-    return [{
-        id:     obj.type,
-        type:   obj.type,
-        nodeId: obj.id,
-        itemId: 'rect_0',
-        x:      obj.x,
-        y:      obj.y,
-        width:  obj.width,
-        height: obj.height
-    }];
-}
+// function generateRect(obj)
+// {   
+//     return [{
+//         id:     obj.type,
+//         type:   obj.type,
+//         nodeId: obj.id,
+//         itemId: 'rect_0',
+//         x:      obj.x,
+//         y:      obj.y,
+//         width:  obj.width,
+//         height: obj.height
+//     }];
+// }
 
 
-function generateRow(node)
-{
-    var input  = generate(node.inputs[0]);
-    var bounds = getBounds(input);
+// function generateRow(node)
+// {
+//     var input  = generate(node.inputs[0]);
+//     var bounds = getBounds(input);
 
-    result = [];
+//     result = [];
 
-    for (var i = 0, x = 0; i < node.count; i++)
-    {
-        for (var j = 0; j < input.length; j++)
-        {
-            var item = shallowCopy(input[j]);
-            item.itemId = 'row_' + i + '_' + j;
+//     for (var i = 0, x = 0; i < node.count; i++)
+//     {
+//         for (var j = 0; j < input.length; j++)
+//         {
+//             var item = shallowCopy(input[j]);
+//             item.itemId = 'row_' + i + '_' + j;
 
-            item.x += x;
+//             item.x += x;
             
-            result.push(item);
-        }
+//             result.push(item);
+//         }
         
-        x += bounds.w + node.gap;
-    }
+//         x += bounds.w + node.gap;
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
 
 function generateColumn(node)
 {
     var input  = generate(node.inputs[0]);
-    var bounds = getBounds(input);
+    var bounds = getObjectBounds(input);
 
     result = [];
 
@@ -95,7 +98,7 @@ function generateColumn(node)
 function generateSpread(node)
 {
     var input  = generate(node.inputs[0]);
-    var bounds = getBounds(input);
+    var bounds = getObjectBounds(input);
 
     var rnd = new Random(node.seed);
 
@@ -126,7 +129,7 @@ function generateSpread(node)
 }
 
 
-function getBounds(objects)
+function getObjectBounds(objects)
 {
     var boundsL = Number.MAX_SAFE_INTEGER;
     var boundsT = Number.MAX_SAFE_INTEGER;

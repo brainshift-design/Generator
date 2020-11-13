@@ -1,18 +1,13 @@
-parameters/Parameter.js
-parameters/NumberParam.js
+_parameters/_common/Parameter.js
+_parameters/number/NumberParam.js
 
-operators/Input.js
-operators/Output.js
-operators/Connection.js
-operators/Operator.js
-operators/Operator node.js
-operators/Operator textbox.js
+operators/_common/Operator.js
+operators/_common/Input.js
+operators/_common/Output.js
+operators/_common/Connection.js
 
-operators/OpNumber.js
-operators/OpRandom.js
+operators/number/OpNumber.js
 
-operators/OpRect.js
-
-operators/OpRow.js
-operators/OpColumn.js
-operators/OpSpread.js
+operators/number/OpRect.js
+operators/number/OpRow.js
+operators/number/OpColumn.js

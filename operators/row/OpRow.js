@@ -21,28 +21,38 @@ extends Operator
     {
         if (this.valid) return;
 
-        var input = this.inputs[0];
+        const input  = this.inputs[0];
+        const output = this.output;
 
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data))
+        if (!input.connected)
         {
-            this.output._data = {};
+            output._data = {};
             return;
         }
 
+    
+        const objects = input.data;
+        const bounds = getObjectBounds(objects);
 
-        this.output._data = 
+
+        output._data = [];
+    
+        for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            id:    this.id,
-            type:  this.opType,
+            for (var j = 0; j < objects.length; j++)
+            {
+                const obj = shallowCopy(objects[j]);
+                obj.itemId = 'row_' + i + '_' + j;
+   
+                obj.x += x;
+                
+                output._data.push(obj);
+            }
+            
+            x += bounds.w + this.#gap.value;
+        }
 
-            count: this.#count.value,
-            gap:   this.#gap  .value,
-
-            inputs: [input.data]
-        };
-
-
+        
         super.generate();
     }
 }

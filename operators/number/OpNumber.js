@@ -16,6 +16,7 @@ extends Operator
     generate()
     {
         this.output._data = this.#value.value;
+        
         super.generate();
     }
 }
