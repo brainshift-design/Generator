@@ -1,0 +1,1443 @@
+<script id='_generator' type='javascript/worker'>
+
+
+
+const R = 0, G = 1, B = 2, A = 3;
+const Eps = 0.0000001;
+
+function nozero(x)
+{
+    return x != 0 ? x : Eps;
+}
+
+
+function getDigitCount(i)
+{
+    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+    return l + 1;
+}
+
+
+function isDigit(key)
+{
+    var is = 
+           key >= '0' 
+        && key <= '9';
+
+    return is;
+}
+
+function isHexLetter(key)
+{
+    var is =
+           key.length == 1
+        && (   key >= 'A' && key <= 'F'
+            || key >= 'a' && key <= 'f');
+
+    return is;
+}
+
+
+function getNumberString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (i < str.length && str[i] !== '.' && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+    str = str.substring(0, i--);
+    
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
+    str = str.substring(0, i--);
+    
+    return str;
+}    
+
+
+const Tau = Math.PI * 2;
+const phi = (Math.sqrt(5) - 1) / 2; // 0.618
+
+
+function sqr (x) { return x*x;   };
+function cube(x) { return x*x*x; };
+
+
+function distance(p1, p2)
+{
+    var dx = p2.x - p1.x;
+    var dy = p2.y - p1.y;
+
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+function distance_(x1, y1, x2, y2)
+{
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+
+function vector(angle, dist)
+{
+    return { 
+        x: dist * Math.cos(angle), 
+        y: dist * Math.sin(angle) };
+}
+
+
+function equalv(v1, v2)
+{
+    return v1.x == v2.x
+        && v1.y == v2.y;
+}
+
+function lengthv(v)
+{
+    return Math.sqrt(v.x*v.x + v.y*v.y);
+}
+
+function unitv(v)
+{
+    return { x: v.x == 0 ? 0 : v.x / lengthv(v),
+             y: v.y == 0 ? 0 : v.y / lengthv(v) };
+}
+
+function addv(v1, v2)
+{
+    return { x: v1.x + v2.x,
+             y: v1.y + v2.y };
+}	
+
+
+function subv(v1, v2)
+{
+    return { x: v1.x - v2.x,
+             y: v1.y - v2.y };
+}	
+
+
+function mulv(v1, v2)
+{
+    return { x: v1.x * v2.x,
+             y: v1.y * v2.y };
+}	
+
+function mulvs(v, s)
+{
+    return { x: v.x * s,
+             y: v.y * s };
+}	
+
+
+function divvs(v, s)
+{
+    return { x: v.x / s,
+             y: v.y / s };
+}	
+
+
+function crossv(v)
+{
+    // returns a cross product of v and the unit vector pointing up the Z axis
+
+    return { x:  v.y, 
+             y: -v.x };
+}
+
+
+function crossv2(v1, v2)
+{
+    // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
+    // equivalent to dot(v1, cross(v2)) (same as in 3D with a Z component of 0)
+    // also the area of the parallelogram between the two vectors
+    // also determinant of 2×2 matrix built from the two vectors
+    // positive if turn from v1 to v2 is clockwise
+
+    return (v1.x * v2.y 
+          - v1.y * v2.x);
+}	
+
+
+function anglev(v1, v2)
+{
+    return anglev_(v1.x, v1.y, v2.x, v2.y);
+}
+
+
+function anglev_(x1, y1, x2, y2)
+{
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+
+    var angle = Math.atan2(dy, dx);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+function clipEdge(p, q, t0, t1)
+{
+    if (p == 0 && q < 0)
+    {
+        return null;
+    }
+    else if (p < 0)
+    {
+        var r = q/p;
+
+             if (r > t1) return null;
+        else if (r > t0) t0 = r;
+    }
+    else if (p > 0)
+    {
+        var r = q/p;
+
+             if (r < t0) return null;
+        else if (r < t1) t1 = r;
+    }
+
+    return [t0, t1];
+}
+
+
+
+function clipLine(x1, y1, x2, y2, left, top, right, bottom)
+{
+    var t0 = 0;
+    var t1 = 1;
+
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+
+    var cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
+    var cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    var ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    var cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+
+    if (t1 < 1)
+    {
+        x2 = x1 + t1*dx;
+        y2 = y1 + t1*dy;
+    }
+
+    if (t0 > 0)
+    {
+        x1 = x1 + t0*dx;
+        y1 = y1 + t0*dy;
+    }
+
+    return [
+        {x:x1, y:y1}, 
+        {x:x2, y:y2} ];
+}
+
+
+
+function intersect(p1, p2, q1, q2, segment)
+{
+    if (   equalv(p1, p2) 
+        || equalv(q1, q2)) 
+        return {x:NaN, y:NaN}; // undefined line
+
+    var v1 = subv(p2, p1);
+    var v2 = subv(q2, q1);
+
+    if (crossv2(v1, v2) == 0) 
+        return {x:NaN, y:NaN}; // parallel lines
+
+    var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
+    var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
+
+    if ((  0 <= t1 && t1 <= 1
+        && 0 <= t2 && t2 <= 1)
+        || !segment)
+        return addv(p1, mulvs(v1, t1));
+        
+    return {x:NaN, y:NaN};
+}
+
+
+
+function closestPointOnLine(l0, l1, p, segment)
+{
+    if (equalv(p, l0))
+        return l0;
+        
+    var d = mulvs(
+        unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
+        distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
+
+    return intersect(l0, l1, p, subv(p, d), segment);
+}
+
+
+
+function signedPosOnLine(p0, p1, p)
+{
+    var cp = closestPointOnLine(p0, p1, p, false);
+
+    var xform = mulm3m3(
+        xmove(-p0),
+        xrotate(-anglev(p0, p1)));
+
+    p0 = transform(p0, xform);
+    p1 = transform(p1, xform);
+    cp = transform(cp, xform);
+
+    return (cp.X - p0.X) / nozero(p1.X - p0.X);
+}
+
+
+function mulv2m3(v, m)
+{
+    var r = [0, 0, 0];
+
+    for (var i = 0; i < 3; i++)
+    {
+        // calculate the dot product of the ith row of m and v
+        for (var j = 0; j < 3; j++)
+            r[i] += m[i][j] * v[j];
+    }
+
+    return {x: r[0], y: r[1]};
+}
+
+
+function mulm3m3(m1, m2)
+{
+    var m = [[0, 0, 0],
+             [0, 0, 0],
+             [0, 0, 0]];
+
+    for (var i = 0; i < 3; i++)
+    {
+        for (var j = 0; j < 3; j++)
+        {
+            /*	calculate the dot product of ith row 
+                of this and jth column of m  */
+            for (var k = 0; k < 3; k++)
+                m[i][j] += m1[i][k] * m2[k][j];
+        }
+    }
+
+    return m;
+}
+
+
+function transform(p, xform)
+{
+    return mulv2m3(p, xform);
+}
+
+
+function xmove(v)
+{
+    return [[1, 0, v.x],
+            [0, 1, v.y],
+            [0, 0, 1  ]];
+}
+
+
+function xrotate(angle)
+{
+    return [[Math.cos(angle), -math.sin(angle), 0],
+            [Math.sin(angle),  math.cos(angle), 0],
+            [0,                0,               1]];
+}
+
+
+
+class Random
+{
+    seed;
+
+
+    constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+
+
+    next()
+    {
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+
+        return this.seed / -0x7fffffff;
+    }
+}
+
+
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (var property in properties)
+        elem.style[property] = properties[property];
+}
+
+
+function indexOfChild(parent, child)
+{
+    return Array.prototype.indexOf.call(parent.children, child);
+}
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+
+//     element.dispatchEvent(e);
+// }
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
+}
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+function colorStyle(rgb)
+{
+    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
+}
+
+
+function numToString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+        str = str.substring(0, i--);
+
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+        str = str.substring(0, i--);
+
+    return str;
+}
+
+
+function isEmptyObject(obj)
+{
+    if (obj == null)
+        return false;
+        
+    return (
+           Object.keys(obj).length === 0 
+        && obj.constructor === Object);
+}
+
+
+function shallowCopy(obj)
+{
+    return Object.assign({}, obj);
+}
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+function createSvg(element)
+{
+    return document.createElementNS('http://www.w3.org/2000/svg', element);
+}
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
+class Graph
+{
+    nodes = [];
+
+    mutex = false;
+
+    deferOutputs = [];
+
+    random = new Random();
+    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
+
+    
+    getNewId(_node)
+    {
+        var opType = _node.opType;
+
+        var maxNum = 0;
+        
+        for (const node of this.nodes)
+        {
+            if (node == _node)
+                continue;
+                
+            if (   node.id.length < opType.length
+                || node.id.substring(0, opType.length) !== opType)
+                continue;
+                
+            var num = parseInt(node.id.substring(opType.length));
+            
+            if (isNaN(num) || num == 0) 
+                num = 1;
+            
+            maxNum = Math.max(num, maxNum);
+        }
+
+        if (maxNum == 0)
+            return opType;
+
+        maxNum++;
+
+        return opType + maxNum;
+    }
+    
+    
+    createNode(opType)
+    {
+        var node;
+
+        switch (opType)
+        {
+            case 'number': node = new OpNumber(); break;
+            //case 'random': node = new OpRandom(); break;
+            case 'rect':   node = new OpRect();   break;
+            case 'row':    node = new OpRow();    break;
+            case 'column': node = new OpColumn(); break;
+        }
+        
+        this.addNode(node);
+        node.makeActive();
+
+        return node;
+    }
+
+
+    addNode(node)
+    {
+        node.setGraph(this);
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+        
+        this.nodes.push(node);
+    }
+    
+
+    connect(output, input)
+    {
+        if (input.connectedOutput == output)
+            return false;
+            
+        if (input.connectedOutput != null)
+            this.disconnect(input);
+
+        if (input.op)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
+
+            const conn = new Connection(output, input);
+
+            input .connection = conn;
+            output.connection = conn;
+            
+            //wires.appendChild(conn.wire);
+            //conn.updateWire();
+            
+            output.op.makePassive();
+            input.op.valid = false;
+        
+            if (input.op.activeNodeInTree.output)
+                regenerate([input.op.activeNodeInTree.output]);
+
+            return true;
+        }
+        
+        else if (input.param)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
+
+            const conn = new Connection(output, input);
+
+            input .connection = conn;
+            output.connection = conn;
+            
+            //wires.appendChild(conn.wire);
+            //conn.updateWire();
+            
+            input.param.op.valid = false;
+        
+            if (input.param.op.activeNodeInTree.output)
+                regenerate([input.param.op.activeNodeInTree.output]);
+
+            return true;
+        }
+
+
+        return false;
+    }
+
+
+    disconnect(input, remove = true)
+    {
+        // first remove the current output
+
+        if (input.op)
+            removeNodeOutput(input.op.activeNodeInTree);
+
+        // then disconnect
+
+        var output = input.connectedOutput;
+        if (!output) return false;
+
+        //if (remove)
+        //    wires.removeChild(input.connection.wire);
+
+        var inputIndex = output.connectedInputs.indexOf(input);
+        output.connectedInputs.splice(inputIndex, 1);
+        
+        input .connection     = null;
+        output.connection     = null;
+
+        input.connectedOutput = null;
+
+
+        output.op.valid = false;
+
+        if (!output.op.activeNodeInTree)
+            output.op.makeActive();
+
+
+        var inputOp;
+
+             if (input.op   ) inputOp = input.op;
+        else if (input.param) inputOp = input.param.op;
+
+        inputOp.valid = false;
+        inputOp.activeNodeInTree.makeActive();
+
+        regenerate([
+            output, 
+            inputOp.activeNodeInTree.output]);
+
+            
+        return true;
+    }
+
+
+    nodeFromId(id)
+    {
+        return this.nodes.find(n => n.id === id);
+    }
+}
+
+
+class Parameter
+{
+    #type; get type() { return this.#type; }
+    _op;   get op()   { return this._op;   }
+
+    constructor(type)
+    {
+        this.#type = type;
+    }
+}
+
+
+class   NumberParam
+extends Parameter
+{
+    #value;
+    get value() { return this.#value; }
+    set value(val) { this.#value = val; }
+
+
+    input; 
+
+
+    constructor(name, 
+                val = 0, 
+                min = Number.MIN_SAFE_INTEGER, 
+                max = Number.MAX_SAFE_INTEGER)
+    {
+        super('NUM');
+    }
+}
+
+
+/*
+    data types:
+        OBJ
+        NUM
+*/
+
+class Operator
+{
+    #opType;
+    get opType() { return this.#opType; }
+    
+    #dataType;
+    get dataType() { return this.#dataType; }
+
+    _id;
+    get id() { return this._id; }
+    set id(id)
+    {
+        this._id = id;
+    }
+    
+    _graph = null;
+    get graph() { return this._graph; }
+    setGraph(graph) { this._graph = graph; }
+    
+    
+    params = [];
+    
+    inputs = [];
+    output = null;
+    
+    cachedObjects = [];
+
+    #valid = false; // this is the flag for regeneration
+
+    
+    _active = false;
+    get active() { return this._active; }
+
+
+    makeActive() // only true
+    {
+        this.makeLeftPassive();
+        this.makeRightPassive();        
+
+        this._active = true;
+
+        if (   this.output
+            && this.output.dataType == 'OBJ')
+            regenerate([this.output]);
+    }
+
+    
+    makeLeftPassive()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+            {
+                input.connectedOutput.op.makePassive();
+                input.connectedOutput.op.makeLeftPassive();            
+            }
+        }
+    }
+
+    makeRightPassive()
+    {
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+            {
+                input.op.makePassive();
+                input.op.makeRightPassive();            
+            }
+        }
+    }
+
+    makePassive()
+    {
+        if (this.active)
+            removeNodeOutput(this);
+
+        this._active = false;
+    }
+
+    
+    get activeNodeInTree() { return this.getActiveNodeInTree(null); }
+
+    getActiveNodeInTree(callerOp = null)
+    {
+        if (this.active)
+            return this;
+
+        for (const input of this.inputs)
+        {
+            if (   input.connected
+                && input.connectedOutput.op != callerOp)
+            {
+                const active = input.connectedOutput.op.getActiveNodeInTree(this);
+                if (active) return active;
+            }
+        }
+
+        if (   this.output
+            && this.output.connected)
+        {
+            for (const input of this.output.connectedInputs)
+            {
+                if (input.op != callerOp)
+                {
+                    const active = input.op.getActiveNodeInTree(this);
+                    if (active) return active;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+    set valid(val) { this.#valid = val; }
+    get valid() 
+    {
+        var valid = this.#valid;
+        
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                valid &= input.connectedOutput.op.valid;
+        }
+
+        return valid;
+    }
+
+
+    constructor(opType, dataType)
+    {
+        this.#opType   = opType;   // this is the operator type
+        this.#dataType = dataType; // this is the op's main data type
+
+        this._id = opType; // this is a temp until the op becomes a graph node
+    }    
+    
+    
+    addInput(input)
+    {
+        input._op = this;
+        this.inputs.push(input);
+    }
+
+
+    setOutput(output)
+    {
+        if (this.output != null)
+            this.output._op = null;
+
+        output._op = this;
+        this.output = output;
+    }
+
+
+    addParam(param)
+    {
+        this.params.push(param);
+        param._op = this;
+    }
+ 
+    
+
+    setId(newId)
+    {
+        if (this._graph.nodes.find(node => node.id == newId))
+            return false; // graph already contains a node with this id
+
+        this._id = newId;
+        return true;
+    }
+
+
+    generate() 
+    { 
+        this.valid = true; 
+    }
+
+
+    isBefore(node)
+    {
+        if (   !this.output
+            || !this.output.connected)
+            return false;
+
+        for (const input of output.connectedInputs)
+        {
+            if (input.op == node)        return true;
+            if (input.op.isBefore(node)) return true;
+        }
+
+        return false;
+    }
+
+
+    isAfter(node)
+    {
+        if (this.inputs.length == 0)
+            return false;
+
+        for (const input of inputs)
+        {
+            if (input.connectedOutput.op == node)       return true;
+            if (input.connectedOutput.op.isAfter(node)) return true;
+        }
+
+        return false;
+    }
+}
+
+
+class Input
+{
+    #dataType;     
+    get dataType() { return this.#dataType; }
+
+    get data()
+    {
+        return (
+            this.connected
+            ? this.connectedOutput.data
+            : null);
+    }
+
+
+    _op    = null; get op   () { return this._op;    }
+    _param = null; get param() { return this._param; }
+
+    control;
+  
+    connectedOutput = null;
+    connection      = null;
+    
+    connecting      = false;
+    
+
+    get connected() { return this.connectedOutput != null; }
+
+
+    constructor(dataType)
+    {
+        this.#dataType = dataType;
+
+        // this.control = document.createElement('div');
+        // this.control.className = 'input';
+        // this.control.input = this;
+    
+        // this.control.addEventListener('pointerdown', e => e.preventDefault());
+
+        // this.control.addEventListener('pointerenter', e => 
+        // {
+        //     graphView.overInput = this;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+        // });
+
+        // this.control.addEventListener('pointerleave', e => 
+        // {
+        //     graphView.overInput = null;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        // });
+    }    
+}
+
+
+class Output
+{
+    #dataType;     
+    get dataType() { return this.#dataType; }
+
+    _op = null; get op() { return this._op; }
+    
+    
+    _data = {};
+    get data() 
+    {
+        if (!this.op.valid)
+            this.op.generate();
+
+        return this._data;
+    }
+
+
+    control;
+    
+    connectedInputs = [];
+    
+    connecting      = false;
+    
+    get connected() { return this.connectedInputs.length > 0; }
+
+
+    constructor(dataType)
+    {
+        this.#dataType = dataType;
+        
+        // this.control = document.createElement('div');
+        // this.control.className = 'output';
+        // this.control.output = this;
+
+        // this.control.addEventListener('pointerenter', e => 
+        // {
+        //     graphView.overOutput = this;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
+        // });
+
+        // this.control.addEventListener('pointerleave', e => 
+        // {
+        //     graphView.overOutput = null;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        // });
+    }
+}
+
+
+class Connection
+{
+    output;
+    input;
+
+    savedInput = null;
+
+    wire;
+
+
+    constructor(output, input)
+    {
+        this.output = output;
+        this.input  = input;
+
+        this.wire = createSvg('svg');
+        this.wire.style.position = 'absolute';
+        this.wire.style.left     = 0;
+        this.wire.style.top      = 0;
+        this.wire.style.width    = '100%';
+        this.wire.style.height   = '100vh';
+
+        this.wire.curve = createSvg('path');
+        this.wire.curve.style.fill        = 'none';
+        //this.wire.curve.style.stroke      = '#18A0FB';
+        this.wire.curve.style.strokeWidth = 1.2;
+        this.wire.curve.style.position    = 'absolute';
+        this.wire.appendChild(this.wire.curve);
+
+        this.wire.outBall = createSvg('circle');
+        //this.wire.outBall.style.fill     = '#18A0FB';
+        this.wire.outBall.style.position = 'absolute';
+        this.wire.outBall.style.r        = 3;
+
+        this.wire.inBall = createSvg('circle');
+        //this.wire.inBall.style.fill     = '#18A0FB';
+        this.wire.inBall.style.position = 'absolute';
+        this.wire.inBall.style.r        = 3;
+
+        this.wire.appendChild(this.wire.curve);
+        this.wire.appendChild(this.wire.outBall);
+        this.wire.appendChild(this.wire.inBall);
+    }
+
+
+    updateWire()
+    {
+        var outRect = this.output.control.getBoundingClientRect();
+        var inRect  = this.input .control.getBoundingClientRect();
+
+        var x1 = outRect.left + outRect.width /2;
+        var y1 = outRect.top  + outRect.height/2;
+        var x2 = inRect .left + inRect .width /2;
+        var y2 = inRect .top  + inRect .height/2;
+
+        var color;
+
+        switch (this.output.dataType)
+        {
+            case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
+            case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
+        }
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x1                ) + ',' + y1
+            + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
+            + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
+            + ' '   +  (x2                ) + ',' + y2);
+
+        this.wire.curve.setAttribute('stroke', color);
+
+        show(this.wire.outBall);
+        this.wire.outBall.setAttribute('cx', x1);
+        this.wire.outBall.setAttribute('cy', y1);
+        this.wire.outBall.setAttribute('fill', color);
+
+        show(this.wire.inBall);
+        this.wire.inBall.setAttribute('cx', x2);
+        this.wire.inBall.setAttribute('cy', y2);
+        this.wire.inBall.setAttribute('fill', color);
+    }
+
+
+    updateWireFromOutput(x, y)
+    {
+        var outRect = this.output.control.getBoundingClientRect();
+
+        var x1 = outRect.left + outRect.width /2;
+        var y1 = outRect.top  + outRect.height/2;
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x1               ) + ',' + y1
+            + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
+            + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
+            + ' '   +  (x                ) + ',' + y);
+
+        this.wire.outBall.setAttribute('cx', x1);
+        this.wire.outBall.setAttribute('cy', y1);
+
+        var col = colorFromDataType(this.output.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
+
+        hide(this.wire.inBall);
+    }
+
+
+    updateWireFromInput(x, y)
+    {
+        var inRect = this.input.control.getBoundingClientRect();
+
+        var x2 = inRect.left + inRect.width /2;
+        var y2 = inRect.top  + inRect.height/2;
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x               ) + ',' + y
+            + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
+            + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
+            + ' '   +  (x2              ) + ',' + y2);
+
+        this.wire.inBall.setAttribute('cx', x2);
+        this.wire.inBall.setAttribute('cy', y2);
+
+        var col = colorFromDataType(this.input.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
+
+        hide(this.wire.outBall);
+    }
+}
+
+
+class   OpNumber
+extends Operator
+{
+    #value;
+
+    constructor()
+    {
+        super('number', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#value = new NumberParam(''));
+    }
+
+
+    generate()
+    {
+        this.output._data = this.#value.value;
+        
+        super.generate();
+    }
+}
+
+
+class   OpRect
+extends Operator
+{
+    #width;
+    #height;
+
+
+    constructor()
+    {
+        super('rect', 'OBJ');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#width  = new NumberParam('width',  10, 0.01));
+        this.addParam(this.#height = new NumberParam('height', 10, 0.01));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        [{
+            type:   'rect',
+            itemId: this.id + '_0',
+
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value
+        }];
+
+        super.generate();
+    }
+}
+
+
+class   OpRow
+extends Operator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('row', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count = new NumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        const input  = this.inputs[0];
+        const output = this.output;
+
+        if (!input.connected)
+        {
+            output._data = {};
+            return;
+        }
+
+    
+        const objects = input.data;
+        const bounds = getObjectBounds(objects);
+
+
+        output._data = [];
+    
+        for (var i = 0, x = 0; i < this.#count.value; i++)
+        {
+            for (var j = 0; j < objects.length; j++)
+            {
+                const obj = shallowCopy(objects[j]);
+                obj.itemId = 'row_' + i + '_' + j;
+   
+                obj.x += x;
+                
+                output._data.push(obj);
+            }
+            
+            x += bounds.w + this.#gap.value;
+        }
+
+        
+        super.generate();
+    }
+}
+
+
+class   OpColumn
+extends Operator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('row', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count = new NumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        const input  = this.inputs[0];
+        const output = this.output;
+
+        if (!input.connected)
+        {
+            output._data = {};
+            return;
+        }
+
+    
+        const objects = input.data;
+        const bounds = getObjectBounds(objects);
+
+
+        output._data = [];
+    
+        for (var i = 0, y = 0; i < this.#count.value; i++)
+        {
+            for (var j = 0; j < objects.length; j++)
+            {
+                const obj = shallowCopy(objects[j]);
+                obj.itemId = 'column_' + i + '_' + j;
+   
+                obj.y += y;
+                
+                output._data.push(obj);
+            }
+            
+            y += bounds.h + this.#gap.value;
+        }
+
+        
+        super.generate();
+    }
+}
+
+
+const graph = new Graph();
+
+
+onmessage = e =>
+{
+    switch (e.data.msg)
+    {
+        case 'createNode': createNode(e.data.opType); break;
+    }
+};
+
+
+function createNode(opType)
+{
+    const node = graph.createNode(opType);
+
+    postMessage({ 
+        msg:     '_createNode',
+        opType:   node.opType,
+        dataType: node.dataType,
+        nodeId:   node.id
+    });
+}
+
+
+// function getObjectBounds(objects)
+// {
+//     var boundsL = Number.MAX_SAFE_INTEGER;
+//     var boundsT = Number.MAX_SAFE_INTEGER;
+//     var boundsR = Number.MIN_SAFE_INTEGER;
+//     var boundsB = Number.MIN_SAFE_INTEGER;
+    
+//     for (const obj of objects)
+//     {
+//         boundsL = Math.min(boundsL, obj.x);
+//         boundsT = Math.min(boundsT, obj.y);
+//         boundsR = Math.max(boundsR, obj.x + obj.width);
+//         boundsB = Math.max(boundsB, obj.y + obj.height);
+//     }
+
+//     return {
+//         x: boundsL, 
+//         y: boundsT,
+//         w: boundsR - boundsL,
+//         h: boundsB - boundsT };
+// }
+
+
+</script>

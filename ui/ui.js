@@ -25,4 +25,4 @@ parent.postMessage({ pluginMessage:
 /////////////////////////////////////////////////////////
 
 
-var graph = new Graph();
+//var graph = new Graph();

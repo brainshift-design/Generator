@@ -19,16 +19,20 @@ html/ui_2.html
     core/def.js
     core/util.js
     
-    generator/Graph.js
+    //generator/Graph.js
 
-    [autojoin/operators.aj]
+    //[autojoin/operators.aj]
 
-    ui/window.js
-    ui/slider.js
-    ui/slider textbox.js
-    ui/select.js
-    ui/graphView.js
-    ui/canvas.js
     ui/ui.js
+    ui/window.js
+
+    ui/graph.js
+    ui/graphView.js
+    ui/node.js
+    ui/node textbox.js
+
+    ui/controls/slider.js
+    ui/controls/slider textbox.js
+    ui/controls/select.js
 
 html/ui_3.html
