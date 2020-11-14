@@ -11,8 +11,8 @@ extends Operator
 
         this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#width  = new NumberParam('width',  10, 0.01));
-        this.addParam(this.#height = new NumberParam('height', 10, 0.01));
+        this.addParam(this.#width  = new NumberParam('width',  100, 0.01));
+        this.addParam(this.#height = new NumberParam('height', 100, 0.01));
     }
 
 

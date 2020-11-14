@@ -3,17 +3,24 @@ const ggraph = new GGraph();
 
 onmessage = function(e)
 {
-    console.log('generator msg = ' + e.data.msg);
     switch (e.data.msg)
     {
         case 'createNode': 
-            ggraph.createNode(e.data.opType);
-            break;
+        {
+            const node = ggraph.createNode(e.data.opType);
+            node.id = e.data.nodeId;
 
+            postMessage({ 
+                msg:    'makeActive',
+                nodeId:  node.id
+            });
+            
+            break;
+        }
         case 'connect':
         {
             const outNode = ggraph.nodes.find(n => n.id == e.data.output);
-            const  inNode = ggraph.nodes.find(n => n.id == e.data.input[0]);
+            const  inNode = ggraph.nodes.find(n => n.id == e.data.inputs[0]);
             ggraph.connect(outNode.output, inNode.inputs[e.data.input[1]]);
             break;
         }
@@ -24,29 +31,23 @@ onmessage = function(e)
 
         case 'generate':
         {
-            console.log('generator msg generate');
-            const objects = [];
+            var data = [];
 
             for (const nodeId of e.data.nodeIds)
-                objects = objects.concat(generate(nodeId));
+            {
+                const node = ggraph.nodeFromId(nodeId);
+                data = data.concat(node.output.data);
+            }
 
             postMessage({ 
-                cmd:    'updateObjects',
-                nodeId:  e.data.nodeId,
-                objects: objects
+                msg:  'updateData',
+                data: data
             });
 
             break;
         }
     }
 };
-
-
-function generate(nodeId)
-{
-    console.log('generator generate()');
-    const node = ggraph.nodeFromId(nodeId).generate();
-}
 
 
 function generateRow(node)

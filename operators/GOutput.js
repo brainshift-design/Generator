@@ -8,8 +8,6 @@ class GOutput
     
     _data = {};
 
-    control;
-    
     connectedInputs = [];
     
     connecting      = false;
@@ -20,22 +18,6 @@ class GOutput
     constructor(dataType)
     {
         this.#dataType = dataType;
-        
-        this.control = document.createElement('div');
-        this.control.className = 'output';
-        this.control.output = this;
-
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overOutput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
-        });
-
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overOutput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
-        });
     }
     
 

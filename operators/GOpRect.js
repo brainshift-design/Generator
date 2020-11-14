@@ -11,25 +11,25 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#width  = new GNumberParam('width',  10, 0.01));
-        this.addParam(this.#height = new GNumberParam('height', 10, 0.01));
+        this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
+        this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
     }
 
 
     generate()
     {
-        console.log('GOpRect.generate()');
         if (this.valid) return;
 
         this.output._data = 
         [{
-            nodeId: obj.nodeId,
-            itemId: obj.nodeId + '_0',
-            
-            x:      obj.x,
-            y:      obj.y,
-            width:  obj.width,
-            height: obj.height
+            objType: 'rect',
+            nodeId:  this.id,
+            itemId:  this.id + '_0',
+             
+            x:       0,
+            y:       0,
+            width:   this.#width .value,
+            height:  this.#height.value
         }];
 
         super.generate();

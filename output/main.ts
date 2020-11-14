@@ -72,31 +72,31 @@ function msgRemoveObjectList(msg)
 
 function msgUpdateObjects(msg)
 {
-    for (const item of msg.data)
+    for (const obj of msg.objects)
     {
-        switch (item.type)
+        switch (obj.objType)
         {
-            case 'rect': updateRect(item); break;
+            case 'rect': updateRect(obj); break;
         }
     }
 }
 
 
-function updateRect(item)
+function updateRect(data)
 {
     const existing = figma.currentPage.children.findIndex(obj => 
-        obj.getPluginData('#GEN') === '#GEN_' + item.itemId);
+        obj.getPluginData('#GEN') === '#GEN_' + data.itemId);
 
     var rect;
 
     if (existing < 0)
     {
         rect = figma.createRectangle()
-        rect.setPluginData('#GEN', '#GEN_' + item.itemId);
-        rect.name  = item.itemId;
+        rect.name  = data.itemId;
+        rect.setPluginData('#GEN', '#GEN_' + rect.name);
         rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
-        rect.x     = item.x;
-        rect.y     = item.y;
+        rect.x     = data.x;
+        rect.y     = data.y;
     
         figma.currentPage.appendChild(rect);
     }    
@@ -104,16 +104,16 @@ function updateRect(item)
     {
         rect = <RectangleNode>figma.currentPage.children[existing];
 
-        rect.x = item.x;
-        rect.y = item.y;
+        rect.x = data.x;
+        rect.y = data.y;
     }    
 
-    if (   rect.width  != item.width
-        || rect.height != item.height)
+    if (   rect.width  != data.width
+        || rect.height != data.height)
     {
         rect.resize(
-            Math.max(0.01, item.width ), 
-            Math.max(0.01, item.height));
+            Math.max(0.01, data.width ), 
+            Math.max(0.01, data.height));
     }
 }
 

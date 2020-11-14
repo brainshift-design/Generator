@@ -17,7 +17,6 @@ class GOperator
     set id(id)
     {
         this._id = id;
-        this.label.innerHTML = id;
     }
     
     _graph = null;
@@ -152,9 +151,6 @@ class GOperator
         this.#dataType = dataType; // this is the op's main data type
 
         this._id = opType; // this is a temp until the op becomes a graph node
-        
-        var headerColor = colorFromDataType(dataType, false);
-        createDiv(this, headerColor);
     }    
     
     
@@ -162,32 +158,23 @@ class GOperator
     {
         input._op = this;
         this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
     }
 
 
     setOutput(output)
     {
         if (this.output != null)
-        {
-            this.outputControls.removeChild(this.output.control);
             this.output._op = null;
-        }
 
         output._op = this;
         this.output = output;
-        this.outputControls.appendChild(output.control);
     }
 
 
     addParam(param)
     {
         this.params.push(param);
-        
         param._op = this;
-        param.control.style.display = 'inline-block';
-        
-        this.inner.appendChild(param.div);
     }
  
     
@@ -198,7 +185,6 @@ class GOperator
             return false; // graph already contains a node with this id
 
         this._id = newId;
-        this.label.innerHTML = newId;
 
         return true;
     }
@@ -233,7 +219,7 @@ class GOperator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op == node)       return true;
             if (input.connectedOutput.op.isAfter(node)) return true;
         }
 

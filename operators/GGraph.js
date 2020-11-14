@@ -57,7 +57,8 @@ class GGraph
         }
         
         this.addNode(node);
-        node.makeActive();
+
+        return node;
     }
 
 
@@ -66,31 +67,7 @@ class GGraph
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
         
-        if (this.nodes.length > 0)
-        {
-            const bounds = graphView.getNodeBounds();
-            
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            const gap = 30;
-            node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y;
-        }
-        else // 0
-        {
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            node.div.style.zIndex = graph.nodes.length-1;
-            node.div.style.left = 100;
-
-            // I subtract the full height of the node here as they grow down, so this
-            // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
-        }
-
-        putNodeOnTop(node);
+        this.nodes.push(node);
     }
     
 
@@ -112,9 +89,6 @@ class GGraph
             input .connection = conn;
             output.connection = conn;
             
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
             output.op.makePassive();
             input.op.valid = false;
         
@@ -132,9 +106,6 @@ class GGraph
 
             input .connection = conn;
             output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
             
             input.param.op.valid = false;
         
@@ -160,8 +131,6 @@ class GGraph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        if (remove)
-            wires.removeChild(input.connection.wire);
 
         var inputIndex = output.connectedInputs.indexOf(input);
         output.connectedInputs.splice(inputIndex, 1);

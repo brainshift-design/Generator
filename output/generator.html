@@ -158,6 +158,15 @@ function colorFromDataType(dataType, active)
 }
 
 
+const OBJ_COLOR = '#bedfff';
+const NUM_COLOR = '#ddd';
+
+const ACTIVE_OBJ_COLOR = '#18a0fb';
+const ACTIVE_NUM_COLOR = '#787878';
+
+const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+
+
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
@@ -540,21 +549,19 @@ class Random
 
 class GParameter
 {
-    #type;
+    _name;
+    get name() { return this._name; }
+
+    #type; 
     get type() { return this.#type; }
     
-    _op;      get op()      { return this._op;      }
-    _control; get control() { return this._control; }
-    _div;     get div()     { return this._div;     }
+    _op; 
+    get op() { return this._op; }
 
-    constructor(type)
+    constructor(name, type)
     {
+        this._name = name;
         this.#type = type;
-
-        this._div = document.createElement('div');
-        this.div.style.position = 'relative';
-        this.div.style.padding  = 0;
-        this.div.style.width    = '100%';
     }
 }
 
@@ -564,56 +571,25 @@ extends GParameter
 {
     #value;
 
-    get value() { return this._control.value; }
-    set value(val) { this._control.setValue(val); }
+    get value() { return this.#value; }
+    set value(val) 
+    {
+        this.#value = val;
+        this.op.valid = false;
+    }
 
 
     input; 
 
 
-    constructor(name, 
-                val = 0, 
-                min = Number.MIN_SAFE_INTEGER, 
-                max = Number.MAX_SAFE_INTEGER)
+    constructor(name, val = 0)
     {
-        super('NUM');
+        super(name, 'NUM');
 
-        this._control = document.createElement('div');
-        this.control.param  = this;
-        this.control.zIndex = 0;
+        this.#value = val;
 
-        initSlider(
-            this.control,
-            100,  // width
-            20,   // height
-            name, 
-            min,
-            max,
-            val,  // default
-            0.01, // drag scale
-            1,    // wheel step
-            0,    // decimals
-            0,    // acceleration
-            '');  // suffix
-
-        this.div.appendChild(this.control);
-
-        this.input = new Input ('NUM');
+        this.input = new GInput ('NUM');
         this.input._param = this;
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.input.control);
-
-        this._control.addEventListener('onchange', function(e)
-        {
-            var op = this.param.op;
-
-            op.valid = false;
-            generate([op.activeNodeInTree]);
-            op.graph.mutex = true;            
-        });
     }
 }
 
@@ -677,7 +653,8 @@ class GGraph
         }
         
         this.addNode(node);
-        node.makeActive();
+
+        return node;
     }
 
 
@@ -686,31 +663,7 @@ class GGraph
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
         
-        if (this.nodes.length > 0)
-        {
-            const bounds = graphView.getNodeBounds();
-            
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            const gap = 30;
-            node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y;
-        }
-        else // 0
-        {
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            node.div.style.zIndex = graph.nodes.length-1;
-            node.div.style.left = 100;
-
-            // I subtract the full height of the node here as they grow down, so this
-            // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
-        }
-
-        putNodeOnTop(node);
+        this.nodes.push(node);
     }
     
 
@@ -732,9 +685,6 @@ class GGraph
             input .connection = conn;
             output.connection = conn;
             
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
             output.op.makePassive();
             input.op.valid = false;
         
@@ -752,9 +702,6 @@ class GGraph
 
             input .connection = conn;
             output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
             
             input.param.op.valid = false;
         
@@ -780,8 +727,6 @@ class GGraph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        if (remove)
-            wires.removeChild(input.connection.wire);
 
         var inputIndex = output.connectedInputs.indexOf(input);
         output.connectedInputs.splice(inputIndex, 1);
@@ -830,8 +775,6 @@ class GInput
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
 
-    control;
-  
     connectedOutput = null;
     connection      = null;
     
@@ -844,24 +787,6 @@ class GInput
     constructor(dataType)
     {
         this.#dataType = dataType;
-
-        this.control = document.createElement('div');
-        this.control.className = 'input';
-        this.control.input = this;
-    
-        this.control.addEventListener('pointerdown', e => e.preventDefault());
-
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overInput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
-        });
-
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overInput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
-        });
     }    
     
 
@@ -885,8 +810,6 @@ class GOutput
     
     _data = {};
 
-    control;
-    
     connectedInputs = [];
     
     connecting      = false;
@@ -897,22 +820,6 @@ class GOutput
     constructor(dataType)
     {
         this.#dataType = dataType;
-        
-        this.control = document.createElement('div');
-        this.control.className = 'output';
-        this.control.output = this;
-
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overOutput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
-        });
-
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overOutput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
-        });
     }
     
 
@@ -931,133 +838,11 @@ class GConnection
     output;
     input;
 
-    savedInput = null;
-
-    wire;
-
 
     constructor(output, input)
     {
         this.output = output;
         this.input  = input;
-
-        this.wire = createSvg('svg');
-        this.wire.style.position = 'absolute';
-        this.wire.style.left     = 0;
-        this.wire.style.top      = 0;
-        this.wire.style.width    = '100%';
-        this.wire.style.height   = '100vh';
-
-        this.wire.curve = createSvg('path');
-        this.wire.curve.style.fill        = 'none';
-        //this.wire.curve.style.stroke      = '#18A0FB';
-        this.wire.curve.style.strokeWidth = 1.2;
-        this.wire.curve.style.position    = 'absolute';
-        this.wire.appendChild(this.wire.curve);
-
-        this.wire.outBall = createSvg('circle');
-        //this.wire.outBall.style.fill     = '#18A0FB';
-        this.wire.outBall.style.position = 'absolute';
-        this.wire.outBall.style.r        = 3;
-
-        this.wire.inBall = createSvg('circle');
-        //this.wire.inBall.style.fill     = '#18A0FB';
-        this.wire.inBall.style.position = 'absolute';
-        this.wire.inBall.style.r        = 3;
-
-        this.wire.appendChild(this.wire.curve);
-        this.wire.appendChild(this.wire.outBall);
-        this.wire.appendChild(this.wire.inBall);
-    }
-
-
-    updateWire()
-    {
-        var outRect = this.output.control.getBoundingClientRect();
-        var inRect  = this.input .control.getBoundingClientRect();
-
-        var x1 = outRect.left + outRect.width /2;
-        var y1 = outRect.top  + outRect.height/2;
-        var x2 = inRect .left + inRect .width /2;
-        var y2 = inRect .top  + inRect .height/2;
-
-        var color;
-
-        switch (this.output.dataType)
-        {
-            case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
-            case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
-        }
-
-        this.wire.curve.setAttribute('d',
-               'M ' +  (x1                ) + ',' + y1
-            + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
-            + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
-            + ' '   +  (x2                ) + ',' + y2);
-
-        this.wire.curve.setAttribute('stroke', color);
-
-        show(this.wire.outBall);
-        this.wire.outBall.setAttribute('cx', x1);
-        this.wire.outBall.setAttribute('cy', y1);
-        this.wire.outBall.setAttribute('fill', color);
-
-        show(this.wire.inBall);
-        this.wire.inBall.setAttribute('cx', x2);
-        this.wire.inBall.setAttribute('cy', y2);
-        this.wire.inBall.setAttribute('fill', color);
-    }
-
-
-    updateWireFromOutput(x, y)
-    {
-        var outRect = this.output.control.getBoundingClientRect();
-
-        var x1 = outRect.left + outRect.width /2;
-        var y1 = outRect.top  + outRect.height/2;
-
-        this.wire.curve.setAttribute('d',
-               'M ' +  (x1               ) + ',' + y1
-            + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
-            + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
-            + ' '   +  (x                ) + ',' + y);
-
-        this.wire.outBall.setAttribute('cx', x1);
-        this.wire.outBall.setAttribute('cy', y1);
-
-        var col = colorFromDataType(this.output.dataType, true);
-
-        this.wire.curve  .style.stroke = col;
-        this.wire.inBall .style.fill   = col;
-        this.wire.outBall.style.fill   = col;
-
-        hide(this.wire.inBall);
-    }
-
-
-    updateWireFromInput(x, y)
-    {
-        var inRect = this.input.control.getBoundingClientRect();
-
-        var x2 = inRect.left + inRect.width /2;
-        var y2 = inRect.top  + inRect.height/2;
-
-        this.wire.curve.setAttribute('d',
-               'M ' +  (x               ) + ',' + y
-            + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
-            + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
-            + ' '   +  (x2              ) + ',' + y2);
-
-        this.wire.inBall.setAttribute('cx', x2);
-        this.wire.inBall.setAttribute('cy', y2);
-
-        var col = colorFromDataType(this.input.dataType, true);
-
-        this.wire.curve  .style.stroke = col;
-        this.wire.inBall .style.fill   = col;
-        this.wire.outBall.style.fill   = col;
-
-        hide(this.wire.outBall);
     }
 }
 
@@ -1081,7 +866,6 @@ class GOperator
     set id(id)
     {
         this._id = id;
-        this.label.innerHTML = id;
     }
     
     _graph = null;
@@ -1216,9 +1000,6 @@ class GOperator
         this.#dataType = dataType; // this is the op's main data type
 
         this._id = opType; // this is a temp until the op becomes a graph node
-        
-        var headerColor = colorFromDataType(dataType, false);
-        createDiv(this, headerColor);
     }    
     
     
@@ -1226,32 +1007,23 @@ class GOperator
     {
         input._op = this;
         this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
     }
 
 
     setOutput(output)
     {
         if (this.output != null)
-        {
-            this.outputControls.removeChild(this.output.control);
             this.output._op = null;
-        }
 
         output._op = this;
         this.output = output;
-        this.outputControls.appendChild(output.control);
     }
 
 
     addParam(param)
     {
         this.params.push(param);
-        
         param._op = this;
-        param.control.style.display = 'inline-block';
-        
-        this.inner.appendChild(param.div);
     }
  
     
@@ -1262,7 +1034,6 @@ class GOperator
             return false; // graph already contains a node with this id
 
         this._id = newId;
-        this.label.innerHTML = newId;
 
         return true;
     }
@@ -1297,7 +1068,7 @@ class GOperator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op == node)       return true;
             if (input.connectedOutput.op.isAfter(node)) return true;
         }
 
@@ -1319,25 +1090,25 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#width  = new GNumberParam('width',  10, 0.01));
-        this.addParam(this.#height = new GNumberParam('height', 10, 0.01));
+        this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
+        this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
     }
 
 
     generate()
     {
-        console.log('GOpRect.generate()');
         if (this.valid) return;
 
         this.output._data = 
         [{
-            nodeId: obj.nodeId,
-            itemId: obj.nodeId + '_0',
-            
-            x:      obj.x,
-            y:      obj.y,
-            width:  obj.width,
-            height: obj.height
+            objType: 'rect',
+            nodeId:  this.id,
+            itemId:  this.id + '_0',
+             
+            x:       0,
+            y:       0,
+            width:   this.#width .value,
+            height:  this.#height.value
         }];
 
         super.generate();
@@ -1593,17 +1364,24 @@ const ggraph = new GGraph();
 
 onmessage = function(e)
 {
-    console.log('generator msg = ' + e.data.msg);
     switch (e.data.msg)
     {
         case 'createNode': 
-            ggraph.createNode(e.data.opType);
-            break;
+        {
+            const node = ggraph.createNode(e.data.opType);
+            node.id = e.data.nodeId;
 
+            postMessage({ 
+                msg:    'makeActive',
+                nodeId:  node.id
+            });
+            
+            break;
+        }
         case 'connect':
         {
             const outNode = ggraph.nodes.find(n => n.id == e.data.output);
-            const  inNode = ggraph.nodes.find(n => n.id == e.data.input[0]);
+            const  inNode = ggraph.nodes.find(n => n.id == e.data.inputs[0]);
             ggraph.connect(outNode.output, inNode.inputs[e.data.input[1]]);
             break;
         }
@@ -1614,29 +1392,23 @@ onmessage = function(e)
 
         case 'generate':
         {
-            console.log('generator msg generate');
-            const objects = [];
+            var data = [];
 
             for (const nodeId of e.data.nodeIds)
-                objects = objects.concat(generate(nodeId));
+            {
+                const node = ggraph.nodeFromId(nodeId);
+                data = data.concat(node.output.data);
+            }
 
             postMessage({ 
-                cmd:    'updateObjects',
-                nodeId:  e.data.nodeId,
-                objects: objects
+                msg:  'updateData',
+                data: data
             });
 
             break;
         }
     }
 };
-
-
-function generate(nodeId)
-{
-    console.log('generator generate()');
-    const node = ggraph.nodeFromId(nodeId).generate();
-}
 
 
 function generateRow(node)

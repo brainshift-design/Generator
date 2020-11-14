@@ -57,7 +57,8 @@ class Graph
         }
         
         this.addNode(node);
-        node.makeActive();
+        
+        return node;
     }
 
 

@@ -1,7 +1,8 @@
 generator/generator_0.html
 
     util.js
-    
+    def.js
+
     core/lib.js
     core/math.js
     core/random.js
