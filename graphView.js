@@ -54,14 +54,14 @@ graphView.addEventListener('pointerup', e =>
                 }
                 else if (savedInput) // disconnect old, connect new
                 {
-                    graph.disconnect(savedInput);
-                    graph.connect(output, input);
+                    disconnect(savedInput);
+                    connect(output, input);
                 }
                 else // connect new
-                    graph.connect(output, input);
+                    connect(output, input);
             }
             else if (savedInput) // disconnect old
-                graph.disconnect(savedInput)
+                disconnect(savedInput)
             
             graphView.cancelConnection();
         }

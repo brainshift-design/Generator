@@ -25,8 +25,8 @@ figma.ui.onmessage = msg => {
         case 'removeObjectList':
             msgRemoveObjectList(msg);
             break;
-        case 'regenerateObjects':
-            msgRegenerateObjects(msg);
+        case 'updateObjects':
+            msgUpdateObjects(msg);
             break;
     }
 };
@@ -50,8 +50,8 @@ function msgLoadState(msg) {
     })();
 }
 function msgResizeWindow(msg) {
-    var width = Math.max(0, msg.width);
-    var height = Math.max(0, msg.height);
+    var width = Math.floor(Math.max(0, msg.width));
+    var height = Math.floor(Math.max(0, msg.height));
     figma.ui.resize(width, height);
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
@@ -69,16 +69,16 @@ function msgRemoveObjectList(msg) {
             obj.remove();
     }
 }
-function msgRegenerateObjects(msg) {
+function msgUpdateObjects(msg) {
     for (const item of msg.data) {
         switch (item.type) {
             case 'rect':
-                regenerateRect(item);
+                updateRect(item);
                 break;
         }
     }
 }
-function regenerateRect(item) {
+function updateRect(item) {
     const existing = figma.currentPage.children.findIndex(obj => obj.getPluginData('#GEN') === '#GEN_' + item.itemId);
     var rect;
     if (existing < 0) {

@@ -1,5 +1,5 @@
-class   OpRandom
-extends Operator
+class   GOpRandom
+extends GOperator
 {
     #min;
     #max;
@@ -11,12 +11,12 @@ extends Operator
     {
         super('random', 'NUM');
 
-        this.setOutput(new Output(this.dataType));
+        this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#min   = new NumberParam('min'));
-        this.addParam(this.#max   = new NumberParam('max'));
-        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed'));
+        this.addParam(this.#min   = new GNumberParam('min'));
+        this.addParam(this.#max   = new GNumberParam('max'));
+        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed'));
 
         this.#min.control.addEventListener('onchange', () =>
         {

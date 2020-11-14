@@ -1,5 +1,5 @@
-class   OpSpread 
-extends Operator
+class   GOpSpread 
+extends GOperator
 {
     #count;
     #radius;
@@ -11,11 +11,11 @@ extends Operator
     {
         super('spread', 'OBJ');
 
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count  = new NumberParam('count', 2, 1));
-        this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
+        this.addParam(this.#count  = new GNumberParam('count', 2, 1));
+        this.addParam(this.#radius = new GNumberParam('radius', 100, 0.01));
     }
 
 

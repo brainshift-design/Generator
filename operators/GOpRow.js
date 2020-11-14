@@ -1,5 +1,5 @@
-class   OpColumn
-extends Operator
+class   GOpRow
+extends GOperator
 {
     #count;
     #gap;
@@ -7,13 +7,13 @@ extends Operator
 
     constructor()
     {
-        super('column', 'OBJ');
+        super('row', 'OBJ');
 
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count', 4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
+        this.addParam(this.#count = new GNumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',   10, 0));
     }
 
 
@@ -24,21 +24,24 @@ extends Operator
         var input = this.inputs[0];
 
         if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
+            || isEmptyObject(input.connectedOutput.data))
         {
             this.output._data = {};
             return;
         }
 
+
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
-            count:  this.#count.value,
-            gap:    this.#gap  .value,
+
+            count: this.#count.value,
+            gap:   this.#gap  .value,
 
             inputs: [input.data]
         };
+
 
         super.generate();
     }

@@ -1,9 +1,53 @@
-var worker = new Worker(
+const graph = new Graph();
+
+
+function createNode(opType)
+{
+    graph.createNode(opType);
+
+    generator.postMessage({
+        msg:   'createNode', 
+        opType: opType
+    });
+}
+
+
+function connect(output, input)
+{
+    graph.connect(output, input);
+
+    generator.postMessage({
+        msg:   'connect', 
+        output: output.op.id, 
+        input:  
+        [
+            input.op.id, 
+            input.op.inputs.indexOf(input)
+        ]
+    });
+}
+
+
+function disconnect(input)
+{
+    graph.disconnect(input);
+
+    generator.postMessage({
+        msg:  'disconnect', 
+        input: input
+    });
+}
+
+
+/////////////////////////////////////////////////////////////////////
+
+
+var generator = new Worker(
     window.URL.createObjectURL(
-        new Blob([generateWorker.textContent])));
+        new Blob([generatorScript.textContent])));
 
 
-worker.onmessage = function(e)
+generator.onmessage = function(e)
 {
     if (e.data.cmd == 'regenerateObjects')
     {
@@ -38,23 +82,23 @@ worker.onmessage = function(e)
         
         if (graph.deferOutputs.length > 0)
         {
-            var deferOutputs = Array.from(graph.deferOutputs);
-            graph.deferOutputs = [];
+            var deferNodes = Array.from(graph.deferNodes);
+            graph.deferNodes = [];
 
-            regenerateOutputs(deferOutputs);
+            generate(deferNodes);
         }
     }
 };
       
 
-function regenerateOutputs(outputs)
+function generate(nodes)
 {
     if (graph.mutex)
     {
-        graph.deferOutputs = [];
+        graph.deferNodes = [];
 
-        for (const output of outputs)
-            graph.deferOutputs.push(output);
+        for (const node of nodes)
+            graph.deferNodes.push(node);
 
         return;
     }
@@ -62,20 +106,19 @@ function regenerateOutputs(outputs)
     graph.mutex = true;
     var posted = false;
 
-    for (const output of outputs)
-    {
-        if (!isEmptyObject(output.data))
-        {
-            worker.postMessage(
-            {
-                msg:   'regenerateObjects',
-                nodeId: output.op.id,
-                data:   output.data
-            });
 
-            posted = true;
-        }
-    }
+    const nodeIds = nodes.map(n => n.id);
+
+    console.log('canvas generate(nodes)');
+    console.log(nodeIds);
+    generator.postMessage(
+    {
+        msg:  'generate',
+        nodes: nodeIds
+    });
+
+    posted = true;
+
 
     if (!posted)
         graph.mutex = false;

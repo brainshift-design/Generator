@@ -1,5 +1,5 @@
-class   OpColumn
-extends Operator
+class   GOpColumn
+extends GOperator
 {
     #count;
     #gap;
@@ -9,11 +9,11 @@ extends Operator
     {
         super('column', 'OBJ');
 
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count', 4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
+        this.addParam(this.#count = new GNumberParam('count', 4, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap', 10, 0));
     }
 
 

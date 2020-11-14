@@ -1,5 +1,5 @@
-class   NumberParam
-extends Parameter
+class   NumberControl
+extends ParamControl
 {
     #value;
 
@@ -18,7 +18,7 @@ extends Parameter
         super('NUM');
 
         this._control = document.createElement('div');
-        this.control.param  = this;
+        this.control.param = this;
         this.control.zIndex = 0;
 
         initSlider(

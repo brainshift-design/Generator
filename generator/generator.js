@@ -1,42 +1,51 @@
+const ggraph = new GGraph();
+
+
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateObjects')
+    console.log('generator msg = ' + e.data.msg);
+    switch (e.data.msg)
     {
-        var objects = generate(e.data.data);
+        case 'createNode': 
+            ggraph.createNode(e.data.opType);
+            break;
 
-        postMessage({ 
-            cmd:    'regenerateObjects',
-            nodeId:  e.data.nodeId,
-            objects: objects
-        });
+        case 'connect':
+        {
+            const outNode = ggraph.nodes.find(n => n.id == e.data.output);
+            const  inNode = ggraph.nodes.find(n => n.id == e.data.input[0]);
+            ggraph.connect(outNode.output, inNode.inputs[e.data.input[1]]);
+            break;
+        }
+        case 'disconnect':
+            ggraph.disconnect(e.data.opType);
+            break;
+
+
+        case 'generate':
+        {
+            console.log('generator msg generate');
+            const objects = [];
+
+            for (const nodeId of e.data.nodeIds)
+                objects = objects.concat(generate(nodeId));
+
+            postMessage({ 
+                cmd:    'updateObjects',
+                nodeId:  e.data.nodeId,
+                objects: objects
+            });
+
+            break;
+        }
     }
 };
 
 
-function generate(obj)
+function generate(nodeId)
 {
-    switch (obj.type)
-    {
-        case 'rect'  : return generateRect  (obj);
-        case 'row'   : return generateRow   (obj);
-        case 'column': return generateColumn(obj);
-        case 'spread': return generateSpread(obj);
-    }    
-}
-
-
-function generateRect(obj)
-{   
-    return [{
-        id:     obj.type,
-        type:   obj.type,
-        nodeId: obj.id,
-        itemId: 'rect_0',
-        x:      obj.x,
-        y:      obj.y,
-        width:  obj.width,
-        height: obj.height
-    }];
+    console.log('generator generate()');
+    const node = ggraph.nodeFromId(nodeId).generate();
 }
 
 
@@ -52,7 +61,7 @@ function generateRow(node)
         for (var j = 0; j < input.length; j++)
         {
             var item = shallowCopy(input[j]);
-            item.itemId = 'row_' + i + '_' + j;
+            item.itemId = node.nodeId + '_' + i + '_' + j;
 
             item.x += x;
             
@@ -78,7 +87,7 @@ function generateColumn(node)
         for (var j = 0; j < input.length; j++)
         {
             var item = shallowCopy(input[j]);
-            item.itemId = 'column_' + i + '_' + j;
+            item.itemId = node.nodeId + '_' + i + '_' + j;
 
             item.y += y;
             
@@ -111,7 +120,7 @@ function generateSpread(node)
         for (var j = 0; j < input.length; j++)
         {
             var item = shallowCopy(input[j]);
-            item.itemId = 'spread_' + i + '_' + j;
+            item.itemId = node.nodeId + '_' + i + '_' + j;
 
             item.x += v.x;
             item.y += v.y;

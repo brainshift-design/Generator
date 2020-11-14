@@ -19,10 +19,3 @@ parent.postMessage({ pluginMessage:
 // {
 //     var msg = e.data.pluginMessage;
 // }
-
-
-
-/////////////////////////////////////////////////////////
-
-
-var graph = new Graph();

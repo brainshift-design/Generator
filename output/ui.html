@@ -329,17 +329,17 @@ button svg
 
     <div id='presets'></div>
 
-    <button class='button' id='btnCreateNumber' onclick='graph.createNode("number"); this.blur();'>Num</button>
-    <button class='button' id='btnCreateRandom' onclick='graph.createNode("random"); this.blur();'>Rnd</button>
-    <button class='button' id='btnCreateRect'   onclick='graph.createNode("rect");   this.blur();'>Rct</button>
-    <button class='button' id='btnCreateRow'    onclick='graph.createNode("row");    this.blur();'>Row</button>
-    <button class='button' id='btnCreateColumn' onclick='graph.createNode("column"); this.blur();'>Col</button>
-    <button class='button' id='btnCreateSpread' onclick='graph.createNode("spread"); this.blur();'>Spr</button>
+    <button class='button' id='btnCreateNumber' onclick='createNode("number"); this.blur();'>Num</button>
+    <button class='button' id='btnCreateRandom' onclick='createNode("random"); this.blur();'>Rnd</button>
+    <button class='button' id='btnCreateRect'   onclick='createNode("rect");   this.blur();'>Rct</button>
+    <button class='button' id='btnCreateRow'    onclick='createNode("row");    this.blur();'>Row</button>
+    <button class='button' id='btnCreateColumn' onclick='createNode("column"); this.blur();'>Col</button>
+    <button class='button' id='btnCreateSpread' onclick='createNode("spread"); this.blur();'>Spr</button>
 
 </div>
 
 
-<script id='generateWorker' type='javascript/worker'>
+<script id='generatorScript' type='javascript/worker'>
 
 
 
@@ -879,6 +879,1062 @@ class Random
 }
 
 
+class GParameter
+{
+    #type;
+    get type() { return this.#type; }
+    
+    _op;      get op()      { return this._op;      }
+    _control; get control() { return this._control; }
+    _div;     get div()     { return this._div;     }
+
+    constructor(type)
+    {
+        this.#type = type;
+
+        this._div = document.createElement('div');
+        this.div.style.position = 'relative';
+        this.div.style.padding  = 0;
+        this.div.style.width    = '100%';
+    }
+}
+
+
+class   GNumberParam
+extends GParameter
+{
+    #value;
+
+    get value() { return this._control.value; }
+    set value(val) { this._control.setValue(val); }
+
+
+    input; 
+
+
+    constructor(name, 
+                val = 0, 
+                min = Number.MIN_SAFE_INTEGER, 
+                max = Number.MAX_SAFE_INTEGER)
+    {
+        super('NUM');
+
+        this._control = document.createElement('div');
+        this.control.param  = this;
+        this.control.zIndex = 0;
+
+        initSlider(
+            this.control,
+            100,  // width
+            20,   // height
+            name, 
+            min,
+            max,
+            val,  // default
+            0.01, // drag scale
+            1,    // wheel step
+            0,    // decimals
+            0,    // acceleration
+            '');  // suffix
+
+        this.div.appendChild(this.control);
+
+        this.input = new Input ('NUM');
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
+
+        this._control.addEventListener('onchange', function(e)
+        {
+            var op = this.param.op;
+
+            op.valid = false;
+
+            if (op.activeNodeInTree.output)
+                regenerateOutputs([op.activeNodeInTree.output]);
+    
+            op.graph.mutex = true;            
+        });
+    }
+}
+
+
+class GGraph
+{
+    nodes = [];
+
+    mutex = false;
+
+    deferOutputs = [];
+
+    random = new Random();
+    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
+
+    
+    getNewId(_node)
+    {
+        var opType = _node.opType;
+
+        var maxNum = 0;
+        
+        for (const node of this.nodes)
+        {
+            if (node == _node)
+                continue;
+                
+            if (   node.id.length < opType.length
+                || node.id.substring(0, opType.length) !== opType)
+                continue;
+                
+            var num = parseInt(node.id.substring(opType.length));
+            
+            if (isNaN(num) || num == 0) 
+                num = 1;
+            
+            maxNum = Math.max(num, maxNum);
+        }
+
+        if (maxNum == 0)
+            return opType;
+
+        maxNum++;
+
+        return opType + maxNum;
+    }
+    
+    
+    createNode(opType)
+    {
+        var node;
+
+        switch (opType)
+        {
+            case 'number': node = new GOpNumber(); break;
+            case 'random': node = new GOpRandom(); break;
+            case 'rect':   node = new GOpRect();   break;
+            case 'row':    node = new GOpRow();    break;
+            case 'column': node = new GOpColumn(); break;
+            case 'spread': node = new GOpSpread(); break;
+        }
+        
+        this.addNode(node);
+        node.makeActive();
+    }
+
+
+    addNode(node)
+    {
+        node.setGraph(this);
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+        
+        if (this.nodes.length > 0)
+        {
+            const bounds = graphView.getNodeBounds();
+            
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            const gap = 30;
+            node.div.style.left = bounds.x + bounds.w + gap;
+            node.div.style.top  = bounds.y;
+        }
+        else // 0
+        {
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            node.div.style.zIndex = graph.nodes.length-1;
+            node.div.style.left = 100;
+
+            // I subtract the full height of the node here as they grow down, so this
+            // gives a nice random-ish offset for the first line of nodes
+            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
+        }
+
+        putNodeOnTop(node);
+    }
+    
+
+    connect(output, input)
+    {
+        if (input.connectedOutput == output)
+            return false;
+            
+        if (input.connectedOutput != null)
+            this.disconnect(input);
+
+        if (input.op)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
+
+            const conn = new GConnection(output, input);
+
+            input .connection = conn;
+            output.connection = conn;
+            
+            wires.appendChild(conn.wire);
+            conn.updateWire();
+            
+            output.op.makePassive();
+            input.op.valid = false;
+        
+            if (input.op.activeNodeInTree.output)
+                regenerateOutputs([input.op.activeNodeInTree.output]);
+
+            return true;
+        }
+        
+        else if (input.param)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
+
+            const conn = new GConnection(output, input);
+
+            input .connection = conn;
+            output.connection = conn;
+            
+            wires.appendChild(conn.wire);
+            conn.updateWire();
+            
+            input.param.op.valid = false;
+        
+            if (input.param.op.activeNodeInTree.output)
+                regenerateOutputs([input.param.op.activeNodeInTree.output]);
+
+            return true;
+        }
+
+
+        return false;
+    }
+
+
+    disconnect(input, remove = true)
+    {
+        // first remove the current output
+
+        if (input.op)
+            removeNodeOutput(input.op.activeNodeInTree);
+
+        // then disconnect
+
+        var output = input.connectedOutput;
+        if (!output) return false;
+
+        if (remove)
+            wires.removeChild(input.connection.wire);
+
+        var inputIndex = output.connectedInputs.indexOf(input);
+        output.connectedInputs.splice(inputIndex, 1);
+        
+        input .connection     = null;
+        output.connection     = null;
+
+        input.connectedOutput = null;
+
+
+        output.op.valid = false;
+
+        if (!output.op.activeNodeInTree)
+            output.op.makeActive();
+
+
+        var inputOp;
+
+             if (input.op   ) inputOp = input.op;
+        else if (input.param) inputOp = input.param.op;
+
+        inputOp.valid = false;
+        inputOp.activeNodeInTree.makeActive();
+
+        regenerateOutputs([
+            output, 
+            inputOp.activeNodeInTree.output]);
+
+            
+        return true;
+    }
+
+
+    nodeFromId(id)
+    {
+        return this.nodes.find(n => n.id === id);
+    }
+}
+
+
+class GInput
+{
+    #dataType;     
+    get dataType() { return this.#dataType; }
+
+    _op    = null; get op   () { return this._op;    }
+    _param = null; get param() { return this._param; }
+
+    control;
+  
+    connectedOutput = null;
+    connection      = null;
+    
+    connecting      = false;
+    
+
+    get connected() { return this.connectedOutput != null; }
+
+
+    constructor(dataType)
+    {
+        this.#dataType = dataType;
+
+        this.control = document.createElement('div');
+        this.control.className = 'input';
+        this.control.input = this;
+    
+        this.control.addEventListener('pointerdown', e => e.preventDefault());
+
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overInput = this;
+            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+        });
+
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overInput = null;
+            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        });
+    }    
+    
+
+    get data()
+    {
+        return (
+            this.connected
+            ? this.connectedOutput.data
+            : null);
+    }
+}
+
+
+class GOutput
+{
+    #dataType;     
+    get dataType() { return this.#dataType; }
+
+    _op    = null; get op   () { return this._op;    }
+    _param = null; get param() { return this._param; }
+    
+    _data = {};
+
+    control;
+    
+    connectedInputs = [];
+    
+    connecting      = false;
+    
+    get connected() { return this.connectedInputs.length > 0; }
+
+
+    constructor(dataType)
+    {
+        this.#dataType = dataType;
+        
+        this.control = document.createElement('div');
+        this.control.className = 'output';
+        this.control.output = this;
+
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overOutput = this;
+            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
+        });
+
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overOutput = null;
+            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        });
+    }
+    
+
+    get data() 
+    {
+        if (!this.op.valid)
+            this.op.generate();
+
+        return this._data;
+    }
+}
+
+
+class GConnection
+{
+    output;
+    input;
+
+    savedInput = null;
+
+    wire;
+
+
+    constructor(output, input)
+    {
+        this.output = output;
+        this.input  = input;
+
+        this.wire = createSvg('svg');
+        this.wire.style.position = 'absolute';
+        this.wire.style.left     = 0;
+        this.wire.style.top      = 0;
+        this.wire.style.width    = '100%';
+        this.wire.style.height   = '100vh';
+
+        this.wire.curve = createSvg('path');
+        this.wire.curve.style.fill        = 'none';
+        //this.wire.curve.style.stroke      = '#18A0FB';
+        this.wire.curve.style.strokeWidth = 1.2;
+        this.wire.curve.style.position    = 'absolute';
+        this.wire.appendChild(this.wire.curve);
+
+        this.wire.outBall = createSvg('circle');
+        //this.wire.outBall.style.fill     = '#18A0FB';
+        this.wire.outBall.style.position = 'absolute';
+        this.wire.outBall.style.r        = 3;
+
+        this.wire.inBall = createSvg('circle');
+        //this.wire.inBall.style.fill     = '#18A0FB';
+        this.wire.inBall.style.position = 'absolute';
+        this.wire.inBall.style.r        = 3;
+
+        this.wire.appendChild(this.wire.curve);
+        this.wire.appendChild(this.wire.outBall);
+        this.wire.appendChild(this.wire.inBall);
+    }
+
+
+    updateWire()
+    {
+        var outRect = this.output.control.getBoundingClientRect();
+        var inRect  = this.input .control.getBoundingClientRect();
+
+        var x1 = outRect.left + outRect.width /2;
+        var y1 = outRect.top  + outRect.height/2;
+        var x2 = inRect .left + inRect .width /2;
+        var y2 = inRect .top  + inRect .height/2;
+
+        var color;
+
+        switch (this.output.dataType)
+        {
+            case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
+            case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
+        }
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x1                ) + ',' + y1
+            + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
+            + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
+            + ' '   +  (x2                ) + ',' + y2);
+
+        this.wire.curve.setAttribute('stroke', color);
+
+        show(this.wire.outBall);
+        this.wire.outBall.setAttribute('cx', x1);
+        this.wire.outBall.setAttribute('cy', y1);
+        this.wire.outBall.setAttribute('fill', color);
+
+        show(this.wire.inBall);
+        this.wire.inBall.setAttribute('cx', x2);
+        this.wire.inBall.setAttribute('cy', y2);
+        this.wire.inBall.setAttribute('fill', color);
+    }
+
+
+    updateWireFromOutput(x, y)
+    {
+        var outRect = this.output.control.getBoundingClientRect();
+
+        var x1 = outRect.left + outRect.width /2;
+        var y1 = outRect.top  + outRect.height/2;
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x1               ) + ',' + y1
+            + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
+            + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
+            + ' '   +  (x                ) + ',' + y);
+
+        this.wire.outBall.setAttribute('cx', x1);
+        this.wire.outBall.setAttribute('cy', y1);
+
+        var col = colorFromDataType(this.output.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
+
+        hide(this.wire.inBall);
+    }
+
+
+    updateWireFromInput(x, y)
+    {
+        var inRect = this.input.control.getBoundingClientRect();
+
+        var x2 = inRect.left + inRect.width /2;
+        var y2 = inRect.top  + inRect.height/2;
+
+        this.wire.curve.setAttribute('d',
+               'M ' +  (x               ) + ',' + y
+            + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
+            + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
+            + ' '   +  (x2              ) + ',' + y2);
+
+        this.wire.inBall.setAttribute('cx', x2);
+        this.wire.inBall.setAttribute('cy', y2);
+
+        var col = colorFromDataType(this.input.dataType, true);
+
+        this.wire.curve  .style.stroke = col;
+        this.wire.inBall .style.fill   = col;
+        this.wire.outBall.style.fill   = col;
+
+        hide(this.wire.outBall);
+    }
+}
+
+
+/*
+    data types:
+        OBJ
+        NUM
+*/
+
+class GOperator
+{
+    #opType;
+    get opType() { return this.#opType; }
+    
+    #dataType;
+    get dataType() { return this.#dataType; }
+
+    _id;
+    get id() { return this._id; }
+    set id(id)
+    {
+        this._id = id;
+        this.label.innerHTML = id;
+    }
+    
+    _graph = null;
+    get graph() { return this._graph; }
+    setGraph(graph) { this._graph = graph; }
+    
+    
+    params = [];
+    
+    inputs = [];
+    output = null;
+    
+    cachedObjects = [];
+
+    #valid = false; // this is the flag for regeneration
+
+    
+    _active = false;
+    get active() { return this._active; }
+
+
+    makeActive() // only true
+    {
+        this.makeLeftPassive();
+        this.makeRightPassive();        
+
+        this._active = true;
+        this.div.style.boxShadow = '0 0 0 2px #18A0FB';
+
+        if (   this.output
+            && this.output.dataType == 'OBJ')
+            regenerateOutputs([this.output]);
+    }
+
+    
+    makeLeftPassive()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+            {
+                input.connectedOutput.op.makePassive();
+                input.connectedOutput.op.makeLeftPassive();            
+            }
+        }
+    }
+
+    makeRightPassive()
+    {
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+            {
+                input.op.makePassive();
+                input.op.makeRightPassive();            
+            }
+        }
+    }
+
+    makePassive()
+    {
+        if (this.active)
+        {
+            this.div.style.boxShadow = 'none';
+            removeNodeOutput(this);
+        }
+
+        this._active = false;
+    }
+
+    
+    get activeNodeInTree() { return this.getActiveNodeInTree(null); }
+
+    getActiveNodeInTree(callerOp = null)
+    {
+        if (this.active)
+            return this;
+
+        for (const input of this.inputs)
+        {
+            if (   input.connected
+                && input.connectedOutput.op != callerOp)
+            {
+                const active = input.connectedOutput.op.getActiveNodeInTree(this);
+                if (active) return active;
+            }
+        }
+
+        if (   this.output
+            && this.output.connected)
+        {
+            for (const input of this.output.connectedInputs)
+            {
+                if (input.op != callerOp)
+                {
+                    const active = input.op.getActiveNodeInTree(this);
+                    if (active) return active;
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+    set valid(val) { this.#valid = val; }
+    get valid() 
+    {
+        var valid = this.#valid;
+        
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                valid &= input.connectedOutput.op.valid;
+        }
+
+        return valid;
+    }
+
+
+    div;
+    inner;
+    header;
+    label;
+    inputControls;
+    outputControls;
+
+
+    constructor(opType, dataType)
+    {
+        this.#opType   = opType;   // this is the operator type
+        this.#dataType = dataType; // this is the op's main data type
+
+        this._id = opType; // this is a temp until the op becomes a graph node
+        
+        var headerColor = colorFromDataType(dataType, false);
+        createDiv(this, headerColor);
+    }    
+    
+    
+    addInput(input)
+    {
+        input._op = this;
+        this.inputs.push(input);
+        this.inputControls.appendChild(input.control);
+    }
+
+
+    setOutput(output)
+    {
+        if (this.output != null)
+        {
+            this.outputControls.removeChild(this.output.control);
+            this.output._op = null;
+        }
+
+        output._op = this;
+        this.output = output;
+        this.outputControls.appendChild(output.control);
+    }
+
+
+    addParam(param)
+    {
+        this.params.push(param);
+        
+        param._op = this;
+        param.control.style.display = 'inline-block';
+        
+        this.inner.appendChild(param.div);
+    }
+ 
+    
+
+    setId(newId)
+    {
+        if (this._graph.nodes.find(node => node.id == newId))
+            return false; // graph already contains a node with this id
+
+        this._id = newId;
+        this.label.innerHTML = newId;
+
+        return true;
+    }
+
+
+    generate() 
+    { 
+        this.valid = true; 
+    }
+
+
+    isBefore(node)
+    {
+        if (   !this.output
+            || !this.output.connected)
+            return false;
+
+        for (const input of output.connectedInputs)
+        {
+            if (input.op == node)        return true;
+            if (input.op.isBefore(node)) return true;
+        }
+
+        return false;
+    }
+
+
+    isAfter(node)
+    {
+        if (this.inputs.length == 0)
+            return false;
+
+        for (const input of inputs)
+        {
+            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op.isAfter(node)) return true;
+        }
+
+        return false;
+    }
+}
+
+
+class   GOpRect
+extends GOperator
+{
+    #width;
+    #height;
+
+
+    constructor()
+    {
+        super('rect', 'OBJ');
+
+        this.setOutput(new GOutput(this.dataType));
+
+        this.addParam(this.#width  = new GNumberParam('width',  10, 0.01));
+        this.addParam(this.#height = new GNumberParam('height', 10, 0.01));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value,
+
+            inputs: []
+        };
+
+        super.generate();
+    }
+}
+
+
+class   GOpRow
+extends GOperator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('row', 'OBJ');
+
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
+        
+        this.addParam(this.#count = new GNumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',   10, 0));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data))
+        {
+            this.output._data = {};
+            return;
+        }
+
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            count: this.#count.value,
+            gap:   this.#gap  .value,
+
+            inputs: [input.data]
+        };
+
+
+        super.generate();
+    }
+}
+
+
+class   GOpColumn
+extends GOperator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('column', 'OBJ');
+
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
+        
+        this.addParam(this.#count = new GNumberParam('count', 4, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap', 10, 0));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+            count:  this.#count.value,
+            gap:    this.#gap  .value,
+
+            inputs: [input.data]
+        };
+
+        super.generate();
+    }
+}
+
+
+class   GOpSpread 
+extends GOperator
+{
+    #count;
+    #radius;
+
+    seed = 0;
+
+
+    constructor()
+    {
+        super('spread', 'OBJ');
+
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
+        
+        this.addParam(this.#count  = new GNumberParam('count', 2, 1));
+        this.addParam(this.#radius = new GNumberParam('radius', 100, 0.01));
+    }
+
+
+    setGraph(graph)
+    {
+        super.setGraph(graph);
+        this.seed = this.graph.random.seed;
+        this.graph.random.next();
+    }
+
+    
+    generate()
+    {
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            count:  this.#count .value,
+            radius: this.#radius.value,
+            
+            seed:   this.seed,
+
+            inputs: [input.data]
+        };
+
+        super.generate();
+    }
+}
+
+
+class   GOpNumber
+extends GOperator
+{
+    #value;
+
+    constructor()
+    {
+        super('number', 'NUM');
+
+        this.setOutput(new GOutput(this.dataType));
+
+        this.addParam(this.#value = new GNumberParam(''));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            value:  this.#value.value,
+        };
+
+        super.generate();
+    }
+}
+
+
+class   GOpRandom
+extends GOperator
+{
+    #min;
+    #max;
+    #scale;
+    #seed;
+
+
+    constructor()
+    {
+        super('random', 'NUM');
+
+        this.setOutput(new GOutput(this.dataType));
+
+        this.addParam(this.#min   = new GNumberParam('min'));
+        this.addParam(this.#max   = new GNumberParam('max'));
+        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed'));
+
+        this.#min.control.addEventListener('onchange', () =>
+        {
+            if (this.#min.control.value > this.#max.control.value)
+                this.#max.control.setValue(this.#min.control.value, false);
+        });
+
+        this.#max.control.addEventListener('onchange', () =>
+        {
+            if (this.#max.control.value < this.#min.control.value)
+                this.#min.control.setValue(this.#max.control.value, false);
+        });
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+            
+            min:    this.#min  .value,
+            max:    this.#max  .value,
+            scale:  this.#scale.value,
+            seed:   this.#seed .value
+        };
+
+        super.generate();
+    }
+}
+
+
 onmessage = function(e)
 {
     if (e.data.msg === 'regenerateObjects')
@@ -896,7 +1952,7 @@ onmessage = function(e)
 
 function generate(obj)
 {
-    switch (obj.type)
+    switch (obj.opType)
     {
         case 'rect'  : return generateRect  (obj);
         case 'row'   : return generateRow   (obj);
@@ -910,9 +1966,9 @@ function generateRect(obj)
 {   
     return [{
         id:     obj.type,
-        type:   obj.type,
-        nodeId: obj.id,
-        itemId: 'rect_0',
+        type:   obj.opType,
+        nodeId: obj.nodeId,
+        itemId: obj.nodeId + '_0',
         x:      obj.x,
         y:      obj.y,
         width:  obj.width,
@@ -933,7 +1989,7 @@ function generateRow(node)
         for (var j = 0; j < input.length; j++)
         {
             var item = shallowCopy(input[j]);
-            item.itemId = 'row_' + i + '_' + j;
+            item.itemId = node.nodeId + '_' + i + '_' + j;
 
             item.x += x;
             
@@ -959,7 +2015,7 @@ function generateColumn(node)
         for (var j = 0; j < input.length; j++)
         {
             var item = shallowCopy(input[j]);
-            item.itemId = 'column_' + i + '_' + j;
+            item.itemId = node.nodeId + '_' + i + '_' + j;
 
             item.y += y;
             
@@ -992,7 +2048,7 @@ function generateSpread(node)
         for (var j = 0; j < input.length; j++)
         {
             var item = shallowCopy(input[j]);
-            item.itemId = 'spread_' + i + '_' + j;
+            item.itemId = node.nodeId + '_' + i + '_' + j;
 
             item.x += v.x;
             item.y += v.y;
@@ -1299,212 +2355,6 @@ function checkResize(x, y)
     else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
     else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
     else                          document.body.style.cursor = 'auto';
-}
-
-
-class Graph
-{
-    nodes = [];
-
-    mutex = false;
-
-    deferOutputs = [];
-
-    random = new Random();
-    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
-
-    
-    getNewId(_node)
-    {
-        var opType = _node.opType;
-
-        var maxNum = 0;
-        
-        for (const node of this.nodes)
-        {
-            if (node == _node)
-                continue;
-                
-            if (   node.id.length < opType.length
-                || node.id.substring(0, opType.length) !== opType)
-                continue;
-                
-            var num = parseInt(node.id.substring(opType.length));
-            
-            if (isNaN(num) || num == 0) 
-                num = 1;
-            
-            maxNum = Math.max(num, maxNum);
-        }
-
-        if (maxNum == 0)
-            return opType;
-
-        maxNum++;
-
-        return opType + maxNum;
-    }
-    
-    
-    createNode(opType)
-    {
-        var node;
-
-        switch (opType)
-        {
-            case 'number': node = new OpNumber(); break;
-            case 'random': node = new OpRandom(); break;
-            case 'rect':   node = new OpRect();   break;
-            case 'row':    node = new OpRow();    break;
-            case 'column': node = new OpColumn(); break;
-            case 'spread': node = new OpSpread(); break;
-        }
-        
-        this.addNode(node);
-        node.makeActive();
-    }
-
-
-    addNode(node)
-    {
-        node.setGraph(this);
-        node.setId(this.getNewId(node)); // TODO: not checking return value here
-        
-        if (this.nodes.length > 0)
-        {
-            const bounds = graphView.getNodeBounds();
-            
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            const gap = 30;
-            node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y;
-        }
-        else // 0
-        {
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            node.div.style.zIndex = graph.nodes.length-1;
-            node.div.style.left = 100;
-
-            // I subtract the full height of the node here as they grow down, so this
-            // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
-        }
-
-        putNodeOnTop(node);
-    }
-    
-
-    connect(output, input)
-    {
-        if (input.connectedOutput == output)
-            return false;
-            
-        if (input.connectedOutput != null)
-            this.disconnect(input);
-
-        if (input.op)
-        {
-            output.connectedInputs.push(input);
-            input.connectedOutput = output;
-
-            const conn = new Connection(output, input);
-
-            input .connection = conn;
-            output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
-            output.op.makePassive();
-            input.op.valid = false;
-        
-            if (input.op.activeNodeInTree.output)
-                regenerateOutputs([input.op.activeNodeInTree.output]);
-
-            return true;
-        }
-        
-        else if (input.param)
-        {
-            output.connectedInputs.push(input);
-            input.connectedOutput = output;
-
-            const conn = new Connection(output, input);
-
-            input .connection = conn;
-            output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
-            input.param.op.valid = false;
-        
-            if (input.param.op.activeNodeInTree.output)
-                regenerateOutputs([input.param.op.activeNodeInTree.output]);
-
-            return true;
-        }
-
-
-        return false;
-    }
-
-
-    disconnect(input, remove = true)
-    {
-        // first remove the current output
-
-        if (input.op)
-            removeNodeOutput(input.op.activeNodeInTree);
-
-        // then disconnect
-
-        var output = input.connectedOutput;
-        if (!output) return false;
-
-        if (remove)
-            wires.removeChild(input.connection.wire);
-
-        var inputIndex = output.connectedInputs.indexOf(input);
-        output.connectedInputs.splice(inputIndex, 1);
-        
-        input .connection     = null;
-        output.connection     = null;
-
-        input.connectedOutput = null;
-
-
-        output.op.valid = false;
-
-        if (!output.op.activeNodeInTree)
-            output.op.makeActive();
-
-
-        var inputOp;
-
-             if (input.op   ) inputOp = input.op;
-        else if (input.param) inputOp = input.param.op;
-
-        inputOp.valid = false;
-        inputOp.activeNodeInTree.makeActive();
-
-        regenerateOutputs([
-            output, 
-            inputOp.activeNodeInTree.output]);
-
-            
-        return true;
-    }
-
-
-    nodeFromId(id)
-    {
-        return this.nodes.find(n => n.id === id);
-    }
 }
 
 
@@ -1957,7 +2807,7 @@ extends Parameter
         super('NUM');
 
         this._control = document.createElement('div');
-        this.control.param = this;
+        this.control.param  = this;
         this.control.zIndex = 0;
 
         initSlider(
@@ -1989,12 +2839,213 @@ extends Parameter
             var op = this.param.op;
 
             op.valid = false;
-
-            if (op.activeNodeInTree.output)
-                regenerateOutputs([op.activeNodeInTree.output]);
-    
+            generate([op.activeNodeInTree]);
             op.graph.mutex = true;            
         });
+    }
+}
+
+
+class Graph
+{
+    nodes = [];
+
+    mutex = false;
+
+    deferNodes = [];
+
+    random = new Random();
+    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
+
+    
+    getNewId(_node)
+    {
+        var opType = _node.opType;
+
+        var maxNum = 0;
+        
+        for (const node of this.nodes)
+        {
+            if (node == _node)
+                continue;
+                
+            if (   node.id.length < opType.length
+                || node.id.substring(0, opType.length) !== opType)
+                continue;
+                
+            var num = parseInt(node.id.substring(opType.length));
+            
+            if (isNaN(num) || num == 0) 
+                num = 1;
+            
+            maxNum = Math.max(num, maxNum);
+        }
+
+        if (maxNum == 0)
+            return opType;
+
+        maxNum++;
+
+        return opType + maxNum;
+    }
+    
+    
+    createNode(opType)
+    {
+        var node;
+
+        switch (opType)
+        {
+            case 'number': node = new OpNumber(); break;
+            case 'random': node = new OpRandom(); break;
+            case 'rect':   node = new OpRect();   break;
+            case 'row':    node = new OpRow();    break;
+            case 'column': node = new OpColumn(); break;
+            case 'spread': node = new OpSpread(); break;
+        }
+        
+        this.addNode(node);
+        node.makeActive();
+    }
+
+
+    addNode(node)
+    {
+        node.setGraph(this);
+        node.setId(this.getNewId(node)); // TODO: not checking return value here
+        
+        if (this.nodes.length > 0)
+        {
+            const bounds = graphView.getNodeBounds();
+            
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            const gap = 30;
+            node.div.style.left = bounds.x + bounds.w + gap;
+            node.div.style.top  = bounds.y;
+        }
+        else // 0
+        {
+            this.nodes.push(node);
+            graphView.appendChild(node.div);
+
+            node.div.style.zIndex = graph.nodes.length-1;
+            node.div.style.left = 100;
+
+            // I subtract the full height of the node here as they grow down, so this
+            // gives a nice random-ish offset for the first line of nodes
+            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
+        }
+
+        putNodeOnTop(node);
+    }
+    
+
+    connect(output, input)
+    {
+        if (input.connectedOutput == output)
+            return false;
+            
+        if (input.connectedOutput != null)
+            this.disconnect(input);
+
+        if (input.op)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
+
+            const conn = new Connection(output, input);
+
+            input .connection = conn;
+            output.connection = conn;
+            
+            wires.appendChild(conn.wire);
+            conn.updateWire();
+            
+            output.op.makePassive();
+            input.op.valid = false;
+        
+            generate([input.op.activeNodeInTree]);
+
+            return true;
+        }
+        
+        else if (input.param)
+        {
+            output.connectedInputs.push(input);
+            input.connectedOutput = output;
+
+            const conn = new Connection(output, input);
+
+            input .connection = conn;
+            output.connection = conn;
+            
+            wires.appendChild(conn.wire);
+            conn.updateWire();
+            
+            input.param.op.valid = false;
+        
+            generate([input.param.op.activeNodeInTree]);
+
+            return true;
+        }
+
+
+        return false;
+    }
+
+
+    disconnect(input, remove = true)
+    {
+        // first remove the current output
+
+        if (input.op)
+            removeNodeOutput(input.op.activeNodeInTree);
+
+        // then disconnect
+
+        var output = input.connectedOutput;
+        if (!output) return false;
+
+        if (remove)
+            wires.removeChild(input.connection.wire);
+
+        var inputIndex = output.connectedInputs.indexOf(input);
+        output.connectedInputs.splice(inputIndex, 1);
+        
+        input .connection     = null;
+        output.connection     = null;
+
+        input.connectedOutput = null;
+
+
+        output.op.valid = false;
+
+        if (!output.op.activeNodeInTree)
+            output.op.makeActive();
+
+
+        var inputOp;
+
+             if (input.op   ) inputOp = input.op;
+        else if (input.param) inputOp = input.param.op;
+
+        inputOp.valid = false;
+        inputOp.activeNodeInTree.makeActive();
+
+        generate([
+            output.op, 
+            inputOp.activeNodeInTree]);
+
+            
+        return true;
+    }
+
+
+    nodeFromId(id)
+    {
+        return this.nodes.find(n => n.id === id);
     }
 }
 
@@ -2290,7 +3341,7 @@ class Operator
 
         if (   this.output
             && this.output.dataType == 'OBJ')
-            regenerateOutputs([this.output]);
+            generate([this]);
     }
 
     
@@ -2768,6 +3819,92 @@ function initLabelTextbox(node)
 }
 
 
+class   OpNumber
+extends Operator
+{
+    #value;
+
+    constructor()
+    {
+        super('number', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#value = new NumberParam(''));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            value:  this.#value.value,
+        };
+
+        super.generate();
+    }
+}
+
+
+class   OpRandom
+extends Operator
+{
+    #min;
+    #max;
+    #scale;
+    #seed;
+
+
+    constructor()
+    {
+        super('random', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#min   = new NumberParam('min'));
+        this.addParam(this.#max   = new NumberParam('max'));
+        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new NumberParam('seed'));
+
+        this.#min.control.addEventListener('onchange', () =>
+        {
+            if (this.#min.control.value > this.#max.control.value)
+                this.#max.control.setValue(this.#min.control.value, false);
+        });
+
+        this.#max.control.addEventListener('onchange', () =>
+        {
+            if (this.#max.control.value < this.#min.control.value)
+                this.#min.control.setValue(this.#max.control.value, false);
+        });
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+            
+            min:    this.#min  .value,
+            max:    this.#max  .value,
+            scale:  this.#scale.value,
+            seed:   this.#seed .value
+        };
+
+        super.generate();
+    }
+}
+
+
 class   OpRect
 extends Operator
 {
@@ -2792,8 +3929,8 @@ extends Operator
 
         this.output._data = 
         {
-            id:     this.id,
-            type:   this.opType,
+            nodeId: this.id,
+            opType: this.opType,
 
             x:      0,
             y:      0,
@@ -2843,8 +3980,8 @@ extends Operator
 
         this.output._data = 
         {
-            id:    this.id,
-            type:  this.opType,
+            nodeId: this.id,
+            opType: this.opType,
 
             count: this.#count.value,
             gap:   this.#gap  .value,
@@ -2892,10 +4029,10 @@ extends Operator
 
         this.output._data = 
         {
-            id:    this.id,
-            type:  this.opType,
-            count: this.#count.value,
-            gap:   this.#gap  .value,
+            nodeId: this.id,
+            opType: this.opType,
+            count:  this.#count.value,
+            gap:    this.#gap  .value,
 
             inputs: [input.data]
         };
@@ -2949,8 +4086,8 @@ extends Operator
 
         this.output._data = 
         {
-            id:     this.id,
-            type:   this.opType,
+            nodeId: this.id,
+            opType: this.opType,
 
             count:  this.#count .value,
             radius: this.#radius.value,
@@ -2958,76 +4095,6 @@ extends Operator
             seed:   this.seed,
 
             inputs: [input.data]
-        };
-
-        super.generate();
-    }
-}
-
-
-class   OpNumber
-extends Operator
-{
-    #value;
-
-    constructor()
-    {
-        super('number', 'NUM');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#value = new NumberParam(''));
-    }
-}
-
-
-class   OpRandom
-extends Operator
-{
-    #min;
-    #max;
-    #scale;
-    #seed;
-
-
-    constructor()
-    {
-        super('random', 'NUM');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#min   = new NumberParam('min'));
-        this.addParam(this.#max   = new NumberParam('max'));
-        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed'));
-
-        this.#min.control.addEventListener('onchange', () =>
-        {
-            if (this.#min.control.value > this.#max.control.value)
-                this.#max.control.setValue(this.#min.control.value, false);
-        });
-
-        this.#max.control.addEventListener('onchange', () =>
-        {
-            if (this.#max.control.value < this.#min.control.value)
-                this.#min.control.setValue(this.#max.control.value, false);
-        });
-    }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        this.output._data = 
-        {
-            id:    this.id,
-            type:  this.opType,
-            
-            min:   this.#min  .value,
-            max:   this.#max  .value,
-            scale: this.#scale.value,
-            seed:  this.#seed .value
         };
 
         super.generate();
@@ -3838,14 +4905,14 @@ graphView.addEventListener('pointerup', e =>
                 }
                 else if (savedInput) // disconnect old, connect new
                 {
-                    graph.disconnect(savedInput);
-                    graph.connect(output, input);
+                    disconnect(savedInput);
+                    connect(output, input);
                 }
                 else // connect new
-                    graph.connect(output, input);
+                    connect(output, input);
             }
             else if (savedInput) // disconnect old
-                graph.disconnect(savedInput)
+                disconnect(savedInput)
             
             graphView.cancelConnection();
         }
@@ -3932,12 +4999,56 @@ function putNodeOnTop(node)
 }
 
 
-var worker = new Worker(
+const graph = new Graph();
+
+
+function createNode(opType)
+{
+    graph.createNode(opType);
+
+    generator.postMessage({
+        msg:   'createNode', 
+        opType: opType
+    });
+}
+
+
+function connect(output, input)
+{
+    graph.connect(output, input);
+
+    generator.postMessage({
+        msg:   'connect', 
+        output: output.op.id, 
+        input:  
+        [
+            input.op.id, 
+            input.op.inputs.indexOf(input)
+        ]
+    });
+}
+
+
+function disconnect(input)
+{
+    graph.disconnect(input);
+
+    generator.postMessage({
+        msg:  'disconnect', 
+        input: input
+    });
+}
+
+
+/////////////////////////////////////////////////////////////////////
+
+
+var generator = new Worker(
     window.URL.createObjectURL(
-        new Blob([generateWorker.textContent])));
+        new Blob([generatorScript.textContent])));
 
 
-worker.onmessage = function(e)
+generator.onmessage = function(e)
 {
     if (e.data.cmd == 'regenerateObjects')
     {
@@ -3972,23 +5083,23 @@ worker.onmessage = function(e)
         
         if (graph.deferOutputs.length > 0)
         {
-            var deferOutputs = Array.from(graph.deferOutputs);
-            graph.deferOutputs = [];
+            var deferNodes = Array.from(graph.deferNodes);
+            graph.deferNodes = [];
 
-            regenerateOutputs(deferOutputs);
+            generate(deferNodes);
         }
     }
 };
       
 
-function regenerateOutputs(outputs)
+function generate(nodes)
 {
     if (graph.mutex)
     {
-        graph.deferOutputs = [];
+        graph.deferNodes = [];
 
-        for (const output of outputs)
-            graph.deferOutputs.push(output);
+        for (const node of nodes)
+            graph.deferNodes.push(node);
 
         return;
     }
@@ -3996,25 +5107,23 @@ function regenerateOutputs(outputs)
     graph.mutex = true;
     var posted = false;
 
-    for (const output of outputs)
-    {
-        if (!isEmptyObject(output.data))
-        {
-            worker.postMessage(
-            {
-                msg:   'regenerateObjects',
-                nodeId: output.op.id,
-                data:   output.data
-            });
 
-            posted = true;
-        }
-    }
+    const nodeIds = nodes.map(n => n.id);
+
+    console.log('canvas generate(nodes)');
+    console.log(nodeIds);
+    generator.postMessage(
+    {
+        msg:  'generate',
+        nodes: nodeIds
+    });
+
+    posted = true;
+
 
     if (!posted)
         graph.mutex = false;
 }
-
 
 
 //save('state', null);
@@ -4039,12 +5148,6 @@ parent.postMessage({ pluginMessage:
 //     var msg = e.data.pluginMessage;
 // }
 
-
-
-/////////////////////////////////////////////////////////
-
-
-var graph = new Graph();
 
 
 

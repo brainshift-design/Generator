@@ -4,7 +4,7 @@
         NUM
 */
 
-class Operator
+class GOperator
 {
     #opType;
     get opType() { return this.#opType; }

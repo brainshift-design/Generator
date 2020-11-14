@@ -1,5 +1,5 @@
-class   OpNumber
-extends Operator
+class   GOpNumber
+extends GOperator
 {
     #value;
 
@@ -7,9 +7,9 @@ extends Operator
     {
         super('number', 'NUM');
 
-        this.setOutput(new Output(this.dataType));
+        this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#value = new NumberParam(''));
+        this.addParam(this.#value = new GNumberParam(''));
     }
 
 

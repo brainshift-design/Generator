@@ -10,7 +10,7 @@ figma.ui.onmessage = msg =>
         case 'resizeWindow':      msgResizeWindow     (msg); break; 
         case 'removeNodeObjects': msgRemoveNodeObjects(msg); break; 
         case 'removeObjectList':  msgRemoveObjectList (msg); break;
-        case 'regenerateObjects': msgRegenerateObjects(msg); break;
+        case 'updateObjects':     msgUpdateObjects    (msg); break;
     }
 };
 
@@ -40,8 +40,8 @@ function msgLoadState(msg)
 
 function msgResizeWindow(msg)
 {
-    var width  = Math.max(0, msg.width);
-    var height = Math.max(0, msg.height);
+    var width  = Math.floor(Math.max(0, msg.width ));
+    var height = Math.floor(Math.max(0, msg.height));
 
     figma.ui.resize(width, height);
 
@@ -70,19 +70,19 @@ function msgRemoveObjectList(msg)
 }
 
 
-function msgRegenerateObjects(msg)
+function msgUpdateObjects(msg)
 {
     for (const item of msg.data)
     {
         switch (item.type)
         {
-            case 'rect': regenerateRect(item); break;
+            case 'rect': updateRect(item); break;
         }
     }
 }
 
 
-function regenerateRect(item)
+function updateRect(item)
 {
     const existing = figma.currentPage.children.findIndex(obj => 
         obj.getPluginData('#GEN') === '#GEN_' + item.itemId);

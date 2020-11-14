@@ -4,7 +4,7 @@ class Graph
 
     mutex = false;
 
-    deferOutputs = [];
+    deferNodes = [];
 
     random = new Random();
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
@@ -118,8 +118,7 @@ class Graph
             output.op.makePassive();
             input.op.valid = false;
         
-            if (input.op.activeNodeInTree.output)
-                regenerateOutputs([input.op.activeNodeInTree.output]);
+            generate([input.op.activeNodeInTree]);
 
             return true;
         }
@@ -139,8 +138,7 @@ class Graph
             
             input.param.op.valid = false;
         
-            if (input.param.op.activeNodeInTree.output)
-                regenerateOutputs([input.param.op.activeNodeInTree.output]);
+            generate([input.param.op.activeNodeInTree]);
 
             return true;
         }
@@ -188,9 +186,9 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-        regenerateOutputs([
-            output, 
-            inputOp.activeNodeInTree.output]);
+        generate([
+            output.op, 
+            inputOp.activeNodeInTree]);
 
             
         return true;

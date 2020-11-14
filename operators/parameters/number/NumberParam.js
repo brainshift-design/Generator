@@ -3,8 +3,8 @@ extends Parameter
 {
     #value;
 
-    get value() { return this._control.value; }
-    set value(val) { this._control.setValue(val); }
+    // get value() { return this._control.value; }
+    // set value(val) { this._control.setValue(val); }
 
 
     input; 
@@ -18,7 +18,7 @@ extends Parameter
         super('NUM');
 
         this._control = document.createElement('div');
-        this.control.param  = this;
+        this.control.param = this;
         this.control.zIndex = 0;
 
         initSlider(

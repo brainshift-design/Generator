@@ -22,8 +22,8 @@ extends Operator
 
         this.output._data = 
         {
-            id:     this.id,
-            type:   this.opType,
+            nodeId: this.id,
+            opType: this.opType,
 
             x:      0,
             y:      0,
