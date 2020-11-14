@@ -47,11 +47,7 @@ class Operator
 
         if (   this.output
             && this.output.dataType == 'OBJ')
-<<<<<<< HEAD:operators/Operator.js
             generate([this]);
-=======
-            regenerate([this.output]);
->>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:operators/_common/Operator.js
     }
 
     

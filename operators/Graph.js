@@ -95,12 +95,7 @@ class Graph
             output.op.makePassive();
             input.op.valid = false;
         
-<<<<<<< HEAD:operators/Graph.js
             generate([input.op.activeNodeInTree]);
-=======
-            if (input.op.activeNodeInTree.output)
-                regenerate([input.op.activeNodeInTree.output]);
->>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:generator/Graph.js
 
             return true;
         }
@@ -168,15 +163,9 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-<<<<<<< HEAD:operators/Graph.js
         generate([
             output.op, 
             inputOp.activeNodeInTree]);
-=======
-        regenerate([
-            output, 
-            inputOp.activeNodeInTree.output]);
->>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:generator/Graph.js
 
             
         return true;

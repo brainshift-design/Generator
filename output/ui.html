@@ -2682,12 +2682,7 @@ class Graph
             output.op.makePassive();
             input.op.valid = false;
         
-<<<<<<< HEAD:operators/Graph.js
             generate([input.op.activeNodeInTree]);
-=======
-            if (input.op.activeNodeInTree.output)
-                regenerate([input.op.activeNodeInTree.output]);
->>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:generator/Graph.js
 
             return true;
         }
@@ -2755,15 +2750,9 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-<<<<<<< HEAD:operators/Graph.js
         generate([
             output.op, 
             inputOp.activeNodeInTree]);
-=======
-        regenerate([
-            output, 
-            inputOp.activeNodeInTree.output]);
->>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:generator/Graph.js
 
             
         return true;
@@ -3065,11 +3054,7 @@ class Operator
 
         if (   this.output
             && this.output.dataType == 'OBJ')
-<<<<<<< HEAD:operators/Operator.js
             generate([this]);
-=======
-            regenerate([this.output]);
->>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:operators/_common/Operator.js
     }
 
     
@@ -3285,6 +3270,44 @@ extends Operator
             scale:  this.#scale.value,
             seed:   this.#seed .value
         };
+
+        super.generate();
+    }
+}
+
+
+class   OpRect
+extends Operator
+{
+    #width;
+    #height;
+
+
+    constructor()
+    {
+        super('rect', 'OBJ');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#width  = new NumberParam('width',  10, 0.01));
+        this.addParam(this.#height = new NumberParam('height', 10, 0.01));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value
+        }];
 
         super.generate();
     }
