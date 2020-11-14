@@ -1,4 +1,4 @@
-const OBJ_COLOR = '#bedfff';
+const OBJ_COLOR = '#bee0ff';
 const NUM_COLOR = '#ddd';
 
 const ACTIVE_OBJ_COLOR = '#18a0fb';

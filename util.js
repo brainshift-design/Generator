@@ -38,6 +38,12 @@ function forwardEvent(event, element)
 // }
 
 
+function remove(obj, array)
+{
+    array.splice(array.indexOf(obj), 1);
+}
+
+
 function clearChildren(parent) 
 {
     while (parent.firstChild)

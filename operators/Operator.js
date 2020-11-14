@@ -34,7 +34,31 @@ class Operator
 
     #valid = false; // this is the flag for regeneration
 
+
+    _selected;
+    get selected() { return this._selected; }
+    set selected(sel) 
+    {
+        if (this._selected)
+            remove(this, graphSelected);
+
+        setSelected(sel); 
+
+        if (this._selected)
+            graph.selected.push(this);
+    }
+
+    setSelected(sel)
+    {
+        this._selected = sel;
+
+        this.div.style.boxShadow = 
+            this._selected
+            ? '0 0 0 2px ' + ACTIVE_OBJ_COLOR
+            : 'none';
+    }
     
+
     _active = false;
     get active() { return this._active; }
 
@@ -45,13 +69,16 @@ class Operator
         this.makeRightPassive();        
 
         this._active = true;
-        this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
+        this.header.style.backgroundColor = this.activeColor;
+        this.header.style.boxShadow       = 'none';
+        this.label .style.color           = 'white';
+        
         if (   this.output
             && this.output.dataType == 'OBJ')
             generate([this]);
-    }
-
+        }
+        
     
     makeLeftPassive()
     {
@@ -64,7 +91,7 @@ class Operator
             }
         }
     }
-
+    
     makeRightPassive()
     {
         if (this.output)
@@ -76,12 +103,15 @@ class Operator
             }
         }
     }
-
+    
     makePassive()
     {
         if (this.active)
         {
-            this.div.style.boxShadow = 'none';
+            this.header.style.backgroundColor = this.passiveColor;
+            this.header.style.boxShadow       = '0 0 0 1px #0001 inset';
+            this.label .style.color           = 'black';
+
             removeNodeOutput(this);
         }
 
@@ -135,6 +165,29 @@ class Operator
         }
 
         return valid;
+    }
+
+
+    get activeColor()
+    {
+        switch (this.#dataType)
+        {
+            case 'OBJ': return ACTIVE_OBJ_COLOR;
+            case 'NUM': return ACTIVE_NUM_COLOR;
+        }
+
+        return 'magenta'
+    }
+
+    get passiveColor()
+    {
+        switch (this.#dataType)
+        {
+            case 'OBJ': return OBJ_COLOR;
+            case 'NUM': return NUM_COLOR;
+        }
+
+        return 'magenta'
     }
 
 

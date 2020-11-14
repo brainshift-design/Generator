@@ -13,6 +13,20 @@ function createNode(opType)
 }
 
 
+function setNodeId(nodeId, newId)
+{
+    const node = graph.nodeFromId(nodeId);
+
+    node.id = newId;
+
+    generator.postMessage({
+        msg:   'setNodeId', 
+        nodeId: nodeId,
+        newId:  newId
+    });
+}
+
+
 function connect(output, input)
 {
     graph.connect(output, input);

@@ -21,6 +21,10 @@ function createDiv(node, headerColor)
             && !graphView.overOutput
             && !graphView.overInput)
         {
+            e.stopPropagation();
+
+            graph.selected = [node];
+
             node.div.sx  = e.clientX;
             node.div.sy  = e.clientY;
             node.div.slx = node.div.offsetLeft;

@@ -8,6 +8,7 @@ onmessage = function(e)
         case 'createNode': 
         {
             const node = ggraph.createNode(e.data.opType);
+            
             node.id = e.data.nodeId;
 
             postMessage({ 
@@ -15,6 +16,12 @@ onmessage = function(e)
                 nodeId:  node.id
             });
             
+            break;
+        }
+        case 'setNodeId': 
+        {
+            const node = ggraph.nodeFromId(e.data.nodeId);
+            node.id = e.data.newId;
             break;
         }
         case 'connect':

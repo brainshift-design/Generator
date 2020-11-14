@@ -1,6 +1,20 @@
 class Graph
 {
-    nodes = [];
+    nodes    = [];
+    
+    #selected = [];
+    get selected() { return this.#selected; }
+    set selected(sel)
+    {
+        for (const node of this.#selected)            
+            node.setSelected(false);
+
+        this.#selected = sel;
+
+        for (const node of this.#selected)
+            node.setSelected(true);
+    }
+
 
     mutex = false;
 

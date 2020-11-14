@@ -29,6 +29,10 @@ graphView.addEventListener('pointerdown', e =>
             graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
         }
     }
+    else // selection
+    {
+        graph.selected = [];
+    }
 });
 
 
