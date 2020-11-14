@@ -120,7 +120,12 @@ class Graph
             
             input.param.op.valid = false;
         
+<<<<<<< HEAD:operators/Graph.js
             generate([input.param.op.activeNodeInTree]);
+=======
+            if (input.param.op.activeNodeInTree.output)
+                regenerate([input.param.op.activeNodeInTree.output]);
+>>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:generator/Graph.js
 
             return true;
         }

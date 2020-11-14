@@ -343,162 +343,6 @@ button svg
 
 
 
-function setStyle(id, properties)
-{
-    var elem = document.getElementById(id);
-
-    for (var property in properties)
-        elem.style[property] = properties[property];
-}
-
-
-function indexOfChild(parent, child)
-{
-    return Array.prototype.indexOf.call(parent.children, child);
-}
-
-function containsChild(parent, child)
-{
-    return child.parentNode == parent;
-}
-
-
-function forwardEvent(event, element)
-{
-    var e = new event.constructor(event.type, event);
-    element.dispatchEvent(e);
-}
-
-
-// function triggerMouseEvent(element, event, px, py, button = 0)
-// {
-//     const e = new MouseEvent(event, 
-//     {
-//         clientX: px,
-//         clientY: py,
-//         button:  button
-//     });
-
-//     element.dispatchEvent(e);
-// }
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-function isEmptyObject(obj)
-{
-    if (obj == null)
-        return false;
-        
-    return (
-           Object.keys(obj).length === 0 
-        && obj.constructor === Object);
-}
-
-
-function shallowCopy(obj)
-{
-    return Object.assign({}, obj);
-}
-
-
-function deepCopy(obj)
-{
-    return JSON.parse(JSON.stringify(obj));
-}
-
-
-function createSvg(element)
-{
-    return document.createElementNS('http://www.w3.org/2000/svg', element);
-}
-
-
-function show(element) { element.style.visibility = 'visible'; }
-function hide(element) { element.style.visibility = 'hidden'; }
-
-
-function removeNodeOutput(node)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
-    }}, '*');
-}
-
-
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
-    }
-
-    return 'magenta';
-}
-
-
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
@@ -952,10 +796,7 @@ extends GParameter
             var op = this.param.op;
 
             op.valid = false;
-
-            if (op.activeNodeInTree.output)
-                regenerateOutputs([op.activeNodeInTree.output]);
-    
+            generate([op.activeNodeInTree]);
             op.graph.mutex = true;            
         });
     }
@@ -968,7 +809,7 @@ class GGraph
 
     mutex = false;
 
-    deferOutputs = [];
+    deferNodes = [];
 
     random = new Random();
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
@@ -1082,8 +923,7 @@ class GGraph
             output.op.makePassive();
             input.op.valid = false;
         
-            if (input.op.activeNodeInTree.output)
-                regenerateOutputs([input.op.activeNodeInTree.output]);
+            generate([input.op.activeNodeInTree]);
 
             return true;
         }
@@ -1103,8 +943,7 @@ class GGraph
             
             input.param.op.valid = false;
         
-            if (input.param.op.activeNodeInTree.output)
-                regenerateOutputs([input.param.op.activeNodeInTree.output]);
+            generate([input.param.op.activeNodeInTree]);
 
             return true;
         }
@@ -1152,9 +991,9 @@ class GGraph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-        regenerateOutputs([
-            output, 
-            inputOp.activeNodeInTree.output]);
+        generate([
+            output.op, 
+            inputOp.activeNodeInTree]);
 
             
         return true;
@@ -1459,7 +1298,7 @@ class GOperator
 
         if (   this.output
             && this.output.dataType == 'OBJ')
-            regenerateOutputs([this.output]);
+            generate([this]);
     }
 
     
@@ -1672,20 +1511,19 @@ extends GOperator
 
     generate()
     {
+        console.log('GOpRect.generate()');
         if (this.valid) return;
 
         this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            x:      0,
-            y:      0,
-            width:  this.#width .value,
-            height: this.#height.value,
-
-            inputs: []
-        };
+        [{
+            nodeId: obj.nodeId,
+            itemId: obj.nodeId + '_0',
+            
+            x:      obj.x,
+            y:      obj.y,
+            width:  obj.width,
+            height: obj.height
+        }];
 
         super.generate();
     }
@@ -1935,45 +1773,54 @@ extends GOperator
 }
 
 
+const ggraph = new GGraph();
+
+
 onmessage = function(e)
 {
-    if (e.data.msg === 'regenerateObjects')
+    console.log('generator msg = ' + e.data.msg);
+    switch (e.data.msg)
     {
-        var objects = generate(e.data.data);
+        case 'createNode': 
+            ggraph.createNode(e.data.opType);
+            break;
 
-        postMessage({ 
-            cmd:    'regenerateObjects',
-            nodeId:  e.data.nodeId,
-            objects: objects
-        });
+        case 'connect':
+        {
+            const outNode = ggraph.nodes.find(n => n.id == e.data.output);
+            const  inNode = ggraph.nodes.find(n => n.id == e.data.input[0]);
+            ggraph.connect(outNode.output, inNode.inputs[e.data.input[1]]);
+            break;
+        }
+        case 'disconnect':
+            ggraph.disconnect(e.data.opType);
+            break;
+
+
+        case 'generate':
+        {
+            console.log('generator msg generate');
+            const objects = [];
+
+            for (const nodeId of e.data.nodeIds)
+                objects = objects.concat(generate(nodeId));
+
+            postMessage({ 
+                cmd:    'updateObjects',
+                nodeId:  e.data.nodeId,
+                objects: objects
+            });
+
+            break;
+        }
     }
 };
 
 
-function generate(obj)
+function generate(nodeId)
 {
-    switch (obj.opType)
-    {
-        case 'rect'  : return generateRect  (obj);
-        case 'row'   : return generateRow   (obj);
-        case 'column': return generateColumn(obj);
-        case 'spread': return generateSpread(obj);
-    }    
-}
-
-
-function generateRect(obj)
-{   
-    return [{
-        id:     obj.type,
-        type:   obj.opType,
-        nodeId: obj.nodeId,
-        itemId: obj.nodeId + '_0',
-        x:      obj.x,
-        y:      obj.y,
-        width:  obj.width,
-        height: obj.height
-    }];
+    console.log('generator generate()');
+    const node = ggraph.nodeFromId(nodeId).generate();
 }
 
 
@@ -2092,270 +1939,6 @@ function getBounds(objects)
 <script>
 
 ////////////////////////////////////////////////////
-
-
-const OBJ_COLOR = '#bedfff';
-const NUM_COLOR = '#ddd';
-
-const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = '#787878';
-
-const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
-
-
-function setStyle(id, properties)
-{
-    var elem = document.getElementById(id);
-
-    for (var property in properties)
-        elem.style[property] = properties[property];
-}
-
-
-function indexOfChild(parent, child)
-{
-    return Array.prototype.indexOf.call(parent.children, child);
-}
-
-function containsChild(parent, child)
-{
-    return child.parentNode == parent;
-}
-
-
-function forwardEvent(event, element)
-{
-    var e = new event.constructor(event.type, event);
-    element.dispatchEvent(e);
-}
-
-
-// function triggerMouseEvent(element, event, px, py, button = 0)
-// {
-//     const e = new MouseEvent(event, 
-//     {
-//         clientX: px,
-//         clientY: py,
-//         button:  button
-//     });
-
-//     element.dispatchEvent(e);
-// }
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-function isEmptyObject(obj)
-{
-    if (obj == null)
-        return false;
-        
-    return (
-           Object.keys(obj).length === 0 
-        && obj.constructor === Object);
-}
-
-
-function shallowCopy(obj)
-{
-    return Object.assign({}, obj);
-}
-
-
-function deepCopy(obj)
-{
-    return JSON.parse(JSON.stringify(obj));
-}
-
-
-function createSvg(element)
-{
-    return document.createElementNS('http://www.w3.org/2000/svg', element);
-}
-
-
-function show(element) { element.style.visibility = 'visible'; }
-function hide(element) { element.style.visibility = 'hidden'; }
-
-
-function removeNodeOutput(node)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
-    }}, '*');
-}
-
-
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
-    }
-
-    return 'magenta';
-}
-
-
-const resizeEdgeWidth = 8;
-
-document.canResizeX = false;
-document.canResizeY = false;
-
-document.resizingX  = false;
-document.resizingY  = false;
-
-document.startX     = 0;
-document.startY     = 0;
-
-document.startH     = 0;
-document.startW     = 0;
-
-
-document.addEventListener('pointerdown', function(e)
-{
-    if (   document.canResizeX
-        || document.canResizeY)
-    {
-        if (document.canResizeX) document.resizingX = true;
-        if (document.canResizeY) document.resizingY = true;
-
-        document.startX   = e.clientX;
-        document.startY   = e.clientY;
-
-        document.startW   = window.innerWidth;
-        document.startH   = window.innerHeight;
-
-        document.body.setPointerCapture(e.pointerId);
-    }
-});
-
-
-document.addEventListener('pointermove', function(e)
-{
-    if (   document.resizingX
-        && document.resizingY)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.startH + e.clientY - document.startY);
-    }
-    else if (document.resizingX)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.body.clientHeight);
-    }
-    else if (document.resizingY)
-    {
-        resizeWindow(
-            document.body.clientWidth,
-            document.startH + e.clientY - document.startY);
-    }
-    else
-        checkResize(e.clientX, e.clientY);
-});
-
-
-document.addEventListener('pointerup', function(e)
-{
-    if (   document.resizingX
-        || document.resizingY)
-    {
-        document.resizingX = false;
-        document.resizingY = false;
-        
-        checkResize(e.clientX, e.clientY);
-        document.body.releasePointerCapture(e.pointerId);
-    }
-});
-
-
-function resizeWindow(width, height)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'resizeWindow', 
-        width:  width,
-        height: height
-    }}, '*');
-
-}
-
-
-function checkResize(x, y)
-{
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
-
-         if (document.canResizeX
-          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
-    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
-    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
-    else                          document.body.style.cursor = 'auto';
-}
 
 
 const R = 0, G = 1, B = 2, A = 3;
@@ -2766,23 +2349,179 @@ function saveState()
 }
 
 
+const OBJ_COLOR = '#bedfff';
+const NUM_COLOR = '#ddd';
+
+const ACTIVE_OBJ_COLOR = '#18a0fb';
+const ACTIVE_NUM_COLOR = '#787878';
+
+const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+
+
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (var property in properties)
+        elem.style[property] = properties[property];
+}
+
+
+function indexOfChild(parent, child)
+{
+    return Array.prototype.indexOf.call(parent.children, child);
+}
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+
+//     element.dispatchEvent(e);
+// }
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
+}
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+function colorStyle(rgb)
+{
+    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
+}
+
+
+function numToString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+        str = str.substring(0, i--);
+
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+        str = str.substring(0, i--);
+
+    return str;
+}
+
+
+function isEmptyObject(obj)
+{
+    if (obj == null)
+        return false;
+        
+    return (
+           Object.keys(obj).length === 0 
+        && obj.constructor === Object);
+}
+
+
+function shallowCopy(obj)
+{
+    return Object.assign({}, obj);
+}
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+function createSvg(element)
+{
+    return document.createElementNS('http://www.w3.org/2000/svg', element);
+}
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
 class Parameter
 {
-    #type;
-    get type() { return this.#type; }
-    
-    _op;      get op()      { return this._op;      }
-    _control; get control() { return this._control; }
-    _div;     get div()     { return this._div;     }
+    #type; get type() { return this.#type; }
+    _op;   get op()   { return this._op;   }
 
     constructor(type)
     {
         this.#type = type;
-
-        this._div = document.createElement('div');
-        this.div.style.position = 'relative';
-        this.div.style.padding  = 0;
-        this.div.style.width    = '100%';
     }
 }
 
@@ -2897,15 +2636,16 @@ class Graph
         switch (opType)
         {
             case 'number': node = new OpNumber(); break;
-            case 'random': node = new OpRandom(); break;
+            //case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
             case 'column': node = new OpColumn(); break;
-            case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);
         node.makeActive();
+
+        return node;
     }
 
 
@@ -2914,31 +2654,7 @@ class Graph
         node.setGraph(this);
         node.setId(this.getNewId(node)); // TODO: not checking return value here
         
-        if (this.nodes.length > 0)
-        {
-            const bounds = graphView.getNodeBounds();
-            
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            const gap = 30;
-            node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y;
-        }
-        else // 0
-        {
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            node.div.style.zIndex = graph.nodes.length-1;
-            node.div.style.left = 100;
-
-            // I subtract the full height of the node here as they grow down, so this
-            // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
-        }
-
-        putNodeOnTop(node);
+        this.nodes.push(node);
     }
     
 
@@ -2960,13 +2676,18 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            wires.appendChild(conn.wire);
-            conn.updateWire();
+            //wires.appendChild(conn.wire);
+            //conn.updateWire();
             
             output.op.makePassive();
             input.op.valid = false;
         
+<<<<<<< HEAD:operators/Graph.js
             generate([input.op.activeNodeInTree]);
+=======
+            if (input.op.activeNodeInTree.output)
+                regenerate([input.op.activeNodeInTree.output]);
+>>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:generator/Graph.js
 
             return true;
         }
@@ -2981,8 +2702,8 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            wires.appendChild(conn.wire);
-            conn.updateWire();
+            //wires.appendChild(conn.wire);
+            //conn.updateWire();
             
             input.param.op.valid = false;
         
@@ -3008,8 +2729,8 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        if (remove)
-            wires.removeChild(input.connection.wire);
+        //if (remove)
+        //    wires.removeChild(input.connection.wire);
 
         var inputIndex = output.connectedInputs.indexOf(input);
         output.connectedInputs.splice(inputIndex, 1);
@@ -3034,9 +2755,15 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
+<<<<<<< HEAD:operators/Graph.js
         generate([
             output.op, 
             inputOp.activeNodeInTree]);
+=======
+        regenerate([
+            output, 
+            inputOp.activeNodeInTree.output]);
+>>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:generator/Graph.js
 
             
         return true;
@@ -3054,6 +2781,15 @@ class Input
 {
     #dataType;     
     get dataType() { return this.#dataType; }
+
+    get data()
+    {
+        return (
+            this.connected
+            ? this.connectedOutput.data
+            : null);
+    }
+
 
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
@@ -3073,33 +2809,24 @@ class Input
     {
         this.#dataType = dataType;
 
-        this.control = document.createElement('div');
-        this.control.className = 'input';
-        this.control.input = this;
+        // this.control = document.createElement('div');
+        // this.control.className = 'input';
+        // this.control.input = this;
     
-        this.control.addEventListener('pointerdown', e => e.preventDefault());
+        // this.control.addEventListener('pointerdown', e => e.preventDefault());
 
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overInput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
-        });
+        // this.control.addEventListener('pointerenter', e => 
+        // {
+        //     graphView.overInput = this;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+        // });
 
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overInput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
-        });
+        // this.control.addEventListener('pointerleave', e => 
+        // {
+        //     graphView.overInput = null;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        // });
     }    
-    
-
-    get data()
-    {
-        return (
-            this.connected
-            ? this.connectedOutput.data
-            : null);
-    }
 }
 
 
@@ -3108,10 +2835,18 @@ class Output
     #dataType;     
     get dataType() { return this.#dataType; }
 
-    _op    = null; get op   () { return this._op;    }
-    _param = null; get param() { return this._param; }
+    _op = null; get op() { return this._op; }
+    
     
     _data = {};
+    get data() 
+    {
+        if (!this.op.valid)
+            this.op.generate();
+
+        return this._data;
+    }
+
 
     control;
     
@@ -3126,30 +2861,21 @@ class Output
     {
         this.#dataType = dataType;
         
-        this.control = document.createElement('div');
-        this.control.className = 'output';
-        this.control.output = this;
+        // this.control = document.createElement('div');
+        // this.control.className = 'output';
+        // this.control.output = this;
 
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overOutput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
-        });
+        // this.control.addEventListener('pointerenter', e => 
+        // {
+        //     graphView.overOutput = this;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
+        // });
 
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overOutput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
-        });
-    }
-    
-
-    get data() 
-    {
-        if (!this.op.valid)
-            this.op.generate();
-
-        return this._data;
+        // this.control.addEventListener('pointerleave', e => 
+        // {
+        //     graphView.overOutput = null;
+        //     e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        // });
     }
 }
 
@@ -3309,7 +3035,6 @@ class Operator
     set id(id)
     {
         this._id = id;
-        this.label.innerHTML = id;
     }
     
     _graph = null;
@@ -3337,11 +3062,14 @@ class Operator
         this.makeRightPassive();        
 
         this._active = true;
-        this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
         if (   this.output
             && this.output.dataType == 'OBJ')
+<<<<<<< HEAD:operators/Operator.js
             generate([this]);
+=======
+            regenerate([this.output]);
+>>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:operators/_common/Operator.js
     }
 
     
@@ -3372,10 +3100,7 @@ class Operator
     makePassive()
     {
         if (this.active)
-        {
-            this.div.style.boxShadow = 'none';
             removeNodeOutput(this);
-        }
 
         this._active = false;
     }
@@ -3430,23 +3155,12 @@ class Operator
     }
 
 
-    div;
-    inner;
-    header;
-    label;
-    inputControls;
-    outputControls;
-
-
     constructor(opType, dataType)
     {
         this.#opType   = opType;   // this is the operator type
         this.#dataType = dataType; // this is the op's main data type
 
         this._id = opType; // this is a temp until the op becomes a graph node
-        
-        var headerColor = colorFromDataType(dataType, false);
-        createDiv(this, headerColor);
     }    
     
     
@@ -3454,32 +3168,23 @@ class Operator
     {
         input._op = this;
         this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
     }
 
 
     setOutput(output)
     {
         if (this.output != null)
-        {
-            this.outputControls.removeChild(this.output.control);
             this.output._op = null;
-        }
 
         output._op = this;
         this.output = output;
-        this.outputControls.appendChild(output.control);
     }
 
 
     addParam(param)
     {
         this.params.push(param);
-        
         param._op = this;
-        param.control.style.display = 'inline-block';
-        
-        this.inner.appendChild(param.div);
     }
  
     
@@ -3490,8 +3195,6 @@ class Operator
             return false; // graph already contains a node with this id
 
         this._id = newId;
-        this.label.innerHTML = newId;
-
         return true;
     }
 
@@ -3525,7 +3228,7 @@ class Operator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op == node)       return true;
             if (input.connectedOutput.op.isAfter(node)) return true;
         }
 
@@ -3534,22 +3237,625 @@ class Operator
 }
 
 
-function createDiv(node, headerColor)
+class   OpRandom
+extends Operator
 {
-    node.div = document.createElement('div');
+    #min;
+    #max;
+    #scale;
+    #seed;
 
-    node.div.className = 'node';
-    node.div.op        = node;
-    node.div.dragging  = false;
+
+    constructor()
+    {
+        super('random', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#min   = new NumberParam('min'));
+        this.addParam(this.#max   = new NumberParam('max'));
+        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new NumberParam('seed'));
+
+        this.#min.control.addEventListener('onchange', () =>
+        {
+            if (this.#min.control.value > this.#max.control.value)
+                this.#max.control.setValue(this.#min.control.value, false);
+        });
+
+        this.#max.control.addEventListener('onchange', () =>
+        {
+            if (this.#max.control.value < this.#min.control.value)
+                this.#min.control.setValue(this.#max.control.value, false);
+        });
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+            
+            min:    this.#min  .value,
+            max:    this.#max  .value,
+            scale:  this.#scale.value,
+            seed:   this.#seed .value
+        };
+
+        super.generate();
+    }
+}
+
+
+class   OpRow
+extends Operator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('row', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count = new NumberParam('count',  4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data))
+        {
+            this.output._data = {};
+            return;
+        }
+
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            count: this.#count.value,
+            gap:   this.#gap  .value,
+
+            inputs: [input.data]
+        };
+
+
+        super.generate();
+    }
+}
+
+
+class   OpColumn
+extends Operator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('column', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count = new NumberParam('count', 4, 1));
+        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+            count:  this.#count.value,
+            gap:    this.#gap  .value,
+
+            inputs: [input.data]
+        };
+
+        super.generate();
+    }
+}
+
+
+class   OpSpread 
+extends Operator
+{
+    #count;
+    #radius;
+
+    seed = 0;
+
+
+    constructor()
+    {
+        super('spread', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count  = new NumberParam('count', 2, 1));
+        this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
+    }
+
+
+    setGraph(graph)
+    {
+        super.setGraph(graph);
+        this.seed = this.graph.random.seed;
+        this.graph.random.next();
+    }
+
+    
+    generate()
+    {
+        if (this.valid) return;
+
+        var input = this.inputs[0];
+
+        if (   !input.connected
+            || isEmptyObject(input.connectedOutput.data)) 
+        {
+            this.output._data = {};
+            return;
+        }
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            count:  this.#count .value,
+            radius: this.#radius.value,
+            
+            seed:   this.seed,
+
+            inputs: [input.data]
+        };
+
+        super.generate();
+    }
+}
+
+
+//save('state', null);
+//save('windowWidth', null);
+//save('windowHeight', null);
+
+initSelect(presets,
+[
+    {value: '', text: 'untitled'},
+]);
+
+
+parent.postMessage({ pluginMessage: 
+{ 
+    cmd:    'loadState',
+    onLoad: 'loadState'
+}}, '*');
+
+
+// onmessage = (e) =>
+// {
+//     var msg = e.data.pluginMessage;
+// }
+
+
+
+const resizeEdgeWidth = 8;
+
+document.canResizeX = false;
+document.canResizeY = false;
+
+document.resizingX  = false;
+document.resizingY  = false;
+
+document.startX     = 0;
+document.startY     = 0;
+
+document.startH     = 0;
+document.startW     = 0;
+
+
+document.addEventListener('pointerdown', function(e)
+{
+    if (   document.canResizeX
+        || document.canResizeY)
+    {
+        if (document.canResizeX) document.resizingX = true;
+        if (document.canResizeY) document.resizingY = true;
+
+        document.startX   = e.clientX;
+        document.startY   = e.clientY;
+
+        document.startW   = window.innerWidth;
+        document.startH   = window.innerHeight;
+
+        document.body.setPointerCapture(e.pointerId);
+    }
+});
+
+
+document.addEventListener('pointermove', function(e)
+{
+    if (   document.resizingX
+        && document.resizingY)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.startH + e.clientY - document.startY);
+    }
+    else if (document.resizingX)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.body.clientHeight);
+    }
+    else if (document.resizingY)
+    {
+        resizeWindow(
+            document.body.clientWidth,
+            document.startH + e.clientY - document.startY);
+    }
+    else
+        checkResize(e.clientX, e.clientY);
+});
+
+
+document.addEventListener('pointerup', function(e)
+{
+    if (   document.resizingX
+        || document.resizingY)
+    {
+        document.resizingX = false;
+        document.resizingY = false;
+        
+        checkResize(e.clientX, e.clientY);
+        document.body.releasePointerCapture(e.pointerId);
+    }
+});
+
+
+function resizeWindow(width, height)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'resizeWindow', 
+        width:  width,
+        height: height
+    }}, '*');
+
+}
+
+
+function checkResize(x, y)
+{
+    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+
+         if (document.canResizeX
+          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
+    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
+    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
+    else                          document.body.style.cursor = 'auto';
+}
+
+
+const generator = new Worker(
+    window.URL.createObjectURL(
+        new Blob([_generator.textContent])));
+
+
+const nodes = [];
+
+
+function createNode(opType) 
+{ 
+    generator.postMessage({
+        msg:   'createNode', 
+        opType: opType
+    }); 
+}
+
+
+generator.onmessage = e =>
+{
+    switch (e.data.msg)
+    {
+        case '_createNode':
+            _createNode(
+                e.data.opType, 
+                e.data.dataType,
+                e.data.nodeId); 
+            break;
+    }
+};
+
+
+//generator.onmessage = function(e)
+//{
+    // if (e.data.cmd == 'regenerate')
+    // {
+    //     const node = graph.nodeFromId(e.data.nodeId);
+    //     var removeList = [];
+    
+    //     for (const obj of node.cachedObjects)
+    //     {
+    //         if (!e.data.objects.find(o => o.itemId === obj.itemId))
+    //             removeList.push(obj);    
+    //     }
+
+    //     if (removeList.length > 0)
+    //     {
+    //         parent.postMessage({ pluginMessage: 
+    //         { 
+    //             cmd: 'removeList',
+    //             data: removeList
+    //         }}, '*');
+    //     }
+
+    //     parent.postMessage({ pluginMessage: 
+    //     { 
+    //         cmd:   'regenerate',
+    //         nodeId: e.data.nodeId,
+    //         data:   e.data.objects
+    //     }}, '*');    
+
+    //     node.cachedObjects = e.data.objects;
+    //     graph.mutex = false;
+
+        
+    //     if (graph.deferOutputs.length > 0)
+    //     {
+    //         var deferOutputs = Array.from(graph.deferOutputs);
+    //         graph.deferOutputs = [];
+
+    //         regenerate(deferOutputs);
+    //     }
+    // }
+//};
+      
+
+// function regenerate(outputs)
+// {
+//     if (graph.mutex)
+//     {
+//         graph.deferOutputs = [];
+
+//         for (const output of outputs)
+//             graph.deferOutputs.push(output);
+
+//         return;
+//     }
+    
+//     graph.mutex = true;
+//     var posted = false;
+
+//     for (const output of outputs)
+//     {
+//         if (!isEmptyObject(output.data))
+//         {
+//             generator.postMessage(
+//             {
+//                 msg:   'regenerate',
+//                 nodeId: output.op.id,
+//                 data:   output.data
+//             });
+
+//             posted = true;
+//         }
+//     }
+
+//     if (!posted)
+//         graph.mutex = false;
+// }
+
+
+graphView.overInput  = null;
+graphView.overOutput = null;
+
+graphView.tempConn = null;
+
+
+graphView.addEventListener('pointerdown', e =>
+{
+    if (graphView.overOutput)
+    {
+        graphView.overOutput.connecting = true;
+        graphView.startConnectionFromOutput(graphView.overOutput);
+        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+    }
+    else if (graphView.overInput)
+    {
+        if (graphView.overInput.connectedOutput) // pretend to disconnect
+        {
+            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+            graphView.tempConn.savedInput = graphView.overInput;
+            hide(graphView.overInput.connection.wire);
+            hide(graphView.overInput.connection.wire.outBall);
+        }
+        else
+        {
+            graphView.overInput.connecting = true;
+            graphView.startConnectionFromInput(graphView.overInput);
+            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
+        }
+    }
+});
+
+
+graphView.addEventListener('pointerup', e =>
+{
+    if (graphView.tempConn)
+    {
+        if (graphView.tempConn.output) // FROM OUTPUT
+        {
+            var output     = graphView.tempConn.output;
+            var input      = graphView.overInput;
+            var savedInput = graphView.tempConn.savedInput;
+            
+            output.connecting = false;
+            
+            if (   input
+                && input.dataType == output.dataType) // TO INPUT
+            {
+                if (input == savedInput) // reconnect old
+                {
+                    show(input.connection.wire);
+                    show(input.connection.wire.outBall);
+                }
+                else if (savedInput) // disconnect old, connect new
+                {
+                    disconnect(savedInput);
+                    connect(output, input);
+                }
+                else // connect new
+                    connect(output, input);
+            }
+            else if (savedInput) // disconnect old
+                disconnect(savedInput)
+            
+            graphView.cancelConnection();
+        }
+        
+        else if (graphView.tempConn.input) // FROM INPUT
+        {
+            var input  = graphView.tempConn.input;
+            var output = graphView.overOutput;
+
+            input.connecting = false;
+            
+            if (   output
+                && output.dataType == input.dataType) // TO OUTPUT
+                graph.connect(output, input); // connect new
+
+            graphView.cancelConnection();
+        }
+    }
+});
+
+
+graphView.addEventListener('pointermove', e =>
+{
+    if (graphView.tempConn)
+    {
+             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
+    }
+});
+
+
+graphView.startConnectionFromOutput = output =>
+{
+    graphView.tempConn = new Connection(output, null);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.startConnectionFromInput = input =>
+{
+    graphView.tempConn = new Connection(null, input);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.cancelConnection = () =>
+{
+    wires.removeChild(graphView.tempConn.wire);    
+    graphView.tempConn = null;
+};
+
+
+graphView.getNodeBounds = () =>
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    for (const node of nodes)
+    {
+        var bounds = node.getBoundingClientRect();
+
+        boundsL = Math.min(boundsL, bounds.left  );
+        boundsT = Math.min(boundsT, bounds.top   );
+        boundsR = Math.max(boundsR, bounds.right );
+        boundsB = Math.max(boundsB, bounds.bottom);
+    }
+
+    return {
+        x: boundsL, 
+        y: boundsT,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
+};
+
+
+function putNodeOnTop(node)
+{
+    for (const n of nodes)
+        n.style.zIndex = Math.max(0, Number(n.style.zIndex) - 1);
+
+    node.style.zIndex = nodes.length-1;
+}
+
+
+function _createNode(opType, dataType, nodeId)
+{
+    const node = document.createElement('div');
+    node.className = 'node';
+
+    node.opType   = opType;
+    node.dataType = dataType;
+    node.nodeId   = nodeId;
+
+    node.params   = [];
+
+    node.inputs   = [];
+    node.output   = null;
+
+
+    node.dragging = false;
 
 
     node.inner = document.createElement('div');
     node.inner.className = 'nodeInner';
 
-    node.div.appendChild(node.inner);
+    node.appendChild(node.inner);
 
 
-    node.div.addEventListener('pointerdown', function(e) 
+    node.addEventListener('pointerdown', function(e) 
     {
         putNodeOnTop(node);
         
@@ -3557,39 +3863,39 @@ function createDiv(node, headerColor)
             && !graphView.overOutput
             && !graphView.overInput)
         {
-            node.div.sx  = e.clientX;
-            node.div.sy  = e.clientY;
-            node.div.slx = node.div.offsetLeft;
-            node.div.sly = node.div.offsetTop;
+            node.sx  = e.clientX;
+            node.sy  = e.clientY;
+            node.slx = node.offsetLeft;
+            node.sly = node.offsetTop;
 
-            node.div.dragging = true;
-            node.div.setPointerCapture(e.pointerId);
+            node.dragging = true;
+            node.setPointerCapture(e.pointerId);
         }
     });
 
-    node.div.addEventListener('pointermove', function(e) 
+    node.addEventListener('pointermove', function(e) 
     {
-        if (node.div.dragging)
+        if (node.dragging)
         {
-            setDivPosition(
-                node.div.op,
-                node.div.slx + e.clientX - node.div.sx,
-                node.div.sly + e.clientY - node.div.sy);
+            setNodePosition(
+                node,
+                node.slx + e.clientX - node.sx,
+                node.sly + e.clientY - node.sy);
         };
     });
 
-    node.div.addEventListener('pointerup', function(e) 
+    node.addEventListener('pointerup', function(e) 
     {
         if (   e.button == 0
-            && node.div.dragging)
+            && node.dragging)
         {
-            node.div.dragging = false;
-            node.div.releasePointerCapture(e.pointerId);
+            node.dragging = false;
+            node.releasePointerCapture(e.pointerId);
         }
     });
     
     
-    node.div.addEventListener('dblclick', function(e)
+    node.addEventListener('dblclick', function(e)
     {
         var bounds = node.label.getBoundingClientRect();
 
@@ -3601,32 +3907,42 @@ function createDiv(node, headerColor)
     });
 
 
-    node.div.addEventListener('pointerenter', function(e)
+    node.addEventListener('pointerenter', function(e)
     {
-        e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+        e.target.inner.style.boxShadow = '0 0 0 1px #18A0FB';
     });
 
-    node.div.addEventListener('pointerleave', function(e)
+    node.addEventListener('pointerleave', function(e)
     {
-        e.target.op.inner.style.boxShadow = 'none';
+        e.target.inner.style.boxShadow = 'none';
     });
 
 
-    createDivHeader(node, headerColor);
+    createNodeHeader(node);
+    addNode(node);
 }     
 
 
-function createDivHeader(node, headerColor)
+function createNodeHeader(node)
 {
     node.header = document.createElement('div');
     node.header.className = 'nodeHeader';
+
+    var headerColor;
+
+    switch (node.dataType)
+    {
+        case 'OBJ': headerColor = OBJ_COLOR; break;
+        case 'NUM': headerColor = NUM_COLOR; break;
+    }
+
     node.header.style.backgroundColor = headerColor;
 
     node.inputControls = document.createElement('div');
     node.inputControls.className = 'inputControls';
     node.header.appendChild(node.inputControls);
 
-    createDivLabel(node);
+    createNodeLabel(node);
 
     node.outputControls = document.createElement('div');
     node.outputControls.className = 'outputControls';
@@ -3636,22 +3952,51 @@ function createDivHeader(node, headerColor)
 }
 
 
-function createDivLabel(node)
+function createNodeLabel(node)
 {
     node.label = document.createElement('div');
     node.label.className = 'nodeLabel';
-    node.label.op        = node;
+    //node.label.op        = node;
     
+    node.label.innerHTML = node.nodeId;
+
     node.header.appendChild(node.label);
 
     initLabelTextbox(node);
 }
 
 
-function setDivPosition(node, x, y)
+function addNode(node)
 {
-    node.div.style.left = x;
-    node.div.style.top  = y;
+    if (nodes.length > 0)
+    {
+        const bounds = graphView.getNodeBounds();
+        const gap    = 30;
+
+        node.style.left = bounds.x + bounds.w + gap;
+        node.style.top  = bounds.y;
+    }
+    else // 0
+    {
+        node.style.zIndex = nodes.length-1;
+        node.style.left   = 100;
+
+        // I subtract the full height of the node here as they grow down, so this
+        // gives a nice random-ish offset for the first line of nodes
+        node.style.top = graphView.offsetHeight/2 - node.offsetHeight;
+    }
+
+    nodes.push(node);
+    graphView.appendChild(node);
+
+    putNodeOnTop(node);
+}
+
+
+function setNodePosition(node, x, y)
+{
+    node.style.left = x;
+    node.style.top  = y;
 
     for (const input of node.inputs)
     {
@@ -3815,289 +4160,6 @@ function initLabelTextbox(node)
         
         node.textbox.focus();
         node.textbox.select();
-    }
-}
-
-
-class   OpNumber
-extends Operator
-{
-    #value;
-
-    constructor()
-    {
-        super('number', 'NUM');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#value = new NumberParam(''));
-    }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  this.#value.value,
-        };
-
-        super.generate();
-    }
-}
-
-
-class   OpRandom
-extends Operator
-{
-    #min;
-    #max;
-    #scale;
-    #seed;
-
-
-    constructor()
-    {
-        super('random', 'NUM');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#min   = new NumberParam('min'));
-        this.addParam(this.#max   = new NumberParam('max'));
-        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed'));
-
-        this.#min.control.addEventListener('onchange', () =>
-        {
-            if (this.#min.control.value > this.#max.control.value)
-                this.#max.control.setValue(this.#min.control.value, false);
-        });
-
-        this.#max.control.addEventListener('onchange', () =>
-        {
-            if (this.#max.control.value < this.#min.control.value)
-                this.#min.control.setValue(this.#max.control.value, false);
-        });
-    }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-            
-            min:    this.#min  .value,
-            max:    this.#max  .value,
-            scale:  this.#scale.value,
-            seed:   this.#seed .value
-        };
-
-        super.generate();
-    }
-}
-
-
-class   OpRect
-extends Operator
-{
-    #width;
-    #height;
-
-
-    constructor()
-    {
-        super('rect', 'OBJ');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#width  = new NumberParam('width',  10, 0.01));
-        this.addParam(this.#height = new NumberParam('height', 10, 0.01));
-    }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            x:      0,
-            y:      0,
-            width:  this.#width .value,
-            height: this.#height.value,
-
-            inputs: []
-        };
-
-        super.generate();
-    }
-}
-
-
-class   OpRow
-extends Operator
-{
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('row', 'OBJ');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count = new NumberParam('count',  4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
-    }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        var input = this.inputs[0];
-
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data))
-        {
-            this.output._data = {};
-            return;
-        }
-
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            count: this.#count.value,
-            gap:   this.#gap  .value,
-
-            inputs: [input.data]
-        };
-
-
-        super.generate();
-    }
-}
-
-
-class   OpColumn
-extends Operator
-{
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('column', 'OBJ');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count = new NumberParam('count', 4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
-    }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        var input = this.inputs[0];
-
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
-        {
-            this.output._data = {};
-            return;
-        }
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-            count:  this.#count.value,
-            gap:    this.#gap  .value,
-
-            inputs: [input.data]
-        };
-
-        super.generate();
-    }
-}
-
-
-class   OpSpread 
-extends Operator
-{
-    #count;
-    #radius;
-
-    seed = 0;
-
-
-    constructor()
-    {
-        super('spread', 'OBJ');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count  = new NumberParam('count', 2, 1));
-        this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
-    }
-
-
-    setGraph(graph)
-    {
-        super.setGraph(graph);
-        this.seed = this.graph.random.seed;
-        this.graph.random.next();
-    }
-
-    
-    generate()
-    {
-        if (this.valid) return;
-
-        var input = this.inputs[0];
-
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
-        {
-            this.output._data = {};
-            return;
-        }
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            count:  this.#count .value,
-            radius: this.#radius.value,
-            
-            seed:   this.seed,
-
-            inputs: [input.data]
-        };
-
-        super.generate();
     }
 }
 
@@ -4847,307 +4909,6 @@ function onSelectClickTimer(select)
 {
     select.holding = true;
 }
-
-
-graphView.overInput  = null;
-graphView.overOutput = null;
-
-graphView.tempConn = null;
-
-
-graphView.addEventListener('pointerdown', e =>
-{
-    if (graphView.overOutput)
-    {
-        graphView.overOutput.connecting = true;
-        graphView.startConnectionFromOutput(graphView.overOutput);
-        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-    }
-    else if (graphView.overInput)
-    {
-        if (graphView.overInput.connectedOutput) // pretend to disconnect
-        {
-            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
-            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-            graphView.tempConn.savedInput = graphView.overInput;
-            hide(graphView.overInput.connection.wire);
-            hide(graphView.overInput.connection.wire.outBall);
-        }
-        else
-        {
-            graphView.overInput.connecting = true;
-            graphView.startConnectionFromInput(graphView.overInput);
-            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
-        }
-    }
-});
-
-
-graphView.addEventListener('pointerup', e =>
-{
-    if (graphView.tempConn)
-    {
-        if (graphView.tempConn.output) // FROM OUTPUT
-        {
-            var output     = graphView.tempConn.output;
-            var input      = graphView.overInput;
-            var savedInput = graphView.tempConn.savedInput;
-            
-            output.connecting = false;
-            
-            if (   input
-                && input.dataType == output.dataType) // TO INPUT
-            {
-                if (input == savedInput) // reconnect old
-                {
-                    show(input.connection.wire);
-                    show(input.connection.wire.outBall);
-                }
-                else if (savedInput) // disconnect old, connect new
-                {
-                    disconnect(savedInput);
-                    connect(output, input);
-                }
-                else // connect new
-                    connect(output, input);
-            }
-            else if (savedInput) // disconnect old
-                disconnect(savedInput)
-            
-            graphView.cancelConnection();
-        }
-        
-        else if (graphView.tempConn.input) // FROM INPUT
-        {
-            var input  = graphView.tempConn.input;
-            var output = graphView.overOutput;
-
-            input.connecting = false;
-            
-            if (   output
-                && output.dataType == input.dataType) // TO OUTPUT
-                graph.connect(output, input); // connect new
-
-            graphView.cancelConnection();
-        }
-    }
-});
-
-
-graphView.addEventListener('pointermove', e =>
-{
-    if (graphView.tempConn)
-    {
-             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
-    }
-});
-
-
-graphView.startConnectionFromOutput = output =>
-{
-    graphView.tempConn = new Connection(output, null);
-    wires.appendChild(graphView.tempConn.wire);    
-};
-
-
-graphView.startConnectionFromInput = input =>
-{
-    graphView.tempConn = new Connection(null, input);
-    wires.appendChild(graphView.tempConn.wire);    
-};
-
-
-graphView.cancelConnection = () =>
-{
-    wires.removeChild(graphView.tempConn.wire);    
-    graphView.tempConn = null;
-};
-
-
-graphView.getNodeBounds = () =>
-{
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
-    
-    for (const node of graph.nodes)
-    {
-        var bounds = node.div.getBoundingClientRect();
-
-        boundsL = Math.min(boundsL, bounds.left  );
-        boundsT = Math.min(boundsT, bounds.top   );
-        boundsR = Math.max(boundsR, bounds.right );
-        boundsB = Math.max(boundsB, bounds.bottom);
-    }
-
-    return {
-        x: boundsL, 
-        y: boundsT,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
-};
-
-
-function putNodeOnTop(node)
-{
-    for (const n of graph.nodes)
-        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
-
-    node.div.style.zIndex = graph.nodes.length-1;
-}
-
-
-const graph = new Graph();
-
-
-function createNode(opType)
-{
-    graph.createNode(opType);
-
-    generator.postMessage({
-        msg:   'createNode', 
-        opType: opType
-    });
-}
-
-
-function connect(output, input)
-{
-    graph.connect(output, input);
-
-    generator.postMessage({
-        msg:   'connect', 
-        output: output.op.id, 
-        input:  
-        [
-            input.op.id, 
-            input.op.inputs.indexOf(input)
-        ]
-    });
-}
-
-
-function disconnect(input)
-{
-    graph.disconnect(input);
-
-    generator.postMessage({
-        msg:  'disconnect', 
-        input: input
-    });
-}
-
-
-/////////////////////////////////////////////////////////////////////
-
-
-var generator = new Worker(
-    window.URL.createObjectURL(
-        new Blob([generatorScript.textContent])));
-
-
-generator.onmessage = function(e)
-{
-    if (e.data.cmd == 'regenerateObjects')
-    {
-        const node = graph.nodeFromId(e.data.nodeId);
-        var removeList = [];
-    
-        for (const obj of node.cachedObjects)
-        {
-            if (!e.data.objects.find(o => o.itemId === obj.itemId))
-                removeList.push(obj);    
-        }
-
-        if (removeList.length > 0)
-        {
-            parent.postMessage({ pluginMessage: 
-            { 
-                cmd: 'removeObjectList',
-                data: removeList
-            }}, '*');
-        }
-
-        parent.postMessage({ pluginMessage: 
-        { 
-            cmd:   'regenerateObjects',
-            nodeId: e.data.nodeId,
-            data:   e.data.objects
-        }}, '*');    
-
-        node.cachedObjects = e.data.objects;
-        graph.mutex = false;
-
-        
-        if (graph.deferOutputs.length > 0)
-        {
-            var deferNodes = Array.from(graph.deferNodes);
-            graph.deferNodes = [];
-
-            generate(deferNodes);
-        }
-    }
-};
-      
-
-function generate(nodes)
-{
-    if (graph.mutex)
-    {
-        graph.deferNodes = [];
-
-        for (const node of nodes)
-            graph.deferNodes.push(node);
-
-        return;
-    }
-    
-    graph.mutex = true;
-    var posted = false;
-
-
-    const nodeIds = nodes.map(n => n.id);
-
-    console.log('canvas generate(nodes)');
-    console.log(nodeIds);
-    generator.postMessage(
-    {
-        msg:  'generate',
-        nodes: nodeIds
-    });
-
-    posted = true;
-
-
-    if (!posted)
-        graph.mutex = false;
-}
-
-
-//save('state', null);
-//save('windowWidth', null);
-//save('windowHeight', null);
-
-initSelect(presets,
-[
-    {value: '', text: 'untitled'},
-]);
-
-
-parent.postMessage({ pluginMessage: 
-{ 
-    cmd:    'loadState',
-    onLoad: 'loadState'
-}}, '*');
-
-
-// onmessage = (e) =>
-// {
-//     var msg = e.data.pluginMessage;
-// }
-
 
 
 

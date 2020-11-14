@@ -17,7 +17,6 @@ class Operator
     set id(id)
     {
         this._id = id;
-        this.label.innerHTML = id;
     }
     
     _graph = null;
@@ -45,11 +44,14 @@ class Operator
         this.makeRightPassive();        
 
         this._active = true;
-        this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
         if (   this.output
             && this.output.dataType == 'OBJ')
+<<<<<<< HEAD:operators/Operator.js
             generate([this]);
+=======
+            regenerate([this.output]);
+>>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:operators/_common/Operator.js
     }
 
     
@@ -80,10 +82,7 @@ class Operator
     makePassive()
     {
         if (this.active)
-        {
-            this.div.style.boxShadow = 'none';
             removeNodeOutput(this);
-        }
 
         this._active = false;
     }
@@ -138,23 +137,12 @@ class Operator
     }
 
 
-    div;
-    inner;
-    header;
-    label;
-    inputControls;
-    outputControls;
-
-
     constructor(opType, dataType)
     {
         this.#opType   = opType;   // this is the operator type
         this.#dataType = dataType; // this is the op's main data type
 
         this._id = opType; // this is a temp until the op becomes a graph node
-        
-        var headerColor = colorFromDataType(dataType, false);
-        createDiv(this, headerColor);
     }    
     
     
@@ -162,32 +150,23 @@ class Operator
     {
         input._op = this;
         this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
     }
 
 
     setOutput(output)
     {
         if (this.output != null)
-        {
-            this.outputControls.removeChild(this.output.control);
             this.output._op = null;
-        }
 
         output._op = this;
         this.output = output;
-        this.outputControls.appendChild(output.control);
     }
 
 
     addParam(param)
     {
         this.params.push(param);
-        
         param._op = this;
-        param.control.style.display = 'inline-block';
-        
-        this.inner.appendChild(param.div);
     }
  
     
@@ -198,8 +177,6 @@ class Operator
             return false; // graph already contains a node with this id
 
         this._id = newId;
-        this.label.innerHTML = newId;
-
         return true;
     }
 
@@ -233,7 +210,7 @@ class Operator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op == node)       return true;
             if (input.connectedOutput.op.isAfter(node)) return true;
         }
 

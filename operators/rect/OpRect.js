@@ -21,17 +21,21 @@ extends Operator
         if (this.valid) return;
 
         this.output._data = 
+<<<<<<< HEAD:operators/OpRect.js
         {
             nodeId: this.id,
             opType: this.opType,
+=======
+        [{
+            type:   'rect',
+            itemId: this.id + '_0',
+>>>>>>> 37b01d739129b91937ee4025d59936c818ed2a2a:operators/rect/OpRect.js
 
             x:      0,
             y:      0,
             width:  this.#width .value,
-            height: this.#height.value,
-
-            inputs: []
-        };
+            height: this.#height.value
+        }];
 
         super.generate();
     }
