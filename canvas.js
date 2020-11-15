@@ -89,7 +89,7 @@ function generate(nodes)
 /////////////////////////////////////////////////////////////////////
 
 
-var generator = new Worker(
+const generator = new Worker(
     window.URL.createObjectURL(
         new Blob([generatorScript.textContent])));
 

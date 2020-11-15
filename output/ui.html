@@ -343,6 +343,177 @@ button svg
 
 
 
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (var property in properties)
+        elem.style[property] = properties[property];
+}
+
+
+function indexOfChild(parent, child)
+{
+    return Array.prototype.indexOf.call(parent.children, child);
+}
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+
+//     element.dispatchEvent(e);
+// }
+
+
+function remove(obj, array)
+{
+    array.splice(array.indexOf(obj), 1);
+}
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
+}
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+function colorStyle(rgb)
+{
+    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
+}
+
+
+function numToString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+        str = str.substring(0, i--);
+
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+        str = str.substring(0, i--);
+
+    return str;
+}
+
+
+function isEmptyObject(obj)
+{
+    if (obj == null)
+        return false;
+        
+    return (
+           Object.keys(obj).length === 0 
+        && obj.constructor === Object);
+}
+
+
+function shallowCopy(obj)
+{
+    return Object.assign({}, obj);
+}
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+function createSvg(element)
+{
+    return document.createElementNS('http://www.w3.org/2000/svg', element);
+}
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
+const OBJ_COLOR = '#bee0ff';
+const NUM_COLOR = '#ddd';
+
+const ACTIVE_OBJ_COLOR = '#18a0fb';
+const ACTIVE_NUM_COLOR = '#787878';
+
+const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+
+
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
@@ -398,8 +569,9 @@ function getNumberString(num, dec)
     while (i >= 0 && str[i] === '0')
     str = str.substring(0, i--);
     
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
-    str = str.substring(0, i--);
+    if (   str[i] === '.' 
+        || str[i] === ',') // hack because JavaScript
+        str = str.substring(0, i--);
     
     return str;
 }    
@@ -906,7 +1078,10 @@ class GGraph
 
     nodeFromId(id)
     {
-        return this.nodes.find(n => n.id === id);
+        console.log(id);
+        const node = this.nodes.find(n => n.id === id);
+        console.log(node);
+        return node;
     }
 }
 
@@ -1007,10 +1182,7 @@ class GOperator
 
     _id;
     get id() { return this._id; }
-    set id(id)
-    {
-        this._id = id;
-    }
+    set id(id) { this._id = id; }
     
     _graph = null;
     get graph() { return this._graph; }
@@ -1512,6 +1684,7 @@ onmessage = function(e)
     {
         case 'createNode': 
         {
+            console.log('creatin node');
             const node = ggraph.createNode(e.data.opType);
             
             node.id = e.data.nodeId;
@@ -1544,10 +1717,10 @@ onmessage = function(e)
         case 'generate':
         {
             var data = [];
-
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
+                console.log(ggraph.nodes);
                 data = data.concat(node.output.data);
             }
 
@@ -1679,6 +1852,177 @@ function getBounds(objects)
 ////////////////////////////////////////////////////
 
 
+const OBJ_COLOR = '#bee0ff';
+const NUM_COLOR = '#ddd';
+
+const ACTIVE_OBJ_COLOR = '#18a0fb';
+const ACTIVE_NUM_COLOR = '#787878';
+
+const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+
+
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (var property in properties)
+        elem.style[property] = properties[property];
+}
+
+
+function indexOfChild(parent, child)
+{
+    return Array.prototype.indexOf.call(parent.children, child);
+}
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+
+//     element.dispatchEvent(e);
+// }
+
+
+function remove(obj, array)
+{
+    array.splice(array.indexOf(obj), 1);
+}
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
+}
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+function colorStyle(rgb)
+{
+    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
+}
+
+
+function numToString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+        str = str.substring(0, i--);
+
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+        str = str.substring(0, i--);
+
+    return str;
+}
+
+
+function isEmptyObject(obj)
+{
+    if (obj == null)
+        return false;
+        
+    return (
+           Object.keys(obj).length === 0 
+        && obj.constructor === Object);
+}
+
+
+function shallowCopy(obj)
+{
+    return Object.assign({}, obj);
+}
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+function createSvg(element)
+{
+    return document.createElementNS('http://www.w3.org/2000/svg', element);
+}
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
@@ -1734,8 +2078,9 @@ function getNumberString(num, dec)
     while (i >= 0 && str[i] === '0')
     str = str.substring(0, i--);
     
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
-    str = str.substring(0, i--);
+    if (   str[i] === '.' 
+        || str[i] === ',') // hack because JavaScript
+        str = str.substring(0, i--);
     
     return str;
 }    
@@ -2071,7 +2416,7 @@ function save(key, value)
 {
     parent.postMessage({ pluginMessage:
     { 
-        cmd:   'save', 
+        cmd:  'save', 
         key:   key,
         value: value
     }}, '*');
@@ -2087,185 +2432,23 @@ function saveState()
 }
 
 
-const OBJ_COLOR = '#bee0ff';
-const NUM_COLOR = '#ddd';
-
-const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = '#787878';
-
-const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
-
-
-function setStyle(id, properties)
-{
-    var elem = document.getElementById(id);
-
-    for (var property in properties)
-        elem.style[property] = properties[property];
-}
-
-
-function indexOfChild(parent, child)
-{
-    return Array.prototype.indexOf.call(parent.children, child);
-}
-
-function containsChild(parent, child)
-{
-    return child.parentNode == parent;
-}
-
-
-function forwardEvent(event, element)
-{
-    var e = new event.constructor(event.type, event);
-    element.dispatchEvent(e);
-}
-
-
-// function triggerMouseEvent(element, event, px, py, button = 0)
-// {
-//     const e = new MouseEvent(event, 
-//     {
-//         clientX: px,
-//         clientY: py,
-//         button:  button
-//     });
-
-//     element.dispatchEvent(e);
-// }
-
-
-function remove(obj, array)
-{
-    array.splice(array.indexOf(obj), 1);
-}
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-function isEmptyObject(obj)
-{
-    if (obj == null)
-        return false;
-        
-    return (
-           Object.keys(obj).length === 0 
-        && obj.constructor === Object);
-}
-
-
-function shallowCopy(obj)
-{
-    return Object.assign({}, obj);
-}
-
-
-function deepCopy(obj)
-{
-    return JSON.parse(JSON.stringify(obj));
-}
-
-
-function createSvg(element)
-{
-    return document.createElementNS('http://www.w3.org/2000/svg', element);
-}
-
-
-function show(element) { element.style.visibility = 'visible'; }
-function hide(element) { element.style.visibility = 'hidden'; }
-
-
-function removeNodeOutput(node)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
-    }}, '*');
-}
-
-
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
-    }
-
-    return 'magenta';
-}
-
-
 class Parameter
 {
-    #type; get type() { return this.#type; }
-    _op;   get op()   { return this._op;   }
+    #type;
+    get type() { return this.#type; }
+    
+    _op;      get op()      { return this._op;      }
+    _control; get control() { return this._control; }
+    _div;     get div()     { return this._div;     }
 
     constructor(type)
     {
         this.#type = type;
+
+        this._div = document.createElement('div');
+        this.div.style.position = 'relative';
+        this.div.style.padding  = 0;
+        this.div.style.width    = '100%';
     }
 }
 
@@ -2309,7 +2492,7 @@ extends Parameter
 
         this.div.appendChild(this.control);
 
-        this.input = new Input ('NUM');
+        this.input = new Input('NUM');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -2317,7 +2500,7 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this._control.addEventListener('onchange', function(e)
+        this.control.addEventListener('onchange', function(e)
         {
             var op = this.param.op;
 
@@ -2580,23 +2763,23 @@ class Input
     {
         this.#dataType = dataType;
 
-        // this.control = document.createElement('div');
-        // this.control.className = 'input';
-        // this.control.input = this;
+        this.control = document.createElement('div');
+        this.control.className = 'input';
+        this.control.input = this;
     
-        // this.control.addEventListener('pointerdown', e => e.preventDefault());
+        this.control.addEventListener('pointerdown', e => e.preventDefault());
 
-        // this.control.addEventListener('pointerenter', e => 
-        // {
-        //     graphView.overInput = this;
-        //     e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
-        // });
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overInput = this;
+            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+        });
 
-        // this.control.addEventListener('pointerleave', e => 
-        // {
-        //     graphView.overInput = null;
-        //     e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
-        // });
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overInput = null;
+            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        });
     }    
 }
 
@@ -2632,21 +2815,21 @@ class Output
     {
         this.#dataType = dataType;
         
-        // this.control = document.createElement('div');
-        // this.control.className = 'output';
-        // this.control.output = this;
+        this.control = document.createElement('div');
+        this.control.className = 'output';
+        this.control.output = this;
 
-        // this.control.addEventListener('pointerenter', e => 
-        // {
-        //     graphView.overOutput = this;
-        //     e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
-        // });
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overOutput = this;
+            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
+        });
 
-        // this.control.addEventListener('pointerleave', e => 
-        // {
-        //     graphView.overOutput = null;
-        //     e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
-        // });
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overOutput = null;
+            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+        });
     }
 }
 
@@ -2806,6 +2989,7 @@ class Operator
     set id(id)
     {
         this._id = id;
+        this.label.innerHTML = id;
     }
     
     _graph = null;
@@ -2901,6 +3085,7 @@ class Operator
             this.label .style.color           = 'black';
 
             removeNodeOutput(this);
+        }
 
         this._active = false;
     }
@@ -2992,6 +3177,9 @@ class Operator
         this.#dataType = dataType; // this is the op's main data type
 
         this._id = opType; // this is a temp until the op becomes a graph node
+        
+        var headerColor = colorFromDataType(dataType, false);
+        createDiv(this, headerColor);
     }    
     
     
@@ -2999,23 +3187,32 @@ class Operator
     {
         input._op = this;
         this.inputs.push(input);
+        this.inputControls.appendChild(input.control);
     }
 
 
     setOutput(output)
     {
         if (this.output != null)
+        {
+            this.outputControls.removeChild(this.output.control);
             this.output._op = null;
+        }
 
         output._op = this;
         this.output = output;
+        this.outputControls.appendChild(output.control);
     }
 
 
     addParam(param)
     {
         this.params.push(param);
+        
         param._op = this;
+        param.control.style.display = 'inline-block';
+        
+        this.inner.appendChild(param.div);
     }
  
     
@@ -3026,6 +3223,8 @@ class Operator
             return false; // graph already contains a node with this id
 
         this._id = newId;
+        this.label.innerHTML = newId;
+
         return true;
     }
 
@@ -3059,7 +3258,7 @@ class Operator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)       return true;
+            if (input.connectedOutput.op == node)        return true;
             if (input.connectedOutput.op.isAfter(node)) return true;
         }
 
@@ -3239,6 +3438,183 @@ function setDivPosition(node, x, y)
 }
 
 
+function initLabelTextbox(node)
+{
+    node.textbox = document.createElement('INPUT');
+    node.textbox.setAttribute('type', 'text'); 
+    node.textbox.className  = 'nodeLabelTextbox';
+    node.textbox.spellcheck = false;
+    
+    node.textbox.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'KeyC'
+            && e.ctrlKey)
+        {
+            e.preventDefault();
+            document.execCommand("copy");
+        }
+        else if (e.code == 'KeyV'
+              && e.ctrlKey)
+        {
+            e.preventDefault();
+            document.execCommand("paste");
+        }
+        
+        else if (e.code == 'Enter'
+              || e.code == 'NumpadEnter')
+        {
+            if (!graph.nodes.find(n => n.id == node.textbox.value))
+                node.textbox.finish(true);
+        }
+
+        else if (e.code == 'Escape')
+            node.textbox.finish(false);
+
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+            
+            var tabs  = document.querySelectorAll('.node, .figmaSelect, #hexValue, button');
+            var index = node.tabIndex;
+
+            for (var i = 0; i < tabs.length; i++) 
+            {
+                if (   e.shiftKey && tabs[i].tabIndex == index - 1
+                    ||               tabs[i].tabIndex == index + 1) 
+                {
+                    if (tabs[i].className == 'node')
+                        tabs[i].showTextbox();
+                    else 
+                    {
+                        document.activeElement.blur();
+                        tabs[i].focus();
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        // else 
+        // {
+        //     if (   e.key.length == 1
+        //         && !isDigit(e.key)
+        //         && e.key != '.'
+        //         && !(   (   e.code == 'Minus'
+        //                  || e.code == 'NumpadSubtract')
+        //              && node.min < 0))
+        //         e.preventDefault();
+
+        //     var t = node.textbox;
+
+        //     var curVal = t.value;
+
+        //     curVal = 
+        //           curVal.substring(0, t.selectionStart) 
+        //         + curVal.substring(t.selectionEnd, curVal.length);
+
+        //     var nextVal = parseFloat(curVal + e.key);
+
+        //     if (   nextVal < node.min - 0.001
+        //         || nextVal > node.max)
+        //         e.preventDefault();            
+        // }
+    });
+
+
+    // node.textbox.addEventListener('input', function()
+    // {
+    //     node.setValue(Number(node.textbox.value));
+    // });
+
+    node.textbox.addEventListener('paste', function(e)
+    {
+        e.preventDefault();
+
+        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        val = Math.min(Math.max(node.min, val), node.max);
+
+        node.textbox.value = isNaN(val) ? '' : val;
+    });
+
+    node.textbox.addEventListener('focusout', function()
+    {
+        node.header.removeChild(node.textbox);
+        node.clicked = false;
+    });
+    
+    node.textbox.finish = function(success)
+    {
+        if (success) 
+        {
+            if (node.textbox.value != '')
+                setNodeId(node.id, node.textbox.value);
+        }
+
+        node.textbox.blur();
+
+        if (node.inFocus)
+            node.focus();
+    };    
+    
+    
+    node.showLabelTextbox = function()
+    {
+        node.inFocus = 
+                node == document.activeElement
+            && !node.clicked;
+    
+        node.textbox.style.width     = node.header.offsetWidth  - 2;
+        node.textbox.style.height    = node.header.offsetHeight - 4;
+        node.textbox.style.position  = 'absolute';
+        node.textbox.style.left      = '50%';
+        node.textbox.style.top       = '50%';
+        node.textbox.style.transform = 'translateX(-50%) translateY(-50%)';
+        node.textbox.style.textAlign = 'center';
+    
+        node.textbox.value      = node.id;
+        node.textbox.savedValue = node.textbox.value;
+        
+        node.header.appendChild(node.textbox);
+        
+        node.textbox.focus();
+        node.textbox.select();
+    }
+}
+
+
+class   OpNumber
+extends Operator
+{
+    #value;
+
+    constructor()
+    {
+        super('number', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#value = new NumberParam(''));
+    }
+
+
+    generate()
+    {
+        if (this.valid) return;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            value:  this.#value.value,
+        };
+
+        super.generate();
+    }
+}
+
+
 class   OpRandom
 extends Operator
 {
@@ -3311,23 +3687,23 @@ extends Operator
     }
 
 
-    generate()
-    {
-        if (this.valid) return;
+    // generate()
+    // {
+    //     if (this.valid) return;
 
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
+    //     this.output._data = 
+    //     {
+    //         nodeId: this.id,
+    //         opType: this.opType,
 
-            x:      0,
-            y:      0,
-            width:  this.#width .value,
-            height: this.#height.value
-        }];
+    //         x:      0,
+    //         y:      0,
+    //         width:  this.#width .value,
+    //         height: this.#height.value
+    //     };
 
-        super.generate();
-    }
+    //     super.generate();
+    // }
 }
 
 
@@ -3484,734 +3860,6 @@ extends Operator
         };
 
         super.generate();
-    }
-}
-
-
-//save('state', null);
-//save('windowWidth', null);
-//save('windowHeight', null);
-
-initSelect(presets,
-[
-    {value: '', text: 'untitled'},
-]);
-
-
-parent.postMessage({ pluginMessage: 
-{ 
-    cmd:    'loadState',
-    onLoad: 'loadState'
-}}, '*');
-
-
-// onmessage = (e) =>
-// {
-//     var msg = e.data.pluginMessage;
-// }
-
-
-
-const resizeEdgeWidth = 8;
-
-document.canResizeX = false;
-document.canResizeY = false;
-
-document.resizingX  = false;
-document.resizingY  = false;
-
-document.startX     = 0;
-document.startY     = 0;
-
-document.startH     = 0;
-document.startW     = 0;
-
-
-document.addEventListener('pointerdown', function(e)
-{
-    if (   document.canResizeX
-        || document.canResizeY)
-    {
-        if (document.canResizeX) document.resizingX = true;
-        if (document.canResizeY) document.resizingY = true;
-
-        document.startX   = e.clientX;
-        document.startY   = e.clientY;
-
-        document.startW   = window.innerWidth;
-        document.startH   = window.innerHeight;
-
-        document.body.setPointerCapture(e.pointerId);
-    }
-});
-
-
-document.addEventListener('pointermove', function(e)
-{
-    if (   document.resizingX
-        && document.resizingY)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.startH + e.clientY - document.startY);
-    }
-    else if (document.resizingX)
-    {
-        resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.body.clientHeight);
-    }
-    else if (document.resizingY)
-    {
-        resizeWindow(
-            document.body.clientWidth,
-            document.startH + e.clientY - document.startY);
-    }
-    else
-        checkResize(e.clientX, e.clientY);
-});
-
-
-document.addEventListener('pointerup', function(e)
-{
-    if (   document.resizingX
-        || document.resizingY)
-    {
-        document.resizingX = false;
-        document.resizingY = false;
-        
-        checkResize(e.clientX, e.clientY);
-        document.body.releasePointerCapture(e.pointerId);
-    }
-});
-
-
-function resizeWindow(width, height)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'resizeWindow', 
-        width:  width,
-        height: height
-    }}, '*');
-
-}
-
-
-function checkResize(x, y)
-{
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
-
-         if (document.canResizeX
-          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
-    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
-    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
-    else                          document.body.style.cursor = 'auto';
-}
-
-
-const generator = new Worker(
-    window.URL.createObjectURL(
-        new Blob([_generator.textContent])));
-
-
-const nodes = [];
-
-
-function createNode(opType) 
-{ 
-    generator.postMessage({
-        msg:   'createNode', 
-        opType: opType
-    }); 
-}
-
-
-generator.onmessage = e =>
-{
-    switch (e.data.msg)
-    {
-        case '_createNode':
-            _createNode(
-                e.data.opType, 
-                e.data.dataType,
-                e.data.nodeId); 
-            break;
-    }
-};
-
-
-//generator.onmessage = function(e)
-//{
-    // if (e.data.cmd == 'regenerate')
-    // {
-    //     const node = graph.nodeFromId(e.data.nodeId);
-    //     var removeList = [];
-    
-    //     for (const obj of node.cachedObjects)
-    //     {
-    //         if (!e.data.objects.find(o => o.itemId === obj.itemId))
-    //             removeList.push(obj);    
-    //     }
-
-    //     if (removeList.length > 0)
-    //     {
-    //         parent.postMessage({ pluginMessage: 
-    //         { 
-    //             cmd: 'removeList',
-    //             data: removeList
-    //         }}, '*');
-    //     }
-
-    //     parent.postMessage({ pluginMessage: 
-    //     { 
-    //         cmd:   'regenerate',
-    //         nodeId: e.data.nodeId,
-    //         data:   e.data.objects
-    //     }}, '*');    
-
-    //     node.cachedObjects = e.data.objects;
-    //     graph.mutex = false;
-
-        
-    //     if (graph.deferOutputs.length > 0)
-    //     {
-    //         var deferOutputs = Array.from(graph.deferOutputs);
-    //         graph.deferOutputs = [];
-
-    //         regenerate(deferOutputs);
-    //     }
-    // }
-//};
-      
-
-// function regenerate(outputs)
-// {
-//     if (graph.mutex)
-//     {
-//         graph.deferOutputs = [];
-
-//         for (const output of outputs)
-//             graph.deferOutputs.push(output);
-
-//         return;
-//     }
-    
-//     graph.mutex = true;
-//     var posted = false;
-
-//     for (const output of outputs)
-//     {
-//         if (!isEmptyObject(output.data))
-//         {
-//             generator.postMessage(
-//             {
-//                 msg:   'regenerate',
-//                 nodeId: output.op.id,
-//                 data:   output.data
-//             });
-
-//             posted = true;
-//         }
-//     }
-
-//     if (!posted)
-//         graph.mutex = false;
-// }
-
-
-graphView.overInput  = null;
-graphView.overOutput = null;
-
-graphView.tempConn = null;
-
-
-graphView.addEventListener('pointerdown', e =>
-{
-    if (graphView.overOutput)
-    {
-        graphView.overOutput.connecting = true;
-        graphView.startConnectionFromOutput(graphView.overOutput);
-        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-    }
-    else if (graphView.overInput)
-    {
-        if (graphView.overInput.connectedOutput) // pretend to disconnect
-        {
-            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
-            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-            graphView.tempConn.savedInput = graphView.overInput;
-            hide(graphView.overInput.connection.wire);
-            hide(graphView.overInput.connection.wire.outBall);
-        }
-        else
-        {
-            graphView.overInput.connecting = true;
-            graphView.startConnectionFromInput(graphView.overInput);
-            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
-        }
-    }
-    else // selection
-    {
-        if (!e.shiftKey)
-            graph.selected = [];
-    }
-});
-
-
-graphView.addEventListener('pointerup', e =>
-{
-    if (graphView.tempConn)
-    {
-        if (graphView.tempConn.output) // FROM OUTPUT
-        {
-            var output     = graphView.tempConn.output;
-            var input      = graphView.overInput;
-            var savedInput = graphView.tempConn.savedInput;
-            
-            output.connecting = false;
-            
-            if (   input
-                && input.dataType == output.dataType) // TO INPUT
-            {
-                if (input == savedInput) // reconnect old
-                {
-                    show(input.connection.wire);
-                    show(input.connection.wire.outBall);
-                }
-                else if (savedInput) // disconnect old, connect new
-                {
-                    disconnect(savedInput);
-                    connect(output, input);
-                }
-                else // connect new
-                    connect(output, input);
-            }
-            else if (savedInput) // disconnect old
-                disconnect(savedInput)
-            
-            graphView.cancelConnection();
-        }
-        
-        else if (graphView.tempConn.input) // FROM INPUT
-        {
-            var input  = graphView.tempConn.input;
-            var output = graphView.overOutput;
-
-            input.connecting = false;
-            
-            if (   output
-                && output.dataType == input.dataType) // TO OUTPUT
-                graph.connect(output, input); // connect new
-
-            graphView.cancelConnection();
-        }
-    }
-});
-
-
-graphView.addEventListener('pointermove', e =>
-{
-    if (graphView.tempConn)
-    {
-             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
-    }
-});
-
-
-graphView.startConnectionFromOutput = output =>
-{
-    graphView.tempConn = new Connection(output, null);
-    wires.appendChild(graphView.tempConn.wire);    
-};
-
-
-graphView.startConnectionFromInput = input =>
-{
-    graphView.tempConn = new Connection(null, input);
-    wires.appendChild(graphView.tempConn.wire);    
-};
-
-
-graphView.cancelConnection = () =>
-{
-    wires.removeChild(graphView.tempConn.wire);    
-    graphView.tempConn = null;
-};
-
-
-graphView.getNodeBounds = () =>
-{
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
-    
-    for (const node of nodes)
-    {
-        var bounds = node.getBoundingClientRect();
-
-        boundsL = Math.min(boundsL, bounds.left  );
-        boundsT = Math.min(boundsT, bounds.top   );
-        boundsR = Math.max(boundsR, bounds.right );
-        boundsB = Math.max(boundsB, bounds.bottom);
-    }
-
-    return {
-        x: boundsL, 
-        y: boundsT,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
-};
-
-
-graphView.putNodeOnTop = node =>
-{
-    for (const n of nodes)
-        n.style.zIndex = Math.max(0, Number(n.style.zIndex) - 1);
-
-    node.div.style.zIndex = graph.nodes.length-1;
-};
-
-
-graphView.startSelection = () =>
-{
-
-};
-
-
-
-function _createNode(opType, dataType, nodeId)
-{
-    const node = document.createElement('div');
-    node.className = 'node';
-
-    node.opType   = opType;
-    node.dataType = dataType;
-    node.nodeId   = nodeId;
-
-    node.params   = [];
-
-    node.inputs   = [];
-    node.output   = null;
-
-
-    node.dragging = false;
-
-
-    node.inner = document.createElement('div');
-    node.inner.className = 'nodeInner';
-
-    node.appendChild(node.inner);
-
-
-    node.addEventListener('pointerdown', function(e) 
-    {
-        putNodeOnTop(node);
-        
-        if (   e.button == 0
-            && !graphView.overOutput
-            && !graphView.overInput)
-        {
-            node.sx  = e.clientX;
-            node.sy  = e.clientY;
-            node.slx = node.offsetLeft;
-            node.sly = node.offsetTop;
-
-            node.dragging = true;
-            node.setPointerCapture(e.pointerId);
-        }
-    });
-
-    node.addEventListener('pointermove', function(e) 
-    {
-        if (node.dragging)
-        {
-            setNodePosition(
-                node,
-                node.slx + e.clientX - node.sx,
-                node.sly + e.clientY - node.sy);
-        };
-    });
-
-    node.addEventListener('pointerup', function(e) 
-    {
-        if (   e.button == 0
-            && node.dragging)
-        {
-            node.dragging = false;
-            node.releasePointerCapture(e.pointerId);
-        }
-    });
-    
-    
-    node.addEventListener('dblclick', function(e)
-    {
-        var bounds = node.label.getBoundingClientRect();
-
-        if (   e.clientX >= bounds.left && e.clientX < bounds.right
-            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-            node.showLabelTextbox();
-        else
-            node.makeActive();
-    });
-
-
-    node.addEventListener('pointerenter', function(e)
-    {
-        e.target.inner.style.boxShadow = '0 0 0 1px #18A0FB';
-    });
-
-    node.addEventListener('pointerleave', function(e)
-    {
-        e.target.inner.style.boxShadow = 'none';
-    });
-
-
-    createNodeHeader(node);
-    addNode(node);
-}     
-
-
-function createNodeHeader(node)
-{
-    node.header = document.createElement('div');
-    node.header.className = 'nodeHeader';
-
-    var headerColor;
-
-    switch (node.dataType)
-    {
-        case 'OBJ': headerColor = OBJ_COLOR; break;
-        case 'NUM': headerColor = NUM_COLOR; break;
-    }
-
-    node.header.style.backgroundColor = headerColor;
-
-    node.inputControls = document.createElement('div');
-    node.inputControls.className = 'inputControls';
-    node.header.appendChild(node.inputControls);
-
-    createNodeLabel(node);
-
-    node.outputControls = document.createElement('div');
-    node.outputControls.className = 'outputControls';
-    node.header.appendChild(node.outputControls);
-
-    node.inner.appendChild(node.header);
-}
-
-
-function createNodeLabel(node)
-{
-    node.label = document.createElement('div');
-    node.label.className = 'nodeLabel';
-    //node.label.op        = node;
-    
-    node.label.innerHTML = node.nodeId;
-
-    node.header.appendChild(node.label);
-
-    initLabelTextbox(node);
-}
-
-
-function addNode(node)
-{
-    if (nodes.length > 0)
-    {
-        const bounds = graphView.getNodeBounds();
-        const gap    = 30;
-
-        node.style.left = bounds.x + bounds.w + gap;
-        node.style.top  = bounds.y;
-    }
-    else // 0
-    {
-        node.style.zIndex = nodes.length-1;
-        node.style.left   = 100;
-
-        // I subtract the full height of the node here as they grow down, so this
-        // gives a nice random-ish offset for the first line of nodes
-        node.style.top = graphView.offsetHeight/2 - node.offsetHeight;
-    }
-
-    nodes.push(node);
-    graphView.appendChild(node);
-
-    putNodeOnTop(node);
-}
-
-
-function setNodePosition(node, x, y)
-{
-    node.style.left = x;
-    node.style.top  = y;
-
-    for (const input of node.inputs)
-    {
-        if (input.connected) 
-            input.connection.updateWire();
-    }
-
-    if (   node.output 
-        && node.output.connected)
-    {
-        for (const input of node.output.connectedInputs)
-            input.connection.updateWire();
-    }
-
-    for (const param of node.params)
-    {
-        if (param.input .connected) 
-            param.input .connection.updateWire();
-    }
-}
-
-
-function initLabelTextbox(node)
-{
-    node.textbox = document.createElement('INPUT');
-    node.textbox.setAttribute('type', 'text'); 
-    node.textbox.className  = 'nodeLabelTextbox';
-    node.textbox.spellcheck = false;
-    
-    node.textbox.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'KeyC'
-            && e.ctrlKey)
-        {
-            e.preventDefault();
-            document.execCommand("copy");
-        }
-        else if (e.code == 'KeyV'
-              && e.ctrlKey)
-        {
-            e.preventDefault();
-            document.execCommand("paste");
-        }
-        
-        else if (e.code == 'Enter'
-              || e.code == 'NumpadEnter')
-        {
-            if (!graph.nodes.find(n => n.id == node.textbox.value))
-                node.textbox.finish(true);
-        }
-
-        else if (e.code == 'Escape')
-            node.textbox.finish(false);
-
-        else if (e.code == 'Tab')
-        {
-            e.preventDefault();
-            
-            var tabs  = document.querySelectorAll('.node, .figmaSelect, #hexValue, button');
-            var index = node.tabIndex;
-
-            for (var i = 0; i < tabs.length; i++) 
-            {
-                if (   e.shiftKey && tabs[i].tabIndex == index - 1
-                    ||               tabs[i].tabIndex == index + 1) 
-                {
-                    if (tabs[i].className == 'node')
-                        tabs[i].showTextbox();
-                    else 
-                    {
-                        document.activeElement.blur();
-                        tabs[i].focus();
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        // else 
-        // {
-        //     if (   e.key.length == 1
-        //         && !isDigit(e.key)
-        //         && e.key != '.'
-        //         && !(   (   e.code == 'Minus'
-        //                  || e.code == 'NumpadSubtract')
-        //              && node.min < 0))
-        //         e.preventDefault();
-
-        //     var t = node.textbox;
-
-        //     var curVal = t.value;
-
-        //     curVal = 
-        //           curVal.substring(0, t.selectionStart) 
-        //         + curVal.substring(t.selectionEnd, curVal.length);
-
-        //     var nextVal = parseFloat(curVal + e.key);
-
-        //     if (   nextVal < node.min - 0.001
-        //         || nextVal > node.max)
-        //         e.preventDefault();            
-        // }
-    });
-
-
-    // node.textbox.addEventListener('input', function()
-    // {
-    //     node.setValue(Number(node.textbox.value));
-    // });
-
-    node.textbox.addEventListener('paste', function(e)
-    {
-        e.preventDefault();
-
-        var val = parseFloat(e.clipboardData.getData('text/plain'));
-        val = Math.min(Math.max(node.min, val), node.max);
-
-        node.textbox.value = isNaN(val) ? '' : val;
-    });
-
-    node.textbox.addEventListener('focusout', function()
-    {
-        node.header.removeChild(node.textbox);
-        node.clicked = false;
-    });
-    
-    node.textbox.finish = function(success)
-    {
-        if (success) 
-        {
-            if (node.textbox.value != '')
-                setNodeId(node.id, node.textbox.value);
-        }
-
-        node.textbox.blur();
-
-        if (node.inFocus)
-            node.focus();
-    };    
-    
-    
-    node.showLabelTextbox = function()
-    {
-        node.inFocus = 
-                node == document.activeElement
-            && !node.clicked;
-    
-        node.textbox.style.width     = node.header.offsetWidth  - 2;
-        node.textbox.style.height    = node.header.offsetHeight - 4;
-        node.textbox.style.position  = 'absolute';
-        node.textbox.style.left      = '50%';
-        node.textbox.style.top       = '50%';
-        node.textbox.style.transform = 'translateX(-50%) translateY(-50%)';
-        node.textbox.style.textAlign = 'center';
-    
-        node.textbox.value      = node.id;
-        node.textbox.savedValue = node.textbox.value;
-        
-        node.header.appendChild(node.textbox);
-        
-        node.textbox.focus();
-        node.textbox.select();
     }
 }
 
@@ -4962,6 +4610,441 @@ function onSelectClickTimer(select)
 {
     select.holding = true;
 }
+
+
+//save('state', null);
+//save('windowWidth', null);
+//save('windowHeight', null);
+
+initSelect(presets,
+[
+    {value: '', text: 'untitled'},
+]);
+
+
+parent.postMessage({ pluginMessage: 
+{ 
+    cmd:    'loadState',
+    onLoad: 'loadState'
+}}, '*');
+
+
+// onmessage = (e) =>
+// {
+//     var msg = e.data.pluginMessage;
+// }
+
+
+
+const resizeEdgeWidth = 8;
+
+document.canResizeX = false;
+document.canResizeY = false;
+
+document.resizingX  = false;
+document.resizingY  = false;
+
+document.startX     = 0;
+document.startY     = 0;
+
+document.startH     = 0;
+document.startW     = 0;
+
+
+document.addEventListener('pointerdown', function(e)
+{
+    if (   document.canResizeX
+        || document.canResizeY)
+    {
+        if (document.canResizeX) document.resizingX = true;
+        if (document.canResizeY) document.resizingY = true;
+
+        document.startX   = e.clientX;
+        document.startY   = e.clientY;
+
+        document.startW   = window.innerWidth;
+        document.startH   = window.innerHeight;
+
+        document.body.setPointerCapture(e.pointerId);
+    }
+});
+
+
+document.addEventListener('pointermove', function(e)
+{
+    if (   document.resizingX
+        && document.resizingY)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.startH + e.clientY - document.startY);
+    }
+    else if (document.resizingX)
+    {
+        resizeWindow(
+            document.startW + e.clientX - document.startX,
+            document.body.clientHeight);
+    }
+    else if (document.resizingY)
+    {
+        resizeWindow(
+            document.body.clientWidth,
+            document.startH + e.clientY - document.startY);
+    }
+    else
+        checkResize(e.clientX, e.clientY);
+});
+
+
+document.addEventListener('pointerup', function(e)
+{
+    if (   document.resizingX
+        || document.resizingY)
+    {
+        document.resizingX = false;
+        document.resizingY = false;
+        
+        checkResize(e.clientX, e.clientY);
+        document.body.releasePointerCapture(e.pointerId);
+    }
+});
+
+
+function resizeWindow(width, height)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'resizeWindow', 
+        width:  width,
+        height: height
+    }}, '*');
+
+}
+
+
+function checkResize(x, y)
+{
+    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+
+         if (document.canResizeX
+          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
+    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
+    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
+    else                          document.body.style.cursor = 'auto';
+}
+
+
+graphView.overInput  = null;
+graphView.overOutput = null;
+
+graphView.tempConn = null;
+
+
+graphView.addEventListener('pointerdown', e =>
+{
+    if (graphView.overOutput)
+    {
+        graphView.overOutput.connecting = true;
+        graphView.startConnectionFromOutput(graphView.overOutput);
+        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+    }
+    else if (graphView.overInput)
+    {
+        if (graphView.overInput.connectedOutput) // pretend to disconnect
+        {
+            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+            graphView.tempConn.savedInput = graphView.overInput;
+            hide(graphView.overInput.connection.wire);
+            hide(graphView.overInput.connection.wire.outBall);
+        }
+        else
+        {
+            graphView.overInput.connecting = true;
+            graphView.startConnectionFromInput(graphView.overInput);
+            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
+        }
+    }
+    else // selection
+    {
+        if (!e.shiftKey)
+            graph.selected = [];
+    }
+});
+
+
+graphView.addEventListener('pointerup', e =>
+{
+    if (graphView.tempConn)
+    {
+        if (graphView.tempConn.output) // FROM OUTPUT
+        {
+            var output     = graphView.tempConn.output;
+            var input      = graphView.overInput;
+            var savedInput = graphView.tempConn.savedInput;
+            
+            output.connecting = false;
+            
+            if (   input
+                && input.dataType == output.dataType) // TO INPUT
+            {
+                if (input == savedInput) // reconnect old
+                {
+                    show(input.connection.wire);
+                    show(input.connection.wire.outBall);
+                }
+                else if (savedInput) // disconnect old, connect new
+                {
+                    disconnect(savedInput);
+                    connect(output, input);
+                }
+                else // connect new
+                    connect(output, input);
+            }
+            else if (savedInput) // disconnect old
+                disconnect(savedInput)
+            
+            graphView.cancelConnection();
+        }
+        
+        else if (graphView.tempConn.input) // FROM INPUT
+        {
+            var input  = graphView.tempConn.input;
+            var output = graphView.overOutput;
+
+            input.connecting = false;
+            
+            if (   output
+                && output.dataType == input.dataType) // TO OUTPUT
+                graph.connect(output, input); // connect new
+
+            graphView.cancelConnection();
+        }
+    }
+});
+
+
+graphView.addEventListener('pointermove', e =>
+{
+    if (graphView.tempConn)
+    {
+             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
+    }
+});
+
+
+graphView.startConnectionFromOutput = output =>
+{
+    graphView.tempConn = new Connection(output, null);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.startConnectionFromInput = input =>
+{
+    graphView.tempConn = new Connection(null, input);
+    wires.appendChild(graphView.tempConn.wire);    
+};
+
+
+graphView.cancelConnection = () =>
+{
+    wires.removeChild(graphView.tempConn.wire);    
+    graphView.tempConn = null;
+};
+
+
+graphView.getNodeBounds = () =>
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    for (const node of nodes)
+    {
+        var bounds = node.getBoundingClientRect();
+
+        boundsL = Math.min(boundsL, bounds.left  );
+        boundsT = Math.min(boundsT, bounds.top   );
+        boundsR = Math.max(boundsR, bounds.right );
+        boundsB = Math.max(boundsB, bounds.bottom);
+    }
+
+    return {
+        x: boundsL, 
+        y: boundsT,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
+};
+
+
+graphView.putNodeOnTop = node =>
+{
+    for (const n of graph.nodes)
+        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
+
+    node.div.style.zIndex = graph.nodes.length-1;
+};
+
+
+graphView.startSelection = () =>
+{
+
+};
+
+
+
+const graph = new Graph();
+
+
+function createNode(opType)
+{
+    const node = graph.createNode(opType);
+
+    generator.postMessage({
+        msg:   'createNode', 
+        opType: opType,
+        nodeId: node.id
+    });
+}
+
+
+function setNodeId(nodeId, newId)
+{
+    const node = graph.nodeFromId(nodeId);
+
+    node.id = newId;
+
+    generator.postMessage({
+        msg:   'setNodeId', 
+        nodeId: nodeId,
+        newId:  newId
+    });
+}
+
+
+function connect(output, input)
+{
+    graph.connect(output, input);
+
+    generator.postMessage({
+        msg:   'connect', 
+        output: output.op.id, 
+        inputs:  
+        [
+            input.op.id, 
+            input.op.inputs.indexOf(input)
+        ]
+    });
+}
+
+
+function disconnect(input)
+{
+    graph.disconnect(input);
+
+    generator.postMessage({
+        msg:  'disconnect', 
+        input: input
+    });
+}
+
+
+function generate(nodes)
+{
+    if (graph.mutex)
+    {
+        graph.deferNodes = [];
+
+        for (const node of nodes)
+            graph.deferNodes.push(node);
+
+        return;
+    }
+    
+    graph.mutex = true;
+    var posted = false;
+
+
+    const nodeIds = nodes.map(n => n.id);
+
+    generator.postMessage(
+    {
+        msg:    'generate',
+        nodeIds: nodeIds
+    });
+
+    posted = true;
+
+
+    if (!posted)
+        graph.mutex = false;
+}
+
+
+/////////////////////////////////////////////////////////////////////
+
+
+const generator = new Worker(
+    window.URL.createObjectURL(
+        new Blob([generatorScript.textContent])));
+
+
+generator.onmessage = function(e)
+{
+    switch (e.data.msg)
+    {
+        case 'makeActive':
+        {
+            const node = graph.nodeFromId(e.data.nodeId);
+            node.makeActive();
+            break;
+        }
+        case 'updateData':
+        {
+            // const node = graph.nodeFromId(e.data.nodeId);
+            // var removeList = [];
+        
+            // for (const obj of node.cachedObjects)
+            // {
+            //     if (!e.data.objects.find(o => o.itemId === obj.itemId))
+            //         removeList.push(obj);    
+            // }
+
+            // if (removeList.length > 0)
+            // {
+            //     parent.postMessage({ pluginMessage: 
+            //     { 
+            //         cmd: 'removeObjectList',
+            //         data: removeList
+            //     }}, '*');
+            // }
+
+            parent.postMessage({ pluginMessage: 
+            { 
+                cmd:    'updateObjects',
+                objects: e.data.data
+            }}, '*');    
+
+            //node.cachedObjects = e.data.objects;
+            graph.mutex = false;
+
+            
+            if (graph.deferNodes.length > 0)
+            {
+                var deferNodes = Array.from(graph.deferNodes);
+                graph.deferNodes = [];
+
+                generate(deferNodes);
+            }
+
+            break;
+        }
+    }
+};
 
 
 

@@ -134,6 +134,9 @@ class GGraph
 
     nodeFromId(id)
     {
-        return this.nodes.find(n => n.id === id);
+        console.log(id);
+        const node = this.nodes.find(n => n.id === id);
+        console.log(node);
+        return node;
     }
 }

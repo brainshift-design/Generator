@@ -10,7 +10,7 @@ function save(key, value)
 {
     parent.postMessage({ pluginMessage:
     { 
-        cmd:   'save', 
+        cmd:  'save', 
         key:   key,
         value: value
     }}, '*');

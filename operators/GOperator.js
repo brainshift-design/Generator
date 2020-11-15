@@ -14,10 +14,7 @@ class GOperator
 
     _id;
     get id() { return this._id; }
-    set id(id)
-    {
-        this._id = id;
-    }
+    set id(id) { this._id = id; }
     
     _graph = null;
     get graph() { return this._graph; }

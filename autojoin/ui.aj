@@ -12,25 +12,24 @@ html/ui_1.html
 
 html/ui_2.html
 
+    def.js
+    util.js
+    
     core/lib.js
     core/math.js
     core/random.js
     core/storage.js
-    core/def.js
-    core/util.js
     
     [autojoin/operators.aj]
 
-    ui/ui.js
-    ui/window.js
+    ui/slider.js
+    ui/slider textbox.js
+    ui/select.js
 
-    ui/graph.js
-    ui/graphView.js
-    ui/node.js
-    ui/node textbox.js
+    ui.js
+    window.js
 
-    ui/controls/slider.js
-    ui/controls/slider textbox.js
-    ui/controls/select.js
+    graphView.js
+    canvas.js
 
 html/ui_3.html

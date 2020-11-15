@@ -16,21 +16,21 @@ extends Operator
     }
 
 
-    generate()
-    {
-        if (this.valid) return;
+    // generate()
+    // {
+    //     if (this.valid) return;
 
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
+    //     this.output._data = 
+    //     {
+    //         nodeId: this.id,
+    //         opType: this.opType,
 
-            x:      0,
-            y:      0,
-            width:  this.#width .value,
-            height: this.#height.value
-        }];
+    //         x:      0,
+    //         y:      0,
+    //         width:  this.#width .value,
+    //         height: this.#height.value
+    //     };
 
-        super.generate();
-    }
+    //     super.generate();
+    // }
 }

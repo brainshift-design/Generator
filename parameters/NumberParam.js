@@ -37,7 +37,7 @@ extends Parameter
 
         this.div.appendChild(this.control);
 
-        this.input = new Input ('NUM');
+        this.input = new Input('NUM');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -45,7 +45,7 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this._control.addEventListener('onchange', function(e)
+        this.control.addEventListener('onchange', function(e)
         {
             var op = this.param.op;
 

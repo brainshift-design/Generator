@@ -53,8 +53,9 @@ function getNumberString(num, dec)
     while (i >= 0 && str[i] === '0')
     str = str.substring(0, i--);
     
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales    
-    str = str.substring(0, i--);
+    if (   str[i] === '.' 
+        || str[i] === ',') // hack because JavaScript
+        str = str.substring(0, i--);
     
     return str;
 }    
