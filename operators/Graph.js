@@ -1,6 +1,7 @@
 class Graph
 {
-    nodes    = [];
+    nodes = [];
+    
     
     #selected = [];
     get selected() { return this.#selected; }
@@ -47,8 +48,8 @@ class Graph
             maxNum = Math.max(num, maxNum);
         }
 
-        if (maxNum == 0)
-            return opType;
+        // if (maxNum == 0)
+        //     return opType;
 
         maxNum++;
 
@@ -63,14 +64,14 @@ class Graph
         switch (opType)
         {
             case 'number': node = new OpNumber(); break;
-            //case 'random': node = new OpRandom(); break;
+            case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
             case 'column': node = new OpColumn(); break;
+            case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);
-        node.makeActive();
 
         return node;
     }
@@ -127,8 +128,8 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            //wires.appendChild(conn.wire);
-            //conn.updateWire();
+            wires.appendChild(conn.wire);
+            conn.updateWire();
             
             output.op.makePassive();
             input.op.valid = false;
@@ -148,8 +149,8 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            //wires.appendChild(conn.wire);
-            //conn.updateWire();
+            wires.appendChild(conn.wire);
+            conn.updateWire();
             
             input.param.op.valid = false;
         

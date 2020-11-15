@@ -1078,10 +1078,7 @@ class GGraph
 
     nodeFromId(id)
     {
-        console.log(id);
-        const node = this.nodes.find(n => n.id === id);
-        console.log(node);
-        return node;
+        return this.nodes.find(n => n.id === id);
     }
 }
 
@@ -1684,7 +1681,6 @@ onmessage = function(e)
     {
         case 'createNode': 
         {
-            console.log('creatin node');
             const node = ggraph.createNode(e.data.opType);
             
             node.id = e.data.nodeId;
@@ -1720,7 +1716,6 @@ onmessage = function(e)
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                console.log(ggraph.nodes);
                 data = data.concat(node.output.data);
             }
 
@@ -2514,7 +2509,8 @@ extends Parameter
 
 class Graph
 {
-    nodes    = [];
+    nodes = [];
+    
     
     #selected = [];
     get selected() { return this.#selected; }
@@ -2561,8 +2557,8 @@ class Graph
             maxNum = Math.max(num, maxNum);
         }
 
-        if (maxNum == 0)
-            return opType;
+        // if (maxNum == 0)
+        //     return opType;
 
         maxNum++;
 
@@ -2577,14 +2573,14 @@ class Graph
         switch (opType)
         {
             case 'number': node = new OpNumber(); break;
-            //case 'random': node = new OpRandom(); break;
+            case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
             case 'column': node = new OpColumn(); break;
+            case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);
-        node.makeActive();
 
         return node;
     }
@@ -2641,8 +2637,8 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            //wires.appendChild(conn.wire);
-            //conn.updateWire();
+            wires.appendChild(conn.wire);
+            conn.updateWire();
             
             output.op.makePassive();
             input.op.valid = false;
@@ -2662,8 +2658,8 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            //wires.appendChild(conn.wire);
-            //conn.updateWire();
+            wires.appendChild(conn.wire);
+            conn.updateWire();
             
             input.param.op.valid = false;
         
@@ -4863,9 +4859,9 @@ graphView.getNodeBounds = () =>
     var boundsR = Number.MIN_SAFE_INTEGER;
     var boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (const node of nodes)
+    for (const node of graph.nodes)
     {
-        var bounds = node.getBoundingClientRect();
+        var bounds = node.div.getBoundingClientRect();
 
         boundsL = Math.min(boundsL, bounds.left  );
         boundsT = Math.min(boundsT, bounds.top   );

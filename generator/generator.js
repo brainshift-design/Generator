@@ -7,7 +7,6 @@ onmessage = function(e)
     {
         case 'createNode': 
         {
-            console.log('creatin node');
             const node = ggraph.createNode(e.data.opType);
             
             node.id = e.data.nodeId;
@@ -43,7 +42,6 @@ onmessage = function(e)
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                console.log(ggraph.nodes);
                 data = data.concat(node.output.data);
             }
 

@@ -126,9 +126,9 @@ graphView.getNodeBounds = () =>
     var boundsR = Number.MIN_SAFE_INTEGER;
     var boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (const node of nodes)
+    for (const node of graph.nodes)
     {
-        var bounds = node.getBoundingClientRect();
+        var bounds = node.div.getBoundingClientRect();
 
         boundsL = Math.min(boundsL, bounds.left  );
         boundsT = Math.min(boundsT, bounds.top   );
