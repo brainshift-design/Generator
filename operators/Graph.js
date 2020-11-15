@@ -63,15 +63,15 @@ class Graph
         switch (opType)
         {
             case 'number': node = new OpNumber(); break;
-            case 'random': node = new OpRandom(); break;
+            //case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
             case 'column': node = new OpColumn(); break;
-            case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);
-        
+        node.makeActive();
+
         return node;
     }
 
@@ -127,8 +127,8 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            wires.appendChild(conn.wire);
-            conn.updateWire();
+            //wires.appendChild(conn.wire);
+            //conn.updateWire();
             
             output.op.makePassive();
             input.op.valid = false;
@@ -148,8 +148,8 @@ class Graph
             input .connection = conn;
             output.connection = conn;
             
-            wires.appendChild(conn.wire);
-            conn.updateWire();
+            //wires.appendChild(conn.wire);
+            //conn.updateWire();
             
             input.param.op.valid = false;
         
@@ -175,8 +175,8 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        if (remove)
-            wires.removeChild(input.connection.wire);
+        //if (remove)
+        //    wires.removeChild(input.connection.wire);
 
         var inputIndex = output.connectedInputs.indexOf(input);
         output.connectedInputs.splice(inputIndex, 1);

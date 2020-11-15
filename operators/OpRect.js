@@ -28,10 +28,8 @@ extends Operator
             x:      0,
             y:      0,
             width:  this.#width .value,
-            height: this.#height.value,
-
-            inputs: []
-        };
+            height: this.#height.value
+        }];
 
         super.generate();
     }
