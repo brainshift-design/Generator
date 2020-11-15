@@ -40,9 +40,9 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            remove(this, graphSelected);
+            remove(this, graph.selected);
 
-        setSelected(sel); 
+        this.setSelected(sel); 
 
         if (this._selected)
             graph.selected.push(this);

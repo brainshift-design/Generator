@@ -953,38 +953,6 @@ class GGraph
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
 
     
-    getNewId(_node)
-    {
-        var opType = _node.opType;
-
-        var maxNum = 0;
-        
-        for (const node of this.nodes)
-        {
-            if (node == _node)
-                continue;
-                
-            if (   node.id.length < opType.length
-                || node.id.substring(0, opType.length) !== opType)
-                continue;
-                
-            var num = parseInt(node.id.substring(opType.length));
-            
-            if (isNaN(num) || num == 0) 
-                num = 1;
-            
-            maxNum = Math.max(num, maxNum);
-        }
-
-        if (maxNum == 0)
-            return opType;
-
-        maxNum++;
-
-        return opType + maxNum;
-    }
-    
-    
     createNode(opType)
     {
         var node;
@@ -1008,7 +976,7 @@ class GGraph
     addNode(node)
     {
         node.setGraph(this);
-        node.setId(this.getNewId(node)); // TODO: not checking return value here
+        //node.setId(this.getNewId(node)); // TODO: not checking return value here
         
         this.nodes.push(node);
     }
@@ -1450,7 +1418,7 @@ extends GOperator
         [{
             objType: 'rect',
             nodeId:  this.id,
-            itemId:  this.id + '_0',
+            itemId:  this.id,
              
             x:       0,
             y:       0,
@@ -2747,7 +2715,7 @@ class Graph
             node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
         }
 
-        putNodeOnTop(node);
+        graphView.putNodeOnTop(node);
     }
     
 
@@ -3141,9 +3109,9 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            remove(this, graphSelected);
+            remove(this, graph.selected);
 
-        setSelected(sel); 
+        this.setSelected(sel); 
 
         if (this._selected)
             graph.selected.push(this);
@@ -3402,8 +3370,10 @@ function createDiv(node, headerColor)
 
     node.div.className = 'node';
     node.div.op        = node;
-    node.div.dragging  = false;
-
+    
+    node.div.selectedSet = false;
+    node.div.dragging    = false;
+    node.div.moved       = false;
 
     node.inner = document.createElement('div');
     node.inner.className = 'nodeInner';
@@ -3413,7 +3383,7 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerdown', function(e) 
     {
-        putNodeOnTop(node);
+        graphView.putNodeOnTop(node);
         
         if (   e.button == 0
             && !graphView.overOutput
@@ -3421,12 +3391,25 @@ function createDiv(node, headerColor)
         {
             e.stopPropagation();
 
-            graph.selected = [node];
+            node.div.selectedSet = false;
+            node.div.moved       = false;
 
-            node.div.sx  = e.clientX;
-            node.div.sy  = e.clientY;
-            node.div.slx = node.div.offsetLeft;
-            node.div.sly = node.div.offsetTop;
+            if (!node.selected)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graph.selected = [node];
+
+                node.selectedSet = true;
+            }
+
+            node.div.sx = e.clientX;
+            node.div.sy = e.clientY;
+
+            for (const n of graph.selected)
+            {
+                n.div.slx = n.div.offsetLeft;
+                n.div.sly = n.div.offsetTop;
+            }
 
             node.div.dragging = true;
             node.div.setPointerCapture(e.pointerId);
@@ -3437,10 +3420,15 @@ function createDiv(node, headerColor)
     {
         if (node.div.dragging)
         {
-            setDivPosition(
-                node.div.op,
-                node.div.slx + e.clientX - node.div.sx,
-                node.div.sly + e.clientY - node.div.sy);
+            for (const n of graph.selected)
+            {
+                setDivPosition(
+                    n.div.op,
+                    n.div.slx + e.clientX - node.div.sx,
+                    n.div.sly + e.clientY - node.div.sy);
+            }
+
+            node.div.moved = true;
         };
     });
 
@@ -3449,6 +3437,13 @@ function createDiv(node, headerColor)
         if (   e.button == 0
             && node.div.dragging)
         {
+            if (   !node.div.selectedSet
+                && !node.div.moved)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graph.selected = [node];
+            }
+
             node.div.dragging = false;
             node.div.releasePointerCapture(e.pointerId);
         }
@@ -4044,7 +4039,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             ? slider.parentNode.parentNode.parentNode
             : null;
 
-        if (opDiv && opDiv.className == 'node') putNodeOnTop(opDiv.op);
+        if (opDiv && opDiv.className == 'node') 
+            graphView.putNodeOnTop(opDiv.op);
 
 
         if (e.button == 0)
@@ -4748,7 +4744,8 @@ graphView.addEventListener('pointerdown', e =>
     }
     else // selection
     {
-        graph.selected = [];
+        if (!e.shiftKey)
+            graph.selected = [];
     }
 });
 
@@ -4860,13 +4857,19 @@ graphView.getNodeBounds = () =>
 };
 
 
-function putNodeOnTop(node)
+graphView.putNodeOnTop = node =>
 {
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
 
     node.div.style.zIndex = graph.nodes.length-1;
-}
+};
+
+
+graphView.startSelection = () =>
+{
+
+};
 
 
 const graph = new Graph();

@@ -74,7 +74,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             ? slider.parentNode.parentNode.parentNode
             : null;
 
-        if (opDiv && opDiv.className == 'node') putNodeOnTop(opDiv.op);
+        if (opDiv && opDiv.className == 'node') 
+            graphView.putNodeOnTop(opDiv.op);
 
 
         if (e.button == 0)

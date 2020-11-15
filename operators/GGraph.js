@@ -10,38 +10,6 @@ class GGraph
     randomSeed = this.random.seed; // TODO reset the seed when loading a graph
 
     
-    getNewId(_node)
-    {
-        var opType = _node.opType;
-
-        var maxNum = 0;
-        
-        for (const node of this.nodes)
-        {
-            if (node == _node)
-                continue;
-                
-            if (   node.id.length < opType.length
-                || node.id.substring(0, opType.length) !== opType)
-                continue;
-                
-            var num = parseInt(node.id.substring(opType.length));
-            
-            if (isNaN(num) || num == 0) 
-                num = 1;
-            
-            maxNum = Math.max(num, maxNum);
-        }
-
-        if (maxNum == 0)
-            return opType;
-
-        maxNum++;
-
-        return opType + maxNum;
-    }
-    
-    
     createNode(opType)
     {
         var node;
@@ -65,7 +33,7 @@ class GGraph
     addNode(node)
     {
         node.setGraph(this);
-        node.setId(this.getNewId(node)); // TODO: not checking return value here
+        //node.setId(this.getNewId(node)); // TODO: not checking return value here
         
         this.nodes.push(node);
     }

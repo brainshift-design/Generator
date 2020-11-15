@@ -24,7 +24,7 @@ extends GOperator
         [{
             objType: 'rect',
             nodeId:  this.id,
-            itemId:  this.id + '_0',
+            itemId:  this.id,
              
             x:       0,
             y:       0,

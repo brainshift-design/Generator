@@ -105,7 +105,7 @@ class Graph
             node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
         }
 
-        putNodeOnTop(node);
+        graphView.putNodeOnTop(node);
     }
     
 

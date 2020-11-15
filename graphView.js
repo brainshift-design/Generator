@@ -31,7 +31,8 @@ graphView.addEventListener('pointerdown', e =>
     }
     else // selection
     {
-        graph.selected = [];
+        if (!e.shiftKey)
+            graph.selected = [];
     }
 });
 
@@ -143,10 +144,16 @@ graphView.getNodeBounds = () =>
 };
 
 
-function putNodeOnTop(node)
+graphView.putNodeOnTop = node =>
 {
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
 
     node.div.style.zIndex = graph.nodes.length-1;
-}
+};
+
+
+graphView.startSelection = () =>
+{
+
+};

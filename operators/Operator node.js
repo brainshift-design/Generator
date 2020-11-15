@@ -4,8 +4,10 @@ function createDiv(node, headerColor)
 
     node.div.className = 'node';
     node.div.op        = node;
-    node.div.dragging  = false;
-
+    
+    node.div.selectedSet = false;
+    node.div.dragging    = false;
+    node.div.moved       = false;
 
     node.inner = document.createElement('div');
     node.inner.className = 'nodeInner';
@@ -15,7 +17,7 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerdown', function(e) 
     {
-        putNodeOnTop(node);
+        graphView.putNodeOnTop(node);
         
         if (   e.button == 0
             && !graphView.overOutput
@@ -23,12 +25,25 @@ function createDiv(node, headerColor)
         {
             e.stopPropagation();
 
-            graph.selected = [node];
+            node.div.selectedSet = false;
+            node.div.moved       = false;
 
-            node.div.sx  = e.clientX;
-            node.div.sy  = e.clientY;
-            node.div.slx = node.div.offsetLeft;
-            node.div.sly = node.div.offsetTop;
+            if (!node.selected)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graph.selected = [node];
+
+                node.selectedSet = true;
+            }
+
+            node.div.sx = e.clientX;
+            node.div.sy = e.clientY;
+
+            for (const n of graph.selected)
+            {
+                n.div.slx = n.div.offsetLeft;
+                n.div.sly = n.div.offsetTop;
+            }
 
             node.div.dragging = true;
             node.div.setPointerCapture(e.pointerId);
@@ -39,10 +54,15 @@ function createDiv(node, headerColor)
     {
         if (node.div.dragging)
         {
-            setDivPosition(
-                node.div.op,
-                node.div.slx + e.clientX - node.div.sx,
-                node.div.sly + e.clientY - node.div.sy);
+            for (const n of graph.selected)
+            {
+                setDivPosition(
+                    n.div.op,
+                    n.div.slx + e.clientX - node.div.sx,
+                    n.div.sly + e.clientY - node.div.sy);
+            }
+
+            node.div.moved = true;
         };
     });
 
@@ -51,6 +71,13 @@ function createDiv(node, headerColor)
         if (   e.button == 0
             && node.div.dragging)
         {
+            if (   !node.div.selectedSet
+                && !node.div.moved)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graph.selected = [node];
+            }
+
             node.div.dragging = false;
             node.div.releasePointerCapture(e.pointerId);
         }
