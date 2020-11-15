@@ -6,11 +6,7 @@ document.canResizeY = false;
 document.resizingX  = false;
 document.resizingY  = false;
 
-document.startX     = 0;
-document.startY     = 0;
-
-document.startH     = 0;
-document.startW     = 0;
+document.startRect = new Rect();
 
 
 document.addEventListener('pointerdown', function(e)
@@ -21,11 +17,11 @@ document.addEventListener('pointerdown', function(e)
         if (document.canResizeX) document.resizingX = true;
         if (document.canResizeY) document.resizingY = true;
 
-        document.startX   = e.clientX;
-        document.startY   = e.clientY;
-
-        document.startW   = window.innerWidth;
-        document.startH   = window.innerHeight;
+        document.startRect = new Rect(
+            e.clientX,
+            e.clientY,
+            window.innerWidth,
+            window.innerHeight);
 
         document.body.setPointerCapture(e.pointerId);
     }
@@ -38,20 +34,20 @@ document.addEventListener('pointermove', function(e)
         && document.resizingY)
     {
         resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.startH + e.clientY - document.startY);
+            document.startRect.w + e.clientX - document.startRect.x,
+            document.startRect.h + e.clientY - document.startRect.y);
     }
     else if (document.resizingX)
     {
         resizeWindow(
-            document.startW + e.clientX - document.startX,
+            document.startRect.w + e.clientX - document.startRect.x,
             document.body.clientHeight);
     }
     else if (document.resizingY)
     {
         resizeWindow(
             document.body.clientWidth,
-            document.startH + e.clientY - document.startY);
+            document.startRect.h + e.clientY - document.startRect.y);
     }
     else
         checkResize(e.clientX, e.clientY);

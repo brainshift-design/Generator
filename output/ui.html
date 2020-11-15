@@ -319,10 +319,22 @@ button svg
     z-index: 2000000000;
 }
 
+#selectBox
+{
+    outline:          1px solid #18A0FB;
+    background-color: #18A0FB20;
+    pointer-events:   none;
+    margin:           0;
+    padding:          0;
+    position:         absolute;
+    visibility:       hidden;
+}
+
 
 </style>
 
 <div id='graphView'></div>
+<div id='selectBox'></div>
 <div id='wires'></div>
 
 <div id='controlBar'>
@@ -866,9 +878,58 @@ function xmove(v)
 
 function xrotate(angle)
 {
-    return [[Math.cos(angle), -math.sin(angle), 0],
-            [Math.sin(angle),  math.cos(angle), 0],
+    return [[Math.cos(angle), -Math.sin(angle), 0],
+            [Math.sin(angle),  Math.cos(angle), 0],
             [0,                0,               1]];
+}
+
+
+class Rect
+{
+    x;
+    y;
+    w;
+    h;
+
+    get width()  { return this.w;            }
+    get height() { return this.h;            }
+
+    get left()   { return this.x;            }
+    get center() { return this.x + this.w/2; }
+    get right()  { return this.x + this.w;   }
+
+    get top()    { return this.y;            }
+    get middle() { return this.y + this.h/2  }
+    get bottom() { return this.y + this.h;   }
+
+    constructor(x, y, w, h)
+    {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+
+    static NaN  = new Rect(Number.NaN, Number.NaN, Number.NaN, Number.NaN);
+    static Zero = new Rect(0, 0, 0, 0);
+
+    get isNaN()
+    {
+        return isNaN(this.x)
+            || isNaN(this.y)
+            || isNaN(this.w)
+            || isNaN(this.h);
+    }
+}
+
+
+function rectsIntersect(rect1, rect2)
+{
+    return !(
+           rect1.left   >= rect2.right
+        || rect1.right  <= rect2.left
+        || rect1.top    >= rect2.bottom
+        || rect1.bottom <= rect2.top); 
 }
 
 
@@ -2370,9 +2431,58 @@ function xmove(v)
 
 function xrotate(angle)
 {
-    return [[Math.cos(angle), -math.sin(angle), 0],
-            [Math.sin(angle),  math.cos(angle), 0],
+    return [[Math.cos(angle), -Math.sin(angle), 0],
+            [Math.sin(angle),  Math.cos(angle), 0],
             [0,                0,               1]];
+}
+
+
+class Rect
+{
+    x;
+    y;
+    w;
+    h;
+
+    get width()  { return this.w;            }
+    get height() { return this.h;            }
+
+    get left()   { return this.x;            }
+    get center() { return this.x + this.w/2; }
+    get right()  { return this.x + this.w;   }
+
+    get top()    { return this.y;            }
+    get middle() { return this.y + this.h/2  }
+    get bottom() { return this.y + this.h;   }
+
+    constructor(x, y, w, h)
+    {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+
+    static NaN  = new Rect(Number.NaN, Number.NaN, Number.NaN, Number.NaN);
+    static Zero = new Rect(0, 0, 0, 0);
+
+    get isNaN()
+    {
+        return isNaN(this.x)
+            || isNaN(this.y)
+            || isNaN(this.w)
+            || isNaN(this.h);
+    }
+}
+
+
+function rectsIntersect(rect1, rect2)
+{
+    return !(
+           rect1.left   >= rect2.right
+        || rect1.right  <= rect2.left
+        || rect1.top    >= rect2.bottom
+        || rect1.bottom <= rect2.top); 
 }
 
 
@@ -4640,11 +4750,7 @@ document.canResizeY = false;
 document.resizingX  = false;
 document.resizingY  = false;
 
-document.startX     = 0;
-document.startY     = 0;
-
-document.startH     = 0;
-document.startW     = 0;
+document.startRect = new Rect();
 
 
 document.addEventListener('pointerdown', function(e)
@@ -4655,11 +4761,11 @@ document.addEventListener('pointerdown', function(e)
         if (document.canResizeX) document.resizingX = true;
         if (document.canResizeY) document.resizingY = true;
 
-        document.startX   = e.clientX;
-        document.startY   = e.clientY;
-
-        document.startW   = window.innerWidth;
-        document.startH   = window.innerHeight;
+        document.startRect = new Rect(
+            e.clientX,
+            e.clientY,
+            window.innerWidth,
+            window.innerHeight);
 
         document.body.setPointerCapture(e.pointerId);
     }
@@ -4672,20 +4778,20 @@ document.addEventListener('pointermove', function(e)
         && document.resizingY)
     {
         resizeWindow(
-            document.startW + e.clientX - document.startX,
-            document.startH + e.clientY - document.startY);
+            document.startRect.w + e.clientX - document.startRect.x,
+            document.startRect.h + e.clientY - document.startRect.y);
     }
     else if (document.resizingX)
     {
         resizeWindow(
-            document.startW + e.clientX - document.startX,
+            document.startRect.w + e.clientX - document.startRect.x,
             document.body.clientHeight);
     }
     else if (document.resizingY)
     {
         resizeWindow(
             document.body.clientWidth,
-            document.startH + e.clientY - document.startY);
+            document.startRect.h + e.clientY - document.startRect.y);
     }
     else
         checkResize(e.clientX, e.clientY);
@@ -4734,7 +4840,9 @@ function checkResize(x, y)
 graphView.overInput  = null;
 graphView.overOutput = null;
 
-graphView.tempConn = null;
+graphView.tempConn   = null;
+
+graphView.selection  = Rect.NaN;
 
 
 graphView.addEventListener('pointerdown', e =>
@@ -4765,14 +4873,20 @@ graphView.addEventListener('pointerdown', e =>
     else // selection
     {
         if (!e.shiftKey)
+        {
             graph.selected = [];
+            graphView.startSelection(e.clientX, e.clientY);
+        }
     }
 });
 
 
 graphView.addEventListener('pointerup', e =>
 {
-    if (graphView.tempConn)
+    if (!graphView.selection.isNaN)
+        graphView.endSelection();
+
+    else if (graphView.tempConn)
     {
         if (graphView.tempConn.output) // FROM OUTPUT
         {
@@ -4823,7 +4937,10 @@ graphView.addEventListener('pointerup', e =>
 
 graphView.addEventListener('pointermove', e =>
 {
-    if (graphView.tempConn)
+    if (!graphView.selection.isNaN)
+        graphView.updateSelection(e.clientX, e.clientY);
+
+    else if (graphView.tempConn)
     {
              if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
         else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
@@ -4886,11 +5003,57 @@ graphView.putNodeOnTop = node =>
 };
 
 
-graphView.startSelection = () =>
+graphView.getValidSelection = () =>
 {
-
+    return new Rect(
+        graphView.selection.x + Math.min(graphView.selection.w, 0),
+        graphView.selection.y + Math.min(graphView.selection.h, 0),
+        Math.abs(graphView.selection.w),
+        Math.abs(graphView.selection.h));
 };
 
+
+graphView.startSelection = (x, y) =>
+{
+    graphView.selection = new Rect(x, y, 0, 0);
+    
+    selectBox.style.visibility = 'visible';
+    graphView.updateSelectBox();
+};
+
+
+graphView.updateSelection = (x, y) =>
+{
+    graphView.selection.w = x - graphView.selection.x;
+    graphView.selection.h = y - graphView.selection.y;
+
+    graphView.updateSelectBox();
+};
+
+graphView.updateSelectBox = () =>
+{
+    var selection = graphView.getValidSelection();
+
+    selectBox.style.left   = selection.x + Math.min(selection.w, 0);
+    selectBox.style.top    = selection.y + Math.min(selection.h, 0);
+    selectBox.style.width  = Math.abs(selection.w);
+    selectBox.style.height = Math.abs(selection.h);
+
+    
+    graph.selected = [];
+
+    for (const node of graph.nodes)
+    {
+        if (rectsIntersect(node.div.getBoundingClientRect(), graphView.getValidSelection()))
+            node.selected = true;
+    }
+};
+
+graphView.endSelection = () =>
+{
+    graphView.selection = Rect.NaN;
+    selectBox.style.visibility = 'hidden';
+};
 
 
 const graph = new Graph();

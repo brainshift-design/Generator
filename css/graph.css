@@ -127,3 +127,14 @@
     pointer-events: none;
     z-index: 2000000000;
 }
+
+#selectBox
+{
+    outline:          1px solid #18A0FB;
+    background-color: #18A0FB20;
+    pointer-events:   none;
+    margin:           0;
+    padding:          0;
+    position:         absolute;
+    visibility:       hidden;
+}
