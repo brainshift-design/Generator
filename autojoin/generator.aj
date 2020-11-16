@@ -6,6 +6,7 @@ generator/generator_0.html
     core/lib.js
     core/math.js
     core/random.js
+    core/Noise.js
     
     [autojoin/g_operators.aj]
 

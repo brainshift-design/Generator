@@ -1,5 +1,6 @@
 const Tau = Math.PI * 2;
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
+const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 function sqr (x) { return x*x;   };
