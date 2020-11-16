@@ -10,6 +10,23 @@ function createNode(opType)
         opType: opType,
         nodeId: node.id
     });
+
+    if (graph.selected.length > 0)
+    {
+        const selNode = graph.nodes.find(n => n.selected);
+        const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
+
+        if (   !!selNode
+            && selNode.output
+            && inputs.length > 0)
+        {
+            console.log(selNode.output);
+            console.log(inputs[0]);
+            connect(selNode.output, inputs[0]);
+        }
+    }
+    
+    graph.selected = [node];
 }
 
 

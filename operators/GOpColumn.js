@@ -21,24 +21,37 @@ extends GOperator
     {
         if (this.valid) return;
 
+
         var input = this.inputs[0];
 
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
+        if (   !input.connected)
+            //|| isEmptyObject(input.connectedOutput.data))
         {
-            this.output._data = {};
+            this.output._data = [];
             return;
         }
 
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-            count:  this.#count.value,
-            gap:    this.#gap  .value,
 
-            inputs: [input.data]
-        };
+        var bounds = getBounds(input.data);
+    
+
+        this.output._data = [];
+    
+        for (var i = 0, y = 0; i < this.#count.value; i++)
+        {
+            for (var j = 0; j < input.data.length; j++)
+            {
+                var item = shallowCopy(input.data[j]);
+                item.itemId += '_' + i;
+    
+                item.y += y;
+                
+                this.output._data.push(item);
+            }
+            
+            y += bounds.h + this.#gap.value;
+        }
+    
 
         super.generate();
     }

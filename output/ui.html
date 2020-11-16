@@ -1513,27 +1513,37 @@ extends GOperator
     {
         if (this.valid) return;
 
+
         var input = this.inputs[0];
 
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data))
+        if (   !input.connected)
+            //|| isEmptyObject(input.connectedOutput.data))
         {
-            this.output._data = {};
+            this.output._data = [];
             return;
         }
 
 
-        this.output._data = 
+        var bounds = getBounds(input.data);
+    
+
+        this.output._data = [];
+    
+        for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            nodeId: this.id,
-            opType: this.opType,
-
-            count: this.#count.value,
-            gap:   this.#gap  .value,
-
-            inputs: [input.data]
-        };
-
+            for (var j = 0; j < input.data.length; j++)
+            {
+                var item = shallowCopy(input.data[j]);
+                item.itemId += '_' + i;
+    
+                item.x += x;
+                
+                this.output._data.push(item);
+            }
+            
+            x += bounds.w + this.#gap.value;
+        }
+    
 
         super.generate();
     }
@@ -1563,24 +1573,37 @@ extends GOperator
     {
         if (this.valid) return;
 
+
         var input = this.inputs[0];
 
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
+        if (   !input.connected)
+            //|| isEmptyObject(input.connectedOutput.data))
         {
-            this.output._data = {};
+            this.output._data = [];
             return;
         }
 
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-            count:  this.#count.value,
-            gap:    this.#gap  .value,
 
-            inputs: [input.data]
-        };
+        var bounds = getBounds(input.data);
+    
+
+        this.output._data = [];
+    
+        for (var i = 0, y = 0; i < this.#count.value; i++)
+        {
+            for (var j = 0; j < input.data.length; j++)
+            {
+                var item = shallowCopy(input.data[j]);
+                item.itemId += '_' + i;
+    
+                item.y += y;
+                
+                this.output._data.push(item);
+            }
+            
+            y += bounds.h + this.#gap.value;
+        }
+    
 
         super.generate();
     }
@@ -1812,32 +1835,6 @@ function generate(nodeIds)
         msg:  'updateData',
         data: data
     });
-}
-
-
-function generateRow(node)
-{
-    var input  = generate(node.inputs[0]);
-    var bounds = getBounds(input);
-
-    result = [];
-
-    for (var i = 0, x = 0; i < node.count; i++)
-    {
-        for (var j = 0; j < input.length; j++)
-        {
-            var item = shallowCopy(input[j]);
-            item.itemId = node.nodeId + '_' + i + '_' + j;
-
-            item.x += x;
-            
-            result.push(item);
-        }
-        
-        x += bounds.w + node.gap;
-    }
-
-    return result;
 }
 
 
@@ -2779,7 +2776,7 @@ class Graph
             output.op.makePassive();
             input.op.valid = false;
         
-            generate([input.op.activeNodeInTree]);
+            //generate([input.op.activeNodeInTree]);
 
             return true;
         }
@@ -2799,7 +2796,7 @@ class Graph
             
             input.param.op.valid = false;
         
-            generate([input.param.op.activeNodeInTree]);
+            //generate([input.param.op.activeNodeInTree]);
 
             return true;
         }
@@ -3858,34 +3855,34 @@ extends Operator
     }
 
 
-    generate()
-    {
-        if (this.valid) return;
+    // generate()
+    // {
+    //     if (this.valid) return;
 
-        var input = this.inputs[0];
+    //     var input = this.inputs[0];
 
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data))
-        {
-            this.output._data = {};
-            return;
-        }
-
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            count: this.#count.value,
-            gap:   this.#gap  .value,
-
-            inputs: [input.data]
-        };
+    //     if (   !input.connected
+    //         || isEmptyObject(input.connectedOutput.data))
+    //     {
+    //         this.output._data = {};
+    //         return;
+    //     }
 
 
-        super.generate();
-    }
+    //     this.output._data = 
+    //     {
+    //         nodeId: this.id,
+    //         opType: this.opType,
+
+    //         count: this.#count.value,
+    //         gap:   this.#gap  .value,
+
+    //         inputs: [input.data]
+    //     };
+
+
+    //     super.generate();
+    // }
 }
 
 
@@ -3908,31 +3905,31 @@ extends Operator
     }
 
 
-    generate()
-    {
-        if (this.valid) return;
+    // generate()
+    // {
+    //     if (this.valid) return;
 
-        var input = this.inputs[0];
+    //     var input = this.inputs[0];
 
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
-        {
-            this.output._data = {};
-            return;
-        }
+    //     if (   !input.connected
+    //         || isEmptyObject(input.connectedOutput.data)) 
+    //     {
+    //         this.output._data = {};
+    //         return;
+    //     }
 
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-            count:  this.#count.value,
-            gap:    this.#gap  .value,
+    //     this.output._data = 
+    //     {
+    //         nodeId: this.id,
+    //         opType: this.opType,
+    //         count:  this.#count.value,
+    //         gap:    this.#gap  .value,
 
-            inputs: [input.data]
-        };
+    //         inputs: [input.data]
+    //     };
 
-        super.generate();
-    }
+    //     super.generate();
+    // }
 }
 
 
@@ -4394,10 +4391,10 @@ function initSliderTextbox(slider)
     });
 
 
-    slider.textbox.addEventListener('input', function()
-    {
-        slider.setValue(Number(slider.textbox.value));
-    });
+    // slider.textbox.addEventListener('input', function()
+    // {
+    //     slider.setValue(Number(slider.textbox.value));
+    // });
 
     slider.textbox.addEventListener('paste', function(e)
     {
@@ -4417,8 +4414,8 @@ function initSliderTextbox(slider)
     
     slider.textbox.finish = function(success)
     {
-        if (success) slider.setValue(Number(slider.textbox.value     ), false);
-        else         slider.setValue(Number(slider.textbox.savedValue), true );
+        if (success) slider.setValue(Number(slider.textbox.value     ));
+        else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
 
@@ -5094,6 +5091,23 @@ function createNode(opType)
         opType: opType,
         nodeId: node.id
     });
+
+    if (graph.selected.length > 0)
+    {
+        const selNode = graph.nodes.find(n => n.selected);
+        const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
+
+        if (   !!selNode
+            && selNode.output
+            && inputs.length > 0)
+        {
+            console.log(selNode.output);
+            console.log(inputs[0]);
+            connect(selNode.output, inputs[0]);
+        }
+    }
+    
+    graph.selected = [node];
 }
 
 

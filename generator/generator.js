@@ -80,32 +80,6 @@ function generate(nodeIds)
 }
 
 
-function generateRow(node)
-{
-    var input  = generate(node.inputs[0]);
-    var bounds = getBounds(input);
-
-    result = [];
-
-    for (var i = 0, x = 0; i < node.count; i++)
-    {
-        for (var j = 0; j < input.length; j++)
-        {
-            var item = shallowCopy(input[j]);
-            item.itemId = node.nodeId + '_' + i + '_' + j;
-
-            item.x += x;
-            
-            result.push(item);
-        }
-        
-        x += bounds.w + node.gap;
-    }
-
-    return result;
-}
-
-
 function generateColumn(node)
 {
     var input  = generate(node.inputs[0]);

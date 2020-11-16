@@ -78,10 +78,10 @@ function initSliderTextbox(slider)
     });
 
 
-    slider.textbox.addEventListener('input', function()
-    {
-        slider.setValue(Number(slider.textbox.value));
-    });
+    // slider.textbox.addEventListener('input', function()
+    // {
+    //     slider.setValue(Number(slider.textbox.value));
+    // });
 
     slider.textbox.addEventListener('paste', function(e)
     {
@@ -101,8 +101,8 @@ function initSliderTextbox(slider)
     
     slider.textbox.finish = function(success)
     {
-        if (success) slider.setValue(Number(slider.textbox.value     ), false);
-        else         slider.setValue(Number(slider.textbox.savedValue), true );
+        if (success) slider.setValue(Number(slider.textbox.value     ));
+        else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
 

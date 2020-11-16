@@ -134,7 +134,7 @@ class Graph
             output.op.makePassive();
             input.op.valid = false;
         
-            generate([input.op.activeNodeInTree]);
+            //generate([input.op.activeNodeInTree]);
 
             return true;
         }
@@ -154,7 +154,7 @@ class Graph
             
             input.param.op.valid = false;
         
-            generate([input.param.op.activeNodeInTree]);
+            //generate([input.param.op.activeNodeInTree]);
 
             return true;
         }
