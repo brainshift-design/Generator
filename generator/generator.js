@@ -27,12 +27,21 @@ onmessage = function(e)
         case 'connect':
         {
             const outNode = ggraph.nodes.find(n => n.id == e.data.output);
-            const  inNode = ggraph.nodes.find(n => n.id == e.data.inputs[0]);
-            ggraph.connect(outNode.output, inNode.inputs[e.data.input[1]]);
+
+            for (const input of e.data.inputs)
+            {
+                const inNode = ggraph.nodes.find(n => n.id == input[0]);
+                ggraph.connect(outNode.output, inNode.inputs[input[1]]);
+            }
+
             break;
         }
         case 'disconnect':
-            ggraph.disconnect(e.data.opType);
+            for (const input of e.data.inputs)
+            {
+                const inNode = ggraph.nodes.find(n => n.id == input[0]);
+                ggraph.disconnect(inNode.inputs[input[1]]);
+            }
             break;
 
 

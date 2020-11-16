@@ -1062,10 +1062,10 @@ class GGraph
             input .connection = conn;
             output.connection = conn;
             
-            output.op.makePassive();
+            // output.op.makePassive();
             input.op.valid = false;
         
-            generate([input.op.activeNodeInTree]);
+            //generate([input.op.activeNodeInTree]);
 
             return true;
         }
@@ -1082,7 +1082,7 @@ class GGraph
             
             input.param.op.valid = false;
         
-            generate([input.param.op.activeNodeInTree]);
+            //generate([input.param.op.activeNodeInTree]);
 
             return true;
         }
@@ -1096,8 +1096,8 @@ class GGraph
     {
         // first remove the current output
 
-        if (input.op)
-            removeNodeOutput(input.op.activeNodeInTree);
+        // if (input.op)
+        //     removeNodeOutput(input.op.activeNodeInTree);
 
         // then disconnect
 
@@ -1116,8 +1116,8 @@ class GGraph
 
         output.op.valid = false;
 
-        if (!output.op.activeNodeInTree)
-            output.op.makeActive();
+        // if (!output.op.activeNodeInTree)
+        //     output.op.makeActive();
 
 
         var inputOp;
@@ -1126,11 +1126,11 @@ class GGraph
         else if (input.param) inputOp = input.param.op;
 
         inputOp.valid = false;
-        inputOp.activeNodeInTree.makeActive();
+        // inputOp.activeNodeInTree.makeActive();
 
-        generate([
-            output.op, 
-            inputOp.activeNodeInTree]);
+        // generate([
+        //     output.op, 
+        //     inputOp.activeNodeInTree]);
 
             
         return true;
@@ -1762,12 +1762,21 @@ onmessage = function(e)
         case 'connect':
         {
             const outNode = ggraph.nodes.find(n => n.id == e.data.output);
-            const  inNode = ggraph.nodes.find(n => n.id == e.data.inputs[0]);
-            ggraph.connect(outNode.output, inNode.inputs[e.data.input[1]]);
+
+            for (const input of e.data.inputs)
+            {
+                const inNode = ggraph.nodes.find(n => n.id == input[0]);
+                ggraph.connect(outNode.output, inNode.inputs[input[1]]);
+            }
+
             break;
         }
         case 'disconnect':
-            ggraph.disconnect(e.data.opType);
+            for (const input of e.data.inputs)
+            {
+                const inNode = ggraph.nodes.find(n => n.id == input[0]);
+                ggraph.disconnect(inNode.inputs[input[1]]);
+            }
             break;
 
 
@@ -2795,8 +2804,8 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        //if (remove)
-        //    wires.removeChild(input.connection.wire);
+        if (remove)
+           wires.removeChild(input.connection.wire);
 
         var inputIndex = output.connectedInputs.indexOf(input);
         output.connectedInputs.splice(inputIndex, 1);
@@ -5093,10 +5102,10 @@ function connect(output, input)
         msg:   'connect', 
         output: output.op.id, 
         inputs:  
-        [
+        [[
             input.op.id, 
             input.op.inputs.indexOf(input)
-        ]
+        ]]
     });
 }
 
@@ -5107,7 +5116,11 @@ function disconnect(input)
 
     generator.postMessage({
         msg:  'disconnect', 
-        input: input
+        inputs:  
+        [[
+            input.op.id, 
+            input.op.inputs.indexOf(input)
+        ]]
     });
 }
 

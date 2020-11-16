@@ -176,8 +176,8 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        //if (remove)
-        //    wires.removeChild(input.connection.wire);
+        if (remove)
+           wires.removeChild(input.connection.wire);
 
         var inputIndex = output.connectedInputs.indexOf(input);
         output.connectedInputs.splice(inputIndex, 1);

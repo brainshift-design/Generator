@@ -57,10 +57,10 @@ class GGraph
             input .connection = conn;
             output.connection = conn;
             
-            output.op.makePassive();
+            // output.op.makePassive();
             input.op.valid = false;
         
-            generate([input.op.activeNodeInTree]);
+            //generate([input.op.activeNodeInTree]);
 
             return true;
         }
@@ -77,7 +77,7 @@ class GGraph
             
             input.param.op.valid = false;
         
-            generate([input.param.op.activeNodeInTree]);
+            //generate([input.param.op.activeNodeInTree]);
 
             return true;
         }
@@ -91,8 +91,8 @@ class GGraph
     {
         // first remove the current output
 
-        if (input.op)
-            removeNodeOutput(input.op.activeNodeInTree);
+        // if (input.op)
+        //     removeNodeOutput(input.op.activeNodeInTree);
 
         // then disconnect
 
@@ -111,8 +111,8 @@ class GGraph
 
         output.op.valid = false;
 
-        if (!output.op.activeNodeInTree)
-            output.op.makeActive();
+        // if (!output.op.activeNodeInTree)
+        //     output.op.makeActive();
 
 
         var inputOp;
@@ -121,11 +121,11 @@ class GGraph
         else if (input.param) inputOp = input.param.op;
 
         inputOp.valid = false;
-        inputOp.activeNodeInTree.makeActive();
+        // inputOp.activeNodeInTree.makeActive();
 
-        generate([
-            output.op, 
-            inputOp.activeNodeInTree]);
+        // generate([
+        //     output.op, 
+        //     inputOp.activeNodeInTree]);
 
             
         return true;

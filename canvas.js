@@ -35,10 +35,10 @@ function connect(output, input)
         msg:   'connect', 
         output: output.op.id, 
         inputs:  
-        [
+        [[
             input.op.id, 
             input.op.inputs.indexOf(input)
-        ]
+        ]]
     });
 }
 
@@ -49,7 +49,11 @@ function disconnect(input)
 
     generator.postMessage({
         msg:  'disconnect', 
-        input: input
+        inputs:  
+        [[
+            input.op.id, 
+            input.op.inputs.indexOf(input)
+        ]]
     });
 }
 
