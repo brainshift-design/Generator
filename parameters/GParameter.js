@@ -1,7 +1,7 @@
 class GParameter
 {
-    _name;
-    get name() { return this._name; }
+    #name;
+    get name() { return this.#name; }
 
     #type; 
     get type() { return this.#type; }
@@ -11,7 +11,7 @@ class GParameter
 
     constructor(name, type)
     {
-        this._name = name;
+        this.#name = name;
         this.#type = type;
     }
 }

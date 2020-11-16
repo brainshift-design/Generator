@@ -30,8 +30,8 @@ onmessage = function(e)
 
             for (const input of e.data.inputs)
             {
-                const inNode = ggraph.nodes.find(n => n.id == input[0]);
-                ggraph.connect(outNode.output, inNode.inputs[input[1]]);
+                const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
+                ggraph.connect(outNode.output, inNode.inputs[input.index]);
             }
 
             break;
@@ -39,30 +39,45 @@ onmessage = function(e)
         case 'disconnect':
             for (const input of e.data.inputs)
             {
-                const inNode = ggraph.nodes.find(n => n.id == input[0]);
-                ggraph.disconnect(inNode.inputs[input[1]]);
+                const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
+                ggraph.disconnect(inNode.inputs[input.index]);
             }
             break;
+        
+        case 'setParam':
+        {
+            const node  = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            const param = node.params.find(p => p.name == e.data.param);
+            param.value = e.data.value;
+            generate([node.id]);
+            break;
+        }
 
 
         case 'generate':
         {
-            var data = [];
-            for (const nodeId of e.data.nodeIds)
-            {
-                const node = ggraph.nodeFromId(nodeId);
-                data = data.concat(node.output.data);
-            }
-
-            postMessage({ 
-                msg:  'updateData',
-                data: data
-            });
-
+            generate(e.data.nodeIds);
             break;
         }
     }
 };
+
+
+function generate(nodeIds)
+{
+    var data = [];
+    
+    for (const nodeId of nodeIds)
+    {
+        const node = ggraph.nodeFromId(nodeId);
+        data = data.concat(node.output.data);
+    }
+
+    postMessage({ 
+        msg:  'updateData',
+        data: data
+    });
+}
 
 
 function generateRow(node)

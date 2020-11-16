@@ -958,8 +958,8 @@ class Random
 
 class GParameter
 {
-    _name;
-    get name() { return this._name; }
+    #name;
+    get name() { return this.#name; }
 
     #type; 
     get type() { return this.#type; }
@@ -969,7 +969,7 @@ class GParameter
 
     constructor(name, type)
     {
-        this._name = name;
+        this.#name = name;
         this.#type = type;
     }
 }
@@ -1765,8 +1765,8 @@ onmessage = function(e)
 
             for (const input of e.data.inputs)
             {
-                const inNode = ggraph.nodes.find(n => n.id == input[0]);
-                ggraph.connect(outNode.output, inNode.inputs[input[1]]);
+                const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
+                ggraph.connect(outNode.output, inNode.inputs[input.index]);
             }
 
             break;
@@ -1774,30 +1774,45 @@ onmessage = function(e)
         case 'disconnect':
             for (const input of e.data.inputs)
             {
-                const inNode = ggraph.nodes.find(n => n.id == input[0]);
-                ggraph.disconnect(inNode.inputs[input[1]]);
+                const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
+                ggraph.disconnect(inNode.inputs[input.index]);
             }
             break;
+        
+        case 'setParam':
+        {
+            const node  = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            const param = node.params.find(p => p.name == e.data.param);
+            param.value = e.data.value;
+            generate([node.id]);
+            break;
+        }
 
 
         case 'generate':
         {
-            var data = [];
-            for (const nodeId of e.data.nodeIds)
-            {
-                const node = ggraph.nodeFromId(nodeId);
-                data = data.concat(node.output.data);
-            }
-
-            postMessage({ 
-                msg:  'updateData',
-                data: data
-            });
-
+            generate(e.data.nodeIds);
             break;
         }
     }
 };
+
+
+function generate(nodeIds)
+{
+    var data = [];
+    
+    for (const nodeId of nodeIds)
+    {
+        const node = ggraph.nodeFromId(nodeId);
+        data = data.concat(node.output.data);
+    }
+
+    postMessage({ 
+        msg:  'updateData',
+        data: data
+    });
+}
 
 
 function generateRow(node)
@@ -2551,13 +2566,17 @@ class Parameter
     #type;
     get type() { return this.#type; }
     
+    #name;
+    get name() { return this.#name; }
+
     _op;      get op()      { return this._op;      }
     _control; get control() { return this._control; }
     _div;     get div()     { return this._div;     }
 
-    constructor(type)
+    constructor(name, type)
     {
         this.#type = type;
+        this.#name = name;
 
         this._div = document.createElement('div');
         this.div.style.position = 'relative';
@@ -2584,7 +2603,7 @@ extends Parameter
                 min = Number.MIN_SAFE_INTEGER, 
                 max = Number.MAX_SAFE_INTEGER)
     {
-        super('NUM');
+        super(name, 'NUM');
 
         this._control = document.createElement('div');
         this.control.param  = this;
@@ -2594,7 +2613,7 @@ extends Parameter
             this.control,
             100,  // width
             20,   // height
-            name, 
+            this.name, 
             min,
             max,
             val,  // default
@@ -2614,13 +2633,11 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.control.addEventListener('onchange', function(e)
+        this.control.addEventListener('onchange', e =>
         {
-            var op = this.param.op;
-
-            op.valid = false;
-            generate([op.activeNodeInTree]);
-            op.graph.mutex = true;            
+            this.op.valid = false;
+            setParam(this, this.value);
+            this.op.graph.mutex = true;            
         });
     }
 }
@@ -5102,10 +5119,10 @@ function connect(output, input)
         msg:   'connect', 
         output: output.op.id, 
         inputs:  
-        [[
-            input.op.id, 
-            input.op.inputs.indexOf(input)
-        ]]
+        [{
+            nodeId: input.op.id, 
+            index:  input.op.inputs.indexOf(input)
+        }]
     });
 }
 
@@ -5117,12 +5134,26 @@ function disconnect(input)
     generator.postMessage({
         msg:  'disconnect', 
         inputs:  
-        [[
-            input.op.id, 
-            input.op.inputs.indexOf(input)
-        ]]
+        [{
+            nodeId: input.op.id, 
+            index:  input.op.inputs.indexOf(input)
+        }]
     });
 }
+
+
+function setParam(param, value)
+{
+    generator.postMessage({
+        msg:   'setParam', 
+        nodeId: param.op.id, 
+        param:  param.name,
+        value:  value
+    });
+}
+
+
+/////////////////////////////////////////////////////////////////////
 
 
 function generate(nodes)

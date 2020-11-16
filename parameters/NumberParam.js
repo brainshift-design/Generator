@@ -15,7 +15,7 @@ extends Parameter
                 min = Number.MIN_SAFE_INTEGER, 
                 max = Number.MAX_SAFE_INTEGER)
     {
-        super('NUM');
+        super(name, 'NUM');
 
         this._control = document.createElement('div');
         this.control.param  = this;
@@ -25,7 +25,7 @@ extends Parameter
             this.control,
             100,  // width
             20,   // height
-            name, 
+            this.name, 
             min,
             max,
             val,  // default
@@ -45,13 +45,11 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.control.addEventListener('onchange', function(e)
+        this.control.addEventListener('onchange', e =>
         {
-            var op = this.param.op;
-
-            op.valid = false;
-            generate([op.activeNodeInTree]);
-            op.graph.mutex = true;            
+            this.op.valid = false;
+            setParam(this, this.value);
+            this.op.graph.mutex = true;            
         });
     }
 }

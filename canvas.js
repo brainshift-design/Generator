@@ -35,10 +35,10 @@ function connect(output, input)
         msg:   'connect', 
         output: output.op.id, 
         inputs:  
-        [[
-            input.op.id, 
-            input.op.inputs.indexOf(input)
-        ]]
+        [{
+            nodeId: input.op.id, 
+            index:  input.op.inputs.indexOf(input)
+        }]
     });
 }
 
@@ -50,12 +50,26 @@ function disconnect(input)
     generator.postMessage({
         msg:  'disconnect', 
         inputs:  
-        [[
-            input.op.id, 
-            input.op.inputs.indexOf(input)
-        ]]
+        [{
+            nodeId: input.op.id, 
+            index:  input.op.inputs.indexOf(input)
+        }]
     });
 }
+
+
+function setParam(param, value)
+{
+    generator.postMessage({
+        msg:   'setParam', 
+        nodeId: param.op.id, 
+        param:  param.name,
+        value:  value
+    });
+}
+
+
+/////////////////////////////////////////////////////////////////////
 
 
 function generate(nodes)
