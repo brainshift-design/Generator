@@ -30,7 +30,6 @@ class Operator
     inputs = [];
     output = null;
     
-    //cachedData = [];
 
     #valid = false; // this is the flag for regeneration
 

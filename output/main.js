@@ -63,7 +63,7 @@ function msgRemoveNodeObjects(msg) {
     }
 }
 function msgRemoveObjectList(msg) {
-    for (const _obj of msg.data) {
+    for (const _obj of msg.objects) {
         var obj = figma.currentPage.children.find(n => n.getPluginData('#GEN') === '#GEN_' + _obj.itemId);
         if (obj)
             obj.remove();

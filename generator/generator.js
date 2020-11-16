@@ -56,17 +56,18 @@ onmessage = function(e)
 
         case 'generate':
         {
-            var data = [];
+            var objects = [];
     
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                data = data.concat(node.output.data);
+                objects = objects.concat(node.output.data);
             }
 
             postMessage({ 
-                msg:  'updateData',
-                data: data
+                msg:    'updateObjects',
+                nodeIds: e.data.nodeIds,
+                objects: objects
             });
 
             break;

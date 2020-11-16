@@ -200,7 +200,7 @@ class Graph
         else if (input.param) inputOp = input.param.op;
 
         inputOp.valid = false;
-        inputOp.activeNodeInTree.makeActive();
+        //inputOp.activeNodeInTree.makeActive();
 
         // generate([
         //     output.op, 

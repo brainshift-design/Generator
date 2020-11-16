@@ -1,5 +1,7 @@
 const graph = new Graph();
 
+var cachedObjects = [];
+
 
 function createNode(opType)
 {
@@ -82,6 +84,16 @@ function setParam(param, value)
 }
 
 
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
 /////////////////////////////////////////////////////////////////////
 
 
@@ -149,34 +161,33 @@ generator.onmessage = function(e)
             generate(nodes);
             break;
         }
-        case 'updateData':
+        case 'updateObjects':
         {
-            // const node = graph.nodeFromId(e.data.nodeId);
-            // var removeList = [];
-        
-            // for (const obj of node.cachedData)
-            // {
-                //     if (!e.data.objects.find(o => o.itemId === obj.itemId))
-                //         removeList.push(obj);    
-                // }
+            var removeList = [];
 
-            // if (removeList.length > 0)
-            // {
-                //     parent.postMessage({ pluginMessage: 
-                //     { 
-                    //         cmd: 'removeObjectList',
-            //         data: removeList
-            //     }}, '*');
-            // }
+            for (const cachedObj of cachedObjects)
+            {
+                if (!e.data.objects.find(obj => obj.itemId === cachedObj.itemId))
+                    removeList.push(cachedObj);    
+            }
+
+            if (removeList.length > 0)
+            {
+                parent.postMessage({ pluginMessage: 
+                { 
+                    cmd:    'removeObjectList',
+                    objects: removeList
+                }}, '*');
+            }
 
 
             parent.postMessage({ pluginMessage: 
             { 
                 cmd:    'updateObjects',
-                objects: e.data.data
+                objects: e.data.objects
             }}, '*');    
 
-            //node.cachedData = e.data.objects;
+            cachedObjects = e.data.objects;
             graph.mutex = false;
 
             

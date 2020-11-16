@@ -138,16 +138,6 @@ function show(element) { element.style.visibility = 'visible'; }
 function hide(element) { element.style.visibility = 'hidden'; }
 
 
-function removeNodeOutput(node)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
-    }}, '*');
-}
-
-
 function colorFromDataType(dataType, active)
 {
     switch (dataType)

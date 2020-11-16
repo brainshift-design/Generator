@@ -142,16 +142,6 @@ function show(element) { element.style.visibility = 'visible'; }
 function hide(element) { element.style.visibility = 'hidden'; }
 
 
-function removeNodeOutput(node)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
-    }}, '*');
-}
-
-
 function colorFromDataType(dataType, active)
 {
     switch (dataType)
@@ -1122,10 +1112,11 @@ extends GOperator
 
         this.output._data = 
         [{
-            objType: 'rect',
             nodeId:  this.id,
             itemId:  this.id,
-             
+            
+            objType: 'rect',
+            
             x:       0,
             y:       0,
             width:   this.#width .value,
@@ -1181,7 +1172,7 @@ extends GOperator
             for (var j = 0; j < input.data.length; j++)
             {
                 var item = shallowCopy(input.data[j]);
-                item.itemId += '_' + i;
+                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;// + '_' + (j+1);
     
                 item.x += x;
                 
@@ -1241,7 +1232,7 @@ extends GOperator
             for (var j = 0; j < input.data.length; j++)
             {
                 var item = shallowCopy(input.data[j]);
-                item.itemId += '_' + i;
+                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;// + '_' + (j+1);
     
                 item.y += y;
                 
@@ -1461,17 +1452,18 @@ onmessage = function(e)
 
         case 'generate':
         {
-            var data = [];
+            var objects = [];
     
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                data = data.concat(node.output.data);
+                objects = objects.concat(node.output.data);
             }
 
             postMessage({ 
-                msg:  'updateData',
-                data: data
+                msg:    'updateObjects',
+                nodeIds: e.data.nodeIds,
+                objects: objects
             });
 
             break;

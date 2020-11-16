@@ -495,16 +495,6 @@ function show(element) { element.style.visibility = 'visible'; }
 function hide(element) { element.style.visibility = 'hidden'; }
 
 
-function removeNodeOutput(node)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
-    }}, '*');
-}
-
-
 function colorFromDataType(dataType, active)
 {
     switch (dataType)
@@ -1475,10 +1465,11 @@ extends GOperator
 
         this.output._data = 
         [{
-            objType: 'rect',
             nodeId:  this.id,
             itemId:  this.id,
-             
+            
+            objType: 'rect',
+            
             x:       0,
             y:       0,
             width:   this.#width .value,
@@ -1534,7 +1525,7 @@ extends GOperator
             for (var j = 0; j < input.data.length; j++)
             {
                 var item = shallowCopy(input.data[j]);
-                item.itemId += '_' + i;
+                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;// + '_' + (j+1);
     
                 item.x += x;
                 
@@ -1594,7 +1585,7 @@ extends GOperator
             for (var j = 0; j < input.data.length; j++)
             {
                 var item = shallowCopy(input.data[j]);
-                item.itemId += '_' + i;
+                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;// + '_' + (j+1);
     
                 item.y += y;
                 
@@ -1814,17 +1805,18 @@ onmessage = function(e)
 
         case 'generate':
         {
-            var data = [];
+            var objects = [];
     
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                data = data.concat(node.output.data);
+                objects = objects.concat(node.output.data);
             }
 
             postMessage({ 
-                msg:  'updateData',
-                data: data
+                msg:    'updateObjects',
+                nodeIds: e.data.nodeIds,
+                objects: objects
             });
 
             break;
@@ -2054,16 +2046,6 @@ function createSvg(element)
 
 function show(element) { element.style.visibility = 'visible'; }
 function hide(element) { element.style.visibility = 'hidden'; }
-
-
-function removeNodeOutput(node)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
-    }}, '*');
-}
 
 
 function colorFromDataType(dataType, active)
@@ -2820,7 +2802,7 @@ class Graph
         else if (input.param) inputOp = input.param.op;
 
         inputOp.valid = false;
-        inputOp.activeNodeInTree.makeActive();
+        //inputOp.activeNodeInTree.makeActive();
 
         // generate([
         //     output.op, 
@@ -3109,7 +3091,6 @@ class Operator
     inputs = [];
     output = null;
     
-    //cachedData = [];
 
     #valid = false; // this is the flag for regeneration
 
@@ -5002,6 +4983,8 @@ graphView.endSelection = () =>
 
 const graph = new Graph();
 
+var cachedObjects = [];
+
 
 function createNode(opType)
 {
@@ -5084,6 +5067,16 @@ function setParam(param, value)
 }
 
 
+function removeNodeOutput(node)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'removeNodeObjects',
+        nodeId: node.id
+    }}, '*');
+}
+
+
 /////////////////////////////////////////////////////////////////////
 
 
@@ -5151,34 +5144,33 @@ generator.onmessage = function(e)
             generate(nodes);
             break;
         }
-        case 'updateData':
+        case 'updateObjects':
         {
-            // const node = graph.nodeFromId(e.data.nodeId);
-            // var removeList = [];
-        
-            // for (const obj of node.cachedData)
-            // {
-                //     if (!e.data.objects.find(o => o.itemId === obj.itemId))
-                //         removeList.push(obj);    
-                // }
+            var removeList = [];
 
-            // if (removeList.length > 0)
-            // {
-                //     parent.postMessage({ pluginMessage: 
-                //     { 
-                    //         cmd: 'removeObjectList',
-            //         data: removeList
-            //     }}, '*');
-            // }
+            for (const cachedObj of cachedObjects)
+            {
+                if (!e.data.objects.find(obj => obj.itemId === cachedObj.itemId))
+                    removeList.push(cachedObj);    
+            }
+
+            if (removeList.length > 0)
+            {
+                parent.postMessage({ pluginMessage: 
+                { 
+                    cmd:    'removeObjectList',
+                    objects: removeList
+                }}, '*');
+            }
 
 
             parent.postMessage({ pluginMessage: 
             { 
                 cmd:    'updateObjects',
-                objects: e.data.data
+                objects: e.data.objects
             }}, '*');    
 
-            //node.cachedData = e.data.objects;
+            cachedObjects = e.data.objects;
             graph.mutex = false;
 
             

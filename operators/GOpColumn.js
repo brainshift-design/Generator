@@ -42,7 +42,7 @@ extends GOperator
             for (var j = 0; j < input.data.length; j++)
             {
                 var item = shallowCopy(input.data[j]);
-                item.itemId += '_' + i;
+                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;// + '_' + (j+1);
     
                 item.y += y;
                 

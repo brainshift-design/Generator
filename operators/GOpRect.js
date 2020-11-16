@@ -22,10 +22,11 @@ extends GOperator
 
         this.output._data = 
         [{
-            objType: 'rect',
             nodeId:  this.id,
             itemId:  this.id,
-             
+            
+            objType: 'rect',
+            
             x:       0,
             y:       0,
             width:   this.#width .value,
