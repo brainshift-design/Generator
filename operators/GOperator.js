@@ -30,7 +30,7 @@ class GOperator
 
     #valid = false; // this is the flag for regeneration
 
-    
+
     // _active = false;
     // get active() { return this._active; }
 
@@ -119,7 +119,11 @@ class GOperator
     // }
 
 
-    set valid(val) { this.#valid = val; }
+    set valid(val) 
+    { 
+        this.#valid = val; 
+    }
+    
     get valid() 
     {
         var valid = this.#valid;
@@ -200,6 +204,16 @@ class GOperator
     generate() 
     { 
         this.valid = true; 
+    }
+
+
+    reset() 
+    {
+        // for (const input of this.inputs)
+        // {
+        //     if (input.connected)
+        //         input.connectedOutput.op.reset();
+        // }
     }
 
 

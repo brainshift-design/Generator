@@ -61,6 +61,9 @@ onmessage = function(e)
 
         case 'generate':
         {
+            for (const node of ggraph.nodes)
+                node.reset();
+                
             var objects = [];
     
             for (const nodeId of e.data.nodeIds)

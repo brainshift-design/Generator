@@ -22,7 +22,7 @@ extends GOperator
             nodeId: this.id,
             opType: this.opType,
 
-            value:  this.#value.value,
+            value:  this.#value.value
         };
 
         super.generate();

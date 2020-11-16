@@ -6,6 +6,7 @@ extends GOperator
     #scale;
     #seed;
 
+    noise = new Noise();
 
     constructor()
     {
@@ -24,20 +25,26 @@ extends GOperator
     {
         if (this.valid) return;
 
-        
-        var value = 0;
-
+        var rnd   = this.noise.next(this.#scale.value);
+        var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
 
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
 
-            value:  value,
+            value:  value
         };
 
         super.generate();
 
         this.valid = false;
+    }
+
+
+    reset()
+    {
+        this.noise.seed.set(this.#seed.value);
+        //super.reset();
     }
 }

@@ -24,8 +24,7 @@ extends GOperator
 
         var input = this.inputs[0];
 
-        if (   !input.connected)
-            //|| isEmptyObject(input.connectedOutput.data))
+        if (!input.connected)
         {
             this.output._data = [];
             return;
@@ -33,6 +32,7 @@ extends GOperator
 
 
         var bounds = getBounds(input.data);
+        console.log(bounds);
     
 
         this.output._data = [];
@@ -42,14 +42,16 @@ extends GOperator
             for (var j = 0; j < input.data.length; j++)
             {
                 var item = shallowCopy(input.data[j]);
-                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;// + '_' + (j+1);
+                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
                 item.x += x;
                 
                 this.output._data.push(item);
             }
             
-            x += bounds.w + this.#gap.value;
+            var gapValue = this.#gap.value;
+            console.log(gapValue);
+            x += bounds.w + gapValue;
         }
     
 

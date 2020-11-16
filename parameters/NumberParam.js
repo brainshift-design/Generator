@@ -4,7 +4,9 @@ extends Parameter
     #value;
 
     get value() { return this._control.value; }
-    set value(val) { this._control.setValue(val); }
+    set value(value) { this._control.setValue(value); }
+
+    setValue(value, fireChangeEvent = true) { this._control.setValue(value, fireChangeEvent); }
 
 
     input; 

@@ -20,14 +20,14 @@ extends Operator
 
         this.#min.control.addEventListener('onchange', () =>
         {
-            if (this.#min.control.value > this.#max.control.value)
-                this.#max.control.setValue(this.#min.control.value, false);
+            if (this.#min.value > this.#max.value)
+                this.#max.value = this.#min.value;
         });
 
         this.#max.control.addEventListener('onchange', () =>
         {
-            if (this.#max.control.value < this.#min.control.value)
-                this.#min.control.setValue(this.#max.control.value, false);
+            if (this.#max.value < this.#min.value)
+                this.#min.value = this.#max.value;
         });
     }
 }

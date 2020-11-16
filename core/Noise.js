@@ -6,31 +6,35 @@ const INTER_STEP   = 0,
 
 class NoiseSeed
 {
-    initial = 0;
+    initial;
     current;
 
+    
     constructor()
     {
         this.reset();
     }
-
+    
     set(seed)
     {
         this.initial = seed;
         this.current = seed;
-    }
-
+    }    
+    
     rotate()
     {
-        this.current ^= (this.current << 13);
-        this.current  = (this.current >> 17);
-        this.current ^= (this.current <<  5);
-    }
-
+        this.current = (this.current + 0x7ed55d16) + (this.current << 12);
+        this.current = (this.current ^ 0xc761c23c) ^ (this.current >> 19);
+        this.current = (this.current + 0x165667b1) + (this.current <<  5);
+        this.current = (this.current + 0xd3a2646c) ^ (this.current <<  9);
+        this.current = (this.current + 0xfd7046c5) + (this.current <<  3);
+        this.current = (this.current ^ 0xb55a4f09) ^ (this.current >> 16);
+    }    
+    
     next()
     {
         const seed = this.current;
-        rotate();
+        this.rotate();
         return seed;
     }
 
@@ -46,7 +50,7 @@ class Noise
 	interpolation = INTER_CUBIC;
 	clip = false;
 
-	seed;
+	seed = new NoiseSeed();
 
 	v0;
 	v1;
@@ -59,7 +63,7 @@ class Noise
     constructor(seed = 0)
     {
         this.seed.set(seed);
-        reset();
+        this.reset();
     }
 
 
@@ -67,7 +71,7 @@ class Noise
     {
         // changing the scale linearly only has a visible "regular" effect when 
         // the values are relatively small, so I set the scale as a power of Phi
-        scale = Math.pow(Phi, scale) / Phi;
+        //scale = Math.pow(Phi, scale) / Phi;
         scale = Math.max(1, scale);
 
         var next = this.v1;
@@ -90,16 +94,16 @@ class Noise
 
         // get the next 'noise' value
 
-        switch (interpolation)
+        switch (this.interpolation)
         {
             case INTER_STEP:
             {
-                this.next = this.v1;
+                next = this.v1;
                 break;
             }
             case INTER_LINEAR:
             {
-                this.next = this.v1 + this.step * (this.v2 - this.v1);
+                next = this.v1 + this.step * (this.v2 - this.v1);
                 break;
             }
             case INTER_COSINE:
@@ -107,8 +111,7 @@ class Noise
                 const ft = this.step * Math.PI;
                 const f  = (1 - Math.cos(ft)) * 0.5;
                 
-                this.next = this.v1 + f * (this.v2 - this.v1);
-                
+                next = this.v1 + f * (this.v2 - this.v1);
                 break;
             }
             case INTER_CUBIC:
@@ -124,7 +127,7 @@ class Noise
                     + r * this.step 
                     + s;
 
-                this.next = this.clip 
+                next = this.clip 
                     ? Math.max(0, Math.min(val, 1)) 
                     : val;
 
@@ -134,7 +137,7 @@ class Noise
 
         this.step += 1 / scale;
 
-        return this.next;
+        return next;
     }
 
    
@@ -154,5 +157,5 @@ class Noise
 
 function normalizeSeed(x)
 {
-    return (x & 0xFFFF) / 0xFFFF;
+    return x / -0x7fffffff;
 }
