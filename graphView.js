@@ -75,7 +75,6 @@ graphView.addEventListener('pointerup', e =>
             }
             else if (savedInput) // disconnect old
             {
-                console.log(savedInput);
                 disconnect(savedInput)
             }
             

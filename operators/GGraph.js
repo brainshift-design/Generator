@@ -47,8 +47,8 @@ class GGraph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (!!input.op)
-        {
+        // if (!!input.op)
+        // {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
 
@@ -63,27 +63,27 @@ class GGraph
             //generate([input.op.activeNodeInTree]);
 
             return true;
-        }
+        // }
         
-        else if (!!input.param)
-        {
-            output.connectedInputs.push(input);
-            input.connectedOutput = output;
+        // else if (!!input.param)
+        // {
+        //     output.connectedInputs.push(input);
+        //     input.connectedOutput = output;
 
-            const conn = new GConnection(output, input);
+        //     const conn = new GConnection(output, input);
 
-            input .connection = conn;
-            output.connection = conn;
+        //     input .connection = conn;
+        //     output.connection = conn;
             
-            input.param.op.valid = false;
+        //     input.param.op.valid = false;
         
-            //generate([input.param.op.activeNodeInTree]);
+        //     //generate([input.param.op.activeNodeInTree]);
 
-            return true;
-        }
+        //     return true;
+        // }
 
 
-        return false;
+        //return false;
     }
 
 
@@ -115,12 +115,13 @@ class GGraph
         //     output.op.makeActive();
 
 
-        var inputOp;
+        // var inputOp;
 
-             if (input.op   ) inputOp = input.op;
-        else if (input.param) inputOp = input.param.op;
+        //      if (input.op   ) inputOp = input.op;
+        // else if (input.param) inputOp = input.param.op;
 
-        inputOp.valid = false;
+        // inputOp.valid = false;
+        input.op.valid = false;
         // inputOp.activeNodeInTree.makeActive();
 
         // generate([

@@ -177,7 +177,11 @@ class GOperator
     addParam(param)
     {
         this.params.push(param);
+
         param._op = this;
+
+        param.input._op = this;
+        this.inputs.push(param.input);
     }
  
     

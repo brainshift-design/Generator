@@ -194,12 +194,13 @@ class Graph
             output.op.makeActive();
 
 
-        var inputOp;
+        // var inputOp;
 
-             if (input.op   ) inputOp = input.op;
-        else if (input.param) inputOp = input.param.op;
+        //      if (input.op   ) inputOp = input.op;
+        // else if (input.param) inputOp = input.param.op;
 
-        inputOp.valid = false;
+        // inputOp.valid = false;
+        input.op.valid = false;
         //inputOp.activeNodeInTree.makeActive();
 
         // generate([

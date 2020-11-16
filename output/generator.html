@@ -696,8 +696,8 @@ class GGraph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (!!input.op)
-        {
+        // if (!!input.op)
+        // {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
 
@@ -712,27 +712,27 @@ class GGraph
             //generate([input.op.activeNodeInTree]);
 
             return true;
-        }
+        // }
         
-        else if (!!input.param)
-        {
-            output.connectedInputs.push(input);
-            input.connectedOutput = output;
+        // else if (!!input.param)
+        // {
+        //     output.connectedInputs.push(input);
+        //     input.connectedOutput = output;
 
-            const conn = new GConnection(output, input);
+        //     const conn = new GConnection(output, input);
 
-            input .connection = conn;
-            output.connection = conn;
+        //     input .connection = conn;
+        //     output.connection = conn;
             
-            input.param.op.valid = false;
+        //     input.param.op.valid = false;
         
-            //generate([input.param.op.activeNodeInTree]);
+        //     //generate([input.param.op.activeNodeInTree]);
 
-            return true;
-        }
+        //     return true;
+        // }
 
 
-        return false;
+        //return false;
     }
 
 
@@ -764,12 +764,13 @@ class GGraph
         //     output.op.makeActive();
 
 
-        var inputOp;
+        // var inputOp;
 
-             if (input.op   ) inputOp = input.op;
-        else if (input.param) inputOp = input.param.op;
+        //      if (input.op   ) inputOp = input.op;
+        // else if (input.param) inputOp = input.param.op;
 
-        inputOp.valid = false;
+        // inputOp.valid = false;
+        input.op.valid = false;
         // inputOp.activeNodeInTree.makeActive();
 
         // generate([
@@ -1047,7 +1048,11 @@ class GOperator
     addParam(param)
     {
         this.params.push(param);
+
         param._op = this;
+
+        param.input._op = this;
+        this.inputs.push(param.input);
     }
  
     
@@ -1372,18 +1377,6 @@ extends GOperator
         this.addParam(this.#max   = new GNumberParam('max'));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new GNumberParam('seed'));
-
-        this.#min.control.addEventListener('onchange', () =>
-        {
-            if (this.#min.control.value > this.#max.control.value)
-                this.#max.control.setValue(this.#min.control.value, false);
-        });
-
-        this.#max.control.addEventListener('onchange', () =>
-        {
-            if (this.#max.control.value < this.#min.control.value)
-                this.#min.control.setValue(this.#max.control.value, false);
-        });
     }
 
 
@@ -1391,18 +1384,21 @@ extends GOperator
     {
         if (this.valid) return;
 
+        
+        var value = 0;
+
+
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
-            
-            min:    this.#min  .value,
-            max:    this.#max  .value,
-            scale:  this.#scale.value,
-            seed:   this.#seed .value
+
+            value:  value,
         };
 
         super.generate();
+
+        this.valid = false;
     }
 }
 

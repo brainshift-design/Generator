@@ -150,18 +150,18 @@ class Operator
         {
             for (const input of this.output.connectedInputs)
             {
-                if (   !!input.op
-                    && input.op != callerOp)
+                if (/*   !!input.op
+                    &&*/ input.op != callerOp)
                 {
                     const active = input.op.getActiveNodeInTree(this);
                     if (active) return active;
                 }
-                else if (!!input.param
-                        && input.param.op != callerOp)
-                {
-                    const active = input.param.op.getActiveNodeInTree(this);
-                    if (active) return active;
-                }
+                // else if (!!input.param
+                //         && input.param.op != callerOp)
+                // {
+                //     const active = input.param.op.getActiveNodeInTree(this);
+                //     if (active) return active;
+                // }
             }
         }
 
@@ -254,6 +254,10 @@ class Operator
         this.params.push(param);
         
         param._op = this;
+
+        param.input._op = this;
+        this.inputs.push(param.input);
+        
         param.control.style.display = 'inline-block';
         
         this.inner.appendChild(param.div);

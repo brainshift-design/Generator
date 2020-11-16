@@ -30,23 +30,4 @@ extends Operator
                 this.#min.control.setValue(this.#max.control.value, false);
         });
     }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-            
-            min:    this.#min  .value,
-            max:    this.#max  .value,
-            scale:  this.#scale.value,
-            seed:   this.#seed .value
-        };
-
-        super.generate();
-    }
 }
