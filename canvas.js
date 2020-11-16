@@ -1,6 +1,6 @@
 const graph = new Graph();
 
-var cachedObjects = [];
+//var cachedObjects = [];
 
 
 function createNode(opType)
@@ -99,18 +99,18 @@ function removeNodeOutput(node)
 
 function generate(nodes)
 {
-    // if (graph.mutex)
-    // {
-    //     graph.deferNodes = [];
+    if (graph.mutex)
+    {
+        graph.deferNodes = [];
 
-    //     for (const node of nodes)
-    //         graph.deferNodes.push(node);
+        for (const node of nodes)
+            graph.deferNodes.push(node);
 
-    //     return;
-    // }
+        return;
+    }
     
-    // graph.mutex = true;
-    // var posted = false;
+    graph.mutex = true;
+    var posted = false;
 
 
     const nodeIds = nodes.map(n => n.id);
@@ -120,11 +120,11 @@ function generate(nodes)
         nodeIds: nodeIds
     });
 
-    // posted = true;
+    posted = true;
 
 
-    // if (!posted)
-    //     graph.mutex = false;
+    if (!posted)
+        graph.mutex = false;
 }
 
 
@@ -163,31 +163,36 @@ generator.onmessage = function(e)
         }
         case 'updateObjects':
         {
-            var removeList = [];
+            // var removeList = [];
 
-            for (const cachedObj of cachedObjects)
-            {
-                if (!e.data.objects.find(obj => obj.itemId === cachedObj.itemId))
-                    removeList.push(cachedObj);    
-            }
+            // for (const cachedObj of cachedObjects)
+            // {
+            //     if (!e.data.objects.find(obj => obj.itemId === cachedObj.itemId))
+            //         removeList.push(cachedObj);    
+            // }
 
-            if (removeList.length > 0)
-            {
-                parent.postMessage({ pluginMessage: 
-                { 
-                    cmd:    'removeObjectList',
-                    objects: removeList
-                }}, '*');
-            }
+            // if (removeList.length > 0)
+            // {
+            //     parent.postMessage({ pluginMessage: 
+            //     { 
+            //         cmd:    'removeObjectList',
+            //         objects: removeList
+            //     }}, '*');
+            // }
+
+
+            // for (const nodeId of e.data.nodeIds)
+            //     removeNodeOutput(graph.nodes.find(n => n.id == nodeId));
 
 
             parent.postMessage({ pluginMessage: 
             { 
                 cmd:    'updateObjects',
+                nodeIds: e.data.nodeIds,
                 objects: e.data.objects
             }}, '*');    
 
-            cachedObjects = e.data.objects;
+            //cachedObjects = e.data.objects;
             graph.mutex = false;
 
             

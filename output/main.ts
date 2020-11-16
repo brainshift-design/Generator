@@ -6,11 +6,11 @@ figma.ui.onmessage = msg =>
     switch (msg.cmd)
     {
         case 'save':              figma.clientStorage.setAsync(msg.key, msg.value); break;
-        case 'loadState':         msgLoadState        (msg); break;
-        case 'resizeWindow':      msgResizeWindow     (msg); break; 
-        case 'removeNodeObjects': msgRemoveNodeObjects(msg); break; 
-        case 'removeObjectList':  msgRemoveObjectList (msg); break;
-        case 'updateObjects':     msgUpdateObjects    (msg); break;
+        case 'loadState':         msgLoadState        (msg);        break;
+        case 'resizeWindow':      msgResizeWindow     (msg);        break; 
+        case 'removeNodeObjects': msgRemoveNodeObjects(msg.nodeId); break; 
+        case 'removeObjectList':  msgRemoveObjectList (msg);        break;
+        case 'updateObjects':     msgUpdateObjects    (msg);        break;
     }
 };
 
@@ -50,11 +50,11 @@ function msgResizeWindow(msg)
 }
 
 
-function msgRemoveNodeObjects(msg)
+function msgRemoveNodeObjects(nodeId)
 {
     for (const obj of figma.currentPage.children)
     {
-        if (madeByNode(obj, msg.nodeId))
+        if (madeByNode(obj, nodeId))
             obj.remove();
     }
 }
@@ -74,50 +74,71 @@ function msgRemoveObjectList(msg)
 
 function msgUpdateObjects(msg)
 {
+    for (const nodeId of msg.nodeIds)
+        msgRemoveNodeObjects(nodeId);
+
+
     for (const obj of msg.objects)
     {
         switch (obj.objType)
         {
-            case 'rect': updateRect(obj); break;
+            case 'rect': createRect(obj); break;
         }
     }
 }
 
 
-function updateRect(data)
+function createRect(obj)
 {
-    const existing = figma.currentPage.children.findIndex(obj => 
-        obj.getPluginData('#GEN') === '#GEN_' + data.itemId);
+    const rect = figma.createRectangle()
+    rect.name  = obj.itemId;
+    rect.setPluginData('#GEN', '#GEN_' + rect.name);
+    rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+    rect.x     = obj.x;
+    rect.y     = obj.y;
 
-    var rect;
+    figma.currentPage.appendChild(rect);
 
-    if (existing < 0)
-    {
-        rect = figma.createRectangle()
-        rect.name  = data.itemId;
-        rect.setPluginData('#GEN', '#GEN_' + rect.name);
-        rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
-        rect.x     = data.x;
-        rect.y     = data.y;
-    
-        figma.currentPage.appendChild(rect);
-    }    
-    else
-    {
-        rect = <RectangleNode>figma.currentPage.children[existing];
-
-        rect.x = data.x;
-        rect.y = data.y;
-    }    
-
-    if (   rect.width  != data.width
-        || rect.height != data.height)
-    {
-        rect.resize(
-            Math.max(0.01, data.width ), 
-            Math.max(0.01, data.height));
-    }
+    rect.resize(
+        Math.max(0.01, obj.width ), 
+        Math.max(0.01, obj.height));
 }
+
+
+// function updateRect(data)
+// {
+//     const existing = figma.currentPage.children.findIndex(obj => 
+//         obj.getPluginData('#GEN') === '#GEN_' + data.itemId);
+
+//     var rect;
+
+//     if (existing < 0)
+//     {
+//         rect = figma.createRectangle()
+//         rect.name  = data.itemId;
+//         rect.setPluginData('#GEN', '#GEN_' + rect.name);
+//         rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+//         rect.x     = data.x;
+//         rect.y     = data.y;
+    
+//         figma.currentPage.appendChild(rect);
+//     }    
+//     else
+//     {
+//         rect = <RectangleNode>figma.currentPage.children[existing];
+
+//         rect.x = data.x;
+//         rect.y = data.y;
+//     }    
+
+//     if (   rect.width  != data.width
+//         || rect.height != data.height)
+//     {
+//         rect.resize(
+//             Math.max(0.01, data.width ), 
+//             Math.max(0.01, data.height));
+//     }
+// }
 
 
 function madeByNode(obj, nodeId)
