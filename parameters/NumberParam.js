@@ -49,7 +49,7 @@ extends Parameter
         {
             this.op.valid = false;
             setParam(this, this.value);
-            this.op.graph.mutex = true;            
+            //this.op.graph.mutex = true;            
         });
     }
 }

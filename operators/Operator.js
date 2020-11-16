@@ -30,7 +30,7 @@ class Operator
     inputs = [];
     output = null;
     
-    cachedObjects = [];
+    //cachedData = [];
 
     #valid = false; // this is the flag for regeneration
 
@@ -76,8 +76,8 @@ class Operator
         
         if (   this.output
             && this.output.dataType == 'OBJ')
-            generate([this]);
-        }
+            generate([this.activeNodeInTree]);
+    }
         
     
     makeLeftPassive()

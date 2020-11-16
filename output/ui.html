@@ -1814,7 +1814,19 @@ onmessage = function(e)
 
         case 'generate':
         {
-            generate(e.data.nodeIds);
+            var data = [];
+    
+            for (const nodeId of e.data.nodeIds)
+            {
+                const node = ggraph.nodeFromId(nodeId);
+                data = data.concat(node.output.data);
+            }
+
+            postMessage({ 
+                msg:  'updateData',
+                data: data
+            });
+
             break;
         }
     }
@@ -1823,79 +1835,45 @@ onmessage = function(e)
 
 function generate(nodeIds)
 {
-    var data = [];
-    
-    for (const nodeId of nodeIds)
-    {
-        const node = ggraph.nodeFromId(nodeId);
-        data = data.concat(node.output.data);
-    }
-
-    postMessage({ 
-        msg:  'updateData',
-        data: data
+    postMessage({
+        msg:    'requestGenerate',
+        nodeIds: nodeIds
     });
 }
 
 
-function generateColumn(node)
-{
-    var input  = generate(node.inputs[0]);
-    var bounds = getBounds(input);
+// function generateSpread(node)
+// {
+//     var input  = generate(node.inputs[0]);
+//     var bounds = getBounds(input);
 
-    result = [];
+//     var rnd = new Random(node.seed);
 
-    for (var i = 0, y = 0; i < node.count; i++)
-    {
-        for (var j = 0; j < input.length; j++)
-        {
-            var item = shallowCopy(input[j]);
-            item.itemId = node.nodeId + '_' + i + '_' + j;
+//     result = [];
 
-            item.y += y;
-            
-            result.push(item);
-        }
+//     var a = 0;
+
+//     for (var i = 0; i < node.count; i++)
+//     {
+//         var d = rnd.next() * node.radius;
+//         var v = vector(a, d);
         
-        y += bounds.h + node.gap;
-    }
+//         for (var j = 0; j < input.length; j++)
+//         {
+//             var item = shallowCopy(input[j]);
+//             item.itemId = node.nodeId + '_' + i + '_' + j;
 
-    return result;
-}
-
-
-function generateSpread(node)
-{
-    var input  = generate(node.inputs[0]);
-    var bounds = getBounds(input);
-
-    var rnd = new Random(node.seed);
-
-    result = [];
-
-    var a = 0;
-
-    for (var i = 0; i < node.count; i++)
-    {
-        var d = rnd.next() * node.radius;
-        var v = vector(a, d);
-        
-        for (var j = 0; j < input.length; j++)
-        {
-            var item = shallowCopy(input[j]);
-            item.itemId = node.nodeId + '_' + i + '_' + j;
-
-            item.x += v.x;
-            item.y += v.y;
+//             item.x += v.x;
+//             item.y += v.y;
             
-            result.push(item);
-        }
+//             result.push(item);
+//         }
 
-        a += Tau * phi;
-    }
+//         a += Tau * phi;
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
 
 function getBounds(objects)
@@ -2634,7 +2612,7 @@ extends Parameter
         {
             this.op.valid = false;
             setParam(this, this.value);
-            this.op.graph.mutex = true;            
+            //this.op.graph.mutex = true;            
         });
     }
 }
@@ -2844,9 +2822,9 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-        generate([
-            output.op, 
-            inputOp.activeNodeInTree]);
+        // generate([
+        //     output.op, 
+        //     inputOp.activeNodeInTree]);
 
             
         return true;
@@ -3131,7 +3109,7 @@ class Operator
     inputs = [];
     output = null;
     
-    cachedObjects = [];
+    //cachedData = [];
 
     #valid = false; // this is the flag for regeneration
 
@@ -3177,8 +3155,8 @@ class Operator
         
         if (   this.output
             && this.output.dataType == 'OBJ')
-            generate([this]);
-        }
+            generate([this.activeNodeInTree]);
+    }
         
     
     makeLeftPassive()
@@ -3853,36 +3831,6 @@ extends Operator
         this.addParam(this.#count = new NumberParam('count',  4, 1));
         this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
     }
-
-
-    // generate()
-    // {
-    //     if (this.valid) return;
-
-    //     var input = this.inputs[0];
-
-    //     if (   !input.connected
-    //         || isEmptyObject(input.connectedOutput.data))
-    //     {
-    //         this.output._data = {};
-    //         return;
-    //     }
-
-
-    //     this.output._data = 
-    //     {
-    //         nodeId: this.id,
-    //         opType: this.opType,
-
-    //         count: this.#count.value,
-    //         gap:   this.#gap  .value,
-
-    //         inputs: [input.data]
-    //     };
-
-
-    //     super.generate();
-    // }
 }
 
 
@@ -3903,33 +3851,6 @@ extends Operator
         this.addParam(this.#count = new NumberParam('count', 4, 1));
         this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
     }
-
-
-    // generate()
-    // {
-    //     if (this.valid) return;
-
-    //     var input = this.inputs[0];
-
-    //     if (   !input.connected
-    //         || isEmptyObject(input.connectedOutput.data)) 
-    //     {
-    //         this.output._data = {};
-    //         return;
-    //     }
-
-    //     this.output._data = 
-    //     {
-    //         nodeId: this.id,
-    //         opType: this.opType,
-    //         count:  this.#count.value,
-    //         gap:    this.#gap  .value,
-
-    //         inputs: [input.data]
-    //     };
-
-    //     super.generate();
-    // }
 }
 
 
@@ -5100,11 +5021,7 @@ function createNode(opType)
         if (   !!selNode
             && selNode.output
             && inputs.length > 0)
-        {
-            console.log(selNode.output);
-            console.log(inputs[0]);
             connect(selNode.output, inputs[0]);
-        }
     }
     
     graph.selected = [node];
@@ -5172,33 +5089,32 @@ function setParam(param, value)
 
 function generate(nodes)
 {
-    if (graph.mutex)
-    {
-        graph.deferNodes = [];
+    // if (graph.mutex)
+    // {
+    //     graph.deferNodes = [];
 
-        for (const node of nodes)
-            graph.deferNodes.push(node);
+    //     for (const node of nodes)
+    //         graph.deferNodes.push(node);
 
-        return;
-    }
+    //     return;
+    // }
     
-    graph.mutex = true;
-    var posted = false;
+    // graph.mutex = true;
+    // var posted = false;
 
 
     const nodeIds = nodes.map(n => n.id);
 
-    generator.postMessage(
-    {
+    generator.postMessage({
         msg:    'generate',
         nodeIds: nodeIds
     });
 
-    posted = true;
+    // posted = true;
 
 
-    if (!posted)
-        graph.mutex = false;
+    // if (!posted)
+    //     graph.mutex = false;
 }
 
 
@@ -5220,25 +5136,41 @@ generator.onmessage = function(e)
             node.makeActive();
             break;
         }
+        case 'requestGenerate':
+        {
+            const nodes = [];
+
+            for (const nodeId of e.data.nodeIds)
+            {
+                const node = graph.nodes.find(n => n.id == nodeId);
+
+                if (!nodes.includes(node.activeNodeInTree))
+                    nodes.push(node.activeNodeInTree);
+            }
+
+            generate(nodes);
+            break;
+        }
         case 'updateData':
         {
             // const node = graph.nodeFromId(e.data.nodeId);
             // var removeList = [];
         
-            // for (const obj of node.cachedObjects)
+            // for (const obj of node.cachedData)
             // {
-            //     if (!e.data.objects.find(o => o.itemId === obj.itemId))
-            //         removeList.push(obj);    
-            // }
+                //     if (!e.data.objects.find(o => o.itemId === obj.itemId))
+                //         removeList.push(obj);    
+                // }
 
             // if (removeList.length > 0)
             // {
-            //     parent.postMessage({ pluginMessage: 
-            //     { 
-            //         cmd: 'removeObjectList',
+                //     parent.postMessage({ pluginMessage: 
+                //     { 
+                    //         cmd: 'removeObjectList',
             //         data: removeList
             //     }}, '*');
             // }
+
 
             parent.postMessage({ pluginMessage: 
             { 
@@ -5246,7 +5178,7 @@ generator.onmessage = function(e)
                 objects: e.data.data
             }}, '*');    
 
-            //node.cachedObjects = e.data.objects;
+            //node.cachedData = e.data.objects;
             graph.mutex = false;
 
             

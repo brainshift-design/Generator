@@ -202,9 +202,9 @@ class Graph
         inputOp.valid = false;
         inputOp.activeNodeInTree.makeActive();
 
-        generate([
-            output.op, 
-            inputOp.activeNodeInTree]);
+        // generate([
+        //     output.op, 
+        //     inputOp.activeNodeInTree]);
 
             
         return true;

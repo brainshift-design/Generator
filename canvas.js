@@ -19,11 +19,7 @@ function createNode(opType)
         if (   !!selNode
             && selNode.output
             && inputs.length > 0)
-        {
-            console.log(selNode.output);
-            console.log(inputs[0]);
             connect(selNode.output, inputs[0]);
-        }
     }
     
     graph.selected = [node];
@@ -91,33 +87,32 @@ function setParam(param, value)
 
 function generate(nodes)
 {
-    if (graph.mutex)
-    {
-        graph.deferNodes = [];
+    // if (graph.mutex)
+    // {
+    //     graph.deferNodes = [];
 
-        for (const node of nodes)
-            graph.deferNodes.push(node);
+    //     for (const node of nodes)
+    //         graph.deferNodes.push(node);
 
-        return;
-    }
+    //     return;
+    // }
     
-    graph.mutex = true;
-    var posted = false;
+    // graph.mutex = true;
+    // var posted = false;
 
 
     const nodeIds = nodes.map(n => n.id);
 
-    generator.postMessage(
-    {
+    generator.postMessage({
         msg:    'generate',
         nodeIds: nodeIds
     });
 
-    posted = true;
+    // posted = true;
 
 
-    if (!posted)
-        graph.mutex = false;
+    // if (!posted)
+    //     graph.mutex = false;
 }
 
 
@@ -139,25 +134,41 @@ generator.onmessage = function(e)
             node.makeActive();
             break;
         }
+        case 'requestGenerate':
+        {
+            const nodes = [];
+
+            for (const nodeId of e.data.nodeIds)
+            {
+                const node = graph.nodes.find(n => n.id == nodeId);
+
+                if (!nodes.includes(node.activeNodeInTree))
+                    nodes.push(node.activeNodeInTree);
+            }
+
+            generate(nodes);
+            break;
+        }
         case 'updateData':
         {
             // const node = graph.nodeFromId(e.data.nodeId);
             // var removeList = [];
         
-            // for (const obj of node.cachedObjects)
+            // for (const obj of node.cachedData)
             // {
-            //     if (!e.data.objects.find(o => o.itemId === obj.itemId))
-            //         removeList.push(obj);    
-            // }
+                //     if (!e.data.objects.find(o => o.itemId === obj.itemId))
+                //         removeList.push(obj);    
+                // }
 
             // if (removeList.length > 0)
             // {
-            //     parent.postMessage({ pluginMessage: 
-            //     { 
-            //         cmd: 'removeObjectList',
+                //     parent.postMessage({ pluginMessage: 
+                //     { 
+                    //         cmd: 'removeObjectList',
             //         data: removeList
             //     }}, '*');
             // }
+
 
             parent.postMessage({ pluginMessage: 
             { 
@@ -165,7 +176,7 @@ generator.onmessage = function(e)
                 objects: e.data.data
             }}, '*');    
 
-            //node.cachedObjects = e.data.objects;
+            //node.cachedData = e.data.objects;
             graph.mutex = false;
 
             
