@@ -47,7 +47,7 @@ class GGraph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (input.op)
+        if (!!input.op)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -65,7 +65,7 @@ class GGraph
             return true;
         }
         
-        else if (input.param)
+        else if (!!input.param)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;

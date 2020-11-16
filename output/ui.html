@@ -72,7 +72,7 @@ input[type=text]::selection
     width:            74px;
     height:           26px;
     box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset;
-    border-radius:    2px;
+    border-radius:    1px;
     overflow:         hidden;
     background-color: white;
     text-align:       center;
@@ -970,7 +970,14 @@ extends GParameter
 {
     #value;
 
-    get value() { return this.#value; }
+    get value() 
+    {
+        return (
+            this.input.connected
+            ? this.input.data.value
+            : this.#value); 
+    }
+    
     set value(val) 
     {
         this.#value = val;
@@ -1042,7 +1049,7 @@ class GGraph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (input.op)
+        if (!!input.op)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -1060,7 +1067,7 @@ class GGraph
             return true;
         }
         
-        else if (input.param)
+        else if (!!input.param)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -1247,92 +1254,92 @@ class GOperator
     #valid = false; // this is the flag for regeneration
 
     
-    _active = false;
-    get active() { return this._active; }
+    // _active = false;
+    // get active() { return this._active; }
 
 
-    makeActive() // only true
-    {
-        this.makeLeftPassive();
-        this.makeRightPassive();        
+    // makeActive() // only true
+    // {
+    //     this.makeLeftPassive();
+    //     this.makeRightPassive();        
 
-        this._active = true;
-        this.div.style.boxShadow = '0 0 0 2px #18A0FB';
+    //     this._active = true;
+    //     this.div.style.boxShadow = '0 0 0 2px #18A0FB';
 
-        if (   this.output
-            && this.output.dataType == 'OBJ')
-            generate([this]);
-    }
-
-    
-    makeLeftPassive()
-    {
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-            {
-                input.connectedOutput.op.makePassive();
-                input.connectedOutput.op.makeLeftPassive();            
-            }
-        }
-    }
-
-    makeRightPassive()
-    {
-        if (this.output)
-        {
-            for (const input of this.output.connectedInputs)
-            {
-                input.op.makePassive();
-                input.op.makeRightPassive();            
-            }
-        }
-    }
-
-    makePassive()
-    {
-        if (this.active)
-        {
-            this.div.style.boxShadow = 'none';
-            removeNodeOutput(this);
-        }
-
-        this._active = false;
-    }
+    //     if (   this.output
+    //         && this.output.dataType == 'OBJ')
+    //         generate([this]);
+    // }
 
     
-    get activeNodeInTree() { return this.getActiveNodeInTree(null); }
+    // makeLeftPassive()
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.connected)
+    //         {
+    //             input.connectedOutput.op.makePassive();
+    //             input.connectedOutput.op.makeLeftPassive();            
+    //         }
+    //     }
+    // }
 
-    getActiveNodeInTree(callerOp = null)
-    {
-        if (this.active)
-            return this;
+    // makeRightPassive()
+    // {
+    //     if (this.output)
+    //     {
+    //         for (const input of this.output.connectedInputs)
+    //         {
+    //             input.op.makePassive();
+    //             input.op.makeRightPassive();            
+    //         }
+    //     }
+    // }
 
-        for (const input of this.inputs)
-        {
-            if (   input.connected
-                && input.connectedOutput.op != callerOp)
-            {
-                const active = input.connectedOutput.op.getActiveNodeInTree(this);
-                if (active) return active;
-            }
-        }
+    // makePassive()
+    // {
+    //     if (this.active)
+    //     {
+    //         this.div.style.boxShadow = 'none';
+    //         removeNodeOutput(this);
+    //     }
 
-        if (   this.output
-            && this.output.connected)
-        {
-            for (const input of this.output.connectedInputs)
-            {
-                if (input.op != callerOp)
-                {
-                    const active = input.op.getActiveNodeInTree(this);
-                    if (active) return active;
-                }
-            }
-        }
+    //     this._active = false;
+    // }
 
-        return null;
-    }
+    
+    // get activeNodeInTree() { return this.getActiveNodeInTree(null); }
+
+    // getActiveNodeInTree(callerOp = null)
+    // {
+    //     if (this.active)
+    //         return this;
+
+    //     for (const input of this.inputs)
+    //     {
+    //         if (   input.connected
+    //             && input.connectedOutput.op != callerOp)
+    //         {
+    //             const active = input.connectedOutput.op.getActiveNodeInTree(this);
+    //             if (active) return active;
+    //         }
+    //     }
+
+    //     if (   this.output
+    //         && this.output.connected)
+    //     {
+    //         for (const input of this.output.connectedInputs)
+    //         {
+    //             if (input.op != callerOp)
+    //             {
+    //                 const active = input.op.getActiveNodeInTree(this);
+    //                 if (active) return active;
+    //             }
+    //         }
+    //     }
+
+    //     return null;
+    // }
 
 
     set valid(val) { this.#valid = val; }
@@ -1344,6 +1351,12 @@ class GOperator
         {
             if (input.connected)
                 valid &= input.connectedOutput.op.valid;
+        }
+
+        for (const param of this.params)
+        {
+            if (param.input.connected)
+                valid &= param.input.connectedOutput.op.valid;
         }
 
         return valid;
@@ -1780,7 +1793,12 @@ onmessage = function(e)
             for (const input of e.data.inputs)
             {
                 const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
-                ggraph.connect(outNode.output, inNode.inputs[input.index]);
+
+                ggraph.connect(
+                    outNode.output, 
+                    input.index >= 0
+                    ? inNode.inputs[input.index]
+                    : inNode.params.find(p => p.name == input.param).input);
             }
 
             break;
@@ -2720,10 +2738,10 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (input.op)
+        if (!!input.op)
         {
             output.connectedInputs.push(input);
-            input.connectedOutput = output;
+            input .connectedOutput = output;
 
             const conn = new Connection(output, input);
 
@@ -2741,7 +2759,7 @@ class Graph
             return true;
         }
         
-        else if (input.param)
+        else if (!!input.param)
         {
             output.connectedInputs.push(input);
             input.connectedOutput = output;
@@ -3092,7 +3110,7 @@ class Operator
     output = null;
     
 
-    #valid = false; // this is the flag for regeneration
+    //#valid = false; // this is the flag for regeneration
 
 
     _selected;
@@ -3196,14 +3214,31 @@ class Operator
             }
         }
 
+        for (const param of this.params)
+        {
+            if (   param.input.connected
+                && param.input.connectedOutput.op != callerOp)
+            {
+                const active = param.input.connectedOutput.op.getActiveNodeInTree(this);
+                if (active) return active;
+            }
+        }
+
         if (   this.output
             && this.output.connected)
         {
             for (const input of this.output.connectedInputs)
             {
-                if (input.op != callerOp)
+                if (   !!input.op
+                    && input.op != callerOp)
                 {
                     const active = input.op.getActiveNodeInTree(this);
+                    if (active) return active;
+                }
+                else if (!!input.param
+                        && input.param.op != callerOp)
+                {
+                    const active = input.param.op.getActiveNodeInTree(this);
                     if (active) return active;
                 }
             }
@@ -3213,19 +3248,19 @@ class Operator
     }
 
 
-    set valid(val) { this.#valid = val; }
-    get valid() 
-    {
-        var valid = this.#valid;
+    // set valid(val) { this.#valid = val; }
+    // get valid() 
+    // {
+    //     var valid = this.#valid;
         
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                valid &= input.connectedOutput.op.valid;
-        }
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.connected)
+    //             valid &= input.connectedOutput.op.valid;
+    //     }
 
-        return valid;
-    }
+    //     return valid;
+    // }
 
 
     get activeColor()
@@ -3236,7 +3271,7 @@ class Operator
             case 'NUM': return ACTIVE_NUM_COLOR;
         }
 
-        return 'magenta'
+        return 'magenta';
     }
 
     get passiveColor()
@@ -3247,7 +3282,7 @@ class Operator
             case 'NUM': return NUM_COLOR;
         }
 
-        return 'magenta'
+        return 'magenta';
     }
 
 
@@ -3683,22 +3718,6 @@ extends Operator
         this.setOutput(new Output(this.dataType));
 
         this.addParam(this.#value = new NumberParam(''));
-    }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  this.#value.value,
-        };
-
-        super.generate();
     }
 }
 
@@ -4838,7 +4857,10 @@ graphView.addEventListener('pointerup', e =>
                     connect(output, input);
             }
             else if (savedInput) // disconnect old
+            {
+                console.log(savedInput);
                 disconnect(savedInput)
+            }
             
             graphView.cancelConnection();
         }
@@ -5029,13 +5051,16 @@ function connect(output, input)
 {
     graph.connect(output, input);
 
+    const inputNode = !!input.op ? input.op : input.param.op;
+
     generator.postMessage({
         msg:   'connect', 
         output: output.op.id, 
         inputs:  
         [{
-            nodeId: input.op.id, 
-            index:  input.op.inputs.indexOf(input)
+            nodeId: inputNode.id, 
+            param:  !!input.op ? '' : input.param.name,
+            index:  inputNode.inputs.indexOf(input)
         }]
     });
 }

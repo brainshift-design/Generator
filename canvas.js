@@ -46,13 +46,16 @@ function connect(output, input)
 {
     graph.connect(output, input);
 
+    const inputNode = !!input.op ? input.op : input.param.op;
+
     generator.postMessage({
         msg:   'connect', 
         output: output.op.id, 
         inputs:  
         [{
-            nodeId: input.op.id, 
-            index:  input.op.inputs.indexOf(input)
+            nodeId: inputNode.id, 
+            param:  !!input.op ? '' : input.param.name,
+            index:  inputNode.inputs.indexOf(input)
         }]
     });
 }

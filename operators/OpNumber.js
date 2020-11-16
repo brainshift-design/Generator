@@ -11,20 +11,4 @@ extends Operator
 
         this.addParam(this.#value = new NumberParam(''));
     }
-
-
-    generate()
-    {
-        if (this.valid) return;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  this.#value.value,
-        };
-
-        super.generate();
-    }
 }

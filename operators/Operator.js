@@ -31,7 +31,7 @@ class Operator
     output = null;
     
 
-    #valid = false; // this is the flag for regeneration
+    //#valid = false; // this is the flag for regeneration
 
 
     _selected;
@@ -135,14 +135,31 @@ class Operator
             }
         }
 
+        for (const param of this.params)
+        {
+            if (   param.input.connected
+                && param.input.connectedOutput.op != callerOp)
+            {
+                const active = param.input.connectedOutput.op.getActiveNodeInTree(this);
+                if (active) return active;
+            }
+        }
+
         if (   this.output
             && this.output.connected)
         {
             for (const input of this.output.connectedInputs)
             {
-                if (input.op != callerOp)
+                if (   !!input.op
+                    && input.op != callerOp)
                 {
                     const active = input.op.getActiveNodeInTree(this);
+                    if (active) return active;
+                }
+                else if (!!input.param
+                        && input.param.op != callerOp)
+                {
+                    const active = input.param.op.getActiveNodeInTree(this);
                     if (active) return active;
                 }
             }
@@ -152,19 +169,19 @@ class Operator
     }
 
 
-    set valid(val) { this.#valid = val; }
-    get valid() 
-    {
-        var valid = this.#valid;
+    // set valid(val) { this.#valid = val; }
+    // get valid() 
+    // {
+    //     var valid = this.#valid;
         
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                valid &= input.connectedOutput.op.valid;
-        }
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.connected)
+    //             valid &= input.connectedOutput.op.valid;
+    //     }
 
-        return valid;
-    }
+    //     return valid;
+    // }
 
 
     get activeColor()
@@ -175,7 +192,7 @@ class Operator
             case 'NUM': return ACTIVE_NUM_COLOR;
         }
 
-        return 'magenta'
+        return 'magenta';
     }
 
     get passiveColor()
@@ -186,7 +203,7 @@ class Operator
             case 'NUM': return NUM_COLOR;
         }
 
-        return 'magenta'
+        return 'magenta';
     }
 
 

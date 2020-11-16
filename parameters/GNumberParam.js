@@ -3,7 +3,14 @@ extends GParameter
 {
     #value;
 
-    get value() { return this.#value; }
+    get value() 
+    {
+        return (
+            this.input.connected
+            ? this.input.data.value
+            : this.#value); 
+    }
+    
     set value(val) 
     {
         this.#value = val;

@@ -74,7 +74,10 @@ graphView.addEventListener('pointerup', e =>
                     connect(output, input);
             }
             else if (savedInput) // disconnect old
+            {
+                console.log(savedInput);
                 disconnect(savedInput)
+            }
             
             graphView.cancelConnection();
         }

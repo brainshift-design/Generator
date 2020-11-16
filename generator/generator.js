@@ -31,7 +31,12 @@ onmessage = function(e)
             for (const input of e.data.inputs)
             {
                 const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
-                ggraph.connect(outNode.output, inNode.inputs[input.index]);
+
+                ggraph.connect(
+                    outNode.output, 
+                    input.index >= 0
+                    ? inNode.inputs[input.index]
+                    : inNode.params.find(p => p.name == input.param).input);
             }
 
             break;
