@@ -31,113 +31,17 @@ class GOperator
     #valid = false; // this is the flag for regeneration
 
 
-    // _active = false;
-    // get active() { return this._active; }
-
-
-    // makeActive() // only true
-    // {
-    //     this.makeLeftPassive();
-    //     this.makeRightPassive();        
-
-    //     this._active = true;
-    //     this.div.style.boxShadow = '0 0 0 2px #18A0FB';
-
-    //     if (   this.output
-    //         && this.output.dataType == 'OBJ')
-    //         generate([this]);
-    // }
-
-    
-    // makeLeftPassive()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //         {
-    //             input.connectedOutput.op.makePassive();
-    //             input.connectedOutput.op.makeLeftPassive();            
-    //         }
-    //     }
-    // }
-
-    // makeRightPassive()
-    // {
-    //     if (this.output)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //         {
-    //             input.op.makePassive();
-    //             input.op.makeRightPassive();            
-    //         }
-    //     }
-    // }
-
-    // makePassive()
-    // {
-    //     if (this.active)
-    //     {
-    //         this.div.style.boxShadow = 'none';
-    //         removeNodeOutput(this);
-    //     }
-
-    //     this._active = false;
-    // }
-
-    
-    // get activeNodeInTree() { return this.getActiveNodeInTree(null); }
-
-    // getActiveNodeInTree(callerOp = null)
-    // {
-    //     if (this.active)
-    //         return this;
-
-    //     for (const input of this.inputs)
-    //     {
-    //         if (   input.connected
-    //             && input.connectedOutput.op != callerOp)
-    //         {
-    //             const active = input.connectedOutput.op.getActiveNodeInTree(this);
-    //             if (active) return active;
-    //         }
-    //     }
-
-    //     if (   this.output
-    //         && this.output.connected)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //         {
-    //             if (input.op != callerOp)
-    //             {
-    //                 const active = input.op.getActiveNodeInTree(this);
-    //                 if (active) return active;
-    //             }
-    //         }
-    //     }
-
-    //     return null;
-    // }
-
-
-    set valid(val) 
-    { 
-        this.#valid = val; 
-    }
+    set valid(valid) { this.#valid = valid; }
     
     get valid() 
     {
         var valid = this.#valid;
+        if (!valid) return valid;
         
         for (const input of this.inputs)
         {
             if (input.connected)
                 valid &= input.connectedOutput.op.valid;
-        }
-
-        for (const param of this.params)
-        {
-            if (param.input.connected)
-                valid &= param.input.connectedOutput.op.valid;
         }
 
         return valid;

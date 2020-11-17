@@ -16,7 +16,8 @@ extends EventTarget
     get connected() { return this.connectedInputs.length > 0; }
 
     
-    onconnect = new Event('connect');
+    onconnect    = new Event('connect');
+    ondisconnect = new Event('disconnect');
 
 
     constructor(dataType)
@@ -42,6 +43,17 @@ extends EventTarget
 
         this.dispatchEvent(new CustomEvent(
             'connect', 
+            { 'input': input }));
+    }
+
+
+    disconnect(input)
+    {
+        const inputIndex = this.connectedInputs.indexOf(input);
+        this.connectedInputs.splice(inputIndex, 1);
+
+        this.dispatchEvent(new CustomEvent(
+            'disconnect', 
             { 'input': input }));
     }
 }

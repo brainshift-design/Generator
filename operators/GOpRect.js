@@ -20,6 +20,11 @@ extends GOperator
     {
         if (this.valid) return;
 
+        const width  = this.#width .value;
+        const height = this.#height.value;
+
+        console.log(width + ', ' + height);
+
         this.output._data = 
         [{
             nodeId:  this.id,
@@ -29,8 +34,8 @@ extends GOperator
             
             x:       0,
             y:       0,
-            width:   this.#width .value,
-            height:  this.#height.value
+            width:   width,
+            height:  height
         }];
 
         super.generate(callerInput);

@@ -48,7 +48,7 @@ extends GParameter
         this.#min      = min;
         this.#max      = max;
 
-        this.input = new GInput ('NUM');
+        this.input = new GInput('NUM');
         this.input._param = this;
     }
 }

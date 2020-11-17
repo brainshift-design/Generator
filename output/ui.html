@@ -346,7 +346,7 @@ button svg
     <button class='button' id='btnCreateRect'   onclick='createNode("rect");   this.blur();'>Rct</button>
     <button class='button' id='btnCreateRow'    onclick='createNode("row");    this.blur();'>Row</button>
     <button class='button' id='btnCreateColumn' onclick='createNode("column"); this.blur();'>Col</button>
-    <button class='button' id='btnCreateSpread' onclick='createNode("spread"); this.blur();'>Spr</button>
+    <!-- <button class='button' id='btnCreateSpread' onclick='createNode("spread"); this.blur();'>Spr</button> -->
 
 </div>
 
@@ -1179,7 +1179,7 @@ extends GParameter
         this.#min      = min;
         this.#max      = max;
 
-        this.input = new GInput ('NUM');
+        this.input = new GInput('NUM');
         this.input._param = this;
     }
 }
@@ -1233,6 +1233,7 @@ class GGraph
             this.disconnect(input);
 
         output.connect(input);
+
         input.connectedOutput = output;
 
         const conn = new GConnection(output, input);
@@ -1240,8 +1241,7 @@ class GGraph
         input .connection = conn;
         output.connection = conn;
         
-        // output.op.makePassive();
-        input.op.valid = false;
+        output.op.valid = false;
 
         return true;
     }
@@ -1255,14 +1255,12 @@ class GGraph
         if (!!input.param)
             input.param.value = input.data.value;
 
-        var inputIndex = output.connectedInputs.indexOf(input);
-        output.connectedInputs.splice(inputIndex, 1);
+        output.disconnect(input);
         
         input .connection     = null;
         output.connection     = null;
 
         input.connectedOutput = null;
-
 
         output.op.valid = false;
         input .op.valid = false;
@@ -1329,7 +1327,8 @@ extends EventTarget
     get connected() { return this.connectedInputs.length > 0; }
 
     
-    onconnect = new Event('connect');
+    onconnect    = new Event('connect');
+    ondisconnect = new Event('disconnect');
 
 
     constructor(dataType)
@@ -1355,6 +1354,17 @@ extends EventTarget
 
         this.dispatchEvent(new CustomEvent(
             'connect', 
+            { 'input': input }));
+    }
+
+
+    disconnect(input)
+    {
+        const inputIndex = this.connectedInputs.indexOf(input);
+        this.connectedInputs.splice(inputIndex, 1);
+
+        this.dispatchEvent(new CustomEvent(
+            'disconnect', 
             { 'input': input }));
     }
 }
@@ -1407,113 +1417,17 @@ class GOperator
     #valid = false; // this is the flag for regeneration
 
 
-    // _active = false;
-    // get active() { return this._active; }
-
-
-    // makeActive() // only true
-    // {
-    //     this.makeLeftPassive();
-    //     this.makeRightPassive();        
-
-    //     this._active = true;
-    //     this.div.style.boxShadow = '0 0 0 2px #18A0FB';
-
-    //     if (   this.output
-    //         && this.output.dataType == 'OBJ')
-    //         generate([this]);
-    // }
-
-    
-    // makeLeftPassive()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //         {
-    //             input.connectedOutput.op.makePassive();
-    //             input.connectedOutput.op.makeLeftPassive();            
-    //         }
-    //     }
-    // }
-
-    // makeRightPassive()
-    // {
-    //     if (this.output)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //         {
-    //             input.op.makePassive();
-    //             input.op.makeRightPassive();            
-    //         }
-    //     }
-    // }
-
-    // makePassive()
-    // {
-    //     if (this.active)
-    //     {
-    //         this.div.style.boxShadow = 'none';
-    //         removeNodeOutput(this);
-    //     }
-
-    //     this._active = false;
-    // }
-
-    
-    // get activeNodeInTree() { return this.getActiveNodeInTree(null); }
-
-    // getActiveNodeInTree(callerOp = null)
-    // {
-    //     if (this.active)
-    //         return this;
-
-    //     for (const input of this.inputs)
-    //     {
-    //         if (   input.connected
-    //             && input.connectedOutput.op != callerOp)
-    //         {
-    //             const active = input.connectedOutput.op.getActiveNodeInTree(this);
-    //             if (active) return active;
-    //         }
-    //     }
-
-    //     if (   this.output
-    //         && this.output.connected)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //         {
-    //             if (input.op != callerOp)
-    //             {
-    //                 const active = input.op.getActiveNodeInTree(this);
-    //                 if (active) return active;
-    //             }
-    //         }
-    //     }
-
-    //     return null;
-    // }
-
-
-    set valid(val) 
-    { 
-        this.#valid = val; 
-    }
+    set valid(valid) { this.#valid = valid; }
     
     get valid() 
     {
         var valid = this.#valid;
+        if (!valid) return valid;
         
         for (const input of this.inputs)
         {
             if (input.connected)
                 valid &= input.connectedOutput.op.valid;
-        }
-
-        for (const param of this.params)
-        {
-            if (param.input.connected)
-                valid &= param.input.connectedOutput.op.valid;
         }
 
         return valid;
@@ -1649,6 +1563,11 @@ extends GOperator
     {
         if (this.valid) return;
 
+        const width  = this.#width .value;
+        const height = this.#height.value;
+
+        console.log(width + ', ' + height);
+
         this.output._data = 
         [{
             nodeId:  this.id,
@@ -1658,8 +1577,8 @@ extends GOperator
             
             x:       0,
             y:       0,
-            width:   this.#width .value,
-            height:  this.#height.value
+            width:   width,
+            height:  height
         }];
 
         super.generate(callerInput);
@@ -1901,7 +1820,8 @@ extends GOperator
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new GNumberParam('seed', 0, 0));
 
-        this.output.addEventListener('connect', () => this.reset());
+        this.output.addEventListener('connect',    () => postMessage({msg: 'resetNode', nodeId: this.id}));
+        this.output.addEventListener('disconnect', () => postMessage({msg: 'resetNode', nodeId: this.id}));
     }
 
 
@@ -1909,7 +1829,7 @@ extends GOperator
     {
         if (this.valid) return;
 
-        if (!!callerInput) this.noise.seed.set(callerInput.currentSeed);
+        if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
         var rnd = this.noise.next(this.#scale.value);
         if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
         

@@ -46,6 +46,7 @@ class GGraph
             this.disconnect(input);
 
         output.connect(input);
+
         input.connectedOutput = output;
 
         const conn = new GConnection(output, input);
@@ -53,8 +54,7 @@ class GGraph
         input .connection = conn;
         output.connection = conn;
         
-        // output.op.makePassive();
-        input.op.valid = false;
+        output.op.valid = false;
 
         return true;
     }
@@ -68,14 +68,12 @@ class GGraph
         if (!!input.param)
             input.param.value = input.data.value;
 
-        var inputIndex = output.connectedInputs.indexOf(input);
-        output.connectedInputs.splice(inputIndex, 1);
+        output.disconnect(input);
         
         input .connection     = null;
         output.connection     = null;
 
         input.connectedOutput = null;
-
 
         output.op.valid = false;
         input .op.valid = false;
