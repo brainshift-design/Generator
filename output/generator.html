@@ -804,9 +804,9 @@ extends GParameter
         return value;
     }
     
-    set value(val) 
+    set value(value) 
     {
-        this.#value = val;
+        this.#value   = value;
         this.op.valid = false;
     }
 
@@ -1233,7 +1233,12 @@ class GOperator
     reset() 
     {
         for (const input of this.inputs)
+        {
             input.currentSeed = input.initialSeed;
+            
+            if (input.connected)
+                input.connectedOutput.op.reset();
+        }
     }
 
 
@@ -1333,7 +1338,7 @@ extends GOperator
         if (this.valid) return;
 
 
-        var input = this.inputs[0];
+        const input = this.inputs[0];
 
         if (!input.connected)
         {
@@ -1342,28 +1347,27 @@ extends GOperator
         }
 
 
-        var bounds = getBounds(input.data);
-    
-
         this.output._data = [];
-    
+        
         for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            for (var j = 0; j < input.data.length; j++)
+            const inputData = input.data;
+
+            const bounds = getBounds(inputData);
+            const gap    = this.#gap.value;
+
+            for (var j = 0; j < inputData.length; j++)
             {
-                var item = shallowCopy(input.data[j]);
+                var item = shallowCopy(inputData[j]);
                 item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
                 item.x += x;
                 
                 this.output._data.push(item);
             }
-            
-            var gapValue = this.#gap.value;
 
-            x += bounds.w + gapValue;
+            x += bounds.w + gap;
         }
-    
 
         super.generate(callerInput);
     }
@@ -1394,7 +1398,7 @@ extends GOperator
         if (this.valid) return;
 
 
-        var input = this.inputs[0];
+        const input = this.inputs[0];
 
         if (!input.connected)
         {
@@ -1403,16 +1407,18 @@ extends GOperator
         }
 
 
-        var bounds = getBounds(input.data);
-    
-
         this.output._data = [];
-    
+        
         for (var i = 0, y = 0; i < this.#count.value; i++)
         {
-            for (var j = 0; j < input.data.length; j++)
+            const inputData = input.data;
+
+            const bounds = getBounds(inputData);
+            const gap    = this.#gap.value;
+
+            for (var j = 0; j < inputData.length; j++)
             {
-                var item = shallowCopy(input.data[j]);
+                var item = shallowCopy(inputData[j]);
                 item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
                 item.y += y;
@@ -1420,7 +1426,7 @@ extends GOperator
                 this.output._data.push(item);
             }
             
-            y += bounds.h + this.#gap.value;
+            y += bounds.h + gap;
         }
     
 
@@ -1537,10 +1543,10 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#min   = new GNumberParam('min'));
-        this.addParam(this.#max   = new GNumberParam('max'));
+        this.addParam(this.#min   = new GNumberParam('min',   0));
+        this.addParam(this.#max   = new GNumberParam('max', 100));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed'));
+        this.addParam(this.#seed  = new GNumberParam('seed', 0, 0));
 
         this.output.addEventListener('connect', () => this.reset());
     }
@@ -1550,9 +1556,9 @@ extends GOperator
     {
         if (this.valid) return;
 
-        this.noise.seed.set(callerInput.currentSeed);
+        if (!!callerInput) this.noise.seed.set(callerInput.currentSeed);
         var rnd = this.noise.next(this.#scale.value);
-        callerInput.currentSeed = this.noise.seed.current;
+        if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
         
         var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
 
@@ -1570,7 +1576,7 @@ extends GOperator
     }
 
 
-    reset(callerInput = null)
+    reset()
     {
         this.noise.seed.set(this.#seed.value);
         

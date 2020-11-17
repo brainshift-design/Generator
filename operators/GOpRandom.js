@@ -14,10 +14,10 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#min   = new GNumberParam('min'));
-        this.addParam(this.#max   = new GNumberParam('max'));
+        this.addParam(this.#min   = new GNumberParam('min',   0));
+        this.addParam(this.#max   = new GNumberParam('max', 100));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed'));
+        this.addParam(this.#seed  = new GNumberParam('seed', 0, 0));
 
         this.output.addEventListener('connect', () => this.reset());
     }
@@ -27,9 +27,9 @@ extends GOperator
     {
         if (this.valid) return;
 
-        this.noise.seed.set(callerInput.currentSeed);
+        if (!!callerInput) this.noise.seed.set(callerInput.currentSeed);
         var rnd = this.noise.next(this.#scale.value);
-        callerInput.currentSeed = this.noise.seed.current;
+        if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
         
         var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
 
@@ -47,7 +47,7 @@ extends GOperator
     }
 
 
-    reset(callerInput = null)
+    reset()
     {
         this.noise.seed.set(this.#seed.value);
         

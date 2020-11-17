@@ -26,9 +26,9 @@ extends GParameter
         return value;
     }
     
-    set value(val) 
+    set value(value) 
     {
-        this.#value = val;
+        this.#value   = value;
         this.op.valid = false;
     }
 

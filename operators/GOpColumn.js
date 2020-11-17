@@ -22,7 +22,7 @@ extends GOperator
         if (this.valid) return;
 
 
-        var input = this.inputs[0];
+        const input = this.inputs[0];
 
         if (!input.connected)
         {
@@ -31,16 +31,18 @@ extends GOperator
         }
 
 
-        var bounds = getBounds(input.data);
-    
-
         this.output._data = [];
-    
+        
         for (var i = 0, y = 0; i < this.#count.value; i++)
         {
-            for (var j = 0; j < input.data.length; j++)
+            const inputData = input.data;
+
+            const bounds = getBounds(inputData);
+            const gap    = this.#gap.value;
+
+            for (var j = 0; j < inputData.length; j++)
             {
-                var item = shallowCopy(input.data[j]);
+                var item = shallowCopy(inputData[j]);
                 item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
                 item.y += y;
@@ -48,7 +50,7 @@ extends GOperator
                 this.output._data.push(item);
             }
             
-            y += bounds.h + this.#gap.value;
+            y += bounds.h + gap;
         }
     
 

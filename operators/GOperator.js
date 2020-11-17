@@ -210,7 +210,12 @@ class GOperator
     reset() 
     {
         for (const input of this.inputs)
+        {
             input.currentSeed = input.initialSeed;
+            
+            if (input.connected)
+                input.connectedOutput.op.reset();
+        }
     }
 
 

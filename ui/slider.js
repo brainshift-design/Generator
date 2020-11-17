@@ -160,17 +160,17 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         var rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
-               e.clientX >= rect.left
-            && e.clientX <  rect.right
-            && e.clientY >= rect.top
-            && e.clientY <  rect.bottom;
-
+        e.clientX >= rect.left
+        && e.clientX <  rect.right
+        && e.clientY >= rect.top
+        && e.clientY <  rect.bottom;
+        
         slider.clientX = e.clientX;
-
+        
         if (slider.buttonDown0)
         {
             slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
-
+            
             if (slider.isPointerLocked())
             {
                 slider.movedX += e.movementX;
