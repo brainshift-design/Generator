@@ -58,15 +58,18 @@ function connect(output, input)
 
 function disconnect(input)
 {
+    const connectedOutput = input.connectedOutput;
+
     graph.disconnect(input);
 
     generator.postMessage({
-        msg:  'disconnect', 
-        inputs:  
-        [{
+        msg: 'disconnect',
+        outputNodeId: connectedOutput.op.id,
+        input:
+        {
             nodeId: input.op.id, 
             index:  input.op.inputs.indexOf(input)
-        }]
+        }
     });
 }
 

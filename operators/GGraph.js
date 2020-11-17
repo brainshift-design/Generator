@@ -65,6 +65,8 @@ class GGraph
         var output = input.connectedOutput;
         if (!output) return false;
 
+        if (!!input.param)
+            input.param.value = input.data.value;
 
         var inputIndex = output.connectedInputs.indexOf(input);
         output.connectedInputs.splice(inputIndex, 1);

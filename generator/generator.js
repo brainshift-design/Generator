@@ -37,16 +37,21 @@ onmessage = function(e)
                     input.index >= 0
                     ? inNode.inputs[input.index]
                     : inNode.params.find(p => p.name == input.param).input);
+
+                generate([input.nodeId]);
             }
 
             break;
         }
         case 'disconnect':
-            for (const input of e.data.inputs)
-            {
-                const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
-                ggraph.disconnect(inNode.inputs[input.index]);
-            }
+            const node  = ggraph.nodes.find(n => n.id == e.data.input.nodeId);
+            const input = node.inputs[e.data.input.index];
+
+            ggraph.disconnect(input);
+
+            // generate([e.data.outputNodeId]);
+            // generate([input.nodeId]);
+
             break;
         
         case 'setParam':
