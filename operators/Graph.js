@@ -130,9 +130,11 @@ class Graph
         conn.updateWire();
         
         output.op.makePassive();
-        input.op.valid = false;
+        
+        invalidate(input.op);
     
-        //generate([input.op.activeNodeInTree]);
+        if (!input.op.activeNodeInTree)
+            input.op.makeActive();
 
         return true;
     }
@@ -162,24 +164,11 @@ class Graph
         input.connectedOutput = null;
 
 
-        output.op.valid = false;
+        invalidate(input.op);
+        invalidate(output.op);
 
         if (!output.op.activeNodeInTree)
             output.op.makeActive();
-
-
-        // var inputOp;
-
-        //      if (input.op   ) inputOp = input.op;
-        // else if (input.param) inputOp = input.param.op;
-
-        // inputOp.valid = false;
-        input.op.valid = false;
-        //inputOp.activeNodeInTree.makeActive();
-
-        // generate([
-        //     output.op, 
-        //     inputOp.activeNodeInTree]);
 
             
         return true;

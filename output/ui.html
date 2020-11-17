@@ -1684,7 +1684,6 @@ extends GOperator
 
 
         var bounds = getBounds(input.data);
-        console.log(bounds);
     
 
         this.output._data = [];
@@ -1702,7 +1701,7 @@ extends GOperator
             }
             
             var gapValue = this.#gap.value;
-            console.log(gapValue);
+
             x += bounds.w + gapValue;
         }
     
@@ -1984,6 +1983,13 @@ onmessage = function(e)
             break;
         }
 
+        case 'invalidate':
+        {
+            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            node.valid = false;
+            generate([node.id]);
+            break;
+        }
 
         case 'generate':
         {
@@ -2920,9 +2926,11 @@ class Graph
         conn.updateWire();
         
         output.op.makePassive();
-        input.op.valid = false;
+        
+        invalidate(input.op);
     
-        //generate([input.op.activeNodeInTree]);
+        if (!input.op.activeNodeInTree)
+            input.op.makeActive();
 
         return true;
     }
@@ -2952,24 +2960,11 @@ class Graph
         input.connectedOutput = null;
 
 
-        output.op.valid = false;
+        invalidate(input.op);
+        invalidate(output.op);
 
         if (!output.op.activeNodeInTree)
             output.op.makeActive();
-
-
-        // var inputOp;
-
-        //      if (input.op   ) inputOp = input.op;
-        // else if (input.param) inputOp = input.param.op;
-
-        // inputOp.valid = false;
-        input.op.valid = false;
-        //inputOp.activeNodeInTree.makeActive();
-
-        // generate([
-        //     output.op, 
-        //     inputOp.activeNodeInTree]);
 
             
         return true;
@@ -5214,6 +5209,15 @@ function setParam(param, value)
         nodeId: param.op.id, 
         param:  param.name,
         value:  value
+    });
+}
+
+
+function invalidate(node)
+{
+    generator.postMessage({
+        msg:   'invalidate', 
+        nodeId: node.id
     });
 }
 

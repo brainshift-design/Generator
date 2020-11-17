@@ -1331,7 +1331,6 @@ extends GOperator
 
 
         var bounds = getBounds(input.data);
-        console.log(bounds);
     
 
         this.output._data = [];
@@ -1349,7 +1348,7 @@ extends GOperator
             }
             
             var gapValue = this.#gap.value;
-            console.log(gapValue);
+
             x += bounds.w + gapValue;
         }
     
@@ -1631,6 +1630,13 @@ onmessage = function(e)
             break;
         }
 
+        case 'invalidate':
+        {
+            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            node.valid = false;
+            generate([node.id]);
+            break;
+        }
 
         case 'generate':
         {

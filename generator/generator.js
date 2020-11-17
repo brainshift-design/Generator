@@ -58,6 +58,13 @@ onmessage = function(e)
             break;
         }
 
+        case 'invalidate':
+        {
+            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            node.valid = false;
+            generate([node.id]);
+            break;
+        }
 
         case 'generate':
         {

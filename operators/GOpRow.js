@@ -32,7 +32,6 @@ extends GOperator
 
 
         var bounds = getBounds(input.data);
-        console.log(bounds);
     
 
         this.output._data = [];
@@ -50,7 +49,7 @@ extends GOperator
             }
             
             var gapValue = this.#gap.value;
-            console.log(gapValue);
+
             x += bounds.w + gapValue;
         }
     

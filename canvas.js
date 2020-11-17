@@ -82,6 +82,15 @@ function setParam(param, value)
 }
 
 
+function invalidate(node)
+{
+    generator.postMessage({
+        msg:   'invalidate', 
+        nodeId: node.id
+    });
+}
+
+
 function removeNodeOutput(node)
 {
     parent.postMessage({ pluginMessage: 
