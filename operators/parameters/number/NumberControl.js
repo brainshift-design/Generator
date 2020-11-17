@@ -45,7 +45,7 @@ extends ParamControl
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this._control.addEventListener('onchange', function(e)
+        this._control.addEventListener('change', function(e)
         {
             var op = this.param.op;
 

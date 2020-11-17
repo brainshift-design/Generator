@@ -1,31 +1,47 @@
-class GOutput
+class   GOutput
+extends EventTarget
 {
     #dataType;     
     get dataType() { return this.#dataType; }
-
+    
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
     
     _data = {};
-
+    
     connectedInputs = [];
     
     connecting      = false;
     
     get connected() { return this.connectedInputs.length > 0; }
 
+    
+    onconnect = new Event('connect');
+
 
     constructor(dataType)
     {
+        super();
+        
         this.#dataType = dataType;
     }
     
 
-    get data() 
+    getData(callerInput = null) 
     {
         if (!this.op.valid)
-            this.op.generate();
+            this.op.generate(callerInput);
 
         return this._data;
+    }
+
+
+    connect(input)
+    {
+        this.connectedInputs.push(input);
+
+        this.dispatchEvent(new CustomEvent(
+            'connect', 
+            { 'input': input }));
     }
 }

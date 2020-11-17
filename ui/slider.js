@@ -61,7 +61,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     //
 
-    slider.onchange = new Event('onchange');
+    slider.onchange = new Event('change');
 
     //
 

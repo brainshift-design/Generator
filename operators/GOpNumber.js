@@ -13,7 +13,7 @@ extends GOperator
     }
 
 
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
@@ -25,6 +25,6 @@ extends GOperator
             value:  this.#value.value
         };
 
-        super.generate();
+        super.generate(callerInput);
     }
 }

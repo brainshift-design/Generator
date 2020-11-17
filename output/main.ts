@@ -10,7 +10,7 @@ figma.ui.onmessage = msg =>
         case 'resizeWindow':      msgResizeWindow     (msg);        break; 
         case 'removeNodeObjects': msgRemoveNodeObjects(msg.nodeId); break; 
         case 'removeObjectList':  msgRemoveObjectList (msg);        break;
-        case 'updateObjects':     msgUpdateObjects    (msg);        break;
+        case 'recreateObjects':     msgrecreateObjects    (msg);        break;
     }
 };
 
@@ -72,7 +72,7 @@ function msgRemoveObjectList(msg)
 }
 
 
-function msgUpdateObjects(msg)
+function msgrecreateObjects(msg)
 {
     for (const nodeId of msg.nodeIds)
         msgRemoveNodeObjects(nodeId);

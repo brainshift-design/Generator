@@ -65,15 +65,15 @@ onmessage = function(e)
                 node.reset();
                 
             var objects = [];
-    
+            
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                objects = objects.concat(node.output.data);
+                objects = objects.concat(node.output.getData());
             }
 
             postMessage({ 
-                msg:    'updateObjects',
+                msg:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
                 objects: objects
             });

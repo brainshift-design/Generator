@@ -18,13 +18,13 @@
 //         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
 //         this.addParam(this.#seed  = new NumberParam('seed'));
 
-//         this.#min.control.addEventListener('onchange', () =>
+//         this.#min.control.addEventListener('change', () =>
 //         {
 //             if (this.#min.control.value > this.#max.control.value)
 //                 this.#max.control.setValue(this.#min.control.value, false);
 //         });
 
-//         this.#max.control.addEventListener('onchange', () =>
+//         this.#max.control.addEventListener('change', () =>
 //         {
 //             if (this.#max.control.value < this.#min.control.value)
 //                 this.#min.control.setValue(this.#max.control.value, false);

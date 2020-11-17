@@ -1,7 +1,5 @@
 const graph = new Graph();
 
-//var cachedObjects = [];
-
 
 function createNode(opType)
 {
@@ -146,6 +144,13 @@ generator.onmessage = function(e)
             node.makeActive();
             break;
         }
+        case 'showParamValue':
+        {
+            const node  = graph.nodeFromId(e.data.nodeId);
+            const param = node.params.find(p => p.name == e.data.param);
+            param.control.setValue(e.data.value, false);
+            break;
+        }
         case 'requestGenerate':
         {
             const nodes = [];
@@ -161,38 +166,15 @@ generator.onmessage = function(e)
             generate(nodes);
             break;
         }
-        case 'updateObjects':
+        case 'recreateObjects':
         {
-            // var removeList = [];
-
-            // for (const cachedObj of cachedObjects)
-            // {
-            //     if (!e.data.objects.find(obj => obj.itemId === cachedObj.itemId))
-            //         removeList.push(cachedObj);    
-            // }
-
-            // if (removeList.length > 0)
-            // {
-            //     parent.postMessage({ pluginMessage: 
-            //     { 
-            //         cmd:    'removeObjectList',
-            //         objects: removeList
-            //     }}, '*');
-            // }
-
-
-            // for (const nodeId of e.data.nodeIds)
-            //     removeNodeOutput(graph.nodes.find(n => n.id == nodeId));
-
-
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:    'updateObjects',
+                cmd:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
                 objects: e.data.objects
             }}, '*');    
 
-            //cachedObjects = e.data.objects;
             graph.mutex = false;
 
             

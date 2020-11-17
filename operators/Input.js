@@ -22,6 +22,8 @@ class Input
     
     connecting      = false;
     
+    initialSeed     = 0;
+    currentSeed     = 0;
 
     get connected() { return this.connectedOutput != null; }
 

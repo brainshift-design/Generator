@@ -25,7 +25,7 @@ class GInput
     {
         return (
             this.connected
-            ? this.connectedOutput.data
+            ? this.connectedOutput.getData(this)
             : null);
     }
 }

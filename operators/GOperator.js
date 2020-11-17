@@ -201,7 +201,7 @@ class GOperator
     }
 
 
-    generate() 
+    generate(callerInput) 
     { 
         this.valid = true; 
     }
@@ -209,11 +209,8 @@ class GOperator
 
     reset() 
     {
-        // for (const input of this.inputs)
-        // {
-        //     if (input.connected)
-        //         input.connectedOutput.op.reset();
-        // }
+        for (const input of this.inputs)
+            input.currentSeed = input.initialSeed;
     }
 
 

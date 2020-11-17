@@ -277,7 +277,7 @@ function initSelect(select, items)
     select.update(0);
     select.updateItems();
     
-    select.onchange = new Event('onchange');
+    select.onchange = new Event('change');
 }
 
 

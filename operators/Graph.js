@@ -118,49 +118,23 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (!!input.op)
-        {
-            output.connectedInputs.push(input);
-            input .connectedOutput = output;
+        output.connectedInputs.push(input);
+        input .connectedOutput = output;
 
-            const conn = new Connection(output, input);
+        const conn = new Connection(output, input);
 
-            input .connection = conn;
-            output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
-            output.op.makePassive();
-            input.op.valid = false;
+        input .connection = conn;
+        output.connection = conn;
         
-            //generate([input.op.activeNodeInTree]);
-
-            return true;
-        }
+        wires.appendChild(conn.wire);
+        conn.updateWire();
         
-        else if (!!input.param)
-        {
-            output.connectedInputs.push(input);
-            input.connectedOutput = output;
+        output.op.makePassive();
+        input.op.valid = false;
+    
+        //generate([input.op.activeNodeInTree]);
 
-            const conn = new Connection(output, input);
-
-            input .connection = conn;
-            output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
-            input.param.op.valid = false;
-        
-            //generate([input.param.op.activeNodeInTree]);
-
-            return true;
-        }
-
-
-        return false;
+        return true;
     }
 
 

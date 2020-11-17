@@ -1136,10 +1136,21 @@ extends GParameter
 
     get value() 
     {
-        return (
-            this.input.connected
-            ? this.input.data.value
-            : this.#value); 
+        if (this.input.connected)
+        {
+            const value = this.input.data.value;
+
+            postMessage({ 
+                msg:   'showParamValue',
+                nodeId: this.op.id,
+                param:  this.name,
+                value:  value
+            });
+
+            return value;
+        }
+
+        else return this.#value;
     }
     
     set value(val) 
@@ -1199,8 +1210,6 @@ class GGraph
     addNode(node)
     {
         node.setGraph(this);
-        //node.setId(this.getNewId(node)); // TODO: not checking return value here
-        
         this.nodes.push(node);
     }
     
@@ -1213,55 +1222,23 @@ class GGraph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        // if (!!input.op)
-        // {
-            output.connectedInputs.push(input);
-            input.connectedOutput = output;
+        output.connect(input);
+        input.connectedOutput = output;
 
-            const conn = new GConnection(output, input);
+        const conn = new GConnection(output, input);
 
-            input .connection = conn;
-            output.connection = conn;
-            
-            // output.op.makePassive();
-            input.op.valid = false;
+        input .connection = conn;
+        output.connection = conn;
         
-            //generate([input.op.activeNodeInTree]);
+        // output.op.makePassive();
+        input.op.valid = false;
 
-            return true;
-        // }
-        
-        // else if (!!input.param)
-        // {
-        //     output.connectedInputs.push(input);
-        //     input.connectedOutput = output;
-
-        //     const conn = new GConnection(output, input);
-
-        //     input .connection = conn;
-        //     output.connection = conn;
-            
-        //     input.param.op.valid = false;
-        
-        //     //generate([input.param.op.activeNodeInTree]);
-
-        //     return true;
-        // }
-
-
-        //return false;
+        return true;
     }
 
 
     disconnect(input, remove = true)
     {
-        // first remove the current output
-
-        // if (input.op)
-        //     removeNodeOutput(input.op.activeNodeInTree);
-
-        // then disconnect
-
         var output = input.connectedOutput;
         if (!output) return false;
 
@@ -1276,24 +1253,7 @@ class GGraph
 
 
         output.op.valid = false;
-
-        // if (!output.op.activeNodeInTree)
-        //     output.op.makeActive();
-
-
-        // var inputOp;
-
-        //      if (input.op   ) inputOp = input.op;
-        // else if (input.param) inputOp = input.param.op;
-
-        // inputOp.valid = false;
-        input.op.valid = false;
-        // inputOp.activeNodeInTree.makeActive();
-
-        // generate([
-        //     output.op, 
-        //     inputOp.activeNodeInTree]);
-
+        input .op.valid = false;
             
         return true;
     }
@@ -1333,41 +1293,57 @@ class GInput
     {
         return (
             this.connected
-            ? this.connectedOutput.data
+            ? this.connectedOutput.getData(this)
             : null);
     }
 }
 
 
-class GOutput
+class   GOutput
+extends EventTarget
 {
     #dataType;     
     get dataType() { return this.#dataType; }
-
+    
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
     
     _data = {};
-
+    
     connectedInputs = [];
     
     connecting      = false;
     
     get connected() { return this.connectedInputs.length > 0; }
 
+    
+    onconnect = new Event('connect');
+
 
     constructor(dataType)
     {
+        super();
+        
         this.#dataType = dataType;
     }
     
 
-    get data() 
+    getData(callerInput = null) 
     {
         if (!this.op.valid)
-            this.op.generate();
+            this.op.generate(callerInput);
 
         return this._data;
+    }
+
+
+    connect(input)
+    {
+        this.connectedInputs.push(input);
+
+        this.dispatchEvent(new CustomEvent(
+            'connect', 
+            { 'input': input }));
     }
 }
 
@@ -1589,7 +1565,7 @@ class GOperator
     }
 
 
-    generate() 
+    generate(callerInput) 
     { 
         this.valid = true; 
     }
@@ -1597,11 +1573,8 @@ class GOperator
 
     reset() 
     {
-        // for (const input of this.inputs)
-        // {
-        //     if (input.connected)
-        //         input.connectedOutput.op.reset();
-        // }
+        for (const input of this.inputs)
+            input.currentSeed = input.initialSeed;
     }
 
 
@@ -1655,7 +1628,7 @@ extends GOperator
     }
 
 
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
@@ -1672,7 +1645,7 @@ extends GOperator
             height:  this.#height.value
         }];
 
-        super.generate();
+        super.generate(callerInput);
     }
 }
 
@@ -1696,7 +1669,7 @@ extends GOperator
     }
 
 
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
@@ -1734,7 +1707,7 @@ extends GOperator
         }
     
 
-        super.generate();
+        super.generate(callerInput);
     }
 }
 
@@ -1758,7 +1731,7 @@ extends GOperator
     }
 
 
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
@@ -1793,7 +1766,7 @@ extends GOperator
         }
     
 
-        super.generate();
+        super.generate(callerInput);
     }
 }
 
@@ -1827,7 +1800,7 @@ extends GOperator
     }
 
     
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
@@ -1853,7 +1826,7 @@ extends GOperator
             inputs: [input.data]
         };
 
-        super.generate();
+        super.generate(callerInput);
     }
 }
 
@@ -1873,7 +1846,7 @@ extends GOperator
     }
 
 
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
@@ -1885,7 +1858,7 @@ extends GOperator
             value:  this.#value.value
         };
 
-        super.generate();
+        super.generate(callerInput);
     }
 }
 
@@ -1910,14 +1883,19 @@ extends GOperator
         this.addParam(this.#max   = new GNumberParam('max'));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new GNumberParam('seed'));
+
+        this.output.addEventListener('connect', () => this.reset());
     }
 
 
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
-        var rnd   = this.noise.next(this.#scale.value);
+        this.noise.seed.set(callerInput.currentSeed);
+        var rnd = this.noise.next(this.#scale.value);
+        callerInput.currentSeed = this.noise.seed.current;
+        
         var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
 
         this.output._data = 
@@ -1928,16 +1906,20 @@ extends GOperator
             value:  value
         };
 
-        super.generate();
+        super.generate(callerInput);
 
         this.valid = false;
     }
 
 
-    reset()
+    reset(callerInput = null)
     {
         this.noise.seed.set(this.#seed.value);
-        //super.reset();
+        
+        for (const input of this.output.connectedInputs)
+            input.initialSeed = this.noise.next();
+
+        super.reset();
     }
 }
 
@@ -2009,15 +1991,15 @@ onmessage = function(e)
                 node.reset();
                 
             var objects = [];
-    
+            
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                objects = objects.concat(node.output.data);
+                objects = objects.concat(node.output.getData());
             }
 
             postMessage({ 
-                msg:    'updateObjects',
+                msg:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
                 objects: objects
             });
@@ -2796,7 +2778,7 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.control.addEventListener('onchange', e =>
+        this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
             setParam(this, this.value);
@@ -2926,49 +2908,23 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
-        if (!!input.op)
-        {
-            output.connectedInputs.push(input);
-            input .connectedOutput = output;
+        output.connectedInputs.push(input);
+        input .connectedOutput = output;
 
-            const conn = new Connection(output, input);
+        const conn = new Connection(output, input);
 
-            input .connection = conn;
-            output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
-            output.op.makePassive();
-            input.op.valid = false;
+        input .connection = conn;
+        output.connection = conn;
         
-            //generate([input.op.activeNodeInTree]);
-
-            return true;
-        }
+        wires.appendChild(conn.wire);
+        conn.updateWire();
         
-        else if (!!input.param)
-        {
-            output.connectedInputs.push(input);
-            input.connectedOutput = output;
+        output.op.makePassive();
+        input.op.valid = false;
+    
+        //generate([input.op.activeNodeInTree]);
 
-            const conn = new Connection(output, input);
-
-            input .connection = conn;
-            output.connection = conn;
-            
-            wires.appendChild(conn.wire);
-            conn.updateWire();
-            
-            input.param.op.valid = false;
-        
-            //generate([input.param.op.activeNodeInTree]);
-
-            return true;
-        }
-
-
-        return false;
+        return true;
     }
 
 
@@ -3051,6 +3007,8 @@ class Input
     
     connecting      = false;
     
+    initialSeed     = 0;
+    currentSeed     = 0;
 
     get connected() { return this.connectedOutput != null; }
 
@@ -3935,13 +3893,13 @@ extends Operator
         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new NumberParam('seed'));
 
-        this.#min.control.addEventListener('onchange', () =>
+        this.#min.control.addEventListener('change', () =>
         {
             if (this.#min.value > this.#max.value)
                 this.#max.value = this.#min.value;
         });
 
-        this.#max.control.addEventListener('onchange', () =>
+        this.#max.control.addEventListener('change', () =>
         {
             if (this.#max.value < this.#min.value)
                 this.#min.value = this.#max.value;
@@ -4151,7 +4109,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     //
 
-    slider.onchange = new Event('onchange');
+    slider.onchange = new Event('change');
 
     //
 
@@ -4826,7 +4784,7 @@ function initSelect(select, items)
     select.update(0);
     select.updateItems();
     
-    select.onchange = new Event('onchange');
+    select.onchange = new Event('change');
 }
 
 
@@ -5178,8 +5136,6 @@ graphView.endSelection = () =>
 
 const graph = new Graph();
 
-//var cachedObjects = [];
-
 
 function createNode(opType)
 {
@@ -5324,6 +5280,13 @@ generator.onmessage = function(e)
             node.makeActive();
             break;
         }
+        case 'showParamValue':
+        {
+            const node  = graph.nodeFromId(e.data.nodeId);
+            const param = node.params.find(p => p.name == e.data.param);
+            param.control.setValue(e.data.value, false);
+            break;
+        }
         case 'requestGenerate':
         {
             const nodes = [];
@@ -5339,38 +5302,15 @@ generator.onmessage = function(e)
             generate(nodes);
             break;
         }
-        case 'updateObjects':
+        case 'recreateObjects':
         {
-            // var removeList = [];
-
-            // for (const cachedObj of cachedObjects)
-            // {
-            //     if (!e.data.objects.find(obj => obj.itemId === cachedObj.itemId))
-            //         removeList.push(cachedObj);    
-            // }
-
-            // if (removeList.length > 0)
-            // {
-            //     parent.postMessage({ pluginMessage: 
-            //     { 
-            //         cmd:    'removeObjectList',
-            //         objects: removeList
-            //     }}, '*');
-            // }
-
-
-            // for (const nodeId of e.data.nodeIds)
-            //     removeNodeOutput(graph.nodes.find(n => n.id == nodeId));
-
-
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:    'updateObjects',
+                cmd:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
                 objects: e.data.objects
             }}, '*');    
 
-            //cachedObjects = e.data.objects;
             graph.mutex = false;
 
             

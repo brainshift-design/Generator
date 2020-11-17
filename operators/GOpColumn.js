@@ -17,7 +17,7 @@ extends GOperator
     }
 
 
-    generate()
+    generate(callerInput)
     {
         if (this.valid) return;
 
@@ -52,6 +52,6 @@ extends GOperator
         }
     
 
-        super.generate();
+        super.generate(callerInput);
     }
 }

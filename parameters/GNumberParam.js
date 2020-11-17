@@ -5,10 +5,21 @@ extends GParameter
 
     get value() 
     {
-        return (
-            this.input.connected
-            ? this.input.data.value
-            : this.#value); 
+        if (this.input.connected)
+        {
+            const value = this.input.data.value;
+
+            postMessage({ 
+                msg:   'showParamValue',
+                nodeId: this.op.id,
+                param:  this.name,
+                value:  value
+            });
+
+            return value;
+        }
+
+        else return this.#value;
     }
     
     set value(val) 
