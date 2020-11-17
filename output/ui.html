@@ -3346,50 +3346,41 @@ class Operator
     }
 
     
-    get activeNodeInTree() { return this.getActiveNodeInTree(null); }
+    get activeNodeInTree() 
+    { 
+        const left  = this.getActiveNodeLeft();  if (!!left ) return left;
+        const right = this.getActiveNodeRight(); if (!!right) return right;
 
-    getActiveNodeInTree(callerOp = null)
+         return null;
+    }
+
+    getActiveNodeLeft()
     {
-        if (this.active)
-            return this;
+        if (this.active) return this;
 
         for (const input of this.inputs)
         {
-            if (   input.connected
-                && input.connectedOutput.op != callerOp)
+            if (input.connected)
             {
-                const active = input.connectedOutput.op.getActiveNodeInTree(this);
-                if (active) return active;
+                const left = input.connectedOutput.op.getActiveNodeLeft(this);
+                if (left) return left;
             }
         }
 
-        for (const param of this.params)
-        {
-            if (   param.input.connected
-                && param.input.connectedOutput.op != callerOp)
-            {
-                const active = param.input.connectedOutput.op.getActiveNodeInTree(this);
-                if (active) return active;
-            }
-        }
+        return null;
+    }
 
-        if (   this.output
-            && this.output.connected)
+
+    getActiveNodeRight()
+    {
+        if (this.active) return this;
+
+        if (!!this.output)
         {
             for (const input of this.output.connectedInputs)
             {
-                if (/*   !!input.op
-                    &&*/ input.op != callerOp)
-                {
-                    const active = input.op.getActiveNodeInTree(this);
-                    if (active) return active;
-                }
-                // else if (!!input.param
-                //         && input.param.op != callerOp)
-                // {
-                //     const active = input.param.op.getActiveNodeInTree(this);
-                //     if (active) return active;
-                // }
+                const right = input.op.getActiveNodeRight(this);
+                if (right) return right;
             }
         }
 
