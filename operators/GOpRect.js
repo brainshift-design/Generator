@@ -23,8 +23,6 @@ extends GOperator
         const width  = this.#width .value;
         const height = this.#height.value;
 
-        console.log(width + ', ' + height);
-
         this.output._data = 
         [{
             nodeId:  this.id,

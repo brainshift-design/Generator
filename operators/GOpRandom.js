@@ -53,7 +53,10 @@ extends GOperator
         this.noise.seed.set(this.#seed.value);
         
         for (const input of this.output.connectedInputs)
-            input.initialSeed = this.noise.next();
+        {
+            input.initialSeed = input.currentSeed = this.noise.seed.current;
+            this.noise.next();
+        }
 
         super.reset();
     }

@@ -1566,8 +1566,6 @@ extends GOperator
         const width  = this.#width .value;
         const height = this.#height.value;
 
-        console.log(width + ', ' + height);
-
         this.output._data = 
         [{
             nodeId:  this.id,
@@ -1854,7 +1852,10 @@ extends GOperator
         this.noise.seed.set(this.#seed.value);
         
         for (const input of this.output.connectedInputs)
-            input.initialSeed = this.noise.next();
+        {
+            input.initialSeed = input.currentSeed = this.noise.seed.current;
+            this.noise.next();
+        }
 
         super.reset();
     }
@@ -1925,7 +1926,6 @@ onmessage = function(e)
             generate([node.id]);
             break;
         }
-
         case 'invalidate':
         {
             const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
@@ -1933,7 +1933,11 @@ onmessage = function(e)
             generate([node.id]);
             break;
         }
-
+        case 'reset':
+        {
+            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            node.reset();
+        }
         case 'generate':
         {
             for (const node of ggraph.nodes)
@@ -5240,6 +5244,17 @@ generator.onmessage = function(e)
             }
 
             generate(nodes);
+            break;
+        }
+        case 'reset':
+        {
+            const node = graph.nodes.find(n => n.id == e.data.nodeId);
+
+            generator.postMessage({
+                cmd:   'reset',
+                nodeId: node.activeNodeInTree.id
+            });    
+
             break;
         }
         case 'recreateObjects':

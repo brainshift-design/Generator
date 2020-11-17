@@ -62,7 +62,6 @@ onmessage = function(e)
             generate([node.id]);
             break;
         }
-
         case 'invalidate':
         {
             const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
@@ -70,7 +69,11 @@ onmessage = function(e)
             generate([node.id]);
             break;
         }
-
+        case 'reset':
+        {
+            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            node.reset();
+        }
         case 'generate':
         {
             for (const node of ggraph.nodes)

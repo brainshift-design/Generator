@@ -178,6 +178,17 @@ generator.onmessage = function(e)
             generate(nodes);
             break;
         }
+        case 'reset':
+        {
+            const node = graph.nodes.find(n => n.id == e.data.nodeId);
+
+            generator.postMessage({
+                cmd:   'reset',
+                nodeId: node.activeNodeInTree.id
+            });    
+
+            break;
+        }
         case 'recreateObjects':
         {
             parent.postMessage({ pluginMessage: 
