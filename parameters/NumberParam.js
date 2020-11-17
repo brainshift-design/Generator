@@ -1,8 +1,6 @@
 class   NumberParam
 extends Parameter
 {
-    #value;
-
     get value() { return this._control.value; }
     set value(value) { this._control.setValue(value); }
 
@@ -13,9 +11,11 @@ extends Parameter
 
 
     constructor(name, 
-                val = 0, 
-                min = Number.MIN_SAFE_INTEGER, 
-                max = Number.MAX_SAFE_INTEGER)
+                value     = 0, 
+                min       = Number.MIN_SAFE_INTEGER, 
+                max       = Number.MAX_SAFE_INTEGER,
+                decimals  = 0,
+                dragScale = 0.01)
     {
         super(name, 'NUM');
 
@@ -25,17 +25,17 @@ extends Parameter
 
         initSlider(
             this.control,
-            100,  // width
-            20,   // height
+            100,       // width
+            20,        // height
             this.name, 
             min,
             max,
-            val,  // default
-            0.01, // drag scale
-            1,    // wheel step
-            0,    // decimals
-            0,    // acceleration
-            '');  // suffix
+            value,     // default
+            dragScale, // drag scale
+            1,         // wheel step
+            decimals,  // decimals
+            0,         // acceleration
+            '');       // suffix
 
         this.div.appendChild(this.control);
 
@@ -51,7 +51,6 @@ extends Parameter
         {
             this.op.valid = false;
             setParam(this, this.value);
-            //this.op.graph.mutex = true;            
         });
     }
 }

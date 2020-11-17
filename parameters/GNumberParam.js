@@ -3,11 +3,17 @@ extends GParameter
 {
     #value;
 
+    #min;
+    #max;
+    
+
     get value() 
     {
+        var value = Math.min(Math.max(this.#min, this.#value), this.#max);
+
         if (this.input.connected)
         {
-            const value = this.input.data.value;
+            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
 
             postMessage({ 
                 msg:   'showParamValue',
@@ -15,11 +21,9 @@ extends GParameter
                 param:  this.name,
                 value:  value
             });
-
-            return value;
         }
 
-        else return this.#value;
+        return value;
     }
     
     set value(val) 
@@ -32,11 +36,17 @@ extends GParameter
     input; 
 
 
-    constructor(name, val = 0)
+    constructor(name, 
+                value = 0, 
+                min   = Number.MIN_SAFE_INTEGER, 
+                max   = Number.MAX_SAFE_INTEGER)
     {
         super(name, 'NUM');
 
-        this.#value = val;
+        this.#value    = value;
+   
+        this.#min      = min;
+        this.#max      = max;
 
         this.input = new GInput ('NUM');
         this.input._param = this;

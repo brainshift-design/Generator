@@ -1134,11 +1134,17 @@ extends GParameter
 {
     #value;
 
+    #min;
+    #max;
+    
+
     get value() 
     {
+        var value = Math.min(Math.max(this.#min, this.#value), this.#max);
+
         if (this.input.connected)
         {
-            const value = this.input.data.value;
+            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
 
             postMessage({ 
                 msg:   'showParamValue',
@@ -1146,11 +1152,9 @@ extends GParameter
                 param:  this.name,
                 value:  value
             });
-
-            return value;
         }
 
-        else return this.#value;
+        return value;
     }
     
     set value(val) 
@@ -1163,11 +1167,17 @@ extends GParameter
     input; 
 
 
-    constructor(name, val = 0)
+    constructor(name, 
+                value = 0, 
+                min   = Number.MIN_SAFE_INTEGER, 
+                max   = Number.MAX_SAFE_INTEGER)
     {
         super(name, 'NUM');
 
-        this.#value = val;
+        this.#value    = value;
+   
+        this.#min      = min;
+        this.#max      = max;
 
         this.input = new GInput ('NUM');
         this.input._param = this;
@@ -2745,8 +2755,6 @@ class Parameter
 class   NumberParam
 extends Parameter
 {
-    #value;
-
     get value() { return this._control.value; }
     set value(value) { this._control.setValue(value); }
 
@@ -2757,9 +2765,11 @@ extends Parameter
 
 
     constructor(name, 
-                val = 0, 
-                min = Number.MIN_SAFE_INTEGER, 
-                max = Number.MAX_SAFE_INTEGER)
+                value     = 0, 
+                min       = Number.MIN_SAFE_INTEGER, 
+                max       = Number.MAX_SAFE_INTEGER,
+                decimals  = 0,
+                dragScale = 0.01)
     {
         super(name, 'NUM');
 
@@ -2769,17 +2779,17 @@ extends Parameter
 
         initSlider(
             this.control,
-            100,  // width
-            20,   // height
+            100,       // width
+            20,        // height
             this.name, 
             min,
             max,
-            val,  // default
-            0.01, // drag scale
-            1,    // wheel step
-            0,    // decimals
-            0,    // acceleration
-            '');  // suffix
+            value,     // default
+            dragScale, // drag scale
+            1,         // wheel step
+            decimals,  // decimals
+            0,         // acceleration
+            '');       // suffix
 
         this.div.appendChild(this.control);
 
@@ -2795,7 +2805,6 @@ extends Parameter
         {
             this.op.valid = false;
             setParam(this, this.value);
-            //this.op.graph.mutex = true;            
         });
     }
 }
