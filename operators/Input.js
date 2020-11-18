@@ -1,4 +1,5 @@
-class Input
+class   Input
+extends EventTarget
 {
     #dataType;     
     get dataType() { return this.#dataType; }
@@ -17,7 +18,31 @@ class Input
 
     control;
   
-    connectedOutput = null;
+    _connectedOutput = null;
+    get connectedOutput() { return this._connectedOutput; }
+    set connectedOutput(output)
+    {
+        if (this._connectedOutput)
+        {
+            this.dispatchEvent(new CustomEvent(
+                'disconnect', 
+                { 'input': this }));
+        }
+
+        this._connectedOutput = output;
+
+        if (this._connectedOutput)
+        {
+            this.dispatchEvent(new CustomEvent(
+                'connect', 
+                { 
+                    'output': output,
+                    'input':  this 
+                }));
+        }
+    }
+
+
     connection      = null;
     
     connecting      = false;
@@ -28,8 +53,14 @@ class Input
     get connected() { return this.connectedOutput != null; }
 
 
+    onconnect    = new Event('connect');
+    ondisconnect = new Event('disconnect');
+
+
     constructor(dataType)
     {
+        super();
+        
         this.#dataType = dataType;
 
         this.control = document.createElement('div');

@@ -43,7 +43,10 @@ extends EventTarget
 
         this.dispatchEvent(new CustomEvent(
             'connect', 
-            { 'input': input }));
+            { 
+                'output': this, 
+                'input':  input 
+            }));
     }
 
 

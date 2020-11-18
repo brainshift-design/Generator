@@ -78,9 +78,7 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyA'
           && e.ctrlKey)
     {
-        const selected = graph.nodes;
-        console.log(selected);
-        graphView.selected = selected;
+        graphView.selected = graph.nodes;
     }
 });
 

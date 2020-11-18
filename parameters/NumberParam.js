@@ -52,5 +52,17 @@ extends Parameter
             this.op.valid = false;
             setParam(this, this.value);
         });
+
+        this.input.addEventListener('connect', e =>
+        {
+            this.control.style.fontStyle     = 'italic';
+            this.control.style.pointerEvents = 'none';
+        });
+
+        this.input.addEventListener('disconnect', e =>
+        {
+            this.control.style.fontStyle     = 'normal';
+            this.control.style.pointerEvents = 'auto';
+        });
     }
 }

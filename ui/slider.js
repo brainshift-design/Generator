@@ -56,6 +56,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     slider.enableChangeEvent = true;
 
+
     initSliderChildren(slider);    
     initSliderTextbox(slider);
     
@@ -160,10 +161,10 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         var rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
-        e.clientX >= rect.left
-        && e.clientX <  rect.right
-        && e.clientY >= rect.top
-        && e.clientY <  rect.bottom;
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top
+            && e.clientY <  rect.bottom;
         
         slider.clientX = e.clientX;
         
