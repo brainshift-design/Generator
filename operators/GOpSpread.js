@@ -19,14 +19,6 @@ extends GOperator
     }
 
 
-    setGraph(graph)
-    {
-        super.setGraph(graph);
-        this.seed = this.graph.random.seed;
-        this.graph.random.next();
-    }
-
-    
     generate(callerInput)
     {
         if (this.valid) return;

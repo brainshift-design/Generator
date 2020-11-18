@@ -16,7 +16,7 @@ extends Operator
         this.addParam(this.#min   = new NumberParam('min',   0));
         this.addParam(this.#max   = new NumberParam('max', 100));
         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed', 0, 0));
+        this.addParam(this.#seed  = new NumberParam('seed', 1, 1));
 
         this.#min.control.addEventListener('change', () =>
         {

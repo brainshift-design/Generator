@@ -665,8 +665,6 @@ class Noise
 
     next(scale = 1)
     {
-        // changing the scale linearly only has a visible "regular" effect when 
-        // the values are relatively small, so I set the scale as a power of Phi
         //scale = Math.pow(Phi, scale) / Phi;
         scale = Math.max(1, scale);
 
@@ -840,9 +838,6 @@ class GGraph
 
     deferNodes = [];
 
-    random = new Random();
-    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
-
     
     createNode(opType)
     {
@@ -866,26 +861,29 @@ class GGraph
 
     addNode(node)
     {
-        node.setGraph(this);
+        node.graph = this;
         this.nodes.push(node);
     }
     
 
-    removeNode(nodeId)
+    removeNodes(nodeIds)
     {
-        const node = this.nodes.find(n => n.id == nodeId);
-
-        for (const input of node.inputs)
-            if (input.connected) this.disconnect(input);
-
-        if (!!node.output)
+        for (const nodeId of nodeIds)
         {
-            for (const input of node.output.connectedInputs)
-                this.disconnect(input);
-        }
+            const node = this.nodes.find(n => n.id == nodeId);
 
-        node.setGraph(null);
-        removeFromArray(node, this.nodes);
+            for (const input of node.inputs)
+                if (input.connected) this.disconnect(input);
+
+            if (!!node.output)
+            {
+                for (const input of node.output.connectedInputs)
+                    this.disconnect(input);
+            }
+
+            node.graph = null;
+            removeFromArray(node, this.nodes);
+        }
     }
 
 
@@ -1066,9 +1064,7 @@ class GOperator
     get id() { return this._id; }
     set id(id) { this._id = id; }
     
-    _graph = null;
-    get graph() { return this._graph; }
-    setGraph(graph) { this._graph = graph; }
+    graph = null;
     
     
     params = [];
@@ -1146,7 +1142,7 @@ class GOperator
 
     setId(newId)
     {
-        if (this._graph.nodes.find(node => node.id == newId))
+        if (this.graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
         this._id = newId;
@@ -1390,14 +1386,6 @@ extends GOperator
     }
 
 
-    setGraph(graph)
-    {
-        super.setGraph(graph);
-        this.seed = this.graph.random.seed;
-        this.graph.random.next();
-    }
-
-    
     generate(callerInput)
     {
         if (this.valid) return;
@@ -1494,7 +1482,7 @@ extends GOperator
         this.addParam(this.#min   = new GNumberParam('min',   0));
         this.addParam(this.#max   = new GNumberParam('max', 100));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed', 0, 0));
+        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
 
         this.output.addEventListener('connect',    () => postMessage({msg: 'resetNode', nodeId: this.id}));
         this.output.addEventListener('disconnect', () => postMessage({msg: 'resetNode', nodeId: this.id}));
@@ -1554,15 +1542,15 @@ onmessage = function(e)
             node.id = e.data.nodeId;
 
             postMessage({ 
-                msg:    'makeActive',
-                nodeId:  node.id
+                msg:   'makeActive',
+                nodeId: node.id
             });
             
             break;
         }
-        case 'removeNode':
+        case 'removeNodes':
         {
-            ggraph.removeNode(e.data.nodeId);
+            ggraph.removeNodes(e.data.nodeIds);
             break;            
         }
         case 'setNodeId': 
@@ -1585,7 +1573,7 @@ onmessage = function(e)
                     ? inNode.inputs[input.index]
                     : inNode.params.find(p => p.name == input.param).input);
 
-                generate([input.nodeId]);
+                requestGenerate([input.nodeId]);
             }
 
             break;
@@ -1603,14 +1591,14 @@ onmessage = function(e)
             const node  = ggraph.nodes.find(n => n.id == e.data.nodeId);
             const param = node.params.find(p => p.name == e.data.param);
             param.value = e.data.value;
-            generate([node.id]);
+            requestGenerate([node.id]);
             break;
         }
         case 'invalidate':
         {
             const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
             node.valid = false;
-            generate([node.id]);
+            //generate([node.id]);
             break;
         }
         case 'reset':
@@ -1653,7 +1641,7 @@ function reset(nodeId)
 }
 
 
-function generate(nodeIds)
+function requestGenerate(nodeIds)
 {
     postMessage({
         msg:    'requestGenerate',

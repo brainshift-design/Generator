@@ -69,8 +69,6 @@ class Noise
 
     next(scale = 1)
     {
-        // changing the scale linearly only has a visible "regular" effect when 
-        // the values are relatively small, so I set the scale as a power of Phi
         //scale = Math.pow(Phi, scale) / Phi;
         scale = Math.max(1, scale);
 

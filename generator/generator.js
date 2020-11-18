@@ -12,15 +12,15 @@ onmessage = function(e)
             node.id = e.data.nodeId;
 
             postMessage({ 
-                msg:    'makeActive',
-                nodeId:  node.id
+                msg:   'makeActive',
+                nodeId: node.id
             });
             
             break;
         }
-        case 'removeNode':
+        case 'removeNodes':
         {
-            ggraph.removeNode(e.data.nodeId);
+            ggraph.removeNodes(e.data.nodeIds);
             break;            
         }
         case 'setNodeId': 
@@ -43,7 +43,7 @@ onmessage = function(e)
                     ? inNode.inputs[input.index]
                     : inNode.params.find(p => p.name == input.param).input);
 
-                generate([input.nodeId]);
+                requestGenerate([input.nodeId]);
             }
 
             break;
@@ -61,14 +61,14 @@ onmessage = function(e)
             const node  = ggraph.nodes.find(n => n.id == e.data.nodeId);
             const param = node.params.find(p => p.name == e.data.param);
             param.value = e.data.value;
-            generate([node.id]);
+            requestGenerate([node.id]);
             break;
         }
         case 'invalidate':
         {
             const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
             node.valid = false;
-            generate([node.id]);
+            //generate([node.id]);
             break;
         }
         case 'reset':
@@ -111,7 +111,7 @@ function reset(nodeId)
 }
 
 
-function generate(nodeIds)
+function requestGenerate(nodeIds)
 {
     postMessage({
         msg:    'requestGenerate',

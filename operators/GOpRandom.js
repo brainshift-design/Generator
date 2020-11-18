@@ -17,7 +17,7 @@ extends GOperator
         this.addParam(this.#min   = new GNumberParam('min',   0));
         this.addParam(this.#max   = new GNumberParam('max', 100));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed', 0, 0));
+        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
 
         this.output.addEventListener('connect',    () => postMessage({msg: 'resetNode', nodeId: this.id}));
         this.output.addEventListener('disconnect', () => postMessage({msg: 'resetNode', nodeId: this.id}));

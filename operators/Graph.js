@@ -7,9 +7,6 @@ class Graph
 
     deferNodes = [];
 
-    random = new Random();
-    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
-
     
     getNewId(_node)
     {
@@ -65,7 +62,7 @@ class Graph
 
     addNode(node)
     {
-        node.setGraph(this);
+        node.graph = this;
         node.setId(this.getNewId(node)); // TODO: not checking return value here
         
         if (this.nodes.length > 0)
@@ -96,22 +93,25 @@ class Graph
     }
     
 
-    removeNode(nodeId)
+    removeNodes(nodeIds)
     {
-        const node = this.nodes.find(n => n.id == nodeId);
-
-        for (const input of node.inputs)
-            if (input.connected) this.disconnect(input);
-
-        if (!!node.output)
+        for (const nodeId of nodeIds)
         {
-            for (const input of node.output.connectedInputs)
-                this.disconnect(input);
-        }
+            const node = this.nodes.find(n => n.id == nodeId);
 
-        node.setGraph(null);
-        removeFromArray(node, this.nodes);
-        graphView.removeChild(node.div);
+            for (const input of node.inputs)
+                if (input.connected) this.disconnect(input);
+
+            if (!!node.output)
+            {
+                for (const input of node.output.connectedInputs)
+                    this.disconnect(input);
+            }
+
+            node.graph = null;
+            removeFromArray(node, this.nodes);
+            graphView.removeChild(node.div);
+        }
     }
 
 
@@ -172,8 +172,7 @@ class Graph
         invalidate(output.op);
 
         if (!output.op.activeNodeInTree)
-            output.op.makeActive();
-
+             output.op.makeActive();
             
         return true;
     }

@@ -72,10 +72,8 @@ document.addEventListener('keydown', e =>
 {
     if (e.key == 'Delete')
     {
-        for (const node of graphView.selected)
-            removeNode(node.id);
-
-        graphView.selected = [];
+        removeNodes(graphView.selected);
+        graphView._selected = [];
     }
 });
 

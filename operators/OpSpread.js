@@ -19,14 +19,6 @@ extends Operator
     }
 
 
-    setGraph(graph)
-    {
-        super.setGraph(graph);
-        this.seed = this.graph.random.seed;
-        this.graph.random.next();
-    }
-
-    
     generate()
     {
         if (this.valid) return;

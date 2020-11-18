@@ -26,13 +26,14 @@ function createNode(opType)
 }
 
 
-function removeNode(nodeId)
+function removeNodes(nodes)
 {
-    graph.removeNode(nodeId);
+    const nodeIds = graph.nodes.map(n => n.id);
+    graph.removeNodes(nodeIds);
 
     generator.postMessage({
-        msg:   'removeNode', 
-        nodeId: nodeId
+        msg:    'removeNodes', 
+        nodeIds: nodeIds
     });
 }
 

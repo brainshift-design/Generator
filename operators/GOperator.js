@@ -16,9 +16,7 @@ class GOperator
     get id() { return this._id; }
     set id(id) { this._id = id; }
     
-    _graph = null;
-    get graph() { return this._graph; }
-    setGraph(graph) { this._graph = graph; }
+    graph = null;
     
     
     params = [];
@@ -96,7 +94,7 @@ class GOperator
 
     setId(newId)
     {
-        if (this._graph.nodes.find(node => node.id == newId))
+        if (this.graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
         this._id = newId;

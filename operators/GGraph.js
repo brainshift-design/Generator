@@ -6,9 +6,6 @@ class GGraph
 
     deferNodes = [];
 
-    random = new Random();
-    randomSeed = this.random.seed; // TODO reset the seed when loading a graph
-
     
     createNode(opType)
     {
@@ -32,26 +29,29 @@ class GGraph
 
     addNode(node)
     {
-        node.setGraph(this);
+        node.graph = this;
         this.nodes.push(node);
     }
     
 
-    removeNode(nodeId)
+    removeNodes(nodeIds)
     {
-        const node = this.nodes.find(n => n.id == nodeId);
-
-        for (const input of node.inputs)
-            if (input.connected) this.disconnect(input);
-
-        if (!!node.output)
+        for (const nodeId of nodeIds)
         {
-            for (const input of node.output.connectedInputs)
-                this.disconnect(input);
-        }
+            const node = this.nodes.find(n => n.id == nodeId);
 
-        node.setGraph(null);
-        removeFromArray(node, this.nodes);
+            for (const input of node.inputs)
+                if (input.connected) this.disconnect(input);
+
+            if (!!node.output)
+            {
+                for (const input of node.output.connectedInputs)
+                    this.disconnect(input);
+            }
+
+            node.graph = null;
+            removeFromArray(node, this.nodes);
+        }
     }
 
 
