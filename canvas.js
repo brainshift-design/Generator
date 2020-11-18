@@ -11,7 +11,7 @@ function createNode(opType)
         nodeId: node.id
     });
 
-    if (graph.selected.length > 0)
+    if (graphView.selected.length > 0)
     {
         const selNode = graph.nodes.find(n => n.selected);
         const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
@@ -22,7 +22,18 @@ function createNode(opType)
             connect(selNode.output, inputs[0]);
     }
     
-    graph.selected = [node];
+    graphView.selected = [node];
+}
+
+
+function removeNode(nodeId)
+{
+    graph.removeNode(nodeId);
+
+    generator.postMessage({
+        msg:   'removeNode', 
+        nodeId: nodeId
+    });
 }
 
 
@@ -148,6 +159,7 @@ const generator = new Worker(
 
 generator.onmessage = function(e)
 {
+    console.log(e.data.msg);
     switch (e.data.msg)
     {
         case 'makeActive':

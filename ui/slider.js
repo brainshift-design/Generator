@@ -196,13 +196,13 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.update();
     });
 
-    slider.addEventListener('mousewheel', function(e)
+    slider.addEventListener('mousewheel', e =>
     {
         slider.setValue(slider.value + (e.wheelDeltaY > 0 ? 1 : -1) * slider.wheelStep);
     });
 
 
-    slider.addEventListener('keydown', function(e)
+    slider.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')

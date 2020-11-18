@@ -37,6 +37,24 @@ class GGraph
     }
     
 
+    removeNode(nodeId)
+    {
+        const node = this.nodes.find(n => n.id == nodeId);
+
+        for (const input of node.inputs)
+            if (input.connected) this.disconnect(input);
+
+        if (!!node.output)
+        {
+            for (const input of node.output.connectedInputs)
+                this.disconnect(input);
+        }
+
+        node.setGraph(null);
+        removeFromArray(node, this.nodes);
+    }
+
+
     connect(output, input)
     {
         if (input.connectedOutput == output)

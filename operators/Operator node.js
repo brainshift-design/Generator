@@ -31,7 +31,7 @@ function createDiv(node, headerColor)
             if (!node.selected)
             {
                 if (e.shiftKey) node.selected = true;
-                else            graph.selected = [node];
+                else            graphView.selected = [node];
 
                 node.selectedSet = true;
             }
@@ -39,7 +39,7 @@ function createDiv(node, headerColor)
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
 
-            for (const n of graph.selected)
+            for (const n of graphView.selected)
             {
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
@@ -54,7 +54,7 @@ function createDiv(node, headerColor)
     {
         if (node.div.dragging)
         {
-            for (const n of graph.selected)
+            for (const n of graphView.selected)
             {
                 setDivPosition(
                     n.div.op,
@@ -75,7 +75,7 @@ function createDiv(node, headerColor)
                 && !node.div.moved)
             {
                 if (e.shiftKey) node.selected = true;
-                else            graph.selected = [node];
+                else            graphView.selected = [node];
             }
 
             node.div.dragging = false;

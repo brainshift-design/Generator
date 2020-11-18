@@ -18,6 +18,11 @@ onmessage = function(e)
             
             break;
         }
+        case 'removeNode':
+        {
+            ggraph.removeNode(e.data.nodeId);
+            break;            
+        }
         case 'setNodeId': 
         {
             const node = ggraph.nodeFromId(e.data.nodeId);
@@ -84,6 +89,7 @@ onmessage = function(e)
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
+                //node.reset();
                 objects = objects.concat(node.output.getData());
             }
 
@@ -97,6 +103,15 @@ onmessage = function(e)
         }
     }
 };
+
+
+function reset(nodeId)
+{
+    postMessage({
+        msg:   'reset',
+        nodeId: nodeId
+    });
+}
 
 
 function generate(nodeIds)

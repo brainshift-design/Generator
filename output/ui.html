@@ -395,7 +395,7 @@ function forwardEvent(event, element)
 // }
 
 
-function remove(obj, array)
+function removeFromArray(obj, array)
 {
     array.splice(array.indexOf(obj), 1);
 }
@@ -1224,6 +1224,24 @@ class GGraph
     }
     
 
+    removeNode(nodeId)
+    {
+        const node = this.nodes.find(n => n.id == nodeId);
+
+        for (const input of node.inputs)
+            if (input.connected) this.disconnect(input);
+
+        if (!!node.output)
+        {
+            for (const input of node.output.connectedInputs)
+                this.disconnect(input);
+        }
+
+        node.setGraph(null);
+        removeFromArray(node, this.nodes);
+    }
+
+
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -1360,8 +1378,7 @@ extends EventTarget
 
     disconnect(input)
     {
-        const inputIndex = this.connectedInputs.indexOf(input);
-        this.connectedInputs.splice(inputIndex, 1);
+        removeFromArray(input, this.connectedInputs);
 
         this.dispatchEvent(new CustomEvent(
             'disconnect', 
@@ -1770,6 +1787,9 @@ extends GOperator
 {
     #value;
 
+    #sampled = Number.NaN;
+
+
     constructor()
     {
         super('number', 'NUM');
@@ -1784,15 +1804,26 @@ extends GOperator
     {
         if (this.valid) return;
 
+        //if (isNaN(this.#sampled))
+            this.#sampled = this.#value.value;
+
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
 
-            value:  this.#value.value
+            value:  this.#sampled
         };
 
         super.generate(callerInput);
+    }
+
+
+    reset()
+    {
+        super.reset();
+        
+        this.#sampled = Number.NaN;
     }
 }
 
@@ -1849,15 +1880,15 @@ extends GOperator
 
     reset()
     {
+        super.reset();
+
         this.noise.seed.set(this.#seed.value);
         
         for (const input of this.output.connectedInputs)
         {
-            input.initialSeed = input.currentSeed = this.noise.seed.current;
             this.noise.next();
+            input.initialSeed = input.currentSeed = this.noise.seed.current;
         }
-
-        super.reset();
     }
 }
 
@@ -1881,6 +1912,11 @@ onmessage = function(e)
             });
             
             break;
+        }
+        case 'removeNode':
+        {
+            ggraph.removeNode(e.data.nodeId);
+            break;            
         }
         case 'setNodeId': 
         {
@@ -1948,6 +1984,7 @@ onmessage = function(e)
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
+                //node.reset();
                 objects = objects.concat(node.output.getData());
             }
 
@@ -1961,6 +1998,15 @@ onmessage = function(e)
         }
     }
 };
+
+
+function reset(nodeId)
+{
+    postMessage({
+        msg:   'reset',
+        nodeId: nodeId
+    });
+}
 
 
 function generate(nodeIds)
@@ -2086,7 +2132,7 @@ function forwardEvent(event, element)
 // }
 
 
-function remove(obj, array)
+function removeFromArray(obj, array)
 {
     array.splice(array.indexOf(obj), 1);
 }
@@ -2745,20 +2791,6 @@ class Graph
     nodes = [];
     
     
-    #selected = [];
-    get selected() { return this.#selected; }
-    set selected(sel)
-    {
-        for (const node of this.#selected)            
-            node.setSelected(false);
-
-        this.#selected = sel;
-
-        for (const node of this.#selected)
-            node.setSelected(true);
-    }
-
-
     mutex = false;
 
     deferNodes = [];
@@ -2852,6 +2884,25 @@ class Graph
     }
     
 
+    removeNode(nodeId)
+    {
+        const node = this.nodes.find(n => n.id == nodeId);
+
+        for (const input of node.inputs)
+            if (input.connected) this.disconnect(input);
+
+        if (!!node.output)
+        {
+            for (const input of node.output.connectedInputs)
+                this.disconnect(input);
+        }
+
+        node.setGraph(null);
+        removeFromArray(node, this.nodes);
+        graphView.removeChild(node.div);
+    }
+
+
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -2897,8 +2948,7 @@ class Graph
         if (remove)
            wires.removeChild(input.connection.wire);
 
-        var inputIndex = output.connectedInputs.indexOf(input);
-        output.connectedInputs.splice(inputIndex, 1);
+        removeFromArray(input, output.connectedInputs);
         
         input .connection     = null;
         output.connection     = null;
@@ -3206,12 +3256,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            remove(this, graph.selected);
+            removeFromArray(this, graphView.selected);
 
         this.setSelected(sel); 
 
         if (this._selected)
-            graph.selected.push(this);
+            graphView.selected.push(this);
     }
 
     setSelected(sel)
@@ -3238,10 +3288,9 @@ class Operator
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
-        this.label .style.color           = 'white';
+        this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
         
-        if (   this.output
-            && this.output.dataType == 'OBJ')
+        if (this.dataType == 'OBJ')
             generate([this.activeNodeInTree]);
     }
         
@@ -3347,7 +3396,7 @@ class Operator
         switch (this.#dataType)
         {
             case 'OBJ': return ACTIVE_OBJ_COLOR;
-            case 'NUM': return ACTIVE_NUM_COLOR;
+            case 'NUM': return NUM_COLOR; //ACTIVE_NUM_COLOR;
         }
 
         return 'magenta';
@@ -3506,7 +3555,7 @@ function createDiv(node, headerColor)
             if (!node.selected)
             {
                 if (e.shiftKey) node.selected = true;
-                else            graph.selected = [node];
+                else            graphView.selected = [node];
 
                 node.selectedSet = true;
             }
@@ -3514,7 +3563,7 @@ function createDiv(node, headerColor)
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
 
-            for (const n of graph.selected)
+            for (const n of graphView.selected)
             {
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
@@ -3529,7 +3578,7 @@ function createDiv(node, headerColor)
     {
         if (node.div.dragging)
         {
-            for (const n of graph.selected)
+            for (const n of graphView.selected)
             {
                 setDivPosition(
                     n.div.op,
@@ -3550,7 +3599,7 @@ function createDiv(node, headerColor)
                 && !node.div.moved)
             {
                 if (e.shiftKey) node.selected = true;
-                else            graph.selected = [node];
+                else            graphView.selected = [node];
             }
 
             node.div.dragging = false;
@@ -4176,13 +4225,13 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.update();
     });
 
-    slider.addEventListener('mousewheel', function(e)
+    slider.addEventListener('mousewheel', e =>
     {
         slider.setValue(slider.value + (e.wheelDeltaY > 0 ? 1 : -1) * slider.wheelStep);
     });
 
 
-    slider.addEventListener('keydown', function(e)
+    slider.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
@@ -4820,11 +4869,23 @@ document.addEventListener('pointerup', function(e)
 });
 
 
+document.addEventListener('keydown', e =>
+{
+    if (e.key == 'Delete')
+    {
+        for (const node of graphView.selected)
+            removeNode(node.id);
+
+        graphView.selected = [];
+    }
+});
+
+
 function resizeWindow(width, height)
 {
     parent.postMessage({ pluginMessage: 
     { 
-        cmd:    'resizeWindow', 
+        cmd:   'resizeWindow', 
         width:  width,
         height: height
     }}, '*');
@@ -4851,6 +4912,24 @@ graphView.overOutput = null;
 graphView.tempConn   = null;
 
 graphView.selection  = Rect.NaN;
+
+
+graphView._selected = [];
+
+Object.defineProperty(graphView, 'selected',
+{
+    get: () => graphView._selected,
+    set: selected =>
+    {
+        for (const node of graphView._selected)            
+            node.setSelected(false);
+    
+        graphView._selected = selected;
+    
+        for (const node of graphView._selected)
+            node.setSelected(true);
+    }
+});
 
 
 graphView.addEventListener('pointerdown', e =>
@@ -4882,7 +4961,7 @@ graphView.addEventListener('pointerdown', e =>
     {
         if (!e.shiftKey)
         {
-            graph.selected = [];
+            graphView.selected = [];
             graphView.startSelection(e.clientX, e.clientY);
         }
     }
@@ -5050,7 +5129,7 @@ graphView.updateSelectBox = () =>
     selectBox.style.height = Math.abs(selection.h);
 
     
-    graph.selected = [];
+    graphView.selected = [];
 
     for (const node of graph.nodes)
     {
@@ -5079,7 +5158,7 @@ function createNode(opType)
         nodeId: node.id
     });
 
-    if (graph.selected.length > 0)
+    if (graphView.selected.length > 0)
     {
         const selNode = graph.nodes.find(n => n.selected);
         const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
@@ -5090,7 +5169,18 @@ function createNode(opType)
             connect(selNode.output, inputs[0]);
     }
     
-    graph.selected = [node];
+    graphView.selected = [node];
+}
+
+
+function removeNode(nodeId)
+{
+    graph.removeNode(nodeId);
+
+    generator.postMessage({
+        msg:   'removeNode', 
+        nodeId: nodeId
+    });
 }
 
 
@@ -5216,6 +5306,7 @@ const generator = new Worker(
 
 generator.onmessage = function(e)
 {
+    console.log(e.data.msg);
     switch (e.data.msg)
     {
         case 'makeActive':

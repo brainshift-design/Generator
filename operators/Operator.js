@@ -39,12 +39,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            remove(this, graph.selected);
+            removeFromArray(this, graphView.selected);
 
         this.setSelected(sel); 
 
         if (this._selected)
-            graph.selected.push(this);
+            graphView.selected.push(this);
     }
 
     setSelected(sel)
@@ -71,10 +71,9 @@ class Operator
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
-        this.label .style.color           = 'white';
+        this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
         
-        if (   this.output
-            && this.output.dataType == 'OBJ')
+        if (this.dataType == 'OBJ')
             generate([this.activeNodeInTree]);
     }
         
@@ -180,7 +179,7 @@ class Operator
         switch (this.#dataType)
         {
             case 'OBJ': return ACTIVE_OBJ_COLOR;
-            case 'NUM': return ACTIVE_NUM_COLOR;
+            case 'NUM': return NUM_COLOR; //ACTIVE_NUM_COLOR;
         }
 
         return 'magenta';

@@ -38,7 +38,7 @@ function forwardEvent(event, element)
 // }
 
 
-function remove(obj, array)
+function removeFromArray(obj, array)
 {
     array.splice(array.indexOf(obj), 1);
 }

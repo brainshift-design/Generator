@@ -6,6 +6,24 @@ graphView.tempConn   = null;
 graphView.selection  = Rect.NaN;
 
 
+graphView._selected = [];
+
+Object.defineProperty(graphView, 'selected',
+{
+    get: () => graphView._selected,
+    set: selected =>
+    {
+        for (const node of graphView._selected)            
+            node.setSelected(false);
+    
+        graphView._selected = selected;
+    
+        for (const node of graphView._selected)
+            node.setSelected(true);
+    }
+});
+
+
 graphView.addEventListener('pointerdown', e =>
 {
     if (graphView.overOutput)
@@ -35,7 +53,7 @@ graphView.addEventListener('pointerdown', e =>
     {
         if (!e.shiftKey)
         {
-            graph.selected = [];
+            graphView.selected = [];
             graphView.startSelection(e.clientX, e.clientY);
         }
     }
@@ -203,7 +221,7 @@ graphView.updateSelectBox = () =>
     selectBox.style.height = Math.abs(selection.h);
 
     
-    graph.selected = [];
+    graphView.selected = [];
 
     for (const node of graph.nodes)
     {

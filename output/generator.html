@@ -42,7 +42,7 @@ function forwardEvent(event, element)
 // }
 
 
-function remove(obj, array)
+function removeFromArray(obj, array)
 {
     array.splice(array.indexOf(obj), 1);
 }
@@ -871,6 +871,24 @@ class GGraph
     }
     
 
+    removeNode(nodeId)
+    {
+        const node = this.nodes.find(n => n.id == nodeId);
+
+        for (const input of node.inputs)
+            if (input.connected) this.disconnect(input);
+
+        if (!!node.output)
+        {
+            for (const input of node.output.connectedInputs)
+                this.disconnect(input);
+        }
+
+        node.setGraph(null);
+        removeFromArray(node, this.nodes);
+    }
+
+
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -1007,8 +1025,7 @@ extends EventTarget
 
     disconnect(input)
     {
-        const inputIndex = this.connectedInputs.indexOf(input);
-        this.connectedInputs.splice(inputIndex, 1);
+        removeFromArray(input, this.connectedInputs);
 
         this.dispatchEvent(new CustomEvent(
             'disconnect', 
@@ -1417,6 +1434,9 @@ extends GOperator
 {
     #value;
 
+    #sampled = Number.NaN;
+
+
     constructor()
     {
         super('number', 'NUM');
@@ -1431,15 +1451,26 @@ extends GOperator
     {
         if (this.valid) return;
 
+        //if (isNaN(this.#sampled))
+            this.#sampled = this.#value.value;
+
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
 
-            value:  this.#value.value
+            value:  this.#sampled
         };
 
         super.generate(callerInput);
+    }
+
+
+    reset()
+    {
+        super.reset();
+        
+        this.#sampled = Number.NaN;
     }
 }
 
@@ -1496,15 +1527,15 @@ extends GOperator
 
     reset()
     {
+        super.reset();
+
         this.noise.seed.set(this.#seed.value);
         
         for (const input of this.output.connectedInputs)
         {
-            input.initialSeed = input.currentSeed = this.noise.seed.current;
             this.noise.next();
+            input.initialSeed = input.currentSeed = this.noise.seed.current;
         }
-
-        super.reset();
     }
 }
 
@@ -1528,6 +1559,11 @@ onmessage = function(e)
             });
             
             break;
+        }
+        case 'removeNode':
+        {
+            ggraph.removeNode(e.data.nodeId);
+            break;            
         }
         case 'setNodeId': 
         {
@@ -1595,6 +1631,7 @@ onmessage = function(e)
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
+                //node.reset();
                 objects = objects.concat(node.output.getData());
             }
 
@@ -1608,6 +1645,15 @@ onmessage = function(e)
         }
     }
 };
+
+
+function reset(nodeId)
+{
+    postMessage({
+        msg:   'reset',
+        nodeId: nodeId
+    });
+}
 
 
 function generate(nodeIds)

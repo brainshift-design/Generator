@@ -68,11 +68,23 @@ document.addEventListener('pointerup', function(e)
 });
 
 
+document.addEventListener('keydown', e =>
+{
+    if (e.key == 'Delete')
+    {
+        for (const node of graphView.selected)
+            removeNode(node.id);
+
+        graphView.selected = [];
+    }
+});
+
+
 function resizeWindow(width, height)
 {
     parent.postMessage({ pluginMessage: 
     { 
-        cmd:    'resizeWindow', 
+        cmd:   'resizeWindow', 
         width:  width,
         height: height
     }}, '*');

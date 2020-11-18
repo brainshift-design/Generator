@@ -3,20 +3,6 @@ class Graph
     nodes = [];
     
     
-    #selected = [];
-    get selected() { return this.#selected; }
-    set selected(sel)
-    {
-        for (const node of this.#selected)            
-            node.setSelected(false);
-
-        this.#selected = sel;
-
-        for (const node of this.#selected)
-            node.setSelected(true);
-    }
-
-
     mutex = false;
 
     deferNodes = [];
@@ -110,6 +96,25 @@ class Graph
     }
     
 
+    removeNode(nodeId)
+    {
+        const node = this.nodes.find(n => n.id == nodeId);
+
+        for (const input of node.inputs)
+            if (input.connected) this.disconnect(input);
+
+        if (!!node.output)
+        {
+            for (const input of node.output.connectedInputs)
+                this.disconnect(input);
+        }
+
+        node.setGraph(null);
+        removeFromArray(node, this.nodes);
+        graphView.removeChild(node.div);
+    }
+
+
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -155,8 +160,7 @@ class Graph
         if (remove)
            wires.removeChild(input.connection.wire);
 
-        var inputIndex = output.connectedInputs.indexOf(input);
-        output.connectedInputs.splice(inputIndex, 1);
+        removeFromArray(input, output.connectedInputs);
         
         input .connection     = null;
         output.connection     = null;

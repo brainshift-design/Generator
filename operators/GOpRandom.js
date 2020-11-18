@@ -50,14 +50,14 @@ extends GOperator
 
     reset()
     {
+        super.reset();
+
         this.noise.seed.set(this.#seed.value);
         
         for (const input of this.output.connectedInputs)
         {
-            input.initialSeed = input.currentSeed = this.noise.seed.current;
             this.noise.next();
+            input.initialSeed = input.currentSeed = this.noise.seed.current;
         }
-
-        super.reset();
     }
 }

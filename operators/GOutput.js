@@ -49,8 +49,7 @@ extends EventTarget
 
     disconnect(input)
     {
-        const inputIndex = this.connectedInputs.indexOf(input);
-        this.connectedInputs.splice(inputIndex, 1);
+        removeFromArray(input, this.connectedInputs);
 
         this.dispatchEvent(new CustomEvent(
             'disconnect', 
