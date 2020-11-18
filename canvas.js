@@ -28,7 +28,7 @@ function createNode(opType)
 
 function removeNodes(nodes)
 {
-    const nodeIds = graph.nodes.map(n => n.id);
+    const nodeIds = nodes.map(n => n.id);
     graph.removeNodes(nodeIds);
 
     generator.postMessage({
@@ -68,11 +68,11 @@ function connect(output, input)
 }
 
 
-function disconnect(input)
+function disconnect(input, deletingOutput)
 {
     const connectedOutput = input.connectedOutput;
 
-    graph.disconnect(input);
+    graph.disconnect(input, deletingOutput);
 
     generator.postMessage({
         msg: 'disconnect',

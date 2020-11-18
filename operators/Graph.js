@@ -100,12 +100,12 @@ class Graph
             const node = this.nodes.find(n => n.id == nodeId);
 
             for (const input of node.inputs)
-                if (input.connected) this.disconnect(input);
+                if (input.connected) this.disconnect(input, true);
 
             if (!!node.output)
             {
                 for (const input of node.output.connectedInputs)
-                    this.disconnect(input);
+                    this.disconnect(input, true);
             }
 
             node.graph = null;
@@ -117,6 +117,7 @@ class Graph
 
     connect(output, input)
     {
+        console.log('Graph connect ' + output.op.id + ' --> ' + input.op.id);
         if (input.connectedOutput == output)
             return false;
             
@@ -136,7 +137,7 @@ class Graph
         
         output.op.makePassive();
         
-        invalidate(input.op);
+        //invalidate(input.op);
     
         if (!input.op.activeNodeInTree)
             input.op.makeActive();
@@ -145,8 +146,9 @@ class Graph
     }
 
 
-    disconnect(input, remove = true)
+    disconnect(input, deletingOutput = false)
     {
+        console.log('Graph disconnect ' + input.connectedOutput.op.id + ' -X- ' + input.op.id);
         // first remove the current output
 
         if (input.op)
@@ -157,8 +159,7 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        if (remove)
-           wires.removeChild(input.connection.wire);
+        wires.removeChild(input.connection.wire);
 
         removeFromArray(input, output.connectedInputs);
         
@@ -168,10 +169,11 @@ class Graph
         input.connectedOutput = null;
 
 
-        invalidate(input.op);
-        invalidate(output.op);
+        // invalidate(input.op);
+        // invalidate(output.op);
 
-        if (!output.op.activeNodeInTree)
+        if (   !output.op.activeNodeInTree
+            && !deletingOutput)
              output.op.makeActive();
             
         return true;

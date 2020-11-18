@@ -1242,6 +1242,7 @@ class GGraph
 
     connect(output, input)
     {
+        console.log('GGraph connect ' + output.op.id + ' --> ' + input.op.id);
         if (input.connectedOutput == output)
             return false;
             
@@ -1257,14 +1258,15 @@ class GGraph
         input .connection = conn;
         output.connection = conn;
         
-        output.op.valid = false;
+        input.valid = false;
 
         return true;
     }
 
 
-    disconnect(input, remove = true)
+    disconnect(input)
     {
+        console.log('GGraph disconnect ' + input.connectedOutput.op.id + ' -X- ' + input.op.id);
         var output = input.connectedOutput;
         if (!output) return false;
 
@@ -1961,6 +1963,7 @@ onmessage = function(e)
         }
         case 'generate':
         {
+            console.log('G generate');
             for (const node of ggraph.nodes)
                 node.reset();
                 
@@ -1996,6 +1999,8 @@ function reset(nodeId)
 
 function requestGenerate(nodeIds)
 {
+    console.log('G requestGenerate');
+
     postMessage({
         msg:    'requestGenerate',
         nodeIds: nodeIds
@@ -2873,12 +2878,12 @@ class Graph
             const node = this.nodes.find(n => n.id == nodeId);
 
             for (const input of node.inputs)
-                if (input.connected) this.disconnect(input);
+                if (input.connected) this.disconnect(input, true);
 
             if (!!node.output)
             {
                 for (const input of node.output.connectedInputs)
-                    this.disconnect(input);
+                    this.disconnect(input, true);
             }
 
             node.graph = null;
@@ -2890,6 +2895,7 @@ class Graph
 
     connect(output, input)
     {
+        console.log('Graph connect ' + output.op.id + ' --> ' + input.op.id);
         if (input.connectedOutput == output)
             return false;
             
@@ -2909,7 +2915,7 @@ class Graph
         
         output.op.makePassive();
         
-        invalidate(input.op);
+        //invalidate(input.op);
     
         if (!input.op.activeNodeInTree)
             input.op.makeActive();
@@ -2918,8 +2924,9 @@ class Graph
     }
 
 
-    disconnect(input, remove = true)
+    disconnect(input, deletingOutput = false)
     {
+        console.log('Graph disconnect ' + input.connectedOutput.op.id + ' -X- ' + input.op.id);
         // first remove the current output
 
         if (input.op)
@@ -2930,8 +2937,7 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        if (remove)
-           wires.removeChild(input.connection.wire);
+        wires.removeChild(input.connection.wire);
 
         removeFromArray(input, output.connectedInputs);
         
@@ -2941,10 +2947,11 @@ class Graph
         input.connectedOutput = null;
 
 
-        invalidate(input.op);
-        invalidate(output.op);
+        // invalidate(input.op);
+        // invalidate(output.op);
 
-        if (!output.op.activeNodeInTree)
+        if (   !output.op.activeNodeInTree
+            && !deletingOutput)
              output.op.makeActive();
             
         return true;
@@ -5156,7 +5163,7 @@ function createNode(opType)
 
 function removeNodes(nodes)
 {
-    const nodeIds = graph.nodes.map(n => n.id);
+    const nodeIds = nodes.map(n => n.id);
     graph.removeNodes(nodeIds);
 
     generator.postMessage({
@@ -5196,11 +5203,11 @@ function connect(output, input)
 }
 
 
-function disconnect(input)
+function disconnect(input, deletingOutput)
 {
     const connectedOutput = input.connectedOutput;
 
-    graph.disconnect(input);
+    graph.disconnect(input, deletingOutput);
 
     generator.postMessage({
         msg: 'disconnect',
