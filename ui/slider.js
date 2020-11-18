@@ -179,7 +179,12 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
                 var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
     
                 // TODO: if (log) do log scaling
-                slider.setValue(slider.sv - dx*slider.dragScale*adaptive);
+                var val = slider.sv - dx*slider.dragScale*adaptive;
+
+                const grain = Math.pow(10, this.editDec);
+                val = Math.floor(val / grain) * grain;
+                
+                slider.setValue(val);
             }
             else
             {
@@ -219,6 +224,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.setValue = function(value, fireChangeEvent = true)
     {
+        const oldValue = slider.value;
+
         if (slider.wrapValue)
         {
             while (value < slider.min) value += slider.max - slider.min;
@@ -227,7 +234,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         else
             value = Math.min(Math.max(slider.min, value), slider.max);
         
-        slider.value = value;
+        if (value != oldValue)
+            slider.value = value;
 
 
         var v  = value / (slider.max - slider.min);
@@ -261,7 +269,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
 
         if (   fireChangeEvent
-            && slider.enableChangeEvent)
+            && slider.enableChangeEvent
+            && value != oldValue)
             slider.dispatchEvent(slider.onchange);
     };
 

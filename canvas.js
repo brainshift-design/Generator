@@ -159,7 +159,6 @@ const generator = new Worker(
 
 generator.onmessage = function(e)
 {
-    console.log(e.data.msg);
     switch (e.data.msg)
     {
         case 'makeActive':

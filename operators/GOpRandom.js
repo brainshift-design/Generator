@@ -56,8 +56,8 @@ extends GOperator
         
         for (const input of this.output.connectedInputs)
         {
-            this.noise.next();
             input.initialSeed = input.currentSeed = this.noise.seed.current;
+            this.noise.next();
         }
     }
 }

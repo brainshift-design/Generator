@@ -54,9 +54,6 @@ onmessage = function(e)
 
             ggraph.disconnect(input);
 
-            // generate([e.data.outputNodeId]);
-            // generate([input.nodeId]);
-
             break;
         
         case 'setParam':

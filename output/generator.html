@@ -1533,8 +1533,8 @@ extends GOperator
         
         for (const input of this.output.connectedInputs)
         {
-            this.noise.next();
             input.initialSeed = input.currentSeed = this.noise.seed.current;
+            this.noise.next();
         }
     }
 }
@@ -1595,9 +1595,6 @@ onmessage = function(e)
             const input = node.inputs[e.data.input.index];
 
             ggraph.disconnect(input);
-
-            // generate([e.data.outputNodeId]);
-            // generate([input.nodeId]);
 
             break;
         
