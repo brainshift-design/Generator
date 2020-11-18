@@ -57,7 +57,6 @@ class GGraph
 
     connect(output, input)
     {
-        console.log('GGraph connect ' + output.op.id + ' --> ' + input.op.id);
         if (input.connectedOutput == output)
             return false;
             
@@ -81,7 +80,6 @@ class GGraph
 
     disconnect(input)
     {
-        console.log('GGraph disconnect ' + input.connectedOutput.op.id + ' -X- ' + input.op.id);
         var output = input.connectedOutput;
         if (!output) return false;
 

@@ -1242,7 +1242,6 @@ class GGraph
 
     connect(output, input)
     {
-        console.log('GGraph connect ' + output.op.id + ' --> ' + input.op.id);
         if (input.connectedOutput == output)
             return false;
             
@@ -1266,7 +1265,6 @@ class GGraph
 
     disconnect(input)
     {
-        console.log('GGraph disconnect ' + input.connectedOutput.op.id + ' -X- ' + input.op.id);
         var output = input.connectedOutput;
         if (!output) return false;
 
@@ -1963,7 +1961,6 @@ onmessage = function(e)
         }
         case 'generate':
         {
-            console.log('G generate');
             for (const node of ggraph.nodes)
                 node.reset();
                 
@@ -1999,8 +1996,6 @@ function reset(nodeId)
 
 function requestGenerate(nodeIds)
 {
-    console.log('G requestGenerate');
-
     postMessage({
         msg:    'requestGenerate',
         nodeIds: nodeIds
@@ -2895,7 +2890,6 @@ class Graph
 
     connect(output, input)
     {
-        console.log('Graph connect ' + output.op.id + ' --> ' + input.op.id);
         if (input.connectedOutput == output)
             return false;
             
@@ -2926,7 +2920,6 @@ class Graph
 
     disconnect(input, deletingOutput = false)
     {
-        console.log('Graph disconnect ' + input.connectedOutput.op.id + ' -X- ' + input.op.id);
         // first remove the current output
 
         if (input.op)
@@ -4865,6 +4858,13 @@ document.addEventListener('keydown', e =>
     {
         removeNodes(graphView.selected);
         graphView._selected = [];
+    }
+    else if (e.code == 'KeyA'
+          && e.ctrlKey)
+    {
+        const selected = graph.nodes;
+        console.log(selected);
+        graphView.selected = selected;
     }
 });
 

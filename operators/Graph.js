@@ -117,7 +117,6 @@ class Graph
 
     connect(output, input)
     {
-        console.log('Graph connect ' + output.op.id + ' --> ' + input.op.id);
         if (input.connectedOutput == output)
             return false;
             
@@ -148,7 +147,6 @@ class Graph
 
     disconnect(input, deletingOutput = false)
     {
-        console.log('Graph disconnect ' + input.connectedOutput.op.id + ' -X- ' + input.op.id);
         // first remove the current output
 
         if (input.op)

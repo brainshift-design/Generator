@@ -78,7 +78,6 @@ onmessage = function(e)
         }
         case 'generate':
         {
-            console.log('G generate');
             for (const node of ggraph.nodes)
                 node.reset();
                 
@@ -114,8 +113,6 @@ function reset(nodeId)
 
 function requestGenerate(nodeIds)
 {
-    console.log('G requestGenerate');
-
     postMessage({
         msg:    'requestGenerate',
         nodeIds: nodeIds
