@@ -19,7 +19,9 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
 
+        
         const width  = this.#width .value;
         const height = this.#height.value;
 
@@ -35,7 +37,5 @@ extends GOperator
             width:   width,
             height:  height
         }];
-
-        super.generate(callerInput);
     }
 }

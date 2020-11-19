@@ -17,11 +17,12 @@ extends Operator
         this.addParam(this.#count  = new NumberParam('count', 2, 1));
         this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
     }
-
-
+    
+    
     generate()
     {
         if (this.valid) return;
+        super.generate();
 
         var input = this.inputs[0];
 
@@ -45,6 +46,5 @@ extends Operator
             inputs: [input.data]
         };
 
-        super.generate();
     }
 }

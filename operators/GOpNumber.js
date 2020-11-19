@@ -1,9 +1,9 @@
 class   GOpNumber
 extends GOperator
 {
-    #value;
+    _value;
 
-    #sampled = Number.NaN;
+    _sampled = Number.NaN;
 
 
     constructor()
@@ -12,33 +12,40 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#value = new GNumberParam(''));
+        this.addParam(this._value = new GNumberParam(''));
     }
 
 
     generate(callerInput)
     {
         if (this.valid) return;
+        // if (   this._valid
+        //     && (  !this._value.input.connected
+        //         || this._value.input.connectedOutput.op.opType == 'random')) 
+        //     return;
 
-        //if (isNaN(this.#sampled))
-            this.#sampled = this.#value.value;
+        super.generate(callerInput);
+        console.log('generate number');
+        console.log(this._sampled);
+
+
+        if (isNaN(this._sampled))
+            this._sampled = this._value.value;
 
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
 
-            value:  this.#sampled
+            value:  this._sampled
         };
-
-        super.generate(callerInput);
     }
 
 
-    reset()
+    refresh()
     {
-        super.reset();
+        super.refresh();
         
-        this.#sampled = Number.NaN;
+        this._sampled = Number.NaN;
     }
 }

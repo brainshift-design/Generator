@@ -66,6 +66,7 @@ class Operator
         this.makeRightPassive();        
 
         this._active = true;
+        setActive(this, true);
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
@@ -112,6 +113,7 @@ class Operator
         }
 
         this._active = false;
+        setActive(this, false);
     }
 
     

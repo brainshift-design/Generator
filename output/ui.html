@@ -1430,14 +1430,14 @@ class GOperator
     
     cachedObjects = [];
 
-    #valid = false; // this is the flag for regeneration
+    _valid = false; // this is the flag for regeneration
 
 
-    set valid(valid) { this.#valid = valid; }
+    set valid(valid) { this._valid = valid; }
     
     get valid() 
     {
-        var valid = this.#valid;
+        var valid = this._valid;
         if (!valid) return valid;
         
         for (const input of this.inputs)
@@ -1448,6 +1448,9 @@ class GOperator
 
         return valid;
     }
+
+    
+    active = false;
 
 
     div;
@@ -1510,10 +1513,20 @@ class GOperator
     generate(callerInput) 
     { 
         this.valid = true; 
+
+        // const param = this.params.find(p => 
+        //        p.input.connected 
+        //     && p.input.dataType != this.dataType);
+
+        // if (param)
+        // {
+        //     console.log(param);
+        //     this.reset();
+        // }
     }
 
 
-    reset() 
+    reset() // for the entire generation run
     {
         for (const input of this.inputs)
         {
@@ -1525,6 +1538,16 @@ class GOperator
     }
 
 
+    refresh() // for repeats requests from nodes that duplicate their input, like row and column
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                input.connectedOutput.op.refresh();
+        }
+    }
+
+    
     isBefore(node)
     {
         if (   !this.output
@@ -1578,7 +1601,9 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
 
+        
         const width  = this.#width .value;
         const height = this.#height.value;
 
@@ -1594,8 +1619,6 @@ extends GOperator
             width:   width,
             height:  height
         }];
-
-        super.generate(callerInput);
     }
 }
 
@@ -1614,7 +1637,7 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count',  4, 1));
+        this.addParam(this.#count = new GNumberParam('count',  7, 1));
         this.addParam(this.#gap   = new GNumberParam('gap',   10, 0));
     }
 
@@ -1622,6 +1645,7 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
 
 
         const input = this.inputs[0];
@@ -1653,9 +1677,11 @@ extends GOperator
             }
 
             x += bounds.w + gap;
-        }
 
-        super.generate(callerInput);
+            // as this node duplicates its input, everything like
+            // OpNumber upstream that does S&H needs to be refreshed
+            this.refresh();
+        }
     }
 }
 
@@ -1674,7 +1700,7 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count', 4, 1));
+        this.addParam(this.#count = new GNumberParam('count', 7, 1));
         this.addParam(this.#gap   = new GNumberParam('gap', 10, 0));
     }
 
@@ -1682,6 +1708,7 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
 
 
         const input = this.inputs[0];
@@ -1713,10 +1740,9 @@ extends GOperator
             }
             
             y += bounds.h + gap;
-        }
-    
 
-        super.generate(callerInput);
+            this.refresh();
+        }
     }
 }
 
@@ -1745,6 +1771,8 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
+
 
         var input = this.inputs[0];
 
@@ -1767,8 +1795,6 @@ extends GOperator
 
             inputs: [input.data]
         };
-
-        super.generate(callerInput);
     }
 }
 
@@ -1776,9 +1802,9 @@ extends GOperator
 class   GOpNumber
 extends GOperator
 {
-    #value;
+    _value;
 
-    #sampled = Number.NaN;
+    _sampled = Number.NaN;
 
 
     constructor()
@@ -1787,34 +1813,41 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#value = new GNumberParam(''));
+        this.addParam(this._value = new GNumberParam(''));
     }
 
 
     generate(callerInput)
     {
         if (this.valid) return;
+        // if (   this._valid
+        //     && (  !this._value.input.connected
+        //         || this._value.input.connectedOutput.op.opType == 'random')) 
+        //     return;
 
-        //if (isNaN(this.#sampled))
-            this.#sampled = this.#value.value;
+        super.generate(callerInput);
+        console.log('generate number');
+        console.log(this._sampled);
+
+
+        if (isNaN(this._sampled))
+            this._sampled = this._value.value;
 
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
 
-            value:  this.#sampled
+            value:  this._sampled
         };
-
-        super.generate(callerInput);
     }
 
 
-    reset()
+    refresh()
     {
-        super.reset();
+        super.refresh();
         
-        this.#sampled = Number.NaN;
+        this._sampled = Number.NaN;
     }
 }
 
@@ -1848,6 +1881,7 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
 
         if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
         var rnd = this.noise.next(this.#scale.value);
@@ -1861,9 +1895,7 @@ extends GOperator
             opType: this.opType,
 
             value:  value
-        };
-
-        super.generate(callerInput);
+        };    
 
         this.valid = false;
     }
@@ -1915,13 +1947,19 @@ onmessage = function(e)
             node.id = e.data.newId;
             break;
         }
+        case 'setActive': // this is only a state message, no regeneration
+        {
+            const node = ggraph.nodeFromId(e.data.nodeId);
+            node.active = e.data.active;
+            break;
+        }
         case 'connect':
         {
-            const outNode = ggraph.nodes.find(n => n.id == e.data.output);
+            const outNode = ggraph.nodeFromId(e.data.output);
 
             for (const input of e.data.inputs)
             {
-                const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
+                const inNode = ggraph.nodeFromId(input.nodeId);
 
                 ggraph.connect(
                     outNode.output, 
@@ -1935,7 +1973,7 @@ onmessage = function(e)
             break;
         }
         case 'disconnect':
-            const node  = ggraph.nodes.find(n => n.id == e.data.input.nodeId);
+            const node  = ggraph.nodeFromId(e.data.input.nodeId);
             const input = node.inputs[e.data.input.index];
 
             ggraph.disconnect(input);
@@ -1944,7 +1982,7 @@ onmessage = function(e)
         
         case 'setParam':
         {
-            const node  = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            const node  = ggraph.nodeFromId(e.data.nodeId);
             const param = node.params.find(p => p.name == e.data.param);
             param.value = e.data.value;
             requestGenerate([node.id]);
@@ -1959,8 +1997,8 @@ onmessage = function(e)
         }
         case 'reset':
         {
-            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
-            node.reset();
+            // const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            // node.reset();
         }
         case 'generate':
         {
@@ -1976,6 +2014,16 @@ onmessage = function(e)
                 objects = objects.concat(node.output.getData());
             }
 
+            // reset number nodes to be able to duplicate random inputs
+            // for (const node of ggraph.nodes)
+            // {
+            //     if (node.opType == 'number')
+            //     {
+            //         console.log('reset number');
+            //         node._sampled = Number.NaN;
+            //     }
+            // }
+
             postMessage({ 
                 msg:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
@@ -1988,13 +2036,13 @@ onmessage = function(e)
 };
 
 
-function reset(nodeId)
-{
-    postMessage({
-        msg:   'reset',
-        nodeId: nodeId
-    });
-}
+// function reset(nodeId)
+// {
+//     postMessage({
+//         msg:   'reset',
+//         nodeId: nodeId
+//     });
+// }
 
 
 function requestGenerate(nodeIds)
@@ -3313,6 +3361,7 @@ class Operator
         this.makeRightPassive();        
 
         this._active = true;
+        setActive(this, true);
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
@@ -3359,6 +3408,7 @@ class Operator
         }
 
         this._active = false;
+        setActive(this, false);
     }
 
     
@@ -3969,8 +4019,8 @@ extends Operator
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count',  4, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+        this.addParam(this.#count = new NumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
     }
 }
 
@@ -3989,7 +4039,7 @@ extends Operator
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count', 4, 1));
+        this.addParam(this.#count = new NumberParam('count', 7, 1));
         this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
     }
 }
@@ -4014,11 +4064,12 @@ extends Operator
         this.addParam(this.#count  = new NumberParam('count', 2, 1));
         this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
     }
-
-
+    
+    
     generate()
     {
         if (this.valid) return;
+        super.generate();
 
         var input = this.inputs[0];
 
@@ -4042,7 +4093,6 @@ extends Operator
             inputs: [input.data]
         };
 
-        super.generate();
     }
 }
 
@@ -5286,6 +5336,17 @@ function invalidate(node)
 }
 
 
+
+function setActive(node, active)
+{
+    generator.postMessage({
+        msg:   'setActive', 
+        nodeId: node.id,
+        active: active
+    });
+}
+
+
 function removeNodeOutput(node)
 {
     parent.postMessage({ pluginMessage: 
@@ -5372,12 +5433,12 @@ generator.onmessage = function(e)
         }
         case 'reset':
         {
-            const node = graph.nodes.find(n => n.id == e.data.nodeId);
+            // const node = graph.nodes.find(n => n.id == e.data.nodeId);
 
-            generator.postMessage({
-                cmd:   'reset',
-                nodeId: node.activeNodeInTree.id
-            });    
+            // generator.postMessage({
+            //     cmd:   'reset',
+            //     nodeId: node.activeNodeInTree.id
+            // });    
 
             break;
         }

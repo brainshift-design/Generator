@@ -106,6 +106,17 @@ function invalidate(node)
 }
 
 
+
+function setActive(node, active)
+{
+    generator.postMessage({
+        msg:   'setActive', 
+        nodeId: node.id,
+        active: active
+    });
+}
+
+
 function removeNodeOutput(node)
 {
     parent.postMessage({ pluginMessage: 
@@ -192,12 +203,12 @@ generator.onmessage = function(e)
         }
         case 'reset':
         {
-            const node = graph.nodes.find(n => n.id == e.data.nodeId);
+            // const node = graph.nodes.find(n => n.id == e.data.nodeId);
 
-            generator.postMessage({
-                cmd:   'reset',
-                nodeId: node.activeNodeInTree.id
-            });    
+            // generator.postMessage({
+            //     cmd:   'reset',
+            //     nodeId: node.activeNodeInTree.id
+            // });    
 
             break;
         }

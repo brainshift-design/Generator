@@ -27,6 +27,7 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
 
         if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
         var rnd = this.noise.next(this.#scale.value);
@@ -40,9 +41,7 @@ extends GOperator
             opType: this.opType,
 
             value:  value
-        };
-
-        super.generate(callerInput);
+        };    
 
         this.valid = false;
     }

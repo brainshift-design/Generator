@@ -22,6 +22,8 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
+
 
         var input = this.inputs[0];
 
@@ -44,7 +46,5 @@ extends GOperator
 
             inputs: [input.data]
         };
-
-        super.generate(callerInput);
     }
 }

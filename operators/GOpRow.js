@@ -12,7 +12,7 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count',  4, 1));
+        this.addParam(this.#count = new GNumberParam('count',  7, 1));
         this.addParam(this.#gap   = new GNumberParam('gap',   10, 0));
     }
 
@@ -20,6 +20,7 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
+        super.generate(callerInput);
 
 
         const input = this.inputs[0];
@@ -51,8 +52,10 @@ extends GOperator
             }
 
             x += bounds.w + gap;
-        }
 
-        super.generate(callerInput);
+            // as this node duplicates its input, everything like
+            // OpNumber upstream that does S&H needs to be refreshed
+            this.refresh();
+        }
     }
 }

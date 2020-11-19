@@ -26,14 +26,14 @@ class GOperator
     
     cachedObjects = [];
 
-    #valid = false; // this is the flag for regeneration
+    _valid = false; // this is the flag for regeneration
 
 
-    set valid(valid) { this.#valid = valid; }
+    set valid(valid) { this._valid = valid; }
     
     get valid() 
     {
-        var valid = this.#valid;
+        var valid = this._valid;
         if (!valid) return valid;
         
         for (const input of this.inputs)
@@ -44,6 +44,9 @@ class GOperator
 
         return valid;
     }
+
+    
+    active = false;
 
 
     div;
@@ -106,10 +109,20 @@ class GOperator
     generate(callerInput) 
     { 
         this.valid = true; 
+
+        // const param = this.params.find(p => 
+        //        p.input.connected 
+        //     && p.input.dataType != this.dataType);
+
+        // if (param)
+        // {
+        //     console.log(param);
+        //     this.reset();
+        // }
     }
 
 
-    reset() 
+    reset() // for the entire generation run
     {
         for (const input of this.inputs)
         {
@@ -121,6 +134,16 @@ class GOperator
     }
 
 
+    refresh() // for repeats requests from nodes that duplicate their input, like row and column
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                input.connectedOutput.op.refresh();
+        }
+    }
+
+    
     isBefore(node)
     {
         if (   !this.output

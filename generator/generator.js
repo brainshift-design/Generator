@@ -29,13 +29,19 @@ onmessage = function(e)
             node.id = e.data.newId;
             break;
         }
+        case 'setActive': // this is only a state message, no regeneration
+        {
+            const node = ggraph.nodeFromId(e.data.nodeId);
+            node.active = e.data.active;
+            break;
+        }
         case 'connect':
         {
-            const outNode = ggraph.nodes.find(n => n.id == e.data.output);
+            const outNode = ggraph.nodeFromId(e.data.output);
 
             for (const input of e.data.inputs)
             {
-                const inNode = ggraph.nodes.find(n => n.id == input.nodeId);
+                const inNode = ggraph.nodeFromId(input.nodeId);
 
                 ggraph.connect(
                     outNode.output, 
@@ -49,7 +55,7 @@ onmessage = function(e)
             break;
         }
         case 'disconnect':
-            const node  = ggraph.nodes.find(n => n.id == e.data.input.nodeId);
+            const node  = ggraph.nodeFromId(e.data.input.nodeId);
             const input = node.inputs[e.data.input.index];
 
             ggraph.disconnect(input);
@@ -58,7 +64,7 @@ onmessage = function(e)
         
         case 'setParam':
         {
-            const node  = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            const node  = ggraph.nodeFromId(e.data.nodeId);
             const param = node.params.find(p => p.name == e.data.param);
             param.value = e.data.value;
             requestGenerate([node.id]);
@@ -73,8 +79,8 @@ onmessage = function(e)
         }
         case 'reset':
         {
-            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
-            node.reset();
+            // const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
+            // node.reset();
         }
         case 'generate':
         {
@@ -90,6 +96,16 @@ onmessage = function(e)
                 objects = objects.concat(node.output.getData());
             }
 
+            // reset number nodes to be able to duplicate random inputs
+            // for (const node of ggraph.nodes)
+            // {
+            //     if (node.opType == 'number')
+            //     {
+            //         console.log('reset number');
+            //         node._sampled = Number.NaN;
+            //     }
+            // }
+
             postMessage({ 
                 msg:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
@@ -102,13 +118,13 @@ onmessage = function(e)
 };
 
 
-function reset(nodeId)
-{
-    postMessage({
-        msg:   'reset',
-        nodeId: nodeId
-    });
-}
+// function reset(nodeId)
+// {
+//     postMessage({
+//         msg:   'reset',
+//         nodeId: nodeId
+//     });
+// }
 
 
 function requestGenerate(nodeIds)
