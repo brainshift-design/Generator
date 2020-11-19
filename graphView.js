@@ -1,7 +1,11 @@
+graphView.wires = [];
+
+
 graphView.overInput  = null;
 graphView.overOutput = null;
 
 graphView.tempConn   = null;
+
 
 graphView.selection  = Rect.NaN;
 
@@ -24,48 +28,100 @@ Object.defineProperty(graphView, 'selected',
 });
 
 
+graphView._pan = {x:0, y:0};
+  
+Object.defineProperty(graphView, 'pan',
+{
+    get: () => graphView._pan,
+    set: pan =>
+    {
+        if (graphView._pan == pan) return;
+        graphView._pan = pan;
+        graphView.updatePan();
+    }
+});
+
+graphView.panning = false;
+graphView.panStart;
+
+
+graphView._zoom = 1;
+
+Object.defineProperty(graphView, 'zoom',
+{
+    get: () => graphView._zoom,
+    set: zoom =>
+    {
+        if (graphView._zoom == zoom) return;
+        graphView._zoom = zoom;
+        graphView.updatePan();
+    }
+});
+
+graphView.zooming   = false;
+graphView.zoomStart = 1;
+
+
+graphView.pStart = {x:0, y:0};
+
+
 graphView.addEventListener('pointerdown', e =>
 {
-    if (graphView.overOutput)
+    graphView.pStart = { x: e.clientX, 
+                         y: e.clientY };
+
+    if (e.button == 0)
     {
-        graphView.overOutput.connecting = true;
-        graphView.startConnectionFromOutput(graphView.overOutput);
-        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        if (graphView.overOutput)
+        {
+            graphView.overOutput.connecting = true;
+            graphView.startConnectionFromOutput(graphView.overOutput);
+            graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+        }
+        else if (graphView.overInput)
+        {
+            if (graphView.overInput.connectedOutput) // pretend to disconnect
+            {
+                graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+                graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+                graphView.tempConn.savedInput = graphView.overInput;
+                hide(graphView.overInput.connection.wire);
+                hide(graphView.overInput.connection.wire.outBall);
+            }
+            else
+            {
+                graphView.overInput.connecting = true;
+                graphView.startConnectionFromInput(graphView.overInput);
+                graphView.tempConn.wire.updateFromInput(e.clientX, e.clientY)
+            }
+        }
+        else // selection
+        {
+            if (!e.shiftKey)
+            {
+                graphView.selected = [];
+                graphView.startSelection(e.clientX, e.clientY);
+            }
+        }
     }
-    else if (graphView.overInput)
+    
+    else if (e.button == 1)
     {
-        if (graphView.overInput.connectedOutput) // pretend to disconnect
-        {
-            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
-            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-            graphView.tempConn.savedInput = graphView.overInput;
-            hide(graphView.overInput.connection.wire);
-            hide(graphView.overInput.connection.wire.outBall);
-        }
-        else
-        {
-            graphView.overInput.connecting = true;
-            graphView.startConnectionFromInput(graphView.overInput);
-            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
-        }
-    }
-    else // selection
-    {
-        if (!e.shiftKey)
-        {
-            graphView.selected = [];
-            graphView.startSelection(e.clientX, e.clientY);
-        }
+        graphView.panning  = true;
+        graphView.panStart = graphView.pan;
+        graphView.style.cursor = 'grab';
     }
 });
 
 
 graphView.addEventListener('pointerup', e =>
 {
-    if (!graphView.selection.isNaN)
+    if (   e.button == 0
+        && !graphView.selection.isNaN)
         graphView.endSelection();
 
-    else if (graphView.tempConn)
+    else if (e.button == 0
+          && graphView.tempConn)
     {
         if (graphView.tempConn.output) // FROM OUTPUT
         {
@@ -113,18 +169,30 @@ graphView.addEventListener('pointerup', e =>
             graphView.cancelConnection();
         }
     }
+
+    else if (e.button == 1
+          && graphView.panning)
+    {
+        graphView.panning = false;
+        graphView.style.cursor = 'auto';
+    }
 });
 
 
 graphView.addEventListener('pointermove', e =>
 {
-    if (!graphView.selection.isNaN)
+    const p = {x: e.clientX, y: e.clientY};
+
+    if (graphView.panning)
+        graphView.pan = addv(graphView.panStart, subv(p, graphView.pStart));
+
+    else if (!graphView.selection.isNaN)
         graphView.updateSelection(e.clientX, e.clientY);
 
     else if (graphView.tempConn)
     {
-             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
+             if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
     }
 });
 
@@ -132,20 +200,20 @@ graphView.addEventListener('pointermove', e =>
 graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new Connection(output, null);
-    wires.appendChild(graphView.tempConn.wire);    
+    graphView.addWire(graphView.tempConn.wire);    
 };
 
 
 graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new Connection(null, input);
-    wires.appendChild(graphView.tempConn.wire);    
+    graphView.addWire(graphView.tempConn.wire);    
 };
 
 
 graphView.cancelConnection = () =>
 {
-    wires.removeChild(graphView.tempConn.wire);    
+    graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
 };
 
@@ -234,4 +302,36 @@ graphView.endSelection = () =>
 {
     graphView.selection = Rect.NaN;
     selectBox.style.visibility = 'hidden';
+};
+
+
+graphView.updatePan = () =>
+{
+    const pan = 
+          'translate(' 
+        + graphView.pan.x
+        + 'px, ' 
+        + graphView.pan.y
+        + 'px)';
+
+    for (const node of graph.nodes)
+        node.div.style.transform = pan;
+
+    for (const wire of graphView.wires)
+        wire.style.transform = pan;
+};
+
+
+graphView.addWire = wire =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    wire.update();  
+};
+
+
+graphView.removeWire = wire =>
+{
+    graphView.removeChild(wire);    
+    removeFromArray(wire, graphView.wires);
 };

@@ -335,7 +335,6 @@ button svg
 
 <div id='graphView'></div>
 <div id='selectBox'></div>
-<div id='wires'></div>
 
 <div id='controlBar'>
 
@@ -1513,16 +1512,6 @@ class GOperator
     generate(callerInput) 
     { 
         this.valid = true; 
-
-        // const param = this.params.find(p => 
-        //        p.input.connected 
-        //     && p.input.dataType != this.dataType);
-
-        // if (param)
-        // {
-        //     console.log(param);
-        //     this.reset();
-        // }
     }
 
 
@@ -1820,16 +1809,9 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
-        // if (   this._valid
-        //     && (  !this._value.input.connected
-        //         || this._value.input.connectedOutput.op.opType == 'random')) 
-        //     return;
-
         super.generate(callerInput);
-        console.log('generate number');
-        console.log(this._sampled);
 
-
+        
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
@@ -1992,13 +1974,7 @@ onmessage = function(e)
         {
             const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
             node.valid = false;
-            //generate([node.id]);
             break;
-        }
-        case 'reset':
-        {
-            // const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
-            // node.reset();
         }
         case 'generate':
         {
@@ -2010,19 +1986,8 @@ onmessage = function(e)
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                //node.reset();
                 objects = objects.concat(node.output.getData());
             }
-
-            // reset number nodes to be able to duplicate random inputs
-            // for (const node of ggraph.nodes)
-            // {
-            //     if (node.opType == 'number')
-            //     {
-            //         console.log('reset number');
-            //         node._sampled = Number.NaN;
-            //     }
-            // }
 
             postMessage({ 
                 msg:    'recreateObjects',
@@ -2034,15 +1999,6 @@ onmessage = function(e)
         }
     }
 };
-
-
-// function reset(nodeId)
-// {
-//     postMessage({
-//         msg:   'reset',
-//         nodeId: nodeId
-//     });
-// }
 
 
 function requestGenerate(nodeIds)
@@ -2967,8 +2923,7 @@ class Graph
         input .connection = conn;
         output.connection = conn;
         
-        wires.appendChild(conn.wire);
-        conn.updateWire();
+        graphView.addWire(conn.wire);
         
         output.op.makePassive();
         
@@ -2993,7 +2948,7 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        wires.removeChild(input.connection.wire);
+        graphView.removeWire(input.connection.wire);
 
         removeFromArray(input, output.connectedInputs);
         
@@ -3199,96 +3154,96 @@ class Connection
         this.wire.appendChild(this.wire.curve);
         this.wire.appendChild(this.wire.outBall);
         this.wire.appendChild(this.wire.inBall);
-    }
 
 
-    updateWire()
-    {
-        var outRect = this.output.control.getBoundingClientRect();
-        var inRect  = this.input .control.getBoundingClientRect();
-
-        var x1 = outRect.left + outRect.width /2;
-        var y1 = outRect.top  + outRect.height/2;
-        var x2 = inRect .left + inRect .width /2;
-        var y2 = inRect .top  + inRect .height/2;
-
-        var color;
-
-        switch (this.output.dataType)
+        this.wire.update = () =>
         {
-            case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
-            case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
-        }
+            var outRect = this.output.control.getBoundingClientRect();
+            var inRect  = this.input .control.getBoundingClientRect();
 
-        this.wire.curve.setAttribute('d',
-               'M ' +  (x1                ) + ',' + y1
-            + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
-            + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
-            + ' '   +  (x2                ) + ',' + y2);
+            var x1 = outRect.left + outRect.width /2;
+            var y1 = outRect.top  + outRect.height/2;
+            var x2 = inRect .left + inRect .width /2;
+            var y2 = inRect .top  + inRect .height/2;
 
-        this.wire.curve.setAttribute('stroke', color);
+            var color;
 
-        show(this.wire.outBall);
-        this.wire.outBall.setAttribute('cx', x1);
-        this.wire.outBall.setAttribute('cy', y1);
-        this.wire.outBall.setAttribute('fill', color);
+            switch (this.output.dataType)
+            {
+                case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
+                case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
+            }
 
-        show(this.wire.inBall);
-        this.wire.inBall.setAttribute('cx', x2);
-        this.wire.inBall.setAttribute('cy', y2);
-        this.wire.inBall.setAttribute('fill', color);
-    }
+            this.wire.curve.setAttribute('d',
+                'M ' +  (x1                ) + ',' + y1
+                + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
+                + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
+                + ' '   +  (x2                ) + ',' + y2);
 
+            this.wire.curve.setAttribute('stroke', color);
 
-    updateWireFromOutput(x, y)
-    {
-        var outRect = this.output.control.getBoundingClientRect();
+            show(this.wire.outBall);
+            this.wire.outBall.setAttribute('cx', x1);
+            this.wire.outBall.setAttribute('cy', y1);
+            this.wire.outBall.setAttribute('fill', color);
 
-        var x1 = outRect.left + outRect.width /2;
-        var y1 = outRect.top  + outRect.height/2;
-
-        this.wire.curve.setAttribute('d',
-               'M ' +  (x1               ) + ',' + y1
-            + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
-            + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
-            + ' '   +  (x                ) + ',' + y);
-
-        this.wire.outBall.setAttribute('cx', x1);
-        this.wire.outBall.setAttribute('cy', y1);
-
-        var col = colorFromDataType(this.output.dataType, true);
-
-        this.wire.curve  .style.stroke = col;
-        this.wire.inBall .style.fill   = col;
-        this.wire.outBall.style.fill   = col;
-
-        hide(this.wire.inBall);
-    }
+            show(this.wire.inBall);
+            this.wire.inBall.setAttribute('cx', x2);
+            this.wire.inBall.setAttribute('cy', y2);
+            this.wire.inBall.setAttribute('fill', color);
+        };
 
 
-    updateWireFromInput(x, y)
-    {
-        var inRect = this.input.control.getBoundingClientRect();
+        this.wire.updateFromOutput = (x, y) =>
+        {
+            var outRect = this.output.control.getBoundingClientRect();
 
-        var x2 = inRect.left + inRect.width /2;
-        var y2 = inRect.top  + inRect.height/2;
+            var x1 = outRect.left + outRect.width /2;
+            var y1 = outRect.top  + outRect.height/2;
 
-        this.wire.curve.setAttribute('d',
-               'M ' +  (x               ) + ',' + y
-            + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
-            + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
-            + ' '   +  (x2              ) + ',' + y2);
+            this.wire.curve.setAttribute('d',
+                'M ' +  (x1               ) + ',' + y1
+                + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
+                + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
+                + ' '   +  (x                ) + ',' + y);
 
-        this.wire.inBall.setAttribute('cx', x2);
-        this.wire.inBall.setAttribute('cy', y2);
+            this.wire.outBall.setAttribute('cx', x1);
+            this.wire.outBall.setAttribute('cy', y1);
 
-        var col = colorFromDataType(this.input.dataType, true);
+            var col = colorFromDataType(this.output.dataType, true);
 
-        this.wire.curve  .style.stroke = col;
-        this.wire.inBall .style.fill   = col;
-        this.wire.outBall.style.fill   = col;
+            this.wire.curve  .style.stroke = col;
+            this.wire.inBall .style.fill   = col;
+            this.wire.outBall.style.fill   = col;
 
-        hide(this.wire.outBall);
+            hide(this.wire.inBall);
+        };
+
+
+        this.wire.updateFromInput = (x, y) =>
+        {
+            var inRect = this.input.control.getBoundingClientRect();
+
+            var x2 = inRect.left + inRect.width /2;
+            var y2 = inRect.top  + inRect.height/2;
+
+            this.wire.curve.setAttribute('d',
+                'M ' +  (x               ) + ',' + y
+                + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
+                + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
+                + ' '   +  (x2              ) + ',' + y2);
+
+            this.wire.inBall.setAttribute('cx', x2);
+            this.wire.inBall.setAttribute('cy', y2);
+
+            var col = colorFromDataType(this.input.dataType, true);
+
+            this.wire.curve  .style.stroke = col;
+            this.wire.inBall .style.fill   = col;
+            this.wire.outBall.style.fill   = col;
+
+            hide(this.wire.outBall);
+        };
     }
 }
 
@@ -3753,20 +3708,20 @@ function setDivPosition(node, x, y)
     for (const input of node.inputs)
     {
         if (input.connected) 
-            input.connection.updateWire();
+            input.connection.wire.update();
     }
 
     if (   node.output 
         && node.output.connected)
     {
         for (const input of node.output.connectedInputs)
-            input.connection.updateWire();
+            input.connection.wire.update();
     }
 
     for (const param of node.params)
     {
-        if (param.input .connected) 
-            param.input .connection.updateWire();
+        if (param.input.connected) 
+            param.input.connection.wire.update();
     }
 }
 
@@ -4989,10 +4944,14 @@ function checkResize(x, y)
 }
 
 
+graphView.wires = [];
+
+
 graphView.overInput  = null;
 graphView.overOutput = null;
 
 graphView.tempConn   = null;
+
 
 graphView.selection  = Rect.NaN;
 
@@ -5015,48 +4974,100 @@ Object.defineProperty(graphView, 'selected',
 });
 
 
+graphView._pan = {x:0, y:0};
+  
+Object.defineProperty(graphView, 'pan',
+{
+    get: () => graphView._pan,
+    set: pan =>
+    {
+        if (graphView._pan == pan) return;
+        graphView._pan = pan;
+        graphView.updatePan();
+    }
+});
+
+graphView.panning = false;
+graphView.panStart;
+
+
+graphView._zoom = 1;
+
+Object.defineProperty(graphView, 'zoom',
+{
+    get: () => graphView._zoom,
+    set: zoom =>
+    {
+        if (graphView._zoom == zoom) return;
+        graphView._zoom = zoom;
+        graphView.updatePan();
+    }
+});
+
+graphView.zooming   = false;
+graphView.zoomStart = 1;
+
+
+graphView.pStart = {x:0, y:0};
+
+
 graphView.addEventListener('pointerdown', e =>
 {
-    if (graphView.overOutput)
+    graphView.pStart = { x: e.clientX, 
+                         y: e.clientY };
+
+    if (e.button == 0)
     {
-        graphView.overOutput.connecting = true;
-        graphView.startConnectionFromOutput(graphView.overOutput);
-        graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
+        if (graphView.overOutput)
+        {
+            graphView.overOutput.connecting = true;
+            graphView.startConnectionFromOutput(graphView.overOutput);
+            graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+        }
+        else if (graphView.overInput)
+        {
+            if (graphView.overInput.connectedOutput) // pretend to disconnect
+            {
+                graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+                graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+                graphView.tempConn.savedInput = graphView.overInput;
+                hide(graphView.overInput.connection.wire);
+                hide(graphView.overInput.connection.wire.outBall);
+            }
+            else
+            {
+                graphView.overInput.connecting = true;
+                graphView.startConnectionFromInput(graphView.overInput);
+                graphView.tempConn.wire.updateFromInput(e.clientX, e.clientY)
+            }
+        }
+        else // selection
+        {
+            if (!e.shiftKey)
+            {
+                graphView.selected = [];
+                graphView.startSelection(e.clientX, e.clientY);
+            }
+        }
     }
-    else if (graphView.overInput)
+    
+    else if (e.button == 1)
     {
-        if (graphView.overInput.connectedOutput) // pretend to disconnect
-        {
-            graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
-            graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-            graphView.tempConn.savedInput = graphView.overInput;
-            hide(graphView.overInput.connection.wire);
-            hide(graphView.overInput.connection.wire.outBall);
-        }
-        else
-        {
-            graphView.overInput.connecting = true;
-            graphView.startConnectionFromInput(graphView.overInput);
-            graphView.tempConn.updateWireFromInput (e.clientX, e.clientY)
-        }
-    }
-    else // selection
-    {
-        if (!e.shiftKey)
-        {
-            graphView.selected = [];
-            graphView.startSelection(e.clientX, e.clientY);
-        }
+        graphView.panning  = true;
+        graphView.panStart = graphView.pan;
+        graphView.style.cursor = 'grab';
     }
 });
 
 
 graphView.addEventListener('pointerup', e =>
 {
-    if (!graphView.selection.isNaN)
+    if (   e.button == 0
+        && !graphView.selection.isNaN)
         graphView.endSelection();
 
-    else if (graphView.tempConn)
+    else if (e.button == 0
+          && graphView.tempConn)
     {
         if (graphView.tempConn.output) // FROM OUTPUT
         {
@@ -5104,18 +5115,30 @@ graphView.addEventListener('pointerup', e =>
             graphView.cancelConnection();
         }
     }
+
+    else if (e.button == 1
+          && graphView.panning)
+    {
+        graphView.panning = false;
+        graphView.style.cursor = 'auto';
+    }
 });
 
 
 graphView.addEventListener('pointermove', e =>
 {
-    if (!graphView.selection.isNaN)
+    const p = {x: e.clientX, y: e.clientY};
+
+    if (graphView.panning)
+        graphView.pan = addv(graphView.panStart, subv(p, graphView.pStart));
+
+    else if (!graphView.selection.isNaN)
         graphView.updateSelection(e.clientX, e.clientY);
 
     else if (graphView.tempConn)
     {
-             if (graphView.tempConn.output) graphView.tempConn.updateWireFromOutput(e.clientX, e.clientY);
-        else if (graphView.tempConn.input ) graphView.tempConn.updateWireFromInput (e.clientX, e.clientY);
+             if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
     }
 });
 
@@ -5123,20 +5146,20 @@ graphView.addEventListener('pointermove', e =>
 graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new Connection(output, null);
-    wires.appendChild(graphView.tempConn.wire);    
+    graphView.addWire(graphView.tempConn.wire);    
 };
 
 
 graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new Connection(null, input);
-    wires.appendChild(graphView.tempConn.wire);    
+    graphView.addWire(graphView.tempConn.wire);    
 };
 
 
 graphView.cancelConnection = () =>
 {
-    wires.removeChild(graphView.tempConn.wire);    
+    graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
 };
 
@@ -5225,6 +5248,38 @@ graphView.endSelection = () =>
 {
     graphView.selection = Rect.NaN;
     selectBox.style.visibility = 'hidden';
+};
+
+
+graphView.updatePan = () =>
+{
+    const pan = 
+          'translate(' 
+        + graphView.pan.x
+        + 'px, ' 
+        + graphView.pan.y
+        + 'px)';
+
+    for (const node of graph.nodes)
+        node.div.style.transform = pan;
+
+    for (const wire of graphView.wires)
+        wire.style.transform = pan;
+};
+
+
+graphView.addWire = wire =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    wire.update();  
+};
+
+
+graphView.removeWire = wire =>
+{
+    graphView.removeChild(wire);    
+    removeFromArray(wire, graphView.wires);
 };
 
 

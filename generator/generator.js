@@ -74,13 +74,7 @@ onmessage = function(e)
         {
             const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
             node.valid = false;
-            //generate([node.id]);
             break;
-        }
-        case 'reset':
-        {
-            // const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
-            // node.reset();
         }
         case 'generate':
         {
@@ -92,19 +86,8 @@ onmessage = function(e)
             for (const nodeId of e.data.nodeIds)
             {
                 const node = ggraph.nodeFromId(nodeId);
-                //node.reset();
                 objects = objects.concat(node.output.getData());
             }
-
-            // reset number nodes to be able to duplicate random inputs
-            // for (const node of ggraph.nodes)
-            // {
-            //     if (node.opType == 'number')
-            //     {
-            //         console.log('reset number');
-            //         node._sampled = Number.NaN;
-            //     }
-            // }
 
             postMessage({ 
                 msg:    'recreateObjects',
@@ -116,15 +99,6 @@ onmessage = function(e)
         }
     }
 };
-
-
-// function reset(nodeId)
-// {
-//     postMessage({
-//         msg:   'reset',
-//         nodeId: nodeId
-//     });
-// }
 
 
 function requestGenerate(nodeIds)

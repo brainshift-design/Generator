@@ -109,16 +109,6 @@ class GOperator
     generate(callerInput) 
     { 
         this.valid = true; 
-
-        // const param = this.params.find(p => 
-        //        p.input.connected 
-        //     && p.input.dataType != this.dataType);
-
-        // if (param)
-        // {
-        //     console.log(param);
-        //     this.reset();
-        // }
     }
 
 

@@ -19,16 +19,9 @@ extends GOperator
     generate(callerInput)
     {
         if (this.valid) return;
-        // if (   this._valid
-        //     && (  !this._value.input.connected
-        //         || this._value.input.connectedOutput.op.opType == 'random')) 
-        //     return;
-
         super.generate(callerInput);
-        console.log('generate number');
-        console.log(this._sampled);
 
-
+        
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 

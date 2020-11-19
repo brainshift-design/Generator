@@ -131,8 +131,7 @@ class Graph
         input .connection = conn;
         output.connection = conn;
         
-        wires.appendChild(conn.wire);
-        conn.updateWire();
+        graphView.addWire(conn.wire);
         
         output.op.makePassive();
         
@@ -157,7 +156,7 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        wires.removeChild(input.connection.wire);
+        graphView.removeWire(input.connection.wire);
 
         removeFromArray(input, output.connectedInputs);
         

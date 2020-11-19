@@ -151,19 +151,19 @@ function setDivPosition(node, x, y)
     for (const input of node.inputs)
     {
         if (input.connected) 
-            input.connection.updateWire();
+            input.connection.wire.update();
     }
 
     if (   node.output 
         && node.output.connected)
     {
         for (const input of node.output.connectedInputs)
-            input.connection.updateWire();
+            input.connection.wire.update();
     }
 
     for (const param of node.params)
     {
-        if (param.input .connected) 
-            param.input .connection.updateWire();
+        if (param.input.connected) 
+            param.input.connection.wire.update();
     }
 }
