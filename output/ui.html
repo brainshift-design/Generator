@@ -486,7 +486,9 @@ function deepCopy(obj)
 
 function createSvg(element)
 {
-    return document.createElementNS('http://www.w3.org/2000/svg', element);
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    svg.style.pointerEvents = 'none';
+    return svg;
 }
 
 
@@ -2216,7 +2218,9 @@ function deepCopy(obj)
 
 function createSvg(element)
 {
-    return document.createElementNS('http://www.w3.org/2000/svg', element);
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    svg.style.pointerEvents = 'none';
+    return svg;
 }
 
 
@@ -3161,10 +3165,10 @@ class Connection
             var outRect = this.output.control.getBoundingClientRect();
             var inRect  = this.input .control.getBoundingClientRect();
 
-            var x1 = outRect.left + outRect.width /2;
-            var y1 = outRect.top  + outRect.height/2;
-            var x2 = inRect .left + inRect .width /2;
-            var y2 = inRect .top  + inRect .height/2;
+            var x1 = outRect.left + outRect.width /2 - graphView.pan.x;
+            var y1 = outRect.top  + outRect.height/2 - graphView.pan.y;
+            var x2 = inRect .left + inRect .width /2 - graphView.pan.x;
+            var y2 = inRect .top  + inRect .height/2 - graphView.pan.y;
 
             var color;
 
@@ -3175,7 +3179,7 @@ class Connection
             }
 
             this.wire.curve.setAttribute('d',
-                'M ' +  (x1                ) + ',' + y1
+                   'M ' +  (x1                ) + ',' + y1
                 + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
                 + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
                 + ' '   +  (x2                ) + ',' + y2);
@@ -3198,11 +3202,11 @@ class Connection
         {
             var outRect = this.output.control.getBoundingClientRect();
 
-            var x1 = outRect.left + outRect.width /2;
-            var y1 = outRect.top  + outRect.height/2;
+            var x1 = outRect.left + outRect.width /2 - graphView.pan.x;
+            var y1 = outRect.top  + outRect.height/2 - graphView.pan.y;
 
             this.wire.curve.setAttribute('d',
-                'M ' +  (x1               ) + ',' + y1
+                   'M ' +  (x1               ) + ',' + y1
                 + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
                 + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
                 + ' '   +  (x                ) + ',' + y);
@@ -3224,11 +3228,11 @@ class Connection
         {
             var inRect = this.input.control.getBoundingClientRect();
 
-            var x2 = inRect.left + inRect.width /2;
-            var y2 = inRect.top  + inRect.height/2;
+            var x2 = inRect.left + inRect.width /2 - graphView.pan.x;
+            var y2 = inRect.top  + inRect.height/2 - graphView.pan.y;
 
             this.wire.curve.setAttribute('d',
-                'M ' +  (x               ) + ',' + y
+                   'M ' +  (x               ) + ',' + y
                 + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
                 + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
                 + ' '   +  (x2              ) + ',' + y2);
@@ -3572,87 +3576,6 @@ function createDiv(node, headerColor)
     node.div.appendChild(node.inner);
 
 
-    node.div.addEventListener('pointerdown', function(e) 
-    {
-        graphView.putNodeOnTop(node);
-        
-        if (   e.button == 0
-            && !graphView.overOutput
-            && !graphView.overInput)
-        {
-            e.stopPropagation();
-
-            node.div.selectedSet = false;
-            node.div.moved       = false;
-
-            if (!node.selected)
-            {
-                if (e.shiftKey) node.selected = true;
-                else            graphView.selected = [node];
-
-                node.selectedSet = true;
-            }
-
-            node.div.sx = e.clientX;
-            node.div.sy = e.clientY;
-
-            for (const n of graphView.selected)
-            {
-                n.div.slx = n.div.offsetLeft;
-                n.div.sly = n.div.offsetTop;
-            }
-
-            node.div.dragging = true;
-            node.div.setPointerCapture(e.pointerId);
-        }
-    });
-
-    node.div.addEventListener('pointermove', function(e) 
-    {
-        if (node.div.dragging)
-        {
-            for (const n of graphView.selected)
-            {
-                setDivPosition(
-                    n.div.op,
-                    n.div.slx + e.clientX - node.div.sx,
-                    n.div.sly + e.clientY - node.div.sy);
-            }
-
-            node.div.moved = true;
-        };
-    });
-
-    node.div.addEventListener('pointerup', function(e) 
-    {
-        if (   e.button == 0
-            && node.div.dragging)
-        {
-            if (   !node.div.selectedSet
-                && !node.div.moved)
-            {
-                if (e.shiftKey) node.selected = true;
-                else            graphView.selected = [node];
-            }
-
-            node.div.dragging = false;
-            node.div.releasePointerCapture(e.pointerId);
-        }
-    });
-    
-    
-    node.div.addEventListener('dblclick', function(e)
-    {
-        var bounds = node.label.getBoundingClientRect();
-
-        if (   e.clientX >= bounds.left && e.clientX < bounds.right
-            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-            node.showLabelTextbox();
-        else
-            node.makeActive();
-    });
-
-
     node.div.addEventListener('pointerenter', function(e)
     {
         e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
@@ -3685,6 +3608,86 @@ function createDivHeader(node, headerColor)
     node.header.appendChild(node.outputControls);
 
     node.inner.appendChild(node.header);
+
+    node.header.addEventListener('pointerdown', function(e) 
+    {
+        graphView.putNodeOnTop(node);
+        
+        if (   e.button == 0
+            && !graphView.overOutput
+            && !graphView.overInput)
+        {
+            e.stopPropagation();
+
+            node.div.selectedSet = false;
+            node.div.moved       = false;
+
+            if (!node.selected)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graphView.selected = [node];
+
+                node.selectedSet = true;
+            }
+
+            node.div.sx = e.clientX;
+            node.div.sy = e.clientY;
+
+            for (const n of graphView.selected)
+            {
+                n.div.slx = n.div.offsetLeft;
+                n.div.sly = n.div.offsetTop;
+            }
+
+            node.div.dragging = true;
+            node.header.setPointerCapture(e.pointerId);
+        }
+    });
+
+    node.header.addEventListener('pointermove', function(e) 
+    {
+        if (node.div.dragging)
+        {
+            for (const n of graphView.selected)
+            {
+                setDivPosition(
+                    n.div.op,
+                    n.div.slx + e.clientX - node.div.sx,
+                    n.div.sly + e.clientY - node.div.sy);
+            }
+
+            node.div.moved = true;
+        };
+    });
+
+    node.header.addEventListener('pointerup', function(e) 
+    {
+        if (   e.button == 0
+            && node.div.dragging)
+        {
+            if (   !node.div.selectedSet
+                && !node.div.moved)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graphView.selected = [node];
+            }
+
+            node.div.dragging = false;
+            node.header.releasePointerCapture(e.pointerId);
+        }
+    });
+    
+    
+    node.header.addEventListener('dblclick', function(e)
+    {
+        var bounds = node.label.getBoundingClientRect();
+
+        if (   e.clientX >= bounds.left && e.clientX < bounds.right
+            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
+            node.showLabelTextbox();
+        else
+            node.makeActive();
+    });
 }
 
 
@@ -5146,14 +5149,14 @@ graphView.addEventListener('pointermove', e =>
 graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new Connection(output, null);
-    graphView.addWire(graphView.tempConn.wire);    
+    graphView.addWireFromOutput(graphView.tempConn.wire, output);    
 };
 
 
 graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new Connection(null, input);
-    graphView.addWire(graphView.tempConn.wire);    
+    graphView.addWireFromInput(graphView.tempConn.wire, input);    
 };
 
 
@@ -5191,10 +5194,26 @@ graphView.getNodeBounds = () =>
 
 graphView.putNodeOnTop = node =>
 {
-    for (const n of graph.nodes)
-        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
+    const topIndices = 
+          1 
+        + node.inputs.filter(i => i.connected).length 
+        + (!!node.output && node.output.connected ? 1 : 0);
 
-    node.div.style.zIndex = graph.nodes.length-1;
+    for (const n of graph.nodes)
+        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
+
+    var z = Number.MAX_SAFE_INTEGER;
+
+    for (const input of node.inputs.filter(i => i.connected))
+        input.connection.wire.style.zIndex = z--;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+            input.connection.wire.style.zIndex = z--;
+    }
+
+    node.div.style.zIndex = z;
 };
 
 
@@ -5253,18 +5272,22 @@ graphView.endSelection = () =>
 
 graphView.updatePan = () =>
 {
-    const pan = 
-          'translate(' 
-        + graphView.pan.x
-        + 'px, ' 
-        + graphView.pan.y
-        + 'px)';
-
     for (const node of graph.nodes)
-        node.div.style.transform = pan;
+    {
+        node.div.style.transform =
+              'translate(' 
+            + graphView.pan.x + 'px, ' 
+            + graphView.pan.y + 'px)';
+    }
 
     for (const wire of graphView.wires)
-        wire.style.transform = pan;
+    {
+        wire.setAttribute('viewBox',
+                    (-graphView.pan.x)
+            + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
+            + ' ' + graphView.clientWidth
+            + ' ' + graphView.clientHeight);
+    }
 };
 
 
@@ -5273,6 +5296,22 @@ graphView.addWire = wire =>
     graphView.wires.push(wire);
     graphView.appendChild(wire);  
     wire.update();  
+};
+
+
+graphView.addWireFromOutput = (wire, output) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    //wire.updateFromOutput(output);  
+};
+
+
+graphView.addWireFromInput = (wire, input) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    //wire.updateFromInput(input);  
 };
 
 
@@ -5308,6 +5347,7 @@ function createNode(opType)
     }
     
     graphView.selected = [node];
+    graphView.putNodeOnTop(node);
 }
 
 

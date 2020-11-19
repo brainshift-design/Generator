@@ -200,14 +200,14 @@ graphView.addEventListener('pointermove', e =>
 graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new Connection(output, null);
-    graphView.addWire(graphView.tempConn.wire);    
+    graphView.addWireFromOutput(graphView.tempConn.wire, output);    
 };
 
 
 graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new Connection(null, input);
-    graphView.addWire(graphView.tempConn.wire);    
+    graphView.addWireFromInput(graphView.tempConn.wire, input);    
 };
 
 
@@ -245,10 +245,26 @@ graphView.getNodeBounds = () =>
 
 graphView.putNodeOnTop = node =>
 {
-    for (const n of graph.nodes)
-        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - 1);
+    const topIndices = 
+          1 
+        + node.inputs.filter(i => i.connected).length 
+        + (!!node.output && node.output.connected ? 1 : 0);
 
-    node.div.style.zIndex = graph.nodes.length-1;
+    for (const n of graph.nodes)
+        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
+
+    var z = Number.MAX_SAFE_INTEGER;
+
+    for (const input of node.inputs.filter(i => i.connected))
+        input.connection.wire.style.zIndex = z--;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+            input.connection.wire.style.zIndex = z--;
+    }
+
+    node.div.style.zIndex = z;
 };
 
 
@@ -307,18 +323,22 @@ graphView.endSelection = () =>
 
 graphView.updatePan = () =>
 {
-    const pan = 
-          'translate(' 
-        + graphView.pan.x
-        + 'px, ' 
-        + graphView.pan.y
-        + 'px)';
-
     for (const node of graph.nodes)
-        node.div.style.transform = pan;
+    {
+        node.div.style.transform =
+              'translate(' 
+            + graphView.pan.x + 'px, ' 
+            + graphView.pan.y + 'px)';
+    }
 
     for (const wire of graphView.wires)
-        wire.style.transform = pan;
+    {
+        wire.setAttribute('viewBox',
+                    (-graphView.pan.x)
+            + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
+            + ' ' + graphView.clientWidth
+            + ' ' + graphView.clientHeight);
+    }
 };
 
 
@@ -327,6 +347,22 @@ graphView.addWire = wire =>
     graphView.wires.push(wire);
     graphView.appendChild(wire);  
     wire.update();  
+};
+
+
+graphView.addWireFromOutput = (wire, output) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    //wire.updateFromOutput(output);  
+};
+
+
+graphView.addWireFromInput = (wire, input) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    //wire.updateFromInput(input);  
 };
 
 

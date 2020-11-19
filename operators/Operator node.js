@@ -15,87 +15,6 @@ function createDiv(node, headerColor)
     node.div.appendChild(node.inner);
 
 
-    node.div.addEventListener('pointerdown', function(e) 
-    {
-        graphView.putNodeOnTop(node);
-        
-        if (   e.button == 0
-            && !graphView.overOutput
-            && !graphView.overInput)
-        {
-            e.stopPropagation();
-
-            node.div.selectedSet = false;
-            node.div.moved       = false;
-
-            if (!node.selected)
-            {
-                if (e.shiftKey) node.selected = true;
-                else            graphView.selected = [node];
-
-                node.selectedSet = true;
-            }
-
-            node.div.sx = e.clientX;
-            node.div.sy = e.clientY;
-
-            for (const n of graphView.selected)
-            {
-                n.div.slx = n.div.offsetLeft;
-                n.div.sly = n.div.offsetTop;
-            }
-
-            node.div.dragging = true;
-            node.div.setPointerCapture(e.pointerId);
-        }
-    });
-
-    node.div.addEventListener('pointermove', function(e) 
-    {
-        if (node.div.dragging)
-        {
-            for (const n of graphView.selected)
-            {
-                setDivPosition(
-                    n.div.op,
-                    n.div.slx + e.clientX - node.div.sx,
-                    n.div.sly + e.clientY - node.div.sy);
-            }
-
-            node.div.moved = true;
-        };
-    });
-
-    node.div.addEventListener('pointerup', function(e) 
-    {
-        if (   e.button == 0
-            && node.div.dragging)
-        {
-            if (   !node.div.selectedSet
-                && !node.div.moved)
-            {
-                if (e.shiftKey) node.selected = true;
-                else            graphView.selected = [node];
-            }
-
-            node.div.dragging = false;
-            node.div.releasePointerCapture(e.pointerId);
-        }
-    });
-    
-    
-    node.div.addEventListener('dblclick', function(e)
-    {
-        var bounds = node.label.getBoundingClientRect();
-
-        if (   e.clientX >= bounds.left && e.clientX < bounds.right
-            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-            node.showLabelTextbox();
-        else
-            node.makeActive();
-    });
-
-
     node.div.addEventListener('pointerenter', function(e)
     {
         e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
@@ -128,6 +47,86 @@ function createDivHeader(node, headerColor)
     node.header.appendChild(node.outputControls);
 
     node.inner.appendChild(node.header);
+
+    node.header.addEventListener('pointerdown', function(e) 
+    {
+        graphView.putNodeOnTop(node);
+        
+        if (   e.button == 0
+            && !graphView.overOutput
+            && !graphView.overInput)
+        {
+            e.stopPropagation();
+
+            node.div.selectedSet = false;
+            node.div.moved       = false;
+
+            if (!node.selected)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graphView.selected = [node];
+
+                node.selectedSet = true;
+            }
+
+            node.div.sx = e.clientX;
+            node.div.sy = e.clientY;
+
+            for (const n of graphView.selected)
+            {
+                n.div.slx = n.div.offsetLeft;
+                n.div.sly = n.div.offsetTop;
+            }
+
+            node.div.dragging = true;
+            node.header.setPointerCapture(e.pointerId);
+        }
+    });
+
+    node.header.addEventListener('pointermove', function(e) 
+    {
+        if (node.div.dragging)
+        {
+            for (const n of graphView.selected)
+            {
+                setDivPosition(
+                    n.div.op,
+                    n.div.slx + e.clientX - node.div.sx,
+                    n.div.sly + e.clientY - node.div.sy);
+            }
+
+            node.div.moved = true;
+        };
+    });
+
+    node.header.addEventListener('pointerup', function(e) 
+    {
+        if (   e.button == 0
+            && node.div.dragging)
+        {
+            if (   !node.div.selectedSet
+                && !node.div.moved)
+            {
+                if (e.shiftKey) node.selected = true;
+                else            graphView.selected = [node];
+            }
+
+            node.div.dragging = false;
+            node.header.releasePointerCapture(e.pointerId);
+        }
+    });
+    
+    
+    node.header.addEventListener('dblclick', function(e)
+    {
+        var bounds = node.label.getBoundingClientRect();
+
+        if (   e.clientX >= bounds.left && e.clientX < bounds.right
+            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
+            node.showLabelTextbox();
+        else
+            node.makeActive();
+    });
 }
 
 

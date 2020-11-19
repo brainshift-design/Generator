@@ -23,6 +23,7 @@ function createNode(opType)
     }
     
     graphView.selected = [node];
+    graphView.putNodeOnTop(node);
 }
 
 
