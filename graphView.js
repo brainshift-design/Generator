@@ -184,7 +184,13 @@ graphView.addEventListener('pointermove', e =>
     graphView.p = { x: e.clientX, y: e.clientY };
 
     if (graphView.panning)
-        graphView.pan = mulvs(addv(graphView.panStart, subv(graphView.p, graphView.pStart)), graphView.zoom);
+    {
+        const dp  = subv(graphView.p, graphView.pStart);
+        const sdp = divvs(dp, graphView.zoom);
+        const pan = addv(graphView.panStart, sdp);
+
+        graphView.pan = pan;
+    }
 
     else if (!graphView.selection.isNaN)
         graphView.updateSelection(e.clientX, e.clientY);
@@ -202,7 +208,7 @@ graphView.addEventListener('mousewheel', e =>
     if (e.ctrlKey)
     {
         const dZoom  = Math.log(graphView.zoom) / Math.log(2);
-        const dWheel = e.wheelDeltaY/120 / 4;
+        const dWheel = e.wheelDeltaY/120 / 10;
         
         const oldZoom = graphView.zoom;
         graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom + dWheel));
@@ -344,8 +350,8 @@ graphView.updatePanAndZoom = () =>
     for (const node of graph.nodes)
     {
         node.div.style.transformOrigin =
-              (graphView.p.x - graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100 + '% ' 
-            + (graphView.p.y - graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100 + '%';
+              (/*graphView.p.x*/ - graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100 + '% ' 
+            + (/*graphView.p.y*/ - graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100 + '%';
             
         node.div.style.transform =
              'translate(' 
@@ -362,9 +368,9 @@ graphView.updatePanAndZoom = () =>
             + ' ' + graphView.clientWidth
             + ' ' + graphView.clientHeight);
 
-        wire.style.transformOrigin = 
-              graphView.p.x + 'px ' 
-            + graphView.p.y + 'px';
+        wire.style.transformOrigin = '0 0';
+            //   graphView.p.x + 'px ' 
+            // + graphView.p.y + 'px';
 
         wire.style.transform = 'scale(' + graphView.zoom + ')';
     }
