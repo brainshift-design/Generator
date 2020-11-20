@@ -350,11 +350,11 @@ graphView.updatePanAndZoom = () =>
     for (const node of graph.nodes)
     {
         node.div.style.transformOrigin =
-              (/*graphView.p.x*/ - graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100 + '% ' 
-            + (/*graphView.p.y*/ - graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100 + '%';
+              ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+            + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
             
         node.div.style.transform =
-             'translate(' 
+              'translate(' 
             + graphView.pan.x + 'px, ' 
             + graphView.pan.y + 'px) '
             + 'scale(' + graphView.zoom + ')';
@@ -369,11 +369,16 @@ graphView.updatePanAndZoom = () =>
             + ' ' + graphView.clientHeight);
 
         wire.style.transformOrigin = '0 0';
-            //   graphView.p.x + 'px ' 
-            // + graphView.p.y + 'px';
-
         wire.style.transform = 'scale(' + graphView.zoom + ')';
     }
+
+
+    var bounds = new Rect();
+
+    for (const node of graph.nodes)
+        bounds.expandFromRect(node.div.getBoundingClientRect());
+
+    console.log(bounds);
 };
 
 

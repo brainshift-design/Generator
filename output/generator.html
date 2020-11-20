@@ -524,6 +524,19 @@ function xrotate(angle)
 }
 
 
+class Point
+{
+    x;
+    y;
+
+    constructor(x, y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+
 class Rect
 {
     x;
@@ -531,16 +544,49 @@ class Rect
     w;
     h;
 
-    get width()  { return this.w;            }
-    get height() { return this.h;            }
+    
+    get l() { return this.x;            }
+    get c() { return this.x + this.w/2; }
+    get r() { return this.x + this.w;   }
 
-    get left()   { return this.x;            }
-    get center() { return this.x + this.w/2; }
-    get right()  { return this.x + this.w;   }
+    get t() { return this.y;            }
+    get m() { return this.y + this.h/2  }
+    get b() { return this.y + this.h;   }
 
-    get top()    { return this.y;            }
-    get middle() { return this.y + this.h/2  }
-    get bottom() { return this.y + this.h;   }
+    get tl() { return {x: this.l, y: this.t}; }
+    get tc() { return {x: this.c, y: this.t}; }
+    get tr() { return {x: this.r, y: this.t}; }
+    get ml() { return {x: this.l, y: this.m}; }
+    get mc() { return {x: this.c, y: this.m}; }
+    get cm() { return {x: this.c, y: this.m}; }
+    get mr() { return {x: this.r, y: this.m}; }
+    get bl() { return {x: this.l, y: this.b}; }
+    get bc() { return {x: this.c, y: this.b}; }
+    get br() { return {x: this.r, y: this.b}; }
+
+
+    get width()  { return this.w; }
+    get height() { return this.h; }
+
+    get left()   { return this.l; }
+    get center() { return this.c; }
+    get right()  { return this.r; }
+    
+    get top()    { return this.t; }
+    get middle() { return this.m; }
+    get bottom() { return this.b; }
+
+    get topLeft()      { return this.tl; }
+    get topCenter()    { return this.tc; }
+    get topRight()     { return this.tr; }
+    get middleLeft()   { return this.ml; }
+    get middleCenter() { return this.mc; }
+    get centerMiddle() { return this.cm; }
+    get middleRight()  { return this.mr; }
+    get bottomLeft()   { return this.bl; }
+    get bottomCenter() { return this.bc; }
+    get bottomRight()  { return this.br; }
+
 
     constructor(x, y, w, h)
     {
@@ -550,8 +596,10 @@ class Rect
         this.h = h;
     }
 
+
     static NaN  = new Rect(Number.NaN, Number.NaN, Number.NaN, Number.NaN);
     static Zero = new Rect(0, 0, 0, 0);
+
 
     get isNaN()
     {
@@ -559,6 +607,40 @@ class Rect
             || isNaN(this.y)
             || isNaN(this.w)
             || isNaN(this.h);
+    }
+
+	get isEmpty()
+	{
+		return (
+			   this.w == 0
+			|| this.h == 0);
+	}
+
+    expandFromRect(rect)
+    {
+        if (this.isEmpty) return rect;
+        if (rect.isEmpty) return this;
+        
+        const r = AbsRect(
+            Math.min(this.t, rect.t),
+            Math.min(this.l, rect.l),
+            Math.max(this.b, rect.b),
+            Math.max(this.r, rect.r));
+
+        this.x = r.x;
+        this.y = r.y;
+        this.w = r.w;
+        this.h = r.h;
+    }
+}
+
+
+class   AbsRect
+extends Rect
+{
+    constructor(t, l, b, r)
+    {
+        super(l, t, r-l, b-t);
     }
 }
 

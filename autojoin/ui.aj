@@ -17,6 +17,8 @@ html/ui_2.html
     
     core/lib.js
     core/math.js
+    core/Point.js
+    core/Rect.js
     core/random.js
     core/storage.js
     

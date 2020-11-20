@@ -47,10 +47,10 @@ class Connection
             var outRect = this.output.control.getBoundingClientRect();
             var inRect  = this.input .control.getBoundingClientRect();
 
-            var x1 = outRect.left + outRect.width /2 - graphView.pan.x;
-            var y1 = outRect.top  + outRect.height/2 - graphView.pan.y;
-            var x2 = inRect .left + inRect .width /2 - graphView.pan.x;
-            var y2 = inRect .top  + inRect .height/2 - graphView.pan.y;
+            var x1 = (outRect.left + outRect.width /2 - graphView.pan.x) / graphView.zoom;
+            var y1 = (outRect.top  + outRect.height/2 - graphView.pan.y) / graphView.zoom;
+            var x2 = (inRect .left + inRect .width /2 - graphView.pan.x) / graphView.zoom;
+            var y2 = (inRect .top  + inRect .height/2 - graphView.pan.y) / graphView.zoom;
 
             var color;
 
