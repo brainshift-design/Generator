@@ -37,7 +37,7 @@ Object.defineProperty(graphView, 'pan',
     {
         if (graphView._pan == pan) return;
         graphView._pan = pan;
-        graphView.updatePan();
+        graphView.updatePanAndZoom();
     }
 });
 
@@ -54,7 +54,7 @@ Object.defineProperty(graphView, 'zoom',
     {
         if (graphView._zoom == zoom) return;
         graphView._zoom = zoom;
-        graphView.updatePan();
+        graphView.updatePanAndZoom();
     }
 });
 
@@ -181,10 +181,10 @@ graphView.addEventListener('pointerup', e =>
 
 graphView.addEventListener('pointermove', e =>
 {
-    const p = {x: e.clientX, y: e.clientY};
+    graphView.p = { x: e.clientX, y: e.clientY };
 
     if (graphView.panning)
-        graphView.pan = addv(graphView.panStart, subv(p, graphView.pStart));
+        graphView.pan = mulvs(addv(graphView.panStart, subv(graphView.p, graphView.pStart)), graphView.zoom);
 
     else if (!graphView.selection.isNaN)
         graphView.updateSelection(e.clientX, e.clientY);
@@ -197,10 +197,28 @@ graphView.addEventListener('pointermove', e =>
 });
 
 
+graphView.addEventListener('mousewheel', e =>
+{
+    if (e.ctrlKey)
+    {
+        const dZoom  = Math.log(graphView.zoom) / Math.log(2);
+        const dWheel = e.wheelDeltaY/120 / 4;
+        
+        const oldZoom = graphView.zoom;
+        graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom + dWheel));
+
+		//graphView.pan = subv(graphView.pan, mulvs(graphView.p, (oldZoom * graphView.zoom - 1) / graphView.zoom));
+
+        //graphView.pStart = { x: e.clientX, y: e.clientY };
+		//graphView.panStart = view.Pan;
+    }
+});
+
+
 graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new Connection(output, null);
-    graphView.addWireFromOutput(graphView.tempConn.wire, output);    
+    graphView.addWireFromOutput(graphView.tempConn.wire, output);
 };
 
 
@@ -321,14 +339,19 @@ graphView.endSelection = () =>
 };
 
 
-graphView.updatePan = () =>
+graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
     {
+        node.div.style.transformOrigin =
+              (graphView.p.x - graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100 + '% ' 
+            + (graphView.p.y - graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100 + '%';
+            
         node.div.style.transform =
-              'translate(' 
+             'translate(' 
             + graphView.pan.x + 'px, ' 
-            + graphView.pan.y + 'px)';
+            + graphView.pan.y + 'px) '
+            + 'scale(' + graphView.zoom + ')';
     }
 
     for (const wire of graphView.wires)
@@ -338,6 +361,12 @@ graphView.updatePan = () =>
             + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
             + ' ' + graphView.clientWidth
             + ' ' + graphView.clientHeight);
+
+        wire.style.transformOrigin = 
+              graphView.p.x + 'px ' 
+            + graphView.p.y + 'px';
+
+        wire.style.transform = 'scale(' + graphView.zoom + ')';
     }
 };
 
@@ -346,15 +375,15 @@ graphView.addWire = wire =>
 {
     graphView.wires.push(wire);
     graphView.appendChild(wire);  
-    wire.update();  
+    wire.update();
 };
 
 
 graphView.addWireFromOutput = (wire, output) =>
 {
     graphView.wires.push(wire);
-    graphView.appendChild(wire);  
-    //wire.updateFromOutput(output);  
+    graphView.appendChild(wire);
+    wire.updateFromOutput(output);  
 };
 
 

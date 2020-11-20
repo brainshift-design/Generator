@@ -84,8 +84,8 @@ class Connection
         {
             var outRect = this.output.control.getBoundingClientRect();
 
-            var x1 = outRect.left + outRect.width /2 - graphView.pan.x;
-            var y1 = outRect.top  + outRect.height/2 - graphView.pan.y;
+            var x1 = outRect.left + outRect.width /2;// - graphView.pan.x;
+            var y1 = outRect.top  + outRect.height/2;// - graphView.pan.y;
 
             this.wire.curve.setAttribute('d',
                    'M ' +  (x1               ) + ',' + y1
@@ -110,8 +110,8 @@ class Connection
         {
             var inRect = this.input.control.getBoundingClientRect();
 
-            var x2 = inRect.left + inRect.width /2 - graphView.pan.x;
-            var y2 = inRect.top  + inRect.height/2 - graphView.pan.y;
+            var x2 = inRect.left + inRect.width /2;// - graphView.pan.x;
+            var y2 = inRect.top  + inRect.height/2;// - graphView.pan.y;
 
             this.wire.curve.setAttribute('d',
                    'M ' +  (x               ) + ',' + y

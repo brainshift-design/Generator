@@ -80,6 +80,19 @@ document.addEventListener('keydown', e =>
     {
         graphView.selected = graph.nodes;
     }
+    else if (e.code == 'Minus')
+    {
+        graphView.zoom /= 2;
+    }
+    else if (e.code == 'Equal')
+    {
+        graphView.zoom *= 2;
+    }
+    else if (e.code == 'Digit0'
+          && e.shiftKey)
+    {
+        graphView.zoom = 1;
+    }
 });
 
 
