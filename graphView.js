@@ -7,7 +7,8 @@ graphView.overOutput = null;
 graphView.tempConn   = null;
 
 
-graphView.selection  = Rect.NaN;
+graphView.selecting  = false;
+graphView.selectBox  = Rect.NaN;
 
 
 graphView._selected = [];
@@ -70,7 +71,8 @@ graphView.addEventListener('pointerdown', e =>
     graphView.pStart = { x: e.clientX, 
                          y: e.clientY };
 
-    if (e.button == 0)
+    if (   e.button == 0
+        && !graphView.panning)
     {
         if (graphView.overOutput)
         {
@@ -99,7 +101,6 @@ graphView.addEventListener('pointerdown', e =>
         {
             if (!e.shiftKey)
             {
-                graphView.selected = [];
                 graphView.startSelection(e.clientX, e.clientY);
             }
         }
@@ -123,7 +124,7 @@ graphView.addEventListener('pointerdown', e =>
 graphView.addEventListener('pointerup', e =>
 {
     if (   e.button == 0
-        && !graphView.selection.isNaN)
+        && !graphView.selectBox.isNaN)
         graphView.endSelection();
 
     else if (e.button == 0
@@ -208,8 +209,10 @@ graphView.addEventListener('pointermove', e =>
         graphView.updatePanAndZoom();
     }
 
-    else if (!graphView.selection.isNaN)
+    else if (!graphView.selectBox.isNaN)
+    {
         graphView.updateSelection(e.clientX, e.clientY);
+    }
 
     else if (graphView.tempConn)
     {
@@ -311,16 +314,17 @@ graphView.putNodeOnTop = node =>
 graphView.getValidSelection = () =>
 {
     return new Rect(
-        graphView.selection.x + Math.min(graphView.selection.w, 0),
-        graphView.selection.y + Math.min(graphView.selection.h, 0),
-        Math.abs(graphView.selection.w),
-        Math.abs(graphView.selection.h));
+        graphView.selectBox.x + Math.min(graphView.selectBox.w, 0),
+        graphView.selectBox.y + Math.min(graphView.selectBox.h, 0),
+        Math.abs(graphView.selectBox.w),
+        Math.abs(graphView.selectBox.h));
 };
 
 
 graphView.startSelection = (x, y) =>
 {
-    graphView.selection = new Rect(x, y, 0, 0);
+    graphView.selecting = true;
+    graphView.selectBox = new Rect(x, y, 0, 0);
     
     selectBox.style.visibility = 'visible';
     graphView.updateSelectBox();
@@ -329,8 +333,10 @@ graphView.startSelection = (x, y) =>
 
 graphView.updateSelection = (x, y) =>
 {
-    graphView.selection.w = x - graphView.selection.x;
-    graphView.selection.h = y - graphView.selection.y;
+    if (!graphView.selecting) return;
+
+    graphView.selectBox.w = x - graphView.selectBox.x;
+    graphView.selectBox.h = y - graphView.selectBox.y;
 
     graphView.updateSelectBox();
 };
@@ -344,19 +350,23 @@ graphView.updateSelectBox = () =>
     selectBox.style.width  = Math.abs(selection.w);
     selectBox.style.height = Math.abs(selection.h);
 
-    
-    graphView.selected = [];
+    const selected = [];
 
     for (const node of graph.nodes)
     {
-        if (rectsIntersect(node.div.getBoundingClientRect(), graphView.getValidSelection()))
-            node.selected = true;
+        if (rectsIntersect(
+                Rect.fromTypical(node.div.getBoundingClientRect()), 
+                graphView.getValidSelection()))
+            selected.push(node);
     }
+
+    graphView.selected = selected;
 };
 
 graphView.endSelection = () =>
 {
-    graphView.selection = Rect.NaN;
+    graphView.selecting = false;
+    graphView.selectBox = Rect.NaN;
     selectBox.style.visibility = 'hidden';
 };
 
@@ -390,12 +400,10 @@ graphView.updatePanAndZoom = () =>
     }
 
 
-    // var bounds = Rect.NaN;
+    var bounds = Rect.NaN;
 
-    // for (const node of graph.nodes)
-    //     bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
-
-    // console.log(bounds);
+    for (const node of graph.nodes)
+        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 };
 
 
