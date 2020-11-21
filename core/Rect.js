@@ -5,7 +5,6 @@ class Rect
     w;
     h;
 
-    
     get l() { return this.x;            }
     get c() { return this.x + this.w/2; }
     get r() { return this.x + this.w;   }
@@ -63,9 +62,8 @@ class Rect
     }
 
     // w & h are kept 0 so that isEmpty() works logically on NaN rects
-    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
-
-    static Zero = new Rect(0, 0, 0, 0);
+    static get NaN() { return new Rect(Number.NaN, Number.NaN, 0, 0) };
+    static get Zero() { return new Rect(0, 0, 0, 0); }
 
     get isNaN()
     {

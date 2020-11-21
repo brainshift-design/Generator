@@ -111,6 +111,7 @@ graphView.addEventListener('pointerdown', e =>
         graphView.panning  = true;
         graphView.panStart = graphView.pan;
         graphView.style.cursor = 'grab';
+        graphView.setPointerCapture(e.pointerId);
 
         for (const node of graph.nodes)
         {
@@ -182,6 +183,7 @@ graphView.addEventListener('pointerup', e =>
     {
         graphView.panning = false;
         graphView.style.cursor = 'auto';
+        graphView.releasePointerCapture(e.pointerId);
     }
 });
 
@@ -197,19 +199,10 @@ graphView.addEventListener('pointermove', e =>
         const pan = addv(graphView.panStart, sdp);
 
         graphView.pan = pan;
-
-        for (const node of graph.nodes)
-        {
-            setDivPosition(
-                node.div.op,
-                node.div.slx + graphView.p.x - graphView.pStart.x,
-                node.div.sly + graphView.p.y - graphView.pStart.y);
-        }
-
-        graphView.updatePanAndZoom();
+        //graphView.updatePanAndZoom();
     }
 
-    else if (!graphView.selectBox.isNaN)
+    else if (graphView.selecting)
     {
         graphView.updateSelection(e.clientX, e.clientY);
     }
@@ -375,6 +368,14 @@ graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
     {
+        setDivPosition(
+            node.div.op,
+            node.div.slx + graphView.p.x - graphView.pStart.x,
+            node.div.sly + graphView.p.y - graphView.pStart.y);
+    }
+    
+    for (const node of graph.nodes)
+    {
         // node.div.style.transformOrigin =
         //       ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
         //     + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
@@ -404,6 +405,9 @@ graphView.updatePanAndZoom = () =>
 
     for (const node of graph.nodes)
         bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+
+    graphView.updateScrollX(bounds);
+    graphView.updateScrollY(bounds);
 };
 
 

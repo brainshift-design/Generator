@@ -32,6 +32,7 @@ html/ui_2.html
     window.js
 
     graphView.js
+    graphView scrollbars.js
     canvas.js
 
 html/ui_3.html

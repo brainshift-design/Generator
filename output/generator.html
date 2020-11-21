@@ -164,6 +164,8 @@ const ACTIVE_NUM_COLOR = '#787878';
 
 const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
 
+const scrollGap = 6;
+
 
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
@@ -544,7 +546,6 @@ class Rect
     w;
     h;
 
-    
     get l() { return this.x;            }
     get c() { return this.x + this.w/2; }
     get r() { return this.x + this.w;   }
@@ -602,9 +603,8 @@ class Rect
     }
 
     // w & h are kept 0 so that isEmpty() works logically on NaN rects
-    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
-
-    static Zero = new Rect(0, 0, 0, 0);
+    static get NaN() { return new Rect(Number.NaN, Number.NaN, 0, 0) };
+    static get Zero() { return new Rect(0, 0, 0, 0); }
 
     get isNaN()
     {

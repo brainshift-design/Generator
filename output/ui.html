@@ -317,22 +317,24 @@ button svg
     visibility:       hidden;
 }
 
-#scrollX
+#scrollbarX
 {
-    background-color: black;
-    height:           10px;
-    border-radius:    5px;
+    background-color: #969696;
+    height:           6px;
+    border-radius:    3px;
     position:         absolute;
-    visibility:       hidden;
+    display:          none;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
-#scrollY
+#scrollbarY
 {
-    background-color: black;
-    width:            10px;
-    border-radius:    5px;
+    background-color: #969696;
+    width:            6px;
+    border-radius:    3px;
     position:         absolute;
-    visibility:       hidden;
+    display:          none;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
 
@@ -340,8 +342,8 @@ button svg
 
 <div id='graphView'></div>
 <div id='selectBox'></div>
-<div id='scrollX'></div>
-<div id='scrollY'></div>
+<div id='scrollbarX'></div>
+<div id='scrollbarY'></div>
 
 <div id='controlBar'>
 
@@ -522,6 +524,8 @@ const ACTIVE_OBJ_COLOR = '#18a0fb';
 const ACTIVE_NUM_COLOR = '#787878';
 
 const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+
+const scrollGap = 6;
 
 
 const R = 0, G = 1, B = 2, A = 3;
@@ -903,7 +907,6 @@ class Rect
     w;
     h;
 
-    
     get l() { return this.x;            }
     get c() { return this.x + this.w/2; }
     get r() { return this.x + this.w;   }
@@ -961,9 +964,8 @@ class Rect
     }
 
     // w & h are kept 0 so that isEmpty() works logically on NaN rects
-    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
-
-    static Zero = new Rect(0, 0, 0, 0);
+    static get NaN() { return new Rect(Number.NaN, Number.NaN, 0, 0) };
+    static get Zero() { return new Rect(0, 0, 0, 0); }
 
     get isNaN()
     {
@@ -2184,6 +2186,8 @@ const ACTIVE_NUM_COLOR = '#787878';
 
 const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
 
+const scrollGap = 6;
+
 
 function setStyle(id, properties)
 {
@@ -2718,7 +2722,6 @@ class Rect
     w;
     h;
 
-    
     get l() { return this.x;            }
     get c() { return this.x + this.w/2; }
     get r() { return this.x + this.w;   }
@@ -2776,9 +2779,8 @@ class Rect
     }
 
     // w & h are kept 0 so that isEmpty() works logically on NaN rects
-    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
-
-    static Zero = new Rect(0, 0, 0, 0);
+    static get NaN() { return new Rect(Number.NaN, Number.NaN, 0, 0) };
+    static get Zero() { return new Rect(0, 0, 0, 0); }
 
     get isNaN()
     {
@@ -5268,6 +5270,7 @@ graphView.addEventListener('pointerdown', e =>
         graphView.panning  = true;
         graphView.panStart = graphView.pan;
         graphView.style.cursor = 'grab';
+        graphView.setPointerCapture(e.pointerId);
 
         for (const node of graph.nodes)
         {
@@ -5339,6 +5342,7 @@ graphView.addEventListener('pointerup', e =>
     {
         graphView.panning = false;
         graphView.style.cursor = 'auto';
+        graphView.releasePointerCapture(e.pointerId);
     }
 });
 
@@ -5354,19 +5358,10 @@ graphView.addEventListener('pointermove', e =>
         const pan = addv(graphView.panStart, sdp);
 
         graphView.pan = pan;
-
-        for (const node of graph.nodes)
-        {
-            setDivPosition(
-                node.div.op,
-                node.div.slx + graphView.p.x - graphView.pStart.x,
-                node.div.sly + graphView.p.y - graphView.pStart.y);
-        }
-
-        graphView.updatePanAndZoom();
+        //graphView.updatePanAndZoom();
     }
 
-    else if (!graphView.selectBox.isNaN)
+    else if (graphView.selecting)
     {
         graphView.updateSelection(e.clientX, e.clientY);
     }
@@ -5532,6 +5527,14 @@ graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
     {
+        setDivPosition(
+            node.div.op,
+            node.div.slx + graphView.p.x - graphView.pStart.x,
+            node.div.sly + graphView.p.y - graphView.pStart.y);
+    }
+    
+    for (const node of graph.nodes)
+    {
         // node.div.style.transformOrigin =
         //       ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
         //     + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
@@ -5561,6 +5564,9 @@ graphView.updatePanAndZoom = () =>
 
     for (const node of graph.nodes)
         bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+
+    graphView.updateScrollX(bounds);
+    graphView.updateScrollY(bounds);
 };
 
 
@@ -5593,6 +5599,185 @@ graphView.removeWire = wire =>
     graphView.removeChild(wire);    
     removeFromArray(wire, graphView.wires);
 };
+
+
+graphView.updateScrollX = bounds =>
+{
+    if (bounds.l < 0)
+    {
+        const widthX = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - scrollGap*2;
+
+        scrollbarX.style.display = 'inline-block';
+        scrollbarX.style.width   = widthX;
+        scrollbarX.style.left    = graphView.clientWidth - scrollGap - widthX;
+        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - scrollGap - 6;
+    }
+    else if (bounds.r >= graphView.clientWidth)
+    {
+        scrollbarX.style.display = 'inline-block';
+        scrollbarX.style.width   = sqr(graphView.clientWidth) / bounds.r - scrollGap*2;
+        scrollbarX.style.left    = scrollGap;
+        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - scrollGap - 6;
+    }
+    else
+    {
+        scrollbarX.style.display = 'none';
+    }
+};
+
+
+scrollbarX.moving = false;
+
+scrollbarX.addEventListener('pointerdown', e =>
+{
+    if (e.button == 0)
+    {
+        scrollbarX.moving = true;
+        scrollbarX.xStart = scrollbarX.offsetLeft;
+        scrollbarX.wStart = scrollbarX.offsetWidth;
+        scrollbarX.pStart = e.clientX;
+        scrollbarX.setPointerCapture(e.pointerId);
+
+        for (const node of graph.nodes)
+            node.div.slx = node.div.offsetLeft;
+    }
+});
+
+scrollbarX.addEventListener('pointerup', e =>
+{
+    if (   e.button == 0
+        && scrollbarX.moving)
+    {
+        scrollbarX.moving = false;
+        scrollbarX.releasePointerCapture(e.pointerId);
+
+        var bounds = Rect.NaN;
+
+        for (const node of graph.nodes)
+            bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+
+        if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
+            scrollbarX.style.display = 'none';
+    }
+});
+
+scrollbarX.addEventListener('pointermove', e =>
+{
+    if (scrollbarX.moving)
+    {
+        var x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
+
+        var l = x;
+        var r = l + scrollbarX.wStart;
+
+        l = Math.max(scrollGap, l);
+        r = Math.min(r, graphView.clientWidth - scrollGap);
+
+        l = Math.max(scrollGap, Math.min(l, r - scrollGap));
+        r = Math.max(l + scrollGap, r);
+
+        scrollbarX.style.left  = l;
+        scrollbarX.style.width = r-l;
+
+        for (const node of graph.nodes)
+        {
+            setDivPosition(
+                node,
+                node.div.slx - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+                node.div.offsetTop);
+        }
+    }
+});
+
+
+
+graphView.updateScrollY = bounds =>
+{
+    if (bounds.t < 0)
+    {
+        const heightY = sqr(graphView.clientHeight) / (graphView.clientHeight - bounds.t) - scrollGap*2;
+
+        scrollbarY.style.display = 'inline-block';
+        scrollbarY.style.height  = heightY;
+        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - scrollGap - 6;
+        scrollbarY.style.top     = graphView.clientHeight - scrollGap - heightY;
+    }
+    else if (bounds.b >= graphView.clientHeight)
+    {
+        scrollbarY.style.display = 'inline-block';
+        scrollbarY.style.height  = sqr(graphView.clientHeight) / bounds.b - scrollGap*2;
+        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - scrollGap - 6;
+        scrollbarY.style.top     = scrollGap;
+    }
+    else
+    {
+        scrollbarY.style.display = 'none';
+    }
+};
+
+
+scrollbarY.moving = false;
+
+scrollbarY.addEventListener('pointerdown', e =>
+{
+    if (e.button == 0)
+    {
+        scrollbarY.moving = true;
+        scrollbarY.yStart = scrollbarY.offsetTop;
+        scrollbarY.hStart = scrollbarY.offsetHeight;
+        scrollbarY.pStart = e.clientY;
+        scrollbarY.setPointerCapture(e.pointerId);
+
+        for (const node of graph.nodes)
+            node.div.sly = node.div.offsetTop;
+    }
+});
+
+scrollbarY.addEventListener('pointerup', e =>
+{
+    if (   e.button == 0
+        && scrollbarY.moving)
+    {
+        scrollbarY.moving = false;
+        scrollbarY.releasePointerCapture(e.pointerId);
+
+        var bounds = Rect.NaN;
+
+        for (const node of graph.nodes)
+            bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+
+        if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
+            scrollbarY.style.display = 'none';
+    }
+});
+
+scrollbarY.addEventListener('pointermove', e =>
+{
+    if (scrollbarY.moving)
+    {
+        var y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
+
+        var t = y;
+        var b = t + scrollbarY.hStart;
+
+        t = Math.max(scrollGap, t);
+        b = Math.min(b, graphView.clientHeight - scrollGap);
+
+        t = Math.max(scrollGap, Math.min(t, b - scrollGap));
+        b = Math.max(t + scrollGap, b);
+
+        scrollbarY.style.top    = t;
+        scrollbarY.style.height = b-t;
+
+        for (const node of graph.nodes)
+        {
+            setDivPosition(
+                node,
+                node.div.offsetLeft,
+                node.div.sly - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
+        }    
+    }
+});
 
 
 const graph = new Graph();
