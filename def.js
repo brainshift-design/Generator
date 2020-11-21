@@ -6,4 +6,5 @@ const ACTIVE_NUM_COLOR = '#787878';
 
 const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
 
-const scrollGap = 6;
+const smallScrollGap = 6;
+const largeScrollGap = 14;

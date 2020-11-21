@@ -2,19 +2,19 @@ graphView.updateScrollX = bounds =>
 {
     if (bounds.l < 0)
     {
-        const widthX = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - scrollGap*2;
+        const widthX = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - (smallScrollGap + largeScrollGap);
 
         scrollbarX.style.display = 'inline-block';
         scrollbarX.style.width   = widthX;
-        scrollbarX.style.left    = graphView.clientWidth - scrollGap - widthX;
-        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - scrollGap - 6;
+        scrollbarX.style.left    = graphView.clientWidth - largeScrollGap - widthX;
+        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
     }
     else if (bounds.r >= graphView.clientWidth)
     {
         scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   = sqr(graphView.clientWidth) / bounds.r - scrollGap*2;
-        scrollbarX.style.left    = scrollGap;
-        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - scrollGap - 6;
+        scrollbarX.style.width   = sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
+        scrollbarX.style.left    = smallScrollGap;
+        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
     }
     else
     {
@@ -67,11 +67,11 @@ scrollbarX.addEventListener('pointermove', e =>
         var l = x;
         var r = l + scrollbarX.wStart;
 
-        l = Math.max(scrollGap, l);
-        r = Math.min(r, graphView.clientWidth - scrollGap);
+        l = Math.max(smallScrollGap, l);
+        r = Math.min(r, graphView.clientWidth - largeScrollGap);
 
-        l = Math.max(scrollGap, Math.min(l, r - scrollGap));
-        r = Math.max(l + scrollGap, r);
+        l = Math.max(smallScrollGap, Math.min(l, r - smallScrollGap));
+        r = Math.max(l + smallScrollGap, r);
 
         scrollbarX.style.left  = l;
         scrollbarX.style.width = r-l;
@@ -92,19 +92,19 @@ graphView.updateScrollY = bounds =>
 {
     if (bounds.t < 0)
     {
-        const heightY = sqr(graphView.clientHeight) / (graphView.clientHeight - bounds.t) - scrollGap*2;
+        const heightY = sqr(graphView.clientHeight) / (graphView.clientHeight - bounds.t) - (smallScrollGap + largeScrollGap);
 
         scrollbarY.style.display = 'inline-block';
         scrollbarY.style.height  = heightY;
-        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - scrollGap - 6;
-        scrollbarY.style.top     = graphView.clientHeight - scrollGap - heightY;
+        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - smallScrollGap - 6;
+        scrollbarY.style.top     = graphView.clientHeight - largeScrollGap - heightY;
     }
     else if (bounds.b >= graphView.clientHeight)
     {
         scrollbarY.style.display = 'inline-block';
-        scrollbarY.style.height  = sqr(graphView.clientHeight) / bounds.b - scrollGap*2;
-        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - scrollGap - 6;
-        scrollbarY.style.top     = scrollGap;
+        scrollbarY.style.height  = sqr(graphView.clientHeight) / bounds.b - (smallScrollGap + largeScrollGap);
+        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - smallScrollGap - 6;
+        scrollbarY.style.top     = smallScrollGap;
     }
     else
     {
@@ -157,11 +157,11 @@ scrollbarY.addEventListener('pointermove', e =>
         var t = y;
         var b = t + scrollbarY.hStart;
 
-        t = Math.max(scrollGap, t);
-        b = Math.min(b, graphView.clientHeight - scrollGap);
+        t = Math.max(smallScrollGap, t);
+        b = Math.min(b, graphView.clientHeight - largeScrollGap);
 
-        t = Math.max(scrollGap, Math.min(t, b - scrollGap));
-        b = Math.max(t + scrollGap, b);
+        t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
+        b = Math.max(t + smallScrollGap, b);
 
         scrollbarY.style.top    = t;
         scrollbarY.style.height = b-t;
