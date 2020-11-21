@@ -9,9 +9,7 @@ extends GOperator
     constructor()
     {
         super('number', 'NUM');
-
         this.setOutput(new GOutput(this.dataType));
-
         this.addParam(this._value = new GNumberParam(''));
     }
 
@@ -21,7 +19,7 @@ extends GOperator
         if (this.valid) return;
         super.generate(callerInput);
 
-        
+
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 

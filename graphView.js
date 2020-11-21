@@ -110,6 +110,12 @@ graphView.addEventListener('pointerdown', e =>
         graphView.panning  = true;
         graphView.panStart = graphView.pan;
         graphView.style.cursor = 'grab';
+
+        for (const node of graph.nodes)
+        {
+            node.div.slx = node.div.offsetLeft;
+            node.div.sly = node.div.offsetTop;
+        }
     }
 });
 
@@ -190,6 +196,16 @@ graphView.addEventListener('pointermove', e =>
         const pan = addv(graphView.panStart, sdp);
 
         graphView.pan = pan;
+
+        for (const node of graph.nodes)
+        {
+            setDivPosition(
+                node.div.op,
+                node.div.slx + graphView.p.x - graphView.pStart.x,
+                node.div.sly + graphView.p.y - graphView.pStart.y);
+        }
+
+        graphView.updatePanAndZoom();
     }
 
     else if (!graphView.selection.isNaN)
@@ -349,36 +365,37 @@ graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
     {
-        node.div.style.transformOrigin =
-              ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-            + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+        // node.div.style.transformOrigin =
+        //       ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+        //     + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
             
-        node.div.style.transform =
-              'translate(' 
-            + graphView.pan.x + 'px, ' 
-            + graphView.pan.y + 'px) '
-            + 'scale(' + graphView.zoom + ')';
+        // node.div.style.transform =
+        //     /*  'translate(' 
+        //     + graphView.pan.x + 'px, ' 
+        //     + graphView.pan.y + 'px) '
+        //     +*/ 'scale(' + graphView.zoom + ')';
     }
 
     for (const wire of graphView.wires)
     {
-        wire.setAttribute('viewBox',
-                    (-graphView.pan.x)
-            + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
-            + ' ' + graphView.clientWidth
-            + ' ' + graphView.clientHeight);
+        wire.update();
+        // wire.setAttribute('viewBox',
+        //             (-graphView.pan.x)
+        //     + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
+        //     + ' ' + graphView.clientWidth
+        //     + ' ' + graphView.clientHeight);
 
-        wire.style.transformOrigin = '0 0';
-        wire.style.transform = 'scale(' + graphView.zoom + ')';
+        // wire.style.transformOrigin = '0 0';
+        // wire.style.transform = 'scale(' + graphView.zoom + ')';
     }
 
 
-    var bounds = new Rect();
+    // var bounds = Rect.NaN;
 
-    for (const node of graph.nodes)
-        bounds.expandFromRect(node.div.getBoundingClientRect());
+    // for (const node of graph.nodes)
+    //     bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
-    console.log(bounds);
+    // console.log(bounds);
 };
 
 

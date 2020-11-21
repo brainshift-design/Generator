@@ -102,6 +102,8 @@ function createRect(obj)
     rect.resize(
         Math.max(0.01, obj.width ), 
         Math.max(0.01, obj.height));
+
+    rect.cornerRadius = obj.round;
 }
 
 

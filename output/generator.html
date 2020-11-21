@@ -596,10 +596,15 @@ class Rect
         this.h = h;
     }
 
+    static fromTypical(typ)
+    {
+        return new Rect(typ.x, typ.y, typ.width, typ.height); 
+    }
 
-    static NaN  = new Rect(Number.NaN, Number.NaN, Number.NaN, Number.NaN);
+    // w & h are kept 0 so that isEmpty() works logically on NaN rects
+    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
+
     static Zero = new Rect(0, 0, 0, 0);
-
 
     get isNaN()
     {
@@ -611,26 +616,31 @@ class Rect
 
 	get isEmpty()
 	{
-		return (
-			   this.w == 0
-			|| this.h == 0);
+		return (this.w == 0
+			 || this.h == 0);
 	}
+
+    assign(rect)
+    {
+        this.x = rect.x;
+        this.y = rect.y;
+        this.w = rect.w;
+        this.h = rect.h;
+    }
 
     expandFromRect(rect)
     {
-        if (this.isEmpty) return rect;
+        if (rect.isNaN  ) return this;
         if (rect.isEmpty) return this;
+
+        if (this.isNaN  ) this.assign(rect);
+        if (this.isEmpty) return rect;
         
-        const r = AbsRect(
+        this.assign(new AbsRect(
             Math.min(this.t, rect.t),
             Math.min(this.l, rect.l),
             Math.max(this.b, rect.b),
-            Math.max(this.r, rect.r));
-
-        this.x = r.x;
-        this.y = r.y;
-        this.w = r.w;
-        this.h = r.h;
+            Math.max(this.r, rect.r)));
     }
 }
 
@@ -1306,7 +1316,8 @@ extends GOperator
 {
     #width;
     #height;
-
+    #round;
+    
 
     constructor()
     {
@@ -1316,6 +1327,7 @@ extends GOperator
 
         this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
         this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
+        this.addParam(this.#round  = new GNumberParam('round',    0, 0));
     }
 
 
@@ -1324,9 +1336,6 @@ extends GOperator
         if (this.valid) return;
         super.generate(callerInput);
 
-        
-        const width  = this.#width .value;
-        const height = this.#height.value;
 
         this.output._data = 
         [{
@@ -1337,8 +1346,9 @@ extends GOperator
             
             x:       0,
             y:       0,
-            width:   width,
-            height:  height
+            width:   this.#width .value,
+            height:  this.#height.value,
+            round:   this.#round .value
         }];
     }
 }
@@ -1531,9 +1541,7 @@ extends GOperator
     constructor()
     {
         super('number', 'NUM');
-
         this.setOutput(new GOutput(this.dataType));
-
         this.addParam(this._value = new GNumberParam(''));
     }
 
@@ -1543,7 +1551,7 @@ extends GOperator
         if (this.valid) return;
         super.generate(callerInput);
 
-        
+
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 

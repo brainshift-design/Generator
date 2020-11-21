@@ -3,7 +3,8 @@ extends GOperator
 {
     #width;
     #height;
-
+    #round;
+    
 
     constructor()
     {
@@ -13,6 +14,7 @@ extends GOperator
 
         this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
         this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
+        this.addParam(this.#round  = new GNumberParam('round',    0, 0));
     }
 
 
@@ -21,9 +23,6 @@ extends GOperator
         if (this.valid) return;
         super.generate(callerInput);
 
-        
-        const width  = this.#width .value;
-        const height = this.#height.value;
 
         this.output._data = 
         [{
@@ -34,8 +33,9 @@ extends GOperator
             
             x:       0,
             y:       0,
-            width:   width,
-            height:  height
+            width:   this.#width .value,
+            height:  this.#height.value,
+            round:   this.#round .value
         }];
     }
 }

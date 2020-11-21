@@ -3,6 +3,7 @@ extends Operator
 {
     #width;
     #height;
+    #round;
 
 
     constructor()
@@ -13,6 +14,7 @@ extends Operator
 
         this.addParam(this.#width  = new NumberParam('width',  100, 0.01));
         this.addParam(this.#height = new NumberParam('height', 100, 0.01));
+        this.addParam(this.#round  = new NumberParam('round',    0, 0));
     }
 
 

@@ -955,10 +955,15 @@ class Rect
         this.h = h;
     }
 
+    static fromTypical(typ)
+    {
+        return new Rect(typ.x, typ.y, typ.width, typ.height); 
+    }
 
-    static NaN  = new Rect(Number.NaN, Number.NaN, Number.NaN, Number.NaN);
+    // w & h are kept 0 so that isEmpty() works logically on NaN rects
+    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
+
     static Zero = new Rect(0, 0, 0, 0);
-
 
     get isNaN()
     {
@@ -970,26 +975,31 @@ class Rect
 
 	get isEmpty()
 	{
-		return (
-			   this.w == 0
-			|| this.h == 0);
+		return (this.w == 0
+			 || this.h == 0);
 	}
+
+    assign(rect)
+    {
+        this.x = rect.x;
+        this.y = rect.y;
+        this.w = rect.w;
+        this.h = rect.h;
+    }
 
     expandFromRect(rect)
     {
-        if (this.isEmpty) return rect;
+        if (rect.isNaN  ) return this;
         if (rect.isEmpty) return this;
+
+        if (this.isNaN  ) this.assign(rect);
+        if (this.isEmpty) return rect;
         
-        const r = AbsRect(
+        this.assign(new AbsRect(
             Math.min(this.t, rect.t),
             Math.min(this.l, rect.l),
             Math.max(this.b, rect.b),
-            Math.max(this.r, rect.r));
-
-        this.x = r.x;
-        this.y = r.y;
-        this.w = r.w;
-        this.h = r.h;
+            Math.max(this.r, rect.r)));
     }
 }
 
@@ -1665,7 +1675,8 @@ extends GOperator
 {
     #width;
     #height;
-
+    #round;
+    
 
     constructor()
     {
@@ -1675,6 +1686,7 @@ extends GOperator
 
         this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
         this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
+        this.addParam(this.#round  = new GNumberParam('round',    0, 0));
     }
 
 
@@ -1683,9 +1695,6 @@ extends GOperator
         if (this.valid) return;
         super.generate(callerInput);
 
-        
-        const width  = this.#width .value;
-        const height = this.#height.value;
 
         this.output._data = 
         [{
@@ -1696,8 +1705,9 @@ extends GOperator
             
             x:       0,
             y:       0,
-            width:   width,
-            height:  height
+            width:   this.#width .value,
+            height:  this.#height.value,
+            round:   this.#round .value
         }];
     }
 }
@@ -1890,9 +1900,7 @@ extends GOperator
     constructor()
     {
         super('number', 'NUM');
-
         this.setOutput(new GOutput(this.dataType));
-
         this.addParam(this._value = new GNumberParam(''));
     }
 
@@ -1902,7 +1910,7 @@ extends GOperator
         if (this.valid) return;
         super.generate(callerInput);
 
-        
+
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
@@ -2760,10 +2768,15 @@ class Rect
         this.h = h;
     }
 
+    static fromTypical(typ)
+    {
+        return new Rect(typ.x, typ.y, typ.width, typ.height); 
+    }
 
-    static NaN  = new Rect(Number.NaN, Number.NaN, Number.NaN, Number.NaN);
+    // w & h are kept 0 so that isEmpty() works logically on NaN rects
+    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
+
     static Zero = new Rect(0, 0, 0, 0);
-
 
     get isNaN()
     {
@@ -2775,26 +2788,31 @@ class Rect
 
 	get isEmpty()
 	{
-		return (
-			   this.w == 0
-			|| this.h == 0);
+		return (this.w == 0
+			 || this.h == 0);
 	}
+
+    assign(rect)
+    {
+        this.x = rect.x;
+        this.y = rect.y;
+        this.w = rect.w;
+        this.h = rect.h;
+    }
 
     expandFromRect(rect)
     {
-        if (this.isEmpty) return rect;
+        if (rect.isNaN  ) return this;
         if (rect.isEmpty) return this;
+
+        if (this.isNaN  ) this.assign(rect);
+        if (this.isEmpty) return rect;
         
-        const r = AbsRect(
+        this.assign(new AbsRect(
             Math.min(this.t, rect.t),
             Math.min(this.l, rect.l),
             Math.max(this.b, rect.b),
-            Math.max(this.r, rect.r));
-
-        this.x = r.x;
-        this.y = r.y;
-        this.w = r.w;
-        this.h = r.h;
+            Math.max(this.r, rect.r)));
     }
 }
 
@@ -3336,10 +3354,10 @@ class Connection
             var outRect = this.output.control.getBoundingClientRect();
             var inRect  = this.input .control.getBoundingClientRect();
 
-            var x1 = (outRect.left + outRect.width /2 - graphView.pan.x) / graphView.zoom;
-            var y1 = (outRect.top  + outRect.height/2 - graphView.pan.y) / graphView.zoom;
-            var x2 = (inRect .left + inRect .width /2 - graphView.pan.x) / graphView.zoom;
-            var y2 = (inRect .top  + inRect .height/2 - graphView.pan.y) / graphView.zoom;
+            var x1 = (outRect.left + outRect.width /2) / graphView.zoom;
+            var y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
+            var x2 = (inRect .left + inRect .width /2) / graphView.zoom;
+            var y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
             var color;
 
@@ -4101,6 +4119,7 @@ extends Operator
 {
     #width;
     #height;
+    #round;
 
 
     constructor()
@@ -4111,6 +4130,7 @@ extends Operator
 
         this.addParam(this.#width  = new NumberParam('width',  100, 0.01));
         this.addParam(this.#height = new NumberParam('height', 100, 0.01));
+        this.addParam(this.#round  = new NumberParam('round',    0, 0));
     }
 
 
@@ -5243,6 +5263,12 @@ graphView.addEventListener('pointerdown', e =>
         graphView.panning  = true;
         graphView.panStart = graphView.pan;
         graphView.style.cursor = 'grab';
+
+        for (const node of graph.nodes)
+        {
+            node.div.slx = node.div.offsetLeft;
+            node.div.sly = node.div.offsetTop;
+        }
     }
 });
 
@@ -5323,6 +5349,16 @@ graphView.addEventListener('pointermove', e =>
         const pan = addv(graphView.panStart, sdp);
 
         graphView.pan = pan;
+
+        for (const node of graph.nodes)
+        {
+            setDivPosition(
+                node.div.op,
+                node.div.slx + graphView.p.x - graphView.pStart.x,
+                node.div.sly + graphView.p.y - graphView.pStart.y);
+        }
+
+        graphView.updatePanAndZoom();
     }
 
     else if (!graphView.selection.isNaN)
@@ -5482,36 +5518,37 @@ graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
     {
-        node.div.style.transformOrigin =
-              ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-            + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+        // node.div.style.transformOrigin =
+        //       ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+        //     + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
             
-        node.div.style.transform =
-              'translate(' 
-            + graphView.pan.x + 'px, ' 
-            + graphView.pan.y + 'px) '
-            + 'scale(' + graphView.zoom + ')';
+        // node.div.style.transform =
+        //     /*  'translate(' 
+        //     + graphView.pan.x + 'px, ' 
+        //     + graphView.pan.y + 'px) '
+        //     +*/ 'scale(' + graphView.zoom + ')';
     }
 
     for (const wire of graphView.wires)
     {
-        wire.setAttribute('viewBox',
-                    (-graphView.pan.x)
-            + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
-            + ' ' + graphView.clientWidth
-            + ' ' + graphView.clientHeight);
+        wire.update();
+        // wire.setAttribute('viewBox',
+        //             (-graphView.pan.x)
+        //     + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
+        //     + ' ' + graphView.clientWidth
+        //     + ' ' + graphView.clientHeight);
 
-        wire.style.transformOrigin = '0 0';
-        wire.style.transform = 'scale(' + graphView.zoom + ')';
+        // wire.style.transformOrigin = '0 0';
+        // wire.style.transform = 'scale(' + graphView.zoom + ')';
     }
 
 
-    var bounds = new Rect();
+    // var bounds = Rect.NaN;
 
-    for (const node of graph.nodes)
-        bounds.expandFromRect(node.div.getBoundingClientRect());
+    // for (const node of graph.nodes)
+    //     bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
-    console.log(bounds);
+    // console.log(bounds);
 };
 
 

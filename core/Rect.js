@@ -57,10 +57,15 @@ class Rect
         this.h = h;
     }
 
+    static fromTypical(typ)
+    {
+        return new Rect(typ.x, typ.y, typ.width, typ.height); 
+    }
 
-    static NaN  = new Rect(Number.NaN, Number.NaN, Number.NaN, Number.NaN);
+    // w & h are kept 0 so that isEmpty() works logically on NaN rects
+    static NaN = new Rect(Number.NaN, Number.NaN, 0, 0);
+
     static Zero = new Rect(0, 0, 0, 0);
-
 
     get isNaN()
     {
@@ -72,26 +77,31 @@ class Rect
 
 	get isEmpty()
 	{
-		return (
-			   this.w == 0
-			|| this.h == 0);
+		return (this.w == 0
+			 || this.h == 0);
 	}
+
+    assign(rect)
+    {
+        this.x = rect.x;
+        this.y = rect.y;
+        this.w = rect.w;
+        this.h = rect.h;
+    }
 
     expandFromRect(rect)
     {
-        if (this.isEmpty) return rect;
+        if (rect.isNaN  ) return this;
         if (rect.isEmpty) return this;
+
+        if (this.isNaN  ) this.assign(rect);
+        if (this.isEmpty) return rect;
         
-        const r = AbsRect(
+        this.assign(new AbsRect(
             Math.min(this.t, rect.t),
             Math.min(this.l, rect.l),
             Math.max(this.b, rect.b),
-            Math.max(this.r, rect.r));
-
-        this.x = r.x;
-        this.y = r.y;
-        this.w = r.w;
-        this.h = r.h;
+            Math.max(this.r, rect.r)));
     }
 }
 

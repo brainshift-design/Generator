@@ -89,6 +89,7 @@ function createRect(obj) {
     rect.y = obj.y;
     figma.currentPage.appendChild(rect);
     rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+    rect.cornerRadius = obj.round;
 }
 // function updateRect(data)
 // {
