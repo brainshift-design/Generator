@@ -219,8 +219,6 @@ graphView.addEventListener('mousewheel', e =>
 {
     if (e.ctrlKey)
     {
-        //console.log(position(e));
-
         graphView.oldZoom = graphView.zoom;
         
         const dZoom   = Math.log(graphView.zoom) / Math.log(2);
@@ -228,10 +226,6 @@ graphView.addEventListener('mousewheel', e =>
         
         graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom + dWheel));
         graphView.pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
-
-        //console.log(graphView.pan);
-        //graphView.pStart = { x: e.clientX, y: e.clientY };
-		//graphView.panStart = view.Pan;
     }
 });
 
@@ -369,38 +363,27 @@ graphView.endSelection = () =>
 
 graphView.updatePanAndZoom = () =>
 {
-    // for (const node of graph.nodes)
-    // {
-    //     setDivPosition(
-    //         node.div.op,
-    //         node.div.slx + graphView.p.x - graphView.pStart.x,
-    //         node.div.sly + graphView.p.y - graphView.pStart.y);
-    // }
-    
     for (const node of graph.nodes)
-    {
-        node.div.style.transformOrigin = 
-              ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-            + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-     
-        node.div.style.transform =
-              'translate(' 
-            + (graphView.pan.x * graphView.zoom) + 'px, ' 
-            + (graphView.pan.y * graphView.zoom) + 'px) '
-            + 'scale(' + graphView.zoom + ')';
-    }
+        graphView.updateNodeTransform(node);
 
     for (const wire of graphView.wires)
     {
         wire.update();
-        // wire.setAttribute('viewBox',
-        //             (-graphView.pan.x)
-        //     + ' ' + (-graphView.pan.y + 20) // TODO wtf is this number? why do I need to offset here?
-        //     + ' ' + graphView.clientWidth
-        //     + ' ' + graphView.clientHeight);
 
-        // wire.style.transformOrigin = '0 0';
-        // wire.style.transform = 'scale(' + graphView.zoom + ')';
+        wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
+        wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
+
+        wire.setAttribute('viewBox',
+                    0
+            + ' ' + 20 / graphView.zoom // TODO wtf is this number? why do I need to offset here?
+            + ' ' + graphView.clientWidth  / graphView.zoom
+            + ' ' + graphView.clientHeight / graphView.zoom);
+
+        // wire.style.transformOrigin = 
+        //       graphView.pan.x + ' ' 
+        //     + graphView.pan.y;
+        //wire.setAttribute('transform-origin', '0 0');
+        //wire.setAttribute('transform', 'scale(' + graphView.zoom + ')');
     }
 
 
@@ -411,6 +394,20 @@ graphView.updatePanAndZoom = () =>
 
     graphView.updateScrollX(bounds);
     graphView.updateScrollY(bounds);
+};
+
+
+graphView.updateNodeTransform = function(node)
+{
+    node.div.style.transformOrigin = 
+          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+    
+    node.div.style.transform =
+          'translate(' 
+        + (graphView.pan.x * graphView.zoom) + 'px, ' 
+        + (graphView.pan.y * graphView.zoom) + 'px) '
+        + 'scale(' + graphView.zoom + ')';
 };
 
 
