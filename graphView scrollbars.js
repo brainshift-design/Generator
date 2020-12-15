@@ -78,14 +78,6 @@ scrollbarX.addEventListener('pointermove', e =>
         scrollbarX.style.left  = l;
         scrollbarX.style.width = r-l;
 
-        // for (const node of graph.nodes)
-        // {
-        //     setDivPosition(
-        //         node,
-        //         node.div.slx - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
-        //         node.div.offsetTop);
-        // }
-
         graphView.pan = {
             x: graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
             y: graphView.panStart.y 
@@ -174,14 +166,5 @@ scrollbarY.addEventListener('pointermove', e =>
 
         scrollbarY.style.top    = t;
         scrollbarY.style.height = b-t;
-
-        // for (const node of graph.nodes)
-        // {
-        //     setDivPosition(
-        //         node,
-        //         node.div.offsetLeft,
-        //         );
-        // }    
-
     }
 });

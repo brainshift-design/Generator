@@ -91,8 +91,8 @@ function createDivHeader(node, headerColor)
             {
                 setDivPosition(
                     n.div.op,
-                    n.div.slx + e.clientX - node.div.sx,
-                    n.div.sly + e.clientY - node.div.sy);
+                    n.div.slx + (e.clientX - node.div.sx) / graphView.zoom,
+                    n.div.sly + (e.clientY - node.div.sy) / graphView.zoom);
             }
 
             node.div.moved = true;
@@ -148,6 +148,8 @@ function setDivPosition(node, x, y)
 {
     node.div.style.left = x;
     node.div.style.top  = y;
+
+    graphView.updateNodeTransform(node);
 
     for (const input of node.inputs)
     {

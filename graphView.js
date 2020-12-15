@@ -114,12 +114,6 @@ graphView.addEventListener('pointerdown', e =>
         graphView.panStart = graphView.pan;
         graphView.style.cursor = 'grab';
         graphView.setPointerCapture(e.pointerId);
-
-        // for (const node of graph.nodes)
-        // {
-        //     node.div.slx = node.div.offsetLeft;
-        //     node.div.sly = node.div.offsetTop;
-        // }
     }
 });
 
@@ -375,15 +369,9 @@ graphView.updatePanAndZoom = () =>
 
         wire.setAttribute('viewBox',
                     0
-            + ' ' + 20 / graphView.zoom // TODO wtf is this number? why do I need to offset here?
+            + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
             + ' ' + graphView.clientWidth  / graphView.zoom
             + ' ' + graphView.clientHeight / graphView.zoom);
-
-        // wire.style.transformOrigin = 
-        //       graphView.pan.x + ' ' 
-        //     + graphView.pan.y;
-        //wire.setAttribute('transform-origin', '0 0');
-        //wire.setAttribute('transform', 'scale(' + graphView.zoom + ')');
     }
 
 
