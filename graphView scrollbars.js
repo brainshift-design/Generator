@@ -166,5 +166,10 @@ scrollbarY.addEventListener('pointermove', e =>
 
         scrollbarY.style.top    = t;
         scrollbarY.style.height = b-t;
+
+        graphView.pan = {
+            x: graphView.panStart.x, 
+            y: graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight
+        };
     }
 });
