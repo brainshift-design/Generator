@@ -35,6 +35,8 @@ scrollbarX.addEventListener('pointerdown', e =>
         scrollbarX.pStart = e.clientX;
         scrollbarX.setPointerCapture(e.pointerId);
 
+        graphView.panStart = graphView.pan;
+
         for (const node of graph.nodes)
             node.div.slx = node.div.offsetLeft;
     }
@@ -76,13 +78,18 @@ scrollbarX.addEventListener('pointermove', e =>
         scrollbarX.style.left  = l;
         scrollbarX.style.width = r-l;
 
-        for (const node of graph.nodes)
-        {
-            setDivPosition(
-                node,
-                node.div.slx - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
-                node.div.offsetTop);
-        }
+        // for (const node of graph.nodes)
+        // {
+        //     setDivPosition(
+        //         node,
+        //         node.div.slx - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+        //         node.div.offsetTop);
+        // }
+
+        graphView.pan = {
+            x: graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+            y: graphView.panStart.y 
+        };
     }
 });
 
@@ -127,6 +134,8 @@ scrollbarY.addEventListener('pointerdown', e =>
 
         for (const node of graph.nodes)
             node.div.sly = node.div.offsetTop;
+
+        graphView.panStart = graphView.pan;
     }
 });
 
@@ -166,12 +175,13 @@ scrollbarY.addEventListener('pointermove', e =>
         scrollbarY.style.top    = t;
         scrollbarY.style.height = b-t;
 
-        for (const node of graph.nodes)
-        {
-            setDivPosition(
-                node,
-                node.div.offsetLeft,
-                node.div.sly - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
-        }    
+        // for (const node of graph.nodes)
+        // {
+        //     setDivPosition(
+        //         node,
+        //         node.div.offsetLeft,
+        //         );
+        // }    
+
     }
 });

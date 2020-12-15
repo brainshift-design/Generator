@@ -96,6 +96,8 @@ function createDivHeader(node, headerColor)
             }
 
             node.div.moved = true;
+
+            //graphView.updatePanAndZoom();
         };
     });
 

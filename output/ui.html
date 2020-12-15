@@ -517,6 +517,15 @@ function colorFromDataType(dataType, active)
 }
 
 
+function position(e)
+{
+    return {
+        x: e.clientX,
+        y: e.clientY
+    };
+}
+
+
 const OBJ_COLOR = '#bee0ff';
 const NUM_COLOR = '#ddd';
 
@@ -1954,8 +1963,8 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#min   = new GNumberParam('min',   0));
-        this.addParam(this.#max   = new GNumberParam('max', 100));
+        this.addParam(this.#min   = new GNumberParam('min',  0));
+        this.addParam(this.#max   = new GNumberParam('max', 10));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
 
@@ -2342,6 +2351,15 @@ function colorFromDataType(dataType, active)
     }
 
     return 'magenta';
+}
+
+
+function position(e)
+{
+    return {
+        x: e.clientX,
+        y: e.clientY
+    };
 }
 
 
@@ -3854,6 +3872,8 @@ function createDivHeader(node, headerColor)
             }
 
             node.div.moved = true;
+
+            //graphView.updatePanAndZoom();
         };
     });
 
@@ -4102,8 +4122,8 @@ extends Operator
 
         this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#min   = new NumberParam('min',   0));
-        this.addParam(this.#max   = new NumberParam('max', 100));
+        this.addParam(this.#min   = new NumberParam('min',  0));
+        this.addParam(this.#max   = new NumberParam('max', 10));
         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new NumberParam('seed', 1, 1));
 
@@ -5208,6 +5228,8 @@ graphView.panStart;
 
 
 graphView._zoom = 1;
+graphView.oldZoom = 1;
+
 
 Object.defineProperty(graphView, 'zoom',
 {
@@ -5274,11 +5296,11 @@ graphView.addEventListener('pointerdown', e =>
         graphView.style.cursor = 'grab';
         graphView.setPointerCapture(e.pointerId);
 
-        for (const node of graph.nodes)
-        {
-            node.div.slx = node.div.offsetLeft;
-            node.div.sly = node.div.offsetTop;
-        }
+        // for (const node of graph.nodes)
+        // {
+        //     node.div.slx = node.div.offsetLeft;
+        //     node.div.sly = node.div.offsetTop;
+        // }
     }
 });
 
@@ -5356,11 +5378,9 @@ graphView.addEventListener('pointermove', e =>
     if (graphView.panning)
     {
         const dp  = subv(graphView.p, graphView.pStart);
-        const sdp = divvs(dp, graphView.zoom);
-        const pan = addv(graphView.panStart, sdp);
+        const pan = addv(graphView.panStart, dp);
 
         graphView.pan = pan;
-        //graphView.updatePanAndZoom();
     }
 
     else if (graphView.selecting)
@@ -5380,14 +5400,17 @@ graphView.addEventListener('mousewheel', e =>
 {
     if (e.ctrlKey)
     {
-        const dZoom  = Math.log(graphView.zoom) / Math.log(2);
-        const dWheel = e.wheelDeltaY/120 / 10;
+        //console.log(position(e));
+
+        graphView.oldZoom = graphView.zoom;
         
-        const oldZoom = graphView.zoom;
+        const dZoom   = Math.log(graphView.zoom) / Math.log(2);
+        const dWheel  = e.wheelDeltaY/120 / 10;
+        
         graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom + dWheel));
+        graphView.pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
 
-		//graphView.pan = subv(graphView.pan, mulvs(graphView.p, (oldZoom * graphView.zoom - 1) / graphView.zoom));
-
+        //console.log(graphView.pan);
         //graphView.pStart = { x: e.clientX, y: e.clientY };
 		//graphView.panStart = view.Pan;
     }
@@ -5527,25 +5550,25 @@ graphView.endSelection = () =>
 
 graphView.updatePanAndZoom = () =>
 {
-    for (const node of graph.nodes)
-    {
-        setDivPosition(
-            node.div.op,
-            node.div.slx + graphView.p.x - graphView.pStart.x,
-            node.div.sly + graphView.p.y - graphView.pStart.y);
-    }
+    // for (const node of graph.nodes)
+    // {
+    //     setDivPosition(
+    //         node.div.op,
+    //         node.div.slx + graphView.p.x - graphView.pStart.x,
+    //         node.div.sly + graphView.p.y - graphView.pStart.y);
+    // }
     
     for (const node of graph.nodes)
     {
-        // node.div.style.transformOrigin =
-        //       ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-        //     + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-            
-        // node.div.style.transform =
-        //     /*  'translate(' 
-        //     + graphView.pan.x + 'px, ' 
-        //     + graphView.pan.y + 'px) '
-        //     +*/ 'scale(' + graphView.zoom + ')';
+        node.div.style.transformOrigin = 
+              ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+            + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+     
+        node.div.style.transform =
+              'translate(' 
+            + (graphView.pan.x * graphView.zoom) + 'px, ' 
+            + (graphView.pan.y * graphView.zoom) + 'px) '
+            + 'scale(' + graphView.zoom + ')';
     }
 
     for (const wire of graphView.wires)
@@ -5640,6 +5663,8 @@ scrollbarX.addEventListener('pointerdown', e =>
         scrollbarX.pStart = e.clientX;
         scrollbarX.setPointerCapture(e.pointerId);
 
+        graphView.panStart = graphView.pan;
+
         for (const node of graph.nodes)
             node.div.slx = node.div.offsetLeft;
     }
@@ -5681,13 +5706,18 @@ scrollbarX.addEventListener('pointermove', e =>
         scrollbarX.style.left  = l;
         scrollbarX.style.width = r-l;
 
-        for (const node of graph.nodes)
-        {
-            setDivPosition(
-                node,
-                node.div.slx - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
-                node.div.offsetTop);
-        }
+        // for (const node of graph.nodes)
+        // {
+        //     setDivPosition(
+        //         node,
+        //         node.div.slx - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+        //         node.div.offsetTop);
+        // }
+
+        graphView.pan = {
+            x: graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+            y: graphView.panStart.y 
+        };
     }
 });
 
@@ -5732,6 +5762,8 @@ scrollbarY.addEventListener('pointerdown', e =>
 
         for (const node of graph.nodes)
             node.div.sly = node.div.offsetTop;
+
+        graphView.panStart = graphView.pan;
     }
 });
 
@@ -5771,13 +5803,14 @@ scrollbarY.addEventListener('pointermove', e =>
         scrollbarY.style.top    = t;
         scrollbarY.style.height = b-t;
 
-        for (const node of graph.nodes)
-        {
-            setDivPosition(
-                node,
-                node.div.offsetLeft,
-                node.div.sly - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
-        }    
+        // for (const node of graph.nodes)
+        // {
+        //     setDivPosition(
+        //         node,
+        //         node.div.offsetLeft,
+        //         );
+        // }    
+
     }
 });
 

@@ -150,3 +150,12 @@ function colorFromDataType(dataType, active)
 
     return 'magenta';
 }
+
+
+function position(e)
+{
+    return {
+        x: e.clientX,
+        y: e.clientY
+    };
+}

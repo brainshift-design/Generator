@@ -47,6 +47,8 @@ graphView.panStart;
 
 
 graphView._zoom = 1;
+graphView.oldZoom = 1;
+
 
 Object.defineProperty(graphView, 'zoom',
 {
@@ -113,11 +115,11 @@ graphView.addEventListener('pointerdown', e =>
         graphView.style.cursor = 'grab';
         graphView.setPointerCapture(e.pointerId);
 
-        for (const node of graph.nodes)
-        {
-            node.div.slx = node.div.offsetLeft;
-            node.div.sly = node.div.offsetTop;
-        }
+        // for (const node of graph.nodes)
+        // {
+        //     node.div.slx = node.div.offsetLeft;
+        //     node.div.sly = node.div.offsetTop;
+        // }
     }
 });
 
@@ -195,11 +197,9 @@ graphView.addEventListener('pointermove', e =>
     if (graphView.panning)
     {
         const dp  = subv(graphView.p, graphView.pStart);
-        const sdp = divvs(dp, graphView.zoom);
-        const pan = addv(graphView.panStart, sdp);
+        const pan = addv(graphView.panStart, dp);
 
         graphView.pan = pan;
-        //graphView.updatePanAndZoom();
     }
 
     else if (graphView.selecting)
@@ -219,14 +219,17 @@ graphView.addEventListener('mousewheel', e =>
 {
     if (e.ctrlKey)
     {
-        const dZoom  = Math.log(graphView.zoom) / Math.log(2);
-        const dWheel = e.wheelDeltaY/120 / 10;
+        //console.log(position(e));
+
+        graphView.oldZoom = graphView.zoom;
         
-        const oldZoom = graphView.zoom;
+        const dZoom   = Math.log(graphView.zoom) / Math.log(2);
+        const dWheel  = e.wheelDeltaY/120 / 10;
+        
         graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom + dWheel));
+        graphView.pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
 
-		//graphView.pan = subv(graphView.pan, mulvs(graphView.p, (oldZoom * graphView.zoom - 1) / graphView.zoom));
-
+        //console.log(graphView.pan);
         //graphView.pStart = { x: e.clientX, y: e.clientY };
 		//graphView.panStart = view.Pan;
     }
@@ -366,25 +369,25 @@ graphView.endSelection = () =>
 
 graphView.updatePanAndZoom = () =>
 {
-    for (const node of graph.nodes)
-    {
-        setDivPosition(
-            node.div.op,
-            node.div.slx + graphView.p.x - graphView.pStart.x,
-            node.div.sly + graphView.p.y - graphView.pStart.y);
-    }
+    // for (const node of graph.nodes)
+    // {
+    //     setDivPosition(
+    //         node.div.op,
+    //         node.div.slx + graphView.p.x - graphView.pStart.x,
+    //         node.div.sly + graphView.p.y - graphView.pStart.y);
+    // }
     
     for (const node of graph.nodes)
     {
-        // node.div.style.transformOrigin =
-        //       ((-graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-        //     + ((-graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-            
-        // node.div.style.transform =
-        //     /*  'translate(' 
-        //     + graphView.pan.x + 'px, ' 
-        //     + graphView.pan.y + 'px) '
-        //     +*/ 'scale(' + graphView.zoom + ')';
+        node.div.style.transformOrigin = 
+              ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+            + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+     
+        node.div.style.transform =
+              'translate(' 
+            + (graphView.pan.x * graphView.zoom) + 'px, ' 
+            + (graphView.pan.y * graphView.zoom) + 'px) '
+            + 'scale(' + graphView.zoom + ')';
     }
 
     for (const wire of graphView.wires)
