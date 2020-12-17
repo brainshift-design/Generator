@@ -17,12 +17,17 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerenter', function(e)
     {
-        e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+        if (!graphView.zoomSelecting)
+        {
+            console.log(graphView.zoomSelecting);
+            e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+        }
     });
 
     node.div.addEventListener('pointerleave', function(e)
     {
-        e.target.op.inner.style.boxShadow = 'none';
+        if (!graphView.zoomSelecting)
+            e.target.op.inner.style.boxShadow = 'none';
     });
 
 

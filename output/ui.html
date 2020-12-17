@@ -205,11 +205,6 @@ button svg
     padding: 0;
 }
 
-.nodeInner:hover
-{
-    box-shadow: 0 0 0 1px #18A0FB;
-}
-
 .nodeInner
 {
     display:       block;
@@ -3793,12 +3788,17 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerenter', function(e)
     {
-        e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+        if (!graphView.zoomSelecting)
+        {
+            console.log(graphView.zoomSelecting);
+            e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+        }
     });
 
     node.div.addEventListener('pointerleave', function(e)
     {
-        e.target.op.inner.style.boxShadow = 'none';
+        if (!graphView.zoomSelecting)
+            e.target.op.inner.style.boxShadow = 'none';
     });
 
 
@@ -5162,6 +5162,8 @@ document.addEventListener('keydown', e =>
     else if (e.key == 'Control'
           && graphView.spaceDown)
     {
+        graphView.zoomSelecting = true;
+
         if (e.altKey) graphView.setZoomOutCursor();
         else          graphView.setZoomInCursor();
     }
@@ -5180,19 +5182,26 @@ document.addEventListener('keyup', e =>
     {
         if (graphView.spaceDown)
         {
-            graphView.style.cursor = 'auto';
-            graphView.spaceDown    = false;
+            graphView.style.cursor  = 'auto';
+            graphView.spaceDown     = false;
+            graphView.zoomSelecting = false;
         }
     }
     else if (e.key == 'Alt'
           && graphView.spaceDown)
     {
-        if (e.ctrlKey) graphView.setZoomInCursor();
-        else           graphView.setPanCursor();
+        if (e.ctrlKey) 
+            graphView.setZoomInCursor();
+        else
+        {
+            graphView.setPanCursor();
+            graphView.zoomSelecting = false;
+        }
     }
     else if (e.key == 'Control'
           && graphView.spaceDown)
     {
+        graphView.zoomSelecting = false;
         graphView.setPanCursor();
     }
 });

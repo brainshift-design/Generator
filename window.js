@@ -102,6 +102,8 @@ document.addEventListener('keydown', e =>
     else if (e.key == 'Control'
           && graphView.spaceDown)
     {
+        graphView.zoomSelecting = true;
+
         if (e.altKey) graphView.setZoomOutCursor();
         else          graphView.setZoomInCursor();
     }
@@ -120,19 +122,26 @@ document.addEventListener('keyup', e =>
     {
         if (graphView.spaceDown)
         {
-            graphView.style.cursor = 'auto';
-            graphView.spaceDown    = false;
+            graphView.style.cursor  = 'auto';
+            graphView.spaceDown     = false;
+            graphView.zoomSelecting = false;
         }
     }
     else if (e.key == 'Alt'
           && graphView.spaceDown)
     {
-        if (e.ctrlKey) graphView.setZoomInCursor();
-        else           graphView.setPanCursor();
+        if (e.ctrlKey) 
+            graphView.setZoomInCursor();
+        else
+        {
+            graphView.setPanCursor();
+            graphView.zoomSelecting = false;
+        }
     }
     else if (e.key == 'Control'
           && graphView.spaceDown)
     {
+        graphView.zoomSelecting = false;
         graphView.setPanCursor();
     }
 });
