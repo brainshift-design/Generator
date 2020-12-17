@@ -93,6 +93,48 @@ document.addEventListener('keydown', e =>
     {
         graphView.zoom = 1;
     }
+    else if (e.code == 'Space'
+         && !e.ctrlKey)
+    {
+        graphView.spaceDown = true;
+        graphView.setPanCursor();
+    }
+    else if (e.key == 'Control'
+          && graphView.spaceDown)
+    {
+        if (e.altKey) graphView.setZoomOutCursor();
+        else          graphView.setZoomInCursor();
+    }
+    else if (e.key == 'Alt'
+          && graphView.spaceDown
+          && e.ctrlKey)
+    {
+        graphView.setZoomOutCursor();
+    }
+});
+
+
+document.addEventListener('keyup', e =>
+{
+    if (e.code == 'Space')
+    {
+        if (graphView.spaceDown)
+        {
+            graphView.style.cursor = 'auto';
+            graphView.spaceDown    = false;
+        }
+    }
+    else if (e.key == 'Alt'
+          && graphView.spaceDown)
+    {
+        if (e.ctrlKey) graphView.setZoomInCursor();
+        else           graphView.setPanCursor();
+    }
+    else if (e.key == 'Control'
+          && graphView.spaceDown)
+    {
+        graphView.setPanCursor();
+    }
 });
 
 
@@ -104,7 +146,6 @@ function resizeWindow(width, height)
         width:  width,
         height: height
     }}, '*');
-
 }
 
 
