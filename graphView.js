@@ -10,6 +10,7 @@ graphView.tempConn   = null;
 graphView.selecting  = false;
 graphView.selectBox  = Rect.NaN;
 
+graphView.button1down = false;
 
 graphView._selected = [];
 
@@ -118,6 +119,7 @@ graphView.addEventListener('pointerdown', e =>
     
     else if (e.button == 1)
     {
+        graphView.button1down = true;
         graphView.startPan(e.pointerId);
     }
 });
@@ -125,8 +127,8 @@ graphView.addEventListener('pointerdown', e =>
 
 graphView.addEventListener('pointerup', e =>
 {
-    if (e.button == 0
-          && graphView.spaceDown)
+    if (   e.button == 0
+        && graphView.spaceDown)
     {
         if (e.ctrlKey)
         {
@@ -209,6 +211,7 @@ graphView.addEventListener('pointerup', e =>
           && graphView.panning)
     {
         graphView.endPan(e.pointerId, true);
+        graphView.button1down = false;
     }
 });
 
@@ -243,17 +246,35 @@ graphView.addEventListener('pointermove', e =>
 });
 
 
-graphView.addEventListener('mousewheel', e =>
+graphView.addEventListener('wheel', e =>
 {
+    if (graphView.button1down)
+        return;
+
+        
+    const dZoom = Math.log(graphView.zoom) / Math.log(2);
+    
+    const dWheelX = e.deltaX/120;
+    const dWheelY = e.deltaY/120;
+
     if (e.ctrlKey)
     {
         graphView.oldZoom = graphView.zoom;
         
-        const dZoom   = Math.log(graphView.zoom) / Math.log(2);
-        const dWheel  = e.wheelDeltaY/120 / 10;
-        
-        graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom + dWheel));
+        graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
         graphView.pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
+    }
+    else
+    {
+        const dPanX = dWheelX * 20 / Math.pow(graphView.zoom, 0.1);
+        const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
+
+        graphView.pan = 
+            dWheelX != 0
+            ? { x:  e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
+                y: !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX }
+            : { x: !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
+                y:  e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY };
     }
 });
 

@@ -202,9 +202,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.update();
     });
 
-    slider.addEventListener('mousewheel', e =>
+    slider.addEventListener('wheel', e =>
     {
-        slider.setValue(slider.value + (e.wheelDeltaY > 0 ? 1 : -1) * slider.wheelStep);
+        slider.setValue(slider.value + (e.deltaY > 0 ? 1 : -1) * slider.wheelStep);
     });
 
 
