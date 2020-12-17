@@ -96,8 +96,11 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'Space'
          && !e.ctrlKey)
     {
-        graphView.spaceDown = true;
-        graphView.setPanCursor();
+        if (!graphView.selecting)
+        {
+            graphView.spaceDown = true;
+            graphView.setPanCursor();
+        }
     }
     else if (e.key == 'Control'
           && graphView.spaceDown)

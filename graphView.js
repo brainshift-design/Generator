@@ -251,7 +251,7 @@ graphView.addEventListener('wheel', e =>
     if (graphView.button1down)
         return;
 
-        
+
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
     
     const dWheelX = e.deltaX/120;
@@ -275,6 +275,9 @@ graphView.addEventListener('wheel', e =>
                 y: !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX }
             : { x: !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
                 y:  e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY };
+
+        if (graphView.selecting)
+            graphView.updateSelection(e.clientX, e.clientY);
     }
 });
 
@@ -318,8 +321,8 @@ graphView.getNodeBounds = () =>
     }
 
     return {
-        x: boundsL, 
-        y: boundsT,
+        x: boundsL - graphView.pan.x, 
+        y: boundsT - graphView.pan.y,
         w: boundsR - boundsL,
         h: boundsB - boundsT };
 };
@@ -483,21 +486,6 @@ graphView.updatePanAndZoom = () =>
     for (const node of graph.nodes)
         graphView.updateNodeTransform(node);
 
-    for (const wire of graphView.wires)
-    {
-        wire.update();
-
-        wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
-        wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
-
-        wire.setAttribute('viewBox',
-                    0
-            + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
-            + ' ' + graphView.clientWidth  / graphView.zoom
-            + ' ' + graphView.clientHeight / graphView.zoom);
-    }
-
-
     var bounds = Rect.NaN;
 
     for (const node of graph.nodes)
@@ -519,6 +507,33 @@ graphView.updateNodeTransform = function(node)
         + (graphView.pan.x * graphView.zoom) + 'px, '
         + (graphView.pan.y * graphView.zoom) + 'px) '
         + 'scale(' + graphView.zoom + ')';
+
+    for (const input of node.inputs)
+    {
+        if (input.connected)
+            graphView.updateWireTransform(input.connection.wire);        
+    }
+
+    if (node.output)
+    {
+        for (const input of node.output.connectedInputs)
+            graphView.updateWireTransform(input.connection.wire);        
+    }
+};
+
+
+graphView.updateWireTransform = function(wire)
+{
+    wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
+    wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
+
+    wire.setAttribute('viewBox',
+                0
+        + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
+        + ' ' + graphView.clientWidth  / graphView.zoom
+        + ' ' + graphView.clientHeight / graphView.zoom);
+
+    wire.update();
 };
 
 

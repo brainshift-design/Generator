@@ -18,10 +18,7 @@ function createDiv(node, headerColor)
     node.div.addEventListener('pointerenter', function(e)
     {
         if (!graphView.zoomSelecting)
-        {
-            console.log(graphView.zoomSelecting);
             e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
-        }
     });
 
     node.div.addEventListener('pointerleave', function(e)

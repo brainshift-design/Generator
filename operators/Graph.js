@@ -68,7 +68,7 @@ class Graph
         if (this.nodes.length > 0)
         {
             const bounds = graphView.getNodeBounds();
-            
+
             this.nodes.push(node);
             graphView.appendChild(node.div);
 
