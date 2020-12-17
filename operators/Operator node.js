@@ -17,13 +17,15 @@ function createDiv(node, headerColor)
 
     node.div.addEventListener('pointerenter', function(e)
     {
-        if (!graphView.zoomSelecting)
+        if (   !graphView.zoomSelecting
+            && !graphView.spaceDown)
             e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
     });
 
     node.div.addEventListener('pointerleave', function(e)
     {
-        if (!graphView.zoomSelecting)
+        if (   !graphView.zoomSelecting
+            && !graphView.spaceDown)
             e.target.op.inner.style.boxShadow = 'none';
     });
 
@@ -52,6 +54,9 @@ function createDivHeader(node, headerColor)
 
     node.header.addEventListener('pointerdown', function(e) 
     {
+        if (graphView.spaceDown)    
+            return;
+
         graphView.putNodeOnTop(node);
         
         if (   e.button == 0

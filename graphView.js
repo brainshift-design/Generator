@@ -541,6 +541,7 @@ graphView.addWire = wire =>
 {
     graphView.wires.push(wire);
     graphView.appendChild(wire);  
+    graphView.updateWireTransform(wire);
     wire.update();
 };
 

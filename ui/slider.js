@@ -68,6 +68,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('pointerdown', function(e)
     {
+        if (graphView.spaceDown)
+            return;
+
         var opDiv = 
                slider.parentNode
             && slider.parentNode.parentNode
@@ -106,7 +109,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.addEventListener('losecapture', function()
     {
         slider.buttonDown0 = false;
-        slider.mouseOver  = false;
+        slider.mouseOver   = false;
         slider.update();
     });
 
@@ -146,13 +149,19 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     slider.addEventListener('pointerenter', function(e)
     {
-        slider.style.cursor = 'ew-resize';
+        if (!graphView.spaceDown)
+        {
+            slider.style.cursor = 'ew-resize';
+            //slider.style.boxShadow = '0 0 0 -1px rgba(0, 0, 0, 0.1)';
+        }
     });
 
     slider.addEventListener('pointerout', function(e)
     {
+        if (!graphView.spaceDown)
+            slider.style.cursor = 'default';
+
         slider.style.boxShadow = '0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset';
-        slider.style.cursor    = 'default';
     });
 
 
@@ -163,7 +172,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.mouseOver = 
                e.clientX >= rect.left
             && e.clientX <  rect.right
-            && e.clientY >= rect.top
+            && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
         
         slider.clientX = e.clientX;
@@ -202,9 +211,14 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.update();
     });
 
+    
     slider.addEventListener('wheel', e =>
     {
-        slider.setValue(slider.value + (e.deltaY > 0 ? 1 : -1) * slider.wheelStep);
+        if (!e.ctrlKey)
+        {
+            e.stopPropagation();
+            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+        }
     });
 
 
@@ -218,7 +232,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('focus', function()
     {
-        slider.showTextbox();
+        if (!graphView.spaceDown)
+            slider.showTextbox();
     });
 
     //

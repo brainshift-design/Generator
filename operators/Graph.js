@@ -137,7 +137,7 @@ class Graph
         output.connection = conn;
         
         graphView.addWire(conn.wire);
-        
+
         output.op.makePassive();
         
         //invalidate(input.op);
