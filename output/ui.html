@@ -3075,6 +3075,11 @@ class Graph
         {
             const bounds = graphView.getNodeBounds();
 
+            bounds.x /= graphView.zoom;
+            bounds.y /= graphView.zoom;
+            bounds.w /= graphView.zoom;
+            bounds.h /= graphView.zoom;
+
             this.nodes.push(node);
             graphView.appendChild(node.div);
 
