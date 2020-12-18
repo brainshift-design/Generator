@@ -44,6 +44,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         
     slider.mouseOver         = false;
     slider.buttonDown0       = false;
+    slider.buttonDown1       = false;
         
     slider.clickSize         = 4;
     slider.moved             = false;
@@ -71,19 +72,19 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         if (graphView.spaceDown)
             return;
 
-        var opDiv = 
-               slider.parentNode
-            && slider.parentNode.parentNode
-            && slider.parentNode.parentNode.parentNode
-            ? slider.parentNode.parentNode.parentNode
-            : null;
-
-        if (opDiv && opDiv.className == 'node') 
-            graphView.putNodeOnTop(opDiv.op);
-
-
         if (e.button == 0)
         {
+            var opDiv = 
+                   slider.parentNode
+                && slider.parentNode.parentNode
+                && slider.parentNode.parentNode.parentNode
+                ? slider.parentNode.parentNode.parentNode
+                : null;
+
+            if (opDiv && opDiv.className == 'node') 
+                graphView.putNodeOnTop(opDiv.op);
+
+
             e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
 
@@ -104,6 +105,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
                 onSliderClickTimer(slider); 
             }, 500);
         }
+        else if (e.button == 1)
+            slider.buttonDown1 = true;
     });
 
     slider.addEventListener('losecapture', function()
@@ -130,6 +133,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.showTextbox();
         }
         
+        if (slider.buttonDown1)
+            slider.buttonDown1 = false;
+
         slider.buttonDown0_ = false;
     });    
 
@@ -149,18 +155,13 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     slider.addEventListener('pointerenter', function(e)
     {
-        if (!graphView.spaceDown)
-        {
-            slider.style.cursor = 'ew-resize';
-            //slider.style.boxShadow = '0 0 0 -1px rgba(0, 0, 0, 0.1)';
-        }
+        slider.style.cursor    = 'ew-resize';
+        slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
     });
 
     slider.addEventListener('pointerout', function(e)
     {
-        if (!graphView.spaceDown)
-            slider.style.cursor = 'default';
-
+        slider.style.cursor    = 'default';
         slider.style.boxShadow = '0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset';
     });
 
@@ -185,7 +186,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             {
                 slider.movedX += e.movementX;
                 
-                var dx       = slider.sx - slider.movedX;
+                var dx       = slider.sx - slider.movedX;             
                 var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
     
                 // TODO: if (log) do log scaling
@@ -205,8 +206,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
                 }
             }
         }
-        else
-            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        //else
+        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
         slider.update();
     });
@@ -227,12 +228,16 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
             slider.showTextbox();
+
+        // else if (e.code == 'Space')
+        //     graphView.setPanCursor();
     });
 
 
     slider.addEventListener('focus', function()
     {
-        if (!graphView.spaceDown)
+        if (   !graphView.spaceDown
+            && !slider.buttonDown1)
             slider.showTextbox();
     });
 
