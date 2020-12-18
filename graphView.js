@@ -286,6 +286,10 @@ graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new Connection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
+    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.scale = graphView.zoom;
+    graphView.tempConn.wire.output = output;
+    graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
 };
 
 
@@ -293,6 +297,10 @@ graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new Connection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
+    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.scale = graphView.zoom;
+    graphView.tempConn.wire.input = input;
+    graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
 };
 
 
@@ -550,7 +558,7 @@ graphView.addWireFromOutput = (wire, output) =>
 {
     graphView.wires.push(wire);
     graphView.appendChild(wire);
-    wire.updateFromOutput(output);  
+    //wire.updateFromOutput(output);  
 };
 
 
