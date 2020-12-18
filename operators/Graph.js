@@ -144,6 +144,8 @@ class Graph
     
         if (!input.op.activeNodeInTree)
             input.op.makeActive();
+            
+        conn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
 
         return true;
     }

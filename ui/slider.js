@@ -74,14 +74,14 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         if (graphView.spaceDown)
             return;
 
-        if (slider.inputConnected)
-        {
-            e.stopPropagation();
-            return;
-        }
-
         if (e.button == 0)
         {
+            if (slider.inputConnected)
+            {
+                e.stopPropagation();
+                return;
+            }
+    
             var opDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
