@@ -57,6 +57,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     slider.enableChangeEvent = true;
 
+    slider.inputConnected    = false;
+
 
     initSliderChildren(slider);    
     initSliderTextbox(slider);
@@ -71,6 +73,12 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     {
         if (graphView.spaceDown)
             return;
+
+        if (slider.inputConnected)
+        {
+            e.stopPropagation();
+            return;
+        }
 
         if (e.button == 0)
         {
@@ -155,8 +163,12 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     slider.addEventListener('pointerenter', function(e)
     {
-        slider.style.cursor    = 'ew-resize';
-        slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        if (   !graphView.spaceDown
+            && !slider.inputConnected)
+        {
+            slider.style.cursor    = 'ew-resize';
+            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        }
     });
 
     slider.addEventListener('pointerout', function(e)
@@ -168,6 +180,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('pointermove', function(e)
     {
+        if (slider.inputConnected)
+            return;
+
         var rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
@@ -237,7 +252,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.addEventListener('focus', function()
     {
         if (   !graphView.spaceDown
-            && !slider.buttonDown1)
+            && !slider.buttonDown1
+            && !slider.inputConnected)
             slider.showTextbox();
     });
 

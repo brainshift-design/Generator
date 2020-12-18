@@ -55,14 +55,14 @@ extends Parameter
 
         this.input.addEventListener('connect', e =>
         {
-            this.control.style.fontStyle     = 'italic';
-            this.control.style.pointerEvents = 'none';
+            this.control.style.fontStyle = 'italic';
+            this.control.inputConnected  = true;
         });
 
         this.input.addEventListener('disconnect', e =>
         {
-            this.control.style.fontStyle     = 'normal';
-            this.control.style.pointerEvents = 'auto';
+            this.control.style.fontStyle = 'normal';
+            this.control.inputConnected  = false;
         });
     }
 }
