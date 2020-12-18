@@ -145,6 +145,7 @@ class Graph
         if (!input.op.activeNodeInTree)
             input.op.makeActive();
             
+        output.op.updateConnectedInputValueText();
         conn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
 
         return true;
@@ -171,6 +172,9 @@ class Graph
         output.connection     = null;
 
         input.connectedOutput = null;
+
+        if (input.param)
+            input.param.valueText = '';
 
 
         // invalidate(input.op);

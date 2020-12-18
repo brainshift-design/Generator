@@ -59,6 +59,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.inputConnected    = false;
 
+    slider.valueText         = '';
+
 
     initSliderChildren(slider);    
     initSliderTextbox(slider);
@@ -302,8 +304,13 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         
         if (slider.name.length > 0)
             slider.text.innerHTML += slider.name + "&nbsp;&nbsp;";
-            
-        slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
+        
+        var valueText = 
+            slider.valueText != ''
+            ? slider.valueText
+            : getNumberString(value, slider.dec);
+
+        slider.text.innerHTML += valueText + slider.suffix;
 
         if (   fireChangeEvent
             && slider.enableChangeEvent

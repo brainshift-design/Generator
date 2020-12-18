@@ -2946,6 +2946,14 @@ extends Parameter
     input; 
 
 
+    get valueText() { return this.control.valueText; }
+    set valueText(text) 
+    {
+        this.control.valueText = text;
+        this.control.update();
+    }
+
+    
     constructor(name, 
                 value     = 0, 
                 min       = Number.MIN_SAFE_INTEGER, 
@@ -3151,6 +3159,7 @@ class Graph
         if (!input.op.activeNodeInTree)
             input.op.makeActive();
             
+        output.op.updateConnectedInputValueText();
         conn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
 
         return true;
@@ -3177,6 +3186,9 @@ class Graph
         output.connection     = null;
 
         input.connectedOutput = null;
+
+        if (input.param)
+            input.param.valueText = '';
 
 
         // invalidate(input.op);
@@ -3636,6 +3648,9 @@ class Operator
 
         return null;
     }
+
+
+    updateConnectedInputValueText() {}
 
 
     // set valid(val) { this.#valid = val; }
@@ -4146,17 +4161,41 @@ extends Operator
         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new NumberParam('seed', 1, 1));
 
+        this.#max.control.min = this.#min.value;
+        this.#min.control.max = this.#max.value;
+
         this.#min.control.addEventListener('change', () =>
         {
-            if (this.#min.value > this.#max.value)
-                this.#max.value = this.#min.value;
+            // if (this.#min.value > this.#max.value)
+            //     this.#min.value = this.#max.value;
+
+            this.#max.control.min = this.#min.value;
+            this.updateConnectedInputValueText();
         });
 
         this.#max.control.addEventListener('change', () =>
         {
-            if (this.#max.value < this.#min.value)
-                this.#min.value = this.#max.value;
+            // if (this.#max.value < this.#min.value)
+            //     this.#max.value = this.#min.value;
+
+            this.#min.control.max = this.#max.value;
+            this.updateConnectedInputValueText();
         });
+    }
+
+
+    updateConnectedInputValueText()
+    {
+        const val =
+            this.#min.value == this.#max.value
+            ? this.#min.value
+            : this.#min.value + '~' + this.#max.value;
+
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+                input.param.valueText = val;
+        }
     }
 }
 
@@ -4353,6 +4392,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.enableChangeEvent = true;
 
     slider.inputConnected    = false;
+
+    slider.valueText         = '';
 
 
     initSliderChildren(slider);    
@@ -4597,8 +4638,13 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         
         if (slider.name.length > 0)
             slider.text.innerHTML += slider.name + "&nbsp;&nbsp;";
-            
-        slider.text.innerHTML += getNumberString(value, slider.dec) + slider.suffix;
+        
+        var valueText = 
+            slider.valueText != ''
+            ? slider.valueText
+            : getNumberString(value, slider.dec);
+
+        slider.text.innerHTML += valueText + slider.suffix;
 
         if (   fireChangeEvent
             && slider.enableChangeEvent

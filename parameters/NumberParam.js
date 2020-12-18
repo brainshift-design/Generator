@@ -10,6 +10,14 @@ extends Parameter
     input; 
 
 
+    get valueText() { return this.control.valueText; }
+    set valueText(text) 
+    {
+        this.control.valueText = text;
+        this.control.update();
+    }
+
+    
     constructor(name, 
                 value     = 0, 
                 min       = Number.MIN_SAFE_INTEGER, 

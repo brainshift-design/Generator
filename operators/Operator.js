@@ -159,6 +159,9 @@ class Operator
     }
 
 
+    updateConnectedInputValueText() {}
+
+
     // set valid(val) { this.#valid = val; }
     // get valid() 
     // {
