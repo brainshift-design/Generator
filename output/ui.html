@@ -3905,7 +3905,10 @@ function createDivHeader(node, headerColor)
 
             node.div.moved = true;
 
-            //graphView.updatePanAndZoom();
+            const bounds = graphView.getAllNodeBounds();
+
+            graphView.updateScrollX(bounds);
+            graphView.updateScrollY(bounds);
         };
     });
 
@@ -3957,8 +3960,6 @@ function setDivPosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    graphView.updateNodeTransform(node);
-
     for (const input of node.inputs)
     {
         if (input.connected) 
@@ -3977,6 +3978,8 @@ function setDivPosition(node, x, y)
         if (param.input.connected) 
             param.input.connection.wire.update(true);
     }
+
+    graphView.updateNodeTransform(node);
 }
 
 
@@ -5646,6 +5649,17 @@ graphView.cancelConnection = () =>
 };
 
 
+graphView.getAllNodeBounds = () =>
+{
+    const bounds = Rect.NaN;
+
+    for (const node of graph.nodes)
+        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+
+    return bounds;
+};
+
+
 graphView.getNodeBounds = () =>
 {
     var boundsL = Number.MAX_SAFE_INTEGER;
@@ -5829,10 +5843,7 @@ graphView.updatePanAndZoom = () =>
     for (const node of graph.nodes)
         graphView.updateNodeTransform(node);
 
-    var bounds = Rect.NaN;
-
-    for (const node of graph.nodes)
-        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+    const bounds = graphView.getAllNodeBounds();
 
     graphView.updateScrollX(bounds);
     graphView.updateScrollY(bounds);

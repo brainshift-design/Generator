@@ -104,7 +104,10 @@ function createDivHeader(node, headerColor)
 
             node.div.moved = true;
 
-            //graphView.updatePanAndZoom();
+            const bounds = graphView.getAllNodeBounds();
+
+            graphView.updateScrollX(bounds);
+            graphView.updateScrollY(bounds);
         };
     });
 
@@ -156,8 +159,6 @@ function setDivPosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    graphView.updateNodeTransform(node);
-
     for (const input of node.inputs)
     {
         if (input.connected) 
@@ -176,4 +177,6 @@ function setDivPosition(node, x, y)
         if (param.input.connected) 
             param.input.connection.wire.update(true);
     }
+
+    graphView.updateNodeTransform(node);
 }

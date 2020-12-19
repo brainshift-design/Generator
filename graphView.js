@@ -311,6 +311,17 @@ graphView.cancelConnection = () =>
 };
 
 
+graphView.getAllNodeBounds = () =>
+{
+    const bounds = Rect.NaN;
+
+    for (const node of graph.nodes)
+        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+
+    return bounds;
+};
+
+
 graphView.getNodeBounds = () =>
 {
     var boundsL = Number.MAX_SAFE_INTEGER;
@@ -494,10 +505,7 @@ graphView.updatePanAndZoom = () =>
     for (const node of graph.nodes)
         graphView.updateNodeTransform(node);
 
-    var bounds = Rect.NaN;
-
-    for (const node of graph.nodes)
-        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+    const bounds = graphView.getAllNodeBounds();
 
     graphView.updateScrollX(bounds);
     graphView.updateScrollY(bounds);
