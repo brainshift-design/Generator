@@ -1,3 +1,12 @@
+graphView.updateScroll = () =>
+{
+    const bounds = graphView.getAllNodeBounds();
+
+    graphView.updateScrollX(bounds);
+    graphView.updateScrollY(bounds);
+};
+
+
 graphView.updateScrollX = bounds =>
 {
     if (bounds.l < 0)

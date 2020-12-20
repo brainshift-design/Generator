@@ -69,12 +69,12 @@ class Connection
 
             this.wire.curve.setAttribute('stroke', color);
             
-            this.wire.outBall.setAttribute('cx', x1);
-            this.wire.outBall.setAttribute('cy', y1);
+            this.wire.outBall.setAttribute('cx',   x1);
+            this.wire.outBall.setAttribute('cy',   y1);
             this.wire.outBall.setAttribute('fill', color);
             
-            this.wire.inBall.setAttribute('cx', x2);
-            this.wire.inBall.setAttribute('cy', y2);
+            this.wire.inBall.setAttribute('cx',   x2);
+            this.wire.inBall.setAttribute('cy',   y2);
             this.wire.inBall.setAttribute('fill', color);
             
             this.wire.updateStyle(color);

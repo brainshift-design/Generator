@@ -505,10 +505,7 @@ graphView.updatePanAndZoom = () =>
     for (const node of graph.nodes)
         graphView.updateNodeTransform(node);
 
-    const bounds = graphView.getAllNodeBounds();
-
-    graphView.updateScrollX(bounds);
-    graphView.updateScrollY(bounds);
+    graphView.updateScroll();
 };
 
 

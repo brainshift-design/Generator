@@ -104,10 +104,7 @@ function createDivHeader(node, headerColor)
 
             node.div.moved = true;
 
-            const bounds = graphView.getAllNodeBounds();
-
-            graphView.updateScrollX(bounds);
-            graphView.updateScrollY(bounds);
+            graphView.updateScroll();
         };
     });
 

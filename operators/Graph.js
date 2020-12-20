@@ -95,6 +95,7 @@ class Graph
         }
 
         graphView.putNodeOnTop(node);
+        graphView.updateScroll();
     }
     
 
@@ -117,6 +118,8 @@ class Graph
             removeFromArray(node, this.nodes);
             graphView.removeChild(node.div);
         }
+
+        graphView.updateScroll();
     }
 
 
