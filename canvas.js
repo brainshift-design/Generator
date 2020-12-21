@@ -184,9 +184,14 @@ generator.onmessage = function(e)
         }
         case 'showParamValue':
         {
-            const node  = graph.nodeFromId(e.data.nodeId);
-            const param = node.params.find(p => p.name == e.data.param);
-            param.control.setValue(e.data.value, false);
+            const node = graph.nodeFromId(e.data.nodeId);
+            
+            if (!!node) // this is mainly for deleted nodes which still exist 
+            {           // in Generator Graph but no longer in the UI Graph
+                const param = node.params.find(p => p.name == e.data.param);
+                param.control.setValue(e.data.value, false);
+            }
+            
             break;
         }
         case 'requestGenerate':

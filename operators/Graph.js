@@ -106,15 +106,27 @@ class Graph
             const node = this.nodes.find(n => n.id == nodeId);
 
             for (const input of node.inputs)
-                if (input.connected) this.disconnect(input, true);
+            {
+                if (!input.connected) continue;
 
+                input.connectedOutput.op.makeActive();
+                this.disconnect(input, true);
+            }
+            
             if (!!node.output)
             {
                 for (const input of node.output.connectedInputs)
+                {
                     this.disconnect(input, true);
+                    
+                    if (!input.op.activeNodeInTree)
+                    input.op.lastNodeInTree.makeActive();
+                }
             }
+            
+            node.selected = false;
+            node.graph    = null;
 
-            node.graph = null;
             removeFromArray(node, this.nodes);
             graphView.removeChild(node.div);
         }
@@ -159,7 +171,8 @@ class Graph
     {
         // first remove the current output
 
-        if (input.op)
+        //if (input.op)
+        if (!!input.op.activeNodeInTree)
             removeNodeOutput(input.op.activeNodeInTree);
 
         // then disconnect

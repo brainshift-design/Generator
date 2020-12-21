@@ -133,14 +133,13 @@ class Operator
         {
             if (input.connected)
             {
-                const left = input.connectedOutput.op.getActiveNodeLeft(this);
+                const left = input.connectedOutput.op.getActiveNodeLeft();
                 if (left) return left;
             }
         }
 
         return null;
     }
-
 
     getActiveNodeRight()
     {
@@ -150,12 +149,36 @@ class Operator
         {
             for (const input of this.output.connectedInputs)
             {
-                const right = input.op.getActiveNodeRight(this);
+                const right = input.op.getActiveNodeRight();
                 if (right) return right;
             }
         }
 
         return null;
+    }
+
+
+    get lastNodeInTree() 
+    { 
+        const right = this.getLastNodeRight(); 
+        return !!right ? right : null;
+    }
+
+    getLastNodeRight()
+    {
+        var right = null;
+
+        if (!!this.output)
+        {
+            for (const input of this.output.connectedInputs)
+            {
+                const _right = input.op.getLastNodeRight(this);
+                if (_right && !!right) return this;
+                right = _right;
+            }
+        }
+
+        return !!right ? right : this;
     }
 
 
