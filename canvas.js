@@ -148,7 +148,6 @@ function generate(nodes)
     graph.mutex = true;
     var posted = false;
 
-
     const nodeIds = nodes.map(n => n.id);
 
     generator.postMessage({
@@ -206,6 +205,7 @@ generator.onmessage = function(e)
                     nodes.push(node.activeNodeInTree);
             }
 
+            console.log('request generate');
             generate(nodes);
             break;
         }
@@ -237,6 +237,7 @@ generator.onmessage = function(e)
                 var deferNodes = Array.from(graph.deferNodes);
                 graph.deferNodes = [];
 
+                console.log('generate deferred nodes');
                 generate(deferNodes);
             }
 

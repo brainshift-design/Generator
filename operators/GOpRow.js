@@ -32,6 +32,7 @@ extends GOperator
         }
 
 
+        console.log(this.#count.value);
         this.output._data = [];
         
         for (var i = 0, x = 0; i < this.#count.value; i++)

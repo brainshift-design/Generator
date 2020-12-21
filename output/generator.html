@@ -1010,7 +1010,7 @@ class GGraph
         input .connection = conn;
         output.connection = conn;
         
-        input.valid = false;
+        input.op.valid = false;
 
         return true;
     }
@@ -1400,6 +1400,7 @@ extends GOperator
         }
 
 
+        console.log(this.#count.value);
         this.output._data = [];
         
         for (var i = 0, x = 0; i < this.#count.value; i++)
@@ -1730,6 +1731,7 @@ onmessage = function(e)
         }
         case 'generate':
         {
+            console.log('generate');
             for (const node of ggraph.nodes)
                 node.reset();
                 
@@ -1739,8 +1741,9 @@ onmessage = function(e)
             {
                 const node = ggraph.nodeFromId(nodeId);
                 objects = objects.concat(node.output.getData());
+                console.log(objects);
             }
-
+            console.log(objects);
             postMessage({ 
                 msg:    'recreateObjects',
                 nodeIds: e.data.nodeIds,

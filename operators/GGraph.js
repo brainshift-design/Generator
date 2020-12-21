@@ -72,7 +72,7 @@ class GGraph
         input .connection = conn;
         output.connection = conn;
         
-        input.valid = false;
+        input.op.valid = false;
 
         return true;
     }
