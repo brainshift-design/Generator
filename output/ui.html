@@ -1756,7 +1756,6 @@ extends GOperator
         }
 
 
-        console.log(this.#count.value);
         this.output._data = [];
         
         for (var i = 0, x = 0; i < this.#count.value; i++)
@@ -2087,7 +2086,6 @@ onmessage = function(e)
         }
         case 'generate':
         {
-            console.log('generate');
             for (const node of ggraph.nodes)
                 node.reset();
                 
@@ -2097,9 +2095,8 @@ onmessage = function(e)
             {
                 const node = ggraph.nodeFromId(nodeId);
                 objects = objects.concat(node.output.getData());
-                console.log(objects);
             }
-            console.log(objects);
+
             postMessage({ 
                 msg:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
@@ -6389,7 +6386,6 @@ generator.onmessage = function(e)
                     nodes.push(node.activeNodeInTree);
             }
 
-            console.log('request generate');
             generate(nodes);
             break;
         }
@@ -6421,7 +6417,6 @@ generator.onmessage = function(e)
                 var deferNodes = Array.from(graph.deferNodes);
                 graph.deferNodes = [];
 
-                console.log('generate deferred nodes');
                 generate(deferNodes);
             }
 

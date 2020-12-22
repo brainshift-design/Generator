@@ -78,7 +78,6 @@ onmessage = function(e)
         }
         case 'generate':
         {
-            console.log('generate');
             for (const node of ggraph.nodes)
                 node.reset();
                 
@@ -88,9 +87,8 @@ onmessage = function(e)
             {
                 const node = ggraph.nodeFromId(nodeId);
                 objects = objects.concat(node.output.getData());
-                console.log(objects);
             }
-            console.log(objects);
+
             postMessage({ 
                 msg:    'recreateObjects',
                 nodeIds: e.data.nodeIds,
