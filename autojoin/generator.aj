@@ -13,5 +13,6 @@ generator/generator_0.html
     [autojoin/g_operators.aj]
 
     generator/generator.js
+    generator/generator objects.js
 
 generator/generator_1.html

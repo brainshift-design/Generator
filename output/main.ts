@@ -1,3 +1,8 @@
+const MAX_OBJECTS = 0x10000;
+const objects     = new Array(MAX_OBJECTS);
+var   nObjects    = 0;
+
+
 figma.showUI(__html__);
 
 
@@ -6,11 +11,11 @@ figma.ui.onmessage = msg =>
     switch (msg.cmd)
     {
         case 'save':              figma.clientStorage.setAsync(msg.key, msg.value); break;
-        case 'loadState':         msgLoadState        (msg);        break;
-        case 'resizeWindow':      msgResizeWindow     (msg);        break; 
-        case 'removeNodeObjects': msgRemoveNodeObjects(msg.nodeId); break; 
-        case 'removeObjectList':  msgRemoveObjectList (msg);        break;
-        case 'recreateObjects':     msgrecreateObjects    (msg);        break;
+        case 'loadState':         msgLoadState        (msg);         break;
+        case 'resizeWindow':      msgResizeWindow     (msg);         break; 
+        case 'removeNodeObjects': msgRemoveNodeObjects(msg.nodeIds); break; 
+        case 'removeObjectList':  msgRemoveObjectList (msg);         break;
+        case 'updateObjects':     msgUpdateObjects    (msg);         break;
     }
 };
 
@@ -50,11 +55,11 @@ function msgResizeWindow(msg)
 }
 
 
-function msgRemoveNodeObjects(nodeId)
+function msgRemoveNodeObjects(nodeIds)
 {
     for (const obj of figma.currentPage.children)
     {
-        if (madeByNode(obj, nodeId))
+        if (madeByNodes(obj, nodeIds))
             obj.remove();
     }
 }
@@ -72,19 +77,20 @@ function msgRemoveObjectList(msg)
 }
 
 
-function msgrecreateObjects(msg)
+function msgUpdateObjects(msg)
 {
-    for (const nodeId of msg.nodeIds)
-        msgRemoveNodeObjects(nodeId);
+    // for (const nodeId of msg.nodeIds)
+    //     msgRemoveNodeObjects(nodeIds);
 
+    // for (const _obj of msg.objects)
+    // {
+    //     //var obj = objects[]
 
-    for (const obj of msg.objects)
-    {
-        switch (obj.objType)
-        {
-            case 'rect': createRect(obj); break;
-        }
-    }
+    //     switch (obj.objType)
+    //     {
+    //         case 'rect': createRect(obj); break;
+    //     }
+    // }
 }
 
 
@@ -143,10 +149,17 @@ function createRect(obj)
 // }
 
 
-function madeByNode(obj, nodeId)
+function madeByNodes(obj, nodeIds)
 {
-    const tag     = obj.getPluginData('#GEN');
-    const nodeTag = '#GEN_' + nodeId;
-    
-    return tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag;
+    const tag = obj.getPluginData('#GEN');
+
+    for (const nodeId of nodeIds)
+    {
+        let nodeTag = '#GEN_' + nodeId;
+
+        if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
+            return true;
+    }
+
+    return false;
 }

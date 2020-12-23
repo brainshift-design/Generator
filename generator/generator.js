@@ -90,7 +90,7 @@ onmessage = function(e)
             }
 
             postMessage({ 
-                msg:    'recreateObjects',
+                msg:    'updateObjects',
                 nodeIds: e.data.nodeIds,
                 objects: objects
             });

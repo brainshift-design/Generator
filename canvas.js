@@ -219,11 +219,11 @@ generator.onmessage = function(e)
 
             break;
         }
-        case 'recreateObjects':
+        case 'updateObjects':
         {
             parent.postMessage({ pluginMessage: 
             { 
-                cmd:    'recreateObjects',
+                cmd:    'updateObjects',
                 nodeIds: e.data.nodeIds,
                 objects: e.data.objects
             }}, '*');    

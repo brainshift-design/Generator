@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const MAX_OBJECTS = 0x10000;
+const objects = new Array(MAX_OBJECTS);
+var nObjects = 0;
 figma.showUI(__html__);
 figma.ui.onmessage = msg => {
     switch (msg.cmd) {
@@ -20,13 +23,13 @@ figma.ui.onmessage = msg => {
             msgResizeWindow(msg);
             break;
         case 'removeNodeObjects':
-            msgRemoveNodeObjects(msg.nodeId);
+            msgRemoveNodeObjects(msg.nodeIds);
             break;
         case 'removeObjectList':
             msgRemoveObjectList(msg);
             break;
-        case 'recreateObjects':
-            msgrecreateObjects(msg);
+        case 'updateObjects':
+            msgUpdateObjects(msg);
             break;
     }
 };
@@ -56,9 +59,9 @@ function msgResizeWindow(msg) {
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
 }
-function msgRemoveNodeObjects(nodeId) {
+function msgRemoveNodeObjects(nodeIds) {
     for (const obj of figma.currentPage.children) {
-        if (madeByNode(obj, nodeId))
+        if (madeByNodes(obj, nodeIds))
             obj.remove();
     }
 }
@@ -69,16 +72,17 @@ function msgRemoveObjectList(msg) {
             obj.remove();
     }
 }
-function msgrecreateObjects(msg) {
-    for (const nodeId of msg.nodeIds)
-        msgRemoveNodeObjects(nodeId);
-    for (const obj of msg.objects) {
-        switch (obj.objType) {
-            case 'rect':
-                createRect(obj);
-                break;
-        }
-    }
+function msgUpdateObjects(msg) {
+    // for (const nodeId of msg.nodeIds)
+    //     msgRemoveNodeObjects(nodeIds);
+    // for (const _obj of msg.objects)
+    // {
+    //     //var obj = objects[]
+    //     switch (obj.objType)
+    //     {
+    //         case 'rect': createRect(obj); break;
+    //     }
+    // }
 }
 function createRect(obj) {
     const rect = figma.createRectangle();
@@ -120,8 +124,12 @@ function createRect(obj) {
 //             Math.max(0.01, data.height));
 //     }
 // }
-function madeByNode(obj, nodeId) {
+function madeByNodes(obj, nodeIds) {
     const tag = obj.getPluginData('#GEN');
-    const nodeTag = '#GEN_' + nodeId;
-    return tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag;
+    for (const nodeId of nodeIds) {
+        let nodeTag = '#GEN_' + nodeId;
+        if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
+            return true;
+    }
+    return false;
 }
