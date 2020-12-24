@@ -60,8 +60,8 @@ function connect(output, input)
     graph.connect(output, input);
 
     generator.postMessage({
-        msg:   'connect', 
-        output: output.op.id, 
+        msg:     'connect', 
+        outputId: output.op.id, 
         inputs:  
         [{
             nodeId: input.op.id, 
@@ -73,13 +73,10 @@ function connect(output, input)
 
 function disconnect(input, deletingOutput)
 {
-    const connectedOutput = input.connectedOutput;
-
     graph.disconnect(input, deletingOutput);
 
     generator.postMessage({
         msg: 'disconnect',
-        outputNodeId: connectedOutput.op.id,
         input:
         {
             nodeId: input.op.id, 

@@ -32,23 +32,30 @@ extends GOperator
         }
 
 
-        this.output._data = [];
+        //this.output._data = [];
         
         for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            const inputData = input.data;
+            const first = input.data[0];
+            const count = input.data[1];
 
-            const bounds = getBounds(inputData);
+            const bounds = getObjectBounds(first, count);
             const gap    = this.#gap.value;
 
-            for (var j = 0; j < inputData.length; j++)
+            for (var j = first; j < first + count; j++)
             {
-                var item = shallowCopy(inputData[j]);
-                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
+                var objId = newObjectId();
+
+                objects[objId] = shallowCopy(objects[j]);
+                const item = objects[objId];
+
+                item[1] = objId;
+                item[2] = this.uid;
+                //item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
-                item.x += x;
+                item[3] += x;
                 
-                this.output._data.push(item);
+                //this.output._data.push(item);
             }
 
             x += bounds.w + gap;

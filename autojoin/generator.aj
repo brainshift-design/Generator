@@ -14,5 +14,6 @@ generator/generator_0.html
 
     generator/generator.js
     generator/generator objects.js
+    generator/gutil.js
 
 generator/generator_1.html

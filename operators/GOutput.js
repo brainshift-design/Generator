@@ -6,8 +6,12 @@ extends EventTarget
     
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
+
     
-    _data = {};
+    // the output exists as bytes in the buffer
+    _firstObject = 0;
+    _nObjects    = 0;
+
     
     connectedInputs = [];
     
@@ -33,7 +37,8 @@ extends EventTarget
         if (!this.op.valid)
             this.op.generate(callerInput);
 
-        return this._data;
+        return [this._firstObject, 
+                this._nObjects];
     }
 
 

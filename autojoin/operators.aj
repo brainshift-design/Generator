@@ -11,12 +11,12 @@ operators/Operator.js
 operators/Operator node.js
 operators/Operator textbox.js
 
-operators/OpNumber.js
-operators/OpRandom.js
+//operators/OpNumber.js
+//operators/OpRandom.js
 
 operators/OpRect.js
 
 operators/OpRow.js
-operators/OpColumn.js
+//operators/OpColumn.js
 
-operators/OpSpread.js
+//operators/OpSpread.js

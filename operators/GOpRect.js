@@ -24,18 +24,26 @@ extends GOperator
         super.generate(callerInput);
 
 
-        this.output._data = 
-        [{
-            nodeId:  this.id,
-            itemId:  this.id,
-            
-            objType: 'rect',
-            
-            x:       0,
-            y:       0,
-            width:   this.#width .value,
-            height:  this.#height.value,
-            round:   this.#round .value
-        }];
+        var objId = newObjectId();
+
+        objects[objId] = 
+        [
+            OBJ_RECT,           // type
+            objId,              // object id
+            this.uid,           // node uid
+            //this.id,            // object name
+               
+            0,                  // x      
+            0,                  // y      
+            this.#width .value, // width
+            this.#height.value, // height 
+            this.#round .value  // round  
+        ];
+
+        nObjects++;
+
+
+        this.output._firstObject = objId;
+        this.output._nObjects    = 1;
     }
 }

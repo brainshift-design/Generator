@@ -2,18 +2,17 @@ const OBJ_RECT = 1;
 
 
 const MAX_OBJECTS = 0x10000;
-var nObjects  = 0;
 
-const gobjects  = new Array(MAX_OBJECTS);
-const gobjNodes = new Array(MAX_OBJECTS);
+var _nextObjId = 0;
 
-var nextObjId = 0;
+var objects  = new Array(MAX_OBJECTS);
+var nObjects = 0;
 
 
 
 function newObjectId()
 {
-    var id = nextObjId;
+    var id = _nextObjId;
 
     var looped = false;
 
@@ -32,7 +31,7 @@ function newObjectId()
         }
     }
 
-    nextObjId == id + 1;
+    _nextObjId == id + 1;
     
     return id;
 }

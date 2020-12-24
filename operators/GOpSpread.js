@@ -48,3 +48,37 @@ extends GOperator
         };
     }
 }
+
+
+// function generateSpread(node)
+// {
+//     var input  = generate(node.inputs[0]);
+//     var bounds = getBounds(input);
+
+//     var rnd = new Random(node.seed);
+
+//     result = [];
+
+//     var a = 0;
+
+//     for (var i = 0; i < node.count; i++)
+//     {
+//         var d = rnd.next() * node.radius;
+//         var v = vector(a, d);
+        
+//         for (var j = 0; j < input.length; j++)
+//         {
+//             var item = shallowCopy(input[j]);
+//             item.itemId = node.nodeId + '_' + i + '_' + j;
+
+//             item.x += v.x;
+//             item.y += v.y;
+            
+//             result.push(item);
+//         }
+
+//         a += Tau * phi;
+//     }
+
+//     return result;
+// }

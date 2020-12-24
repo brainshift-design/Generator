@@ -344,11 +344,11 @@ button svg
 
     <div id='presets'></div>
 
-    <button class='button' id='btnCreateNumber' onclick='createNode("number"); this.blur();'>Num</button>
-    <button class='button' id='btnCreateRandom' onclick='createNode("random"); this.blur();'>Rnd</button>
+    <!-- <button class='button' id='btnCreateNumber' onclick='createNode("number"); this.blur();'>Num</button> -->
+    <!-- <button class='button' id='btnCreateRandom' onclick='createNode("random"); this.blur();'>Rnd</button> -->
     <button class='button' id='btnCreateRect'   onclick='createNode("rect");   this.blur();'>Rct</button>
     <button class='button' id='btnCreateRow'    onclick='createNode("row");    this.blur();'>Row</button>
-    <button class='button' id='btnCreateColumn' onclick='createNode("column"); this.blur();'>Col</button>
+    <!-- <button class='button' id='btnCreateColumn' onclick='createNode("column"); this.blur();'>Col</button> -->
     <!-- <button class='button' id='btnCreateSpread' onclick='createNode("spread"); this.blur();'>Spr</button> -->
 
 </div>
@@ -1442,8 +1442,12 @@ extends EventTarget
     
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
+
     
-    _data = {};
+    // the output exists as bytes in the buffer
+    _firstObject = 0;
+    _nObjects    = 0;
+
     
     connectedInputs = [];
     
@@ -1469,7 +1473,8 @@ extends EventTarget
         if (!this.op.valid)
             this.op.generate(callerInput);
 
-        return this._data;
+        return [this._firstObject, 
+                this._nObjects];
     }
 
 
@@ -1710,19 +1715,27 @@ extends GOperator
         super.generate(callerInput);
 
 
-        this.output._data = 
-        [{
-            nodeId:  this.id,
-            itemId:  this.id,
-            
-            objType: 'rect',
-            
-            x:       0,
-            y:       0,
-            width:   this.#width .value,
-            height:  this.#height.value,
-            round:   this.#round .value
-        }];
+        var objId = newObjectId();
+
+        objects[objId] = 
+        [
+            OBJ_RECT,           // type
+            objId,              // object id
+            this.uid,           // node uid
+            //this.id,            // object name
+               
+            0,                  // x      
+            0,                  // y      
+            this.#width .value, // width
+            this.#height.value, // height 
+            this.#round .value  // round  
+        ];
+
+        nObjects++;
+
+
+        this.output._firstObject = objId;
+        this.output._nObjects    = 1;
     }
 }
 
@@ -1761,23 +1774,30 @@ extends GOperator
         }
 
 
-        this.output._data = [];
+        //this.output._data = [];
         
         for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            const inputData = input.data;
+            const first = input.data[0];
+            const count = input.data[1];
 
-            const bounds = getBounds(inputData);
+            const bounds = getObjectBounds(first, count);
             const gap    = this.#gap.value;
 
-            for (var j = 0; j < inputData.length; j++)
+            for (var j = first; j < first + count; j++)
             {
-                var item = shallowCopy(inputData[j]);
-                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
+                var objId = newObjectId();
+
+                objects[objId] = shallowCopy(objects[j]);
+                const item = objects[objId];
+
+                item[1] = objId;
+                item[2] = this.uid;
+                //item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
-                item.x += x;
+                item[3] += x;
                 
-                this.output._data.push(item);
+                //this.output._data.push(item);
             }
 
             x += bounds.w + gap;
@@ -1790,227 +1810,6 @@ extends GOperator
 }
 
 
-class   GOpColumn
-extends GOperator
-{
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('column', 'OBJ');
-
-        this.addInput (new GInput (this.dataType));
-        this.setOutput(new GOutput(this.dataType));
-        
-        this.addParam(this.#count = new GNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap', 10, 0));
-    }
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        const input = this.inputs[0];
-
-        if (!input.connected)
-        {
-            this.output._data = [];
-            return;
-        }
-
-
-        this.output._data = [];
-        
-        for (var i = 0, y = 0; i < this.#count.value; i++)
-        {
-            const inputData = input.data;
-
-            const bounds = getBounds(inputData);
-            const gap    = this.#gap.value;
-
-            for (var j = 0; j < inputData.length; j++)
-            {
-                var item = shallowCopy(inputData[j]);
-                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
-    
-                item.y += y;
-                
-                this.output._data.push(item);
-            }
-            
-            y += bounds.h + gap;
-
-            this.refresh();
-        }
-    }
-}
-
-
-class   GOpSpread 
-extends GOperator
-{
-    #count;
-    #radius;
-
-    seed = 0;
-
-
-    constructor()
-    {
-        super('spread', 'OBJ');
-
-        this.addInput (new GInput (this.dataType));
-        this.setOutput(new GOutput(this.dataType));
-        
-        this.addParam(this.#count  = new GNumberParam('count', 2, 1));
-        this.addParam(this.#radius = new GNumberParam('radius', 100, 0.01));
-    }
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        var input = this.inputs[0];
-
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
-        {
-            this.output._data = {};
-            return;
-        }
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            count:  this.#count .value,
-            radius: this.#radius.value,
-            
-            seed:   this.seed,
-
-            inputs: [input.data]
-        };
-    }
-}
-
-
-class   GOpNumber
-extends GOperator
-{
-    _value;
-
-    _sampled = Number.NaN;
-
-
-    constructor()
-    {
-        super('number', 'NUM');
-        this.setOutput(new GOutput(this.dataType));
-        this.addParam(this._value = new GNumberParam(''));
-    }
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        if (isNaN(this._sampled))
-            this._sampled = this._value.value;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  this._sampled
-        };
-    }
-
-
-    refresh()
-    {
-        super.refresh();
-        
-        this._sampled = Number.NaN;
-    }
-}
-
-
-class   GOpRandom
-extends GOperator
-{
-    #min;
-    #max;
-    #scale;
-    #seed;
-
-    noise = new Noise();
-
-    constructor()
-    {
-        super('random', 'NUM');
-
-        this.setOutput(new GOutput(this.dataType));
-
-        this.addParam(this.#min   = new GNumberParam('min',  0));
-        this.addParam(this.#max   = new GNumberParam('max', 10));
-        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
-
-        this.output.addEventListener('connect',    () => postMessage({msg: 'resetNode', nodeId: this.id}));
-        this.output.addEventListener('disconnect', () => postMessage({msg: 'resetNode', nodeId: this.id}));
-    }
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-        if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
-        var rnd = this.noise.next(this.#scale.value);
-        if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
-        
-        var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  value
-        };    
-
-        this.valid = false;
-    }
-
-
-    reset()
-    {
-        super.reset();
-
-        this.noise.seed.set(this.#seed.value);
-        
-        for (const input of this.output.connectedInputs)
-        {
-            input.initialSeed = input.currentSeed = this.noise.seed.current;
-            this.noise.next();
-        }
-    }
-}
-
-
 const ggraph = new GGraph();
 
 
@@ -2018,100 +1817,112 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode': 
-        {
-            const node = ggraph.createNode(e.data.opType);
-            
-            node.id = e.data.nodeId;
-
-            postMessage({ 
-                msg:   'makeActive',
-                nodeId: node.id
-            });
-            
-            break;
-        }
-        case 'removeNodes':
-        {
-            ggraph.removeNodes(e.data.nodeIds);
-            break;            
-        }
-        case 'setNodeId': 
-        {
-            const node = ggraph.nodeFromId(e.data.nodeId);
-            node.id = e.data.newId;
-            break;
-        }
-        case 'setActive': // this is only a state message, no regeneration
-        {
-            const node = ggraph.nodeFromId(e.data.nodeId);
-            node.active = e.data.active;
-            break;
-        }
-        case 'connect':
-        {
-            const outNode = ggraph.nodeFromId(e.data.output);
-
-            for (const input of e.data.inputs)
-            {
-                const inNode = ggraph.nodeFromId(input.nodeId);
-
-                ggraph.connect(
-                    outNode.output, 
-                    input.index >= 0
-                    ? inNode.inputs[input.index]
-                    : inNode.params.find(p => p.name == input.param).input);
-
-                requestGenerate([input.nodeId]);
-            }
-
-            break;
-        }
-        case 'disconnect':
-            const node  = ggraph.nodeFromId(e.data.input.nodeId);
-            const input = node.inputs[e.data.input.index];
-
-            ggraph.disconnect(input);
-
-            break;
-        
-        case 'setParam':
-        {
-            const node  = ggraph.nodeFromId(e.data.nodeId);
-            const param = node.params.find(p => p.name == e.data.param);
-            param.value = e.data.value;
-            requestGenerate([node.id]);
-            break;
-        }
-        case 'invalidate':
-        {
-            const node = ggraph.nodes.find(n => n.id == e.data.nodeId);
-            node.valid = false;
-            break;
-        }
-        case 'generate':
-        {
-            for (const node of ggraph.nodes)
-                node.reset();
-                
-            var objects = [];
-            
-            for (const nodeId of e.data.nodeIds)
-            {
-                const node = ggraph.nodeFromId(nodeId);
-                objects = objects.concat(node.output.getData());
-            }
-
-            postMessage({ 
-                msg:    'updateObjects',
-                nodeIds: e.data.nodeIds,
-                objects: objects
-            });
-
-            break;
-        }
+        case 'createNode':  createNode(e.data.opType, e.data.nodeId); break; 
+        case 'removeNodes': removeNodes(e.data.nodeIds); break;             
+        case 'setNodeId':   setNodeId(e.data.nodeId, e.data.newId); break; 
+        case 'setActive':   setActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
+        case 'connect':     connect(e.data.outputId, e.data.inputs); break; 
+        case 'disconnect':  disconnect(e.data.input); break;
+        case 'setParam':    setParam(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'invalidate':  invalidate(e.data.nodeId); break;
+        case 'generate':    generate(e.data.nodeIds); break;
     }
 };
+
+
+function createNode(type, id)
+{
+    const node = ggraph.createNode(type);
+    node.id    = id;
+
+    postMessage({ 
+        msg:   'makeActive',
+        nodeId: node.id
+    });
+}
+
+
+function removeNodes(ids)
+{
+    ggraph.removeNodes(ids);
+}
+
+
+function setNodeId(id, newId)
+{
+    const node = ggraph.nodeFromId(id);
+    node.id    = newId;
+}
+
+
+function setActive(nodeId, active)
+{
+    const node  = ggraph.nodeFromId(nodeId);
+    node.active = active;
+}
+
+
+function connect(outputId, inputs)
+{
+    const outNode = ggraph.nodeFromId(outputId);
+
+    for (const input of inputs)
+    {
+        const inNode = ggraph.nodeFromId(input.nodeId);
+
+        ggraph.connect(
+            outNode.output, 
+            input.index >= 0
+            ? inNode.inputs[input.index]
+            : inNode.params.find(p => p.name == input.param).input);
+
+        requestGenerate([input.nodeId]);
+    }
+}
+
+
+function disconnect(input)
+{
+    const node = ggraph.nodeFromId(_input.nodeId);
+    ggraph.disconnect(node.inputs[input.index]);
+}
+
+
+function setParam(nodeId, name, value)
+{
+    const node  = ggraph.nodeFromId(nodeId);
+    const param = node.params.find(p => p.name == name);
+    param.value = value;
+
+    requestGenerate([node.id]);
+}
+
+
+function invalidate(nodeId)
+{
+    const node = ggraph.nodes.find(n => n.id == nodeId);
+    node.valid = false;
+}
+
+
+function generate(nodeIds)
+{
+    for (const node of ggraph.nodes)
+        node.reset();
+        
+    for (const nodeId of nodeIds)
+    {
+        const node = ggraph.nodeFromId(nodeId);
+        //objects    = objects.concat(node.output.getData());
+        node.output.getData(); // just for the generate() inside
+    }
+
+    postMessage({ 
+        msg:    'updateObjects',
+        nodeIds: e.data.nodeIds,
+        objects: objects
+    });
+}
 
 
 function requestGenerate(nodeIds)
@@ -2123,79 +1934,21 @@ function requestGenerate(nodeIds)
 }
 
 
-// function generateSpread(node)
-// {
-//     var input  = generate(node.inputs[0]);
-//     var bounds = getBounds(input);
-
-//     var rnd = new Random(node.seed);
-
-//     result = [];
-
-//     var a = 0;
-
-//     for (var i = 0; i < node.count; i++)
-//     {
-//         var d = rnd.next() * node.radius;
-//         var v = vector(a, d);
-        
-//         for (var j = 0; j < input.length; j++)
-//         {
-//             var item = shallowCopy(input[j]);
-//             item.itemId = node.nodeId + '_' + i + '_' + j;
-
-//             item.x += v.x;
-//             item.y += v.y;
-            
-//             result.push(item);
-//         }
-
-//         a += Tau * phi;
-//     }
-
-//     return result;
-// }
-
-
-function getBounds(objects)
-{
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
-    
-    for (const obj of objects)
-    {
-        boundsL = Math.min(boundsL, obj.x);
-        boundsT = Math.min(boundsT, obj.y);
-        boundsR = Math.max(boundsR, obj.x + obj.width);
-        boundsB = Math.max(boundsB, obj.y + obj.height);
-    }
-
-    return {
-        x: boundsL, 
-        y: boundsT,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
-}
-
-
 const OBJ_RECT = 1;
 
 
 const MAX_OBJECTS = 0x10000;
-var nObjects  = 0;
 
-const gobjects  = new Array(MAX_OBJECTS);
-const gobjNodes = new Array(MAX_OBJECTS);
+var _nextObjId = 0;
 
-var nextObjId = 0;
+var objects  = new Array(MAX_OBJECTS);
+var nObjects = 0;
 
 
 
 function newObjectId()
 {
-    var id = nextObjId;
+    var id = _nextObjId;
 
     var looped = false;
 
@@ -2214,9 +1967,34 @@ function newObjectId()
         }
     }
 
-    nextObjId == id + 1;
+    _nextObjId == id + 1;
     
     return id;
+}
+
+
+function getObjectBounds(first, count)
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    for (var i = first; i < first + count; i++)
+    {
+        const obj = objects[i];
+        
+        boundsL = Math.min(boundsL, obj.x);
+        boundsT = Math.min(boundsT, obj.y);
+        boundsR = Math.max(boundsR, obj.x + obj.width);
+        boundsB = Math.max(boundsB, obj.y + obj.height);
+    }
+
+    return {
+        x: boundsL, 
+        y: boundsT,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
 }
 
 
@@ -4209,81 +3987,6 @@ function initLabelTextbox(node)
 }
 
 
-class   OpNumber
-extends Operator
-{
-    #value;
-
-    constructor()
-    {
-        super('number', 'NUM');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#value = new NumberParam(''));
-    }
-}
-
-
-class   OpRandom
-extends Operator
-{
-    #min;
-    #max;
-    #scale;
-    #seed;
-
-
-    constructor()
-    {
-        super('random', 'NUM');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#min   = new NumberParam('min',  0));
-        this.addParam(this.#max   = new NumberParam('max', 10));
-        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed', 1, 1));
-
-        this.#max.control.min = this.#min.value;
-        this.#min.control.max = this.#max.value;
-
-        this.#min.control.addEventListener('change', () =>
-        {
-            // if (this.#min.value > this.#max.value)
-            //     this.#min.value = this.#max.value;
-
-            this.#max.control.min = this.#min.value;
-            this.updateConnectedInputValueText();
-        });
-
-        this.#max.control.addEventListener('change', () =>
-        {
-            // if (this.#max.value < this.#min.value)
-            //     this.#max.value = this.#min.value;
-
-            this.#min.control.max = this.#max.value;
-            this.updateConnectedInputValueText();
-        });
-    }
-
-
-    updateConnectedInputValueText()
-    {
-        const val =
-            this.#min.value == this.#max.value
-            ? this.#min.value
-            : this.#min.value + '~' + this.#max.value;
-
-        if (this.output)
-        {
-            for (const input of this.output.connectedInputs)
-                input.param.valueText = val;
-        }
-    }
-}
-
-
 class   OpRect
 extends Operator
 {
@@ -4321,98 +4024,6 @@ extends Operator
 
     //     super.generate();
     // }
-}
-
-
-class   OpRow
-extends Operator
-{
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('row', 'OBJ');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count = new NumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
-    }
-}
-
-
-class   OpColumn
-extends Operator
-{
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('column', 'OBJ');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count = new NumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
-    }
-}
-
-
-class   OpSpread 
-extends Operator
-{
-    #count;
-    #radius;
-
-    seed = 0;
-
-
-    constructor()
-    {
-        super('spread', 'OBJ');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count  = new NumberParam('count', 2, 1));
-        this.addParam(this.#radius = new NumberParam('radius', 100, 0.01));
-    }
-    
-    
-    generate()
-    {
-        if (this.valid) return;
-        super.generate();
-
-        var input = this.inputs[0];
-
-        if (   !input.connected
-            || isEmptyObject(input.connectedOutput.data)) 
-        {
-            this.output._data = {};
-            return;
-        }
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            count:  this.#count .value,
-            radius: this.#radius.value,
-            
-            seed:   this.seed,
-
-            inputs: [input.data]
-        };
-
-    }
 }
 
 
@@ -6286,8 +5897,8 @@ function connect(output, input)
     graph.connect(output, input);
 
     generator.postMessage({
-        msg:   'connect', 
-        output: output.op.id, 
+        msg:     'connect', 
+        outputId: output.op.id, 
         inputs:  
         [{
             nodeId: input.op.id, 
@@ -6299,13 +5910,10 @@ function connect(output, input)
 
 function disconnect(input, deletingOutput)
 {
-    const connectedOutput = input.connectedOutput;
-
     graph.disconnect(input, deletingOutput);
 
     generator.postMessage({
         msg: 'disconnect',
-        outputNodeId: connectedOutput.op.id,
         input:
         {
             nodeId: input.op.id, 

@@ -12,9 +12,9 @@ operators/GOperator.js
 operators/GOpRect.js
 
 operators/GOpRow.js
-operators/GOpColumn.js
+//operators/GOpColumn.js
 
-operators/GOpSpread.js
+//operators/GOpSpread.js
 
-operators/GOpNumber.js
-operators/GOpRandom.js
+//operators/GOpNumber.js
+//operators/GOpRandom.js
