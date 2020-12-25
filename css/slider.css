@@ -3,7 +3,7 @@
     padding:          0;
     width:            74px;
     height:           26px;
-    box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset;
+    /* box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset; */
     /* border-radius:    1px; */
     overflow:         hidden;
     background-color: white;
@@ -25,13 +25,24 @@
     top:            3px;
 }
 
+.sliderFocus
+{
+    position:       absolute;
+    pointer-events: none;
+    box-shadow:     0 0 0 1px #18A0FB inset;
+    visibility:     hidden;
+    opacity:        0;
+}
+
 /* .slider:hover
 {
     box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
 }     */
 
-.slider:focus
+/* .slider:focus
 {
     outline:    none;
-    box-shadow: 0 0 0 2px #18A0FB;
-}    
+    box-sizing: border-box;
+    border:     solid 2px #18A0FB;
+    box-shadow: 0 0 0 -2px #18A0FB inset;
+}     */

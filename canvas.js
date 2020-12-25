@@ -221,7 +221,6 @@ generator.onmessage = function(e)
             parent.postMessage({ pluginMessage: 
             { 
                 cmd:    'updateObjects',
-                nodeIds: e.data.nodeIds,
                 objects: e.data.objects
             }}, '*');    
 

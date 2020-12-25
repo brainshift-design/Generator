@@ -14,7 +14,7 @@ class GOperator
 
     
     static nextUid = 1;
-    uid = nextUid++;
+    uid = GOperator.nextUid++;
 
 
     _id;

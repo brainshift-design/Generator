@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const OBJ_RECT = 1;
 const MAX_OBJECTS = 0x10000;
 const objects = new Array(MAX_OBJECTS);
 var nObjects = 0;
@@ -67,7 +68,7 @@ function msgRemoveNodeObjects(nodeIds) {
 }
 function msgRemoveObjectList(msg) {
     for (const _obj of msg.objects) {
-        var obj = figma.currentPage.children.find(n => n.getPluginData('#GEN') === '#GEN_' + _obj.itemId);
+        var obj = figma.currentPage.children.find(n => n.getPluginData('#') === '#' + _obj.itemId);
         if (obj)
             obj.remove();
     }
@@ -75,61 +76,67 @@ function msgRemoveObjectList(msg) {
 function msgUpdateObjects(msg) {
     // for (const nodeId of msg.nodeIds)
     //     msgRemoveNodeObjects(nodeIds);
-    // for (const _obj of msg.objects)
-    // {
-    //     //var obj = objects[]
-    //     switch (obj.objType)
-    //     {
-    //         case 'rect': createRect(obj); break;
-    //     }
-    // }
+    for (const obj of msg.objects) {
+        switch (obj[0]) {
+            case OBJ_RECT:
+                if (!objects[obj[1]])
+                    createRect(obj);
+                else {
+                    const cur = objects[obj[1]];
+                    if (cur.type == obj2type(obj[0])
+                        && cur.getPluginData('uid') == obj[1]
+                        && cur.getPluginData('nodeId') == obj[2])
+                        updateRect(obj);
+                    else
+                        figma.notify('ERROR: object ID mismatch');
+                }
+                break;
+        }
+    }
 }
 function createRect(obj) {
     const rect = figma.createRectangle();
-    rect.name = obj.itemId;
-    rect.setPluginData('#GEN', '#GEN_' + rect.name);
+    rect.name = obj[1].toString(); //obj.itemId;
+    rect.setPluginData('uid', obj[1].toString());
+    rect.setPluginData('nodeId', obj[2].toString());
+    rect.setPluginData('name', rect.name);
+    rect.x = obj[3];
+    rect.y = obj[4];
     rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
-    rect.x = obj.x;
-    rect.y = obj.y;
+    rect.resize(Math.max(0.01, obj[5]), Math.max(0.01, obj[6]));
     figma.currentPage.appendChild(rect);
-    rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
-    rect.cornerRadius = obj.round;
+    objects[obj[1]] = rect;
+    rect.cornerRadius = obj[7];
 }
-// function updateRect(data)
-// {
-//     const existing = figma.currentPage.children.findIndex(obj => 
-//         obj.getPluginData('#GEN') === '#GEN_' + data.itemId);
-//     var rect;
-//     if (existing < 0)
-//     {
-//         rect = figma.createRectangle()
-//         rect.name  = data.itemId;
-//         rect.setPluginData('#GEN', '#GEN_' + rect.name);
-//         rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
-//         rect.x     = data.x;
-//         rect.y     = data.y;
-//         figma.currentPage.appendChild(rect);
-//     }    
-//     else
-//     {
-//         rect = <RectangleNode>figma.currentPage.children[existing];
-//         rect.x = data.x;
-//         rect.y = data.y;
-//     }    
-//     if (   rect.width  != data.width
-//         || rect.height != data.height)
-//     {
-//         rect.resize(
-//             Math.max(0.01, data.width ), 
-//             Math.max(0.01, data.height));
-//     }
-// }
+function updateRect(obj) {
+    const rect = objects[obj[1]];
+    rect.x = obj[3];
+    rect.y = obj[4];
+    if (rect.width != obj[5]
+        || rect.height != obj[6]) {
+        rect.resize(Math.max(0.01, obj[5]), Math.max(0.01, obj[6]));
+    }
+    rect.cornerRadius = obj[7];
+}
 function madeByNodes(obj, nodeIds) {
-    const tag = obj.getPluginData('#GEN');
+    const tag = obj.getPluginData('name');
     for (const nodeId of nodeIds) {
-        let nodeTag = '#GEN_' + nodeId;
+        let nodeTag = nodeId;
         if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
             return true;
     }
     return false;
+}
+function obj2type(type) {
+    switch (type) {
+        case OBJ_RECT: return 'RECTANGLE';
+        // case 'VECTOR':
+        // case 'LINE':
+        // case 'ELLIPSE':
+        // case 'POLYGON':
+        // case 'STAR':
+        // case 'TEXT':
+        // case 'BOOLEAN_OPERATION':
+    }
+    return 'ERROR_TYPE';
 }

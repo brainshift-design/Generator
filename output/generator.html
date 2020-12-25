@@ -1176,7 +1176,7 @@ class GOperator
 
     
     static nextUid = 1;
-    uid = nextUid++;
+    uid = GOperator.nextUid++;
 
 
     _id;
@@ -1359,14 +1359,13 @@ extends GOperator
         super.generate(callerInput);
 
 
-        var objId = newObjectId();
+        var objId = 0;//newObjectId();
 
-        objects[objId] = 
+        gObjects[objId] = 
         [
             OBJ_RECT,           // type
             objId,              // object id
             this.uid,           // node uid
-            //this.id,            // object name
                
             0,                  // x      
             0,                  // y      
@@ -1375,7 +1374,7 @@ extends GOperator
             this.#round .value  // round  
         ];
 
-        nObjects++;
+        ngObjects++;
 
 
         this.output._firstObject = objId;
@@ -1418,30 +1417,28 @@ extends GOperator
         }
 
 
-        //this.output._data = [];
-        
+        const first = input.data[0];
+        const count = input.data[1];
+
+
         for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            const first = input.data[0];
-            const count = input.data[1];
-
             const bounds = getObjectBounds(first, count);
             const gap    = this.#gap.value;
 
             for (var j = first; j < first + count; j++)
             {
-                var objId = newObjectId();
+                var objId = first + count; //newObjectId();
 
-                objects[objId] = shallowCopy(objects[j]);
-                const item = objects[objId];
+                gObjects[objId] = shallowCopy(gObjects[j]);
+                ngObjects++;
+
+                const item = gObjects[objId];
 
                 item[1] = objId;
                 item[2] = this.uid;
-                //item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
                 item[3] += x;
-                
-                //this.output._data.push(item);
             }
 
             x += bounds.w + gap;
@@ -1554,16 +1551,33 @@ function generate(nodeIds)
     for (const node of ggraph.nodes)
         node.reset();
         
+    var nObjects = 0;
+
     for (const nodeId of nodeIds)
     {
         const node = ggraph.nodeFromId(nodeId);
-        //objects    = objects.concat(node.output.getData());
-        node.output.getData(); // just for the generate() inside
-    }
+        const data = node.output.getData();
+        nObjects += data[1];
+    }    
 
+    
+    const objects = new Array(nObjects);
+
+    var i = 0;
+    for (const nodeId of nodeIds)
+    {
+        const node = ggraph.nodeFromId(nodeId);
+        const data = node.output.getData();
+        
+        const first = data[0];
+        const count = data[1];
+        
+        for (var j = first; j < first + count; i++, j++)
+            objects[i] = gObjects[j];
+    }    
+    
     postMessage({ 
         msg:    'updateObjects',
-        nodeIds: e.data.nodeIds,
         objects: objects
     });
 }
@@ -1581,13 +1595,25 @@ function requestGenerate(nodeIds)
 const OBJ_RECT = 1;
 
 
+var  _resetObjId = 0;
+var  _nextObjId  = _resetObjId;
+
 const MAX_OBJECTS = 0x10000;
+const gObjects    = new Array(MAX_OBJECTS);
+var   ngObjects   = 0;
 
-var _nextObjId = 0;
 
-var objects  = new Array(MAX_OBJECTS);
-var nObjects = 0;
+/*  object format
 
+    type
+    object id (unique numeric)
+    node uid (unique numeric)
+
+    object data
+    .
+    .
+    .
+*/
 
 
 function newObjectId()
@@ -1597,7 +1623,7 @@ function newObjectId()
     var looped = false;
 
     while (id < MAX_OBJECTS
-        && !!gobjects[id])
+        && !!gObjects[id])
     {
         id++;
 
@@ -1626,8 +1652,8 @@ function getObjectBounds(first, count)
     
     for (var i = first; i < first + count; i++)
     {
-        const obj = objects[i];
-        
+        const obj = gObjects[i];
+
         boundsL = Math.min(boundsL, obj.x);
         boundsT = Math.min(boundsT, obj.y);
         boundsR = Math.max(boundsR, obj.x + obj.width);

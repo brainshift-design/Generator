@@ -46,12 +46,12 @@ class Graph
 
         switch (opType)
         {
-            case 'number': node = new OpNumber(); break;
-            case 'random': node = new OpRandom(); break;
+            //case 'number': node = new OpNumber(); break;
+            //case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
-            case 'column': node = new OpColumn(); break;
-            case 'spread': node = new OpSpread(); break;
+            //case 'column': node = new OpColumn(); break;
+            //case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);

@@ -24,14 +24,13 @@ extends GOperator
         super.generate(callerInput);
 
 
-        var objId = newObjectId();
+        var objId = 0;//newObjectId();
 
-        objects[objId] = 
+        gObjects[objId] = 
         [
             OBJ_RECT,           // type
             objId,              // object id
             this.uid,           // node uid
-            //this.id,            // object name
                
             0,                  // x      
             0,                  // y      
@@ -40,7 +39,7 @@ extends GOperator
             this.#round .value  // round  
         ];
 
-        nObjects++;
+        ngObjects++;
 
 
         this.output._firstObject = objId;

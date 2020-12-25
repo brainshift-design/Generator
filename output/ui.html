@@ -71,7 +71,7 @@ input[type=text]::selection
     padding:          0;
     width:            74px;
     height:           26px;
-    box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset;
+    /* box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset; */
     /* border-radius:    1px; */
     overflow:         hidden;
     background-color: white;
@@ -93,16 +93,27 @@ input[type=text]::selection
     top:            3px;
 }
 
+.sliderFocus
+{
+    position:       absolute;
+    pointer-events: none;
+    box-shadow:     0 0 0 1px #18A0FB inset;
+    visibility:     hidden;
+    opacity:        0;
+}
+
 /* .slider:hover
 {
     box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
 }     */
 
-.slider:focus
+/* .slider:focus
 {
     outline:    none;
-    box-shadow: 0 0 0 2px #18A0FB;
-}    
+    box-sizing: border-box;
+    border:     solid 2px #18A0FB;
+    box-shadow: 0 0 0 -2px #18A0FB inset;
+}     */
 
 
 button
@@ -1532,7 +1543,7 @@ class GOperator
 
     
     static nextUid = 1;
-    uid = nextUid++;
+    uid = GOperator.nextUid++;
 
 
     _id;
@@ -1715,14 +1726,13 @@ extends GOperator
         super.generate(callerInput);
 
 
-        var objId = newObjectId();
+        var objId = 0;//newObjectId();
 
-        objects[objId] = 
+        gObjects[objId] = 
         [
             OBJ_RECT,           // type
             objId,              // object id
             this.uid,           // node uid
-            //this.id,            // object name
                
             0,                  // x      
             0,                  // y      
@@ -1731,7 +1741,7 @@ extends GOperator
             this.#round .value  // round  
         ];
 
-        nObjects++;
+        ngObjects++;
 
 
         this.output._firstObject = objId;
@@ -1774,30 +1784,28 @@ extends GOperator
         }
 
 
-        //this.output._data = [];
-        
+        const first = input.data[0];
+        const count = input.data[1];
+
+
         for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            const first = input.data[0];
-            const count = input.data[1];
-
             const bounds = getObjectBounds(first, count);
             const gap    = this.#gap.value;
 
             for (var j = first; j < first + count; j++)
             {
-                var objId = newObjectId();
+                var objId = first + count; //newObjectId();
 
-                objects[objId] = shallowCopy(objects[j]);
-                const item = objects[objId];
+                gObjects[objId] = shallowCopy(gObjects[j]);
+                ngObjects++;
+
+                const item = gObjects[objId];
 
                 item[1] = objId;
                 item[2] = this.uid;
-                //item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
     
                 item[3] += x;
-                
-                //this.output._data.push(item);
             }
 
             x += bounds.w + gap;
@@ -1910,16 +1918,33 @@ function generate(nodeIds)
     for (const node of ggraph.nodes)
         node.reset();
         
+    var nObjects = 0;
+
     for (const nodeId of nodeIds)
     {
         const node = ggraph.nodeFromId(nodeId);
-        //objects    = objects.concat(node.output.getData());
-        node.output.getData(); // just for the generate() inside
-    }
+        const data = node.output.getData();
+        nObjects += data[1];
+    }    
 
+    
+    const objects = new Array(nObjects);
+
+    var i = 0;
+    for (const nodeId of nodeIds)
+    {
+        const node = ggraph.nodeFromId(nodeId);
+        const data = node.output.getData();
+        
+        const first = data[0];
+        const count = data[1];
+        
+        for (var j = first; j < first + count; i++, j++)
+            objects[i] = gObjects[j];
+    }    
+    
     postMessage({ 
         msg:    'updateObjects',
-        nodeIds: e.data.nodeIds,
         objects: objects
     });
 }
@@ -1937,13 +1962,25 @@ function requestGenerate(nodeIds)
 const OBJ_RECT = 1;
 
 
+var  _resetObjId = 0;
+var  _nextObjId  = _resetObjId;
+
 const MAX_OBJECTS = 0x10000;
+const gObjects    = new Array(MAX_OBJECTS);
+var   ngObjects   = 0;
 
-var _nextObjId = 0;
 
-var objects  = new Array(MAX_OBJECTS);
-var nObjects = 0;
+/*  object format
 
+    type
+    object id (unique numeric)
+    node uid (unique numeric)
+
+    object data
+    .
+    .
+    .
+*/
 
 
 function newObjectId()
@@ -1953,7 +1990,7 @@ function newObjectId()
     var looped = false;
 
     while (id < MAX_OBJECTS
-        && !!gobjects[id])
+        && !!gObjects[id])
     {
         id++;
 
@@ -1982,8 +2019,8 @@ function getObjectBounds(first, count)
     
     for (var i = first; i < first + count; i++)
     {
-        const obj = objects[i];
-        
+        const obj = gObjects[i];
+
         boundsL = Math.min(boundsL, obj.x);
         boundsT = Math.min(boundsT, obj.y);
         boundsR = Math.max(boundsR, obj.x + obj.width);
@@ -2883,12 +2920,12 @@ class Graph
 
         switch (opType)
         {
-            case 'number': node = new OpNumber(); break;
-            case 'random': node = new OpRandom(); break;
+            //case 'number': node = new OpNumber(); break;
+            //case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
-            case 'column': node = new OpColumn(); break;
-            case 'spread': node = new OpSpread(); break;
+            //case 'column': node = new OpColumn(); break;
+            //case 'spread': node = new OpSpread(); break;
         }
         
         this.addNode(node);
@@ -4004,6 +4041,30 @@ extends Operator
         this.addParam(this.#width  = new NumberParam('width',  100, 0.01));
         this.addParam(this.#height = new NumberParam('height', 100, 0.01));
         this.addParam(this.#round  = new NumberParam('round',    0, 0));
+        
+        this.#width ._control.addEventListener('change', () => this.updateRound());
+        this.#height._control.addEventListener('change', () => this.updateRound());
+
+        this.updateRound();
+    }
+    
+    
+    updateRound()
+    {
+        const min = Math.min(this.#width.value, this.#height.value);
+        this.setRoundMinMax(0, min/2);
+    }
+
+    
+    setRoundMinMax(min, max)
+    {
+        const control = this.#round._control;
+
+        control.min   = min;
+        control.max   = max;
+        //control.value = Math.min(control.value, control.max);
+
+        this.#round._control.update();
     }
 
 
@@ -4027,16 +4088,40 @@ extends Operator
 }
 
 
+class   OpRow
+extends Operator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('row', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count = new NumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
+    }
+}
+
+
 function initSliderChildren(slider)
 {
-    slider.bar = document.createElement('DIV');
+    slider.bar = document.createElement('div');
     slider.bar.className = 'sliderBar';
 
-    slider.text = document.createElement('DIV');
+    slider.text = document.createElement('div');
     slider.text.className = 'sliderText';
+
+    slider.focus = document.createElement('div');
+    slider.focus.className = 'sliderFocus';
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
+    slider.appendChild(slider.focus);
 }
 
 
@@ -4093,6 +4178,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     initSliderChildren(slider);    
     initSliderTextbox(slider);
+
     
     //
 
@@ -4134,7 +4220,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.sx           = e.clientX;
             slider.sv           = slider.value;
 
-            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
+            slider.focus.style.boxShadow = '0 0 0 1px #18A0FB inset';
                         
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -4145,7 +4231,10 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             }, 500);
         }
         else if (e.button == 1)
+        {
+            e.preventDefault();
             slider.buttonDown1 = true;
+        }
     });
 
     slider.addEventListener('losecapture', function()
@@ -4187,7 +4276,12 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.buttonDown0 = false;
             slider.unlockPointer(e.pointerId);
 
-            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        }
+        if (   e.button == 1
+            && slider.buttonDown1)
+        {
+            slider.buttonDown1 = false;            
         }
     });
 
@@ -4198,14 +4292,23 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             && !slider.inputConnected)
         {
             slider.style.cursor    = 'ew-resize';
-            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            
+            slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            slider.focus.style.visibility = 'visible';
+            slider.focus.style.opacity    = '100%';
+    
+            slider.update();
         }
     });
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.cursor    = 'default';
-        slider.style.boxShadow = '0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset';
+        slider.style.cursor     = 'default';
+        
+        slider.focus.style.visibility = 'hidden';
+        slider.focus.style.opacity    = 0;
+
+        slider.update();
     });
 
 
@@ -4226,7 +4329,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         
         if (slider.buttonDown0)
         {
-            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
+            //slider.style.boxShadow = '0 0 0 1px #18A0FB';
             
             if (slider.isPointerLocked())
             {
@@ -4261,7 +4364,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     slider.addEventListener('wheel', e =>
     {
-        if (!e.ctrlKey)
+        if (   !e.ctrlKey
+            && !slider.buttonDown1)
         {
             e.stopPropagation();
             slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
@@ -4306,14 +4410,34 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.value = value;
 
 
-        var v  = value / (slider.max - slider.min);
+        slider.update();
+
+
+        if (   fireChangeEvent
+            && slider.enableChangeEvent
+            && value != oldValue)
+            slider.dispatchEvent(slider.onchange);
+    };
+
+
+    slider.update = function()
+    {
+        var v  =  slider.value / (slider.max - slider.min);
         var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         slider.bar.style.background = slider.valueColor;
 
+        slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
+        slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = slider.clientWidth;
+        slider.focus.style.height = slider.clientHeight;
+
         if (v >= 0)
         {
-            slider.bar.style.left  = 1 + slider.offsetLeft + Math.round(cx);
+            slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
             slider.bar.style.width = Math.round(v * slider.clientWidth);
         }
         else
@@ -4327,8 +4451,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             ? slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
-        slider.bar.style.height = slider.clientHeight;
-
         slider.text.innerHTML = '';
         
         if (slider.name.length > 0)
@@ -4337,21 +4459,10 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         var valueText = 
             slider.valueText != ''
             ? slider.valueText
-            : getNumberString(value, slider.dec);
+            : getNumberString(slider.value, slider.dec);
 
         slider.text.innerHTML += valueText + slider.suffix;
-
-        if (   fireChangeEvent
-            && slider.enableChangeEvent
-            && value != oldValue)
-            slider.dispatchEvent(slider.onchange);
     };
-
-
-    slider.update = function()
-    {
-        slider.setValue(slider.value, false);
-    }
 
 
     slider.lockPointer = function()
@@ -6058,7 +6169,6 @@ generator.onmessage = function(e)
             parent.postMessage({ pluginMessage: 
             { 
                 cmd:    'updateObjects',
-                nodeIds: e.data.nodeIds,
                 objects: e.data.objects
             }}, '*');    
 

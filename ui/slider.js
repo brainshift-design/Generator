@@ -1,13 +1,17 @@
 function initSliderChildren(slider)
 {
-    slider.bar = document.createElement('DIV');
+    slider.bar = document.createElement('div');
     slider.bar.className = 'sliderBar';
 
-    slider.text = document.createElement('DIV');
+    slider.text = document.createElement('div');
     slider.text.className = 'sliderText';
+
+    slider.focus = document.createElement('div');
+    slider.focus.className = 'sliderFocus';
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
+    slider.appendChild(slider.focus);
 }
 
 
@@ -64,6 +68,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     initSliderChildren(slider);    
     initSliderTextbox(slider);
+
     
     //
 
@@ -105,7 +110,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.sx           = e.clientX;
             slider.sv           = slider.value;
 
-            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
+            slider.focus.style.boxShadow = '0 0 0 1px #18A0FB inset';
                         
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -116,7 +121,10 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             }, 500);
         }
         else if (e.button == 1)
+        {
+            e.preventDefault();
             slider.buttonDown1 = true;
+        }
     });
 
     slider.addEventListener('losecapture', function()
@@ -158,7 +166,12 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.buttonDown0 = false;
             slider.unlockPointer(e.pointerId);
 
-            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        }
+        if (   e.button == 1
+            && slider.buttonDown1)
+        {
+            slider.buttonDown1 = false;            
         }
     });
 
@@ -169,14 +182,23 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             && !slider.inputConnected)
         {
             slider.style.cursor    = 'ew-resize';
-            slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            
+            slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            slider.focus.style.visibility = 'visible';
+            slider.focus.style.opacity    = '100%';
+    
+            slider.update();
         }
     });
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.cursor    = 'default';
-        slider.style.boxShadow = '0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset';
+        slider.style.cursor     = 'default';
+        
+        slider.focus.style.visibility = 'hidden';
+        slider.focus.style.opacity    = 0;
+
+        slider.update();
     });
 
 
@@ -197,7 +219,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         
         if (slider.buttonDown0)
         {
-            slider.style.boxShadow = '0 0 0 1px #18A0FB inset';
+            //slider.style.boxShadow = '0 0 0 1px #18A0FB';
             
             if (slider.isPointerLocked())
             {
@@ -232,7 +254,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     
     slider.addEventListener('wheel', e =>
     {
-        if (!e.ctrlKey)
+        if (   !e.ctrlKey
+            && !slider.buttonDown1)
         {
             e.stopPropagation();
             slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
@@ -277,14 +300,34 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.value = value;
 
 
-        var v  = value / (slider.max - slider.min);
+        slider.update();
+
+
+        if (   fireChangeEvent
+            && slider.enableChangeEvent
+            && value != oldValue)
+            slider.dispatchEvent(slider.onchange);
+    };
+
+
+    slider.update = function()
+    {
+        var v  =  slider.value / (slider.max - slider.min);
         var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         slider.bar.style.background = slider.valueColor;
 
+        slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
+        slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = slider.clientWidth;
+        slider.focus.style.height = slider.clientHeight;
+
         if (v >= 0)
         {
-            slider.bar.style.left  = 1 + slider.offsetLeft + Math.round(cx);
+            slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
             slider.bar.style.width = Math.round(v * slider.clientWidth);
         }
         else
@@ -298,8 +341,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             ? slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
-        slider.bar.style.height = slider.clientHeight;
-
         slider.text.innerHTML = '';
         
         if (slider.name.length > 0)
@@ -308,21 +349,10 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         var valueText = 
             slider.valueText != ''
             ? slider.valueText
-            : getNumberString(value, slider.dec);
+            : getNumberString(slider.value, slider.dec);
 
         slider.text.innerHTML += valueText + slider.suffix;
-
-        if (   fireChangeEvent
-            && slider.enableChangeEvent
-            && value != oldValue)
-            slider.dispatchEvent(slider.onchange);
     };
-
-
-    slider.update = function()
-    {
-        slider.setValue(slider.value, false);
-    }
 
 
     slider.lockPointer = function()

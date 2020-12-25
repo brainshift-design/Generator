@@ -98,16 +98,33 @@ function generate(nodeIds)
     for (const node of ggraph.nodes)
         node.reset();
         
+    var nObjects = 0;
+
     for (const nodeId of nodeIds)
     {
         const node = ggraph.nodeFromId(nodeId);
-        //objects    = objects.concat(node.output.getData());
-        node.output.getData(); // just for the generate() inside
-    }
+        const data = node.output.getData();
+        nObjects += data[1];
+    }    
 
+    
+    const objects = new Array(nObjects);
+
+    var i = 0;
+    for (const nodeId of nodeIds)
+    {
+        const node = ggraph.nodeFromId(nodeId);
+        const data = node.output.getData();
+        
+        const first = data[0];
+        const count = data[1];
+        
+        for (var j = first; j < first + count; i++, j++)
+            objects[i] = gObjects[j];
+    }    
+    
     postMessage({ 
         msg:    'updateObjects',
-        nodeIds: e.data.nodeIds,
         objects: objects
     });
 }

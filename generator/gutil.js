@@ -7,8 +7,8 @@ function getObjectBounds(first, count)
     
     for (var i = first; i < first + count; i++)
     {
-        const obj = objects[i];
-        
+        const obj = gObjects[i];
+
         boundsL = Math.min(boundsL, obj.x);
         boundsT = Math.min(boundsT, obj.y);
         boundsR = Math.max(boundsR, obj.x + obj.width);
