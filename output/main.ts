@@ -23,6 +23,9 @@ figma.ui.onmessage = msg =>
 };
 
 
+figma.on('selectionchange', onSelectionChange);
+
+
 function msgLoadState(msg)
 {
     (async function()
@@ -132,6 +135,7 @@ function createRect(obj)
         
     figma.currentPage.appendChild(rect);
     objects[obj[1]] = rect;
+    nObjects++;
 
     rect.cornerRadius = obj[7];
 }
@@ -188,3 +192,52 @@ function obj2type(type)
 
     return 'ERROR_TYPE';
 }
+
+
+function onSelectionChange()
+{
+    /*  Every time a selection changes, check that all objects in the object table
+        still exist in the canvas. If not, remove the pointer from the object table.  
+        
+        NOTE: at this point I don't know if objects are deleted by the API, but then again,
+        only one plugin runs at a time right now, so maybe it's not an issue.  */
+
+    for (var i = 0; i < nObjects; i++)
+    {
+        if (!objects[i]) continue;
+
+        const exist = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('uid')) == i);
+
+        if (!exist)
+            objects[i] = null;
+    }
+}
+
+// function updateRect(data)
+// {
+//     const existing = figma.currentPage.children.findIndex(obj => 
+//         obj.getPluginData('#GEN') === '#GEN_' + data.itemId);
+
+//     var rect;
+
+//     if (existing < 0)
+//     {
+//         rect = figma.createRectangle()
+//         rect.name  = data.itemId;
+//         rect.setPluginData('#GEN', '#GEN_' + rect.name);
+//         rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+//         rect.x     = data.x;
+//         rect.y     = data.y;
+    
+//         figma.currentPage.appendChild(rect);
+//     }    
+//     else
+//     {
+//         rect = <RectangleNode>figma.currentPage.children[existing];
+
+//         rect.x = data.x;
+//         rect.y = data.y;
+//     }    
+
+//     if (   rect.width  != data.width
+//         || rect.height != data.height)
