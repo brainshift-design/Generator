@@ -6,10 +6,10 @@ function createNode(opType)
     const node = graph.createNode(opType);
 
     generator.postMessage({
-        msg:    'createNode', 
-        opType:  opType,
-        nodeUid: node.uid,
-        nodeId:  node.id
+        msg:     'createNode', 
+        opType:   opType,
+        nodeId:   node.id,
+        nodeName: node.name
     });
 
     if (graphView.selected.length > 0)
@@ -32,7 +32,7 @@ function createNode(opType)
 
 function deleteNodes(nodes)
 {
-    const nodeIds = nodes.map(n => n.uid);
+    const nodeIds = nodes.map(n => n.id);
     graph.deleteNodes(nodeIds);
 
     generator.postMessage({
@@ -175,18 +175,16 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'makeActive':      makeActive(e.data.nodeUid); break;
+        case 'makeActive':      makeActive(e.data.nodeId); break;
         case 'showParamValue':  showParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        //case 'requestGenerate': requestGenerate(nodeIds); break;
-        case 'reset':           reset(); break;
         case 'updateObjects':   updateObjects(e.data.objects); break;
     }
 };
 
 
-function makeActive(nodeUid)
+function makeActive(nodeId)
 {
-    const node = graph.nodeFromUid(nodeUid);
+    const node = graph.nodeFromId(nodeId);
     node.makeActive();
 }
 
@@ -200,33 +198,6 @@ function showParamValue(nodeId, paramName, value)
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
-}
-
-
-// function requestGenerate(nodeIds)
-// {
-//     const nodes = [];
-
-//     for (const nodeId of nodeIds)
-//     {
-//         const node = graph.nodes.find(n => n.id == nodeId);
-
-//         if (!nodes.includes(node.activeNodeInTree))
-//             nodes.push(node.activeNodeInTree);
-//     }
-
-//     generate(nodes);
-// }
-
-
-function reset()
-{
-    // const node = graph.nodes.find(n => n.id == e.data.nodeId);
-
-    // generator.postMessage({
-    //     cmd:   'reset',
-    //     nodeId: node.activeNodeInTree.id
-    // });    
 }
 
 

@@ -30,7 +30,7 @@ extends GOperator
         [
             OBJ_RECT,           // type
             objId,              // object id
-            this.uid,           // node uid
+            this.id,            // node id
                
             0,                  // x      
             0,                  // y      

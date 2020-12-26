@@ -14,11 +14,10 @@ figma.ui.onmessage = msg =>
     switch (msg.cmd)
     {
         case 'save':              figma.clientStorage.setAsync(msg.key, msg.value); break;
-        case 'loadState':         msgLoadState(msg); break;
-        case 'resizeWindow':      msgResizeWindow(msg); break; 
-        case 'deleteNodeObjects': msgDeleteNodeObjects(msg.nodeIds); break; 
-        //case 'removeObjectList':  msgRemoveObjectList(msg); break;
-        case 'updateObjects':     msgUpdateObjects(msg); break;
+        case 'loadState':         loadState(msg); break;
+        case 'resizeWindow':      resizeWindow(msg); break; 
+        case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds); break; 
+        case 'updateObjects':     updateObjects(msg); break;
     }
 };
 
@@ -26,7 +25,7 @@ figma.ui.onmessage = msg =>
 figma.on('selectionchange', onSelectionChange);
 
 
-function msgLoadState(msg)
+function loadState(msg)
 {
     (async function()
     {
@@ -49,7 +48,7 @@ function msgLoadState(msg)
 }
 
 
-function msgResizeWindow(msg)
+function resizeWindow(msg)
 {
     var width  = Math.floor(Math.max(0, msg.width ));
     var height = Math.floor(Math.max(0, msg.height));
@@ -61,50 +60,19 @@ function msgResizeWindow(msg)
 }
 
 
-function msgDeleteNodeObjects(nodeIds)
+function deleteNodeObjects(nodeIds)
 {
     console.log(nodeIds);
     for (const obj of figma.currentPage.children)
     {
-        if (!!nodeIds.find(id => obj.getPluginData('nodeId') == id)) //madeByNodes(obj, nodeIds))
+        if (!!nodeIds.find(uid => obj.getPluginData('nodeId') == uid))
             obj.remove();
     }
 }
 
 
-// function madeByNodes(obj, nodeIds)
-// {
-//     const tag = obj.getPluginData('name');
-
-//     for (const nodeId of nodeIds)
-//     {
-//         let nodeTag = nodeId;
-
-//         if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
-//             return true;
-//     }
-
-//     return false;
-// }
-
-
-// function msgRemoveObjectList(msg)
-// {
-//     for (const _obj of msg.objects)
-//     {
-//         var obj = figma.currentPage.children.find(n => 
-//             n.getPluginData('#') === '#' + _obj.itemId);
-
-//         if (obj) obj.remove();
-//     }
-// }
-
-
-function msgUpdateObjects(msg)
+function updateObjects(msg)
 {
-    // for (const nodeId of msg.nodeIds)
-    //     msgRemoveNodeObjects(nodeIds);
-
     for (const obj of msg.objects)
     {
         switch (obj[0])
@@ -137,9 +105,9 @@ function createRect(obj)
     const rect = figma.createRectangle();
     rect.name  = obj[1].toString();//obj.itemId;
 
-    rect.setPluginData('uid',    obj[1].toString());
+    rect.setPluginData('uid',     obj[1].toString());
     rect.setPluginData('nodeId', obj[2].toString());
-    rect.setPluginData('name',   rect.name);
+    rect.setPluginData('name',    rect.name);
     
     rect.x = obj[3]
     rect.y = obj[4];

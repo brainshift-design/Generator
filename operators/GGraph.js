@@ -38,7 +38,7 @@ class GGraph
     {
         for (const nodeId of nodeIds)
         {
-            const node = this.nodes.find(n => n.uid == nodeId);
+            const node = this.nodes.find(n => n.id == nodeId);
 
             for (const input of node.inputs)
                 if (input.connected) this.disconnect(input);

@@ -12,17 +12,17 @@ class Operator
     #dataType;
     get dataType() { return this.#dataType; }
 
-    _id;
-    get id() { return this._id; }
-    set id(id)
+    _name;
+    get name() { return this._name; }
+    set name(name)
     {
-        this._id = id;
-        this.label.innerHTML = id;
+        this._name = name;
+        this.label.innerHTML = name;
     }
     
 
-    static nextUid = 1;
-    uid = Operator.nextUid++;
+    static nextId = 1;
+    id = Operator.nextId++;
 
 
     graph = null;
@@ -241,7 +241,7 @@ class Operator
         this.#opType   = opType;   // this is the operator type
         this.#dataType = dataType; // this is the op's main data type
 
-        this._id = opType; // this is a temp until the op becomes a graph node
+        this._name = opType; // this is a temp until the op becomes a graph node
         
         var headerColor = colorFromDataType(dataType, false);
         createDiv(this, headerColor);
@@ -291,7 +291,7 @@ class Operator
         if (this.graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
-        this._id = newId;
+        this._name = newId;
         this.label.innerHTML = newId;
 
         return true;

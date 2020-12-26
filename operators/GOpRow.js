@@ -51,7 +51,7 @@ extends GOperator
                 const item = gObjects[objId];
 
                 item[1] = objId;
-                item[2] = this.uid;
+                item[2] = this.id;
     
                 item[3] += x;
             }

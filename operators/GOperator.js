@@ -13,9 +13,9 @@ class GOperator
     get dataType() { return this.#dataType; }
 
     
-    _id;
-    get id() { return this._id; }
-    set id(id) { this._id = id; }
+    _name;
+    get name() { return this._name; }
+    set name(name) { this._name = name; }
     
     graph = null;
     
@@ -63,7 +63,7 @@ class GOperator
         this.#opType   = opType;   // this is the operator type
         this.#dataType = dataType; // this is the op's main data type
 
-        this._id = opType; // this is a temp until the op becomes a graph node
+        this._name = opType; // this is a temp until the op becomes a graph node
     }    
     
     
@@ -101,7 +101,7 @@ class GOperator
         if (this.graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
-        this._id = newId;
+        this._name = newId;
 
         return true;
     }

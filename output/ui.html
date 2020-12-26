@@ -1343,7 +1343,7 @@ class GGraph
     {
         for (const nodeId of nodeIds)
         {
-            const node = this.nodes.find(n => n.uid == nodeId);
+            const node = this.nodes.find(n => n.id == nodeId);
 
             for (const input of node.inputs)
                 if (input.connected) this.disconnect(input);
@@ -1542,9 +1542,9 @@ class GOperator
     get dataType() { return this.#dataType; }
 
     
-    _id;
-    get id() { return this._id; }
-    set id(id) { this._id = id; }
+    _name;
+    get name() { return this._name; }
+    set name(name) { this._name = name; }
     
     graph = null;
     
@@ -1592,7 +1592,7 @@ class GOperator
         this.#opType   = opType;   // this is the operator type
         this.#dataType = dataType; // this is the op's main data type
 
-        this._id = opType; // this is a temp until the op becomes a graph node
+        this._name = opType; // this is a temp until the op becomes a graph node
     }    
     
     
@@ -1630,7 +1630,7 @@ class GOperator
         if (this.graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
-        this._id = newId;
+        this._name = newId;
 
         return true;
     }
@@ -1728,7 +1728,7 @@ extends GOperator
         [
             OBJ_RECT,           // type
             objId,              // object id
-            this.uid,           // node uid
+            this.id,            // node id
                
             0,                  // x      
             0,                  // y      
@@ -1799,7 +1799,7 @@ extends GOperator
                 const item = gObjects[objId];
 
                 item[1] = objId;
-                item[2] = this.uid;
+                item[2] = this.id;
     
                 item[3] += x;
             }
@@ -1821,7 +1821,7 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':  createNode(e.data.opType, e.data.nodeUid, e.data.nodeId); break; 
+        case 'createNode':  createNode(e.data.opType, e.data.nodeId, e.data.nodeId); break; 
         case 'deleteNodes': deleteNodes(e.data.nodeIds); break;             
         case 'setNodeId':   setNodeId(e.data.nodeId, e.data.newId); break; 
         case 'setActive':   setActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
@@ -1834,26 +1834,26 @@ onmessage = function(e)
 };
 
 
-function createNode(type, uid, id)
+function createNode(type, id, name)
 {
     const node = ggraph.createNode(type);
-    node.uid   = uid;
     node.id    = id;
+    node.name  = name;
 
     postMessage({ 
         msg:    'makeActive',
-        nodeUid: node.uid
+        nodeId: node.id
     });
 }
 
 
-function deleteNodes(ids)
+function deleteNodes(uids)
 {
-    ggraph.deleteNodes(ids);
+    ggraph.deleteNodes(uids);
 }
 
 
-function setNodeId(id, newId)
+function setNodeId(uid, newId)
 {
     const node = ggraph.nodeFromId(id);
     node.id    = newId;
@@ -1882,7 +1882,6 @@ function connect(outputId, inputs)
             : inNode.params.find(p => p.name == input.param).input);
 
         generate([input.node.id]);
-        //requestGenerate([input.nodeId]);
     }
 }
 
@@ -2972,11 +2971,11 @@ class Graph
     }
     
 
-    deleteNodes(nodeUids)
+    deleteNodes(nodeIds)
     {
-        for (const nodeUid of nodeUids)
+        for (const nodeId of nodeIds)
         {
-            const node = this.nodes.find(n => n.uid == nodeUid);
+            const node = this.nodes.find(n => n.id == nodeId);
 
             for (const input of node.inputs)
             {
@@ -3077,9 +3076,9 @@ class Graph
     }
 
 
-    nodeFromUid(uid)
+    nodeFromId(id)
     {
-        return this.nodes.find(n => n.uid == uid);
+        return this.nodes.find(n => n.id == id);
     }
 }
 
@@ -3378,17 +3377,17 @@ class Operator
     #dataType;
     get dataType() { return this.#dataType; }
 
-    _id;
-    get id() { return this._id; }
-    set id(id)
+    _name;
+    get name() { return this._name; }
+    set name(name)
     {
-        this._id = id;
-        this.label.innerHTML = id;
+        this._name = name;
+        this.label.innerHTML = name;
     }
     
 
-    static nextUid = 1;
-    uid = Operator.nextUid++;
+    static nextId = 1;
+    id = Operator.nextId++;
 
 
     graph = null;
@@ -3607,7 +3606,7 @@ class Operator
         this.#opType   = opType;   // this is the operator type
         this.#dataType = dataType; // this is the op's main data type
 
-        this._id = opType; // this is a temp until the op becomes a graph node
+        this._name = opType; // this is a temp until the op becomes a graph node
         
         var headerColor = colorFromDataType(dataType, false);
         createDiv(this, headerColor);
@@ -3657,7 +3656,7 @@ class Operator
         if (this.graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
-        this._id = newId;
+        this._name = newId;
         this.label.innerHTML = newId;
 
         return true;
@@ -5958,10 +5957,10 @@ function createNode(opType)
     const node = graph.createNode(opType);
 
     generator.postMessage({
-        msg:    'createNode', 
-        opType:  opType,
-        nodeUid: node.uid,
-        nodeId:  node.id
+        msg:     'createNode', 
+        opType:   opType,
+        nodeId:   node.id,
+        nodeName: node.name
     });
 
     if (graphView.selected.length > 0)
@@ -5984,7 +5983,7 @@ function createNode(opType)
 
 function deleteNodes(nodes)
 {
-    const nodeIds = nodes.map(n => n.uid);
+    const nodeIds = nodes.map(n => n.id);
     graph.deleteNodes(nodeIds);
 
     generator.postMessage({
@@ -6127,18 +6126,16 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'makeActive':      makeActive(e.data.nodeUid); break;
+        case 'makeActive':      makeActive(e.data.nodeId); break;
         case 'showParamValue':  showParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        //case 'requestGenerate': requestGenerate(nodeIds); break;
-        case 'reset':           reset(); break;
         case 'updateObjects':   updateObjects(e.data.objects); break;
     }
 };
 
 
-function makeActive(nodeUid)
+function makeActive(nodeId)
 {
-    const node = graph.nodeFromUid(nodeUid);
+    const node = graph.nodeFromId(nodeId);
     node.makeActive();
 }
 
@@ -6152,33 +6149,6 @@ function showParamValue(nodeId, paramName, value)
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
-}
-
-
-// function requestGenerate(nodeIds)
-// {
-//     const nodes = [];
-
-//     for (const nodeId of nodeIds)
-//     {
-//         const node = graph.nodes.find(n => n.id == nodeId);
-
-//         if (!nodes.includes(node.activeNodeInTree))
-//             nodes.push(node.activeNodeInTree);
-//     }
-
-//     generate(nodes);
-// }
-
-
-function reset()
-{
-    // const node = graph.nodes.find(n => n.id == e.data.nodeId);
-
-    // generator.postMessage({
-    //     cmd:   'reset',
-    //     nodeId: node.activeNodeInTree.id
-    // });    
 }
 
 

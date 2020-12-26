@@ -99,11 +99,11 @@ class Graph
     }
     
 
-    deleteNodes(nodeUids)
+    deleteNodes(nodeIds)
     {
-        for (const nodeUid of nodeUids)
+        for (const nodeId of nodeIds)
         {
-            const node = this.nodes.find(n => n.uid == nodeUid);
+            const node = this.nodes.find(n => n.id == nodeId);
 
             for (const input of node.inputs)
             {
@@ -204,8 +204,8 @@ class Graph
     }
 
 
-    nodeFromUid(uid)
+    nodeFromId(id)
     {
-        return this.nodes.find(n => n.uid == uid);
+        return this.nodes.find(n => n.id == id);
     }
 }
