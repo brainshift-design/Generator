@@ -5,15 +5,16 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':  createNode(e.data.opType, e.data.nodeId, e.data.nodeId); break; 
-        case 'deleteNodes': deleteNodes(e.data.nodeIds); break;             
-        case 'setNodeId':   setNodeId(e.data.nodeId, e.data.newId); break; 
-        case 'setActive':   setActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
-        case 'connect':     connect(e.data.outputId, e.data.inputs); break; 
-        case 'disconnect':  disconnect(e.data.input); break;
-        case 'setParam':    setParam(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'invalidate':  invalidate(e.data.nodeId); break;
-        case 'generate':    generate(e.data.nodeIds); break;
+        case 'createNode':      createNode(e.data.opType, e.data.nodeId, e.data.nodeId); break; 
+        case 'deleteNodes':     deleteNodes(e.data.nodeIds); break;             
+        case 'setNodeId':       setNodeId(e.data.nodeId, e.data.newId); break; 
+        case 'setActive':       setActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
+        case 'connect':         connect(e.data.outputId, e.data.inputs); break; 
+        case 'disconnect':      disconnect(e.data.input); break;
+        case 'setParam':        setParam(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'invalidate':      invalidate(e.data.nodeId); break;
+        case 'generateObjects': generateObjects(e.data.nodeIds); break;
+        //case 'deleteObjects':   deleteObjects(e.data.nodeIds); break;             
     }
 };
 
@@ -31,13 +32,13 @@ function createNode(type, id, name)
 }
 
 
-function deleteNodes(uids)
+function deleteNodes(nodeIds)
 {
-    ggraph.deleteNodes(uids);
+    ggraph.deleteNodes(nodeIds);
 }
 
 
-function setNodeId(uid, newId)
+function setNodeId(id, newId)
 {
     const node = ggraph.nodeFromId(id);
     node.id    = newId;
@@ -65,7 +66,7 @@ function connect(outputId, inputs)
             ? inNode.inputs[input.index]
             : inNode.params.find(p => p.name == input.param).input);
 
-        generate([input.node.id]);
+        generateObjects([input.node.id]);
     }
 }
 
@@ -83,8 +84,7 @@ function setParam(nodeId, name, value)
     const param = node.params.find(p => p.name == name);
     param.value = value;
 
-    generate([node.id]);
-    //requestGenerate([node.id]);
+    generateObjects([node.id]);
 }
 
 
@@ -95,7 +95,7 @@ function invalidate(nodeId)
 }
 
 
-function generate(nodeIds)
+function generateObjects(nodeIds)
 {
     for (const node of ggraph.nodes)
         node.reset();
@@ -132,10 +132,8 @@ function generate(nodeIds)
 }
 
 
-function requestGenerate(nodeIds)
-{
-    postMessage({
-        msg:    'requestGenerate',
-        nodeIds: nodeIds
-    });
-}
+// function deleteObjects(nodeIds)
+// {
+//     for (const id of nodeIds)
+//         gObjects[id] = null;
+// }

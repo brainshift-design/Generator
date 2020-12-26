@@ -127,13 +127,18 @@ function deleteNodeObjects(nodeIds)
         cmd:    'deleteNodeObjects',
         nodeIds: nodeIds
     }}, '*');
+
+    // generator.postMessage({
+    //     msg:    'deleteNodeObjects',
+    //     nodeIds: nodeIds
+    // });
 }
 
 
 /////////////////////////////////////////////////////////////////////
 
 
-function generate(nodes)
+function generateObjects(nodes)
 {
     if (graph.mutex)
     {
@@ -151,7 +156,7 @@ function generate(nodes)
     const nodeIds = nodes.map(n => n.id);
 
     generator.postMessage({
-        msg:    'generate',
+        msg:    'generateObjects',
         nodeIds: nodeIds
     });
 
@@ -217,6 +222,6 @@ function updateObjects(objects)
         var deferNodes = Array.from(graph.deferNodes);
         graph.deferNodes = [];
 
-        generate(deferNodes);
+        generateObjects(deferNodes);
     }
 }

@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const OBJ_RECT = 1;
 const MAX_OBJECTS = 0x10000;
 const objects = new Array(MAX_OBJECTS);
-var nObjects = 0;
+var maxObjId = -1;
 figma.showUI(__html__);
 figma.ui.onmessage = msg => {
     switch (msg.cmd) {
@@ -24,7 +24,7 @@ figma.ui.onmessage = msg => {
             resizeWindow(msg);
             break;
         case 'deleteNodeObjects':
-            deleteNodeObjects(msg.nodeIds);
+            deleteObjects(msg.nodeIds);
             break;
         case 'updateObjects':
             updateObjects(msg);
@@ -58,11 +58,19 @@ function resizeWindow(msg) {
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
 }
-function deleteNodeObjects(nodeIds) {
-    console.log(nodeIds);
+function deleteObjects(nodeIds) {
     for (const obj of figma.currentPage.children) {
-        if (!!nodeIds.find(uid => obj.getPluginData('nodeId') == uid))
+        const id = nodeIds.findIndex(id => obj.getPluginData('nodeId') == id);
+        if (id >= 0) {
             obj.remove();
+            if (id == maxObjId) {
+                do
+                    maxObjId--;
+                while (maxObjId > 0
+                    && !objects[maxObjId]);
+            }
+        }
+        objects[id] = null;
     }
 }
 function updateObjects(msg) {
@@ -74,11 +82,11 @@ function updateObjects(msg) {
                 else {
                     const cur = objects[obj[1]];
                     if (cur.type == obj2type(obj[0])
-                        && cur.getPluginData('uid') == obj[1]
+                        && cur.getPluginData('id') == obj[1]
                         && cur.getPluginData('nodeId') == obj[2])
                         updateRect(obj);
                     else
-                        figma.notify('ERROR: object ID mismatch');
+                        figma.notify('Generator Error: Object ID mismatch');
                 }
                 break;
         }
@@ -86,8 +94,8 @@ function updateObjects(msg) {
 }
 function createRect(obj) {
     const rect = figma.createRectangle();
-    rect.name = obj[1].toString(); //obj.itemId;
-    rect.setPluginData('uid', obj[1].toString());
+    rect.name = obj[1].toString();
+    rect.setPluginData('id', obj[1].toString());
     rect.setPluginData('nodeId', obj[2].toString());
     rect.setPluginData('name', rect.name);
     rect.x = obj[3];
@@ -96,7 +104,7 @@ function createRect(obj) {
     rect.resize(Math.max(0.01, obj[5]), Math.max(0.01, obj[6]));
     figma.currentPage.appendChild(rect);
     objects[obj[1]] = rect;
-    nObjects++;
+    maxObjId++;
     rect.cornerRadius = obj[7];
 }
 function updateRect(obj) {
@@ -128,10 +136,10 @@ function onSelectionChange() {
         
         NOTE: at this point I don't know if objects are deleted by the API, but then again,
         only one plugin runs at a time right now, so maybe it's not an issue.  */
-    for (var i = 0; i < nObjects; i++) {
+    for (var i = 0; i < maxObjId; i++) {
         if (!objects[i])
             continue;
-        const exist = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('uid')) == i);
+        const exist = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
         if (!exist)
             objects[i] = null;
     }

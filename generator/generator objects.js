@@ -13,7 +13,7 @@ var   ngObjects   = 0;
 
     type
     object id (unique numeric)
-    node uid (unique numeric)
+    node id (unique numeric)
 
     object data
     .
