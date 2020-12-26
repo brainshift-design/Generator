@@ -34,11 +34,11 @@ class GGraph
     }
     
 
-    removeNodes(nodeIds)
+    deleteNodes(nodeIds)
     {
         for (const nodeId of nodeIds)
         {
-            const node = this.nodes.find(n => n.id == nodeId);
+            const node = this.nodes.find(n => n.uid == nodeId);
 
             for (const input of node.inputs)
                 if (input.connected) this.disconnect(input);

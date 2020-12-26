@@ -72,7 +72,7 @@ document.addEventListener('keydown', e =>
 {
     if (e.key == 'Delete')
     {
-        removeNodes(graphView.selected);
+        deleteNodes(graphView.selected);
         graphView._selected = [];
     }
     else if (e.code == 'KeyA'

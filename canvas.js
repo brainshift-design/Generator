@@ -6,9 +6,10 @@ function createNode(opType)
     const node = graph.createNode(opType);
 
     generator.postMessage({
-        msg:   'createNode', 
-        opType: opType,
-        nodeId: node.id
+        msg:    'createNode', 
+        opType:  opType,
+        nodeUid: node.uid,
+        nodeId:  node.id
     });
 
     if (graphView.selected.length > 0)
@@ -29,15 +30,17 @@ function createNode(opType)
 }
 
 
-function removeNodes(nodes)
+function deleteNodes(nodes)
 {
-    const nodeIds = nodes.map(n => n.id);
-    graph.removeNodes(nodeIds);
+    const nodeIds = nodes.map(n => n.uid);
+    graph.deleteNodes(nodeIds);
 
     generator.postMessage({
-        msg:    'removeNodes', 
+        msg:    'deleteNodes',
         nodeIds: nodeIds
     });
+
+    deleteNodeObjects(nodeIds);
 }
 
 
@@ -117,12 +120,12 @@ function setActive(node, active)
 }
 
 
-function removeNodeOutput(node)
+function deleteNodeObjects(nodeIds)
 {
     parent.postMessage({ pluginMessage: 
     { 
-        cmd:   'removeNodeObjects',
-        nodeId: node.id
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
     }}, '*');
 }
 
@@ -172,70 +175,77 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'makeActive':
-        {
-            const node = graph.nodeFromId(e.data.nodeId);
-            node.makeActive();
-            break;
-        }
-        case 'showParamValue':
-        {
-            const node = graph.nodeFromId(e.data.nodeId);
-            
-            if (!!node) // this is mainly for deleted nodes which still exist 
-            {           // in Generator Graph but no longer in the UI Graph
-                const param = node.params.find(p => p.name == e.data.param);
-                param.control.setValue(e.data.value, false);
-            }
-            
-            break;
-        }
-        case 'requestGenerate':
-        {
-            const nodes = [];
-
-            for (const nodeId of e.data.nodeIds)
-            {
-                const node = graph.nodes.find(n => n.id == nodeId);
-
-                if (!nodes.includes(node.activeNodeInTree))
-                    nodes.push(node.activeNodeInTree);
-            }
-
-            generate(nodes);
-            break;
-        }
-        case 'reset':
-        {
-            // const node = graph.nodes.find(n => n.id == e.data.nodeId);
-
-            // generator.postMessage({
-            //     cmd:   'reset',
-            //     nodeId: node.activeNodeInTree.id
-            // });    
-
-            break;
-        }
-        case 'updateObjects':
-        {
-            parent.postMessage({ pluginMessage: 
-            { 
-                cmd:    'updateObjects',
-                objects: e.data.objects
-            }}, '*');    
-
-            graph.mutex = false;
-
-            
-            if (graph.deferNodes.length > 0)
-            {
-                var deferNodes = Array.from(graph.deferNodes);
-                graph.deferNodes = [];
-
-                generate(deferNodes);
-            }
-
-            break;
-        }
+        case 'makeActive':      makeActive(e.data.nodeUid); break;
+        case 'showParamValue':  showParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        //case 'requestGenerate': requestGenerate(nodeIds); break;
+        case 'reset':           reset(); break;
+        case 'updateObjects':   updateObjects(e.data.objects); break;
     }
 };
+
+
+function makeActive(nodeUid)
+{
+    const node = graph.nodeFromUid(nodeUid);
+    node.makeActive();
+}
+
+
+function showParamValue(nodeId, paramName, value)
+{
+    const node = graph.nodeFromId(nodeId);
+            
+    if (!!node) // this is mainly for deleted nodes which still exist 
+    {           // in Generator Graph but no longer in the UI Graph
+        const param = node.params.find(p => p.name == paramName);
+        param.control.setValue(value, false);
+    }
+}
+
+
+// function requestGenerate(nodeIds)
+// {
+//     const nodes = [];
+
+//     for (const nodeId of nodeIds)
+//     {
+//         const node = graph.nodes.find(n => n.id == nodeId);
+
+//         if (!nodes.includes(node.activeNodeInTree))
+//             nodes.push(node.activeNodeInTree);
+//     }
+
+//     generate(nodes);
+// }
+
+
+function reset()
+{
+    // const node = graph.nodes.find(n => n.id == e.data.nodeId);
+
+    // generator.postMessage({
+    //     cmd:   'reset',
+    //     nodeId: node.activeNodeInTree.id
+    // });    
+}
+
+
+function updateObjects(objects)
+{
+    parent.postMessage({ pluginMessage:
+    { 
+        cmd:    'updateObjects',
+        objects: objects
+    }}, '*');    
+
+    graph.mutex = false;
+
+    
+    if (graph.deferNodes.length > 0)
+    {
+        var deferNodes = Array.from(graph.deferNodes);
+        graph.deferNodes = [];
+
+        generate(deferNodes);
+    }
+}

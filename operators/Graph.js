@@ -64,7 +64,7 @@ class Graph
     {
         node.graph = this;
         node.setId(this.getNewId(node)); // TODO: not checking return value here
-        
+            
         if (this.nodes.length > 0)
         {
             const bounds = graphView.getNodeBounds();
@@ -99,11 +99,11 @@ class Graph
     }
     
 
-    removeNodes(nodeIds)
+    deleteNodes(nodeUids)
     {
-        for (const nodeId of nodeIds)
+        for (const nodeUid of nodeUids)
         {
-            const node = this.nodes.find(n => n.id == nodeId);
+            const node = this.nodes.find(n => n.uid == nodeUid);
 
             for (const input of node.inputs)
             {
@@ -173,7 +173,7 @@ class Graph
 
         //if (input.op)
         if (!!input.op.activeNodeInTree)
-            removeNodeOutput(input.op.activeNodeInTree);
+            deleteNodeObjects(input.op.activeNodeInTree);
 
         // then disconnect
 
@@ -204,8 +204,8 @@ class Graph
     }
 
 
-    nodeFromId(id)
+    nodeFromUid(uid)
     {
-        return this.nodes.find(n => n.id === id);
+        return this.nodes.find(n => n.uid == uid);
     }
 }

@@ -23,12 +23,10 @@ figma.ui.onmessage = msg => {
         case 'resizeWindow':
             msgResizeWindow(msg);
             break;
-        case 'removeNodeObjects':
-            msgRemoveNodeObjects(msg.nodeIds);
+        case 'deleteNodeObjects':
+            msgDeleteNodeObjects(msg.nodeIds);
             break;
-        case 'removeObjectList':
-            msgRemoveObjectList(msg);
-            break;
+        //case 'removeObjectList':  msgRemoveObjectList(msg); break;
         case 'updateObjects':
             msgUpdateObjects(msg);
             break;
@@ -61,19 +59,33 @@ function msgResizeWindow(msg) {
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
 }
-function msgRemoveNodeObjects(nodeIds) {
+function msgDeleteNodeObjects(nodeIds) {
+    console.log(nodeIds);
     for (const obj of figma.currentPage.children) {
-        if (madeByNodes(obj, nodeIds))
+        if (!!nodeIds.find(id => obj.getPluginData('nodeId') == id)) //madeByNodes(obj, nodeIds))
             obj.remove();
     }
 }
-function msgRemoveObjectList(msg) {
-    for (const _obj of msg.objects) {
-        var obj = figma.currentPage.children.find(n => n.getPluginData('#') === '#' + _obj.itemId);
-        if (obj)
-            obj.remove();
-    }
-}
+// function madeByNodes(obj, nodeIds)
+// {
+//     const tag = obj.getPluginData('name');
+//     for (const nodeId of nodeIds)
+//     {
+//         let nodeTag = nodeId;
+//         if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
+//             return true;
+//     }
+//     return false;
+// }
+// function msgRemoveObjectList(msg)
+// {
+//     for (const _obj of msg.objects)
+//     {
+//         var obj = figma.currentPage.children.find(n => 
+//             n.getPluginData('#') === '#' + _obj.itemId);
+//         if (obj) obj.remove();
+//     }
+// }
 function msgUpdateObjects(msg) {
     // for (const nodeId of msg.nodeIds)
     //     msgRemoveNodeObjects(nodeIds);
@@ -119,15 +131,6 @@ function updateRect(obj) {
         rect.resize(Math.max(0.01, obj[5]), Math.max(0.01, obj[6]));
     }
     rect.cornerRadius = obj[7];
-}
-function madeByNodes(obj, nodeIds) {
-    const tag = obj.getPluginData('name');
-    for (const nodeId of nodeIds) {
-        let nodeTag = nodeId;
-        if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
-            return true;
-    }
-    return false;
 }
 function obj2type(type) {
     switch (type) {

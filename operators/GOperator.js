@@ -13,10 +13,6 @@ class GOperator
     get dataType() { return this.#dataType; }
 
     
-    static nextUid = 1;
-    uid = GOperator.nextUid++;
-
-
     _id;
     get id() { return this._id; }
     set id(id) { this._id = id; }

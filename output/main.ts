@@ -16,8 +16,8 @@ figma.ui.onmessage = msg =>
         case 'save':              figma.clientStorage.setAsync(msg.key, msg.value); break;
         case 'loadState':         msgLoadState(msg); break;
         case 'resizeWindow':      msgResizeWindow(msg); break; 
-        case 'removeNodeObjects': msgRemoveNodeObjects(msg.nodeIds); break; 
-        case 'removeObjectList':  msgRemoveObjectList(msg); break;
+        case 'deleteNodeObjects': msgDeleteNodeObjects(msg.nodeIds); break; 
+        //case 'removeObjectList':  msgRemoveObjectList(msg); break;
         case 'updateObjects':     msgUpdateObjects(msg); break;
     }
 };
@@ -61,26 +61,43 @@ function msgResizeWindow(msg)
 }
 
 
-function msgRemoveNodeObjects(nodeIds)
+function msgDeleteNodeObjects(nodeIds)
 {
+    console.log(nodeIds);
     for (const obj of figma.currentPage.children)
     {
-        if (madeByNodes(obj, nodeIds))
+        if (!!nodeIds.find(id => obj.getPluginData('nodeId') == id)) //madeByNodes(obj, nodeIds))
             obj.remove();
     }
 }
 
 
-function msgRemoveObjectList(msg)
-{
-    for (const _obj of msg.objects)
-    {
-        var obj = figma.currentPage.children.find(n => 
-            n.getPluginData('#') === '#' + _obj.itemId);
+// function madeByNodes(obj, nodeIds)
+// {
+//     const tag = obj.getPluginData('name');
 
-        if (obj) obj.remove();
-    }
-}
+//     for (const nodeId of nodeIds)
+//     {
+//         let nodeTag = nodeId;
+
+//         if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
+//             return true;
+//     }
+
+//     return false;
+// }
+
+
+// function msgRemoveObjectList(msg)
+// {
+//     for (const _obj of msg.objects)
+//     {
+//         var obj = figma.currentPage.children.find(n => 
+//             n.getPluginData('#') === '#' + _obj.itemId);
+
+//         if (obj) obj.remove();
+//     }
+// }
 
 
 function msgUpdateObjects(msg)
@@ -157,22 +174,6 @@ function updateRect(obj)
     }
 
     rect.cornerRadius = obj[7];
-}
-
-
-function madeByNodes(obj, nodeIds)
-{
-    const tag = obj.getPluginData('name');
-
-    for (const nodeId of nodeIds)
-    {
-        let nodeTag = nodeId;
-
-        if (tag.substring(0, Math.min(tag.length, nodeTag.length)) === nodeTag)
-            return true;
-    }
-
-    return false;
 }
 
 

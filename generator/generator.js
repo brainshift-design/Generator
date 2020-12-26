@@ -5,8 +5,8 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':  createNode(e.data.opType, e.data.nodeId); break; 
-        case 'removeNodes': removeNodes(e.data.nodeIds); break;             
+        case 'createNode':  createNode(e.data.opType, e.data.nodeUid, e.data.nodeId); break; 
+        case 'deleteNodes': deleteNodes(e.data.nodeIds); break;             
         case 'setNodeId':   setNodeId(e.data.nodeId, e.data.newId); break; 
         case 'setActive':   setActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
         case 'connect':     connect(e.data.outputId, e.data.inputs); break; 
@@ -18,21 +18,22 @@ onmessage = function(e)
 };
 
 
-function createNode(type, id)
+function createNode(type, uid, id)
 {
     const node = ggraph.createNode(type);
+    node.uid   = uid;
     node.id    = id;
 
     postMessage({ 
-        msg:   'makeActive',
-        nodeId: node.id
+        msg:    'makeActive',
+        nodeUid: node.uid
     });
 }
 
 
-function removeNodes(ids)
+function deleteNodes(ids)
 {
-    ggraph.removeNodes(ids);
+    ggraph.deleteNodes(ids);
 }
 
 
@@ -64,7 +65,8 @@ function connect(outputId, inputs)
             ? inNode.inputs[input.index]
             : inNode.params.find(p => p.name == input.param).input);
 
-        requestGenerate([input.nodeId]);
+        generate([input.node.id]);
+        //requestGenerate([input.nodeId]);
     }
 }
 
@@ -82,7 +84,8 @@ function setParam(nodeId, name, value)
     const param = node.params.find(p => p.name == name);
     param.value = value;
 
-    requestGenerate([node.id]);
+    generate([node.id]);
+    //requestGenerate([node.id]);
 }
 
 

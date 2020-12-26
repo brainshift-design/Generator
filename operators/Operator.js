@@ -20,6 +20,11 @@ class Operator
         this.label.innerHTML = id;
     }
     
+
+    static nextUid = 1;
+    uid = Operator.nextUid++;
+
+
     graph = null;
     
     
