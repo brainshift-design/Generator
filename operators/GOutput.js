@@ -10,7 +10,7 @@ extends EventTarget
     
     // the output exists as bytes in the buffer
     _firstObject = 0;
-    _nObjects    = 0;
+    _firstObject = 0;
 
     
     connectedInputs = [];
@@ -38,7 +38,7 @@ extends EventTarget
             this.op.generate(callerInput);
 
         return [this._firstObject, 
-                this._nObjects];
+                this._lastObject];
     }
 
 

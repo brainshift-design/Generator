@@ -24,7 +24,7 @@ extends GOperator
         super.generate(callerInput);
 
 
-        var objId = 0;//newObjectId();
+        var objId = newObjectId();
 
         gObjects[objId] = 
         [
@@ -43,6 +43,6 @@ extends GOperator
 
 
         this.output._firstObject = objId;
-        this.output._nObjects    = 1;
+        this.output._lastObject  = objId;
     }
 }

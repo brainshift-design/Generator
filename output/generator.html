@@ -1090,7 +1090,7 @@ extends EventTarget
     
     // the output exists as bytes in the buffer
     _firstObject = 0;
-    _nObjects    = 0;
+    _firstObject = 0;
 
     
     connectedInputs = [];
@@ -1118,7 +1118,7 @@ extends EventTarget
             this.op.generate(callerInput);
 
         return [this._firstObject, 
-                this._nObjects];
+                this._lastObject];
     }
 
 
@@ -1355,7 +1355,7 @@ extends GOperator
         super.generate(callerInput);
 
 
-        var objId = 0;//newObjectId();
+        var objId = newObjectId();
 
         gObjects[objId] = 
         [
@@ -1374,7 +1374,7 @@ extends GOperator
 
 
         this.output._firstObject = objId;
-        this.output._nObjects    = 1;
+        this.output._lastObject  = objId;
     }
 }
 
@@ -1463,7 +1463,7 @@ onmessage = function(e)
         case 'setParam':        setParam(e.data.nodeId, e.data.param, e.data.value); break;
         case 'invalidate':      invalidate(e.data.nodeId); break;
         case 'generateObjects': generateObjects(e.data.nodeIds); break;
-        //case 'deleteObjects':   deleteObjects(e.data.nodeIds); break;             
+        case 'setNextObjId':    setNextObjId(e.data.nextObjId); break;
     }
 };
 
@@ -1549,16 +1549,23 @@ function generateObjects(nodeIds)
     for (const node of ggraph.nodes)
         node.reset();
         
+    _nextObjId = _resetObjId;
+
+
+    // first determine number of objects
+
     var nObjects = 0;
 
     for (const nodeId of nodeIds)
     {
         const node = ggraph.nodeFromId(nodeId);
         const data = node.output.getData();
-        nObjects += data[1];
+        nObjects  += data[1] - data[0] + 1;
     }    
 
     
+    // now create the objects
+
     const objects = new Array(nObjects);
 
     var i = 0;
@@ -1568,9 +1575,9 @@ function generateObjects(nodeIds)
         const data = node.output.getData();
         
         const first = data[0];
-        const count = data[1];
+        const last  = data[1];
         
-        for (var j = first; j < first + count; i++, j++)
+        for (var j = first; j <= last; i++, j++)
             objects[i] = gObjects[j];
     }    
     
@@ -1581,18 +1588,12 @@ function generateObjects(nodeIds)
 }
 
 
-// function deleteObjects(nodeIds)
-// {
-//     for (const id of nodeIds)
-//         gObjects[id] = null;
-// }
-
 
 const OBJ_RECT = 1;
 
 
-var  _resetObjId = 0;
-var  _nextObjId  = _resetObjId;
+var _resetObjId = 0;
+var _nextObjId  = _resetObjId;
 
 const MAX_OBJECTS = 0x10000;
 const gObjects    = new Array(MAX_OBJECTS);
@@ -1616,26 +1617,35 @@ function newObjectId()
 {
     var id = _nextObjId;
 
-    var looped = false;
+    // var looped = false;
 
-    while (id < MAX_OBJECTS
-        && !!gObjects[id])
-    {
-        id++;
+    // while (id < MAX_OBJECTS
+    //     && !!gObjects[id])
+    // {
+    //     id++;
 
         if (id == MAX_OBJECTS)
-        {
-            if (looped)
-                return -1;
+            return -1;
+    //     // {
+    //     //     if (looped)
+    //     //         return -1;
 
-            id     = 0
-            looped = true;
-        }
-    }
+    //     //     id     = 0
+    //     //     looped = true;
+    //     // }
+    // }
 
     _nextObjId == id + 1;
-    
+    console.log('id = ' + id);
+    console.log('_nextObjId = ' + _nextObjId);
     return id;
+}
+
+
+function setNextObjId(nextObjId)
+{
+    console.log('setNextObjId()');
+    _resetObjId = nextObjId;
 }
 
 

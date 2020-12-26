@@ -8,7 +8,7 @@ class Graph
     deferNodes = [];
 
     
-    getNewId(_node)
+    getNewNodeName(_node)
     {
         var opType = _node.opType;
 
@@ -19,11 +19,11 @@ class Graph
             if (node == _node)
                 continue;
                 
-            if (   node.id.length < opType.length
-                || node.id.substring(0, opType.length) !== opType)
+            if (   node.name.length < opType.length
+                || node.name.substring(0, opType.length) !== opType)
                 continue;
                 
-            var num = parseInt(node.id.substring(opType.length));
+            var num = parseInt(node.name.substring(opType.length));
             
             if (isNaN(num) || num == 0) 
                 num = 1;
@@ -63,7 +63,7 @@ class Graph
     addNode(node)
     {
         node.graph = this;
-        node.setId(this.getNewId(node)); // TODO: not checking return value here
+        node.setId(this.getNewNodeName(node)); // TODO: not checking return value here
             
         if (this.nodes.length > 0)
         {

@@ -1,4 +1,4 @@
-const  OBJ_RECT = 1;
+const OBJ_RECT = 1;
 
 const MAX_OBJECTS = 0x10000;
 
@@ -23,6 +23,7 @@ figma.ui.onmessage = msg =>
 
 
 figma.on('selectionchange', onSelectionChange);
+figma.on('close',           onPluginClose);
 
 
 function loadState(msg)
@@ -80,6 +81,19 @@ function deleteObjects(nodeIds)
 
         objects[id] = null;
     }
+
+    postToGenerator(
+    {
+        msg:      'setNextObjId',
+        nextObjId: maxObjId + 1
+    });
+}
+
+
+function deleteAllObjects()
+{
+    for (const obj of figma.currentPage.children)
+        if (!!obj.getPluginData('id')) obj.remove();
 }
 
 
@@ -193,6 +207,22 @@ function onSelectionChange()
             objects[i] = null;
     }
 }
+
+
+function onPluginClose()
+{
+    deleteAllObjects();
+}
+
+
+function postToGenerator(msg)
+{
+    figma.ui.postMessage({
+        cmd:     'forwardToGen',
+        forward: msg
+    });
+}
+
 
 // function updateRect(data)
 // {

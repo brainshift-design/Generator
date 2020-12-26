@@ -127,11 +127,6 @@ function deleteNodeObjects(nodeIds)
         cmd:    'deleteNodeObjects',
         nodeIds: nodeIds
     }}, '*');
-
-    // generator.postMessage({
-    //     msg:    'deleteNodeObjects',
-    //     nodeIds: nodeIds
-    // });
 }
 
 

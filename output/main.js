@@ -32,6 +32,7 @@ figma.ui.onmessage = msg => {
     }
 };
 figma.on('selectionchange', onSelectionChange);
+figma.on('close', onPluginClose);
 function loadState(msg) {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
@@ -72,6 +73,15 @@ function deleteObjects(nodeIds) {
         }
         objects[id] = null;
     }
+    postToGenerator({
+        msg: 'setNextObjId',
+        nextObjId: maxObjId + 1
+    });
+}
+function deleteAllObjects() {
+    for (const obj of figma.currentPage.children)
+        if (!!obj.getPluginData('id'))
+            obj.remove();
 }
 function updateObjects(msg) {
     for (const obj of msg.objects) {
@@ -143,6 +153,15 @@ function onSelectionChange() {
         if (!exist)
             objects[i] = null;
     }
+}
+function onPluginClose() {
+    deleteAllObjects();
+}
+function postToGenerator(msg) {
+    figma.ui.postMessage({
+        cmd: 'forwardToGen',
+        forward: msg
+    });
 }
 // function updateRect(data)
 // {

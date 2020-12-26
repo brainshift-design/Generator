@@ -15,7 +15,14 @@ parent.postMessage({ pluginMessage:
 }}, '*');
 
 
-// onmessage = (e) =>
-// {
-//     var msg = e.data.pluginMessage;
-// }
+onmessage = e =>
+{
+    var msg = e.data.pluginMessage;
+
+    switch (msg.cmd)
+    {
+        case 'forwardToGen': 
+            generator.postMessage(msg.forward); 
+            break;
+    }
+}

@@ -14,7 +14,7 @@ onmessage = function(e)
         case 'setParam':        setParam(e.data.nodeId, e.data.param, e.data.value); break;
         case 'invalidate':      invalidate(e.data.nodeId); break;
         case 'generateObjects': generateObjects(e.data.nodeIds); break;
-        //case 'deleteObjects':   deleteObjects(e.data.nodeIds); break;             
+        case 'setNextObjId':    setNextObjId(e.data.nextObjId); break;
     }
 };
 
@@ -100,16 +100,23 @@ function generateObjects(nodeIds)
     for (const node of ggraph.nodes)
         node.reset();
         
+    _nextObjId = _resetObjId;
+
+
+    // first determine number of objects
+
     var nObjects = 0;
 
     for (const nodeId of nodeIds)
     {
         const node = ggraph.nodeFromId(nodeId);
         const data = node.output.getData();
-        nObjects += data[1];
+        nObjects  += data[1] - data[0] + 1;
     }    
 
     
+    // now create the objects
+
     const objects = new Array(nObjects);
 
     var i = 0;
@@ -119,9 +126,9 @@ function generateObjects(nodeIds)
         const data = node.output.getData();
         
         const first = data[0];
-        const count = data[1];
+        const last  = data[1];
         
-        for (var j = first; j < first + count; i++, j++)
+        for (var j = first; j <= last; i++, j++)
             objects[i] = gObjects[j];
     }    
     
@@ -130,10 +137,3 @@ function generateObjects(nodeIds)
         objects: objects
     });
 }
-
-
-// function deleteObjects(nodeIds)
-// {
-//     for (const id of nodeIds)
-//         gObjects[id] = null;
-// }

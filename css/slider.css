@@ -10,6 +10,11 @@
     text-align:       center;
 }    
 
+.sliderName
+{
+    color: #b3b3b3;
+}
+
 .sliderBar
 {
     position:       absolute;

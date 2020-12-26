@@ -344,7 +344,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.text.innerHTML = '';
         
         if (slider.name.length > 0)
-            slider.text.innerHTML += slider.name + "&nbsp;&nbsp;";
+            slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
         var valueText = 
             slider.valueText != ''
