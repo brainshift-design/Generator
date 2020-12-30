@@ -58,7 +58,7 @@ extends Parameter
         this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
-            setParam(this, this.value);
+            uiSetParam(this, this.value);
         });
 
         this.input.addEventListener('connect', e =>

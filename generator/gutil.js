@@ -1,18 +1,21 @@
-function getObjectBounds(first, count)
+function getObjectBounds(objects)
 {
     var boundsL = Number.MAX_SAFE_INTEGER;
     var boundsT = Number.MAX_SAFE_INTEGER;
     var boundsR = Number.MIN_SAFE_INTEGER;
     var boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (var i = first; i < first + count; i++)
+    for (const obj of objects)
     {
-        const obj = gObjects[i];
-
-        boundsL = Math.min(boundsL, obj.x);
-        boundsT = Math.min(boundsT, obj.y);
-        boundsR = Math.max(boundsR, obj.x + obj.width);
-        boundsB = Math.max(boundsB, obj.y + obj.height);
+        switch (obj[0])
+        {
+            case OBJ_RECT:
+                boundsL = Math.min(boundsL, obj[3]);
+                boundsT = Math.min(boundsT, obj[4]);
+                boundsR = Math.max(boundsR, obj[3] + obj[5]);
+                boundsB = Math.max(boundsB, obj[4] + obj[6]);
+                break;
+        }
     }
 
     return {

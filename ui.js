@@ -24,5 +24,9 @@ onmessage = e =>
         case 'forwardToGen': 
             generator.postMessage(msg.forward); 
             break;
+
+        // case 'updatePanAndZoom':
+        //     graphView.updatePanAndZoom();
+        //     break;
     }
 }

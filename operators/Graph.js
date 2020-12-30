@@ -119,7 +119,7 @@ class Graph
                 {
                     this.disconnect(input, true);
                     
-                    if (!input.op.activeNodeInTree)
+                    if (!activeNodeInTree(input.op))
                     input.op.lastNodeInTree.makeActive();
                 }
             }
@@ -157,7 +157,7 @@ class Graph
         
         //invalidate(input.op);
     
-        if (!input.op.activeNodeInTree)
+        if (!activeNodeInTree(input.op))
             input.op.makeActive();
             
         output.op.updateConnectedInputValueText();
@@ -172,8 +172,8 @@ class Graph
         // first remove the current output
 
         //if (input.op)
-        if (!!input.op.activeNodeInTree)
-            deleteNodeObjects(input.op.activeNodeInTree);
+        if (!!activeNodeInTree(input.op))
+            uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
 
         // then disconnect
 
@@ -196,7 +196,7 @@ class Graph
         // invalidate(input.op);
         // invalidate(output.op);
 
-        if (   !output.op.activeNodeInTree
+        if (   !activeNodeInTree(output.op)
             && !deletingOutput)
              output.op.makeActive();
             

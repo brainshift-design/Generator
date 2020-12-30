@@ -21,7 +21,7 @@ class Operator
     }
     
 
-    static nextId = 1;
+    static nextId = 0;
     id = Operator.nextId++;
 
 
@@ -71,14 +71,14 @@ class Operator
         this.makeRightPassive();        
 
         this._active = true;
-        setActive(this, true);
+        uiSetActive(this, true);
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
         this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
         
         if (this.dataType == 'OBJ')
-            generateObjects([this.activeNodeInTree]);
+            uiGenerateObjects([activeNodeInTree(this)]);
     }
         
     
@@ -114,80 +114,12 @@ class Operator
             this.header.style.boxShadow       = '0 0 0 1px #0001 inset';
             this.label .style.color           = 'black';
 
-            removeNodeOutput(this);
+            uiDeleteNodeObjects([this.id]);
         }
 
         this._active = false;
-        setActive(this, false);
+        uiSetActive(this, false);
     }
-
-    
-    get activeNodeInTree() 
-    { 
-        const left  = this.getActiveNodeLeft();  if (!!left ) return left;
-        const right = this.getActiveNodeRight(); if (!!right) return right;
-
-         return null;
-    }
-
-    getActiveNodeLeft()
-    {
-        if (this.active) return this;
-
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-            {
-                const left = input.connectedOutput.op.getActiveNodeLeft();
-                if (left) return left;
-            }
-        }
-
-        return null;
-    }
-
-    getActiveNodeRight()
-    {
-        if (this.active) return this;
-
-        if (!!this.output)
-        {
-            for (const input of this.output.connectedInputs)
-            {
-                const right = input.op.getActiveNodeRight();
-                if (right) return right;
-            }
-        }
-
-        return null;
-    }
-
-
-    get lastNodeInTree() 
-    { 
-        const right = this.getLastNodeRight(); 
-        return !!right ? right : null;
-    }
-
-    getLastNodeRight()
-    {
-        var right = null;
-
-        if (!!this.output)
-        {
-            for (const input of this.output.connectedInputs)
-            {
-                const _right = input.op.getLastNodeRight(this);
-                if (_right && !!right) return this;
-                right = _right;
-            }
-        }
-
-        return !!right ? right : this;
-    }
-
-
-    updateConnectedInputValueText() {}
 
 
     // set valid(val) { this.#valid = val; }
@@ -333,4 +265,7 @@ class Operator
 
         return false;
     }
+
+
+    updateConnectedInputValueText() {}
 }

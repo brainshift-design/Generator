@@ -30,6 +30,7 @@ html/ui_2.html
 
     ui.js
     window.js
+    tree.js
 
     graphView.js
     graphView scrollbars.js

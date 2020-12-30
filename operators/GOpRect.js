@@ -24,12 +24,10 @@ extends GOperator
         super.generate(callerInput);
 
 
-        var objId = newObjectId();
-
-        gObjects[objId] = 
-        [
+        this.output._data =
+        [[
             OBJ_RECT,           // type
-            objId,              // object id
+            0,                  // object id
             this.id,            // node id
                
             0,                  // x      
@@ -37,12 +35,6 @@ extends GOperator
             this.#width .value, // width
             this.#height.value, // height 
             this.#round .value  // round  
-        ];
-
-        ngObjects++;
-
-
-        this.output._firstObject = objId;
-        this.output._lastObject  = objId;
+        ]];
     }
 }

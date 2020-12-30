@@ -32,34 +32,31 @@ extends GOperator
         }
 
 
-        const first = input.data[0];
-        const count = input.data[1];
+        const data = input.data;
 
+        this.output._data = [];
 
         for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            const bounds = getObjectBounds(first, count);
+            const bounds = getObjectBounds(data);
             const gap    = this.#gap.value;
 
-            for (var j = first; j < first + count; j++)
+            for (var j = 0; j < data.length; j++)
             {
-                var objId = first + count; //newObjectId();
+                const obj = shallowCopy(data[j]);
 
-                gObjects[objId] = shallowCopy(gObjects[j]);
-                ngObjects++;
+                obj[1] = this.output._data.length;
+                obj[2] = this.id;
+                
+                obj[3] += x;
 
-                const item = gObjects[objId];
-
-                item[1] = objId;
-                item[2] = this.id;
-    
-                item[3] += x;
-            }
+                this.output._data.push(obj);
+            }    
 
             x += bounds.w + gap;
 
             // as this node duplicates its input, everything like
-            // OpNumber upstream that does S&H needs to be refreshed
+            // OpNumber upstream that does S&H needs to be refresheds
             this.refresh();
         }
     }

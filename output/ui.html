@@ -360,12 +360,12 @@ button svg
 
     <div id='presets'></div>
 
-    <!-- <button class='button' id='btnCreateNumber' onclick='createNode("number"); this.blur();'>Num</button> -->
-    <!-- <button class='button' id='btnCreateRandom' onclick='createNode("random"); this.blur();'>Rnd</button> -->
-    <button class='button' id='btnCreateRect'   onclick='createNode("rect");   this.blur();'>Rct</button>
-    <button class='button' id='btnCreateRow'    onclick='createNode("row");    this.blur();'>Row</button>
-    <!-- <button class='button' id='btnCreateColumn' onclick='createNode("column"); this.blur();'>Col</button> -->
-    <!-- <button class='button' id='btnCreateSpread' onclick='createNode("spread"); this.blur();'>Spr</button> -->
+    <!-- <button class='button' id='btnCreateNumber' onclick='uiCreateNode("number"); this.blur();'>Num</button> -->
+    <!-- <button class='button' id='btnCreateRandom' onclick='uiCreateNode("random"); this.blur();'>Rnd</button> -->
+    <button class='button' id='btnCreateRect'   onclick='uiCreateNode("rect");   this.blur();'>Rct</button>
+    <button class='button' id='btnCreateRow'    onclick='uiCreateNode("row");    this.blur();'>Row</button>
+    <!-- <button class='button' id='btnCreateColumn' onclick='uiCreateNode("column"); this.blur();'>Col</button> -->
+    <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
 
 </div>
 
@@ -1456,13 +1456,11 @@ extends EventTarget
     #dataType;     
     get dataType() { return this.#dataType; }
     
-    _op    = null; get op   () { return this._op;    }
-    _param = null; get param() { return this._param; }
+    _data = []; // output cache
 
     
-    // the output exists as bytes in the buffer
-    _firstObject = 0;
-    _firstObject = 0;
+    _op    = null; get op   () { return this._op;    }
+    _param = null; get param() { return this._param; }
 
     
     connectedInputs = [];
@@ -1479,7 +1477,6 @@ extends EventTarget
     constructor(dataType)
     {
         super();
-        
         this.#dataType = dataType;
     }
     
@@ -1489,8 +1486,7 @@ extends EventTarget
         if (!this.op.valid)
             this.op.generate(callerInput);
 
-        return [this._firstObject, 
-                this._lastObject];
+        return this._data;
     }
 
 
@@ -1559,7 +1555,6 @@ class GOperator
     inputs = [];
     output = null;
     
-    cachedObjects = [];
 
     _valid = false; // this is the flag for regeneration
 
@@ -1727,12 +1722,10 @@ extends GOperator
         super.generate(callerInput);
 
 
-        var objId = newObjectId();
-
-        gObjects[objId] = 
-        [
+        this.output._data =
+        [[
             OBJ_RECT,           // type
-            objId,              // object id
+            0,                  // object id
             this.id,            // node id
                
             0,                  // x      
@@ -1740,13 +1733,7 @@ extends GOperator
             this.#width .value, // width
             this.#height.value, // height 
             this.#round .value  // round  
-        ];
-
-        ngObjects++;
-
-
-        this.output._firstObject = objId;
-        this.output._lastObject  = objId;
+        ]];
     }
 }
 
@@ -1785,38 +1772,38 @@ extends GOperator
         }
 
 
-        const first = input.data[0];
-        const count = input.data[1];
+        const data = input.data;
 
+        this.output._data = [];
 
         for (var i = 0, x = 0; i < this.#count.value; i++)
         {
-            const bounds = getObjectBounds(first, count);
+            const bounds = getObjectBounds(data);
             const gap    = this.#gap.value;
 
-            for (var j = first; j < first + count; j++)
+            for (var j = 0; j < data.length; j++)
             {
-                var objId = first + count; //newObjectId();
+                const obj = shallowCopy(data[j]);
 
-                gObjects[objId] = shallowCopy(gObjects[j]);
-                ngObjects++;
+                obj[1] = this.output._data.length;
+                obj[2] = this.id;
+                
+                obj[3] += x;
 
-                const item = gObjects[objId];
-
-                item[1] = objId;
-                item[2] = this.id;
-    
-                item[3] += x;
-            }
+                this.output._data.push(obj);
+            }    
 
             x += bounds.w + gap;
 
             // as this node duplicates its input, everything like
-            // OpNumber upstream that does S&H needs to be refreshed
+            // OpNumber upstream that does S&H needs to be refresheds
             this.refresh();
         }
     }
 }
+
+
+const OBJ_RECT = 1;
 
 
 const ggraph = new GGraph();
@@ -1826,23 +1813,23 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':      createNode(e.data.opType, e.data.nodeId, e.data.nodeId); break; 
-        case 'deleteNodes':     deleteNodes(e.data.nodeIds); break;             
-        case 'setNodeId':       setNodeId(e.data.nodeId, e.data.newId); break; 
-        case 'setActive':       setActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
-        case 'connect':         connect(e.data.outputId, e.data.inputs); break; 
-        case 'disconnect':      disconnect(e.data.input); break;
-        case 'setParam':        setParam(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'invalidate':      invalidate(e.data.nodeId); break;
-        case 'generateObjects': generateObjects(e.data.nodeIds); break;
-        case 'setNextObjId':    setNextObjId(e.data.nextObjId); break;
+        case 'createNode':      genCreateNode(e.data.opType, e.data.nodeId, e.data.nodeId); break; 
+        case 'deleteNodes':     genDeleteNodes(e.data.nodeIds); break;             
+        case 'setNodeId':       genSetNodeId(e.data.nodeId, e.data.newId); break; 
+        case 'setActive':       genSetActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
+        case 'connect':         genConnect(e.data.outputId, e.data.inputs); break; 
+        case 'disconnect':      genDisconnect(e.data.input); break;
+        case 'setParam':        genSetParam(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'invalidate':      genInvalidate(e.data.nodeId); break;
+        case 'generateObjects': genGenerateObjects(e.data.nodeIds); break;
     }
 };
 
 
-function createNode(type, id, name)
+function genCreateNode(type, id, name)
 {
     const node = ggraph.createNode(type);
+
     node.id    = id;
     node.name  = name;
 
@@ -1853,27 +1840,27 @@ function createNode(type, id, name)
 }
 
 
-function deleteNodes(nodeIds)
+function genDeleteNodes(nodeIds)
 {
     ggraph.deleteNodes(nodeIds);
 }
 
 
-function setNodeId(id, newId)
+function genSetNodeId(id, newId)
 {
     const node = ggraph.nodeFromId(id);
     node.id    = newId;
 }
 
 
-function setActive(nodeId, active)
+function genSetActive(nodeId, active)
 {
     const node  = ggraph.nodeFromId(nodeId);
     node.active = active;
 }
 
 
-function connect(outputId, inputs)
+function genConnect(outputId, inputs)
 {
     const outNode = ggraph.nodeFromId(outputId);
 
@@ -1887,42 +1874,42 @@ function connect(outputId, inputs)
             ? inNode.inputs[input.index]
             : inNode.params.find(p => p.name == input.param).input);
 
-        generateObjects([input.node.id]);
+        genGenerateObjects([input.nodeId]);
     }
 }
 
 
-function disconnect(input)
+function genDisconnect(input)
 {
-    const node = ggraph.nodeFromId(_input.nodeId);
+    const node = ggraph.nodeFromId(input.nodeId);
     ggraph.disconnect(node.inputs[input.index]);
 }
 
 
-function setParam(nodeId, name, value)
+function genSetParam(nodeId, name, value)
 {
     const node  = ggraph.nodeFromId(nodeId);
     const param = node.params.find(p => p.name == name);
     param.value = value;
 
-    generateObjects([node.id]);
+    const activeId = activeNodeInTree(ggraph.nodes.find(n => n.id == node.id)).id;
+
+    genGenerateObjects([activeId]);
 }
 
 
-function invalidate(nodeId)
+function genInvalidate(nodeId)
 {
     const node = ggraph.nodes.find(n => n.id == nodeId);
     node.valid = false;
 }
 
 
-function generateObjects(nodeIds)
+function genGenerateObjects(nodeIds)
 {
     for (const node of ggraph.nodes)
         node.reset();
         
-    _nextObjId = _resetObjId;
-
 
     // first determine number of objects
 
@@ -1932,7 +1919,7 @@ function generateObjects(nodeIds)
     {
         const node = ggraph.nodeFromId(nodeId);
         const data = node.output.getData();
-        nObjects  += data[1] - data[0] + 1;
+        nObjects  += data.length;
     }    
 
     
@@ -1946,11 +1933,8 @@ function generateObjects(nodeIds)
         const node = ggraph.nodeFromId(nodeId);
         const data = node.output.getData();
         
-        const first = data[0];
-        const last  = data[1];
-        
-        for (var j = first; j <= last; i++, j++)
-            objects[i] = gObjects[j];
+        for (const obj of data)
+            objects[i++] = obj;
     }    
     
     postMessage({ 
@@ -1961,15 +1945,14 @@ function generateObjects(nodeIds)
 
 
 
-const OBJ_RECT = 1;
 
 
-var _resetObjId = 0;
-var _nextObjId  = _resetObjId;
+//var _resetObjId = 0;
+//var _nextObjId  = 0;//_resetObjId;
 
-const MAX_OBJECTS = 0x10000;
-const gObjects    = new Array(MAX_OBJECTS);
-var   ngObjects   = 0;
+//const MAX_OBJECTS = 0x10000;
+//const gObjects    = new Array(MAX_OBJECTS);
+//var   ngObjects   = 0;
 
 
 /*  object format
@@ -1985,57 +1968,38 @@ var   ngObjects   = 0;
 */
 
 
-function newObjectId()
-{
-    var id = _nextObjId;
-
-    // var looped = false;
-
-    // while (id < MAX_OBJECTS
-    //     && !!gObjects[id])
-    // {
-    //     id++;
-
-        if (id == MAX_OBJECTS)
-            return -1;
-    //     // {
-    //     //     if (looped)
-    //     //         return -1;
-
-    //     //     id     = 0
-    //     //     looped = true;
-    //     // }
-    // }
-
-    _nextObjId == id + 1;
-    console.log('id = ' + id);
-    console.log('_nextObjId = ' + _nextObjId);
-    return id;
-}
+// function newObjectIds(count)
+// {
+//     var first = _nextObjId;
+    
+//     // while (gObjects[first])
+// }
 
 
-function setNextObjId(nextObjId)
-{
-    console.log('setNextObjId()');
-    _resetObjId = nextObjId;
-}
+// function setNextObjId(nextObjId)
+// {
+//     // _resetObjId = nextObjId;
+// }
 
 
-function getObjectBounds(first, count)
+function getObjectBounds(objects)
 {
     var boundsL = Number.MAX_SAFE_INTEGER;
     var boundsT = Number.MAX_SAFE_INTEGER;
     var boundsR = Number.MIN_SAFE_INTEGER;
     var boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (var i = first; i < first + count; i++)
+    for (const obj of objects)
     {
-        const obj = gObjects[i];
-
-        boundsL = Math.min(boundsL, obj.x);
-        boundsT = Math.min(boundsT, obj.y);
-        boundsR = Math.max(boundsR, obj.x + obj.width);
-        boundsB = Math.max(boundsB, obj.y + obj.height);
+        switch (obj[0])
+        {
+            case OBJ_RECT:
+                boundsL = Math.min(boundsL, obj[3]);
+                boundsT = Math.min(boundsT, obj[4]);
+                boundsR = Math.max(boundsR, obj[3] + obj[5]);
+                boundsB = Math.max(boundsB, obj[4] + obj[6]);
+                break;
+        }
     }
 
     return {
@@ -2043,6 +2007,71 @@ function getObjectBounds(first, count)
         y: boundsT,
         w: boundsR - boundsL,
         h: boundsB - boundsT };
+}
+
+
+function activeNodeInTree(node) 
+{ 
+    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
+    const right = getActiveNodeRight(node); if (!!right) return right;
+
+    return null;
+}
+
+function getActiveNodeLeft(node)
+{
+    if (node.active) return node;
+
+    for (const input of node.inputs)
+    {
+        if (input.connected)
+        {
+            const left = getActiveNodeLeft(input.connectedOutput.op);
+            if (left) return left;
+        }
+    }
+
+    return null;
+}
+
+function getActiveNodeRight(node)
+{
+    if (node.active) return node;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const right = getActiveNodeRight(input.op);
+            if (right) return right;
+        }
+    }
+
+    return null;
+}
+
+
+function lastNodeInTree(node) 
+{ 
+    const right = getLastNodeRight(node); 
+    return !!right ? right : null;
+}
+
+function getLastNodeRight(node)
+{
+    var right = null;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const _right = getLastNodeRight(input.op);
+            if (_right && !!right) return node;
+            right = _right;
+        }
+    }
+
+    return !!right ? right : node;
 }
 
 
@@ -2865,7 +2894,7 @@ extends Parameter
         this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
-            setParam(this, this.value);
+            uiSetParam(this, this.value);
         });
 
         this.input.addEventListener('connect', e =>
@@ -3004,7 +3033,7 @@ class Graph
                 {
                     this.disconnect(input, true);
                     
-                    if (!input.op.activeNodeInTree)
+                    if (!activeNodeInTree(input.op))
                     input.op.lastNodeInTree.makeActive();
                 }
             }
@@ -3042,7 +3071,7 @@ class Graph
         
         //invalidate(input.op);
     
-        if (!input.op.activeNodeInTree)
+        if (!activeNodeInTree(input.op))
             input.op.makeActive();
             
         output.op.updateConnectedInputValueText();
@@ -3057,8 +3086,8 @@ class Graph
         // first remove the current output
 
         //if (input.op)
-        if (!!input.op.activeNodeInTree)
-            deleteNodeObjects(input.op.activeNodeInTree);
+        if (!!activeNodeInTree(input.op))
+            uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
 
         // then disconnect
 
@@ -3081,7 +3110,7 @@ class Graph
         // invalidate(input.op);
         // invalidate(output.op);
 
-        if (   !output.op.activeNodeInTree
+        if (   !activeNodeInTree(output.op)
             && !deletingOutput)
              output.op.makeActive();
             
@@ -3399,7 +3428,7 @@ class Operator
     }
     
 
-    static nextId = 1;
+    static nextId = 0;
     id = Operator.nextId++;
 
 
@@ -3449,14 +3478,14 @@ class Operator
         this.makeRightPassive();        
 
         this._active = true;
-        setActive(this, true);
+        uiSetActive(this, true);
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
         this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
         
         if (this.dataType == 'OBJ')
-            generateObjects([this.activeNodeInTree]);
+            uiGenerateObjects([activeNodeInTree(this)]);
     }
         
     
@@ -3492,80 +3521,12 @@ class Operator
             this.header.style.boxShadow       = '0 0 0 1px #0001 inset';
             this.label .style.color           = 'black';
 
-            removeNodeOutput(this);
+            uiDeleteNodeObjects([this.id]);
         }
 
         this._active = false;
-        setActive(this, false);
+        uiSetActive(this, false);
     }
-
-    
-    get activeNodeInTree() 
-    { 
-        const left  = this.getActiveNodeLeft();  if (!!left ) return left;
-        const right = this.getActiveNodeRight(); if (!!right) return right;
-
-         return null;
-    }
-
-    getActiveNodeLeft()
-    {
-        if (this.active) return this;
-
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-            {
-                const left = input.connectedOutput.op.getActiveNodeLeft();
-                if (left) return left;
-            }
-        }
-
-        return null;
-    }
-
-    getActiveNodeRight()
-    {
-        if (this.active) return this;
-
-        if (!!this.output)
-        {
-            for (const input of this.output.connectedInputs)
-            {
-                const right = input.op.getActiveNodeRight();
-                if (right) return right;
-            }
-        }
-
-        return null;
-    }
-
-
-    get lastNodeInTree() 
-    { 
-        const right = this.getLastNodeRight(); 
-        return !!right ? right : null;
-    }
-
-    getLastNodeRight()
-    {
-        var right = null;
-
-        if (!!this.output)
-        {
-            for (const input of this.output.connectedInputs)
-            {
-                const _right = input.op.getLastNodeRight(this);
-                if (_right && !!right) return this;
-                right = _right;
-            }
-        }
-
-        return !!right ? right : this;
-    }
-
-
-    updateConnectedInputValueText() {}
 
 
     // set valid(val) { this.#valid = val; }
@@ -3711,6 +3672,9 @@ class Operator
 
         return false;
     }
+
+
+    updateConnectedInputValueText() {}
 }
 
 
@@ -4981,6 +4945,10 @@ onmessage = e =>
         case 'forwardToGen': 
             generator.postMessage(msg.forward); 
             break;
+
+        // case 'updatePanAndZoom':
+        //     graphView.updatePanAndZoom();
+        //     break;
     }
 }
 
@@ -5060,7 +5028,7 @@ document.addEventListener('keydown', e =>
 {
     if (e.key == 'Delete')
     {
-        deleteNodes(graphView.selected);
+        uiDeleteNodes(graphView.selected);
         graphView._selected = [];
     }
     else if (e.code == 'KeyA'
@@ -5140,6 +5108,8 @@ document.addEventListener('keyup', e =>
 
 function resizeWindow(width, height)
 {
+    graphView.updatePanAndZoom();
+
     parent.postMessage({ pluginMessage: 
     { 
         cmd:   'resizeWindow', 
@@ -5159,6 +5129,71 @@ function checkResize(x, y)
     else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
     else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
     else                          document.body.style.cursor = 'auto';
+}
+
+
+function activeNodeInTree(node) 
+{ 
+    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
+    const right = getActiveNodeRight(node); if (!!right) return right;
+
+    return null;
+}
+
+function getActiveNodeLeft(node)
+{
+    if (node.active) return node;
+
+    for (const input of node.inputs)
+    {
+        if (input.connected)
+        {
+            const left = getActiveNodeLeft(input.connectedOutput.op);
+            if (left) return left;
+        }
+    }
+
+    return null;
+}
+
+function getActiveNodeRight(node)
+{
+    if (node.active) return node;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const right = getActiveNodeRight(input.op);
+            if (right) return right;
+        }
+    }
+
+    return null;
+}
+
+
+function lastNodeInTree(node) 
+{ 
+    const right = getLastNodeRight(node); 
+    return !!right ? right : null;
+}
+
+function getLastNodeRight(node)
+{
+    var right = null;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const _right = getLastNodeRight(input.op);
+            if (_right && !!right) return node;
+            right = _right;
+        }
+    }
+
+    return !!right ? right : node;
 }
 
 
@@ -5212,7 +5247,7 @@ graphView.panStart;
 
 graphView.spaceDown = false;
 
-graphView._zoom = 1;
+graphView._zoom   = 1;
 graphView.oldZoom = 1;
 
 
@@ -5342,15 +5377,15 @@ graphView.addEventListener('pointerup', e =>
                 }
                 else if (savedInput) // disconnect old, connect new
                 {
-                    disconnect(savedInput);
-                    connect(output, input);
+                    uiDisconnect(savedInput);
+                    uiConnect(output, input);
                 }
                 else // connect new
-                    connect(output, input);
+                    uiConnect(output, input);
             }
             else if (savedInput) // disconnect old
             {
-                disconnect(savedInput)
+                uiDisconnect(savedInput)
             }
             
             graphView.cancelConnection();
@@ -5972,7 +6007,7 @@ scrollbarY.addEventListener('pointermove', e =>
 const graph = new Graph();
 
 
-function createNode(opType)
+function uiCreateNode(opType)
 {
     const node = graph.createNode(opType);
 
@@ -5991,7 +6026,7 @@ function createNode(opType)
         if (   !!selNode
             && selNode.output
             && inputs.length > 0)
-            connect(selNode.output, inputs[0]);
+            uiConnect(selNode.output, inputs[0]);
     }
     
     graphView.selected = [node];
@@ -6001,7 +6036,7 @@ function createNode(opType)
 }
 
 
-function deleteNodes(nodes)
+function uiDeleteNodes(nodes)
 {
     const nodeIds = nodes.map(n => n.id);
     graph.deleteNodes(nodeIds);
@@ -6011,11 +6046,11 @@ function deleteNodes(nodes)
         nodeIds: nodeIds
     });
 
-    deleteNodeObjects(nodeIds);
+    uiDeleteNodeObjects(nodeIds);
 }
 
 
-function setNodeId(nodeId, newId)
+function uiSetNodeId(nodeId, newId)
 {
     const node = graph.nodeFromId(nodeId);
 
@@ -6029,8 +6064,10 @@ function setNodeId(nodeId, newId)
 }
 
 
-function connect(output, input)
+function uiConnect(output, input)
 {
+    uiDeleteNodeObjects([output.op.id]);
+    
     graph.connect(output, input);
 
     generator.postMessage({
@@ -6045,7 +6082,7 @@ function connect(output, input)
 }
 
 
-function disconnect(input, deletingOutput)
+function uiDisconnect(input, deletingOutput)
 {
     graph.disconnect(input, deletingOutput);
 
@@ -6060,7 +6097,7 @@ function disconnect(input, deletingOutput)
 }
 
 
-function setParam(param, value)
+function uiSetParam(param, value)
 {
     generator.postMessage({
         msg:   'setParam', 
@@ -6071,7 +6108,7 @@ function setParam(param, value)
 }
 
 
-function invalidate(node)
+function uiInvalidate(node)
 {
     generator.postMessage({
         msg:   'invalidate', 
@@ -6081,7 +6118,7 @@ function invalidate(node)
 
 
 
-function setActive(node, active)
+function uiSetActive(node, active)
 {
     generator.postMessage({
         msg:   'setActive', 
@@ -6091,8 +6128,9 @@ function setActive(node, active)
 }
 
 
-function deleteNodeObjects(nodeIds)
+function uiDeleteNodeObjects(nodeIds)
 {
+    console.log(nodeIds);
     parent.postMessage({ pluginMessage: 
     { 
         cmd:    'deleteNodeObjects',
@@ -6104,7 +6142,7 @@ function deleteNodeObjects(nodeIds)
 /////////////////////////////////////////////////////////////////////
 
 
-function generateObjects(nodes)
+function uiGenerateObjects(nodes)
 {
     if (graph.mutex)
     {
@@ -6146,21 +6184,21 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'makeActive':      makeActive(e.data.nodeId); break;
-        case 'showParamValue':  showParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'updateObjects':   updateObjects(e.data.objects); break;
+        case 'makeActive':      uiMakeActive(e.data.nodeId); break;
+        case 'showParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'updateObjects':   uiUpdateObjects(e.data.objects); break;
     }
 };
 
 
-function makeActive(nodeId)
+function uiMakeActive(nodeId)
 {
     const node = graph.nodeFromId(nodeId);
     node.makeActive();
 }
 
 
-function showParamValue(nodeId, paramName, value)
+function uiShowParamValue(nodeId, paramName, value)
 {
     const node = graph.nodeFromId(nodeId);
             
@@ -6172,7 +6210,7 @@ function showParamValue(nodeId, paramName, value)
 }
 
 
-function updateObjects(objects)
+function uiUpdateObjects(objects)
 {
     parent.postMessage({ pluginMessage:
     { 
@@ -6188,7 +6226,7 @@ function updateObjects(objects)
         var deferNodes = Array.from(graph.deferNodes);
         graph.deferNodes = [];
 
-        generateObjects(deferNodes);
+        uiGenerateObjects(deferNodes);
     }
 }
 

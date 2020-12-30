@@ -48,7 +48,7 @@ graphView.panStart;
 
 graphView.spaceDown = false;
 
-graphView._zoom = 1;
+graphView._zoom   = 1;
 graphView.oldZoom = 1;
 
 
@@ -178,15 +178,15 @@ graphView.addEventListener('pointerup', e =>
                 }
                 else if (savedInput) // disconnect old, connect new
                 {
-                    disconnect(savedInput);
-                    connect(output, input);
+                    uiDisconnect(savedInput);
+                    uiConnect(output, input);
                 }
                 else // connect new
-                    connect(output, input);
+                    uiConnect(output, input);
             }
             else if (savedInput) // disconnect old
             {
-                disconnect(savedInput)
+                uiDisconnect(savedInput)
             }
             
             graphView.cancelConnection();

@@ -72,7 +72,7 @@ document.addEventListener('keydown', e =>
 {
     if (e.key == 'Delete')
     {
-        deleteNodes(graphView.selected);
+        uiDeleteNodes(graphView.selected);
         graphView._selected = [];
     }
     else if (e.code == 'KeyA'
@@ -152,6 +152,8 @@ document.addEventListener('keyup', e =>
 
 function resizeWindow(width, height)
 {
+    graphView.updatePanAndZoom();
+
     parent.postMessage({ pluginMessage: 
     { 
         cmd:   'resizeWindow', 

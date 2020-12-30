@@ -25,7 +25,6 @@ class GOperator
     inputs = [];
     output = null;
     
-    cachedObjects = [];
 
     _valid = false; // this is the flag for regeneration
 

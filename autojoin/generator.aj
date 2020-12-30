@@ -16,4 +16,6 @@ generator/generator_0.html
     generator/generator objects.js
     generator/gutil.js
 
+    tree.js
+    
 generator/generator_1.html

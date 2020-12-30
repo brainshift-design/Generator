@@ -49,8 +49,8 @@
 
 //         //     op.valid = false;
 
-//         //     if (op.activeNodeInTree.output)
-//         //         regenerate([op.activeNodeInTree.output]);
+//         //     if (activeNodeInTree(op).output)
+//         //         regenerate([activeNodeInTree(op).output]);
     
 //         //     op.graph.mutex = true;            
 //         // });

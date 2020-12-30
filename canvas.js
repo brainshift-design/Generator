@@ -1,7 +1,7 @@
 const graph = new Graph();
 
 
-function createNode(opType)
+function uiCreateNode(opType)
 {
     const node = graph.createNode(opType);
 
@@ -20,7 +20,7 @@ function createNode(opType)
         if (   !!selNode
             && selNode.output
             && inputs.length > 0)
-            connect(selNode.output, inputs[0]);
+            uiConnect(selNode.output, inputs[0]);
     }
     
     graphView.selected = [node];
@@ -30,7 +30,7 @@ function createNode(opType)
 }
 
 
-function deleteNodes(nodes)
+function uiDeleteNodes(nodes)
 {
     const nodeIds = nodes.map(n => n.id);
     graph.deleteNodes(nodeIds);
@@ -40,11 +40,11 @@ function deleteNodes(nodes)
         nodeIds: nodeIds
     });
 
-    deleteNodeObjects(nodeIds);
+    uiDeleteNodeObjects(nodeIds);
 }
 
 
-function setNodeId(nodeId, newId)
+function uiSetNodeId(nodeId, newId)
 {
     const node = graph.nodeFromId(nodeId);
 
@@ -58,8 +58,10 @@ function setNodeId(nodeId, newId)
 }
 
 
-function connect(output, input)
+function uiConnect(output, input)
 {
+    uiDeleteNodeObjects([output.op.id]);
+    
     graph.connect(output, input);
 
     generator.postMessage({
@@ -74,7 +76,7 @@ function connect(output, input)
 }
 
 
-function disconnect(input, deletingOutput)
+function uiDisconnect(input, deletingOutput)
 {
     graph.disconnect(input, deletingOutput);
 
@@ -89,7 +91,7 @@ function disconnect(input, deletingOutput)
 }
 
 
-function setParam(param, value)
+function uiSetParam(param, value)
 {
     generator.postMessage({
         msg:   'setParam', 
@@ -100,7 +102,7 @@ function setParam(param, value)
 }
 
 
-function invalidate(node)
+function uiInvalidate(node)
 {
     generator.postMessage({
         msg:   'invalidate', 
@@ -110,7 +112,7 @@ function invalidate(node)
 
 
 
-function setActive(node, active)
+function uiSetActive(node, active)
 {
     generator.postMessage({
         msg:   'setActive', 
@@ -120,8 +122,9 @@ function setActive(node, active)
 }
 
 
-function deleteNodeObjects(nodeIds)
+function uiDeleteNodeObjects(nodeIds)
 {
+    console.log(nodeIds);
     parent.postMessage({ pluginMessage: 
     { 
         cmd:    'deleteNodeObjects',
@@ -133,7 +136,7 @@ function deleteNodeObjects(nodeIds)
 /////////////////////////////////////////////////////////////////////
 
 
-function generateObjects(nodes)
+function uiGenerateObjects(nodes)
 {
     if (graph.mutex)
     {
@@ -175,21 +178,21 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'makeActive':      makeActive(e.data.nodeId); break;
-        case 'showParamValue':  showParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'updateObjects':   updateObjects(e.data.objects); break;
+        case 'makeActive':      uiMakeActive(e.data.nodeId); break;
+        case 'showParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'updateObjects':   uiUpdateObjects(e.data.objects); break;
     }
 };
 
 
-function makeActive(nodeId)
+function uiMakeActive(nodeId)
 {
     const node = graph.nodeFromId(nodeId);
     node.makeActive();
 }
 
 
-function showParamValue(nodeId, paramName, value)
+function uiShowParamValue(nodeId, paramName, value)
 {
     const node = graph.nodeFromId(nodeId);
             
@@ -201,7 +204,7 @@ function showParamValue(nodeId, paramName, value)
 }
 
 
-function updateObjects(objects)
+function uiUpdateObjects(objects)
 {
     parent.postMessage({ pluginMessage:
     { 
@@ -217,6 +220,6 @@ function updateObjects(objects)
         var deferNodes = Array.from(graph.deferNodes);
         graph.deferNodes = [];
 
-        generateObjects(deferNodes);
+        uiGenerateObjects(deferNodes);
     }
 }

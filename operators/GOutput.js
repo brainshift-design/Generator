@@ -4,13 +4,11 @@ extends EventTarget
     #dataType;     
     get dataType() { return this.#dataType; }
     
-    _op    = null; get op   () { return this._op;    }
-    _param = null; get param() { return this._param; }
+    _data = []; // output cache
 
     
-    // the output exists as bytes in the buffer
-    _firstObject = 0;
-    _firstObject = 0;
+    _op    = null; get op   () { return this._op;    }
+    _param = null; get param() { return this._param; }
 
     
     connectedInputs = [];
@@ -27,7 +25,6 @@ extends EventTarget
     constructor(dataType)
     {
         super();
-        
         this.#dataType = dataType;
     }
     
@@ -37,8 +34,7 @@ extends EventTarget
         if (!this.op.valid)
             this.op.generate(callerInput);
 
-        return [this._firstObject, 
-                this._lastObject];
+        return this._data;
     }
 
 
