@@ -60,8 +60,6 @@ function uiSetNodeId(nodeId, newId)
 
 function uiConnect(output, input)
 {
-    uiDeleteNodeObjects([output.op.id]);
-    
     graph.connect(output, input);
 
     generator.postMessage({
@@ -76,9 +74,9 @@ function uiConnect(output, input)
 }
 
 
-function uiDisconnect(input, deletingOutput)
+function uiDisconnect(input)
 {
-    graph.disconnect(input, deletingOutput);
+    graph.disconnect(input);
 
     generator.postMessage({
         msg: 'disconnect',
@@ -124,12 +122,16 @@ function uiSetActive(node, active)
 
 function uiDeleteNodeObjects(nodeIds)
 {
-    console.log(nodeIds);
     parent.postMessage({ pluginMessage: 
     { 
         cmd:    'deleteNodeObjects',
         nodeIds: nodeIds
     }}, '*');
+
+    generator.postMessage({
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    });
 }
 
 

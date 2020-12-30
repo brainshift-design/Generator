@@ -360,11 +360,11 @@ button svg
 
     <div id='presets'></div>
 
-    <!-- <button class='button' id='btnCreateNumber' onclick='uiCreateNode("number"); this.blur();'>Num</button> -->
-    <!-- <button class='button' id='btnCreateRandom' onclick='uiCreateNode("random"); this.blur();'>Rnd</button> -->
+    <button class='button' id='btnCreateNumber' onclick='uiCreateNode("number"); this.blur();'>Num</button>
+    <button class='button' id='btnCreateRandom' onclick='uiCreateNode("random"); this.blur();'>Rnd</button>
     <button class='button' id='btnCreateRect'   onclick='uiCreateNode("rect");   this.blur();'>Rct</button>
     <button class='button' id='btnCreateRow'    onclick='uiCreateNode("row");    this.blur();'>Row</button>
-    <!-- <button class='button' id='btnCreateColumn' onclick='uiCreateNode("column"); this.blur();'>Col</button> -->
+    <button class='button' id='btnCreateColumn' onclick='uiCreateNode("column"); this.blur();'>Col</button>
     <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
 
 </div>
@@ -1696,6 +1696,114 @@ class GOperator
 }
 
 
+class   GOpNumber
+extends GOperator
+{
+    _value;
+
+    _sampled = Number.NaN;
+
+
+    constructor()
+    {
+        super('number', 'NUM');
+        this.setOutput(new GOutput(this.dataType));
+        this.addParam(this._value = new GNumberParam(''));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+
+        if (isNaN(this._sampled))
+            this._sampled = this._value.value;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            value:  this._sampled
+        };
+    }
+
+
+    refresh()
+    {
+        super.refresh();
+        
+        this._sampled = Number.NaN;
+    }
+}
+
+
+class   GOpRandom
+extends GOperator
+{
+    #min;
+    #max;
+    #scale;
+    #seed;
+
+    noise = new Noise();
+
+    constructor()
+    {
+        super('random', 'NUM');
+
+        this.setOutput(new GOutput(this.dataType));
+
+        this.addParam(this.#min   = new GNumberParam('min',  0));
+        this.addParam(this.#max   = new GNumberParam('max', 10));
+        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
+
+        this.output.addEventListener('connect',    () => postMessage({msg: 'resetNode', nodeId: this.id}));
+        this.output.addEventListener('disconnect', () => postMessage({msg: 'resetNode', nodeId: this.id}));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+        if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
+        var rnd = this.noise.next(this.#scale.value);
+        if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
+        
+        var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            value:  value
+        };    
+
+        this.valid = false;
+    }
+
+
+    reset()
+    {
+        super.reset();
+
+        this.noise.seed.set(this.#seed.value);
+        
+        for (const input of this.output.connectedInputs)
+        {
+            input.initialSeed = input.currentSeed = this.noise.seed.current;
+            this.noise.next();
+        }
+    }
+}
+
+
 class   GOpRect
 extends GOperator
 {
@@ -1752,8 +1860,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count',  7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',   10, 0));
+        this.addParam(this.#count = new GNumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
     }
 
 
@@ -1794,6 +1902,71 @@ extends GOperator
             }    
 
             x += bounds.w + gap;
+
+            // as this node duplicates its input, everything like
+            // OpNumber upstream that does S&H needs to be refresheds
+            this.refresh();
+        }
+    }
+}
+
+
+class   GOpColumn
+extends GOperator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('column', 'OBJ');
+
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
+        
+        this.addParam(this.#count = new GNumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+
+        const input = this.inputs[0];
+
+        if (!input.connected)
+        {
+            this.output._data = [];
+            return;
+        }
+
+
+        const data = input.data;
+
+        this.output._data = [];
+
+        for (var i = 0, y = 0; i < this.#count.value; i++)
+        {
+            const bounds = getObjectBounds(data);
+            const gap    = this.#gap.value;
+
+            for (var j = 0; j < data.length; j++)
+            {
+                const obj = shallowCopy(data[j]);
+
+                obj[1] = this.output._data.length;
+                obj[2] = this.id;
+                
+                obj[4] += y;
+
+                this.output._data.push(obj);
+            }    
+
+            y += bounds.h + gap;
 
             // as this node duplicates its input, everything like
             // OpNumber upstream that does S&H needs to be refresheds
@@ -2960,11 +3133,11 @@ class Graph
 
         switch (opType)
         {
-            //case 'number': node = new OpNumber(); break;
-            //case 'random': node = new OpRandom(); break;
+            case 'number': node = new OpNumber(); break;
+            case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
-            //case 'column': node = new OpColumn(); break;
+            case 'column': node = new OpColumn(); break;
             //case 'spread': node = new OpSpread(); break;
         }
         
@@ -3081,7 +3254,7 @@ class Graph
     }
 
 
-    disconnect(input, deletingOutput = false)
+    disconnect(input)//, deletingOutput = false)
     {
         // first remove the current output
 
@@ -3110,8 +3283,8 @@ class Graph
         // invalidate(input.op);
         // invalidate(output.op);
 
-        if (   !activeNodeInTree(output.op)
-            && !deletingOutput)
+        if (!activeNodeInTree(output.op))
+           // && !deletingOutput)
              output.op.makeActive();
             
         return true;
@@ -4004,6 +4177,81 @@ function initLabelTextbox(node)
 }
 
 
+class   OpNumber
+extends Operator
+{
+    #value;
+
+    constructor()
+    {
+        super('number', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#value = new NumberParam(''));
+    }
+}
+
+
+class   OpRandom
+extends Operator
+{
+    #min;
+    #max;
+    #scale;
+    #seed;
+
+
+    constructor()
+    {
+        super('random', 'NUM');
+
+        this.setOutput(new Output(this.dataType));
+
+        this.addParam(this.#min   = new NumberParam('min',  0));
+        this.addParam(this.#max   = new NumberParam('max', 10));
+        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new NumberParam('seed', 1, 1));
+
+        this.#max.control.min = this.#min.value;
+        this.#min.control.max = this.#max.value;
+
+        this.#min.control.addEventListener('change', () =>
+        {
+            // if (this.#min.value > this.#max.value)
+            //     this.#min.value = this.#max.value;
+
+            this.#max.control.min = this.#min.value;
+            this.updateConnectedInputValueText();
+        });
+
+        this.#max.control.addEventListener('change', () =>
+        {
+            // if (this.#max.value < this.#min.value)
+            //     this.#max.value = this.#min.value;
+
+            this.#min.control.max = this.#max.value;
+            this.updateConnectedInputValueText();
+        });
+    }
+
+
+    updateConnectedInputValueText()
+    {
+        const val =
+            this.#min.value == this.#max.value
+            ? this.#min.value
+            : this.#min.value + '~' + this.#max.value;
+
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+                input.param.valueText = val;
+        }
+    }
+}
+
+
 class   OpRect
 extends Operator
 {
@@ -4078,6 +4326,26 @@ extends Operator
     constructor()
     {
         super('row', 'OBJ');
+
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count = new NumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
+    }
+}
+
+
+class   OpColumn
+extends Operator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('column', 'OBJ');
 
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
@@ -4943,7 +5211,7 @@ onmessage = e =>
     switch (msg.cmd)
     {
         case 'forwardToGen': 
-            generator.postMessage(msg.forward); 
+            generator.postMessage(msg.msg); 
             break;
 
         // case 'updatePanAndZoom':
@@ -4952,6 +5220,15 @@ onmessage = e =>
     }
 }
 
+
+function uiNotify(text)
+{
+    parent.postMessage({ pluginMessage:
+    { 
+        cmd: 'notify',
+        text: text
+    }}, '*');    
+}
 
 
 const resizeEdgeWidth = 8;
@@ -5048,6 +5325,7 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         graphView.zoom = 1;
+        uiNotify('Zoom to 100%');
     }
     else if (e.code == 'Space'
          && !e.ctrlKey)
@@ -6066,8 +6344,6 @@ function uiSetNodeId(nodeId, newId)
 
 function uiConnect(output, input)
 {
-    uiDeleteNodeObjects([output.op.id]);
-    
     graph.connect(output, input);
 
     generator.postMessage({
@@ -6082,9 +6358,9 @@ function uiConnect(output, input)
 }
 
 
-function uiDisconnect(input, deletingOutput)
+function uiDisconnect(input)
 {
-    graph.disconnect(input, deletingOutput);
+    graph.disconnect(input);
 
     generator.postMessage({
         msg: 'disconnect',
@@ -6130,12 +6406,16 @@ function uiSetActive(node, active)
 
 function uiDeleteNodeObjects(nodeIds)
 {
-    console.log(nodeIds);
     parent.postMessage({ pluginMessage: 
     { 
         cmd:    'deleteNodeObjects',
         nodeIds: nodeIds
     }}, '*');
+
+    generator.postMessage({
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    });
 }
 
 

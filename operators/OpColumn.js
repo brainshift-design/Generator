@@ -13,6 +13,6 @@ extends Operator
         this.setOutput(new Output(this.dataType));
         
         this.addParam(this.#count = new NumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap', 10, 0));
+        this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
     }
 }

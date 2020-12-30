@@ -22,6 +22,7 @@ figma.ui.onmessage = msg =>
         case 'resizeWindow':      resizeWindow(msg); break; 
         case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds); break; 
         case 'updateObjects':     updateObjects(msg); break;
+        case 'notify':            notify(msg.text); break;
     }
 };
 
@@ -69,15 +70,14 @@ function resizeWindow(msg)
 
 function deleteNodeObjects(nodeIds)
 {
-    for (const obj of figma.currentPage.children)
+    for (const nodeId of nodeIds)
     {
-        const nodeId = nodeIds.findIndex(id => obj.getPluginData('nodeId') == id);
-
-        if (nodeId >= 0)
-        {
-            objNodes[nodeId][obj.getPluginData('id')] = null;
+        if (!objNodes[nodeId]) continue;
+        
+        for (const obj of objNodes[nodeId])
             obj.remove();
-        }
+
+        objNodes[nodeId] = null;
     }
 }
 
@@ -97,8 +97,6 @@ function updateObjects(msg)
     var prevId = -1;
     var count  = 0;
 
-    console.log(msg.objects);
-    
     for (const obj of msg.objects)
     {
         count++;
@@ -141,19 +139,20 @@ function updateObjects(msg)
             case OBJ_RECT:
             {
                 if (!objNodes[obj[2]][obj[1]])
+                {
                     createRect(obj);
-
+                }
                 else 
                 {
                     const cur = objNodes[obj[2]][obj[1]];
 
-                    if (   cur.type == obj2type(obj[0])
+                    if (   cur.type == objTypeString(obj[0])
                         && cur.getPluginData('id')     == obj[1]
                         && cur.getPluginData('nodeId') == obj[2])
                         updateRect(obj);
 
                     else
-                        figma.notify('Generator error: Object ID mismatch');
+                        notify('Error: Object ID mismatch');
                 }
 
                 break;
@@ -208,7 +207,7 @@ function updateRect(obj)
 }
 
 
-function obj2type(type)
+function objTypeString(type)
 {
     switch (type)
     {
@@ -255,9 +254,15 @@ function onPluginClose()
 function postToGenerator(msg)
 {
     figma.ui.postMessage({
-        cmd:     'forwardToGen',
-        forward: msg
+        cmd: 'forwardToGen',
+        msg:  msg
     });
+}
+
+
+function notify(text)
+{
+    figma.notify('Generator: ' + text);
 }
 
 

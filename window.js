@@ -92,6 +92,7 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         graphView.zoom = 1;
+        uiNotify('Zoom to 100%');
     }
     else if (e.code == 'Space'
          && !e.ctrlKey)

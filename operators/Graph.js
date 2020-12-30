@@ -46,11 +46,11 @@ class Graph
 
         switch (opType)
         {
-            //case 'number': node = new OpNumber(); break;
-            //case 'random': node = new OpRandom(); break;
+            case 'number': node = new OpNumber(); break;
+            case 'random': node = new OpRandom(); break;
             case 'rect':   node = new OpRect();   break;
             case 'row':    node = new OpRow();    break;
-            //case 'column': node = new OpColumn(); break;
+            case 'column': node = new OpColumn(); break;
             //case 'spread': node = new OpSpread(); break;
         }
         
@@ -167,7 +167,7 @@ class Graph
     }
 
 
-    disconnect(input, deletingOutput = false)
+    disconnect(input)//, deletingOutput = false)
     {
         // first remove the current output
 
@@ -196,8 +196,8 @@ class Graph
         // invalidate(input.op);
         // invalidate(output.op);
 
-        if (   !activeNodeInTree(output.op)
-            && !deletingOutput)
+        if (!activeNodeInTree(output.op))
+           // && !deletingOutput)
              output.op.makeActive();
             
         return true;

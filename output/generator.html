@@ -1324,6 +1324,114 @@ class GOperator
 }
 
 
+class   GOpNumber
+extends GOperator
+{
+    _value;
+
+    _sampled = Number.NaN;
+
+
+    constructor()
+    {
+        super('number', 'NUM');
+        this.setOutput(new GOutput(this.dataType));
+        this.addParam(this._value = new GNumberParam(''));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+
+        if (isNaN(this._sampled))
+            this._sampled = this._value.value;
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            value:  this._sampled
+        };
+    }
+
+
+    refresh()
+    {
+        super.refresh();
+        
+        this._sampled = Number.NaN;
+    }
+}
+
+
+class   GOpRandom
+extends GOperator
+{
+    #min;
+    #max;
+    #scale;
+    #seed;
+
+    noise = new Noise();
+
+    constructor()
+    {
+        super('random', 'NUM');
+
+        this.setOutput(new GOutput(this.dataType));
+
+        this.addParam(this.#min   = new GNumberParam('min',  0));
+        this.addParam(this.#max   = new GNumberParam('max', 10));
+        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
+
+        this.output.addEventListener('connect',    () => postMessage({msg: 'resetNode', nodeId: this.id}));
+        this.output.addEventListener('disconnect', () => postMessage({msg: 'resetNode', nodeId: this.id}));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+        if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
+        var rnd = this.noise.next(this.#scale.value);
+        if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
+        
+        var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            value:  value
+        };    
+
+        this.valid = false;
+    }
+
+
+    reset()
+    {
+        super.reset();
+
+        this.noise.seed.set(this.#seed.value);
+        
+        for (const input of this.output.connectedInputs)
+        {
+            input.initialSeed = input.currentSeed = this.noise.seed.current;
+            this.noise.next();
+        }
+    }
+}
+
+
 class   GOpRect
 extends GOperator
 {
@@ -1380,8 +1488,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count',  7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',   10, 0));
+        this.addParam(this.#count = new GNumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
     }
 
 
@@ -1422,6 +1530,71 @@ extends GOperator
             }    
 
             x += bounds.w + gap;
+
+            // as this node duplicates its input, everything like
+            // OpNumber upstream that does S&H needs to be refresheds
+            this.refresh();
+        }
+    }
+}
+
+
+class   GOpColumn
+extends GOperator
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('column', 'OBJ');
+
+        this.addInput (new GInput (this.dataType));
+        this.setOutput(new GOutput(this.dataType));
+        
+        this.addParam(this.#count = new GNumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+
+        const input = this.inputs[0];
+
+        if (!input.connected)
+        {
+            this.output._data = [];
+            return;
+        }
+
+
+        const data = input.data;
+
+        this.output._data = [];
+
+        for (var i = 0, y = 0; i < this.#count.value; i++)
+        {
+            const bounds = getObjectBounds(data);
+            const gap    = this.#gap.value;
+
+            for (var j = 0; j < data.length; j++)
+            {
+                const obj = shallowCopy(data[j]);
+
+                obj[1] = this.output._data.length;
+                obj[2] = this.id;
+                
+                obj[4] += y;
+
+                this.output._data.push(obj);
+            }    
+
+            y += bounds.h + gap;
 
             // as this node duplicates its input, everything like
             // OpNumber upstream that does S&H needs to be refresheds

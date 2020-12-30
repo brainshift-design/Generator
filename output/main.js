@@ -31,6 +31,9 @@ figma.ui.onmessage = msg => {
         case 'updateObjects':
             updateObjects(msg);
             break;
+        case 'notify':
+            notify(msg.text);
+            break;
     }
 };
 figma.on('selectionchange', onSelectionChange);
@@ -63,12 +66,12 @@ function resizeWindow(msg) {
     //figma.ui.postMessage({cmd: 'updatePanAndZoom'});
 }
 function deleteNodeObjects(nodeIds) {
-    for (const obj of figma.currentPage.children) {
-        const nodeId = nodeIds.findIndex(id => obj.getPluginData('nodeId') == id);
-        if (nodeId >= 0) {
-            objNodes[nodeId][obj.getPluginData('id')] = null;
+    for (const nodeId of nodeIds) {
+        if (!objNodes[nodeId])
+            continue;
+        for (const obj of objNodes[nodeId])
             obj.remove();
-        }
+        objNodes[nodeId] = null;
     }
 }
 function deleteAllObjects() {
@@ -81,7 +84,6 @@ function updateObjects(msg) {
     var nodeId = -1;
     var prevId = -1;
     var count = 0;
-    console.log(msg.objects);
     for (const obj of msg.objects) {
         count++;
         if (obj[2] != nodeId) {
@@ -108,16 +110,17 @@ function updateObjects(msg) {
         switch (obj[0]) {
             case OBJ_RECT:
                 {
-                    if (!objNodes[obj[2]][obj[1]])
+                    if (!objNodes[obj[2]][obj[1]]) {
                         createRect(obj);
+                    }
                     else {
                         const cur = objNodes[obj[2]][obj[1]];
-                        if (cur.type == obj2type(obj[0])
+                        if (cur.type == objTypeString(obj[0])
                             && cur.getPluginData('id') == obj[1]
                             && cur.getPluginData('nodeId') == obj[2])
                             updateRect(obj);
                         else
-                            figma.notify('Generator error: Object ID mismatch');
+                            notify('Error: Object ID mismatch');
                     }
                     break;
                 }
@@ -148,7 +151,7 @@ function updateRect(obj) {
     }
     rect.cornerRadius = obj[7];
 }
-function obj2type(type) {
+function objTypeString(type) {
     switch (type) {
         case OBJ_RECT: return 'RECTANGLE';
         // case 'VECTOR':
@@ -182,8 +185,11 @@ function onPluginClose() {
 function postToGenerator(msg) {
     figma.ui.postMessage({
         cmd: 'forwardToGen',
-        forward: msg
+        msg: msg
     });
+}
+function notify(text) {
+    figma.notify('Generator: ' + text);
 }
 // function updateRect(data)
 // {

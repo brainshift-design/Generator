@@ -13,7 +13,7 @@ extends GOperator
         this.setOutput(new GOutput(this.dataType));
         
         this.addParam(this.#count = new GNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap', 10, 0));
+        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
     }
 
 
@@ -32,27 +32,31 @@ extends GOperator
         }
 
 
+        const data = input.data;
+
         this.output._data = [];
-        
+
         for (var i = 0, y = 0; i < this.#count.value; i++)
         {
-            const inputData = input.data;
-
-            const bounds = getBounds(inputData);
+            const bounds = getObjectBounds(data);
             const gap    = this.#gap.value;
 
-            for (var j = 0; j < inputData.length; j++)
+            for (var j = 0; j < data.length; j++)
             {
-                var item = shallowCopy(inputData[j]);
-                item.itemId = this.id + '_' + (i+1) + '_' + item.itemId;
-    
-                item.y += y;
+                const obj = shallowCopy(data[j]);
+
+                obj[1] = this.output._data.length;
+                obj[2] = this.id;
                 
-                this.output._data.push(item);
-            }
-            
+                obj[4] += y;
+
+                this.output._data.push(obj);
+            }    
+
             y += bounds.h + gap;
 
+            // as this node duplicates its input, everything like
+            // OpNumber upstream that does S&H needs to be refresheds
             this.refresh();
         }
     }

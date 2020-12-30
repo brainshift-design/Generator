@@ -12,8 +12,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count',  7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',   10, 0));
+        this.addParam(this.#count = new GNumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
     }
 
 
