@@ -5,7 +5,7 @@ class Graph
     
     mutex = false;
 
-    deferNodes = [];
+    deferNodeIds = [];
 
     
     getNewNodeName(_node)

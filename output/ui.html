@@ -1986,14 +1986,14 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':      genCreateNode(e.data.opType, e.data.nodeId, e.data.nodeId); break; 
-        case 'deleteNodes':     genDeleteNodes(e.data.nodeIds); break;             
-        case 'setNodeId':       genSetNodeId(e.data.nodeId, e.data.newId); break; 
-        case 'setActive':       genSetActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
-        case 'connect':         genConnect(e.data.outputId, e.data.inputs); break; 
-        case 'disconnect':      genDisconnect(e.data.input); break;
-        case 'setParam':        genSetParam(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'invalidate':      genInvalidate(e.data.nodeId); break;
+        case 'createNode':      genCreateNode     (e.data.opType, e.data.nodeId, e.data.nodeId); break; 
+        case 'deleteNodes':     genDeleteNodes    (e.data.nodeIds); break;             
+        case 'setNodeId':       genSetNodeId      (e.data.nodeId, e.data.newId); break; 
+        case 'setActive':       genSetActive      (e.data.nodeId, e.data.active); break;  // only state, no regeneration
+        case 'connect':         genConnect        (e.data.outputId, e.data.inputs); break; 
+        case 'disconnect':      genDisconnect     (e.data.input); break;
+        case 'setParam':        genSetParam       (e.data.nodeId, e.data.param, e.data.value); break;
+        case 'invalidate':      genInvalidate     (e.data.nodeId); break;
         case 'generateObjects': genGenerateObjects(e.data.nodeIds); break;
     }
 };
@@ -2008,7 +2008,7 @@ function genCreateNode(type, id, name)
 
     postMessage({ 
         msg:    'makeActive',
-        nodeId: node.id
+        nodeId:  node.id
     });
 }
 
@@ -2067,7 +2067,15 @@ function genSetParam(nodeId, name, value)
 
     const activeId = activeNodeInTree(ggraph.nodes.find(n => n.id == node.id)).id;
 
-    genGenerateObjects([activeId]);
+    if (activeId > -1)
+    {
+        postMessage({ 
+            msg:    'generateObjects',
+            nodeIds: [activeId]
+        });
+    }
+
+    //genGenerateObjects([activeId]);
 }
 
 
@@ -2110,49 +2118,13 @@ function genGenerateObjects(nodeIds)
             objects[i++] = obj;
     }    
     
+    
     postMessage({ 
         msg:    'updateObjects',
         objects: objects
     });
 }
 
-
-
-
-
-//var _resetObjId = 0;
-//var _nextObjId  = 0;//_resetObjId;
-
-//const MAX_OBJECTS = 0x10000;
-//const gObjects    = new Array(MAX_OBJECTS);
-//var   ngObjects   = 0;
-
-
-/*  object format
-
-    type
-    object id (unique numeric)
-    node id (unique numeric)
-
-    object data
-    .
-    .
-    .
-*/
-
-
-// function newObjectIds(count)
-// {
-//     var first = _nextObjId;
-    
-//     // while (gObjects[first])
-// }
-
-
-// function setNextObjId(nextObjId)
-// {
-//     // _resetObjId = nextObjId;
-// }
 
 
 function getObjectBounds(objects)
@@ -3092,7 +3064,7 @@ class Graph
     
     mutex = false;
 
-    deferNodes = [];
+    deferNodeIds = [];
 
     
     getNewNodeName(_node)
@@ -3658,7 +3630,7 @@ class Operator
         this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
         
         if (this.dataType == 'OBJ')
-            uiGenerateObjects([activeNodeInTree(this)]);
+            uiGenerateObjects([activeNodeInTree(this).id]);
     }
         
     
@@ -6422,33 +6394,25 @@ function uiDeleteNodeObjects(nodeIds)
 /////////////////////////////////////////////////////////////////////
 
 
-function uiGenerateObjects(nodes)
+function uiGenerateObjects(nodeIds)
 {
     if (graph.mutex)
     {
-        graph.deferNodes = [];
+        //graph.deferNodes = [];
 
-        for (const node of nodes)
-            graph.deferNodes.push(node);
+        for (const nodeId of nodeIds)
+            graph.deferNodeIds.push(nodeId);
 
         return;
     }
     
     graph.mutex = true;
-    var posted = false;
 
-    const nodeIds = nodes.map(n => n.id);
 
     generator.postMessage({
         msg:    'generateObjects',
         nodeIds: nodeIds
     });
-
-    posted = true;
-
-
-    if (!posted)
-        graph.mutex = false;
 }
 
 
@@ -6467,6 +6431,7 @@ generator.onmessage = function(e)
         case 'makeActive':      uiMakeActive(e.data.nodeId); break;
         case 'showParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         case 'updateObjects':   uiUpdateObjects(e.data.objects); break;
+        case 'generateObjects': uiGenerateObjects(e.data.nodeIds); break;
     }
 };
 
@@ -6499,12 +6464,14 @@ function uiUpdateObjects(objects)
     }}, '*');    
 
     graph.mutex = false;
-
     
-    if (graph.deferNodes.length > 0)
+
+    if (graph.deferNodeIds.length > 0)
     {
-        var deferNodes = Array.from(graph.deferNodes);
-        graph.deferNodes = [];
+        var deferNodes = Array.from(graph.deferNodeIds).filter(
+            (value, index, self) => self.indexOf(value) === index);
+            
+        graph.deferNodeIds = [];
 
         uiGenerateObjects(deferNodes);
     }

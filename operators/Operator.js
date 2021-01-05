@@ -78,7 +78,7 @@ class Operator
         this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
         
         if (this.dataType == 'OBJ')
-            uiGenerateObjects([activeNodeInTree(this)]);
+            uiGenerateObjects([activeNodeInTree(this).id]);
     }
         
     

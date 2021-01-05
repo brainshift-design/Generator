@@ -5,6 +5,9 @@ const MAX_NODES   = 0x10000;
 
 const objNodes = new Array(MAX_NODES).fill(null);
 
+var minNodeId = Number.MAX_SAFE_INTEGER;
+var maxNodeId = Number.MIN_SAFE_INTEGER;
+
 
 // const objects  = new Array(MAX_OBJECTS);
 // var   maxObjId = -1;

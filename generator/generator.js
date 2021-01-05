@@ -8,14 +8,14 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':      genCreateNode(e.data.opType, e.data.nodeId, e.data.nodeId); break; 
-        case 'deleteNodes':     genDeleteNodes(e.data.nodeIds); break;             
-        case 'setNodeId':       genSetNodeId(e.data.nodeId, e.data.newId); break; 
-        case 'setActive':       genSetActive(e.data.nodeId, e.data.active); break;  // only state, no regeneration
-        case 'connect':         genConnect(e.data.outputId, e.data.inputs); break; 
-        case 'disconnect':      genDisconnect(e.data.input); break;
-        case 'setParam':        genSetParam(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'invalidate':      genInvalidate(e.data.nodeId); break;
+        case 'createNode':      genCreateNode     (e.data.opType, e.data.nodeId, e.data.nodeId); break; 
+        case 'deleteNodes':     genDeleteNodes    (e.data.nodeIds); break;             
+        case 'setNodeId':       genSetNodeId      (e.data.nodeId, e.data.newId); break; 
+        case 'setActive':       genSetActive      (e.data.nodeId, e.data.active); break;  // only state, no regeneration
+        case 'connect':         genConnect        (e.data.outputId, e.data.inputs); break; 
+        case 'disconnect':      genDisconnect     (e.data.input); break;
+        case 'setParam':        genSetParam       (e.data.nodeId, e.data.param, e.data.value); break;
+        case 'invalidate':      genInvalidate     (e.data.nodeId); break;
         case 'generateObjects': genGenerateObjects(e.data.nodeIds); break;
     }
 };
@@ -30,7 +30,7 @@ function genCreateNode(type, id, name)
 
     postMessage({ 
         msg:    'makeActive',
-        nodeId: node.id
+        nodeId:  node.id
     });
 }
 
@@ -89,7 +89,15 @@ function genSetParam(nodeId, name, value)
 
     const activeId = activeNodeInTree(ggraph.nodes.find(n => n.id == node.id)).id;
 
-    genGenerateObjects([activeId]);
+    if (activeId > -1)
+    {
+        postMessage({ 
+            msg:    'generateObjects',
+            nodeIds: [activeId]
+        });
+    }
+
+    //genGenerateObjects([activeId]);
 }
 
 
@@ -131,6 +139,7 @@ function genGenerateObjects(nodeIds)
         for (const obj of data)
             objects[i++] = obj;
     }    
+    
     
     postMessage({ 
         msg:    'updateObjects',

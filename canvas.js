@@ -138,33 +138,25 @@ function uiDeleteNodeObjects(nodeIds)
 /////////////////////////////////////////////////////////////////////
 
 
-function uiGenerateObjects(nodes)
+function uiGenerateObjects(nodeIds)
 {
     if (graph.mutex)
     {
-        graph.deferNodes = [];
+        //graph.deferNodes = [];
 
-        for (const node of nodes)
-            graph.deferNodes.push(node);
+        for (const nodeId of nodeIds)
+            graph.deferNodeIds.push(nodeId);
 
         return;
     }
     
     graph.mutex = true;
-    var posted = false;
 
-    const nodeIds = nodes.map(n => n.id);
 
     generator.postMessage({
         msg:    'generateObjects',
         nodeIds: nodeIds
     });
-
-    posted = true;
-
-
-    if (!posted)
-        graph.mutex = false;
 }
 
 
@@ -183,6 +175,7 @@ generator.onmessage = function(e)
         case 'makeActive':      uiMakeActive(e.data.nodeId); break;
         case 'showParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         case 'updateObjects':   uiUpdateObjects(e.data.objects); break;
+        case 'generateObjects': uiGenerateObjects(e.data.nodeIds); break;
     }
 };
 
@@ -215,12 +208,14 @@ function uiUpdateObjects(objects)
     }}, '*');    
 
     graph.mutex = false;
-
     
-    if (graph.deferNodes.length > 0)
+
+    if (graph.deferNodeIds.length > 0)
     {
-        var deferNodes = Array.from(graph.deferNodes);
-        graph.deferNodes = [];
+        var deferNodes = Array.from(graph.deferNodeIds).filter(
+            (value, index, self) => self.indexOf(value) === index);
+            
+        graph.deferNodeIds = [];
 
         uiGenerateObjects(deferNodes);
     }
