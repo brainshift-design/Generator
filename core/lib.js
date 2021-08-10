@@ -1,10 +1,13 @@
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
+
+
 function nozero(x)
 {
     return x != 0 ? x : Eps;
 }
+
 
 
 function getDigitCount(i)
@@ -12,6 +15,7 @@ function getDigitCount(i)
     var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
     return l + 1;
 }
+
 
 
 function isDigit(key)
@@ -23,6 +27,8 @@ function isDigit(key)
     return is;
 }
 
+
+
 function isHexLetter(key)
 {
     var is =
@@ -32,6 +38,7 @@ function isHexLetter(key)
 
     return is;
 }
+
 
 
 function getNumberString(num, dec)
@@ -58,4 +65,34 @@ function getNumberString(num, dec)
         str = str.substring(0, i--);
     
     return str;
-}    
+}
+
+
+
+function removeFrom(array, item)
+{
+    var index = array.indexOf(item);
+
+    if (index > -1)
+        array.splice(index, 1)
+}
+
+
+
+function removeLast(array)
+{
+    if (array.length == 0)
+        return null;
+
+    var last = lastOf(array);
+    array.splice(array.length-1, 1)
+
+    return last;
+}
+
+
+
+function lastOf(array)
+{
+    return array[array.length-1];
+}

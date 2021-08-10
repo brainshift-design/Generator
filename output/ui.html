@@ -316,10 +316,9 @@ button svg
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
-
 #selectBox
 {
-    outline:          1px solid #18A0FB;
+    outline:          1pt solid #18A0FB;
     background-color: #18A0FB20;
     pointer-events:   none;
     margin:           0;
@@ -360,11 +359,11 @@ button svg
 
     <div id='presets'></div>
 
-    <button class='button' id='btnCreateNumber' onclick='uiCreateNode("number"); this.blur();'>Num</button>
-    <button class='button' id='btnCreateRandom' onclick='uiCreateNode("random"); this.blur();'>Rnd</button>
-    <button class='button' id='btnCreateRect'   onclick='uiCreateNode("rect");   this.blur();'>Rct</button>
-    <button class='button' id='btnCreateRow'    onclick='uiCreateNode("row");    this.blur();'>Row</button>
-    <button class='button' id='btnCreateColumn' onclick='uiCreateNode("column"); this.blur();'>Col</button>
+    <button class='button' id='btnCreateNumber' onclick='actionManager.perform(new CreateNodeAction("number")); this.blur();'>Num</button>
+    <button class='button' id='btnCreateRandom' onclick='actionManager.perform(new CreateNodeAction("random")); this.blur();'>Rnd</button>
+    <button class='button' id='btnCreateRect'   onclick='actionManager.perform(new CreateNodeAction("rect"  )); this.blur();'>Rct</button>
+    <button class='button' id='btnCreateRow'    onclick='actionManager.perform(new CreateNodeAction("row"   )); this.blur();'>Row</button>
+    <button class='button' id='btnCreateColumn' onclick='actionManager.perform(new CreateNodeAction("column")); this.blur();'>Col</button>
     <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
 
 </div>
@@ -374,13 +373,26 @@ button svg
 
 
 
+const OBJ_COLOR = '#bee0ff';
+const NUM_COLOR = '#ddd';
+
+const ACTIVE_OBJ_COLOR = '#18a0fb';
+const ACTIVE_NUM_COLOR = '#787878';
+
+const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+
+const smallScrollGap = 6;
+const largeScrollGap = 14;
+
+
 function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
 
-    for (var property in properties)
+    for (const property in properties)
         elem.style[property] = properties[property];
 }
+
 
 
 function indexOfChild(parent, child)
@@ -388,10 +400,13 @@ function indexOfChild(parent, child)
     return Array.prototype.indexOf.call(parent.children, child);
 }
 
+
+
 function containsChild(parent, child)
 {
     return child.parentNode == parent;
 }
+
 
 
 function forwardEvent(event, element)
@@ -399,6 +414,7 @@ function forwardEvent(event, element)
     var e = new event.constructor(event.type, event);
     element.dispatchEvent(e);
 }
+
 
 
 // function triggerMouseEvent(element, event, px, py, button = 0)
@@ -414,10 +430,15 @@ function forwardEvent(event, element)
 // }
 
 
-function removeFromArray(obj, array)
+
+function removeFromArray(array, obj)
 {
-    array.splice(array.indexOf(obj), 1);
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
 }
+
 
 
 function clearChildren(parent) 
@@ -425,6 +446,7 @@ function clearChildren(parent)
     while (parent.firstChild)
         parent.removeChild(parent.firstChild);
 }
+
 
 
 function colorStyle_(r, g, b, a)
@@ -447,10 +469,12 @@ function colorStyle_(r, g, b, a)
 }
 
 
+
 function colorStyle(rgb)
 {
     return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
 }
+
 
 
 function numToString(num, dec)
@@ -481,6 +505,7 @@ function numToString(num, dec)
 }
 
 
+
 function isEmptyObject(obj)
 {
     if (obj == null)
@@ -492,16 +517,19 @@ function isEmptyObject(obj)
 }
 
 
+
 function shallowCopy(obj)
 {
     return Object.assign({}, obj);
 }
 
 
+
 function deepCopy(obj)
 {
     return JSON.parse(JSON.stringify(obj));
 }
+
 
 
 function createSvg(element)
@@ -512,8 +540,10 @@ function createSvg(element)
 }
 
 
+
 function show(element) { element.style.visibility = 'visible'; }
 function hide(element) { element.style.visibility = 'hidden'; }
+
 
 
 function colorFromDataType(dataType, active)
@@ -528,6 +558,7 @@ function colorFromDataType(dataType, active)
 }
 
 
+
 function position(e)
 {
     return {
@@ -537,20 +568,10 @@ function position(e)
 }
 
 
-const OBJ_COLOR = '#bee0ff';
-const NUM_COLOR = '#ddd';
-
-const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = '#787878';
-
-const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
-
-const smallScrollGap = 6;
-const largeScrollGap = 14;
-
-
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
+
+
 
 function nozero(x)
 {
@@ -558,11 +579,13 @@ function nozero(x)
 }
 
 
+
 function getDigitCount(i)
 {
     var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
     return l + 1;
 }
+
 
 
 function isDigit(key)
@@ -574,6 +597,8 @@ function isDigit(key)
     return is;
 }
 
+
+
 function isHexLetter(key)
 {
     var is =
@@ -583,6 +608,7 @@ function isHexLetter(key)
 
     return is;
 }
+
 
 
 function getNumberString(num, dec)
@@ -609,7 +635,37 @@ function getNumberString(num, dec)
         str = str.substring(0, i--);
     
     return str;
-}    
+}
+
+
+
+function removeFrom(array, item)
+{
+    var index = array.indexOf(item);
+
+    if (index > -1)
+        array.splice(index, 1)
+}
+
+
+
+function removeLast(array)
+{
+    if (array.length == 0)
+        return null;
+
+    var last = lastOf(array);
+    array.splice(array.length-1, 1)
+
+    return last;
+}
+
+
+
+function lastOf(array)
+{
+    return array[array.length-1];
+}
 
 
 const Tau = Math.PI * 2;
@@ -1317,6 +1373,7 @@ class GGraph
     deferNodes = [];
 
     
+
     createNode(opType)
     {
         var node;
@@ -1331,21 +1388,29 @@ class GGraph
             case 'spread': node = new GOpSpread(); break;
         }
         
-        this.addNode(node);
+        this.addNodes([node]);
 
         return node;
     }
 
 
-    addNode(node)
+
+    addNodes(nodes)
     {
-        node.graph = this;
-        this.nodes.push(node);
+        for (const node of nodes)
+        {
+            node.graph = this;
+            this.nodes.push(node);
+        }
     }
     
 
+
     deleteNodes(nodeIds)
     {
+        var deleted = []; // this array of deleted notes will be put in a list for undo
+
+
         for (const nodeId of nodeIds)
         {
             const node = this.nodes.find(n => n.id == nodeId);
@@ -1360,9 +1425,15 @@ class GGraph
             }
 
             node.graph = null;
-            removeFromArray(node, this.nodes);
+            removeFromArray(this.nodes, node);
+
+            deleted.push(node);
         }
+
+
+        return deleted;
     }
+
 
 
     connect(output, input)
@@ -1388,6 +1459,7 @@ class GGraph
     }
 
 
+
     disconnect(input)
     {
         var output = input.connectedOutput;
@@ -1408,6 +1480,7 @@ class GGraph
             
         return true;
     }
+
 
 
     nodeFromId(id)
@@ -1505,7 +1578,7 @@ extends EventTarget
 
     disconnect(input)
     {
-        removeFromArray(input, this.connectedInputs);
+        removeFromArray(this.connectedInputs, input);
 
         this.dispatchEvent(new CustomEvent(
             'disconnect', 
@@ -1528,11 +1601,84 @@ class GConnection
 }
 
 
+function activeNodeInTree(node) 
+{ 
+    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
+    const right = getActiveNodeRight(node); if (!!right) return right;
+
+    return null;
+}
+
+
+
+function getActiveNodeLeft(node)
+{
+    if (node.active) return node;
+
+    for (const input of node.inputs)
+    {
+        if (input.connected)
+        {
+            const left = getActiveNodeLeft(input.connectedOutput.op);
+            if (left) return left;
+        }
+    }
+
+    return null;
+}
+
+
+
+function getActiveNodeRight(node)
+{
+    if (node.active) return node;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const right = getActiveNodeRight(input.op);
+            if (right) return right;
+        }
+    }
+
+    return null;
+}
+
+
+
+function lastNodeInTree(node) 
+{ 
+    const right = getLastNodeRight(node); 
+    return !!right ? right : null;
+}
+
+
+
+function getLastNodeRight(node)
+{
+    var right = null;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const _right = getLastNodeRight(input.op);
+            if (_right && !!right) return node;
+            right = _right;
+        }
+    }
+
+    return !!right ? right : node;
+}
+
+
 /*
     data types:
         OBJ
         NUM
 */
+
 
 class GOperator
 {
@@ -1559,6 +1705,7 @@ class GOperator
     _valid = false; // this is the flag for regeneration
 
 
+
     set valid(valid) { this._valid = valid; }
     
     get valid() 
@@ -1575,6 +1722,7 @@ class GOperator
         return valid;
     }
 
+
     
     active = false;
 
@@ -1587,6 +1735,7 @@ class GOperator
     outputControls;
 
 
+
     constructor(opType, dataType)
     {
         this.#opType   = opType;   // this is the operator type
@@ -1596,11 +1745,13 @@ class GOperator
     }    
     
     
+
     addInput(input)
     {
         input._op = this;
         this.inputs.push(input);
     }
+
 
 
     setOutput(output)
@@ -1611,6 +1762,7 @@ class GOperator
         output._op = this;
         this.output = output;
     }
+
 
 
     addParam(param)
@@ -1636,10 +1788,12 @@ class GOperator
     }
 
 
+
     generate(callerInput) 
     { 
         this.valid = true; 
     }
+
 
 
     reset() // for the entire generation run
@@ -1654,6 +1808,7 @@ class GOperator
     }
 
 
+
     refresh() // for repeats requests from nodes that duplicate their input, like row and column
     {
         for (const input of this.inputs)
@@ -1664,6 +1819,7 @@ class GOperator
     }
 
     
+
     isBefore(node)
     {
         if (   !this.output
@@ -1679,6 +1835,7 @@ class GOperator
         return false;
     }
 
+    
 
     isAfter(node)
     {
@@ -1812,6 +1969,7 @@ extends GOperator
     #round;
     
 
+
     constructor()
     {
         super('rect', 'OBJ');
@@ -1823,6 +1981,7 @@ extends GOperator
         this.addParam(this.#round  = new GNumberParam('round',    0, 0));
     }
 
+    
 
     generate(callerInput)
     {
@@ -1979,69 +2138,102 @@ extends GOperator
 const OBJ_RECT = 1;
 
 
-const ggraph = new GGraph();
+const genGraph            = new GGraph();
+const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
+
 
 
 onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':      genCreateNode     (e.data.opType, e.data.nodeId, e.data.nodeId); break; 
-        case 'deleteNodes':     genDeleteNodes    (e.data.nodeIds); break;             
-        case 'setNodeId':       genSetNodeId      (e.data.nodeId, e.data.newId); break; 
-        case 'setActive':       genSetActive      (e.data.nodeId, e.data.active); break;  // only state, no regeneration
-        case 'connect':         genConnect        (e.data.outputId, e.data.inputs); break; 
-        case 'disconnect':      genDisconnect     (e.data.input); break;
-        case 'setParam':        genSetParam       (e.data.nodeId, e.data.param, e.data.value); break;
-        case 'invalidate':      genInvalidate     (e.data.nodeId); break;
-        case 'generateObjects': genGenerateObjects(e.data.nodeIds); break;
+        case 'createNode':      genCreateNode     (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        case 'deleteNodes':     genDeleteNodes    (e.data.nodeIds,  e.data.uiActionId);            break;             
+        case 'undeleteNodes':   genUndeleteNodes  (e.data.uiActionId);                             break;             
+        case 'setNodeId':       genSetNodeId      (e.data.nodeId,   e.data.newId);                 break; 
+        case 'setActive':       genSetActive      (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
+        case 'connect':         genConnect        (e.data.outputId, e.data.inputs);                break; 
+        case 'disconnect':      genDisconnect     (e.data.input);                                  break;
+        case 'setParam':        genSetParam       (e.data.nodeId,   e.data.param, e.data.value);   break;
+        case 'invalidate':      genInvalidate     (e.data.nodeId);                                 break;
+        case 'generateObjects': genGenerateObjects(e.data.nodeIds);                                break;
     }
 };
 
 
+
 function genCreateNode(type, id, name)
 {
-    const node = ggraph.createNode(type);
+    const node = genGraph.createNode(type);
 
-    node.id    = id;
-    node.name  = name;
+    node.id   = id;
+    node.name = name;
 
     postMessage({ 
-        msg:    'makeActive',
-        nodeId:  node.id
+        msg:     'makeActive',
+        nodeIds: [node.id]
     });
 }
 
 
-function genDeleteNodes(nodeIds)
+
+function genDeleteNodes(nodeIds, uiActionId)
 {
-    ggraph.deleteNodes(nodeIds);
+    var deleted = genGraph.deleteNodes(nodeIds);
+    deletedNodeArrays.push([uiActionId, deleted]);
 }
+
+
+
+function genUndeleteNodes(uiActionId)
+{
+    var deleted = deletedNodeArrays.find(n => n[0] == uiActionId);
+    var nodeIds = [];
+
+
+    for (const node in deleted[1])
+    {
+        genGraph.addNode(node);
+        nodeIds.push(node.id);
+    }
+
+    
+    postMessage({ 
+        msg:    'makeActive',
+        nodeIds: nodeIds
+    });
+
+    
+    removeFromArray(deletedNodeArrays, deleted);
+}
+
 
 
 function genSetNodeId(id, newId)
 {
-    const node = ggraph.nodeFromId(id);
+    const node = genGraph.nodeFromId(id);
     node.id    = newId;
 }
 
 
+
 function genSetActive(nodeId, active)
 {
-    const node  = ggraph.nodeFromId(nodeId);
+    const node  = genGraph.nodeFromId(nodeId);
     node.active = active;
 }
 
 
+
 function genConnect(outputId, inputs)
 {
-    const outNode = ggraph.nodeFromId(outputId);
+    const outNode = genGraph.nodeFromId(outputId);
 
     for (const input of inputs)
     {
-        const inNode = ggraph.nodeFromId(input.nodeId);
+        const inNode = genGraph.nodeFromId(input.nodeId);
 
-        ggraph.connect(
+        genGraph.connect(
             outNode.output, 
             input.index >= 0
             ? inNode.inputs[input.index]
@@ -2052,20 +2244,22 @@ function genConnect(outputId, inputs)
 }
 
 
+
 function genDisconnect(input)
 {
-    const node = ggraph.nodeFromId(input.nodeId);
-    ggraph.disconnect(node.inputs[input.index]);
+    const node = genGraph.nodeFromId(input.nodeId);
+    genGraph.disconnect(node.inputs[input.index]);
 }
+
 
 
 function genSetParam(nodeId, name, value)
 {
-    const node  = ggraph.nodeFromId(nodeId);
+    const node  = genGraph.nodeFromId(nodeId);
     const param = node.params.find(p => p.name == name);
     param.value = value;
 
-    const activeId = activeNodeInTree(ggraph.nodes.find(n => n.id == node.id)).id;
+    const activeId = activeNodeInTree(genGraph.nodes.find(n => n.id == node.id)).id;
 
     if (activeId > -1)
     {
@@ -2079,16 +2273,18 @@ function genSetParam(nodeId, name, value)
 }
 
 
+
 function genInvalidate(nodeId)
 {
-    const node = ggraph.nodes.find(n => n.id == nodeId);
+    const node = genGraph.nodes.find(n => n.id == nodeId);
     node.valid = false;
 }
 
 
+
 function genGenerateObjects(nodeIds)
 {
-    for (const node of ggraph.nodes)
+    for (const node of genGraph.nodes)
         node.reset();
         
 
@@ -2098,7 +2294,7 @@ function genGenerateObjects(nodeIds)
 
     for (const nodeId of nodeIds)
     {
-        const node = ggraph.nodeFromId(nodeId);
+        const node = genGraph.nodeFromId(nodeId);
         const data = node.output.getData();
         nObjects  += data.length;
     }    
@@ -2111,7 +2307,7 @@ function genGenerateObjects(nodeIds)
     var i = 0;
     for (const nodeId of nodeIds)
     {
-        const node = ggraph.nodeFromId(nodeId);
+        const node = genGraph.nodeFromId(nodeId);
         const data = node.output.getData();
         
         for (const obj of data)
@@ -2155,71 +2351,6 @@ function getObjectBounds(objects)
 }
 
 
-function activeNodeInTree(node) 
-{ 
-    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
-    const right = getActiveNodeRight(node); if (!!right) return right;
-
-    return null;
-}
-
-function getActiveNodeLeft(node)
-{
-    if (node.active) return node;
-
-    for (const input of node.inputs)
-    {
-        if (input.connected)
-        {
-            const left = getActiveNodeLeft(input.connectedOutput.op);
-            if (left) return left;
-        }
-    }
-
-    return null;
-}
-
-function getActiveNodeRight(node)
-{
-    if (node.active) return node;
-
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const right = getActiveNodeRight(input.op);
-            if (right) return right;
-        }
-    }
-
-    return null;
-}
-
-
-function lastNodeInTree(node) 
-{ 
-    const right = getLastNodeRight(node); 
-    return !!right ? right : null;
-}
-
-function getLastNodeRight(node)
-{
-    var right = null;
-
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const _right = getLastNodeRight(input.op);
-            if (_right && !!right) return node;
-            right = _right;
-        }
-    }
-
-    return !!right ? right : node;
-}
-
-
 </script>
 
 
@@ -2244,9 +2375,10 @@ function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
 
-    for (var property in properties)
+    for (const property in properties)
         elem.style[property] = properties[property];
 }
+
 
 
 function indexOfChild(parent, child)
@@ -2254,10 +2386,13 @@ function indexOfChild(parent, child)
     return Array.prototype.indexOf.call(parent.children, child);
 }
 
+
+
 function containsChild(parent, child)
 {
     return child.parentNode == parent;
 }
+
 
 
 function forwardEvent(event, element)
@@ -2265,6 +2400,7 @@ function forwardEvent(event, element)
     var e = new event.constructor(event.type, event);
     element.dispatchEvent(e);
 }
+
 
 
 // function triggerMouseEvent(element, event, px, py, button = 0)
@@ -2280,10 +2416,15 @@ function forwardEvent(event, element)
 // }
 
 
-function removeFromArray(obj, array)
+
+function removeFromArray(array, obj)
 {
-    array.splice(array.indexOf(obj), 1);
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
 }
+
 
 
 function clearChildren(parent) 
@@ -2291,6 +2432,7 @@ function clearChildren(parent)
     while (parent.firstChild)
         parent.removeChild(parent.firstChild);
 }
+
 
 
 function colorStyle_(r, g, b, a)
@@ -2313,10 +2455,12 @@ function colorStyle_(r, g, b, a)
 }
 
 
+
 function colorStyle(rgb)
 {
     return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
 }
+
 
 
 function numToString(num, dec)
@@ -2347,6 +2491,7 @@ function numToString(num, dec)
 }
 
 
+
 function isEmptyObject(obj)
 {
     if (obj == null)
@@ -2358,16 +2503,19 @@ function isEmptyObject(obj)
 }
 
 
+
 function shallowCopy(obj)
 {
     return Object.assign({}, obj);
 }
 
 
+
 function deepCopy(obj)
 {
     return JSON.parse(JSON.stringify(obj));
 }
+
 
 
 function createSvg(element)
@@ -2378,8 +2526,10 @@ function createSvg(element)
 }
 
 
+
 function show(element) { element.style.visibility = 'visible'; }
 function hide(element) { element.style.visibility = 'hidden'; }
+
 
 
 function colorFromDataType(dataType, active)
@@ -2394,6 +2544,7 @@ function colorFromDataType(dataType, active)
 }
 
 
+
 function position(e)
 {
     return {
@@ -2406,10 +2557,13 @@ function position(e)
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
+
+
 function nozero(x)
 {
     return x != 0 ? x : Eps;
 }
+
 
 
 function getDigitCount(i)
@@ -2417,6 +2571,7 @@ function getDigitCount(i)
     var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
     return l + 1;
 }
+
 
 
 function isDigit(key)
@@ -2428,6 +2583,8 @@ function isDigit(key)
     return is;
 }
 
+
+
 function isHexLetter(key)
 {
     var is =
@@ -2437,6 +2594,7 @@ function isHexLetter(key)
 
     return is;
 }
+
 
 
 function getNumberString(num, dec)
@@ -2463,7 +2621,37 @@ function getNumberString(num, dec)
         str = str.substring(0, i--);
     
     return str;
-}    
+}
+
+
+
+function removeFrom(array, item)
+{
+    var index = array.indexOf(item);
+
+    if (index > -1)
+        array.splice(index, 1)
+}
+
+
+
+function removeLast(array)
+{
+    if (array.length == 0)
+        return null;
+
+    var last = lastOf(array);
+    array.splice(array.length-1, 1)
+
+    return last;
+}
+
+
+
+function lastOf(array)
+{
+    return array[array.length-1];
+}
 
 
 const Tau = Math.PI * 2;
@@ -2966,12 +3154,16 @@ class Parameter
     _control; get control() { return this._control; }
     _div;     get div()     { return this._div;     }
 
+
+    
     constructor(name, type)
     {
         this.#type = type;
         this.#name = name;
 
+
         this._div = document.createElement('div');
+
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
@@ -3028,7 +3220,7 @@ extends Parameter
 
         this.div.appendChild(this.control);
 
-        this.input = new Input('NUM');
+        this.input = new UInput('NUM');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -3057,7 +3249,7 @@ extends Parameter
 }
 
 
-class Graph
+class UGraph
 {
     nodes = [];
     
@@ -3065,6 +3257,7 @@ class Graph
     mutex = false;
 
     deferNodeIds = [];
+
 
     
     getNewNodeName(_node)
@@ -3099,24 +3292,26 @@ class Graph
     }
     
     
+
     createNode(opType)
     {
         var node;
 
         switch (opType)
         {
-            case 'number': node = new OpNumber(); break;
-            case 'random': node = new OpRandom(); break;
-            case 'rect':   node = new OpRect();   break;
-            case 'row':    node = new OpRow();    break;
-            case 'column': node = new OpColumn(); break;
-            //case 'spread': node = new OpSpread(); break;
+            case 'number': node = new UOpNumber(); break;
+            case 'random': node = new UOpRandom(); break;
+            case 'rect':   node = new UOpRect();   break;
+            case 'row':    node = new UOpRow();    break;
+            case 'column': node = new UOpColumn(); break;
+            //case 'spread': node = new UOpSpread(); break;
         }
         
         this.addNode(node);
 
         return node;
     }
+
 
 
     addNode(node)
@@ -3145,7 +3340,7 @@ class Graph
             this.nodes.push(node);
             graphView.appendChild(node.div);
 
-            node.div.style.zIndex = graph.nodes.length-1;
+            node.div.style.zIndex = uiGraph.nodes.length-1;
             node.div.style.left = 100;
 
             // I subtract the full height of the node here as they grow down, so this
@@ -3158,6 +3353,7 @@ class Graph
     }
     
 
+    
     deleteNodes(nodeIds)
     {
         for (const nodeId of nodeIds)
@@ -3186,7 +3382,7 @@ class Graph
             node.selected = false;
             node.graph    = null;
 
-            removeFromArray(node, this.nodes);
+            removeFromArray(this.nodes, node);
             graphView.removeChild(node.div);
         }
 
@@ -3226,6 +3422,7 @@ class Graph
     }
 
 
+
     disconnect(input)//, deletingOutput = false)
     {
         // first remove the current output
@@ -3241,7 +3438,7 @@ class Graph
 
         graphView.removeWire(input.connection.wire);
 
-        removeFromArray(input, output.connectedInputs);
+        removeFromArray(output.connectedInputs, input);
         
         input .connection     = null;
         output.connection     = null;
@@ -3263,6 +3460,7 @@ class Graph
     }
 
 
+
     nodeFromId(id)
     {
         return this.nodes.find(n => n.id == id);
@@ -3270,7 +3468,7 @@ class Graph
 }
 
 
-class   Input
+class   UInput
 extends EventTarget
 {
     #dataType;     
@@ -3356,7 +3554,7 @@ extends EventTarget
 }
 
 
-class Output
+class UOutput
 {
     #dataType;     
     get dataType() { return this.#dataType; }
@@ -3406,7 +3604,7 @@ class Output
 }
 
 
-class Connection
+class UConnection
 {
     output;
     input;
@@ -3550,13 +3748,85 @@ class Connection
 }
 
 
+function activeNodeInTree(node) 
+{ 
+    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
+    const right = getActiveNodeRight(node); if (!!right) return right;
+
+    return null;
+}
+
+
+
+function getActiveNodeLeft(node)
+{
+    if (node.active) return node;
+
+    for (const input of node.inputs)
+    {
+        if (input.connected)
+        {
+            const left = getActiveNodeLeft(input.connectedOutput.op);
+            if (left) return left;
+        }
+    }
+
+    return null;
+}
+
+
+
+function getActiveNodeRight(node)
+{
+    if (node.active) return node;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const right = getActiveNodeRight(input.op);
+            if (right) return right;
+        }
+    }
+
+    return null;
+}
+
+
+
+function lastNodeInTree(node) 
+{ 
+    const right = getLastNodeRight(node); 
+    return !!right ? right : null;
+}
+
+
+
+function getLastNodeRight(node)
+{
+    var right = null;
+
+    if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        {
+            const _right = getLastNodeRight(input.op);
+            if (_right && !!right) return node;
+            right = _right;
+        }
+    }
+
+    return !!right ? right : node;
+}
+
+
 /*
     data types:
         OBJ
         NUM
 */
 
-class Operator
+class UOperator
 {
     #opType;
     get opType() { return this.#opType; }
@@ -3574,7 +3844,7 @@ class Operator
     
 
     static nextId = 0;
-    id = Operator.nextId++;
+    id = UOperator.nextId++;
 
 
     graph = null;
@@ -3589,18 +3859,21 @@ class Operator
     //#valid = false; // this is the flag for regeneration
 
 
+
     _selected;
     get selected() { return this._selected; }
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(this, graphView.selected);
+            removeFromArray(graphView.selected, this);
 
         this.setSelected(sel); 
 
         if (this._selected)
             graphView.selected.push(this);
     }
+
+
 
     setSelected(sel)
     {
@@ -3613,8 +3886,10 @@ class Operator
     }
     
 
+
     _active = false;
     get active() { return this._active; }
+
 
 
     makeActive() // only true
@@ -3634,6 +3909,7 @@ class Operator
     }
         
     
+
     makeLeftPassive()
     {
         for (const input of this.inputs)
@@ -3646,6 +3922,8 @@ class Operator
         }
     }
     
+
+
     makeRightPassive()
     {
         if (this.output)
@@ -3658,6 +3936,8 @@ class Operator
         }
     }
     
+
+
     makePassive()
     {
         if (this.active)
@@ -3672,6 +3952,7 @@ class Operator
         this._active = false;
         uiSetActive(this, false);
     }
+
 
 
     // set valid(val) { this.#valid = val; }
@@ -3712,12 +3993,14 @@ class Operator
     }
 
 
+
     div;
     inner;
     header;
     label;
     inputControls;
     outputControls;
+
 
 
     constructor(opType, dataType)
@@ -3732,12 +4015,14 @@ class Operator
     }    
     
     
+
     addInput(input)
     {
         input._op = this;
         this.inputs.push(input);
         this.inputControls.appendChild(input.control);
     }
+
 
 
     setOutput(output)
@@ -3752,6 +4037,7 @@ class Operator
         this.output = output;
         this.outputControls.appendChild(output.control);
     }
+
 
 
     addParam(param)
@@ -3782,10 +4068,12 @@ class Operator
     }
 
 
+
     generate() 
     { 
         this.valid = true; 
     }
+
 
 
     isBefore(node)
@@ -3804,6 +4092,7 @@ class Operator
     }
 
 
+
     isAfter(node)
     {
         if (this.inputs.length == 0)
@@ -3818,6 +4107,7 @@ class Operator
         return false;
     }
 
+    
 
     updateConnectedInputValueText() {}
 }
@@ -4149,8 +4439,8 @@ function initLabelTextbox(node)
 }
 
 
-class   OpNumber
-extends Operator
+class   UOpNumber
+extends UOperator
 {
     #value;
 
@@ -4158,7 +4448,7 @@ extends Operator
     {
         super('number', 'NUM');
 
-        this.setOutput(new Output(this.dataType));
+        this.setOutput(new UOutput(this.dataType));
 
         this.addParam(this.#value = new NumberParam(''));
     }
@@ -4166,19 +4456,20 @@ extends Operator
 
 
 class   OpRandom
-extends Operator
+extends UOperator
 {
     #min;
     #max;
     #scale;
     #seed;
 
+    
 
     constructor()
     {
         super('random', 'NUM');
 
-        this.setOutput(new Output(this.dataType));
+        this.setOutput(new UOutput(this.dataType));
 
         this.addParam(this.#min   = new NumberParam('min',  0));
         this.addParam(this.#max   = new NumberParam('max', 10));
@@ -4208,6 +4499,7 @@ extends Operator
     }
 
 
+
     updateConnectedInputValueText()
     {
         const val =
@@ -4224,8 +4516,65 @@ extends Operator
 }
 
 
-class   OpRect
-extends Operator
+
+
+
+// class   UOpRandom
+// extends UOperator
+// {
+//     #min;
+//     #max;
+//     #scale;
+//     #seed;
+
+
+//     constructor()
+//     {
+//         super('random', 'NUM');
+
+//         this.setOutput(new UOutput(this.dataType));
+
+//         this.addParam(this.#min   = new NumberParam('min'));
+//         this.addParam(this.#max   = new NumberParam('max'));
+//         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
+//         this.addParam(this.#seed  = new NumberParam('seed'));
+
+//         this.#min.control.addEventListener('change', () =>
+//         {
+//             if (this.#min.control.value > this.#max.control.value)
+//                 this.#max.control.setValue(this.#min.control.value, false);
+//         });
+
+//         this.#max.control.addEventListener('change', () =>
+//         {
+//             if (this.#max.control.value < this.#min.control.value)
+//                 this.#min.control.setValue(this.#max.control.value, false);
+//         });
+//     }
+
+
+//     generate()
+//     {
+//         if (this.valid) return;
+
+//         this.output._data = 
+//         {
+//             id:    this.id,
+//             type:  this.opType,
+            
+//             min:   this.#min  .value,
+//             max:   this.#max  .value,
+//             scale: this.#scale.value,
+//             seed:  this.#seed .value
+//         };
+
+//         super.generate();
+//     }
+// }
+
+
+class   UOpRect
+extends UOperator
 {
     #width;
     #height;
@@ -4236,7 +4585,7 @@ extends Operator
     {
         super('rect', 'OBJ');
 
-        this.setOutput(new Output(this.dataType));
+        this.setOutput(new UOutput(this.dataType));
 
         this.addParam(this.#width  = new NumberParam('width',  100, 0.01));
         this.addParam(this.#height = new NumberParam('height', 100, 0.01));
@@ -4288,8 +4637,8 @@ extends Operator
 }
 
 
-class   OpRow
-extends Operator
+class   UOpRow
+extends UOperator
 {
     #count;
     #gap;
@@ -4299,8 +4648,8 @@ extends Operator
     {
         super('row', 'OBJ');
 
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        this.addInput (new UInput (this.dataType));
+        this.setOutput(new UOutput(this.dataType));
         
         this.addParam(this.#count = new NumberParam('count', 7, 1));
         this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
@@ -4308,8 +4657,70 @@ extends Operator
 }
 
 
+
+
+// class   UOpRow
+// extends UOperator
+// {
+//     #count;
+//     #gap;
+
+
+//     constructor()
+//     {
+//         super('row', 'OBJ');
+
+//         this.addInput (new UInput (this.dataType));
+//         this.setOutput(new UOutput(this.dataType));
+        
+//         this.addParam(this.#count = new NumberParam('count',  4, 1));
+//         this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+//     }
+
+
+//     generate()
+//     {
+//         if (this.valid) return;
+
+//         const input  = this.inputs[0];
+//         const output = this.output;
+
+//         if (!input.connected)
+//         {
+//             output._data = {};
+//             return;
+//         }
+
+    
+//         const objects = input.data;
+//         const bounds = getObjectBounds(objects);
+
+
+//         output._data = [];
+    
+//         for (var i = 0, x = 0; i < this.#count.value; i++)
+//         {
+//             for (var j = 0; j < objects.length; j++)
+//             {
+//                 const obj = shallowCopy(objects[j]);
+//                 obj.itemId = 'row_' + i + '_' + j;
+   
+//                 obj.x += x;
+                
+//                 output._data.push(obj);
+//             }
+            
+//             x += bounds.w + this.#gap.value;
+//         }
+
+        
+//         super.generate();
+//     }
+// }
+
+
 class   OpColumn
-extends Operator
+extends UOperator
 {
     #count;
     #gap;
@@ -4319,13 +4730,852 @@ extends Operator
     {
         super('column', 'OBJ');
 
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        this.addInput (new UInput (this.dataType));
+        this.setOutput(new UOutput(this.dataType));
         
         this.addParam(this.#count = new NumberParam('count', 7, 1));
         this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
     }
 }
+
+
+
+// class   UOpColumn
+// extends UOperator
+// {
+//     #count;
+//     #gap;
+
+
+//     constructor()
+//     {
+//         super('row', 'OBJ');
+
+//         this.addInput (new UInput (this.dataType));
+//         this.setOutput(new UOutput(this.dataType));
+        
+//         this.addParam(this.#count = new NumberParam('count',  4, 1));
+//         this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
+//     }
+
+
+//     generate()
+//     {
+//         if (this.valid) return;
+
+//         const input  = this.inputs[0];
+//         const output = this.output;
+
+//         if (!input.connected)
+//         {
+//             output._data = {};
+//             return;
+//         }
+
+    
+//         const objects = input.data;
+//         const bounds = getObjectBounds(objects);
+
+
+//         output._data = [];
+    
+//         for (var i = 0, y = 0; i < this.#count.value; i++)
+//         {
+//             for (var j = 0; j < objects.length; j++)
+//             {
+//                 const obj = shallowCopy(objects[j]);
+//                 obj.itemId = 'column_' + i + '_' + j;
+   
+//                 obj.y += y;
+                
+//                 output._data.push(obj);
+//             }
+            
+//             y += bounds.h + this.#gap.value;
+//         }
+
+        
+//         super.generate();
+//     }
+// }
+
+
+class Action
+{
+    id;
+    manager;
+  
+    prevAction; // these are used to link actions into sequences
+    nextAction; 
+  
+    data;
+  
+    onBefore;
+    onAfter;
+
+    onBeforeUndo;
+    onAfterUndo;
+
+
+
+    perform() {}
+
+
+
+    redo()
+    {
+        this.perform();
+    }
+
+
+
+    undo() {}
+
+
+
+	link(prevAction, action)
+	{
+		prevAction.nextAction = action;
+		action    .prevAction = prevAction;
+	}
+
+
+
+    // checkForPrevLink(condition)
+    // {
+    //     var index = manager.actions.indexOf(this);
+
+    //     if (manager.actions[index-1].)
+    //         && !PrevAction)
+    //     {
+    //         auto before = std::static_pointer_cast<T>((*Manager)[index-1]);
+
+    //         if (condition(before))
+    //             link(before, shared_from_this());
+    //     }
+    // }
+};
+
+
+
+class ActionManager
+{
+    actions      = [];
+    redoActions  = [];
+    
+    nextActionId = 0;
+   
+    
+    
+    perform(action)
+    {
+        // this is a fresh new action so clear the redo queue
+        this.redoActions = [];
+
+        this.actions.push(action);
+
+        action.id      = this.nextActionId++;
+        action.manager = this;
+        
+        action.perform();
+    }
+
+
+
+    undo()
+    {
+        if (this.actions.length == 0)
+            return;
+
+        var last = removeLast(this.actions);
+        this.redoActions.push(last);
+
+        last.undo();
+    }
+
+
+
+    redo()
+    {
+        if (this.redoActions.length == 0)
+            return;
+
+        var last = removeLast(this.redoActions);
+        this.actions.push(last);
+
+        last.redo();
+    }
+}
+
+
+
+const actionManager = new ActionManager();
+
+
+class CreateNodeAction
+extends Action
+{
+    opType;
+    createdNode = null;    
+
+
+    constructor(opType)
+    {
+        super();
+        this.opType = opType;
+    }
+
+
+
+    perform()
+    {
+        this.createdNode = uiCreateNode(this.opType);
+    }
+
+
+
+    undo()
+    {
+        uiDeleteNodes([this.createdNode]);
+        this.createdNode = null;
+        UOperator.nextId--;
+    }
+}
+
+
+class DeleteNodesAction
+extends Action
+{
+    nodes       = [];
+    connections = [];
+
+
+
+    constructor(nodes)
+    {
+        super();
+        this.nodes = [...nodes]; // clone the array
+    }
+
+
+
+    perform()
+    {
+        // TODO remember and remove the connections
+        uiDeleteNodes(this.nodes, this.id);
+    }
+
+
+
+    undo()
+    {
+        uiUndeleteNodes(this.nodes);
+        // TODO restore connections
+    }
+}
+
+
+class SelectNodesAction
+extends Action
+{
+    selected       = [];
+    selectedBefore = [];
+
+
+
+    constructor(nodes)
+    {
+        super();
+
+        selected = [...nodes];
+    }
+
+
+
+    perform()
+    {
+
+    }
+
+
+
+    undo()
+    {
+
+    }
+}
+
+
+class MoveNodesAction
+extends Action
+{
+
+
+    constructor()
+    {
+        super();
+    }
+
+
+
+    perform()
+    {
+
+    }
+
+
+
+    undo()
+    {
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+//save('state', null);
+//save('windowWidth', null);
+//save('windowHeight', null);
+
+
+
+const uiGraph = new UGraph();
+
+
+
+initSelect(presets,
+[
+    {value: '', text: 'untitled'},
+]);    
+
+
+
+parent.postMessage({ pluginMessage: 
+{ 
+    cmd:    'loadState',
+    onLoad: 'loadState'
+}}, '*');    
+
+
+
+onmessage = e =>
+{
+    var msg = e.data.pluginMessage;
+
+    switch (msg.cmd)
+    {
+        case 'forwardToGen': 
+            generator.postMessage(msg.msg); 
+            break;
+
+        // case 'updatePanAndZoom':    
+        //     graphView.updatePanAndZoom();
+        //     break;
+    }    
+}    
+
+
+
+function uiNotify(text)
+{
+    parent.postMessage({ pluginMessage:
+    { 
+        cmd: 'notify',
+        text: text
+    }}, '*');        
+}    
+
+
+
+function uiCreateNode(opType, node = null)
+{
+    if (node == null)
+        node = uiGraph.createNode(opType);
+
+    
+    generator.postMessage({
+        msg:     'createNode', 
+        opType:   opType,
+        nodeId:   node.id,
+        nodeName: node.name
+    });
+
+
+    if (graphView.selected.length > 0)
+    {
+        const selNode = uiGraph.nodes.find(n => n.selected);
+        const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
+
+        if (   !!selNode
+            && selNode.output
+            && inputs.length > 0)
+            uiConnect(selNode.output, inputs[0]);
+    }
+    
+
+    graphView.selected = [node];
+    graphView.putNodeOnTop(node);
+
+    graphView.updateNodeTransform(node);
+
+
+    return node;
+}
+
+
+
+function uiDeleteNodes(nodes, actionId)
+{
+    const nodeIds = nodes.map(n => n.id);
+    uiGraph.deleteNodes(nodeIds);
+    
+    generator.postMessage({
+        msg:     'deleteNodes',
+        nodeIds:  nodeIds,
+        actionId: actionId
+    });
+    
+    uiDeleteNodeObjects(nodeIds);
+}
+
+
+
+function uiUndeleteNodes(nodes, actionId)
+{
+    uiGraph.addNodes(nodes);
+
+
+    graphView.selected = nodes;
+    
+    for (const node in nodes)
+        graphView.updateNodeTransform(node);
+    
+    graphView.putNodeOnTop(lastOf(nodes));
+
+
+    generator.postMessage({
+        msg:       'undeleteNodes',
+        uiActionId: actionId
+    });
+}
+
+
+
+function uiSetNodeId(nodeId, newId)
+{
+    const node = uiGraph.nodeFromId(nodeId);
+
+    node.id = newId;
+
+    generator.postMessage({
+        msg:   'setNodeId', 
+        nodeId: nodeId,
+        newId:  newId
+    });
+}
+
+
+
+function uiConnect(output, input)
+{
+    uiGraph.connect(output, input);
+
+    generator.postMessage({
+        msg:     'connect', 
+        outputId: output.op.id, 
+        inputs:  
+        [{
+            nodeId: input.op.id, 
+            index:  input.op.inputs.indexOf(input)
+        }]
+    });
+}
+
+
+
+function uiDisconnect(input)
+{
+    uiGraph.disconnect(input);
+
+    generator.postMessage({
+        msg: 'disconnect',
+        input:
+        {
+            nodeId: input.op.id, 
+            index:  input.op.inputs.indexOf(input)
+        }
+    });
+}
+
+
+
+function uiSetParam(param, value)
+{
+    generator.postMessage({
+        msg:   'setParam', 
+        nodeId: param.op.id, 
+        param:  param.name,
+        value:  value
+    });
+}
+
+
+
+function uiInvalidate(node)
+{
+    generator.postMessage({
+        msg:   'invalidate', 
+        nodeId: node.id
+    });
+}
+
+
+
+function uiSetActive(node, active)
+{
+    generator.postMessage({
+        msg:   'setActive', 
+        nodeId: node.id,
+        active: active
+    });
+}
+
+
+
+function uiDeleteNodeObjects(nodeIds)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    }}, '*');
+
+    generator.postMessage({
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    });
+}
+
+
+
+/////////////////////////////////////////////////////////////////////
+
+
+
+function uiGenerateObjects(nodeIds)
+{
+    if (uiGraph.mutex)
+    {
+        //uiGraph.deferNodes = [];
+
+        for (const nodeId of nodeIds)
+            uiGraph.deferNodeIds.push(nodeId);
+
+        return;
+    }
+    
+    uiGraph.mutex = true;
+
+
+    generator.postMessage({
+        msg:    'generateObjects',
+        nodeIds: nodeIds
+    });
+}
+
+
+
+/////////////////////////////////////////////////////////////////////
+
+
+
+const generator = new Worker(
+    window.URL.createObjectURL(
+        new Blob([generatorScript.textContent])));
+
+
+
+generator.onmessage = function(e)
+{
+    switch (e.data.msg)
+    {
+        case 'makeActive':      uiMakeActive     (e.data.nodeIds);                            break;
+        case 'showParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
+        case 'updateObjects':   uiUpdateObjects  (e.data.objects);                            break;
+        case 'generateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
+    }
+};
+
+
+
+/////////////////////////////////////////////////////////////////////
+
+
+
+function uiMakeActive(nodeIds)
+{
+    for (const nodeId in nodeIds)
+    {
+        const node = uiGraph.nodeFromId(nodeId);
+        node.makeActive();
+    }
+}
+
+
+
+function uiShowParamValue(nodeId, paramName, value)
+{
+    const node = uiGraph.nodeFromId(nodeId);
+            
+    if (!!node) // this is mainly for deleted nodes which still exist 
+    {           // in Generator Graph but no longer in the UI Graph
+        const param = node.params.find(p => p.name == paramName);
+        param.control.setValue(value, false);
+    }
+}
+
+
+
+function uiUpdateObjects(objects)
+{
+    parent.postMessage({ pluginMessage:
+    { 
+        cmd:    'updateObjects',
+        objects: objects
+    }}, '*');    
+
+    uiGraph.mutex = false;
+    
+
+    if (uiGraph.deferNodeIds.length > 0)
+    {
+        var deferNodes = Array.from(uiGraph.deferNodeIds).filter(
+            (value, index, self) => self.indexOf(value) === index);
+            
+        uiGraph.deferNodeIds = [];
+
+        uiGenerateObjects(deferNodes);
+    }
+}
+
+
+const resizeEdgeWidth = 8;
+
+document.canResizeX = false;
+document.canResizeY = false;
+
+document.resizingX  = false;
+document.resizingY  = false;
+
+document.startRect = new Rect();
+
+
+
+function resizeWindow(width, height)
+{
+    graphView.updatePanAndZoom();
+
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:   'resizeWindow', 
+        width:  width,
+        height: height
+    }}, '*');
+}
+
+
+
+function checkResize(x, y)
+{
+    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+
+         if (document.canResizeX
+          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
+    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
+    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
+    else                          document.body.style.cursor = 'auto';
+}
+
+
+document.addEventListener('pointerdown', function(e)
+{
+    if (   document.canResizeX
+        || document.canResizeY)
+    {
+        if (document.canResizeX) document.resizingX = true;
+        if (document.canResizeY) document.resizingY = true;
+
+        document.startRect = new Rect(
+            e.clientX,
+            e.clientY,
+            window.innerWidth,
+            window.innerHeight);
+
+        document.body.setPointerCapture(e.pointerId);
+    }
+});
+
+
+
+document.addEventListener('pointermove', function(e)
+{
+    if (   document.resizingX
+        && document.resizingY)
+    {
+        resizeWindow(
+            document.startRect.w + e.clientX - document.startRect.x,
+            document.startRect.h + e.clientY - document.startRect.y);
+    }
+    else if (document.resizingX)
+    {
+        resizeWindow(
+            document.startRect.w + e.clientX - document.startRect.x,
+            document.body.clientHeight);
+    }
+    else if (document.resizingY)
+    {
+        resizeWindow(
+            document.body.clientWidth,
+            document.startRect.h + e.clientY - document.startRect.y);
+    }
+    else
+        checkResize(e.clientX, e.clientY);
+});
+
+
+
+document.addEventListener('pointerup', function(e)
+{
+    if (   document.resizingX
+        || document.resizingY)
+    {
+        document.resizingX = false;
+        document.resizingY = false;
+        
+        checkResize(e.clientX, e.clientY);
+        document.body.releasePointerCapture(e.pointerId);
+    }
+});
+
+
+
+
+
+document.addEventListener('keydown', e =>
+{
+    // delete
+    if (e.key == 'Delete')
+    {
+        actionManager.perform(new DeleteNodesAction(graphView.selected)); 
+        graphView._selected = [];
+    }
+
+    // select all
+    else if (e.code == 'KeyA'
+          && e.ctrlKey)
+    {
+        graphView.selected = uiGraph.nodes;
+    }
+
+    // undo/redo
+    else if (e.code == 'KeyZ'
+          && e.ctrlKey)
+    {
+        if (e.shiftKey) actionManager.redo();
+        else            actionManager.undo();
+    }
+
+    // 
+    else if (e.code == 'Minus')
+    {
+        graphView.zoom /= 2;
+    }
+
+    else if (e.code == 'Equal')
+    {
+        graphView.zoom *= 2;
+    }
+
+    else if (e.code == 'Digit0'
+          && e.shiftKey)
+    {
+        graphView.zoom = 1;
+        uiNotify('Zoom to 100%');
+    }
+
+    else if (e.code == 'Space'
+         && !e.ctrlKey)
+    {
+        if (!graphView.selecting)
+        {
+            graphView.spaceDown = true;
+            graphView.setPanCursor();
+        }
+    }
+
+    else if (e.key == 'Control'
+          && graphView.spaceDown)
+    {
+        graphView.zoomSelecting = true;
+
+        if (e.altKey) graphView.setZoomOutCursor();
+        else          graphView.setZoomInCursor();
+    }
+
+    else if (e.key == 'Alt'
+          && graphView.spaceDown
+          && e.ctrlKey)
+    {
+        graphView.setZoomOutCursor();
+    }
+});
+
+
+
+document.addEventListener('keyup', e =>
+{
+    if (e.code == 'Space')
+    {
+        if (graphView.spaceDown)
+        {
+            graphView.style.cursor  = 'auto';
+            graphView.spaceDown     = false;
+            graphView.zoomSelecting = false;
+        }
+    }
+
+    else if (e.key == 'Alt'
+          && graphView.spaceDown)
+    {
+        if (e.ctrlKey) 
+            graphView.setZoomInCursor();
+        else
+        {
+            graphView.setPanCursor();
+            graphView.zoomSelecting = false;
+        }
+    }
+
+    else if (e.key == 'Control'
+          && graphView.spaceDown)
+    {
+        graphView.zoomSelecting = false;
+        graphView.setPanCursor();
+    }
+});
+
+
+
+
 
 
 function initSliderChildren(slider)
@@ -5159,294 +6409,6 @@ function onSelectClickTimer(select)
 }
 
 
-//save('state', null);
-//save('windowWidth', null);
-//save('windowHeight', null);
-
-initSelect(presets,
-[
-    {value: '', text: 'untitled'},
-]);
-
-
-parent.postMessage({ pluginMessage: 
-{ 
-    cmd:    'loadState',
-    onLoad: 'loadState'
-}}, '*');
-
-
-onmessage = e =>
-{
-    var msg = e.data.pluginMessage;
-
-    switch (msg.cmd)
-    {
-        case 'forwardToGen': 
-            generator.postMessage(msg.msg); 
-            break;
-
-        // case 'updatePanAndZoom':
-        //     graphView.updatePanAndZoom();
-        //     break;
-    }
-}
-
-
-function uiNotify(text)
-{
-    parent.postMessage({ pluginMessage:
-    { 
-        cmd: 'notify',
-        text: text
-    }}, '*');    
-}
-
-
-const resizeEdgeWidth = 8;
-
-document.canResizeX = false;
-document.canResizeY = false;
-
-document.resizingX  = false;
-document.resizingY  = false;
-
-document.startRect = new Rect();
-
-
-document.addEventListener('pointerdown', function(e)
-{
-    if (   document.canResizeX
-        || document.canResizeY)
-    {
-        if (document.canResizeX) document.resizingX = true;
-        if (document.canResizeY) document.resizingY = true;
-
-        document.startRect = new Rect(
-            e.clientX,
-            e.clientY,
-            window.innerWidth,
-            window.innerHeight);
-
-        document.body.setPointerCapture(e.pointerId);
-    }
-});
-
-
-document.addEventListener('pointermove', function(e)
-{
-    if (   document.resizingX
-        && document.resizingY)
-    {
-        resizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
-            document.startRect.h + e.clientY - document.startRect.y);
-    }
-    else if (document.resizingX)
-    {
-        resizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
-            document.body.clientHeight);
-    }
-    else if (document.resizingY)
-    {
-        resizeWindow(
-            document.body.clientWidth,
-            document.startRect.h + e.clientY - document.startRect.y);
-    }
-    else
-        checkResize(e.clientX, e.clientY);
-});
-
-
-document.addEventListener('pointerup', function(e)
-{
-    if (   document.resizingX
-        || document.resizingY)
-    {
-        document.resizingX = false;
-        document.resizingY = false;
-        
-        checkResize(e.clientX, e.clientY);
-        document.body.releasePointerCapture(e.pointerId);
-    }
-});
-
-
-document.addEventListener('keydown', e =>
-{
-    if (e.key == 'Delete')
-    {
-        uiDeleteNodes(graphView.selected);
-        graphView._selected = [];
-    }
-    else if (e.code == 'KeyA'
-          && e.ctrlKey)
-    {
-        graphView.selected = graph.nodes;
-    }
-    else if (e.code == 'Minus')
-    {
-        graphView.zoom /= 2;
-    }
-    else if (e.code == 'Equal')
-    {
-        graphView.zoom *= 2;
-    }
-    else if (e.code == 'Digit0'
-          && e.shiftKey)
-    {
-        graphView.zoom = 1;
-        uiNotify('Zoom to 100%');
-    }
-    else if (e.code == 'Space'
-         && !e.ctrlKey)
-    {
-        if (!graphView.selecting)
-        {
-            graphView.spaceDown = true;
-            graphView.setPanCursor();
-        }
-    }
-    else if (e.key == 'Control'
-          && graphView.spaceDown)
-    {
-        graphView.zoomSelecting = true;
-
-        if (e.altKey) graphView.setZoomOutCursor();
-        else          graphView.setZoomInCursor();
-    }
-    else if (e.key == 'Alt'
-          && graphView.spaceDown
-          && e.ctrlKey)
-    {
-        graphView.setZoomOutCursor();
-    }
-});
-
-
-document.addEventListener('keyup', e =>
-{
-    if (e.code == 'Space')
-    {
-        if (graphView.spaceDown)
-        {
-            graphView.style.cursor  = 'auto';
-            graphView.spaceDown     = false;
-            graphView.zoomSelecting = false;
-        }
-    }
-    else if (e.key == 'Alt'
-          && graphView.spaceDown)
-    {
-        if (e.ctrlKey) 
-            graphView.setZoomInCursor();
-        else
-        {
-            graphView.setPanCursor();
-            graphView.zoomSelecting = false;
-        }
-    }
-    else if (e.key == 'Control'
-          && graphView.spaceDown)
-    {
-        graphView.zoomSelecting = false;
-        graphView.setPanCursor();
-    }
-});
-
-
-function resizeWindow(width, height)
-{
-    graphView.updatePanAndZoom();
-
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:   'resizeWindow', 
-        width:  width,
-        height: height
-    }}, '*');
-}
-
-
-function checkResize(x, y)
-{
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
-
-         if (document.canResizeX
-          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
-    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
-    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
-    else                          document.body.style.cursor = 'auto';
-}
-
-
-function activeNodeInTree(node) 
-{ 
-    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
-    const right = getActiveNodeRight(node); if (!!right) return right;
-
-    return null;
-}
-
-function getActiveNodeLeft(node)
-{
-    if (node.active) return node;
-
-    for (const input of node.inputs)
-    {
-        if (input.connected)
-        {
-            const left = getActiveNodeLeft(input.connectedOutput.op);
-            if (left) return left;
-        }
-    }
-
-    return null;
-}
-
-function getActiveNodeRight(node)
-{
-    if (node.active) return node;
-
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const right = getActiveNodeRight(input.op);
-            if (right) return right;
-        }
-    }
-
-    return null;
-}
-
-
-function lastNodeInTree(node) 
-{ 
-    const right = getLastNodeRight(node); 
-    return !!right ? right : null;
-}
-
-function getLastNodeRight(node)
-{
-    var right = null;
-
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const _right = getLastNodeRight(input.op);
-            if (_right && !!right) return node;
-            right = _right;
-        }
-    }
-
-    return !!right ? right : node;
-}
-
-
 graphView.wires = [];
 
 
@@ -5650,7 +6612,7 @@ graphView.addEventListener('pointerup', e =>
             
             if (   output
                 && output.dataType == input.dataType) // TO OUTPUT
-                graph.connect(output, input); // connect new
+                uiGraph.connect(output, input); // connect new
 
             graphView.cancelConnection();
         }
@@ -5733,7 +6695,7 @@ graphView.addEventListener('wheel', e =>
 
 graphView.startConnectionFromOutput = output =>
 {
-    graphView.tempConn = new Connection(output, null);
+    graphView.tempConn = new UConnection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
     graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
     graphView.tempConn.wire.scale = graphView.zoom;
@@ -5744,7 +6706,7 @@ graphView.startConnectionFromOutput = output =>
 
 graphView.startConnectionFromInput = input =>
 {
-    graphView.tempConn = new Connection(null, input);
+    graphView.tempConn = new UConnection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
     graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
     graphView.tempConn.wire.scale = graphView.zoom;
@@ -5764,7 +6726,7 @@ graphView.getAllNodeBounds = () =>
 {
     const bounds = Rect.NaN;
 
-    for (const node of graph.nodes)
+    for (const node of uiGraph.nodes)
         bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
     return bounds;
@@ -5778,7 +6740,7 @@ graphView.getNodeBounds = () =>
     var boundsR = Number.MIN_SAFE_INTEGER;
     var boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (const node of graph.nodes)
+    for (const node of uiGraph.nodes)
     {
         var bounds = node.div.getBoundingClientRect();
 
@@ -5803,7 +6765,7 @@ graphView.putNodeOnTop = node =>
         + node.inputs.filter(i => i.connected).length 
         + (!!node.output && node.output.connected ? 1 : 0);
 
-    for (const n of graph.nodes)
+    for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
 
     var z = Number.MAX_SAFE_INTEGER;
@@ -5930,7 +6892,7 @@ graphView.updateSelectBox = () =>
 
     const selected = [];
 
-    for (const node of graph.nodes)
+    for (const node of uiGraph.nodes)
     {
         if (rectsIntersect(
                 Rect.fromTypical(node.div.getBoundingClientRect()), 
@@ -5951,7 +6913,7 @@ graphView.endSelection = () =>
 
 graphView.updatePanAndZoom = () =>
 {
-    for (const node of graph.nodes)
+    for (const node of uiGraph.nodes)
         graphView.updateNodeTransform(node);
 
     graphView.updateScroll();
@@ -6027,7 +6989,7 @@ graphView.addWireFromInput = (wire, input) =>
 graphView.removeWire = wire =>
 {
     graphView.removeChild(wire);    
-    removeFromArray(wire, graphView.wires);
+    removeFromArray(graphView.wires, wire);
 };
 
 
@@ -6116,7 +7078,7 @@ scrollbarX.addEventListener('pointerdown', e =>
 
         graphView.panStart = graphView.pan;
 
-        for (const node of graph.nodes)
+        for (const node of uiGraph.nodes)
             node.div.slx = node.div.offsetLeft;
     }
 });
@@ -6131,7 +7093,7 @@ scrollbarX.addEventListener('pointerup', e =>
 
         var bounds = Rect.NaN;
 
-        for (const node of graph.nodes)
+        for (const node of uiGraph.nodes)
             bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
         if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
@@ -6203,7 +7165,7 @@ scrollbarY.addEventListener('pointerdown', e =>
         scrollbarY.pStart = e.clientY;
         scrollbarY.setPointerCapture(e.pointerId);
 
-        for (const node of graph.nodes)
+        for (const node of uiGraph.nodes)
             node.div.sly = node.div.offsetTop;
 
         graphView.panStart = graphView.pan;
@@ -6220,7 +7182,7 @@ scrollbarY.addEventListener('pointerup', e =>
 
         var bounds = Rect.NaN;
 
-        for (const node of graph.nodes)
+        for (const node of uiGraph.nodes)
             bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
         if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
@@ -6252,230 +7214,6 @@ scrollbarY.addEventListener('pointermove', e =>
         };
     }
 });
-
-
-const graph = new Graph();
-
-
-function uiCreateNode(opType)
-{
-    const node = graph.createNode(opType);
-
-    generator.postMessage({
-        msg:     'createNode', 
-        opType:   opType,
-        nodeId:   node.id,
-        nodeName: node.name
-    });
-
-    if (graphView.selected.length > 0)
-    {
-        const selNode = graph.nodes.find(n => n.selected);
-        const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
-
-        if (   !!selNode
-            && selNode.output
-            && inputs.length > 0)
-            uiConnect(selNode.output, inputs[0]);
-    }
-    
-    graphView.selected = [node];
-    graphView.putNodeOnTop(node);
-
-    graphView.updateNodeTransform(node);
-}
-
-
-function uiDeleteNodes(nodes)
-{
-    const nodeIds = nodes.map(n => n.id);
-    graph.deleteNodes(nodeIds);
-
-    generator.postMessage({
-        msg:    'deleteNodes',
-        nodeIds: nodeIds
-    });
-
-    uiDeleteNodeObjects(nodeIds);
-}
-
-
-function uiSetNodeId(nodeId, newId)
-{
-    const node = graph.nodeFromId(nodeId);
-
-    node.id = newId;
-
-    generator.postMessage({
-        msg:   'setNodeId', 
-        nodeId: nodeId,
-        newId:  newId
-    });
-}
-
-
-function uiConnect(output, input)
-{
-    graph.connect(output, input);
-
-    generator.postMessage({
-        msg:     'connect', 
-        outputId: output.op.id, 
-        inputs:  
-        [{
-            nodeId: input.op.id, 
-            index:  input.op.inputs.indexOf(input)
-        }]
-    });
-}
-
-
-function uiDisconnect(input)
-{
-    graph.disconnect(input);
-
-    generator.postMessage({
-        msg: 'disconnect',
-        input:
-        {
-            nodeId: input.op.id, 
-            index:  input.op.inputs.indexOf(input)
-        }
-    });
-}
-
-
-function uiSetParam(param, value)
-{
-    generator.postMessage({
-        msg:   'setParam', 
-        nodeId: param.op.id, 
-        param:  param.name,
-        value:  value
-    });
-}
-
-
-function uiInvalidate(node)
-{
-    generator.postMessage({
-        msg:   'invalidate', 
-        nodeId: node.id
-    });
-}
-
-
-
-function uiSetActive(node, active)
-{
-    generator.postMessage({
-        msg:   'setActive', 
-        nodeId: node.id,
-        active: active
-    });
-}
-
-
-function uiDeleteNodeObjects(nodeIds)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'deleteNodeObjects',
-        nodeIds: nodeIds
-    }}, '*');
-
-    generator.postMessage({
-        cmd:    'deleteNodeObjects',
-        nodeIds: nodeIds
-    });
-}
-
-
-/////////////////////////////////////////////////////////////////////
-
-
-function uiGenerateObjects(nodeIds)
-{
-    if (graph.mutex)
-    {
-        //graph.deferNodes = [];
-
-        for (const nodeId of nodeIds)
-            graph.deferNodeIds.push(nodeId);
-
-        return;
-    }
-    
-    graph.mutex = true;
-
-
-    generator.postMessage({
-        msg:    'generateObjects',
-        nodeIds: nodeIds
-    });
-}
-
-
-/////////////////////////////////////////////////////////////////////
-
-
-const generator = new Worker(
-    window.URL.createObjectURL(
-        new Blob([generatorScript.textContent])));
-
-
-generator.onmessage = function(e)
-{
-    switch (e.data.msg)
-    {
-        case 'makeActive':      uiMakeActive(e.data.nodeId); break;
-        case 'showParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'updateObjects':   uiUpdateObjects(e.data.objects); break;
-        case 'generateObjects': uiGenerateObjects(e.data.nodeIds); break;
-    }
-};
-
-
-function uiMakeActive(nodeId)
-{
-    const node = graph.nodeFromId(nodeId);
-    node.makeActive();
-}
-
-
-function uiShowParamValue(nodeId, paramName, value)
-{
-    const node = graph.nodeFromId(nodeId);
-            
-    if (!!node) // this is mainly for deleted nodes which still exist 
-    {           // in Generator Graph but no longer in the UI Graph
-        const param = node.params.find(p => p.name == paramName);
-        param.control.setValue(value, false);
-    }
-}
-
-
-function uiUpdateObjects(objects)
-{
-    parent.postMessage({ pluginMessage:
-    { 
-        cmd:    'updateObjects',
-        objects: objects
-    }}, '*');    
-
-    graph.mutex = false;
-    
-
-    if (graph.deferNodeIds.length > 0)
-    {
-        var deferNodes = Array.from(graph.deferNodeIds).filter(
-            (value, index, self) => self.indexOf(value) === index);
-            
-        graph.deferNodeIds = [];
-
-        uiGenerateObjects(deferNodes);
-    }
-}
 
 
 

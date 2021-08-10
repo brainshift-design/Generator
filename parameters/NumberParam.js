@@ -47,7 +47,7 @@ extends Parameter
 
         this.div.appendChild(this.control);
 
-        this.input = new Input('NUM');
+        this.input = new UInput('NUM');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';

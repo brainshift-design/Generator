@@ -4,6 +4,7 @@
         NUM
 */
 
+
 class GOperator
 {
     #opType;
@@ -29,6 +30,7 @@ class GOperator
     _valid = false; // this is the flag for regeneration
 
 
+
     set valid(valid) { this._valid = valid; }
     
     get valid() 
@@ -45,6 +47,7 @@ class GOperator
         return valid;
     }
 
+
     
     active = false;
 
@@ -57,6 +60,7 @@ class GOperator
     outputControls;
 
 
+
     constructor(opType, dataType)
     {
         this.#opType   = opType;   // this is the operator type
@@ -66,11 +70,13 @@ class GOperator
     }    
     
     
+
     addInput(input)
     {
         input._op = this;
         this.inputs.push(input);
     }
+
 
 
     setOutput(output)
@@ -81,6 +87,7 @@ class GOperator
         output._op = this;
         this.output = output;
     }
+
 
 
     addParam(param)
@@ -106,10 +113,12 @@ class GOperator
     }
 
 
+
     generate(callerInput) 
     { 
         this.valid = true; 
     }
+
 
 
     reset() // for the entire generation run
@@ -124,6 +133,7 @@ class GOperator
     }
 
 
+
     refresh() // for repeats requests from nodes that duplicate their input, like row and column
     {
         for (const input of this.inputs)
@@ -134,6 +144,7 @@ class GOperator
     }
 
     
+
     isBefore(node)
     {
         if (   !this.output
@@ -149,6 +160,7 @@ class GOperator
         return false;
     }
 
+    
 
     isAfter(node)
     {

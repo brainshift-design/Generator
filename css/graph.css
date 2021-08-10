@@ -109,10 +109,9 @@
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
-
 #selectBox
 {
-    outline:          1px solid #18A0FB;
+    outline:          1pt solid #18A0FB;
     background-color: #18A0FB20;
     pointer-events:   none;
     margin:           0;
