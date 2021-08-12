@@ -2,12 +2,15 @@ class CreateNodeAction
 extends Action
 {
     opType;
+    
     createdNode = null;    
+
 
 
     constructor(opType)
     {
-        super();
+        super('Create Node');
+        
         this.opType = opType;
     }
 

@@ -9,6 +9,6 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#value = new NumberParam(''));
+        this.addParam(this.#value = new UNumberParam(''));
     }
 }

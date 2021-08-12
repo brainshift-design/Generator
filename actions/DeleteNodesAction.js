@@ -8,7 +8,8 @@ extends Action
 
     constructor(nodes)
     {
-        super();
+        super('Delete Nodes');
+        
         this.nodes = [...nodes]; // clone the array
     }
 

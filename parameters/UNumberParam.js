@@ -1,13 +1,20 @@
-class   NumberParam
-extends Parameter
+class   UNumberParam
+extends UParameter
 {
-    get value() { return this._control.value; }
+    get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
 
-    setValue(value, fireChangeEvent = true) { this._control.setValue(value, fireChangeEvent); }
+    get oldValue()   { return this._control.oldValue; }
+
+    
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        this._control.setValue(value, fireChangeEvent, confirm); 
+    }
 
 
     input; 
+
 
 
     get valueText() { return this.control.valueText; }
@@ -16,6 +23,7 @@ extends Parameter
         this.control.valueText = text;
         this.control.update();
     }
+
 
     
     constructor(name, 
@@ -55,11 +63,23 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
+
+
         this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
             uiSetParam(this, this.value);
         });
+
+
+
+        this.control.addEventListener('confirm', e =>
+        {
+            this.op.valid = false;
+            actionManager.perform(new SetValueAction(this, this.value));
+        });
+
+
 
         this.input.addEventListener('connect', e =>
         {
@@ -67,6 +87,8 @@ extends Parameter
             this.control.inputConnected  = true;
         });
 
+
+        
         this.input.addEventListener('disconnect', e =>
         {
             this.control.style.fontStyle = 'normal';

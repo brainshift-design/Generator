@@ -15,6 +15,7 @@ function initSliderChildren(slider)
 }
 
 
+
 function initSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
@@ -57,6 +58,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.inFocus           = false;
     slider.clicked           = false;
 
+    slider.oldValue;
+
     slider.wrapValue         = false;
     
     slider.enableChangeEvent = true;
@@ -66,13 +69,18 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.valueText         = '';
 
 
+
     initSliderChildren(slider);    
     initSliderTextbox(slider);
 
     
+
     //
 
-    slider.onchange = new Event('change');
+    slider.onchange  = new Event('change');
+    slider.onconfirm = new Event('confirm');
+
+
 
     //
 
@@ -107,11 +115,16 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.buttonDown0_ = true;
             slider.moved        = false;
             slider.clientX      = 0;
+            slider.oldValue     = slider.value;
+
+            slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
-            slider.sv           = slider.value;
 
             slider.focus.style.boxShadow = '0 0 0 1px #18A0FB inset';
-                        
+            
+            
+
+
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
 
@@ -127,12 +140,71 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         }
     });
 
+
+
+    slider.addEventListener('pointermove', function(e)
+    {
+        if (slider.inputConnected)
+            return;
+        
+
+        var rect = slider.getBoundingClientRect();
+        
+        slider.mouseOver = 
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top                                     
+            && e.clientY <  rect.bottom;
+        
+        slider.clientX = e.clientX;
+
+        
+        if (slider.buttonDown0)
+        {
+            //slider.style.boxShadow = '0 0 0 1px #18A0FB';
+            
+            if (slider.isPointerLocked())
+            {
+                slider.movedX += e.movementX;
+                
+                var dx       = slider.sx - slider.movedX;             
+                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                
+                // TODO: if (log) do log scaling
+                var val = slider.oldValue - dx*slider.dragScale*adaptive;
+                
+                const grain = Math.pow(10, this.editDec);
+                val = Math.floor(val / grain) * grain;
+                
+                slider.setValue(val, true, false);
+
+                slider.prevValue = slider.value;
+            }
+            else
+            {
+                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+                {
+                    slider.moved = true;
+                    slider.lockPointer();
+                }
+            }
+        }
+        //else
+        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        
+        // slider.update();
+    });
+    
+    
+    
     slider.addEventListener('losecapture', function()
     {
         slider.buttonDown0 = false;
         slider.mouseOver   = false;
         slider.update();
     });
+
+
 
     slider.addEventListener('pointerup', function(e)
     {
@@ -158,6 +230,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     });    
 
 
+
     document.addEventListener('pointerup', function(e)
     {
         if (   e.button == 0 
@@ -167,6 +240,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.unlockPointer(e.pointerId);
 
             slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+
+            if (slider.value != slider.oldValue)
+                slider.dispatchEvent(slider.onconfirm);
         }
         if (   e.button == 1
             && slider.buttonDown1)
@@ -175,13 +251,14 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         }
     });
 
+
     
     slider.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
             && !slider.inputConnected)
         {
-            slider.style.cursor    = 'ew-resize';
+            slider.style.cursor           = 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';
@@ -190,6 +267,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.update();
         }
     });
+
+
 
     slider.addEventListener('pointerout', function(e)
     {
@@ -202,65 +281,20 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     });
 
 
-    slider.addEventListener('pointermove', function(e)
-    {
-        if (slider.inputConnected)
-            return;
 
-        var rect = slider.getBoundingClientRect();
-        
-        slider.mouseOver = 
-               e.clientX >= rect.left
-            && e.clientX <  rect.right
-            && e.clientY >= rect.top                                     
-            && e.clientY <  rect.bottom;
-        
-        slider.clientX = e.clientX;
-        
-        if (slider.buttonDown0)
-        {
-            //slider.style.boxShadow = '0 0 0 1px #18A0FB';
-            
-            if (slider.isPointerLocked())
-            {
-                slider.movedX += e.movementX;
-                
-                var dx       = slider.sx - slider.movedX;             
-                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-    
-                // TODO: if (log) do log scaling
-                var val = slider.sv - dx*slider.dragScale*adaptive;
-
-                const grain = Math.pow(10, this.editDec);
-                val = Math.floor(val / grain) * grain;
-                
-                slider.setValue(val);
-            }
-            else
-            {
-                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
-                {
-                    slider.moved = true;
-                    slider.lockPointer();
-                }
-            }
-        }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-
-        slider.update();
-    });
-
-    
     slider.addEventListener('wheel', e =>
     {
         if (   !e.ctrlKey
             && !slider.buttonDown1)
         {
             e.stopPropagation();
+
+            slider.oldValue = slider.value;
             slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+            // TODO conform after a delay and/or another action, same with key changes 
         }
     });
+
 
 
     slider.addEventListener('keydown', e =>
@@ -274,6 +308,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     });
 
 
+
     slider.addEventListener('focus', function()
     {
         if (   !graphView.spaceDown
@@ -282,9 +317,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.showTextbox();
     });
 
-    //
 
-    slider.setValue = function(value, fireChangeEvent = true)
+    
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
         const oldValue = slider.value;
 
@@ -296,7 +331,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         else
             value = Math.min(Math.max(slider.min, value), slider.max);
         
-        if (value != oldValue)
+        if (  !confirm
+            || value != oldValue)
             slider.value = value;
 
 
@@ -305,9 +341,17 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && value != oldValue)
+            && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
+
+
+        if (   confirm
+            && slider.enableChangeEvent
+            && value != oldValue)
+            slider.dispatchEvent(slider.onconfirm);
     };
+
+
 
 
     slider.update = function()
@@ -355,6 +399,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     };
 
 
+
     slider.lockPointer = function()
     {
         slider.requestPointerLock =    
@@ -368,6 +413,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.sx     = 0;
     };
 
+
+
     slider.unlockPointer = function()
     {
         document.exitPointerLock =    
@@ -377,16 +424,19 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         document.exitPointerLock();
     };
 
+
+
     slider.isPointerLocked = function()
     {
         return (document.pointerLockElement    === slider 
              || document.mozPointerLockElement === slider);
     }
     
-    //
+
 
     slider.update();
 }
+
 
 
 function onSliderClickTimer(slider)

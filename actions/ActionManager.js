@@ -9,7 +9,8 @@ class ActionManager
     
     perform(action)
     {
-        // this is a fresh new action so clear the redo queue
+        // this is a fresh new action so any 
+        // old redo queue is no longer relevant
         this.redoActions = [];
 
         this.actions.push(action);
@@ -17,6 +18,7 @@ class ActionManager
         action.id      = this.nextActionId++;
         action.manager = this;
         
+        console.log("PERFORM '" + action.name + "'")
         action.perform();
     }
 
@@ -30,6 +32,7 @@ class ActionManager
         var last = removeLast(this.actions);
         this.redoActions.push(last);
 
+        console.log("UNDO '" + last.name + "'")
         last.undo();
     }
 
@@ -43,6 +46,7 @@ class ActionManager
         var last = removeLast(this.redoActions);
         this.actions.push(last);
 
+        console.log("REDO '" + last.name + "'")
         last.redo();
     }
 }

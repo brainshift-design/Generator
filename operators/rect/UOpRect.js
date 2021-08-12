@@ -12,9 +12,9 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#width  = new NumberParam('width',  100, 0.01));
-        this.addParam(this.#height = new NumberParam('height', 100, 0.01));
-        this.addParam(this.#round  = new NumberParam('round',    0, 0));
+        this.addParam(this.#width  = new UNumberParam('width',  100, 0.01));
+        this.addParam(this.#height = new UNumberParam('height', 100, 0.01));
+        this.addParam(this.#round  = new UNumberParam('round',    0, 0));
         
         this.#width ._control.addEventListener('change', () => this.updateRound());
         this.#height._control.addEventListener('change', () => this.updateRound());

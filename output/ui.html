@@ -3142,7 +3142,7 @@ function saveState()
 }
 
 
-class Parameter
+class UParameter
 {
     #type;
     get type() { return this.#type; }
@@ -3171,16 +3171,23 @@ class Parameter
 }
 
 
-class   NumberParam
-extends Parameter
+class   UNumberParam
+extends UParameter
 {
-    get value() { return this._control.value; }
+    get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
 
-    setValue(value, fireChangeEvent = true) { this._control.setValue(value, fireChangeEvent); }
+    get oldValue()   { return this._control.oldValue; }
+
+    
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        this._control.setValue(value, fireChangeEvent, confirm); 
+    }
 
 
     input; 
+
 
 
     get valueText() { return this.control.valueText; }
@@ -3189,6 +3196,7 @@ extends Parameter
         this.control.valueText = text;
         this.control.update();
     }
+
 
     
     constructor(name, 
@@ -3228,11 +3236,23 @@ extends Parameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
+
+
         this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
             uiSetParam(this, this.value);
         });
+
+
+
+        this.control.addEventListener('confirm', e =>
+        {
+            this.op.valid = false;
+            actionManager.perform(new SetValueAction(this, this.value));
+        });
+
+
 
         this.input.addEventListener('connect', e =>
         {
@@ -3240,6 +3260,8 @@ extends Parameter
             this.control.inputConnected  = true;
         });
 
+
+        
         this.input.addEventListener('disconnect', e =>
         {
             this.control.style.fontStyle = 'normal';
@@ -4130,12 +4152,15 @@ function createDiv(node, headerColor)
     node.div.appendChild(node.inner);
 
 
+
     node.div.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.zoomSelecting
             && !graphView.spaceDown)
             e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
     });
+
+
 
     node.div.addEventListener('pointerleave', function(e)
     {
@@ -4144,9 +4169,11 @@ function createDiv(node, headerColor)
             e.target.op.inner.style.boxShadow = 'none';
     });
 
+    
 
     createDivHeader(node, headerColor);
 }     
+
 
 
 function createDivHeader(node, headerColor)
@@ -4166,6 +4193,8 @@ function createDivHeader(node, headerColor)
     node.header.appendChild(node.outputControls);
 
     node.inner.appendChild(node.header);
+
+
 
     node.header.addEventListener('pointerdown', function(e) 
     {
@@ -4205,6 +4234,8 @@ function createDivHeader(node, headerColor)
         }
     });
 
+
+
     node.header.addEventListener('pointermove', function(e) 
     {
         if (node.div.dragging)
@@ -4222,6 +4253,8 @@ function createDivHeader(node, headerColor)
             graphView.updateScroll();
         };
     });
+
+
 
     node.header.addEventListener('pointerup', function(e) 
     {
@@ -4241,6 +4274,7 @@ function createDivHeader(node, headerColor)
     });
     
     
+
     node.header.addEventListener('dblclick', function(e)
     {
         var bounds = node.label.getBoundingClientRect();
@@ -4254,6 +4288,7 @@ function createDivHeader(node, headerColor)
 }
 
 
+
 function createDivLabel(node)
 {
     node.label = document.createElement('div');
@@ -4264,6 +4299,7 @@ function createDivLabel(node)
 
     initLabelTextbox(node);
 }
+
 
 
 function setDivPosition(node, x, y)
@@ -4450,7 +4486,7 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#value = new NumberParam(''));
+        this.addParam(this.#value = new UNumberParam(''));
     }
 }
 
@@ -4471,10 +4507,10 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#min   = new NumberParam('min',  0));
-        this.addParam(this.#max   = new NumberParam('max', 10));
-        this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed', 1, 1));
+        this.addParam(this.#min   = new UNumberParam('min',  0));
+        this.addParam(this.#max   = new UNumberParam('max', 10));
+        this.addParam(this.#scale = new UNumberParam('scale', 1, 1));
+        this.addParam(this.#seed  = new UNumberParam('seed', 1, 1));
 
         this.#max.control.min = this.#min.value;
         this.#min.control.max = this.#max.value;
@@ -4587,9 +4623,9 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#width  = new NumberParam('width',  100, 0.01));
-        this.addParam(this.#height = new NumberParam('height', 100, 0.01));
-        this.addParam(this.#round  = new NumberParam('round',    0, 0));
+        this.addParam(this.#width  = new UNumberParam('width',  100, 0.01));
+        this.addParam(this.#height = new UNumberParam('height', 100, 0.01));
+        this.addParam(this.#round  = new UNumberParam('round',    0, 0));
         
         this.#width ._control.addEventListener('change', () => this.updateRound());
         this.#height._control.addEventListener('change', () => this.updateRound());
@@ -4651,8 +4687,8 @@ extends UOperator
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
+        this.addParam(this.#count = new UNumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new UNumberParam('gap',  10, 0));
     }
 }
 
@@ -4733,8 +4769,8 @@ extends UOperator
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',  10, 0));
+        this.addParam(this.#count = new UNumberParam('count', 7, 1));
+        this.addParam(this.#gap   = new UNumberParam('gap',  10, 0));
     }
 }
 
@@ -4802,8 +4838,10 @@ extends UOperator
 
 class Action
 {
-    id;
     manager;
+ 
+    id;
+    name;
   
     prevAction; // these are used to link actions into sequences
     nextAction; 
@@ -4815,6 +4853,18 @@ class Action
 
     onBeforeUndo;
     onAfterUndo;
+
+
+
+    constructor(name)
+    {
+        this.name = name;
+
+        console.assert(
+               this.name != undefined
+            && this.name != null
+            && this.name != '');
+    }
 
 
 
@@ -4869,7 +4919,8 @@ class ActionManager
     
     perform(action)
     {
-        // this is a fresh new action so clear the redo queue
+        // this is a fresh new action so any 
+        // old redo queue is no longer relevant
         this.redoActions = [];
 
         this.actions.push(action);
@@ -4877,6 +4928,7 @@ class ActionManager
         action.id      = this.nextActionId++;
         action.manager = this;
         
+        console.log("PERFORM '" + action.name + "'")
         action.perform();
     }
 
@@ -4890,6 +4942,7 @@ class ActionManager
         var last = removeLast(this.actions);
         this.redoActions.push(last);
 
+        console.log("UNDO '" + last.name + "'")
         last.undo();
     }
 
@@ -4903,6 +4956,7 @@ class ActionManager
         var last = removeLast(this.redoActions);
         this.actions.push(last);
 
+        console.log("REDO '" + last.name + "'")
         last.redo();
     }
 }
@@ -4916,12 +4970,15 @@ class CreateNodeAction
 extends Action
 {
     opType;
+    
     createdNode = null;    
+
 
 
     constructor(opType)
     {
-        super();
+        super('Create Node');
+        
         this.opType = opType;
     }
 
@@ -4953,7 +5010,8 @@ extends Action
 
     constructor(nodes)
     {
-        super();
+        super('Delete Nodes');
+        
         this.nodes = [...nodes]; // clone the array
     }
 
@@ -5038,7 +5096,56 @@ extends Action
 
 
 
+class SetValueAction
+extends Action
+{
+    param;
 
+    oldValue;
+    newValue;
+
+
+
+    constructor(param, newValue)
+    {
+        super('Set Value');
+
+        this.param    = param;
+        this.newValue = newValue;
+    }
+
+
+
+    perform()
+    {
+        this.oldValue = this.param.oldValue;
+        uiSetParam(this.param, this.newValue);
+
+        console.log("perform oldValue = " + this.oldValue);
+        console.log("perform newValue = " + this.newValue);
+    }
+
+
+
+    undo()
+    {
+        console.log("undo param.value = " + this.param.value);
+        console.log("undo oldValue    = " + this.oldValue);
+
+        this.param.setValue(this.oldValue, true, false);
+    }
+
+
+
+    redo()
+    {
+        uiSetParam(this.param, this.newValue);
+        this.param.setValue(this.newValue, false, false);
+
+        console.log("redo oldValue = " + this.oldValue);
+        console.log("redo newValue = " + this.newValue);
+    }
+}
 
 
 //save('state', null);
@@ -5595,6 +5702,7 @@ function initSliderChildren(slider)
 }
 
 
+
 function initSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
@@ -5637,6 +5745,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.inFocus           = false;
     slider.clicked           = false;
 
+    slider.oldValue;
+
     slider.wrapValue         = false;
     
     slider.enableChangeEvent = true;
@@ -5646,13 +5756,18 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.valueText         = '';
 
 
+
     initSliderChildren(slider);    
     initSliderTextbox(slider);
 
     
+
     //
 
-    slider.onchange = new Event('change');
+    slider.onchange  = new Event('change');
+    slider.onconfirm = new Event('confirm');
+
+
 
     //
 
@@ -5687,11 +5802,16 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.buttonDown0_ = true;
             slider.moved        = false;
             slider.clientX      = 0;
+            slider.oldValue     = slider.value;
+
+            slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
-            slider.sv           = slider.value;
 
             slider.focus.style.boxShadow = '0 0 0 1px #18A0FB inset';
-                        
+            
+            
+
+
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
 
@@ -5707,12 +5827,71 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         }
     });
 
+
+
+    slider.addEventListener('pointermove', function(e)
+    {
+        if (slider.inputConnected)
+            return;
+        
+
+        var rect = slider.getBoundingClientRect();
+        
+        slider.mouseOver = 
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top                                     
+            && e.clientY <  rect.bottom;
+        
+        slider.clientX = e.clientX;
+
+        
+        if (slider.buttonDown0)
+        {
+            //slider.style.boxShadow = '0 0 0 1px #18A0FB';
+            
+            if (slider.isPointerLocked())
+            {
+                slider.movedX += e.movementX;
+                
+                var dx       = slider.sx - slider.movedX;             
+                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                
+                // TODO: if (log) do log scaling
+                var val = slider.oldValue - dx*slider.dragScale*adaptive;
+                
+                const grain = Math.pow(10, this.editDec);
+                val = Math.floor(val / grain) * grain;
+                
+                slider.setValue(val, true, false);
+
+                slider.prevValue = slider.value;
+            }
+            else
+            {
+                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+                {
+                    slider.moved = true;
+                    slider.lockPointer();
+                }
+            }
+        }
+        //else
+        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        
+        // slider.update();
+    });
+    
+    
+    
     slider.addEventListener('losecapture', function()
     {
         slider.buttonDown0 = false;
         slider.mouseOver   = false;
         slider.update();
     });
+
+
 
     slider.addEventListener('pointerup', function(e)
     {
@@ -5738,6 +5917,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     });    
 
 
+
     document.addEventListener('pointerup', function(e)
     {
         if (   e.button == 0 
@@ -5747,6 +5927,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.unlockPointer(e.pointerId);
 
             slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+
+            if (slider.value != slider.oldValue)
+                slider.dispatchEvent(slider.onconfirm);
         }
         if (   e.button == 1
             && slider.buttonDown1)
@@ -5755,13 +5938,14 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         }
     });
 
+
     
     slider.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
             && !slider.inputConnected)
         {
-            slider.style.cursor    = 'ew-resize';
+            slider.style.cursor           = 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';
@@ -5770,6 +5954,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.update();
         }
     });
+
+
 
     slider.addEventListener('pointerout', function(e)
     {
@@ -5782,65 +5968,20 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     });
 
 
-    slider.addEventListener('pointermove', function(e)
-    {
-        if (slider.inputConnected)
-            return;
 
-        var rect = slider.getBoundingClientRect();
-        
-        slider.mouseOver = 
-               e.clientX >= rect.left
-            && e.clientX <  rect.right
-            && e.clientY >= rect.top                                     
-            && e.clientY <  rect.bottom;
-        
-        slider.clientX = e.clientX;
-        
-        if (slider.buttonDown0)
-        {
-            //slider.style.boxShadow = '0 0 0 1px #18A0FB';
-            
-            if (slider.isPointerLocked())
-            {
-                slider.movedX += e.movementX;
-                
-                var dx       = slider.sx - slider.movedX;             
-                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-    
-                // TODO: if (log) do log scaling
-                var val = slider.sv - dx*slider.dragScale*adaptive;
-
-                const grain = Math.pow(10, this.editDec);
-                val = Math.floor(val / grain) * grain;
-                
-                slider.setValue(val);
-            }
-            else
-            {
-                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
-                {
-                    slider.moved = true;
-                    slider.lockPointer();
-                }
-            }
-        }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-
-        slider.update();
-    });
-
-    
     slider.addEventListener('wheel', e =>
     {
         if (   !e.ctrlKey
             && !slider.buttonDown1)
         {
             e.stopPropagation();
+
+            slider.oldValue = slider.value;
             slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+            // TODO conform after a delay and/or another action, same with key changes 
         }
     });
+
 
 
     slider.addEventListener('keydown', e =>
@@ -5854,6 +5995,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     });
 
 
+
     slider.addEventListener('focus', function()
     {
         if (   !graphView.spaceDown
@@ -5862,9 +6004,9 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.showTextbox();
     });
 
-    //
 
-    slider.setValue = function(value, fireChangeEvent = true)
+    
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
         const oldValue = slider.value;
 
@@ -5876,7 +6018,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         else
             value = Math.min(Math.max(slider.min, value), slider.max);
         
-        if (value != oldValue)
+        if (  !confirm
+            || value != oldValue)
             slider.value = value;
 
 
@@ -5885,9 +6028,17 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && value != oldValue)
+            && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
+
+
+        if (   confirm
+            && slider.enableChangeEvent
+            && value != oldValue)
+            slider.dispatchEvent(slider.onconfirm);
     };
+
+
 
 
     slider.update = function()
@@ -5935,6 +6086,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     };
 
 
+
     slider.lockPointer = function()
     {
         slider.requestPointerLock =    
@@ -5948,6 +6100,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         slider.sx     = 0;
     };
 
+
+
     slider.unlockPointer = function()
     {
         document.exitPointerLock =    
@@ -5957,16 +6111,19 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         document.exitPointerLock();
     };
 
+
+
     slider.isPointerLocked = function()
     {
         return (document.pointerLockElement    === slider 
              || document.mozPointerLockElement === slider);
     }
     
-    //
+
 
     slider.update();
 }
+
 
 
 function onSliderClickTimer(slider)

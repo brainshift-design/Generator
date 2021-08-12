@@ -1,7 +1,9 @@
 class Action
 {
-    id;
     manager;
+ 
+    id;
+    name;
   
     prevAction; // these are used to link actions into sequences
     nextAction; 
@@ -13,6 +15,18 @@ class Action
 
     onBeforeUndo;
     onAfterUndo;
+
+
+
+    constructor(name)
+    {
+        this.name = name;
+
+        console.assert(
+               this.name != undefined
+            && this.name != null
+            && this.name != '');
+    }
 
 
 

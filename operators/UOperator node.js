@@ -15,12 +15,15 @@ function createDiv(node, headerColor)
     node.div.appendChild(node.inner);
 
 
+
     node.div.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.zoomSelecting
             && !graphView.spaceDown)
             e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
     });
+
+
 
     node.div.addEventListener('pointerleave', function(e)
     {
@@ -29,9 +32,11 @@ function createDiv(node, headerColor)
             e.target.op.inner.style.boxShadow = 'none';
     });
 
+    
 
     createDivHeader(node, headerColor);
 }     
+
 
 
 function createDivHeader(node, headerColor)
@@ -51,6 +56,8 @@ function createDivHeader(node, headerColor)
     node.header.appendChild(node.outputControls);
 
     node.inner.appendChild(node.header);
+
+
 
     node.header.addEventListener('pointerdown', function(e) 
     {
@@ -90,6 +97,8 @@ function createDivHeader(node, headerColor)
         }
     });
 
+
+
     node.header.addEventListener('pointermove', function(e) 
     {
         if (node.div.dragging)
@@ -107,6 +116,8 @@ function createDivHeader(node, headerColor)
             graphView.updateScroll();
         };
     });
+
+
 
     node.header.addEventListener('pointerup', function(e) 
     {
@@ -126,6 +137,7 @@ function createDivHeader(node, headerColor)
     });
     
     
+
     node.header.addEventListener('dblclick', function(e)
     {
         var bounds = node.label.getBoundingClientRect();
@@ -139,6 +151,7 @@ function createDivHeader(node, headerColor)
 }
 
 
+
 function createDivLabel(node)
 {
     node.label = document.createElement('div');
@@ -149,6 +162,7 @@ function createDivLabel(node)
 
     initLabelTextbox(node);
 }
+
 
 
 function setDivPosition(node, x, y)
