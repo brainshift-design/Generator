@@ -30,13 +30,13 @@ class Action
 
 
 
-    perform() {}
+    do() {}
 
 
 
     redo()
     {
-        this.perform();
+        this.do();
     }
 
 

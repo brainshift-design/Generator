@@ -7,7 +7,7 @@ class ActionManager
    
     
     
-    perform(action)
+    do(action)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
@@ -18,8 +18,8 @@ class ActionManager
         action.id      = this.nextActionId++;
         action.manager = this;
         
-        console.log("PERFORM '" + action.name + "'")
-        action.perform();
+        console.log("DO '" + action.name + "'")
+        action.do();
     }
 
 

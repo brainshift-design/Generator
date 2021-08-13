@@ -76,7 +76,7 @@ extends UParameter
         this.control.addEventListener('confirm', e =>
         {
             this.op.valid = false;
-            actionManager.perform(new SetValueAction(this, this.value));
+            actionManager.do(new SetValueAction(this, this.value));
         });
 
 

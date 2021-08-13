@@ -359,11 +359,11 @@ button svg
 
     <div id='presets'></div>
 
-    <button class='button' id='btnCreateNumber' onclick='actionManager.perform(new CreateNodeAction("number")); this.blur();'>Num</button>
-    <button class='button' id='btnCreateRandom' onclick='actionManager.perform(new CreateNodeAction("random")); this.blur();'>Rnd</button>
-    <button class='button' id='btnCreateRect'   onclick='actionManager.perform(new CreateNodeAction("rect"  )); this.blur();'>Rct</button>
-    <button class='button' id='btnCreateRow'    onclick='actionManager.perform(new CreateNodeAction("row"   )); this.blur();'>Row</button>
-    <button class='button' id='btnCreateColumn' onclick='actionManager.perform(new CreateNodeAction("column")); this.blur();'>Col</button>
+    <button class='button' id='btnCreateNumber' onclick='actionManager.do(new CreateNodeAction("number")); this.blur();'>Num</button>
+    <button class='button' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>Rnd</button>
+    <button class='button' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>Rct</button>
+    <button class='button' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>Row</button>
+    <button class='button' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>Col</button>
     <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
 
 </div>
@@ -3249,7 +3249,7 @@ extends UParameter
         this.control.addEventListener('confirm', e =>
         {
             this.op.valid = false;
-            actionManager.perform(new SetValueAction(this, this.value));
+            actionManager.do(new SetValueAction(this, this.value));
         });
 
 
@@ -3315,7 +3315,7 @@ class UGraph
     
     
 
-    createNode(opType)
+    createNode(opType, createdNodeId = -1)
     {
         var node;
 
@@ -3327,6 +3327,12 @@ class UGraph
             case 'row':    node = new UOpRow();    break;
             case 'column': node = new UOpColumn(); break;
             //case 'spread': node = new UOpSpread(); break;
+        }
+        
+        if (createdNodeId > -1)
+        {
+            UOperator.nextId--;
+            node.id = createdNodeId;
         }
         
         this.addNode(node);
@@ -4868,13 +4874,13 @@ class Action
 
 
 
-    perform() {}
+    do() {}
 
 
 
     redo()
     {
-        this.perform();
+        this.do();
     }
 
 
@@ -4917,7 +4923,7 @@ class ActionManager
    
     
     
-    perform(action)
+    do(action)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
@@ -4928,8 +4934,8 @@ class ActionManager
         action.id      = this.nextActionId++;
         action.manager = this;
         
-        console.log("PERFORM '" + action.name + "'")
-        action.perform();
+        console.log("DO '" + action.name + "'")
+        action.do();
     }
 
 
@@ -4970,8 +4976,9 @@ class CreateNodeAction
 extends Action
 {
     opType;
-    
-    createdNode = null;    
+    createdNodeId;    
+
+    prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
 
 
@@ -4984,18 +4991,27 @@ extends Action
 
 
 
-    perform()
+    do()
     {
-        this.createdNode = uiCreateNode(this.opType);
+        this.prevSelectedIds = graphView.getSelectedIds();
+        this.createdNodeId   = uiCreateNode(this.opType).id;
     }
 
 
 
     undo()
     {
-        uiDeleteNodes([this.createdNode]);
-        this.createdNode = null;
+        uiDeleteNodes([this.createdNodeId]);
         UOperator.nextId--;
+
+        graphView.selectFromIds(this.prevSelectedIds);
+    }
+
+
+
+    redo()
+    {
+        uiCreateNode(this.opType, this.createdNodeId);
     }
 }
 
@@ -5017,7 +5033,7 @@ extends Action
 
 
 
-    perform()
+    do()
     {
         // TODO remember and remove the connections
         uiDeleteNodes(this.nodes, this.id);
@@ -5036,30 +5052,40 @@ extends Action
 class SelectNodesAction
 extends Action
 {
-    selected       = [];
-    selectedBefore = [];
+    selectedIds     = [];
+    prevSelectedIds = [];
 
 
 
-    constructor(nodes)
+    constructor(selectedIds, prevSelectedIds)
     {
-        super();
+        super('Select Nodes');
 
-        selected = [...nodes];
+        this.selectedIds     = [...selectedIds];
+        this.prevSelectedIds = [...prevSelectedIds];
     }
 
 
 
-    perform()
+    do()
     {
-
+        // this happens in the UI
     }
 
 
 
     undo()
     {
+        graphView.selectFromIds(this.prevSelectedIds);
+        console.log(graphView.selected);
+    }
 
+
+
+    redo()
+    {
+        graphView.selectFromIds(this.selectedIds);
+        console.log(graphView.selected);
     }
 }
 
@@ -5076,7 +5102,7 @@ extends Action
 
 
 
-    perform()
+    do()
     {
 
     }
@@ -5116,22 +5142,16 @@ extends Action
 
 
 
-    perform()
+    do()
     {
         this.oldValue = this.param.oldValue;
         uiSetParam(this.param, this.newValue);
-
-        console.log("perform oldValue = " + this.oldValue);
-        console.log("perform newValue = " + this.newValue);
     }
 
 
 
     undo()
     {
-        console.log("undo param.value = " + this.param.value);
-        console.log("undo oldValue    = " + this.oldValue);
-
         this.param.setValue(this.oldValue, true, false);
     }
 
@@ -5141,9 +5161,6 @@ extends Action
     {
         uiSetParam(this.param, this.newValue);
         this.param.setValue(this.newValue, false, false);
-
-        console.log("redo oldValue = " + this.oldValue);
-        console.log("redo newValue = " + this.newValue);
     }
 }
 
@@ -5202,10 +5219,9 @@ function uiNotify(text)
 
 
 
-function uiCreateNode(opType, node = null)
+function uiCreateNode(opType, createdId = -1)
 {
-    if (node == null)
-        node = uiGraph.createNode(opType);
+    var node = uiGraph.createNode(opType, createdId);
 
     
     generator.postMessage({
@@ -5239,9 +5255,8 @@ function uiCreateNode(opType, node = null)
 
 
 
-function uiDeleteNodes(nodes, actionId)
+function uiDeleteNodes(nodeIds, actionId)
 {
-    const nodeIds = nodes.map(n => n.id);
     uiGraph.deleteNodes(nodeIds);
     
     generator.postMessage({
@@ -5582,7 +5597,7 @@ document.addEventListener('keydown', e =>
     // delete
     if (e.key == 'Delete')
     {
-        actionManager.perform(new DeleteNodesAction(graphView.selected)); 
+        actionManager.do(new DeleteNodesAction(graphView.selected)); 
         graphView._selected = [];
     }
 
@@ -6569,75 +6584,21 @@ function onSelectClickTimer(select)
 graphView.wires = [];
 
 
-graphView.overInput  = null;
-graphView.overOutput = null;
+graphView.overInput     = null;
+graphView.overOutput    = null;
+   
+graphView.tempConn      = null;
+   
+   
+graphView.selecting     = false;
+graphView.selectBox     = Rect.NaN;
 
-graphView.tempConn   = null;
+graphView.btn1down      = false;
 
-
-graphView.selecting  = false;
-graphView.selectBox  = Rect.NaN;
-
-graphView.button1down = false;
-
-graphView._selected = [];
-
-Object.defineProperty(graphView, 'selected',
-{
-    get: () => graphView._selected,
-    set: selected =>
-    {
-        for (const node of graphView._selected)            
-            node.setSelected(false);
-    
-        graphView._selected = selected;
-    
-        for (const node of graphView._selected)
-            node.setSelected(true);
-    }
-});
-
-
-graphView._pan = {x:0, y:0};
-  
-Object.defineProperty(graphView, 'pan',
-{
-    get: () => graphView._pan,
-    set: pan =>
-    {
-        if (graphView._pan == pan) return;
-        graphView._pan = pan;
-        graphView.updatePanAndZoom();
-    }
-});
-
-graphView.panning = false;
-graphView.panStart;
-
-graphView.spaceDown = false;
-
-graphView._zoom   = 1;
-graphView.oldZoom = 1;
-
-
-Object.defineProperty(graphView, 'zoom',
-{
-    get: () => graphView._zoom,
-    set: zoom =>
-    {
-        if (graphView._zoom == zoom) return;
-        graphView._zoom = zoom;
-        graphView.updatePanAndZoom();
-    }
-});
-
-graphView.zooming   = false;
-graphView.zoomStart = 1;
-
-graphView.zoomSelecting = false;
 
 
 graphView.pStart = {x:0, y:0};
+
 
 
 graphView.addEventListener('pointerdown', e =>
@@ -6645,7 +6606,7 @@ graphView.addEventListener('pointerdown', e =>
     graphView.pStart = { x: e.clientX, 
                          y: e.clientY };
 
-    if (   e.button == 0
+    if (    e.button == 0
         && !graphView.panning)
     {
         if (graphView.spaceDown)
@@ -6678,19 +6639,47 @@ graphView.addEventListener('pointerdown', e =>
         }
         else // selection
         {
+            graphView._prevSelected = [...graphView.selected];
+
             if (!e.shiftKey)
-            {
                 graphView.startSelection(e.clientX, e.clientY);
-            }
         }
     }
     
     else if (e.button == 1)
     {
-        graphView.button1down = true;
+        graphView.btn1down = true;
         graphView.startPan(e.pointerId);
     }
 });
+
+
+
+graphView.addEventListener('pointermove', e =>
+{
+    graphView.p = { 
+        x: e.clientX, 
+        y: e.clientY };
+
+    if (graphView.panning)
+    {
+        const dp = subv(graphView.p, graphView.pStart);
+        graphView.pan = addv(graphView.panStart, dp);
+    }
+    
+    else if (graphView.selecting)
+        graphView.updateSelection(e.clientX, e.clientY);
+    
+    else if (graphView.zoomSelecting)
+        graphView.updateZoomSelection(e.clientX, e.clientY);
+    
+    else if (graphView.tempConn)
+    {
+             if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
+    }
+});
+
 
 
 graphView.addEventListener('pointerup', e =>
@@ -6721,8 +6710,8 @@ graphView.addEventListener('pointerup', e =>
         graphView.endPan(e.pointerId, false);
     }
 
-    else if (   e.button == 0
-        && !graphView.selectBox.isNaN)
+    else if (e.button == 0
+         && !graphView.selectBox.isNaN)
         graphView.endSelection();
 
     else if (e.button == 0
@@ -6779,44 +6768,15 @@ graphView.addEventListener('pointerup', e =>
           && graphView.panning)
     {
         graphView.endPan(e.pointerId, true);
-        graphView.button1down = false;
+        graphView.btn1down = false;
     }
 });
 
-
-graphView.addEventListener('pointermove', e =>
-{
-    graphView.p = { x: e.clientX, y: e.clientY };
-
-    if (graphView.panning)
-    {
-        const dp  = subv(graphView.p, graphView.pStart);
-        const pan = addv(graphView.panStart, dp);
-
-        graphView.pan = pan;
-    }
-
-    else if (graphView.selecting)
-    {
-        graphView.updateSelection(e.clientX, e.clientY);
-    }
-
-    else if (graphView.zoomSelecting)
-    {
-        graphView.updateZoomSelection(e.clientX, e.clientY);
-    }
-
-    else if (graphView.tempConn)
-    {
-             if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
-        else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
-    }
-});
 
 
 graphView.addEventListener('wheel', e =>
 {
-    if (graphView.button1down)
+    if (graphView.btn1down)
         return;
 
 
@@ -6850,6 +6810,7 @@ graphView.addEventListener('wheel', e =>
 });
 
 
+
 graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new UConnection(output, null);
@@ -6859,6 +6820,7 @@ graphView.startConnectionFromOutput = output =>
     graphView.tempConn.wire.output = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
 };
+
 
 
 graphView.startConnectionFromInput = input =>
@@ -6872,11 +6834,13 @@ graphView.startConnectionFromInput = input =>
 };
 
 
+
 graphView.cancelConnection = () =>
 {
     graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
 };
+
 
 
 graphView.getAllNodeBounds = () =>
@@ -6888,6 +6852,7 @@ graphView.getAllNodeBounds = () =>
 
     return bounds;
 };
+
 
 
 graphView.getNodeBounds = () =>
@@ -6915,39 +6880,184 @@ graphView.getNodeBounds = () =>
 };
 
 
+
 graphView.putNodeOnTop = node =>
 {
     const topIndices = 
-          1 
-        + node.inputs.filter(i => i.connected).length 
+    1 
+    + node.inputs.filter(i => i.connected).length 
         + (!!node.output && node.output.connected ? 1 : 0);
-
-    for (const n of uiGraph.nodes)
+        
+        for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
+        
+        var z = Number.MAX_SAFE_INTEGER;
 
-    var z = Number.MAX_SAFE_INTEGER;
-
-    for (const input of node.inputs.filter(i => i.connected))
+        for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;
-
-    if (!!node.output)
+        
+        if (!!node.output)
     {
         for (const input of node.output.connectedInputs)
-            input.connection.wire.style.zIndex = z--;
+        input.connection.wire.style.zIndex = z--;
     }
-
+    
     node.div.style.zIndex = z;
 };
 
 
-graphView.getValidSelection = () =>
+
+graphView.updateNodeTransform = function(node)
 {
-    return new Rect(
-        graphView.selectBox.x + Math.min(graphView.selectBox.w, 0),
-        graphView.selectBox.y + Math.min(graphView.selectBox.h, 0),
-        Math.abs(graphView.selectBox.w),
-        Math.abs(graphView.selectBox.h));
+    node.div.style.transformOrigin = 
+          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+    
+    node.div.style.transform =
+          'translate(' 
+        + (graphView.pan.x * graphView.zoom) + 'px, '
+        + (graphView.pan.y * graphView.zoom) + 'px) '
+        + 'scale(' + graphView.zoom + ')';
+
+    for (const input of node.inputs)
+    {
+        if (input.connected)
+            graphView.updateWireTransform(input.connection.wire);        
+    }
+
+    if (node.output)
+    {
+        for (const input of node.output.connectedInputs)
+            graphView.updateWireTransform(input.connection.wire);        
+    }
 };
+
+
+
+graphView.updateWireTransform = function(wire)
+{
+    wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
+    wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
+
+    wire.setAttribute('viewBox',
+                0
+        + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
+        + ' ' + graphView.clientWidth  / graphView.zoom
+        + ' ' + graphView.clientHeight / graphView.zoom);
+
+    wire.update();
+};
+
+
+
+graphView.addWire = wire =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    graphView.updateWireTransform(wire);
+    wire.update();
+};
+
+
+
+graphView.addWireFromOutput = (wire, output) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);
+    //wire.updateFromOutput(output);  
+};
+
+
+
+graphView.addWireFromInput = (wire, input) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    //wire.updateFromInput(input);  
+};
+
+
+
+graphView.removeWire = wire =>
+{
+    graphView.removeChild(wire);    
+    removeFromArray(graphView.wires, wire);
+};
+
+
+graphView._pan = {x:0, y:0};
+  
+Object.defineProperty(graphView, 'pan',
+{
+    get: () => graphView._pan,
+    set: pan =>
+    {
+        if (graphView._pan == pan) return;
+        graphView._pan = pan;
+        graphView.updatePanAndZoom();
+    }
+});
+
+
+
+graphView.panning   = false;
+graphView.panStart;
+
+graphView.spaceDown = false;
+
+
+graphView._zoom     = 1;
+graphView.oldZoom   = 1;
+
+Object.defineProperty(graphView, 'zoom',
+{
+    get: () => graphView._zoom,
+    set: zoom =>
+    {
+        if (graphView._zoom == zoom) return;
+        graphView._zoom = zoom;
+        graphView.updatePanAndZoom();
+    }
+});
+
+
+
+graphView.zooming   = false;
+graphView.zoomStart = 1;
+
+graphView.zoomSelecting = false;
+
+
+
+graphView.updatePanAndZoom = () =>
+{
+    for (const node of uiGraph.nodes)
+        graphView.updateNodeTransform(node);
+
+    graphView.updateScroll();
+};
+
+
+
+graphView.startPan = pointerId =>
+{
+    graphView.panning  = true;
+    graphView.panStart = graphView.pan;
+    graphView.setPointerCapture(pointerId);
+    graphView.setPanCursor();
+};
+
+
+
+graphView.endPan = (pointerId, changeCursor) =>
+{
+    graphView.panning = false;
+    graphView.releasePointerCapture(pointerId);
+
+    if (changeCursor)
+        graphView.style.cursor = 'auto';
+};
+
 
 
 graphView.startZoomSelection = (x, y) =>
@@ -6958,6 +7068,7 @@ graphView.startZoomSelection = (x, y) =>
     selectBox.style.visibility = 'visible';
     graphView.updateZoomSelectBox();
 };
+
 
 
 graphView.updateZoomSelection = (x, y) =>
@@ -6971,6 +7082,7 @@ graphView.updateZoomSelection = (x, y) =>
 };
 
 
+
 graphView.updateZoomSelectBox = () =>
 {
     var selection = graphView.getValidSelection();
@@ -6980,6 +7092,7 @@ graphView.updateZoomSelectBox = () =>
     selectBox.style.width  = Math.abs(selection.w);
     selectBox.style.height = Math.abs(selection.h);
 };
+
 
 
 graphView.endZoomSelection = (zoom) =>
@@ -7017,162 +7130,12 @@ graphView.endZoomSelection = (zoom) =>
 };
 
 
-graphView.startSelection = (x, y) =>
-{
-    graphView.selecting = true;
-    graphView.selectBox = new Rect(x, y, 0, 0);
-    
-    selectBox.style.visibility = 'visible';
-    graphView.updateSelectBox();
-};
-
-
-graphView.updateSelection = (x, y) =>
-{
-    if (!graphView.selecting) return;
-
-    graphView.selectBox.w = x - graphView.selectBox.x;
-    graphView.selectBox.h = y - graphView.selectBox.y;
-
-    graphView.updateSelectBox();
-};
-
-
-graphView.updateSelectBox = () =>
-{
-    var selection = graphView.getValidSelection();
-
-    selectBox.style.left   = selection.x + Math.min(selection.w, 0);
-    selectBox.style.top    = selection.y + Math.min(selection.h, 0);
-    selectBox.style.width  = Math.abs(selection.w);
-    selectBox.style.height = Math.abs(selection.h);
-
-    const selected = [];
-
-    for (const node of uiGraph.nodes)
-    {
-        if (rectsIntersect(
-                Rect.fromTypical(node.div.getBoundingClientRect()), 
-                graphView.getValidSelection()))
-            selected.push(node);
-    }
-
-    graphView.selected = selected;
-};
-
-graphView.endSelection = () =>
-{
-    graphView.selecting = false;
-    graphView.selectBox = Rect.NaN;
-    selectBox.style.visibility = 'hidden';
-};
-
-
-graphView.updatePanAndZoom = () =>
-{
-    for (const node of uiGraph.nodes)
-        graphView.updateNodeTransform(node);
-
-    graphView.updateScroll();
-};
-
-
-graphView.updateNodeTransform = function(node)
-{
-    node.div.style.transformOrigin = 
-          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-    
-    node.div.style.transform =
-          'translate(' 
-        + (graphView.pan.x * graphView.zoom) + 'px, '
-        + (graphView.pan.y * graphView.zoom) + 'px) '
-        + 'scale(' + graphView.zoom + ')';
-
-    for (const input of node.inputs)
-    {
-        if (input.connected)
-            graphView.updateWireTransform(input.connection.wire);        
-    }
-
-    if (node.output)
-    {
-        for (const input of node.output.connectedInputs)
-            graphView.updateWireTransform(input.connection.wire);        
-    }
-};
-
-
-graphView.updateWireTransform = function(wire)
-{
-    wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
-    wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
-
-    wire.setAttribute('viewBox',
-                0
-        + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
-        + ' ' + graphView.clientWidth  / graphView.zoom
-        + ' ' + graphView.clientHeight / graphView.zoom);
-
-    wire.update();
-};
-
-
-graphView.addWire = wire =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);  
-    graphView.updateWireTransform(wire);
-    wire.update();
-};
-
-
-graphView.addWireFromOutput = (wire, output) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);
-    //wire.updateFromOutput(output);  
-};
-
-
-graphView.addWireFromInput = (wire, input) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);  
-    //wire.updateFromInput(input);  
-};
-
-
-graphView.removeWire = wire =>
-{
-    graphView.removeChild(wire);    
-    removeFromArray(graphView.wires, wire);
-};
-
-
-graphView.startPan = pointerId =>
-{
-    graphView.panning  = true;
-    graphView.panStart = graphView.pan;
-    graphView.setPointerCapture(pointerId);
-    graphView.setPanCursor();
-};
-
-
-graphView.endPan = (pointerId, changeCursor) =>
-{
-    graphView.panning = false;
-    graphView.releasePointerCapture(pointerId);
-
-    if (changeCursor)
-        graphView.style.cursor = 'auto';
-};
-
 
 graphView.setPanCursor = () =>
 {
     graphView.style.cursor = 'url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij48aW1hZ2UgeGxpbms6aHJlZj0iZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFFQUFBQUJBQ0FZQUFBQ3FhWEhlQUFBSHFrbEVRVlI0WHUyYWY4aVY1Um5IUDlhbXpjM0tkRERkSDJ2WitpUEQvdEJTSEtLQ1EyVmJaTWdnbDAxTENUUmJ0Q1hLSFA1Z1N1UWZNZGtmZ3lrMkZLTWtjU0wrV0RKbExOU2xwaWtSaEdRU1VTMU4zV2JiYW5OOG50M1h1N3ZIOXpYUE9jOXp3dDczZ3B2M25QT2U4enpQOWIyLzE4Lzc2a1UzbDE3ZFhIOTZBT2hoUURkSG9NY0V1amtCZXB4Z2p3bTAwUVFFTzFiYzlnSVFxNDJQOHY5YnRZTUIzdU9xdEs0R0JnRTNBdThBYndML1R1cy9nS3V0VWpjQVhsK2x2d0I4RVZnRXpNODBmQkZZRFR3UGZGd0NvaTNNcUJzQWxWZnhQc0R2Z0xFcVAyVElFSTRmUDU3djlGVGdqOEJOd0YrQk54SWJaRWV0ektnRGdMQnphYS95MXdEZkIzNnJ4cHMyYldMS2xDbWNPSEdDdVhQbnNtM2JOai9lQlh3TnVDMmhjaEJZRE93QlBrcnNxTVU4cWdTZ2JPdlMzcDN2Qzh3R2ZqNXk1RWoyN2R2WHNmT3JWNjltOW16LzFhVThEdndhK0ZkZElGUUZRRGc1ZDF6RjF3SERnZXVBVjREWGdBZVhMRm5DNHNWdTdQOWt6NTQ5akI4L3ZuanQ1K1BHamFOZnYzNXMzYm9Wdnd1OEM0d0FQZ0QrbVh5RXZxRXlxUUtBY0hTOTA0NmY3dXJwTGdYQXNXUEhHRHAwYU1kUGUvWHFlTFFKd0NIZ2ZES0hTazJoQ2dEQzBYMEplQWFZcUJaYnRteGgrUERoTEZpd2dIWHJKQVRGcm5iRmdBc1hQcm14TWtPR0FQY0RMd0IvU3l3d1dsVEdnbFlCOFBkU1h1Vy9BdndaK1BxcVZhdVlOMjlleDI0T0dEQ0EwNmRQTnd2QVE4bEpHaDFrZ2Y1QUZnaEN5MnhvRlFCdFgrcC9PZGw3RWR2S3U3bDA2ZEpDK1NZWjhDandUV0JrOGlWUEF5K1Y4b2FtR1ZFRkFJYTVmc0FOd0tzMUFOQ1pTM2tTK0VVV0hjd1htcEpXQWREK3BmKzF3SURrOGF0bUFLTkhqMmI1OHVYSXBPUVhWRlpmc3pmNUJYT0ZwbGpRS2dCaC80YTdnY0RMVlROZzJMQmhIRGx5cEdOM1I0MGF4Zjc5KzMwdkEzNlovRUtFeUlaWlVBVUFKam9CZ09HcVN3WVlBVko4dnlnUDZDb0s3TjY5dThnUFFzS2ZKRDh3SmFYT0g2WVErWmtDOEZYQUZMWmRBSGl2SHdCbmdMOG5mOUN3R1ZURmdPdVRDYlFUQU0zdFhzREV5eHpoSDgzNGdTc1pnTVBBRHhNQTV4SUFEZWNGVnpJQWVzYjdnRk9BQU9nSGFnY2dBSXUvRmorR3dYQ0NCenJ6QVRvK25WZkZUckN0QU9TbGJsUis2aHIxZmlSQ3BzS2RPa0hqOTlpeFl5K0tBZ0tqNk8xektWZUpuVVFCQVpoZVlrRERDZEhsbUVBb2JNenZiMDBEV0tHNTY2YSttNjE5QUIzaG56b0RvT0hZZElrZlpHR3dMUUJFc2VOT1c2ditDcml6aytjek0xbWJtaGNYTWVCS0JzQlUxMkpITy84TmNJL0tyRnk1a2hFalJuRDQ4T0hDcnMrZDB3Y1ZEUXM3UUxVQ0VQNEVxSjBCN3I3S1creVlkeityY3VYR3hjR0RCMW0wYUJFN2R1em8yT2h5VmxjbEE5b0pnTHZ2amxycVBnQThZVXBhZGxhaDNMSmx5enFhSFo4WEFLTFEwY1BQQVg1V0xrektPN3RyMXk3bXo1L1BvVU5GU1ZDTHRKTUJPajRMSFV2ZE85TGhSY0dBdkRncGEzbisvSG42OXZWbjljaG5CWUNsN25KZ3NtcHQzNzZkU1pNbTFhUGhwMXkxblFEa0ptQ3o0MmJnS2VBYlB1UEdqUnVaT3RVRG5mWktPd0hJbmFCSmp1V3VKemNMMCtFbWE5ZXVaY2FNR1cxRm9BUkExQUkyVEswRktzMEVEWU9SNjBlcWE5L3ZGdUNud0xmVXZOd0JyaHVOVWlhWUYwT1d3NVVDb0M2UkNJVXpOQlYyYVFZL0FXNzFTeXRXckdEaFFvbFJ2OHlhTllzMWE5WjRvejhBUDY2N0dveFVPRnJmTWtGekVBUVBNMlhDN1Q2TkFBaEUzYUx6M2JsenA3ZDVEbGlXQUFnVHFLVWN0aGpTSVFxQ1RBZ1FCRUxuS0FpR3llSXdSSk9vVXdZT0hNaXBVN1lBaXFKTUVPd0lDWUFtVUFzQTNxd3pFS3dHZ3cyUEFhUDlvazVSNTFpSDdOMjd0MmlSSi9rZThIbzZPQlVBYTVGYWU0S0NFSkhCNGtnbUNJTG1JQkNQeEFDRTRkRXdXYlZNbno2ZDlldlhlMW1yVCszL0wxbFRWQUFhbHN2cEIrUVhEUkRDSER3UHpFRXdaYlpYd01TSkV6OVJJRFg4WktVZmJONjh1UmlzU0xJQStEM3dQbkEyaFVBUFJ4cVdSZ0h3QnJsakRDYVlMa2VFZUJENHJsLzBkUGpBZ2FKTDFwS2NPWE9HL3YyOWZDRk9rM2dvOGw2cEk5eHdDQXhsbW5tNHZGR2lZd3dtaEUvNEVYQjNGVXpJaHlpQXQ0RlppZnA2UW5lLzZUT0JWZ0NJMytZTmt6SUltc0xEZm5ITW1ERkZtSnc4dVNnbExrdk9uajNMaGcwYm1ETkhxeXJFM244a1BpcnYxRWljQnpnejBKUTBZd0w1amZMcGtKZ1IwQnhrZ2tzUXpKWDlqSmt6WnpKdDJqUW1UQ2pjUktkeTlPalJRbkhYeVpNbjR6c2VoeitSS0cvWVUvbUkvZHArdytFdkx0d3FBRGtUSW0yV0NTcXNjM1E1K25ZWDhKMjRhZS9ldlJrOGVEQ0RCZzJpVDUraWk0WjI3dVNZZnpQeGplMWlSMHg4cmVMU1BzNEJtajRVclJLQU1naTIwT3dpR1NZRndpVW8xZzdmVGtOUGd6K0ZyOGRTejg4dTgxdHB0MVhjSmUxalVxVGxjWmtxR0pDREdWT2hnaEFtb2ZJdVFmRXp0OXoza1QrWVpTcFdjOUpiKzViV1puWXFxcE9UN2k1Zit6M0haR0tJc2luYnI1b0IrZlh5ckZHRlhVYUtlQzBBNWhHQzVYSVRZaXhXcGR4VkZSUUFsUlVFbDYvOVRIQXFVVDZvMnhLQ1hmdzRRTkF2cUd5TTBJWHlmcTd5Zmk5WUdDT3hBcUNTZ3FDTng0cGhTWlZ2T09YdFNza3FUYUI4ajRnUStiQjBERTNudXgvUEVGTmZ3WUlBd3IvNUlIVmx5dGZKZ0J5TU9GcUxORHAvci9JNUFEa0lNaUlmbHE1VThicDh3S1hNS1pUTi8rYWJFQW9HQ0orTGNmazYvRXVsMTZ6VEIxVDZvSFZkckFlQXVwQzlVcTdiN1Jud1g2cWNXVzY0MVZ5REFBQUFBRWxGVGtTdVFtQ0MiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIvPjwvc3ZnPg==) 15 15, auto';
 };
+
 
 
 graphView.setZoomInCursor = () =>
@@ -7181,10 +7144,12 @@ graphView.setZoomInCursor = () =>
 };
 
 
+
 graphView.setZoomOutCursor = () =>
 {
     graphView.style.cursor = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZCkiPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE0LjUgOEMxNC41IDExLjAzOCAxMi4wMzggMTMuNSA5IDEzLjVDNS45NjIgMTMuNSAzLjUgMTEuMDM4IDMuNSA4QzMuNSA0Ljk2MiA1Ljk2MiAyLjUgOSAyLjVDMTIuMDM4IDIuNSAxNC41IDQuOTYyIDE0LjUgOFoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNSA4QzE0LjUgMTEuMDM4IDEyLjAzOCAxMy41IDkgMTMuNUM1Ljk2MiAxMy41IDMuNSAxMS4wMzggMy41IDhDMy41IDQuOTYyIDUuOTYyIDIuNSA5IDIuNUMxMi4wMzggMi41IDE0LjUgNC45NjIgMTQuNSA4WiIgc3Ryb2tlPSJibGFjayIvPgo8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE3LjU4NTcgMTguMDAwMkwxOC45OTk3IDE2LjU4NjJMMTMuNTUwNyAxMS4xMzcyTDEyLjEzNjcgMTIuNTUxMkwxNy41ODU3IDE4LjAwMDJaIiBmaWxsPSJibGFjayIvPgo8L2c+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIgN0g2VjguOThIMTJWN1oiIGZpbGw9ImJsYWNrIi8+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2QiIHg9IjAiIHk9IjAiIHdpZHRoPSIyMS45OTk3IiBoZWlnaHQ9IjIyLjAwMDIiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiLz4KPGZlT2Zmc2V0IGR5PSIxIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEuNSIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMC4zNSAwIi8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0iZWZmZWN0MV9kcm9wU2hhZG93Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iZWZmZWN0MV9kcm9wU2hhZG93IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8L2RlZnM+Cjwvc3ZnPgo=) 8 8, auto';
 };
+
 
 
 graphView.updateScroll = () =>
@@ -7371,6 +7336,136 @@ scrollbarY.addEventListener('pointermove', e =>
         };
     }
 });
+
+
+graphView._selected     = [];
+graphView._prevSelected = [];
+
+Object.defineProperty(graphView, 'selected',
+{
+    get: () => graphView._selected,
+    set: selected =>
+    {
+        graphView.deselectAll();
+
+        graphView._selected = [...selected];
+    
+        for (const node of graphView._selected)
+            node.setSelected(true);
+    }
+});
+
+
+
+graphView.deselectAll = () =>
+{
+    for (const node of graphView._selected)            
+        node.setSelected(false);
+
+    graphView._selected = [];
+};
+
+
+
+graphView.getSelectedIds = () =>
+{
+    return graphView._selected.map(n => n.id);
+
+    // selectedIds = [];
+
+    // for (var node in graphView.selected)
+    //     selectedIds.push(node.is);
+
+    // return selectedIds;
+};
+
+
+
+graphView.selectFromIds = (nodeIds) =>
+{
+    graphView.deselectAll();
+
+    for (var id in nodeIds)
+    {
+        var node = uiGraph.nodes.find(n => n.id == id);
+        
+        graphView._selected.push(node);
+        node.setSelected(true);
+    }
+};
+
+
+
+graphView.getValidSelection = () =>
+{
+    return new Rect(
+        graphView.selectBox.x + Math.min(graphView.selectBox.w, 0),
+        graphView.selectBox.y + Math.min(graphView.selectBox.h, 0),
+        Math.abs(graphView.selectBox.w),
+        Math.abs(graphView.selectBox.h));
+};
+
+
+
+graphView.startSelection = (x, y) =>
+{
+    graphView.selecting = true;
+
+    graphView.selectBox = new Rect(x, y, 0, 0);
+    selectBox.style.visibility = 'visible';
+
+    graphView.updateSelectBox();
+};
+
+
+
+graphView.updateSelection = (x, y) =>
+{
+    if (!graphView.selecting) return;
+
+    graphView.selectBox.w = x - graphView.selectBox.x;
+    graphView.selectBox.h = y - graphView.selectBox.y;
+
+    graphView.updateSelectBox();
+};
+
+
+
+graphView.updateSelectBox = () =>
+{
+    var selection = graphView.getValidSelection();
+
+    selectBox.style.left   = selection.x + Math.min(selection.w, 0);
+    selectBox.style.top    = selection.y + Math.min(selection.h, 0);
+    selectBox.style.width  = Math.abs(selection.w);
+    selectBox.style.height = Math.abs(selection.h);
+
+    const selected = [];
+
+    for (const node of uiGraph.nodes)
+    {
+        if (rectsIntersect(
+                Rect.fromTypical(node.div.getBoundingClientRect()), 
+                graphView.getValidSelection()))
+            selected.push(node);
+    }
+
+    graphView.selected = selected;
+};
+
+
+
+graphView.endSelection = () =>
+{
+    graphView.selecting = false;
+    graphView.selectBox = Rect.NaN;
+
+    selectBox.style.visibility = 'hidden';
+
+    actionManager.do(new SelectNodesAction(
+        graphView.selected, 
+        graphView._prevSelected));
+};
 
 
 

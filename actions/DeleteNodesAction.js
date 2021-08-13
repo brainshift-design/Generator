@@ -15,7 +15,7 @@ extends Action
 
 
 
-    perform()
+    do()
     {
         // TODO remember and remove the connections
         uiDeleteNodes(this.nodes, this.id);

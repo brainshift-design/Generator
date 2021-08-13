@@ -9,11 +9,11 @@
 
     <div id='presets'></div>
 
-    <button class='button' id='btnCreateNumber' onclick='actionManager.perform(new CreateNodeAction("number")); this.blur();'>Num</button>
-    <button class='button' id='btnCreateRandom' onclick='actionManager.perform(new CreateNodeAction("random")); this.blur();'>Rnd</button>
-    <button class='button' id='btnCreateRect'   onclick='actionManager.perform(new CreateNodeAction("rect"  )); this.blur();'>Rct</button>
-    <button class='button' id='btnCreateRow'    onclick='actionManager.perform(new CreateNodeAction("row"   )); this.blur();'>Row</button>
-    <button class='button' id='btnCreateColumn' onclick='actionManager.perform(new CreateNodeAction("column")); this.blur();'>Col</button>
+    <button class='button' id='btnCreateNumber' onclick='actionManager.do(new CreateNodeAction("number")); this.blur();'>Num</button>
+    <button class='button' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>Rnd</button>
+    <button class='button' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>Rct</button>
+    <button class='button' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>Row</button>
+    <button class='button' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>Col</button>
     <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
 
 </div>

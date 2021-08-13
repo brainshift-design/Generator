@@ -52,10 +52,9 @@ function uiNotify(text)
 
 
 
-function uiCreateNode(opType, node = null)
+function uiCreateNode(opType, createdId = -1)
 {
-    if (node == null)
-        node = uiGraph.createNode(opType);
+    var node = uiGraph.createNode(opType, createdId);
 
     
     generator.postMessage({
@@ -89,9 +88,8 @@ function uiCreateNode(opType, node = null)
 
 
 
-function uiDeleteNodes(nodes, actionId)
+function uiDeleteNodes(nodeIds, actionId)
 {
-    const nodeIds = nodes.map(n => n.id);
     uiGraph.deleteNodes(nodeIds);
     
     generator.postMessage({

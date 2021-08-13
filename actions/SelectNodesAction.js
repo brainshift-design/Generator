@@ -1,29 +1,39 @@
 class SelectNodesAction
 extends Action
 {
-    selected       = [];
-    selectedBefore = [];
+    selectedIds     = [];
+    prevSelectedIds = [];
 
 
 
-    constructor(nodes)
+    constructor(selectedIds, prevSelectedIds)
     {
-        super();
+        super('Select Nodes');
 
-        selected = [...nodes];
+        this.selectedIds     = [...selectedIds];
+        this.prevSelectedIds = [...prevSelectedIds];
     }
 
 
 
-    perform()
+    do()
     {
-
+        // this happens in the UI
     }
 
 
 
     undo()
     {
+        graphView.selectFromIds(this.prevSelectedIds);
+        console.log(graphView.selected);
+    }
 
+
+
+    redo()
+    {
+        graphView.selectFromIds(this.selectedIds);
+        console.log(graphView.selected);
     }
 }

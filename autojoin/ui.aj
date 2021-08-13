@@ -25,10 +25,12 @@ html/ui_2.html
     ui/pointer.js
     ui/keyboard.js
 
-    ui/controls/slider.js
-    ui/controls/slider textbox.js
-    ui/controls/select.js
-    ui/controls/graphView.js
-    ui/controls/graphView scrollbars.js
+    ui/controls/slider/slider.js
+    ui/controls/slider/slider textbox.js
+    ui/controls/select/select.js
+    ui/controls/graphView/graphView.js
+    ui/controls/graphView/graphView pan & zoom.js
+    ui/controls/graphView/graphView scrollbars.js
+    ui/controls/graphView/graphView selection.js
 
 html/ui_3.html
