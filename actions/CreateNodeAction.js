@@ -28,8 +28,9 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        UOperator.nextId--;
+        //UOperator.nextId--;
 
+        console.log("undo prevSelectedIds = " + this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);
     }
 

@@ -389,7 +389,7 @@ function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
 
-    for (const property in properties)
+    for (const property of properties)
         elem.style[property] = properties[property];
 }
 
@@ -2191,7 +2191,7 @@ function genUndeleteNodes(uiActionId)
     var nodeIds = [];
 
 
-    for (const node in deleted[1])
+    for (const node of deleted[1])
     {
         genGraph.addNode(node);
         nodeIds.push(node.id);
@@ -2375,7 +2375,7 @@ function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
 
-    for (const property in properties)
+    for (const property of properties)
         elem.style[property] = properties[property];
 }
 
@@ -4497,7 +4497,7 @@ extends UOperator
 }
 
 
-class   OpRandom
+class   UOpRandom
 extends UOperator
 {
     #min;
@@ -4761,7 +4761,7 @@ extends UOperator
 // }
 
 
-class   OpColumn
+class   UOpColumn
 extends UOperator
 {
     #count;
@@ -5002,8 +5002,9 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        UOperator.nextId--;
+        //UOperator.nextId--;
 
+        console.log("undo prevSelectedIds = " + this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);
     }
 
@@ -5076,6 +5077,8 @@ extends Action
 
     undo()
     {
+        console.log('select undo prevSelectedIds');
+        console.log(this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);
         console.log(graphView.selected);
     }
@@ -5277,7 +5280,7 @@ function uiUndeleteNodes(nodes, actionId)
 
     graphView.selected = nodes;
     
-    for (const node in nodes)
+    for (const node of nodes)
         graphView.updateNodeTransform(node);
     
     graphView.putNodeOnTop(lastOf(nodes));
@@ -7341,6 +7344,8 @@ scrollbarY.addEventListener('pointermove', e =>
 graphView._selected     = [];
 graphView._prevSelected = [];
 
+
+
 Object.defineProperty(graphView, 'selected',
 {
     get: () => graphView._selected,
@@ -7373,7 +7378,7 @@ graphView.getSelectedIds = () =>
 
     // selectedIds = [];
 
-    // for (var node in graphView.selected)
+    // for (var node of graphView.selected)
     //     selectedIds.push(node.is);
 
     // return selectedIds;
@@ -7385,9 +7390,14 @@ graphView.selectFromIds = (nodeIds) =>
 {
     graphView.deselectAll();
 
-    for (var id in nodeIds)
+    console.log('graphView.selectFromIds');
+    console.log(nodeIds);
+
+    for (const id of nodeIds)
     {
         var node = uiGraph.nodes.find(n => n.id == id);
+        console.log('id = ' + id);
+        console.log('node = ' + node);
         
         graphView._selected.push(node);
         node.setSelected(true);
@@ -7463,8 +7473,8 @@ graphView.endSelection = () =>
     selectBox.style.visibility = 'hidden';
 
     actionManager.do(new SelectNodesAction(
-        graphView.selected, 
-        graphView._prevSelected));
+        graphView.selected     .map(n => n.id), 
+        graphView._prevSelected.map(n => n.id)));
 };
 
 

@@ -1,6 +1,8 @@
 graphView._selected     = [];
 graphView._prevSelected = [];
 
+
+
 Object.defineProperty(graphView, 'selected',
 {
     get: () => graphView._selected,
@@ -33,7 +35,7 @@ graphView.getSelectedIds = () =>
 
     // selectedIds = [];
 
-    // for (var node in graphView.selected)
+    // for (var node of graphView.selected)
     //     selectedIds.push(node.is);
 
     // return selectedIds;
@@ -45,9 +47,14 @@ graphView.selectFromIds = (nodeIds) =>
 {
     graphView.deselectAll();
 
-    for (var id in nodeIds)
+    console.log('graphView.selectFromIds');
+    console.log(nodeIds);
+
+    for (const id of nodeIds)
     {
         var node = uiGraph.nodes.find(n => n.id == id);
+        console.log('id = ' + id);
+        console.log('node = ' + node);
         
         graphView._selected.push(node);
         node.setSelected(true);
@@ -123,6 +130,6 @@ graphView.endSelection = () =>
     selectBox.style.visibility = 'hidden';
 
     actionManager.do(new SelectNodesAction(
-        graphView.selected, 
-        graphView._prevSelected));
+        graphView.selected     .map(n => n.id), 
+        graphView._prevSelected.map(n => n.id)));
 };

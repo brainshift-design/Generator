@@ -2,7 +2,7 @@ function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
 
-    for (const property in properties)
+    for (const property of properties)
         elem.style[property] = properties[property];
 }
 

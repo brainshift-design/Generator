@@ -1,4 +1,4 @@
-class   OpRandom
+class   UOpRandom
 extends UOperator
 {
     #min;

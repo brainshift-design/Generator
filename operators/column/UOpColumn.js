@@ -1,4 +1,4 @@
-class   OpColumn
+class   UOpColumn
 extends UOperator
 {
     #count;

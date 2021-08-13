@@ -110,7 +110,7 @@ function uiUndeleteNodes(nodes, actionId)
 
     graphView.selected = nodes;
     
-    for (const node in nodes)
+    for (const node of nodes)
         graphView.updateNodeTransform(node);
     
     graphView.putNodeOnTop(lastOf(nodes));

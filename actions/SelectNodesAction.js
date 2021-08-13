@@ -25,6 +25,8 @@ extends Action
 
     undo()
     {
+        console.log('select undo prevSelectedIds');
+        console.log(this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);
         console.log(graphView.selected);
     }

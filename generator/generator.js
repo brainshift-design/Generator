@@ -54,7 +54,7 @@ function genUndeleteNodes(uiActionId)
     var nodeIds = [];
 
 
-    for (const node in deleted[1])
+    for (const node of deleted[1])
     {
         genGraph.addNode(node);
         nodeIds.push(node.id);

@@ -42,7 +42,7 @@ class UGraph
     
     
 
-    createNode(opType)
+    createNode(opType, createdNodeId = -1)
     {
         var node;
 
@@ -54,6 +54,12 @@ class UGraph
             case 'row':    node = new UOpRow();    break;
             case 'column': node = new UOpColumn(); break;
             //case 'spread': node = new UOpSpread(); break;
+        }
+        
+        if (createdNodeId > -1)
+        {
+            UOperator.nextId--;
+            node.id = createdNodeId;
         }
         
         this.addNode(node);
