@@ -677,6 +677,7 @@ function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 
 
+
 function distance(p1, p2)
 {
     var dx = p2.x - p1.x;
@@ -684,6 +685,8 @@ function distance(p1, p2)
 
     return Math.sqrt(dx*dx + dy*dy);
 }
+
+
 
 function distance_(x1, y1, x2, y2)
 {
@@ -694,6 +697,7 @@ function distance_(x1, y1, x2, y2)
 }
 
 
+
 function vector(angle, dist)
 {
     return { 
@@ -702,16 +706,21 @@ function vector(angle, dist)
 }
 
 
+
 function equalv(v1, v2)
 {
     return v1.x == v2.x
         && v1.y == v2.y;
 }
 
+
+
 function lengthv(v)
 {
     return Math.sqrt(v.x*v.x + v.y*v.y);
 }
+
+
 
 function unitv(v)
 {
@@ -719,11 +728,14 @@ function unitv(v)
              y: v.y == 0 ? 0 : v.y / lengthv(v) };
 }
 
+
+
 function addv(v1, v2)
 {
     return { x: v1.x + v2.x,
              y: v1.y + v2.y };
 }	
+
 
 
 function subv(v1, v2)
@@ -733,17 +745,21 @@ function subv(v1, v2)
 }	
 
 
+
 function mulv(v1, v2)
 {
     return { x: v1.x * v2.x,
              y: v1.y * v2.y };
 }	
 
+
+
 function mulvs(v, s)
 {
     return { x: v.x * s,
              y: v.y * s };
 }	
+
 
 
 function divvs(v, s)
@@ -753,6 +769,7 @@ function divvs(v, s)
 }	
 
 
+
 function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis
@@ -760,6 +777,7 @@ function crossv(v)
     return { x:  v.y, 
              y: -v.x };
 }
+
 
 
 function crossv2(v1, v2)
@@ -775,10 +793,12 @@ function crossv2(v1, v2)
 }	
 
 
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
 }
+
 
 
 function anglev_(x1, y1, x2, y2)
@@ -791,6 +811,7 @@ function anglev_(x1, y1, x2, y2)
 
     return angle;
 }
+
 
 
 function clipEdge(p, q, t0, t1)
@@ -2663,6 +2684,7 @@ function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 
 
+
 function distance(p1, p2)
 {
     var dx = p2.x - p1.x;
@@ -2670,6 +2692,8 @@ function distance(p1, p2)
 
     return Math.sqrt(dx*dx + dy*dy);
 }
+
+
 
 function distance_(x1, y1, x2, y2)
 {
@@ -2680,6 +2704,7 @@ function distance_(x1, y1, x2, y2)
 }
 
 
+
 function vector(angle, dist)
 {
     return { 
@@ -2688,16 +2713,21 @@ function vector(angle, dist)
 }
 
 
+
 function equalv(v1, v2)
 {
     return v1.x == v2.x
         && v1.y == v2.y;
 }
 
+
+
 function lengthv(v)
 {
     return Math.sqrt(v.x*v.x + v.y*v.y);
 }
+
+
 
 function unitv(v)
 {
@@ -2705,11 +2735,14 @@ function unitv(v)
              y: v.y == 0 ? 0 : v.y / lengthv(v) };
 }
 
+
+
 function addv(v1, v2)
 {
     return { x: v1.x + v2.x,
              y: v1.y + v2.y };
 }	
+
 
 
 function subv(v1, v2)
@@ -2719,17 +2752,21 @@ function subv(v1, v2)
 }	
 
 
+
 function mulv(v1, v2)
 {
     return { x: v1.x * v2.x,
              y: v1.y * v2.y };
 }	
 
+
+
 function mulvs(v, s)
 {
     return { x: v.x * s,
              y: v.y * s };
 }	
+
 
 
 function divvs(v, s)
@@ -2739,6 +2776,7 @@ function divvs(v, s)
 }	
 
 
+
 function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis
@@ -2746,6 +2784,7 @@ function crossv(v)
     return { x:  v.y, 
              y: -v.x };
 }
+
 
 
 function crossv2(v1, v2)
@@ -2761,10 +2800,12 @@ function crossv2(v1, v2)
 }	
 
 
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
 }
+
 
 
 function anglev_(x1, y1, x2, y2)
@@ -2777,6 +2818,7 @@ function anglev_(x1, y1, x2, y2)
 
     return angle;
 }
+
 
 
 function clipEdge(p, q, t0, t1)
@@ -4039,7 +4081,7 @@ class UOperator
         this._name = opType; // this is a temp until the op becomes a graph node
         
         var headerColor = colorFromDataType(dataType, false);
-        createDiv(this, headerColor);
+        createNode(this, headerColor);
     }    
     
     
@@ -4141,7 +4183,7 @@ class UOperator
 }
 
 
-function createDiv(node, headerColor)
+function createNode(node, headerColor)
 {
     node.div = document.createElement('div');
 
@@ -4177,12 +4219,12 @@ function createDiv(node, headerColor)
 
     
 
-    createDivHeader(node, headerColor);
+    createNodeHeader(node, headerColor);
 }     
 
 
 
-function createDivHeader(node, headerColor)
+function createNodeHeader(node, headerColor)
 {
     node.header = document.createElement('div');
     node.header.className = 'nodeHeader';
@@ -4192,7 +4234,7 @@ function createDivHeader(node, headerColor)
     node.inputControls.className = 'inputControls';
     node.header.appendChild(node.inputControls);
 
-    createDivLabel(node);
+    createNodeLabel(node);
 
     node.outputControls = document.createElement('div');
     node.outputControls.className = 'outputControls';
@@ -4248,7 +4290,7 @@ function createDivHeader(node, headerColor)
         {
             for (const n of graphView.selected)
             {
-                setDivPosition(
+                setNodePosition(
                     n.div.op,
                     n.div.slx + (e.clientX - node.div.sx) / graphView.zoom,
                     n.div.sly + (e.clientY - node.div.sy) / graphView.zoom);
@@ -4267,6 +4309,12 @@ function createDivHeader(node, headerColor)
         if (   e.button == 0
             && node.div.dragging)
         {
+            actionManager.do(new MoveNodesAction(
+                graphView.selectedIds(), 
+                { x: node.div.slx, y: node.div.sly },
+                { x: node.div.x,   y: node.div.y   }));
+
+
             if (   !node.div.selectedSet
                 && !node.div.moved)
             {
@@ -4295,7 +4343,7 @@ function createDivHeader(node, headerColor)
 
 
 
-function createDivLabel(node)
+function createNodeLabel(node)
 {
     node.label = document.createElement('div');
     node.label.className = 'nodeLabel';
@@ -4308,7 +4356,7 @@ function createDivLabel(node)
 
 
 
-function setDivPosition(node, x, y)
+function setNodePosition(node, x, y)
 {
     node.div.style.left = x;
     node.div.style.top  = y;
@@ -4993,7 +5041,7 @@ extends Action
 
     do()
     {
-        this.prevSelectedIds = graphView.getSelectedIds();
+        this.prevSelectedIds = graphView.selectedIds();
         this.createdNodeId   = uiCreateNode(this.opType).id;
     }
 
@@ -5096,25 +5144,70 @@ extends Action
 class MoveNodesAction
 extends Action
 {
+    nodeIds;
+
+    fromPos;
+    toPos;
+
+    from;
+    to;
 
 
-    constructor()
+
+    constructor(nodeIds, fromPos, toPos)
     {
-        super();
+        super('Move Nodes');
+
+        
+        this.nodeIds = [...nodeIds];
+
+        this.fromPos = fromPos;
+        this.toPos   = toPos;
+
+        const dx = this.toPos.x - this.fromPos.x;
+        const dy = this.toPos.y - this.fromPos.y;
+
+
+        this.from = [];
+        this.to   = [];
+
+        for (const id of this.nodeIds)
+        {
+            const node = uiGraph.nodeFromId(id);
+
+            this.from.push({ x: node.div.slx,      y: node.div.sly      });
+            this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
+        }
     }
 
 
 
     do()
     {
+        for (var i = 0; i < this.nodeIds.length; i++)
+        {
+            const node = uiGraph.nodeFromId(this.nodeIds[i]);
 
+            setNodePosition(
+                node.div.op,
+                this.to[i].x,
+                this.to[i].y);
+        }
     }
 
 
 
     undo()
     {
+        for (var i = 0; i < this.nodeIds.length; i++)
+        {
+            const node = uiGraph.nodeFromId(this.nodeIds[i]);
 
+            setNodePosition(
+                node.div.op,
+                this.from[i].x,
+                this.from[i].y);
+        }
     }
 }
 
@@ -7372,16 +7465,9 @@ graphView.deselectAll = () =>
 
 
 
-graphView.getSelectedIds = () =>
+graphView.selectedIds = () =>
 {
     return graphView._selected.map(n => n.id);
-
-    // selectedIds = [];
-
-    // for (var node of graphView.selected)
-    //     selectedIds.push(node.is);
-
-    // return selectedIds;
 };
 
 

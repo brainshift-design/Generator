@@ -19,7 +19,7 @@ extends Action
 
     do()
     {
-        this.prevSelectedIds = graphView.getSelectedIds();
+        this.prevSelectedIds = graphView.selectedIds();
         this.createdNodeId   = uiCreateNode(this.opType).id;
     }
 

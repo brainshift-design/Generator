@@ -7,6 +7,7 @@ function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 
 
+
 function distance(p1, p2)
 {
     var dx = p2.x - p1.x;
@@ -14,6 +15,8 @@ function distance(p1, p2)
 
     return Math.sqrt(dx*dx + dy*dy);
 }
+
+
 
 function distance_(x1, y1, x2, y2)
 {
@@ -24,6 +27,7 @@ function distance_(x1, y1, x2, y2)
 }
 
 
+
 function vector(angle, dist)
 {
     return { 
@@ -32,16 +36,21 @@ function vector(angle, dist)
 }
 
 
+
 function equalv(v1, v2)
 {
     return v1.x == v2.x
         && v1.y == v2.y;
 }
 
+
+
 function lengthv(v)
 {
     return Math.sqrt(v.x*v.x + v.y*v.y);
 }
+
+
 
 function unitv(v)
 {
@@ -49,11 +58,14 @@ function unitv(v)
              y: v.y == 0 ? 0 : v.y / lengthv(v) };
 }
 
+
+
 function addv(v1, v2)
 {
     return { x: v1.x + v2.x,
              y: v1.y + v2.y };
 }	
+
 
 
 function subv(v1, v2)
@@ -63,17 +75,21 @@ function subv(v1, v2)
 }	
 
 
+
 function mulv(v1, v2)
 {
     return { x: v1.x * v2.x,
              y: v1.y * v2.y };
 }	
 
+
+
 function mulvs(v, s)
 {
     return { x: v.x * s,
              y: v.y * s };
 }	
+
 
 
 function divvs(v, s)
@@ -83,6 +99,7 @@ function divvs(v, s)
 }	
 
 
+
 function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis
@@ -90,6 +107,7 @@ function crossv(v)
     return { x:  v.y, 
              y: -v.x };
 }
+
 
 
 function crossv2(v1, v2)
@@ -105,10 +123,12 @@ function crossv2(v1, v2)
 }	
 
 
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
 }
+
 
 
 function anglev_(x1, y1, x2, y2)
@@ -121,6 +141,7 @@ function anglev_(x1, y1, x2, y2)
 
     return angle;
 }
+
 
 
 function clipEdge(p, q, t0, t1)

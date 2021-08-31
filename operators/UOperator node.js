@@ -1,4 +1,4 @@
-function createDiv(node, headerColor)
+function createNode(node, headerColor)
 {
     node.div = document.createElement('div');
 
@@ -34,12 +34,12 @@ function createDiv(node, headerColor)
 
     
 
-    createDivHeader(node, headerColor);
+    createNodeHeader(node, headerColor);
 }     
 
 
 
-function createDivHeader(node, headerColor)
+function createNodeHeader(node, headerColor)
 {
     node.header = document.createElement('div');
     node.header.className = 'nodeHeader';
@@ -49,7 +49,7 @@ function createDivHeader(node, headerColor)
     node.inputControls.className = 'inputControls';
     node.header.appendChild(node.inputControls);
 
-    createDivLabel(node);
+    createNodeLabel(node);
 
     node.outputControls = document.createElement('div');
     node.outputControls.className = 'outputControls';
@@ -105,7 +105,7 @@ function createDivHeader(node, headerColor)
         {
             for (const n of graphView.selected)
             {
-                setDivPosition(
+                setNodePosition(
                     n.div.op,
                     n.div.slx + (e.clientX - node.div.sx) / graphView.zoom,
                     n.div.sly + (e.clientY - node.div.sy) / graphView.zoom);
@@ -124,6 +124,12 @@ function createDivHeader(node, headerColor)
         if (   e.button == 0
             && node.div.dragging)
         {
+            actionManager.do(new MoveNodesAction(
+                graphView.selectedIds(), 
+                { x: node.div.slx, y: node.div.sly },
+                { x: node.div.x,   y: node.div.y   }));
+
+
             if (   !node.div.selectedSet
                 && !node.div.moved)
             {
@@ -152,7 +158,7 @@ function createDivHeader(node, headerColor)
 
 
 
-function createDivLabel(node)
+function createNodeLabel(node)
 {
     node.label = document.createElement('div');
     node.label.className = 'nodeLabel';
@@ -165,7 +171,7 @@ function createDivLabel(node)
 
 
 
-function setDivPosition(node, x, y)
+function setNodePosition(node, x, y)
 {
     node.div.style.left = x;
     node.div.style.top  = y;

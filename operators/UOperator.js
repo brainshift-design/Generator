@@ -189,7 +189,7 @@ class UOperator
         this._name = opType; // this is a temp until the op becomes a graph node
         
         var headerColor = colorFromDataType(dataType, false);
-        createDiv(this, headerColor);
+        createNode(this, headerColor);
     }    
     
     
