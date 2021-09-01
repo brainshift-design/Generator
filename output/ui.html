@@ -4311,8 +4311,8 @@ function createNodeHeader(node, headerColor)
         {
             actionManager.do(new MoveNodesAction(
                 graphView.selectedIds(), 
-                { x: node.div.slx, y: node.div.sly },
-                { x: node.div.x,   y: node.div.y   }));
+                { x: node.div.slx,        y: node.div.sly       },
+                { x: node.div.offsetLeft, y: node.div.offsetTop }));
 
 
             if (   !node.div.selectedSet
@@ -5032,7 +5032,7 @@ extends Action
 
     constructor(opType)
     {
-        super('Create Node');
+        super('Create node');
         
         this.opType = opType;
     }
@@ -5075,7 +5075,7 @@ extends Action
 
     constructor(nodes)
     {
-        super('Delete Nodes');
+        super('Delete nodes');
         
         this.nodes = [...nodes]; // clone the array
     }
@@ -5108,7 +5108,7 @@ extends Action
 
     constructor(selectedIds, prevSelectedIds)
     {
-        super('Select Nodes');
+        super('Select nodes');
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];
@@ -5156,9 +5156,9 @@ extends Action
 
     constructor(nodeIds, fromPos, toPos)
     {
-        super('Move Nodes');
+        super('Move nodes');
 
-        
+
         this.nodeIds = [...nodeIds];
 
         this.fromPos = fromPos;

@@ -126,8 +126,8 @@ function createNodeHeader(node, headerColor)
         {
             actionManager.do(new MoveNodesAction(
                 graphView.selectedIds(), 
-                { x: node.div.slx, y: node.div.sly },
-                { x: node.div.x,   y: node.div.y   }));
+                { x: node.div.slx,        y: node.div.sly       },
+                { x: node.div.offsetLeft, y: node.div.offsetTop }));
 
 
             if (   !node.div.selectedSet

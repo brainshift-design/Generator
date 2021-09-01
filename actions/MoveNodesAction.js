@@ -13,9 +13,9 @@ extends Action
 
     constructor(nodeIds, fromPos, toPos)
     {
-        super('Move Nodes');
+        super('Move nodes');
 
-        
+
         this.nodeIds = [...nodeIds];
 
         this.fromPos = fromPos;

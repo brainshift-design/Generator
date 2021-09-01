@@ -10,7 +10,7 @@ extends Action
 
     constructor(opType)
     {
-        super('Create Node');
+        super('Create node');
         
         this.opType = opType;
     }
