@@ -5,6 +5,8 @@ function initLabelTextbox(node)
     node.textbox.className  = 'nodeLabelTextbox';
     node.textbox.spellcheck = false;
     
+
+
     node.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
@@ -82,10 +84,13 @@ function initLabelTextbox(node)
     });
 
 
+    
     // node.textbox.addEventListener('input', function()
     // {
     //     node.setValue(Number(node.textbox.value));
     // });
+
+
 
     node.textbox.addEventListener('paste', function(e)
     {
@@ -97,12 +102,16 @@ function initLabelTextbox(node)
         node.textbox.value = isNaN(val) ? '' : val;
     });
 
+    
+    
     node.textbox.addEventListener('focusout', function()
     {
         node.header.removeChild(node.textbox);
         node.clicked = false;
     });
     
+
+
     node.textbox.finish = function(success)
     {
         if (success) 
@@ -116,6 +125,7 @@ function initLabelTextbox(node)
         if (node.inFocus)
             node.focus();
     };    
+ 
     
     
     node.showLabelTextbox = function()
@@ -132,7 +142,7 @@ function initLabelTextbox(node)
         node.textbox.style.transform = 'translateX(-50%) translateY(-50%)';
         node.textbox.style.textAlign = 'center';
     
-        node.textbox.value      = node.id;
+        node.textbox.value      = node.name;
         node.textbox.savedValue = node.textbox.value;
         
         node.header.appendChild(node.textbox);

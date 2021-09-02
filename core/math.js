@@ -313,3 +313,84 @@ function xrotate(angle)
             [Math.sin(angle),  Math.cos(angle), 0],
             [0,                0,               1]];
 }
+
+
+
+function isPrime(x) 
+{
+    for (var i = 2; i * i <= x; i++) 
+    {
+        if (x % i === 0) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function nthPrime(n) 
+{
+    var maybe = 2;
+    var prime = 0;
+
+    while (n >= 0) 
+    {
+        if (isPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigIsPrime(x) 
+{
+    for (var i = 2n; i * i <= x; i++) 
+    {
+        if (x % i === 0n) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function bigNthPrime(n) 
+{
+    var maybe = 2n;
+    var prime = 0n;
+
+    while (n >= 0n) 
+    {
+        if (bigIsPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigPow(x, e)
+{
+    var _e = Number(e);
+    var _x = 1n;
+
+    for (var i = 0; i < _e; i++)
+        _x *= x;
+
+    return _x;
+}

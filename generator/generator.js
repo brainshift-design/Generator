@@ -1,7 +1,7 @@
 const OBJ_RECT = 1;
 
 
-const genGraph            = new GGraph();
+const genGraph          = new GGraph();
 const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 
@@ -32,7 +32,7 @@ function genCreateNode(type, id, name)
     node.id   = id;
     node.name = name;
 
-    postMessage({ 
+    postMessage({
         msg:     'makeActive',
         nodeIds: [node.id]
     });

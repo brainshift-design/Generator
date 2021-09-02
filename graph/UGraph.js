@@ -111,9 +111,9 @@ class UGraph
     
     deleteNodes(nodeIds)
     {
-        for (const nodeId of nodeIds)
+        for (const id of nodeIds)
         {
-            const node = this.nodes.find(n => n.id == nodeId);
+            const node = this.nodes.find(n => n.id == id);
 
             for (const input of node.inputs)
             {
@@ -145,6 +145,7 @@ class UGraph
     }
 
 
+
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -156,7 +157,7 @@ class UGraph
         output.connectedInputs.push(input);
         input .connectedOutput = output;
 
-        const conn = new Connection(output, input);
+        const conn = new UConnection(output, input);
 
         input .connection = conn;
         output.connection = conn;

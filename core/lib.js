@@ -3,6 +3,13 @@ const Eps = 0.0000001;
 
 
 
+function floatToInt(f)
+{
+    return f | 0;
+}
+
+
+
 function nozero(x)
 {
     return x != 0 ? x : Eps;
@@ -95,4 +102,69 @@ function removeLast(array)
 function lastOf(array)
 {
     return array[array.length-1];
+}
+
+
+
+function capitalize(str)
+{
+    var cap = "";
+
+    if (str.length > 0)
+        cap += str[0].toUpperCase();
+
+    if (str.length > 1)
+        cap += str.substring(1).toLowerCase();
+
+    return cap;
+}
+
+
+
+function gcd(a, b)
+{
+    var temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function bytesFromString(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function stringFromBytes(bytes) 
+{
+    var str = '';
+
+    for (var i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
 }

@@ -14,191 +14,15 @@ const smallScrollGap = 6;
 const largeScrollGap = 14;
 
 
-function setStyle(id, properties)
-{
-    var elem = document.getElementById(id);
-
-    for (const property of properties)
-        elem.style[property] = properties[property];
-}
-
-
-
-function indexOfChild(parent, child)
-{
-    return Array.prototype.indexOf.call(parent.children, child);
-}
-
-
-
-function containsChild(parent, child)
-{
-    return child.parentNode == parent;
-}
-
-
-
-function forwardEvent(event, element)
-{
-    var e = new event.constructor(event.type, event);
-    element.dispatchEvent(e);
-}
-
-
-
-// function triggerMouseEvent(element, event, px, py, button = 0)
-// {
-//     const e = new MouseEvent(event, 
-//     {
-//         clientX: px,
-//         clientY: py,
-//         button:  button
-//     });
-
-//     element.dispatchEvent(e);
-// }
-
-
-
-function removeFromArray(array, obj)
-{
-    var index = array.indexOf(obj);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-
-function isEmptyObject(obj)
-{
-    if (obj == null)
-        return false;
-        
-    return (
-           Object.keys(obj).length === 0 
-        && obj.constructor === Object);
-}
-
-
-
-function shallowCopy(obj)
-{
-    return Object.assign({}, obj);
-}
-
-
-
-function deepCopy(obj)
-{
-    return JSON.parse(JSON.stringify(obj));
-}
-
-
-
-function createSvg(element)
-{
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
-    svg.style.pointerEvents = 'none';
-    return svg;
-}
-
-
-
-function show(element) { element.style.visibility = 'visible'; }
-function hide(element) { element.style.visibility = 'hidden'; }
-
-
-
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
-    }
-
-    return 'magenta';
-}
-
-
-
-function position(e)
-{
-    return {
-        x: e.clientX,
-        y: e.clientY
-    };
-}
-
-
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
+
+
+
+function floatToInt(f)
+{
+    return f | 0;
+}
 
 
 
@@ -294,6 +118,71 @@ function removeLast(array)
 function lastOf(array)
 {
     return array[array.length-1];
+}
+
+
+
+function capitalize(str)
+{
+    var cap = "";
+
+    if (str.length > 0)
+        cap += str[0].toUpperCase();
+
+    if (str.length > 1)
+        cap += str.substring(1).toLowerCase();
+
+    return cap;
+}
+
+
+
+function gcd(a, b)
+{
+    var temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function bytesFromString(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function stringFromBytes(bytes) 
+{
+    var str = '';
+
+    for (var i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
 }
 
 
@@ -614,6 +503,87 @@ function xrotate(angle)
 }
 
 
+
+function isPrime(x) 
+{
+    for (var i = 2; i * i <= x; i++) 
+    {
+        if (x % i === 0) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function nthPrime(n) 
+{
+    var maybe = 2;
+    var prime = 0;
+
+    while (n >= 0) 
+    {
+        if (isPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigIsPrime(x) 
+{
+    for (var i = 2n; i * i <= x; i++) 
+    {
+        if (x % i === 0n) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function bigNthPrime(n) 
+{
+    var maybe = 2n;
+    var prime = 0n;
+
+    while (n >= 0n) 
+    {
+        if (bigIsPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigPow(x, e)
+{
+    var _e = Number(e);
+    var _x = 1n;
+
+    for (var i = 0; i < _e; i++)
+        _x *= x;
+
+    return _x;
+}
+
+
 class Point
 {
     x;
@@ -775,6 +745,189 @@ class Random
 
         return this.seed / -0x7fffffff;
     }
+}
+
+
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (const property of properties)
+        elem.style[property] = properties[property];
+}
+
+
+
+function indexOfChild(parent, child)
+{
+    return Array.prototype.indexOf.call(parent.children, child);
+}
+
+
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+
+//     element.dispatchEvent(e);
+// }
+
+
+
+function removeFromArray(array, obj)
+{
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
+}
+
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+
+function colorStyle(rgb)
+{
+    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
+}
+
+
+
+function numToString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+        str = str.substring(0, i--);
+
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+        str = str.substring(0, i--);
+
+    return str;
+}
+
+
+
+function isEmptyObject(obj)
+{
+    if (obj == null)
+        return false;
+        
+    return (
+           Object.keys(obj).length === 0 
+        && obj.constructor === Object);
+}
+
+
+
+function shallowCopy(obj)
+{
+    return Object.assign({}, obj);
+}
+
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+
+function createSvg(element)
+{
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    svg.style.pointerEvents = 'none';
+    return svg;
+}
+
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
+
+function position(e)
+{
+    return {
+        x: e.clientX,
+        y: e.clientY
+    };
 }
 
 
@@ -1788,7 +1941,7 @@ extends GOperator
 const OBJ_RECT = 1;
 
 
-const genGraph            = new GGraph();
+const genGraph          = new GGraph();
 const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 
@@ -1819,7 +1972,7 @@ function genCreateNode(type, id, name)
     node.id   = id;
     node.name = name;
 
-    postMessage({ 
+    postMessage({
         msg:     'makeActive',
         nodeIds: [node.id]
     });

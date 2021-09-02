@@ -10,7 +10,7 @@ extends Action
 
     constructor(opType)
     {
-        super('Create node');
+        super('Create ' + capitalize(opType) + ' node');
         
         this.opType = opType;
     }
@@ -28,7 +28,6 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        //UOperator.nextId--;
 
         console.log("undo prevSelectedIds = " + this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);

@@ -385,191 +385,15 @@ const smallScrollGap = 6;
 const largeScrollGap = 14;
 
 
-function setStyle(id, properties)
-{
-    var elem = document.getElementById(id);
-
-    for (const property of properties)
-        elem.style[property] = properties[property];
-}
-
-
-
-function indexOfChild(parent, child)
-{
-    return Array.prototype.indexOf.call(parent.children, child);
-}
-
-
-
-function containsChild(parent, child)
-{
-    return child.parentNode == parent;
-}
-
-
-
-function forwardEvent(event, element)
-{
-    var e = new event.constructor(event.type, event);
-    element.dispatchEvent(e);
-}
-
-
-
-// function triggerMouseEvent(element, event, px, py, button = 0)
-// {
-//     const e = new MouseEvent(event, 
-//     {
-//         clientX: px,
-//         clientY: py,
-//         button:  button
-//     });
-
-//     element.dispatchEvent(e);
-// }
-
-
-
-function removeFromArray(array, obj)
-{
-    var index = array.indexOf(obj);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-
-function isEmptyObject(obj)
-{
-    if (obj == null)
-        return false;
-        
-    return (
-           Object.keys(obj).length === 0 
-        && obj.constructor === Object);
-}
-
-
-
-function shallowCopy(obj)
-{
-    return Object.assign({}, obj);
-}
-
-
-
-function deepCopy(obj)
-{
-    return JSON.parse(JSON.stringify(obj));
-}
-
-
-
-function createSvg(element)
-{
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
-    svg.style.pointerEvents = 'none';
-    return svg;
-}
-
-
-
-function show(element) { element.style.visibility = 'visible'; }
-function hide(element) { element.style.visibility = 'hidden'; }
-
-
-
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
-    }
-
-    return 'magenta';
-}
-
-
-
-function position(e)
-{
-    return {
-        x: e.clientX,
-        y: e.clientY
-    };
-}
-
-
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
+
+
+
+function floatToInt(f)
+{
+    return f | 0;
+}
 
 
 
@@ -665,6 +489,71 @@ function removeLast(array)
 function lastOf(array)
 {
     return array[array.length-1];
+}
+
+
+
+function capitalize(str)
+{
+    var cap = "";
+
+    if (str.length > 0)
+        cap += str[0].toUpperCase();
+
+    if (str.length > 1)
+        cap += str.substring(1).toLowerCase();
+
+    return cap;
+}
+
+
+
+function gcd(a, b)
+{
+    var temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function bytesFromString(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function stringFromBytes(bytes) 
+{
+    var str = '';
+
+    for (var i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
 }
 
 
@@ -985,6 +874,87 @@ function xrotate(angle)
 }
 
 
+
+function isPrime(x) 
+{
+    for (var i = 2; i * i <= x; i++) 
+    {
+        if (x % i === 0) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function nthPrime(n) 
+{
+    var maybe = 2;
+    var prime = 0;
+
+    while (n >= 0) 
+    {
+        if (isPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigIsPrime(x) 
+{
+    for (var i = 2n; i * i <= x; i++) 
+    {
+        if (x % i === 0n) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function bigNthPrime(n) 
+{
+    var maybe = 2n;
+    var prime = 0n;
+
+    while (n >= 0n) 
+    {
+        if (bigIsPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigPow(x, e)
+{
+    var _e = Number(e);
+    var _x = 1n;
+
+    for (var i = 0; i < _e; i++)
+        _x *= x;
+
+    return _x;
+}
+
+
 class Point
 {
     x;
@@ -1146,6 +1116,189 @@ class Random
 
         return this.seed / -0x7fffffff;
     }
+}
+
+
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (const property of properties)
+        elem.style[property] = properties[property];
+}
+
+
+
+function indexOfChild(parent, child)
+{
+    return Array.prototype.indexOf.call(parent.children, child);
+}
+
+
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+
+//     element.dispatchEvent(e);
+// }
+
+
+
+function removeFromArray(array, obj)
+{
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
+}
+
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+
+function colorStyle(rgb)
+{
+    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
+}
+
+
+
+function numToString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+        str = str.substring(0, i--);
+
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+        str = str.substring(0, i--);
+
+    return str;
+}
+
+
+
+function isEmptyObject(obj)
+{
+    if (obj == null)
+        return false;
+        
+    return (
+           Object.keys(obj).length === 0 
+        && obj.constructor === Object);
+}
+
+
+
+function shallowCopy(obj)
+{
+    return Object.assign({}, obj);
+}
+
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+
+function createSvg(element)
+{
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    svg.style.pointerEvents = 'none';
+    return svg;
+}
+
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
+
+function position(e)
+{
+    return {
+        x: e.clientX,
+        y: e.clientY
+    };
 }
 
 
@@ -2159,7 +2312,7 @@ extends GOperator
 const OBJ_RECT = 1;
 
 
-const genGraph            = new GGraph();
+const genGraph          = new GGraph();
 const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 
@@ -2190,7 +2343,7 @@ function genCreateNode(type, id, name)
     node.id   = id;
     node.name = name;
 
-    postMessage({ 
+    postMessage({
         msg:     'makeActive',
         nodeIds: [node.id]
     });
@@ -2392,191 +2545,15 @@ const smallScrollGap = 6;
 const largeScrollGap = 14;
 
 
-function setStyle(id, properties)
-{
-    var elem = document.getElementById(id);
-
-    for (const property of properties)
-        elem.style[property] = properties[property];
-}
-
-
-
-function indexOfChild(parent, child)
-{
-    return Array.prototype.indexOf.call(parent.children, child);
-}
-
-
-
-function containsChild(parent, child)
-{
-    return child.parentNode == parent;
-}
-
-
-
-function forwardEvent(event, element)
-{
-    var e = new event.constructor(event.type, event);
-    element.dispatchEvent(e);
-}
-
-
-
-// function triggerMouseEvent(element, event, px, py, button = 0)
-// {
-//     const e = new MouseEvent(event, 
-//     {
-//         clientX: px,
-//         clientY: py,
-//         button:  button
-//     });
-
-//     element.dispatchEvent(e);
-// }
-
-
-
-function removeFromArray(array, obj)
-{
-    var index = array.indexOf(obj);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-
-function isEmptyObject(obj)
-{
-    if (obj == null)
-        return false;
-        
-    return (
-           Object.keys(obj).length === 0 
-        && obj.constructor === Object);
-}
-
-
-
-function shallowCopy(obj)
-{
-    return Object.assign({}, obj);
-}
-
-
-
-function deepCopy(obj)
-{
-    return JSON.parse(JSON.stringify(obj));
-}
-
-
-
-function createSvg(element)
-{
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
-    svg.style.pointerEvents = 'none';
-    return svg;
-}
-
-
-
-function show(element) { element.style.visibility = 'visible'; }
-function hide(element) { element.style.visibility = 'hidden'; }
-
-
-
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
-    }
-
-    return 'magenta';
-}
-
-
-
-function position(e)
-{
-    return {
-        x: e.clientX,
-        y: e.clientY
-    };
-}
-
-
 const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
+
+
+
+function floatToInt(f)
+{
+    return f | 0;
+}
 
 
 
@@ -2672,6 +2649,71 @@ function removeLast(array)
 function lastOf(array)
 {
     return array[array.length-1];
+}
+
+
+
+function capitalize(str)
+{
+    var cap = "";
+
+    if (str.length > 0)
+        cap += str[0].toUpperCase();
+
+    if (str.length > 1)
+        cap += str.substring(1).toLowerCase();
+
+    return cap;
+}
+
+
+
+function gcd(a, b)
+{
+    var temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function bytesFromString(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function stringFromBytes(bytes) 
+{
+    var str = '';
+
+    for (var i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
 }
 
 
@@ -2992,6 +3034,87 @@ function xrotate(angle)
 }
 
 
+
+function isPrime(x) 
+{
+    for (var i = 2; i * i <= x; i++) 
+    {
+        if (x % i === 0) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function nthPrime(n) 
+{
+    var maybe = 2;
+    var prime = 0;
+
+    while (n >= 0) 
+    {
+        if (isPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigIsPrime(x) 
+{
+    for (var i = 2n; i * i <= x; i++) 
+    {
+        if (x % i === 0n) 
+            return false;
+    }
+
+    return true;
+}
+  
+
+
+function bigNthPrime(n) 
+{
+    var maybe = 2n;
+    var prime = 0n;
+
+    while (n >= 0n) 
+    {
+        if (bigIsPrime(maybe)) 
+        {
+            n--;
+            prime = maybe;
+        }
+        
+        maybe++;
+    }
+
+    return prime;
+}
+
+
+
+function bigPow(x, e)
+{
+    var _e = Number(e);
+    var _x = 1n;
+
+    for (var i = 0; i < _e; i++)
+        _x *= x;
+
+    return _x;
+}
+
+
 class Point
 {
     x;
@@ -3156,6 +3279,189 @@ class Random
 }
 
 
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (const property of properties)
+        elem.style[property] = properties[property];
+}
+
+
+
+function indexOfChild(parent, child)
+{
+    return Array.prototype.indexOf.call(parent.children, child);
+}
+
+
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+
+//     element.dispatchEvent(e);
+// }
+
+
+
+function removeFromArray(array, obj)
+{
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
+}
+
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+
+function colorStyle(rgb)
+{
+    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
+}
+
+
+
+function numToString(num, dec)
+{
+    var str = Number(num).toFixed(dec).toString();
+
+    var i = 0;
+
+    // find decimal place
+
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
+        i++;
+
+    if (i >= str.length) // if no decimal place
+        return str;
+
+    i = str.length-1;
+
+    while (i >= 0 && str[i] === '0')
+        str = str.substring(0, i--);
+
+    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+        str = str.substring(0, i--);
+
+    return str;
+}
+
+
+
+function isEmptyObject(obj)
+{
+    if (obj == null)
+        return false;
+        
+    return (
+           Object.keys(obj).length === 0 
+        && obj.constructor === Object);
+}
+
+
+
+function shallowCopy(obj)
+{
+    return Object.assign({}, obj);
+}
+
+
+
+function deepCopy(obj)
+{
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+
+function createSvg(element)
+{
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    svg.style.pointerEvents = 'none';
+    return svg;
+}
+
+
+
+function show(element) { element.style.visibility = 'visible'; }
+function hide(element) { element.style.visibility = 'hidden'; }
+
+
+
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
+        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+    }
+
+    return 'magenta';
+}
+
+
+
+function position(e)
+{
+    return {
+        x: e.clientX,
+        y: e.clientY
+    };
+}
+
+
 function loadState(state)
 {
     resizeWindow(
@@ -3181,6 +3487,89 @@ function saveState()
     {
         //windowHeight: window.innerHeight
     });
+}
+
+
+function createPublicPrivateKeys()
+{
+    // two random primes
+
+    var p = nthPrime(100 + floatToInt(10 * Math.random()));
+    var q = p;
+
+    while (q == p)
+        q = nthPrime(100 + floatToInt(10 * Math.random()));
+
+
+    var n   = p*q;
+    var phi = (p-1)*(q-1);
+    
+    
+    var e = 2; // must be an integer, not be factor of n, and 1 < e < Ф(n)
+    
+    while (e < phi)
+    {
+        if (gcd(e, phi) == 1) break;
+        else                  e++;
+    }        
+
+    
+    console.log('p: ' + p);
+    console.log('q: ' + q);
+    console.log('n: ' + n);
+    console.log('e: ' + e);
+    
+
+    return {
+        public:  createPublicKey (n,   e), 
+        private: createPrivateKey(phi, e) };
+}                    
+
+
+
+function createPublicKey(n, e)
+{
+    return {n:n, e:e};    
+}    
+
+
+
+function createPrivateKey(phi, e)
+{
+    var k = 2; // a constant value
+    var d = (k*phi + 1) / e;
+
+    return d;
+}
+
+
+
+function encrypt(data, publicKey)
+{
+    var n = BigInt(publicKey.n);
+    var e = BigInt(publicKey.e);
+
+    var enc = [];
+
+    for (var i = 0; i < data.length; i++)
+        enc.push(Number(bigPow(BigInt(data[i]), e) % n));
+
+    return enc;
+}
+
+
+
+function decrypt(data, publicKey, privateKey)
+{
+    var n   = BigInt(publicKey.n);
+    var prv = BigInt(privateKey);
+
+    var dec = [];
+
+    for (var i = 0; i < data.length; i++)
+        dec.push(Number(bigPow(BigInt(data[i]), prv) % n));
+
+    return dec;
 }
 
 
@@ -3426,9 +3815,9 @@ class UGraph
     
     deleteNodes(nodeIds)
     {
-        for (const nodeId of nodeIds)
+        for (const id of nodeIds)
         {
-            const node = this.nodes.find(n => n.id == nodeId);
+            const node = this.nodes.find(n => n.id == id);
 
             for (const input of node.inputs)
             {
@@ -3460,6 +3849,7 @@ class UGraph
     }
 
 
+
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -3471,7 +3861,7 @@ class UGraph
         output.connectedInputs.push(input);
         input .connectedOutput = output;
 
-        const conn = new Connection(output, input);
+        const conn = new UConnection(output, input);
 
         input .connection = conn;
         output.connection = conn;
@@ -4132,7 +4522,7 @@ class UOperator
             return false; // graph already contains a node with this id
 
         this._name = newId;
-        this.label.innerHTML = newId;
+        this.label.innerHTML = this.id + ': ' + newId;
 
         return true;
     }
@@ -4391,6 +4781,8 @@ function initLabelTextbox(node)
     node.textbox.className  = 'nodeLabelTextbox';
     node.textbox.spellcheck = false;
     
+
+
     node.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
@@ -4468,10 +4860,13 @@ function initLabelTextbox(node)
     });
 
 
+    
     // node.textbox.addEventListener('input', function()
     // {
     //     node.setValue(Number(node.textbox.value));
     // });
+
+
 
     node.textbox.addEventListener('paste', function(e)
     {
@@ -4483,12 +4878,16 @@ function initLabelTextbox(node)
         node.textbox.value = isNaN(val) ? '' : val;
     });
 
+    
+    
     node.textbox.addEventListener('focusout', function()
     {
         node.header.removeChild(node.textbox);
         node.clicked = false;
     });
     
+
+
     node.textbox.finish = function(success)
     {
         if (success) 
@@ -4502,6 +4901,7 @@ function initLabelTextbox(node)
         if (node.inFocus)
             node.focus();
     };    
+ 
     
     
     node.showLabelTextbox = function()
@@ -4518,7 +4918,7 @@ function initLabelTextbox(node)
         node.textbox.style.transform = 'translateX(-50%) translateY(-50%)';
         node.textbox.style.textAlign = 'center';
     
-        node.textbox.value      = node.id;
+        node.textbox.value      = node.name;
         node.textbox.savedValue = node.textbox.value;
         
         node.header.appendChild(node.textbox);
@@ -4982,7 +5382,7 @@ class ActionManager
         action.id      = this.nextActionId++;
         action.manager = this;
         
-        console.log("DO '" + action.name + "'")
+        console.log("DO " + action.name);
         action.do();
     }
 
@@ -4996,7 +5396,7 @@ class ActionManager
         var last = removeLast(this.actions);
         this.redoActions.push(last);
 
-        console.log("UNDO '" + last.name + "'")
+        console.log("UNDO " + last.name);
         last.undo();
     }
 
@@ -5010,7 +5410,7 @@ class ActionManager
         var last = removeLast(this.redoActions);
         this.actions.push(last);
 
-        console.log("REDO '" + last.name + "'")
+        console.log("REDO " + last.name);
         last.redo();
     }
 }
@@ -5018,6 +5418,9 @@ class ActionManager
 
 
 const actionManager = new ActionManager();
+
+
+
 
 
 class CreateNodeAction
@@ -5032,7 +5435,7 @@ extends Action
 
     constructor(opType)
     {
-        super('Create node');
+        super('Create ' + capitalize(opType) + ' node');
         
         this.opType = opType;
     }
@@ -5050,7 +5453,6 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        //UOperator.nextId--;
 
         console.log("undo prevSelectedIds = " + this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);
@@ -5098,47 +5500,7 @@ extends Action
 }
 
 
-class SelectNodesAction
-extends Action
-{
-    selectedIds     = [];
-    prevSelectedIds = [];
 
-
-
-    constructor(selectedIds, prevSelectedIds)
-    {
-        super('Select nodes');
-
-        this.selectedIds     = [...selectedIds];
-        this.prevSelectedIds = [...prevSelectedIds];
-    }
-
-
-
-    do()
-    {
-        // this happens in the UI
-    }
-
-
-
-    undo()
-    {
-        console.log('select undo prevSelectedIds');
-        console.log(this.prevSelectedIds);
-        graphView.selectFromIds(this.prevSelectedIds);
-        console.log(graphView.selected);
-    }
-
-
-
-    redo()
-    {
-        graphView.selectFromIds(this.selectedIds);
-        console.log(graphView.selected);
-    }
-}
 
 
 class MoveNodesAction
@@ -5215,7 +5577,47 @@ extends Action
 
 
 
+class SelectNodesAction
+extends Action
+{
+    selectedIds     = [];
+    prevSelectedIds = [];
 
+
+
+    constructor(selectedIds, prevSelectedIds)
+    {
+        super('Select nodes');
+
+        this.selectedIds     = [...selectedIds];
+        this.prevSelectedIds = [...prevSelectedIds];
+    }
+
+
+
+    do()
+    {
+        // this happens in the UI
+    }
+
+
+
+    undo()
+    {
+        console.log('select undo prevSelectedIds');
+        console.log(this.prevSelectedIds);
+        graphView.selectFromIds(this.prevSelectedIds);
+        console.log(graphView.selected);
+    }
+
+
+
+    redo()
+    {
+        graphView.selectFromIds(this.selectedIds);
+        console.log(graphView.selected);
+    }
+}
 
 
 class SetValueAction
@@ -5273,6 +5675,7 @@ const uiGraph = new UGraph();
 
 initSelect(presets,
 [
+    {value: '', text: 'untitled'},
     {value: '', text: 'untitled'},
 ]);    
 
@@ -5387,6 +5790,22 @@ function uiUndeleteNodes(nodes, actionId)
 
 
 
+function uiDeleteNodeObjects(nodeIds)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    }}, '*');
+
+    generator.postMessage({
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    });
+}
+
+
+
 function uiSetNodeId(nodeId, newId)
 {
     const node = uiGraph.nodeFromId(nodeId);
@@ -5468,22 +5887,6 @@ function uiSetActive(node, active)
 
 
 
-function uiDeleteNodeObjects(nodeIds)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'deleteNodeObjects',
-        nodeIds: nodeIds
-    }}, '*');
-
-    generator.postMessage({
-        cmd:    'deleteNodeObjects',
-        nodeIds: nodeIds
-    });
-}
-
-
-
 /////////////////////////////////////////////////////////////////////
 
 
@@ -5492,7 +5895,6 @@ function uiGenerateObjects(nodeIds)
 {
     if (uiGraph.mutex)
     {
-        //uiGraph.deferNodes = [];
 
         for (const nodeId of nodeIds)
             uiGraph.deferNodeIds.push(nodeId);
@@ -5553,8 +5955,8 @@ function uiShowParamValue(nodeId, paramName, value)
 {
     const node = uiGraph.nodeFromId(nodeId);
             
-    if (!!node) // this is mainly for deleted nodes which still exist 
-    {           // in Generator Graph but no longer in the UI Graph
+    if (!!node) // this is for deleted nodes which still exist 
+    {           // in genGraph but no longer in uiGraph
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
@@ -5583,6 +5985,36 @@ function uiUpdateObjects(objects)
         uiGenerateObjects(deferNodes);
     }
 }
+
+
+
+function strFromData(data)
+{
+    var str = '';
+
+    for (var i = 0; i < data.length; i++)
+        str += String.fromCharCode(data[i]);
+
+    return str;
+}
+
+
+
+
+var str = 'this is an encrypted message';
+
+var data = bytesFromString(str);
+console.log('str: ' + stringFromBytes(data));
+
+var keys = createPublicPrivateKeys();
+
+var enc = encrypt(data, keys.public);
+console.log('enc: ' + enc);
+console.log('enc: ' + stringFromBytes(enc));
+
+var dec = decrypt(enc, keys.public, keys.private);
+console.log('dec: ' + dec);
+console.log('dec: ' + stringFromBytes(dec));
 
 
 const resizeEdgeWidth = 8;

@@ -1,12 +1,12 @@
-html/generator_0.html
+../html/generator_0.html
 
-    [autojoin/core.aj]
+    [../autojoin/core.aj]
 
-    core/Noise.js
+    ../core/Noise.js
     
-    [autojoin/goperators.aj]
+    [../autojoin/goperators.aj]
 
-    generator/generator.js
-    generator/gutil.js
+    ../generator/generator.js
+    ../generator/gutil.js
 
-html/generator_1.html
+../html/generator_1.html

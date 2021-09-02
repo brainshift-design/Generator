@@ -18,7 +18,7 @@ class ActionManager
         action.id      = this.nextActionId++;
         action.manager = this;
         
-        console.log("DO '" + action.name + "'")
+        console.log("DO " + action.name);
         action.do();
     }
 
@@ -32,7 +32,7 @@ class ActionManager
         var last = removeLast(this.actions);
         this.redoActions.push(last);
 
-        console.log("UNDO '" + last.name + "'")
+        console.log("UNDO " + last.name);
         last.undo();
     }
 
@@ -46,7 +46,7 @@ class ActionManager
         var last = removeLast(this.redoActions);
         this.actions.push(last);
 
-        console.log("REDO '" + last.name + "'")
+        console.log("REDO " + last.name);
         last.redo();
     }
 }

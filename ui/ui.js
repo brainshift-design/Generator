@@ -11,6 +11,7 @@ const uiGraph = new UGraph();
 initSelect(presets,
 [
     {value: '', text: 'untitled'},
+    {value: '', text: 'untitled'},
 ]);    
 
 
@@ -124,6 +125,22 @@ function uiUndeleteNodes(nodes, actionId)
 
 
 
+function uiDeleteNodeObjects(nodeIds)
+{
+    parent.postMessage({ pluginMessage: 
+    { 
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    }}, '*');
+
+    generator.postMessage({
+        cmd:    'deleteNodeObjects',
+        nodeIds: nodeIds
+    });
+}
+
+
+
 function uiSetNodeId(nodeId, newId)
 {
     const node = uiGraph.nodeFromId(nodeId);
@@ -205,22 +222,6 @@ function uiSetActive(node, active)
 
 
 
-function uiDeleteNodeObjects(nodeIds)
-{
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'deleteNodeObjects',
-        nodeIds: nodeIds
-    }}, '*');
-
-    generator.postMessage({
-        cmd:    'deleteNodeObjects',
-        nodeIds: nodeIds
-    });
-}
-
-
-
 /////////////////////////////////////////////////////////////////////
 
 
@@ -229,7 +230,6 @@ function uiGenerateObjects(nodeIds)
 {
     if (uiGraph.mutex)
     {
-        //uiGraph.deferNodes = [];
 
         for (const nodeId of nodeIds)
             uiGraph.deferNodeIds.push(nodeId);
@@ -290,8 +290,8 @@ function uiShowParamValue(nodeId, paramName, value)
 {
     const node = uiGraph.nodeFromId(nodeId);
             
-    if (!!node) // this is mainly for deleted nodes which still exist 
-    {           // in Generator Graph but no longer in the UI Graph
+    if (!!node) // this is for deleted nodes which still exist 
+    {           // in genGraph but no longer in uiGraph
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
@@ -320,3 +320,33 @@ function uiUpdateObjects(objects)
         uiGenerateObjects(deferNodes);
     }
 }
+
+
+
+function strFromData(data)
+{
+    var str = '';
+
+    for (var i = 0; i < data.length; i++)
+        str += String.fromCharCode(data[i]);
+
+    return str;
+}
+
+
+
+
+var str = 'this is an encrypted message';
+
+var data = bytesFromString(str);
+console.log('str: ' + stringFromBytes(data));
+
+var keys = createPublicPrivateKeys();
+
+var enc = encrypt(data, keys.public);
+console.log('enc: ' + enc);
+console.log('enc: ' + stringFromBytes(enc));
+
+var dec = decrypt(enc, keys.public, keys.private);
+console.log('dec: ' + dec);
+console.log('dec: ' + stringFromBytes(dec));

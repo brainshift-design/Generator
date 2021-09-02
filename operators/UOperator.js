@@ -240,7 +240,7 @@ class UOperator
             return false; // graph already contains a node with this id
 
         this._name = newId;
-        this.label.innerHTML = newId;
+        this.label.innerHTML = this.id + ': ' + newId;
 
         return true;
     }
