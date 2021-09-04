@@ -328,25 +328,7 @@ function strFromData(data)
     var str = '';
 
     for (var i = 0; i < data.length; i++)
-        str += String.fromCharCode(data[i]);
+        str += String.fromCharCode(data[si]);
 
     return str;
 }
-
-
-
-
-var str = 'this is an encrypted message';
-
-var data = bytesFromString(str);
-console.log('str: ' + stringFromBytes(data));
-
-var keys = createPublicPrivateKeys();
-
-var enc = encrypt(data, keys.public);
-console.log('enc: ' + enc);
-console.log('enc: ' + stringFromBytes(enc));
-
-var dec = decrypt(enc, keys.public, keys.private);
-console.log('dec: ' + dec);
-console.log('dec: ' + stringFromBytes(dec));

@@ -121,23 +121,6 @@ function capitalize(str)
 
 
 
-function gcd(a, b)
-{
-    var temp;
-    while (1)
-    {
-        temp = a % b;
-
-        if (temp == 0)
-          return b;
-
-        a = b;
-        b = temp;
-    }
-}
-
-
-
 function toUtf8(str) 
 {
     return decodeURI(encodeURIComponent(str));

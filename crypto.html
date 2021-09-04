@@ -1,0 +1,38 @@
+<html>
+    <script src="core/lib.js"></script>
+    <script src="core/math.js"></script>
+    <script src="core/crypto.js"></script>
+
+    <body>
+        <p id='text'></p>
+    </body>
+
+    <style>
+        #text { font: 20pt Consolas; }
+    </style>
+
+    <script>
+        var txt = '';
+        
+        var str = 'this is an encrypted message';
+        
+        var data = bytesFromString(str);
+        txt += 'str: ' + stringFromBytes(data) + '<br/>';
+        
+        var keys = createPublicPrivateKeys();
+       
+        txt += 'public.n: ' + keys.public.n + '<br/>';
+
+        // var enc = encrypt(data, keys.public);
+        // txt += 'enc: ' + enc + '<br/>';
+        // txt += 'enc: ' + stringFromBytes(enc) + '<br/>';
+        
+        
+        // var dec = decrypt(enc, keys.private);
+        // txt += 'dec: ' + dec + '<br/>';
+        // txt += 'dec: ' + stringFromBytes(dec) + '<br/>';
+
+        text.innerHTML = txt;
+    </script>
+
+</html>
