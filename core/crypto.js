@@ -84,51 +84,7 @@ function createPublicPrivateKeys()
     return {
         public:  pub,
         private: prv };
-    
-
-    // two random primes    
-
-    // var p = bigNthPrime(100 + floatToInt(100 * Math.random()));
-    // var q = p;
-
-    // while (q == p)
-    //     q = bigNthPrime(100 + floatToInt(100 * Math.random()));
-
-
-    // var n   = p*q;
-    // var phi = (p-1n)*(q-1n);
-    
-    
-    // var e = 2n; // must be an integer, not be factor of n, and 1 < e < Ф(n)
-    
-    // while (e < phi)
-    // {
-    //     if (gcd(e, phi) == 1) break;    
-    //     else                  e++;
-    // }        
-
-    
-    // return {
-    //      public:  createPublicKey (e, n),     
-    //      private: createPrivateKey(e, phi) };
 }                        
-
-
-
-// function createPublicKey(e, n)
-// {
-//     return {e:e, n:n};    
-// }    
-
-
-
-// function createPrivateKey(phi, e, n)
-// {
-//     var k = 2n; // a constant value
-//     var d = (k*phi + 1n) / e;
-
-//     return {d:d, n:n};
-// }
 
 
 

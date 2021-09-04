@@ -946,51 +946,59 @@ function bigPower(a, n, p)
 
 function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
 {
-    if (n <= 1n) return false;
-    if (n <= 3n) return true;
+    if (n <= 1n) return false; 
+    if (n <= 3n) return true; // prime
 
     if (n % 2n == 0n) 
-        return false;
+        return false; // composite
     
 
-    // find d so that n = 2^d * r + 1 for some r >= 1
-    var d = n - 1n;
-    while (d % 2n == 0n)
-        d /= 2n;
+    var d = n - 1n;      // find d  
+    while (d % 2n == 0n) // so that n = 2^d * r + 1 
+        d /= 2n;         // for r >= 1
 
 
     for (var i = 0; i < k; i++) // Miller test
+        if (!bigMillerTest(d, n))
+            return false; // composite
+
+
+    return true; // maybe prime
+}
+
+
+
+function bigMillerTest(d, n)
+{
+    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
+    var a = 2n + bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+
+
+    var x = bigPower(a, d, n);
+
+    if (   x == 1n
+        || x == n - 1n)
+        return true; // maybe prime
+
+
+    // keep squaring x until one of the following happens
+
+    // (i)   d reaches n-1
+    // (ii)  (x^2) % n == 1
+    // (iii) (x^2) % n == n-1  
+
+    while (d < n-1n)
     {
-        // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
-        var a = 2n + bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
- 
+        x = (x * x) % n;
 
-        var x = bigPower(a, d, n);
+        if (x == 1n  ) return false; // composite
+        if (x == n-1n) return true;  // maybe prime
 
-        if (   x == 1n
-            || x == n - 1n)
-            return true;
-
-
-        // keep squaring x until one of the following happens
-
-        // (i)   d reaches n-1
-        // (ii)  (x^2) % n == 1
-        // (iii) (x^2) % n == n-1  
-
-        while (d < n-1n)
-        {
-            x = (x * x) % n;
-    
-            if (x == 1n  ) return false;
-            if (x == n-1n) return true;
-
-            d *= 2n;
-        }
+        d *= 2n;
     }
- 
-    
-    return true;
+
+
+    return false; // composite
 }
 
 
@@ -1000,52 +1008,6 @@ function bigNextPrime(n)
     while (!bigIsPrime(++n));
     return n;
 }
-
-
-
-// function bigIsPrime(n) 
-// {
-//     if (   n == 2n 
-//         || n == 3n)
-//         return true;
-
-//     if (   n % 2n == 0n 
-//         || n % 3n == 0n)
-//         return false;
-
-//     var d = 6n;
-
-//     while (sqr(d-1n) <= n)
-//     {
-//         if (n % (d-1n) == 0n) return false;
-//         if (n % (d+1n) == 0n) return false;
-
-//         d += 6n;
-//     }
-
-//     return true;
-// }
-  
-
-
-// function bigNthPrime(n) 
-// {
-//     var maybe = 2n;
-//     var prime = 0n;
-
-//     while (n >= 0n) 
-//     {
-//         if (bigIsPrime(maybe)) 
-//         {
-//             n--;
-//             prime = maybe;
-//         }
-        
-//         maybe++;
-//     }
-
-//     return prime;
-// }
 
 
 
@@ -3228,51 +3190,59 @@ function bigPower(a, n, p)
 
 function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
 {
-    if (n <= 1n) return false;
-    if (n <= 3n) return true;
+    if (n <= 1n) return false; 
+    if (n <= 3n) return true; // prime
 
     if (n % 2n == 0n) 
-        return false;
+        return false; // composite
     
 
-    // find d so that n = 2^d * r + 1 for some r >= 1
-    var d = n - 1n;
-    while (d % 2n == 0n)
-        d /= 2n;
+    var d = n - 1n;      // find d  
+    while (d % 2n == 0n) // so that n = 2^d * r + 1 
+        d /= 2n;         // for r >= 1
 
 
     for (var i = 0; i < k; i++) // Miller test
+        if (!bigMillerTest(d, n))
+            return false; // composite
+
+
+    return true; // maybe prime
+}
+
+
+
+function bigMillerTest(d, n)
+{
+    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
+    var a = 2n + bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+
+
+    var x = bigPower(a, d, n);
+
+    if (   x == 1n
+        || x == n - 1n)
+        return true; // maybe prime
+
+
+    // keep squaring x until one of the following happens
+
+    // (i)   d reaches n-1
+    // (ii)  (x^2) % n == 1
+    // (iii) (x^2) % n == n-1  
+
+    while (d < n-1n)
     {
-        // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
-        var a = 2n + bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
- 
+        x = (x * x) % n;
 
-        var x = bigPower(a, d, n);
+        if (x == 1n  ) return false; // composite
+        if (x == n-1n) return true;  // maybe prime
 
-        if (   x == 1n
-            || x == n - 1n)
-            return true;
-
-
-        // keep squaring x until one of the following happens
-
-        // (i)   d reaches n-1
-        // (ii)  (x^2) % n == 1
-        // (iii) (x^2) % n == n-1  
-
-        while (d < n-1n)
-        {
-            x = (x * x) % n;
-    
-            if (x == 1n  ) return false;
-            if (x == n-1n) return true;
-
-            d *= 2n;
-        }
+        d *= 2n;
     }
- 
-    
-    return true;
+
+
+    return false; // composite
 }
 
 
@@ -3282,52 +3252,6 @@ function bigNextPrime(n)
     while (!bigIsPrime(++n));
     return n;
 }
-
-
-
-// function bigIsPrime(n) 
-// {
-//     if (   n == 2n 
-//         || n == 3n)
-//         return true;
-
-//     if (   n % 2n == 0n 
-//         || n % 3n == 0n)
-//         return false;
-
-//     var d = 6n;
-
-//     while (sqr(d-1n) <= n)
-//     {
-//         if (n % (d-1n) == 0n) return false;
-//         if (n % (d+1n) == 0n) return false;
-
-//         d += 6n;
-//     }
-
-//     return true;
-// }
-  
-
-
-// function bigNthPrime(n) 
-// {
-//     var maybe = 2n;
-//     var prime = 0n;
-
-//     while (n >= 0n) 
-//     {
-//         if (bigIsPrime(maybe)) 
-//         {
-//             n--;
-//             prime = maybe;
-//         }
-        
-//         maybe++;
-//     }
-
-//     return prime;
-// }
 
 
 
@@ -3820,51 +3744,7 @@ function createPublicPrivateKeys()
     return {
         public:  pub,
         private: prv };
-    
-
-    // two random primes    
-
-    // var p = bigNthPrime(100 + floatToInt(100 * Math.random()));
-    // var q = p;
-
-    // while (q == p)
-    //     q = bigNthPrime(100 + floatToInt(100 * Math.random()));
-
-
-    // var n   = p*q;
-    // var phi = (p-1n)*(q-1n);
-    
-    
-    // var e = 2n; // must be an integer, not be factor of n, and 1 < e < Ф(n)
-    
-    // while (e < phi)
-    // {
-    //     if (gcd(e, phi) == 1) break;    
-    //     else                  e++;
-    // }        
-
-    
-    // return {
-    //      public:  createPublicKey (e, n),     
-    //      private: createPrivateKey(e, phi) };
 }                        
-
-
-
-// function createPublicKey(e, n)
-// {
-//     return {e:e, n:n};    
-// }    
-
-
-
-// function createPrivateKey(phi, e, n)
-// {
-//     var k = 2n; // a constant value
-//     var d = (k*phi + 1n) / e;
-
-//     return {d:d, n:n};
-// }
 
 
 
