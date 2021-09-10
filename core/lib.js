@@ -3,9 +3,9 @@ const Eps = 0.0000001;
 
 
 
-function floatToInt(f)
+function toInt(f)
 {
-    return f | 0;
+    return Math.floor(f) | 0;
 }
 
 

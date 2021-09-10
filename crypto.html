@@ -1,6 +1,7 @@
 <html>
     <script src="core/lib.js"></script>
     <script src="core/math.js"></script>
+    <script src="core/bigmath.js"></script>
     <script src="core/crypto.js"></script>
 
     <body>
@@ -8,29 +9,48 @@
     </body>
 
     <style>
-        #text { font: 20pt Consolas; }
+        #text 
+        {
+             font:          12pt Consolas; 
+             overflow-wrap: break-word;
+             word-break:    break-all;
+        }
     </style>
 
     <script>
         var txt = '';
         
-        var str = 'this is an encrypted message';
-        
-        var data = bytesFromString(str);
-        txt += 'str: ' + stringFromBytes(data) + '<br/>';
-        
-        var keys = createPublicPrivateKeys();
-       
-        txt += 'public.n: ' + keys.public.n + '<br/>';
+        var str = 'Th';// is a plain text message.';
 
-        // var enc = encrypt(data, keys.public);
-        // txt += 'enc: ' + enc + '<br/>';
-        // txt += 'enc: ' + stringFromBytes(enc) + '<br/>';
+        var data = bytesFromString(str);
+
+        txt += 'data: ' + data + '<br/>';
+        txt += 'str: '  + str  + '<br/><br/>';
         
+        txt += 'crypto: ' + cryptoModulusSize + ' bits<br/><br/>'
         
-        // var dec = decrypt(enc, keys.private);
-        // txt += 'dec: ' + dec + '<br/>';
-        // txt += 'dec: ' + stringFromBytes(dec) + '<br/>';
+        var keys = createCryptoKeys();
+       
+        txt += 'p: ' + keys.private.p + '<br/><br/>';
+        txt += 'q: ' + keys.private.q + '<br/><br/>';
+        
+        txt += 'public key:<br/><br/>';
+        
+        txt += 'e: ' + keys.public.e + '<br/><br/>';
+        
+        txt += 'n: ' + keys.public.n + '<br/><br/>';
+        
+        txt += 'private key:<br/><br/>';
+        
+        txt += 'd: ' + keys.private.d + '<br/><br/>';
+
+        var enc = encrypt(data, keys.public);
+        txt += 'enc: ' + enc + '<br/>';
+        txt += 'enc: ' + stringFromBytes(enc) + '<br/><br/>';
+        
+        var dec = decrypt(enc, keys.private);
+        txt += 'dec: ' + dec + '<br/>';
+        txt += 'dec: ' + stringFromBytes(dec) + '<br/><br/>';
 
         text.innerHTML = txt;
     </script>

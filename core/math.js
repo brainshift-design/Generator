@@ -8,6 +8,24 @@ function cube(x) { return x*x*x; };
 
 
 
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
+
+
+
 function distance(p1, p2)
 {
     var dx = p2.x - p1.x;
@@ -316,40 +334,6 @@ function xrotate(angle)
 
 
 
-// function isPrime(x) 
-// {
-//     for (var i = 2; i * i <= x; i++) 
-//     {
-//         if (x % i === 0) 
-//             return false;
-//     }
-
-//     return true;
-// }
-  
-
-
-// function nthPrime(n) 
-// {
-//     var maybe = 2;
-//     var prime = 0;
-
-//     while (n >= 0) 
-//     {
-//         if (isPrime(maybe)) 
-//         {
-//             n--;
-//             prime = maybe;
-//         }
-        
-//         maybe++;
-//     }
-
-//     return prime;
-// }
-
-
-
 function gcd(a, b)
 {
     var temp;
@@ -367,131 +351,100 @@ function gcd(a, b)
 
 
 
-// multiply BigInt by float 0 <= f <=1
-function bigMult(n, f)
-{
-    var mult = 1000000000000000000000000000; // this is the float "precision"
+// function ipow(n, e)
+// {
+//     var res = 1;
 
-    return n*BigInt(mult) 
-         * BigInt(floatToInt(f*mult))
-         / sqr(BigInt(mult));
+//     for (;;)
+//     {
+//         if (e & 1 != 0)
+//             res *= n;
+
+//         e >>= 1;
+
+//         if (e == 0)
+//             break;
+
+//         n *= n;
+//     }
+
+//     return res;
+// }
+
+
+
+const MaxDigits = 100000;
+ 
+function multRes(x, res, resSize)
+{
+    var carry = 0n;
+    
+    // multiply individual digits of res[] by n
+    for (var i = 0; i < resSize; i++) 
+    {
+        var prod = res[i] * x + carry;
+    
+        res[i] = prod % 10n; // store last digit of prod in res[]
+        carry  = prod / 10n; // put rest in carry
+    }
+    
+    // put carry in res and
+    // increase result size
+    while (carry)
+    {
+        res[resSize] = carry % 10n;
+        carry        = carry / 10n;
+        resSize++;
+    }
+
+    return resSize;
 }
 
 
 
-// iterative function to calculate (a^n) % p in O(log y)
-function bigPower(a, n, p)
+function randomPrime(max = Number.MAX_SAFE_INTEGER/2)
 {
-    var pow = 1n;
-
-    a %= p; // update a if a >= p
- 
-    while (n > 0n)
-    {
-        // if n is odd, multiply a by result
-        if (n & 1n)
-            pow = (pow*a) % p;
- 
-        // n must be even now    
-        n = n >> 1n; // n = n/2
-        a = (a*a) % p;
-    }    
-
-    return pow;
-}    
- 
+    var num = Math.floor(Math.random() * max);
+    return nextPrime(num);
+}
 
 
-function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
+
+function nextPrime(x) 
 {
-    if (n <= 1n) return false; 
-    if (n <= 3n) return true; // prime
+    while (!isPrime(++x));
+    return x;
+}
 
-    if (n % 2n == 0n) 
+
+
+function isPrime(n, k = millerRabinIterations) // Miller-Rabin
+{
+    if (n <= 1) return false; 
+    if (n <= 3) return true; // prime
+    
+    if (n % 2 == 0) 
         return false; // composite
     
-
-    var d = n - 1n;      // find d  
-    while (d % 2n == 0n) // so that n = 2^d * r + 1 
-        d /= 2n;         // for r >= 1
-
-
-    for (var i = 0; i < k; i++) // Miller test
-        if (!bigMillerTest(d, n))
+    
+    var d = n - 1;     // find d      
+    while (d % 2 == 0) // so that x = 2^d * r + 1 
+        d /= 2;        // for r >= 1
+    
+    
+    for (var i = 0; i < k; i++)    
+        if (!millerTest(d, n))
             return false; // composite
+    
+    
+    return true; // maybe prime        
+}    
 
 
-    return true; // maybe prime
-}
 
-
-
-function bigMillerTest(d, n)
+function millerTest(d, n)
 {
-    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
-    var a = 2n + bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
-
-
-    var x = bigPower(a, d, n);
-
-    if (   x == 1n
-        || x == n - 1n)
-        return true; // maybe prime
-
-
-    // keep squaring x until one of the following happens
-
-    // (i)   d reaches n-1
-    // (ii)  (x^2) % n == 1
-    // (iii) (x^2) % n == n-1  
-
-    while (d < n-1n)
-    {
-        x = (x * x) % n;
-
-        if (x == 1n  ) return false; // composite
-        if (x == n-1n) return true;  // maybe prime
-
-        d *= 2n;
-    }
-
-
-    return false; // composite
-}
-
-
-
-function bigNextPrime(n) 
-{
-    while (!bigIsPrime(++n));
-    return n;
-}
-
-
-
-function bigPow(x, e)
-{
-    var _e = Number(e);
-    var _x = 1n;
-
-    for (var i = 0; i < _e; i++)
-        _x *= x;
-
-    return _x;
-}
-
-
-
-function bigFromBuffer(buffer, size)
-{
-    var val = 0n;
-    var mul = 1n;
-
-    for (var i = size-1; i >= 0; i--) // big-endian
-    {
-        val += BigInt(buffer[i]) * mul;
-        mul *= 10n;
-    }
-
-    return val;
-}
+    return bigMillerTest(
+        BigInt(d),
+        BigInt(n));
+}        

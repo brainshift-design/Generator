@@ -390,9 +390,9 @@ const Eps = 0.0000001;
 
 
 
-function floatToInt(f)
+function toInt(f)
 {
-    return f | 0;
+    return Math.floor(f) | 0;
 }
 
 
@@ -547,6 +547,24 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
+
+
+
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
 
 
 
@@ -858,40 +876,6 @@ function xrotate(angle)
 
 
 
-// function isPrime(x) 
-// {
-//     for (var i = 2; i * i <= x; i++) 
-//     {
-//         if (x % i === 0) 
-//             return false;
-//     }
-
-//     return true;
-// }
-  
-
-
-// function nthPrime(n) 
-// {
-//     var maybe = 2;
-//     var prime = 0;
-
-//     while (n >= 0) 
-//     {
-//         if (isPrime(maybe)) 
-//         {
-//             n--;
-//             prime = maybe;
-//         }
-        
-//         maybe++;
-//     }
-
-//     return prime;
-// }
-
-
-
 function gcd(a, b)
 {
     var temp;
@@ -909,96 +893,171 @@ function gcd(a, b)
 
 
 
-// multiply BigInt by float 0 <= f <=1
-function bigMult(n, f)
-{
-    var mult = 1000000000000000000000000000; // this is the float "precision"
+// function ipow(n, e)
+// {
+//     var res = 1;
 
-    return n*BigInt(mult) 
-         * BigInt(floatToInt(f*mult))
-         / sqr(BigInt(mult));
-}
+//     for (;;)
+//     {
+//         if (e & 1 != 0)
+//             res *= n;
+
+//         e >>= 1;
+
+//         if (e == 0)
+//             break;
+
+//         n *= n;
+//     }
+
+//     return res;
+// }
 
 
 
-// iterative function to calculate (a^n) % p in O(log y)
-function bigPower(a, n, p)
-{
-    var pow = 1n;
-
-    a %= p; // update a if a >= p
+const MaxDigits = 100000;
  
-    while (n > 0n)
-    {
-        // if n is odd, multiply a by result
-        if (n & 1n)
-            pow = (pow*a) % p;
- 
-        // n must be even now    
-        n = n >> 1n; // n = n/2
-        a = (a*a) % p;
-    }    
-
-    return pow;
-}    
- 
-
-
-function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
+function multRes(x, res, resSize)
 {
-    if (n <= 1n) return false; 
-    if (n <= 3n) return true; // prime
-
-    if (n % 2n == 0n) 
-        return false; // composite
+    var carry = 0n;
     
-
-    var d = n - 1n;      // find d  
-    while (d % 2n == 0n) // so that n = 2^d * r + 1 
-        d /= 2n;         // for r >= 1
-
-
-    for (var i = 0; i < k; i++) // Miller test
-        if (!bigMillerTest(d, n))
-            return false; // composite
-
-
-    return true; // maybe prime
-}
-
-
-
-function bigMillerTest(d, n)
-{
-    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
-    var a = 2n + bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
-
-
-    var x = bigPower(a, d, n);
-
-    if (   x == 1n
-        || x == n - 1n)
-        return true; // maybe prime
-
-
-    // keep squaring x until one of the following happens
-
-    // (i)   d reaches n-1
-    // (ii)  (x^2) % n == 1
-    // (iii) (x^2) % n == n-1  
-
-    while (d < n-1n)
+    // multiply individual digits of res[] by n
+    for (var i = 0; i < resSize; i++) 
     {
-        x = (x * x) % n;
-
-        if (x == 1n  ) return false; // composite
-        if (x == n-1n) return true;  // maybe prime
-
-        d *= 2n;
+        var prod = res[i] * x + carry;
+    
+        res[i] = prod % 10n; // store last digit of prod in res[]
+        carry  = prod / 10n; // put rest in carry
+    }
+    
+    // put carry in res and
+    // increase result size
+    while (carry)
+    {
+        res[resSize] = carry % 10n;
+        carry        = carry / 10n;
+        resSize++;
     }
 
+    return resSize;
+}
 
-    return false; // composite
+
+
+function randomPrime(max = Number.MAX_SAFE_INTEGER/2)
+{
+    var num = Math.floor(Math.random() * max);
+    return nextPrime(num);
+}
+
+
+
+function nextPrime(x) 
+{
+    while (!isPrime(++x));
+    return x;
+}
+
+
+
+function isPrime(n, k = millerRabinIterations) // Miller-Rabin
+{
+    if (n <= 1) return false; 
+    if (n <= 3) return true; // prime
+    
+    if (n % 2 == 0) 
+        return false; // composite
+    
+    
+    var d = n - 1;     // find d      
+    while (d % 2 == 0) // so that x = 2^d * r + 1 
+        d /= 2;        // for r >= 1
+    
+    
+    for (var i = 0; i < k; i++)    
+        if (!millerTest(d, n))
+            return false; // composite
+    
+    
+    return true; // maybe prime        
+}    
+
+
+
+function millerTest(d, n)
+{
+    return bigMillerTest(
+        BigInt(d),
+        BigInt(n));
+}        
+
+
+
+var bigBuffer = new Uint8Array(2048);
+
+
+
+// function bigPower(a, n, p)
+// {
+//     var res = 1n;
+
+//     a %= p; // update a if a >= p
+ 
+//     while (n > 0n)
+//     {
+//         // if n is odd, multiply a by result
+//         if (n & 1n)
+//             res = (res*a) % p;
+ 
+//         // n must be even now    
+//         n >>= 1n;
+//         a = (a*a) % p;
+//     }    
+
+//     return res;
+// }    
+
+
+
+function bigRandom(max = 0)
+{
+    var size = bigBuffer.length;
+    
+    if (max > 0)
+        size = bigBitCount(max)/8;
+
+    if (size > bigBuffer.length)
+        bigBuffer = new Uint8Array(nextPow2(size));
+        
+    for (var i = 0; i < size; i++)
+        bigBuffer[i] = toInt(Math.random() * 0x100);
+
+    var rnd = bigFromBufferAt(bigBuffer, 0, size);
+
+    if (max > 0)
+        rnd = rnd % max;
+        
+    return rnd;
+}
+
+
+
+function bigPowMod(n, e, mod) // n^e % mod
+{
+    var res = 1n;
+    var pow = n;
+
+    do
+    {
+        if ((e % 2n) == 1n)
+            res *= pow;
+
+        e  >>= 2n;
+        pow *= pow;
+    }
+    while (e > 0n); 
+    
+    return res;
 }
 
 
@@ -1011,32 +1070,215 @@ function bigNextPrime(n)
 
 
 
-function bigPow(x, e)
+function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
 {
-    var _e = Number(e);
-    var _x = 1n;
+    if (n <= 1n) return false; 
+    if (n <= 3n) return true; // prime
+    
+    if (n % 2n == 0n) 
+        return false; // composite
+        
+        
+    var d = n - 1n;      // find d      
+    while (d % 2n == 0n) // so that n = 2^d * r + 1 
+        d /= 2n;         // for r >= 1
+        
 
-    for (var i = 0; i < _e; i++)
-        _x *= x;
+    for (var i = 0; i < k; i++)    
+        if (!bigMillerTest(d, n))
+            return false; // composite
+        
 
-    return _x;
+    return true; // maybe prime        
+}    
+
+    
+
+function bigMillerTest(d, n)
+{
+    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
+    var a = 2n + bigRandom(n - 4n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+
+    
+    var x = bigPowMod(a, d, n);
+    
+    if (   x == 1n
+        || x == n - 1n)
+        return true; // maybe prime
+        
+
+    // keep squaring x until one of the following happens    
+        
+    // (i)   d reaches n-1
+    // (ii)  (x^2) % n == 1
+    // (iii) (x^2) % n == n-1  
+    
+    while (d < n-1n)
+    {
+        x = (x * x) % n;
+
+        if (x == 1n  ) return false; // composite
+        if (x == n-1n) return true;  // maybe prime
+        
+        d *= 2n;
+    }    
+    
+    
+    return false; // composite
+}    
+
+
+
+// multiply BigInt by float 0 <= f <=1
+// function bigMult(n, f)
+// {
+//     var mult = 100000000000000000000000000; // this is the float "precision"
+    
+//     return n*BigInt(mult) 
+//          * BigInt(Math.floor(f*mult))
+//          / sqr(BigInt(mult));
+// }            
+
+
+
+function bigFromBuffer(buffer)
+{
+    return bigFromBufferAt(buffer, 0, buffer.length);
 }
 
 
 
-function bigFromBuffer(buffer, size)
+function bigFromBufferAt(buffer, start, size)
 {
+    size = Math.min(size, buffer.length - start);
+    
     var val = 0n;
     var mul = 1n;
 
-    for (var i = size-1; i >= 0; i--) // big-endian
+    for (var i = start+size-1; i >= start; i--) // little-endian
     {
-        val += BigInt(buffer[i]) * mul;
-        mul *= 10n;
+        val += mul * BigInt(buffer[i]);
+        mul <<= 8n;
     }
 
     return val;
 }
+
+
+
+function bigToBuffer(n, buffer, size)
+{
+    bigToBufferAt(n, buffer, 0, size);
+}
+
+
+
+function bigToBufferAt(n, buffer, start, size)
+{
+    size = Math.min(size, buffer.length - start);
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = Number(n & 0xFFn); 
+        n >>= 8n;
+    }
+}
+
+
+
+function bigBitCount(n)
+{
+    return n.toString(2).length;
+}
+
+
+
+// function bigModInvert(n, m)
+// {
+//     for (var i = 1n; i < BigInt(m); i++)
+//         if ((((n % m) * (i % m)) % m) == n)
+//             return i;
+// }
+
+
+
+function bigModInvert(n, m)
+{
+    var gcd = bigGcdExtended(n, m);
+
+    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+    else              return (gcd[1] % m + m) % m;
+}
+
+
+
+function bigGcdExtended(n, m)
+{
+    if (n == 0n)
+        return [m, 0n, 1n];
+
+    var gcd = bigGcdExtended(m % n, n);
+
+    var x = gcd[1];
+    var y = gcd[2];
+
+    return [
+        gcd[0], 
+        y - (m/n)*x,
+        x ];
+}
+
+
+
+// function bigModInvert(u, v)
+// {
+//    var inv, u1, u3, v1, v3, t1, t3, q;
+//    var iter;
+
+
+//    /* Step X1. Initialise */
+   
+//    u1 = 1n;
+//    u3 = u;
+//    v1 = 0n;
+//    v3 = v;
+   
+
+//    /* Remember odd/even iterations */
+   
+//    iter = 1n;
+
+   
+//    /* Step X2. Loop while v3 != 0 */
+  
+//    while (v3 != 0n)
+//    {
+//        /* Step X3. Divide and "Subtract" */
+//        q  = u3 / v3;
+//        t3 = u3 % v3;
+//        t1 = u1 + q * v1;
+
+//        /* Swap */
+//        u1 = v1; v1 = t1; 
+//        u3 = v3; v3 = t3;
+
+//        iter = -iter;
+//    }
+
+
+//    /* Make sure u3 = gcd(u,v) == 1 */
+ 
+//    if (u3 != 1n)
+//        return 0n;   /* Error: No inverse exists */
+
+
+//     /* Ensure a positive result */
+//     if (iter < 0n)
+//         inv = v - u1;
+//     else
+//         inv = u1;
+//     return inv;
+// }
 
 
 class Point
@@ -2634,9 +2876,9 @@ const Eps = 0.0000001;
 
 
 
-function floatToInt(f)
+function toInt(f)
 {
-    return f | 0;
+    return Math.floor(f) | 0;
 }
 
 
@@ -2791,6 +3033,24 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
+
+
+
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
 
 
 
@@ -3102,40 +3362,6 @@ function xrotate(angle)
 
 
 
-// function isPrime(x) 
-// {
-//     for (var i = 2; i * i <= x; i++) 
-//     {
-//         if (x % i === 0) 
-//             return false;
-//     }
-
-//     return true;
-// }
-  
-
-
-// function nthPrime(n) 
-// {
-//     var maybe = 2;
-//     var prime = 0;
-
-//     while (n >= 0) 
-//     {
-//         if (isPrime(maybe)) 
-//         {
-//             n--;
-//             prime = maybe;
-//         }
-        
-//         maybe++;
-//     }
-
-//     return prime;
-// }
-
-
-
 function gcd(a, b)
 {
     var temp;
@@ -3153,96 +3379,171 @@ function gcd(a, b)
 
 
 
-// multiply BigInt by float 0 <= f <=1
-function bigMult(n, f)
-{
-    var mult = 1000000000000000000000000000; // this is the float "precision"
+// function ipow(n, e)
+// {
+//     var res = 1;
 
-    return n*BigInt(mult) 
-         * BigInt(floatToInt(f*mult))
-         / sqr(BigInt(mult));
-}
+//     for (;;)
+//     {
+//         if (e & 1 != 0)
+//             res *= n;
+
+//         e >>= 1;
+
+//         if (e == 0)
+//             break;
+
+//         n *= n;
+//     }
+
+//     return res;
+// }
 
 
 
-// iterative function to calculate (a^n) % p in O(log y)
-function bigPower(a, n, p)
-{
-    var pow = 1n;
-
-    a %= p; // update a if a >= p
+const MaxDigits = 100000;
  
-    while (n > 0n)
-    {
-        // if n is odd, multiply a by result
-        if (n & 1n)
-            pow = (pow*a) % p;
- 
-        // n must be even now    
-        n = n >> 1n; // n = n/2
-        a = (a*a) % p;
-    }    
-
-    return pow;
-}    
- 
-
-
-function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
+function multRes(x, res, resSize)
 {
-    if (n <= 1n) return false; 
-    if (n <= 3n) return true; // prime
-
-    if (n % 2n == 0n) 
-        return false; // composite
+    var carry = 0n;
     
-
-    var d = n - 1n;      // find d  
-    while (d % 2n == 0n) // so that n = 2^d * r + 1 
-        d /= 2n;         // for r >= 1
-
-
-    for (var i = 0; i < k; i++) // Miller test
-        if (!bigMillerTest(d, n))
-            return false; // composite
-
-
-    return true; // maybe prime
-}
-
-
-
-function bigMillerTest(d, n)
-{
-    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
-    var a = 2n + bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
-
-
-    var x = bigPower(a, d, n);
-
-    if (   x == 1n
-        || x == n - 1n)
-        return true; // maybe prime
-
-
-    // keep squaring x until one of the following happens
-
-    // (i)   d reaches n-1
-    // (ii)  (x^2) % n == 1
-    // (iii) (x^2) % n == n-1  
-
-    while (d < n-1n)
+    // multiply individual digits of res[] by n
+    for (var i = 0; i < resSize; i++) 
     {
-        x = (x * x) % n;
-
-        if (x == 1n  ) return false; // composite
-        if (x == n-1n) return true;  // maybe prime
-
-        d *= 2n;
+        var prod = res[i] * x + carry;
+    
+        res[i] = prod % 10n; // store last digit of prod in res[]
+        carry  = prod / 10n; // put rest in carry
+    }
+    
+    // put carry in res and
+    // increase result size
+    while (carry)
+    {
+        res[resSize] = carry % 10n;
+        carry        = carry / 10n;
+        resSize++;
     }
 
+    return resSize;
+}
 
-    return false; // composite
+
+
+function randomPrime(max = Number.MAX_SAFE_INTEGER/2)
+{
+    var num = Math.floor(Math.random() * max);
+    return nextPrime(num);
+}
+
+
+
+function nextPrime(x) 
+{
+    while (!isPrime(++x));
+    return x;
+}
+
+
+
+function isPrime(n, k = millerRabinIterations) // Miller-Rabin
+{
+    if (n <= 1) return false; 
+    if (n <= 3) return true; // prime
+    
+    if (n % 2 == 0) 
+        return false; // composite
+    
+    
+    var d = n - 1;     // find d      
+    while (d % 2 == 0) // so that x = 2^d * r + 1 
+        d /= 2;        // for r >= 1
+    
+    
+    for (var i = 0; i < k; i++)    
+        if (!millerTest(d, n))
+            return false; // composite
+    
+    
+    return true; // maybe prime        
+}    
+
+
+
+function millerTest(d, n)
+{
+    return bigMillerTest(
+        BigInt(d),
+        BigInt(n));
+}        
+
+
+
+var bigBuffer = new Uint8Array(2048);
+
+
+
+// function bigPower(a, n, p)
+// {
+//     var res = 1n;
+
+//     a %= p; // update a if a >= p
+ 
+//     while (n > 0n)
+//     {
+//         // if n is odd, multiply a by result
+//         if (n & 1n)
+//             res = (res*a) % p;
+ 
+//         // n must be even now    
+//         n >>= 1n;
+//         a = (a*a) % p;
+//     }    
+
+//     return res;
+// }    
+
+
+
+function bigRandom(max = 0)
+{
+    var size = bigBuffer.length;
+    
+    if (max > 0)
+        size = bigBitCount(max)/8;
+
+    if (size > bigBuffer.length)
+        bigBuffer = new Uint8Array(nextPow2(size));
+        
+    for (var i = 0; i < size; i++)
+        bigBuffer[i] = toInt(Math.random() * 0x100);
+
+    var rnd = bigFromBufferAt(bigBuffer, 0, size);
+
+    if (max > 0)
+        rnd = rnd % max;
+        
+    return rnd;
+}
+
+
+
+function bigPowMod(n, e, mod) // n^e % mod
+{
+    var res = 1n;
+    var pow = n;
+
+    do
+    {
+        if ((e % 2n) == 1n)
+            res *= pow;
+
+        e  >>= 2n;
+        pow *= pow;
+    }
+    while (e > 0n); 
+    
+    return res;
 }
 
 
@@ -3255,32 +3556,215 @@ function bigNextPrime(n)
 
 
 
-function bigPow(x, e)
+function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
 {
-    var _e = Number(e);
-    var _x = 1n;
+    if (n <= 1n) return false; 
+    if (n <= 3n) return true; // prime
+    
+    if (n % 2n == 0n) 
+        return false; // composite
+        
+        
+    var d = n - 1n;      // find d      
+    while (d % 2n == 0n) // so that n = 2^d * r + 1 
+        d /= 2n;         // for r >= 1
+        
 
-    for (var i = 0; i < _e; i++)
-        _x *= x;
+    for (var i = 0; i < k; i++)    
+        if (!bigMillerTest(d, n))
+            return false; // composite
+        
 
-    return _x;
+    return true; // maybe prime        
+}    
+
+    
+
+function bigMillerTest(d, n)
+{
+    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
+    var a = 2n + bigRandom(n - 4n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+
+    
+    var x = bigPowMod(a, d, n);
+    
+    if (   x == 1n
+        || x == n - 1n)
+        return true; // maybe prime
+        
+
+    // keep squaring x until one of the following happens    
+        
+    // (i)   d reaches n-1
+    // (ii)  (x^2) % n == 1
+    // (iii) (x^2) % n == n-1  
+    
+    while (d < n-1n)
+    {
+        x = (x * x) % n;
+
+        if (x == 1n  ) return false; // composite
+        if (x == n-1n) return true;  // maybe prime
+        
+        d *= 2n;
+    }    
+    
+    
+    return false; // composite
+}    
+
+
+
+// multiply BigInt by float 0 <= f <=1
+// function bigMult(n, f)
+// {
+//     var mult = 100000000000000000000000000; // this is the float "precision"
+    
+//     return n*BigInt(mult) 
+//          * BigInt(Math.floor(f*mult))
+//          / sqr(BigInt(mult));
+// }            
+
+
+
+function bigFromBuffer(buffer)
+{
+    return bigFromBufferAt(buffer, 0, buffer.length);
 }
 
 
 
-function bigFromBuffer(buffer, size)
+function bigFromBufferAt(buffer, start, size)
 {
+    size = Math.min(size, buffer.length - start);
+    
     var val = 0n;
     var mul = 1n;
 
-    for (var i = size-1; i >= 0; i--) // big-endian
+    for (var i = start+size-1; i >= start; i--) // little-endian
     {
-        val += BigInt(buffer[i]) * mul;
-        mul *= 10n;
+        val += mul * BigInt(buffer[i]);
+        mul <<= 8n;
     }
 
     return val;
 }
+
+
+
+function bigToBuffer(n, buffer, size)
+{
+    bigToBufferAt(n, buffer, 0, size);
+}
+
+
+
+function bigToBufferAt(n, buffer, start, size)
+{
+    size = Math.min(size, buffer.length - start);
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = Number(n & 0xFFn); 
+        n >>= 8n;
+    }
+}
+
+
+
+function bigBitCount(n)
+{
+    return n.toString(2).length;
+}
+
+
+
+// function bigModInvert(n, m)
+// {
+//     for (var i = 1n; i < BigInt(m); i++)
+//         if ((((n % m) * (i % m)) % m) == n)
+//             return i;
+// }
+
+
+
+function bigModInvert(n, m)
+{
+    var gcd = bigGcdExtended(n, m);
+
+    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+    else              return (gcd[1] % m + m) % m;
+}
+
+
+
+function bigGcdExtended(n, m)
+{
+    if (n == 0n)
+        return [m, 0n, 1n];
+
+    var gcd = bigGcdExtended(m % n, n);
+
+    var x = gcd[1];
+    var y = gcd[2];
+
+    return [
+        gcd[0], 
+        y - (m/n)*x,
+        x ];
+}
+
+
+
+// function bigModInvert(u, v)
+// {
+//    var inv, u1, u3, v1, v3, t1, t3, q;
+//    var iter;
+
+
+//    /* Step X1. Initialise */
+   
+//    u1 = 1n;
+//    u3 = u;
+//    v1 = 0n;
+//    v3 = v;
+   
+
+//    /* Remember odd/even iterations */
+   
+//    iter = 1n;
+
+   
+//    /* Step X2. Loop while v3 != 0 */
+  
+//    while (v3 != 0n)
+//    {
+//        /* Step X3. Divide and "Subtract" */
+//        q  = u3 / v3;
+//        t3 = u3 % v3;
+//        t1 = u1 + q * v1;
+
+//        /* Swap */
+//        u1 = v1; v1 = t1; 
+//        u3 = v3; v3 = t3;
+
+//        iter = -iter;
+//    }
+
+
+//    /* Make sure u3 = gcd(u,v) == 1 */
+ 
+//    if (u3 != 1n)
+//        return 0n;   /* Error: No inverse exists */
+
+
+//     /* Ensure a positive result */
+//     if (iter < 0n)
+//         inv = v - u1;
+//     else
+//         inv = u1;
+//     return inv;
+// }
 
 
 class Point
@@ -3658,126 +4142,165 @@ function saveState()
 }
 
 
-const cryptoModulusSize     = 2048; // 1024, 2048
-const millerRabinIterations = 56;   // 40,   56
+const cryptoModulusSize     = 32;
+const millerRabinIterations = 64;
 
-const cryptoBlockSize  = cryptoModulusSize/8;
-const cryptoBufferSize = cryptoBlockSize/2;
+const cryptoByteSize        = cryptoModulusSize/8;
+const cryptoBufferSize      = cryptoByteSize/2;
+     
+const cryptoBuffer          = new Uint8Array(cryptoBufferSize);
 
 
-
-class PublicKey
+function bigCryptoRandom()
 {
-    e = 0n; // public exponent
-    n = 0n; // modulus
-
-    constructor(e, n)
-    {
-        this.e = e;
-        this.n = n;
-    }
-}
-
-
-
-class PrivateKey
-{
-    e = 0n; // public exponent
-    d = 0n; // private exponent
-    n = 0n; // modulus
-    p = 0n; // starting prime p
-    q = 0n; // starting prime q
-
-    constructor(e)
-    {
-        this.e = e;
-        
-        // set p,q so that gcd(e, p-1) = gcd(e, q-1) = 1
-        
-        this.p = randomLargePrime(this.e);
-        
-        do { this.q = randomLargePrime(this.e); } 
-        while (this.q == this.p);
-        
-        this.n = this.p * this.q;
-        
-        var phi = (this.p-1n) * (this.q-1n);
-        
-        var k = 2n; // a constant value
-        
-        this.d = (k*phi + 1n) / this.e;
-    }    
-}    
-
-
-
-function randomLargePrime(e)
-{
-    var buffer = new Uint8Array(cryptoBufferSize);
-
     for (var i = 0; i < cryptoBufferSize; i++)
-        buffer[i] = Math.random() * 0x100;
+        cryptoBuffer[i] = toInt(Math.random() * 0x100);
 
-    buffer[0] |= 0xC0; // set the top two bits to 1 to ensure a relatively large number
+    cryptoBuffer[0]                  |= 0x80; // set the top bit to ensure a relatively large number
+    cryptoBuffer[cryptoBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
 
-    
-    var num = bigFromBuffer(buffer, cryptoBufferSize);
-    
-    num = bigNextPrime(num);
-
-    while (num % e != 1n)
-        num = bigNextPrime(num);
-
-
-    return num;
+    return bigFromBuffer(cryptoBuffer);
 }
 
 
 
-function createPublicPrivateKeys()
+function bigNextCryptoPrime(n) 
 {
-    // pick a global e // 3, 17, 65537
+    do { n += 2n; } while (!bigIsPrime(n));
+    return n-2n;
+}
 
-    var prv = new PrivateKey(3n);
-    var pub = new PublicKey(prv.e, prv.n);
+
+
+function bigCryptoPrime(e)
+{
+    var p;
+
+    do
+    {
+        var rnd = bigCryptoRandom();
+        p       = bigNextCryptoPrime(rnd);
+    }
+    while (gcd(p-1n, e) != 1n); // set p,q so that gcd(e, p-1) = gcd(e, q-1) = 1
+        
+    return p;
+}
+
+
+
+function createCryptoKeys()
+{
+    var e = 3n; // 3, 17, 65537
+    //var e = BigInt(randomPrime(1024));
+
+
+    var p = bigCryptoPrimes(e);
     
+    var q;
+    do { q = bigCryptoPrime(e); } 
+    while (q == p);
+
+    
+    if (p < q)
+        [p,q] = [q,p];
+
+        
+    var n = p * q;
+    var phi = (p-1n) * (q-1n);
+
+    var d = bigModInvert(e, phi);
+
+
     return {
-        public:  pub,
-        private: prv };
+        public:  {e:e, n:n, p:p, q:q},
+        private: {d:d, n:n} };
 }                        
+
+
+
+function getCryptoBlock(bytes, buffer, nBlock, blockSize)
+{
+    // blocks smaller than cryptoBlockSize 
+    // must be front-padded with zeros
+
+    var emptySize = cryptoByteSize - blockSize;
+
+    for (var i = 0;         i < emptySize;      i++) buffer[i] = 0;
+    for (var i = emptySize; i < cryptoByteSize; i++) buffer[i] = bytes[nBlock * cryptoByteSize + i - emptySize];
+
+    return bigFromBufferAt(buffer, 0, cryptoByteSize);
+}
+
+
+
+function encryptBlock(n, publicKey)
+{
+    return bigPowMod(
+        n, 
+        publicKey.e,
+        publicKey.n);
+}        
+
+
+
+function decryptBlock(n, privateKey)
+{
+    return bigPowMod(
+        n, 
+        privateKey.d,
+        privateKey.n);
+}        
 
 
 
 function encrypt(data, publicKey)
 {
-    var enc = [];
+    var cipher = new Uint8Array(data.length);
+    var buffer = new Uint8Array(cryptoByteSize);
 
-    for (var i = 0; i < data.length; i++)
+    var length = data.length;
+    var nBlock = 0;
+
+    while (length > 0)
     {
-        var x = BigInt(data[i]);
-        var p = bigPow(x, publicKey.e);
+        var blockSize = Math.min(length, cryptoByteSize);
 
-        enc.push(Number(p % publicKey.n));
+        var block = getCryptoBlock(data, buffer, nBlock, blockSize);
+        var enc   = encryptBlock(block, publicKey);
+
+        bigToBuffer(enc, cipher, blockSize);
+
+        nBlock++;
+        length -= blockSize;
     }
 
-    return enc;
+    return cipher;
 }
 
 
 
-function decrypt(data, privateKey)
+function decrypt(cipher, privateKey)
 {
-    var dec = [];
+    var data   = new Uint8Array(cipher.length);
+    var buffer = new Uint8Array(cryptoByteSize);
 
-    for (var i = 0; i < data.length; i++)
+    var length = cipher.length;
+    var nBlock  = 0;
+
+    while (length > 0)
     {
-        var x = BigInt(data[i]);
-        var p = bigPow(x, privateKey.d);
-        
-        dec.push(Number(p % privateKey.n));
+        var blockSize = Math.min(length, cryptoByteSize);
+
+        var block = getCryptoBlock(cipher, buffer, nBlock, blockSize);
+        var dec   = decryptBlock(block, privateKey);
+
+        bigToBuffer(dec, data, blockSize); 
+
+        nBlock++;
+        length -= blockSize;
     }
 
-    return dec;
+    return data;
 }
 
 
