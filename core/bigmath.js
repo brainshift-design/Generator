@@ -168,18 +168,20 @@ function bigFromBufferAt(buffer, start, size)
 
 
 
-function bigToBuffer(n, buffer, size)
+function bigToBuffer(n, buffer, bufferSize)
 {
-    bigToBufferAt(n, buffer, 0, size);
+    bigToBufferAt(n, buffer, 0, bufferSize);
 }
 
 
 
-function bigToBufferAt(n, buffer, start, size)
+function bigToBufferAt(n, buffer, start, bufferSize)
 {
+    var size = Math.ceil(bigBitCount(n) / 8);
+    
     size = Math.min(size, buffer.length - start);
 
-    start += cryptoBufferSize - size;
+    start += bufferSize - size;
 
     for (var i = start+size-1; i >= start; i--) // little-endian
     {

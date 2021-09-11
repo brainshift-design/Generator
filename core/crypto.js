@@ -1,19 +1,19 @@
-const cryptoModulusSize     = 32;
+const cryptoModulusSize     = 2048;
 const millerRabinIterations = 40;
 
 const cryptoByteSize        = cryptoModulusSize/8;
-const cryptoBufferSize      = cryptoByteSize/2;
+const cryptoPrimeBufferSize = cryptoByteSize/2;
      
-const cryptoBuffer          = new Uint8Array(cryptoBufferSize);
+const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
 
 
 function bigCryptoRandom()
 {
-    for (var i = 0; i < cryptoBufferSize; i++)
+    for (var i = 0; i < cryptoPrimeBufferSize; i++)
         cryptoBuffer[i] = toInt(Math.random() * 0x100);
 
     cryptoBuffer[0]                  |= 0xC0; // set the top bit to ensure a relatively large number
-    cryptoBuffer[cryptoBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
+    cryptoBuffer[cryptoPrimeBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
 
     return bigFromBuffer(cryptoBuffer);
 }
@@ -51,6 +51,8 @@ function createCryptoKeys()
     var e = 65537n; // 0x10001
 
 
+    // var p = 54121n, q = 53617n;
+
     var p = bigCryptoPrime(e);
     
     var q;
@@ -62,7 +64,7 @@ function createCryptoKeys()
         [p,q] = [q,p];
 
         
-    var n = p * q;
+    var n   = p * q;
     var phi = (p-1n) * (q-1n);
 
     var d = bigModInvert(e, phi);
@@ -112,7 +114,9 @@ function decryptBlock(n, privateKey)
 
 function encrypt(data, publicKey)
 {
-    var cipher = new Uint8Array(data.length);
+    //add data size as first uint before encrypting
+
+    var cipher = new Uint8Array(cryptoByteSize); // encoded data may be larger than plain data
     var buffer = new Uint8Array(cryptoByteSize);
 
     var length = data.length;
@@ -125,7 +129,7 @@ function encrypt(data, publicKey)
         var block = getCryptoBlock(data, buffer, nBlock, blockSize);
         var enc   = encryptBlock(block, publicKey);
 
-        bigToBuffer(enc, cipher, blockSize);
+        bigToBuffer(enc, cipher, cryptoByteSize);
 
         nBlock++;
         length -= blockSize;
@@ -151,7 +155,7 @@ function decrypt(cipher, privateKey)
         var block = getCryptoBlock(cipher, buffer, nBlock, blockSize);
         var dec   = decryptBlock(block, privateKey);
 
-        bigToBuffer(dec, data, blockSize); 
+        bigToBuffer(dec, data, cryptoByteSize); 
 
         nBlock++;
         length -= blockSize;
