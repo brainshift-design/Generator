@@ -6,3 +6,4 @@
 ../core/Rect.js
 ../core/random.js
 ../core/util.js
+../core/base64.js
