@@ -20,7 +20,7 @@
     <script>
         var txt = '';
         
-        var str = 'This a plain text message.';
+        var str = 'Th';//'This a plain text message.';
 
         var data = bytesFromString(str);
 
@@ -45,11 +45,9 @@
         txt += 'd: ' + keys.private.d + '<br/><br/>';
 
         var enc = encrypt(data, keys.public);
-        txt += 'enc: ' + enc + '<br/>';
         txt += 'enc: ' + stringFromBytes(enc) + '<br/><br/>';
         
         var dec = decrypt(enc, keys.private);
-        txt += 'dec: ' + dec + '<br/>';
         txt += 'dec: ' + stringFromBytes(dec) + '<br/><br/>';
 
         text.innerHTML = txt;

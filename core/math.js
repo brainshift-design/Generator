@@ -448,3 +448,50 @@ function millerTest(d, n)
         BigInt(d),
         BigInt(n));
 }        
+
+
+
+function uintFromBuffer(buffer, size)
+{
+    return uintFromBufferAt(buffer, 0, size);
+}
+
+
+
+function uintFromBufferAt(buffer, start, size)
+{
+    var val = 0;
+    var mul = 1;
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        val += mul * buffer[i];
+        mul <<= 8;
+    }
+
+    return val;
+}
+
+
+
+function uintToBuffer(val, buffer, bufferSize)
+{
+    uintToBufferAt(val, buffer, 0, bufferSize);
+}
+
+
+
+function uintToBufferAt(val, buffer, start, bufferSize)
+{
+    var size = Math.ceil(bigBitCount(val) / 8);
+    
+    size = Math.min(size, buffer.length - start);
+
+    start += bufferSize - size;
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = val & 0xFF; 
+        val >>= 8;
+    }
+}

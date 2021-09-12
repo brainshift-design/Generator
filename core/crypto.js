@@ -1,8 +1,8 @@
-const cryptoModulusSize     = 2048;
+const cryptoModulusSize     = 1024;
 const millerRabinIterations = 40;
 
-const cryptoByteSize        = cryptoModulusSize/8;
-const cryptoPrimeBufferSize = cryptoByteSize/2;
+const cryptoBufferSize      = cryptoModulusSize/8;
+const cryptoPrimeBufferSize = cryptoBufferSize/2;
      
 const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
 
@@ -12,7 +12,7 @@ function bigCryptoRandom()
     for (var i = 0; i < cryptoPrimeBufferSize; i++)
         cryptoBuffer[i] = toInt(Math.random() * 0x100);
 
-    cryptoBuffer[0]                  |= 0xC0; // set the top bit to ensure a relatively large number
+    cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
     cryptoBuffer[cryptoPrimeBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
 
     return bigFromBuffer(cryptoBuffer);
@@ -51,8 +51,6 @@ function createCryptoKeys()
     var e = 65537n; // 0x10001
 
 
-    // var p = 54121n, q = 53617n;
-
     var p = bigCryptoPrime(e);
     
     var q;
@@ -74,21 +72,6 @@ function createCryptoKeys()
         public:  {e:e, n:n},
         private: {d:d, n:n, p:p, q:q} };
 }                        
-
-
-
-function getCryptoBlock(bytes, buffer, nBlock, blockSize)
-{
-    // blocks smaller than cryptoBlockSize 
-    // must be front-padded with zeros
-
-    var emptySize = cryptoByteSize - blockSize;
-
-    for (var i = 0;         i < emptySize;      i++) buffer[i] = 0;
-    for (var i = emptySize; i < cryptoByteSize; i++) buffer[i] = bytes[nBlock * cryptoByteSize + i - emptySize];
-
-    return bigFromBufferAt(buffer, 0, cryptoByteSize);
-}
 
 
 
@@ -114,27 +97,37 @@ function decryptBlock(n, privateKey)
 
 function encrypt(data, publicKey)
 {
-    //add data size as first uint before encrypting
+    var buffer = new Uint8Array(cryptoBufferSize);
+    
+    // prep array should be a multiple of cryptoBufferSize
+    var prep   = new Uint8Array(Math.ceil((4+data.length) / cryptoBufferSize) * cryptoBufferSize); 
+    var cipher = new Uint8Array(prep.length);
 
-    var cipher = new Uint8Array(cryptoByteSize); // encoded data may be larger than plain data
-    var buffer = new Uint8Array(cryptoByteSize);
 
-    var length = data.length;
+    uintToBuffer(data.length, prep, 4); // add uint data size to front of prep
+
+    var start = prep.length - data.length;
+    for (var i = 0; i < data.length; i++)
+        prep[start+i] = data[i];
+
+
+    var length = prep.length;
     var nBlock = 0;
 
     while (length > 0)
     {
-        var blockSize = Math.min(length, cryptoByteSize);
-
-        var block = getCryptoBlock(data, buffer, nBlock, blockSize);
+        var blockStart = nBlock * cryptoBufferSize;
+        var blockSize  = Math.min(length, cryptoBufferSize);
+        
+        var block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
         var enc   = encryptBlock(block, publicKey);
-
-        bigToBuffer(enc, cipher, cryptoByteSize);
-
+        bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
+        
         nBlock++;
         length -= blockSize;
     }
-
+    
+    
     return cipher;
 }
 
@@ -142,24 +135,34 @@ function encrypt(data, publicKey)
 
 function decrypt(cipher, privateKey)
 {
-    var data   = new Uint8Array(cipher.length);
-    var buffer = new Uint8Array(cryptoByteSize);
-
+    var prep   = new Uint8Array(cipher.length);
+    var buffer = new Uint8Array(cryptoBufferSize);
+    
+    
     var length = cipher.length;
-    var nBlock  = 0;
-
+    var nBlock = 0;
+    
     while (length > 0)
     {
-        var blockSize = Math.min(length, cryptoByteSize);
+        var blockStart = nBlock * cryptoBufferSize;
+        var blockSize  = Math.min(length, cryptoBufferSize);
 
-        var block = getCryptoBlock(cipher, buffer, nBlock, blockSize);
+        var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
         var dec   = decryptBlock(block, privateKey);
-
-        bigToBuffer(dec, data, cryptoByteSize); 
+        bigToBufferAt(dec, prep, blockStart, cryptoBufferSize); 
 
         nBlock++;
         length -= blockSize;
     }
+
+
+    var size = uintFromBuffer(prep, 4); // first 4 bytes are the data size
+    var data = new Uint8Array(size); 
+
+    var start = prep.length - size;
+    for (var i = 0; i < size; i++)
+        data[i] = prep[start + i];
+
 
     return data;
 }
