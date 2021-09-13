@@ -16,6 +16,8 @@
     ../core/storage.js
     ../core/crypto.js
     
+    ../license/license.js
+    
     [../autojoin/uoperators.aj]
 
     ../actions/*.js

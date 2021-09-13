@@ -1,4 +1,4 @@
-const cryptoModulusSize     = 1024;
+const cryptoModulusSize     = 32;
 const millerRabinIterations = 40;
 
 const cryptoBufferSize      = cryptoModulusSize/8;
@@ -61,7 +61,15 @@ function createCryptoKeys()
     if (p < q)
         [p,q] = [q,p];
 
-        
+    
+    // // console.log('p: ' + p);
+    // // console.log('q: ' + q);
+
+
+    // var p = 55487n,
+    //     q = 53923n;
+    
+
     var n   = p * q;
     var phi = (p-1n) * (q-1n);
 
@@ -69,8 +77,8 @@ function createCryptoKeys()
 
 
     return {
-        public:  {e:e, n:n},
-        private: {d:d, n:n, p:p, q:q} };
+        public:  {n:n, e:e },
+        private: {n:n, e:e, d:d, p:p, q:q} };
 }                        
 
 
