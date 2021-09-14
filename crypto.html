@@ -2,6 +2,7 @@
     <script src="core/lib.js"></script>
     <script src="core/math.js"></script>
     <script src="core/util.js"></script>
+    <script src="core/random.js"></script>
     <script src="core/base32.js"></script>
     <script src="core/base64.js"></script>
     <script src="core/bigmath.js"></script>
@@ -27,6 +28,8 @@
     </style>
 
     <script>
+        var rnd = new Random(1234567);
+
         const names = [];
 
         //var maxLen  = 0;
@@ -34,8 +37,8 @@
         for (var i = 0; i < 30; i++)
         {
             const name =
-                  firstNames[Math.floor(Math.random() * firstNames.length)] + ' '
-                +  lastNames[Math.floor(Math.random() *  lastNames.length)];
+                  firstNames[Math.floor(rnd.next() * firstNames.length)] + ' '
+                +  lastNames[Math.floor(rnd.next() *  lastNames.length)];
 
             names.push(name);
             //maxLen = Math.max(maxLen, name.length);
@@ -46,7 +49,7 @@
               Math.max(...(firstNames.map(n => n.length))) + 1 
             + Math.max(...( lastNames.map(n => n.length)));
         
-            
+
         var txt = '';
 
         for (var i = 0; i < names.length; i++)
@@ -54,15 +57,21 @@
             const name = names[i];
             const key  = createProductKey(name);
             
-            //var otherKey = 'IOHOIHOIHO';
-    
             txt += 
                   name.padEnd(maxLen).replace(/ /g, '&nbsp;')
-                + ' ' + key + '<br/>';
-            //txt += 'product key "' + key + '" is ' + (checkProductKey(name, key) ? 'valid' : 'not valid') + '<br/><br/>';
-            //txt += 'product key "' + otherKey + '" is ' + (checkProductKey(name, otherKey) ? 'valid' : 'not valid') + '<br/><br/>';
+                + ' ' + key 
+                + '&nbsp;&nbsp;&nbsp;' + (validateProductKey(name, key) ? '√' : 'X')
+                + '<br/>';
         }
 
+
+        var testName = 'Wisal Meiners';
+        var goodKey  = '39HJGGDEKJH2E';
+        var badKey   = '39HJGGDEKJH2F';
+
+        txt += '<br/>';
+        txt += 'validating ' + testName + ' ' + goodKey + ' ' + (validateProductKey(testName, goodKey) ? '√' : 'X') + ' ' + base32toArray(goodKey) + '<br/>';
+        txt += 'validating ' + testName + ' ' +  badKey + ' ' + (validateProductKey(testName, badKey ) ? '√' : 'X') + ' ' + base32toArray( badKey);
 
         text.innerHTML = txt;
     </script>

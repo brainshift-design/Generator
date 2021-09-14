@@ -1,11 +1,12 @@
-const licenseKeys = createCryptoKeys();
+const licenseKeys     = createCryptoKeys();
+const licenseHashSize = 4;
 
 
 
 function createProductKey(name)
 {
-    var hash = hashLicenseName(name, 16);
-    var enc  = encrypt(hash, licenseKeys.private);
+    var hash = hashLicenseName(name, licenseHashSize);
+    var enc  = sign(hash, licenseKeys.private);
     var key  = arrayToBase32(enc);
 
     return key;
@@ -13,13 +14,32 @@ function createProductKey(name)
 
 
 
-function checkProductKey(name, key)
+function validateProductKey(name, key, rec = false)
 {
-    var arr  = base64toArray(key);
-    var dec  = decrypt(arr, licenseKeys.public);
-    var hash = hashLicenseName(name);
+    var arr  = base32toArray(key.toUpperCase());
+    var dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
+    var trim = dec.subarray(dec.length - licenseHashSize);
+    var hash = hashLicenseName(name, licenseHashSize);
     
-    return arraysEqual(dec, hash);
+    var valid = arraysEqual(trim, hash);
+
+    if (valid && !rec)
+    {
+        var lowerKey  = key;
+
+        var lastChar  = lowerKey[lowerKey.length-1];
+        var lastIndex = base32chars.indexOf(lastChar);
+
+        if (lastIndex > 0)
+        {
+            lowerKey = replaceInStringAt(lowerKey, lowerKey.length-1, base32chars[lastIndex-1]);
+
+            if (validateProductKey(name, lowerKey, true))
+                return false; // at this scale of product key the last bit needs to be guarded against
+        }
+    }
+
+    return valid;
 }
 
 
@@ -28,7 +48,8 @@ function hashLicenseName(name, nBytes)
 {
     name = name.trim();
 
-    var bytes = bytesFromString(name);
+
+    var bytes = stringToArray(name);
 
     if (bytes.length > nBytes)
     {
@@ -45,5 +66,6 @@ function hashLicenseName(name, nBytes)
         }
     }
     
+
     return newSizeArrayFrom(bytes, nBytes);
 }

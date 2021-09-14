@@ -1,8 +1,8 @@
-const cryptoModulusSize     = 32;
+const cryptoModulusSize     = 64;
 const millerRabinIterations = 40;
 
 const cryptoBufferSize      = cryptoModulusSize/8;
-const cryptoPrimeBufferSize = cryptoBufferSize/2;
+const cryptoPrimeBufferSize = cryptoBufferSize /2;
      
 const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
 
@@ -32,6 +32,8 @@ function bigNextCryptoPrime(n)
 
 function bigCryptoPrime(e)
 {
+    // set p so that gcd(e, p-1) = 1
+    
     var p;
 
     do
@@ -39,7 +41,7 @@ function bigCryptoPrime(e)
         var rnd = bigCryptoRandom();
         p       = bigNextCryptoPrime(rnd);
     }
-    while (gcd(p-1n, e) != 1n); // set p,q so that gcd(e, p-1) = gcd(e, q-1) = 1
+    while (gcd(p-1n, e) != 1n); 
         
     return p;
 }
@@ -51,23 +53,23 @@ function createCryptoKeys()
     var e = 65537n; // 0x10001
 
 
-    var p = bigCryptoPrime(e);
+    // var p = bigCryptoPrime(e);
     
-    var q;
-    do { q = bigCryptoPrime(e); } 
-    while (q == p);
-
-    
-    if (p < q)
-        [p,q] = [q,p];
+    // var q;
+    // do { q = bigCryptoPrime(e); } 
+    // while (q == p);
 
     
-    // // console.log('p: ' + p);
-    // // console.log('q: ' + q);
+    // if (p < q)
+    //     [p,q] = [q,p];
+
+    
+    // console.log('p: ' + p);
+    // console.log('q: ' + q);
 
 
-    // var p = 55487n,
-    //     q = 53923n;
+    var p = 4131437551n,
+        q = 3567532051n;
     
 
     var n   = p * q;
@@ -78,41 +80,30 @@ function createCryptoKeys()
 
     return {
         public:  {n:n, e:e },
-        private: {n:n, e:e, d:d, p:p, q:q} };
+        private: {n:n, d:d, p:p, q:q} };
 }                        
 
 
 
-function encryptBlock(n, publicKey)
+function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
+function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
+
+
+
+function encrypt(data, key) { return encryptData(data, key, false); }
+function decrypt(data, key) { return decryptData(data, key, false); }
+
+function sign   (data, key) { return encryptData(data, key, true); } // yes I know real sign/verify uses a hash,
+function verify (data, key) { return decryptData(data, key, true); } // but I prefer it this way for what I need
+
+
+
+function encryptData(data, key, sign)
 {
-    return bigPowMod(
-        n, 
-        publicKey.e,
-        publicKey.n);
-}        
-
-
-
-function decryptBlock(n, privateKey)
-{
-    return bigPowMod(
-        n, 
-        privateKey.d,
-        privateKey.n);
-}        
-
-
-
-function encrypt(data, publicKey)
-{
-    var buffer = new Uint8Array(cryptoBufferSize);
-    
     // prep array should be a multiple of cryptoBufferSize
-    var prep   = new Uint8Array(Math.ceil((4+data.length) / cryptoBufferSize) * cryptoBufferSize); 
+    var prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
     var cipher = new Uint8Array(prep.length);
 
-
-    uintToBuffer(data.length, prep, 4); // add uint data size to front of prep
 
     var start = prep.length - data.length;
     for (var i = 0; i < data.length; i++)
@@ -128,7 +119,7 @@ function encrypt(data, publicKey)
         var blockSize  = Math.min(length, cryptoBufferSize);
         
         var block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
-        var enc   = encryptBlock(block, publicKey);
+        var enc   = encryptBlock(block, key, sign);
         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
         
         nBlock++;
@@ -141,10 +132,9 @@ function encrypt(data, publicKey)
 
 
 
-function decrypt(cipher, privateKey)
+function decryptData(cipher, key, verify)
 {
-    var prep   = new Uint8Array(cipher.length);
-    var buffer = new Uint8Array(cryptoBufferSize);
+    var data = new Uint8Array(cipher.length);
     
     
     var length = cipher.length;
@@ -156,21 +146,13 @@ function decrypt(cipher, privateKey)
         var blockSize  = Math.min(length, cryptoBufferSize);
 
         var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
-        var dec   = decryptBlock(block, privateKey);
-        bigToBufferAt(dec, prep, blockStart, cryptoBufferSize); 
+        var dec   = decryptBlock(block, key, verify);
+        bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
 
         nBlock++;
         length -= blockSize;
-    }
+    }    
 
 
-    var size = uintFromBuffer(prep, 4); // first 4 bytes are the data size
-    var data = new Uint8Array(size); 
-
-    var start = prep.length - size;
-    for (var i = 0; i < size; i++)
-        data[i] = prep[start + i];
-
-
-    return data;
+    return data;    
 }

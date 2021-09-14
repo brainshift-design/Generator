@@ -223,3 +223,12 @@ function arraysEqual(arr1, arr2)
 
     return true;
 }
+
+
+
+function replaceInStringAt(str, index, replace)
+{
+    return str.substring(0, index) 
+         + replace 
+         + str.substring(index + replace.length);
+}

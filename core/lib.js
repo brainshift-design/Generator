@@ -135,14 +135,14 @@ function fromUtf8(str)
 
 
 
-function bytesFromString(str)
+function stringToArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
 
 
 
-function stringFromBytes(bytes) 
+function arrayToString(bytes) 
 {
     var str = '';
 
