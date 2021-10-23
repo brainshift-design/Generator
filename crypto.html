@@ -20,60 +20,74 @@
     <style>
         #text 
         {
-             font:          11pt Consolas; 
-             overflow-wrap: break-word;
-             word-break:    break-all;
-             line-height:   1.5em;
+            font:          11pt Consolas; 
+            overflow-wrap: break-word;
+            word-break:    break-all;
+            line-height:   1.5em;
         }
     </style>
 
     <script>
-        var rnd = new Random(1234567);
-
-        const names = [];
-
-        //var maxLen  = 0;
-
-        for (var i = 0; i < 30; i++)
-        {
-            const name =
-                  firstNames[Math.floor(rnd.next() * firstNames.length)] + ' '
-                +  lastNames[Math.floor(rnd.next() *  lastNames.length)];
-
-            names.push(name);
-            //maxLen = Math.max(maxLen, name.length);
-        }
-
-
-        var maxLen = 
-              Math.max(...(firstNames.map(n => n.length))) + 1 
-            + Math.max(...( lastNames.map(n => n.length)));
         
-
         var txt = '';
 
-        for (var i = 0; i < names.length; i++)
+
+        var name = getQueryVariable('name');
+
+        if (name != 'false')
         {
-            const name = names[i];
-            const key  = createProductKey(name);
+            txt += createProductKey(name);
+        }    
+
+        else
+        {
+            var rnd = new Random(1234567);    
+
+            const names = [];
+
+            //var maxLen  = 0;
+
+            for (var i = 0; i < 30; i++)
+            {
+                const name =
+                      firstNames[Math.floor(rnd.next() * firstNames.length)] + ' '
+                    +  lastNames[Math.floor(rnd.next() *  lastNames.length)];  
+
+                names.push(name);    
+                //maxLen = Math.max(maxLen, name.length);
+            }    
+
+
+            var maxLen = 
+                Math.max(...(firstNames.map(n => n.length))) + 1 
+                + Math.max(...( lastNames.map(n => n.length)));  
             
-            txt += 
-                  name.padEnd(maxLen).replace(/ /g, '&nbsp;')
-                + ' ' + key 
-                + '&nbsp;&nbsp;&nbsp;' + (validateProductKey(name, key) ? '√' : 'X')
-                + '<br/>';
+        
+            for (var i = 0; i < names.length; i++)
+            {
+                const name = names[i];
+                const key  = createProductKey(name);
+                
+                txt += 
+                    name.padEnd(maxLen).replace(/ /g, '&nbsp;')
+                    + ' ' + key 
+                    + '&nbsp;&nbsp;&nbsp;' + (validateProductKey(name, key) ? '√' : 'X')
+                    + '<br/>';
+            }
+
+
+            var testName = 'Wisal Meiners';
+            var goodKey  = '39HJGGDEKJH2E';
+            var badKey   = '39HJGGDEKJH2F';
+
+            txt += '<br/>';
+            txt += 'validating ' + testName + ' ' + goodKey + ' ' + (validateProductKey(testName, goodKey) ? '√' : 'X') + '<br/>';
+            txt += 'validating ' + testName + ' ' +  badKey + ' ' + (validateProductKey(testName, badKey ) ? '√' : 'X');
         }
 
 
-        var testName = 'Wisal Meiners';
-        var goodKey  = '39HJGGDEKJH2E';
-        var badKey   = '39HJGGDEKJH2F';
-
-        txt += '<br/>';
-        txt += 'validating ' + testName + ' ' + goodKey + ' ' + (validateProductKey(testName, goodKey) ? '√' : 'X') + ' ' + base32toArray(goodKey) + '<br/>';
-        txt += 'validating ' + testName + ' ' +  badKey + ' ' + (validateProductKey(testName, badKey ) ? '√' : 'X') + ' ' + base32toArray( badKey);
-
         text.innerHTML = txt;
+
     </script>
 
 </html>

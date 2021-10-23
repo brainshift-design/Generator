@@ -522,14 +522,14 @@ function fromUtf8(str)
 
 
 
-function bytesFromString(str)
+function stringToArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
 
 
 
-function stringFromBytes(bytes) 
+function arrayToString(bytes) 
 {
     var str = '';
 
@@ -537,6 +537,24 @@ function stringFromBytes(bytes)
         str += String.fromCharCode(bytes[i]);
 
     return str;
+}
+
+
+
+function getQueryVariable(strVar)
+{
+    var query = window.location.search.substring(1);
+    var vars  = query.split('&');
+
+    for (var i = 0; i < vars.length; i++) 
+    {
+        var pair = vars[i].split('=');
+
+        if (pair[0] == strVar)
+            return pair[1];
+    }
+
+    return false;
 }
 
 
@@ -993,6 +1011,53 @@ function millerTest(d, n)
 
 
 
+function uintFromBuffer(buffer, size)
+{
+    return uintFromBufferAt(buffer, 0, size);
+}
+
+
+
+function uintFromBufferAt(buffer, start, size)
+{
+    var val = 0;
+    var mul = 1;
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        val += mul * buffer[i];
+        mul <<= 8;
+    }
+
+    return val;
+}
+
+
+
+function uintToBuffer(val, buffer, bufferSize)
+{
+    uintToBufferAt(val, buffer, 0, bufferSize);
+}
+
+
+
+function uintToBufferAt(val, buffer, start, bufferSize)
+{
+    var size = Math.ceil(bigBitCount(val) / 8);
+    
+    size = Math.min(size, buffer.length - start);
+
+    start += bufferSize - size;
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = val & 0xFF; 
+        val >>= 8;
+    }
+}
+
+
+
 var bigBuffer = new Uint8Array(2048);
 
 
@@ -1021,11 +1086,11 @@ var bigBuffer = new Uint8Array(2048);
 
 function bigRandom(max = 0)
 {
-    var size = bigBuffer.length;
+    var size = 
+        max > 0
+        ? Math.max(1, Math.floor(bigBitCount(max)/8))
+        : bigBuffer.length;
     
-    if (max > 0)
-        size = bigBitCount(max)/8;
-
     if (size > bigBuffer.length)
         bigBuffer = new Uint8Array(nextPow2(size));
         
@@ -1042,22 +1107,25 @@ function bigRandom(max = 0)
 
 
 
-function bigPowMod(n, e, mod) // n^e % mod
+function bigPowMod(n, e, m) // n^e % mod
 {
-    var res = 1n;
-    var pow = n;
+    var c = 1n;
 
-    do
+    while (e > 0n)
     {
-        if ((e % 2n) == 1n)
-            res *= pow;
+        if ((e & 1n) != 0n)
+        {
+            c *= n;
+            c %= m;
+        }
 
-        e  >>= 2n;
-        pow *= pow;
+        e  >>= 1n;
+        
+        n *= n;
+        n %= m;
     }
-    while (e > 0n); 
     
-    return res;
+    return c;
 }
 
 
@@ -1070,62 +1138,56 @@ function bigNextPrime(n)
 
 
 
-function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
+function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
 {
-    if (n <= 1n) return false; 
-    if (n <= 3n) return true; // prime
+    if (x <= 1n) return false; 
+    if (x <= 3n) return true;
     
-    if (n % 2n == 0n) 
-        return false; // composite
+    if (x % 2n == 0n) 
+        return false;
         
         
-    var d = n - 1n;      // find d      
-    while (d % 2n == 0n) // so that n = 2^d * r + 1 
-        d /= 2n;         // for r >= 1
+    var d = x - 1n;
+    var s = 0n; 
+                
+    while (d % 2n == 0n) 
+    {
+        d /= 2n;         
+        s++;
+    }
         
 
     for (var i = 0; i < k; i++)    
-        if (!bigMillerTest(d, n))
-            return false; // composite
-        
-
-    return true; // maybe prime        
-}    
-
-    
-
-function bigMillerTest(d, n)
-{
-    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
-    var a = 2n + bigRandom(n - 4n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
-
-    
-    var x = bigPowMod(a, d, n);
-    
-    if (   x == 1n
-        || x == n - 1n)
-        return true; // maybe prime
-        
-
-    // keep squaring x until one of the following happens    
-        
-    // (i)   d reaches n-1
-    // (ii)  (x^2) % n == 1
-    // (iii) (x^2) % n == n-1  
-    
-    while (d < n-1n)
     {
-        x = (x * x) % n;
+        var a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-        if (x == 1n  ) return false; // composite
-        if (x == n-1n) return true;  // maybe prime
+        if (!bigIsWitness(a, s, d, x))
+            return false;        
+    }
         
-        d *= 2n;
-    }    
-    
-    
-    return false; // composite
+
+    return true; 
 }    
+
+    
+
+function bigIsWitness(a, s, d, n)
+{
+    var x = bigPowMod(a, d, n);
+        
+    if (x == 1n)
+        return true;
+
+    for (var j = 0n; j < s-1n; j++)
+    {
+        if (x == n-1n)
+            return true;
+        
+        x = bigPowMod(x, 2n, n);
+    }
+
+    return x == n-1n;
+}
 
 
 
@@ -1166,16 +1228,20 @@ function bigFromBufferAt(buffer, start, size)
 
 
 
-function bigToBuffer(n, buffer, size)
+function bigToBuffer(n, buffer, bufferSize)
 {
-    bigToBufferAt(n, buffer, 0, size);
+    bigToBufferAt(n, buffer, 0, bufferSize);
 }
 
 
 
-function bigToBufferAt(n, buffer, start, size)
+function bigToBufferAt(n, buffer, start, bufferSize)
 {
+    var size = Math.ceil(bigBitCount(n) / 8);
+    
     size = Math.min(size, buffer.length - start);
+
+    start += bufferSize - size;
 
     for (var i = start+size-1; i >= start; i--) // little-endian
     {
@@ -1442,6 +1508,18 @@ class Random
 
         return this.seed / -0x7fffffff;
     }
+
+	/*	Using Thomas Wang's 64-bit int hashing algorithm to generate
+		predictable pseudo-random values that work with clip regions.  */
+
+	//#define HASH(x)	\
+	//	(x) = (~(x)) + ((x) << 21); \
+	//	(x) = (x) ^ ((x) >> 24); \
+	//	(x) = ((x) + ((x) << 3)) + ((x) << 8); \
+	//	(x) = (x) ^ ((x) >> 14); \
+	//	(x) = ((x) + ((x) << 2)) + ((x) << 4); \
+	//	(x) = (x) ^ ((x) >> 28); \
+	//	(x) = (x) + ((x) << 31);
 }
 
 
@@ -1625,6 +1703,283 @@ function position(e)
         x: e.clientX,
         y: e.clientY
     };
+}
+
+
+
+function copyArray(src, dst)
+{
+    copyArrayAt(
+        src, 0, src.length,
+        dst, 0, dst.length);
+}
+
+
+
+function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
+{
+    var size = Math.min(srcSize, dstSize);
+
+    for (var i = 0; i < size; i++)
+        dst[dstStart + i] = src[srcStart + i];
+}
+
+
+
+function newSizeArrayFrom(array, size) // resizes an array and returns a new array
+{
+    var newArray = new Uint8Array(size);
+    copyArray(array, newArray);
+    return newArray;
+}
+
+
+
+function arraysEqual(arr1, arr2)
+{
+    if (arr1.length != arr2.length)
+        return false;
+
+    for (var i = 0; i < arr1.length; i++)
+    {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+
+function replaceInStringAt(str, index, replace)
+{
+    return str.substring(0, index) 
+         + replace 
+         + str.substring(index + replace.length);
+}
+
+
+"use strict";
+
+// Base64 / binary data / UTF-8 strings utilities
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Base64_encoding_and_decoding
+
+
+// byte array to Base64 string decoding
+
+function base64toUint6(c) 
+{
+    return    c > 64 
+           && c < 91 
+           ? c - 65 
+           :    c > 96 
+             && c < 123 
+             ? c - 71
+             :    c > 47 
+               && c < 58 
+               ? c + 4
+               : c === 43 
+                 ? 62
+                 : c === 47 ? 63 : 0;
+}
+
+
+
+function base64toArray(str, blocksSize) 
+{
+    var base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
+    var inLen  = base64.length;
+
+    var outLen = 
+        blocksSize 
+        ? Math.ceil((inLen * 3 + 1 >> 2) / blocksSize) * blocksSize 
+        : inLen * 3 + 1 >> 2;
+        
+    var bytes = new Uint8Array(outLen);
+
+    for (var mod3, 
+             mod4, 
+             uint24 = 0, 
+             out    = 0, 
+        i = 0; 
+        i < inLen; 
+        i++) 
+    {
+        mod4 = i & 3;
+        uint24 |= base64toUint6(base64.charCodeAt(i)) << 6 * (3 - mod4);
+
+        if (   mod4 === 3 
+            || inLen - i === 1) 
+        {
+            for (mod3 = 0; mod3 < 3 && out < outLen; mod3++, out++) 
+                bytes[out] = uint24 >>> (16 >>> mod3 & 24) & 255;
+
+            uint24 = 0;
+        }
+    }
+
+    return bytes;
+}
+
+
+
+// Base64 string to array encoding
+
+function uint6toBase64(i) 
+{
+    return i < 26 
+           ? i + 65
+           : i < 52 
+             ? i + 71
+             : i < 62 
+               ? i - 4
+               : i === 62 
+                 ? 43
+                 : i === 63 ? 47 : 65;
+}
+
+
+
+function arrayToBase64(bytes)
+{
+    var mod3   = 2, 
+        base64 = "";
+
+    var length = bytes.length;
+
+    for (var i = 0, uint24 = 0; i < length; i++) 
+    {
+        mod3 = i % 3;
+
+        if (i > 0 && (i * 4 / 3) % 76 === 0) 
+            base64 += "\r\n";
+
+        uint24 |= bytes[i] << (16 >>> mod3 & 24);
+
+        if (   mod3 === 2 
+            || bytes.length - i === 1) 
+        {
+            base64 += String.fromCharCode(
+                uint6toBase64(uint24 >>> 18 & 0x3F), 
+                uint6toBase64(uint24 >>> 12 & 0x3F), 
+                uint6toBase64(uint24 >>>  6 & 0x3F), 
+                uint6toBase64(uint24        & 0x3F));
+                
+            uint24 = 0;
+        }
+    }
+
+    return base64.substr(0, base64.length - 2 + mod3) + (mod3 === 2 ? '' : mod3 === 1 ? '=' : '==');
+}
+
+
+
+// UTF-8 array to DOMString and vice versa
+
+function UTF8ArrToStr(bytes) 
+{
+    var str    = "";
+    var length = bytes.length;
+
+    for (var i = 0; i < length; i++) 
+    {
+        var byte = bytes[i];
+
+        str += String.fromCharCode(
+               byte > 251 
+            && byte < 254 
+            && i + 5 < length // six bytes
+            ? (byte - 252) * 1073741824 + (bytes[++i] - 128 << 24) + (bytes[++i] - 128 << 18) + (bytes[++i] - 128 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+            :    byte > 247 
+              && byte < 252 
+              && i + 4 < length // five bytes
+              ? (byte - 248 << 24) + (bytes[++i] - 128 << 18) + (bytes[++i] - 128 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+              :    byte > 239 
+                && byte < 248 
+                && i + 3 < length // four bytes
+                ? (byte - 240 << 18) + (bytes[++i] - 128 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+                :    byte > 223 
+                  && byte < 240 
+                  && i + 2 < length // three bytes
+                  ? (byte - 224 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+                  :    byte > 191 
+                    && byte < 224 
+                    && i + 1 < length // two bytes
+                    ? (byte - 192 << 6) + bytes[++i] - 128 /* nPart < 127 ? */ // one byte
+                    : byte);
+    }
+
+    return str;
+}
+
+
+
+function strToUTF8Arr(str) 
+{
+    var strLen = str.length, 
+        arrLen = 0;
+
+
+    // mapping
+
+    for (var i = 0; i < strLen; i++) 
+    {
+        chr = str.charCodeAt(i);
+        arrLen += chr < 0x80 ? 1 : chr < 0x800 ? 2 : chr < 0x10000 ? 3 : chr < 0x200000 ? 4 : chr < 0x4000000 ? 5 : 6;
+    }
+
+    var bytes = new Uint8Array(arrLen);
+
+
+    // transcription
+
+    for (var i = 0, iChr = 0; i < arrLen; iChr++) 
+    {
+        var chr = str.charCodeAt(iChr);
+     
+        if (chr < 0x80) // one byte
+        {
+            bytes[i++] = chr;
+        } 
+        else if (chr < 0x800) // two bytes
+        {
+            bytes[i++] = 192 + (chr >>> 6);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        } 
+        else if (chr < 0x10000) // three bytes
+        {
+            bytes[i++] = 224 + (chr >>> 12);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        }
+        else if (chr < 0x200000) // four bytes
+        {
+            bytes[i++] = 240 + (chr >>> 18);
+            bytes[i++] = 128 + (chr >>> 12 & 0x3F);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        } 
+        else if (chr < 0x4000000) // five bytes
+        {
+            bytes[i++] = 248 + (chr >>> 24);
+            bytes[i++] = 128 + (chr >>> 18 & 0x3F);
+            bytes[i++] = 128 + (chr >>> 12 & 0x3F);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        } 
+        else //if (nChr <= 0x7fffffff) // six bytes
+        {
+            bytes[i++] = 252 + (chr >>> 30);
+            bytes[i++] = 128 + (chr >>> 24 & 0x3F);
+            bytes[i++] = 128 + (chr >>> 18 & 0x3F);
+            bytes[i++] = 128 + (chr >>> 12 & 0x3F);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        }
+    }
+
+
+    return bytes;
 }
 
 
@@ -3008,14 +3363,14 @@ function fromUtf8(str)
 
 
 
-function bytesFromString(str)
+function stringToArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
 
 
 
-function stringFromBytes(bytes) 
+function arrayToString(bytes) 
 {
     var str = '';
 
@@ -3023,6 +3378,24 @@ function stringFromBytes(bytes)
         str += String.fromCharCode(bytes[i]);
 
     return str;
+}
+
+
+
+function getQueryVariable(strVar)
+{
+    var query = window.location.search.substring(1);
+    var vars  = query.split('&');
+
+    for (var i = 0; i < vars.length; i++) 
+    {
+        var pair = vars[i].split('=');
+
+        if (pair[0] == strVar)
+            return pair[1];
+    }
+
+    return false;
 }
 
 
@@ -3479,6 +3852,53 @@ function millerTest(d, n)
 
 
 
+function uintFromBuffer(buffer, size)
+{
+    return uintFromBufferAt(buffer, 0, size);
+}
+
+
+
+function uintFromBufferAt(buffer, start, size)
+{
+    var val = 0;
+    var mul = 1;
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        val += mul * buffer[i];
+        mul <<= 8;
+    }
+
+    return val;
+}
+
+
+
+function uintToBuffer(val, buffer, bufferSize)
+{
+    uintToBufferAt(val, buffer, 0, bufferSize);
+}
+
+
+
+function uintToBufferAt(val, buffer, start, bufferSize)
+{
+    var size = Math.ceil(bigBitCount(val) / 8);
+    
+    size = Math.min(size, buffer.length - start);
+
+    start += bufferSize - size;
+
+    for (var i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = val & 0xFF; 
+        val >>= 8;
+    }
+}
+
+
+
 var bigBuffer = new Uint8Array(2048);
 
 
@@ -3507,11 +3927,11 @@ var bigBuffer = new Uint8Array(2048);
 
 function bigRandom(max = 0)
 {
-    var size = bigBuffer.length;
+    var size = 
+        max > 0
+        ? Math.max(1, Math.floor(bigBitCount(max)/8))
+        : bigBuffer.length;
     
-    if (max > 0)
-        size = bigBitCount(max)/8;
-
     if (size > bigBuffer.length)
         bigBuffer = new Uint8Array(nextPow2(size));
         
@@ -3528,22 +3948,25 @@ function bigRandom(max = 0)
 
 
 
-function bigPowMod(n, e, mod) // n^e % mod
+function bigPowMod(n, e, m) // n^e % mod
 {
-    var res = 1n;
-    var pow = n;
+    var c = 1n;
 
-    do
+    while (e > 0n)
     {
-        if ((e % 2n) == 1n)
-            res *= pow;
+        if ((e & 1n) != 0n)
+        {
+            c *= n;
+            c %= m;
+        }
 
-        e  >>= 2n;
-        pow *= pow;
+        e  >>= 1n;
+        
+        n *= n;
+        n %= m;
     }
-    while (e > 0n); 
     
-    return res;
+    return c;
 }
 
 
@@ -3556,62 +3979,56 @@ function bigNextPrime(n)
 
 
 
-function bigIsPrime(n, k = millerRabinIterations) // Miller-Rabin
+function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
 {
-    if (n <= 1n) return false; 
-    if (n <= 3n) return true; // prime
+    if (x <= 1n) return false; 
+    if (x <= 3n) return true;
     
-    if (n % 2n == 0n) 
-        return false; // composite
+    if (x % 2n == 0n) 
+        return false;
         
         
-    var d = n - 1n;      // find d      
-    while (d % 2n == 0n) // so that n = 2^d * r + 1 
-        d /= 2n;         // for r >= 1
+    var d = x - 1n;
+    var s = 0n; 
+                
+    while (d % 2n == 0n) 
+    {
+        d /= 2n;         
+        s++;
+    }
         
 
     for (var i = 0; i < k; i++)    
-        if (!bigMillerTest(d, n))
-            return false; // composite
-        
-
-    return true; // maybe prime        
-}    
-
-    
-
-function bigMillerTest(d, n)
-{
-    // pick a random number in [2..n-2] (the above corner cases make sure that n > 4)
-    var a = 2n + bigRandom(n - 4n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
-
-    
-    var x = bigPowMod(a, d, n);
-    
-    if (   x == 1n
-        || x == n - 1n)
-        return true; // maybe prime
-        
-
-    // keep squaring x until one of the following happens    
-        
-    // (i)   d reaches n-1
-    // (ii)  (x^2) % n == 1
-    // (iii) (x^2) % n == n-1  
-    
-    while (d < n-1n)
     {
-        x = (x * x) % n;
+        var a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-        if (x == 1n  ) return false; // composite
-        if (x == n-1n) return true;  // maybe prime
+        if (!bigIsWitness(a, s, d, x))
+            return false;        
+    }
         
-        d *= 2n;
-    }    
-    
-    
-    return false; // composite
+
+    return true; 
 }    
+
+    
+
+function bigIsWitness(a, s, d, n)
+{
+    var x = bigPowMod(a, d, n);
+        
+    if (x == 1n)
+        return true;
+
+    for (var j = 0n; j < s-1n; j++)
+    {
+        if (x == n-1n)
+            return true;
+        
+        x = bigPowMod(x, 2n, n);
+    }
+
+    return x == n-1n;
+}
 
 
 
@@ -3652,16 +4069,20 @@ function bigFromBufferAt(buffer, start, size)
 
 
 
-function bigToBuffer(n, buffer, size)
+function bigToBuffer(n, buffer, bufferSize)
 {
-    bigToBufferAt(n, buffer, 0, size);
+    bigToBufferAt(n, buffer, 0, bufferSize);
 }
 
 
 
-function bigToBufferAt(n, buffer, start, size)
+function bigToBufferAt(n, buffer, start, bufferSize)
 {
+    var size = Math.ceil(bigBitCount(n) / 8);
+    
     size = Math.min(size, buffer.length - start);
+
+    start += bufferSize - size;
 
     for (var i = start+size-1; i >= start; i--) // little-endian
     {
@@ -3928,6 +4349,18 @@ class Random
 
         return this.seed / -0x7fffffff;
     }
+
+	/*	Using Thomas Wang's 64-bit int hashing algorithm to generate
+		predictable pseudo-random values that work with clip regions.  */
+
+	//#define HASH(x)	\
+	//	(x) = (~(x)) + ((x) << 21); \
+	//	(x) = (x) ^ ((x) >> 24); \
+	//	(x) = ((x) + ((x) << 3)) + ((x) << 8); \
+	//	(x) = (x) ^ ((x) >> 14); \
+	//	(x) = ((x) + ((x) << 2)) + ((x) << 4); \
+	//	(x) = (x) ^ ((x) >> 28); \
+	//	(x) = (x) + ((x) << 31);
 }
 
 
@@ -4114,6 +4547,283 @@ function position(e)
 }
 
 
+
+function copyArray(src, dst)
+{
+    copyArrayAt(
+        src, 0, src.length,
+        dst, 0, dst.length);
+}
+
+
+
+function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
+{
+    var size = Math.min(srcSize, dstSize);
+
+    for (var i = 0; i < size; i++)
+        dst[dstStart + i] = src[srcStart + i];
+}
+
+
+
+function newSizeArrayFrom(array, size) // resizes an array and returns a new array
+{
+    var newArray = new Uint8Array(size);
+    copyArray(array, newArray);
+    return newArray;
+}
+
+
+
+function arraysEqual(arr1, arr2)
+{
+    if (arr1.length != arr2.length)
+        return false;
+
+    for (var i = 0; i < arr1.length; i++)
+    {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+
+function replaceInStringAt(str, index, replace)
+{
+    return str.substring(0, index) 
+         + replace 
+         + str.substring(index + replace.length);
+}
+
+
+"use strict";
+
+// Base64 / binary data / UTF-8 strings utilities
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Base64_encoding_and_decoding
+
+
+// byte array to Base64 string decoding
+
+function base64toUint6(c) 
+{
+    return    c > 64 
+           && c < 91 
+           ? c - 65 
+           :    c > 96 
+             && c < 123 
+             ? c - 71
+             :    c > 47 
+               && c < 58 
+               ? c + 4
+               : c === 43 
+                 ? 62
+                 : c === 47 ? 63 : 0;
+}
+
+
+
+function base64toArray(str, blocksSize) 
+{
+    var base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
+    var inLen  = base64.length;
+
+    var outLen = 
+        blocksSize 
+        ? Math.ceil((inLen * 3 + 1 >> 2) / blocksSize) * blocksSize 
+        : inLen * 3 + 1 >> 2;
+        
+    var bytes = new Uint8Array(outLen);
+
+    for (var mod3, 
+             mod4, 
+             uint24 = 0, 
+             out    = 0, 
+        i = 0; 
+        i < inLen; 
+        i++) 
+    {
+        mod4 = i & 3;
+        uint24 |= base64toUint6(base64.charCodeAt(i)) << 6 * (3 - mod4);
+
+        if (   mod4 === 3 
+            || inLen - i === 1) 
+        {
+            for (mod3 = 0; mod3 < 3 && out < outLen; mod3++, out++) 
+                bytes[out] = uint24 >>> (16 >>> mod3 & 24) & 255;
+
+            uint24 = 0;
+        }
+    }
+
+    return bytes;
+}
+
+
+
+// Base64 string to array encoding
+
+function uint6toBase64(i) 
+{
+    return i < 26 
+           ? i + 65
+           : i < 52 
+             ? i + 71
+             : i < 62 
+               ? i - 4
+               : i === 62 
+                 ? 43
+                 : i === 63 ? 47 : 65;
+}
+
+
+
+function arrayToBase64(bytes)
+{
+    var mod3   = 2, 
+        base64 = "";
+
+    var length = bytes.length;
+
+    for (var i = 0, uint24 = 0; i < length; i++) 
+    {
+        mod3 = i % 3;
+
+        if (i > 0 && (i * 4 / 3) % 76 === 0) 
+            base64 += "\r\n";
+
+        uint24 |= bytes[i] << (16 >>> mod3 & 24);
+
+        if (   mod3 === 2 
+            || bytes.length - i === 1) 
+        {
+            base64 += String.fromCharCode(
+                uint6toBase64(uint24 >>> 18 & 0x3F), 
+                uint6toBase64(uint24 >>> 12 & 0x3F), 
+                uint6toBase64(uint24 >>>  6 & 0x3F), 
+                uint6toBase64(uint24        & 0x3F));
+                
+            uint24 = 0;
+        }
+    }
+
+    return base64.substr(0, base64.length - 2 + mod3) + (mod3 === 2 ? '' : mod3 === 1 ? '=' : '==');
+}
+
+
+
+// UTF-8 array to DOMString and vice versa
+
+function UTF8ArrToStr(bytes) 
+{
+    var str    = "";
+    var length = bytes.length;
+
+    for (var i = 0; i < length; i++) 
+    {
+        var byte = bytes[i];
+
+        str += String.fromCharCode(
+               byte > 251 
+            && byte < 254 
+            && i + 5 < length // six bytes
+            ? (byte - 252) * 1073741824 + (bytes[++i] - 128 << 24) + (bytes[++i] - 128 << 18) + (bytes[++i] - 128 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+            :    byte > 247 
+              && byte < 252 
+              && i + 4 < length // five bytes
+              ? (byte - 248 << 24) + (bytes[++i] - 128 << 18) + (bytes[++i] - 128 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+              :    byte > 239 
+                && byte < 248 
+                && i + 3 < length // four bytes
+                ? (byte - 240 << 18) + (bytes[++i] - 128 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+                :    byte > 223 
+                  && byte < 240 
+                  && i + 2 < length // three bytes
+                  ? (byte - 224 << 12) + (bytes[++i] - 128 << 6) + bytes[++i] - 128
+                  :    byte > 191 
+                    && byte < 224 
+                    && i + 1 < length // two bytes
+                    ? (byte - 192 << 6) + bytes[++i] - 128 /* nPart < 127 ? */ // one byte
+                    : byte);
+    }
+
+    return str;
+}
+
+
+
+function strToUTF8Arr(str) 
+{
+    var strLen = str.length, 
+        arrLen = 0;
+
+
+    // mapping
+
+    for (var i = 0; i < strLen; i++) 
+    {
+        chr = str.charCodeAt(i);
+        arrLen += chr < 0x80 ? 1 : chr < 0x800 ? 2 : chr < 0x10000 ? 3 : chr < 0x200000 ? 4 : chr < 0x4000000 ? 5 : 6;
+    }
+
+    var bytes = new Uint8Array(arrLen);
+
+
+    // transcription
+
+    for (var i = 0, iChr = 0; i < arrLen; iChr++) 
+    {
+        var chr = str.charCodeAt(iChr);
+     
+        if (chr < 0x80) // one byte
+        {
+            bytes[i++] = chr;
+        } 
+        else if (chr < 0x800) // two bytes
+        {
+            bytes[i++] = 192 + (chr >>> 6);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        } 
+        else if (chr < 0x10000) // three bytes
+        {
+            bytes[i++] = 224 + (chr >>> 12);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        }
+        else if (chr < 0x200000) // four bytes
+        {
+            bytes[i++] = 240 + (chr >>> 18);
+            bytes[i++] = 128 + (chr >>> 12 & 0x3F);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        } 
+        else if (chr < 0x4000000) // five bytes
+        {
+            bytes[i++] = 248 + (chr >>> 24);
+            bytes[i++] = 128 + (chr >>> 18 & 0x3F);
+            bytes[i++] = 128 + (chr >>> 12 & 0x3F);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        } 
+        else //if (nChr <= 0x7fffffff) // six bytes
+        {
+            bytes[i++] = 252 + (chr >>> 30);
+            bytes[i++] = 128 + (chr >>> 24 & 0x3F);
+            bytes[i++] = 128 + (chr >>> 18 & 0x3F);
+            bytes[i++] = 128 + (chr >>> 12 & 0x3F);
+            bytes[i++] = 128 + (chr >>>  6 & 0x3F);
+            bytes[i++] = 128 + (chr        & 0x3F);
+        }
+    }
+
+
+    return bytes;
+}
+
+
 function loadState(state)
 {
     resizeWindow(
@@ -4142,22 +4852,22 @@ function saveState()
 }
 
 
-const cryptoModulusSize     = 32;
-const millerRabinIterations = 64;
+const cryptoModulusSize     = 64;
+const millerRabinIterations = 40;
 
-const cryptoByteSize        = cryptoModulusSize/8;
-const cryptoBufferSize      = cryptoByteSize/2;
+const cryptoBufferSize      = cryptoModulusSize/8;
+const cryptoPrimeBufferSize = cryptoBufferSize /2;
      
-const cryptoBuffer          = new Uint8Array(cryptoBufferSize);
+const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
 
 
 function bigCryptoRandom()
 {
-    for (var i = 0; i < cryptoBufferSize; i++)
+    for (var i = 0; i < cryptoPrimeBufferSize; i++)
         cryptoBuffer[i] = toInt(Math.random() * 0x100);
 
-    cryptoBuffer[0]                  |= 0x80; // set the top bit to ensure a relatively large number
-    cryptoBuffer[cryptoBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
+    cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
+    cryptoBuffer[cryptoPrimeBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
 
     return bigFromBuffer(cryptoBuffer);
 }
@@ -4166,14 +4876,18 @@ function bigCryptoRandom()
 
 function bigNextCryptoPrime(n) 
 {
-    do { n += 2n; } while (!bigIsPrime(n));
-    return n-2n;
+    while (!bigIsPrime(n))
+        n += 2n;
+    
+    return n;
 }
 
 
 
 function bigCryptoPrime(e)
 {
+    // set p so that gcd(e, p-1) = 1
+    
     var p;
 
     do
@@ -4181,7 +4895,7 @@ function bigCryptoPrime(e)
         var rnd = bigCryptoRandom();
         p       = bigNextCryptoPrime(rnd);
     }
-    while (gcd(p-1n, e) != 1n); // set p,q so that gcd(e, p-1) = gcd(e, q-1) = 1
+    while (gcd(p-1n, e) != 1n); 
         
     return p;
 }
@@ -4190,117 +4904,184 @@ function bigCryptoPrime(e)
 
 function createCryptoKeys()
 {
-    var e = 3n; // 3, 17, 65537
-    //var e = BigInt(randomPrime(1024));
+    var e = 65537n; // 0x10001
 
 
-    var p = bigCryptoPrimes(e);
+    // var p = bigCryptoPrime(e);
     
-    var q;
-    do { q = bigCryptoPrime(e); } 
-    while (q == p);
+    // var q;
+    // do { q = bigCryptoPrime(e); } 
+    // while (q == p);
 
     
-    if (p < q)
-        [p,q] = [q,p];
+    // if (p < q)
+    //     [p,q] = [q,p];
 
-        
-    var n = p * q;
+    
+    // console.log('p: ' + p);
+    // console.log('q: ' + q);
+
+
+    var p = 4131437551n,
+        q = 3567532051n;
+    
+
+    var n   = p * q;
     var phi = (p-1n) * (q-1n);
 
     var d = bigModInvert(e, phi);
 
 
     return {
-        public:  {e:e, n:n, p:p, q:q},
-        private: {d:d, n:n} };
+        public:  {n:n, e:e },
+        private: {n:n, d:d, p:p, q:q} };
 }                        
 
 
 
-function getCryptoBlock(bytes, buffer, nBlock, blockSize)
+function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
+function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
+
+
+
+function encrypt(data, key) { return encryptData(data, key, false); }
+function decrypt(data, key) { return decryptData(data, key, false); }
+
+function sign   (data, key) { return encryptData(data, key, true); } // yes I know real sign/verify uses a hash,
+function verify (data, key) { return decryptData(data, key, true); } // but I prefer it this way for what I need
+
+
+
+function encryptData(data, key, sign)
 {
-    // blocks smaller than cryptoBlockSize 
-    // must be front-padded with zeros
-
-    var emptySize = cryptoByteSize - blockSize;
-
-    for (var i = 0;         i < emptySize;      i++) buffer[i] = 0;
-    for (var i = emptySize; i < cryptoByteSize; i++) buffer[i] = bytes[nBlock * cryptoByteSize + i - emptySize];
-
-    return bigFromBufferAt(buffer, 0, cryptoByteSize);
-}
+    // prep array should be a multiple of cryptoBufferSize
+    var prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
+    var cipher = new Uint8Array(prep.length);
 
 
-
-function encryptBlock(n, publicKey)
-{
-    return bigPowMod(
-        n, 
-        publicKey.e,
-        publicKey.n);
-}        
+    var start = prep.length - data.length;
+    for (var i = 0; i < data.length; i++)
+        prep[start+i] = data[i];
 
 
-
-function decryptBlock(n, privateKey)
-{
-    return bigPowMod(
-        n, 
-        privateKey.d,
-        privateKey.n);
-}        
-
-
-
-function encrypt(data, publicKey)
-{
-    var cipher = new Uint8Array(data.length);
-    var buffer = new Uint8Array(cryptoByteSize);
-
-    var length = data.length;
+    var length = prep.length;
     var nBlock = 0;
 
     while (length > 0)
     {
-        var blockSize = Math.min(length, cryptoByteSize);
-
-        var block = getCryptoBlock(data, buffer, nBlock, blockSize);
-        var enc   = encryptBlock(block, publicKey);
-
-        bigToBuffer(enc, cipher, blockSize);
-
+        var blockStart = nBlock * cryptoBufferSize;
+        var blockSize  = Math.min(length, cryptoBufferSize);
+        
+        var block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
+        var enc   = encryptBlock(block, key, sign);
+        bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
+        
         nBlock++;
         length -= blockSize;
     }
-
+    
+    
     return cipher;
 }
 
 
 
-function decrypt(cipher, privateKey)
+function decryptData(cipher, key, verify)
 {
-    var data   = new Uint8Array(cipher.length);
-    var buffer = new Uint8Array(cryptoByteSize);
-
+    var data = new Uint8Array(cipher.length);
+    
+    
     var length = cipher.length;
-    var nBlock  = 0;
-
+    var nBlock = 0;
+    
     while (length > 0)
     {
-        var blockSize = Math.min(length, cryptoByteSize);
+        var blockStart = nBlock * cryptoBufferSize;
+        var blockSize  = Math.min(length, cryptoBufferSize);
 
-        var block = getCryptoBlock(cipher, buffer, nBlock, blockSize);
-        var dec   = decryptBlock(block, privateKey);
-
-        bigToBuffer(dec, data, blockSize); 
+        var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
+        var dec   = decryptBlock(block, key, verify);
+        bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
 
         nBlock++;
         length -= blockSize;
+    }    
+
+
+    return data;    
+}
+
+
+const licenseKeys     = createCryptoKeys();
+const licenseHashSize = 4;
+
+
+
+function createProductKey(name)
+{
+    var hash = hashLicenseName(name, licenseHashSize);
+    var enc  = sign(hash, licenseKeys.private);
+    var key  = arrayToBase32(enc);
+
+    return key;
+}
+
+
+
+function validateProductKey(name, key, rec = false)
+{
+    var arr  = base32toArray(key.toUpperCase());
+    var dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
+    var trim = dec.subarray(dec.length - licenseHashSize);
+    var hash = hashLicenseName(name, licenseHashSize);
+    
+    var valid = arraysEqual(trim, hash);
+
+    if (valid && !rec)
+    {
+        var lowerKey  = key;
+
+        var lastChar  = lowerKey[lowerKey.length-1];
+        var lastIndex = base32chars.indexOf(lastChar);
+
+        if (lastIndex > 0)
+        {
+            lowerKey = replaceInStringAt(lowerKey, lowerKey.length-1, base32chars[lastIndex-1]);
+
+            if (validateProductKey(name, lowerKey, true))
+                return false; // at this scale of product key the last bit needs to be guarded against
+        }
     }
 
-    return data;
+    return valid;
+}
+
+
+
+function hashLicenseName(name, nBytes)
+{
+    name = name.trim();
+
+
+    var bytes = stringToArray(name);
+
+    if (bytes.length > nBytes)
+    {
+        var pos    = nBytes;
+        var length = bytes.length - nBytes;
+        
+        while (length > 0)
+        {
+            for (var i = 0; i < nBytes; i++)
+                bytes[i] ^= bytes[pos+i];
+            
+            pos    += nBytes;
+            length -= nBytes;
+        }
+    }
+    
+
+    return newSizeArrayFrom(bytes, nBytes);
 }
 
 
