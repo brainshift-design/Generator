@@ -94,6 +94,7 @@
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
+
 .output
 {
     width:          10px;
@@ -109,6 +110,7 @@
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
+
 #selectBox
 {
     outline:          1pt solid #18A0FB;
@@ -120,6 +122,7 @@
     visibility:       hidden;
 }
 
+
 #scrollbarX
 {
     background-color: #969696;
@@ -129,6 +132,7 @@
     display:          none;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
 }
+
 
 #scrollbarY
 {

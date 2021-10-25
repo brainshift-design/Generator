@@ -2,6 +2,7 @@
 
     ../css/document.css
     ../css/slider.css
+    ../css/control bar.css
     ../css/button.css
     ../css/select.css
     ../css/graph.css
@@ -30,7 +31,10 @@
 
     ../ui/controls/slider/slider.js
     ../ui/controls/slider/slider textbox.js
-    ../ui/controls/select/select.js
+
+    ../ui/controls/select/figmaSelect.js
+    ../ui/controls/select/menuSelect.js
+
     ../ui/controls/graphView/graphView.js
     ../ui/controls/graphView/graphView pan & zoom.js
     ../ui/controls/graphView/graphView scrollbars.js

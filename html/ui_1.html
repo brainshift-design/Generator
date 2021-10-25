@@ -1,19 +1,19 @@
 </style>
 
+<div id='controlBar'>
+    
+    <div id='graphs' style='margin-left: 10px;'></div>
+    
+    <button class='menuButton' id='btnCreateNumber' onclick='actionManager.do(new CreateNodeAction("number")); this.blur();'>NUM</button>
+    <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
+    <button class='menuButton' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>RCT</button>
+    <button class='menuButton' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>ROW</button>
+    <button class='menuButton' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>COL</button>
+    <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
+    
+</div>
+    
 <div id='graphView'></div>
 <div id='selectBox'></div>
 <div id='scrollbarX'></div>
 <div id='scrollbarY'></div>
-
-<div id='controlBar'>
-
-    <div id='presets'></div>
-
-    <button class='button' id='btnCreateNumber' onclick='actionManager.do(new CreateNodeAction("number")); this.blur();'>Num</button>
-    <button class='button' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>Rnd</button>
-    <button class='button' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>Rct</button>
-    <button class='button' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>Row</button>
-    <button class='button' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>Col</button>
-    <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
-
-</div>

@@ -8,10 +8,17 @@ const uiGraph = new UGraph();
 
 
 
-initSelect(presets,
+initMenuSelect(graphs,
 [
-    {value: '', text: 'untitled'},
-    {value: '', text: 'untitled'},
+    {value: '',  text: 'New...'},
+    {value: '',  text: 'Load...'},
+    {value: '-', text: ''},
+    {value: '',  text: 'Untitled'},
+    {value: '-', text: ''},
+    {value: '',  text: 'Save As...'},
+    {value: '',  text: 'Save Local Copy'},
+    {value: '-', text: ''},
+    {value: '',  text: 'Delete'},
 ]);    
 
 

@@ -1,4 +1,4 @@
-function initSelectMenu(select)
+function initFigmaSelectMenu(select)
 {
     select.menu = document.createElement('DIV');
     select.menu.className = 'selectMenu';
@@ -15,7 +15,11 @@ function initSelectMenu(select)
     select.menu.style.borderRadius = '2px';
     select.menu.style.overflow     = 'hidden';
 
+
+
     select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
+
+
 
     select.menu.addEventListener('keydown', function(e)
     { 
@@ -23,6 +27,7 @@ function initSelectMenu(select)
             select.menu.blur();
     });
     
+
     
     select.menu.tabIndex = 0;
     
@@ -61,16 +66,22 @@ function initSelectMenu(select)
     
     select.menu.appendChild(select.menuWrap);
 
+
+
     select.menu.addEventListener('pointerdown', function(e)
     {
         e.stopPropagation();
     });            
     
+
+
     select.menu.addEventListener('pointerup', function(e)
     {
         if (select.holding)
             select.menu.selectCurrent();
     });         
+
+
 
     select.menu.addEventListener('pointermove', function(e)
     {
@@ -78,6 +89,8 @@ function initSelectMenu(select)
         select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
     });                
     
+
+
     select.menu.selectCurrent = function()
     {
         select.update(select.menu.hoverIndex);
@@ -87,6 +100,8 @@ function initSelectMenu(select)
 
         document.menuHadFocus = false;
     };
+
+
 
     select.menu.addEventListener('keydown', function(e)
     {
@@ -108,6 +123,7 @@ function initSelectMenu(select)
     });        
 
 
+
     select.menu.addEventListener('focusout', function()
     {
         select.hideMenu();
@@ -118,14 +134,17 @@ function initSelectMenu(select)
 }    
 
 
-function initSelect(select, items)
+
+function initFigmaSelect(select, items)
 {
-    select.className = 'figmaSelect';
+    select.className = 'menuSelect';
     select.tabIndex = 0;    
     
-    initSelectMenu(select);
+    initFigmaSelectMenu(select);
 
     select.holding  = false;
+    
+
     
     //////////////////////////////////////////////////////////////////////////////////
     
@@ -133,29 +152,51 @@ function initSelect(select, items)
     {
         select.resetMenu();
         
-        for (var i = 0; i < select.items.length; i++)
+        for (let i = 0; i < select.items.length; i++)
         {
-            var item = document.createElement('DIV');
-            var sub  = document.createElement('DIV');
+            let item = document.createElement('DIV');
+            let sub  = document.createElement('DIV');
             
             item.style.width       = 'auto';
-            item.style.height      = 24;
             item.style.display     = 'block';
             item.style.textAlign   = 'left';
             item.style.paddingLeft = 30;
             
-            sub.style.height    = 'auto';
-            sub.style.position  = 'relative';
-            sub.style.top       = '50%';
-            sub.style.transform = 'translateY(-50%)';
+            sub .style.height      = 'auto';
+            sub .style.position    = 'relative';
+            sub .style.top         = '50%';
+            sub .style.transform   = 'translateY(-50%)';
             
-            sub.innerHTML = select.items[i].text;
-            
+            if (select.items[i].value == '-')
+            {
+                item.style.borderTop = '1px solid white';
+                item.style.marginTop = '6px';
+                item.style.height    = '4px';
+                item.style.position  = 'relative';
+                item.style.left      = '6px';
+                
+                item.disabled = true;
+            }
+            else
+            {
+                item.style.border = 'none';
+                item.style.height = 24;
+
+                item.disabled = false;
+
+                sub.innerHTML = select.items[i].text;
+            }
+
             item.appendChild(sub);
             select.menuWrap.appendChild(item);
         }
+
+
+        let options = select.getElementsByTagName('option');
+        for (const op of options) op.disabled = op.value == '-';
     };
     
+
 
     select.update = function(index)
     {
@@ -163,6 +204,7 @@ function initSelect(select, items)
         select.innerHTML = select.items[index].text;
     };
     
+
     
     select.addEventListener('pointerdown', function(e)
     {
@@ -183,6 +225,7 @@ function initSelect(select, items)
         }        
     });        
     
+
     
     select.addEventListener('keydown', function(e)
     {
@@ -194,6 +237,7 @@ function initSelect(select, items)
             select.showMenu();
         }        
     });        
+
 
 
     select.showMenu = function()
@@ -208,16 +252,20 @@ function initSelect(select, items)
         document.menuHadFocus = true;
     }        
     
+
+
     select.hideMenu = function()
     {
         select.menu.blur();
     };    
 
+
+
     select.updateMenu = function()
     {
-        var iy = select.selectedIndex();
+        let iy = select.selectedIndex();
         
-        var menuTop =
+        let menuTop =
             select.offsetTop 
             - 3 // paddingTop
             - 4 // hack this for now (select.menu.children[0].offsetHeight - select.menu.children[0].children[0].offsetHeight) / 2;
@@ -231,13 +279,16 @@ function initSelect(select, items)
         select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
     };
     
+
+
     select.indexFromY = function(y)
     {
-        var iy = Math.floor((y - 8 - select.menu.offsetTop) / 24);
+        let iy = Math.floor((y - 8 - select.menu.offsetTop) / 24);
         iy = Math.min(Math.max(0, iy), select.items.length-1);
         return iy;
     };        
     
+
     
     select.resetMenu = function()
     {
@@ -253,13 +304,15 @@ function initSelect(select, items)
         select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
 
         select.menuWrap.appendChild(select.check);
-    };        
+    };  
+
 
 
     select.selectedIndex = function()
     {
         return select.items.findIndex(item => item.value == select.value);
     };        
+
 
 
     select.setValue = function(value)
@@ -270,8 +323,10 @@ function initSelect(select, items)
     }
 
 
+
     //////////////////////////////////////////////////////////////////////////////////
- 
+
+    
     select.items = items;
     
     select.update(0);

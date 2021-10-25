@@ -36,7 +36,7 @@ function initLabelTextbox(node)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.node, .figmaSelect, #hexValue, button');
+            var tabs  = document.querySelectorAll('.node, .figmaSelect, .menuSelect #hexValue, button');
             var index = node.tabIndex;
 
             for (var i = 0; i < tabs.length; i++) 

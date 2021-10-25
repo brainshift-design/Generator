@@ -5,11 +5,13 @@ body
     user-select:      none;
 }
 
+
 div
 {
     margin:  0;
     padding: 0;
 }
+
 
 #graphView
 {
@@ -17,16 +19,6 @@ div
     overflow: hidden;
     height:   calc(100% - 40px);
     position: relative;
-}
-
-#controlBar
-{
-    display:          block;
-    height:           40px;
-    line-height:      40px;
-    background-color: white;
-    /* vertical-align:   middle; */
-    padding:          0 4 0 4;
 }
 
 
@@ -42,16 +34,19 @@ input[type=text]
     cursor:        default;
 }
 
+
 input[type=text]:hover
 {
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
+
 
 input[type=text]:focus
 {
     box-shadow: 0 0 0 1px #18A0FB;
     outline: none;
 }
+
 
 input[type=text]::selection
 {
