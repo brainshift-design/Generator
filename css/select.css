@@ -1,5 +1,5 @@
 
-.figmaSelect
+.select
 {
     font-family:         Inter;
     font-size:           11;
@@ -22,7 +22,8 @@
     display:             inline-block;
 }
 
-.figmaSelect:hover
+
+.select:hover
 {
     box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1);
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
@@ -31,7 +32,8 @@
     padding-right:       30;
 }
 
-.figmaSelect:focus
+
+.select:focus
 {
     padding-left:        6;
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
@@ -40,4 +42,22 @@
     padding-right:       30;
     box-shadow:          0 0 0 2px #18A0FB;
     outline:             none;
+}
+
+
+.selectMenu
+{
+    position:      absolute;
+    width:         auto;
+    height:        auto;
+    color:         white;
+    background:    #222;
+    font-family:   Inter;
+    font-size:     13;
+    text-align:    center;
+    outline:       0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    box-shadow:    0px 2px 7px  rgba(0, 0, 0, 0.15),
+                   0px 5px 17px rgba(0, 0, 0, 0.2);
+    overflow:      hidden;
 }

@@ -126,84 +126,6 @@ input[type=text]::selection
 }
 
 
-.menuButton
-{
-    font-family:   Inter;
-    font-size:     11px;
-    width:         40px;
-    height:        40px;
-    background:    #2c2c2c;
-    border-radius: 0;
-    min-width:     0;
-    min-height:    0;
-    border:        none;
-    position:      relative;
-    padding:       0;
-    margin-right:  -4px;
-    color:         #d5d5d5;
-}
-
-
-.menuButton:hover
-{
-    background: black;
-    color:      white;
-}
-
-
-.menuButton:focus
-{
-    background:#18A0FB;
-    color:     white;
-}
-
-
-.menuSelect
-{
-    font-family:         Inter;
-    font-size:           14;
-    vertical-align:      middle;
-    padding-left:        6;
-    padding-right:       30;
-    padding-top:         2;
-    margin-right:        6;
-    margin-bottom:       2;
-    height:              24px;
-    line-height:         22px;
-    border:              none;
-    border-radius:       0.5px;
-    overflow:            hidden;
-    -webkit-appearance:  none;
-    appearance:          none;
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
-    background-position: calc(100% - 13px) 50%;
-    background-repeat:   no-repeat;
-    display:             inline-block;
-    color:               white;
-}
-
-.menuSelect:hover
-{
-    /* box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1); */
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
-    background-position: calc(100% - 13px) calc(50% + 3px);
-    background-repeat:   no-repeat;
-    padding-right:       30;
-    transition:          all 0.2s ease;
-}
-
-.menuSelect:focus
-{
-    padding-left:        6;
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
-    background-position: calc(100% - 13px) 50%;
-    background-repeat:   no-repeat;
-    padding-right:       30;
-    box-shadow:          0 0 0 2px #18A0FB;
-    outline:             none;
-}
-
-
 button
 {
     font-family:   Inter;
@@ -248,7 +170,7 @@ button svg
 
 
 
-.figmaSelect
+.select
 {
     font-family:         Inter;
     font-size:           11;
@@ -271,7 +193,8 @@ button svg
     display:             inline-block;
 }
 
-.figmaSelect:hover
+
+.select:hover
 {
     box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1);
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
@@ -280,7 +203,8 @@ button svg
     padding-right:       30;
 }
 
-.figmaSelect:focus
+
+.select:focus
 {
     padding-left:        6;
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
@@ -290,6 +214,149 @@ button svg
     box-shadow:          0 0 0 2px #18A0FB;
     outline:             none;
 }
+
+
+.selectMenu
+{
+    position:      absolute;
+    width:         auto;
+    height:        auto;
+    color:         white;
+    background:    #222;
+    font-family:   Inter;
+    font-size:     13;
+    text-align:    center;
+    outline:       0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    box-shadow:    0px 2px 7px  rgba(0, 0, 0, 0.15),
+                   0px 5px 17px rgba(0, 0, 0, 0.2);
+    overflow:      hidden;
+}
+
+
+.menuButton
+{
+    font-family:     Inter;
+    font-size:       11px;
+    width:           40px;
+    height:          40px;
+    background:      #2c2c2c;
+    border-radius:   0;
+    min-width:       0;
+    min-height:      0;
+    border:          none;
+    position:        relative;
+    padding:         0;
+    padding-top:     1px;
+    padding-bottom: -1px;
+    margin-right:   -4px;
+    color:          #d5d5d5;
+}
+
+
+.menuButton:hover
+{
+    background: black;
+    color:      white;
+}
+
+
+.menuButton:focus
+{
+    background:#18A0FB;
+    color:     white;
+}
+
+
+
+
+.menuSelect
+{
+    font-family:         Inter;
+    font-size:           14;
+    vertical-align:      middle;
+    padding-left:        6;
+    padding-right:       30;
+    padding-top:         1;
+    margin-right:        6;
+    margin-top:          1;
+    height:              24px;
+    line-height:         22px;
+    border:              none;
+    border-radius:       0.5px;
+    overflow:            hidden;
+    -webkit-appearance:  none;
+    appearance:          none;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
+    background-position: calc(100% - 14px) 50%;
+    background-repeat:   no-repeat;
+    display:             inline-block;
+    color:               white;
+}
+
+
+.menuSelect:hover
+{
+    /* box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1); */
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
+    background-position: calc(100% - 14px) calc(50% + 3px);
+    background-repeat:   no-repeat;
+    padding-right:       30;
+    transition:          all 0.2s ease;
+}
+
+
+.menuSelect:focus
+{
+    padding-left:        6;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
+    background-position: calc(100% - 14px) 50%;
+    background-repeat:   no-repeat;
+    padding-right:       30;
+    box-shadow:          0 0 0 2px #18A0FB;
+    outline:             none;
+}
+
+
+.menuSelectText
+{
+    font-family:    Inter;
+    font-size:      11;
+    pointer-events: none;
+    position:       relative;
+    top:            3px;
+}
+
+
+.menuSelectMenu
+{
+    position:      absolute;
+    width:         auto;
+    height:        auto;
+    color:         white;
+    background:    #222;
+    font-family:   Inter;
+    font-size:     13;
+    text-align:    center;
+    outline:       0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    box-shadow:    0px 2px  7px rgba(0, 0, 0, 0.15),
+                   0px 5px 17px rgba(0, 0, 0, 0.2 );
+    /* overflow:      hidden; */
+}
+
+
+.menuSelectMenu::after 
+{
+    content:       '';
+    position:      absolute;
+    top:           -10px;
+    left:          65px;
+    border-width:  5px;
+    border-style:  solid;
+    border-color:  transparent transparent #222 transparent;
+}
+
 
 
 #graphView
@@ -443,7 +510,7 @@ button svg
 
 <div id='controlBar'>
     
-    <div id='graphs' style='margin-left: 10px;'></div>
+    <div id='menuSelect' style='margin-left: 10px;'></div>
     
     <button class='menuButton' id='btnCreateNumber' onclick='actionManager.do(new CreateNodeAction("number")); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
@@ -7276,17 +7343,15 @@ const uiGraph = new UGraph();
 
 
 
-initMenuSelect(graphs,
+initMenuSelect(menuSelect,
 [
-    {value: '',  text: 'New...'},
-    {value: '',  text: 'Load...'},
-    {value: '-', text: ''},
-    {value: '',  text: 'Untitled'},
-    {value: '-', text: ''},
-    {value: '',  text: 'Save As...'},
-    {value: '',  text: 'Save Local Copy'},
-    {value: '-', text: ''},
-    {value: '',  text: 'Delete'},
+    {value: 'graph0',     text: 'Untitled'},
+    {value: 'new',        text: 'New graph'},
+    {value: 'load',       text: 'Load from file'},
+    {value: 'saveAs',     text: 'Save as...'},
+    {value: 'saveLocal',  text: 'Save local copy'},
+    {value: 'delete',     text: 'Delete'},
+    {value: 'productKey', text: 'Enter product key'}
 ]);    
 
 
@@ -7609,6 +7674,12 @@ function strFromData(data)
 }
 
 
+menuSelect.addEventListener('change', () => 
+{
+    console.log(menuSelect.items[menuSelect.getSelectedIndex()]);
+});
+
+
 const resizeEdgeWidth = 8;
 
 document.canResizeX = false;
@@ -7818,6 +7889,147 @@ document.addEventListener('keyup', e =>
 
 
 
+
+
+function initSliderTextbox(slider)
+{
+    slider.textbox = document.createElement('INPUT');
+    slider.textbox.setAttribute('type', 'text'); 
+    slider.textbox.className = 'sliderText';
+    
+    slider.textbox.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'KeyC'
+            && e.ctrlKey)
+        {
+            e.preventDefault();
+            document.execCommand("copy");
+        }
+        else if (e.code == 'KeyV'
+              && e.ctrlKey)
+        {
+            e.preventDefault();
+            document.execCommand("paste");
+        }
+        
+        else if (e.code == 'Enter'
+              || e.code == 'NumpadEnter')
+            slider.textbox.finish(true);
+
+        else if (e.code == 'Escape')
+            slider.textbox.finish(false);
+
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+            
+            var tabs  = document.querySelectorAll('.slider, .select, .menuSelect, button, .menuButton');
+            var index = slider.tabIndex;
+
+            for (var i = 0; i < tabs.length; i++) 
+            {
+                if (   e.shiftKey && tabs[i].tabIndex == index - 1
+                    ||               tabs[i].tabIndex == index + 1) 
+                {
+                    if (tabs[i].className == 'slider')
+                        tabs[i].showTextbox();
+                    else 
+                    {
+                        document.activeElement.blur();
+                        tabs[i].focus();
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        else 
+        {
+            if (   e.key.length == 1
+                && !isDigit(e.key)
+                && e.key != '.'
+                && !(   (   e.code == 'Minus'
+                         || e.code == 'NumpadSubtract')
+                     && slider.min < 0))
+                e.preventDefault();
+
+            var t = slider.textbox;
+
+            var curVal = t.value;
+
+            curVal = 
+                  curVal.substring(0, t.selectionStart) 
+                + curVal.substring(t.selectionEnd, curVal.length);
+
+            var nextVal = parseFloat(curVal + e.key);
+
+            if (   nextVal < slider.min - 0.001
+                || nextVal > slider.max)
+                e.preventDefault();            
+        }
+    });
+
+
+    // slider.textbox.addEventListener('input', function()
+    // {
+    //     slider.setValue(Number(slider.textbox.value));
+    // });
+
+    slider.textbox.addEventListener('paste', function(e)
+    {
+        e.preventDefault();
+
+        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        val = Math.min(Math.max(slider.min, val), slider.max);
+
+        slider.textbox.value = isNaN(val) ? '' : val;
+    });
+
+    slider.textbox.addEventListener('focusout', function()
+    {
+        slider.parentNode.removeChild(slider.textbox);
+        slider.clicked = false;
+    });
+    
+    slider.textbox.finish = function(success)
+    {
+        if (success) slider.setValue(Number(slider.textbox.value     ));
+        else         slider.setValue(Number(slider.textbox.savedValue));
+
+        slider.textbox.blur();
+
+        if (slider.inFocus)
+            slider.focus();
+    };    
+    
+    
+    slider.showTextbox = function()
+    {
+        slider.inFocus = 
+                slider == document.activeElement
+            && !slider.clicked;
+    
+        slider.textbox.style.position = 'absolute';
+    
+        slider.textbox.style.left      = slider.offsetLeft   + 1;
+        slider.textbox.style.top       = slider.offsetTop    + 1;
+        slider.textbox.style.width     = slider.offsetWidth  - 2;
+        slider.textbox.style.height    = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow = '0 0 0 1px #18A0FB';
+        slider.textbox.style.outline   = 'none';
+    
+        slider.textbox.style.textAlign = 'center';
+    
+        slider.textbox.value = numToString(slider.value, slider.editDec);
+        slider.textbox.savedValue = slider.textbox.value;
+        
+        slider.parentNode.appendChild(slider.textbox);
+        
+        slider.textbox.focus();
+        slider.textbox.select();
+    }
+}
 
 
 function initSliderChildren(slider)
@@ -8271,13 +8483,466 @@ function onSliderClickTimer(slider)
 }
 
 
-function initSliderTextbox(slider)
+function initSelectMenu(select)
 {
-    slider.textbox = document.createElement('INPUT');
-    slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderText';
+    select.menu = document.createElement('DIV');
+
+    select.menu.className    = 'selectMenu';
+    select.menu.hoverIndex   = 0;
+    select.menu.tabIndex     = 0;
+
+    select.menu.style.left   = select.offsetLeft;
+    select.menu.style.zIndex = Number.MAX_SAFE_INTEGER;
+
+    select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
+
+    select.menu.addEventListener('keydown', function(e)
+    { 
+        if (e.code == 'Escape')
+            select.menu.blur();
+    });
     
-    slider.textbox.addEventListener('keydown', function(e)
+
+    
+    select.menu.tabIndex = 0;
+    
+    select.menu.style.height     = 'auto';
+    select.menu.style.textAlign  = 'center';
+    select.menu.style.background = '#222222';
+    select.menu.style.zIndex     = Number.MAX_SAFE_INTEGER;
+
+    select.menu.hoverIndex       = 0;
+
+
+    select.selectBox = document.createElement('DIV');
+        
+    // width is set with menu width in showMenu()
+    select.selectBox.style.display         = 'inline-block';
+    select.selectBox.style.width           = 'calc(100% + 1px)';
+    select.selectBox.style.height          = 24;
+    select.selectBox.style.backgroundColor = '#18A0FB';
+    select.selectBox.style.position        = 'absolute';
+    select.selectBox.style.left            = -1; // -1 = border
+    
+    select.menu.appendChild(select.selectBox);
+    
+
+    select.menuWrap = document.createElement('DIV');
+    
+    select.menuWrap.style.width         = 'auto';
+    select.menuWrap.style.height        = '100%';
+    select.menuWrap.style.position      = 'relative';
+    select.menuWrap.style.paddingLeft   = 4;
+    select.menuWrap.style.paddingRight  = 5;
+    select.menuWrap.style.paddingTop    = 7;
+    select.menuWrap.style.paddingBottom = 7;
+    select.menuWrap.style.margin        = 0;
+    select.menuWrap.style.marginRight   = 10;
+    
+    select.menu.appendChild(select.menuWrap);
+
+
+
+    select.menu.addEventListener('pointerdown', function(e)
+    {
+        e.stopPropagation();
+    });            
+    
+
+
+    select.menu.addEventListener('pointerup', function(e)
+    {
+        if (select.holding)
+            select.menu.selectCurrent();
+    });         
+
+
+
+    select.menu.addEventListener('pointermove', function(e)
+    {
+        select.menu.hoverIndex = select.indexFromY(e.clientY);
+        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
+    });                
+    
+
+
+    select.menu.selectCurrent = function()
+    {
+        select.update(select.menu.hoverIndex);
+        select.hideMenu();
+        select.dispatchEvent(select.onchange);
+        select.focus();
+
+        document.menuHadFocus = false;
+    };
+
+
+
+    select.menu.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'Enter' 
+            || e.code == 'NumpadEnter')
+        {
+            select.menu.selectCurrent();   
+        }
+        else if (e.code == 'ArrowUp')
+        {
+            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex - 1), select.items.length-1);
+            select.updateMenu();
+        }
+        else if (e.code == 'ArrowDown')
+        {
+            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex + 1), select.items.length-1);
+            select.updateMenu();
+        }        
+    });        
+
+
+
+    select.menu.addEventListener('focusout', function()
+    {
+        select.hideMenu();
+
+        select.menu.style.display = 'none';
+        select.parentNode.removeChild(select.menu);
+    });
+}
+
+
+function initSelect(select, items)
+{
+    select.className = 'menuSelect';
+    select.tabIndex = 0;    
+    
+    initSelectMenu(select);
+
+    select.holding  = false;
+    
+
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    
+    select.updateItems = function()
+    {
+        select.resetMenu();
+        
+        for (let i = 0; i < select.items.length; i++)
+        {
+            let item = document.createElement('DIV');
+            let sub  = document.createElement('DIV');
+            
+            item.style.width       = 'auto';
+            item.style.display     = 'block';
+            item.style.textAlign   = 'left';
+            item.style.paddingLeft = 30;
+            
+            sub .style.height      = 'auto';
+            sub .style.position    = 'relative';
+            sub .style.top         = '50%';
+            sub .style.transform   = 'translateY(-50%)';
+            
+            if (select.items[i].value == '-')
+            {
+                item.style.borderTop = '1px solid white';
+                item.style.marginTop = '6px';
+                item.style.height    = '4px';
+                item.style.position  = 'relative';
+                item.style.left      = '6px';
+                
+                item.disabled = true;
+            }
+            else
+            {
+                item.style.border = 'none';
+                item.style.height = 24;
+
+                item.disabled = false;
+
+                sub.innerHTML = select.items[i].text;
+            }
+
+            item.appendChild(sub);
+            select.menuWrap.appendChild(item);
+        }
+
+
+        let options = select.getElementsByTagName('option');
+        for (const op of options) op.disabled = op.value == '-';
+    };
+    
+
+
+    select.update = function(index)
+    {
+        select.value     = select.items[index].value;
+        select.innerHTML = select.items[index].text;
+    };
+    
+
+    
+    select.addEventListener('pointerdown', function(e)
+    {
+        if (e.button == 0)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            select.buttonDown0 = true;        
+            select.setPointerCapture(e.pointerId);
+            
+            select.holding = false;
+            setTimeout(function() { onSelectClickTimer(select); }, 200);
+            
+            select.menu.hoverIndex = select.getSelectedIndex();
+
+            select.showMenu();
+        }        
+    });        
+    
+
+    
+    select.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'Enter' 
+            || e.code == 'NumpadEnter'
+            || e.code == 'ArrowUp'
+            || e.code == 'ArrowDown')
+        {
+            select.showMenu();
+        }        
+    });        
+
+
+
+    select.showMenu = function()
+    {  
+        select.menu.style.display = 'inline-block';
+
+        select.parentNode.appendChild(select.menu);
+        select.updateMenu();
+        
+        select.menu.focus();
+
+        document.menuHadFocus = true;
+    }        
+    
+
+
+    select.hideMenu = function()
+    {
+        select.menu.blur();
+    };    
+
+
+
+    select.updateMenu = function()
+    {
+        let iy = select.getSelectedIndex();
+        
+        let menuTop =
+            select.offsetTop 
+            - 3 // paddingTop
+            - 4 // hack this for now (select.menu.children[0].offsetHeight - select.menu.children[0].children[0].offsetHeight) / 2;
+            - iy * 24;
+        
+        menuTop = Math.min(Math.max(8, menuTop), document.body.clientHeight - 8 - select.menu.offsetHeight);
+        
+        select.menu     .style.top = menuTop;
+        select.check    .style.top = 7 + 4 + iy * 24;
+        
+        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
+    };
+    
+
+
+    select.indexFromY = function(y)
+    {
+        let iy = Math.floor((y - 8 - select.menu.offsetTop) / 24);
+        iy = Math.min(Math.max(0, iy), select.items.length-1);
+        return iy;
+    };        
+    
+
+    
+    select.resetMenu = function()
+    {
+        clearChildren(select.menuWrap);
+        
+
+        select.check = document.createElement('DIV');
+        
+        select.check.style.width    = 16;
+        select.check.style.height   = 16;
+        select.check.style.position = 'absolute';
+        select.check.style.left     = 8;
+        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
+
+        select.menuWrap.appendChild(select.check);
+    };  
+
+
+
+    select.getSelectedIndex = function()
+    {
+        return select.items.findIndex(item => item.value == select.value);
+    };        
+
+
+
+    select.setValue = function(value)
+    {
+        select.value = value;
+        select.update(select.getSelectedIndex());
+        select.dispatchEvent(select.onchange);
+    }
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    
+    select.items = items;
+    
+    select.update(0);
+    select.updateItems();
+    
+    select.onchange = new Event('change');
+}
+
+
+
+function onSelectClickTimer(select)
+{
+    select.holding = true;
+}
+
+
+function initMenuSelectMenu(select)
+{
+    select.menu = document.createElement('DIV');
+
+    select.menu.className    = 'menuSelectMenu';
+    select.menu.hoverIndex   = 0;
+    select.menu.tabIndex     = 0;
+
+    select.menu.style.left   = select.offsetLeft;
+    select.menu.style.zIndex = Number.MAX_SAFE_INTEGER;
+
+    select.menu.addEventListener('focus', function() 
+    {
+         select.menu.style.outline = 'none'; 
+    });
+
+    select.menu.addEventListener('keydown', function(e)
+    { 
+        if (e.code == 'Escape')
+            select.menu.blur();
+    });
+    
+    
+
+    select.selectBox = document.createElement('DIV');
+        
+    // width is set with menu width in showMenu()
+    select.selectBox.style.display         = 'inline-block';
+    select.selectBox.style.width           = '100%';
+    select.selectBox.style.height          = 24;
+    select.selectBox.style.backgroundColor = '#18A0FB';
+    select.selectBox.style.position        = 'absolute';
+    select.selectBox.style.left            = 0; // -1 = border
+    
+    select.menu.appendChild(select.selectBox);
+    
+
+    select.menuWrap = document.createElement('DIV');
+    
+    select.menuWrap.style.width         = 'auto';
+    select.menuWrap.style.height        = '100%';
+    select.menuWrap.style.position      = 'relative';
+    select.menuWrap.style.paddingLeft   = 4;
+    select.menuWrap.style.paddingRight  = 5;
+    select.menuWrap.style.paddingTop    = 7;
+    select.menuWrap.style.paddingBottom = 7;
+    select.menuWrap.style.margin        = 0;
+    select.menuWrap.style.marginRight   = 10;
+    
+    select.menu.appendChild(select.menuWrap);
+
+
+
+    select.menu.addEventListener('pointerdown', function(e)
+    {
+        e.stopPropagation();
+    });            
+    
+
+
+    select.menu.addEventListener('pointerup', function(e)
+    {
+        if (select.holding)
+            select.menu.selectCurrent();
+    });         
+
+
+
+    select.menu.addEventListener('pointermove', function(e)
+    {
+        select.menu.hoverIndex = select.indexFromY(e.clientY);
+        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
+    });                
+    
+
+
+    select.menu.selectCurrent = function()
+    {
+        select.update(select.menu.hoverIndex);
+        select.hideMenu();
+        select.dispatchEvent(select.onchange);
+        select.focus();
+
+        document.menuHadFocus = false;
+    };
+
+
+
+    select.menu.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'Enter' 
+            || e.code == 'NumpadEnter')
+        {
+            select.menu.selectCurrent();   
+        }
+        else if (e.code == 'ArrowUp')
+        {
+            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex - 1), select.items.length-1);
+            select.updateMenu();
+        }
+        else if (e.code == 'ArrowDown')
+        {
+            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex + 1), select.items.length-1);
+            select.updateMenu();
+        }        
+    });        
+
+
+
+    select.menu.addEventListener('focusout', function()
+    {
+        select.hideMenu();
+
+        select.menu.style.display = 'none';
+        select.parentNode.removeChild(select.menu);
+    });
+}
+
+
+function initMenuSelectTextbox(select)
+{
+    select.textbox = document.createElement('INPUT');
+    select.textbox.setAttribute('type', 'text'); 
+    select.textbox.className = 'menuSelectText';
+    
+    select.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
             && e.ctrlKey)
@@ -8294,19 +8959,19 @@ function initSliderTextbox(slider)
         
         else if (e.code == 'Enter'
               || e.code == 'NumpadEnter')
-            slider.textbox.finish(true);
+            select.textbox.finish(true);
 
         else if (e.code == 'Escape')
-            slider.textbox.finish(false);
+            select.textbox.finish(false);
 
         else if (e.code == 'Tab')
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.slider, .figmaSelect, #hexValue, button');
-            var index = slider.tabIndex;
+            let tabs  = document.querySelectorAll('.slider, .menuSelect, .select, button, .menuButton');
+            let index = select.tabIndex;
 
-            for (var i = 0; i < tabs.length; i++) 
+            for (let i = 0; i < tabs.length; i++) 
             {
                 if (   e.shiftKey && tabs[i].tabIndex == index - 1
                     ||               tabs[i].tabIndex == index + 1) 
@@ -8331,21 +8996,21 @@ function initSliderTextbox(slider)
                 && e.key != '.'
                 && !(   (   e.code == 'Minus'
                          || e.code == 'NumpadSubtract')
-                     && slider.min < 0))
+                     && select.min < 0))
                 e.preventDefault();
 
-            var t = slider.textbox;
+            let t = select.textbox;
 
-            var curVal = t.value;
+            let curVal = t.value;
 
             curVal = 
                   curVal.substring(0, t.selectionStart) 
                 + curVal.substring(t.selectionEnd, curVal.length);
 
-            var nextVal = parseFloat(curVal + e.key);
+            let nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < slider.min - 0.001
-                || nextVal > slider.max)
+            if (   nextVal < select.min - 0.001
+                || nextVal > select.max)
                 e.preventDefault();            
         }
     });
@@ -8356,552 +9021,75 @@ function initSliderTextbox(slider)
     //     slider.setValue(Number(slider.textbox.value));
     // });
 
-    slider.textbox.addEventListener('paste', function(e)
+
+    select.textbox.addEventListener('paste', function(e)
     {
         e.preventDefault();
 
-        var val = parseFloat(e.clipboardData.getData('text/plain'));
-        val = Math.min(Math.max(slider.min, val), slider.max);
+        let val = parseFloat(e.clipboardData.getData('text/plain'));
+        val = Math.min(Math.max(select.min, val), select.max);
 
-        slider.textbox.value = isNaN(val) ? '' : val;
+        select.textbox.value = isNaN(val) ? '' : val;
     });
 
-    slider.textbox.addEventListener('focusout', function()
+
+    select.textbox.addEventListener('focusout', function()
     {
-        slider.parentNode.removeChild(slider.textbox);
-        slider.clicked = false;
+        select.parentNode.removeChild(select.textbox);
+        select.clicked = false;
     });
     
-    slider.textbox.finish = function(success)
+
+    select.textbox.finish = function(success)
     {
-        if (success) slider.setValue(Number(slider.textbox.value     ));
-        else         slider.setValue(Number(slider.textbox.savedValue));
+        if (success) select.setValue(Number(select.textbox.value     ));
+        else         select.setValue(Number(select.textbox.savedValue));
 
-        slider.textbox.blur();
+        select.textbox.blur();
 
-        if (slider.inFocus)
-            slider.focus();
+        if (select.inFocus)
+            select.focus();
     };    
     
     
-    slider.showTextbox = function()
+    select.showTextbox = function()
     {
-        slider.inFocus = 
-                slider == document.activeElement
-            && !slider.clicked;
+        select.inFocus = 
+                select == document.activeElement
+            && !select.clicked;
     
-        slider.textbox.style.position = 'absolute';
+        select.textbox.style.position = 'absolute';
     
-        slider.textbox.style.left      = slider.offsetLeft   + 1;
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px #18A0FB';
-        slider.textbox.style.outline   = 'none';
+        select.textbox.style.left      = select.offsetLeft   + 1;
+        select.textbox.style.top       = select.offsetTop    + 1;
+        select.textbox.style.width     = select.offsetWidth  - 2;
+        select.textbox.style.height    = select.offsetHeight - 2;
+        select.textbox.style.boxShadow = '0 0 0 1px #18A0FB';
+        select.textbox.style.outline   = 'none';
     
-        slider.textbox.style.textAlign = 'center';
+        select.textbox.style.textAlign = 'center';
     
-        slider.textbox.value = numToString(slider.value, slider.editDec);
-        slider.textbox.savedValue = slider.textbox.value;
+        select.textbox.value = numToString(select.value, select.editDec);
+        select.textbox.savedValue = select.textbox.value;
         
-        slider.parentNode.appendChild(slider.textbox);
+        select.parentNode.appendChild(select.textbox);
         
-        slider.textbox.focus();
-        slider.textbox.select();
+        select.textbox.focus();
+        select.textbox.select();
     }
 }
-
-
-function initFigmaSelectMenu(select)
-{
-    select.menu = document.createElement('DIV');
-    select.menu.className = 'selectMenu';
-
-    select.menu.style.position     = 'absolute';
-    select.menu.style.left         = select.offsetLeft;
-    select.menu.style.width        = 'auto';
-    select.menu.style.color        = 'white';
-    select.menu.style.fontFamily   = 'Inter';
-    select.menu.style.fontSize     = '13';
-    select.menu.style.boxShadow    = '0px 2px 7px  rgba(0, 0, 0, 0.15), \
-                                      0px 5px 17px rgba(0, 0, 0, 0.2)';
-    select.menu.style.outline      = '0.5px solid rgba(0, 0, 0, 0.1)';                                   
-    select.menu.style.borderRadius = '2px';
-    select.menu.style.overflow     = 'hidden';
-
-
-
-    select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
-
-
-
-    select.menu.addEventListener('keydown', function(e)
-    { 
-        if (e.code == 'Escape')
-            select.menu.blur();
-    });
-    
-
-    
-    select.menu.tabIndex = 0;
-    
-    select.menu.style.height     = 'auto';
-    select.menu.style.textAlign  = 'center';
-    select.menu.style.background = '#222222';
-    select.menu.style.zIndex     = Number.MAX_SAFE_INTEGER;
-
-    select.menu.hoverIndex       = 0;
-
-
-    select.selectBox = document.createElement('DIV');
-        
-    // width is set with menu width in showMenu()
-    select.selectBox.style.display         = 'inline-block';
-    select.selectBox.style.width           = 'calc(100% + 1px)';
-    select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = '#18A0FB';
-    select.selectBox.style.position        = 'absolute';
-    select.selectBox.style.left            = -1; // -1 = border
-    
-    select.menu.appendChild(select.selectBox);
-    
-
-    select.menuWrap = document.createElement('DIV');
-    
-    select.menuWrap.style.width         = 'auto';
-    select.menuWrap.style.height        = '100%';
-    select.menuWrap.style.position      = 'relative';
-    select.menuWrap.style.paddingLeft   = 4;
-    select.menuWrap.style.paddingRight  = 5;
-    select.menuWrap.style.paddingTop    = 7;
-    select.menuWrap.style.paddingBottom = 7;
-    select.menuWrap.style.margin        = 0;
-    select.menuWrap.style.marginRight   = 10;
-    
-    select.menu.appendChild(select.menuWrap);
-
-
-
-    select.menu.addEventListener('pointerdown', function(e)
-    {
-        e.stopPropagation();
-    });            
-    
-
-
-    select.menu.addEventListener('pointerup', function(e)
-    {
-        if (select.holding)
-            select.menu.selectCurrent();
-    });         
-
-
-
-    select.menu.addEventListener('pointermove', function(e)
-    {
-        select.menu.hoverIndex = select.indexFromY(e.clientY);
-        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
-    });                
-    
-
-
-    select.menu.selectCurrent = function()
-    {
-        select.update(select.menu.hoverIndex);
-        select.hideMenu();
-        select.dispatchEvent(select.onchange);
-        select.focus();
-
-        document.menuHadFocus = false;
-    };
-
-
-
-    select.menu.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'Enter' 
-            || e.code == 'NumpadEnter')
-        {
-            select.menu.selectCurrent();   
-        }
-        else if (e.code == 'ArrowUp')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex - 1), select.items.length-1);
-            select.updateMenu();
-        }
-        else if (e.code == 'ArrowDown')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex + 1), select.items.length-1);
-            select.updateMenu();
-        }        
-    });        
-
-
-
-    select.menu.addEventListener('focusout', function()
-    {
-        select.hideMenu();
-
-        select.menu.style.display = 'none';
-        select.parentNode.removeChild(select.menu);
-    });
-}    
-
-
-
-function initFigmaSelect(select, items)
-{
-    select.className = 'menuSelect';
-    select.tabIndex = 0;    
-    
-    initFigmaSelectMenu(select);
-
-    select.holding  = false;
-    
-
-    
-    //////////////////////////////////////////////////////////////////////////////////
-    
-    select.updateItems = function()
-    {
-        select.resetMenu();
-        
-        for (let i = 0; i < select.items.length; i++)
-        {
-            let item = document.createElement('DIV');
-            let sub  = document.createElement('DIV');
-            
-            item.style.width       = 'auto';
-            item.style.display     = 'block';
-            item.style.textAlign   = 'left';
-            item.style.paddingLeft = 30;
-            
-            sub .style.height      = 'auto';
-            sub .style.position    = 'relative';
-            sub .style.top         = '50%';
-            sub .style.transform   = 'translateY(-50%)';
-            
-            if (select.items[i].value == '-')
-            {
-                item.style.borderTop = '1px solid white';
-                item.style.marginTop = '6px';
-                item.style.height    = '4px';
-                item.style.position  = 'relative';
-                item.style.left      = '6px';
-                
-                item.disabled = true;
-            }
-            else
-            {
-                item.style.border = 'none';
-                item.style.height = 24;
-
-                item.disabled = false;
-
-                sub.innerHTML = select.items[i].text;
-            }
-
-            item.appendChild(sub);
-            select.menuWrap.appendChild(item);
-        }
-
-
-        let options = select.getElementsByTagName('option');
-        for (const op of options) op.disabled = op.value == '-';
-    };
-    
-
-
-    select.update = function(index)
-    {
-        select.value     = select.items[index].value;
-        select.innerHTML = select.items[index].text;
-    };
-    
-
-    
-    select.addEventListener('pointerdown', function(e)
-    {
-        if (e.button == 0)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            select.buttonDown0 = true;        
-            select.setPointerCapture(e.pointerId);
-            
-            select.holding = false;
-            setTimeout(function() { onSelectClickTimer(select); }, 200);
-            
-            select.menu.hoverIndex = select.selectedIndex();
-
-            select.showMenu();
-        }        
-    });        
-    
-
-    
-    select.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'Enter' 
-            || e.code == 'NumpadEnter'
-            || e.code == 'ArrowUp'
-            || e.code == 'ArrowDown')
-        {
-            select.showMenu();
-        }        
-    });        
-
-
-
-    select.showMenu = function()
-    {  
-        select.menu.style.display = 'inline-block';
-
-        select.parentNode.appendChild(select.menu);
-        select.updateMenu();
-        
-        select.menu.focus();
-
-        document.menuHadFocus = true;
-    }        
-    
-
-
-    select.hideMenu = function()
-    {
-        select.menu.blur();
-    };    
-
-
-
-    select.updateMenu = function()
-    {
-        let iy = select.selectedIndex();
-        
-        let menuTop =
-            select.offsetTop 
-            - 3 // paddingTop
-            - 4 // hack this for now (select.menu.children[0].offsetHeight - select.menu.children[0].children[0].offsetHeight) / 2;
-            - iy * 24;
-        
-        menuTop = Math.min(Math.max(8, menuTop), document.body.clientHeight - 8 - select.menu.offsetHeight);
-        
-        select.menu     .style.top = menuTop;
-        select.check    .style.top = 7 + 4 + iy * 24;
-        
-        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
-    };
-    
-
-
-    select.indexFromY = function(y)
-    {
-        let iy = Math.floor((y - 8 - select.menu.offsetTop) / 24);
-        iy = Math.min(Math.max(0, iy), select.items.length-1);
-        return iy;
-    };        
-    
-
-    
-    select.resetMenu = function()
-    {
-        clearChildren(select.menuWrap);
-        
-
-        select.check = document.createElement('DIV');
-        
-        select.check.style.width    = 16;
-        select.check.style.height   = 16;
-        select.check.style.position = 'absolute';
-        select.check.style.left     = 8;
-        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
-
-        select.menuWrap.appendChild(select.check);
-    };  
-
-
-
-    select.selectedIndex = function()
-    {
-        return select.items.findIndex(item => item.value == select.value);
-    };        
-
-
-
-    select.setValue = function(value)
-    {
-        select.value = value;
-        select.update(select.selectedIndex());
-        select.dispatchEvent(select.onchange);
-    }
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    
-    select.items = items;
-    
-    select.update(0);
-    select.updateItems();
-    
-    select.onchange = new Event('change');
-}
-
-
-function onSelectClickTimer(select)
-{
-    select.holding = true;
-}
-
-
-function initMenuSelectMenu(select)
-{
-    select.menu = document.createElement('DIV');
-    select.menu.className = 'selectMenu';
-
-    select.menu.style.position     = 'absolute';
-    select.menu.style.left         = select.offsetLeft;
-    select.menu.style.width        = 'auto';
-    select.menu.style.color        = 'white';
-    select.menu.style.fontFamily   = 'Inter';
-    select.menu.style.fontSize     = '13';
-    select.menu.style.boxShadow    = '0px 2px 7px  rgba(0, 0, 0, 0.15), \
-                                      0px 5px 17px rgba(0, 0, 0, 0.2)';
-    select.menu.style.outline      = '0.5px solid rgba(0, 0, 0, 0.1)';                                   
-    select.menu.style.borderRadius = '2px';
-    select.menu.style.overflow     = 'hidden';
-
-
-
-    select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
-
-
-
-    select.menu.addEventListener('keydown', function(e)
-    { 
-        if (e.code == 'Escape')
-            select.menu.blur();
-    });
-    
-
-    
-    select.menu.tabIndex = 0;
-    
-    select.menu.style.height     = 'auto';
-    select.menu.style.textAlign  = 'center';
-    select.menu.style.background = '#222222';
-    select.menu.style.zIndex     = Number.MAX_SAFE_INTEGER;
-
-    select.menu.hoverIndex       = 0;
-
-
-    select.selectBox = document.createElement('DIV');
-        
-    // width is set with menu width in showMenu()
-    select.selectBox.style.display         = 'inline-block';
-    select.selectBox.style.width           = 'calc(100% + 1px)';
-    select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = '#18A0FB';
-    select.selectBox.style.position        = 'absolute';
-    select.selectBox.style.left            = -1; // -1 = border
-    
-    select.menu.appendChild(select.selectBox);
-    
-
-    select.menuWrap = document.createElement('DIV');
-    
-    select.menuWrap.style.width         = 'auto';
-    select.menuWrap.style.height        = '100%';
-    select.menuWrap.style.position      = 'relative';
-    select.menuWrap.style.paddingLeft   = 4;
-    select.menuWrap.style.paddingRight  = 5;
-    select.menuWrap.style.paddingTop    = 7;
-    select.menuWrap.style.paddingBottom = 7;
-    select.menuWrap.style.margin        = 0;
-    select.menuWrap.style.marginRight   = 10;
-    
-    select.menu.appendChild(select.menuWrap);
-
-
-
-    select.menu.addEventListener('pointerdown', function(e)
-    {
-        e.stopPropagation();
-    });            
-    
-
-
-    select.menu.addEventListener('pointerup', function(e)
-    {
-        if (select.holding)
-            select.menu.selectCurrent();
-    });         
-
-
-
-    select.menu.addEventListener('pointermove', function(e)
-    {
-        select.menu.hoverIndex = select.indexFromY(e.clientY);
-        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
-    });                
-    
-
-
-    select.menu.selectCurrent = function()
-    {
-        select.update(select.menu.hoverIndex);
-        select.hideMenu();
-        select.dispatchEvent(select.onchange);
-        select.focus();
-
-        document.menuHadFocus = false;
-    };
-
-
-
-    select.menu.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'Enter' 
-            || e.code == 'NumpadEnter')
-        {
-            select.menu.selectCurrent();   
-        }
-        else if (e.code == 'ArrowUp')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex - 1), select.items.length-1);
-            select.updateMenu();
-        }
-        else if (e.code == 'ArrowDown')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex + 1), select.items.length-1);
-            select.updateMenu();
-        }        
-    });        
-
-
-
-    select.menu.addEventListener('focusout', function()
-    {
-        select.hideMenu();
-
-        select.menu.style.display = 'none';
-        select.parentNode.removeChild(select.menu);
-    });
-}    
-
 
 
 function initMenuSelect(select, items)
 {
     select.className = 'menuSelect';
-    select.tabIndex = 0;    
+    select.tabIndex  = 0;    
     
-    initFigmaSelectMenu(select);
+    initMenuSelectMenu(select);
+    initMenuSelectTextbox(select);
 
-    select.holding  = false;
-    
+    select.holding = false;
+
 
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -8925,33 +9113,16 @@ function initMenuSelect(select, items)
             sub .style.top         = '50%';
             sub .style.transform   = 'translateY(-50%)';
             
-            if (select.items[i].value == '-')
-            {
-                item.style.borderTop = '1px solid white';
-                item.style.marginTop = '6px';
-                item.style.height    = '4px';
-                item.style.position  = 'relative';
-                item.style.left      = '6px';
-                
-                item.disabled = true;
-            }
-            else
-            {
-                item.style.border = 'none';
-                item.style.height = 24;
+            item.style.border = 'none';
+            item.style.height = 24;
 
-                item.disabled = false;
+            item.disabled = false;
 
-                sub.innerHTML = select.items[i].text;
-            }
+            sub.innerHTML = select.items[i].text;
 
             item.appendChild(sub);
             select.menuWrap.appendChild(item);
         }
-
-
-        let options = select.getElementsByTagName('option');
-        for (const op of options) op.disabled = op.value == '-';
     };
     
 
@@ -8970,16 +9141,23 @@ function initMenuSelect(select, items)
         {
             e.preventDefault();
             e.stopPropagation();
-            
-            select.buttonDown0 = true;        
-            select.setPointerCapture(e.pointerId);
-            
-            select.holding = false;
-            setTimeout(function() { onSelectClickTimer(select); }, 200);
-            
-            select.menu.hoverIndex = select.selectedIndex();
 
-            select.showMenu();
+            var rect = select.getBoundingClientRect();
+
+            if (e.clientX > rect.width - 20)
+            {
+                select.buttonDown0 = true;        
+                select.setPointerCapture(e.pointerId);
+                
+                select.holding = false;
+                setTimeout(function() { onSelectClickTimer(select); }, 200);
+                
+                select.menu.hoverIndex = select.getSelectedIndex();
+
+                select.showMenu();
+            }
+            else
+                select.showTextbox();
         }        
     });        
     
@@ -9021,18 +9199,18 @@ function initMenuSelect(select, items)
 
     select.updateMenu = function()
     {
-        let iy = select.selectedIndex();
+        let iy = select.getSelectedIndex();
         
-        let menuTop =
-            select.offsetTop 
-            - 3 // paddingTop
-            - 4 // hack this for now (select.menu.children[0].offsetHeight - select.menu.children[0].children[0].offsetHeight) / 2;
-            - iy * 24;
+        // let menuTop =
+        //     select.offsetTop; 
+        //     - 3 // paddingTop
+        //     - 4 // hack this for now (select.menu.children[0].offsetHeight - select.menu.children[0].children[0].offsetHeight) / 2;
+        //     - iy * 24;
         
-        menuTop = Math.min(Math.max(8, menuTop), document.body.clientHeight - 8 - select.menu.offsetHeight);
+        menuTop = select.offsetTop + select.offsetHeight + 11;//Math.min(Math.max(8, menuTop), document.body.clientHeight - 8 - select.menu.offsetHeight);
         
-        select.menu     .style.top = menuTop;
-        select.check    .style.top = 7 + 4 + iy * 24;
+        select.menu .style.top = menuTop;
+        select.check.style.top = 7 + 4 + iy * 24;
         
         select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
     };
@@ -9042,7 +9220,8 @@ function initMenuSelect(select, items)
     select.indexFromY = function(y)
     {
         let iy = Math.floor((y - 8 - select.menu.offsetTop) / 24);
-        iy = Math.min(Math.max(0, iy), select.items.length-1);
+            iy = Math.min(Math.max(0, iy), select.items.length-1);
+
         return iy;
     };        
     
@@ -9066,7 +9245,7 @@ function initMenuSelect(select, items)
 
 
 
-    select.selectedIndex = function()
+    select.getSelectedIndex = function()
     {
         return select.items.findIndex(item => item.value == select.value);
     };        
@@ -9076,7 +9255,7 @@ function initMenuSelect(select, items)
     select.setValue = function(value)
     {
         select.value = value;
-        select.update(select.selectedIndex());
+        select.update(select.getSelectedIndex());
         select.dispatchEvent(select.onchange);
     }
 
@@ -9093,410 +9272,6 @@ function initMenuSelect(select, items)
     select.onchange = new Event('change');
 }
 
-
-
-graphView.wires = [];
-
-
-graphView.overInput     = null;
-graphView.overOutput    = null;
-   
-graphView.tempConn      = null;
-   
-   
-graphView.selecting     = false;
-graphView.selectBox     = Rect.NaN;
-
-graphView.btn1down      = false;
-
-
-
-graphView.pStart = {x:0, y:0};
-
-
-
-graphView.addEventListener('pointerdown', e =>
-{
-    graphView.pStart = { x: e.clientX, 
-                         y: e.clientY };
-
-    if (    e.button == 0
-        && !graphView.panning)
-    {
-        if (graphView.spaceDown)
-        {
-            if (e.ctrlKey) graphView.startZoomSelection(e.clientX, e.clientY);
-            else           graphView.startPan(e.pointerId);
-        }
-        else if (graphView.overOutput)
-        {
-            graphView.overOutput.connecting = true;
-            graphView.startConnectionFromOutput(graphView.overOutput);
-            graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
-        }
-        else if (graphView.overInput)
-        {
-            if (graphView.overInput.connectedOutput) // pretend to disconnect
-            {
-                graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
-                graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
-                graphView.tempConn.savedInput = graphView.overInput;
-                hide(graphView.overInput.connection.wire);
-                hide(graphView.overInput.connection.wire.outBall);
-            }
-            else
-            {
-                graphView.overInput.connecting = true;
-                graphView.startConnectionFromInput(graphView.overInput);
-                graphView.tempConn.wire.updateFromInput(e.clientX, e.clientY)
-            }
-        }
-        else // selection
-        {
-            graphView._prevSelected = [...graphView.selected];
-
-            if (!e.shiftKey)
-                graphView.startSelection(e.clientX, e.clientY);
-        }
-    }
-    
-    else if (e.button == 1)
-    {
-        graphView.btn1down = true;
-        graphView.startPan(e.pointerId);
-    }
-});
-
-
-
-graphView.addEventListener('pointermove', e =>
-{
-    graphView.p = { 
-        x: e.clientX, 
-        y: e.clientY };
-
-    if (graphView.panning)
-    {
-        const dp = subv(graphView.p, graphView.pStart);
-        graphView.pan = addv(graphView.panStart, dp);
-    }
-    
-    else if (graphView.selecting)
-        graphView.updateSelection(e.clientX, e.clientY);
-    
-    else if (graphView.zoomSelecting)
-        graphView.updateZoomSelection(e.clientX, e.clientY);
-    
-    else if (graphView.tempConn)
-    {
-             if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
-        else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
-    }
-});
-
-
-
-graphView.addEventListener('pointerup', e =>
-{
-    if (   e.button == 0
-        && graphView.spaceDown)
-    {
-        if (e.ctrlKey)
-        {
-            if (   graphView.selectBox.w > 0
-                && graphView.selectBox.h > 0)
-            {
-                graphView.endZoomSelection(true);
-            }
-            else
-            {
-                graphView.endZoomSelection(false);
-
-                graphView.oldZoom = graphView.zoom;
-
-                if (e.altKey) graphView.zoom /= 2;
-                else          graphView.zoom *= 2;
-
-                graphView.pan = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
-            }
-        }
-        
-        graphView.endPan(e.pointerId, false);
-    }
-
-    else if (e.button == 0
-         && !graphView.selectBox.isNaN)
-        graphView.endSelection();
-
-    else if (e.button == 0
-          && graphView.tempConn)
-    {
-        if (graphView.tempConn.output) // FROM OUTPUT
-        {
-            var output     = graphView.tempConn.output;
-            var input      = graphView.overInput;
-            var savedInput = graphView.tempConn.savedInput;
-            
-            output.connecting = false;
-            
-            if (   input
-                && input.dataType == output.dataType) // TO INPUT
-            {
-                if (input == savedInput) // reconnect old
-                {
-                    show(input.connection.wire);
-                    show(input.connection.wire.outBall);
-                }
-                else if (savedInput) // disconnect old, connect new
-                {
-                    uiDisconnect(savedInput);
-                    uiConnect(output, input);
-                }
-                else // connect new
-                    uiConnect(output, input);
-            }
-            else if (savedInput) // disconnect old
-            {
-                uiDisconnect(savedInput)
-            }
-            
-            graphView.cancelConnection();
-        }
-        
-        else if (graphView.tempConn.input) // FROM INPUT
-        {
-            var input  = graphView.tempConn.input;
-            var output = graphView.overOutput;
-
-            input.connecting = false;
-            
-            if (   output
-                && output.dataType == input.dataType) // TO OUTPUT
-                uiGraph.connect(output, input); // connect new
-
-            graphView.cancelConnection();
-        }
-    }
-
-    else if (e.button == 1
-          && graphView.panning)
-    {
-        graphView.endPan(e.pointerId, true);
-        graphView.btn1down = false;
-    }
-});
-
-
-
-graphView.addEventListener('wheel', e =>
-{
-    if (graphView.btn1down)
-        return;
-
-
-    const dZoom = Math.log(graphView.zoom) / Math.log(2);
-    
-    const dWheelX = e.deltaX/120;
-    const dWheelY = e.deltaY/120;
-
-    if (e.ctrlKey)
-    {
-        graphView.oldZoom = graphView.zoom;
-        
-        graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
-        graphView.pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
-    }
-    else
-    {
-        const dPanX = dWheelX * 20 / Math.pow(graphView.zoom, 0.1);
-        const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
-
-        graphView.pan = 
-            dWheelX != 0
-            ? { x:  e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
-                y: !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX }
-            : { x: !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
-                y:  e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY };
-
-        if (graphView.selecting)
-            graphView.updateSelection(e.clientX, e.clientY);
-    }
-});
-
-
-
-graphView.startConnectionFromOutput = output =>
-{
-    graphView.tempConn = new UConnection(output, null);
-    graphView.addWireFromOutput(graphView.tempConn.wire, output);
-    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
-    graphView.tempConn.wire.scale = graphView.zoom;
-    graphView.tempConn.wire.output = output;
-    graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
-};
-
-
-
-graphView.startConnectionFromInput = input =>
-{
-    graphView.tempConn = new UConnection(null, input);
-    graphView.addWireFromInput(graphView.tempConn.wire, input);    
-    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
-    graphView.tempConn.wire.scale = graphView.zoom;
-    graphView.tempConn.wire.input = input;
-    graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
-};
-
-
-
-graphView.cancelConnection = () =>
-{
-    graphView.removeWire(graphView.tempConn.wire);    
-    graphView.tempConn = null;
-};
-
-
-
-graphView.getAllNodeBounds = () =>
-{
-    const bounds = Rect.NaN;
-
-    for (const node of uiGraph.nodes)
-        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
-
-    return bounds;
-};
-
-
-
-graphView.getNodeBounds = () =>
-{
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
-    
-    for (const node of uiGraph.nodes)
-    {
-        var bounds = node.div.getBoundingClientRect();
-
-        boundsL = Math.min(boundsL, bounds.left  );
-        boundsT = Math.min(boundsT, bounds.top   );
-        boundsR = Math.max(boundsR, bounds.right );
-        boundsB = Math.max(boundsB, bounds.bottom);
-    }
-
-    return {
-        x: boundsL - graphView.pan.x, 
-        y: boundsT - graphView.pan.y,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
-};
-
-
-
-graphView.putNodeOnTop = node =>
-{
-    const topIndices = 
-    1 
-    + node.inputs.filter(i => i.connected).length 
-        + (!!node.output && node.output.connected ? 1 : 0);
-        
-        for (const n of uiGraph.nodes)
-        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
-        
-        var z = Number.MAX_SAFE_INTEGER;
-
-        for (const input of node.inputs.filter(i => i.connected))
-        input.connection.wire.style.zIndex = z--;
-        
-        if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        input.connection.wire.style.zIndex = z--;
-    }
-    
-    node.div.style.zIndex = z;
-};
-
-
-
-graphView.updateNodeTransform = function(node)
-{
-    node.div.style.transformOrigin = 
-          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-    
-    node.div.style.transform =
-          'translate(' 
-        + (graphView.pan.x * graphView.zoom) + 'px, '
-        + (graphView.pan.y * graphView.zoom) + 'px) '
-        + 'scale(' + graphView.zoom + ')';
-
-    for (const input of node.inputs)
-    {
-        if (input.connected)
-            graphView.updateWireTransform(input.connection.wire);        
-    }
-
-    if (node.output)
-    {
-        for (const input of node.output.connectedInputs)
-            graphView.updateWireTransform(input.connection.wire);        
-    }
-};
-
-
-
-graphView.updateWireTransform = function(wire)
-{
-    wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
-    wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
-
-    wire.setAttribute('viewBox',
-                0
-        + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
-        + ' ' + graphView.clientWidth  / graphView.zoom
-        + ' ' + graphView.clientHeight / graphView.zoom);
-
-    wire.update();
-};
-
-
-
-graphView.addWire = wire =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);  
-    graphView.updateWireTransform(wire);
-    wire.update();
-};
-
-
-
-graphView.addWireFromOutput = (wire, output) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);
-    //wire.updateFromOutput(output);  
-};
-
-
-
-graphView.addWireFromInput = (wire, input) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);  
-    //wire.updateFromInput(input);  
-};
-
-
-
-graphView.removeWire = wire =>
-{
-    graphView.removeChild(wire);    
-    removeFromArray(graphView.wires, wire);
-};
 
 
 graphView._pan = {x:0, y:0};
@@ -9979,6 +9754,410 @@ graphView.endSelection = () =>
     actionManager.do(new SelectNodesAction(
         graphView.selected     .map(n => n.id), 
         graphView._prevSelected.map(n => n.id)));
+};
+
+
+graphView.wires = [];
+
+
+graphView.overInput     = null;
+graphView.overOutput    = null;
+   
+graphView.tempConn      = null;
+   
+   
+graphView.selecting     = false;
+graphView.selectBox     = Rect.NaN;
+
+graphView.btn1down      = false;
+
+
+
+graphView.pStart = {x:0, y:0};
+
+
+
+graphView.addEventListener('pointerdown', e =>
+{
+    graphView.pStart = { x: e.clientX, 
+                         y: e.clientY };
+
+    if (    e.button == 0
+        && !graphView.panning)
+    {
+        if (graphView.spaceDown)
+        {
+            if (e.ctrlKey) graphView.startZoomSelection(e.clientX, e.clientY);
+            else           graphView.startPan(e.pointerId);
+        }
+        else if (graphView.overOutput)
+        {
+            graphView.overOutput.connecting = true;
+            graphView.startConnectionFromOutput(graphView.overOutput);
+            graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+        }
+        else if (graphView.overInput)
+        {
+            if (graphView.overInput.connectedOutput) // pretend to disconnect
+            {
+                graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+                graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+                graphView.tempConn.savedInput = graphView.overInput;
+                hide(graphView.overInput.connection.wire);
+                hide(graphView.overInput.connection.wire.outBall);
+            }
+            else
+            {
+                graphView.overInput.connecting = true;
+                graphView.startConnectionFromInput(graphView.overInput);
+                graphView.tempConn.wire.updateFromInput(e.clientX, e.clientY)
+            }
+        }
+        else // selection
+        {
+            graphView._prevSelected = [...graphView.selected];
+
+            if (!e.shiftKey)
+                graphView.startSelection(e.clientX, e.clientY);
+        }
+    }
+    
+    else if (e.button == 1)
+    {
+        graphView.btn1down = true;
+        graphView.startPan(e.pointerId);
+    }
+});
+
+
+
+graphView.addEventListener('pointermove', e =>
+{
+    graphView.p = { 
+        x: e.clientX, 
+        y: e.clientY };
+
+    if (graphView.panning)
+    {
+        const dp = subv(graphView.p, graphView.pStart);
+        graphView.pan = addv(graphView.panStart, dp);
+    }
+    
+    else if (graphView.selecting)
+        graphView.updateSelection(e.clientX, e.clientY);
+    
+    else if (graphView.zoomSelecting)
+        graphView.updateZoomSelection(e.clientX, e.clientY);
+    
+    else if (graphView.tempConn)
+    {
+             if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+        else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
+    }
+});
+
+
+
+graphView.addEventListener('pointerup', e =>
+{
+    if (   e.button == 0
+        && graphView.spaceDown)
+    {
+        if (e.ctrlKey)
+        {
+            if (   graphView.selectBox.w > 0
+                && graphView.selectBox.h > 0)
+            {
+                graphView.endZoomSelection(true);
+            }
+            else
+            {
+                graphView.endZoomSelection(false);
+
+                graphView.oldZoom = graphView.zoom;
+
+                if (e.altKey) graphView.zoom /= 2;
+                else          graphView.zoom *= 2;
+
+                graphView.pan = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
+            }
+        }
+        
+        graphView.endPan(e.pointerId, false);
+    }
+
+    else if (e.button == 0
+         && !graphView.selectBox.isNaN)
+        graphView.endSelection();
+
+    else if (e.button == 0
+          && graphView.tempConn)
+    {
+        if (graphView.tempConn.output) // FROM OUTPUT
+        {
+            var output     = graphView.tempConn.output;
+            var input      = graphView.overInput;
+            var savedInput = graphView.tempConn.savedInput;
+            
+            output.connecting = false;
+            
+            if (   input
+                && input.dataType == output.dataType) // TO INPUT
+            {
+                if (input == savedInput) // reconnect old
+                {
+                    show(input.connection.wire);
+                    show(input.connection.wire.outBall);
+                }
+                else if (savedInput) // disconnect old, connect new
+                {
+                    uiDisconnect(savedInput);
+                    uiConnect(output, input);
+                }
+                else // connect new
+                    uiConnect(output, input);
+            }
+            else if (savedInput) // disconnect old
+            {
+                uiDisconnect(savedInput)
+            }
+            
+            graphView.cancelConnection();
+        }
+        
+        else if (graphView.tempConn.input) // FROM INPUT
+        {
+            var input  = graphView.tempConn.input;
+            var output = graphView.overOutput;
+
+            input.connecting = false;
+            
+            if (   output
+                && output.dataType == input.dataType) // TO OUTPUT
+                uiGraph.connect(output, input); // connect new
+
+            graphView.cancelConnection();
+        }
+    }
+
+    else if (e.button == 1
+          && graphView.panning)
+    {
+        graphView.endPan(e.pointerId, true);
+        graphView.btn1down = false;
+    }
+});
+
+
+
+graphView.addEventListener('wheel', e =>
+{
+    if (graphView.btn1down)
+        return;
+
+
+    const dZoom = Math.log(graphView.zoom) / Math.log(2);
+    
+    const dWheelX = e.deltaX/120;
+    const dWheelY = e.deltaY/120;
+
+    if (e.ctrlKey)
+    {
+        graphView.oldZoom = graphView.zoom;
+        
+        graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
+        graphView.pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
+    }
+    else
+    {
+        const dPanX = dWheelX * 20 / Math.pow(graphView.zoom, 0.1);
+        const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
+
+        graphView.pan = 
+            dWheelX != 0
+            ? { x:  e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
+                y: !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX }
+            : { x: !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
+                y:  e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY };
+
+        if (graphView.selecting)
+            graphView.updateSelection(e.clientX, e.clientY);
+    }
+});
+
+
+
+graphView.startConnectionFromOutput = output =>
+{
+    graphView.tempConn = new UConnection(output, null);
+    graphView.addWireFromOutput(graphView.tempConn.wire, output);
+    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.scale = graphView.zoom;
+    graphView.tempConn.wire.output = output;
+    graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
+};
+
+
+
+graphView.startConnectionFromInput = input =>
+{
+    graphView.tempConn = new UConnection(null, input);
+    graphView.addWireFromInput(graphView.tempConn.wire, input);    
+    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.scale = graphView.zoom;
+    graphView.tempConn.wire.input = input;
+    graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
+};
+
+
+
+graphView.cancelConnection = () =>
+{
+    graphView.removeWire(graphView.tempConn.wire);    
+    graphView.tempConn = null;
+};
+
+
+
+graphView.getAllNodeBounds = () =>
+{
+    const bounds = Rect.NaN;
+
+    for (const node of uiGraph.nodes)
+        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+
+    return bounds;
+};
+
+
+
+graphView.getNodeBounds = () =>
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    for (const node of uiGraph.nodes)
+    {
+        var bounds = node.div.getBoundingClientRect();
+
+        boundsL = Math.min(boundsL, bounds.left  );
+        boundsT = Math.min(boundsT, bounds.top   );
+        boundsR = Math.max(boundsR, bounds.right );
+        boundsB = Math.max(boundsB, bounds.bottom);
+    }
+
+    return {
+        x: boundsL - graphView.pan.x, 
+        y: boundsT - graphView.pan.y,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
+};
+
+
+
+graphView.putNodeOnTop = node =>
+{
+    const topIndices = 
+    1 
+    + node.inputs.filter(i => i.connected).length 
+        + (!!node.output && node.output.connected ? 1 : 0);
+        
+        for (const n of uiGraph.nodes)
+        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
+        
+        var z = Number.MAX_SAFE_INTEGER;
+
+        for (const input of node.inputs.filter(i => i.connected))
+        input.connection.wire.style.zIndex = z--;
+        
+        if (!!node.output)
+    {
+        for (const input of node.output.connectedInputs)
+        input.connection.wire.style.zIndex = z--;
+    }
+    
+    node.div.style.zIndex = z;
+};
+
+
+
+graphView.updateNodeTransform = function(node)
+{
+    node.div.style.transformOrigin = 
+          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+    
+    node.div.style.transform =
+          'translate(' 
+        + (graphView.pan.x * graphView.zoom) + 'px, '
+        + (graphView.pan.y * graphView.zoom) + 'px) '
+        + 'scale(' + graphView.zoom + ')';
+
+    for (const input of node.inputs)
+    {
+        if (input.connected)
+            graphView.updateWireTransform(input.connection.wire);        
+    }
+
+    if (node.output)
+    {
+        for (const input of node.output.connectedInputs)
+            graphView.updateWireTransform(input.connection.wire);        
+    }
+};
+
+
+
+graphView.updateWireTransform = function(wire)
+{
+    wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
+    wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
+
+    wire.setAttribute('viewBox',
+                0
+        + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
+        + ' ' + graphView.clientWidth  / graphView.zoom
+        + ' ' + graphView.clientHeight / graphView.zoom);
+
+    wire.update();
+};
+
+
+
+graphView.addWire = wire =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    graphView.updateWireTransform(wire);
+    wire.update();
+};
+
+
+
+graphView.addWireFromOutput = (wire, output) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);
+    //wire.updateFromOutput(output);  
+};
+
+
+
+graphView.addWireFromInput = (wire, input) =>
+{
+    graphView.wires.push(wire);
+    graphView.appendChild(wire);  
+    //wire.updateFromInput(input);  
+};
+
+
+
+graphView.removeWire = wire =>
+{
+    graphView.removeChild(wire);    
+    removeFromArray(graphView.wires, wire);
 };
 
 

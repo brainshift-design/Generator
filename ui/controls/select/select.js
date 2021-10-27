@@ -1,146 +1,9 @@
-function initFigmaSelectMenu(select)
-{
-    select.menu = document.createElement('DIV');
-    select.menu.className = 'selectMenu';
-
-    select.menu.style.position     = 'absolute';
-    select.menu.style.left         = select.offsetLeft;
-    select.menu.style.width        = 'auto';
-    select.menu.style.color        = 'white';
-    select.menu.style.fontFamily   = 'Inter';
-    select.menu.style.fontSize     = '13';
-    select.menu.style.boxShadow    = '0px 2px 7px  rgba(0, 0, 0, 0.15), \
-                                      0px 5px 17px rgba(0, 0, 0, 0.2)';
-    select.menu.style.outline      = '0.5px solid rgba(0, 0, 0, 0.1)';                                   
-    select.menu.style.borderRadius = '2px';
-    select.menu.style.overflow     = 'hidden';
-
-
-
-    select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
-
-
-
-    select.menu.addEventListener('keydown', function(e)
-    { 
-        if (e.code == 'Escape')
-            select.menu.blur();
-    });
-    
-
-    
-    select.menu.tabIndex = 0;
-    
-    select.menu.style.height     = 'auto';
-    select.menu.style.textAlign  = 'center';
-    select.menu.style.background = '#222222';
-    select.menu.style.zIndex     = Number.MAX_SAFE_INTEGER;
-
-    select.menu.hoverIndex       = 0;
-
-
-    select.selectBox = document.createElement('DIV');
-        
-    // width is set with menu width in showMenu()
-    select.selectBox.style.display         = 'inline-block';
-    select.selectBox.style.width           = 'calc(100% + 1px)';
-    select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = '#18A0FB';
-    select.selectBox.style.position        = 'absolute';
-    select.selectBox.style.left            = -1; // -1 = border
-    
-    select.menu.appendChild(select.selectBox);
-    
-
-    select.menuWrap = document.createElement('DIV');
-    
-    select.menuWrap.style.width         = 'auto';
-    select.menuWrap.style.height        = '100%';
-    select.menuWrap.style.position      = 'relative';
-    select.menuWrap.style.paddingLeft   = 4;
-    select.menuWrap.style.paddingRight  = 5;
-    select.menuWrap.style.paddingTop    = 7;
-    select.menuWrap.style.paddingBottom = 7;
-    select.menuWrap.style.margin        = 0;
-    select.menuWrap.style.marginRight   = 10;
-    
-    select.menu.appendChild(select.menuWrap);
-
-
-
-    select.menu.addEventListener('pointerdown', function(e)
-    {
-        e.stopPropagation();
-    });            
-    
-
-
-    select.menu.addEventListener('pointerup', function(e)
-    {
-        if (select.holding)
-            select.menu.selectCurrent();
-    });         
-
-
-
-    select.menu.addEventListener('pointermove', function(e)
-    {
-        select.menu.hoverIndex = select.indexFromY(e.clientY);
-        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
-    });                
-    
-
-
-    select.menu.selectCurrent = function()
-    {
-        select.update(select.menu.hoverIndex);
-        select.hideMenu();
-        select.dispatchEvent(select.onchange);
-        select.focus();
-
-        document.menuHadFocus = false;
-    };
-
-
-
-    select.menu.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'Enter' 
-            || e.code == 'NumpadEnter')
-        {
-            select.menu.selectCurrent();   
-        }
-        else if (e.code == 'ArrowUp')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex - 1), select.items.length-1);
-            select.updateMenu();
-        }
-        else if (e.code == 'ArrowDown')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex + 1), select.items.length-1);
-            select.updateMenu();
-        }        
-    });        
-
-
-
-    select.menu.addEventListener('focusout', function()
-    {
-        select.hideMenu();
-
-        select.menu.style.display = 'none';
-        select.parentNode.removeChild(select.menu);
-    });
-}    
-
-
-
-function initFigmaSelect(select, items)
+function initSelect(select, items)
 {
     select.className = 'menuSelect';
     select.tabIndex = 0;    
     
-    initFigmaSelectMenu(select);
+    initSelectMenu(select);
 
     select.holding  = false;
     
@@ -219,7 +82,7 @@ function initFigmaSelect(select, items)
             select.holding = false;
             setTimeout(function() { onSelectClickTimer(select); }, 200);
             
-            select.menu.hoverIndex = select.selectedIndex();
+            select.menu.hoverIndex = select.getSelectedIndex();
 
             select.showMenu();
         }        
@@ -263,7 +126,7 @@ function initFigmaSelect(select, items)
 
     select.updateMenu = function()
     {
-        let iy = select.selectedIndex();
+        let iy = select.getSelectedIndex();
         
         let menuTop =
             select.offsetTop 
@@ -308,7 +171,7 @@ function initFigmaSelect(select, items)
 
 
 
-    select.selectedIndex = function()
+    select.getSelectedIndex = function()
     {
         return select.items.findIndex(item => item.value == select.value);
     };        
@@ -318,7 +181,7 @@ function initFigmaSelect(select, items)
     select.setValue = function(value)
     {
         select.value = value;
-        select.update(select.selectedIndex());
+        select.update(select.getSelectedIndex());
         select.dispatchEvent(select.onchange);
     }
 
@@ -334,6 +197,7 @@ function initFigmaSelect(select, items)
     
     select.onchange = new Event('change');
 }
+
 
 
 function onSelectClickTimer(select)

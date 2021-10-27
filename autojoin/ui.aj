@@ -5,6 +5,8 @@
     ../css/control bar.css
     ../css/button.css
     ../css/select.css
+    ../css/menuButton.css
+    ../css/menuSelect.css
     ../css/graph.css
 
 ../html/ui_1.html
@@ -24,20 +26,15 @@
     ../actions/*.js
 
     ../ui/ui.js
+    ../ui/ui events.js
 
     ../ui/window.js
     ../ui/pointer.js
     ../ui/keyboard.js
 
-    ../ui/controls/slider/slider.js
-    ../ui/controls/slider/slider textbox.js
-
-    ../ui/controls/select/figmaSelect.js
-    ../ui/controls/select/menuSelect.js
-
-    ../ui/controls/graphView/graphView.js
-    ../ui/controls/graphView/graphView pan & zoom.js
-    ../ui/controls/graphView/graphView scrollbars.js
-    ../ui/controls/graphView/graphView selection.js
+    ../ui/controls/slider/*.js
+    ../ui/controls/select/*.js
+    ../ui/controls/menuSelect/*.js
+    ../ui/controls/graphView/*.js
 
 ../html/ui_3.html

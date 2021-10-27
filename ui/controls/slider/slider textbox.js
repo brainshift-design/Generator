@@ -30,7 +30,7 @@ function initSliderTextbox(slider)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.slider, .figmaSelect, #hexValue, button');
+            var tabs  = document.querySelectorAll('.slider, .select, .menuSelect, button, .menuButton');
             var index = slider.tabIndex;
 
             for (var i = 0; i < tabs.length; i++) 
