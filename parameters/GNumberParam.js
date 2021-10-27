@@ -41,14 +41,14 @@ extends GParameter
                 min   = Number.MIN_SAFE_INTEGER, 
                 max   = Number.MAX_SAFE_INTEGER)
     {
-        super(name, 'NUM');
+        super(name, 'number');
 
         this.#value    = value;
    
         this.#min      = min;
         this.#max      = max;
 
-        this.input = new GInput('NUM');
+        this.input = new GInput('number');
         this.input._param = this;
     }
 }

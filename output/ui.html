@@ -1847,7 +1847,7 @@ function colorFromDataType(dataType, active)
     switch (dataType)
     {
         case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+        case 'number': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
     }
 
     return 'magenta';
@@ -2364,14 +2364,14 @@ extends GParameter
                 min   = Number.MIN_SAFE_INTEGER, 
                 max   = Number.MAX_SAFE_INTEGER)
     {
-        super(name, 'NUM');
+        super(name, 'number');
 
         this.#value    = value;
    
         this.#min      = min;
         this.#max      = max;
 
-        this.input = new GInput('NUM');
+        this.input = new GInput('number');
         this.input._param = this;
     }
 }
@@ -2689,7 +2689,7 @@ function getLastNodeRight(node)
 /*
     data types:
         OBJ
-        NUM
+        number
 */
 
 
@@ -2876,7 +2876,7 @@ extends GOperator
 
     constructor()
     {
-        super('number', 'NUM');
+        super('number', 'number');
         this.setOutput(new GOutput(this.dataType));
         this.addParam(this._value = new GNumberParam(''));
     }
@@ -2922,7 +2922,7 @@ extends GOperator
 
     constructor()
     {
-        super('random', 'NUM');
+        super('random', 'number');
 
         this.setOutput(new GOutput(this.dataType));
 
@@ -4688,7 +4688,7 @@ function colorFromDataType(dataType, active)
     switch (dataType)
     {
         case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+        case 'number': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
     }
 
     return 'magenta';
@@ -5269,15 +5269,22 @@ class UParameter
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
     }
+
+
+
+    save(nTab) {}
 }
 
 
 class   UNumberParam
 extends UParameter
 {
+    defaultValue;
+    
+    
     get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
-
+    
     get oldValue()   { return this._control.oldValue; }
 
     
@@ -5289,7 +5296,7 @@ extends UParameter
 
     input; 
 
-
+    
 
     get valueText() { return this.control.valueText; }
     set valueText(text) 
@@ -5307,11 +5314,13 @@ extends UParameter
                 decimals  = 0,
                 dragScale = 0.01)
     {
-        super(name, 'NUM');
+        super(name, 'number');
 
         this._control = document.createElement('div');
         this.control.param  = this;
         this.control.zIndex = 0;
+
+        this.defaultValue = value;
 
         initSlider(
             this.control,
@@ -5329,7 +5338,7 @@ extends UParameter
 
         this.div.appendChild(this.control);
 
-        this.input = new UInput('NUM');
+        this.input = new UInput('number');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -5368,6 +5377,28 @@ extends UParameter
             this.control.style.fontStyle = 'normal';
             this.control.inputConnected  = false;
         });
+    }
+
+
+
+    save(nTab)
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let save = 
+              pos + '"param" :\n'
+            + pos + '{\n';
+
+        save +=         pos + tab + '"type" : "' + this.type + '"';
+        save += ',\n' + pos + tab + '"name" : "' + this.name + '"';
+
+        if (this.value != this.defaultValue)
+            save += ',\n' + pos + tab + '"value" : "' + this.value + '"';
+        
+        save += '\n' + pos + '}';
+
+        return save;
     }
 }
 
@@ -5595,6 +5626,25 @@ class UGraph
     {
         return this.nodes.find(n => n.id == id);
     }
+
+
+
+    save()
+    {
+        let save = '{';
+
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            save += '\n' + this.nodes[i].save(2);
+
+            if (i < this.nodes.length-1)
+                save += ',';
+        }
+
+        save += '\n}';
+
+        return save;
+    }
 }
 
 
@@ -5794,7 +5844,7 @@ class UConnection
             switch (this.output.dataType)
             {
                 case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
-                case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
+                case 'number': color = ACTIVE_NUM_COLOR; break; //'#444';
             }
 
             this.wire.curve.setAttribute('d',
@@ -5953,7 +6003,7 @@ function getLastNodeRight(node)
 /*
     data types:
         OBJ
-        NUM
+        number
 */
 
 class UOperator
@@ -6105,7 +6155,7 @@ class UOperator
         switch (this.#dataType)
         {
             case 'OBJ': return ACTIVE_OBJ_COLOR;
-            case 'NUM': return NUM_COLOR; //ACTIVE_NUM_COLOR;
+            case 'number': return NUM_COLOR; //ACTIVE_NUM_COLOR;
         }
 
         return 'magenta';
@@ -6116,7 +6166,7 @@ class UOperator
         switch (this.#dataType)
         {
             case 'OBJ': return OBJ_COLOR;
-            case 'NUM': return NUM_COLOR;
+            case 'number': return NUM_COLOR;
         }
 
         return 'magenta';
@@ -6230,7 +6280,7 @@ class UOperator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op == node)       return true;
             if (input.connectedOutput.op.isAfter(node)) return true;
         }
 
@@ -6240,6 +6290,28 @@ class UOperator
     
 
     updateConnectedInputValueText() {}
+
+
+
+    save(nTab) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let save = 
+              pos + '"node" :\n'
+            + pos + '{\n';
+
+        save +=         pos + tab + '"type" : "' + this.opType + '"';
+        save += ',\n' + pos + tab + '"name" : "' + this.name   + '"';
+        
+        for (const param of this.params)
+            save += ',\n' + param.save(nTab + 2);
+
+        save += '\n' + pos + '}';
+
+        return save;
+    }
 }
 
 
@@ -6606,7 +6678,7 @@ extends UOperator
 
     constructor()
     {
-        super('number', 'NUM');
+        super('number', 'number');
 
         this.setOutput(new UOutput(this.dataType));
 
@@ -6627,7 +6699,7 @@ extends UOperator
 
     constructor()
     {
-        super('random', 'NUM');
+        super('random', 'number');
 
         this.setOutput(new UOutput(this.dataType));
 
@@ -6690,7 +6762,7 @@ extends UOperator
 
 //     constructor()
 //     {
-//         super('random', 'NUM');
+//         super('random', 'number');
 
 //         this.setOutput(new UOutput(this.dataType));
 
@@ -7348,6 +7420,7 @@ initMenuSelect(menuSelect,
     {value: 'graph0',     text: 'Untitled'},
     {value: 'new',        text: 'New graph'},
     {value: 'load',       text: 'Load from file'},
+    {value: 'save',       text: 'Save'},
     {value: 'saveAs',     text: 'Save as...'},
     {value: 'saveLocal',  text: 'Save local copy'},
     {value: 'delete',     text: 'Delete'},
@@ -7676,7 +7749,9 @@ function strFromData(data)
 
 menuSelect.addEventListener('change', () => 
 {
-    console.log(menuSelect.items[menuSelect.getSelectedIndex()]);
+    let save = uiGraph.save();
+
+    console.log(save);
 });
 
 
@@ -8570,7 +8645,7 @@ function initSelectMenu(select)
     {
         select.update(select.menu.hoverIndex);
         select.hideMenu();
-        select.dispatchEvent(select.onchange);
+        select.dispatchChangeEvent();
         select.focus();
 
         document.menuHadFocus = false;
@@ -8793,9 +8868,21 @@ function initSelect(select, items)
     {
         select.value = value;
         select.update(select.getSelectedIndex());
-        select.dispatchEvent(select.onchange);
+        select.dispatchChangeEvent();
     }
 
+
+
+    select.dispatchChangeEvent = function()
+    {
+        const onchange = new Event('change', 
+        {
+            selectedIndex: select.getSelectedIndex(),
+            selectedValue: select.items[select.getSelectedIndex()].value
+        });
+
+        select.dispatchEvent(onchange);
+    };
 
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -8805,8 +8892,6 @@ function initSelect(select, items)
     
     select.update(0);
     select.updateItems();
-    
-    select.onchange = new Event('change');
 }
 
 
@@ -8897,7 +8982,15 @@ function initMenuSelectMenu(select)
     {
         select.update(select.menu.hoverIndex);
         select.hideMenu();
-        select.dispatchEvent(select.onchange);
+
+        const onchange = new Event('change', 
+        {
+            selectedIndex: select.getSelectedIndex(),
+            selectedValue: select.items[select.getSelectedIndex()].value
+        });
+
+        select.dispatchEvent(onchange);
+
         select.focus();
 
         document.menuHadFocus = false;
@@ -9252,13 +9345,32 @@ function initMenuSelect(select, items)
 
 
 
+    select.getSelectedValue = function()
+    {
+        return select.items[select.getSelectedIndex()].value;
+    };        
+
+
+
     select.setValue = function(value)
     {
         select.value = value;
         select.update(select.getSelectedIndex());
-        select.dispatchEvent(select.onchange);
-    }
+        select.dispatchChangeEvent();
+    };
 
+
+
+    select.dispatchChangeEvent = function()
+    {
+        const onchange = new Event('change', 
+        {
+            selectedIndex: select.getSelectedIndex(),
+            selectedValue: select.items[select.getSelectedIndex()].value
+        });
+
+        select.dispatchEvent(onchange);
+    };
 
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -9268,8 +9380,6 @@ function initMenuSelect(select, items)
     
     select.update(0);
     select.updateItems();
-    
-    select.onchange = new Event('change');
 }
 
 
@@ -10159,6 +10269,9 @@ graphView.removeWire = wire =>
     graphView.removeChild(wire);    
     removeFromArray(graphView.wires, wire);
 };
+
+
+
 
 
 

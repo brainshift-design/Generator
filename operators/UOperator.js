@@ -1,7 +1,7 @@
 /*
     data types:
         OBJ
-        NUM
+        number
 */
 
 class UOperator
@@ -153,7 +153,7 @@ class UOperator
         switch (this.#dataType)
         {
             case 'OBJ': return ACTIVE_OBJ_COLOR;
-            case 'NUM': return NUM_COLOR; //ACTIVE_NUM_COLOR;
+            case 'number': return NUM_COLOR; //ACTIVE_NUM_COLOR;
         }
 
         return 'magenta';
@@ -164,7 +164,7 @@ class UOperator
         switch (this.#dataType)
         {
             case 'OBJ': return OBJ_COLOR;
-            case 'NUM': return NUM_COLOR;
+            case 'number': return NUM_COLOR;
         }
 
         return 'magenta';
@@ -278,7 +278,7 @@ class UOperator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)        return true;
+            if (input.connectedOutput.op == node)       return true;
             if (input.connectedOutput.op.isAfter(node)) return true;
         }
 
@@ -288,4 +288,26 @@ class UOperator
     
 
     updateConnectedInputValueText() {}
+
+
+
+    save(nTab) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let save = 
+              pos + '"node" :\n'
+            + pos + '{\n';
+
+        save +=         pos + tab + '"type" : "' + this.opType + '"';
+        save += ',\n' + pos + tab + '"name" : "' + this.name   + '"';
+        
+        for (const param of this.params)
+            save += ',\n' + param.save(nTab + 2);
+
+        save += '\n' + pos + '}';
+
+        return save;
+    }
 }

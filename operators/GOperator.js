@@ -1,7 +1,7 @@
 /*
     data types:
         OBJ
-        NUM
+        number
 */
 
 

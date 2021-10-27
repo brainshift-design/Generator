@@ -58,7 +58,7 @@ class UConnection
             switch (this.output.dataType)
             {
                 case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
-                case 'NUM': color = ACTIVE_NUM_COLOR; break; //'#444';
+                case 'number': color = ACTIVE_NUM_COLOR; break; //'#444';
             }
 
             this.wire.curve.setAttribute('d',

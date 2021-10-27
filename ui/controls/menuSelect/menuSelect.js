@@ -170,13 +170,32 @@ function initMenuSelect(select, items)
 
 
 
+    select.getSelectedValue = function()
+    {
+        return select.items[select.getSelectedIndex()].value;
+    };        
+
+
+
     select.setValue = function(value)
     {
         select.value = value;
         select.update(select.getSelectedIndex());
-        select.dispatchEvent(select.onchange);
-    }
+        select.dispatchChangeEvent();
+    };
 
+
+
+    select.dispatchChangeEvent = function()
+    {
+        const onchange = new Event('change', 
+        {
+            selectedIndex: select.getSelectedIndex(),
+            selectedValue: select.items[select.getSelectedIndex()].value
+        });
+
+        select.dispatchEvent(onchange);
+    };
 
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -186,6 +205,4 @@ function initMenuSelect(select, items)
     
     select.update(0);
     select.updateItems();
-    
-    select.onchange = new Event('change');
 }

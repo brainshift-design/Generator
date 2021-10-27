@@ -164,7 +164,7 @@ function colorFromDataType(dataType, active)
     switch (dataType)
     {
         case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'NUM': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+        case 'number': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
     }
 
     return 'magenta';

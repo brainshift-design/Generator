@@ -1,4 +1,6 @@
 menuSelect.addEventListener('change', () => 
 {
-    console.log(menuSelect.items[menuSelect.getSelectedIndex()]);
+    let save = uiGraph.save();
+
+    console.log(save);
 });

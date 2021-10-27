@@ -78,7 +78,15 @@ function initMenuSelectMenu(select)
     {
         select.update(select.menu.hoverIndex);
         select.hideMenu();
-        select.dispatchEvent(select.onchange);
+
+        const onchange = new Event('change', 
+        {
+            selectedIndex: select.getSelectedIndex(),
+            selectedValue: select.items[select.getSelectedIndex()].value
+        });
+
+        select.dispatchEvent(onchange);
+
         select.focus();
 
         document.menuHadFocus = false;

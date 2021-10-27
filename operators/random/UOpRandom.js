@@ -10,7 +10,7 @@ extends UOperator
 
     constructor()
     {
-        super('random', 'NUM');
+        super('random', 'number');
 
         this.setOutput(new UOutput(this.dataType));
 
@@ -73,7 +73,7 @@ extends UOperator
 
 //     constructor()
 //     {
-//         super('random', 'NUM');
+//         super('random', 'number');
 
 //         this.setOutput(new UOutput(this.dataType));
 

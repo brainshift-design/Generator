@@ -37,4 +37,6 @@
     ../ui/controls/menuSelect/*.js
     ../ui/controls/graphView/*.js
 
+    ../storage/*.js
+
 ../html/ui_3.html

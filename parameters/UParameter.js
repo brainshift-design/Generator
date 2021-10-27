@@ -24,4 +24,8 @@ class UParameter
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
     }
+
+
+
+    save(nTab) {}
 }

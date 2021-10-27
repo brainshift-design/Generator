@@ -8,7 +8,7 @@ extends GOperator
 
     constructor()
     {
-        super('number', 'NUM');
+        super('number', 'number');
         this.setOutput(new GOutput(this.dataType));
         this.addParam(this._value = new GNumberParam(''));
     }

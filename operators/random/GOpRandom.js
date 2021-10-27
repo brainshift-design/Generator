@@ -10,7 +10,7 @@ extends GOperator
 
     constructor()
     {
-        super('random', 'NUM');
+        super('random', 'number');
 
         this.setOutput(new GOutput(this.dataType));
 

@@ -85,7 +85,7 @@ function initSelectMenu(select)
     {
         select.update(select.menu.hoverIndex);
         select.hideMenu();
-        select.dispatchEvent(select.onchange);
+        select.dispatchChangeEvent();
         select.focus();
 
         document.menuHadFocus = false;

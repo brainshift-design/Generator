@@ -1,9 +1,12 @@
 class   UNumberParam
 extends UParameter
 {
+    defaultValue;
+    
+    
     get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
-
+    
     get oldValue()   { return this._control.oldValue; }
 
     
@@ -15,7 +18,7 @@ extends UParameter
 
     input; 
 
-
+    
 
     get valueText() { return this.control.valueText; }
     set valueText(text) 
@@ -33,11 +36,13 @@ extends UParameter
                 decimals  = 0,
                 dragScale = 0.01)
     {
-        super(name, 'NUM');
+        super(name, 'number');
 
         this._control = document.createElement('div');
         this.control.param  = this;
         this.control.zIndex = 0;
+
+        this.defaultValue = value;
 
         initSlider(
             this.control,
@@ -55,7 +60,7 @@ extends UParameter
 
         this.div.appendChild(this.control);
 
-        this.input = new UInput('NUM');
+        this.input = new UInput('number');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -94,5 +99,27 @@ extends UParameter
             this.control.style.fontStyle = 'normal';
             this.control.inputConnected  = false;
         });
+    }
+
+
+
+    save(nTab)
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let save = 
+              pos + '"param" :\n'
+            + pos + '{\n';
+
+        save +=         pos + tab + '"type" : "' + this.type + '"';
+        save += ',\n' + pos + tab + '"name" : "' + this.name + '"';
+
+        if (this.value != this.defaultValue)
+            save += ',\n' + pos + tab + '"value" : "' + this.value + '"';
+        
+        save += '\n' + pos + '}';
+
+        return save;
     }
 }

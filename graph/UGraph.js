@@ -221,4 +221,23 @@ class UGraph
     {
         return this.nodes.find(n => n.id == id);
     }
+
+
+
+    save()
+    {
+        let save = '{';
+
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            save += '\n' + this.nodes[i].save(2);
+
+            if (i < this.nodes.length-1)
+                save += ',';
+        }
+
+        save += '\n}';
+
+        return save;
+    }
 }

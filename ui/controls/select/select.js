@@ -182,9 +182,21 @@ function initSelect(select, items)
     {
         select.value = value;
         select.update(select.getSelectedIndex());
-        select.dispatchEvent(select.onchange);
+        select.dispatchChangeEvent();
     }
 
+
+
+    select.dispatchChangeEvent = function()
+    {
+        const onchange = new Event('change', 
+        {
+            selectedIndex: select.getSelectedIndex(),
+            selectedValue: select.items[select.getSelectedIndex()].value
+        });
+
+        select.dispatchEvent(onchange);
+    };
 
 
     //////////////////////////////////////////////////////////////////////////////////
@@ -194,8 +206,6 @@ function initSelect(select, items)
     
     select.update(0);
     select.updateItems();
-    
-    select.onchange = new Event('change');
 }
 
 

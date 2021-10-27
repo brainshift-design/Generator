@@ -5,7 +5,7 @@ extends UOperator
 
     constructor()
     {
-        super('number', 'NUM');
+        super('number', 'number');
 
         this.setOutput(new UOutput(this.dataType));
 
