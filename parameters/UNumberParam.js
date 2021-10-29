@@ -103,23 +103,16 @@ extends UParameter
 
 
 
+    isDefault()
+    {
+        return this.value == this.defaultValue;
+    }
+
+
+
     save(nTab)
     {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
-        
-        let save = 
-              pos + '"param" :\n'
-            + pos + '{\n';
-
-        save +=         pos + tab + '"type" : "' + this.type + '"';
-        save += ',\n' + pos + tab + '"name" : "' + this.name + '"';
-
-        if (this.value != this.defaultValue)
-            save += ',\n' + pos + tab + '"value" : "' + this.value + '"';
-        
-        save += '\n' + pos + '}';
-
-        return save;
+        let pos = ' '.repeat(nTab);
+        return pos + '"' + this.name  + '": "' + this.value + '"';
     }
 }

@@ -4990,11 +4990,11 @@ function loadState(state)
 }    
 
 
-function save(key, value)
+function setPluginData(key, value)
 {
     parent.postMessage({ pluginMessage:
     { 
-        cmd:  'save', 
+        cmd:  'setPluginData', 
         key:   key,
         value: value
     }}, '*');
@@ -5003,7 +5003,7 @@ function save(key, value)
 
 function saveState()
 {
-    save('state',
+    setPluginData('state',
     {
         //windowHeight: window.innerHeight
     });
@@ -5272,6 +5272,10 @@ class UParameter
 
 
 
+    isDefault() { return false; }
+
+
+    
     save(nTab) {}
 }
 
@@ -5381,24 +5385,17 @@ extends UParameter
 
 
 
+    isDefault()
+    {
+        return this.value == this.defaultValue;
+    }
+
+
+
     save(nTab)
     {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
-        
-        let save = 
-              pos + '"param" :\n'
-            + pos + '{\n';
-
-        save +=         pos + tab + '"type" : "' + this.type + '"';
-        save += ',\n' + pos + tab + '"name" : "' + this.name + '"';
-
-        if (this.value != this.defaultValue)
-            save += ',\n' + pos + tab + '"value" : "' + this.value + '"';
-        
-        save += '\n' + pos + '}';
-
-        return save;
+        let pos = ' '.repeat(nTab);
+        return pos + '"' + this.name  + '": "' + this.value + '"';
     }
 }
 
@@ -5631,19 +5628,54 @@ class UGraph
 
     save()
     {
-        let save = '{';
+        const tab = '  ';
 
-        for (let i = 0; i < this.nodes.length; i++)
-        {
-            save += '\n' + this.nodes[i].save(2);
+        let save = 
+              '{\n'
+            + tab + '"nodes":\n'
+            + tab + '[';
+            
 
-            if (i < this.nodes.length-1)
-                save += ',';
-        }
+            for (let i = 0; i < this.nodes.length; i++)
+            {
+                save += '\n' + this.nodes[i].save(4);
+                
+                if (i < this.nodes.length-1)
+                    save += ',';
+            }
+            
 
-        save += '\n}';
+            save += 
+                  '\n' + 
+                  tab + '],\n'
+                + tab + '"connections":\n'
+                + tab + '[';
 
-        return save;
+                
+            for (let i = 0; i < this.nodes.length; i++)
+            {
+                let node = this.nodes[i];
+
+                for (let j = 0; j < node.inputs.length; j++)
+                {
+                    if (!node.inputs[j].connected)
+                        continue;
+
+                    save += '\n' + node.inputs[j].connection.save(4);
+                    
+                    if (i < node.inputs.length-1)
+                       save += ',';
+                }
+            }
+            
+
+            save += 
+                  '\n' + 
+                  tab + ']\n'
+               + '}';
+
+
+            return save;
     }
 }
 
@@ -5668,6 +5700,7 @@ extends EventTarget
 
     control;
   
+
     _connectedOutput = null;
     get connectedOutput() { return this._connectedOutput; }
     set connectedOutput(output)
@@ -5730,7 +5763,19 @@ extends EventTarget
             graphView.overInput = null;
             e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
         });
-    }    
+    }
+
+
+
+    save()
+    {
+        let save = this.op.name;
+
+        if (this.op.param != null)
+            save += '.' + this.op.param.name;
+
+        return save;
+    }
 }
 
 
@@ -5761,6 +5806,7 @@ class UOutput
     get connected() { return this.connectedInputs.length > 0; }
 
 
+
     constructor(dataType)
     {
         this.#dataType = dataType;
@@ -5780,6 +5826,13 @@ class UOutput
             graphView.overOutput = null;
             e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
         });
+    }
+
+
+
+    save()
+    {
+        return this.op.name;
     }
 }
 
@@ -5829,6 +5882,7 @@ class UConnection
         this.wire.appendChild(this.wire.inBall);
 
 
+
         this.wire.update = () =>
         {
             var outRect = this.output.control.getBoundingClientRect();
@@ -5870,6 +5924,7 @@ class UConnection
         };
 
 
+
         this.wire.updateFromOutput = (x, y) =>
         {
             var outRect = this.output.control.getBoundingClientRect();
@@ -5890,6 +5945,7 @@ class UConnection
 
             hide(this.wire.inBall);
         };
+
 
 
         this.wire.updateFromInput = (x, y) =>
@@ -5914,6 +5970,7 @@ class UConnection
         };
 
 
+
         this.wire.updateStyle = (col) =>
         {
             this.wire.curve  .style.stroke = col;
@@ -5924,6 +5981,22 @@ class UConnection
             this.wire. inBall.style.r           = 3   * this.wire.scale;
             this.wire.outBall.style.r           = 3   * this.wire.scale;
         };
+    }
+
+
+
+    save(nTab) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let save = 
+              pos + '{\n'
+            + pos + tab + '"output": "' + this.output.save() + '",\n'
+            + pos + tab + '"input" : "'  + this.input .save() + '"\n'
+            + pos + '}';
+
+        return save;
     }
 }
 
@@ -6299,14 +6372,15 @@ class UOperator
         const tab = '  ';
         
         let save = 
-              pos + '"node" :\n'
-            + pos + '{\n';
-
-        save +=         pos + tab + '"type" : "' + this.opType + '"';
-        save += ',\n' + pos + tab + '"name" : "' + this.name   + '"';
+              pos + '{\n'
+            + pos + tab + '"type": "' + this.opType + '",\n'
+            + pos + tab + '"name": "' + this.name   + '"';
         
         for (const param of this.params)
-            save += ',\n' + param.save(nTab + 2);
+        {
+            if (!param.isDefault())
+                save += ',\n' + param.save(nTab + 2);
+        }
 
         save += '\n' + pos + '}';
 
@@ -7419,9 +7493,8 @@ initMenuSelect(menuSelect,
 [
     {value: 'graph0',     text: 'Untitled'},
     {value: 'new',        text: 'New graph'},
-    {value: 'load',       text: 'Load from file'},
-    {value: 'save',       text: 'Save'},
-    {value: 'saveAs',     text: 'Save as...'},
+    {value: 'loadLocal',  text: 'Load from file'},
+    {value: 'duplicate',  text: 'Duplicate'},
     {value: 'saveLocal',  text: 'Save local copy'},
     {value: 'delete',     text: 'Delete'},
     {value: 'productKey', text: 'Enter product key'}
@@ -7747,11 +7820,34 @@ function strFromData(data)
 }
 
 
-menuSelect.addEventListener('change', () => 
+menuSelect.addEventListener('change', async function(e) 
 {
-    let save = uiGraph.save();
+    switch (e.detail.selectedValue)
+    {
+        case 'saveLocal':
+        {
+            let save = uiGraph.save();
 
-    console.log(save);
+            // const options = 
+            // {
+            //     types: 
+            //     [{
+            //         description: 'Text Files',
+            //         accept:      { 'text/plain': ['.txt'] }
+            //     }],
+            // };
+
+            // const handle = await window.showSaveFilePicker(options);
+
+            //setPluginData('generator', save);
+            
+            saveToLocalFile('graph.gen', save);
+            break;
+        }
+
+        case 'load':
+            break;
+    }
 });
 
 
@@ -8983,11 +9079,11 @@ function initMenuSelectMenu(select)
         select.update(select.menu.hoverIndex);
         select.hideMenu();
 
-        const onchange = new Event('change', 
+        const onchange = new CustomEvent('change', { detail: 
         {
             selectedIndex: select.getSelectedIndex(),
             selectedValue: select.items[select.getSelectedIndex()].value
-        });
+        }});
 
         select.dispatchEvent(onchange);
 
@@ -10271,7 +10367,18 @@ graphView.removeWire = wire =>
 };
 
 
+function saveToLocalFile(filename, str) 
+{
+    var link = document.createElement('a');
+    link.style.display = 'none';
 
+    link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
+    link.setAttribute('download', filename);
+      
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
 
 

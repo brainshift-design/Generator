@@ -226,18 +226,53 @@ class UGraph
 
     save()
     {
-        let save = '{';
+        const tab = '  ';
 
-        for (let i = 0; i < this.nodes.length; i++)
-        {
-            save += '\n' + this.nodes[i].save(2);
+        let save = 
+              '{\n'
+            + tab + '"nodes":\n'
+            + tab + '[';
+            
 
-            if (i < this.nodes.length-1)
-                save += ',';
-        }
+            for (let i = 0; i < this.nodes.length; i++)
+            {
+                save += '\n' + this.nodes[i].save(4);
+                
+                if (i < this.nodes.length-1)
+                    save += ',';
+            }
+            
 
-        save += '\n}';
+            save += 
+                  '\n' + 
+                  tab + '],\n'
+                + tab + '"connections":\n'
+                + tab + '[';
 
-        return save;
+                
+            for (let i = 0; i < this.nodes.length; i++)
+            {
+                let node = this.nodes[i];
+
+                for (let j = 0; j < node.inputs.length; j++)
+                {
+                    if (!node.inputs[j].connected)
+                        continue;
+
+                    save += '\n' + node.inputs[j].connection.save(4);
+                    
+                    if (i < node.inputs.length-1)
+                       save += ',';
+                }
+            }
+            
+
+            save += 
+                  '\n' + 
+                  tab + ']\n'
+               + '}';
+
+
+            return save;
     }
 }

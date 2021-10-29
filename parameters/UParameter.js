@@ -27,5 +27,9 @@ class UParameter
 
 
 
+    isDefault() { return false; }
+
+
+    
     save(nTab) {}
 }

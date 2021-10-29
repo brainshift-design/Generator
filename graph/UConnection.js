@@ -43,6 +43,7 @@ class UConnection
         this.wire.appendChild(this.wire.inBall);
 
 
+
         this.wire.update = () =>
         {
             var outRect = this.output.control.getBoundingClientRect();
@@ -84,6 +85,7 @@ class UConnection
         };
 
 
+
         this.wire.updateFromOutput = (x, y) =>
         {
             var outRect = this.output.control.getBoundingClientRect();
@@ -104,6 +106,7 @@ class UConnection
 
             hide(this.wire.inBall);
         };
+
 
 
         this.wire.updateFromInput = (x, y) =>
@@ -128,6 +131,7 @@ class UConnection
         };
 
 
+
         this.wire.updateStyle = (col) =>
         {
             this.wire.curve  .style.stroke = col;
@@ -138,5 +142,21 @@ class UConnection
             this.wire. inBall.style.r           = 3   * this.wire.scale;
             this.wire.outBall.style.r           = 3   * this.wire.scale;
         };
+    }
+
+
+
+    save(nTab) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let save = 
+              pos + '{\n'
+            + pos + tab + '"output": "' + this.output.save() + '",\n'
+            + pos + tab + '"input" : "'  + this.input .save() + '"\n'
+            + pos + '}';
+
+        return save;
     }
 }

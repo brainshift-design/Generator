@@ -6,11 +6,11 @@ function loadState(state)
 }    
 
 
-function save(key, value)
+function setPluginData(key, value)
 {
     parent.postMessage({ pluginMessage:
     { 
-        cmd:  'save', 
+        cmd:  'setPluginData', 
         key:   key,
         value: value
     }}, '*');
@@ -19,7 +19,7 @@ function save(key, value)
 
 function saveState()
 {
-    save('state',
+    setPluginData('state',
     {
         //windowHeight: window.innerHeight
     });

@@ -25,6 +25,7 @@ class UOutput
     get connected() { return this.connectedInputs.length > 0; }
 
 
+
     constructor(dataType)
     {
         this.#dataType = dataType;
@@ -44,5 +45,12 @@ class UOutput
             graphView.overOutput = null;
             e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
         });
+    }
+
+
+
+    save()
+    {
+        return this.op.name;
     }
 }

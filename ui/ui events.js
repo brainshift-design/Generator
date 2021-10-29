@@ -1,6 +1,29 @@
-menuSelect.addEventListener('change', () => 
+menuSelect.addEventListener('change', async function(e) 
 {
-    let save = uiGraph.save();
+    switch (e.detail.selectedValue)
+    {
+        case 'saveLocal':
+        {
+            let save = uiGraph.save();
 
-    console.log(save);
+            // const options = 
+            // {
+            //     types: 
+            //     [{
+            //         description: 'Text Files',
+            //         accept:      { 'text/plain': ['.txt'] }
+            //     }],
+            // };
+
+            // const handle = await window.showSaveFilePicker(options);
+
+            //setPluginData('generator', save);
+            
+            saveToLocalFile('graph.gen', save);
+            break;
+        }
+
+        case 'load':
+            break;
+    }
 });

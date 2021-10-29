@@ -18,6 +18,7 @@ extends EventTarget
 
     control;
   
+
     _connectedOutput = null;
     get connectedOutput() { return this._connectedOutput; }
     set connectedOutput(output)
@@ -80,5 +81,17 @@ extends EventTarget
             graphView.overInput = null;
             e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
         });
-    }    
+    }
+
+
+
+    save()
+    {
+        let save = this.op.name;
+
+        if (this.op.param != null)
+            save += '.' + this.op.param.name;
+
+        return save;
+    }
 }

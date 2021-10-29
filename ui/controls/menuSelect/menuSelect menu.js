@@ -79,11 +79,11 @@ function initMenuSelectMenu(select)
         select.update(select.menu.hoverIndex);
         select.hideMenu();
 
-        const onchange = new Event('change', 
+        const onchange = new CustomEvent('change', { detail: 
         {
             selectedIndex: select.getSelectedIndex(),
             selectedValue: select.items[select.getSelectedIndex()].value
-        });
+        }});
 
         select.dispatchEvent(onchange);
 

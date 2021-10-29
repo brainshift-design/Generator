@@ -297,14 +297,15 @@ class UOperator
         const tab = '  ';
         
         let save = 
-              pos + '"node" :\n'
-            + pos + '{\n';
-
-        save +=         pos + tab + '"type" : "' + this.opType + '"';
-        save += ',\n' + pos + tab + '"name" : "' + this.name   + '"';
+              pos + '{\n'
+            + pos + tab + '"type": "' + this.opType + '",\n'
+            + pos + tab + '"name": "' + this.name   + '"';
         
         for (const param of this.params)
-            save += ',\n' + param.save(nTab + 2);
+        {
+            if (!param.isDefault())
+                save += ',\n' + param.save(nTab + 2);
+        }
 
         save += '\n' + pos + '}';
 

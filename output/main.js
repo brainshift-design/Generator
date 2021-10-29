@@ -18,8 +18,11 @@ var maxNodeId = Number.MIN_SAFE_INTEGER;
 figma.showUI(__html__);
 figma.ui.onmessage = msg => {
     switch (msg.cmd) {
-        case 'save':
+        case 'saveLocal':
             figma.clientStorage.setAsync(msg.key, msg.value);
+            break;
+        case 'setPluginData':
+            figma.currentPage.setPluginData(msg.key, msg.value);
             break;
         case 'loadState':
             loadState(msg);
@@ -66,6 +69,47 @@ function resizeWindow(msg) {
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
     //figma.ui.postMessage({cmd: 'updatePanAndZoom'});
+}
+function objTypeString(type) {
+    switch (type) {
+        case OBJ_RECT: return 'RECTANGLE';
+        // case 'VECTOR':
+        // case 'LINE':
+        // case 'ELLIPSE':
+        // case 'POLYGON':
+        // case 'STAR':
+        // case 'TEXT':
+        // case 'BOOLEAN_OPERATION':
+    }
+    return 'ERROR_TYPE';
+}
+function onSelectionChange() {
+    /*  Every time a selection changes, check that all objects in the object table
+        still exist in the canvas. If not, remove the pointer from the object table.
+        
+        NOTE: at this point I don't know if objects are deleted by the API, but then again,
+        only one plugin runs at a time right now, so maybe it's not an issue.  */
+    for (let i = 0; i < objNodes.length; i++) {
+        for (let j = 0; j < objNodes[i].length; j++) {
+            if (!objNodes[i][j])
+                continue;
+            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+            if (!exists)
+                objNodes[i][j] = null;
+        }
+    }
+}
+function onPluginClose() {
+    deleteAllObjects();
+}
+function postToGenerator(msg) {
+    figma.ui.postMessage({
+        cmd: 'forwardToGen',
+        msg: msg
+    });
+}
+function notify(text) {
+    figma.notify('Generator: ' + text);
 }
 function deleteNodeObjects(nodeIds) {
     for (const nodeId of nodeIds) {
@@ -152,46 +196,6 @@ function updateRect(obj) {
         rect.resize(Math.max(0.01, obj[5]), Math.max(0.01, obj[6]));
     }
     rect.cornerRadius = obj[7];
-}
-function objTypeString(type) {
-    switch (type) {
-        case OBJ_RECT: return 'RECTANGLE';
-        // case 'VECTOR':
-        // case 'LINE':
-        // case 'ELLIPSE':
-        // case 'POLYGON':
-        // case 'STAR':
-        // case 'TEXT':
-        // case 'BOOLEAN_OPERATION':
-    }
-    return 'ERROR_TYPE';
-}
-function onSelectionChange() {
-    /*  Every time a selection changes, check that all objects in the object table
-        still exist in the canvas. If not, remove the pointer from the object table.
-        
-        NOTE: at this point I don't know if objects are deleted by the API, but then again,
-        only one plugin runs at a time right now, so maybe it's not an issue.  */
-    for (var i = 0; i < objNodes.length; i++) {
-        for (var j = 0; j < objNodes[i].length; j++)
-            if (!objNodes[i][j])
-                continue;
-        const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
-        if (!exists)
-            objNodes[i][j] = null;
-    }
-}
-function onPluginClose() {
-    deleteAllObjects();
-}
-function postToGenerator(msg) {
-    figma.ui.postMessage({
-        cmd: 'forwardToGen',
-        msg: msg
-    });
-}
-function notify(text) {
-    figma.notify('Generator: ' + text);
 }
 // function updateRect(data)
 // {
