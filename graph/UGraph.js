@@ -230,6 +230,9 @@ class UGraph
 
         let save = 
               '{\n'
+            + tab + '"zoom" : "' + graphView.zoom  + '",\n'
+            + tab + '"pan-x": "' + graphView.pan.x + '",\n'
+            + tab + '"pan-y": "' + graphView.pan.y + '",\n'
             + tab + '"nodes":\n'
             + tab + '[';
             

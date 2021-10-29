@@ -5632,6 +5632,9 @@ class UGraph
 
         let save = 
               '{\n'
+            + tab + '"zoom" : "' + graphView.zoom  + '",\n'
+            + tab + '"pan-x": "' + graphView.pan.x + '",\n'
+            + tab + '"pan-y": "' + graphView.pan.y + '",\n'
             + tab + '"nodes":\n'
             + tab + '[';
             
@@ -6373,8 +6376,10 @@ class UOperator
         
         let save = 
               pos + '{\n'
-            + pos + tab + '"type": "' + this.opType + '",\n'
-            + pos + tab + '"name": "' + this.name   + '"';
+            + pos + tab + '"type": "' + this.opType         + '",\n'
+            + pos + tab + '"name": "' + this.name           + '",\n'
+            + pos + tab + '"x"   : "' + this.div.style.left + '",\n'
+            + pos + tab + '"y"   : "' + this.div.style.top  + '"';
         
         for (const param of this.params)
         {
@@ -7826,6 +7831,7 @@ menuSelect.addEventListener('change', async function(e)
     {
         case 'saveLocal': saveToLocalFile('graph.gen', uiGraph.save()); break;
         case 'loadLocal': loadFromLocalFile();                          break;
+        case 'duplicate': console.log(uiGraph.save()); break;
     }
 });
 
