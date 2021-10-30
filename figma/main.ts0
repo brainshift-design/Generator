@@ -20,15 +20,16 @@ figma.ui.onmessage = msg =>
 {
     switch (msg.cmd)
     {
-        case 'saveLocal':         figma.clientStorage.setAsync(msg.key, msg.value);    break;
-        case 'setPluginData':     figma.currentPage.setPluginData(msg.key, msg.value); break;
-        case 'loadState':         loadState(msg);                                      break;
-        case 'resizeWindow':      resizeWindow(msg);                                   break; 
-        case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds);                      break; 
-        case 'updateObjects':     updateObjects(msg);                                  break;
-        case 'notify':            notify(msg.text);                                    break;
+        case 'saveLocal':         saveLocal    (msg.key, msg.value); break;
+        case 'setPluginData':     setPluginData(msg.key, msg.value); break;
+        case 'loadState':         loadState(msg);                    break;
+        case 'resizeWindow':      resizeWindow(msg);                 break; 
+        case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds);    break; 
+        case 'updateObjects':     updateObjects(msg);                break;
+        case 'notify':            notify(msg.text);                  break;
     }
 };
+
 
 
 figma.on('selectionchange', onSelectionChange);
@@ -56,6 +57,20 @@ function loadState(msg)
             Math.max(0, wndWidth),
             Math.max(0, wndHeight));
     })();
+}
+
+
+
+function saveLocal(key, value)
+{
+    figma.clientStorage.setAsync(key, value); 
+}
+
+
+
+function setPluginData(key, value)
+{
+    figma.currentPage.setPluginData(key, value);
 }
 
 

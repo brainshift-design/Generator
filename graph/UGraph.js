@@ -11,9 +11,9 @@ class UGraph
     
     getNewNodeName(_node)
     {
-        var opType = _node.opType;
+        let opType = _node.opType;
 
-        var maxNum = 0;
+        let maxNum = 0;
         
         for (const node of this.nodes)
         {
@@ -24,7 +24,7 @@ class UGraph
                 || node.name.substring(0, opType.length) !== opType)
                 continue;
                 
-            var num = parseInt(node.name.substring(opType.length));
+            let num = parseInt(node.name.substring(opType.length));
             
             if (isNaN(num) || num == 0) 
                 num = 1;
@@ -44,7 +44,7 @@ class UGraph
 
     createNode(opType, createdNodeId = -1)
     {
-        var node;
+        let node;
 
         switch (opType)
         {

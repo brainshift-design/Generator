@@ -19,10 +19,10 @@ figma.showUI(__html__);
 figma.ui.onmessage = msg => {
     switch (msg.cmd) {
         case 'saveLocal':
-            figma.clientStorage.setAsync(msg.key, msg.value);
+            saveLocal(msg.key, msg.value);
             break;
         case 'setPluginData':
-            figma.currentPage.setPluginData(msg.key, msg.value);
+            setPluginData(msg.key, msg.value);
             break;
         case 'loadState':
             loadState(msg);
@@ -61,6 +61,12 @@ function loadState(msg) {
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
         });
     })();
+}
+function saveLocal(key, value) {
+    figma.clientStorage.setAsync(key, value);
+}
+function setPluginData(key, value) {
+    figma.currentPage.setPluginData(key, value);
 }
 function resizeWindow(msg) {
     var width = Math.floor(Math.max(0, msg.width));
