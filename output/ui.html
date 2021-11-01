@@ -4,6 +4,45 @@
 <style>
 
 
+.button
+{
+    font-family:   Inter;
+    font-size:     11px;
+    width:         30;
+    height:        30;
+    background:    white;
+    min-width:     0;
+    min-height:    0;
+    border:        none;
+    border-radius: 2px;
+    position:      relative;
+    padding:       0;
+}
+
+
+.button:hover
+{
+    background: #f0f0f0;
+}
+
+
+.button:active
+{
+    box-shadow: 0 0 0 2px #18A0FB inset;
+    outline:    none;
+}
+
+
+#controlBar
+{
+    display:          block;
+    height:           40px;
+    background-color: #2c2c2c;
+    /* vertical-align:   middle; */
+    padding:          0;
+}
+
+
 body
 {
     margin:           0;
@@ -57,304 +96,6 @@ input[type=text]:focus
 input[type=text]::selection
 {
     background-color: #b9e2fe;
-}
-
-
-
-.slider
-{
-    padding:          0;
-    width:            74px;
-    height:           26px;
-    /* box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset; */
-    /* border-radius:    1px; */
-    overflow:         hidden;
-    background-color: white;
-    text-align:       center;
-}    
-
-.sliderName
-{
-    color: #b3b3b3;
-}
-
-.sliderBar
-{
-    position:       absolute;
-    pointer-events: none;
-}
-
-.sliderText
-{
-    font-family:    Inter;
-    font-size:      11;
-    pointer-events: none;
-    position:       relative;
-    top:            3px;
-}
-
-.sliderFocus
-{
-    position:       absolute;
-    pointer-events: none;
-    box-shadow:     0 0 0 1px #18A0FB inset;
-    visibility:     hidden;
-    opacity:        0;
-}
-
-/* .slider:hover
-{
-    box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
-}     */
-
-/* .slider:focus
-{
-    outline:    none;
-    box-sizing: border-box;
-    border:     solid 2px #18A0FB;
-    box-shadow: 0 0 0 -2px #18A0FB inset;
-}     */
-
-
-#controlBar
-{
-    display:          block;
-    height:           40px;
-    background-color: #2c2c2c;
-    /* vertical-align:   middle; */
-    padding:          0;
-}
-
-
-button
-{
-    font-family:   Inter;
-    font-size:     11px;
-    width:         30;
-    height:        30;
-    background:    white;
-    min-width:     0;
-    min-height:    0;
-    border:        none;
-    border-radius: 2px;
-    position:      relative;
-    padding:       0;
-}
-
-
-button:hover
-{
-    background: #eee;
-}
-
-
-button:focus
-{
-    border:#18A0FB 2px solid;
-    outline: none;
-}
-
-
-button svg
-{
-    width:  12px;
-    height: 12px;
-}
-
-
-#btnCreate svg
-{
-    width:  17px;
-    height: 17px;
-}
-
-
-
-.select
-{
-    font-family:         Inter;
-    font-size:           11;
-    vertical-align:      middle;
-    padding-left:        6;
-    padding-right:       30;
-    padding-top:         2;
-    margin-right:        6;
-    margin-top:          1;
-    height:              24px;
-    line-height:         22px;
-    border:              none;
-    border-radius:       0.5px;
-    overflow:            hidden;
-    -webkit-appearance:  none;
-    appearance:          none;
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.4"/> </svg>');
-    background-position: calc(100% - 17px) 50%;
-    background-repeat:   no-repeat;
-    display:             inline-block;
-}
-
-
-.select:hover
-{
-    box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1);
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
-    background-position: calc(100% - 7px) 50%;
-    background-repeat:   no-repeat;
-    padding-right:       30;
-}
-
-
-.select:focus
-{
-    padding-left:        6;
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
-    background-position: calc(100% - 6px) 50%;
-    background-repeat:   no-repeat;
-    padding-right:       30;
-    box-shadow:          0 0 0 2px #18A0FB;
-    outline:             none;
-}
-
-
-.selectMenu
-{
-    position:      absolute;
-    width:         auto;
-    height:        auto;
-    color:         white;
-    background:    #222;
-    font-family:   Inter;
-    font-size:     13;
-    text-align:    center;
-    outline:       0.5px solid rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    box-shadow:    0px 2px 7px  rgba(0, 0, 0, 0.15),
-                   0px 5px 17px rgba(0, 0, 0, 0.2);
-    overflow:      hidden;
-}
-
-
-.menuButton
-{
-    font-family:     Inter;
-    font-size:       11px;
-    width:           40px;
-    height:          40px;
-    background:      #2c2c2c;
-    border-radius:   0;
-    min-width:       0;
-    min-height:      0;
-    border:          none;
-    position:        relative;
-    padding:         0;
-    padding-top:     1px;
-    padding-bottom: -1px;
-    margin-right:   -4px;
-    color:          #d5d5d5;
-}
-
-
-.menuButton:hover
-{
-    background: black;
-    color:      white;
-}
-
-
-.menuButton:focus
-{
-    background:#18A0FB;
-    color:     white;
-}
-
-
-
-
-.menuSelect
-{
-    font-family:         Inter;
-    font-size:           14;
-    vertical-align:      middle;
-    padding-left:        6;
-    padding-right:       30;
-    padding-top:         1;
-    margin-right:        6;
-    margin-top:          0;
-    height:              24px;
-    line-height:         22px;
-    border:              none;
-    border-radius:       0.5px;
-    overflow:            hidden;
-    -webkit-appearance:  none;
-    appearance:          none;
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
-    background-position: calc(100% - 14px) 50%;
-    background-repeat:   no-repeat;
-    display:             inline-block;
-    color:               white;
-}
-
-
-.menuSelect:hover
-{
-    /* box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1); */
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
-    background-position: calc(100% - 14px) calc(50% + 3px);
-    background-repeat:   no-repeat;
-    padding-right:       30;
-    transition:          all 0.2s ease;
-}
-
-
-.menuSelect:focus
-{
-    padding-left:        6;
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
-    background-position: calc(100% - 14px) 50%;
-    background-repeat:   no-repeat;
-    padding-right:       30;
-    box-shadow:          0 0 0 2px #18A0FB;
-    outline:             none;
-}
-
-
-.menuSelectText
-{
-    font-family:    Inter;
-    font-size:      11;
-    pointer-events: none;
-    position:       relative;
-    top:            3px;
-}
-
-
-.menuSelectMenu
-{
-    position:      absolute;
-    width:         auto;
-    height:        auto;
-    color:         white;
-    background:    #222;
-    font-family:   Inter;
-    font-size:     13;
-    text-align:    center;
-    outline:       0.5px solid rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-    box-shadow:    0px 2px  7px rgba(0, 0, 0, 0.15),
-                   0px 5px 17px rgba(0, 0, 0, 0.2 );
-    /* overflow:      hidden; */
-}
-
-
-.menuSelectMenu::after 
-{
-    content:       '';
-    position:      absolute;
-    top:           -10px;
-    left:          65px;
-    border-width:  5px;
-    border-style:  solid;
-    border-color:  transparent transparent #222 transparent;
 }
 
 
@@ -506,6 +247,387 @@ button svg
 }
 
 
+.menuButton
+{
+    font-family:     Inter;
+    font-size:       11px;
+    width:           40px;
+    height:          40px;
+    background:      #2c2c2c;
+    border-radius:   0;
+    min-width:       0;
+    min-height:      0;
+    border:          none;
+    position:        relative;
+    padding:         0;
+    padding-top:     1px;
+    padding-bottom: -1px;
+    margin-right:   -4px;
+    color:          #d5d5d5;
+}
+
+
+.menuButton:hover
+{
+    background: black;
+    color:      white;
+}
+
+
+.menuButton:focus
+{
+    background:#18A0FB;
+    color:     white;
+}
+
+
+
+
+.menuSelect
+{
+    font-family:         Inter;
+    font-size:           14;
+    vertical-align:      middle;
+    padding-left:        6;
+    padding-right:       30;
+    padding-top:         1;
+    margin-right:        6;
+    margin-top:          0;
+    height:              24px;
+    line-height:         22px;
+    border:              none;
+    border-radius:       0.5px;
+    overflow:            hidden;
+    -webkit-appearance:  none;
+    appearance:          none;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
+    background-position: calc(100% - 14px) 50%;
+    background-repeat:   no-repeat;
+    display:             inline-block;
+    color:               white;
+}
+
+
+.menuSelect:hover
+{
+    /* box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1); */
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
+    background-position: calc(100% - 14px) calc(50% + 3px);
+    background-repeat:   no-repeat;
+    padding-right:       30;
+    transition:          all 0.2s ease;
+}
+
+
+.menuSelect:focus
+{
+    padding-left:        6;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="white" /> </svg>');
+    background-position: calc(100% - 14px) 50%;
+    background-repeat:   no-repeat;
+    padding-right:       30;
+    box-shadow:          0 0 0 2px #18A0FB;
+    outline:             none;
+}
+
+
+.menuSelectText
+{
+    font-family:    Inter;
+    font-size:      11;
+    pointer-events: none;
+    position:       relative;
+    top:            3px;
+}
+
+
+.menuSelectMenu
+{
+    position:      absolute;
+    width:         auto;
+    height:        auto;
+    color:         white;
+    background:    #222;
+    font-family:   Inter;
+    font-size:     13;
+    text-align:    center;
+    outline:       0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    box-shadow:    0px 2px  7px rgba(0, 0, 0, 0.15),
+                   0px 5px 17px rgba(0, 0, 0, 0.2 );
+    /* overflow:      hidden; */
+}
+
+
+.menuSelectMenu::after 
+{
+    content:       '';
+    position:      absolute;
+    top:           -10px;
+    left:          65px;
+    border-width:  5px;
+    border-style:  solid;
+    border-color:  transparent transparent #222 transparent;
+}
+
+
+
+#productKeyBack
+{
+    display:          none;
+
+    z-index:          1;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+
+    background-color: rbg(0, 0, 0, 0.5);
+}
+
+
+#productKeyDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index: 2;
+    position:      absolute;
+    top:           60px;
+    left:          calc(50% - 100px);
+    width:         200px;
+    height:        125px;
+    
+    background:    white;
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+}
+
+
+#productKeyTitle
+{
+    height:        40px;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+}
+
+
+#productKeyText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          rgba(0, 0, 0, 0.8);
+}
+
+
+#productKeyClose
+{
+    width:    32px;
+    height:   32px;
+    position: absolute;
+    left:     calc(100% - 36px);
+    top:      4px;
+}
+
+#productKeyClose:active
+{
+    box-shadow: none;
+}
+
+
+#productKeyUserInfo
+{
+    font-size:     12px;
+    font-weight:   normal;
+
+    margin-top:     16px;
+    margin-bottom:  8px;
+
+    position:      relative;
+    left:          40px;
+}
+
+
+#productKeyInput
+{
+    font-size:    14px;
+    
+    width:         9em;
+    padding-left:  6px;
+
+    position:     relative;
+    left:         37px;
+}
+
+
+
+.select
+{
+    font-family:         Inter;
+    font-size:           11;
+    vertical-align:      middle;
+    padding-left:        6;
+    padding-right:       30;
+    padding-top:         2;
+    margin-right:        6;
+    margin-top:          1;
+    height:              24px;
+    line-height:         22px;
+    border:              none;
+    border-radius:       0.5px;
+    overflow:            hidden;
+    -webkit-appearance:  none;
+    appearance:          none;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.4"/> </svg>');
+    background-position: calc(100% - 17px) 50%;
+    background-repeat:   no-repeat;
+    display:             inline-block;
+}
+
+
+.select:hover
+{
+    box-shadow:          0 0 0 1px rgba(0, 0, 0, 0.1);
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
+    background-position: calc(100% - 7px) 50%;
+    background-repeat:   no-repeat;
+    padding-right:       30;
+}
+
+
+.select:focus
+{
+    padding-left:        6;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.64648 6.35359L0.646484 3.35359L1.35359 2.64648L4.00004 5.29293L6.64648 2.64648L7.35359 3.35359L4.35359 6.35359L4.00004 6.70714L3.64648 6.35359Z" fill="black" fill-opacity="0.8"/> </svg>');
+    background-position: calc(100% - 6px) 50%;
+    background-repeat:   no-repeat;
+    padding-right:       30;
+    box-shadow:          0 0 0 2px #18A0FB;
+    outline:             none;
+}
+
+
+.selectMenu
+{
+    position:      absolute;
+    width:         auto;
+    height:        auto;
+    color:         white;
+    background:    #222;
+    font-family:   Inter;
+    font-size:     13;
+    text-align:    center;
+    outline:       0.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    box-shadow:    0px 2px 7px  rgba(0, 0, 0, 0.15),
+                   0px 5px 17px rgba(0, 0, 0, 0.2);
+    overflow:      hidden;
+}
+
+
+.slider
+{
+    padding:          0;
+    width:            74px;
+    height:           26px;
+    /* box-shadow:       0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset; */
+    /* border-radius:    1px; */
+    overflow:         hidden;
+    background-color: white;
+    text-align:       center;
+}    
+
+.sliderName
+{
+    color: #b3b3b3;
+}
+
+.sliderBar
+{
+    position:       absolute;
+    pointer-events: none;
+}
+
+.sliderText
+{
+    font-family:    Inter;
+    font-size:      11;
+    pointer-events: none;
+    position:       relative;
+    top:            3px;
+}
+
+.sliderFocus
+{
+    position:       absolute;
+    pointer-events: none;
+    box-shadow:     0 0 0 1px #18A0FB inset;
+    visibility:     hidden;
+    opacity:        0;
+}
+
+/* .slider:hover
+{
+    box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
+}     */
+
+/* .slider:focus
+{
+    outline:    none;
+    box-sizing: border-box;
+    border:     solid 2px #18A0FB;
+    box-shadow: 0 0 0 -2px #18A0FB inset;
+}     */
+
+
+input[type=text]
+{
+    font-size:     11;
+    font-family:   Inter;
+    height:        28px;
+    padding-top:   1;
+    border:        none;
+    box-shadow:    0px 1px 0px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5px;
+    cursor:        default;
+}
+
+
+input[type=text]:hover
+{
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+
+input[type=text]:focus
+{
+    box-shadow: 0 0 0 2px #18A0FB;
+    outline: none;
+}
+
+
+input[type=text]::selection
+{
+    background-color: #b9e2fe;
+}
+
+
 </style>
 
 <div id='controlBar'>
@@ -526,9 +648,24 @@ button svg
 <div id='scrollbarX'></div>
 <div id='scrollbarY'></div>
 
+<div id='productKeyBack'></div>
+
 <div id='productKeyDialog'>
-    <div id='productKeyTitle'>Enter product key</div>
-    <div id='productKeyClose'></div>
+
+    <div id='productKeyTitle'>
+        <div id='productKeyText'>Enter product key</div>
+        <div class='button' id='productKeyClose' onclick='productKeyClose.blur();'>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="black" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='productKeyBody'>
+        <div id='productKeyUserInfo'>Some user info</div>
+        <input type='text' id='productKeyInput' />
+    </div>
+
 </div>
 
 
@@ -5248,6 +5385,29 @@ function hashLicenseName(name, nBytes)
 }
 
 
+function showProductKeyDialog()
+{
+    productKeyBack  .style.display = 'block';
+    productKeyDialog.style.display = 'block';
+
+    console.log(currentUser);
+    //productKeyUserInfo.innerHTML = currentUser;
+
+    menuSelect.setSelectedIndex(0);
+    menuSelect.blur();
+
+    productKeyInput.focus();
+}
+
+
+
+function hideProductKeyDialog()
+{
+    productKeyBack  .style.display = 'none';
+    productKeyDialog.style.display = 'none';
+}
+
+
 class UParameter
 {
     #type;
@@ -7494,6 +7654,9 @@ extends Action
 //save('windowHeight', null);
 
 
+var currentUser = '';
+
+
 
 const uiGraph = new UGraph();
 
@@ -7528,6 +7691,10 @@ onmessage = e =>
     {
         case 'forwardToGen': 
             generator.postMessage(msg.msg); 
+            break;
+
+        case 'loadState':
+            currentUser = msg.currentUser;
             break;
 
         // case 'updatePanAndZoom':    
@@ -7836,8 +8003,16 @@ menuSelect.addEventListener('change', async function(e)
     {
         case 'saveLocal': saveToLocalFile('graph.gen', uiGraph.save()); break;
         case 'loadLocal': loadFromLocalFile();                          break;
-        case 'duplicate': console.log(uiGraph.save()); break;
+        case 'duplicate': console.log(uiGraph.save());                  break;
+        case 'productKey': showProductKeyDialog();                      break;
     }
+});
+
+
+
+productKeyClose.addEventListener('click', e =>
+{
+    hideProductKeyDialog();
 });
 
 
@@ -9441,6 +9616,15 @@ function initMenuSelect(select, items)
     select.setValue = function(value)
     {
         select.value = value;
+        select.update(select.getSelectedIndex());
+        select.dispatchChangeEvent();
+    };
+
+
+
+    select.setSelectedIndex = function(index)
+    {
+        select.value = select.items[index];
         select.update(select.getSelectedIndex());
         select.dispatchChangeEvent();
     };

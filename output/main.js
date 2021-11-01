@@ -59,6 +59,10 @@ function loadState(msg) {
             if (wndHeight == null)
                 wndHeight = 300;
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
+            figma.ui.postMessage({
+                cmd: 'loadState',
+                currentUser: figma.currentUser
+            });
         });
     })();
 }

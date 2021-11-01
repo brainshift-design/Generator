@@ -3,6 +3,9 @@
 //save('windowHeight', null);
 
 
+var currentUser = '';
+
+
 
 const uiGraph = new UGraph();
 
@@ -37,6 +40,10 @@ onmessage = e =>
     {
         case 'forwardToGen': 
             generator.postMessage(msg.msg); 
+            break;
+
+        case 'loadState':
+            currentUser = msg.currentUser;
             break;
 
         // case 'updatePanAndZoom':    

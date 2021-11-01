@@ -186,6 +186,15 @@ function initMenuSelect(select, items)
 
 
 
+    select.setSelectedIndex = function(index)
+    {
+        select.value = select.items[index];
+        select.update(select.getSelectedIndex());
+        select.dispatchChangeEvent();
+    };
+
+
+
     select.dispatchChangeEvent = function()
     {
         const onchange = new Event('change', 

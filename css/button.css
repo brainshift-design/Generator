@@ -1,4 +1,4 @@
-button
+.button
 {
     font-family:   Inter;
     font-size:     11px;
@@ -14,28 +14,14 @@ button
 }
 
 
-button:hover
+.button:hover
 {
-    background: #eee;
+    background: #f0f0f0;
 }
 
 
-button:focus
+.button:active
 {
-    border:#18A0FB 2px solid;
-    outline: none;
-}
-
-
-button svg
-{
-    width:  12px;
-    height: 12px;
-}
-
-
-#btnCreate svg
-{
-    width:  17px;
-    height: 17px;
+    box-shadow: 0 0 0 2px #18A0FB inset;
+    outline:    none;
 }

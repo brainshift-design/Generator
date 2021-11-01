@@ -1,13 +1,6 @@
 ../html/ui_0.html
 
-    ../css/document.css
-    ../css/slider.css
-    ../css/control bar.css
-    ../css/button.css
-    ../css/select.css
-    ../css/menuButton.css
-    ../css/menuSelect.css
-    ../css/graph.css
+    ../css/*.css
 
 ../html/ui_1.html
 
@@ -19,7 +12,7 @@
     ../core/storage.js
     ../core/crypto.js
     
-    ../license/license.js
+    ../license/*.js
     
     [../autojoin/uoperators.aj]
 

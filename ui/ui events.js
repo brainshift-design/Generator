@@ -4,6 +4,14 @@ menuSelect.addEventListener('change', async function(e)
     {
         case 'saveLocal': saveToLocalFile('graph.gen', uiGraph.save()); break;
         case 'loadLocal': loadFromLocalFile();                          break;
-        case 'duplicate': console.log(uiGraph.save()); break;
+        case 'duplicate': console.log(uiGraph.save());                  break;
+        case 'productKey': showProductKeyDialog();                      break;
     }
+});
+
+
+
+productKeyClose.addEventListener('click', e =>
+{
+    hideProductKeyDialog();
 });
