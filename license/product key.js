@@ -1,15 +1,17 @@
+var productKey = '';
+
+
+
 function showProductKeyDialog()
 {
     productKeyBack  .style.display = 'block';
     productKeyDialog.style.display = 'block';
 
-    console.log(currentUser);
-    //productKeyUserInfo.innerHTML = currentUser;
+    productKeyUserInfo.innerHTML = 'User ID: ' + currentUser.id;
 
     menuSelect.setSelectedIndex(0);
-    menuSelect.blur();
-
-    productKeyInput.focus();
+    
+    window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
 }
 
 
@@ -19,3 +21,10 @@ function hideProductKeyDialog()
     productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
 }
+
+
+
+productKeyBack.addEventListener('pointerdown', () =>
+{
+    hideProductKeyDialog();
+});

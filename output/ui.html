@@ -385,7 +385,7 @@ input[type=text]::selection
     height:           100%;
     overflow:         auto;
 
-    background-color: rbg(0, 0, 0, 0.5);
+    background-color: #0002
 }
 
 
@@ -398,9 +398,9 @@ input[type=text]::selection
     z-index: 2;
     position:      absolute;
     top:           60px;
-    left:          calc(50% - 100px);
-    width:         200px;
-    height:        125px;
+    left:          calc(50% - 130px);
+    width:         260px;
+    height:        170px;
     
     background:    white;
     
@@ -453,14 +453,27 @@ input[type=text]::selection
 
 #productKeyUserInfo
 {
-    font-size:     12px;
-    font-weight:   normal;
+    font-size:      12px;
 
     margin-top:     16px;
     margin-bottom:  8px;
 
-    position:      relative;
-    left:          40px;
+    position:       relative;
+    left:           40px;
+
+    user-select:    text;
+}
+
+
+#productKeyWebsite
+{
+    font-size:      12px;
+
+    margin-top:     16px;
+    margin-bottom:  8px;
+
+    position:       relative;
+    left:           71px;
 }
 
 
@@ -468,11 +481,11 @@ input[type=text]::selection
 {
     font-size:    14px;
     
-    width:         9em;
-    padding-left:  6px;
+    width:         10em;
+    padding-left:  10px;
 
     position:     relative;
-    left:         37px;
+    left:         calc(50% - 5em);
 }
 
 
@@ -663,7 +676,8 @@ input[type=text]::selection
     
     <div id='productKeyBody'>
         <div id='productKeyUserInfo'>Some user info</div>
-        <input type='text' id='productKeyInput' />
+        <input type='text' id='productKeyInput' tabindex='0' />
+        <div id='productKeyWebsite'>Get subscription at<br/><a href='http://www.bourt.com/generator' target='_blank'>bourt.com/generator</a></div>
     </div>
 
 </div>
@@ -5385,18 +5399,20 @@ function hashLicenseName(name, nBytes)
 }
 
 
+var productKey = '';
+
+
+
 function showProductKeyDialog()
 {
     productKeyBack  .style.display = 'block';
     productKeyDialog.style.display = 'block';
 
-    console.log(currentUser);
-    //productKeyUserInfo.innerHTML = currentUser;
+    productKeyUserInfo.innerHTML = 'User ID: ' + currentUser.id;
 
     menuSelect.setSelectedIndex(0);
-    menuSelect.blur();
-
-    productKeyInput.focus();
+    
+    window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
 }
 
 
@@ -5406,6 +5422,13 @@ function hideProductKeyDialog()
     productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
 }
+
+
+
+productKeyBack.addEventListener('pointerdown', () =>
+{
+    hideProductKeyDialog();
+});
 
 
 class UParameter
@@ -9444,6 +9467,7 @@ function initMenuSelect(select, items)
 
     select.holding = false;
 
+    select.enableChangeEvent = true;
 
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -9599,16 +9623,16 @@ function initMenuSelect(select, items)
 
 
 
-    select.getSelectedIndex = function()
+    select.getSelectedValue = function()
     {
-        return select.items.findIndex(item => item.value == select.value);
+        return select.items[select.getSelectedIndex()].value;
     };        
 
 
 
-    select.getSelectedValue = function()
+    select.getSelectedIndex = function()
     {
-        return select.items[select.getSelectedIndex()].value;
+        return select.items.findIndex(item => item.value == select.value);
     };        
 
 
@@ -9624,26 +9648,36 @@ function initMenuSelect(select, items)
 
     select.setSelectedIndex = function(index)
     {
-        select.value = select.items[index];
+        select.value = select.items[index].value;
         select.update(select.getSelectedIndex());
+        
+        select.enableChangeEvent = false;
         select.dispatchChangeEvent();
+        select.enableChangeEvent = true;
     };
 
 
 
     select.dispatchChangeEvent = function()
     {
+        if (!select.enableChangeEvent)
+            return;
+    
+        let index = select.getSelectedIndex();
+    
         const onchange = new Event('change', 
         {
-            selectedIndex: select.getSelectedIndex(),
-            selectedValue: select.items[select.getSelectedIndex()].value
+            selectedIndex: index,
+            selectedValue: select.items[index].value
         });
 
         select.dispatchEvent(onchange);
     };
 
 
+
     //////////////////////////////////////////////////////////////////////////////////
+
 
     
     select.items = items;

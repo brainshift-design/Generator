@@ -8,6 +8,7 @@ function initMenuSelect(select, items)
 
     select.holding = false;
 
+    select.enableChangeEvent = true;
 
     
     //////////////////////////////////////////////////////////////////////////////////
@@ -163,16 +164,16 @@ function initMenuSelect(select, items)
 
 
 
-    select.getSelectedIndex = function()
+    select.getSelectedValue = function()
     {
-        return select.items.findIndex(item => item.value == select.value);
+        return select.items[select.getSelectedIndex()].value;
     };        
 
 
 
-    select.getSelectedValue = function()
+    select.getSelectedIndex = function()
     {
-        return select.items[select.getSelectedIndex()].value;
+        return select.items.findIndex(item => item.value == select.value);
     };        
 
 
@@ -188,26 +189,36 @@ function initMenuSelect(select, items)
 
     select.setSelectedIndex = function(index)
     {
-        select.value = select.items[index];
+        select.value = select.items[index].value;
         select.update(select.getSelectedIndex());
+        
+        select.enableChangeEvent = false;
         select.dispatchChangeEvent();
+        select.enableChangeEvent = true;
     };
 
 
 
     select.dispatchChangeEvent = function()
     {
+        if (!select.enableChangeEvent)
+            return;
+    
+        let index = select.getSelectedIndex();
+    
         const onchange = new Event('change', 
         {
-            selectedIndex: select.getSelectedIndex(),
-            selectedValue: select.items[select.getSelectedIndex()].value
+            selectedIndex: index,
+            selectedValue: select.items[index].value
         });
 
         select.dispatchEvent(onchange);
     };
 
 
+
     //////////////////////////////////////////////////////////////////////////////////
+
 
     
     select.items = items;
