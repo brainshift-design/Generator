@@ -54,12 +54,14 @@ onmessage = e =>
 
 
 
-function uiNotify(text)
+function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 {
     parent.postMessage({ pluginMessage:
     { 
-        cmd: 'notify',
-        text: text
+        cmd:   'notify',
+        text:   text,
+        prefix: prefix,
+        delay:  delay
     }}, '*');        
 }    
 

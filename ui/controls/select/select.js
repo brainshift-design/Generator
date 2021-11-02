@@ -136,8 +136,8 @@ function initSelect(select, items)
         
         menuTop = Math.min(Math.max(8, menuTop), document.body.clientHeight - 8 - select.menu.offsetHeight);
         
-        select.menu     .style.top = menuTop;
-        select.check    .style.top = 7 + 4 + iy * 24;
+        select.menu .style.top = menuTop;
+        select.check.style.top = 7 + 4 + iy * 24;
         
         select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
     };

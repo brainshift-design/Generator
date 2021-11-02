@@ -9,8 +9,10 @@
 ../html/ui_2.html
 
     [../autojoin/core.aj]
+
     ../core/storage.js
     ../core/crypto.js
+    ../core/base32.js
     
     ../license/*.js
     

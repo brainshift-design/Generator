@@ -78,8 +78,13 @@ function getNumberString(num, dec)
 
 function removeFrom(array, item)
 {
-    var index = array.indexOf(item);
+    removeAt(array, array.indexOf(item));
+}
 
+
+
+function removeAt(array, index)
+{
     if (index > -1)
         array.splice(index, 1)
 }

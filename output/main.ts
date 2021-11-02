@@ -26,7 +26,7 @@ figma.ui.onmessage = msg =>
         case 'resizeWindow':      resizeWindow(msg);                 break; 
         case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds);    break; 
         case 'updateObjects':     updateObjects(msg);                break;
-        case 'notify':            notify(msg.text);                  break;
+        case 'notify':            notify(msg.text, msg.delay);       break;
     }
 };
 
@@ -153,9 +153,9 @@ function postToGenerator(msg)
 
 
 
-function notify(text)
+function notify(text, delay)
 {
-    figma.notify('Generator: ' + text);
+    figma.notify('Generator: ' + text, { timeout: delay });
 }
 
 

@@ -20,7 +20,7 @@ input[type=text]:hover
 input[type=text]:focus
 {
     box-shadow: 0 0 0 2px #18A0FB;
-    outline: none;
+    outline:    none;
 }
 
 

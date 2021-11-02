@@ -37,7 +37,7 @@ figma.ui.onmessage = msg => {
             updateObjects(msg);
             break;
         case 'notify':
-            notify(msg.text);
+            notify(msg.text, msg.delay);
             break;
     }
 };
@@ -118,8 +118,8 @@ function postToGenerator(msg) {
         msg: msg
     });
 }
-function notify(text) {
-    figma.notify('Generator: ' + text);
+function notify(text, delay) {
+    figma.notify('Generator: ' + text, { timeout: delay });
 }
 function deleteNodeObjects(nodeIds) {
     for (const nodeId of nodeIds) {
