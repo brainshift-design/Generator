@@ -1,6 +1,7 @@
 //save('state', null);
 //save('windowWidth', null);
 //save('windowHeight', null);
+//uiSaveLocal('productKey', null);
 
 
 var currentUser = '';
@@ -8,19 +9,6 @@ var currentUser = '';
 
 
 const uiGraph = new UGraph();
-
-
-
-initMenuSelect(menuSelect,
-[
-    {value: 'graph0',     text: 'Untitled'},
-    {value: 'new',        text: 'New graph'},
-    {value: 'loadLocal',  text: 'Load from file'},
-    {value: 'duplicate',  text: 'Duplicate'},
-    {value: 'saveLocal',  text: 'Save local copy'},
-    {value: 'delete',     text: 'Delete'},
-    {value: 'productKey', text: 'Enter product key'}
-]);    
 
 
 
@@ -42,15 +30,38 @@ onmessage = e =>
             generator.postMessage(msg.msg); 
             break;
 
-        case 'loadState':
-            currentUser = msg.currentUser;
+        case 'endLoadState':
+            uiEndLoadState(msg);
             break;
-
+            
         // case 'updatePanAndZoom':    
         //     graphView.updatePanAndZoom();
         //     break;
+        }    
     }    
-}    
+    
+    
+    
+function uiEndLoadState(msg)
+{
+    currentUser = msg.currentUser;
+
+    productKey  = msg.productKey;
+    let menuSelectItems = 
+    [
+        {value: 'graph0',     text: 'Untitled'},
+        {value: 'new',        text: 'New graph'},
+        {value: 'loadLocal',  text: 'Load from file'},
+        {value: 'duplicate',  text: 'Duplicate'},
+        {value: 'saveLocal',  text: 'Save local copy'},
+        {value: 'delete',     text: 'Delete'}
+    ];
+    
+    if (!validateProductKey(currentUser.id, productKey))
+        menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
+    
+    initMenuSelect(menuSelect, menuSelectItems);
+}
 
 
 

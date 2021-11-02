@@ -7,9 +7,10 @@ function showProductKeyDialog()
     productKeyBack  .style.display = 'block';
     productKeyDialog.style.display = 'block';
 
-    productKeyUserInfo.innerHTML = '<span style="user-select: none;">User ID: </span>' + currentUser.id;
+    productKeyUserInfo.innerHTML = '<span style="user-select: none; color: #aaa;">User ID: </span>' + currentUser.id;
 
     setDefaultProductKeyInput();
+    productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value = '';
     
     menuSelect.setSelectedIndex(0);
@@ -43,13 +44,19 @@ productKeyInput.addEventListener('input', () =>
     val = val.substring(0, Math.min(val.length, 13));
     
     productKeyInput.value = val;
-    
+
+    productKeyInputBack.innerHTML = 
+          '&nbsp;'.repeat(val.length)
+        + '•'.repeat(13 - val.length);
+
     
     if (val.length == 13)
     {
         if (validateProductKey(currentUser.id, val))
         {
             productKey = val;        
+            uiSaveLocal('productKey', productKey);
+            
             productKeyInput.blur();
             setGoodProductKeyInput();
             
@@ -61,7 +68,7 @@ productKeyInput.addEventListener('input', () =>
                 removeAt(menuSelect.items, index);
                 menuSelect.updateItems();
 
-                uiNotify('Thank you for subscribing!', 6000);    
+                uiNotify('Thank you for subscribing to Generator!', '', 6000);    
             }, 
             1200);
         }
@@ -85,7 +92,7 @@ function setBadProductKeyInput()
 function setGoodProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px #0c0';
+    productKeyInput.style.boxShadow = '0 0 0 2px #0b0';
 }
 
 

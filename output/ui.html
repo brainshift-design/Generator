@@ -399,7 +399,7 @@ input[type=text]::selection
     position:      absolute;
     top:           60px;
     left:          calc(50% - 130px);
-    width:         260px;
+    width:         220px;
     height:        170px;
     
     background:    white;
@@ -456,10 +456,10 @@ input[type=text]::selection
     font-size:      12px;
 
     margin-top:     16px;
-    margin-bottom:  8px;
+    margin-bottom:  12px;
 
     position:       relative;
-    left:           40px;
+    left:           21px;
 
     user-select:    text;
 }
@@ -471,22 +471,44 @@ input[type=text]::selection
     text-align:     center;
 
     margin-top:     16px;
-    margin-bottom:  8px;
+    margin-bottom:   8px;
 }
 
 
 #productKeyInput
 {
     font-family:  'Roboto Mono';
-    font-size:    16px;
-    
-    width:         9em;
+    font-size:     16px;
+     
+    width:         calc(9em + 1px);
     padding-left:  10px;
     padding-top:   -2px;
     padding-bottom: 2px;
 
-    position:     relative;
-    left:         calc(50% - 4.5em);
+    margin-bottom: -3px;
+
+    position:      relative;
+    left:          calc(50% - 4.5em);
+}
+
+
+
+#productKeyInputBack
+{
+    font-family:   'Roboto Mono';
+    font-size:      16px;
+    color:          #ddd;
+    
+    width:           9em;
+    padding-left:   10px;
+    padding-top:    -2px;
+    padding-bottom:  2px;
+
+    position:       absolute;
+    left:           calc(calc(50% - 4.5em) + 2px);
+    top:            calc(50% + 2px);
+
+    pointer-events: none;
 }
 
 
@@ -678,7 +700,8 @@ input[type=text]::selection
     <div id='productKeyBody'>
         <div id='productKeyUserInfo'></div>
         <input type='text' id='productKeyInput' />
-        <div id='productKeyWebsite'>Get subscription at<br/><a href='http://www.bourt.com/generator' target='_blank'>bourt.com/generator</a></div>
+        <div id='productKeyInputBack'></div>
+        <div id='productKeyWebsite'>Get product key at<br/><a href='http://www.bourt.com/generator' target='_blank'>bourt.com/generator</a></div>
     </div>
 
 </div>
@@ -5157,7 +5180,7 @@ function loadState(state)
 }    
 
 
-function setPluginData(key, value)
+function uiSetPluginData(key, value)
 {
     parent.postMessage({ pluginMessage:
     { 
@@ -5168,13 +5191,38 @@ function setPluginData(key, value)
 }
 
 
-function saveState()
+
+function uiSetPluginData(key, value)
 {
-    setPluginData('state',
-    {
-        //windowHeight: window.innerHeight
-    });
+    parent.postMessage({ pluginMessage:
+    { 
+        cmd:  'setPluginData', 
+        key:   key,
+        value: value
+    }}, '*');
 }
+
+
+
+function uiSaveLocal(key, value)
+{
+    parent.postMessage({ pluginMessage:
+    { 
+        cmd:  'saveLocal', 
+        key:   key,
+        value: value
+    }}, '*');
+}
+
+
+
+// function saveState()
+// {
+//     uiSetPluginData('state',
+//     {
+//         //windowHeight: window.innerHeight
+//     });
+// }
 
 
 const cryptoModulusSize     = 64;
@@ -5588,9 +5636,10 @@ function showProductKeyDialog()
     productKeyBack  .style.display = 'block';
     productKeyDialog.style.display = 'block';
 
-    productKeyUserInfo.innerHTML = '<span style="user-select: none;">User ID: </span>' + currentUser.id;
+    productKeyUserInfo.innerHTML = '<span style="user-select: none; color: #aaa;">User ID: </span>' + currentUser.id;
 
     setDefaultProductKeyInput();
+    productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value = '';
     
     menuSelect.setSelectedIndex(0);
@@ -5624,13 +5673,19 @@ productKeyInput.addEventListener('input', () =>
     val = val.substring(0, Math.min(val.length, 13));
     
     productKeyInput.value = val;
-    
+
+    productKeyInputBack.innerHTML = 
+          '&nbsp;'.repeat(val.length)
+        + '•'.repeat(13 - val.length);
+
     
     if (val.length == 13)
     {
         if (validateProductKey(currentUser.id, val))
         {
             productKey = val;        
+            uiSaveLocal('productKey', productKey);
+            
             productKeyInput.blur();
             setGoodProductKeyInput();
             
@@ -5642,7 +5697,7 @@ productKeyInput.addEventListener('input', () =>
                 removeAt(menuSelect.items, index);
                 menuSelect.updateItems();
 
-                uiNotify('Thank you for subscribing!', 6000);    
+                uiNotify('Thank you for subscribing to Generator!', '', 6000);    
             }, 
             1200);
         }
@@ -5666,7 +5721,7 @@ function setBadProductKeyInput()
 function setGoodProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px #0c0';
+    productKeyInput.style.boxShadow = '0 0 0 2px #0b0';
 }
 
 
@@ -7922,6 +7977,7 @@ extends Action
 //save('state', null);
 //save('windowWidth', null);
 //save('windowHeight', null);
+//uiSaveLocal('productKey', null);
 
 
 var currentUser = '';
@@ -7929,19 +7985,6 @@ var currentUser = '';
 
 
 const uiGraph = new UGraph();
-
-
-
-initMenuSelect(menuSelect,
-[
-    {value: 'graph0',     text: 'Untitled'},
-    {value: 'new',        text: 'New graph'},
-    {value: 'loadLocal',  text: 'Load from file'},
-    {value: 'duplicate',  text: 'Duplicate'},
-    {value: 'saveLocal',  text: 'Save local copy'},
-    {value: 'delete',     text: 'Delete'},
-    {value: 'productKey', text: 'Enter product key'}
-]);    
 
 
 
@@ -7963,15 +8006,38 @@ onmessage = e =>
             generator.postMessage(msg.msg); 
             break;
 
-        case 'loadState':
-            currentUser = msg.currentUser;
+        case 'endLoadState':
+            uiEndLoadState(msg);
             break;
-
+            
         // case 'updatePanAndZoom':    
         //     graphView.updatePanAndZoom();
         //     break;
+        }    
     }    
-}    
+    
+    
+    
+function uiEndLoadState(msg)
+{
+    currentUser = msg.currentUser;
+
+    productKey  = msg.productKey;
+    let menuSelectItems = 
+    [
+        {value: 'graph0',     text: 'Untitled'},
+        {value: 'new',        text: 'New graph'},
+        {value: 'loadLocal',  text: 'Load from file'},
+        {value: 'duplicate',  text: 'Duplicate'},
+        {value: 'saveLocal',  text: 'Save local copy'},
+        {value: 'delete',     text: 'Delete'}
+    ];
+    
+    if (!validateProductKey(currentUser.id, productKey))
+        menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
+    
+    initMenuSelect(menuSelect, menuSelectItems);
+}
 
 
 

@@ -1,0 +1,26 @@
+function resizeWindow(msg)
+{
+    var width  = Math.floor(Math.max(0, msg.width ));
+    var height = Math.floor(Math.max(0, msg.height));
+
+    figma.ui.resize(width, height);
+
+    figma.clientStorage.setAsync('windowWidth',  width);
+    figma.clientStorage.setAsync('windowHeight', height);
+
+    //figma.ui.postMessage({cmd: 'updatePanAndZoom'});
+}
+
+
+
+function onPluginClose()
+{
+    deleteAllObjects();
+}
+
+
+
+function notify(text, prefix, delay)
+{
+    figma.notify(prefix + text, { timeout: delay });
+}

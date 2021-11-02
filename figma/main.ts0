@@ -20,13 +20,13 @@ figma.ui.onmessage = msg =>
 {
     switch (msg.cmd)
     {
-        case 'saveLocal':         saveLocal    (msg.key, msg.value); break;
-        case 'setPluginData':     setPluginData(msg.key, msg.value); break;
-        case 'loadState':         loadState(msg);                    break;
-        case 'resizeWindow':      resizeWindow(msg);                 break; 
-        case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds);    break; 
-        case 'updateObjects':     updateObjects(msg);                break;
-        case 'notify':            notify(msg.text, msg.delay);       break;
+        case 'saveLocal':         saveLocal    (msg.key, msg.value);       break;
+        case 'setPluginData':     setPluginData(msg.key, msg.value);       break;
+        case 'loadState':         loadState(msg);                          break;
+        case 'resizeWindow':      resizeWindow(msg);                       break; 
+        case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds);          break; 
+        case 'updateObjects':     updateObjects(msg);                      break;
+        case 'notify':            notify(msg.text, msg.prefix, msg.delay); break;
     }
 };
 
@@ -46,9 +46,10 @@ function loadState(msg)
         if (state == null) state = {};
         // ...
 
+
         // resize window
-        var wndWidth  = await figma.clientStorage.getAsync('windowWidth');
-        var wndHeight = await figma.clientStorage.getAsync('windowHeight');
+        const wndWidth  = await figma.clientStorage.getAsync('windowWidth');
+        const wndHeight = await figma.clientStorage.getAsync('windowHeight');
 
         if (wndWidth  == null) wndWidth  = 400;
         if (wndHeight == null) wndHeight = 300;
@@ -57,9 +58,16 @@ function loadState(msg)
             Math.max(0, wndWidth),
             Math.max(0, wndHeight));
 
+        // load product key
+        let productKey = await loadLocal('productKey');
+        if (productKey == null) productKey = '';
+
+
+        // end load state
         figma.ui.postMessage({
-            cmd:        'loadState',
-            currentUser: figma.currentUser });
+            cmd:        'endLoadState',
+            currentUser: figma.currentUser,
+            productKey:  productKey });
     })();
 }
 
@@ -72,24 +80,16 @@ function saveLocal(key, value)
 
 
 
-function setPluginData(key, value)
+async function loadLocal(key)
 {
-    figma.currentPage.setPluginData(key, value);
+    return await figma.clientStorage.getAsync(key); 
 }
 
 
 
-function resizeWindow(msg)
+function setPluginData(key, value)
 {
-    var width  = Math.floor(Math.max(0, msg.width ));
-    var height = Math.floor(Math.max(0, msg.height));
-
-    figma.ui.resize(width, height);
-
-    figma.clientStorage.setAsync('windowWidth',  width);
-    figma.clientStorage.setAsync('windowHeight', height);
-
-    //figma.ui.postMessage({cmd: 'updatePanAndZoom'});
+    figma.currentPage.setPluginData(key, value);
 }
 
 
@@ -113,47 +113,10 @@ function objTypeString(type)
 
 
 
-function onSelectionChange()
-{
-    /*  Every time a selection changes, check that all objects in the object table
-        still exist in the canvas. If not, remove the pointer from the object table.  
-        
-        NOTE: at this point I don't know if objects are deleted by the API, but then again,
-        only one plugin runs at a time right now, so maybe it's not an issue.  */
-
-
-    for (let i = 0; i < objNodes.length; i++)
-    {
-        for (let j = 0; j < objNodes[i].length; j++)
-        {
-            if (!objNodes[i][j]) continue;
-
-            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
-            if (!exists) objNodes[i][j] = null;
-        }
-    }
-}
-
-
-
-function onPluginClose()
-{
-    deleteAllObjects();
-}
-
-
-
 function postToGenerator(msg)
 {
     figma.ui.postMessage({
         cmd: 'forwardToGen',
         msg:  msg
     });
-}
-
-
-
-function notify(text, delay)
-{
-    figma.notify('Generator: ' + text, { timeout: delay });
 }
