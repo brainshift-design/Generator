@@ -177,8 +177,8 @@ function loadState(msg) {
                 state = {};
             // ...
             // resize window
-            const wndWidth = yield figma.clientStorage.getAsync('windowWidth');
-            const wndHeight = yield figma.clientStorage.getAsync('windowHeight');
+            let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
+            let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
             if (wndWidth == null)
                 wndWidth = 400;
             if (wndHeight == null)
@@ -238,6 +238,6 @@ function resizeWindow(msg) {
 function onPluginClose() {
     deleteAllObjects();
 }
-function notify(text, prefix, delay) {
+function notify(text, prefix = 'Generator ', delay = 400) {
     figma.notify(prefix + text, { timeout: delay });
 }

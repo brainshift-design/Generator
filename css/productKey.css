@@ -21,7 +21,7 @@
 
     font-family:   Inter;
 
-    z-index: 2;
+    z-index:       2;
     position:      absolute;
     top:           60px;
     left:          calc(50% - 130px);
@@ -131,7 +131,7 @@
     padding-bottom:  2px;
 
     position:       absolute;
-    left:           calc(calc(50% - 4.5em) + 2px);
+    left:           calc(calc(50% - 4.5em) + 1px);
     top:            calc(50% + 2px);
 
     pointer-events: none;

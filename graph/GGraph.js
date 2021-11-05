@@ -8,6 +8,13 @@ class GGraph
 
     
 
+    clear()
+    {
+        this.notes = [];
+    }
+
+
+
     createNode(opType)
     {
         var node;

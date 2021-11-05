@@ -11,6 +11,29 @@ function initSelect(select, items)
     
     //////////////////////////////////////////////////////////////////////////////////
     
+
+
+    select.initMenu = function()
+    {
+        select.check = document.createElement('DIV');
+        
+        select.check.style.width    = 16;
+        select.check.style.height   = 16;
+        select.check.style.position = 'absolute';
+        select.check.style.left     = 8;
+        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
+    };
+
+
+
+    select.resetMenu = function()
+    {
+        clearChildren(select.menuWrap);
+        select.menuWrap.appendChild(select.check);
+    };  
+
+
+
     select.updateItems = function()
     {
         select.resetMenu();
@@ -153,24 +176,6 @@ function initSelect(select, items)
     
 
     
-    select.resetMenu = function()
-    {
-        clearChildren(select.menuWrap);
-        
-
-        select.check = document.createElement('DIV');
-        
-        select.check.style.width    = 16;
-        select.check.style.height   = 16;
-        select.check.style.position = 'absolute';
-        select.check.style.left     = 8;
-        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
-
-        select.menuWrap.appendChild(select.check);
-    };  
-
-
-
     select.getSelectedIndex = function()
     {
         return select.items.findIndex(item => item.value == select.value);

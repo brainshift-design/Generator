@@ -1,16 +1,16 @@
 class DeleteNodesAction
 extends Action
 {
-    nodes       = [];
+    nodeIds     = [];
     connections = [];
 
 
 
-    constructor(nodes)
+    constructor(nodeIds)
     {
         super('Delete nodes');
         
-        this.nodes = [...nodes]; // clone the array
+        this.nodeIds = [...nodeIds]; // clone the array
     }
 
 
@@ -18,14 +18,14 @@ extends Action
     do()
     {
         // TODO remember and remove the connections
-        uiDeleteNodes(this.nodes, this.id);
+        uiDeleteNodes(this.nodeIds, this.id);
     }
 
 
 
     undo()
     {
-        uiUndeleteNodes(this.nodes);
+        uiUndeleteNodes(this.nodeIds);
         // TODO restore connections
     }
 }

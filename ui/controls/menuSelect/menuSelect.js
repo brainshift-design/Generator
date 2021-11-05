@@ -1,22 +1,51 @@
-function initMenuSelect(select, items)
+function initMenuSelect(select)
 {
     select.className = 'menuSelect';
     select.tabIndex  = 0;    
     
-    initMenuSelectMenu(select);
+    initMenuSelectMenu   (select);
     initMenuSelectTextbox(select);
 
     select.holding = false;
 
     select.enableChangeEvent = true;
 
+
     
     //////////////////////////////////////////////////////////////////////////////////
     
-    select.updateItems = function()
+
+
+    select.initMenu = function()
+    {
+        select.check = document.createElement('DIV');
+        
+        select.check.style.width    = 16;
+        select.check.style.height   = 16;
+        select.check.style.position = 'absolute';
+        select.check.style.left     = 8;
+        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
+    };
+
+
+
+    select.resetMenu = function()
+    {
+        clearChildren(select.menuWrap);
+        select.menuWrap.appendChild(select.check);
+    };  
+
+
+
+    select.updateItems = function(items)
     {
         select.resetMenu();
         
+        
+        select.items = items;
+        select.update(0);
+
+
         for (let i = 0; i < select.items.length; i++)
         {
             let item = document.createElement('DIV');
@@ -32,14 +61,15 @@ function initMenuSelect(select, items)
             sub .style.top         = '50%';
             sub .style.transform   = 'translateY(-50%)';
             
-            item.style.border = 'none';
-            item.style.height = 24;
+            item.style.border      = 'none';
+            item.style.height      = 24;
 
             item.disabled = false;
 
             sub.innerHTML = select.items[i].text;
 
             item.appendChild(sub);
+
             select.menuWrap.appendChild(item);
         }
     };
@@ -146,24 +176,6 @@ function initMenuSelect(select, items)
     
 
     
-    select.resetMenu = function()
-    {
-        clearChildren(select.menuWrap);
-        
-
-        select.check = document.createElement('DIV');
-        
-        select.check.style.width    = 16;
-        select.check.style.height   = 16;
-        select.check.style.position = 'absolute';
-        select.check.style.left     = 8;
-        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
-
-        select.menuWrap.appendChild(select.check);
-    };  
-
-
-
     select.getSelectedValue = function()
     {
         return select.items[select.getSelectedIndex()].value;
@@ -214,15 +226,4 @@ function initMenuSelect(select, items)
 
         select.dispatchEvent(onchange);
     };
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-
-    
-    select.items = items;
-    
-    select.update(0);
-    select.updateItems();
 }

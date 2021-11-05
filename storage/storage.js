@@ -36,15 +36,24 @@ function loadFromLocalFile()
 
 
 
-function loadGraphFromFile(file)
+function loadGraphFromFile(file, graph)
 {
     const reader = new FileReader();
 
-    reader.onload = () => 
+    reader.onload = () =>
     {
-        console.log(reader.result);
-        // clear uiGraph
+        uiGraph.clear();
+
+        
         // load file contents
+        
+        let load = JSON.parse(reader.result);
+
+        for (const nodeInfo of load.nodes)
+        {
+            let node = uiCreateNode(nodeInfo.type, false);
+            node.name = nodeInfo.name;
+        }
     };
 
     reader.readAsText(file);

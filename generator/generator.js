@@ -25,6 +25,13 @@ onmessage = function(e)
 
 
 
+function genClearGraph()
+{
+    genGraph.clear();
+}
+
+
+
 function genCreateNode(type, id, name)
 {
     const node = genGraph.createNode(type);
@@ -149,7 +156,7 @@ function genGenerateObjects(nodeIds)
 {
     for (const node of genGraph.nodes)
         node.reset();
-        
+
 
     // first determine number of objects
 

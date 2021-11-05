@@ -63,12 +63,8 @@ productKeyInput.addEventListener('input', () =>
             window.setTimeout(() => 
             {
                 hideProductKeyDialog();
-                
-                let index = menuSelect.items.findIndex(item => item.value == 'productKey');
-                removeAt(menuSelect.items, index);
-                menuSelect.updateItems();
-
-                uiNotify('Thank you for subscribing to Generator!', '', 6000);    
+                updateMenuSelectItems();
+                uiNotify('✨ Thank you for subscribing to Generator! ✨', '', 6000);    
             }, 
             1200);
         }

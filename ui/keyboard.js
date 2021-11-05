@@ -3,7 +3,7 @@ document.addEventListener('keydown', e =>
     // delete
     if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected)); 
+        actionManager.do(new DeleteNodesAction(graphView.selected));
         graphView._selected = [];
     }
 
@@ -22,7 +22,7 @@ document.addEventListener('keydown', e =>
         else            actionManager.undo();
     }
 
-    // 
+    //
     else if (e.code == 'Minus')
     {
         graphView.zoom /= 2;

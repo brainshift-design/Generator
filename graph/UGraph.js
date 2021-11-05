@@ -1,14 +1,21 @@
 class UGraph
 {
-    nodes = [];
-    
-    
-    mutex = false;
+    name         = 'Untitled';
+    nodes        = [];
+           
+    mutex        = false;
 
     deferNodeIds = [];
 
 
     
+    clear()
+    {
+        this.notes = [];
+    }
+
+
+
     getNewNodeName(_node)
     {
         let opType = _node.opType;
@@ -230,6 +237,7 @@ class UGraph
 
         let save = 
               '{\n'
+            + tab + '"name" : "' + this.name       + '",\n'
             + tab + '"zoom" : "' + graphView.zoom  + '",\n'
             + tab + '"pan-x": "' + graphView.pan.x + '",\n'
             + tab + '"pan-y": "' + graphView.pan.y + '",\n'
@@ -237,45 +245,45 @@ class UGraph
             + tab + '[';
             
 
-            for (let i = 0; i < this.nodes.length; i++)
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            save += '\n' + this.nodes[i].save(4);
+            
+            if (i < this.nodes.length-1)
+                save += ',';
+        }
+        
+
+        save += 
+              '\n' + 
+              tab + '],\n'
+            + tab + '"connections":\n'
+            + tab + '[';
+
+            
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            let node = this.nodes[i];
+
+            for (let j = 0; j < node.inputs.length; j++)
             {
-                save += '\n' + this.nodes[i].save(4);
+                if (!node.inputs[j].connected)
+                    continue;
+
+                save += '\n' + node.inputs[j].connection.save(4);
                 
-                if (i < this.nodes.length-1)
+                if (i < node.inputs.length-1)
                     save += ',';
             }
-            
+        }
+        
 
-            save += 
-                  '\n' + 
-                  tab + '],\n'
-                + tab + '"connections":\n'
-                + tab + '[';
-
-                
-            for (let i = 0; i < this.nodes.length; i++)
-            {
-                let node = this.nodes[i];
-
-                for (let j = 0; j < node.inputs.length; j++)
-                {
-                    if (!node.inputs[j].connected)
-                        continue;
-
-                    save += '\n' + node.inputs[j].connection.save(4);
-                    
-                    if (i < node.inputs.length-1)
-                       save += ',';
-                }
-            }
-            
-
-            save += 
-                  '\n' + 
-                  tab + ']\n'
-               + '}';
+        save += 
+                '\n' + 
+                tab + ']\n'
+            + '}';
 
 
-            return save;
+        return save;
     }
 }

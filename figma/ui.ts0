@@ -20,7 +20,7 @@ function onPluginClose()
 
 
 
-function notify(text, prefix, delay)
+function notify(text, prefix = 'Generator ', delay = 400)
 {
     figma.notify(prefix + text, { timeout: delay });
 }

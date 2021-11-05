@@ -395,7 +395,7 @@ input[type=text]::selection
 
     font-family:   Inter;
 
-    z-index: 2;
+    z-index:       2;
     position:      absolute;
     top:           60px;
     left:          calc(50% - 130px);
@@ -505,7 +505,7 @@ input[type=text]::selection
     padding-bottom:  2px;
 
     position:       absolute;
-    left:           calc(calc(50% - 4.5em) + 2px);
+    left:           calc(calc(50% - 4.5em) + 1px);
     top:            calc(50% + 2px);
 
     pointer-events: none;
@@ -1906,7 +1906,7 @@ function forwardEvent(event, element)
 //         clientY: py,
 //         button:  button
 //     });
-
+//
 //     element.dispatchEvent(e);
 // }
 
@@ -2571,6 +2571,13 @@ class GGraph
     deferNodes = [];
 
     
+
+    clear()
+    {
+        this.notes = [];
+    }
+
+
 
     createNode(opType)
     {
@@ -3360,6 +3367,13 @@ onmessage = function(e)
 
 
 
+function genClearGraph()
+{
+    genGraph.clear();
+}
+
+
+
 function genCreateNode(type, id, name)
 {
     const node = genGraph.createNode(type);
@@ -3484,7 +3498,7 @@ function genGenerateObjects(nodeIds)
 {
     for (const node of genGraph.nodes)
         node.reset();
-        
+
 
     // first determine number of objects
 
@@ -4752,7 +4766,7 @@ function forwardEvent(event, element)
 //         clientY: py,
 //         button:  button
 //     });
-
+//
 //     element.dispatchEvent(e);
 // }
 
@@ -5692,12 +5706,8 @@ productKeyInput.addEventListener('input', () =>
             window.setTimeout(() => 
             {
                 hideProductKeyDialog();
-                
-                let index = menuSelect.items.findIndex(item => item.value == 'productKey');
-                removeAt(menuSelect.items, index);
-                menuSelect.updateItems();
-
-                uiNotify('Thank you for subscribing to Generator!', '', 6000);    
+                updateMenuSelectItems();
+                uiNotify('✨ Thank you for subscribing to Generator! ✨', '', 6000);    
             }, 
             1200);
         }
@@ -5892,15 +5902,22 @@ extends UParameter
 
 class UGraph
 {
-    nodes = [];
-    
-    
-    mutex = false;
+    name         = 'Untitled';
+    nodes        = [];
+           
+    mutex        = false;
 
     deferNodeIds = [];
 
 
     
+    clear()
+    {
+        this.notes = [];
+    }
+
+
+
     getNewNodeName(_node)
     {
         let opType = _node.opType;
@@ -6122,6 +6139,7 @@ class UGraph
 
         let save = 
               '{\n'
+            + tab + '"name" : "' + this.name       + '",\n'
             + tab + '"zoom" : "' + graphView.zoom  + '",\n'
             + tab + '"pan-x": "' + graphView.pan.x + '",\n'
             + tab + '"pan-y": "' + graphView.pan.y + '",\n'
@@ -6129,46 +6147,46 @@ class UGraph
             + tab + '[';
             
 
-            for (let i = 0; i < this.nodes.length; i++)
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            save += '\n' + this.nodes[i].save(4);
+            
+            if (i < this.nodes.length-1)
+                save += ',';
+        }
+        
+
+        save += 
+              '\n' + 
+              tab + '],\n'
+            + tab + '"connections":\n'
+            + tab + '[';
+
+            
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            let node = this.nodes[i];
+
+            for (let j = 0; j < node.inputs.length; j++)
             {
-                save += '\n' + this.nodes[i].save(4);
+                if (!node.inputs[j].connected)
+                    continue;
+
+                save += '\n' + node.inputs[j].connection.save(4);
                 
-                if (i < this.nodes.length-1)
+                if (i < node.inputs.length-1)
                     save += ',';
             }
-            
+        }
+        
 
-            save += 
-                  '\n' + 
-                  tab + '],\n'
-                + tab + '"connections":\n'
-                + tab + '[';
-
-                
-            for (let i = 0; i < this.nodes.length; i++)
-            {
-                let node = this.nodes[i];
-
-                for (let j = 0; j < node.inputs.length; j++)
-                {
-                    if (!node.inputs[j].connected)
-                        continue;
-
-                    save += '\n' + node.inputs[j].connection.save(4);
-                    
-                    if (i < node.inputs.length-1)
-                       save += ',';
-                }
-            }
-            
-
-            save += 
-                  '\n' + 
-                  tab + ']\n'
-               + '}';
+        save += 
+                '\n' + 
+                tab + ']\n'
+            + '}';
 
 
-            return save;
+        return save;
     }
 }
 
@@ -7781,16 +7799,16 @@ extends Action
 class DeleteNodesAction
 extends Action
 {
-    nodes       = [];
+    nodeIds     = [];
     connections = [];
 
 
 
-    constructor(nodes)
+    constructor(nodeIds)
     {
         super('Delete nodes');
         
-        this.nodes = [...nodes]; // clone the array
+        this.nodeIds = [...nodeIds]; // clone the array
     }
 
 
@@ -7798,14 +7816,14 @@ extends Action
     do()
     {
         // TODO remember and remove the connections
-        uiDeleteNodes(this.nodes, this.id);
+        uiDeleteNodes(this.nodeIds, this.id);
     }
 
 
 
     undo()
     {
-        uiUndeleteNodes(this.nodes);
+        uiUndeleteNodes(this.nodeIds);
         // TODO restore connections
     }
 }
@@ -7988,7 +8006,7 @@ const uiGraph = new UGraph();
 
 
 
-parent.postMessage({ pluginMessage: 
+parent.postMessage({ pluginMessage:
 { 
     cmd:    'loadState',
     onLoad: 'loadState'
@@ -8013,30 +8031,69 @@ onmessage = e =>
         // case 'updatePanAndZoom':    
         //     graphView.updatePanAndZoom();
         //     break;
-        }    
     }    
+}    
     
     
     
 function uiEndLoadState(msg)
 {
     currentUser = msg.currentUser;
-
     productKey  = msg.productKey;
-    let menuSelectItems = 
+
+    initMenuSelect(menuSelect);
+    menuSelect.initMenu();
+
+    updateMenuSelectItems();
+}
+
+
+
+function updateMenuSelectItems()
+{
+    let items = 
     [
-        {value: 'graph0',     text: 'Untitled'},
-        {value: 'new',        text: 'New graph'},
-        {value: 'loadLocal',  text: 'Load from file'},
-        {value: 'duplicate',  text: 'Duplicate'},
-        {value: 'saveLocal',  text: 'Save local copy'},
-        {value: 'delete',     text: 'Delete'}
+        {value: 'graph0',     text: 'Untitled'      },
+        {value: 'new',        text: 'New graph'     },
+        {value: 'loadLocal',  text: 'Load from file'}
     ];
-    
+
+    checkAddMenuItemsSave     (items);
+    checkAddMenuItemProductKey(items);
+
+    menuSelect.updateItems(items);
+}
+
+
+
+function checkAddMenuItemsSave(menuSelectItems)
+{
+    if (validateProductKey(currentUser.id, productKey))
+    {
+        menuSelectItems.push(...
+        [
+            {value: 'duplicate',  text: 'Duplicate'      },
+            {value: 'saveLocal',  text: 'Save local copy'},
+            {value: 'delete',     text: 'Delete'         } 
+        ]);
+    }
+}
+
+
+
+function checkAddMenuItemProductKey(menuSelectItems)
+{
     if (!validateProductKey(currentUser.id, productKey))
         menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
-    
-    initMenuSelect(menuSelect, menuSelectItems);
+}
+
+
+
+function removeMenuItemProductKey()
+{
+    let index = menuSelect.items.findIndex(item => item.value == 'productKey');
+    removeAt(menuSelect.items, index);
+    menuSelect.updateItems();
 }
 
 
@@ -8054,7 +8111,7 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 
 
 
-function uiCreateNode(opType, createdId = -1)
+function uiCreateNode(opType, updateUI = true, createdId = -1)
 {
     var node = uiGraph.createNode(opType, createdId);
 
@@ -8079,10 +8136,13 @@ function uiCreateNode(opType, createdId = -1)
     }
     
 
-    graphView.selected = [node];
-    graphView.putNodeOnTop(node);
+    if (updateUI)
+    {
+        graphView.selected = [node];
+        graphView.putNodeOnTop(node);
 
-    graphView.updateNodeTransform(node);
+        graphView.updateNodeTransform(node);
+    }
 
 
     return node;
@@ -8339,10 +8399,10 @@ menuSelect.addEventListener('change', async function(e)
 {
     switch (e.detail.selectedValue)
     {
-        case 'saveLocal': saveToLocalFile('graph.gen', uiGraph.save()); break;
-        case 'loadLocal': loadFromLocalFile();                          break;
-        case 'duplicate': console.log(uiGraph.save());                  break;
-        case 'productKey': showProductKeyDialog();                      break;
+        case 'saveLocal':  saveToLocalFile('graph.json'); break;
+        case 'loadLocal':  loadFromLocalFile();           break;
+        case 'duplicate':  console.log(uiGraph.save());   break;
+        case 'productKey': showProductKeyDialog();        break;
     }
 });
 
@@ -8462,7 +8522,7 @@ document.addEventListener('keydown', e =>
     // delete
     if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected)); 
+        actionManager.do(new DeleteNodesAction(graphView.selected));
         graphView._selected = [];
     }
 
@@ -8481,7 +8541,7 @@ document.addEventListener('keydown', e =>
         else            actionManager.undo();
     }
 
-    // 
+    //
     else if (e.code == 'Minus')
     {
         graphView.zoom /= 2;
@@ -9296,6 +9356,29 @@ function initSelect(select, items)
     
     //////////////////////////////////////////////////////////////////////////////////
     
+
+
+    select.initMenu = function()
+    {
+        select.check = document.createElement('DIV');
+        
+        select.check.style.width    = 16;
+        select.check.style.height   = 16;
+        select.check.style.position = 'absolute';
+        select.check.style.left     = 8;
+        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
+    };
+
+
+
+    select.resetMenu = function()
+    {
+        clearChildren(select.menuWrap);
+        select.menuWrap.appendChild(select.check);
+    };  
+
+
+
     select.updateItems = function()
     {
         select.resetMenu();
@@ -9438,24 +9521,6 @@ function initSelect(select, items)
     
 
     
-    select.resetMenu = function()
-    {
-        clearChildren(select.menuWrap);
-        
-
-        select.check = document.createElement('DIV');
-        
-        select.check.style.width    = 16;
-        select.check.style.height   = 16;
-        select.check.style.position = 'absolute';
-        select.check.style.left     = 8;
-        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
-
-        select.menuWrap.appendChild(select.check);
-    };  
-
-
-
     select.getSelectedIndex = function()
     {
         return select.items.findIndex(item => item.value == select.value);
@@ -9772,25 +9837,54 @@ function initMenuSelectTextbox(select)
 }
 
 
-function initMenuSelect(select, items)
+function initMenuSelect(select)
 {
     select.className = 'menuSelect';
     select.tabIndex  = 0;    
     
-    initMenuSelectMenu(select);
+    initMenuSelectMenu   (select);
     initMenuSelectTextbox(select);
 
     select.holding = false;
 
     select.enableChangeEvent = true;
 
+
     
     //////////////////////////////////////////////////////////////////////////////////
     
-    select.updateItems = function()
+
+
+    select.initMenu = function()
+    {
+        select.check = document.createElement('DIV');
+        
+        select.check.style.width    = 16;
+        select.check.style.height   = 16;
+        select.check.style.position = 'absolute';
+        select.check.style.left     = 8;
+        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
+    };
+
+
+
+    select.resetMenu = function()
+    {
+        clearChildren(select.menuWrap);
+        select.menuWrap.appendChild(select.check);
+    };  
+
+
+
+    select.updateItems = function(items)
     {
         select.resetMenu();
         
+        
+        select.items = items;
+        select.update(0);
+
+
         for (let i = 0; i < select.items.length; i++)
         {
             let item = document.createElement('DIV');
@@ -9806,14 +9900,15 @@ function initMenuSelect(select, items)
             sub .style.top         = '50%';
             sub .style.transform   = 'translateY(-50%)';
             
-            item.style.border = 'none';
-            item.style.height = 24;
+            item.style.border      = 'none';
+            item.style.height      = 24;
 
             item.disabled = false;
 
             sub.innerHTML = select.items[i].text;
 
             item.appendChild(sub);
+
             select.menuWrap.appendChild(item);
         }
     };
@@ -9920,24 +10015,6 @@ function initMenuSelect(select, items)
     
 
     
-    select.resetMenu = function()
-    {
-        clearChildren(select.menuWrap);
-        
-
-        select.check = document.createElement('DIV');
-        
-        select.check.style.width    = 16;
-        select.check.style.height   = 16;
-        select.check.style.position = 'absolute';
-        select.check.style.left     = 8;
-        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
-
-        select.menuWrap.appendChild(select.check);
-    };  
-
-
-
     select.getSelectedValue = function()
     {
         return select.items[select.getSelectedIndex()].value;
@@ -9988,17 +10065,6 @@ function initMenuSelect(select, items)
 
         select.dispatchEvent(onchange);
     };
-
-
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-
-    
-    select.items = items;
-    
-    select.update(0);
-    select.updateItems();
 }
 
 
@@ -10928,15 +10994,24 @@ function loadFromLocalFile()
 
 
 
-function loadGraphFromFile(file)
+function loadGraphFromFile(file, graph)
 {
     const reader = new FileReader();
 
-    reader.onload = () => 
+    reader.onload = () =>
     {
-        console.log(reader.result);
-        // clear uiGraph
+        uiGraph.clear();
+
+        
         // load file contents
+        
+        let load = JSON.parse(reader.result);
+
+        for (const nodeInfo of load.nodes)
+        {
+            let node = uiCreateNode(nodeInfo.type, false);
+            node.name = nodeInfo.name;
+        }
     };
 
     reader.readAsText(file);

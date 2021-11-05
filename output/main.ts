@@ -246,8 +246,8 @@ function loadState(msg)
 
 
         // resize window
-        const wndWidth  = await figma.clientStorage.getAsync('windowWidth');
-        const wndHeight = await figma.clientStorage.getAsync('windowHeight');
+        let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
+        let wndHeight = await figma.clientStorage.getAsync('windowHeight');
 
         if (wndWidth  == null) wndWidth  = 400;
         if (wndHeight == null) wndHeight = 300;
@@ -343,7 +343,7 @@ function onPluginClose()
 
 
 
-function notify(text, prefix, delay)
+function notify(text, prefix = 'Generator ', delay = 400)
 {
     figma.notify(prefix + text, { timeout: delay });
 }
