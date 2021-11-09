@@ -19,8 +19,8 @@ extends GOperator
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
         this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
 
-        this.output.addEventListener('connect',    () => postMessage({msg: 'resetNode', nodeId: this.id}));
-        this.output.addEventListener('disconnect', () => postMessage({msg: 'resetNode', nodeId: this.id}));
+        // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
+        // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
     }
 
 

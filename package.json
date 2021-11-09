@@ -1,7 +1,7 @@
 {
   "name": "Generator",
   "version": "1.0.0",
-  "description": "Generative design inside Figma",
+  "description": "Generative design for Figma",
   "main": "output/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.json"

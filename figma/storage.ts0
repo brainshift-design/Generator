@@ -1,0 +1,18 @@
+async function figLoadLocal(key)
+{
+    return await figma.clientStorage.getAsync(key); 
+}
+
+
+
+function figSaveLocal(key, value)
+{
+    figma.clientStorage.setAsync(key, value); 
+}
+
+
+
+function figSetPluginData(key, value)
+{
+    figma.currentPage.setPluginData(key, value);
+}

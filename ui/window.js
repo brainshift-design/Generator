@@ -14,12 +14,11 @@ function resizeWindow(width, height)
 {
     graphView.updatePanAndZoom();
 
-    parent.postMessage({ pluginMessage: 
-    { 
+    uiPostMessageToFigma({ 
         cmd:   'resizeWindow', 
         width:  width,
         height: height
-    }}, '*');
+    });
 }
 
 

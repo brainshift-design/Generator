@@ -1,24 +1,5 @@
-//save('state', null);
-//save('windowWidth', null);
-//save('windowHeight', null);
-//uiSaveLocal('productKey', null);
-
-
-var currentUser = '';
-
-
-
-const uiGraph = new UGraph();
-
-
-
-parent.postMessage({ pluginMessage:
-{ 
-    cmd:    'loadState',
-    onLoad: 'loadState'
-}}, '*');    
-
-
+// --> from Figma
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 onmessage = e =>
 {
@@ -26,22 +7,54 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'forwardToGen': 
-            generator.postMessage(msg.msg); 
-            break;
-
-        case 'endLoadState':
-            uiEndLoadState(msg);
-            break;
-            
-        // case 'updatePanAndZoom':    
-        //     graphView.updatePanAndZoom();
-        //     break;
+        case 'uiForwardToGen': uiPostMessageToGenerator(msg.msg); break;
+        case 'uiEndLoadState': uiEndLoadState          (msg);     break;
+        //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom(); break;
     }    
 }    
-    
-    
-    
+  
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// from Generator <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+generator.onmessage = function(e)
+{
+    switch (e.data.msg)
+    {
+        case 'uiMakeActive':      uiMakeActive     (e.data.nodeIds);                            break;
+        case 'uiShowParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
+        case 'uiUpdateObjects':   uiUpdateObjects  (e.data.objects);                            break;
+        case 'uiGenerateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// <-- to Figma
+function uiPostMessageToFigma(msg)
+{
+    parent.postMessage({ pluginMessage: msg }, '*');    
+}
+
+
+
+// to Generator -->
+function uiPostMessageToGenerator(msg)
+{
+    generator.postMessage(msg);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 function uiEndLoadState(msg)
 {
     currentUser = msg.currentUser;
@@ -106,30 +119,21 @@ function removeMenuItemProductKey()
 
 function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 {
-    parent.postMessage({ pluginMessage:
-    { 
+    uiPostMessageToFigma({ 
         cmd:   'notify',
         text:   text,
         prefix: prefix,
         delay:  delay
-    }}, '*');        
+    });        
 }    
 
 
 
 function uiCreateNode(opType, updateUI = true, createdId = -1)
 {
-    var node = uiGraph.createNode(opType, createdId);
+    let node = uiGraph.createNode(opType, createdId);
 
     
-    generator.postMessage({
-        msg:     'createNode', 
-        opType:   opType,
-        nodeId:   node.id,
-        nodeName: node.name
-    });
-
-
     if (graphView.selected.length > 0)
     {
         const selNode = uiGraph.nodes.find(n => n.selected);
@@ -151,6 +155,14 @@ function uiCreateNode(opType, updateUI = true, createdId = -1)
     }
 
 
+    uiPostMessageToGenerator({
+        msg:     'genCreateNode', 
+        opType:   opType,
+        nodeId:   node.id,
+        nodeName: node.name
+    });
+
+
     return node;
 }
 
@@ -160,8 +172,8 @@ function uiDeleteNodes(nodeIds, actionId)
 {
     uiGraph.deleteNodes(nodeIds);
     
-    generator.postMessage({
-        msg:     'deleteNodes',
+    uiPostMessageToGenerator({
+        msg:     'genDeleteNodes',
         nodeIds:  nodeIds,
         actionId: actionId
     });
@@ -184,8 +196,8 @@ function uiUndeleteNodes(nodes, actionId)
     graphView.putNodeOnTop(lastOf(nodes));
 
 
-    generator.postMessage({
-        msg:       'undeleteNodes',
+    uiPostMessageToGenerator({
+        msg:       'genUndeleteNodes',
         uiActionId: actionId
     });
 }
@@ -194,14 +206,13 @@ function uiUndeleteNodes(nodes, actionId)
 
 function uiDeleteNodeObjects(nodeIds)
 {
-    parent.postMessage({ pluginMessage: 
-    { 
-        cmd:    'deleteNodeObjects',
+    uiPostMessageToFigma({ 
+        cmd:    'figDeleteNodeObjects',
         nodeIds: nodeIds
-    }}, '*');
+    });
 
-    generator.postMessage({
-        cmd:    'deleteNodeObjects',
+    uiPostMessageToGenerator({
+        cmd:    'genDeleteNodeObjects',
         nodeIds: nodeIds
     });
 }
@@ -214,8 +225,8 @@ function uiSetNodeId(nodeId, newId)
 
     node.id = newId;
 
-    generator.postMessage({
-        msg:   'setNodeId', 
+    uiPostMessageToGenerator({
+        msg:   'genSetNodeId', 
         nodeId: nodeId,
         newId:  newId
     });
@@ -227,8 +238,8 @@ function uiConnect(output, input)
 {
     uiGraph.connect(output, input);
 
-    generator.postMessage({
-        msg:     'connect', 
+    uiPostMessageToGenerator({
+        msg:     'genConnect', 
         outputId: output.op.id, 
         inputs:  
         [{
@@ -244,8 +255,8 @@ function uiDisconnect(input)
 {
     uiGraph.disconnect(input);
 
-    generator.postMessage({
-        msg: 'disconnect',
+    uiPostMessageToGenerator({
+        msg: 'genDisconnect',
         input:
         {
             nodeId: input.op.id, 
@@ -258,8 +269,8 @@ function uiDisconnect(input)
 
 function uiSetParam(param, value)
 {
-    generator.postMessage({
-        msg:   'setParam', 
+    uiPostMessageToGenerator({
+        msg:   'genSetParam', 
         nodeId: param.op.id, 
         param:  param.name,
         value:  value
@@ -270,8 +281,8 @@ function uiSetParam(param, value)
 
 function uiInvalidate(node)
 {
-    generator.postMessage({
-        msg:   'invalidate', 
+    uiPostMessageToGenerator({
+        msg:   'genInvalidate', 
         nodeId: node.id
     });
 }
@@ -280,16 +291,12 @@ function uiInvalidate(node)
 
 function uiSetActive(node, active)
 {
-    generator.postMessage({
-        msg:   'setActive', 
+    uiPostMessageToGenerator({
+        msg:   'genSetActive', 
         nodeId: node.id,
         active: active
     });
 }
-
-
-
-/////////////////////////////////////////////////////////////////////
 
 
 
@@ -307,38 +314,11 @@ function uiGenerateObjects(nodeIds)
     uiGraph.mutex = true;
 
 
-    generator.postMessage({
-        msg:    'generateObjects',
+    uiPostMessageToGenerator({
+        msg:    'genGenerateObjects',
         nodeIds: nodeIds
     });
 }
-
-
-
-/////////////////////////////////////////////////////////////////////
-
-
-
-const generator = new Worker(
-    window.URL.createObjectURL(
-        new Blob([generatorScript.textContent])));
-
-
-
-generator.onmessage = function(e)
-{
-    switch (e.data.msg)
-    {
-        case 'makeActive':      uiMakeActive     (e.data.nodeIds);                            break;
-        case 'showParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
-        case 'updateObjects':   uiUpdateObjects  (e.data.objects);                            break;
-        case 'generateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
-    }
-};
-
-
-
-/////////////////////////////////////////////////////////////////////
 
 
 
@@ -368,11 +348,11 @@ function uiShowParamValue(nodeId, paramName, value)
 
 function uiUpdateObjects(objects)
 {
-    parent.postMessage({ pluginMessage:
-    { 
-        cmd:    'updateObjects',
+    uiPostMessageToFigma({ 
+        cmd:    'figUpdateObjects',
         objects: objects
-    }}, '*');    
+    });    
+
 
     uiGraph.mutex = false;
     
@@ -386,16 +366,4 @@ function uiUpdateObjects(objects)
 
         uiGenerateObjects(deferNodes);
     }
-}
-
-
-
-function strFromData(data)
-{
-    var str = '';
-
-    for (var i = 0; i < data.length; i++)
-        str += String.fromCharCode(data[si]);
-
-    return str;
 }

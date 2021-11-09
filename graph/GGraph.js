@@ -15,7 +15,7 @@ class GGraph
 
 
 
-    createNode(opType)
+    createNode(opType, id, name)
     {
         var node;
 
@@ -29,6 +29,9 @@ class GGraph
             case 'spread': node = new GOpSpread(); break;
         }
         
+        node.id   = id;
+        node.name = name;
+
         this.addNodes([node]);
 
         return node;

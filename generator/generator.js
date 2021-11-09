@@ -6,22 +6,38 @@ const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 
 
+// --> from UI
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'createNode':      genCreateNode     (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
-        case 'deleteNodes':     genDeleteNodes    (e.data.nodeIds,  e.data.uiActionId);            break;             
-        case 'undeleteNodes':   genUndeleteNodes  (e.data.uiActionId);                             break;             
-        case 'setNodeId':       genSetNodeId      (e.data.nodeId,   e.data.newId);                 break; 
-        case 'setActive':       genSetActive      (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
-        case 'connect':         genConnect        (e.data.outputId, e.data.inputs);                break; 
-        case 'disconnect':      genDisconnect     (e.data.input);                                  break;
-        case 'setParam':        genSetParam       (e.data.nodeId,   e.data.param, e.data.value);   break;
-        case 'invalidate':      genInvalidate     (e.data.nodeId);                                 break;
-        case 'generateObjects': genGenerateObjects(e.data.nodeIds);                                break;
+        case 'genCreateNode':      genCreateNode     (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        case 'genDeleteNodes':     genDeleteNodes    (e.data.nodeIds,  e.data.uiActionId);            break;             
+        case 'genUndeleteNodes':   genUndeleteNodes  (e.data.uiActionId);                             break;             
+        case 'genSetNodeId':       genSetNodeId      (e.data.nodeId,   e.data.newId);                 break; 
+        case 'genSetActive':       genSetActive      (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
+        case 'genConnect':         genConnect        (e.data.outputId, e.data.inputs);                break; 
+        case 'genDisconnect':      genDisconnect     (e.data.input);                                  break;
+        case 'genSetParam':        genSetParam       (e.data.nodeId,   e.data.param, e.data.value);   break;
+        case 'genInvalidate':      genInvalidate     (e.data.nodeId);                                 break;
+        case 'genGenerateObjects': genGenerateObjects(e.data.nodeIds);                                break;
     }
 };
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genPostMessageToUi(msg)
+{
+    postMessage(msg); // this call is too ambiguous to understand when reading code
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -34,13 +50,10 @@ function genClearGraph()
 
 function genCreateNode(type, id, name)
 {
-    const node = genGraph.createNode(type);
+    const node = genGraph.createNode(type, id, name);
 
-    node.id   = id;
-    node.name = name;
-
-    postMessage({
-        msg:     'makeActive',
+    genPostMessageToUi({
+        msg:     'uiMakeActive',
         nodeIds: [node.id]
     });
 }
@@ -68,8 +81,8 @@ function genUndeleteNodes(uiActionId)
     }
 
     
-    postMessage({ 
-        msg:    'makeActive',
+    genPostMessageToUi({ 
+        msg:    'uiMakeActive',
         nodeIds: nodeIds
     });
 
@@ -133,8 +146,8 @@ function genSetParam(nodeId, name, value)
 
     if (activeId > -1)
     {
-        postMessage({ 
-            msg:    'generateObjects',
+        genPostMessageToUi({ 
+            msg:    'uiGenerateObjects',
             nodeIds: [activeId]
         });
     }
@@ -185,8 +198,8 @@ function genGenerateObjects(nodeIds)
     }    
     
     
-    postMessage({ 
-        msg:    'updateObjects',
+    genPostMessageToUi({ 
+        msg:    'uiUpdateObjects',
         objects: objects
     });
 }

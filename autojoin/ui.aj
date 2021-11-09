@@ -20,6 +20,7 @@
 
     ../actions/*.js
 
+    ../ui/init.js
     ../ui/ui.js
     ../ui/ui events.js
 

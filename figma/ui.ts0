@@ -1,4 +1,4 @@
-function resizeWindow(msg)
+function figResizeWindow(msg)
 {
     var width  = Math.floor(Math.max(0, msg.width ));
     var height = Math.floor(Math.max(0, msg.height));
@@ -8,19 +8,12 @@ function resizeWindow(msg)
     figma.clientStorage.setAsync('windowWidth',  width);
     figma.clientStorage.setAsync('windowHeight', height);
 
-    //figma.ui.postMessage({cmd: 'updatePanAndZoom'});
+    //figPostMessageToUi({cmd: 'uiUpdatePanAndZoom'});
 }
 
 
 
-function onPluginClose()
-{
-    deleteAllObjects();
-}
-
-
-
-function notify(text, prefix = 'Generator ', delay = 400)
+function figNotify(text, prefix = 'Generator ', delay = 400)
 {
     figma.notify(prefix + text, { timeout: delay });
 }

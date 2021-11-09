@@ -1,4 +1,4 @@
-function deleteNodeObjects(nodeIds)
+function figDeleteNodeObjects(nodeIds)
 {
     for (const nodeId of nodeIds)
     {
@@ -13,7 +13,7 @@ function deleteNodeObjects(nodeIds)
 
 
 
-function deleteAllObjects()
+function figDeleteAllObjects()
 {
     for (const obj of figma.currentPage.children)
         if (!!obj.getPluginData('id')) obj.remove();
@@ -21,7 +21,7 @@ function deleteAllObjects()
 
 
 
-function updateObjects(msg)
+function figUpdateObjects(msg)
 {
     // prepare the buffers
 
@@ -42,7 +42,7 @@ function updateObjects(msg)
                 if (  !objNodes[prevId]
                     || objNodes[prevId].length != count)
                 {
-                    deleteNodeObjects([prevId]);
+                    figDeleteNodeObjects([prevId]);
                     objNodes[prevId] = new Array(count).fill(null);
                 }
 
@@ -57,7 +57,7 @@ function updateObjects(msg)
         && (  !objNodes[nodeId]
             || objNodes[nodeId].length != count))
     {
-        deleteNodeObjects([nodeId]);
+        figDeleteNodeObjects([nodeId]);
         objNodes[nodeId] = new Array(count).fill(null);
     }
 
@@ -72,7 +72,7 @@ function updateObjects(msg)
             {
                 if (!objNodes[obj[2]][obj[1]])
                 {
-                    createRect(obj);
+                    figCreateRect(obj);
                 }
                 else 
                 {
@@ -81,10 +81,10 @@ function updateObjects(msg)
                     if (   cur.type == objTypeString(obj[0])
                         && cur.getPluginData('id')     == obj[1]
                         && cur.getPluginData('nodeId') == obj[2])
-                        updateRect(obj);
+                        figUpdateRect(obj);
 
                     else
-                        notify('Error: Object ID mismatch');
+                        figNotify('Error: Object ID mismatch');
                 }
 
                 break;
@@ -95,30 +95,23 @@ function updateObjects(msg)
 
 
 
-function onSelectionChange()
+function figCreateFrame()
 {
-    /*  Every time a selection changes, check that all objects in the object table
-        still exist in the canvas. If not, remove the pointer from the object table.  
-        
-        NOTE: at this point I don't know if objects are deleted by the API, but then again,
-        only one plugin runs at a time right now, so maybe it's not an issue.  */
+    let frame = figma.createFrame();
 
+    frame.name = 'Generator';
 
-    for (let i = 0; i < objNodes.length; i++)
-    {
-        for (let j = 0; j < objNodes[i].length; j++)
-        {
-            if (!objNodes[i][j]) continue;
+    let tx : Paint = {type: 'SOLID', color: {r: 0, g: 0, b: 0}, opacity: 0};
+    frame.fills = [tx];
 
-            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
-            if (!exists) objNodes[i][j] = null;
-        }
-    }
+    //frame.resize(
+    //    (nCols*rectSize + (nCols-1)*hgap),
+    //    (nRows*rectSize + (nRows-1)*hgap));
 }
 
 
 
-function createRect(obj)
+function figCreateRect(obj)
 {
     const rect = figma.createRectangle();
 
@@ -145,7 +138,7 @@ function createRect(obj)
 
 
 
-function updateRect(obj)
+function figUpdateRect(obj)
 {
     const rect = objNodes[obj[2]][obj[1]];
 

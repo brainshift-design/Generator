@@ -232,3 +232,15 @@ function replaceInStringAt(str, index, replace)
          + replace 
          + str.substring(index + replace.length);
 }
+
+
+
+function strFromData(data)
+{
+    var str = '';
+
+    for (var i = 0; i < data.length; i++)
+        str += String.fromCharCode(data[si]);
+
+    return str;
+}

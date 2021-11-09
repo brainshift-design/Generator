@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-function deleteNodeObjects(nodeIds) {
+function figDeleteNodeObjects(nodeIds) {
     for (const nodeId of nodeIds) {
         if (!objNodes[nodeId])
             continue;
@@ -16,12 +16,12 @@ function deleteNodeObjects(nodeIds) {
         objNodes[nodeId] = null;
     }
 }
-function deleteAllObjects() {
+function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
         if (!!obj.getPluginData('id'))
             obj.remove();
 }
-function updateObjects(msg) {
+function figUpdateObjects(msg) {
     // prepare the buffers
     var nodeId = -1;
     var prevId = -1;
@@ -33,7 +33,7 @@ function updateObjects(msg) {
             if (prevId > -1) {
                 if (!objNodes[prevId]
                     || objNodes[prevId].length != count) {
-                    deleteNodeObjects([prevId]);
+                    figDeleteNodeObjects([prevId]);
                     objNodes[prevId] = new Array(count).fill(null);
                 }
                 count = 0;
@@ -44,7 +44,7 @@ function updateObjects(msg) {
     if (count > 0
         && (!objNodes[nodeId]
             || objNodes[nodeId].length != count)) {
-        deleteNodeObjects([nodeId]);
+        figDeleteNodeObjects([nodeId]);
         objNodes[nodeId] = new Array(count).fill(null);
     }
     // fill the buffers
@@ -53,39 +53,32 @@ function updateObjects(msg) {
             case OBJ_RECT:
                 {
                     if (!objNodes[obj[2]][obj[1]]) {
-                        createRect(obj);
+                        figCreateRect(obj);
                     }
                     else {
                         const cur = objNodes[obj[2]][obj[1]];
                         if (cur.type == objTypeString(obj[0])
                             && cur.getPluginData('id') == obj[1]
                             && cur.getPluginData('nodeId') == obj[2])
-                            updateRect(obj);
+                            figUpdateRect(obj);
                         else
-                            notify('Error: Object ID mismatch');
+                            figNotify('Error: Object ID mismatch');
                     }
                     break;
                 }
         }
     }
 }
-function onSelectionChange() {
-    /*  Every time a selection changes, check that all objects in the object table
-        still exist in the canvas. If not, remove the pointer from the object table.
-        
-        NOTE: at this point I don't know if objects are deleted by the API, but then again,
-        only one plugin runs at a time right now, so maybe it's not an issue.  */
-    for (let i = 0; i < objNodes.length; i++) {
-        for (let j = 0; j < objNodes[i].length; j++) {
-            if (!objNodes[i][j])
-                continue;
-            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
-            if (!exists)
-                objNodes[i][j] = null;
-        }
-    }
+function figCreateFrame() {
+    let frame = figma.createFrame();
+    frame.name = 'Generator';
+    let tx = { type: 'SOLID', color: { r: 0, g: 0, b: 0 }, opacity: 0 };
+    frame.fills = [tx];
+    //frame.resize(
+    //    (nCols*rectSize + (nCols-1)*hgap),
+    //    (nRows*rectSize + (nRows-1)*hgap));
 }
-function createRect(obj) {
+function figCreateRect(obj) {
     const rect = figma.createRectangle();
     rect.name = obj[2].toString() + ':' + obj[1].toString();
     rect.setPluginData('id', obj[1].toString());
@@ -99,7 +92,7 @@ function createRect(obj) {
     objNodes[obj[2]][obj[1]] = rect;
     figma.currentPage.appendChild(rect);
 }
-function updateRect(obj) {
+function figUpdateRect(obj) {
     const rect = objNodes[obj[2]][obj[1]];
     rect.x = obj[3];
     rect.y = obj[4];
@@ -132,6 +125,25 @@ function updateRect(obj) {
 //     }    
 //     if (   rect.width  != data.width
 //         || rect.height != data.height)
+function figOnSelectionChange() {
+    /*  Every time a selection changes, check that all objects in the object table
+        still exist in the canvas. If not, remove the pointer from the object table.
+        
+        NOTE: at this point I don't know if objects are deleted by the API, but then again,
+        only one plugin runs at a time right now, so maybe it's not an issue.  */
+    for (let i = 0; i < objNodes.length; i++) {
+        for (let j = 0; j < objNodes[i].length; j++) {
+            if (!objNodes[i][j])
+                continue;
+            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+            if (!exists)
+                objNodes[i][j] = null;
+        }
+    }
+}
+function figOnPluginClose() {
+    figDeleteAllObjects();
+}
 const OBJ_RECT = 1;
 const MAX_OBJECTS = 0x10000;
 const MAX_NODES = 0x10000;
@@ -140,35 +152,50 @@ var minNodeId = Number.MAX_SAFE_INTEGER;
 var maxNodeId = Number.MIN_SAFE_INTEGER;
 // const objects  = new Array(MAX_OBJECTS);
 // var   maxObjId = -1;
+figma.on('selectionchange', figOnSelectionChange);
+figma.on('close', figOnPluginClose);
 figma.showUI(__html__);
+// from UI <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
 figma.ui.onmessage = msg => {
     switch (msg.cmd) {
-        case 'saveLocal':
-            saveLocal(msg.key, msg.value);
+        case 'figLoadState':
+            figLoadState(msg);
             break;
-        case 'setPluginData':
-            setPluginData(msg.key, msg.value);
+        case 'figResizeWindow':
+            figResizeWindow(msg);
             break;
-        case 'loadState':
-            loadState(msg);
+        case 'figSaveLocal':
+            figSaveLocal(msg.key, msg.value);
             break;
-        case 'resizeWindow':
-            resizeWindow(msg);
+        case 'figSetPluginData':
+            figSetPluginData(msg.key, msg.value);
             break;
-        case 'deleteNodeObjects':
-            deleteNodeObjects(msg.nodeIds);
+        case 'figDeleteNodeObjects':
+            figDeleteNodeObjects(msg.nodeIds);
             break;
-        case 'updateObjects':
-            updateObjects(msg);
+        case 'figUpdateObjects':
+            figUpdateObjects(msg);
             break;
-        case 'notify':
-            notify(msg.text, msg.prefix, msg.delay);
+        case 'figNotify':
+            figNotify(msg.text, msg.prefix, msg.delay);
             break;
     }
 };
-figma.on('selectionchange', onSelectionChange);
-figma.on('close', onPluginClose);
-function loadState(msg) {
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// to UI -->
+function figPostMessageToUi(msg) {
+    figma.ui.postMessage(msg);
+}
+// to Generator -->
+function figPostToGenerator(msg) {
+    figPostMessageToUi({
+        cmd: 'uiForwardToGen',
+        msg: msg
+    });
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function figLoadState(msg) {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
             // load state
@@ -185,28 +212,39 @@ function loadState(msg) {
                 wndHeight = 300;
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             // load product key
-            let productKey = yield loadLocal('productKey');
+            let productKey = yield figLoadLocal('productKey');
             if (productKey == null)
                 productKey = '';
             // end load state
-            figma.ui.postMessage({
-                cmd: 'endLoadState',
+            figPostMessageToUi({
+                cmd: 'uiEndLoadState',
                 currentUser: figma.currentUser,
                 productKey: productKey
             });
         });
     })();
 }
-function saveLocal(key, value) {
-    figma.clientStorage.setAsync(key, value);
-}
-function loadLocal(key) {
+function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);
     });
 }
-function setPluginData(key, value) {
+function figSaveLocal(key, value) {
+    figma.clientStorage.setAsync(key, value);
+}
+function figSetPluginData(key, value) {
     figma.currentPage.setPluginData(key, value);
+}
+function figResizeWindow(msg) {
+    var width = Math.floor(Math.max(0, msg.width));
+    var height = Math.floor(Math.max(0, msg.height));
+    figma.ui.resize(width, height);
+    figma.clientStorage.setAsync('windowWidth', width);
+    figma.clientStorage.setAsync('windowHeight', height);
+    //figPostMessageToUi({cmd: 'uiUpdatePanAndZoom'});
+}
+function figNotify(text, prefix = 'Generator ', delay = 400) {
+    figma.notify(prefix + text, { timeout: delay });
 }
 function objTypeString(type) {
     switch (type) {
@@ -220,24 +258,4 @@ function objTypeString(type) {
         // case 'BOOLEAN_OPERATION':
     }
     return 'ERROR_TYPE';
-}
-function postToGenerator(msg) {
-    figma.ui.postMessage({
-        cmd: 'forwardToGen',
-        msg: msg
-    });
-}
-function resizeWindow(msg) {
-    var width = Math.floor(Math.max(0, msg.width));
-    var height = Math.floor(Math.max(0, msg.height));
-    figma.ui.resize(width, height);
-    figma.clientStorage.setAsync('windowWidth', width);
-    figma.clientStorage.setAsync('windowHeight', height);
-    //figma.ui.postMessage({cmd: 'updatePanAndZoom'});
-}
-function onPluginClose() {
-    deleteAllObjects();
-}
-function notify(text, prefix = 'Generator ', delay = 400) {
-    figma.notify(prefix + text, { timeout: delay });
 }

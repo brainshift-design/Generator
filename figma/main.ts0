@@ -1,43 +1,70 @@
-const OBJ_RECT = 1;
+const OBJ_RECT    = 1;
 
 const MAX_OBJECTS = 0x10000;
 const MAX_NODES   = 0x10000;
 
-const objNodes = new Array(MAX_NODES).fill(null);
+const objNodes    = new Array(MAX_NODES).fill(null);
 
-var minNodeId = Number.MAX_SAFE_INTEGER;
-var maxNodeId = Number.MIN_SAFE_INTEGER;
+var   minNodeId   = Number.MAX_SAFE_INTEGER;
+var   maxNodeId   = Number.MIN_SAFE_INTEGER;
 
 
 // const objects  = new Array(MAX_OBJECTS);
 // var   maxObjId = -1;
 
 
+figma.on('selectionchange', figOnSelectionChange);
+figma.on('close',           figOnPluginClose);
+
 figma.showUI(__html__);
 
+
+
+// from UI <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 figma.ui.onmessage = msg => 
 {
     switch (msg.cmd)
     {
-        case 'saveLocal':         saveLocal    (msg.key, msg.value);       break;
-        case 'setPluginData':     setPluginData(msg.key, msg.value);       break;
-        case 'loadState':         loadState(msg);                          break;
-        case 'resizeWindow':      resizeWindow(msg);                       break; 
-        case 'deleteNodeObjects': deleteNodeObjects(msg.nodeIds);          break; 
-        case 'updateObjects':     updateObjects(msg);                      break;
-        case 'notify':            notify(msg.text, msg.prefix, msg.delay); break;
+        case 'figLoadState':         figLoadState        (msg);                             break;
+        case 'figResizeWindow':      figResizeWindow     (msg);                             break; 
+        case 'figSaveLocal':         figSaveLocal        (msg.key, msg.value);              break;
+        case 'figSetPluginData':     figSetPluginData    (msg.key, msg.value);              break;
+        case 'figDeleteNodeObjects': figDeleteNodeObjects(msg.nodeIds);                     break; 
+        case 'figUpdateObjects':     figUpdateObjects    (msg);                             break;
+        case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
     }
 };
 
-
-
-figma.on('selectionchange', onSelectionChange);
-figma.on('close',           onPluginClose);
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-function loadState(msg)
+// to UI -->
+function figPostMessageToUi(msg)
+{
+    figma.ui.postMessage(msg);
+}
+
+
+
+// to Generator -->
+function figPostToGenerator(msg)
+{
+    figPostMessageToUi({
+        cmd: 'uiForwardToGen',
+        msg:  msg
+    });
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function figLoadState(msg)
 {
     (async function()
     {
@@ -59,64 +86,14 @@ function loadState(msg)
             Math.max(0, wndHeight));
 
         // load product key
-        let productKey = await loadLocal('productKey');
+        let productKey = await figLoadLocal('productKey');
         if (productKey == null) productKey = '';
 
 
         // end load state
-        figma.ui.postMessage({
-            cmd:        'endLoadState',
+        figPostMessageToUi({
+            cmd:        'uiEndLoadState',
             currentUser: figma.currentUser,
             productKey:  productKey });
     })();
-}
-
-
-
-function saveLocal(key, value)
-{
-    figma.clientStorage.setAsync(key, value); 
-}
-
-
-
-async function loadLocal(key)
-{
-    return await figma.clientStorage.getAsync(key); 
-}
-
-
-
-function setPluginData(key, value)
-{
-    figma.currentPage.setPluginData(key, value);
-}
-
-
-
-function objTypeString(type)
-{
-    switch (type)
-    {
-        case OBJ_RECT: return 'RECTANGLE';
-        // case 'VECTOR':
-        // case 'LINE':
-        // case 'ELLIPSE':
-        // case 'POLYGON':
-        // case 'STAR':
-        // case 'TEXT':
-        // case 'BOOLEAN_OPERATION':
-    }
-
-    return 'ERROR_TYPE';
-}
-
-
-
-function postToGenerator(msg)
-{
-    figma.ui.postMessage({
-        cmd: 'forwardToGen',
-        msg:  msg
-    });
 }

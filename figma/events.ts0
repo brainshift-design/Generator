@@ -1,0 +1,27 @@
+function figOnSelectionChange()
+{
+    /*  Every time a selection changes, check that all objects in the object table
+        still exist in the canvas. If not, remove the pointer from the object table.  
+        
+        NOTE: at this point I don't know if objects are deleted by the API, but then again,
+        only one plugin runs at a time right now, so maybe it's not an issue.  */
+
+
+    for (let i = 0; i < objNodes.length; i++)
+    {
+        for (let j = 0; j < objNodes[i].length; j++)
+        {
+            if (!objNodes[i][j]) continue;
+
+            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+            if (!exists) objNodes[i][j] = null;
+        }
+    }
+}
+
+
+
+function figOnPluginClose()
+{
+    figDeleteAllObjects();
+}

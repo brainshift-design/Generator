@@ -15,8 +15,8 @@ extends GParameter
         {
             value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
 
-            postMessage({ 
-                msg:   'showParamValue',
+            genPostMessageToUi({ 
+                msg:   'uiShowParamValue',
                 nodeId: this.op.id,
                 param:  this.name,
                 value:  value
