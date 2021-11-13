@@ -7,7 +7,7 @@ extends GOperator
 
     constructor()
     {
-        super('row', 'OBJ');
+        super('row', 'object');
 
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
@@ -45,10 +45,10 @@ extends GOperator
             {
                 const obj = shallowCopy(data[j]);
 
-                obj[1] = this.output._data.length;
-                obj[2] = this.id;
+                obj.id     = this.output._data.length;
+                obj.nodeId = this.id;
                 
-                obj[3] += x;
+                obj.x += x;
 
                 this.output._data.push(obj);
             }    

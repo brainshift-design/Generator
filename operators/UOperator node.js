@@ -133,7 +133,7 @@ function createNodeHeader(node, headerColor)
             if (   !node.div.selectedSet
                 && !node.div.moved)
             {
-                if (e.shiftKey) node.selected = true;
+                if (e.shiftKey) node.selected      = true;
                 else            graphView.selected = [node];
             }
 
@@ -160,7 +160,7 @@ function createNodeHeader(node, headerColor)
 
 function createNodeLabel(node)
 {
-    node.label = document.createElement('div');
+    node.label           = document.createElement('div');
     node.label.className = 'nodeLabel';
     node.label.op        = node;
     

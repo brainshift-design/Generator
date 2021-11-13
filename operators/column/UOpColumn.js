@@ -7,7 +7,7 @@ extends UOperator
 
     constructor()
     {
-        super('column', 'OBJ');
+        super('column', 'object');
 
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
@@ -28,7 +28,7 @@ extends UOperator
 
 //     constructor()
 //     {
-//         super('row', 'OBJ');
+//         super('row', 'object');
 
 //         this.addInput (new UInput (this.dataType));
 //         this.setOutput(new UOutput(this.dataType));

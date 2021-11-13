@@ -14,6 +14,8 @@ const generator = new Worker(
         new Blob([generatorScript.textContent])));
 
 
+const buf = new SharedArrayBuffer(1024);
+
         
 uiPostMessageToFigma({ 
     cmd:    'figLoadState',

@@ -106,6 +106,7 @@ input[type=text]::selection
     overflow: hidden;
 }
 
+
 .node
 {
     display:       block;
@@ -115,6 +116,7 @@ input[type=text]::selection
     border-radius: 4px 4px 0 0;
     padding: 0;
 }
+
 
 .nodeInner
 {
@@ -127,6 +129,7 @@ input[type=text]::selection
     padding:       0;
 }    
 
+
 .nodeHeader
 {
     background:    #BEDFFF;
@@ -135,6 +138,7 @@ input[type=text]::selection
     position:      relative;
     border-radius: 4px 4px 0 0;
 }
+
 
 .nodeLabel
 {
@@ -711,15 +715,15 @@ input[type=text]::selection
 
 
 
-const OBJ_COLOR = '#bee0ff';
-const NUM_COLOR = '#ddd';
+const objectColor       = '#bee0ff';
+const numberColor       = '#ddd';
 
-const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = '#787878';
+const activeObjectColor = '#18a0fb';
+const activeNumberColor = '#787878';
 
-const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
-const smallScrollGap = 6;
+const smallScrollGap =  6;
 const largeScrollGap = 14;
 
 
@@ -2031,8 +2035,8 @@ function colorFromDataType(dataType, active)
 {
     switch (dataType)
     {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'number': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+        case 'object': return active ? activeObjectColor : objectColor;
+        case 'number': return active ? activeNumberColor : numberColor;
     }
 
     return 'magenta';
@@ -2527,6 +2531,7 @@ extends GParameter
     #max;
     
 
+    
     get value() 
     {
         var value = Math.min(Math.max(this.#min, this.#value), this.#max);
@@ -2545,6 +2550,7 @@ extends GParameter
 
         return value;
     }
+
     
     set value(value) 
     {
@@ -2553,7 +2559,9 @@ extends GParameter
     }
 
 
+
     input; 
+
 
 
     constructor(name, 
@@ -2593,7 +2601,7 @@ class GGraph
 
     createNode(opType, id, name)
     {
-        var node;
+        let node;
 
         switch (opType)
         {
@@ -2628,7 +2636,7 @@ class GGraph
 
     deleteNodes(nodeIds)
     {
-        var deleted = []; // this array of deleted notes will be put in a list for undo
+        let deleted = []; // this array of deleted notes will be put in a list for undo
 
 
         for (const nodeId of nodeIds)
@@ -3127,6 +3135,8 @@ extends GOperator
 
     noise = new Noise();
 
+
+
     constructor()
     {
         super('random', 'number');
@@ -3136,11 +3146,12 @@ extends GOperator
         this.addParam(this.#min   = new GNumberParam('min',  0));
         this.addParam(this.#max   = new GNumberParam('max', 10));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed',  1, 1));
 
         // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
         // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
     }
+
 
 
     generate(callerInput)
@@ -3149,10 +3160,10 @@ extends GOperator
         super.generate(callerInput);
 
         if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
-        var rnd = this.noise.next(this.#scale.value);
+        let rnd = this.noise.next(this.#scale.value);
         if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
         
-        var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
+        let value = this.#min.value + rnd * (this.#max.value - this.#min.value);
 
         this.output._data = 
         {
@@ -3164,6 +3175,7 @@ extends GOperator
 
         this.valid = false;
     }
+
 
 
     reset()
@@ -3192,7 +3204,7 @@ extends GOperator
 
     constructor()
     {
-        super('rect', 'OBJ');
+        super('rect', 'object');
 
         this.setOutput(new GOutput(this.dataType));
 
@@ -3210,17 +3222,17 @@ extends GOperator
 
 
         this.output._data =
-        [[
-            OBJ_RECT,           // type
-            0,                  // object id
-            this.id,            // node id
-               
-            0,                  // x      
-            0,                  // y      
-            this.#width .value, // width
-            this.#height.value, // height 
-            this.#round .value  // round  
-        ]];
+        [{
+            type:   OBJ_RECT,
+            id:     0,
+            nodeId: this.id,
+
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value,
+            round:  this.#round .value
+        }];
     }
 }
 
@@ -3234,7 +3246,7 @@ extends GOperator
 
     constructor()
     {
-        super('row', 'OBJ');
+        super('row', 'object');
 
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
@@ -3272,10 +3284,10 @@ extends GOperator
             {
                 const obj = shallowCopy(data[j]);
 
-                obj[1] = this.output._data.length;
-                obj[2] = this.id;
+                obj.id     = this.output._data.length;
+                obj.nodeId = this.id;
                 
-                obj[3] += x;
+                obj.x += x;
 
                 this.output._data.push(obj);
             }    
@@ -3299,7 +3311,7 @@ extends GOperator
 
     constructor()
     {
-        super('column', 'OBJ');
+        super('column', 'object');
 
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
@@ -3408,6 +3420,8 @@ function genClearGraph()
 function genCreateNode(type, id, name)
 {
     const node = genGraph.createNode(type, id, name);
+
+    // on the UI side the node has already been created by this point
 
     genPostMessageToUi({
         msg:     'uiMakeActive',
@@ -3530,7 +3544,7 @@ function genGenerateObjects(nodeIds)
 
     // first determine number of objects
 
-    var nObjects = 0;
+    let nObjects = 0;
 
     for (const nodeId of nodeIds)
     {
@@ -3544,7 +3558,7 @@ function genGenerateObjects(nodeIds)
 
     const objects = new Array(nObjects);
 
-    var i = 0;
+    let i = 0;
     for (const nodeId of nodeIds)
     {
         const node = genGraph.nodeFromId(nodeId);
@@ -3599,15 +3613,15 @@ function getObjectBounds(objects)
 ////////////////////////////////////////////////////
 
 
-const OBJ_COLOR = '#bee0ff';
-const NUM_COLOR = '#ddd';
+const objectColor       = '#bee0ff';
+const numberColor       = '#ddd';
 
-const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = '#787878';
+const activeObjectColor = '#18a0fb';
+const activeNumberColor = '#787878';
 
-const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
-const smallScrollGap = 6;
+const smallScrollGap =  6;
 const largeScrollGap = 14;
 
 
@@ -4919,8 +4933,8 @@ function colorFromDataType(dataType, active)
 {
     switch (dataType)
     {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'number': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+        case 'object': return active ? activeObjectColor : objectColor;
+        case 'number': return active ? activeNumberColor : numberColor;
     }
 
     return 'magenta';
@@ -6299,7 +6313,7 @@ extends EventTarget
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overInput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
         });
     }
 
@@ -6351,7 +6365,9 @@ class UOutput
         
         this.control = document.createElement('div');
         this.control.className = 'output';
-        this.control.output = this;
+        this.control.output    = this;
+
+
 
         this.control.addEventListener('pointerenter', e => 
         {
@@ -6359,10 +6375,12 @@ class UOutput
             e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
         });
 
+
+
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overOutput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
         });
     }
 
@@ -6400,18 +6418,18 @@ class UConnection
 
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
-        //this.wire.curve.style.stroke      = '#18A0FB';
+        //this.wire.curve.style.stroke    = '#18A0FB';
         this.wire.curve.style.strokeWidth = 1.2 * this.wire.scale;
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
         this.wire.outBall = createSvg('circle');
-        //this.wire.outBall.style.fill     = '#18A0FB';
+        //this.wire.outBall.style.fill   = '#18A0FB';
         this.wire.outBall.style.position = 'absolute';
         this.wire.outBall.style.r        = 3 * this.wire.scale;
 
         this.wire.inBall = createSvg('circle');
-        //this.wire.inBall.style.fill     = '#18A0FB';
+        //this.wire.inBall.style.fill   = '#18A0FB';
         this.wire.inBall.style.position = 'absolute';
         this.wire.inBall.style.r        = 3 * this.wire.scale;
 
@@ -6423,39 +6441,33 @@ class UConnection
 
         this.wire.update = () =>
         {
-            var outRect = this.output.control.getBoundingClientRect();
-            var inRect  = this.input .control.getBoundingClientRect();
+            let outRect = this.output.control.getBoundingClientRect();
+            let inRect  = this.input .control.getBoundingClientRect();
 
-            var x1 = (outRect.left + outRect.width /2) / graphView.zoom;
-            var y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
-            var x2 = (inRect .left + inRect .width /2) / graphView.zoom;
-            var y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
-            var color;
+            let x1 = (outRect.left + outRect.width /2) / graphView.zoom;
+            let y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
+            let x2 = (inRect .left + inRect .width /2) / graphView.zoom;
+            let y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
+            y1 -= 40 / graphView.zoom;
+            y2 -= 40 / graphView.zoom;
+
+
+            let color;
+            
             switch (this.output.dataType)
             {
-                case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
-                case 'number': color = ACTIVE_NUM_COLOR; break; //'#444';
+                case 'object': color = activeObjectColor; break;
+                case 'number': color = activeNumberColor; break;
             }
 
-            this.wire.curve.setAttribute('d',
-                   'M ' +  (x1                ) + ',' + y1
-                + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
-                + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
-                + ' '   +  (x2                ) + ',' + y2);
 
-            this.wire.curve.setAttribute('stroke', color);
-            
-            this.wire.outBall.setAttribute('cx',   x1);
-            this.wire.outBall.setAttribute('cy',   y1);
-            this.wire.outBall.setAttribute('fill', color);
-            
-            this.wire.inBall.setAttribute('cx',   x2);
-            this.wire.inBall.setAttribute('cy',   y2);
-            this.wire.inBall.setAttribute('fill', color);
-            
+            this.wire.updateCurve  (x1, y1, x2, y2);
+            this.wire.updateOutBall(x1, y1        );
+            this.wire.updateInBall (        x2, y2);
             this.wire.updateStyle(color);
+
 
             show(this.wire.outBall);
             show(this.wire.inBall);
@@ -6465,20 +6477,16 @@ class UConnection
 
         this.wire.updateFromOutput = (x, y) =>
         {
-            var outRect = this.output.control.getBoundingClientRect();
+            let outRect = this.output.control.getBoundingClientRect();
 
-            var x1 = outRect.left + outRect.width /2;// - graphView.pan.x;
-            var y1 = outRect.top  + outRect.height/2;// - graphView.pan.y;
+            let x1 = outRect.left + outRect.width /2;
+            let y1 = outRect.top  + outRect.height/2;
 
-            this.wire.curve.setAttribute('d',
-                   'M ' +  (x1               ) + ',' + y1
-                + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
-                + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
-                + ' '   +  (x                ) + ',' + y);
+            y1 -= 40;
+            y  -= 40;
 
-            this.wire.outBall.setAttribute('cx', x1);
-            this.wire.outBall.setAttribute('cy', y1);
-
+            this.wire.updateCurve  (x1, y1, x, y);
+            this.wire.updateOutBall(x1, y1      );
             this.wire.updateStyle(colorFromDataType(this.output.dataType, true));
 
             hide(this.wire.inBall);
@@ -6488,20 +6496,16 @@ class UConnection
 
         this.wire.updateFromInput = (x, y) =>
         {
-            var inRect = this.input.control.getBoundingClientRect();
+            let inRect = this.input.control.getBoundingClientRect();
 
-            var x2 = inRect.left + inRect.width /2;// - graphView.pan.x;
-            var y2 = inRect.top  + inRect.height/2;// - graphView.pan.y;
+            let x2 = inRect.left + inRect.width /2;
+            let y2 = inRect.top  + inRect.height/2;
 
-            this.wire.curve.setAttribute('d',
-                   'M ' +  (x               ) + ',' + y
-                + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
-                + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
-                + ' '   +  (x2              ) + ',' + y2);
+            y  -= 40;
+            y2 -= 40;
 
-            this.wire.inBall.setAttribute('cx', x2);
-            this.wire.inBall.setAttribute('cy', y2);
-
+            this.wire.updateCurve (x, y, x2, y2);
+            this.wire.updateInBall(      x2, y2);
             this.wire.updateStyle(colorFromDataType(this.input.dataType, true));
 
             hide(this.wire.outBall);
@@ -6509,11 +6513,38 @@ class UConnection
 
 
 
-        this.wire.updateStyle = (col) =>
+        this.wire.updateCurve = (x1, y1, x2, y2) =>
         {
-            this.wire.curve  .style.stroke = col;
-            this.wire. inBall.style.fill   = col;
-            this.wire.outBall.style.fill   = col;
+            this.wire.curve.setAttribute('d',
+                   'M ' +  (x1                ) + ',' + y1
+                + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
+                + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
+                + ' '   +  (x2                ) + ',' + y2);
+        };
+
+
+
+        this.wire.updateOutBall = (x, y) =>
+        {
+            this.wire.outBall.setAttribute('cx', x);
+            this.wire.outBall.setAttribute('cy', y);
+        };
+
+
+
+        this.wire.updateInBall = (x, y) =>
+        {
+            this.wire.inBall.setAttribute('cx', x);
+            this.wire.inBall.setAttribute('cy', y);
+        };
+
+
+
+        this.wire.updateStyle = (color) =>
+        {
+            this.wire.curve  .style.stroke = color;
+            this.wire. inBall.style.fill   = color;
+            this.wire.outBall.style.fill   = color;
 
             this.wire.curve  .style.strokeWidth = 1.2 * this.wire.scale;
             this.wire. inBall.style.r           = 3   * this.wire.scale;
@@ -6672,7 +6703,7 @@ class UOperator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + ACTIVE_OBJ_COLOR
+            ? '0 0 0 2px ' + activeObjectColor
             : 'none';
     }
     
@@ -6693,10 +6724,10 @@ class UOperator
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
-        this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
+        this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
         
-        if (this.dataType == 'OBJ')
-            uiGenerateObjects([activeNodeInTree(this).id]);
+        if (this.dataType == 'object')
+            uiGenerateObjects([this.id]);
     }
         
     
@@ -6765,8 +6796,8 @@ class UOperator
     {
         switch (this.#dataType)
         {
-            case 'OBJ': return ACTIVE_OBJ_COLOR;
-            case 'number': return NUM_COLOR; //ACTIVE_NUM_COLOR;
+            case 'object': return activeObjectColor;
+            case 'number': return numberColor; //activeNumberColor;
         }
 
         return 'magenta';
@@ -6776,8 +6807,8 @@ class UOperator
     {
         switch (this.#dataType)
         {
-            case 'OBJ': return OBJ_COLOR;
-            case 'number': return NUM_COLOR;
+            case 'object': return objectColor;
+            case 'number': return numberColor;
         }
 
         return 'magenta';
@@ -7064,7 +7095,7 @@ function createNodeHeader(node, headerColor)
             if (   !node.div.selectedSet
                 && !node.div.moved)
             {
-                if (e.shiftKey) node.selected = true;
+                if (e.shiftKey) node.selected      = true;
                 else            graphView.selected = [node];
             }
 
@@ -7091,7 +7122,7 @@ function createNodeHeader(node, headerColor)
 
 function createNodeLabel(node)
 {
-    node.label = document.createElement('div');
+    node.label           = document.createElement('div');
     node.label.className = 'nodeLabel';
     node.label.op        = node;
     
@@ -7429,7 +7460,7 @@ extends UOperator
 
     constructor()
     {
-        super('rect', 'OBJ');
+        super('rect', 'object');
 
         this.setOutput(new UOutput(this.dataType));
 
@@ -7492,7 +7523,7 @@ extends UOperator
 
     constructor()
     {
-        super('row', 'OBJ');
+        super('row', 'object');
 
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
@@ -7514,7 +7545,7 @@ extends UOperator
 
 //     constructor()
 //     {
-//         super('row', 'OBJ');
+//         super('row', 'object');
 
 //         this.addInput (new UInput (this.dataType));
 //         this.setOutput(new UOutput(this.dataType));
@@ -7574,7 +7605,7 @@ extends UOperator
 
     constructor()
     {
-        super('column', 'OBJ');
+        super('column', 'object');
 
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
@@ -7595,7 +7626,7 @@ extends UOperator
 
 //     constructor()
 //     {
-//         super('row', 'OBJ');
+//         super('row', 'object');
 
 //         this.addInput (new UInput (this.dataType));
 //         this.setOutput(new UOutput(this.dataType));
@@ -8035,6 +8066,8 @@ const generator = new Worker(
         new Blob([generatorScript.textContent])));
 
 
+const buf = new SharedArrayBuffer(1024);
+
         
 uiPostMessageToFigma({ 
     cmd:    'figLoadState',
@@ -8070,8 +8103,8 @@ generator.onmessage = function(e)
     {
         case 'uiMakeActive':      uiMakeActive     (e.data.nodeIds);                            break;
         case 'uiShowParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
-        case 'uiUpdateObjects':   uiUpdateObjects  (e.data.objects);                            break;
         case 'uiGenerateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
+        case 'uiUpdateObjects':   uiUpdateObjects  (e.data.objects);                            break;
     }
 };
 
@@ -8172,22 +8205,21 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 }    
 
 
-
 function uiCreateNode(opType, updateUI = true, createdId = -1)
 {
     let node = uiGraph.createNode(opType, createdId);
 
     
-    if (graphView.selected.length > 0)
-    {
-        const selNode = uiGraph.nodes.find(n => n.selected);
-        const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
+    // if (graphView.selected.length > 0)
+    // {
+    //     const selNode = uiGraph.nodes.find(n => n.selected);
+    //     const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
 
-        if (   !!selNode
-            && selNode.output
-            && inputs.length > 0)
-            uiConnect(selNode.output, inputs[0]);
-    }
+    //     if (   !!selNode
+    //         && selNode.output
+    //         && inputs.length > 0)
+    //         uiConnect(selNode.output, inputs[0]);
+    // }
     
 
     if (updateUI)
@@ -8344,28 +8376,6 @@ function uiSetActive(node, active)
 
 
 
-function uiGenerateObjects(nodeIds)
-{
-    if (uiGraph.mutex)
-    {
-
-        for (const nodeId of nodeIds)
-            uiGraph.deferNodeIds.push(nodeId);
-
-        return;
-    }
-    
-    uiGraph.mutex = true;
-
-
-    uiPostMessageToGenerator({
-        msg:    'genGenerateObjects',
-        nodeIds: nodeIds
-    });
-}
-
-
-
 function uiMakeActive(nodeIds)
 {
     for (const nodeId in nodeIds)
@@ -8390,26 +8400,47 @@ function uiShowParamValue(nodeId, paramName, value)
 
 
 
+function uiGenerateObjects(nodeIds)
+{
+    if (uiGraph.mutex)
+    {
+        for (const nodeId of nodeIds)
+            uiGraph.deferNodeIds.push(nodeId);
+
+        return;
+    }
+    
+    uiGraph.mutex = true;
+
+
+    uiPostMessageToGenerator({
+        msg:    'genGenerateObjects',
+        nodeIds: nodeIds
+    });
+}
+
+
+
 function uiUpdateObjects(objects)
 {
-    uiPostMessageToFigma({ 
-        cmd:    'figUpdateObjects',
-        objects: objects
-    });    
-
-
     uiGraph.mutex = false;
     
 
     if (uiGraph.deferNodeIds.length > 0)
     {
-        var deferNodes = Array.from(uiGraph.deferNodeIds).filter(
+        let deferNodes = Array.from(uiGraph.deferNodeIds).filter(
             (value, index, self) => self.indexOf(value) === index);
             
         uiGraph.deferNodeIds = [];
 
         uiGenerateObjects(deferNodes);
     }
+
+
+    uiPostMessageToFigma({ 
+        cmd:    'figUpdateObjects',
+        objects: objects
+    });    
 }
 
 
@@ -10804,8 +10835,8 @@ graphView.startConnectionFromOutput = output =>
     graphView.tempConn = new UConnection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
     graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
-    graphView.tempConn.wire.scale = graphView.zoom;
-    graphView.tempConn.wire.output = output;
+    graphView.tempConn.wire.scale        = graphView.zoom;
+    graphView.tempConn.wire.output       = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
 };
 
@@ -10816,8 +10847,8 @@ graphView.startConnectionFromInput = input =>
     graphView.tempConn = new UConnection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
     graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
-    graphView.tempConn.wire.scale = graphView.zoom;
-    graphView.tempConn.wire.input = input;
+    graphView.tempConn.wire.scale        = graphView.zoom;
+    graphView.tempConn.wire.input        = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
 };
 
@@ -10872,19 +10903,19 @@ graphView.getNodeBounds = () =>
 graphView.putNodeOnTop = node =>
 {
     const topIndices = 
-    1 
-    + node.inputs.filter(i => i.connected).length 
+          1 
+        + node.inputs.filter(i => i.connected).length 
         + (!!node.output && node.output.connected ? 1 : 0);
         
-        for (const n of uiGraph.nodes)
+    for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-        var z = Number.MAX_SAFE_INTEGER;
+    var z = Number.MAX_SAFE_INTEGER;
 
-        for (const input of node.inputs.filter(i => i.connected))
+    for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;
         
-        if (!!node.output)
+    if (!!node.output)
     {
         for (const input of node.output.connectedInputs)
         input.connection.wire.style.zIndex = z--;
@@ -10900,18 +10931,20 @@ graphView.updateNodeTransform = function(node)
     node.div.style.transformOrigin = 
           ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
         + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-    
+
     node.div.style.transform =
           'translate(' 
         + (graphView.pan.x * graphView.zoom) + 'px, '
         + (graphView.pan.y * graphView.zoom) + 'px) '
         + 'scale(' + graphView.zoom + ')';
 
+
     for (const input of node.inputs)
     {
         if (input.connected)
             graphView.updateWireTransform(input.connection.wire);        
     }
+
 
     if (node.output)
     {
@@ -10929,7 +10962,7 @@ graphView.updateWireTransform = function(wire)
 
     wire.setAttribute('viewBox',
                 0
-        + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
+        + ' ' + 20                     / graphView.zoom // 20 seems to be the title bar
         + ' ' + graphView.clientWidth  / graphView.zoom
         + ' ' + graphView.clientHeight / graphView.zoom);
 

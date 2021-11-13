@@ -79,7 +79,7 @@ extends EventTarget
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overInput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
         });
     }
 

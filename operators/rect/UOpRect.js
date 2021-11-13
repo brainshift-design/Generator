@@ -8,7 +8,7 @@ extends UOperator
 
     constructor()
     {
-        super('rect', 'OBJ');
+        super('rect', 'object');
 
         this.setOutput(new UOutput(this.dataType));
 

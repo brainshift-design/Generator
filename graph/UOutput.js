@@ -32,7 +32,9 @@ class UOutput
         
         this.control = document.createElement('div');
         this.control.className = 'output';
-        this.control.output = this;
+        this.control.output    = this;
+
+
 
         this.control.addEventListener('pointerenter', e => 
         {
@@ -40,10 +42,12 @@ class UOutput
             e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
         });
 
+
+
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overOutput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + IO_COLOR;
+            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
         });
     }
 

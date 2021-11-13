@@ -7,6 +7,7 @@ extends GParameter
     #max;
     
 
+    
     get value() 
     {
         var value = Math.min(Math.max(this.#min, this.#value), this.#max);
@@ -25,6 +26,7 @@ extends GParameter
 
         return value;
     }
+
     
     set value(value) 
     {
@@ -33,7 +35,9 @@ extends GParameter
     }
 
 
+
     input; 
+
 
 
     constructor(name, 

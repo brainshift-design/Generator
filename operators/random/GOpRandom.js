@@ -8,6 +8,8 @@ extends GOperator
 
     noise = new Noise();
 
+
+
     constructor()
     {
         super('random', 'number');
@@ -17,11 +19,12 @@ extends GOperator
         this.addParam(this.#min   = new GNumberParam('min',  0));
         this.addParam(this.#max   = new GNumberParam('max', 10));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed',  1, 1));
 
         // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
         // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
     }
+
 
 
     generate(callerInput)
@@ -30,10 +33,10 @@ extends GOperator
         super.generate(callerInput);
 
         if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
-        var rnd = this.noise.next(this.#scale.value);
+        let rnd = this.noise.next(this.#scale.value);
         if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
         
-        var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
+        let value = this.#min.value + rnd * (this.#max.value - this.#min.value);
 
         this.output._data = 
         {
@@ -45,6 +48,7 @@ extends GOperator
 
         this.valid = false;
     }
+
 
 
     reset()

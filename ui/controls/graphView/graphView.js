@@ -233,8 +233,8 @@ graphView.startConnectionFromOutput = output =>
     graphView.tempConn = new UConnection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
     graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
-    graphView.tempConn.wire.scale = graphView.zoom;
-    graphView.tempConn.wire.output = output;
+    graphView.tempConn.wire.scale        = graphView.zoom;
+    graphView.tempConn.wire.output       = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
 };
 
@@ -245,8 +245,8 @@ graphView.startConnectionFromInput = input =>
     graphView.tempConn = new UConnection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
     graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
-    graphView.tempConn.wire.scale = graphView.zoom;
-    graphView.tempConn.wire.input = input;
+    graphView.tempConn.wire.scale        = graphView.zoom;
+    graphView.tempConn.wire.input        = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
 };
 
@@ -301,19 +301,19 @@ graphView.getNodeBounds = () =>
 graphView.putNodeOnTop = node =>
 {
     const topIndices = 
-    1 
-    + node.inputs.filter(i => i.connected).length 
+          1 
+        + node.inputs.filter(i => i.connected).length 
         + (!!node.output && node.output.connected ? 1 : 0);
         
-        for (const n of uiGraph.nodes)
+    for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-        var z = Number.MAX_SAFE_INTEGER;
+    var z = Number.MAX_SAFE_INTEGER;
 
-        for (const input of node.inputs.filter(i => i.connected))
+    for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;
         
-        if (!!node.output)
+    if (!!node.output)
     {
         for (const input of node.output.connectedInputs)
         input.connection.wire.style.zIndex = z--;
@@ -329,18 +329,20 @@ graphView.updateNodeTransform = function(node)
     node.div.style.transformOrigin = 
           ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
         + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-    
+
     node.div.style.transform =
           'translate(' 
         + (graphView.pan.x * graphView.zoom) + 'px, '
         + (graphView.pan.y * graphView.zoom) + 'px) '
         + 'scale(' + graphView.zoom + ')';
 
+
     for (const input of node.inputs)
     {
         if (input.connected)
             graphView.updateWireTransform(input.connection.wire);        
     }
+
 
     if (node.output)
     {
@@ -358,7 +360,7 @@ graphView.updateWireTransform = function(wire)
 
     wire.setAttribute('viewBox',
                 0
-        + ' ' + 20 / graphView.zoom // 20 seems to be the title bar
+        + ' ' + 20                     / graphView.zoom // 20 seems to be the title bar
         + ' ' + graphView.clientWidth  / graphView.zoom
         + ' ' + graphView.clientHeight / graphView.zoom);
 

@@ -9,7 +9,7 @@ extends GOperator
 
     constructor()
     {
-        super('rect', 'OBJ');
+        super('rect', 'object');
 
         this.setOutput(new GOutput(this.dataType));
 
@@ -27,16 +27,16 @@ extends GOperator
 
 
         this.output._data =
-        [[
-            OBJ_RECT,           // type
-            0,                  // object id
-            this.id,            // node id
-               
-            0,                  // x      
-            0,                  // y      
-            this.#width .value, // width
-            this.#height.value, // height 
-            this.#round .value  // round  
-        ]];
+        [{
+            type:   OBJ_RECT,
+            id:     0,
+            nodeId: this.id,
+
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value,
+            round:  this.#round .value
+        }];
     }
 }

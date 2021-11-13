@@ -23,18 +23,18 @@ class UConnection
 
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
-        //this.wire.curve.style.stroke      = '#18A0FB';
+        //this.wire.curve.style.stroke    = '#18A0FB';
         this.wire.curve.style.strokeWidth = 1.2 * this.wire.scale;
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
         this.wire.outBall = createSvg('circle');
-        //this.wire.outBall.style.fill     = '#18A0FB';
+        //this.wire.outBall.style.fill   = '#18A0FB';
         this.wire.outBall.style.position = 'absolute';
         this.wire.outBall.style.r        = 3 * this.wire.scale;
 
         this.wire.inBall = createSvg('circle');
-        //this.wire.inBall.style.fill     = '#18A0FB';
+        //this.wire.inBall.style.fill   = '#18A0FB';
         this.wire.inBall.style.position = 'absolute';
         this.wire.inBall.style.r        = 3 * this.wire.scale;
 
@@ -46,39 +46,33 @@ class UConnection
 
         this.wire.update = () =>
         {
-            var outRect = this.output.control.getBoundingClientRect();
-            var inRect  = this.input .control.getBoundingClientRect();
+            let outRect = this.output.control.getBoundingClientRect();
+            let inRect  = this.input .control.getBoundingClientRect();
 
-            var x1 = (outRect.left + outRect.width /2) / graphView.zoom;
-            var y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
-            var x2 = (inRect .left + inRect .width /2) / graphView.zoom;
-            var y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
-            var color;
+            let x1 = (outRect.left + outRect.width /2) / graphView.zoom;
+            let y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
+            let x2 = (inRect .left + inRect .width /2) / graphView.zoom;
+            let y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
+            y1 -= 40 / graphView.zoom;
+            y2 -= 40 / graphView.zoom;
+
+
+            let color;
+            
             switch (this.output.dataType)
             {
-                case 'OBJ': color = ACTIVE_OBJ_COLOR; break;
-                case 'number': color = ACTIVE_NUM_COLOR; break; //'#444';
+                case 'object': color = activeObjectColor; break;
+                case 'number': color = activeNumberColor; break;
             }
 
-            this.wire.curve.setAttribute('d',
-                   'M ' +  (x1                ) + ',' + y1
-                + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
-                + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
-                + ' '   +  (x2                ) + ',' + y2);
 
-            this.wire.curve.setAttribute('stroke', color);
-            
-            this.wire.outBall.setAttribute('cx',   x1);
-            this.wire.outBall.setAttribute('cy',   y1);
-            this.wire.outBall.setAttribute('fill', color);
-            
-            this.wire.inBall.setAttribute('cx',   x2);
-            this.wire.inBall.setAttribute('cy',   y2);
-            this.wire.inBall.setAttribute('fill', color);
-            
+            this.wire.updateCurve  (x1, y1, x2, y2);
+            this.wire.updateOutBall(x1, y1        );
+            this.wire.updateInBall (        x2, y2);
             this.wire.updateStyle(color);
+
 
             show(this.wire.outBall);
             show(this.wire.inBall);
@@ -88,20 +82,16 @@ class UConnection
 
         this.wire.updateFromOutput = (x, y) =>
         {
-            var outRect = this.output.control.getBoundingClientRect();
+            let outRect = this.output.control.getBoundingClientRect();
 
-            var x1 = outRect.left + outRect.width /2;// - graphView.pan.x;
-            var y1 = outRect.top  + outRect.height/2;// - graphView.pan.y;
+            let x1 = outRect.left + outRect.width /2;
+            let y1 = outRect.top  + outRect.height/2;
 
-            this.wire.curve.setAttribute('d',
-                   'M ' +  (x1               ) + ',' + y1
-                + ' C ' +  (x1 + (x - x1)*2/5) + ',' + y1
-                + ' '   +  (x1 + (x - x1)*3/5) + ',' + y
-                + ' '   +  (x                ) + ',' + y);
+            y1 -= 40;
+            y  -= 40;
 
-            this.wire.outBall.setAttribute('cx', x1);
-            this.wire.outBall.setAttribute('cy', y1);
-
+            this.wire.updateCurve  (x1, y1, x, y);
+            this.wire.updateOutBall(x1, y1      );
             this.wire.updateStyle(colorFromDataType(this.output.dataType, true));
 
             hide(this.wire.inBall);
@@ -111,20 +101,16 @@ class UConnection
 
         this.wire.updateFromInput = (x, y) =>
         {
-            var inRect = this.input.control.getBoundingClientRect();
+            let inRect = this.input.control.getBoundingClientRect();
 
-            var x2 = inRect.left + inRect.width /2;// - graphView.pan.x;
-            var y2 = inRect.top  + inRect.height/2;// - graphView.pan.y;
+            let x2 = inRect.left + inRect.width /2;
+            let y2 = inRect.top  + inRect.height/2;
 
-            this.wire.curve.setAttribute('d',
-                   'M ' +  (x               ) + ',' + y
-                + ' C ' +  (x + (x2 - x)*2/5) + ',' + y
-                + ' '   +  (x + (x2 - x)*3/5) + ',' + y2
-                + ' '   +  (x2              ) + ',' + y2);
+            y  -= 40;
+            y2 -= 40;
 
-            this.wire.inBall.setAttribute('cx', x2);
-            this.wire.inBall.setAttribute('cy', y2);
-
+            this.wire.updateCurve (x, y, x2, y2);
+            this.wire.updateInBall(      x2, y2);
             this.wire.updateStyle(colorFromDataType(this.input.dataType, true));
 
             hide(this.wire.outBall);
@@ -132,11 +118,38 @@ class UConnection
 
 
 
-        this.wire.updateStyle = (col) =>
+        this.wire.updateCurve = (x1, y1, x2, y2) =>
         {
-            this.wire.curve  .style.stroke = col;
-            this.wire. inBall.style.fill   = col;
-            this.wire.outBall.style.fill   = col;
+            this.wire.curve.setAttribute('d',
+                   'M ' +  (x1                ) + ',' + y1
+                + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
+                + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
+                + ' '   +  (x2                ) + ',' + y2);
+        };
+
+
+
+        this.wire.updateOutBall = (x, y) =>
+        {
+            this.wire.outBall.setAttribute('cx', x);
+            this.wire.outBall.setAttribute('cy', y);
+        };
+
+
+
+        this.wire.updateInBall = (x, y) =>
+        {
+            this.wire.inBall.setAttribute('cx', x);
+            this.wire.inBall.setAttribute('cy', y);
+        };
+
+
+
+        this.wire.updateStyle = (color) =>
+        {
+            this.wire.curve  .style.stroke = color;
+            this.wire. inBall.style.fill   = color;
+            this.wire.outBall.style.fill   = color;
 
             this.wire.curve  .style.strokeWidth = 1.2 * this.wire.scale;
             this.wire. inBall.style.r           = 3   * this.wire.scale;

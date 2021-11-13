@@ -32,7 +32,7 @@ figma.ui.onmessage = msg =>
         case 'figSaveLocal':         figSaveLocal        (msg.key, msg.value);              break;
         case 'figSetPluginData':     figSetPluginData    (msg.key, msg.value);              break;
         case 'figDeleteNodeObjects': figDeleteNodeObjects(msg.nodeIds);                     break; 
-        case 'figUpdateObjects':     figUpdateObjects    (msg);                             break;
+        case 'figUpdateObjects':     figUpdateObjects    (msg.objects);                     break;
         case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
     }
 };

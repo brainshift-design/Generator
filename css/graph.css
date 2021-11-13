@@ -4,6 +4,7 @@
     overflow: hidden;
 }
 
+
 .node
 {
     display:       block;
@@ -13,6 +14,7 @@
     border-radius: 4px 4px 0 0;
     padding: 0;
 }
+
 
 .nodeInner
 {
@@ -25,6 +27,7 @@
     padding:       0;
 }    
 
+
 .nodeHeader
 {
     background:    #BEDFFF;
@@ -33,6 +36,7 @@
     position:      relative;
     border-radius: 4px 4px 0 0;
 }
+
 
 .nodeLabel
 {

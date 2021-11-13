@@ -52,6 +52,8 @@ function genCreateNode(type, id, name)
 {
     const node = genGraph.createNode(type, id, name);
 
+    // on the UI side the node has already been created by this point
+
     genPostMessageToUi({
         msg:     'uiMakeActive',
         nodeIds: [node.id]
@@ -173,7 +175,7 @@ function genGenerateObjects(nodeIds)
 
     // first determine number of objects
 
-    var nObjects = 0;
+    let nObjects = 0;
 
     for (const nodeId of nodeIds)
     {
@@ -187,7 +189,7 @@ function genGenerateObjects(nodeIds)
 
     const objects = new Array(nObjects);
 
-    var i = 0;
+    let i = 0;
     for (const nodeId of nodeIds)
     {
         const node = genGraph.nodeFromId(nodeId);

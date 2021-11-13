@@ -7,7 +7,7 @@ extends GOperator
 
     constructor()
     {
-        super('column', 'OBJ');
+        super('column', 'object');
 
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));

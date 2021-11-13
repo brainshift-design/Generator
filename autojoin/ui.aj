@@ -22,6 +22,7 @@
 
     ../ui/init.js
     ../ui/ui.js
+    ../ui/ui nodes.js
     ../ui/ui events.js
 
     ../ui/window.js

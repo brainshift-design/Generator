@@ -9,7 +9,7 @@ extends GOperator
 
     constructor()
     {
-        super('spread', 'OBJ');
+        super('spread', 'object');
 
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));

@@ -9,7 +9,7 @@ extends UOperator
 
     constructor()
     {
-        super('spread', 'OBJ');
+        super('spread', 'object');
 
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));

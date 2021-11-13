@@ -17,7 +17,7 @@ class GGraph
 
     createNode(opType, id, name)
     {
-        var node;
+        let node;
 
         switch (opType)
         {
@@ -52,7 +52,7 @@ class GGraph
 
     deleteNodes(nodeIds)
     {
-        var deleted = []; // this array of deleted notes will be put in a list for undo
+        let deleted = []; // this array of deleted notes will be put in a list for undo
 
 
         for (const nodeId of nodeIds)

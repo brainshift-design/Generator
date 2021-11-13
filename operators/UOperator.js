@@ -59,7 +59,7 @@ class UOperator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + ACTIVE_OBJ_COLOR
+            ? '0 0 0 2px ' + activeObjectColor
             : 'none';
     }
     
@@ -80,10 +80,10 @@ class UOperator
 
         this.header.style.backgroundColor = this.activeColor;
         this.header.style.boxShadow       = 'none';
-        this.label .style.color           = this.dataType == 'OBJ' ? 'white' : 'black';
+        this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
         
-        if (this.dataType == 'OBJ')
-            uiGenerateObjects([activeNodeInTree(this).id]);
+        if (this.dataType == 'object')
+            uiGenerateObjects([this.id]);
     }
         
     
@@ -152,8 +152,8 @@ class UOperator
     {
         switch (this.#dataType)
         {
-            case 'OBJ': return ACTIVE_OBJ_COLOR;
-            case 'number': return NUM_COLOR; //ACTIVE_NUM_COLOR;
+            case 'object': return activeObjectColor;
+            case 'number': return numberColor; //activeNumberColor;
         }
 
         return 'magenta';
@@ -163,8 +163,8 @@ class UOperator
     {
         switch (this.#dataType)
         {
-            case 'OBJ': return OBJ_COLOR;
-            case 'number': return NUM_COLOR;
+            case 'object': return objectColor;
+            case 'number': return numberColor;
         }
 
         return 'magenta';

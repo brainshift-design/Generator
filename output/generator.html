@@ -2,15 +2,15 @@
 
 
 
-const OBJ_COLOR = '#bee0ff';
-const NUM_COLOR = '#ddd';
+const objectColor       = '#bee0ff';
+const numberColor       = '#ddd';
 
-const ACTIVE_OBJ_COLOR = '#18a0fb';
-const ACTIVE_NUM_COLOR = '#787878';
+const activeObjectColor = '#18a0fb';
+const activeNumberColor = '#787878';
 
-const IO_COLOR = 'rgba(0, 0, 0, 0.12)';
+const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
-const smallScrollGap = 6;
+const smallScrollGap =  6;
 const largeScrollGap = 14;
 
 
@@ -1322,8 +1322,8 @@ function colorFromDataType(dataType, active)
 {
     switch (dataType)
     {
-        case 'OBJ': return active ? ACTIVE_OBJ_COLOR : OBJ_COLOR;
-        case 'number': return active ? ACTIVE_NUM_COLOR : NUM_COLOR;
+        case 'object': return active ? activeObjectColor : objectColor;
+        case 'number': return active ? activeNumberColor : numberColor;
     }
 
     return 'magenta';
@@ -1818,6 +1818,7 @@ extends GParameter
     #max;
     
 
+    
     get value() 
     {
         var value = Math.min(Math.max(this.#min, this.#value), this.#max);
@@ -1836,6 +1837,7 @@ extends GParameter
 
         return value;
     }
+
     
     set value(value) 
     {
@@ -1844,7 +1846,9 @@ extends GParameter
     }
 
 
+
     input; 
+
 
 
     constructor(name, 
@@ -1884,7 +1888,7 @@ class GGraph
 
     createNode(opType, id, name)
     {
-        var node;
+        let node;
 
         switch (opType)
         {
@@ -1919,7 +1923,7 @@ class GGraph
 
     deleteNodes(nodeIds)
     {
-        var deleted = []; // this array of deleted notes will be put in a list for undo
+        let deleted = []; // this array of deleted notes will be put in a list for undo
 
 
         for (const nodeId of nodeIds)
@@ -2418,6 +2422,8 @@ extends GOperator
 
     noise = new Noise();
 
+
+
     constructor()
     {
         super('random', 'number');
@@ -2427,11 +2433,12 @@ extends GOperator
         this.addParam(this.#min   = new GNumberParam('min',  0));
         this.addParam(this.#max   = new GNumberParam('max', 10));
         this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed', 1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed',  1, 1));
 
         // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
         // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
     }
+
 
 
     generate(callerInput)
@@ -2440,10 +2447,10 @@ extends GOperator
         super.generate(callerInput);
 
         if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
-        var rnd = this.noise.next(this.#scale.value);
+        let rnd = this.noise.next(this.#scale.value);
         if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
         
-        var value = this.#min.value + rnd * (this.#max.value - this.#min.value);
+        let value = this.#min.value + rnd * (this.#max.value - this.#min.value);
 
         this.output._data = 
         {
@@ -2455,6 +2462,7 @@ extends GOperator
 
         this.valid = false;
     }
+
 
 
     reset()
@@ -2483,7 +2491,7 @@ extends GOperator
 
     constructor()
     {
-        super('rect', 'OBJ');
+        super('rect', 'object');
 
         this.setOutput(new GOutput(this.dataType));
 
@@ -2501,17 +2509,17 @@ extends GOperator
 
 
         this.output._data =
-        [[
-            OBJ_RECT,           // type
-            0,                  // object id
-            this.id,            // node id
-               
-            0,                  // x      
-            0,                  // y      
-            this.#width .value, // width
-            this.#height.value, // height 
-            this.#round .value  // round  
-        ]];
+        [{
+            type:   OBJ_RECT,
+            id:     0,
+            nodeId: this.id,
+
+            x:      0,
+            y:      0,
+            width:  this.#width .value,
+            height: this.#height.value,
+            round:  this.#round .value
+        }];
     }
 }
 
@@ -2525,7 +2533,7 @@ extends GOperator
 
     constructor()
     {
-        super('row', 'OBJ');
+        super('row', 'object');
 
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
@@ -2563,10 +2571,10 @@ extends GOperator
             {
                 const obj = shallowCopy(data[j]);
 
-                obj[1] = this.output._data.length;
-                obj[2] = this.id;
+                obj.id     = this.output._data.length;
+                obj.nodeId = this.id;
                 
-                obj[3] += x;
+                obj.x += x;
 
                 this.output._data.push(obj);
             }    
@@ -2590,7 +2598,7 @@ extends GOperator
 
     constructor()
     {
-        super('column', 'OBJ');
+        super('column', 'object');
 
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
@@ -2699,6 +2707,8 @@ function genClearGraph()
 function genCreateNode(type, id, name)
 {
     const node = genGraph.createNode(type, id, name);
+
+    // on the UI side the node has already been created by this point
 
     genPostMessageToUi({
         msg:     'uiMakeActive',
@@ -2821,7 +2831,7 @@ function genGenerateObjects(nodeIds)
 
     // first determine number of objects
 
-    var nObjects = 0;
+    let nObjects = 0;
 
     for (const nodeId of nodeIds)
     {
@@ -2835,7 +2845,7 @@ function genGenerateObjects(nodeIds)
 
     const objects = new Array(nObjects);
 
-    var i = 0;
+    let i = 0;
     for (const nodeId of nodeIds)
     {
         const node = genGraph.nodeFromId(nodeId);
