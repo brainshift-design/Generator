@@ -114,7 +114,7 @@ input[type=text]::selection
     width:         100px;
     height:        auto;
     border-radius: 4px 4px 0 0;
-    padding: 0;
+    padding:       0;
 }
 
 
@@ -7037,6 +7037,7 @@ function createNodeHeader(node, headerColor)
             node.div.selectedSet = false;
             node.div.moved       = false;
 
+
             if (!node.selected)
             {
                 if (e.shiftKey) node.selected = true;
@@ -7044,6 +7045,7 @@ function createNodeHeader(node, headerColor)
 
                 node.selectedSet = true;
             }
+
 
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
@@ -7053,6 +7055,7 @@ function createNodeHeader(node, headerColor)
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
             }
+
 
             node.div.dragging = true;
             node.header.setPointerCapture(e.pointerId);
@@ -7065,12 +7068,15 @@ function createNodeHeader(node, headerColor)
     {
         if (node.div.dragging)
         {
+            const dx = (e.clientX - node.div.sx) / graphView.zoom;
+            const dy = (e.clientY - node.div.sy) / graphView.zoom;
+
             for (const n of graphView.selected)
             {
                 setNodePosition(
                     n.div.op,
-                    n.div.slx + (e.clientX - node.div.sx) / graphView.zoom,
-                    n.div.sly + (e.clientY - node.div.sy) / graphView.zoom);
+                    n.div.slx + dx,
+                    n.div.sly + dy);
             }
 
             node.div.moved = true;
@@ -7138,11 +7144,13 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
+    
     for (const input of node.inputs)
     {
         if (input.connected) 
             input.connection.wire.update(true);
     }
+
 
     if (   node.output 
         && node.output.connected)
@@ -7151,11 +7159,13 @@ function setNodePosition(node, x, y)
             input.connection.wire.update(true);
     }
 
+
     for (const param of node.params)
     {
         if (param.input.connected) 
             param.input.connection.wire.update(true);
     }
+
 
     graphView.updateNodeTransform(node);
 }
@@ -10600,19 +10610,19 @@ graphView.endSelection = () =>
 };
 
 
-graphView.wires = [];
+graphView.wires      = [];
 
 
-graphView.overInput     = null;
-graphView.overOutput    = null;
+graphView.overInput  = null;
+graphView.overOutput = null;
    
-graphView.tempConn      = null;
+graphView.tempConn   = null;
    
    
-graphView.selecting     = false;
-graphView.selectBox     = Rect.NaN;
+graphView.selecting  = false;
+graphView.selectBox  = Rect.NaN;
 
-graphView.btn1down      = false;
+graphView.btn1down   = false;
 
 
 
@@ -10928,9 +10938,13 @@ graphView.putNodeOnTop = node =>
 
 graphView.updateNodeTransform = function(node)
 {
+    const nodeRect = graphView.getNodeOffsetRect(node.div);
+
+    console.log('nodeRect.width = ' + nodeRect.width);
+
     node.div.style.transformOrigin = 
-          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+          ((graphView.pan.x - nodeRect.x) / node.div.offsetWidth  * 100) + '% ' 
+        + ((graphView.pan.y - nodeRect.y) / node.div.offsetHeight * 100) + '%';
 
     node.div.style.transform =
           'translate(' 
@@ -11004,6 +11018,22 @@ graphView.removeWire = wire =>
     graphView.removeChild(wire);    
     removeFromArray(graphView.wires, wire);
 };
+
+
+
+graphView.getNodeOffsetRect = (node) =>
+{
+    const ox   = -graphView.pan.x / graphView.zoom;
+    const oy   = -graphView.pan.y / graphView.zoom;
+
+    const rect = node.getBoundingClientRect();
+
+    return new DOMRect(
+        ox + (rect.left / graphView.zoom),
+        oy + (rect.top  / graphView.zoom), 
+        rect.width      / graphView.zoom, 
+        rect.weight     / graphView.zoom);
+}
 
 
 function saveToLocalFile(filename, str) 

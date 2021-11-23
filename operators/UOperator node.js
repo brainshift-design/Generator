@@ -75,6 +75,7 @@ function createNodeHeader(node, headerColor)
             node.div.selectedSet = false;
             node.div.moved       = false;
 
+
             if (!node.selected)
             {
                 if (e.shiftKey) node.selected = true;
@@ -82,6 +83,7 @@ function createNodeHeader(node, headerColor)
 
                 node.selectedSet = true;
             }
+
 
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
@@ -91,6 +93,7 @@ function createNodeHeader(node, headerColor)
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
             }
+
 
             node.div.dragging = true;
             node.header.setPointerCapture(e.pointerId);
@@ -103,12 +106,15 @@ function createNodeHeader(node, headerColor)
     {
         if (node.div.dragging)
         {
+            const dx = (e.clientX - node.div.sx) / graphView.zoom;
+            const dy = (e.clientY - node.div.sy) / graphView.zoom;
+
             for (const n of graphView.selected)
             {
                 setNodePosition(
                     n.div.op,
-                    n.div.slx + (e.clientX - node.div.sx) / graphView.zoom,
-                    n.div.sly + (e.clientY - node.div.sy) / graphView.zoom);
+                    n.div.slx + dx,
+                    n.div.sly + dy);
             }
 
             node.div.moved = true;
@@ -176,11 +182,13 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
+    
     for (const input of node.inputs)
     {
         if (input.connected) 
             input.connection.wire.update(true);
     }
+
 
     if (   node.output 
         && node.output.connected)
@@ -189,11 +197,13 @@ function setNodePosition(node, x, y)
             input.connection.wire.update(true);
     }
 
+
     for (const param of node.params)
     {
         if (param.input.connected) 
             param.input.connection.wire.update(true);
     }
+
 
     graphView.updateNodeTransform(node);
 }

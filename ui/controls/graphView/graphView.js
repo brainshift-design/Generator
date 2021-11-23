@@ -1,16 +1,16 @@
-graphView.wires = [];
+graphView.wires      = [];
 
 
-graphView.overInput     = null;
-graphView.overOutput    = null;
+graphView.overInput  = null;
+graphView.overOutput = null;
    
-graphView.tempConn      = null;
+graphView.tempConn   = null;
    
    
-graphView.selecting     = false;
-graphView.selectBox     = Rect.NaN;
+graphView.selecting  = false;
+graphView.selectBox  = Rect.NaN;
 
-graphView.btn1down      = false;
+graphView.btn1down   = false;
 
 
 
@@ -326,9 +326,13 @@ graphView.putNodeOnTop = node =>
 
 graphView.updateNodeTransform = function(node)
 {
+    const nodeRect = graphView.getNodeOffsetRect(node.div);
+
+    console.log('nodeRect.width = ' + nodeRect.width);
+
     node.div.style.transformOrigin = 
-          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
+          ((graphView.pan.x - nodeRect.x) / node.div.offsetWidth  * 100) + '% ' 
+        + ((graphView.pan.y - nodeRect.y) / node.div.offsetHeight * 100) + '%';
 
     node.div.style.transform =
           'translate(' 
@@ -402,3 +406,19 @@ graphView.removeWire = wire =>
     graphView.removeChild(wire);    
     removeFromArray(graphView.wires, wire);
 };
+
+
+
+graphView.getNodeOffsetRect = (node) =>
+{
+    const ox   = -graphView.pan.x / graphView.zoom;
+    const oy   = -graphView.pan.y / graphView.zoom;
+
+    const rect = node.getBoundingClientRect();
+
+    return new DOMRect(
+        ox + (rect.left / graphView.zoom),
+        oy + (rect.top  / graphView.zoom), 
+        rect.width      / graphView.zoom, 
+        rect.weight     / graphView.zoom);
+}
