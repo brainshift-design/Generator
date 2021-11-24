@@ -9,7 +9,7 @@ function createNode(node, headerColor)
     node.div.dragging    = false;
     node.div.moved       = false;
 
-    node.inner = document.createElement('div');
+    node.inner           = document.createElement('div');
     node.inner.className = 'nodeInner';
 
     node.div.appendChild(node.inner);
@@ -20,7 +20,7 @@ function createNode(node, headerColor)
     {
         if (   !graphView.zoomSelecting
             && !graphView.spaceDown)
-            e.target.op.inner.style.boxShadow = '0 0 0 1px #18A0FB';
+            e.target.op.inner.style.boxShadow = '0px 5px 20px #0001, 0 0 0 1px #18A0FB';
     });
 
 
@@ -29,7 +29,7 @@ function createNode(node, headerColor)
     {
         if (   !graphView.zoomSelecting
             && !graphView.spaceDown)
-            e.target.op.inner.style.boxShadow = 'none';
+            e.target.op.inner.style.boxShadow = '0px 5px 20px #0001';
     });
 
     
@@ -88,8 +88,14 @@ function createNodeHeader(node, headerColor)
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
 
+
             for (const n of graphView.selected)
             {
+                // const nRect = graphView.getNodeOffsetRect(n.div);
+
+                // n.div.slx = nRect.left;
+                // n.div.sly = nRect.top;
+
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
             }
@@ -160,6 +166,40 @@ function createNodeHeader(node, headerColor)
         else
             node.makeActive();
     });
+
+
+
+    node.updateInputs = () =>
+    {
+        for (const input of node.inputs)
+        {
+            if (input.connected) 
+                input.connection.wire.update(true);
+        }
+    };
+
+
+
+    node.updateOutput = () =>
+    {
+        if (   node.output 
+            && node.output.connected)
+        {
+            for (const input of node.output.connectedInputs)
+                input.connection.wire.update(true);
+        }
+    };
+
+
+
+    node.updateParams = () =>
+    {
+        for (const param of node.params)
+        {
+            if (param.input.connected) 
+                param.input.connection.wire.update(true);
+        }
+    };
 }
 
 
@@ -182,28 +222,9 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    
-    for (const input of node.inputs)
-    {
-        if (input.connected) 
-            input.connection.wire.update(true);
-    }
-
-
-    if (   node.output 
-        && node.output.connected)
-    {
-        for (const input of node.output.connectedInputs)
-            input.connection.wire.update(true);
-    }
-
-
-    for (const param of node.params)
-    {
-        if (param.input.connected) 
-            param.input.connection.wire.update(true);
-    }
-
+    node.updateInputs();
+    node.updateOutput();
+    node.updateParams();
 
     graphView.updateNodeTransform(node);
 }

@@ -28,7 +28,10 @@ Object.defineProperty(graphView, 'zoom',
     set: zoom =>
     {
         if (graphView._zoom == zoom) return;
-        graphView._zoom = zoom;
+
+        graphView.oldZoom = graphView.zoom;
+        graphView._zoom   = zoom;
+
         graphView.updatePanAndZoom();
     }
 });
@@ -39,6 +42,22 @@ graphView.zooming   = false;
 graphView.zoomStart = 1;
 
 graphView.zoomSelecting = false;
+
+
+
+graphView.setPanAndZoom = (pan, zoom) =>
+{
+    if (   graphView._pan  == pan
+        && graphView._zoom == zoom) 
+        return;
+
+    graphView.oldZoom = graphView.zoom;
+
+    graphView._pan  = pan;
+    graphView._zoom = zoom;
+
+    graphView.updatePanAndZoom();
+};
 
 
 

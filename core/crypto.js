@@ -1,4 +1,4 @@
-const cryptoModulusSize     = 64;
+const cryptoModulusSize     = 64; // to keep the keys short
 const millerRabinIterations = 40;
 
 const cryptoBufferSize      = cryptoModulusSize/8;

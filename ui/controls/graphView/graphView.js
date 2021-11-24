@@ -204,10 +204,9 @@ graphView.addEventListener('wheel', e =>
 
     if (e.ctrlKey)
     {
-        graphView.oldZoom = graphView.zoom;
-        
-        graphView.zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
-        graphView.pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
+        graphView.setPanAndZoom(
+            subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1)),
+            Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10)));
     }
     else
     {
@@ -326,13 +325,15 @@ graphView.putNodeOnTop = node =>
 
 graphView.updateNodeTransform = function(node)
 {
-    const nodeRect = graphView.getNodeOffsetRect(node.div);
+    // const nodeRect = graphView.getNodeOffsetRect(node.div);
 
-    console.log('nodeRect.width = ' + nodeRect.width);
+    // node.div.style.transformOrigin = 
+    //       ((graphView.pan.x - nodeRect.x) / nodeRect.width  * 100) + '% ' 
+    //     + ((graphView.pan.y - nodeRect.y) / nodeRect.height * 100) + '%';
 
     node.div.style.transformOrigin = 
-          ((graphView.pan.x - nodeRect.x) / node.div.offsetWidth  * 100) + '% ' 
-        + ((graphView.pan.y - nodeRect.y) / node.div.offsetHeight * 100) + '%';
+          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
+        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
 
     node.div.style.transform =
           'translate(' 
@@ -364,7 +365,7 @@ graphView.updateWireTransform = function(wire)
 
     wire.setAttribute('viewBox',
                 0
-        + ' ' + 20                     / graphView.zoom // 20 seems to be the title bar
+        + ' ' + 20                     / graphView.zoom // 20 seems to be the plugin title bar
         + ' ' + graphView.clientWidth  / graphView.zoom
         + ' ' + graphView.clientHeight / graphView.zoom);
 
@@ -420,5 +421,5 @@ graphView.getNodeOffsetRect = (node) =>
         ox + (rect.left / graphView.zoom),
         oy + (rect.top  / graphView.zoom), 
         rect.width      / graphView.zoom, 
-        rect.weight     / graphView.zoom);
+        rect.height     / graphView.zoom);
 }

@@ -6,9 +6,10 @@ class UParameter
     #name;
     get name() { return this.#name; }
 
-    _op;      get op()      { return this._op;      }
-    _control; get control() { return this._control; }
-    _div;     get div()     { return this._div;     }
+
+    _operator; get operator() { return this._operator; }
+    _control;  get control()  { return this._control;  }
+    _div;      get div()      { return this._div;      }
 
 
     
@@ -16,7 +17,6 @@ class UParameter
     {
         this.#type = type;
         this.#name = name;
-
 
         this._div = document.createElement('div');
 
