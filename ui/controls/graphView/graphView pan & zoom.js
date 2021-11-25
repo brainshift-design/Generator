@@ -147,15 +147,15 @@ graphView.endZoomSelection = (zoom) =>
         box.w =  box.w                    / graphView.zoom;
         box.h =  box.h                    / graphView.zoom;
         
-        graphView.zoom *= Math.min(
-            window.innerWidth  / graphView.selectBox.w,
-            window.innerHeight / graphView.selectBox.h);
-    
         const diff = { w: (window.innerWidth  / graphView.zoom - box.w)/2,
                        h: (window.innerHeight / graphView.zoom - box.h)/2 };
 
-        graphView.pan = { x: -(box.x - diff.w) * graphView.zoom,
-                          y: -(box.y - diff.h) * graphView.zoom };
+        graphView.setPanAndZoom(
+            { x: -(box.x - diff.w) * graphView.zoom,
+              y: -(box.y - diff.h) * graphView.zoom },
+            graphView.zoom * Math.min(
+                window.innerWidth  / graphView.selectBox.w,
+                window.innerHeight / graphView.selectBox.h));
     }
 
     graphView.selectBox = Rect.NaN;

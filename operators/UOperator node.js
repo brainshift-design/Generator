@@ -78,7 +78,7 @@ function createNodeHeader(node, headerColor)
 
             if (!node.selected)
             {
-                if (e.shiftKey) node.selected = true;
+                if (e.shiftKey) node     .selected = true;
                 else            graphView.selected = [node];
 
                 node.selectedSet = true;

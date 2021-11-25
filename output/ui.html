@@ -2119,6 +2119,10 @@ function strFromData(data)
 }
 
 
+
+const logVar = x => console.log(Object.keys(x)[0] + ' =', Object.values(x)[0]);
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -5017,6 +5021,10 @@ function strFromData(data)
 }
 
 
+
+const logVar = x => console.log(Object.keys(x)[0] + ' =', Object.values(x)[0]);
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -7041,7 +7049,7 @@ function createNodeHeader(node, headerColor)
 
             if (!node.selected)
             {
-                if (e.shiftKey) node.selected = true;
+                if (e.shiftKey) node     .selected = true;
                 else            graphView.selected = [node];
 
                 node.selectedSet = true;
@@ -10298,15 +10306,15 @@ graphView.endZoomSelection = (zoom) =>
         box.w =  box.w                    / graphView.zoom;
         box.h =  box.h                    / graphView.zoom;
         
-        graphView.zoom *= Math.min(
-            window.innerWidth  / graphView.selectBox.w,
-            window.innerHeight / graphView.selectBox.h);
-    
         const diff = { w: (window.innerWidth  / graphView.zoom - box.w)/2,
                        h: (window.innerHeight / graphView.zoom - box.h)/2 };
 
-        graphView.pan = { x: -(box.x - diff.w) * graphView.zoom,
-                          y: -(box.y - diff.h) * graphView.zoom };
+        graphView.setPanAndZoom(
+            { x: -(box.x - diff.w) * graphView.zoom,
+              y: -(box.y - diff.h) * graphView.zoom },
+            graphView.zoom * Math.min(
+                window.innerWidth  / graphView.selectBox.w,
+                window.innerHeight / graphView.selectBox.h));
     }
 
     graphView.selectBox = Rect.NaN;
@@ -10851,7 +10859,8 @@ graphView.addEventListener('wheel', e =>
 
 
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
-    
+    logVar({dZoom});
+
     const dWheelX = e.deltaX/120;
     const dWheelY = e.deltaY/120;
 

@@ -244,3 +244,7 @@ function strFromData(data)
 
     return str;
 }
+
+
+
+const logVar = x => console.log(Object.keys(x)[0] + ' =', Object.values(x)[0]);

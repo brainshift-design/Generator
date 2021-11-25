@@ -198,7 +198,8 @@ graphView.addEventListener('wheel', e =>
 
 
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
-    
+    logVar({dZoom});
+
     const dWheelX = e.deltaX/120;
     const dWheelY = e.deltaY/120;
 
