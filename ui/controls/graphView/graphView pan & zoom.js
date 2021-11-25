@@ -45,16 +45,16 @@ graphView.zoomSelecting = false;
 
 
 
-graphView.setPanAndZoom = (pan, zoom) =>
+graphView.setZoomAndPan = (zoom, pan) =>
 {
-    if (   graphView._pan  == pan
-        && graphView._zoom == zoom) 
+    if (   graphView._zoom == zoom
+        && graphView._pan  == pan) 
         return;
 
     graphView.oldZoom = graphView.zoom;
 
-    graphView._pan  = pan;
     graphView._zoom = zoom;
+    graphView._pan  = pan;
 
     graphView.updatePanAndZoom();
 };
@@ -150,12 +150,12 @@ graphView.endZoomSelection = (zoom) =>
         const diff = { w: (window.innerWidth  / graphView.zoom - box.w)/2,
                        h: (window.innerHeight / graphView.zoom - box.h)/2 };
 
-        graphView.setPanAndZoom(
-            { x: -(box.x - diff.w) * graphView.zoom,
-              y: -(box.y - diff.h) * graphView.zoom },
+        graphView.setZoomAndPan(
             graphView.zoom * Math.min(
                 window.innerWidth  / graphView.selectBox.w,
-                window.innerHeight / graphView.selectBox.h));
+                window.innerHeight / graphView.selectBox.h),
+            { x: -(box.x - diff.w) * graphView.zoom,
+              y: -(box.y - diff.h) * graphView.zoom });
     }
 
     graphView.selectBox = Rect.NaN;

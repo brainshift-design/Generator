@@ -205,9 +205,10 @@ graphView.addEventListener('wheel', e =>
 
     if (e.ctrlKey)
     {
-        graphView.setPanAndZoom(
-            subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1)),
-            Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10)));
+        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
+        const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
+        
+        graphView.setZoomAndPan(zoom, pan);
     }
     else
     {
