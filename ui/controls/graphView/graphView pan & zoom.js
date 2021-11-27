@@ -13,14 +13,14 @@ Object.defineProperty(graphView, 'pan',
 
 
 
-graphView.panning   = false;
+graphView.panning = false;
 graphView.panStart;
 
 graphView.spaceDown = false;
 
 
-graphView._zoom     = 1;
-graphView.oldZoom   = 1;
+graphView._zoom   = 1;
+graphView.oldZoom = 1;
 
 Object.defineProperty(graphView, 'zoom',
 {

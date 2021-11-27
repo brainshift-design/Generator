@@ -247,6 +247,16 @@ function strFromData(data)
 
 
 
-const logVar = x => console.log(
-    Object.keys  (x)[0] + ' =', 
-    Object.values(x)[0]);
+function logVar(x)
+{
+    console.log(
+        Object.keys  (x)[0] + ' =', 
+        Object.values(x)[0]);
+}
+
+
+
+function getStyleValue(obj, style)
+{
+    return window.getComputedStyle(obj, null).getPropertyValue(style);
+}

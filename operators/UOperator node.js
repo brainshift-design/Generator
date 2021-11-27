@@ -59,13 +59,15 @@ function createNodeHeader(node, headerColor)
 
 
 
-    node.header.addEventListener('pointerdown', function(e) 
+    node.header.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)    
             return;
 
+
         graphView.putNodeOnTop(node);
-        
+
+
         if (   e.button == 0
             && !graphView.overOutput
             && !graphView.overInput)
@@ -91,11 +93,6 @@ function createNodeHeader(node, headerColor)
 
             for (const n of graphView.selected)
             {
-                // const nRect = graphView.getNodeOffsetRect(n.div);
-
-                // n.div.slx = nRect.left;
-                // n.div.sly = nRect.top;
-
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
             }
@@ -108,13 +105,13 @@ function createNodeHeader(node, headerColor)
 
 
 
-    node.header.addEventListener('pointermove', function(e) 
+    node.header.addEventListener('pointermove', e =>
     {
         if (node.div.dragging)
         {
             const dx = (e.clientX - node.div.sx) / graphView.zoom;
             const dy = (e.clientY - node.div.sy) / graphView.zoom;
-
+            
             for (const n of graphView.selected)
             {
                 setNodePosition(
@@ -131,7 +128,7 @@ function createNodeHeader(node, headerColor)
 
 
 
-    node.header.addEventListener('pointerup', function(e) 
+    node.header.addEventListener('pointerup', e =>
     {
         if (   e.button == 0
             && node.div.dragging)
@@ -156,7 +153,7 @@ function createNodeHeader(node, headerColor)
     
     
 
-    node.header.addEventListener('dblclick', function(e)
+    node.header.addEventListener('dblclick', e =>
     {
         var bounds = node.label.getBoundingClientRect();
 

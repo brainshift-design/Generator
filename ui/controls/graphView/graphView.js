@@ -198,7 +198,6 @@ graphView.addEventListener('wheel', e =>
 
 
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
-    logVar({dZoom});
 
     const dWheelX = e.deltaX/120;
     const dWheelY = e.deltaY/120;
@@ -207,7 +206,7 @@ graphView.addEventListener('wheel', e =>
     {
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
         const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
-        
+
         graphView.setZoomAndPan(zoom, pan);
     }
     else
@@ -327,23 +326,20 @@ graphView.putNodeOnTop = node =>
 
 graphView.updateNodeTransform = function(node)
 {
-    // const nodeRect = graphView.getNodeOffsetRect(node.div);
-
-    // node.div.style.transformOrigin = 
-    //       ((graphView.pan.x - nodeRect.x) / nodeRect.width  * 100) + '% ' 
-    //     + ((graphView.pan.y - nodeRect.y) / nodeRect.height * 100) + '%';
-
-    node.div.style.transformOrigin = 
-          ((graphView.pan.x - node.div.offsetLeft) / node.div.offsetWidth  * 100) + '% ' 
-        + ((graphView.pan.y - node.div.offsetTop ) / node.div.offsetHeight * 100) + '%';
-
     node.div.style.transform =
           'translate(' 
         + (graphView.pan.x * graphView.zoom) + 'px, '
         + (graphView.pan.y * graphView.zoom) + 'px) '
         + 'scale(' + graphView.zoom + ')';
+    
 
+    const nodeRect = graphView.getNodeOffsetRect(node.div);
 
+    node.div.style.transformOrigin = 
+          ((graphView.pan.x - node.div.offsetLeft) / nodeRect.width  * 100) + '% ' 
+        + ((graphView.pan.y - node.div.offsetTop ) / nodeRect.height * 100) + '%';  
+
+   
     for (const input of node.inputs)
     {
         if (input.connected)
