@@ -2,7 +2,12 @@
 {
     z-index:  0;
     overflow: hidden;
-}
+    /* box-shadow: 0 0 0 1px red inset;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 10 10'> <path d='M0 0 L0 10 L10 10' fill='red' /></svg>");
+    background-repeat:no-repeat;
+    background-position:center center;
+    background-size: 100% 100%, auto; */
+ }
 
 
 .node
@@ -10,7 +15,7 @@
     display:       block;
     position:      absolute;
     width:         100px;
-    /* height:        auto; */
+    height:        auto;
     border-radius: 4px 4px 0 0;
     padding:       0;
 }
@@ -21,7 +26,7 @@
     display:       block;
     position:      relative;
     width:         100px;
-    /* height:        auto; */
+    height:        auto;
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;

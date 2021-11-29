@@ -1,3 +1,8 @@
+scrollbarX.moving = false;
+scrollbarY.moving = false;
+
+
+
 graphView.updateScroll = () =>
 {
     const bounds = graphView.getAllNodeBounds();
@@ -7,6 +12,11 @@ graphView.updateScroll = () =>
 };
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
 graphView.updateScrollX = bounds =>
 {
     if (bounds.l < 0)
@@ -14,25 +24,22 @@ graphView.updateScrollX = bounds =>
         const widthX = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - (smallScrollGap + largeScrollGap);
 
         scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   = widthX;
-        scrollbarX.style.left    = graphView.clientWidth - largeScrollGap - widthX;
-        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.width   =  widthX;
+        scrollbarX.style.left    =  graphView.clientWidth - largeScrollGap - widthX;
+        scrollbarX.style.top     =  graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
     }
     else if (bounds.r >= graphView.clientWidth)
     {
         scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   = sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
-        scrollbarX.style.left    = smallScrollGap;
-        scrollbarX.style.top     = graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.width   =  sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
+        scrollbarX.style.left    =  smallScrollGap;
+        scrollbarX.style.top     =  graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
     }
     else
-    {
         scrollbarX.style.display = 'none';
-    }
 };
 
 
-scrollbarX.moving = false;
 
 scrollbarX.addEventListener('pointerdown', e =>
 {
@@ -51,6 +58,8 @@ scrollbarX.addEventListener('pointerdown', e =>
     }
 });
 
+
+
 scrollbarX.addEventListener('pointerup', e =>
 {
     if (   e.button == 0
@@ -68,6 +77,8 @@ scrollbarX.addEventListener('pointerup', e =>
             scrollbarX.style.display = 'none';
     }
 });
+
+
 
 scrollbarX.addEventListener('pointermove', e =>
 {
@@ -96,32 +107,37 @@ scrollbarX.addEventListener('pointermove', e =>
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
 graphView.updateScrollY = bounds =>
 {
-    if (bounds.t < 0)
+    if (bounds.t < controlBar.offsetHeight)
     {
-        const heightY = sqr(graphView.clientHeight) / (graphView.clientHeight - bounds.t) - (smallScrollGap + largeScrollGap);
+        const ot     = bounds.t - controlBar.offsetHeight;
+        const height = sqr(graphView.clientHeight) / (graphView.clientHeight - ot) - (smallScrollGap + largeScrollGap);
 
+        scrollbarY.style.height  = height;
+        scrollbarY.style.left    = graphView.clientLeft + graphView.clientWidth - smallScrollGap - 6;
+        scrollbarY.style.top     = graphView.clientHeight - largeScrollGap - height;
         scrollbarY.style.display = 'inline-block';
-        scrollbarY.style.height  = heightY;
-        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - smallScrollGap - 6;
-        scrollbarY.style.top     = graphView.clientHeight - largeScrollGap - heightY;
     }
-    else if (bounds.b >= graphView.clientHeight)
+    else if (bounds.b >= controlBar.offsetHeight + graphView.clientHeight)
     {
-        scrollbarY.style.display = 'inline-block';
-        scrollbarY.style.height  = sqr(graphView.clientHeight) / bounds.b - (smallScrollGap + largeScrollGap);
-        scrollbarY.style.left    = graphView.offsetLeft + graphView.clientWidth - smallScrollGap - 6;
+        const ob     = bounds.b - controlBar.offsetHeight;
+        const height = sqr(graphView.clientHeight) / ob - (smallScrollGap + largeScrollGap);
+
+        scrollbarY.style.height  = height;
+        scrollbarY.style.left    = graphView.clientLeft + graphView.clientWidth - smallScrollGap - 6;
         scrollbarY.style.top     = smallScrollGap;
+        scrollbarY.style.display = 'inline-block';
     }
     else
-    {
         scrollbarY.style.display = 'none';
-    }
 };
 
 
-scrollbarY.moving = false;
 
 scrollbarY.addEventListener('pointerdown', e =>
 {
@@ -140,6 +156,8 @@ scrollbarY.addEventListener('pointerdown', e =>
     }
 });
 
+
+
 scrollbarY.addEventListener('pointerup', e =>
 {
     if (   e.button == 0
@@ -157,6 +175,8 @@ scrollbarY.addEventListener('pointerup', e =>
             scrollbarY.style.display = 'none';
     }
 });
+
+
 
 scrollbarY.addEventListener('pointermove', e =>
 {
