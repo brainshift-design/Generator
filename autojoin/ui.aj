@@ -25,8 +25,8 @@
     ../ui/ui nodes.js
     ../ui/ui events.js
 
+    ../ui/document.js
     ../ui/window.js
-    ../ui/pointer.js
     ../ui/keyboard.js
 
     ../ui/controls/slider/*.js

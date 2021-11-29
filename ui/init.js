@@ -1,6 +1,6 @@
-//save('state', null);
-//save('windowWidth', null);
-//save('windowHeight', null);
+// uiSaveLocal('state', null);
+// uiSaveLocal('windowWidth', null);
+//uiSaveLocal('windowHeight', null);
 //uiSaveLocal('productKey', null);
 
 

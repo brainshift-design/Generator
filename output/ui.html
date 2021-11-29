@@ -8121,9 +8121,9 @@ extends Action
 }
 
 
-//save('state', null);
-//save('windowWidth', null);
-//save('windowHeight', null);
+// uiSaveLocal('state', null);
+// uiSaveLocal('windowWidth', null);
+//uiSaveLocal('windowHeight', null);
 //uiSaveLocal('productKey', null);
 
 
@@ -8534,44 +8534,6 @@ productKeyClose.addEventListener('click', e =>
 });
 
 
-const resizeEdgeWidth = 8;
-
-document.canResizeX = false;
-document.canResizeY = false;
-
-document.resizingX  = false;
-document.resizingY  = false;
-
-document.startRect = new Rect();
-
-
-
-function resizeWindow(width, height)
-{
-    graphView.updatePanAndZoom();
-
-    uiPostMessageToFigma({ 
-        cmd:   'figResizeWindow', 
-        width:  width,
-        height: height
-    });
-}
-
-
-
-function checkResize(x, y)
-{
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
-
-         if (document.canResizeX
-          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
-    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
-    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
-    else                          document.body.style.cursor = 'auto';
-}
-
-
 document.addEventListener('pointerdown', function(e)
 {
     if (   document.canResizeX
@@ -8626,16 +8588,58 @@ document.addEventListener('pointerup', function(e)
     if (   document.resizingX
         || document.resizingY)
     {
-        document.resizingX = false;
-        document.resizingY = false;
         
         checkResize(e.clientX, e.clientY);
         document.body.releasePointerCapture(e.pointerId);
     }
+
+    document.resizingX = false;
+    document.resizingY = false;
+
+    scrollbarX.moving  = false;
+    scrollbarY.moving  = false;
 });
 
 
 
+
+
+const resizeEdgeWidth = 8;
+
+document.canResizeX = false;
+document.canResizeY = false;
+
+document.resizingX  = false;
+document.resizingY  = false;
+
+document.startRect = new Rect();
+
+
+
+function resizeWindow(width, height)
+{
+    graphView.updatePanAndZoom();
+
+    uiPostMessageToFigma({ 
+        cmd:   'figResizeWindow', 
+        width:  width,
+        height: height
+    });
+}
+
+
+
+function checkResize(x, y)
+{
+    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+
+         if (document.canResizeX
+          && document.canResizeY) document.body.style.cursor = 'nwse-resize';
+    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';
+    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';
+    else                          document.body.style.cursor = 'auto';
+}
 
 
 document.addEventListener('keydown', e =>
@@ -10742,7 +10746,9 @@ graphView.addEventListener('pointerdown', e =>
     if (    e.button == 0
         && !graphView.panning
         && !document.canResizeX
-        && !document.canResizeY)
+        && !document.canResizeY
+        && !scrollbarX.moving
+        && !scrollbarY.moving)
     {
         console.log('graphView.pointerdown');
 

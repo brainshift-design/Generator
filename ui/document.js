@@ -52,12 +52,16 @@ document.addEventListener('pointerup', function(e)
     if (   document.resizingX
         || document.resizingY)
     {
-        document.resizingX = false;
-        document.resizingY = false;
         
         checkResize(e.clientX, e.clientY);
         document.body.releasePointerCapture(e.pointerId);
     }
+
+    document.resizingX = false;
+    document.resizingY = false;
+
+    scrollbarX.moving  = false;
+    scrollbarY.moving  = false;
 });
 
 
