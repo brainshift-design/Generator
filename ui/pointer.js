@@ -3,8 +3,7 @@ document.addEventListener('pointerdown', function(e)
     if (   document.canResizeX
         || document.canResizeY)
     {
-        if (document.canResizeX) document.resizingX = true;
-        if (document.canResizeY) document.resizingY = true;
+        console.log('document.pointerdown');
 
         document.startRect = new Rect(
             e.clientX,
@@ -13,6 +12,9 @@ document.addEventListener('pointerdown', function(e)
             window.innerHeight);
 
         document.body.setPointerCapture(e.pointerId);
+
+        document.resizingX = document.canResizeX;
+        document.resizingY = document.canResizeY;
     }
 });
 

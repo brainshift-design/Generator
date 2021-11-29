@@ -21,19 +21,21 @@ graphView.updateScrollX = bounds =>
 {
     if (bounds.l < 0)
     {
-        const widthX = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - (smallScrollGap + largeScrollGap);
+        const width = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - (smallScrollGap + largeScrollGap);
 
         scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  widthX;
-        scrollbarX.style.left    =  graphView.clientWidth - largeScrollGap - widthX;
-        scrollbarX.style.top     =  graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.width   =  width;
+        scrollbarX.style.left    =  graphView.clientWidth - largeScrollGap - width;
+        scrollbarX.style.top     =  graphView.clientHeight - smallScrollGap - 6;
     }
     else if (bounds.r >= graphView.clientWidth)
     {
+        const width = sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
+
         scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
+        scrollbarX.style.width   =  width;
         scrollbarX.style.left    =  smallScrollGap;
-        scrollbarX.style.top     =  graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.top     =  graphView.clientHeight - smallScrollGap - 6;
     }
     else
         scrollbarX.style.display = 'none';

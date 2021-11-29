@@ -2,8 +2,10 @@ function createNode(node, headerColor)
 {
     node.div = document.createElement('div');
 
-    node.div.className = 'node';
-    node.div.op        = node;
+    node.div.className   = 'node';
+    node.div.op          = node;
+
+    node.div.style.width = '120px';
     
     node.div.selectedSet = false;
     node.div.dragging    = false;

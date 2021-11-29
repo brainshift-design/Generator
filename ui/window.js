@@ -15,7 +15,7 @@ function resizeWindow(width, height)
     graphView.updatePanAndZoom();
 
     uiPostMessageToFigma({ 
-        cmd:   'resizeWindow', 
+        cmd:   'figResizeWindow', 
         width:  width,
         height: height
     });

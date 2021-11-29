@@ -120,7 +120,7 @@ function removeMenuItemProductKey()
 function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 {
     uiPostMessageToFigma({ 
-        cmd:   'notify',
+        cmd:   'figNotify',
         text:   text,
         prefix: prefix,
         delay:  delay

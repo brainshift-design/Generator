@@ -46,7 +46,7 @@ extends UParameter
 
         initSlider(
             this.control,
-            100,       // width
+            120,       // width
             20,        // height
             this.name, 
             min,

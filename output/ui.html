@@ -116,7 +116,6 @@ input[type=text]::selection
 {
     display:       block;
     position:      absolute;
-    width:         100px;
     height:        auto;
     border-radius: 4px 4px 0 0;
     padding:       0;
@@ -127,7 +126,7 @@ input[type=text]::selection
 {
     display:       block;
     position:      relative;
-    width:         100px;
+    width:         100%;
     height:        auto;
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
@@ -243,6 +242,7 @@ input[type=text]::selection
     position:         absolute;
     display:          none;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
+    z-index:          0;
 }
 
 
@@ -254,6 +254,7 @@ input[type=text]::selection
     position:         absolute;
     display:          none;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
+    z-index:          0;
 }
 
 
@@ -5909,7 +5910,7 @@ extends UParameter
 
         initSlider(
             this.control,
-            100,       // width
+            120,       // width
             20,        // height
             this.name, 
             min,
@@ -7004,8 +7005,10 @@ function createNode(node, headerColor)
 {
     node.div = document.createElement('div');
 
-    node.div.className = 'node';
-    node.div.op        = node;
+    node.div.className   = 'node';
+    node.div.op          = node;
+
+    node.div.style.width = '120px';
     
     node.div.selectedSet = false;
     node.div.dragging    = false;
@@ -8265,7 +8268,7 @@ function removeMenuItemProductKey()
 function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 {
     uiPostMessageToFigma({ 
-        cmd:   'notify',
+        cmd:   'figNotify',
         text:   text,
         prefix: prefix,
         delay:  delay
@@ -8548,7 +8551,7 @@ function resizeWindow(width, height)
     graphView.updatePanAndZoom();
 
     uiPostMessageToFigma({ 
-        cmd:   'resizeWindow', 
+        cmd:   'figResizeWindow', 
         width:  width,
         height: height
     });
@@ -8574,8 +8577,7 @@ document.addEventListener('pointerdown', function(e)
     if (   document.canResizeX
         || document.canResizeY)
     {
-        if (document.canResizeX) document.resizingX = true;
-        if (document.canResizeY) document.resizingY = true;
+        console.log('document.pointerdown');
 
         document.startRect = new Rect(
             e.clientX,
@@ -8584,6 +8586,9 @@ document.addEventListener('pointerdown', function(e)
             window.innerHeight);
 
         document.body.setPointerCapture(e.pointerId);
+
+        document.resizingX = document.canResizeX;
+        document.resizingY = document.canResizeY;
     }
 });
 
@@ -10394,19 +10399,21 @@ graphView.updateScrollX = bounds =>
 {
     if (bounds.l < 0)
     {
-        const widthX = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - (smallScrollGap + largeScrollGap);
+        const width = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - (smallScrollGap + largeScrollGap);
 
         scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  widthX;
-        scrollbarX.style.left    =  graphView.clientWidth - largeScrollGap - widthX;
-        scrollbarX.style.top     =  graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.width   =  width;
+        scrollbarX.style.left    =  graphView.clientWidth - largeScrollGap - width;
+        scrollbarX.style.top     =  graphView.clientHeight - smallScrollGap - 6;
     }
     else if (bounds.r >= graphView.clientWidth)
     {
+        const width = sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
+
         scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
+        scrollbarX.style.width   =  width;
         scrollbarX.style.left    =  smallScrollGap;
-        scrollbarX.style.top     =  graphView.offsetTop + graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.top     =  graphView.clientHeight - smallScrollGap - 6;
     }
     else
         scrollbarX.style.display = 'none';
@@ -10733,8 +10740,12 @@ graphView.addEventListener('pointerdown', e =>
                          y: e.clientY };
 
     if (    e.button == 0
-        && !graphView.panning)
+        && !graphView.panning
+        && !document.canResizeX
+        && !document.canResizeY)
     {
+        console.log('graphView.pointerdown');
+
         if (graphView.spaceDown)
         {
             if (e.ctrlKey) graphView.startZoomSelection(e.clientX, e.clientY);
@@ -11017,7 +11028,7 @@ graphView.putNodeOnTop = node =>
     for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    var z = Number.MAX_SAFE_INTEGER;
+    var z = Number.MAX_SAFE_INTEGER - 2; // -2 is for scrollbars
 
     for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;
@@ -11029,6 +11040,9 @@ graphView.putNodeOnTop = node =>
     }
     
     node.div.style.zIndex = z;
+
+    scrollbarX.style.zIndex = Number.MAX_SAFE_INTEGER - 1;
+    scrollbarY.style.zIndex = Number.MAX_SAFE_INTEGER - 2;
 };
 
 

@@ -24,8 +24,12 @@ graphView.addEventListener('pointerdown', e =>
                          y: e.clientY };
 
     if (    e.button == 0
-        && !graphView.panning)
+        && !graphView.panning
+        && !document.canResizeX
+        && !document.canResizeY)
     {
+        console.log('graphView.pointerdown');
+
         if (graphView.spaceDown)
         {
             if (e.ctrlKey) graphView.startZoomSelection(e.clientX, e.clientY);
@@ -308,7 +312,7 @@ graphView.putNodeOnTop = node =>
     for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    var z = Number.MAX_SAFE_INTEGER;
+    var z = Number.MAX_SAFE_INTEGER - 2; // -2 is for scrollbars
 
     for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;
@@ -320,6 +324,9 @@ graphView.putNodeOnTop = node =>
     }
     
     node.div.style.zIndex = z;
+
+    scrollbarX.style.zIndex = Number.MAX_SAFE_INTEGER - 1;
+    scrollbarY.style.zIndex = Number.MAX_SAFE_INTEGER - 2;
 };
 
 
