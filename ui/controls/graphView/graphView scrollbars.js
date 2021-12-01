@@ -9,6 +9,9 @@ graphView.updateScroll = () =>
 
     graphView.updateScrollX(bounds);
     graphView.updateScrollY(bounds);
+
+    scrollbarX.style.zIndex = MAX_INT-1;
+    scrollbarY.style.zIndex = MAX_INT-2;
 };
 
 

@@ -17,6 +17,10 @@ graphView.btn1down   = false;
 graphView.pStart = {x:0, y:0};
 
 
+scrollbarX.style.zIndex = MAX_INT-1;
+scrollbarY.style.zIndex = MAX_INT-2;
+
+
 
 graphView.addEventListener('pointerdown', e =>
 {
@@ -238,7 +242,7 @@ graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new UConnection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
-    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.style.zIndex = MAX_INT-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.output       = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
@@ -250,7 +254,7 @@ graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new UConnection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
-    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.style.zIndex = MAX_INT-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.input        = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
@@ -314,7 +318,7 @@ graphView.putNodeOnTop = node =>
     for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    var z = Number.MAX_SAFE_INTEGER - 2; // -2 is for scrollbars
+    var z = MAX_INT-3; // -3 is for scrollbars
 
     for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;
@@ -322,13 +326,10 @@ graphView.putNodeOnTop = node =>
     if (!!node.output)
     {
         for (const input of node.output.connectedInputs)
-        input.connection.wire.style.zIndex = z--;
+            input.connection.wire.style.zIndex = z--;
     }
     
     node.div.style.zIndex = z;
-
-    scrollbarX.style.zIndex = Number.MAX_SAFE_INTEGER - 1;
-    scrollbarY.style.zIndex = Number.MAX_SAFE_INTEGER - 2;
 };
 
 

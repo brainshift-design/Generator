@@ -111,6 +111,8 @@ graphView.updateSelectBox = () =>
     }
 
     graphView.selected = selected;
+
+    selectBox.style.zIndex = MAX_INT-3;
 };
 
 

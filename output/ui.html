@@ -236,25 +236,23 @@ input[type=text]::selection
 
 #scrollbarX
 {
-    background-color: #969696;
+    background-color: #a7a7a7;
     height:           6px;
     border-radius:    3px;
     position:         absolute;
     display:          none;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
-    z-index:          0;
 }
 
 
 #scrollbarY
 {
-    background-color: #969696;
+    background-color: #a7a7a7;
     width:            6px;
     border-radius:    3px;
     position:         absolute;
     display:          none;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
-    z-index:          0;
 }
 
 
@@ -732,8 +730,10 @@ const activeNumberColor = '#787878';
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
-const smallScrollGap =  6;
-const largeScrollGap = 14;
+const smallScrollGap    =  6;
+const largeScrollGap    = 14;
+
+const MAX_INT           = 2147483647;
 
 
 const R = 0, G = 1, B = 2, A = 3;
@@ -3646,8 +3646,10 @@ const activeNumberColor = '#787878';
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
-const smallScrollGap =  6;
-const largeScrollGap = 14;
+const smallScrollGap    =  6;
+const largeScrollGap    = 14;
+
+const MAX_INT           = 2147483647;
 
 
 const R = 0, G = 1, B = 2, A = 3;
@@ -6163,7 +6165,7 @@ class UGraph
             input.op.makeActive();
             
         output.op.updateConnectedInputValueText();
-        conn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+        conn.wire.style.zIndex = MAX_INT;
 
         return true;
     }
@@ -9346,12 +9348,17 @@ function initSelectMenu(select)
 {
     select.menu = document.createElement('DIV');
 
-    select.menu.className    = 'selectMenu';
-    select.menu.hoverIndex   = 0;
-    select.menu.tabIndex     = 0;
+    select.menu.className        = 'selectMenu';
+    select.menu.hoverIndex       =  0;
+    select.menu.tabIndex         =  0;
 
-    select.menu.style.left   = select.offsetLeft;
-    select.menu.style.zIndex = Number.MAX_SAFE_INTEGER;
+    select.menu.style.left       =  select.offsetLeft;
+    select.menu.style.height     = 'auto';
+    select.menu.style.textAlign  = 'center';
+    select.menu.style.background = '#222';
+    select.menu.style.zIndex     =  MAX_INT-3;
+    
+
 
     select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
 
@@ -9359,18 +9366,13 @@ function initSelectMenu(select)
     { 
         if (e.code == 'Escape')
             select.menu.blur();
-    });
+    });        
     
 
     
-    select.menu.tabIndex = 0;
+    select.menu.tabIndex   = 0;
     
-    select.menu.style.height     = 'auto';
-    select.menu.style.textAlign  = 'center';
-    select.menu.style.background = '#222222';
-    select.menu.style.zIndex     = Number.MAX_SAFE_INTEGER;
-
-    select.menu.hoverIndex       = 0;
+    select.menu.hoverIndex = 0;
 
 
     select.selectBox = document.createElement('DIV');
@@ -9700,7 +9702,7 @@ function initMenuSelectMenu(select)
     select.menu.tabIndex     = 0;
 
     select.menu.style.left   = select.offsetLeft;
-    select.menu.style.zIndex = Number.MAX_SAFE_INTEGER;
+    select.menu.style.zIndex = MAX_INT;
 
     select.menu.addEventListener('focus', function() 
     {
@@ -10391,6 +10393,9 @@ graphView.updateScroll = () =>
 
     graphView.updateScrollX(bounds);
     graphView.updateScrollY(bounds);
+
+    scrollbarX.style.zIndex = MAX_INT-1;
+    scrollbarY.style.zIndex = MAX_INT-2;
 };
 
 
@@ -10701,6 +10706,8 @@ graphView.updateSelectBox = () =>
     }
 
     graphView.selected = selected;
+
+    selectBox.style.zIndex = MAX_INT-3;
 };
 
 
@@ -10735,6 +10742,10 @@ graphView.btn1down   = false;
 
 
 graphView.pStart = {x:0, y:0};
+
+
+scrollbarX.style.zIndex = MAX_INT-1;
+scrollbarY.style.zIndex = MAX_INT-2;
 
 
 
@@ -10958,7 +10969,7 @@ graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new UConnection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
-    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.style.zIndex = MAX_INT-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.output       = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
@@ -10970,7 +10981,7 @@ graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new UConnection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
-    graphView.tempConn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+    graphView.tempConn.wire.style.zIndex = MAX_INT-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.input        = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
@@ -11034,7 +11045,7 @@ graphView.putNodeOnTop = node =>
     for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    var z = Number.MAX_SAFE_INTEGER - 2; // -2 is for scrollbars
+    var z = MAX_INT-3; // -3 is for scrollbars
 
     for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;
@@ -11042,13 +11053,10 @@ graphView.putNodeOnTop = node =>
     if (!!node.output)
     {
         for (const input of node.output.connectedInputs)
-        input.connection.wire.style.zIndex = z--;
+            input.connection.wire.style.zIndex = z--;
     }
     
     node.div.style.zIndex = z;
-
-    scrollbarX.style.zIndex = Number.MAX_SAFE_INTEGER - 1;
-    scrollbarY.style.zIndex = Number.MAX_SAFE_INTEGER - 2;
 };
 
 
