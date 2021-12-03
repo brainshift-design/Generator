@@ -75,7 +75,7 @@ document.addEventListener('keyup', e =>
     {
         if (graphView.spaceDown)
         {
-            graphView.style.cursor  = 'auto';
+            graphView.setAutoCursor();
             graphView.spaceDown     = false;
             graphView.zoomSelecting = false;
         }

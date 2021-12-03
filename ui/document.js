@@ -1,7 +1,8 @@
 document.addEventListener('pointerdown', function(e)
 {
-    if (   document.canResizeX
-        || document.canResizeY)
+    if (   e.button == 0
+        && (   document.canResizeX
+            || document.canResizeY))
     {
         console.log('document.pointerdown');
 
@@ -33,12 +34,12 @@ document.addEventListener('pointermove', function(e)
     {
         resizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
-            document.body.clientHeight);
+            window.innerHeight);
     }
     else if (document.resizingY)
     {
         resizeWindow(
-            document.body.clientWidth,
+            window.innerWidth,
             document.startRect.h + e.clientY - document.startRect.y);
     }
     else
@@ -52,7 +53,6 @@ document.addEventListener('pointerup', function(e)
     if (   document.resizingX
         || document.resizingY)
     {
-        
         checkResize(e.clientX, e.clientY);
         document.body.releasePointerCapture(e.pointerId);
     }

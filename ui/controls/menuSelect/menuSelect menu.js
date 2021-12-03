@@ -7,7 +7,7 @@ function initMenuSelectMenu(select)
     select.menu.tabIndex     = 0;
 
     select.menu.style.left   = select.offsetLeft;
-    select.menu.style.zIndex = Number.MAX_SAFE_INTEGER;
+    select.menu.style.zIndex = MAX_INT;
 
     select.menu.addEventListener('focus', function() 
     {

@@ -24,18 +24,18 @@ scrollbarY.style.zIndex = MAX_INT-2;
 
 graphView.addEventListener('pointerdown', e =>
 {
+    console.log('graphView.pointerdown');
+
     graphView.pStart = { x: e.clientX, 
                          y: e.clientY };
 
-    if (    e.button == 0
+    if (   e.button == 0                 
         && !graphView.panning
         && !document.canResizeX
         && !document.canResizeY
         && !scrollbarX.moving
         && !scrollbarY.moving)
     {
-        console.log('graphView.pointerdown');
-
         if (graphView.spaceDown)
         {
             if (e.ctrlKey) graphView.startZoomSelection(e.clientX, e.clientY);
@@ -75,6 +75,7 @@ graphView.addEventListener('pointerdown', e =>
     
     else if (e.button == 1)
     {
+        e.preventDefault();
         graphView.btn1down = true;
         graphView.startPan(e.pointerId);
     }
@@ -92,6 +93,7 @@ graphView.addEventListener('pointermove', e =>
     {
         const dp = subv(graphView.p, graphView.pStart);
         graphView.pan = addv(graphView.panStart, dp);
+        graphView.setPanCursor();
     }
     
     else if (graphView.selecting)
@@ -111,6 +113,8 @@ graphView.addEventListener('pointermove', e =>
 
 graphView.addEventListener('pointerup', e =>
 {
+    console.log('graphView.pointerup');
+
     if (   e.button == 0
         && graphView.spaceDown)
     {
@@ -194,8 +198,8 @@ graphView.addEventListener('pointerup', e =>
     else if (e.button == 1
           && graphView.panning)
     {
-        graphView.endPan(e.pointerId, true);
         graphView.btn1down = false;
+        graphView.endPan(e.pointerId, true);
     }
 });
 
@@ -203,6 +207,8 @@ graphView.addEventListener('pointerup', e =>
 
 graphView.addEventListener('wheel', e =>
 {
+    console.log('graphView.wheel');
+
     if (graphView.btn1down)
         return;
 

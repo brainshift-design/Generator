@@ -2,12 +2,17 @@ function initSelectMenu(select)
 {
     select.menu = document.createElement('DIV');
 
-    select.menu.className    = 'selectMenu';
-    select.menu.hoverIndex   = 0;
-    select.menu.tabIndex     = 0;
+    select.menu.className        = 'selectMenu';
+    select.menu.hoverIndex       =  0;
+    select.menu.tabIndex         =  0;
 
-    select.menu.style.left   = select.offsetLeft;
-    select.menu.style.zIndex = Number.MAX_SAFE_INTEGER;
+    select.menu.style.left       =  select.offsetLeft;
+    select.menu.style.height     = 'auto';
+    select.menu.style.textAlign  = 'center';
+    select.menu.style.background = '#222';
+    select.menu.style.zIndex     =  MAX_INT-3;
+    
+
 
     select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
 
@@ -15,18 +20,13 @@ function initSelectMenu(select)
     { 
         if (e.code == 'Escape')
             select.menu.blur();
-    });
+    });        
     
 
     
-    select.menu.tabIndex = 0;
+    select.menu.tabIndex   = 0;
     
-    select.menu.style.height     = 'auto';
-    select.menu.style.textAlign  = 'center';
-    select.menu.style.background = '#222222';
-    select.menu.style.zIndex     = Number.MAX_SAFE_INTEGER;
-
-    select.menu.hoverIndex       = 0;
+    select.menu.hoverIndex = 0;
 
 
     select.selectBox = document.createElement('DIV');

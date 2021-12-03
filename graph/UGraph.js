@@ -103,7 +103,7 @@ class UGraph
             graphView.appendChild(node.div);
 
             node.div.style.zIndex = uiGraph.nodes.length-1;
-            node.div.style.left = 100;
+            node.div.style.left   = 100;
 
             // I subtract the full height of the node here as they grow down, so this
             // gives a nice random-ish offset for the first line of nodes
@@ -179,7 +179,7 @@ class UGraph
             input.op.makeActive();
             
         output.op.updateConnectedInputValueText();
-        conn.wire.style.zIndex = Number.MAX_SAFE_INTEGER;
+        conn.wire.style.zIndex = MAX_INT;
 
         return true;
     }
