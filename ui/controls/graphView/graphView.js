@@ -10,8 +10,8 @@ graphView.tempConn   = null;
 graphView.selecting  = false;
 graphView.selectBox  = Rect.NaN;
 
-graphView.btn1down   = false;
-
+graphView.btn1down   = false; // this is to help deal with mouse wheels that send X values as
+                              // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
 
 graphView.pStart = {x:0, y:0};
@@ -147,53 +147,7 @@ graphView.addEventListener('pointerup', e =>
 
     else if (e.button == 0
           && graphView.tempConn)
-    {
-        if (graphView.tempConn.output) // FROM OUTPUT
-        {
-            var output     = graphView.tempConn.output;
-            var input      = graphView.overInput;
-            var savedInput = graphView.tempConn.savedInput;
-            
-            output.connecting = false;
-            
-            if (   input
-                && input.dataType == output.dataType) // TO INPUT
-            {
-                if (input == savedInput) // reconnect old
-                {
-                    show(input.connection.wire);
-                    show(input.connection.wire.outBall);
-                }
-                else if (savedInput) // disconnect old, connect new
-                {
-                    uiDisconnect(savedInput);
-                    uiConnect(output, input);
-                }
-                else // connect new
-                    uiConnect(output, input);
-            }
-            else if (savedInput) // disconnect old
-            {
-                uiDisconnect(savedInput)
-            }
-            
-            graphView.cancelConnection();
-        }
-        
-        else if (graphView.tempConn.input) // FROM INPUT
-        {
-            var input  = graphView.tempConn.input;
-            var output = graphView.overOutput;
-
-            input.connecting = false;
-            
-            if (   output
-                && output.dataType == input.dataType) // TO OUTPUT
-                uiGraph.connect(output, input); // connect new
-
-            graphView.cancelConnection();
-        }
-    }
+        graphView.endConnection();
 
     else if (e.button == 1
           && graphView.panning)

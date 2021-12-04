@@ -1,10 +1,12 @@
 // uiSaveLocal('state', null);
-uiSaveLocal('windowWidth',  null);
-uiSaveLocal('windowHeight', null);
+//uiSaveLocal('windowWidth',  null);
+//uiSaveLocal('windowHeight', null);
 //uiSaveLocal('productKey', null);
 
 
 var currentUser = '';
+
+var figMessages = [];
 
 
 const uiGraph = new UGraph();

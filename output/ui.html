@@ -8124,12 +8124,14 @@ extends Action
 
 
 // uiSaveLocal('state', null);
-uiSaveLocal('windowWidth',  null);
-uiSaveLocal('windowHeight', null);
+//uiSaveLocal('windowWidth',  null);
+//uiSaveLocal('windowHeight', null);
 //uiSaveLocal('productKey', null);
 
 
 var currentUser = '';
+
+var figMessages = [];
 
 
 const uiGraph = new UGraph();
@@ -8146,63 +8148,6 @@ uiPostMessageToFigma({
     cmd:    'figLoadState',
     onLoad: 'figLoadState'
 });
-
-
-// --> from Figma
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-onmessage = e =>
-{
-    var msg = e.data.pluginMessage;
-
-    switch (msg.cmd)
-    {
-        case 'uiForwardToGen': uiPostMessageToGenerator(msg.msg); break;
-        case 'uiEndLoadState': uiEndLoadState          (msg);     break;
-        //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom(); break;
-    }    
-}    
-  
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// from Generator <--
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-generator.onmessage = function(e)
-{
-    switch (e.data.msg)
-    {
-        case 'uiMakeActive':      uiMakeActive     (e.data.nodeIds);                            break;
-        case 'uiShowParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
-        case 'uiGenerateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
-        case 'uiUpdateObjects':   uiUpdateObjects  (e.data.objects);                            break;
-    }
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// <-- to Figma
-function uiPostMessageToFigma(msg)
-{
-    parent.postMessage({ pluginMessage: msg }, '*');    
-}
-
-
-
-// to Generator -->
-function uiPostMessageToGenerator(msg)
-{
-    generator.postMessage(msg);
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 function uiEndLoadState(msg)
@@ -8536,14 +8481,100 @@ productKeyClose.addEventListener('click', e =>
 });
 
 
+// --> from Figma
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+onmessage = e =>
+{
+    var msg = e.data.pluginMessage;
+
+    switch (msg.cmd)
+    {
+        case 'uiForwardToGen':    uiPostMessageToGenerator(msg.msg); break;
+        case 'uiEndLoadState':    uiEndLoadState          (msg);     break;
+        case 'uiEndFigmaMessage': uiPostNextMessageToFigma();        break;
+      //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
+    }    
+}    
+  
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// from Generator <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+generator.onmessage = function(e)
+{
+    switch (e.data.msg)
+    {
+        case 'uiMakeActive':      uiMakeActive     (e.data.nodeIds);                            break;
+        case 'uiShowParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
+        case 'uiGenerateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
+        case 'uiUpdateObjects':   uiUpdateObjects  (e.data.objects);                            break;
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+// <-- to Figma
+function uiPostMessageToFigma(msg)
+{
+    figMessages.push(msg);
+    uiPostNextMessageToFigma();
+}
+
+
+
+function uiPostNextMessageToFigma()
+{
+    if (figMessages.length > 0)
+    {
+        let msg = figMessages.shift();
+
+        if (msg.cmd == 'figResizeWindow')
+        {
+            // move along the queue since only the last message is important
+            while (figMessages.length > 0
+                && figMessages[0].cmd == msg.cmd)
+                msg = figMessages.shift();
+        }
+
+        parent.postMessage({pluginMessage: msg}, '*');    
+    }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// to Generator -->
+function uiPostMessageToGenerator(msg)
+{
+    generator.postMessage(msg);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 document.addEventListener('pointerdown', function(e)
 {
+    console.log('document.pointerdown');
+
     if (   e.button == 0
         && (   document.canResizeX
             || document.canResizeY))
     {
-        console.log('document.pointerdown');
-
         document.startRect = new Rect(
             e.clientX,
             e.clientY,
@@ -8561,6 +8592,8 @@ document.addEventListener('pointerdown', function(e)
 
 document.addEventListener('pointermove', function(e)
 {
+    console.log('document.pointermove');
+
     if (   document.resizingX
         && document.resizingY)
     {
@@ -8588,6 +8621,8 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
+    console.log('document.pointerup');
+
     if (   document.resizingX
         || document.resizingY)
     {
@@ -8601,9 +8636,6 @@ document.addEventListener('pointerup', function(e)
     scrollbarX.moving  = false;
     scrollbarY.moving  = false;
 });
-
-
-
 
 
 const resizeEdgeWidth = 8;
@@ -10196,6 +10228,56 @@ function initMenuSelect(select)
 
 
 
+graphView.endConnection = function()
+{
+    if (graphView.tempConn.output) // FROM OUTPUT
+    {
+        var output     = graphView.tempConn.output;
+        var input      = graphView.overInput;
+        var savedInput = graphView.tempConn.savedInput;
+        
+        output.connecting = false;
+        
+        if (   input
+            && input.dataType == output.dataType) // TO INPUT
+        {
+            if (input == savedInput) // reconnect old
+            {
+                show(input.connection.wire);
+                show(input.connection.wire.outBall);
+            }
+            else if (savedInput) // disconnect old, connect new
+            {
+                uiDisconnect(savedInput);
+                uiConnect(output, input);
+            }
+            else // connect new
+                uiConnect(output, input);
+        }
+        else if (savedInput) // disconnect old
+        {
+            uiDisconnect(savedInput)
+        }
+        
+        graphView.cancelConnection();
+    }
+    
+    else if (graphView.tempConn.input) // FROM INPUT
+    {
+        var input  = graphView.tempConn.input;
+        var output = graphView.overOutput;
+
+        input.connecting = false;
+        
+        if (   output
+            && output.dataType == input.dataType) // TO OUTPUT
+            uiGraph.connect(output, input); // connect new
+
+        graphView.cancelConnection();
+    }
+};
+
+
 graphView._pan = {x:0, y:0};
   
 Object.defineProperty(graphView, 'pan',
@@ -10385,6 +10467,7 @@ graphView.setZoomOutCursor = () =>
 
 graphView.setAutoCursor = () =>
 {
+    console.log('setAutoCursor()');
     if (graphView.panning)
     {
         graphView.setPanCursor();
@@ -10753,8 +10836,8 @@ graphView.tempConn   = null;
 graphView.selecting  = false;
 graphView.selectBox  = Rect.NaN;
 
-graphView.btn1down   = false;
-
+graphView.btn1down   = false; // this is to help deal with mouse wheels that send X values as
+                              // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
 
 graphView.pStart = {x:0, y:0};
@@ -10890,53 +10973,7 @@ graphView.addEventListener('pointerup', e =>
 
     else if (e.button == 0
           && graphView.tempConn)
-    {
-        if (graphView.tempConn.output) // FROM OUTPUT
-        {
-            var output     = graphView.tempConn.output;
-            var input      = graphView.overInput;
-            var savedInput = graphView.tempConn.savedInput;
-            
-            output.connecting = false;
-            
-            if (   input
-                && input.dataType == output.dataType) // TO INPUT
-            {
-                if (input == savedInput) // reconnect old
-                {
-                    show(input.connection.wire);
-                    show(input.connection.wire.outBall);
-                }
-                else if (savedInput) // disconnect old, connect new
-                {
-                    uiDisconnect(savedInput);
-                    uiConnect(output, input);
-                }
-                else // connect new
-                    uiConnect(output, input);
-            }
-            else if (savedInput) // disconnect old
-            {
-                uiDisconnect(savedInput)
-            }
-            
-            graphView.cancelConnection();
-        }
-        
-        else if (graphView.tempConn.input) // FROM INPUT
-        {
-            var input  = graphView.tempConn.input;
-            var output = graphView.overOutput;
-
-            input.connecting = false;
-            
-            if (   output
-                && output.dataType == input.dataType) // TO OUTPUT
-                uiGraph.connect(output, input); // connect new
-
-            graphView.cancelConnection();
-        }
-    }
+        graphView.endConnection();
 
     else if (e.button == 1
           && graphView.panning)

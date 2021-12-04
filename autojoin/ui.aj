@@ -24,7 +24,7 @@
     ../ui/ui.js
     ../ui/ui nodes.js
     ../ui/ui events.js
-
+    ../ui/messages.js
     ../ui/document.js
     ../ui/window.js
     ../ui/keyboard.js

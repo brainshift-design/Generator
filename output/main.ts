@@ -212,56 +212,12 @@ figma.showUI(__html__);
 
 
 
-// from UI <--
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-figma.ui.onmessage = msg => 
-{
-    switch (msg.cmd)
-    {
-        case 'figLoadState':         figLoadState        (msg);                             break;
-        case 'figResizeWindow':      figResizeWindow     (msg);                             break; 
-        case 'figSaveLocal':         figSaveLocal        (msg.key, msg.value);              break;
-        case 'figSetPluginData':     figSetPluginData    (msg.key, msg.value);              break;
-        case 'figDeleteNodeObjects': figDeleteNodeObjects(msg.nodeIds);                     break; 
-        case 'figUpdateObjects':     figUpdateObjects    (msg.objects);                     break;
-        case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
-    }
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// to UI -->
-function figPostMessageToUi(msg)
-{
-    figma.ui.postMessage(msg);
-}
-
-
-
-// to Generator -->
-function figPostToGenerator(msg)
-{
-    figPostMessageToUi({
-        cmd: 'uiForwardToGen',
-        msg:  msg
-    });
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 function figLoadState(msg)
 {
     (async function()
     {
         // load state
-        var state = await figma.clientStorage.getAsync('state');
+        let state = await figma.clientStorage.getAsync('state');
         if (state == null) state = {};
         // ...
 
@@ -291,6 +247,52 @@ function figLoadState(msg)
 }
 
 
+// from UI <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+figma.ui.onmessage = msg => 
+{
+    switch (msg.cmd)
+    {
+        case 'figLoadState':         figLoadState        (msg);                             break;
+        case 'figResizeWindow':      figResizeWindow     (msg.width, msg.height);           break; 
+        case 'figSaveLocal':         figSaveLocal        (msg.key, msg.value);              break;
+        case 'figSetPluginData':     figSetPluginData    (msg.key, msg.value);              break;
+        case 'figDeleteNodeObjects': figDeleteNodeObjects(msg.nodeIds);                     break; 
+        case 'figUpdateObjects':     figUpdateObjects    (msg.objects);                     break;
+        case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
+    }
+
+    figPostMessageToUi({cmd: 'uiEndFigmaMessage'});
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// to UI -->
+function figPostMessageToUi(msg)
+{
+    figma.ui.postMessage(msg);
+}
+
+
+
+// to Generator -->
+function figPostToGenerator(msg)
+{
+    figPostMessageToUi({
+        cmd: 'uiForwardToGen',
+        msg:  msg
+    });
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 async function figLoadLocal(key)
 {
     return await figma.clientStorage.getAsync(key); 
@@ -311,17 +313,17 @@ function figSetPluginData(key, value)
 }
 
 
-function figResizeWindow(msg)
+function figResizeWindow(width, height)
 {
-    var width  = Math.floor(Math.max(0, msg.width ));
-    var height = Math.floor(Math.max(0, msg.height));
+    width  = Math.floor(Math.max(0, width ));
+    height = Math.floor(Math.max(0, height));
 
     figma.ui.resize(width, height);
 
     figma.clientStorage.setAsync('windowWidth',  width);
     figma.clientStorage.setAsync('windowHeight', height);
 
-    //figPostMessageToUi({cmd: 'uiUpdatePanAndZoom'});
+    figPostMessageToUi({cmd: 'uiUpdatePanAndZoom'});
 }
 
 

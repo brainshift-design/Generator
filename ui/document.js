@@ -1,11 +1,11 @@
 document.addEventListener('pointerdown', function(e)
 {
+    console.log('document.pointerdown');
+
     if (   e.button == 0
         && (   document.canResizeX
             || document.canResizeY))
     {
-        console.log('document.pointerdown');
-
         document.startRect = new Rect(
             e.clientX,
             e.clientY,
@@ -23,6 +23,8 @@ document.addEventListener('pointerdown', function(e)
 
 document.addEventListener('pointermove', function(e)
 {
+    console.log('document.pointermove');
+
     if (   document.resizingX
         && document.resizingY)
     {
@@ -50,6 +52,8 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
+    console.log('document.pointerup');
+
     if (   document.resizingX
         || document.resizingY)
     {
@@ -63,5 +67,3 @@ document.addEventListener('pointerup', function(e)
     scrollbarX.moving  = false;
     scrollbarY.moving  = false;
 });
-
-

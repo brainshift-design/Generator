@@ -187,6 +187,7 @@ graphView.setZoomOutCursor = () =>
 
 graphView.setAutoCursor = () =>
 {
+    console.log('setAutoCursor()');
     if (graphView.panning)
     {
         graphView.setPanCursor();

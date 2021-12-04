@@ -1,14 +1,14 @@
-function figResizeWindow(msg)
+function figResizeWindow(width, height)
 {
-    var width  = Math.floor(Math.max(0, msg.width ));
-    var height = Math.floor(Math.max(0, msg.height));
+    width  = Math.floor(Math.max(0, width ));
+    height = Math.floor(Math.max(0, height));
 
     figma.ui.resize(width, height);
 
     figma.clientStorage.setAsync('windowWidth',  width);
     figma.clientStorage.setAsync('windowHeight', height);
 
-    //figPostMessageToUi({cmd: 'uiUpdatePanAndZoom'});
+    figPostMessageToUi({cmd: 'uiUpdatePanAndZoom'});
 }
 
 
