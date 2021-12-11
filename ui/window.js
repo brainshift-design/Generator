@@ -29,8 +29,8 @@ function checkResize(x, y)
     document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
 
          if (document.canResizeX
-          && document.canResizeY) { document.body.style.cursor = 'nwse-resize'; console.log('nwse-resize'); }
-    else if (document.canResizeX) { document.body.style.cursor = 'ew-resize';   console.log('ew-resize'); }
-    else if (document.canResizeY) { document.body.style.cursor = 'ns-resize';   console.log('ns-resize'); }
+          && document.canResizeY) document.body.style.cursor = 'nwse-resize'; 
+    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';   
+    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';   
     else                          graphView.setAutoCursor();
 }

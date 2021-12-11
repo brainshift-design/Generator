@@ -292,7 +292,6 @@ function figPostToGenerator(msg)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
 async function figLoadLocal(key)
 {
     return await figma.clientStorage.getAsync(key); 

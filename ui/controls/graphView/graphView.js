@@ -24,8 +24,6 @@ scrollbarY.style.zIndex = MAX_INT-2;
 
 graphView.addEventListener('pointerdown', e =>
 {
-    console.log('graphView.pointerdown');
-
     graphView.pStart = { x: e.clientX, 
                          y: e.clientY };
 
@@ -75,7 +73,9 @@ graphView.addEventListener('pointerdown', e =>
     
     else if (e.button == 1)
     {
-        e.preventDefault();
+        // e.preventDefault();
+        // e.stopPropagation();
+
         graphView.btn1down = true;
         graphView.startPan(e.pointerId);
     }
@@ -91,6 +91,9 @@ graphView.addEventListener('pointermove', e =>
 
     if (graphView.panning)
     {
+        // e.preventDefault();
+        // e.stopPropagation();
+        
         const dp = subv(graphView.p, graphView.pStart);
         graphView.pan = addv(graphView.panStart, dp);
         graphView.setPanCursor();
@@ -113,11 +116,12 @@ graphView.addEventListener('pointermove', e =>
 
 graphView.addEventListener('pointerup', e =>
 {
-    console.log('graphView.pointerup');
-
     if (   e.button == 0
         && graphView.spaceDown)
     {
+        // e.preventDefault();
+        // e.stopPropagation();
+
         if (e.ctrlKey)
         {
             if (   graphView.selectBox.w > 0
@@ -161,8 +165,6 @@ graphView.addEventListener('pointerup', e =>
 
 graphView.addEventListener('wheel', e =>
 {
-    console.log('graphView.wheel');
-
     if (graphView.btn1down)
         return;
 

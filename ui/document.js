@@ -1,7 +1,5 @@
 document.addEventListener('pointerdown', function(e)
 {
-    console.log('document.pointerdown');
-
     if (   e.button == 0
         && (   document.canResizeX
             || document.canResizeY))
@@ -23,8 +21,6 @@ document.addEventListener('pointerdown', function(e)
 
 document.addEventListener('pointermove', function(e)
 {
-    console.log('document.pointermove');
-
     if (   document.resizingX
         && document.resizingY)
     {
@@ -52,9 +48,7 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
-    console.log('document.pointerup');
-
-    if (   document.resizingX
+     if (   document.resizingX
         || document.resizingY)
     {
         checkResize(e.clientX, e.clientY);

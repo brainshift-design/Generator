@@ -43,7 +43,8 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'Space'
          && !e.ctrlKey)
     {
-        if (!graphView.selecting)
+        if (   !graphView.selecting
+            && !graphView.spaceDown)
         {
             graphView.spaceDown = true;
             graphView.setPanCursor();
@@ -75,9 +76,9 @@ document.addEventListener('keyup', e =>
     {
         if (graphView.spaceDown)
         {
-            graphView.setAutoCursor();
             graphView.spaceDown     = false;
             graphView.zoomSelecting = false;
+            graphView.setAutoCursor();
         }
     }
 
