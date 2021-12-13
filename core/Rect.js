@@ -5,6 +5,7 @@ class Rect
     w;
     h;
 
+
     get l() { return this.x;            }
     get c() { return this.x + this.w/2; }
     get r() { return this.x + this.w;   }
@@ -48,6 +49,7 @@ class Rect
     get bottomRight()  { return this.br; }
 
 
+
     constructor(x, y, w, h)
     {
         this.x = x;
@@ -56,14 +58,20 @@ class Rect
         this.h = h;
     }
 
+
+
     static fromTypical(typ)
     {
         return new Rect(typ.x, typ.y, typ.width, typ.height); 
     }
 
+
+
     // w & h are kept 0 so that isEmpty() works logically on NaN rects
     static get NaN() { return new Rect(Number.NaN, Number.NaN, 0, 0) };
     static get Zero() { return new Rect(0, 0, 0, 0); }
+
+
 
     get isNaN()
     {
@@ -73,11 +81,15 @@ class Rect
             || isNaN(this.h);
     }
 
+
+
 	get isEmpty()
 	{
 		return (this.w == 0
 			 || this.h == 0);
 	}
+
+
 
     assign(rect)
     {
@@ -86,6 +98,8 @@ class Rect
         this.w = rect.w;
         this.h = rect.h;
     }
+
+
 
     expandFromRect(rect)
     {
@@ -96,10 +110,10 @@ class Rect
         if (this.isEmpty) return rect;
         
         const newRect = new AbsRect(
-            Math.min(this.t, rect.t),
             Math.min(this.l, rect.l),
-            Math.max(this.b, rect.b),
-            Math.max(this.r, rect.r));
+            Math.min(this.t, rect.t),
+            Math.max(this.r, rect.r),
+            Math.max(this.b, rect.b));
 
         this.assign(newRect);
     }
@@ -109,18 +123,8 @@ class Rect
 class   AbsRect
 extends Rect
 {
-    constructor(t, l, b, r)
+    constructor(l, t, r, b)
     {
         super(l, t, r-l, b-t);
     }
-}
-
-
-function rectsIntersect(rect1, rect2)
-{
-    return !(
-           rect1.l >= rect2.r
-        || rect1.r <= rect2.l
-        || rect1.t >= rect2.b
-        || rect1.b <= rect2.t); 
 }

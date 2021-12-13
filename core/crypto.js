@@ -120,6 +120,7 @@ function encryptData(data, key, sign)
         
         var block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
         var enc   = encryptBlock(block, key, sign);
+        
         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
         
         nBlock++;

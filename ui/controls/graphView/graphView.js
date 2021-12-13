@@ -67,15 +67,12 @@ graphView.addEventListener('pointerdown', e =>
             graphView._prevSelected = [...graphView.selected];
 
             if (!e.shiftKey)
-                graphView.startSelection(e.clientX, e.clientY);
+                graphView.startSelection(e.pointerId, e.clientX, e.clientY);
         }
     }
     
     else if (e.button == 1)
     {
-        // e.preventDefault();
-        // e.stopPropagation();
-
         graphView.btn1down = true;
         graphView.startPan(e.pointerId);
     }
@@ -91,9 +88,6 @@ graphView.addEventListener('pointermove', e =>
 
     if (graphView.panning)
     {
-        // e.preventDefault();
-        // e.stopPropagation();
-        
         const dp = subv(graphView.p, graphView.pStart);
         graphView.pan = addv(graphView.panStart, dp);
         graphView.setPanCursor();
@@ -119,9 +113,6 @@ graphView.addEventListener('pointerup', e =>
     if (   e.button == 0
         && graphView.spaceDown)
     {
-        // e.preventDefault();
-        // e.stopPropagation();
-
         if (e.ctrlKey)
         {
             if (   graphView.selectBox.w > 0
@@ -147,7 +138,7 @@ graphView.addEventListener('pointerup', e =>
 
     else if (e.button == 0
          && !graphView.selectBox.isNaN)
-        graphView.endSelection();
+        graphView.endSelection(e.pointerId);
 
     else if (e.button == 0
           && graphView.tempConn)

@@ -358,119 +358,6 @@ function anglev_(x1, y1, x2, y2)
 
 
 
-function clipEdge(p, q, t0, t1)
-{
-    if (p == 0 && q < 0)
-    {
-        return null;
-    }
-    else if (p < 0)
-    {
-        var r = q/p;
-
-             if (r > t1) return null;
-        else if (r > t0) t0 = r;
-    }
-    else if (p > 0)
-    {
-        var r = q/p;
-
-             if (r < t0) return null;
-        else if (r < t1) t1 = r;
-    }
-
-    return [t0, t1];
-}
-
-
-
-function clipLine(x1, y1, x2, y2, left, top, right, bottom)
-{
-    var t0 = 0;
-    var t1 = 1;
-
-    var dx = x2 - x1;
-    var dy = y2 - y1;
-
-    var cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
-    var cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
-    var ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
-    var cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
-
-    if (t1 < 1)
-    {
-        x2 = x1 + t1*dx;
-        y2 = y1 + t1*dy;
-    }
-
-    if (t0 > 0)
-    {
-        x1 = x1 + t0*dx;
-        y1 = y1 + t0*dy;
-    }
-
-    return [
-        {x:x1, y:y1}, 
-        {x:x2, y:y2} ];
-}
-
-
-
-function intersect(p1, p2, q1, q2, segment)
-{
-    if (   equalv(p1, p2) 
-        || equalv(q1, q2)) 
-        return {x:NaN, y:NaN}; // undefined line
-
-    var v1 = subv(p2, p1);
-    var v2 = subv(q2, q1);
-
-    if (crossv2(v1, v2) == 0) 
-        return {x:NaN, y:NaN}; // parallel lines
-
-    var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
-    var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
-
-    if ((  0 <= t1 && t1 <= 1
-        && 0 <= t2 && t2 <= 1)
-        || !segment)
-        return addv(p1, mulvs(v1, t1));
-        
-    return {x:NaN, y:NaN};
-}
-
-
-
-function closestPointOnLine(l0, l1, p, segment)
-{
-    if (equalv(p, l0))
-        return l0;
-        
-    var d = mulvs(
-        unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
-        distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
-
-    return intersect(l0, l1, p, subv(p, d), segment);
-}
-
-
-
-function signedPosOnLine(p0, p1, p)
-{
-    var cp = closestPointOnLine(p0, p1, p, false);
-
-    var xform = mulm3m3(
-        xmove(-p0),
-        xrotate(-anglev(p0, p1)));
-
-    p0 = transform(p0, xform);
-    p1 = transform(p1, xform);
-    cp = transform(cp, xform);
-
-    return (cp.X - p0.X) / nozero(p1.X - p0.X);
-}
-
-
 function mulv2m3(v, m)
 {
     var r = [0, 0, 0];
@@ -484,6 +371,7 @@ function mulv2m3(v, m)
 
     return {x: r[0], y: r[1]};
 }
+
 
 
 function mulm3m3(m1, m2)
@@ -504,28 +392,6 @@ function mulm3m3(m1, m2)
     }
 
     return m;
-}
-
-
-function transform(p, xform)
-{
-    return mulv2m3(p, xform);
-}
-
-
-function xmove(v)
-{
-    return [[1, 0, v.x],
-            [0, 1, v.y],
-            [0, 0, 1  ]];
-}
-
-
-function xrotate(angle)
-{
-    return [[Math.cos(angle), -Math.sin(angle), 0],
-            [Math.sin(angle),  Math.cos(angle), 0],
-            [0,                0,               1]];
 }
 
 
@@ -693,30 +559,196 @@ function uintToBufferAt(val, buffer, start, bufferSize)
 }
 
 
+function clipEdge(p, q, t0, t1)
+{
+    if (p == 0 && q < 0)
+    {
+        return null;
+    }
+    else if (p < 0)
+    {
+        var r = q/p;
+
+             if (r > t1) return null;
+        else if (r > t0) t0 = r;
+    }
+    else if (p > 0)
+    {
+        var r = q/p;
+
+             if (r < t0) return null;
+        else if (r < t1) t1 = r;
+    }
+
+    return [t0, t1];
+}
+
+
+
+function clipLine(x1, y1, x2, y2, left, top, right, bottom)
+{
+    var t0 = 0;
+    var t1 = 1;
+
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+
+    var cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
+    var cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    var ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    var cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+
+    if (t1 < 1)
+    {
+        x2 = x1 + t1*dx;
+        y2 = y1 + t1*dy;
+    }
+
+    if (t0 > 0)
+    {
+        x1 = x1 + t0*dx;
+        y1 = y1 + t0*dy;
+    }
+
+    return [
+        {x:x1, y:y1}, 
+        {x:x2, y:y2} ];
+}
+
+
+
+function intersectLines(p1, p2, q1, q2, segment)
+{
+    if (   equalv(p1, p2) 
+        || equalv(q1, q2)) 
+        return {x:NaN, y:NaN}; // undefined line
+
+    var v1 = subv(p2, p1);
+    var v2 = subv(q2, q1);
+
+    if (crossv2(v1, v2) == 0) 
+        return {x:NaN, y:NaN}; // parallel lines
+
+    var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
+    var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
+
+    if ((  0 <= t1 && t1 <= 1
+        && 0 <= t2 && t2 <= 1)
+        || !segment)
+        return addv(p1, mulvs(v1, t1));
+        
+    return {x:NaN, y:NaN};
+}
+
+
+
+function closestPointOnLine(l0, l1, p, segment)
+{
+    if (equalv(p, l0))
+        return l0;
+        
+    var d = mulvs(
+        unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
+        distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
+
+    return intersectLines(l0, l1, p, subv(p, d), segment);
+}
+
+
+
+function signedPosOnLine(p0, p1, p)
+{
+    var cp = closestPointOnLine(p0, p1, p, false);
+
+    var xform = mulm3m3(
+        xmove(-p0),
+        xrotate(-anglev(p0, p1)));
+
+    p0 = transform(p0, xform);
+    p1 = transform(p1, xform);
+    cp = transform(cp, xform);
+
+    return (cp.X - p0.X) / nozero(p1.X - p0.X);
+}
+
+
+
+function intersectRects(rect1, rect2)
+{
+    return !(
+           rect1.l >= rect2.r
+        || rect1.r <= rect2.l
+        || rect1.t >= rect2.b
+        || rect1.b <= rect2.t); 
+}
+
+
+
+function clipRect(rect, clip)
+{
+    if (!intersectRects(rect, clip))
+        return Rect.NaN;
+
+    return new AbsRect(
+        Math.max(rect.l, clip.l),
+        Math.max(rect.t, clip.t),
+        Math.min(rect.r, clip.r),
+        Math.min(rect.b, clip.b));
+}
+
+
+
+function validateRect(rect)
+{
+    return new Rect(
+        rect.x + Math.min(rect.w, 0),
+        rect.y + Math.min(rect.h, 0),
+        Math.abs(rect.w),
+        Math.abs(rect.h));
+}
+
+
+
+function validateRect_(x, y, w, h)
+{
+    return [
+        x + Math.min(w, 0),
+        y + Math.min(h, 0),
+        Math.abs(w),
+        Math.abs(h) ];
+}
+
+
+
+function transform(p, xform)
+{
+    return mulv2m3(p, xform);
+}
+
+
+
+function xmove(v)
+{
+    return [[1, 0, v.x],
+            [0, 1, v.y],
+            [0, 0, 1  ]];
+}
+
+
+
+function xrotate(angle)
+{
+    return [[Math.cos(angle), -Math.sin(angle), 0],
+            [Math.sin(angle),  Math.cos(angle), 0],
+            [0,                0,               1]];
+}
+
+
+
+
+
 
 var bigBuffer = new Uint8Array(2048);
-
-
-
-// function bigPower(a, n, p)
-// {
-//     var res = 1n;
-
-//     a %= p; // update a if a >= p
- 
-//     while (n > 0n)
-//     {
-//         // if n is odd, multiply a by result
-//         if (n & 1n)
-//             res = (res*a) % p;
- 
-//         // n must be even now    
-//         n >>= 1n;
-//         a = (a*a) % p;
-//     }    
-
-//     return res;
-// }    
 
 
 
@@ -827,18 +859,6 @@ function bigIsWitness(a, s, d, n)
 
 
 
-// multiply BigInt by float 0 <= f <=1
-// function bigMult(n, f)
-// {
-//     var mult = 100000000000000000000000000; // this is the float "precision"
-    
-//     return n*BigInt(mult) 
-//          * BigInt(Math.floor(f*mult))
-//          / sqr(BigInt(mult));
-// }            
-
-
-
 function bigFromBuffer(buffer)
 {
     return bigFromBufferAt(buffer, 0, buffer.length);
@@ -895,15 +915,6 @@ function bigBitCount(n)
 
 
 
-// function bigModInvert(n, m)
-// {
-//     for (var i = 1n; i < BigInt(m); i++)
-//         if ((((n % m) * (i % m)) % m) == n)
-//             return i;
-// }
-
-
-
 function bigModInvert(n, m)
 {
     var gcd = bigGcdExtended(n, m);
@@ -931,58 +942,6 @@ function bigGcdExtended(n, m)
 }
 
 
-
-// function bigModInvert(u, v)
-// {
-//    var inv, u1, u3, v1, v3, t1, t3, q;
-//    var iter;
-
-
-//    /* Step X1. Initialise */
-   
-//    u1 = 1n;
-//    u3 = u;
-//    v1 = 0n;
-//    v3 = v;
-   
-
-//    /* Remember odd/even iterations */
-   
-//    iter = 1n;
-
-   
-//    /* Step X2. Loop while v3 != 0 */
-  
-//    while (v3 != 0n)
-//    {
-//        /* Step X3. Divide and "Subtract" */
-//        q  = u3 / v3;
-//        t3 = u3 % v3;
-//        t1 = u1 + q * v1;
-
-//        /* Swap */
-//        u1 = v1; v1 = t1; 
-//        u3 = v3; v3 = t3;
-
-//        iter = -iter;
-//    }
-
-
-//    /* Make sure u3 = gcd(u,v) == 1 */
- 
-//    if (u3 != 1n)
-//        return 0n;   /* Error: No inverse exists */
-
-
-//     /* Ensure a positive result */
-//     if (iter < 0n)
-//         inv = v - u1;
-//     else
-//         inv = u1;
-//     return inv;
-// }
-
-
 class Point
 {
     x;
@@ -1002,6 +961,7 @@ class Rect
     y;
     w;
     h;
+
 
     get l() { return this.x;            }
     get c() { return this.x + this.w/2; }
@@ -1046,6 +1006,7 @@ class Rect
     get bottomRight()  { return this.br; }
 
 
+
     constructor(x, y, w, h)
     {
         this.x = x;
@@ -1054,14 +1015,20 @@ class Rect
         this.h = h;
     }
 
+
+
     static fromTypical(typ)
     {
         return new Rect(typ.x, typ.y, typ.width, typ.height); 
     }
 
+
+
     // w & h are kept 0 so that isEmpty() works logically on NaN rects
     static get NaN() { return new Rect(Number.NaN, Number.NaN, 0, 0) };
     static get Zero() { return new Rect(0, 0, 0, 0); }
+
+
 
     get isNaN()
     {
@@ -1071,11 +1038,15 @@ class Rect
             || isNaN(this.h);
     }
 
+
+
 	get isEmpty()
 	{
 		return (this.w == 0
 			 || this.h == 0);
 	}
+
+
 
     assign(rect)
     {
@@ -1084,6 +1055,8 @@ class Rect
         this.w = rect.w;
         this.h = rect.h;
     }
+
+
 
     expandFromRect(rect)
     {
@@ -1094,10 +1067,10 @@ class Rect
         if (this.isEmpty) return rect;
         
         const newRect = new AbsRect(
-            Math.min(this.t, rect.t),
             Math.min(this.l, rect.l),
-            Math.max(this.b, rect.b),
-            Math.max(this.r, rect.r));
+            Math.min(this.t, rect.t),
+            Math.max(this.r, rect.r),
+            Math.max(this.b, rect.b));
 
         this.assign(newRect);
     }
@@ -1107,22 +1080,11 @@ class Rect
 class   AbsRect
 extends Rect
 {
-    constructor(t, l, b, r)
+    constructor(l, t, r, b)
     {
         super(l, t, r-l, b-t);
     }
 }
-
-
-function rectsIntersect(rect1, rect2)
-{
-    return !(
-           rect1.l >= rect2.r
-        || rect1.r <= rect2.l
-        || rect1.t >= rect2.b
-        || rect1.b <= rect2.t); 
-}
-
 
 
 class Random

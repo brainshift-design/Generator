@@ -117,7 +117,7 @@ graphView.updateZoomSelection = (x, y) =>
 
 graphView.updateZoomSelectBox = () =>
 {
-    var selection = graphView.getValidSelection();
+    const selection = graphView.selectBox;
 
     selectBox.style.left   = selection.x + Math.min(selection.w, 0);
     selectBox.style.top    = selection.y + Math.min(selection.h, 0);

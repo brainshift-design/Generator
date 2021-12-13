@@ -2,28 +2,6 @@ var bigBuffer = new Uint8Array(2048);
 
 
 
-// function bigPower(a, n, p)
-// {
-//     var res = 1n;
-
-//     a %= p; // update a if a >= p
- 
-//     while (n > 0n)
-//     {
-//         // if n is odd, multiply a by result
-//         if (n & 1n)
-//             res = (res*a) % p;
- 
-//         // n must be even now    
-//         n >>= 1n;
-//         a = (a*a) % p;
-//     }    
-
-//     return res;
-// }    
-
-
-
 function bigRandom(max = 0)
 {
     var size = 
@@ -131,18 +109,6 @@ function bigIsWitness(a, s, d, n)
 
 
 
-// multiply BigInt by float 0 <= f <=1
-// function bigMult(n, f)
-// {
-//     var mult = 100000000000000000000000000; // this is the float "precision"
-    
-//     return n*BigInt(mult) 
-//          * BigInt(Math.floor(f*mult))
-//          / sqr(BigInt(mult));
-// }            
-
-
-
 function bigFromBuffer(buffer)
 {
     return bigFromBufferAt(buffer, 0, buffer.length);
@@ -199,15 +165,6 @@ function bigBitCount(n)
 
 
 
-// function bigModInvert(n, m)
-// {
-//     for (var i = 1n; i < BigInt(m); i++)
-//         if ((((n % m) * (i % m)) % m) == n)
-//             return i;
-// }
-
-
-
 function bigModInvert(n, m)
 {
     var gcd = bigGcdExtended(n, m);
@@ -233,55 +190,3 @@ function bigGcdExtended(n, m)
         y - (m/n)*x,
         x ];
 }
-
-
-
-// function bigModInvert(u, v)
-// {
-//    var inv, u1, u3, v1, v3, t1, t3, q;
-//    var iter;
-
-
-//    /* Step X1. Initialise */
-   
-//    u1 = 1n;
-//    u3 = u;
-//    v1 = 0n;
-//    v3 = v;
-   
-
-//    /* Remember odd/even iterations */
-   
-//    iter = 1n;
-
-   
-//    /* Step X2. Loop while v3 != 0 */
-  
-//    while (v3 != 0n)
-//    {
-//        /* Step X3. Divide and "Subtract" */
-//        q  = u3 / v3;
-//        t3 = u3 % v3;
-//        t1 = u1 + q * v1;
-
-//        /* Swap */
-//        u1 = v1; v1 = t1; 
-//        u3 = v3; v3 = t3;
-
-//        iter = -iter;
-//    }
-
-
-//    /* Make sure u3 = gcd(u,v) == 1 */
- 
-//    if (u3 != 1n)
-//        return 0n;   /* Error: No inverse exists */
-
-
-//     /* Ensure a positive result */
-//     if (iter < 0n)
-//         inv = v - u1;
-//     else
-//         inv = u1;
-//     return inv;
-// }

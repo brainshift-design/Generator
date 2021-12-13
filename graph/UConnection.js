@@ -55,8 +55,8 @@ class UConnection
             let x2 = (inRect .left + inRect .width /2) / graphView.zoom;
             let y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
-            y1 -= 40 / graphView.zoom;
-            y2 -= 40 / graphView.zoom;
+            y1 -= controlBar.offsetHeight / graphView.zoom;
+            y2 -= controlBar.offsetHeight / graphView.zoom;
 
 
             let color;
@@ -87,8 +87,8 @@ class UConnection
             let x1 = outRect.left + outRect.width /2;
             let y1 = outRect.top  + outRect.height/2;
 
-            y1 -= 40;
-            y  -= 40;
+            y1 -= controlBar.offsetHeight;
+            y  -= controlBar.offsetHeight;
 
             this.wire.updateCurve  (x1, y1, x, y);
             this.wire.updateOutBall(x1, y1      );
@@ -106,8 +106,8 @@ class UConnection
             let x2 = inRect.left + inRect.width /2;
             let y2 = inRect.top  + inRect.height/2;
 
-            y  -= 40;
-            y2 -= 40;
+            y  -= controlBar.offsetHeight;
+            y2 -= controlBar.offsetHeight;
 
             this.wire.updateCurve (x, y, x2, y2);
             this.wire.updateInBall(      x2, y2);

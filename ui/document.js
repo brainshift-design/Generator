@@ -40,7 +40,7 @@ document.addEventListener('pointermove', function(e)
             window.innerWidth,
             document.startRect.h + e.clientY - document.startRect.y);
     }
-    else
+    else if (!graphView.selecting)
         checkResize(e.clientX, e.clientY);
 });
 
@@ -49,7 +49,7 @@ document.addEventListener('pointermove', function(e)
 document.addEventListener('pointerup', function(e)
 {
      if (   document.resizingX
-        || document.resizingY)
+         || document.resizingY)
     {
         checkResize(e.clientX, e.clientY);
         document.body.releasePointerCapture(e.pointerId);

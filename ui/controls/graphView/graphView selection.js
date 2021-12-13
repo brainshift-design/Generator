@@ -45,7 +45,7 @@ graphView.selectFromIds = (nodeIds) =>
 
     for (const id of nodeIds)
     {
-        var node = uiGraph.nodes.find(n => n.id == id);
+        const node = uiGraph.nodes.find(n => n.id == id);
         console.log('id = ' + id);
         console.log('node = ' + node);
         
@@ -56,22 +56,14 @@ graphView.selectFromIds = (nodeIds) =>
 
 
 
-graphView.getValidSelection = () =>
+graphView.startSelection = (pointerId, x, y) =>
 {
-    return new Rect(
-        graphView.selectBox.x + Math.min(graphView.selectBox.w, 0),
-        graphView.selectBox.y + Math.min(graphView.selectBox.h, 0),
-        Math.abs(graphView.selectBox.w),
-        Math.abs(graphView.selectBox.h));
-};
+    graphView.setPointerCapture(pointerId);
 
-
-
-graphView.startSelection = (x, y) =>
-{
     graphView.selecting = true;
 
     graphView.selectBox = new Rect(x, y, 0, 0);
+   
     selectBox.style.visibility = 'visible';
 
     graphView.updateSelectBox();
@@ -93,32 +85,46 @@ graphView.updateSelection = (x, y) =>
 
 graphView.updateSelectBox = () =>
 {
-    var selection = graphView.getValidSelection();
+    const wndRect = new Rect(
+                                  1,
+        controlBar.offsetHeight + 1,
+        graphView.offsetWidth   - 2,
+        graphView.offsetHeight  - 5);
 
-    selectBox.style.left   = selection.x + Math.min(selection.w, 0);
-    selectBox.style.top    = selection.y + Math.min(selection.h, 0);
-    selectBox.style.width  = Math.abs(selection.w);
-    selectBox.style.height = Math.abs(selection.h);
+    
+    let selection = validateRect(graphView.selectBox);
+    
+    selection = clipRect(selection, wndRect);
+
+
+    selectBox.style.left   = selection.x;
+    selectBox.style.top    = selection.y;
+    selectBox.style.width  = selection.width;
+    selectBox.style.height = selection.height;
+
 
     const selected = [];
 
     for (const node of uiGraph.nodes)
     {
-        if (rectsIntersect(
+        if (intersectRects(
                 Rect.fromTypical(node.div.getBoundingClientRect()), 
-                graphView.getValidSelection()))
+                selection))
             selected.push(node);
     }
 
     graphView.selected = selected;
+
 
     selectBox.style.zIndex = MAX_INT-3;
 };
 
 
 
-graphView.endSelection = () =>
+graphView.endSelection = pointerId =>
 {
+    graphView.releasePointerCapture(pointerId);
+
     graphView.selecting = false;
     graphView.selectBox = Rect.NaN;
 
