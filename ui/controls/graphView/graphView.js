@@ -8,7 +8,7 @@ graphView.tempConn   = null;
    
    
 graphView.selecting  = false;
-graphView.selectBox  = Rect.NaN;
+graphView.selectionRect  = Rect.NaN;
 
 graphView.btn1down   = false; // this is to help deal with mouse wheels that send X values as
                               // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
@@ -66,8 +66,11 @@ graphView.addEventListener('pointerdown', e =>
         {
             graphView._prevSelected = [...graphView.selected];
 
-            if (!e.shiftKey)
-                graphView.startSelection(e.pointerId, e.clientX, e.clientY);
+            graphView.startSelection(
+                e.pointerId, 
+                e.clientX, 
+                e.clientY, 
+                e.shiftKey);
         }
     }
     
@@ -94,7 +97,7 @@ graphView.addEventListener('pointermove', e =>
     }
     
     else if (graphView.selecting)
-        graphView.updateSelection(e.clientX, e.clientY);
+        graphView.updateSelection(e.clientX, e.clientY, e.shiftKey);
     
     else if (graphView.zoomSelecting)
         graphView.updateZoomSelection(e.clientX, e.clientY);
@@ -115,8 +118,8 @@ graphView.addEventListener('pointerup', e =>
     {
         if (e.ctrlKey)
         {
-            if (   graphView.selectBox.w > 0
-                && graphView.selectBox.h > 0)
+            if (   graphView.selectionRect.w > 0
+                && graphView.selectionRect.h > 0)
             {
                 graphView.endZoomSelection(true);
             }
@@ -137,7 +140,7 @@ graphView.addEventListener('pointerup', e =>
     }
 
     else if (e.button == 0
-         && !graphView.selectBox.isNaN)
+         && !graphView.selectionRect.isNaN)
         graphView.endSelection(e.pointerId);
 
     else if (e.button == 0
@@ -185,7 +188,12 @@ graphView.addEventListener('wheel', e =>
                 y:  e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY };
 
         if (graphView.selecting)
-            graphView.updateSelection(e.clientX, e.clientY);
+        {
+            graphView.updateSelection(
+                e.clientX, 
+                e.clientY, 
+                e.shiftKey);
+        }
     }
 });
 

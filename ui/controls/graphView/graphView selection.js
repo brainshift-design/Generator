@@ -2,7 +2,6 @@ graphView._selected     = [];
 graphView._prevSelected = [];
 
 
-
 Object.defineProperty(graphView, 'selected',
 {
     get: () => graphView._selected,
@@ -56,34 +55,34 @@ graphView.selectFromIds = (nodeIds) =>
 
 
 
-graphView.startSelection = (pointerId, x, y) =>
+graphView.startSelection = (pointerId, x, y, shiftKey) =>
 {
     graphView.setPointerCapture(pointerId);
 
     graphView.selecting = true;
 
-    graphView.selectBox = new Rect(x, y, 0, 0);
+    graphView.selectionRect = new Rect(x, y, 0, 0);
    
     selectBox.style.visibility = 'visible';
 
-    graphView.updateSelectBox();
+    graphView.updateSelectBox(shiftKey);
 };
 
 
 
-graphView.updateSelection = (x, y) =>
+graphView.updateSelection = (x, y, shiftKey) =>
 {
     if (!graphView.selecting) return;
 
-    graphView.selectBox.w = x - graphView.selectBox.x;
-    graphView.selectBox.h = y - graphView.selectBox.y;
+    graphView.selectionRect.w = x - graphView.selectionRect.x;
+    graphView.selectionRect.h = y - graphView.selectionRect.y;
 
-    graphView.updateSelectBox();
+    graphView.updateSelectBox(shiftKey);
 };
 
 
 
-graphView.updateSelectBox = () =>
+graphView.updateSelectBox = (shiftKey) =>
 {
     const wndRect = new Rect(
                                   1,
@@ -92,7 +91,7 @@ graphView.updateSelectBox = () =>
         graphView.offsetHeight  - 5);
 
     
-    let selection = validateRect(graphView.selectBox);
+    let selection = validateRect(graphView.selectionRect);
     
     selection = clipRect(selection, wndRect);
 
@@ -113,7 +112,10 @@ graphView.updateSelectBox = () =>
             selected.push(node);
     }
 
-    graphView.selected = selected;
+    graphView.selected = 
+        shiftKey
+        ? graphView._prevSelected.concat(selected)
+        : selected;
 
 
     selectBox.style.zIndex = MAX_INT-3;
@@ -126,7 +128,7 @@ graphView.endSelection = pointerId =>
     graphView.releasePointerCapture(pointerId);
 
     graphView.selecting = false;
-    graphView.selectBox = Rect.NaN;
+    graphView.selectionRect = Rect.NaN;
 
     selectBox.style.visibility = 'hidden';
 
