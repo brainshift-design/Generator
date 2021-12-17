@@ -284,7 +284,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('wheel', e =>
     {
-        if (   !e.ctrlKey
+        if (   !getCtrlKey(e)
             && !slider.buttonDown1)
         {
             e.stopPropagation();

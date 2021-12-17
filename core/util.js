@@ -260,3 +260,11 @@ function getStyleValue(obj, style)
 {
     return window.getComputedStyle(obj, null).getPropertyValue(style);
 }
+
+
+
+function getCtrlKey(e)
+{
+    return  isMac && e.metaKey
+        || !isMac && e.ctrlKey;
+}

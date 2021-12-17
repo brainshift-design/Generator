@@ -7,13 +7,13 @@ function initSliderTextbox(slider)
     slider.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
-            && e.ctrlKey)
+            && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && e.ctrlKey)
+              && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("paste");

@@ -13,7 +13,7 @@ const inputColor        = 'rgba(0, 0, 0, 0.12)';
 const smallScrollGap    =  6;
 const largeScrollGap    = 14;
 
-const MAX_INT           = 2147483647;
+const MAX_INT32         = 2147483647;
 
 
 const R = 0, G = 1, B = 2, A = 3;
@@ -1382,6 +1382,14 @@ function logVar(x)
 function getStyleValue(obj, style)
 {
     return window.getComputedStyle(obj, null).getPropertyValue(style);
+}
+
+
+
+function getCtrlKey(e)
+{
+    return  isMac && e.metaKey
+        || !isMac && e.ctrlKey;
 }
 
 

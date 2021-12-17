@@ -2111,6 +2111,14 @@ function getStyleValue(obj, style)
 }
 
 
+
+function getCtrlKey(e)
+{
+    return  isMac && e.metaKey
+        || !isMac && e.ctrlKey;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -4989,6 +4997,14 @@ function getStyleValue(obj, style)
 }
 
 
+
+function getCtrlKey(e)
+{
+    return  isMac && e.metaKey
+        || !isMac && e.ctrlKey;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -7182,13 +7198,13 @@ function initLabelTextbox(node)
     node.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
-            && e.ctrlKey)
+            && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && e.ctrlKey)
+              && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("paste");
@@ -8654,14 +8670,14 @@ document.addEventListener('keydown', e =>
 
     // select all
     else if (e.code == 'KeyA'
-          && e.ctrlKey)
+          && getCtrlKey(e))
     {
         graphView.selected = uiGraph.nodes;
     }
 
     // undo/redo
     else if (e.code == 'KeyZ'
-          && e.ctrlKey)
+          && getCtrlKey(e))
     {
         if (e.shiftKey) actionManager.redo();
         else            actionManager.undo();
@@ -8686,7 +8702,7 @@ document.addEventListener('keydown', e =>
     }
 
     else if (e.code == 'Space'
-         && !e.ctrlKey)
+         && !getCtrlKey(e))
     {
         if (   !graphView.selecting
             && !graphView.spaceDown)
@@ -8707,7 +8723,7 @@ document.addEventListener('keydown', e =>
 
     else if (e.key == 'Alt'
           && graphView.spaceDown
-          && e.ctrlKey)
+          && getCtrlKey(e))
     {
         graphView.setZoomOutCursor();
     }
@@ -8730,7 +8746,7 @@ document.addEventListener('keyup', e =>
     else if (e.key == 'Alt'
           && graphView.spaceDown)
     {
-        if (e.ctrlKey) 
+        if (getCtrlKey(e)) 
             graphView.setZoomInCursor();
         else
         {
@@ -8761,13 +8777,13 @@ function initSliderTextbox(slider)
     slider.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
-            && e.ctrlKey)
+            && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && e.ctrlKey)
+              && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("paste");
@@ -9179,7 +9195,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.addEventListener('wheel', e =>
     {
-        if (   !e.ctrlKey
+        if (   !getCtrlKey(e)
             && !slider.buttonDown1)
         {
             e.stopPropagation();
@@ -9829,13 +9845,13 @@ function initMenuSelectTextbox(select)
     select.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
-            && e.ctrlKey)
+            && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && e.ctrlKey)
+              && getCtrlKey(e))
         {
             e.preventDefault();
             document.execCommand("paste");
@@ -10839,8 +10855,8 @@ graphView.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)
         {
-            if (e.ctrlKey) graphView.startZoomSelection(e.clientX, e.clientY);
-            else           graphView.startPan(e.pointerId);
+            if (getCtrlKey(e)) graphView.startZoomSelection(e.clientX, e.clientY);
+            else               graphView.startPan(e.pointerId);
         }
         else if (graphView.overOutput)
         {
@@ -10919,7 +10935,7 @@ graphView.addEventListener('pointerup', e =>
     if (   e.button == 0
         && graphView.spaceDown)
     {
-        if (e.ctrlKey)
+        if (getCtrlKey(e))
         {
             if (   graphView.selectionRect.w > 0
                 && graphView.selectionRect.h > 0)
@@ -10971,7 +10987,7 @@ graphView.addEventListener('wheel', e =>
     const dWheelX = e.deltaX/120;
     const dWheelY = e.deltaY/120;
 
-    if (e.ctrlKey)
+    if (getCtrlKey(e))
     {
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
         const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));

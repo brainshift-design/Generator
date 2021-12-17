@@ -36,8 +36,8 @@ graphView.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)
         {
-            if (e.ctrlKey) graphView.startZoomSelection(e.clientX, e.clientY);
-            else           graphView.startPan(e.pointerId);
+            if (getCtrlKey(e)) graphView.startZoomSelection(e.clientX, e.clientY);
+            else               graphView.startPan(e.pointerId);
         }
         else if (graphView.overOutput)
         {
@@ -116,7 +116,7 @@ graphView.addEventListener('pointerup', e =>
     if (   e.button == 0
         && graphView.spaceDown)
     {
-        if (e.ctrlKey)
+        if (getCtrlKey(e))
         {
             if (   graphView.selectionRect.w > 0
                 && graphView.selectionRect.h > 0)
@@ -168,7 +168,7 @@ graphView.addEventListener('wheel', e =>
     const dWheelX = e.deltaX/120;
     const dWheelY = e.deltaY/120;
 
-    if (e.ctrlKey)
+    if (getCtrlKey(e))
     {
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
         const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));

@@ -9,14 +9,14 @@ document.addEventListener('keydown', e =>
 
     // select all
     else if (e.code == 'KeyA'
-          && e.ctrlKey)
+          && getCtrlKey(e))
     {
         graphView.selected = uiGraph.nodes;
     }
 
     // undo/redo
     else if (e.code == 'KeyZ'
-          && e.ctrlKey)
+          && getCtrlKey(e))
     {
         if (e.shiftKey) actionManager.redo();
         else            actionManager.undo();
@@ -41,7 +41,7 @@ document.addEventListener('keydown', e =>
     }
 
     else if (e.code == 'Space'
-         && !e.ctrlKey)
+         && !getCtrlKey(e))
     {
         if (   !graphView.selecting
             && !graphView.spaceDown)
@@ -62,7 +62,7 @@ document.addEventListener('keydown', e =>
 
     else if (e.key == 'Alt'
           && graphView.spaceDown
-          && e.ctrlKey)
+          && getCtrlKey(e))
     {
         graphView.setZoomOutCursor();
     }
@@ -85,7 +85,7 @@ document.addEventListener('keyup', e =>
     else if (e.key == 'Alt'
           && graphView.spaceDown)
     {
-        if (e.ctrlKey) 
+        if (getCtrlKey(e)) 
             graphView.setZoomInCursor();
         else
         {
