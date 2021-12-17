@@ -1,11 +1,11 @@
 class UGraph
 {
     name         = 'Untitled';
+    
     nodes        = [];
-           
-    mutex        = false;
-
     deferNodeIds = [];
+    
+    mutex        = false;
 
 
     
@@ -112,6 +112,8 @@ class UGraph
 
         graphView.putNodeOnTop(node);
         graphView.updateScroll();
+
+        updateNodes();
     }
     
 
@@ -179,7 +181,7 @@ class UGraph
             input.op.makeActive();
             
         output.op.updateConnectedInputValueText();
-        conn.wire.style.zIndex = MAX_INT;
+        conn.wire.style.zIndex = MAX_INT32;
 
         return true;
     }

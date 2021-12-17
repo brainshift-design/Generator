@@ -120,7 +120,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px #18A0FB inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
             
             
 
@@ -161,7 +161,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px #18A0FB';
+            //slider.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
             
             if (slider.isPointerLocked())
             {

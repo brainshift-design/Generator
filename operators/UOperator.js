@@ -34,6 +34,14 @@ class UOperator
     output = null;
     
 
+    div;
+    inner;
+    header;
+    label;
+    inputControls;
+    outputControls;
+
+
     //#valid = false; // this is the flag for regeneration
 
 
@@ -169,15 +177,6 @@ class UOperator
 
         return 'magenta';
     }
-
-
-
-    div;
-    inner;
-    header;
-    label;
-    inputControls;
-    outputControls;
 
 
 

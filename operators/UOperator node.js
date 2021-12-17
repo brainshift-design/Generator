@@ -8,6 +8,7 @@ function createNode(node, headerColor)
     node.div.style.width = '120px';
     
     node.div.selectedSet = false;
+    node.div.over        = false;
     node.div.dragging    = false;
     node.div.moved       = false;
 
@@ -20,18 +21,16 @@ function createNode(node, headerColor)
 
     node.div.addEventListener('pointerenter', function(e)
     {
-        if (   !graphView.zoomSelecting
-            && !graphView.spaceDown)
-            e.target.op.inner.style.boxShadow = '0px 5px 20px #0001, 0 0 0 1px #18A0FB';
+        node.div.over = true;
+        updateNode(node);
     });
 
 
 
     node.div.addEventListener('pointerleave', function(e)
     {
-        if (   !graphView.zoomSelecting
-            && !graphView.spaceDown)
-            e.target.op.inner.style.boxShadow = '0px 5px 20px #0001';
+        node.div.over = false;
+        updateNode(node);
     });
 
     
@@ -67,6 +66,8 @@ function createNodeHeader(node, headerColor)
             return;
 
 
+        graphView.lastSelected = graphView.selected;
+        
         graphView.putNodeOnTop(node);
 
 
@@ -103,6 +104,9 @@ function createNodeHeader(node, headerColor)
             node.div.dragging = true;
             node.header.setPointerCapture(e.pointerId);
         }
+
+
+        updateNodes();
     });
 
 

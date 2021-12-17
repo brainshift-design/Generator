@@ -23,18 +23,18 @@ class UConnection
 
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
-        //this.wire.curve.style.stroke    = '#18A0FB';
+        //this.wire.curve.style.stroke    = activeObjectColor;
         this.wire.curve.style.strokeWidth = 1.2 * this.wire.scale;
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
         this.wire.outBall = createSvg('circle');
-        //this.wire.outBall.style.fill   = '#18A0FB';
+        //this.wire.outBall.style.fill   = activeObjectColor;
         this.wire.outBall.style.position = 'absolute';
         this.wire.outBall.style.r        = 3 * this.wire.scale;
 
         this.wire.inBall = createSvg('circle');
-        //this.wire.inBall.style.fill   = '#18A0FB';
+        //this.wire.inBall.style.fill   = activeObjectColor;
         this.wire.inBall.style.position = 'absolute';
         this.wire.inBall.style.r        = 3 * this.wire.scale;
 

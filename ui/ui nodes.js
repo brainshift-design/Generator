@@ -17,15 +17,18 @@ function uiCreateNode(opType, updateUI = true, createdId = -1)
 
     if (updateUI)
     {
-        graphView.selected = [node];
-        graphView.putNodeOnTop(node);
+        graphView.lastSelected = graphView.selected;
+        graphView.selected     = [node];
 
+        graphView.putNodeOnTop(node);
         graphView.updateNodeTransform(node);
+
+        updateNodes();
     }
 
 
     uiPostMessageToGenerator({
-        msg:     'genCreateNode', 
+        msg:     'genCreateNode',
         opType:   opType,
         nodeId:   node.id,
         nodeName: node.name
@@ -234,4 +237,40 @@ function uiUpdateObjects(objects)
         cmd:    'figUpdateObjects',
         objects: objects
     });    
+}
+
+
+
+function updateNodes()
+{
+    for (const node of graphView.selected)      updateNode(node);
+    for (const node of graphView._prevSelected) updateNode(node);
+    for (const node of graphView.lastSelected) updateNode(node);
+}
+
+
+
+function updateNode(node)
+{
+    const selecting = 
+           !graphView.zoomSelecting
+        && !graphView.spaceDown;
+
+
+    let boxShadow = '';
+
+    if (selecting)
+    {
+        boxShadow += 
+            '0px 5px ' 
+            + (node.selected ? 20 : 10)
+            + 'px ' 
+            + (node.selected ? '#0001' : '#00000008')
+            + ', ';
+    } 
+
+    boxShadow += '0 0 0 1px ' + (node.div.over ? activeObjectColor : '#00000008');
+
+
+    node.inner.style.boxShadow = boxShadow;
 }

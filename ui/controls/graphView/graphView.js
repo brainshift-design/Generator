@@ -1,24 +1,24 @@
-graphView.wires      = [];
+graphView.wires         = [];
 
 
-graphView.overInput  = null;
-graphView.overOutput = null;
+graphView.overInput     = null;
+graphView.overOutput    = null;
    
-graphView.tempConn   = null;
+graphView.tempConn      = null;
    
    
-graphView.selecting  = false;
-graphView.selectionRect  = Rect.NaN;
+graphView.selecting     = false;
+graphView.selectionRect = Rect.NaN;
 
-graphView.btn1down   = false; // this is to help deal with mouse wheels that send X values as
-                              // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
+graphView.btn1down      = false; // this is to help deal with mouse wheels that send X values as
+                                 // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
 
 graphView.pStart = {x:0, y:0};
 
 
-scrollbarX.style.zIndex = MAX_INT-1;
-scrollbarY.style.zIndex = MAX_INT-2;
+scrollbarX.style.zIndex = MAX_INT32-1;
+scrollbarY.style.zIndex = MAX_INT32-2;
 
 
 
@@ -64,7 +64,7 @@ graphView.addEventListener('pointerdown', e =>
         }
         else // selection
         {
-            graphView._prevSelected = [...graphView.selected];
+            graphView.lastSelected = [...graphView.selected];
 
             graphView.startSelection(
                 e.pointerId, 
@@ -203,7 +203,7 @@ graphView.startConnectionFromOutput = output =>
 {
     graphView.tempConn = new UConnection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
-    graphView.tempConn.wire.style.zIndex = MAX_INT-3;
+    graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.output       = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
@@ -215,7 +215,7 @@ graphView.startConnectionFromInput = input =>
 {
     graphView.tempConn = new UConnection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
-    graphView.tempConn.wire.style.zIndex = MAX_INT-3;
+    graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.input        = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
@@ -279,7 +279,7 @@ graphView.putNodeOnTop = node =>
     for (const n of uiGraph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    var z = MAX_INT-3; // -3 is for scrollbars
+    var z = MAX_INT32-3; // -3 is for scrollbars
 
     for (const input of node.inputs.filter(i => i.connected))
         input.connection.wire.style.zIndex = z--;

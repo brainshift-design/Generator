@@ -34,7 +34,7 @@
 {
     position:       absolute;
     pointer-events: none;
-    box-shadow:     0 0 0 1px #18A0FB inset;
+    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
 }
@@ -48,6 +48,6 @@
 {
     outline:    none;
     box-sizing: border-box;
-    border:     solid 2px #18A0FB;
-    box-shadow: 0 0 0 -2px #18A0FB inset;
+    border:     solid 2px var(--activeObjectColor);
+    box-shadow: 0 0 0 -2px var(--activeObjectColor) inset;
 }     */

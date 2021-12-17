@@ -10,7 +10,7 @@ function initSelectMenu(select)
     select.menu.style.height     = 'auto';
     select.menu.style.textAlign  = 'center';
     select.menu.style.background = '#222';
-    select.menu.style.zIndex     =  MAX_INT-3;
+    select.menu.style.zIndex     =  MAX_INT32-3;
     
 
 
@@ -35,7 +35,7 @@ function initSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = 'calc(100% + 1px)';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = '#18A0FB';
+    select.selectBox.style.backgroundColor = activeObjectColor;
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = -1; // -1 = border
     

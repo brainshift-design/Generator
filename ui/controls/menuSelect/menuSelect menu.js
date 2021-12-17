@@ -7,7 +7,7 @@ function initMenuSelectMenu(select)
     select.menu.tabIndex     = 0;
 
     select.menu.style.left   = select.offsetLeft;
-    select.menu.style.zIndex = MAX_INT;
+    select.menu.style.zIndex = MAX_INT32;
 
     select.menu.addEventListener('focus', function() 
     {
@@ -28,7 +28,7 @@ function initMenuSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = '100%';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = '#18A0FB';
+    select.selectBox.style.backgroundColor = activeObjectColor;
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = 0; // -1 = border
     
