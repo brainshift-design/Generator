@@ -1,6 +1,8 @@
 class   UOpRect
 extends UOperator
 {
+    #x;
+    #y;
     #width;
     #height;
     #round;
@@ -12,10 +14,14 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
+        this.addParam(this.#x      = new UNumberParam('x',        0));
+        this.addParam(this.#y      = new UNumberParam('y',        0));
         this.addParam(this.#width  = new UNumberParam('width',  100, 0.01));
         this.addParam(this.#height = new UNumberParam('height', 100, 0.01));
         this.addParam(this.#round  = new UNumberParam('round',    0, 0));
         
+        this.#x     ._control.addEventListener('change', () => this.updateRound());
+        this.#y     ._control.addEventListener('change', () => this.updateRound());
         this.#width ._control.addEventListener('change', () => this.updateRound());
         this.#height._control.addEventListener('change', () => this.updateRound());
 
