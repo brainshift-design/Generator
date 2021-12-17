@@ -56,7 +56,7 @@ graphView.selectFromIds = (nodeIds) =>
 
 
 
-graphView.startSelection = (pointerId, x, y, shiftKey) =>
+graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
 {
     graphView.setPointerCapture(pointerId);
 
@@ -67,24 +67,24 @@ graphView.startSelection = (pointerId, x, y, shiftKey) =>
    
     selectBox.style.visibility = 'visible';
 
-    graphView.updateSelectBox(shiftKey);
+    graphView.updateSelectBox(shiftKey, ctrlKey);
 };
 
 
 
-graphView.updateSelection = (x, y, shiftKey) =>
+graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
 {
     if (!graphView.selecting) return;
 
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
-    graphView.updateSelectBox(shiftKey);
+    graphView.updateSelectBox(shiftKey, ctrlKey);
 };
 
 
 
-graphView.updateSelectBox = shiftKey =>
+graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 {
     const wndRect = new Rect(
                                   1,
@@ -114,13 +114,18 @@ graphView.updateSelectBox = shiftKey =>
             selected.push(node);
     }
 
-    graphView.selected = 
-        shiftKey
-        ? graphView.lastSelected.concat(selected)
-        : selected;
+
+    if (ctrlKey)
+        graphView.selected = graphView.lastSelected.concat(selected);
+    else if (shiftKey)
+        graphView.selected = graphView.lastSelected
+                             .filter(node => !selected.includes(node))
+                             .concat(selected.filter(node => !graphView.lastSelected.includes(node)));
+    else
+        graphView.selected = selected;
     
         
-        selectBox.style.zIndex = MAX_INT32-3;
+    selectBox.style.zIndex = MAX_INT32-3;
         
         
     updateNodes();

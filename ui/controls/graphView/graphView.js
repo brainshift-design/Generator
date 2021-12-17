@@ -70,7 +70,8 @@ graphView.addEventListener('pointerdown', e =>
                 e.pointerId, 
                 e.clientX, 
                 e.clientY, 
-                e.shiftKey);
+                e.shiftKey,
+                getCtrlKey(e));
         }
     }
     
@@ -97,7 +98,7 @@ graphView.addEventListener('pointermove', e =>
     }
     
     else if (graphView.selecting)
-        graphView.updateSelection(e.clientX, e.clientY, e.shiftKey);
+        graphView.updateSelection(e.clientX, e.clientY, e.shiftKey, getCtrlKey(e));
     
     else if (graphView.zoomSelecting)
         graphView.updateZoomSelection(e.clientX, e.clientY);

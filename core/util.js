@@ -1,3 +1,7 @@
+const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
+
+
+
 function setStyle(id, properties)
 {
     var elem = document.getElementById(id);
