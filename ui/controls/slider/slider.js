@@ -304,7 +304,7 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             slider.showTextbox();
 
         // else if (e.code == 'Space')
-        //     graphView.setPanCursor();
+        //     setCursor(panCursor, true);
     });
 
 

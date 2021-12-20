@@ -36,7 +36,7 @@ graphView.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)
         {
-            if (getCtrlKey(e)) graphView.startZoomSelection(e.clientX, e.clientY);
+            if (getCtrlKey(e)) graphView.startZoomSelection(e.pointerId, e.clientX, e.clientY);
             else               graphView.startPan(e.pointerId);
         }
         else if (graphView.overOutput)
@@ -94,7 +94,7 @@ graphView.addEventListener('pointermove', e =>
     {
         const dp = subv(graphView.p, graphView.pStart);
         graphView.pan = addv(graphView.panStart, dp);
-        graphView.setPanCursor();
+        setCursor(panCursor);
     }
     
     else if (graphView.selecting)
@@ -122,11 +122,11 @@ graphView.addEventListener('pointerup', e =>
             if (   graphView.selectionRect.w > 0
                 && graphView.selectionRect.h > 0)
             {
-                graphView.endZoomSelection(true);
+                graphView.endZoomSelection(e.pointerId, true);
             }
             else
             {
-                graphView.endZoomSelection(false);
+                graphView.endZoomSelection(e.pointerId, false);
 
                 graphView.oldZoom = graphView.zoom;
 

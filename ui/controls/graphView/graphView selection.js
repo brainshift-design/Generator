@@ -1,6 +1,6 @@
 graphView._selected     = [];
 graphView._prevSelected = [];
-graphView.lastSelected = [];
+graphView.lastSelected  = [];
 
 
 Object.defineProperty(graphView, 'selected',
@@ -87,10 +87,10 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
 graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 {
     const wndRect = new Rect(
-                                  1,
+        1,
         controlBar.offsetHeight + 1,
-        graphView.offsetWidth   - 2,
-        graphView.offsetHeight  - 5);
+        graphView.offsetWidth  - 2,
+        graphView.offsetHeight - 5);
 
     
     let selection = validateRect(graphView.selectionRect);
@@ -146,6 +146,6 @@ graphView.endSelection = pointerId =>
     selectBox.style.visibility = 'hidden';
 
     actionManager.do(new SelectNodesAction(
-        graphView.selected     .map(n => n.id), 
+        graphView.selected    .map(n => n.id), 
         graphView.lastSelected.map(n => n.id)));
 };

@@ -28,6 +28,8 @@
     ../ui/document.js
     ../ui/window.js
     ../ui/keyboard.js
+    ../ui/cursors.js
+    ../ui/mouse.js
 
     ../ui/controls/slider/*.js
     ../ui/controls/select/*.js

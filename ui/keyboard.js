@@ -46,9 +46,8 @@ document.addEventListener('keydown', e =>
         if (   !graphView.selecting
             && !graphView.spaceDown)
         {
-            console.log(e.code);
             graphView.spaceDown = true;
-            graphView.setPanCursor();
+            setCursor(panCursor);
         }
     }
 
@@ -57,15 +56,15 @@ document.addEventListener('keydown', e =>
     {
         graphView.zoomSelecting = true;
 
-        if (e.altKey) graphView.setZoomOutCursor();
-        else          graphView.setZoomInCursor();
+        if (e.altKey) setCursor(zoomOutCursor);
+        else          setCursor(zoomInCursor);
     }
 
     else if (e.key == 'Alt'
           && graphView.spaceDown
           && getCtrlKey(e))
     {
-        graphView.setZoomOutCursor();
+        setCursor(zoomOutCursor);
     }
 });
 
@@ -79,7 +78,7 @@ document.addEventListener('keyup', e =>
         {
             graphView.spaceDown     = false;
             graphView.zoomSelecting = false;
-            graphView.setAutoCursor();
+            setAutoCursor();
         }
     }
 
@@ -87,10 +86,10 @@ document.addEventListener('keyup', e =>
           && graphView.spaceDown)
     {
         if (getCtrlKey(e)) 
-            graphView.setZoomInCursor();
+            setCursor(zoomInCursor);
         else
         {
-            graphView.setPanCursor();
+            setCursor(panCursor);
             graphView.zoomSelecting = false;
         }
     }
@@ -99,7 +98,7 @@ document.addEventListener('keyup', e =>
           && graphView.spaceDown)
     {
         graphView.zoomSelecting = false;
-        graphView.setPanCursor();
+        setCursor(panCursor);
     }
 });
 

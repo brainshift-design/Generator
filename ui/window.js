@@ -29,8 +29,8 @@ function checkResize(x, y)
     document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
 
          if (document.canResizeX
-          && document.canResizeY) document.body.style.cursor = 'nwse-resize'; 
-    else if (document.canResizeX) document.body.style.cursor = 'ew-resize';   
-    else if (document.canResizeY) document.body.style.cursor = 'ns-resize';   
-    else                          graphView.setAutoCursor();
+          && document.canResizeY) setCursor('nwse-resize', false); 
+    else if (document.canResizeX) setCursor('ew-resize',   false);   
+    else if (document.canResizeY) setCursor('ns-resize',   false);   
+    else                          setAutoCursor();
 }
