@@ -46,6 +46,7 @@ document.addEventListener('keydown', e =>
         if (   !graphView.selecting
             && !graphView.spaceDown)
         {
+            console.log(e.code);
             graphView.spaceDown = true;
             graphView.setPanCursor();
         }
