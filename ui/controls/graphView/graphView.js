@@ -77,6 +77,8 @@ graphView.addEventListener('pointerdown', e =>
     
     else if (e.button == 1)
     {
+        e.preventDefault();
+        
         graphView.btn1down = true;
         graphView.startPan(e.pointerId);
     }

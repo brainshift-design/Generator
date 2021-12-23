@@ -10555,17 +10555,12 @@ graphView.endZoomSelection = (pointerId, zoom) =>
             w: selection.w,
             h: selection.h };
             
-        box.x = (box.x - graphView.pan.x) / graphView.zoom;
-        box.y = (box.y - graphView.pan.y) / graphView.zoom;
-        box.w =  box.w                    / graphView.zoom;
-        box.h =  box.h                    / graphView.zoom;
-        
-        const wndHeight = window.innerHeight - controlBar.offsetHeight;
+        const wndHeight = window.innerHeight - controlBar.offsetHeight; 
 
-        const diff = { w: (window.innerWidth / graphView.zoom - box.w) / 2,
-                       h: (wndHeight         / graphView.zoom - box.h) / 2 };
+        const diff = { w: (window.innerWidth - box.w) / 2,
+                       h: (wndHeight         - box.h) / 2 };
 
-        console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight + ', zoom = ' + graphView.zoom);
+        console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
 
         graphView.setZoomAndPan(
             graphView.zoom * Math.min(
@@ -11022,6 +11017,8 @@ graphView.addEventListener('pointerdown', e =>
     
     else if (e.button == 1)
     {
+        e.preventDefault();
+        
         graphView.btn1down = true;
         graphView.startPan(e.pointerId);
     }
