@@ -1,4 +1,4 @@
-function initSliderTextbox(slider)
+function initNumberSliderTextbox(slider)
 {
     slider.textbox = document.createElement('INPUT');
     slider.textbox.setAttribute('type', 'text'); 

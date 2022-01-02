@@ -56,6 +56,7 @@ class UGraph
         switch (opType)
         {
             case 'number': node = new UOpNumber(); break;
+            case 'color':  node = new UOpColor();  break;
             case 'random': node = new UOpRandom(); break;
             case 'rect':   node = new UOpRect();   break;
             case 'row':    node = new UOpRow();    break;

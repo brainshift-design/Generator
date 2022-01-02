@@ -1,22 +1,25 @@
-../parameters/GParameter.js
-../parameters/GNumberParam.js
+../parameters/Parameter/GParameter.js
+../parameters/NumberParam/GNumberParam.js
+../parameters/ColorParam/GColorParam.js
 
 ../graph/GGraph.js
 
-../graph/GInput.js
-../graph/GOutput.js
-../graph/GConnection.js
+../graph/Input/GInput.js
+../graph/Output/GOutput.js
+../graph/Connection/GConnection.js
 
 ../graph/tree.js
 
 ../operators/GOperator.js
 
-../operators/number/GOpNumber.js
-../operators/random/GOpRandom.js
+../operators/OpNumber/GOpNumber.js
+../operators/OpRandom/GOpRandom.js
 
-../operators/rect/GOpRect.js
+../operators/OpColor/GOpColor.js
 
-../operators/row/GOpRow.js
-../operators/column/GOpColumn.js
+../operators/OpRect/GOpRect.js
 
-//../operators/spread/GOpSpread.js
+../operators/OpRow/GOpRow.js
+../operators/OpColumn/GOpColumn.js
+
+//../operators/OpSpread/GOpSpread.js

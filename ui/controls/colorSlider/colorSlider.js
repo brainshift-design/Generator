@@ -1,22 +1,18 @@
-function initSliderChildren(slider)
+function initColorSliderChildren(slider)
 {
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'sliderBar';
-
     slider.text = document.createElement('div');
     slider.text.className = 'sliderText';
 
     slider.focus = document.createElement('div');
     slider.focus.className = 'sliderFocus';
 
-    slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
 }
 
 
 
-function initSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
 
@@ -26,8 +22,6 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
     slider.style.width       = width;
     slider.style.height      = height;
         
-    slider.min               = min;
-    slider.max               = max;
     slider.value             = def;
     slider.dec               = dec;
     slider.editDec           = dec;
@@ -70,8 +64,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
 
 
-    initSliderChildren(slider);    
-    initSliderTextbox(slider);
+    initColorSliderChildren(slider);    
+    initColorSliderTextbox(slider);
 
     
 
@@ -319,21 +313,21 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
 
     
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
+    slider.setColor = function(color, fireChangeEvent = true, confirm = true)
     {
-        const oldValue = slider.value;
+        // const oldValue = slider.value;
 
-        if (slider.wrapValue)
-        {
-            while (value < slider.min) value += slider.max - slider.min;
-            while (value > slider.max) value -= slider.max - slider.min;
-        }
-        else
-            value = Math.min(Math.max(slider.min, value), slider.max);
+        // if (slider.wrapValue)
+        // {
+        //     while (color < slider.min) color += slider.max - slider.min;
+        //     while (color > slider.max) color -= slider.max - slider.min;
+        // }
+        // else
+        //     color = Math.min(Math.max(slider.min, color), slider.max);
         
-        if (  !confirm
-            || value != oldValue)
-            slider.value = value;
+        // if (  !confirm
+        //     || color != oldValue)
+        //     slider.value = color;
 
 
         slider.update();
@@ -341,13 +335,13 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && value != slider.prevValue)
+            && color != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
 
 
         if (   confirm
             && slider.enableChangeEvent
-            && value != oldValue)
+            && color != oldValue)
             slider.dispatchEvent(slider.onconfirm);
     };
 
@@ -356,46 +350,46 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
     slider.update = function()
     {
-        var v  =  slider.value / (slider.max - slider.min);
-        var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        // var v  =  slider.value / (slider.max - slider.min);
+        // var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
-        slider.bar.style.background = slider.valueColor;
+        // slider.bar.style.background = slider.valueColor;
 
-        slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
-        slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        // slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
+        // slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         slider.focus.style.left   = 0;
         slider.focus.style.top    = 0;
         slider.focus.style.width  = slider.clientWidth;
         slider.focus.style.height = slider.clientHeight;
 
-        if (v >= 0)
-        {
-            slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
-            slider.bar.style.width = Math.round(v * slider.clientWidth);
-        }
-        else
-        {
-            slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
-            slider.bar.style.width = -v * slider.clientWidth;
-        }
+        // if (v >= 0)
+        // {
+        //     slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
+        //     slider.bar.style.width = Math.round(v * slider.clientWidth);
+        // }
+        // else
+        // {
+        //     slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
+        //     slider.bar.style.width = -v * slider.clientWidth;
+        // }
 
-        slider.bar.style.background =
-            slider.value >= 0
-            ? slider.valueColor
-            : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
+        // slider.bar.style.background =
+        //     slider.value >= 0
+        //     ? slider.valueColor
+        //     : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
         slider.text.innerHTML = '';
         
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        var valueText = 
-            slider.valueText != ''
-            ? slider.valueText
-            : getNumberString(slider.value, slider.dec);
+        // var valueText = 
+        //     slider.valueText != ''
+        //     ? slider.valueText
+        //     : getNumberString(slider.value, slider.dec);
 
-        slider.text.innerHTML += valueText + slider.suffix;
+        // slider.text.innerHTML += valueText + slider.suffix;
     };
 
 

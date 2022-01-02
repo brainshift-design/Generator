@@ -10,7 +10,7 @@ extends GParameter
     
     get value() 
     {
-        var value = Math.min(Math.max(this.#min, this.#value), this.#max);
+        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
 
         if (this.input.connected)
         {
@@ -26,6 +26,7 @@ extends GParameter
 
         return value;
     }
+
 
     
     set value(value) 
@@ -47,10 +48,10 @@ extends GParameter
     {
         super(name, 'number');
 
-        this.#value    = value;
+        this.#value = value;
    
-        this.#min      = min;
-        this.#max      = max;
+        this.#min   = min;
+        this.#max   = max;
 
         this.input = new GInput('number');
         this.input._param = this;

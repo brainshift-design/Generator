@@ -68,7 +68,7 @@ graphView.updatePanAndZoom = () =>
 
     graphView.updateScroll();
 
-    console.log('zoom = ' + graphView.zoom + ', pan = ' + graphView.pan.x + ', ' + graphView.pan.y);
+    //console.log('zoom = ' + graphView.zoom + ', pan = ' + graphView.pan.x + ', ' + graphView.pan.y);
 };
 
 
@@ -157,7 +157,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
         const diff = { w: (window.innerWidth - box.w) / 2,
                        h: (wndHeight         - box.h) / 2 };
 
-        console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
+        //console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
 
         graphView.setZoomAndPan(
             graphView.zoom * Math.min(

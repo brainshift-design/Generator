@@ -1813,7 +1813,7 @@ extends GParameter
     
     get value() 
     {
-        var value = Math.min(Math.max(this.#min, this.#value), this.#max);
+        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
 
         if (this.input.connected)
         {
@@ -1829,6 +1829,7 @@ extends GParameter
 
         return value;
     }
+
 
     
     set value(value) 
@@ -1850,12 +1851,65 @@ extends GParameter
     {
         super(name, 'number');
 
-        this.#value    = value;
+        this.#value = value;
    
-        this.#min      = min;
-        this.#max      = max;
+        this.#min   = min;
+        this.#max   = max;
 
         this.input = new GInput('number');
+        this.input._param = this;
+    }
+}
+
+
+class   GColorParam
+extends GParameter
+{
+    #value; // [r, g, b]
+
+
+    
+    get value() 
+    {
+        let value = this.#value;
+
+        if (this.input.connected)
+        {
+            value = this.input.data.value;
+
+            genPostMessageToUi({ 
+                msg:   'uiShowParamValue',
+                nodeId: this.op.id,
+                param:  this.name,
+                value:  value
+            });
+        }
+
+        return value;
+    }
+
+    
+
+    set value(value) 
+    {
+        this.#value   = value;
+        this.op.valid = false;
+    }
+
+
+
+    input; 
+
+
+
+    constructor(name, 
+                value = [0, 0, 0])
+    {
+        super(name, 'color');
+
+        this.#value = value;
+   
+        this.input = new GInput('color');
         this.input._param = this;
     }
 }
@@ -1885,6 +1939,7 @@ class GGraph
         switch (opType)
         {
             case 'number': node = new GOpNumber(); break;
+            case 'color':  node = new GOpColor();  break;
             case 'random': node = new GOpRandom(); break;
             case 'rect':   node = new GOpRect();   break;
             case 'row':    node = new GOpRow();    break;
@@ -2385,6 +2440,7 @@ extends GOperator
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
+            
         this.output._data = 
         {
             nodeId: this.id,
@@ -2472,6 +2528,65 @@ extends GOperator
 }
 
 
+class   GOpColor
+extends GOperator
+{
+    _r;
+    _g;
+    _b;
+
+    _rSampled = Number.NaN;
+    _gSampled = Number.NaN;
+    _bSampled = Number.NaN;
+
+
+    constructor()
+    {
+        super('color', 'color');
+        this.setOutput(new GOutput(this.dataType));
+        this.addParam(this._r = new GNumberParam('r', 0, 0, 255));
+        this.addParam(this._g = new GNumberParam('g', 0, 0, 255));
+        this.addParam(this._b = new GNumberParam('b', 0, 0, 255));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+
+        if (   isNaN(this._rSampled)
+            || isNaN(this._gSampled)
+            || isNaN(this._bSampled))
+        {
+            this._rSampled = this._r.value;
+            this._gSampled = this._g.value;
+            this._bSampled = this._b.value;
+        }
+
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            r:      this._r,
+            g:      this._g,
+            b:      this._b
+        };
+    }
+
+
+    refresh()
+    {
+        super.refresh();
+        
+        this._sampled = Number.NaN;
+    }
+}
+
+
 class   GOpRect
 extends GOperator
 {
@@ -2480,7 +2595,8 @@ extends GOperator
     #width;
     #height;
     #round;
-    
+    #color;
+   
 
 
     constructor()
@@ -2494,6 +2610,7 @@ extends GOperator
         this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
         this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
         this.addParam(this.#round  = new GNumberParam('round',    0, 0));
+        this.addParam(this.#color  = new GColorParam ('color'));
     }
 
     
@@ -2514,7 +2631,8 @@ extends GOperator
             y:      this.#y     .value,
             width:  this.#width .value,
             height: this.#height.value,
-            round:  this.#round .value
+            round:  this.#round .value,
+            color:  this.#color .value
         }];
     }
 }

@@ -297,10 +297,10 @@ class UOperator
         
         let save = 
               pos + '{\n'
-            + pos + tab + '"type": "' + this.opType         + '",\n'
-            + pos + tab + '"name": "' + this.name           + '",\n'
-            + pos + tab + '"x"   : "' + this.div.style.left + '",\n'
-            + pos + tab + '"y"   : "' + this.div.style.top  + '"';
+            + pos + tab + '"type":   "' + this.opType         + '",\n'
+            + pos + tab + '"name":   "' + this.name           + '",\n'
+            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
+            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
         
         for (const param of this.params)
         {

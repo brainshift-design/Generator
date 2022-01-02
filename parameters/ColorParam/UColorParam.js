@@ -1,4 +1,4 @@
-class   UNumberParam
+class   UColorParam
 extends UParameter
 {
     defaultValue;
@@ -30,13 +30,10 @@ extends UParameter
 
     
     constructor(name, 
-                value     = 0, 
-                min       = Number.MIN_SAFE_INTEGER, 
-                max       = Number.MAX_SAFE_INTEGER,
-                decimals  = 0,
+                value     = [0, 0, 0],
                 dragScale = 0.01)
     {
-        super(name, 'number');
+        super(name, 'color');
 
         this._control = document.createElement('div');
         this.control.param  = this;
@@ -44,23 +41,25 @@ extends UParameter
 
         this.defaultValue = value;
 
-        initSlider(
+        this.control.style.height = 20;
+
+
+        initColorSlider(
             this.control,
             120,       // width
             20,        // height
             this.name, 
-            min,
-            max,
             value,     // default
             dragScale, // drag scale
             1,         // wheel step
-            decimals,  // decimals
+            0,         // decimals
             0,         // acceleration
             '');       // suffix
 
+
         this.div.appendChild(this.control);
 
-        this.input = new UInput('number');
+        this.input = new UInput('color');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';

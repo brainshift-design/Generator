@@ -1,11 +1,12 @@
-../parameters/UParameter.js
-../parameters/UNumberParam.js
+../parameters/Parameter/UParameter.js
+../parameters/NumberParam/UNumberParam.js
+../parameters/ColorParam/UColorParam.js
 
 ../graph/UGraph.js
 
-../graph/UInput.js
-../graph/UOutput.js
-../graph/UConnection.js
+../graph/Input/UInput.js
+../graph/Output/UOutput.js
+../graph/Connection/UConnection.js
 
 ../graph/tree.js
 
@@ -13,12 +14,14 @@
 ../operators/UOperator node.js
 ../operators/UOperator textbox.js
 
-../operators/number/UOpNumber.js
-../operators/random/UOpRandom.js
+../operators/OpNumber/UOpNumber.js
+../operators/OpRandom/UOpRandom.js
 
-../operators/rect/UOpRect.js
+../operators/OpColor/UOpColor.js
 
-../operators/row/UOpRow.js
-../operators/column/UOpColumn.js
+../operators/OpRect/UOpRect.js
 
-//../operators/UOpSpread.js
+../operators/OpRow/UOpRow.js
+../operators/OpColumn/UOpColumn.js
+
+//../operators/OpSpread/UOpSpread.js

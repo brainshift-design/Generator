@@ -31,7 +31,8 @@
     ../ui/cursors.js
     ../ui/mouse.js
 
-    ../ui/controls/slider/*.js
+    ../ui/controls/numberSlider/*.js
+    ../ui/controls/colorSlider/*.js
     ../ui/controls/select/*.js
     ../ui/controls/menuSelect/*.js
     ../ui/controls/graphView/*.js

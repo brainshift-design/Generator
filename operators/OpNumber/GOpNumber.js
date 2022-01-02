@@ -23,6 +23,7 @@ extends GOperator
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
+            
         this.output._data = 
         {
             nodeId: this.id,

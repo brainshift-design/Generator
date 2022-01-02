@@ -686,10 +686,11 @@ input[type=text]::selection
     <div id='menuSelect' style='margin-left: 10px;'></div>
     
     <button class='menuButton' id='btnCreateNumber' onclick='actionManager.do(new CreateNodeAction("number")); this.blur();'>NUM</button>
+    <button class='menuButton' id='btnCreateColor'  onclick='actionManager.do(new CreateNodeAction("color" )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
     <button class='menuButton' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>RCT</button>
     <button class='menuButton' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>ROW</button>
-    <button class='menuButton' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>COL</button>
+    <button class='menuButton' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>CLM</button>
     <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
     
 </div>
@@ -2539,7 +2540,7 @@ extends GParameter
     
     get value() 
     {
-        var value = Math.min(Math.max(this.#min, this.#value), this.#max);
+        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
 
         if (this.input.connected)
         {
@@ -2555,6 +2556,7 @@ extends GParameter
 
         return value;
     }
+
 
     
     set value(value) 
@@ -2576,12 +2578,65 @@ extends GParameter
     {
         super(name, 'number');
 
-        this.#value    = value;
+        this.#value = value;
    
-        this.#min      = min;
-        this.#max      = max;
+        this.#min   = min;
+        this.#max   = max;
 
         this.input = new GInput('number');
+        this.input._param = this;
+    }
+}
+
+
+class   GColorParam
+extends GParameter
+{
+    #value; // [r, g, b]
+
+
+    
+    get value() 
+    {
+        let value = this.#value;
+
+        if (this.input.connected)
+        {
+            value = this.input.data.value;
+
+            genPostMessageToUi({ 
+                msg:   'uiShowParamValue',
+                nodeId: this.op.id,
+                param:  this.name,
+                value:  value
+            });
+        }
+
+        return value;
+    }
+
+    
+
+    set value(value) 
+    {
+        this.#value   = value;
+        this.op.valid = false;
+    }
+
+
+
+    input; 
+
+
+
+    constructor(name, 
+                value = [0, 0, 0])
+    {
+        super(name, 'color');
+
+        this.#value = value;
+   
+        this.input = new GInput('color');
         this.input._param = this;
     }
 }
@@ -2611,6 +2666,7 @@ class GGraph
         switch (opType)
         {
             case 'number': node = new GOpNumber(); break;
+            case 'color':  node = new GOpColor();  break;
             case 'random': node = new GOpRandom(); break;
             case 'rect':   node = new GOpRect();   break;
             case 'row':    node = new GOpRow();    break;
@@ -3111,6 +3167,7 @@ extends GOperator
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
+            
         this.output._data = 
         {
             nodeId: this.id,
@@ -3198,6 +3255,65 @@ extends GOperator
 }
 
 
+class   GOpColor
+extends GOperator
+{
+    _r;
+    _g;
+    _b;
+
+    _rSampled = Number.NaN;
+    _gSampled = Number.NaN;
+    _bSampled = Number.NaN;
+
+
+    constructor()
+    {
+        super('color', 'color');
+        this.setOutput(new GOutput(this.dataType));
+        this.addParam(this._r = new GNumberParam('r', 0, 0, 255));
+        this.addParam(this._g = new GNumberParam('g', 0, 0, 255));
+        this.addParam(this._b = new GNumberParam('b', 0, 0, 255));
+    }
+
+
+    generate(callerInput)
+    {
+        if (this.valid) return;
+        super.generate(callerInput);
+
+
+        if (   isNaN(this._rSampled)
+            || isNaN(this._gSampled)
+            || isNaN(this._bSampled))
+        {
+            this._rSampled = this._r.value;
+            this._gSampled = this._g.value;
+            this._bSampled = this._b.value;
+        }
+
+
+        this.output._data = 
+        {
+            nodeId: this.id,
+            opType: this.opType,
+
+            r:      this._r,
+            g:      this._g,
+            b:      this._b
+        };
+    }
+
+
+    refresh()
+    {
+        super.refresh();
+        
+        this._sampled = Number.NaN;
+    }
+}
+
+
 class   GOpRect
 extends GOperator
 {
@@ -3206,7 +3322,8 @@ extends GOperator
     #width;
     #height;
     #round;
-    
+    #color;
+   
 
 
     constructor()
@@ -3220,6 +3337,7 @@ extends GOperator
         this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
         this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
         this.addParam(this.#round  = new GNumberParam('round',    0, 0));
+        this.addParam(this.#color  = new GColorParam ('color'));
     }
 
     
@@ -3240,7 +3358,8 @@ extends GOperator
             y:      this.#y     .value,
             width:  this.#width .value,
             height: this.#height.value,
-            round:  this.#round .value
+            round:  this.#round .value,
+            color:  this.#color .value
         }];
     }
 }
@@ -5869,7 +5988,7 @@ extends UParameter
 
         this.defaultValue = value;
 
-        initSlider(
+        initNumberSlider(
             this.control,
             120,       // width
             20,        // height
@@ -5886,6 +6005,125 @@ extends UParameter
         this.div.appendChild(this.control);
 
         this.input = new UInput('number');
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
+
+
+
+        this.control.addEventListener('change', e =>
+        {
+            this.op.valid = false;
+            uiSetParam(this, this.value);
+        });
+
+
+
+        this.control.addEventListener('confirm', e =>
+        {
+            this.op.valid = false;
+            actionManager.do(new SetValueAction(this, this.value));
+        });
+
+
+
+        this.input.addEventListener('connect', e =>
+        {
+            this.control.style.fontStyle = 'italic';
+            this.control.inputConnected  = true;
+        });
+
+
+        
+        this.input.addEventListener('disconnect', e =>
+        {
+            this.control.style.fontStyle = 'normal';
+            this.control.inputConnected  = false;
+        });
+    }
+
+
+
+    isDefault()
+    {
+        return this.value == this.defaultValue;
+    }
+
+
+
+    save(nTab)
+    {
+        let pos = ' '.repeat(nTab);
+        return pos + '"' + this.name  + '": "' + this.value + '"';
+    }
+}
+
+
+class   UColorParam
+extends UParameter
+{
+    defaultValue;
+    
+    
+    get value()      { return this._control.value;    }
+    set value(value) { this._control.setValue(value); }
+    
+    get oldValue()   { return this._control.oldValue; }
+
+    
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        this._control.setValue(value, fireChangeEvent, confirm); 
+    }
+
+
+    input; 
+
+    
+
+    get valueText() { return this.control.valueText; }
+    set valueText(text) 
+    {
+        this.control.valueText = text;
+        this.control.update();
+    }
+
+
+    
+    constructor(name, 
+                value     = [0, 0, 0],
+                dragScale = 0.01)
+    {
+        super(name, 'color');
+
+        this._control = document.createElement('div');
+        this.control.param  = this;
+        this.control.zIndex = 0;
+
+        this.defaultValue = value;
+
+        this.control.style.height = 20;
+
+
+        initColorSlider(
+            this.control,
+            120,       // width
+            20,        // height
+            this.name, 
+            value,     // default
+            dragScale, // drag scale
+            1,         // wheel step
+            0,         // decimals
+            0,         // acceleration
+            '');       // suffix
+
+
+        this.div.appendChild(this.control);
+
+        this.input = new UInput('color');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -6001,6 +6239,7 @@ class UGraph
         switch (opType)
         {
             case 'number': node = new UOpNumber(); break;
+            case 'color':  node = new UOpColor();  break;
             case 'random': node = new UOpRandom(); break;
             case 'rect':   node = new UOpRect();   break;
             case 'row':    node = new UOpRow();    break;
@@ -6945,10 +7184,10 @@ class UOperator
         
         let save = 
               pos + '{\n'
-            + pos + tab + '"type": "' + this.opType         + '",\n'
-            + pos + tab + '"name": "' + this.name           + '",\n'
-            + pos + tab + '"x"   : "' + this.div.style.left + '",\n'
-            + pos + tab + '"y"   : "' + this.div.style.top  + '"';
+            + pos + tab + '"type":   "' + this.opType         + '",\n'
+            + pos + tab + '"name":   "' + this.name           + '",\n'
+            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
+            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
         
         for (const param of this.params)
         {
@@ -7487,6 +7726,26 @@ extends UOperator
 // }
 
 
+class   UOpColor
+extends UOperator
+{
+    #r;
+    #g;
+    #b;
+
+    constructor()
+    {
+        super('color', 'color');
+
+        this.setOutput(new UOutput(this.dataType));
+
+        this.addParam(this.#r = new UNumberParam('r', 0, 0, 255));
+        this.addParam(this.#g = new UNumberParam('g', 0, 0, 255));
+        this.addParam(this.#b = new UNumberParam('b', 0, 0, 255));
+    }
+}
+
+
 class   UOpRect
 extends UOperator
 {
@@ -7495,6 +7754,8 @@ extends UOperator
     #width;
     #height;
     #round;
+    #color;
+
 
 
     constructor()
@@ -7508,6 +7769,7 @@ extends UOperator
         this.addParam(this.#width  = new UNumberParam('width',  100, 0.01));
         this.addParam(this.#height = new UNumberParam('height', 100, 0.01));
         this.addParam(this.#round  = new UNumberParam('round',    0, 0));
+        this.addParam(this.#color  = new UColorParam ('color'));
         
         this.#x     ._control.addEventListener('change', () => this.updateRound());
         this.#y     ._control.addEventListener('change', () => this.updateRound());
@@ -7518,6 +7780,7 @@ extends UOperator
     }
     
     
+    
     updateRound()
     {
         const min = Math.min(this.#width.value, this.#height.value);
@@ -7525,6 +7788,7 @@ extends UOperator
     }
 
     
+
     setRoundMinMax(min, max)
     {
         const control = this.#round._control;
@@ -7535,6 +7799,7 @@ extends UOperator
 
         this.#round._control.update();
     }
+
 
 
     // generate()
@@ -8907,7 +9172,7 @@ function setAutoCursor()
 };
 
 
-function initSliderTextbox(slider)
+function initNumberSliderTextbox(slider)
 {
     slider.textbox = document.createElement('INPUT');
     slider.textbox.setAttribute('type', 'text'); 
@@ -9048,7 +9313,7 @@ function initSliderTextbox(slider)
 }
 
 
-function initSliderChildren(slider)
+function initNumberSliderChildren(slider)
 {
     slider.bar = document.createElement('div');
     slider.bar.className = 'sliderBar';
@@ -9066,7 +9331,7 @@ function initSliderChildren(slider)
 
 
 
-function initSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
 
@@ -9120,8 +9385,8 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
 
 
 
-    initSliderChildren(slider);    
-    initSliderTextbox(slider);
+    initNumberSliderChildren(slider);    
+    initNumberSliderTextbox(slider);
 
     
 
@@ -9446,6 +9711,600 @@ function initSlider(slider, width, height, name, min, max, def, dragScale, wheel
             : getNumberString(slider.value, slider.dec);
 
         slider.text.innerHTML += valueText + slider.suffix;
+    };
+
+
+
+    slider.lockPointer = function()
+    {
+        slider.requestPointerLock =    
+               slider.requestPointerLock 
+            || slider.mozRequestPointerLock;
+
+        slider.requestPointerLock();
+        clearTimeout(slider.clickTimer);
+
+        slider.movedX = 0;
+        slider.sx     = 0;
+    };
+
+
+
+    slider.unlockPointer = function()
+    {
+        document.exitPointerLock =    
+               document.exitPointerLock    
+            || document.mozExitPointerLock;
+
+        document.exitPointerLock();
+    };
+
+
+
+    slider.isPointerLocked = function()
+    {
+        return (document.pointerLockElement    === slider 
+             || document.mozPointerLockElement === slider);
+    }
+    
+
+
+    slider.update();
+}
+
+
+
+function onSliderClickTimer(slider)
+{
+    if (!document.menuHadFocus)
+    {
+        slider.moved = true;
+        slider.lockPointer();
+    }
+}
+
+
+function initColorSliderTextbox(slider)
+{
+    slider.textbox = document.createElement('INPUT');
+    slider.textbox.setAttribute('type', 'text'); 
+    slider.textbox.className = 'sliderText';
+    
+    slider.textbox.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand("copy");
+        }
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand("paste");
+        }
+        
+        else if (e.code == 'Enter'
+              || e.code == 'NumpadEnter')
+            slider.textbox.finish(true);
+
+        else if (e.code == 'Escape')
+            slider.textbox.finish(false);
+
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+            
+            var tabs  = document.querySelectorAll('.slider, .select, .menuSelect, button, .menuButton');
+            var index = slider.tabIndex;
+
+            for (var i = 0; i < tabs.length; i++) 
+            {
+                if (   e.shiftKey && tabs[i].tabIndex == index - 1
+                    ||               tabs[i].tabIndex == index + 1) 
+                {
+                    if (tabs[i].className == 'slider')
+                        tabs[i].showTextbox();
+                    else 
+                    {
+                        document.activeElement.blur();
+                        tabs[i].focus();
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        else 
+        {
+            if (   e.key.length == 1
+                && !isDigit(e.key)
+                && e.key != '.'
+                && !(   (   e.code == 'Minus'
+                         || e.code == 'NumpadSubtract')
+                     && slider.min < 0))
+                e.preventDefault();
+
+            var t = slider.textbox;
+
+            var curVal = t.value;
+
+            curVal = 
+                  curVal.substring(0, t.selectionStart) 
+                + curVal.substring(t.selectionEnd, curVal.length);
+
+            var nextVal = parseFloat(curVal + e.key);
+
+            if (   nextVal < slider.min - 0.001
+                || nextVal > slider.max)
+                e.preventDefault();            
+        }
+    });
+
+
+
+    // slider.textbox.addEventListener('input', function()
+    // {
+    //     slider.setValue(Number(slider.textbox.value));
+    // });
+
+
+
+    slider.textbox.addEventListener('paste', function(e)
+    {
+        e.preventDefault();
+
+        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        val = Math.min(Math.max(slider.min, val), slider.max);
+
+        slider.textbox.value = isNaN(val) ? '' : val;
+    });
+
+
+
+    slider.textbox.addEventListener('focusout', function()
+    {
+        slider.parentNode.removeChild(slider.textbox);
+        slider.clicked = false;
+    });
+    
+
+
+    slider.textbox.finish = function(success)
+    {
+        if (success) slider.setValue(Number(slider.textbox.value     ));
+        else         slider.setValue(Number(slider.textbox.savedValue));
+
+        slider.textbox.blur();
+
+        if (slider.inFocus)
+            slider.focus();
+    };    
+    
+    
+    
+    slider.showTextbox = function()
+    {
+        slider.inFocus = 
+                slider == document.activeElement
+            && !slider.clicked;
+    
+        slider.textbox.style.position = 'absolute';
+    
+        slider.textbox.style.left      = slider.offsetLeft   + 1;
+        slider.textbox.style.top       = slider.offsetTop    + 1;
+        slider.textbox.style.width     = slider.offsetWidth  - 2;
+        slider.textbox.style.height    = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+        slider.textbox.style.outline   = 'none';
+    
+        slider.textbox.style.textAlign = 'center';
+    
+        slider.textbox.value = numToString(slider.value, slider.editDec);
+        slider.textbox.savedValue = slider.textbox.value;
+        
+        slider.parentNode.appendChild(slider.textbox);
+        
+        slider.textbox.focus();
+        slider.textbox.select();
+    }
+}
+
+
+function initColorSliderChildren(slider)
+{
+    slider.text = document.createElement('div');
+    slider.text.className = 'sliderText';
+
+    slider.focus = document.createElement('div');
+    slider.focus.className = 'sliderFocus';
+
+    slider.appendChild(slider.text);
+    slider.appendChild(slider.focus);
+}
+
+
+
+function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+{
+    slider.className         = 'slider';
+
+    slider.width             = width;
+    slider.height            = height;
+        
+    slider.style.width       = width;
+    slider.style.height      = height;
+        
+    slider.value             = def;
+    slider.dec               = dec;
+    slider.editDec           = dec;
+    slider.acc               = acc;
+               
+    slider.name              = name;
+    slider.suffix            = suffix;
+    slider.log               = log;
+
+    slider.dragScale         = dragScale;
+    slider.wheelStep         = wheelStep;
+        
+    slider.backColor         = backColor;
+    slider.valueColor        = valueColor;
+           
+    slider.fontSize          = fontSize;
+        
+    slider.style.display     = 'inline';
+        
+    slider.mouseOver         = false;
+    slider.buttonDown0       = false;
+    slider.buttonDown1       = false;
+        
+    slider.clickSize         = 4;
+    slider.moved             = false;
+    
+    slider.tabIndex          = 0;
+    slider.inFocus           = false;
+    slider.clicked           = false;
+
+    slider.oldValue;
+
+    slider.wrapValue         = false;
+    
+    slider.enableChangeEvent = true;
+
+    slider.inputConnected    = false;
+
+    slider.valueText         = '';
+
+
+
+    initColorSliderChildren(slider);    
+    initColorSliderTextbox(slider);
+
+    
+
+    //
+
+    slider.onchange  = new Event('change');
+    slider.onconfirm = new Event('confirm');
+
+
+
+    //
+
+    slider.addEventListener('pointerdown', function(e)
+    {
+        if (graphView.spaceDown)
+            return;
+
+        if (e.button == 0)
+        {
+            if (slider.inputConnected)
+            {
+                e.stopPropagation();
+                return;
+            }
+    
+            var opDiv = 
+                   slider.parentNode
+                && slider.parentNode.parentNode
+                && slider.parentNode.parentNode.parentNode
+                ? slider.parentNode.parentNode.parentNode
+                : null;
+
+            if (opDiv && opDiv.className == 'node') 
+                graphView.putNodeOnTop(opDiv.op);
+
+
+            e.preventDefault(); // this is fine since I lock the pointer anyway
+            e.stopPropagation();
+
+            slider.buttonDown0  = true;
+            slider.buttonDown0_ = true;
+            slider.moved        = false;
+            slider.clientX      = 0;
+            slider.oldValue     = slider.value;
+
+            slider.prevValue    = slider.value;
+            slider.sx           = e.clientX;
+
+            slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
+            
+            
+
+
+            // I don't want to focus here, but I do want to take focus away from elsewhere
+            document.activeElement.blur();
+
+            slider.clickTimer = setTimeout(function() 
+            {
+                onSliderClickTimer(slider); 
+            }, 500);
+        }
+        else if (e.button == 1)
+        {
+            e.preventDefault();
+            slider.buttonDown1 = true;
+        }
+    });
+
+
+
+    slider.addEventListener('pointermove', function(e)
+    {
+        if (slider.inputConnected)
+            return;
+        
+
+        var rect = slider.getBoundingClientRect();
+        
+        slider.mouseOver = 
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top                                     
+            && e.clientY <  rect.bottom;
+        
+        slider.clientX = e.clientX;
+
+        
+        if (slider.buttonDown0)
+        {
+            //slider.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+            
+            if (slider.isPointerLocked())
+            {
+                slider.movedX += e.movementX;
+                
+                var dx       = slider.sx - slider.movedX;             
+                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                
+                // TODO: if (log) do log scaling
+                var val = slider.oldValue - dx*slider.dragScale*adaptive;
+                
+                const grain = Math.pow(10, this.editDec);
+                val = Math.floor(val / grain) * grain;
+                
+                slider.setValue(val, true, false);
+
+                slider.prevValue = slider.value;
+            }
+            else
+            {
+                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+                {
+                    slider.moved = true;
+                    slider.lockPointer();
+                }
+            }
+        }
+        //else
+        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        
+        // slider.update();
+    });
+    
+    
+    
+    slider.addEventListener('losecapture', function()
+    {
+        slider.buttonDown0 = false;
+        slider.mouseOver   = false;
+        slider.update();
+    });
+
+
+
+    slider.addEventListener('pointerup', function(e)
+    {
+        clearTimeout(slider.clickTimer);
+
+        if (   slider.moved
+            || document.menuHadFocus)
+        {
+            slider.unlockPointer(e.pointerId);
+            return;            
+        }    
+
+        if (slider.buttonDown0_)
+        {
+            slider.clicked = true;
+            slider.showTextbox();
+        }
+        
+        if (slider.buttonDown1)
+            slider.buttonDown1 = false;
+
+        slider.buttonDown0_ = false;
+    });    
+
+
+
+    document.addEventListener('pointerup', function(e)
+    {
+        if (   e.button == 0 
+            && slider.buttonDown0)
+        {
+            slider.buttonDown0 = false;
+            slider.unlockPointer(e.pointerId);
+
+            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+
+            if (slider.value != slider.oldValue)
+                slider.dispatchEvent(slider.onconfirm);
+        }
+        if (   e.button == 1
+            && slider.buttonDown1)
+        {
+            slider.buttonDown1 = false;            
+        }
+    });
+
+
+    
+    slider.addEventListener('pointerenter', function(e)
+    {
+        if (   !graphView.spaceDown
+            && !slider.inputConnected)
+        {
+            slider.style.cursor           = 'ew-resize';
+            
+            slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            slider.focus.style.visibility = 'visible';
+            slider.focus.style.opacity    = '100%';
+    
+            slider.update();
+        }
+    });
+
+
+
+    slider.addEventListener('pointerout', function(e)
+    {
+        slider.style.cursor     = 'default';
+        
+        slider.focus.style.visibility = 'hidden';
+        slider.focus.style.opacity    = 0;
+
+        slider.update();
+    });
+
+
+
+    slider.addEventListener('wheel', e =>
+    {
+        if (   !getCtrlKey(e)
+            && !slider.buttonDown1)
+        {
+            e.stopPropagation();
+
+            slider.oldValue = slider.value;
+            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+            // TODO conform after a delay and/or another action, same with key changes 
+        }
+    });
+
+
+
+    slider.addEventListener('keydown', e =>
+    {
+        if (   e.code == 'Enter'
+            || e.code == 'NumpadEnter')
+            slider.showTextbox();
+
+        // else if (e.code == 'Space')
+        //     setCursor(panCursor, true);
+    });
+
+
+
+    slider.addEventListener('focus', function()
+    {
+        if (   !graphView.spaceDown
+            && !slider.buttonDown1
+            && !slider.inputConnected)
+            slider.showTextbox();
+    });
+
+
+    
+    slider.setColor = function(color, fireChangeEvent = true, confirm = true)
+    {
+        // const oldValue = slider.value;
+
+        // if (slider.wrapValue)
+        // {
+        //     while (color < slider.min) color += slider.max - slider.min;
+        //     while (color > slider.max) color -= slider.max - slider.min;
+        // }
+        // else
+        //     color = Math.min(Math.max(slider.min, color), slider.max);
+        
+        // if (  !confirm
+        //     || color != oldValue)
+        //     slider.value = color;
+
+
+        slider.update();
+
+
+        if (   fireChangeEvent
+            && slider.enableChangeEvent
+            && color != slider.prevValue)
+            slider.dispatchEvent(slider.onchange);
+
+
+        if (   confirm
+            && slider.enableChangeEvent
+            && color != oldValue)
+            slider.dispatchEvent(slider.onconfirm);
+    };
+
+
+
+
+    slider.update = function()
+    {
+        // var v  =  slider.value / (slider.max - slider.min);
+        // var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+
+        // slider.bar.style.background = slider.valueColor;
+
+        // slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
+        // slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = slider.clientWidth;
+        slider.focus.style.height = slider.clientHeight;
+
+        // if (v >= 0)
+        // {
+        //     slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
+        //     slider.bar.style.width = Math.round(v * slider.clientWidth);
+        // }
+        // else
+        // {
+        //     slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
+        //     slider.bar.style.width = -v * slider.clientWidth;
+        // }
+
+        // slider.bar.style.background =
+        //     slider.value >= 0
+        //     ? slider.valueColor
+        //     : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
+
+        slider.text.innerHTML = '';
+        
+        if (slider.name.length > 0)
+            slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
+        
+        // var valueText = 
+        //     slider.valueText != ''
+        //     ? slider.valueText
+        //     : getNumberString(slider.value, slider.dec);
+
+        // slider.text.innerHTML += valueText + slider.suffix;
     };
 
 
@@ -10471,7 +11330,7 @@ graphView.updatePanAndZoom = () =>
 
     graphView.updateScroll();
 
-    console.log('zoom = ' + graphView.zoom + ', pan = ' + graphView.pan.x + ', ' + graphView.pan.y);
+    //console.log('zoom = ' + graphView.zoom + ', pan = ' + graphView.pan.x + ', ' + graphView.pan.y);
 };
 
 
@@ -10560,7 +11419,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
         const diff = { w: (window.innerWidth - box.w) / 2,
                        h: (wndHeight         - box.h) / 2 };
 
-        console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
+        //console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
 
         graphView.setZoomAndPan(
             graphView.zoom * Math.min(
