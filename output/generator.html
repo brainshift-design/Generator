@@ -3,10 +3,14 @@
 
 
 const objectColor       = '#bee0ff';
-const numberColor       = '#ddd';
-
 const activeObjectColor = '#18a0fb';
+
+const numberColor       = '#ddd';
 const activeNumberColor = '#787878';
+
+const colorColor        = '#aaa';
+const activeColorColor  = '#666';
+
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
@@ -1292,6 +1296,7 @@ function colorFromDataType(dataType, active)
     {
         case 'object': return active ? activeObjectColor : objectColor;
         case 'number': return active ? activeNumberColor : numberColor;
+        case 'color':  return active ? activeColorColor  : colorColor;
     }
 
     return 'magenta';
@@ -1621,6 +1626,65 @@ function strToUTF8Arr(str)
 }
 
 
+function rgb2hex(rgb)
+{
+    let hex =
+          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+
+    return hex;
+}
+
+
+
+function hex2rgb(hex)
+{
+    let rgb = [];
+
+    if (hex.length >= 6)
+    {
+        rgb[R] = parseInt(hex.slice(0, 2), 16); 
+        rgb[G] = parseInt(hex.slice(2, 4), 16); 
+        rgb[B] = parseInt(hex.slice(4, 6), 16); 
+    }
+    else if (hex.length >= 3)
+    {
+        rgb[R] = parseInt(hex[0], 16) * 0x11; 
+        rgb[G] = parseInt(hex[1], 16) * 0x11; 
+        rgb[B] = parseInt(hex[2], 16) * 0x11; 
+    }
+    else if (hex.length == 2)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v; 
+        rgb[G] = v; 
+        rgb[B] = v; 
+    }
+    else if (hex.length == 1)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v * 0x11; 
+        rgb[G] = v * 0x11; 
+        rgb[B] = v * 0x11; 
+    }
+    else if (hex.length == 0)
+    {
+        rgb[R] = 0; 
+        rgb[G] = 0; 
+        rgb[B] = 0;         
+    }
+
+    rgb[R] /= 0xff;
+    rgb[G] /= 0xff;
+    rgb[B] /= 0xff;
+
+    return rgb;
+}
+
+
 const INTER_STEP   = 0,
       INTER_LINEAR = 1,
       INTER_COSINE = 2,
@@ -1840,7 +1904,8 @@ extends GParameter
 
 
 
-    input; 
+    input;
+    output;
 
 
 
@@ -1858,6 +1923,9 @@ extends GParameter
 
         this.input = new GInput('number');
         this.input._param = this;
+ 
+        this.output = new GOutput('number');
+        this.output._param = this;
     }
 }
 
@@ -1898,7 +1966,8 @@ extends GParameter
 
 
 
-    input; 
+    input;
+    output;
 
 
 
@@ -1911,6 +1980,9 @@ extends GParameter
    
         this.input = new GInput('color');
         this.input._param = this;
+
+        this.output = new GOutput('color');
+        this.output._param = this;
     }
 }
 

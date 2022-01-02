@@ -12,7 +12,7 @@ function initColorSliderChildren(slider)
 
 
 
-function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
 
@@ -23,8 +23,6 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     slider.style.height      = height;
         
     slider.value             = def;
-    slider.dec               = dec;
-    slider.editDec           = dec;
     slider.acc               = acc;
                
     slider.name              = name;
@@ -54,7 +52,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.oldValue;
 
-    slider.wrapValue         = false;
+    //slider.wrapValue         = false;
     
     slider.enableChangeEvent = true;
 
@@ -91,7 +89,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
                 return;
             }
     
-            var opDiv = 
+            let opDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
@@ -142,7 +140,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             return;
         
 
-        var rect = slider.getBoundingClientRect();
+        let rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
                e.clientX >= rect.left
@@ -161,13 +159,14 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             {
                 slider.movedX += e.movementX;
                 
-                var dx       = slider.sx - slider.movedX;             
-                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let dx       = slider.sx - slider.movedX;             
+                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 
                 // TODO: if (log) do log scaling
-                var val = slider.oldValue - dx*slider.dragScale*adaptive;
+                let val = slider.oldValue - dx*slider.dragScale*adaptive;
                 
-                const grain = Math.pow(10, this.editDec);
+                let editDec = 0;
+                const grain = Math.pow(10, editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -252,7 +251,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
         if (   !graphView.spaceDown
             && !slider.inputConnected)
         {
-            slider.style.cursor           = 'ew-resize';
+            slider.style.cursor           = 'all-scroll';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';
@@ -313,21 +312,21 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
 
     
-    slider.setColor = function(color, fireChangeEvent = true, confirm = true)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
-        // const oldValue = slider.value;
+        const oldValue = slider.value;
 
         // if (slider.wrapValue)
         // {
-        //     while (color < slider.min) color += slider.max - slider.min;
-        //     while (color > slider.max) color -= slider.max - slider.min;
+        //     while (value < slider.min) value += slider.max - slider.min;
+        //     while (value > slider.max) value -= slider.max - slider.min;
         // }
         // else
-        //     color = Math.min(Math.max(slider.min, color), slider.max);
+        //     value = Math.min(Math.max(slider.min, value), slider.max);
         
-        // if (  !confirm
-        //     || color != oldValue)
-        //     slider.value = color;
+        if (  !confirm
+            || value != oldValue)
+            slider.value = value;
 
 
         slider.update();
@@ -335,13 +334,13 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && color != slider.prevValue)
+            && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
 
 
         if (   confirm
             && slider.enableChangeEvent
-            && color != oldValue)
+            && value != oldValue)
             slider.dispatchEvent(slider.onconfirm);
     };
 
@@ -350,8 +349,8 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.update = function()
     {
-        // var v  =  slider.value / (slider.max - slider.min);
-        // var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        // let v  =  slider.value / (slider.max - slider.min);
+        // let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         // slider.bar.style.background = slider.valueColor;
 
@@ -384,12 +383,14 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        // var valueText = 
-        //     slider.valueText != ''
-        //     ? slider.valueText
-        //     : getNumberString(slider.value, slider.dec);
+        let valueText = 
+            slider.valueText != ''
+            ? slider.valueText
+            : rgb2hex(slider.value);
 
-        // slider.text.innerHTML += valueText + slider.suffix;
+        slider.text.innerHTML += valueText + slider.suffix;
+
+        slider.style.backgroundColor = colorStyle(slider.value);
     };
 
 

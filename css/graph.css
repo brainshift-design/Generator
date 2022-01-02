@@ -92,7 +92,7 @@
 {
     width:          10px;
     height:         10px;
-    background:     white;
+    background:     transparent;
     border-radius:  5px;
     margin:         0;
     position:       absolute;
@@ -108,7 +108,7 @@
 {
     width:          10px;
     height:         10px;
-    background:     white;
+    background:     transparent;
     border-radius:  5px;
     margin:         0;
     position:       absolute;

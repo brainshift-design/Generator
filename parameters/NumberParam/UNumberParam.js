@@ -16,7 +16,8 @@ extends UParameter
     }
 
 
-    input; 
+    input;
+    output;
 
     
 
@@ -67,6 +68,14 @@ extends UParameter
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
+
+        this.output = new UOutput('number');
+        this.output._param = this;
+        this.output.control.style.float     = 'right';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
 
 
 

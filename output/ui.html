@@ -194,7 +194,7 @@ input[type=text]::selection
 {
     width:          10px;
     height:         10px;
-    background:     white;
+    background:     transparent;
     border-radius:  5px;
     margin:         0;
     position:       absolute;
@@ -210,7 +210,7 @@ input[type=text]::selection
 {
     width:          10px;
     height:         10px;
-    background:     white;
+    background:     transparent;
     border-radius:  5px;
     margin:         0;
     position:       absolute;
@@ -730,10 +730,14 @@ input[type=text]::selection
 
 
 const objectColor       = '#bee0ff';
-const numberColor       = '#ddd';
-
 const activeObjectColor = '#18a0fb';
+
+const numberColor       = '#ddd';
 const activeNumberColor = '#787878';
+
+const colorColor        = '#aaa';
+const activeColorColor  = '#666';
+
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
@@ -2019,6 +2023,7 @@ function colorFromDataType(dataType, active)
     {
         case 'object': return active ? activeObjectColor : objectColor;
         case 'number': return active ? activeNumberColor : numberColor;
+        case 'color':  return active ? activeColorColor  : colorColor;
     }
 
     return 'magenta';
@@ -2348,6 +2353,65 @@ function strToUTF8Arr(str)
 }
 
 
+function rgb2hex(rgb)
+{
+    let hex =
+          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+
+    return hex;
+}
+
+
+
+function hex2rgb(hex)
+{
+    let rgb = [];
+
+    if (hex.length >= 6)
+    {
+        rgb[R] = parseInt(hex.slice(0, 2), 16); 
+        rgb[G] = parseInt(hex.slice(2, 4), 16); 
+        rgb[B] = parseInt(hex.slice(4, 6), 16); 
+    }
+    else if (hex.length >= 3)
+    {
+        rgb[R] = parseInt(hex[0], 16) * 0x11; 
+        rgb[G] = parseInt(hex[1], 16) * 0x11; 
+        rgb[B] = parseInt(hex[2], 16) * 0x11; 
+    }
+    else if (hex.length == 2)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v; 
+        rgb[G] = v; 
+        rgb[B] = v; 
+    }
+    else if (hex.length == 1)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v * 0x11; 
+        rgb[G] = v * 0x11; 
+        rgb[B] = v * 0x11; 
+    }
+    else if (hex.length == 0)
+    {
+        rgb[R] = 0; 
+        rgb[G] = 0; 
+        rgb[B] = 0;         
+    }
+
+    rgb[R] /= 0xff;
+    rgb[G] /= 0xff;
+    rgb[B] /= 0xff;
+
+    return rgb;
+}
+
+
 const INTER_STEP   = 0,
       INTER_LINEAR = 1,
       INTER_COSINE = 2,
@@ -2567,7 +2631,8 @@ extends GParameter
 
 
 
-    input; 
+    input;
+    output;
 
 
 
@@ -2585,6 +2650,9 @@ extends GParameter
 
         this.input = new GInput('number');
         this.input._param = this;
+ 
+        this.output = new GOutput('number');
+        this.output._param = this;
     }
 }
 
@@ -2625,7 +2693,8 @@ extends GParameter
 
 
 
-    input; 
+    input;
+    output;
 
 
 
@@ -2638,6 +2707,9 @@ extends GParameter
    
         this.input = new GInput('color');
         this.input._param = this;
+
+        this.output = new GOutput('color');
+        this.output._param = this;
     }
 }
 
@@ -3742,10 +3814,14 @@ function getObjectBounds(objects)
 
 
 const objectColor       = '#bee0ff';
-const numberColor       = '#ddd';
-
 const activeObjectColor = '#18a0fb';
+
+const numberColor       = '#ddd';
 const activeNumberColor = '#787878';
+
+const colorColor        = '#aaa';
+const activeColorColor  = '#666';
+
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
@@ -5031,6 +5107,7 @@ function colorFromDataType(dataType, active)
     {
         case 'object': return active ? activeObjectColor : objectColor;
         case 'number': return active ? activeNumberColor : numberColor;
+        case 'color':  return active ? activeColorColor  : colorColor;
     }
 
     return 'magenta';
@@ -5357,6 +5434,65 @@ function strToUTF8Arr(str)
 
 
     return bytes;
+}
+
+
+function rgb2hex(rgb)
+{
+    let hex =
+          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+
+    return hex;
+}
+
+
+
+function hex2rgb(hex)
+{
+    let rgb = [];
+
+    if (hex.length >= 6)
+    {
+        rgb[R] = parseInt(hex.slice(0, 2), 16); 
+        rgb[G] = parseInt(hex.slice(2, 4), 16); 
+        rgb[B] = parseInt(hex.slice(4, 6), 16); 
+    }
+    else if (hex.length >= 3)
+    {
+        rgb[R] = parseInt(hex[0], 16) * 0x11; 
+        rgb[G] = parseInt(hex[1], 16) * 0x11; 
+        rgb[B] = parseInt(hex[2], 16) * 0x11; 
+    }
+    else if (hex.length == 2)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v; 
+        rgb[G] = v; 
+        rgb[B] = v; 
+    }
+    else if (hex.length == 1)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v * 0x11; 
+        rgb[G] = v * 0x11; 
+        rgb[B] = v * 0x11; 
+    }
+    else if (hex.length == 0)
+    {
+        rgb[R] = 0; 
+        rgb[G] = 0; 
+        rgb[B] = 0;         
+    }
+
+    rgb[R] /= 0xff;
+    rgb[G] /= 0xff;
+    rgb[B] /= 0xff;
+
+    return rgb;
 }
 
 
@@ -5960,7 +6096,8 @@ extends UParameter
     }
 
 
-    input; 
+    input;
+    output;
 
     
 
@@ -6011,6 +6148,14 @@ extends UParameter
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
+
+        this.output = new UOutput('number');
+        this.output._param = this;
+        this.output.control.style.float     = 'right';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
 
 
 
@@ -6080,7 +6225,8 @@ extends UParameter
     }
 
 
-    input; 
+    input;
+    output;
 
     
 
@@ -6121,6 +6267,7 @@ extends UParameter
             '');       // suffix
 
 
+
         this.div.appendChild(this.control);
 
         this.input = new UInput('color');
@@ -6130,6 +6277,14 @@ extends UParameter
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
+
+        this.output = new UOutput('color');
+        this.output._param = this;
+        this.output.control.style.float     = 'left';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
 
 
 
@@ -9412,7 +9567,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
                 return;
             }
     
-            var opDiv = 
+            let opDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
@@ -9463,7 +9618,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             return;
         
 
-        var rect = slider.getBoundingClientRect();
+        let rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
                e.clientX >= rect.left
@@ -9482,11 +9637,11 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             {
                 slider.movedX += e.movementX;
                 
-                var dx       = slider.sx - slider.movedX;             
-                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let dx       = slider.sx - slider.movedX;             
+                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 
                 // TODO: if (log) do log scaling
-                var val = slider.oldValue - dx*slider.dragScale*adaptive;
+                let val = slider.oldValue - dx*slider.dragScale*adaptive;
                 
                 const grain = Math.pow(10, this.editDec);
                 val = Math.floor(val / grain) * grain;
@@ -9671,8 +9826,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.update = function()
     {
-        var v  =  slider.value / (slider.max - slider.min);
-        var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        let v  =  slider.value / (slider.max - slider.min);
+        let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         slider.bar.style.background = slider.valueColor;
 
@@ -9705,7 +9860,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        var valueText = 
+        let valueText = 
             slider.valueText != ''
             ? slider.valueText
             : getNumberString(slider.value, slider.dec);
@@ -9927,7 +10082,7 @@ function initColorSliderChildren(slider)
 
 
 
-function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
 
@@ -9938,8 +10093,6 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     slider.style.height      = height;
         
     slider.value             = def;
-    slider.dec               = dec;
-    slider.editDec           = dec;
     slider.acc               = acc;
                
     slider.name              = name;
@@ -9969,7 +10122,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.oldValue;
 
-    slider.wrapValue         = false;
+    //slider.wrapValue         = false;
     
     slider.enableChangeEvent = true;
 
@@ -10006,7 +10159,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
                 return;
             }
     
-            var opDiv = 
+            let opDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
@@ -10057,7 +10210,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             return;
         
 
-        var rect = slider.getBoundingClientRect();
+        let rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
                e.clientX >= rect.left
@@ -10076,13 +10229,14 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             {
                 slider.movedX += e.movementX;
                 
-                var dx       = slider.sx - slider.movedX;             
-                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let dx       = slider.sx - slider.movedX;             
+                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 
                 // TODO: if (log) do log scaling
-                var val = slider.oldValue - dx*slider.dragScale*adaptive;
+                let val = slider.oldValue - dx*slider.dragScale*adaptive;
                 
-                const grain = Math.pow(10, this.editDec);
+                let editDec = 0;
+                const grain = Math.pow(10, editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -10167,7 +10321,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
         if (   !graphView.spaceDown
             && !slider.inputConnected)
         {
-            slider.style.cursor           = 'ew-resize';
+            slider.style.cursor           = 'all-scroll';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';
@@ -10228,21 +10382,21 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
 
     
-    slider.setColor = function(color, fireChangeEvent = true, confirm = true)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
-        // const oldValue = slider.value;
+        const oldValue = slider.value;
 
         // if (slider.wrapValue)
         // {
-        //     while (color < slider.min) color += slider.max - slider.min;
-        //     while (color > slider.max) color -= slider.max - slider.min;
+        //     while (value < slider.min) value += slider.max - slider.min;
+        //     while (value > slider.max) value -= slider.max - slider.min;
         // }
         // else
-        //     color = Math.min(Math.max(slider.min, color), slider.max);
+        //     value = Math.min(Math.max(slider.min, value), slider.max);
         
-        // if (  !confirm
-        //     || color != oldValue)
-        //     slider.value = color;
+        if (  !confirm
+            || value != oldValue)
+            slider.value = value;
 
 
         slider.update();
@@ -10250,13 +10404,13 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && color != slider.prevValue)
+            && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
 
 
         if (   confirm
             && slider.enableChangeEvent
-            && color != oldValue)
+            && value != oldValue)
             slider.dispatchEvent(slider.onconfirm);
     };
 
@@ -10265,8 +10419,8 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.update = function()
     {
-        // var v  =  slider.value / (slider.max - slider.min);
-        // var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        // let v  =  slider.value / (slider.max - slider.min);
+        // let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         // slider.bar.style.background = slider.valueColor;
 
@@ -10299,12 +10453,14 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        // var valueText = 
-        //     slider.valueText != ''
-        //     ? slider.valueText
-        //     : getNumberString(slider.value, slider.dec);
+        let valueText = 
+            slider.valueText != ''
+            ? slider.valueText
+            : rgb2hex(slider.value);
 
-        // slider.text.innerHTML += valueText + slider.suffix;
+        slider.text.innerHTML += valueText + slider.suffix;
+
+        slider.style.backgroundColor = colorStyle(slider.value);
     };
 
 

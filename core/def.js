@@ -1,8 +1,12 @@
 const objectColor       = '#bee0ff';
-const numberColor       = '#ddd';
-
 const activeObjectColor = '#18a0fb';
+
+const numberColor       = '#ddd';
 const activeNumberColor = '#787878';
+
+const colorColor        = '#aaa';
+const activeColorColor  = '#666';
+
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
 

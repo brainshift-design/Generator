@@ -37,7 +37,8 @@ extends GParameter
 
 
 
-    input; 
+    input;
+    output;
 
 
 
@@ -55,5 +56,8 @@ extends GParameter
 
         this.input = new GInput('number');
         this.input._param = this;
+ 
+        this.output = new GOutput('number');
+        this.output._param = this;
     }
 }

@@ -34,7 +34,8 @@ extends GParameter
 
 
 
-    input; 
+    input;
+    output;
 
 
 
@@ -47,5 +48,8 @@ extends GParameter
    
         this.input = new GInput('color');
         this.input._param = this;
+
+        this.output = new GOutput('color');
+        this.output._param = this;
     }
 }

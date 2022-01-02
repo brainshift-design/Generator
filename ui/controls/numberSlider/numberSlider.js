@@ -97,7 +97,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
                 return;
             }
     
-            var opDiv = 
+            let opDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
@@ -148,7 +148,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             return;
         
 
-        var rect = slider.getBoundingClientRect();
+        let rect = slider.getBoundingClientRect();
         
         slider.mouseOver = 
                e.clientX >= rect.left
@@ -167,11 +167,11 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             {
                 slider.movedX += e.movementX;
                 
-                var dx       = slider.sx - slider.movedX;             
-                var adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let dx       = slider.sx - slider.movedX;             
+                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 
                 // TODO: if (log) do log scaling
-                var val = slider.oldValue - dx*slider.dragScale*adaptive;
+                let val = slider.oldValue - dx*slider.dragScale*adaptive;
                 
                 const grain = Math.pow(10, this.editDec);
                 val = Math.floor(val / grain) * grain;
@@ -356,8 +356,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.update = function()
     {
-        var v  =  slider.value / (slider.max - slider.min);
-        var cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        let v  =  slider.value / (slider.max - slider.min);
+        let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
 
         slider.bar.style.background = slider.valueColor;
 
@@ -390,7 +390,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        var valueText = 
+        let valueText = 
             slider.valueText != ''
             ? slider.valueText
             : getNumberString(slider.value, slider.dec);

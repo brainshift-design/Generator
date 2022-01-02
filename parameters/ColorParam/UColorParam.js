@@ -16,7 +16,8 @@ extends UParameter
     }
 
 
-    input; 
+    input;
+    output;
 
     
 
@@ -57,6 +58,7 @@ extends UParameter
             '');       // suffix
 
 
+
         this.div.appendChild(this.control);
 
         this.input = new UInput('color');
@@ -66,6 +68,14 @@ extends UParameter
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
+
+        this.output = new UOutput('color');
+        this.output._param = this;
+        this.output.control.style.float     = 'left';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
 
 
 
