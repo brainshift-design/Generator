@@ -1,0 +1,1 @@
+const colorTypes = ['RGB', 'HSV', 'HSL', 'HCL (OKLab)', 'HCL (CIE Lab)', 'HCL (CIE Luv)'];

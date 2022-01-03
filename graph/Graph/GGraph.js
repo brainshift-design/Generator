@@ -22,6 +22,7 @@ class GGraph
         switch (opType)
         {
             case 'number': node = new GOpNumber(); break;
+            case 'add':    node = new GOpAdd();    break;
             case 'color':  node = new GOpColor();  break;
             case 'random': node = new GOpRandom(); break;
             case 'rect':   node = new GOpRect();   break;

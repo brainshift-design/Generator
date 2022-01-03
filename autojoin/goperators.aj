@@ -3,7 +3,7 @@
 ../parameters/ColorParam/GColorParam.js
 ../parameters/SelectParam/GSelectParam.js
 
-../graph/GGraph.js
+../graph/Graph/GGraph.js
 
 ../graph/Input/GInput.js
 ../graph/Output/GOutput.js
@@ -14,8 +14,10 @@
 ../operators/Operator/GOperator.js
 
 ../operators/OpNumber/GOpNumber.js
+../operators/OpAdd/GOpAdd.js
 ../operators/OpRandom/GOpRandom.js
 
+../operators/OpColor/OpColor.js
 ../operators/OpColor/GOpColor.js
 
 ../operators/OpRect/GOpRect.js

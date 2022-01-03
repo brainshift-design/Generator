@@ -1,4 +1,4 @@
-function createNode(node, headerColor)
+function createNode(node)
 {
     node.div = document.createElement('div');
 
@@ -22,7 +22,7 @@ function createNode(node, headerColor)
     node.div.addEventListener('pointerenter', function(e)
     {
         node.div.over = true;
-        updateNode(node);
+        updateGraphNode(node);
     });
 
 
@@ -30,22 +30,21 @@ function createNode(node, headerColor)
     node.div.addEventListener('pointerleave', function(e)
     {
         node.div.over = false;
-        updateNode(node);
+        updateGraphNode(node);
     });
 
     
 
-    createNodeHeader(node, headerColor);
+    createNodeHeader(node);
 }     
 
 
 
-function createNodeHeader(node, headerColor)
+function createNodeHeader(node)
 {
     node.header = document.createElement('div');
     node.header.className = 'nodeHeader';
-    node.header.style.backgroundColor = headerColor;
-
+    
     node.inputControls = document.createElement('div');
     node.inputControls.className = 'inputControls';
     node.header.appendChild(node.inputControls);
@@ -106,7 +105,7 @@ function createNodeHeader(node, headerColor)
         }
 
 
-        updateNodes();
+        updateGraphNodes();
     });
 
 

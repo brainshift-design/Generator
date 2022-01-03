@@ -32,6 +32,7 @@
     ../ui/mouse.js
 
     ../ui/controls/numberSlider/*.js
+    ../ui/controls/selectSlider/*.js
     ../ui/controls/colorSlider/*.js
     ../ui/controls/select/*.js
     ../ui/controls/menuSelect/*.js

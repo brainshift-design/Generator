@@ -23,7 +23,7 @@ function uiCreateNode(opType, updateUI = true, createdId = -1)
         graphView.putNodeOnTop(node);
         graphView.updateNodeTransform(node);
 
-        updateNodes();
+        updateGraphNodes();
     }
 
 
@@ -241,17 +241,20 @@ function uiUpdateObjects(objects)
 
 
 
-function updateNodes()
+function updateGraphNodes()
 {
-    for (const node of graphView.selected)      updateNode(node);
-    for (const node of graphView._prevSelected) updateNode(node);
-    for (const node of graphView.lastSelected) updateNode(node);
+    for (const node of graphView.selected)      updateGraphNode(node);
+    for (const node of graphView._prevSelected) updateGraphNode(node);
+    for (const node of graphView.lastSelected)  updateGraphNode(node);
 }
 
 
 
-function updateNode(node)
+function updateGraphNode(node)
 {
+    node.updateNode();
+
+    
     const selecting = 
            !graphView.zoomSelecting
         && !graphView.spaceDown;
@@ -262,7 +265,7 @@ function updateNode(node)
     if (selecting)
     {
         boxShadow += 
-            '0px 5px ' 
+              '0px 5px ' 
             + (node.selected ? 20 : 10)
             + 'px ' 
             + (node.selected ? '#0001' : '#00000008')

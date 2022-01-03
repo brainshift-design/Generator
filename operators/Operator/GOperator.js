@@ -32,10 +32,9 @@ class GOperator
 
 
     set valid(valid) { this._valid = valid; }
-    
     get valid() 
     {
-        var valid = this._valid;
+        let valid = this._valid;
         if (!valid) return valid;
         
         for (const input of this.inputs)
@@ -50,14 +49,6 @@ class GOperator
 
     
     active = false;
-
-
-    div;
-    inner;
-    header;
-    label;
-    inputControls;
-    outputControls;
 
 
 

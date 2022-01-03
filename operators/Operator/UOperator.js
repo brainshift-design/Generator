@@ -63,6 +63,165 @@ class UOperator
 
 
 
+    _active = false;
+    get active() { return this._active; }
+    
+    
+    
+    set valid(val) { this.#valid = val; }
+    get valid() 
+    {
+        let valid = this.#valid;
+        
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                valid &= input.connectedOutput.op.valid;
+        }
+
+        return valid;
+    }
+
+
+
+    get activeColor()
+    {
+        switch (this.#dataType)
+        {
+            case 'object': return activeObjectColor;
+            case 'number': return numberColor; //activeNumberColor;
+        }
+
+        return 'magenta';
+    }
+
+
+
+    get passiveColor()
+    {
+        switch (this.#dataType)
+        {
+            case 'object': return objectColor;
+            case 'number': return numberColor;
+        }
+
+        return 'magenta';
+    }
+
+
+
+    constructor(opType, dataType)
+    {
+        this.#opType   = opType;   // this is the operator type
+        this.#dataType = dataType; // this is the op's main data type
+
+        this._name = opType; // this is a temp until the op becomes a graph node
+        
+        createNode(this);
+    }    
+    
+    
+
+    addInput(input)
+    {
+        input._op = this;
+        this.inputs.push(input);
+        this.inputControls.appendChild(input.control);
+    }
+
+
+
+    setOutput(output)
+    {
+        if (this.output != null)
+        {
+            this.outputControls.removeChild(this.output.control);
+            this.output._op = null;
+        }
+
+        output._op = this;
+        this.output = output;
+        this.outputControls.appendChild(output.control);
+    }
+
+
+
+    addParam(param)
+    {
+        this.params.push(param);
+        
+        param._op = this;
+
+        if (param.input)
+        {
+            param.input._op = this;
+            this.inputs.push(param.input);
+        }
+                
+        param.control.style.display = 'inline-block';
+        
+        this.inner.appendChild(param.div);
+    }
+ 
+    
+
+    setId(newId)
+    {
+        if (this.graph.nodes.find(node => node.id == newId))
+            return false; // graph already contains a node with this id
+
+        this._name = newId;
+        this.label.innerHTML = this.id + ': ' + newId;
+
+        return true;
+    }
+
+
+
+    generate() 
+    { 
+        this.valid = true; 
+    }
+
+
+
+    isBefore(node)
+    {
+        if (   !this.output
+            || !this.output.connected)
+            return false;
+
+        for (const input of output.connectedInputs)
+        {
+            if (input.op == node)        return true;
+            if (input.op.isBefore(node)) return true;
+        }
+
+        return false;
+    }
+
+
+
+    isAfter(node)
+    {
+        if (this.inputs.length == 0)
+            return false;
+
+        for (const input of inputs)
+        {
+            if (input.connectedOutput.op == node)       return true;
+            if (input.connectedOutput.op.isAfter(node)) return true;
+        }
+
+        return false;
+    }
+
+    
+
+    updateConnectedInputValueText() {}
+
+
+
     setSelected(sel)
     {
         this._selected = sel;
@@ -73,11 +232,6 @@ class UOperator
             : 'none';
     }
     
-
-
-    _active = false;
-    get active() { return this._active; }
-
 
 
     makeActive() // only true
@@ -143,158 +297,6 @@ class UOperator
 
 
 
-    set valid(val) { this.#valid = val; }
-    get valid() 
-    {
-        var valid = this.#valid;
-        
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                valid &= input.connectedOutput.op.valid;
-        }
-
-        return valid;
-    }
-
-
-
-    get activeColor()
-    {
-        switch (this.#dataType)
-        {
-            case 'object': return activeObjectColor;
-            case 'number': return numberColor; //activeNumberColor;
-        }
-
-        return 'magenta';
-    }
-
-
-    
-    get passiveColor()
-    {
-        switch (this.#dataType)
-        {
-            case 'object': return objectColor;
-            case 'number': return numberColor;
-        }
-
-        return 'magenta';
-    }
-
-
-
-    constructor(opType, dataType)
-    {
-        this.#opType   = opType;   // this is the operator type
-        this.#dataType = dataType; // this is the op's main data type
-
-        this._name = opType; // this is a temp until the op becomes a graph node
-        
-        var headerColor = colorFromDataType(dataType, false);
-        createNode(this, headerColor);
-    }    
-    
-    
-
-    addInput(input)
-    {
-        input._op = this;
-        this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
-    }
-
-
-
-    setOutput(output)
-    {
-        if (this.output != null)
-        {
-            this.outputControls.removeChild(this.output.control);
-            this.output._op = null;
-        }
-
-        output._op = this;
-        this.output = output;
-        this.outputControls.appendChild(output.control);
-    }
-
-
-
-    addParam(param)
-    {
-        this.params.push(param);
-        
-        param._op = this;
-
-        param.input._op = this;
-        this.inputs.push(param.input);
-        
-        param.control.style.display = 'inline-block';
-        
-        this.inner.appendChild(param.div);
-    }
- 
-    
-
-    setId(newId)
-    {
-        if (this.graph.nodes.find(node => node.id == newId))
-            return false; // graph already contains a node with this id
-
-        this._name = newId;
-        this.label.innerHTML = this.id + ': ' + newId;
-
-        return true;
-    }
-
-
-
-    generate() 
-    { 
-        this.valid = true; 
-    }
-
-
-
-    isBefore(node)
-    {
-        if (   !this.output
-            || !this.output.connected)
-            return false;
-
-        for (const input of output.connectedInputs)
-        {
-            if (input.op == node)        return true;
-            if (input.op.isBefore(node)) return true;
-        }
-
-        return false;
-    }
-
-
-
-    isAfter(node)
-    {
-        if (this.inputs.length == 0)
-            return false;
-
-        for (const input of inputs)
-        {
-            if (input.connectedOutput.op == node)       return true;
-            if (input.connectedOutput.op.isAfter(node)) return true;
-        }
-
-        return false;
-    }
-
-    
-
-    updateConnectedInputValueText() {}
-
-
-
     save(nTab) 
     {
         let   pos = ' '.repeat(nTab);
@@ -320,5 +322,9 @@ class UOperator
 
 
 
-    updateNode() {}
+    updateNode() 
+    {
+        let headerColor = colorFromDataType(this.#dataType, false);
+        this.header.style.backgroundColor = headerColor;
+    }
 }

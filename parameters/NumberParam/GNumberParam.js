@@ -43,6 +43,7 @@ extends GParameter
 
 
     constructor(name,
+                hasInput,
                 hasOutput,
                 value = 0, 
                 min   = Number.MIN_SAFE_INTEGER, 
@@ -55,17 +56,10 @@ extends GParameter
         this.#min   = min;
         this.#max   = max;
 
+        this.input  = hasInput  ? new GInput ('number') : null;
+        this.output = hasOutput ? new GOutput('number') : null;
 
-        this.input = new GInput('number');
-        this.input._param = this;
- 
-
-        if (hasOutput)
-        {
-            this.output = new GOutput('number');
-            this.output._param = this;
-        }
-        else
-            this.output = null;
+        if (this.input ) this.input ._param = this;
+        if (this.output) this.output._param = this;
     }
 }

@@ -3,18 +3,17 @@ extends GParameter
 {
     #value;
 
-    #min;
-    #max;
+    #options = [];
     
 
     
     get value() 
     {
-        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
+        let value = Math.min(Math.max(0, this.#value), this.#options.length-1);
 
         if (this.input.connected)
         {
-            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
+            value = Math.min(Math.max(0, this.input.data.value), this.#options.length-1);
 
             genPostMessageToUi({ 
                 msg:   'uiShowParamValue',
@@ -44,18 +43,14 @@ extends GParameter
 
     constructor(name,
                 hasOutput,
-                value = 0, 
-                min   = Number.MIN_SAFE_INTEGER, 
-                max   = Number.MAX_SAFE_INTEGER)
+                options,
+                value = 0)
     {
         super(name, 'number');
 
-        this.#value = value;
+        this.#options = options;
+        this.#value   = value;
    
-        this.#min   = min;
-        this.#max   = max;
-
-
         this.input = new GInput('number');
         this.input._param = this;
  

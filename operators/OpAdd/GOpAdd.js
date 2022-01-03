@@ -1,19 +1,22 @@
-class   GOpNumber
+class   GOpAdd
 extends GOperator
 {
     _value;
 
-    _sampled = Number.NaN;
 
 
     constructor()
     {
-        super('number', 'number');
+        super('add', 'number');
 
+        this.addInput(new GInput(this.dataType));
+        this.addInput(new GInput(this.dataType));
+ 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this._value = new GNumberParam('', true, false));
+        this.addParam(this._value = new GNumberParam('', false, false));
     }
+
 
 
     generate(callerInput)
@@ -22,23 +25,23 @@ extends GOperator
         super.generate(callerInput);
 
 
-        if (isNaN(this._sampled))
-            this._sampled = this._value.value;
+        let add =
+              this.inputs[0].value
+            + this.inputs[1].value;
 
         this.output._data = 
         {
             nodeId: this.id,
             opType: this.opType,
 
-            value:  this._sampled
+            value:  add
         };
     }
+
 
 
     refresh()
     {
         super.refresh();
-        
-        this._sampled = Number.NaN;
     }
 }

@@ -9,6 +9,7 @@ class GParameter
     _op; 
     get op() { return this._op; }
 
+
     constructor(name, type)
     {
         this.#name = name;

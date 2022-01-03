@@ -3,23 +3,24 @@ extends UParameter
 {
     defaultValue;
     
+    input;
+    output;
+
+
     
     get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
     
     get oldValue()   { return this._control.oldValue; }
 
+
     
     setValue(value, fireChangeEvent = true, confirm = true) 
     { 
         this._control.setValue(value, fireChangeEvent, confirm); 
-    }
+    }    
 
 
-    input;
-    output;
-
-    
 
     get valueText() { return this.control.valueText; }
     set valueText(text) 
@@ -31,6 +32,7 @@ extends UParameter
 
     
     constructor(name, 
+                hasInput,
                 hasOutput,
                 value     = 0, 
                 min       = Number.MIN_SAFE_INTEGER, 
@@ -64,28 +66,9 @@ extends UParameter
 
         this.div.appendChild(this.control);
 
-
-        this.input = new UInput('number');
-        this.input._param = this;
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.input.control);
-
-
-        if (hasOutput)
-        {
-            this.output = new UOutput('number');
-            this.output._param = this;
-            this.output.control.style.float     = 'right';
-            this.output.control.style.position  = 'absolute';
-            this.output.control.style.top       = '50%';
-            this.output.control.style.transform = 'translateY(-50%)';
-            this.div.appendChild(this.output.control);
-        }
-        else
-            this.output = null;
+       
+        this.initInput (hasInput);
+        this.initOutput(hasOutput);
 
 
             
@@ -102,7 +85,21 @@ extends UParameter
             this.op.valid = false;
             actionManager.do(new SetValueAction(this, this.value));
         });
+    }
 
+
+
+    initInput(hasInput)
+    {
+        this.input = hasInput ? new UInput ('number') : null;
+        if (!this.input) return;
+
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
 
 
         this.input.addEventListener('connect', e =>
@@ -110,14 +107,28 @@ extends UParameter
             this.control.style.fontStyle = 'italic';
             this.control.inputConnected  = true;
         });
-
-
+    
         
         this.input.addEventListener('disconnect', e =>
         {
             this.control.style.fontStyle = 'normal';
             this.control.inputConnected  = false;
         });
+    }
+
+
+
+    initOutput(hasOutput)
+    {
+        this.output = hasOutput ? new UOutput('number') : null;
+        if (!this.output) return;
+
+        this.output._param = this;
+        this.output.control.style.float     = 'right';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
     }
 
 

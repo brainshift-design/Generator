@@ -18,7 +18,7 @@ extends UParameter
         this._control.setValue(value, fireChangeEvent, confirm); 
     }
 
-    
+
 
     input;
     output;
@@ -36,10 +36,8 @@ extends UParameter
     
     constructor(name, 
                 hasOutput,
+                options,
                 value     = 0, 
-                min       = Number.MIN_SAFE_INTEGER, 
-                max       = Number.MAX_SAFE_INTEGER,
-                decimals  = 0,
                 dragScale = 0.01)
     {
         super(name, 'number');
@@ -48,22 +46,17 @@ extends UParameter
         this.control.param  = this;
         this.control.zIndex = 0;
 
+        this.options      = options;
         this.defaultValue = value;
 
 
-        initNumberSlider(
+        initSelectSlider(
             this.control,
-            120,       // width
-            20,        // height
-            this.name, 
-            min,
-            max,
-            value,     // default
-            dragScale, // drag scale
-            1,         // wheel step
-            decimals,  // decimals
-            0,         // acceleration
-            '');       // suffix
+            120,        // width
+            20,         // height
+            this.name,  
+            value,      // default
+            dragScale); // suffix
 
 
         this.div.appendChild(this.control);
