@@ -1,17 +1,20 @@
-class   GColorParam
+class   GSelectParam
 extends GParameter
 {
-    #value; // [r, g, b]
+    #value;
 
+    #min;
+    #max;
+    
 
     
     get value() 
     {
-        let value = this.#value;
+        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
 
         if (this.input.connected)
         {
-            value = this.input.data.value;
+            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
 
             genPostMessageToUi({ 
                 msg:   'uiShowParamValue',
@@ -24,8 +27,8 @@ extends GParameter
         return value;
     }
 
-    
 
+    
     set value(value) 
     {
         this.#value   = value;
@@ -39,22 +42,27 @@ extends GParameter
 
 
 
-    constructor(name, 
+    constructor(name,
                 hasOutput,
-                value = [0, 0, 0])
+                value = 0, 
+                min   = Number.MIN_SAFE_INTEGER, 
+                max   = Number.MAX_SAFE_INTEGER)
     {
-        super(name, 'color');
+        super(name, 'number');
 
         this.#value = value;
    
-        
-        this.input = new GInput('color');
-        this.input._param = this;
+        this.#min   = min;
+        this.#max   = max;
 
+
+        this.input = new GInput('number');
+        this.input._param = this;
+ 
 
         if (hasOutput)
         {
-            this.output = new GOutput('color');
+            this.output = new GOutput('number');
             this.output._param = this;
         }
         else

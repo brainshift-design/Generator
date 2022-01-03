@@ -39,7 +39,7 @@ class UOutput
         this.control.addEventListener('pointerenter', e => 
         {
             graphView.overOutput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
+            e.target.style.backgroundColor = colorFromDataType(e.target.output.dataType, true);
         });
 
 
@@ -47,7 +47,7 @@ class UOutput
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overOutput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
+            e.target.style.backgroundColor = inputColor;
         });
     }
 

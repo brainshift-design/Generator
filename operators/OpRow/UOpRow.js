@@ -12,8 +12,8 @@ extends UOperator
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
         
-        this.addParam(this.#count = new UNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new UNumberParam('gap',  10, 0));
+        this.addParam(this.#count = new UNumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new UNumberParam('gap',   true, 10, 0));
     }
 }
 

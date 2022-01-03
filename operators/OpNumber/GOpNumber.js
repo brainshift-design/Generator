@@ -9,8 +9,10 @@ extends GOperator
     constructor()
     {
         super('number', 'number');
+
         this.setOutput(new GOutput(this.dataType));
-        this.addParam(this._value = new GNumberParam(''));
+
+        this.addParam(this._value = new GNumberParam('', false));
     }
 
 
@@ -23,7 +25,6 @@ extends GOperator
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
-            
         this.output._data = 
         {
             nodeId: this.id,

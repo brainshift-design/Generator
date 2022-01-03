@@ -16,10 +16,10 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#min   = new GNumberParam('min',  0));
-        this.addParam(this.#max   = new GNumberParam('max', 10));
-        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed',  1, 1));
+        this.addParam(this.#min   = new GNumberParam('min',   true,  0));
+        this.addParam(this.#max   = new GNumberParam('max',   true, 10));
+        this.addParam(this.#scale = new GNumberParam('scale', true,  1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed',  true,  1, 1));
 
         // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
         // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));

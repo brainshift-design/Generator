@@ -16,12 +16,12 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#x      = new GNumberParam('x',        0));
-        this.addParam(this.#y      = new GNumberParam('y',        0));
-        this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
-        this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
-        this.addParam(this.#round  = new GNumberParam('round',    0, 0));
-        this.addParam(this.#color  = new GColorParam ('color'));
+        this.addParam(this.#x      = new GNumberParam('x',      true,   0));
+        this.addParam(this.#y      = new GNumberParam('y',      true,   0));
+        this.addParam(this.#width  = new GNumberParam('width',  true, 100, 0.01));
+        this.addParam(this.#height = new GNumberParam('height', true, 100, 0.01));
+        this.addParam(this.#round  = new GNumberParam('round',  true,   0, 0));
+        this.addParam(this.#color  = new GColorParam ('color',  true));
     }
 
     

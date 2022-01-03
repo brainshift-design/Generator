@@ -1,8 +1,11 @@
-class   UNumberParam
+class   USelectParam
 extends UParameter
 {
     defaultValue;
+
+    options = [];
     
+
     
     get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
@@ -15,6 +18,7 @@ extends UParameter
         this._control.setValue(value, fireChangeEvent, confirm); 
     }
 
+    
 
     input;
     output;

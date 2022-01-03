@@ -172,6 +172,13 @@ function createNodeHeader(node, headerColor)
 
 
 
+    node.update = () =>
+    {
+        
+    };
+
+
+
     node.updateInputs = () =>
     {
         for (const input of node.inputs)

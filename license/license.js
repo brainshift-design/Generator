@@ -16,6 +16,10 @@ function createProductKey(name)
 
 function validateProductKey(name, key, rec = false)
 {
+    // TODO: check from today until 1 year from now (max license length)
+    // 1/day, so 365 max, add end day to name
+    // check today against last launch date (in private data) to prevent clock tampering
+
     var arr  = base32toArray(key.toUpperCase());
     var dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
     var trim = dec.subarray(dec.length - licenseHashSize);
@@ -46,8 +50,7 @@ function validateProductKey(name, key, rec = false)
 
 function hashLicenseName(name, nBytes)
 {
-    name = name.trim();
-
+    // XOR wrap name around a given number of bytes
 
     var bytes = stringToArray(name);
 

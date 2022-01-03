@@ -34,6 +34,8 @@ class UOperator
     output = null;
     
 
+    // node
+
     div;
     inner;
     header;
@@ -42,7 +44,7 @@ class UOperator
     outputControls;
 
 
-    //#valid = false; // this is the flag for regeneration
+    #valid = false; // this is the flag for regeneration
 
 
 
@@ -141,19 +143,20 @@ class UOperator
 
 
 
-    // set valid(val) { this.#valid = val; }
-    // get valid() 
-    // {
-    //     var valid = this.#valid;
+    set valid(val) { this.#valid = val; }
+    get valid() 
+    {
+        var valid = this.#valid;
         
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //             valid &= input.connectedOutput.op.valid;
-    //     }
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                valid &= input.connectedOutput.op.valid;
+        }
 
-    //     return valid;
-    // }
+        return valid;
+    }
+
 
 
     get activeColor()
@@ -167,6 +170,8 @@ class UOperator
         return 'magenta';
     }
 
+
+    
     get passiveColor()
     {
         switch (this.#dataType)
@@ -312,4 +317,8 @@ class UOperator
 
         return save;
     }
+
+
+
+    updateNode() {}
 }

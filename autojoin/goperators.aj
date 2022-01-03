@@ -1,6 +1,7 @@
 ../parameters/Parameter/GParameter.js
 ../parameters/NumberParam/GNumberParam.js
 ../parameters/ColorParam/GColorParam.js
+../parameters/SelectParam/GSelectParam.js
 
 ../graph/GGraph.js
 
@@ -10,7 +11,7 @@
 
 ../graph/tree.js
 
-../operators/GOperator.js
+../operators/Operator/GOperator.js
 
 ../operators/OpNumber/GOpNumber.js
 ../operators/OpRandom/GOpRandom.js

@@ -14,8 +14,8 @@ extends UOperator
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
         
-        this.addParam(this.#count  = new UNumberParam('count', 2, 1));
-        this.addParam(this.#radius = new UNumberParam('radius', 100, 0.01));
+        this.addParam(this.#count  = new UNumberParam('count',  true,   2, 1));
+        this.addParam(this.#radius = new UNumberParam('radius', true, 100, 0.01));
     }
     
     

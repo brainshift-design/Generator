@@ -14,13 +14,14 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#min   = new UNumberParam('min',  0));
-        this.addParam(this.#max   = new UNumberParam('max', 10));
-        this.addParam(this.#scale = new UNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new UNumberParam('seed', 1, 1));
+        this.addParam(this.#min   = new UNumberParam('min',   true,  0));
+        this.addParam(this.#max   = new UNumberParam('max',   true, 10));
+        this.addParam(this.#scale = new UNumberParam('scale', true,  1, 1));
+        this.addParam(this.#seed  = new UNumberParam('seed',  true,  1, 1));
 
         this.#max.control.min = this.#min.value;
         this.#min.control.max = this.#max.value;
+
 
         this.#min.control.addEventListener('change', () =>
         {
@@ -31,6 +32,7 @@ extends UOperator
             this.updateConnectedInputValueText();
         });
 
+        
         this.#max.control.addEventListener('change', () =>
         {
             // if (this.#max.value < this.#min.value)

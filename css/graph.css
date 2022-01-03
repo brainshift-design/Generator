@@ -90,15 +90,15 @@
 
 .input
 {
-    width:          10px;
-    height:         10px;
+    width:          8px;
+    height:         8px;
     background:     transparent;
     border-radius:  5px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    left:           3px;
+    left:           4px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -106,15 +106,15 @@
 
 .output
 {
-    width:          10px;
-    height:         10px;
-    background:     transparent;
+    width:          4px;
+    height:         4px;
+    background:     rgba(0, 0, 0, 0.12);
     border-radius:  5px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    right:          3px;
+    right:          6px;
     pointer-events: auto;
-    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
+    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }

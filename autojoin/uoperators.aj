@@ -1,6 +1,7 @@
 ../parameters/Parameter/UParameter.js
 ../parameters/NumberParam/UNumberParam.js
 ../parameters/ColorParam/UColorParam.js
+../parameters/SelectParam/USelectParam.js
 
 ../graph/UGraph.js
 
@@ -10,9 +11,9 @@
 
 ../graph/tree.js
 
-../operators/UOperator.js
-../operators/UOperator node.js
-../operators/UOperator textbox.js
+../operators/Operator/UOperator.js
+../operators/Operator/UOperator node.js
+../operators/Operator/UOperator textbox.js
 
 ../operators/OpNumber/UOpNumber.js
 ../operators/OpRandom/UOpRandom.js

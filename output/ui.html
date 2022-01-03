@@ -192,15 +192,15 @@ input[type=text]::selection
 
 .input
 {
-    width:          10px;
-    height:         10px;
+    width:          8px;
+    height:         8px;
     background:     transparent;
     border-radius:  5px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    left:           3px;
+    left:           4px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -208,17 +208,17 @@ input[type=text]::selection
 
 .output
 {
-    width:          10px;
-    height:         10px;
-    background:     transparent;
+    width:          4px;
+    height:         4px;
+    background:     rgba(0, 0, 0, 0.12);
     border-radius:  5px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    right:          3px;
+    right:          6px;
     pointer-events: auto;
-    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
+    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
 
 
@@ -2636,7 +2636,8 @@ extends GParameter
 
 
 
-    constructor(name, 
+    constructor(name,
+                hasOutput,
                 value = 0, 
                 min   = Number.MIN_SAFE_INTEGER, 
                 max   = Number.MAX_SAFE_INTEGER)
@@ -2648,11 +2649,18 @@ extends GParameter
         this.#min   = min;
         this.#max   = max;
 
+
         this.input = new GInput('number');
         this.input._param = this;
  
-        this.output = new GOutput('number');
-        this.output._param = this;
+
+        if (hasOutput)
+        {
+            this.output = new GOutput('number');
+            this.output._param = this;
+        }
+        else
+            this.output = null;
     }
 }
 
@@ -2699,17 +2707,98 @@ extends GParameter
 
 
     constructor(name, 
+                hasOutput,
                 value = [0, 0, 0])
     {
         super(name, 'color');
 
         this.#value = value;
    
+        
         this.input = new GInput('color');
         this.input._param = this;
 
-        this.output = new GOutput('color');
-        this.output._param = this;
+
+        if (hasOutput)
+        {
+            this.output = new GOutput('color');
+            this.output._param = this;
+        }
+        else
+            this.output = null;
+    }
+}
+
+
+class   GSelectParam
+extends GParameter
+{
+    #value;
+
+    #min;
+    #max;
+    
+
+    
+    get value() 
+    {
+        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
+
+        if (this.input.connected)
+        {
+            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
+
+            genPostMessageToUi({ 
+                msg:   'uiShowParamValue',
+                nodeId: this.op.id,
+                param:  this.name,
+                value:  value
+            });
+        }
+
+        return value;
+    }
+
+
+    
+    set value(value) 
+    {
+        this.#value   = value;
+        this.op.valid = false;
+    }
+
+
+
+    input;
+    output;
+
+
+
+    constructor(name,
+                hasOutput,
+                value = 0, 
+                min   = Number.MIN_SAFE_INTEGER, 
+                max   = Number.MAX_SAFE_INTEGER)
+    {
+        super(name, 'number');
+
+        this.#value = value;
+   
+        this.#min   = min;
+        this.#max   = max;
+
+
+        this.input = new GInput('number');
+        this.input._param = this;
+ 
+
+        if (hasOutput)
+        {
+            this.output = new GOutput('number');
+            this.output._param = this;
+        }
+        else
+            this.output = null;
     }
 }
 
@@ -3225,8 +3314,10 @@ extends GOperator
     constructor()
     {
         super('number', 'number');
+
         this.setOutput(new GOutput(this.dataType));
-        this.addParam(this._value = new GNumberParam(''));
+
+        this.addParam(this._value = new GNumberParam('', false));
     }
 
 
@@ -3239,7 +3330,6 @@ extends GOperator
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
-            
         this.output._data = 
         {
             nodeId: this.id,
@@ -3277,10 +3367,10 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#min   = new GNumberParam('min',  0));
-        this.addParam(this.#max   = new GNumberParam('max', 10));
-        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed',  1, 1));
+        this.addParam(this.#min   = new GNumberParam('min',   true,  0));
+        this.addParam(this.#max   = new GNumberParam('max',   true, 10));
+        this.addParam(this.#scale = new GNumberParam('scale', true,  1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed',  true,  1, 1));
 
         // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
         // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
@@ -3342,10 +3432,13 @@ extends GOperator
     constructor()
     {
         super('color', 'color');
+
+        this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
-        this.addParam(this._r = new GNumberParam('r', 0, 0, 255));
-        this.addParam(this._g = new GNumberParam('g', 0, 0, 255));
-        this.addParam(this._b = new GNumberParam('b', 0, 0, 255));
+
+        this.addParam(this._r = new GNumberParam('r', true, 0, 0, 255));
+        this.addParam(this._g = new GNumberParam('g', true, 0, 0, 255));
+        this.addParam(this._b = new GNumberParam('b', true, 0, 0, 255));
     }
 
 
@@ -3404,12 +3497,12 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#x      = new GNumberParam('x',        0));
-        this.addParam(this.#y      = new GNumberParam('y',        0));
-        this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
-        this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
-        this.addParam(this.#round  = new GNumberParam('round',    0, 0));
-        this.addParam(this.#color  = new GColorParam ('color'));
+        this.addParam(this.#x      = new GNumberParam('x',      true,   0));
+        this.addParam(this.#y      = new GNumberParam('y',      true,   0));
+        this.addParam(this.#width  = new GNumberParam('width',  true, 100, 0.01));
+        this.addParam(this.#height = new GNumberParam('height', true, 100, 0.01));
+        this.addParam(this.#round  = new GNumberParam('round',  true,   0, 0));
+        this.addParam(this.#color  = new GColorParam ('color',  true));
     }
 
     
@@ -3451,8 +3544,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
+        this.addParam(this.#count = new GNumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',   true, 10, 0));
     }
 
 
@@ -3516,8 +3609,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
+        this.addParam(this.#count = new GNumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',   true, 10, 0));
     }
 
 
@@ -5884,6 +5977,10 @@ function createProductKey(name)
 
 function validateProductKey(name, key, rec = false)
 {
+    // TODO: check from today until 1 year from now (max license length)
+    // 1/day, so 365 max, add end day to name
+    // check today against last launch date (in private data) to prevent clock tampering
+
     var arr  = base32toArray(key.toUpperCase());
     var dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
     var trim = dec.subarray(dec.length - licenseHashSize);
@@ -5914,8 +6011,7 @@ function validateProductKey(name, key, rec = false)
 
 function hashLicenseName(name, nBytes)
 {
-    name = name.trim();
-
+    // XOR wrap name around a given number of bytes
 
     var bytes = stringToArray(name);
 
@@ -6005,6 +6101,7 @@ productKeyInput.addEventListener('input', () =>
             {
                 hideProductKeyDialog();
                 updateMenuSelectItems();
+
                 uiNotify('✨ Thank you for subscribing to Generator! ✨', '', 6000);    
             }, 
             1200);
@@ -6111,6 +6208,7 @@ extends UParameter
 
     
     constructor(name, 
+                hasOutput,
                 value     = 0, 
                 min       = Number.MIN_SAFE_INTEGER, 
                 max       = Number.MAX_SAFE_INTEGER,
@@ -6124,6 +6222,7 @@ extends UParameter
         this.control.zIndex = 0;
 
         this.defaultValue = value;
+
 
         initNumberSlider(
             this.control,
@@ -6139,7 +6238,9 @@ extends UParameter
             0,         // acceleration
             '');       // suffix
 
+
         this.div.appendChild(this.control);
+
 
         this.input = new UInput('number');
         this.input._param = this;
@@ -6149,16 +6250,22 @@ extends UParameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.output = new UOutput('number');
-        this.output._param = this;
-        this.output.control.style.float     = 'right';
-        this.output.control.style.position  = 'absolute';
-        this.output.control.style.top       = '50%';
-        this.output.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.output.control);
+
+        if (hasOutput)
+        {
+            this.output = new UOutput('number');
+            this.output._param = this;
+            this.output.control.style.float     = 'right';
+            this.output.control.style.position  = 'absolute';
+            this.output.control.style.top       = '50%';
+            this.output.control.style.transform = 'translateY(-50%)';
+            this.div.appendChild(this.output.control);
+        }
+        else
+            this.output = null;
 
 
-
+            
         this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
@@ -6240,6 +6347,7 @@ extends UParameter
 
     
     constructor(name, 
+                hasOutput,
                 value     = [0, 0, 0],
                 dragScale = 0.01)
     {
@@ -6278,16 +6386,164 @@ extends UParameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.output = new UOutput('color');
-        this.output._param = this;
-        this.output.control.style.float     = 'left';
-        this.output.control.style.position  = 'absolute';
-        this.output.control.style.top       = '50%';
-        this.output.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.output.control);
+
+        if (hasOutput)
+        {
+            this.output = new UOutput('color');
+            this.output._param = this;
+            this.output.control.style.float     = 'left';
+            this.output.control.style.position  = 'absolute';
+            this.output.control.style.top       = '50%';
+            this.output.control.style.transform = 'translateY(-50%)';
+            this.div.appendChild(this.output.control);
+        }
+        else
+            this.output = null;
+
+
+        this.control.addEventListener('change', e =>
+        {
+            this.op.valid = false;
+            uiSetParam(this, this.value);
+        });
 
 
 
+        this.control.addEventListener('confirm', e =>
+        {
+            this.op.valid = false;
+            actionManager.do(new SetValueAction(this, this.value));
+        });
+
+
+
+        this.input.addEventListener('connect', e =>
+        {
+            this.control.style.fontStyle = 'italic';
+            this.control.inputConnected  = true;
+        });
+
+
+        
+        this.input.addEventListener('disconnect', e =>
+        {
+            this.control.style.fontStyle = 'normal';
+            this.control.inputConnected  = false;
+        });
+    }
+
+
+
+    isDefault()
+    {
+        return this.value == this.defaultValue;
+    }
+
+
+
+    save(nTab)
+    {
+        let pos = ' '.repeat(nTab);
+        return pos + '"' + this.name  + '": "' + this.value + '"';
+    }
+}
+
+
+class   USelectParam
+extends UParameter
+{
+    defaultValue;
+
+    options = [];
+    
+
+    
+    get value()      { return this._control.value;    }
+    set value(value) { this._control.setValue(value); }
+    
+    get oldValue()   { return this._control.oldValue; }
+
+    
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        this._control.setValue(value, fireChangeEvent, confirm); 
+    }
+
+    
+
+    input;
+    output;
+
+    
+
+    get valueText() { return this.control.valueText; }
+    set valueText(text) 
+    {
+        this.control.valueText = text;
+        this.control.update();
+    }
+
+
+    
+    constructor(name, 
+                hasOutput,
+                value     = 0, 
+                min       = Number.MIN_SAFE_INTEGER, 
+                max       = Number.MAX_SAFE_INTEGER,
+                decimals  = 0,
+                dragScale = 0.01)
+    {
+        super(name, 'number');
+
+        this._control = document.createElement('div');
+        this.control.param  = this;
+        this.control.zIndex = 0;
+
+        this.defaultValue = value;
+
+
+        initNumberSlider(
+            this.control,
+            120,       // width
+            20,        // height
+            this.name, 
+            min,
+            max,
+            value,     // default
+            dragScale, // drag scale
+            1,         // wheel step
+            decimals,  // decimals
+            0,         // acceleration
+            '');       // suffix
+
+
+        this.div.appendChild(this.control);
+
+
+        this.input = new UInput('number');
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
+
+
+        if (hasOutput)
+        {
+            this.output = new UOutput('number');
+            this.output._param = this;
+            this.output.control.style.float     = 'right';
+            this.output.control.style.position  = 'absolute';
+            this.output.control.style.top       = '50%';
+            this.output.control.style.transform = 'translateY(-50%)';
+            this.div.appendChild(this.output.control);
+        }
+        else
+            this.output = null;
+
+
+            
         this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
@@ -6770,7 +7026,7 @@ class UOutput
         this.control.addEventListener('pointerenter', e => 
         {
             graphView.overOutput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.output.dataType, true);
+            e.target.style.backgroundColor = colorFromDataType(e.target.output.dataType, true);
         });
 
 
@@ -6778,7 +7034,7 @@ class UOutput
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overOutput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
+            e.target.style.backgroundColor = inputColor;
         });
     }
 
@@ -7076,6 +7332,8 @@ class UOperator
     output = null;
     
 
+    // node
+
     div;
     inner;
     header;
@@ -7084,7 +7342,7 @@ class UOperator
     outputControls;
 
 
-    //#valid = false; // this is the flag for regeneration
+    #valid = false; // this is the flag for regeneration
 
 
 
@@ -7183,19 +7441,20 @@ class UOperator
 
 
 
-    // set valid(val) { this.#valid = val; }
-    // get valid() 
-    // {
-    //     var valid = this.#valid;
+    set valid(val) { this.#valid = val; }
+    get valid() 
+    {
+        var valid = this.#valid;
         
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //             valid &= input.connectedOutput.op.valid;
-    //     }
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                valid &= input.connectedOutput.op.valid;
+        }
 
-    //     return valid;
-    // }
+        return valid;
+    }
+
 
 
     get activeColor()
@@ -7209,6 +7468,8 @@ class UOperator
         return 'magenta';
     }
 
+
+    
     get passiveColor()
     {
         switch (this.#dataType)
@@ -7354,6 +7615,10 @@ class UOperator
 
         return save;
     }
+
+
+
+    updateNode() {}
 }
 
 
@@ -7528,6 +7793,13 @@ function createNodeHeader(node, headerColor)
         else
             node.makeActive();
     });
+
+
+
+    node.update = () =>
+    {
+        
+    };
 
 
 
@@ -7752,13 +8024,15 @@ extends UOperator
 {
     #value;
 
+
+    
     constructor()
     {
         super('number', 'number');
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#value = new UNumberParam(''));
+        this.addParam(this.#value = new UNumberParam('', false));
     }
 }
 
@@ -7779,13 +8053,14 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#min   = new UNumberParam('min',  0));
-        this.addParam(this.#max   = new UNumberParam('max', 10));
-        this.addParam(this.#scale = new UNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new UNumberParam('seed', 1, 1));
+        this.addParam(this.#min   = new UNumberParam('min',   true,  0));
+        this.addParam(this.#max   = new UNumberParam('max',   true, 10));
+        this.addParam(this.#scale = new UNumberParam('scale', true,  1, 1));
+        this.addParam(this.#seed  = new UNumberParam('seed',  true,  1, 1));
 
         this.#max.control.min = this.#min.value;
         this.#min.control.max = this.#max.value;
+
 
         this.#min.control.addEventListener('change', () =>
         {
@@ -7796,6 +8071,7 @@ extends UOperator
             this.updateConnectedInputValueText();
         });
 
+        
         this.#max.control.addEventListener('change', () =>
         {
             // if (this.#max.value < this.#min.value)
@@ -7888,15 +8164,33 @@ extends UOperator
     #g;
     #b;
 
+
+    
     constructor()
     {
         super('color', 'color');
 
+        this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#r = new UNumberParam('r', 0, 0, 255));
-        this.addParam(this.#g = new UNumberParam('g', 0, 0, 255));
-        this.addParam(this.#b = new UNumberParam('b', 0, 0, 255));
+        this.addParam(this.#r = new UNumberParam('R', true, 0, 0, 255));
+        this.addParam(this.#g = new UNumberParam('G', true, 0, 0, 255));
+        this.addParam(this.#b = new UNumberParam('B', true, 0, 0, 255));
+
+
+        this.#r.control.addEventListener('change', () => { this.updateNode(); });
+        this.#g.control.addEventListener('change', () => { this.updateNode(); });
+        this.#b.control.addEventListener('change', () => { this.updateNode(); });
+    }
+
+
+
+    updateNode()
+    {
+        this.header.style.backgroundColor = colorStyle_(
+            this.#r.value,
+            this.#g.value,
+            this.#b.value);
     }
 }
 
@@ -7919,12 +8213,12 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#x      = new UNumberParam('x',        0));
-        this.addParam(this.#y      = new UNumberParam('y',        0));
-        this.addParam(this.#width  = new UNumberParam('width',  100, 0.01));
-        this.addParam(this.#height = new UNumberParam('height', 100, 0.01));
-        this.addParam(this.#round  = new UNumberParam('round',    0, 0));
-        this.addParam(this.#color  = new UColorParam ('color'));
+        this.addParam(this.#x      = new UNumberParam('x',      true,   0));
+        this.addParam(this.#y      = new UNumberParam('y',      true,   0));
+        this.addParam(this.#width  = new UNumberParam('width',  true, 100, 0.01));
+        this.addParam(this.#height = new UNumberParam('height', true, 100, 0.01));
+        this.addParam(this.#round  = new UNumberParam('round',  true,   0, 0));
+        this.addParam(this.#color  = new UColorParam ('color',  true));
         
         this.#x     ._control.addEventListener('change', () => this.updateRound());
         this.#y     ._control.addEventListener('change', () => this.updateRound());
@@ -7991,8 +8285,8 @@ extends UOperator
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
         
-        this.addParam(this.#count = new UNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new UNumberParam('gap',  10, 0));
+        this.addParam(this.#count = new UNumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new UNumberParam('gap',   true, 10, 0));
     }
 }
 
@@ -8065,6 +8359,7 @@ extends UOperator
     #count;
     #gap;
 
+    
 
     constructor()
     {
@@ -8073,8 +8368,8 @@ extends UOperator
         this.addInput (new UInput (this.dataType));
         this.setOutput(new UOutput(this.dataType));
         
-        this.addParam(this.#count = new UNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new UNumberParam('gap',  10, 0));
+        this.addParam(this.#count = new UNumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new UNumberParam('gap',   true, 10, 0));
     }
 }
 

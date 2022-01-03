@@ -64,6 +64,7 @@ productKeyInput.addEventListener('input', () =>
             {
                 hideProductKeyDialog();
                 updateMenuSelectItems();
+
                 uiNotify('✨ Thank you for subscribing to Generator! ✨', '', 6000);    
             }, 
             1200);

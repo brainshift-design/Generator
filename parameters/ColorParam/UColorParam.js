@@ -31,6 +31,7 @@ extends UParameter
 
     
     constructor(name, 
+                hasOutput,
                 value     = [0, 0, 0],
                 dragScale = 0.01)
     {
@@ -69,14 +70,19 @@ extends UParameter
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.output = new UOutput('color');
-        this.output._param = this;
-        this.output.control.style.float     = 'left';
-        this.output.control.style.position  = 'absolute';
-        this.output.control.style.top       = '50%';
-        this.output.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.output.control);
 
+        if (hasOutput)
+        {
+            this.output = new UOutput('color');
+            this.output._param = this;
+            this.output.control.style.float     = 'left';
+            this.output.control.style.position  = 'absolute';
+            this.output.control.style.top       = '50%';
+            this.output.control.style.transform = 'translateY(-50%)';
+            this.div.appendChild(this.output.control);
+        }
+        else
+            this.output = null;
 
 
         this.control.addEventListener('change', e =>

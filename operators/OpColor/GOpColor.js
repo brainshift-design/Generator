@@ -13,10 +13,13 @@ extends GOperator
     constructor()
     {
         super('color', 'color');
+
+        this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
-        this.addParam(this._r = new GNumberParam('r', 0, 0, 255));
-        this.addParam(this._g = new GNumberParam('g', 0, 0, 255));
-        this.addParam(this._b = new GNumberParam('b', 0, 0, 255));
+
+        this.addParam(this._r = new GNumberParam('r', true, 0, 0, 255));
+        this.addParam(this._g = new GNumberParam('g', true, 0, 0, 255));
+        this.addParam(this._b = new GNumberParam('b', true, 0, 0, 255));
     }
 
 

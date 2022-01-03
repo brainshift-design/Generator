@@ -1909,7 +1909,8 @@ extends GParameter
 
 
 
-    constructor(name, 
+    constructor(name,
+                hasOutput,
                 value = 0, 
                 min   = Number.MIN_SAFE_INTEGER, 
                 max   = Number.MAX_SAFE_INTEGER)
@@ -1921,11 +1922,18 @@ extends GParameter
         this.#min   = min;
         this.#max   = max;
 
+
         this.input = new GInput('number');
         this.input._param = this;
  
-        this.output = new GOutput('number');
-        this.output._param = this;
+
+        if (hasOutput)
+        {
+            this.output = new GOutput('number');
+            this.output._param = this;
+        }
+        else
+            this.output = null;
     }
 }
 
@@ -1972,17 +1980,98 @@ extends GParameter
 
 
     constructor(name, 
+                hasOutput,
                 value = [0, 0, 0])
     {
         super(name, 'color');
 
         this.#value = value;
    
+        
         this.input = new GInput('color');
         this.input._param = this;
 
-        this.output = new GOutput('color');
-        this.output._param = this;
+
+        if (hasOutput)
+        {
+            this.output = new GOutput('color');
+            this.output._param = this;
+        }
+        else
+            this.output = null;
+    }
+}
+
+
+class   GSelectParam
+extends GParameter
+{
+    #value;
+
+    #min;
+    #max;
+    
+
+    
+    get value() 
+    {
+        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
+
+        if (this.input.connected)
+        {
+            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
+
+            genPostMessageToUi({ 
+                msg:   'uiShowParamValue',
+                nodeId: this.op.id,
+                param:  this.name,
+                value:  value
+            });
+        }
+
+        return value;
+    }
+
+
+    
+    set value(value) 
+    {
+        this.#value   = value;
+        this.op.valid = false;
+    }
+
+
+
+    input;
+    output;
+
+
+
+    constructor(name,
+                hasOutput,
+                value = 0, 
+                min   = Number.MIN_SAFE_INTEGER, 
+                max   = Number.MAX_SAFE_INTEGER)
+    {
+        super(name, 'number');
+
+        this.#value = value;
+   
+        this.#min   = min;
+        this.#max   = max;
+
+
+        this.input = new GInput('number');
+        this.input._param = this;
+ 
+
+        if (hasOutput)
+        {
+            this.output = new GOutput('number');
+            this.output._param = this;
+        }
+        else
+            this.output = null;
     }
 }
 
@@ -2498,8 +2587,10 @@ extends GOperator
     constructor()
     {
         super('number', 'number');
+
         this.setOutput(new GOutput(this.dataType));
-        this.addParam(this._value = new GNumberParam(''));
+
+        this.addParam(this._value = new GNumberParam('', false));
     }
 
 
@@ -2512,7 +2603,6 @@ extends GOperator
         if (isNaN(this._sampled))
             this._sampled = this._value.value;
 
-            
         this.output._data = 
         {
             nodeId: this.id,
@@ -2550,10 +2640,10 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#min   = new GNumberParam('min',  0));
-        this.addParam(this.#max   = new GNumberParam('max', 10));
-        this.addParam(this.#scale = new GNumberParam('scale', 1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed',  1, 1));
+        this.addParam(this.#min   = new GNumberParam('min',   true,  0));
+        this.addParam(this.#max   = new GNumberParam('max',   true, 10));
+        this.addParam(this.#scale = new GNumberParam('scale', true,  1, 1));
+        this.addParam(this.#seed  = new GNumberParam('seed',  true,  1, 1));
 
         // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
         // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
@@ -2615,10 +2705,13 @@ extends GOperator
     constructor()
     {
         super('color', 'color');
+
+        this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
-        this.addParam(this._r = new GNumberParam('r', 0, 0, 255));
-        this.addParam(this._g = new GNumberParam('g', 0, 0, 255));
-        this.addParam(this._b = new GNumberParam('b', 0, 0, 255));
+
+        this.addParam(this._r = new GNumberParam('r', true, 0, 0, 255));
+        this.addParam(this._g = new GNumberParam('g', true, 0, 0, 255));
+        this.addParam(this._b = new GNumberParam('b', true, 0, 0, 255));
     }
 
 
@@ -2677,12 +2770,12 @@ extends GOperator
 
         this.setOutput(new GOutput(this.dataType));
 
-        this.addParam(this.#x      = new GNumberParam('x',        0));
-        this.addParam(this.#y      = new GNumberParam('y',        0));
-        this.addParam(this.#width  = new GNumberParam('width',  100, 0.01));
-        this.addParam(this.#height = new GNumberParam('height', 100, 0.01));
-        this.addParam(this.#round  = new GNumberParam('round',    0, 0));
-        this.addParam(this.#color  = new GColorParam ('color'));
+        this.addParam(this.#x      = new GNumberParam('x',      true,   0));
+        this.addParam(this.#y      = new GNumberParam('y',      true,   0));
+        this.addParam(this.#width  = new GNumberParam('width',  true, 100, 0.01));
+        this.addParam(this.#height = new GNumberParam('height', true, 100, 0.01));
+        this.addParam(this.#round  = new GNumberParam('round',  true,   0, 0));
+        this.addParam(this.#color  = new GColorParam ('color',  true));
     }
 
     
@@ -2724,8 +2817,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
+        this.addParam(this.#count = new GNumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',   true, 10, 0));
     }
 
 
@@ -2789,8 +2882,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count = new GNumberParam('count', 7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',  10, 0));
+        this.addParam(this.#count = new GNumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new GNumberParam('gap',   true, 10, 0));
     }
 
 

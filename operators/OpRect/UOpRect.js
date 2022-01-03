@@ -16,12 +16,12 @@ extends UOperator
 
         this.setOutput(new UOutput(this.dataType));
 
-        this.addParam(this.#x      = new UNumberParam('x',        0));
-        this.addParam(this.#y      = new UNumberParam('y',        0));
-        this.addParam(this.#width  = new UNumberParam('width',  100, 0.01));
-        this.addParam(this.#height = new UNumberParam('height', 100, 0.01));
-        this.addParam(this.#round  = new UNumberParam('round',    0, 0));
-        this.addParam(this.#color  = new UColorParam ('color'));
+        this.addParam(this.#x      = new UNumberParam('x',      true,   0));
+        this.addParam(this.#y      = new UNumberParam('y',      true,   0));
+        this.addParam(this.#width  = new UNumberParam('width',  true, 100, 0.01));
+        this.addParam(this.#height = new UNumberParam('height', true, 100, 0.01));
+        this.addParam(this.#round  = new UNumberParam('round',  true,   0, 0));
+        this.addParam(this.#color  = new UColorParam ('color',  true));
         
         this.#x     ._control.addEventListener('change', () => this.updateRound());
         this.#y     ._control.addEventListener('change', () => this.updateRound());

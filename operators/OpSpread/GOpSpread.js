@@ -14,8 +14,8 @@ extends GOperator
         this.addInput (new GInput (this.dataType));
         this.setOutput(new GOutput(this.dataType));
         
-        this.addParam(this.#count  = new GNumberParam('count', 2, 1));
-        this.addParam(this.#radius = new GNumberParam('radius', 100, 0.01));
+        this.addParam(this.#count  = new GNumberParam('count',  true, 2, 1));
+        this.addParam(this.#radius = new GNumberParam('radius', true, 100, 0.01));
     }
 
 
