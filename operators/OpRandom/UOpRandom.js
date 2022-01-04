@@ -32,7 +32,7 @@ extends UOperator
             this.updateConnectedInputValueText();
         });
 
-        
+
         this.#max.control.addEventListener('change', () =>
         {
             // if (this.#max.value < this.#min.value)
@@ -98,7 +98,7 @@ extends UOperator
 //     }
 
 
-//     generate()
+//     update()
 //     {
 //         if (this.valid) return;
 
@@ -113,6 +113,6 @@ extends UOperator
 //             seed:  this.#seed .value
 //         };
 
-//         super.generate();
+//         super.update();
 //     }
 // }

@@ -208,15 +208,15 @@ input[type=text]::selection
 
 .output
 {
-    width:          4px;
-    height:         4px;
+    width:          6px;
+    height:         6px;
     background:     rgba(0, 0, 0, 0.12);
-    border-radius:  5px;
+    border-radius:  6px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    right:          6px;
+    right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
@@ -2782,14 +2782,8 @@ extends GParameter
         this.input = new GInput('number');
         this.input._param = this;
  
-
-        if (hasOutput)
-        {
-            this.output = new GOutput('number');
-            this.output._param = this;
-        }
-        else
-            this.output = null;
+        this.output = hasOutput ? new GOutput('number') : null;
+        if (this.output) this.output._param = this;
     }
 }
 
@@ -2965,6 +2959,40 @@ class GInput
 }
 
 
+class GNewInput
+extends GInput
+{
+    // #dataType;     
+    // get dataType() { return this.#dataType; }
+
+    // _op    = null; get op   () { return this._op;    }
+    // _param = null; get param() { return this._param; }
+
+    // connectedOutput = null;
+    // connection      = null;
+    
+    // connecting      = false;
+    
+
+    // get connected() { return this.connectedOutput != null; }
+
+
+    constructor(dataType)
+    {
+        super(dataType);
+    }    
+    
+
+    // get data()
+    // {
+    //     return (
+    //         this.connected
+    //         ? this.connectedOutput.getData(this)
+    //         : null);
+    // }
+}
+
+
 class   GOutput
 extends EventTarget
 {
@@ -3045,15 +3073,15 @@ class GConnection
 
 function activeNodeInTree(node) 
 { 
-    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
-    const right = getActiveNodeRight(node); if (!!right) return right;
+    const left  = activeNodeLeft(node);  if (!!left ) return left;
+    const right = activeNodeRight(node); if (!!right) return right;
 
     return null;
 }
 
 
 
-function getActiveNodeLeft(node)
+function activeNodeLeft(node)
 {
     if (node.active) return node;
 
@@ -3061,7 +3089,7 @@ function getActiveNodeLeft(node)
     {
         if (input.connected)
         {
-            const left = getActiveNodeLeft(input.connectedOutput.op);
+            const left = activeNodeLeft(input.connectedOutput.op);
             if (left) return left;
         }
     }
@@ -3071,7 +3099,7 @@ function getActiveNodeLeft(node)
 
 
 
-function getActiveNodeRight(node)
+function activeNodeRight(node)
 {
     if (node.active) return node;
 
@@ -3079,7 +3107,7 @@ function getActiveNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const right = getActiveNodeRight(input.op);
+            const right = activeNodeRight(input.op);
             if (right) return right;
         }
     }
@@ -3091,13 +3119,13 @@ function getActiveNodeRight(node)
 
 function lastNodeInTree(node) 
 { 
-    const right = getLastNodeRight(node); 
+    const right = lastNodeRight(node); 
     return !!right ? right : null;
 }
 
 
 
-function getLastNodeRight(node)
+function lastNodeRight(node)
 {
     var right = null;
 
@@ -3105,7 +3133,7 @@ function getLastNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const _right = getLastNodeRight(input.op);
+            const _right = lastNodeRight(input.op);
             if (_right && !!right) return node;
             right = _right;
         }
@@ -3294,6 +3322,7 @@ extends GOperator
     _sampled = Number.NaN;
 
 
+    
     constructor()
     {
         super('number', 'number');
@@ -3302,6 +3331,7 @@ extends GOperator
 
         this.addParam(this._value = new GNumberParam('', true, false));
     }
+
 
 
     generate(callerInput)
@@ -3321,6 +3351,7 @@ extends GOperator
             value:  this._sampled
         };
     }
+
 
 
     refresh()
@@ -3343,9 +3374,7 @@ extends GOperator
     {
         super('add', 'number');
 
-        this.addInput(new GInput(this.dataType));
-        this.addInput(new GInput(this.dataType));
- 
+        this.addInput(new GNewInput(this.dataType));
         this.setOutput(new GOutput(this.dataType));
 
         this.addParam(this._value = new GNumberParam('', false, false));
@@ -3714,16 +3743,16 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'genCreateNode':      genCreateNode     (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
-        case 'genDeleteNodes':     genDeleteNodes    (e.data.nodeIds,  e.data.uiActionId);            break;             
-        case 'genUndeleteNodes':   genUndeleteNodes  (e.data.uiActionId);                             break;             
-        case 'genSetNodeId':       genSetNodeId      (e.data.nodeId,   e.data.newId);                 break; 
-        case 'genSetActive':       genSetActive      (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
-        case 'genConnect':         genConnect        (e.data.outputId, e.data.inputs);                break; 
-        case 'genDisconnect':      genDisconnect     (e.data.input);                                  break;
-        case 'genSetParam':        genSetParam       (e.data.nodeId,   e.data.param, e.data.value);   break;
-        case 'genInvalidate':      genInvalidate     (e.data.nodeId);                                 break;
-        case 'genGenerateObjects': genGenerateObjects(e.data.nodeIds);                                break;
+        case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
+        case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
+        case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
+        case 'genSetActive':     genSetActive    (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
+        case 'genConnect':       genConnect      (e.data.outputId, e.data.inputs);                break; 
+        case 'genDisconnect':    genDisconnect   (e.data.input);                                  break;
+        case 'genSetParam':      genSetParam     (e.data.nodeId,   e.data.param, e.data.value);   break;
+        case 'genInvalidate':    genInvalidate   (e.data.nodeId);                                 break;
+        case 'genUpdateObjects': genUpdateObjects(e.data.nodeIds);                                break;
     }
 };
 
@@ -3825,7 +3854,8 @@ function genConnect(outputId, inputs)
             ? inNode.inputs[input.index]
             : inNode.params.find(p => p.name == input.param).input);
 
-        genGenerateObjects([input.nodeId]);
+        if (inNode.dataType == 'object')
+            genUpdateObjects([input.nodeId]);
     }
 }
 
@@ -3843,19 +3873,27 @@ function genSetParam(nodeId, name, value)
 {
     const node  = genGraph.nodeFromId(nodeId);
     const param = node.params.find(p => p.name == name);
+
     param.value = value;
 
-    const activeId = activeNodeInTree(genGraph.nodes.find(n => n.id == node.id)).id;
+    updateNodeGraph(node);
+}
+
+
+
+function updateNodeGraph(_node)
+{
+    const node = genGraph.nodes.find(n => n.id == _node.id);
+
+    let activeId = activeNodeInTree(node).id;
 
     if (activeId > -1)
     {
         genPostMessageToUi({ 
-            msg:    'uiGenerateObjects',
+            msg:    'uiUpdateNodes',
             nodeIds: [activeId]
         });
     }
-
-    //genGenerateObjects([activeId]);
 }
 
 
@@ -3868,7 +3906,7 @@ function genInvalidate(nodeId)
 
 
 
-function genGenerateObjects(nodeIds)
+function genUpdateObjects(nodeIds)
 {
     for (const node of genGraph.nodes)
         node.reset();
@@ -3886,25 +3924,31 @@ function genGenerateObjects(nodeIds)
     }    
 
     
-    // now create the objects
+    // now create the objects if necessary
 
-    const objects = new Array(nObjects);
-
-    let i = 0;
-    for (const nodeId of nodeIds)
+    if (nObjects > 0)
     {
-        const node = genGraph.nodeFromId(nodeId);
-        const data = node.output.getData();
-        
-        for (const obj of data)
-            objects[i++] = obj;
-    }    
-    
-    
-    genPostMessageToUi({ 
-        msg:    'uiUpdateObjects',
-        objects: objects
-    });
+        const objects = new Array(nObjects);
+
+        let i = 0;
+        for (const nodeId of nodeIds)
+        {
+            const node = genGraph.nodeFromId(nodeId);
+            const data = node.output.getData();
+            
+            for (const obj of data)
+                objects[i++] = obj;
+        }    
+
+        genPostMessageToUi({ 
+            msg:    'uiUpdateObjects',
+            objects: objects
+        });
+    }
+    // else
+    // {
+    //     genPostMessageToUi({ msg: 'uiUpdateGraph' });
+    // }
 }
 
 
@@ -6178,6 +6222,7 @@ function setDefaultProductKeyInput()
 
 
 class UParameter
+extends EventTarget
 {
     #type;
     get type() { return this.#type; }
@@ -6189,14 +6234,21 @@ class UParameter
     get op()   { return this._op; }
 
 
-    _operator; get operator() { return this._operator; }
+    // _operator; get operator() { return this._operator; }
     _control;  get control()  { return this._control;  }
     _div;      get div()      { return this._div;      }
 
 
-    
+
+    onchange  = new Event('change' );
+    onconfirm = new Event('confirm');
+
+
+
     constructor(name, type)
     {
+        super();
+
         this.#type = type;
         this.#name = name;
 
@@ -6205,6 +6257,27 @@ class UParameter
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
+    }
+
+
+
+    setValue(valueChanged, confirm)
+    {
+        this.op.valid = false;
+
+        if (valueChanged)
+        {
+            this.dispatchEvent(this.onchange);
+
+            if (confirm)
+            {
+                actionManager.do(new SetValueAction(this, this.value));
+                this.dispatchEvent(this.onconfirm);
+            }
+
+            //this.op.update();
+            uiGraph.updateNodes();
+        }
     }
 
 
@@ -6234,13 +6307,6 @@ extends UParameter
 
 
     
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        this._control.setValue(value, fireChangeEvent, confirm); 
-    }    
-
-
-
     get valueText() { return this.control.valueText; }
     set valueText(text) 
     {
@@ -6293,16 +6359,17 @@ extends UParameter
             
         this.control.addEventListener('change', e =>
         {
-            this.op.valid = false;
-            uiSetParam(this, this.value);
+            // this.op.valid = false;
+            // uiSetParam(this, this.value);
+            this.setValue(this.value, false, false);
         });
-
 
 
         this.control.addEventListener('confirm', e =>
         {
-            this.op.valid = false;
-            actionManager.do(new SetValueAction(this, this.value));
+            // this.op.valid = false;
+            // actionManager.do(new SetValueAction(this, this.value));
+            this.setValue(this.value, false, true);
         });
     }
 
@@ -6359,6 +6426,16 @@ extends UParameter
 
 
 
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        this.op.invalidate();
+        this._control.setValue(value, false, false); 
+        
+        UParameter.prototype.setValue.call(this, value != this.oldValue, confirm);
+    }    
+
+
+
     save(nTab)
     {
         let pos = ' '.repeat(nTab);
@@ -6378,13 +6455,8 @@ extends UParameter
     
     get oldValue()   { return this._control.oldValue; }
 
+
     
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        this._control.setValue(value, fireChangeEvent, confirm); 
-    }
-
-
     input;
     output;
 
@@ -6431,27 +6503,10 @@ extends UParameter
 
         this.div.appendChild(this.control);
 
-        this.input = new UInput('color');
-        this.input._param = this;
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.input.control);
 
+        this.initInput();
+        this.initOutput(hasOutput);
 
-        if (hasOutput)
-        {
-            this.output = new UOutput('color');
-            this.output._param = this;
-            this.output.control.style.float     = 'left';
-            this.output.control.style.position  = 'absolute';
-            this.output.control.style.top       = '50%';
-            this.output.control.style.transform = 'translateY(-50%)';
-            this.div.appendChild(this.output.control);
-        }
-        else
-            this.output = null;
 
 
         this.control.addEventListener('change', e =>
@@ -6461,13 +6516,24 @@ extends UParameter
         });
 
 
-
         this.control.addEventListener('confirm', e =>
         {
             this.op.valid = false;
             actionManager.do(new SetValueAction(this, this.value));
         });
+    }
 
+
+
+    initInput()
+    {
+        this.input = new UInput('color');
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
 
 
         this.input.addEventListener('connect', e =>
@@ -6475,7 +6541,6 @@ extends UParameter
             this.control.style.fontStyle = 'italic';
             this.control.inputConnected  = true;
         });
-
 
         
         this.input.addEventListener('disconnect', e =>
@@ -6487,9 +6552,31 @@ extends UParameter
 
 
 
+    initOutput(hasOutput)
+    {
+        this.output = hasOutput ? new UOutput('color') : null;
+        if (!this.output) return;
+
+        this.output._param = this;
+        this.output.control.style.float     = 'left';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
+    }
+
+
+
     isDefault()
     {
         return this.value == this.defaultValue;
+    }
+
+
+
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        //this._control.setValue(value, fireChangeEvent, confirm); 
     }
 
 
@@ -6517,12 +6604,6 @@ extends UParameter
     get oldValue()   { return this._control.oldValue; }
 
     
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        this._control.setValue(value, fireChangeEvent, confirm); 
-    }
-
-
 
     input;
     output;
@@ -6566,28 +6647,8 @@ extends UParameter
         this.div.appendChild(this.control);
 
 
-        this.input = new UInput('number');
-        this.input._param = this;
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.input.control);
-
-
-        if (hasOutput)
-        {
-            this.output = new UOutput('number');
-            this.output._param = this;
-            this.output.control.style.float     = 'right';
-            this.output.control.style.position  = 'absolute';
-            this.output.control.style.top       = '50%';
-            this.output.control.style.transform = 'translateY(-50%)';
-            this.div.appendChild(this.output.control);
-        }
-        else
-            this.output = null;
-
+        this.initInput();
+        this.initOutput(hasOutput);
 
             
         this.control.addEventListener('change', e =>
@@ -6597,13 +6658,24 @@ extends UParameter
         });
 
 
-
         this.control.addEventListener('confirm', e =>
         {
             this.op.valid = false;
             actionManager.do(new SetValueAction(this, this.value));
         });
+    }
 
+
+
+    initInput()
+    {
+        this.input = new UInput('number');
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
 
 
         this.input.addEventListener('connect', e =>
@@ -6611,7 +6683,6 @@ extends UParameter
             this.control.style.fontStyle = 'italic';
             this.control.inputConnected  = true;
         });
-
 
         
         this.input.addEventListener('disconnect', e =>
@@ -6621,11 +6692,33 @@ extends UParameter
         });
     }
 
+    
+
+    initOutput(hasOutput)
+    {
+        this.output = hasOutput ? new UOutput('number') : null;
+        if (!this.output) return;
+
+        this.output._param = this;
+        this.output.control.style.float     = 'right';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
+    }
+
 
 
     isDefault()
     {
         return this.value == this.defaultValue;
+    }
+
+
+
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        //this._control.setValue(value, fireChangeEvent, confirm); 
     }
 
 
@@ -6737,7 +6830,7 @@ class UGraph
 
             const gap = 30;
             node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y;
+            node.div.style.top  = bounds.y - controlBar.offsetHeight;
         }
         else // 0
         {
@@ -6951,6 +7044,7 @@ extends EventTarget
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
 
+    
     control;
   
 
@@ -7032,6 +7126,105 @@ extends EventTarget
 }
 
 
+class UNewInput
+extends UInput
+{
+    // #dataType;     
+    // get dataType() { return this.#dataType; }
+
+    // get data()
+    // {
+    //     return (
+    //         this.connected
+    //         ? this.connectedOutput.data
+    //         : null);
+    // }
+
+
+    // _op    = null; get op   () { return this._op;    }
+    // _param = null; get param() { return this._param; }
+
+    // control;
+  
+
+    // _connectedOutput = null;
+    // get connectedOutput() { return this._connectedOutput; }
+    // set connectedOutput(output)
+    // {
+    //     if (this._connectedOutput)
+    //     {
+    //         this.dispatchEvent(new CustomEvent(
+    //             'disconnect', 
+    //             { 'input': this }));
+    //     }
+
+    //     this._connectedOutput = output;
+
+    //     if (this._connectedOutput)
+    //     {
+    //         this.dispatchEvent(new CustomEvent(
+    //             'connect', 
+    //             { 
+    //                 'output': output,
+    //                 'input':  this 
+    //             }));
+    //     }
+    // }
+
+
+    // connection      = null;
+    
+    // connecting      = false;
+    
+    // initialSeed     = 0;
+    // currentSeed     = 0;
+
+    // get connected() { return this.connectedOutput != null; }
+
+
+    // onconnect    = new Event('connect');
+    // ondisconnect = new Event('disconnect');
+
+
+    // constructor(dataType)
+    // {
+    //     super();
+        
+    //     this.#dataType = dataType;
+
+    //     this.control = document.createElement('div');
+    //     this.control.className = 'input';
+    //     this.control.input = this;
+    
+    //     this.control.addEventListener('pointerdown', e => e.preventDefault());
+
+    //     this.control.addEventListener('pointerenter', e => 
+    //     {
+    //         graphView.overInput = this;
+    //         e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+    //     });
+
+    //     this.control.addEventListener('pointerleave', e => 
+    //     {
+    //         graphView.overInput = null;
+    //         e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
+    //     });
+    // }
+
+
+
+    // save()
+    // {
+    //     let save = this.op.name;
+
+    //     if (this.op.param != null)
+    //         save += '.' + this.op.param.name;
+
+    //     return save;
+    // }
+}
+
+
 class UOutput
 {
     #dataType;     
@@ -7044,7 +7237,7 @@ class UOutput
     get data() 
     {
         if (!this.op.valid)
-            this.op.generate();
+            this.op.update();
 
         return this._data;
     }
@@ -7273,15 +7466,15 @@ class UConnection
 
 function activeNodeInTree(node) 
 { 
-    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
-    const right = getActiveNodeRight(node); if (!!right) return right;
+    const left  = activeNodeLeft(node);  if (!!left ) return left;
+    const right = activeNodeRight(node); if (!!right) return right;
 
     return null;
 }
 
 
 
-function getActiveNodeLeft(node)
+function activeNodeLeft(node)
 {
     if (node.active) return node;
 
@@ -7289,7 +7482,7 @@ function getActiveNodeLeft(node)
     {
         if (input.connected)
         {
-            const left = getActiveNodeLeft(input.connectedOutput.op);
+            const left = activeNodeLeft(input.connectedOutput.op);
             if (left) return left;
         }
     }
@@ -7299,7 +7492,7 @@ function getActiveNodeLeft(node)
 
 
 
-function getActiveNodeRight(node)
+function activeNodeRight(node)
 {
     if (node.active) return node;
 
@@ -7307,7 +7500,7 @@ function getActiveNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const right = getActiveNodeRight(input.op);
+            const right = activeNodeRight(input.op);
             if (right) return right;
         }
     }
@@ -7319,13 +7512,13 @@ function getActiveNodeRight(node)
 
 function lastNodeInTree(node) 
 { 
-    const right = getLastNodeRight(node); 
+    const right = lastNodeRight(node); 
     return !!right ? right : null;
 }
 
 
 
-function getLastNodeRight(node)
+function lastNodeRight(node)
 {
     var right = null;
 
@@ -7333,7 +7526,7 @@ function getLastNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const _right = getLastNodeRight(input.op);
+            const _right = lastNodeRight(input.op);
             if (_right && !!right) return node;
             right = _right;
         }
@@ -7342,12 +7535,6 @@ function getLastNodeRight(node)
     return !!right ? right : node;
 }
 
-
-/*
-    data types:
-        OBJ
-        number
-*/
 
 class UOperator
 {
@@ -7379,7 +7566,7 @@ class UOperator
     output = null;
     
 
-    // node
+    // node UI
 
     div;
     inner;
@@ -7467,6 +7654,37 @@ class UOperator
     
     
 
+    invalidate()
+    {
+        if (!this.valid) // stops an op with inputs from same output 
+            return;      // from being invalidated more than once
+
+        this.valid = false;
+
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+                input.op.invalidate();
+        }
+    }
+
+
+
+    update()
+    { 
+        this.valid = true; 
+    }
+
+
+
+    updateNode() 
+    {
+        let headerColor = colorFromDataType(this.#dataType, false);
+        this.header.style.backgroundColor = headerColor;
+    }
+
+
+
     addInput(input)
     {
         input._op = this;
@@ -7502,7 +7720,7 @@ class UOperator
             param.input._op = this;
             this.inputs.push(param.input);
         }
-                
+
         param.control.style.display = 'inline-block';
         
         this.inner.appendChild(param.div);
@@ -7519,13 +7737,6 @@ class UOperator
         this.label.innerHTML = this.id + ': ' + newId;
 
         return true;
-    }
-
-
-
-    generate() 
-    { 
-        this.valid = true; 
     }
 
 
@@ -7663,14 +7874,6 @@ class UOperator
         save += '\n' + pos + '}';
 
         return save;
-    }
-
-
-
-    updateNode() 
-    {
-        let headerColor = colorFromDataType(this.#dataType, false);
-        this.header.style.backgroundColor = headerColor;
     }
 }
 
@@ -8095,14 +8298,12 @@ extends UOperator
     #value;
 
 
-    
+
     constructor()
     {
         super('add', 'number');
 
-        this.addInput(new UInput(this.dataType));
-        this.addInput(new UInput(this.dataType));
-
+        this.addInput(new UNewInput(this.dataType));
         this.setOutput(new UOutput(this.dataType));
 
         this.addParam(this.#value = new UNumberParam('', false, false));
@@ -8144,7 +8345,7 @@ extends UOperator
             this.updateConnectedInputValueText();
         });
 
-        
+
         this.#max.control.addEventListener('change', () =>
         {
             // if (this.#max.value < this.#min.value)
@@ -8210,7 +8411,7 @@ extends UOperator
 //     }
 
 
-//     generate()
+//     update()
 //     {
 //         if (this.valid) return;
 
@@ -8225,7 +8426,7 @@ extends UOperator
 //             seed:  this.#seed .value
 //         };
 
-//         super.generate();
+//         super.update();
 //     }
 // }
 
@@ -8345,7 +8546,7 @@ extends UOperator
 
 
 
-    // generate()
+    // update()
     // {
     //     if (this.valid) return;
 
@@ -8360,7 +8561,7 @@ extends UOperator
     //         height: this.#height.value
     //     };
 
-    //     super.generate();
+    //     super.update();
     // }
 }
 
@@ -8406,7 +8607,7 @@ extends UOperator
 //     }
 
 
-//     generate()
+//     update()
 //     {
 //         if (this.valid) return;
 
@@ -8442,7 +8643,7 @@ extends UOperator
 //         }
 
         
-//         super.generate();
+//         super.update();
 //     }
 // }
 
@@ -8453,7 +8654,7 @@ extends UOperator
     #count;
     #gap;
 
-    
+
 
     constructor()
     {
@@ -8488,7 +8689,7 @@ extends UOperator
 //     }
 
 
-//     generate()
+//     update()
 //     {
 //         if (this.valid) return;
 
@@ -8524,7 +8725,7 @@ extends UOperator
 //         }
 
         
-//         super.generate();
+//         super.update();
 //     }
 // }
 
@@ -9198,7 +9399,7 @@ function uiShowParamValue(nodeId, paramName, value)
 
 
 
-function uiGenerateObjects(nodeIds)
+function uiUpdateNodes(nodeIds)
 {
     if (uiGraph.mutex)
     {
@@ -9208,21 +9409,22 @@ function uiGenerateObjects(nodeIds)
         return;
     }
     
+
     uiGraph.mutex = true;
 
 
     uiPostMessageToGenerator({
-        msg:    'genGenerateObjects',
+        msg:    'genUpdateObjects',
         nodeIds: nodeIds
     });
 }
 
 
 
-function uiUpdateObjects(objects)
+function uiUpdateGraph()
 {
     uiGraph.mutex = false;
-    
+
 
     if (uiGraph.deferNodeIds.length > 0)
     {
@@ -9231,10 +9433,16 @@ function uiUpdateObjects(objects)
             
         uiGraph.deferNodeIds = [];
 
-        uiGenerateObjects(deferNodes);
+        uiUpdateNodes(deferNodes);
     }
+}
 
 
+
+function uiUpdateObjects(objects)
+{
+    uiUpdateGraph();
+    
     uiPostMessageToFigma({ 
         cmd:    'figUpdateObjects',
         objects: objects
@@ -9264,15 +9472,15 @@ function updateGraphNode(node)
 
     let boxShadow = '';
 
-    if (selecting)
-    {
-        boxShadow += 
-              '0px 5px ' 
-            + (node.selected ? 20 : 10)
-            + 'px ' 
-            + (node.selected ? '#0001' : '#00000008')
-            + ', ';
-    } 
+    // if (selecting)
+    // {
+    //     boxShadow += 
+    //           '0px 5px ' 
+    //         + (node.selected ? 20 : 10)
+    //         + 'px ' 
+    //         + (node.selected ? '#0001' : '#00000008')
+    //         + ', ';
+    // } 
 
     boxShadow += '0 0 0 1px ' + (node.div.over ? activeObjectColor : '#00000008');
 
@@ -9327,10 +9535,11 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'uiMakeActive':      uiMakeActive     (e.data.nodeIds);                            break;
-        case 'uiShowParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
-        case 'uiGenerateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
-        case 'uiUpdateObjects':   uiUpdateObjects  (e.data.objects);                            break;
+        case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
+        case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
+        case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
+        case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
     }
 };
 
@@ -9983,17 +10192,11 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.sx           = e.clientX;
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
-            
-            
 
+            slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
-
-            slider.clickTimer = setTimeout(function() 
-            {
-                onSliderClickTimer(slider); 
-            }, 500);
         }
         else if (e.button == 1)
         {

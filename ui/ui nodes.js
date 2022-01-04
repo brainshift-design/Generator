@@ -196,7 +196,7 @@ function uiShowParamValue(nodeId, paramName, value)
 
 
 
-function uiGenerateObjects(nodeIds)
+function uiUpdateNodes(nodeIds)
 {
     if (uiGraph.mutex)
     {
@@ -206,21 +206,22 @@ function uiGenerateObjects(nodeIds)
         return;
     }
     
+
     uiGraph.mutex = true;
 
 
     uiPostMessageToGenerator({
-        msg:    'genGenerateObjects',
+        msg:    'genUpdateObjects',
         nodeIds: nodeIds
     });
 }
 
 
 
-function uiUpdateObjects(objects)
+function uiUpdateGraph()
 {
     uiGraph.mutex = false;
-    
+
 
     if (uiGraph.deferNodeIds.length > 0)
     {
@@ -229,10 +230,16 @@ function uiUpdateObjects(objects)
             
         uiGraph.deferNodeIds = [];
 
-        uiGenerateObjects(deferNodes);
+        uiUpdateNodes(deferNodes);
     }
+}
 
 
+
+function uiUpdateObjects(objects)
+{
+    uiUpdateGraph();
+    
     uiPostMessageToFigma({ 
         cmd:    'figUpdateObjects',
         objects: objects
@@ -262,15 +269,15 @@ function updateGraphNode(node)
 
     let boxShadow = '';
 
-    if (selecting)
-    {
-        boxShadow += 
-              '0px 5px ' 
-            + (node.selected ? 20 : 10)
-            + 'px ' 
-            + (node.selected ? '#0001' : '#00000008')
-            + ', ';
-    } 
+    // if (selecting)
+    // {
+    //     boxShadow += 
+    //           '0px 5px ' 
+    //         + (node.selected ? 20 : 10)
+    //         + 'px ' 
+    //         + (node.selected ? '#0001' : '#00000008')
+    //         + ', ';
+    // } 
 
     boxShadow += '0 0 0 1px ' + (node.div.over ? activeObjectColor : '#00000008');
 

@@ -9,13 +9,8 @@ extends UParameter
     
     get oldValue()   { return this._control.oldValue; }
 
+
     
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        this._control.setValue(value, fireChangeEvent, confirm); 
-    }
-
-
     input;
     output;
 
@@ -62,27 +57,10 @@ extends UParameter
 
         this.div.appendChild(this.control);
 
-        this.input = new UInput('color');
-        this.input._param = this;
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.input.control);
 
+        this.initInput();
+        this.initOutput(hasOutput);
 
-        if (hasOutput)
-        {
-            this.output = new UOutput('color');
-            this.output._param = this;
-            this.output.control.style.float     = 'left';
-            this.output.control.style.position  = 'absolute';
-            this.output.control.style.top       = '50%';
-            this.output.control.style.transform = 'translateY(-50%)';
-            this.div.appendChild(this.output.control);
-        }
-        else
-            this.output = null;
 
 
         this.control.addEventListener('change', e =>
@@ -92,13 +70,24 @@ extends UParameter
         });
 
 
-
         this.control.addEventListener('confirm', e =>
         {
             this.op.valid = false;
             actionManager.do(new SetValueAction(this, this.value));
         });
+    }
 
+
+
+    initInput()
+    {
+        this.input = new UInput('color');
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
 
 
         this.input.addEventListener('connect', e =>
@@ -106,7 +95,6 @@ extends UParameter
             this.control.style.fontStyle = 'italic';
             this.control.inputConnected  = true;
         });
-
 
         
         this.input.addEventListener('disconnect', e =>
@@ -118,9 +106,31 @@ extends UParameter
 
 
 
+    initOutput(hasOutput)
+    {
+        this.output = hasOutput ? new UOutput('color') : null;
+        if (!this.output) return;
+
+        this.output._param = this;
+        this.output.control.style.float     = 'left';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
+    }
+
+
+
     isDefault()
     {
         return this.value == this.defaultValue;
+    }
+
+
+
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        //this._control.setValue(value, fireChangeEvent, confirm); 
     }
 
 

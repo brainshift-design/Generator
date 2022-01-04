@@ -121,17 +121,11 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.sx           = e.clientX;
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
-            
-            
 
+            slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
-
-            slider.clickTimer = setTimeout(function() 
-            {
-                onSliderClickTimer(slider); 
-            }, 500);
         }
         else if (e.button == 1)
         {

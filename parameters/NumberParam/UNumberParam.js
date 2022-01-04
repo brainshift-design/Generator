@@ -15,13 +15,6 @@ extends UParameter
 
 
     
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        this._control.setValue(value, fireChangeEvent, confirm); 
-    }    
-
-
-
     get valueText() { return this.control.valueText; }
     set valueText(text) 
     {
@@ -74,16 +67,17 @@ extends UParameter
             
         this.control.addEventListener('change', e =>
         {
-            this.op.valid = false;
-            uiSetParam(this, this.value);
+            // this.op.valid = false;
+            // uiSetParam(this, this.value);
+            this.setValue(this.value, false, false);
         });
-
 
 
         this.control.addEventListener('confirm', e =>
         {
-            this.op.valid = false;
-            actionManager.do(new SetValueAction(this, this.value));
+            // this.op.valid = false;
+            // actionManager.do(new SetValueAction(this, this.value));
+            this.setValue(this.value, false, true);
         });
     }
 
@@ -137,6 +131,16 @@ extends UParameter
     {
         return this.value == this.defaultValue;
     }
+
+
+
+    setValue(value, fireChangeEvent = true, confirm = true) 
+    { 
+        this.op.invalidate();
+        this._control.setValue(value, false, false); 
+        
+        UParameter.prototype.setValue.call(this, value != this.oldValue, confirm);
+    }    
 
 
 

@@ -2054,14 +2054,8 @@ extends GParameter
         this.input = new GInput('number');
         this.input._param = this;
  
-
-        if (hasOutput)
-        {
-            this.output = new GOutput('number');
-            this.output._param = this;
-        }
-        else
-            this.output = null;
+        this.output = hasOutput ? new GOutput('number') : null;
+        if (this.output) this.output._param = this;
     }
 }
 
@@ -2237,6 +2231,40 @@ class GInput
 }
 
 
+class GNewInput
+extends GInput
+{
+    // #dataType;     
+    // get dataType() { return this.#dataType; }
+
+    // _op    = null; get op   () { return this._op;    }
+    // _param = null; get param() { return this._param; }
+
+    // connectedOutput = null;
+    // connection      = null;
+    
+    // connecting      = false;
+    
+
+    // get connected() { return this.connectedOutput != null; }
+
+
+    constructor(dataType)
+    {
+        super(dataType);
+    }    
+    
+
+    // get data()
+    // {
+    //     return (
+    //         this.connected
+    //         ? this.connectedOutput.getData(this)
+    //         : null);
+    // }
+}
+
+
 class   GOutput
 extends EventTarget
 {
@@ -2317,15 +2345,15 @@ class GConnection
 
 function activeNodeInTree(node) 
 { 
-    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
-    const right = getActiveNodeRight(node); if (!!right) return right;
+    const left  = activeNodeLeft(node);  if (!!left ) return left;
+    const right = activeNodeRight(node); if (!!right) return right;
 
     return null;
 }
 
 
 
-function getActiveNodeLeft(node)
+function activeNodeLeft(node)
 {
     if (node.active) return node;
 
@@ -2333,7 +2361,7 @@ function getActiveNodeLeft(node)
     {
         if (input.connected)
         {
-            const left = getActiveNodeLeft(input.connectedOutput.op);
+            const left = activeNodeLeft(input.connectedOutput.op);
             if (left) return left;
         }
     }
@@ -2343,7 +2371,7 @@ function getActiveNodeLeft(node)
 
 
 
-function getActiveNodeRight(node)
+function activeNodeRight(node)
 {
     if (node.active) return node;
 
@@ -2351,7 +2379,7 @@ function getActiveNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const right = getActiveNodeRight(input.op);
+            const right = activeNodeRight(input.op);
             if (right) return right;
         }
     }
@@ -2363,13 +2391,13 @@ function getActiveNodeRight(node)
 
 function lastNodeInTree(node) 
 { 
-    const right = getLastNodeRight(node); 
+    const right = lastNodeRight(node); 
     return !!right ? right : null;
 }
 
 
 
-function getLastNodeRight(node)
+function lastNodeRight(node)
 {
     var right = null;
 
@@ -2377,7 +2405,7 @@ function getLastNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const _right = getLastNodeRight(input.op);
+            const _right = lastNodeRight(input.op);
             if (_right && !!right) return node;
             right = _right;
         }
@@ -2566,6 +2594,7 @@ extends GOperator
     _sampled = Number.NaN;
 
 
+    
     constructor()
     {
         super('number', 'number');
@@ -2574,6 +2603,7 @@ extends GOperator
 
         this.addParam(this._value = new GNumberParam('', true, false));
     }
+
 
 
     generate(callerInput)
@@ -2593,6 +2623,7 @@ extends GOperator
             value:  this._sampled
         };
     }
+
 
 
     refresh()
@@ -2615,9 +2646,7 @@ extends GOperator
     {
         super('add', 'number');
 
-        this.addInput(new GInput(this.dataType));
-        this.addInput(new GInput(this.dataType));
- 
+        this.addInput(new GNewInput(this.dataType));
         this.setOutput(new GOutput(this.dataType));
 
         this.addParam(this._value = new GNumberParam('', false, false));
@@ -2986,16 +3015,16 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'genCreateNode':      genCreateNode     (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
-        case 'genDeleteNodes':     genDeleteNodes    (e.data.nodeIds,  e.data.uiActionId);            break;             
-        case 'genUndeleteNodes':   genUndeleteNodes  (e.data.uiActionId);                             break;             
-        case 'genSetNodeId':       genSetNodeId      (e.data.nodeId,   e.data.newId);                 break; 
-        case 'genSetActive':       genSetActive      (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
-        case 'genConnect':         genConnect        (e.data.outputId, e.data.inputs);                break; 
-        case 'genDisconnect':      genDisconnect     (e.data.input);                                  break;
-        case 'genSetParam':        genSetParam       (e.data.nodeId,   e.data.param, e.data.value);   break;
-        case 'genInvalidate':      genInvalidate     (e.data.nodeId);                                 break;
-        case 'genGenerateObjects': genGenerateObjects(e.data.nodeIds);                                break;
+        case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
+        case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
+        case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
+        case 'genSetActive':     genSetActive    (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
+        case 'genConnect':       genConnect      (e.data.outputId, e.data.inputs);                break; 
+        case 'genDisconnect':    genDisconnect   (e.data.input);                                  break;
+        case 'genSetParam':      genSetParam     (e.data.nodeId,   e.data.param, e.data.value);   break;
+        case 'genInvalidate':    genInvalidate   (e.data.nodeId);                                 break;
+        case 'genUpdateObjects': genUpdateObjects(e.data.nodeIds);                                break;
     }
 };
 
@@ -3097,7 +3126,8 @@ function genConnect(outputId, inputs)
             ? inNode.inputs[input.index]
             : inNode.params.find(p => p.name == input.param).input);
 
-        genGenerateObjects([input.nodeId]);
+        if (inNode.dataType == 'object')
+            genUpdateObjects([input.nodeId]);
     }
 }
 
@@ -3115,19 +3145,27 @@ function genSetParam(nodeId, name, value)
 {
     const node  = genGraph.nodeFromId(nodeId);
     const param = node.params.find(p => p.name == name);
+
     param.value = value;
 
-    const activeId = activeNodeInTree(genGraph.nodes.find(n => n.id == node.id)).id;
+    updateNodeGraph(node);
+}
+
+
+
+function updateNodeGraph(_node)
+{
+    const node = genGraph.nodes.find(n => n.id == _node.id);
+
+    let activeId = activeNodeInTree(node).id;
 
     if (activeId > -1)
     {
         genPostMessageToUi({ 
-            msg:    'uiGenerateObjects',
+            msg:    'uiUpdateNodes',
             nodeIds: [activeId]
         });
     }
-
-    //genGenerateObjects([activeId]);
 }
 
 
@@ -3140,7 +3178,7 @@ function genInvalidate(nodeId)
 
 
 
-function genGenerateObjects(nodeIds)
+function genUpdateObjects(nodeIds)
 {
     for (const node of genGraph.nodes)
         node.reset();
@@ -3158,25 +3196,31 @@ function genGenerateObjects(nodeIds)
     }    
 
     
-    // now create the objects
+    // now create the objects if necessary
 
-    const objects = new Array(nObjects);
-
-    let i = 0;
-    for (const nodeId of nodeIds)
+    if (nObjects > 0)
     {
-        const node = genGraph.nodeFromId(nodeId);
-        const data = node.output.getData();
-        
-        for (const obj of data)
-            objects[i++] = obj;
-    }    
-    
-    
-    genPostMessageToUi({ 
-        msg:    'uiUpdateObjects',
-        objects: objects
-    });
+        const objects = new Array(nObjects);
+
+        let i = 0;
+        for (const nodeId of nodeIds)
+        {
+            const node = genGraph.nodeFromId(nodeId);
+            const data = node.output.getData();
+            
+            for (const obj of data)
+                objects[i++] = obj;
+        }    
+
+        genPostMessageToUi({ 
+            msg:    'uiUpdateObjects',
+            objects: objects
+        });
+    }
+    // else
+    // {
+    //     genPostMessageToUi({ msg: 'uiUpdateGraph' });
+    // }
 }
 
 

@@ -54,7 +54,7 @@ extends UOperator
 
 
 
-    // generate()
+    // update()
     // {
     //     if (this.valid) return;
 
@@ -69,6 +69,6 @@ extends UOperator
     //         height: this.#height.value
     //     };
 
-    //     super.generate();
+    //     super.update();
     // }
 }

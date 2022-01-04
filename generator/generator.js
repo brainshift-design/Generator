@@ -13,16 +13,16 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'genCreateNode':      genCreateNode     (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
-        case 'genDeleteNodes':     genDeleteNodes    (e.data.nodeIds,  e.data.uiActionId);            break;             
-        case 'genUndeleteNodes':   genUndeleteNodes  (e.data.uiActionId);                             break;             
-        case 'genSetNodeId':       genSetNodeId      (e.data.nodeId,   e.data.newId);                 break; 
-        case 'genSetActive':       genSetActive      (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
-        case 'genConnect':         genConnect        (e.data.outputId, e.data.inputs);                break; 
-        case 'genDisconnect':      genDisconnect     (e.data.input);                                  break;
-        case 'genSetParam':        genSetParam       (e.data.nodeId,   e.data.param, e.data.value);   break;
-        case 'genInvalidate':      genInvalidate     (e.data.nodeId);                                 break;
-        case 'genGenerateObjects': genGenerateObjects(e.data.nodeIds);                                break;
+        case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
+        case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
+        case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
+        case 'genSetActive':     genSetActive    (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
+        case 'genConnect':       genConnect      (e.data.outputId, e.data.inputs);                break; 
+        case 'genDisconnect':    genDisconnect   (e.data.input);                                  break;
+        case 'genSetParam':      genSetParam     (e.data.nodeId,   e.data.param, e.data.value);   break;
+        case 'genInvalidate':    genInvalidate   (e.data.nodeId);                                 break;
+        case 'genUpdateObjects': genUpdateObjects(e.data.nodeIds);                                break;
     }
 };
 
@@ -124,7 +124,8 @@ function genConnect(outputId, inputs)
             ? inNode.inputs[input.index]
             : inNode.params.find(p => p.name == input.param).input);
 
-        genGenerateObjects([input.nodeId]);
+        if (inNode.dataType == 'object')
+            genUpdateObjects([input.nodeId]);
     }
 }
 
@@ -142,19 +143,27 @@ function genSetParam(nodeId, name, value)
 {
     const node  = genGraph.nodeFromId(nodeId);
     const param = node.params.find(p => p.name == name);
+
     param.value = value;
 
-    const activeId = activeNodeInTree(genGraph.nodes.find(n => n.id == node.id)).id;
+    updateNodeGraph(node);
+}
+
+
+
+function updateNodeGraph(_node)
+{
+    const node = genGraph.nodes.find(n => n.id == _node.id);
+
+    let activeId = activeNodeInTree(node).id;
 
     if (activeId > -1)
     {
         genPostMessageToUi({ 
-            msg:    'uiGenerateObjects',
+            msg:    'uiUpdateNodes',
             nodeIds: [activeId]
         });
     }
-
-    //genGenerateObjects([activeId]);
 }
 
 
@@ -167,7 +176,7 @@ function genInvalidate(nodeId)
 
 
 
-function genGenerateObjects(nodeIds)
+function genUpdateObjects(nodeIds)
 {
     for (const node of genGraph.nodes)
         node.reset();
@@ -185,23 +194,29 @@ function genGenerateObjects(nodeIds)
     }    
 
     
-    // now create the objects
+    // now create the objects if necessary
 
-    const objects = new Array(nObjects);
-
-    let i = 0;
-    for (const nodeId of nodeIds)
+    if (nObjects > 0)
     {
-        const node = genGraph.nodeFromId(nodeId);
-        const data = node.output.getData();
-        
-        for (const obj of data)
-            objects[i++] = obj;
-    }    
-    
-    
-    genPostMessageToUi({ 
-        msg:    'uiUpdateObjects',
-        objects: objects
-    });
+        const objects = new Array(nObjects);
+
+        let i = 0;
+        for (const nodeId of nodeIds)
+        {
+            const node = genGraph.nodeFromId(nodeId);
+            const data = node.output.getData();
+            
+            for (const obj of data)
+                objects[i++] = obj;
+        }    
+
+        genPostMessageToUi({ 
+            msg:    'uiUpdateObjects',
+            objects: objects
+        });
+    }
+    // else
+    // {
+    //     genPostMessageToUi({ msg: 'uiUpdateGraph' });
+    // }
 }

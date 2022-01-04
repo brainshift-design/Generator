@@ -54,13 +54,7 @@ extends GParameter
         this.input = new GInput('number');
         this.input._param = this;
  
-
-        if (hasOutput)
-        {
-            this.output = new GOutput('number');
-            this.output._param = this;
-        }
-        else
-            this.output = null;
+        this.output = hasOutput ? new GOutput('number') : null;
+        if (this.output) this.output._param = this;
     }
 }

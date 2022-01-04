@@ -25,10 +25,11 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'uiMakeActive':      uiMakeActive     (e.data.nodeIds);                            break;
-        case 'uiShowParamValue':  uiShowParamValue (e.data.nodeId, e.data.param, e.data.value); break;
-        case 'uiGenerateObjects': uiGenerateObjects(e.data.nodeIds);                            break;
-        case 'uiUpdateObjects':   uiUpdateObjects  (e.data.objects);                            break;
+        case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
+        case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
+        case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
+        case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
     }
 };
 

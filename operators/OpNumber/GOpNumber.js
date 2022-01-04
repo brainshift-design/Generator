@@ -6,6 +6,7 @@ extends GOperator
     _sampled = Number.NaN;
 
 
+    
     constructor()
     {
         super('number', 'number');
@@ -14,6 +15,7 @@ extends GOperator
 
         this.addParam(this._value = new GNumberParam('', true, false));
     }
+
 
 
     generate(callerInput)
@@ -33,6 +35,7 @@ extends GOperator
             value:  this._sampled
         };
     }
+
 
 
     refresh()

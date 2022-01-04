@@ -1,9 +1,3 @@
-/*
-    data types:
-        OBJ
-        number
-*/
-
 class UOperator
 {
     #opType;
@@ -34,7 +28,7 @@ class UOperator
     output = null;
     
 
-    // node
+    // node UI
 
     div;
     inner;
@@ -122,6 +116,37 @@ class UOperator
     
     
 
+    invalidate()
+    {
+        if (!this.valid) // stops an op with inputs from same output 
+            return;      // from being invalidated more than once
+
+        this.valid = false;
+
+        if (this.output)
+        {
+            for (const input of this.output.connectedInputs)
+                input.op.invalidate();
+        }
+    }
+
+
+
+    update()
+    { 
+        this.valid = true; 
+    }
+
+
+
+    updateNode() 
+    {
+        let headerColor = colorFromDataType(this.#dataType, false);
+        this.header.style.backgroundColor = headerColor;
+    }
+
+
+
     addInput(input)
     {
         input._op = this;
@@ -157,7 +182,7 @@ class UOperator
             param.input._op = this;
             this.inputs.push(param.input);
         }
-                
+
         param.control.style.display = 'inline-block';
         
         this.inner.appendChild(param.div);
@@ -174,13 +199,6 @@ class UOperator
         this.label.innerHTML = this.id + ': ' + newId;
 
         return true;
-    }
-
-
-
-    generate() 
-    { 
-        this.valid = true; 
     }
 
 
@@ -318,13 +336,5 @@ class UOperator
         save += '\n' + pos + '}';
 
         return save;
-    }
-
-
-
-    updateNode() 
-    {
-        let headerColor = colorFromDataType(this.#dataType, false);
-        this.header.style.backgroundColor = headerColor;
     }
 }

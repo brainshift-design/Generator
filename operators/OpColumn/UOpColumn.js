@@ -4,7 +4,7 @@ extends UOperator
     #count;
     #gap;
 
-    
+
 
     constructor()
     {
@@ -39,7 +39,7 @@ extends UOperator
 //     }
 
 
-//     generate()
+//     update()
 //     {
 //         if (this.valid) return;
 
@@ -75,6 +75,6 @@ extends UOperator
 //         }
 
         
-//         super.generate();
+//         super.update();
 //     }
 // }

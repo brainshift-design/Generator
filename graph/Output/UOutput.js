@@ -10,7 +10,7 @@ class UOutput
     get data() 
     {
         if (!this.op.valid)
-            this.op.generate();
+            this.op.update();
 
         return this._data;
     }

@@ -1,14 +1,14 @@
 function activeNodeInTree(node) 
 { 
-    const left  = getActiveNodeLeft(node);  if (!!left ) return left;
-    const right = getActiveNodeRight(node); if (!!right) return right;
+    const left  = activeNodeLeft(node);  if (!!left ) return left;
+    const right = activeNodeRight(node); if (!!right) return right;
 
     return null;
 }
 
 
 
-function getActiveNodeLeft(node)
+function activeNodeLeft(node)
 {
     if (node.active) return node;
 
@@ -16,7 +16,7 @@ function getActiveNodeLeft(node)
     {
         if (input.connected)
         {
-            const left = getActiveNodeLeft(input.connectedOutput.op);
+            const left = activeNodeLeft(input.connectedOutput.op);
             if (left) return left;
         }
     }
@@ -26,7 +26,7 @@ function getActiveNodeLeft(node)
 
 
 
-function getActiveNodeRight(node)
+function activeNodeRight(node)
 {
     if (node.active) return node;
 
@@ -34,7 +34,7 @@ function getActiveNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const right = getActiveNodeRight(input.op);
+            const right = activeNodeRight(input.op);
             if (right) return right;
         }
     }
@@ -46,13 +46,13 @@ function getActiveNodeRight(node)
 
 function lastNodeInTree(node) 
 { 
-    const right = getLastNodeRight(node); 
+    const right = lastNodeRight(node); 
     return !!right ? right : null;
 }
 
 
 
-function getLastNodeRight(node)
+function lastNodeRight(node)
 {
     var right = null;
 
@@ -60,7 +60,7 @@ function getLastNodeRight(node)
     {
         for (const input of node.output.connectedInputs)
         {
-            const _right = getLastNodeRight(input.op);
+            const _right = lastNodeRight(input.op);
             if (_right && !!right) return node;
             right = _right;
         }

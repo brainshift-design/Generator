@@ -6,6 +6,7 @@
 ../graph/Graph/UGraph.js
 
 ../graph/Input/UInput.js
+../graph/NewInput/UNewInput.js
 ../graph/Output/UOutput.js
 ../graph/Connection/UConnection.js
 

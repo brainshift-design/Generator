@@ -97,7 +97,7 @@ class UGraph
 
             const gap = 30;
             node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y;
+            node.div.style.top  = bounds.y - controlBar.offsetHeight;
         }
         else // 0
         {

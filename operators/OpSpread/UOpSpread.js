@@ -19,10 +19,10 @@ extends UOperator
     }
     
     
-    generate()
+    update()
     {
         if (this.valid) return;
-        super.generate();
+        super.update();
 
         var input = this.inputs[0];
 

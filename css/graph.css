@@ -106,15 +106,15 @@
 
 .output
 {
-    width:          4px;
-    height:         4px;
+    width:          6px;
+    height:         6px;
     background:     rgba(0, 0, 0, 0.12);
-    border-radius:  5px;
+    border-radius:  6px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    right:          6px;
+    right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }

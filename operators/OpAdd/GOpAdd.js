@@ -9,9 +9,7 @@ extends GOperator
     {
         super('add', 'number');
 
-        this.addInput(new GInput(this.dataType));
-        this.addInput(new GInput(this.dataType));
- 
+        this.addInput(new GNewInput(this.dataType));
         this.setOutput(new GOutput(this.dataType));
 
         this.addParam(this._value = new GNumberParam('', false, false));
