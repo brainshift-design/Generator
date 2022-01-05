@@ -42,7 +42,7 @@ function loadGraphFromFile(file, graph)
 
     reader.onload = () =>
     {
-        uiGraph.clear();
+        graph.clear();
 
         
         // load file contents

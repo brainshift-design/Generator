@@ -11,7 +11,7 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
     {
-        graphView.selected = uiGraph.nodes;
+        graphView.selected = graph.nodes;
     }
 
     // undo/redo

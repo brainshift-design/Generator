@@ -58,7 +58,7 @@ scrollbarX.addEventListener('pointerdown', e =>
 
         graphView.panStart = graphView.pan;
 
-        for (const node of uiGraph.nodes)
+        for (const node of graph.nodes)
             node.div.slx = node.div.offsetLeft;
     }
 });
@@ -75,7 +75,7 @@ scrollbarX.addEventListener('pointerup', e =>
 
         var bounds = Rect.NaN;
 
-        for (const node of uiGraph.nodes)
+        for (const node of graph.nodes)
             bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
         if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
@@ -154,7 +154,7 @@ scrollbarY.addEventListener('pointerdown', e =>
         scrollbarY.pStart = e.clientY;
         scrollbarY.setPointerCapture(e.pointerId);
 
-        for (const node of uiGraph.nodes)
+        for (const node of graph.nodes)
             node.div.sly = node.div.offsetTop;
 
         graphView.panStart = graphView.pan;
@@ -173,7 +173,7 @@ scrollbarY.addEventListener('pointerup', e =>
 
         var bounds = Rect.NaN;
 
-        for (const node of uiGraph.nodes)
+        for (const node of graph.nodes)
             bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
         if (bounds.t >= 0 && bounds.b < graphView.clientHeight)

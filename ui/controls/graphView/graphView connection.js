@@ -41,7 +41,7 @@ graphView.endConnection = function()
         
         if (   output
             && output.dataType == input.dataType) // TO OUTPUT
-            uiGraph.connect(output, input); // connect new
+            graph.connect(output, input); // connect new
 
         graphView.cancelConnection();
     }

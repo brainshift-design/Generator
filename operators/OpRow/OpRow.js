@@ -1,27 +1,27 @@
-class   UOpColumn
-extends UOperator
+class   OpRow
+extends Operator
 {
     #count;
     #gap;
 
 
-
     constructor()
     {
-        super('column', 'object');
+        super('row', 'object');
 
-        this.addInput (new UInput (this.dataType));
-        this.setOutput(new UOutput(this.dataType));
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new UNumberParam('count', true,  7, 1));
-        this.addParam(this.#gap   = new UNumberParam('gap',   true, 10, 0));
+        this.addParam(this.#count = new NumberParam('count', true,  7, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   true, 10, 0));
     }
 }
 
 
 
-// class   UOpColumn
-// extends UOperator
+
+// class   OpRow
+// extends Operator
 // {
 //     #count;
 //     #gap;
@@ -31,8 +31,8 @@ extends UOperator
 //     {
 //         super('row', 'object');
 
-//         this.addInput (new UInput (this.dataType));
-//         this.setOutput(new UOutput(this.dataType));
+//         this.addInput (new Input (this.dataType));
+//         this.setOutput(new Output(this.dataType));
         
 //         this.addParam(this.#count = new NumberParam('count',  4, 1));
 //         this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
@@ -59,19 +59,19 @@ extends UOperator
 
 //         output._data = [];
     
-//         for (var i = 0, y = 0; i < this.#count.value; i++)
+//         for (var i = 0, x = 0; i < this.#count.value; i++)
 //         {
 //             for (var j = 0; j < objects.length; j++)
 //             {
 //                 const obj = shallowCopy(objects[j]);
-//                 obj.itemId = 'column_' + i + '_' + j;
+//                 obj.itemId = 'row_' + i + '_' + j;
    
-//                 obj.y += y;
+//                 obj.x += x;
                 
 //                 output._data.push(obj);
 //             }
             
-//             y += bounds.h + this.#gap.value;
+//             x += bounds.w + this.#gap.value;
 //         }
 
         

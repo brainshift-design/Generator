@@ -1,4 +1,4 @@
-class UOutput
+class Output
 {
     #dataType;     
     get dataType() { return this.#dataType; }
@@ -6,23 +6,32 @@ class UOutput
     _op = null; get op() { return this._op; }
     
     
-    _data = {};
-    get data() 
-    {
-        if (!this.op.valid)
-            this.op.update();
-
-        return this._data;
-    }
-
-
     control;
+
     
     connectedInputs = [];
     
-    connecting      = false;
+    connecting = false;
     
-    get connected() { return this.connectedInputs.length > 0; }
+
+    _data;
+
+    get data() 
+    {
+        this.op.update();
+        return this._data;
+    }
+    
+    set data(value)
+    {
+        this._data = value;
+
+        for (const input of this.connectedInputs)
+            input.update();
+    }
+
+
+    get isConnected() { return this.connectedInputs.length > 0; }
 
 
 

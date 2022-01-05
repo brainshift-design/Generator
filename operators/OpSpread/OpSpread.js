@@ -1,5 +1,5 @@
-class   UOpSpread 
-extends UOperator
+class   OpSpread 
+extends Operator
 {
     #count;
     #radius;
@@ -11,11 +11,11 @@ extends UOperator
     {
         super('spread', 'object');
 
-        this.addInput (new UInput (this.dataType));
-        this.setOutput(new UOutput(this.dataType));
+        this.addInput (new Input (this.dataType));
+        this.setOutput(new Output(this.dataType));
         
-        this.addParam(this.#count  = new UNumberParam('count',  true,   2, 1));
-        this.addParam(this.#radius = new UNumberParam('radius', true, 100, 0.01));
+        this.addParam(this.#count  = new NumberParam('count',  true,   2, 1));
+        this.addParam(this.#radius = new NumberParam('radius', true, 100, 0.01));
     }
     
     

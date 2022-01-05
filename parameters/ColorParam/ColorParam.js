@@ -1,19 +1,16 @@
-class   USelectParam
-extends UParameter
+class   ColorParam
+extends Parameter
 {
     defaultValue;
-
-    options = [];
     
-
     
     get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
     
     get oldValue()   { return this._control.oldValue; }
 
-    
 
+    
     input;
     output;
 
@@ -30,27 +27,32 @@ extends UParameter
     
     constructor(name, 
                 hasOutput,
-                options,
-                value     = 0, 
+                value     = [0, 0, 0],
                 dragScale = 0.01)
     {
-        super(name, 'number');
+        super(name, 'color');
 
         this._control = document.createElement('div');
         this.control.param  = this;
         this.control.zIndex = 0;
 
-        this.options      = options;
         this.defaultValue = value;
 
+        this.control.style.height = 20;
 
-        initSelectSlider(
+
+        initColorSlider(
             this.control,
-            120,        // width
-            20,         // height
-            this.name,  
-            value,      // default
-            dragScale); // suffix
+            120,       // width
+            20,        // height
+            this.name, 
+            value,     // default
+            dragScale, // drag scale
+            1,         // wheel step
+            0,         // decimals
+            0,         // acceleration
+            '');       // suffix
+
 
 
         this.div.appendChild(this.control);
@@ -59,7 +61,8 @@ extends UParameter
         this.initInput();
         this.initOutput(hasOutput);
 
-            
+
+
         this.control.addEventListener('change', e =>
         {
             this.op.valid = false;
@@ -78,7 +81,7 @@ extends UParameter
 
     initInput()
     {
-        this.input = new UInput('number');
+        this.input = new Input('color');
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
@@ -101,15 +104,15 @@ extends UParameter
         });
     }
 
-    
+
 
     initOutput(hasOutput)
     {
-        this.output = hasOutput ? new UOutput('number') : null;
+        this.output = hasOutput ? new Output('color') : null;
         if (!this.output) return;
 
         this.output._param = this;
-        this.output.control.style.float     = 'right';
+        this.output.control.style.float     = 'left';
         this.output.control.style.position  = 'absolute';
         this.output.control.style.top       = '50%';
         this.output.control.style.transform = 'translateY(-50%)';

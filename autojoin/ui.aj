@@ -16,7 +16,7 @@
     
     ../license/*.js
     
-    [../autojoin/uoperators.aj]
+    [../autojoin/graph.aj]
 
     ../actions/*.js
 

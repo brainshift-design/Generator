@@ -1,4 +1,4 @@
-class UOperator
+class Operator
 {
     #opType;
     get opType() { return this.#opType; }
@@ -16,7 +16,7 @@ class UOperator
     
 
     static nextId = 0;
-    id = UOperator.nextId++;
+    id = Operator.nextId++;
 
 
     graph = null;
@@ -28,6 +28,7 @@ class UOperator
     output = null;
     
 
+    
     // node UI
 
     div;
@@ -38,7 +39,23 @@ class UOperator
     outputControls;
 
 
+
     #valid = false; // this is the flag for regeneration
+
+
+    set valid(val) { this.#valid = val; }
+    get valid() { return this.#valid; }
+    // {
+    //     let valid = this.#valid;
+        
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.connected)
+    //             valid &= input.connectedOutput.op.valid;
+    //     }
+
+    //     return valid;
+    // }
 
 
 
@@ -49,35 +66,18 @@ class UOperator
         if (this._selected)
             removeFromArray(graphView.selected, this);
 
-        this.setSelected(sel); 
+        this.setSelected(sel);     
 
         if (this._selected)
             graphView.selected.push(this);
-    }
+    }        
 
 
 
     _active = false;
     get active() { return this._active; }
+       
     
-    
-    
-    set valid(val) { this.#valid = val; }
-    get valid() 
-    {
-        let valid = this.#valid;
-        
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                valid &= input.connectedOutput.op.valid;
-        }
-
-        return valid;
-    }
-
-
-
     get activeColor()
     {
         switch (this.#dataType)
@@ -116,12 +116,38 @@ class UOperator
     
     
 
+    reset() // for the entire generation run
+    {
+        for (const input of this.inputs)
+        {
+            input.currentSeed = input.initialSeed;
+            
+            if (input.connected)
+                input.connectedOutput.op.reset();
+        }
+    }
+
+
+
+    refresh() // for repeats requests from nodes that duplicate their input, like row and column
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+                input.connectedOutput.op.refresh();
+        }
+    }
+
+
+    
     invalidate()
     {
         if (!this.valid) // stops an op with inputs from same output 
             return;      // from being invalidated more than once
+    
+        console.log(this.id + '.Operator.invalidate()');
 
-        this.valid = false;
+        this.#valid = false;
 
         if (this.output)
         {
@@ -133,9 +159,25 @@ class UOperator
 
 
     update()
-    { 
-        this.valid = true; 
+    {
+        console.log(this.name+' Operator.update()');
+        this.#valid = true;
     }
+
+
+
+    // updateParams()
+    // {
+    //     for (const param of params)
+    //         param.update();
+
+
+    //     if (this.output)
+    //     {
+    //         for (const input of this.output.connectedInputs)
+    //             input.op.updateParams();
+    //     }
+    // }
 
 
 
@@ -143,6 +185,13 @@ class UOperator
     {
         let headerColor = colorFromDataType(this.#dataType, false);
         this.header.style.backgroundColor = headerColor;
+    }
+
+
+
+    generate() 
+    { 
+        // create the generation object here
     }
 
 

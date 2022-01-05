@@ -1,5 +1,5 @@
-class   UOpRandom
-extends UOperator
+class   OpRandom
+extends Operator
 {
     #min;
     #max;
@@ -12,12 +12,12 @@ extends UOperator
     {
         super('random', 'number');
 
-        this.setOutput(new UOutput(this.dataType));
+        this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#min   = new UNumberParam('min',   true,  0));
-        this.addParam(this.#max   = new UNumberParam('max',   true, 10));
-        this.addParam(this.#scale = new UNumberParam('scale', true,  1, 1));
-        this.addParam(this.#seed  = new UNumberParam('seed',  true,  1, 1));
+        this.addParam(this.#min   = new NumberParam('min',   true,  0));
+        this.addParam(this.#max   = new NumberParam('max',   true, 10));
+        this.addParam(this.#scale = new NumberParam('scale', true,  1, 1));
+        this.addParam(this.#seed  = new NumberParam('seed',  true,  1, 1));
 
         this.#max.control.min = this.#min.value;
         this.#min.control.max = this.#max.value;
@@ -64,8 +64,8 @@ extends UOperator
 
 
 
-// class   UOpRandom
-// extends UOperator
+// class   OpRandom
+// extends Operator
 // {
 //     #min;
 //     #max;
@@ -77,7 +77,7 @@ extends UOperator
 //     {
 //         super('random', 'number');
 
-//         this.setOutput(new UOutput(this.dataType));
+//         this.setOutput(new Output(this.dataType));
 
 //         this.addParam(this.#min   = new NumberParam('min'));
 //         this.addParam(this.#max   = new NumberParam('max'));

@@ -63,7 +63,7 @@ graphView.setZoomAndPan = (zoom, pan) =>
 
 graphView.updatePanAndZoom = () =>
 {
-    for (const node of uiGraph.nodes)
+    for (const node of graph.nodes)
         graphView.updateNodeTransform(node);
 
     graphView.updateScroll();

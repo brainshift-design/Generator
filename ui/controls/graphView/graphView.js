@@ -204,7 +204,7 @@ graphView.addEventListener('wheel', e =>
 
 graphView.startConnectionFromOutput = output =>
 {
-    graphView.tempConn = new UConnection(output, null);
+    graphView.tempConn = new Connection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
     graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
@@ -216,7 +216,7 @@ graphView.startConnectionFromOutput = output =>
 
 graphView.startConnectionFromInput = input =>
 {
-    graphView.tempConn = new UConnection(null, input);
+    graphView.tempConn = new Connection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);    
     graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
@@ -238,7 +238,7 @@ graphView.getAllNodeBounds = () =>
 {
     const bounds = Rect.NaN;
 
-    for (const node of uiGraph.nodes)
+    for (const node of graph.nodes)
         bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
 
     return bounds;
@@ -253,7 +253,7 @@ graphView.getNodeBounds = () =>
     var boundsR = Number.MIN_SAFE_INTEGER;
     var boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (const node of uiGraph.nodes)
+    for (const node of graph.nodes)
     {
         var bounds = node.div.getBoundingClientRect();
 
@@ -279,7 +279,7 @@ graphView.putNodeOnTop = node =>
         + node.inputs.filter(i => i.connected).length 
         + (!!node.output && node.output.connected ? 1 : 0);
         
-    for (const n of uiGraph.nodes)
+    for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
     var z = MAX_INT32-3; // -3 is for scrollbars

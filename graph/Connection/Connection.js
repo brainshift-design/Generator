@@ -1,4 +1,4 @@
-class UConnection
+class Connection
 {
     output;
     input;
@@ -167,7 +167,7 @@ class UConnection
         let save = 
               pos + '{\n'
             + pos + tab + '"output": "' + this.output.save() + '",\n'
-            + pos + tab + '"input" : "'  + this.input .save() + '"\n'
+            + pos + tab + '"input" : "' + this.input .save() + '"\n'
             + pos + '}';
 
         return save;

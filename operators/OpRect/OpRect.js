@@ -1,5 +1,5 @@
-class   UOpRect
-extends UOperator
+class   OpRect
+extends Operator
 {
     #x;
     #y;
@@ -14,14 +14,14 @@ extends UOperator
     {
         super('rect', 'object');
 
-        this.setOutput(new UOutput(this.dataType));
+        this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#x      = new UNumberParam('x',      true,   0));
-        this.addParam(this.#y      = new UNumberParam('y',      true,   0));
-        this.addParam(this.#width  = new UNumberParam('width',  true, 100, 0.01));
-        this.addParam(this.#height = new UNumberParam('height', true, 100, 0.01));
-        this.addParam(this.#round  = new UNumberParam('round',  true,   0, 0));
-        this.addParam(this.#color  = new UColorParam ('color',  true));
+        this.addParam(this.#x      = new NumberParam('x',      true,   0));
+        this.addParam(this.#y      = new NumberParam('y',      true,   0));
+        this.addParam(this.#width  = new NumberParam('width',  true, 100, 0.01));
+        this.addParam(this.#height = new NumberParam('height', true, 100, 0.01));
+        this.addParam(this.#round  = new NumberParam('round',  true,   0, 0));
+        this.addParam(this.#color  = new ColorParam ('color',  true));
         
         this.#x     ._control.addEventListener('change', () => this.updateRound());
         this.#y     ._control.addEventListener('change', () => this.updateRound());

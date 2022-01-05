@@ -1,12 +1,12 @@
-class GConnection
-{
-    output;
-    input;
+// class GConnection
+// {
+//     output;
+//     input;
 
 
-    constructor(output, input)
-    {
-        this.output = output;
-        this.input  = input;
-    }
-}
+//     constructor(output, input)
+//     {
+//         this.output = output;
+//         this.input  = input;
+//     }
+// }

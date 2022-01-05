@@ -1846,1164 +1846,15 @@ function normalizeSeed(x)
 }
 
 
-class GParameter
-{
-    #name;
-    get name() { return this.#name; }
-
-    #type; 
-    get type() { return this.#type; }
-    
-    _op; 
-    get op() { return this._op; }
-
-
-    constructor(name, type)
-    {
-        this.#name = name;
-        this.#type = type;
-    }
-}
-
-
-class   GNumberParam
-extends GParameter
-{
-    #value;
-
-    #min;
-    #max;
-    
-
-    
-    get value() 
-    {
-        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
-
-        if (this.input.connected)
-        {
-            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
-
-            genPostMessageToUi({ 
-                msg:   'uiShowParamValue',
-                nodeId: this.op.id,
-                param:  this.name,
-                value:  value
-            });
-        }
-
-        return value;
-    }
-
-
-    
-    set value(value) 
-    {
-        this.#value   = value;
-        this.op.valid = false;
-    }
-
-
-
-    input;
-    output;
-
-
-
-    constructor(name,
-                hasInput,
-                hasOutput,
-                value = 0, 
-                min   = Number.MIN_SAFE_INTEGER, 
-                max   = Number.MAX_SAFE_INTEGER)
-    {
-        super(name, 'number');
-
-        this.#value = value;
-   
-        this.#min   = min;
-        this.#max   = max;
-
-        this.input  = hasInput  ? new GInput ('number') : null;
-        this.output = hasOutput ? new GOutput('number') : null;
-
-        if (this.input ) this.input ._param = this;
-        if (this.output) this.output._param = this;
-    }
-}
-
-
-class   GColorParam
-extends GParameter
-{
-    #value; // [r, g, b]
-
-
-    
-    get value() 
-    {
-        let value = this.#value;
-
-        if (this.input.connected)
-        {
-            value = this.input.data.value;
-
-            genPostMessageToUi({ 
-                msg:   'uiShowParamValue',
-                nodeId: this.op.id,
-                param:  this.name,
-                value:  value
-            });
-        }
-
-        return value;
-    }
-
-    
-
-    set value(value) 
-    {
-        this.#value   = value;
-        this.op.valid = false;
-    }
-
-
-
-    input;
-    output;
-
-
-
-    constructor(name, 
-                hasOutput,
-                value = [0, 0, 0])
-    {
-        super(name, 'color');
-
-        this.#value = value;
-   
-        
-        this.input = new GInput('color');
-        this.input._param = this;
-
-
-        if (hasOutput)
-        {
-            this.output = new GOutput('color');
-            this.output._param = this;
-        }
-        else
-            this.output = null;
-    }
-}
-
-
-class   GSelectParam
-extends GParameter
-{
-    #value;
-
-    #options = [];
-    
-
-    
-    get value() 
-    {
-        let value = Math.min(Math.max(0, this.#value), this.#options.length-1);
-
-        if (this.input.connected)
-        {
-            value = Math.min(Math.max(0, this.input.data.value), this.#options.length-1);
-
-            genPostMessageToUi({ 
-                msg:   'uiShowParamValue',
-                nodeId: this.op.id,
-                param:  this.name,
-                value:  value
-            });
-        }
-
-        return value;
-    }
-
-
-    
-    set value(value) 
-    {
-        this.#value   = value;
-        this.op.valid = false;
-    }
-
-
-
-    input;
-    output;
-
-
-
-    constructor(name,
-                hasOutput,
-                options,
-                value = 0)
-    {
-        super(name, 'number');
-
-        this.#options = options;
-        this.#value   = value;
-   
-        this.input = new GInput('number');
-        this.input._param = this;
- 
-        this.output = hasOutput ? new GOutput('number') : null;
-        if (this.output) this.output._param = this;
-    }
-}
-
-
-class GGraph
-{
-    nodes = [];
-
-    mutex = false;
-
-    deferNodes = [];
-
-    
-
-    clear()
-    {
-        this.notes = [];
-    }
-
-
-
-    createNode(opType, id, name)
-    {
-        let node;
-
-        switch (opType)
-        {
-            case 'number': node = new GOpNumber(); break;
-            case 'add':    node = new GOpAdd();    break;
-            case 'color':  node = new GOpColor();  break;
-            case 'random': node = new GOpRandom(); break;
-            case 'rect':   node = new GOpRect();   break;
-            case 'row':    node = new GOpRow();    break;
-            case 'column': node = new GOpColumn(); break;
-            case 'spread': node = new GOpSpread(); break;
-        }
-        
-        node.id   = id;
-        node.name = name;
-
-        this.addNodes([node]);
-
-        return node;
-    }
-
-
-
-    addNodes(nodes)
-    {
-        for (const node of nodes)
-        {
-            node.graph = this;
-            this.nodes.push(node);
-        }
-    }
-    
-
-
-    deleteNodes(nodeIds)
-    {
-        let deleted = []; // this array of deleted notes will be put in a list for undo
-
-
-        for (const nodeId of nodeIds)
-        {
-            const node = this.nodes.find(n => n.id == nodeId);
-
-            for (const input of node.inputs)
-                if (input.connected) this.disconnect(input);
-
-            if (!!node.output)
-            {
-                for (const input of node.output.connectedInputs)
-                    this.disconnect(input);
-            }
-
-            node.graph = null;
-            removeFromArray(this.nodes, node);
-
-            deleted.push(node);
-        }
-
-
-        return deleted;
-    }
-
-
-
-    connect(output, input)
-    {
-        if (input.connectedOutput == output)
-            return false;
-            
-        if (input.connectedOutput != null)
-            this.disconnect(input);
-
-        output.connect(input);
-
-        input.connectedOutput = output;
-
-        const conn = new GConnection(output, input);
-
-        input .connection = conn;
-        output.connection = conn;
-        
-        input.op.valid = false;
-
-        return true;
-    }
-
-
-
-    disconnect(input)
-    {
-        var output = input.connectedOutput;
-        if (!output) return false;
-
-        if (!!input.param)
-            input.param.value = input.data.value;
-
-        output.disconnect(input);
-        
-        input .connection     = null;
-        output.connection     = null;
-
-        input.connectedOutput = null;
-
-        output.op.valid = false;
-        input .op.valid = false;
-            
-        return true;
-    }
-
-
-
-    nodeFromId(id)
-    {
-        return this.nodes.find(n => n.id === id);
-    }
-}
-
-
-class GInput
-{
-    #dataType;     
-    get dataType() { return this.#dataType; }
-
-    _op    = null; get op   () { return this._op;    }
-    _param = null; get param() { return this._param; }
-
-    connectedOutput = null;
-    connection      = null;
-    
-    connecting      = false;
-    
-
-    get connected() { return this.connectedOutput != null; }
-
-
-    constructor(dataType)
-    {
-        this.#dataType = dataType;
-    }    
-    
-
-    get data()
-    {
-        return (
-            this.connected
-            ? this.connectedOutput.getData(this)
-            : null);
-    }
-}
-
-
-class GNewInput
-extends GInput
-{
-    // #dataType;     
-    // get dataType() { return this.#dataType; }
-
-    // _op    = null; get op   () { return this._op;    }
-    // _param = null; get param() { return this._param; }
-
-    // connectedOutput = null;
-    // connection      = null;
-    
-    // connecting      = false;
-    
-
-    // get connected() { return this.connectedOutput != null; }
-
-
-    constructor(dataType)
-    {
-        super(dataType);
-    }    
-    
-
-    // get data()
-    // {
-    //     return (
-    //         this.connected
-    //         ? this.connectedOutput.getData(this)
-    //         : null);
-    // }
-}
-
-
-class   GOutput
-extends EventTarget
-{
-    #dataType;     
-    get dataType() { return this.#dataType; }
-    
-    _data = []; // output cache
-
-    
-    _op    = null; get op   () { return this._op;    }
-    _param = null; get param() { return this._param; }
-
-    
-    connectedInputs = [];
-    
-    connecting      = false;
-    
-    get connected() { return this.connectedInputs.length > 0; }
-
-    
-    onconnect    = new Event('connect');
-    ondisconnect = new Event('disconnect');
-
-
-    constructor(dataType)
-    {
-        super();
-        this.#dataType = dataType;
-    }
-    
-
-    getData(callerInput = null) 
-    {
-        if (!this.op.valid)
-            this.op.generate(callerInput);
-
-        return this._data;
-    }
-
-
-    connect(input)
-    {
-        this.connectedInputs.push(input);
-
-        this.dispatchEvent(new CustomEvent(
-            'connect', 
-            { 
-                'output': this, 
-                'input':  input 
-            }));
-    }
-
-
-    disconnect(input)
-    {
-        removeFromArray(this.connectedInputs, input);
-
-        this.dispatchEvent(new CustomEvent(
-            'disconnect', 
-            { 'input': input }));
-    }
-}
-
-
-class GConnection
-{
-    output;
-    input;
-
-
-    constructor(output, input)
-    {
-        this.output = output;
-        this.input  = input;
-    }
-}
-
-
-function activeNodeInTree(node) 
-{ 
-    const left  = activeNodeLeft(node);  if (!!left ) return left;
-    const right = activeNodeRight(node); if (!!right) return right;
-
-    return null;
-}
-
-
-
-function activeNodeLeft(node)
-{
-    if (node.active) return node;
-
-    for (const input of node.inputs)
-    {
-        if (input.connected)
-        {
-            const left = activeNodeLeft(input.connectedOutput.op);
-            if (left) return left;
-        }
-    }
-
-    return null;
-}
-
-
-
-function activeNodeRight(node)
-{
-    if (node.active) return node;
-
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const right = activeNodeRight(input.op);
-            if (right) return right;
-        }
-    }
-
-    return null;
-}
-
-
-
-function lastNodeInTree(node) 
-{ 
-    const right = lastNodeRight(node); 
-    return !!right ? right : null;
-}
-
-
-
-function lastNodeRight(node)
-{
-    var right = null;
-
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const _right = lastNodeRight(input.op);
-            if (_right && !!right) return node;
-            right = _right;
-        }
-    }
-
-    return !!right ? right : node;
-}
-
-
 /*
-    data types:
-        OBJ
-        number
+
 */
-
-
-class GOperator
-{
-    #opType;
-    get opType() { return this.#opType; }
-    
-    #dataType;
-    get dataType() { return this.#dataType; }
-
-    
-    _name;
-    get name() { return this._name; }
-    set name(name) { this._name = name; }
-    
-    graph = null;
-    
-    
-    params = [];
-    
-    inputs = [];
-    output = null;
-    
-
-    _valid = false; // this is the flag for regeneration
-
-
-
-    set valid(valid) { this._valid = valid; }
-    get valid() 
-    {
-        let valid = this._valid;
-        if (!valid) return valid;
-        
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                valid &= input.connectedOutput.op.valid;
-        }
-
-        return valid;
-    }
-
-
-    
-    active = false;
-
-
-
-    constructor(opType, dataType)
-    {
-        this.#opType   = opType;   // this is the operator type
-        this.#dataType = dataType; // this is the op's main data type
-
-        this._name = opType; // this is a temp until the op becomes a graph node
-    }    
-    
-    
-
-    addInput(input)
-    {
-        input._op = this;
-        this.inputs.push(input);
-    }
-
-
-
-    setOutput(output)
-    {
-        if (this.output != null)
-            this.output._op = null;
-
-        output._op = this;
-        this.output = output;
-    }
-
-
-
-    addParam(param)
-    {
-        this.params.push(param);
-
-        param._op = this;
-
-        param.input._op = this;
-        this.inputs.push(param.input);
-    }
- 
-    
-
-    setId(newId)
-    {
-        if (this.graph.nodes.find(node => node.id == newId))
-            return false; // graph already contains a node with this id
-
-        this._name = newId;
-
-        return true;
-    }
-
-
-
-    generate(callerInput) 
-    { 
-        this.valid = true; 
-    }
-
-
-
-    reset() // for the entire generation run
-    {
-        for (const input of this.inputs)
-        {
-            input.currentSeed = input.initialSeed;
-            
-            if (input.connected)
-                input.connectedOutput.op.reset();
-        }
-    }
-
-
-
-    refresh() // for repeats requests from nodes that duplicate their input, like row and column
-    {
-        for (const input of this.inputs)
-        {
-            if (input.connected)
-                input.connectedOutput.op.refresh();
-        }
-    }
-
-    
-
-    isBefore(node)
-    {
-        if (   !this.output
-            || !this.output.connected)
-            return false;
-
-        for (const input of output.connectedInputs)
-        {
-            if (input.op == node)        return true;
-            if (input.op.isBefore(node)) return true;
-        }
-
-        return false;
-    }
-
-    
-
-    isAfter(node)
-    {
-        if (this.inputs.length == 0)
-            return false;
-
-        for (const input of inputs)
-        {
-            if (input.connectedOutput.op == node)       return true;
-            if (input.connectedOutput.op.isAfter(node)) return true;
-        }
-
-        return false;
-    }
-}
-
-
-class   GOpNumber
-extends GOperator
-{
-    _value;
-
-    _sampled = Number.NaN;
-
-
-    
-    constructor()
-    {
-        super('number', 'number');
-
-        this.setOutput(new GOutput(this.dataType));
-
-        this.addParam(this._value = new GNumberParam('', true, false));
-    }
-
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        if (isNaN(this._sampled))
-            this._sampled = this._value.value;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  this._sampled
-        };
-    }
-
-
-
-    refresh()
-    {
-        super.refresh();
-        
-        this._sampled = Number.NaN;
-    }
-}
-
-
-class   GOpAdd
-extends GOperator
-{
-    _value;
-
-
-
-    constructor()
-    {
-        super('add', 'number');
-
-        this.addInput(new GNewInput(this.dataType));
-        this.setOutput(new GOutput(this.dataType));
-
-        this.addParam(this._value = new GNumberParam('', false, false));
-    }
-
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        let add =
-              this.inputs[0].value
-            + this.inputs[1].value;
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  add
-        };
-    }
-
-
-
-    refresh()
-    {
-        super.refresh();
-    }
-}
-
-
-class   GOpRandom
-extends GOperator
-{
-    #min;
-    #max;
-    #scale;
-    #seed;
-
-    noise = new Noise();
-
-
-
-    constructor()
-    {
-        super('random', 'number');
-
-        this.setOutput(new GOutput(this.dataType));
-
-        this.addParam(this.#min   = new GNumberParam('min',   true,  0));
-        this.addParam(this.#max   = new GNumberParam('max',   true, 10));
-        this.addParam(this.#scale = new GNumberParam('scale', true,  1, 1));
-        this.addParam(this.#seed  = new GNumberParam('seed',  true,  1, 1));
-
-        // this.output.addEventListener('connect',    () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
-        // this.output.addEventListener('disconnect', () => genPostMessageToUi({msg: 'uiResetNode', nodeId: this.id}));
-    }
-
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-        if (!!callerInput) this.noise.seed.current = callerInput.currentSeed;
-        let rnd = this.noise.next(this.#scale.value);
-        if (!!callerInput) callerInput.currentSeed = this.noise.seed.current;
-        
-        let value = this.#min.value + rnd * (this.#max.value - this.#min.value);
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            value:  value
-        };    
-
-        this.valid = false;
-    }
-
-
-
-    reset()
-    {
-        super.reset();
-
-        this.noise.seed.set(this.#seed.value);
-        
-        for (const input of this.output.connectedInputs)
-        {
-            input.initialSeed = input.currentSeed = this.noise.seed.current;
-            this.noise.next();
-        }
-    }
-}
-
-
-const colorTypes = ['RGB', 'HSV', 'HSL', 'HCL (OKLab)', 'HCL (CIE Lab)', 'HCL (CIE Luv)'];
-
-
-class   GOpColor
-extends GOperator
-{
-    _type;
-
-    _c1;
-    _c2;
-    _c3;
-
-    _sampled1 = Number.NaN;
-    _sampled2 = Number.NaN;
-    _sampled3 = Number.NaN;
-
-
-    constructor()
-    {
-        super('color', 'color');
-
-        this.addInput (new GInput (this.dataType));
-        this.setOutput(new GOutput(this.dataType));
-
-        this.addParam(this._type = new GSelectParam('type', true, colorTypes));
-        this.addParam(this._c1   = new GNumberParam('c1',   true, 0, 0, 255));
-        this.addParam(this._c2   = new GNumberParam('c2',   true, 0, 0, 255));
-        this.addParam(this._c3   = new GNumberParam('c3',   true, 0, 0, 255));
-    }
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        if (   isNaN(this._sampled1)
-            || isNaN(this._sampled2)
-            || isNaN(this._sampled3))
-        {
-            this._sampled1 = this._c1.value;
-            this._sampled2 = this._c2.value;
-            this._sampled3 = this._c3.value;
-        }
-
-
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            type:   this._type,
-            c1:     this._c1,
-            c2:     this._c2,
-            c3:     this._c3
-        };
-    }
-
-
-    refresh()
-    {
-        super.refresh();
-        
-        this._sampled = Number.NaN;
-    }
-}
-
-
-class   GOpRect
-extends GOperator
-{
-    #x;
-    #y;
-    #width;
-    #height;
-    #round;
-    #color;
-   
-
-
-    constructor()
-    {
-        super('rect', 'object');
-
-        this.setOutput(new GOutput(this.dataType));
-
-        this.addParam(this.#x      = new GNumberParam('x',      true,   0));
-        this.addParam(this.#y      = new GNumberParam('y',      true,   0));
-        this.addParam(this.#width  = new GNumberParam('width',  true, 100, 0.01));
-        this.addParam(this.#height = new GNumberParam('height', true, 100, 0.01));
-        this.addParam(this.#round  = new GNumberParam('round',  true,   0, 0));
-        this.addParam(this.#color  = new GColorParam ('color',  true));
-    }
-
-    
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        this.output._data =
-        [{
-            type:   OBJ_RECT,
-            id:     0,
-            nodeId: this.id,
-
-            x:      this.#x     .value,
-            y:      this.#y     .value,
-            width:  this.#width .value,
-            height: this.#height.value,
-            round:  this.#round .value,
-            color:  this.#color .value
-        }];
-    }
-}
-
-
-class   GOpRow
-extends GOperator
-{
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('row', 'object');
-
-        this.addInput (new GInput (this.dataType));
-        this.setOutput(new GOutput(this.dataType));
-        
-        this.addParam(this.#count = new GNumberParam('count', true,  7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',   true, 10, 0));
-    }
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        const input = this.inputs[0];
-
-        if (!input.connected)
-        {
-            this.output._data = [];
-            return;
-        }
-
-
-        const data = input.data;
-
-        this.output._data = [];
-
-        for (var i = 0, x = 0; i < this.#count.value; i++)
-        {
-            const bounds = getObjectBounds(data);
-            const gap    = this.#gap.value;
-
-            for (var j = 0; j < data.length; j++)
-            {
-                const obj = shallowCopy(data[j]);
-
-                obj.id     = this.output._data.length;
-                obj.nodeId = this.id;
-                
-                obj.x += x;
-
-                this.output._data.push(obj);
-            }    
-
-            x += bounds.w + gap;
-
-            // as this node duplicates its input, everything like
-            // OpNumber upstream that does S&H needs to be refresheds
-            this.refresh();
-        }
-    }
-}
-
-
-class   GOpColumn
-extends GOperator
-{
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('column', 'object');
-
-        this.addInput (new GInput (this.dataType));
-        this.setOutput(new GOutput(this.dataType));
-        
-        this.addParam(this.#count = new GNumberParam('count', true,  7, 1));
-        this.addParam(this.#gap   = new GNumberParam('gap',   true, 10, 0));
-    }
-
-
-    generate(callerInput)
-    {
-        if (this.valid) return;
-        super.generate(callerInput);
-
-
-        const input = this.inputs[0];
-
-        if (!input.connected)
-        {
-            this.output._data = [];
-            return;
-        }
-
-
-        const data = input.data;
-
-        this.output._data = [];
-
-        for (var i = 0, y = 0; i < this.#count.value; i++)
-        {
-            const bounds = getObjectBounds(data);
-            const gap    = this.#gap.value;
-
-            for (var j = 0; j < data.length; j++)
-            {
-                const obj = shallowCopy(data[j]);
-
-                obj[1] = this.output._data.length;
-                obj[2] = this.id;
-                
-                obj[4] += y;
-
-                this.output._data.push(obj);
-            }    
-
-            y += bounds.h + gap;
-
-            // as this node duplicates its input, everything like
-            // OpNumber upstream that does S&H needs to be refresheds
-            this.refresh();
-        }
-    }
-}
 
 
 const OBJ_RECT = 1;
 
 
-const genGraph          = new GGraph();
+//const genGraph          = new GGraph();
 const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 
@@ -3015,16 +1866,16 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
-        case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
-        case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
-        case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
-        case 'genSetActive':     genSetActive    (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
-        case 'genConnect':       genConnect      (e.data.outputId, e.data.inputs);                break; 
-        case 'genDisconnect':    genDisconnect   (e.data.input);                                  break;
-        case 'genSetParam':      genSetParam     (e.data.nodeId,   e.data.param, e.data.value);   break;
-        case 'genInvalidate':    genInvalidate   (e.data.nodeId);                                 break;
-        case 'genUpdateObjects': genUpdateObjects(e.data.nodeIds);                                break;
+        // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
+        // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
+        // case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
+        // case 'genSetActive':     genSetActive    (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
+        // case 'genConnect':       genConnect      (e.data.outputId, e.data.inputs);                break; 
+        // case 'genDisconnect':    genDisconnect   (e.data.input);                                  break;
+        // case 'genSetParam':      genSetParam     (e.data.nodeId,   e.data.param, e.data.value);   break;
+        // case 'genInvalidate':    genInvalidate   (e.data.nodeId);                                 break;
+        // case 'genUpdateObjects': genUpdateObjects(e.data.nodeIds);                                break;
     }
 };
 
@@ -3043,185 +1894,185 @@ function genPostMessageToUi(msg)
 
 
 
-function genClearGraph()
-{
-    genGraph.clear();
-}
+// function genClearGraph()
+// {
+//     genGraph.clear();
+// }
 
 
 
-function genCreateNode(type, id, name)
-{
-    const node = genGraph.createNode(type, id, name);
+// function genCreateNode(type, id, name)
+// {
+//     const node = genGraph.createNode(type, id, name);
 
-    // on the UI side the node has already been created by this point
+//     // on the UI side the node has already been created by this point
 
-    genPostMessageToUi({
-        msg:     'uiMakeActive',
-        nodeIds: [node.id]
-    });
-}
-
-
-
-function genDeleteNodes(nodeIds, uiActionId)
-{
-    var deleted = genGraph.deleteNodes(nodeIds);
-    deletedNodeArrays.push([uiActionId, deleted]);
-}
+//     genPostMessageToUi({
+//         msg:     'uiMakeActive',
+//         nodeIds: [node.id]
+//     });
+// }
 
 
 
-function genUndeleteNodes(uiActionId)
-{
-    var deleted = deletedNodeArrays.find(n => n[0] == uiActionId);
-    var nodeIds = [];
+// function genDeleteNodes(nodeIds, uiActionId)
+// {
+//     var deleted = genGraph.deleteNodes(nodeIds);
+//     deletedNodeArrays.push([uiActionId, deleted]);
+// }
 
 
-    for (const node of deleted[1])
-    {
-        genGraph.addNode(node);
-        nodeIds.push(node.id);
-    }
 
-    
-    genPostMessageToUi({ 
-        msg:    'uiMakeActive',
-        nodeIds: nodeIds
-    });
+// function genUndeleteNodes(uiActionId)
+// {
+//     var deleted = deletedNodeArrays.find(n => n[0] == uiActionId);
+//     var nodeIds = [];
+
+
+//     for (const node of deleted[1])
+//     {
+//         genGraph.addNode(node);
+//         nodeIds.push(node.id);
+//     }
 
     
-    removeFromArray(deletedNodeArrays, deleted);
-}
-
-
-
-function genSetNodeId(id, newId)
-{
-    const node = genGraph.nodeFromId(id);
-    node.id    = newId;
-}
-
-
-
-function genSetActive(nodeId, active)
-{
-    const node  = genGraph.nodeFromId(nodeId);
-    node.active = active;
-}
-
-
-
-function genConnect(outputId, inputs)
-{
-    const outNode = genGraph.nodeFromId(outputId);
-
-    for (const input of inputs)
-    {
-        const inNode = genGraph.nodeFromId(input.nodeId);
-
-        genGraph.connect(
-            outNode.output, 
-            input.index >= 0
-            ? inNode.inputs[input.index]
-            : inNode.params.find(p => p.name == input.param).input);
-
-        if (inNode.dataType == 'object')
-            genUpdateObjects([input.nodeId]);
-    }
-}
-
-
-
-function genDisconnect(input)
-{
-    const node = genGraph.nodeFromId(input.nodeId);
-    genGraph.disconnect(node.inputs[input.index]);
-}
-
-
-
-function genSetParam(nodeId, name, value)
-{
-    const node  = genGraph.nodeFromId(nodeId);
-    const param = node.params.find(p => p.name == name);
-
-    param.value = value;
-
-    updateNodeGraph(node);
-}
-
-
-
-function updateNodeGraph(_node)
-{
-    const node = genGraph.nodes.find(n => n.id == _node.id);
-
-    let activeId = activeNodeInTree(node).id;
-
-    if (activeId > -1)
-    {
-        genPostMessageToUi({ 
-            msg:    'uiUpdateNodes',
-            nodeIds: [activeId]
-        });
-    }
-}
-
-
-
-function genInvalidate(nodeId)
-{
-    const node = genGraph.nodes.find(n => n.id == nodeId);
-    node.valid = false;
-}
-
-
-
-function genUpdateObjects(nodeIds)
-{
-    for (const node of genGraph.nodes)
-        node.reset();
-
-
-    // first determine number of objects
-
-    let nObjects = 0;
-
-    for (const nodeId of nodeIds)
-    {
-        const node = genGraph.nodeFromId(nodeId);
-        const data = node.output.getData();
-        nObjects  += data.length;
-    }    
+//     genPostMessageToUi({ 
+//         msg:    'uiMakeActive',
+//         nodeIds: nodeIds
+//     });
 
     
-    // now create the objects if necessary
+//     removeFromArray(deletedNodeArrays, deleted);
+// }
 
-    if (nObjects > 0)
-    {
-        const objects = new Array(nObjects);
 
-        let i = 0;
-        for (const nodeId of nodeIds)
-        {
-            const node = genGraph.nodeFromId(nodeId);
-            const data = node.output.getData();
+
+// function genSetNodeId(id, newId)
+// {
+//     const node = genGraph.nodeFromId(id);
+//     node.id    = newId;
+// }
+
+
+
+// function genSetActive(nodeId, active)
+// {
+//     const node  = genGraph.nodeFromId(nodeId);
+//     node.active = active;
+// }
+
+
+
+// function genConnect(outputId, inputs)
+// {
+//     const outNode = genGraph.nodeFromId(outputId);
+
+//     for (const input of inputs)
+//     {
+//         const inNode = genGraph.nodeFromId(input.nodeId);
+
+//         genGraph.connect(
+//             outNode.output, 
+//             input.index >= 0
+//             ? inNode.inputs[input.index]
+//             : inNode.params.find(p => p.name == input.param).input);
+
+//         if (inNode.dataType == 'object')
+//             genUpdateObjects([input.nodeId]);
+//     }
+// }
+
+
+
+// function genDisconnect(input)
+// {
+//     const node = genGraph.nodeFromId(input.nodeId);
+//     genGraph.disconnect(node.inputs[input.index]);
+// }
+
+
+
+// function genSetParam(nodeId, name, value)
+// {
+//     const node  = genGraph.nodeFromId(nodeId);
+//     const param = node.params.find(p => p.name == name);
+
+//     param.value = value;
+
+//     updateNodeGraph(node);
+// }
+
+
+
+// function updateNodeGraph(_node)
+// {
+//     const node = genGraph.nodes.find(n => n.id == _node.id);
+
+//     let activeId = activeNodeInTree(node).id;
+
+//     if (activeId > -1)
+//     {
+//         genPostMessageToUi({ 
+//             msg:    'uiUpdateNodes',
+//             nodeIds: [activeId]
+//         });
+//     }
+// }
+
+
+
+// function genInvalidate(nodeId)
+// {
+//     const node = genGraph.nodes.find(n => n.id == nodeId);
+//     node.valid = false;
+// }
+
+
+
+// function genUpdateObjects(nodeIds)
+// {
+//     for (const node of genGraph.nodes)
+//         node.reset();
+
+
+//     // first determine number of objects
+
+//     let nObjects = 0;
+
+//     for (const nodeId of nodeIds)
+//     {
+//         const node = genGraph.nodeFromId(nodeId);
+//         const data = node.output.getData();
+//         nObjects  += data.length;
+//     }    
+
+    
+//     // now create the objects if necessary
+
+//     if (nObjects > 0)
+//     {
+//         const objects = new Array(nObjects);
+
+//         let i = 0;
+//         for (const nodeId of nodeIds)
+//         {
+//             const node = genGraph.nodeFromId(nodeId);
+//             const data = node.output.getData();
             
-            for (const obj of data)
-                objects[i++] = obj;
-        }    
+//             for (const obj of data)
+//                 objects[i++] = obj;
+//         }    
 
-        genPostMessageToUi({ 
-            msg:    'uiUpdateObjects',
-            objects: objects
-        });
-    }
-    // else
-    // {
-    //     genPostMessageToUi({ msg: 'uiUpdateGraph' });
-    // }
-}
+//         genPostMessageToUi({ 
+//             msg:    'uiUpdateObjects',
+//             objects: objects
+//         });
+//     }
+//     // else
+//     // {
+//     //     genPostMessageToUi({ msg: 'uiUpdateGraph' });
+//     // }
+// }
 
 
 

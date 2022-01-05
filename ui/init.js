@@ -9,7 +9,7 @@ var currentUser = '';
 var figMessages = [];
 
 
-const uiGraph = new UGraph();
+const graph = new Graph();
 
 const generator = new Worker(
     window.URL.createObjectURL(

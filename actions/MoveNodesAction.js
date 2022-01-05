@@ -30,7 +30,7 @@ extends Action
 
         for (const id of this.nodeIds)
         {
-            const node = uiGraph.nodeFromId(id);
+            const node = graph.nodeFromId(id);
 
             this.from.push({ x: node.div.slx,      y: node.div.sly      });
             this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
@@ -43,7 +43,7 @@ extends Action
     {
         for (var i = 0; i < this.nodeIds.length; i++)
         {
-            const node = uiGraph.nodeFromId(this.nodeIds[i]);
+            const node = graph.nodeFromId(this.nodeIds[i]);
 
             setNodePosition(
                 node.div.op,
@@ -58,7 +58,7 @@ extends Action
     {
         for (var i = 0; i < this.nodeIds.length; i++)
         {
-            const node = uiGraph.nodeFromId(this.nodeIds[i]);
+            const node = graph.nodeFromId(this.nodeIds[i]);
 
             setNodePosition(
                 node.div.op,

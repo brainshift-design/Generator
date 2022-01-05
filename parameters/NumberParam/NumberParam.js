@@ -1,5 +1,5 @@
-class   UNumberParam
-extends UParameter
+class   NumberParam
+extends Parameter
 {
     defaultValue;
     
@@ -64,28 +64,17 @@ extends UParameter
         this.initOutput(hasOutput);
 
 
-            
-        this.control.addEventListener('change', e =>
-        {
-            // this.op.valid = false;
-            // uiSetParam(this, this.value);
-            this.setValue(this.value, false, false);
-        });
-
-
-        this.control.addEventListener('confirm', e =>
-        {
-            // this.op.valid = false;
-            // actionManager.do(new SetValueAction(this, this.value));
-            this.setValue(this.value, false, true);
-        });
+        this.input  .addEventListener('update',  () => { this.update(); });
+        
+        this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, false, true ); });
     }
 
 
 
     initInput(hasInput)
     {
-        this.input = hasInput ? new UInput ('number') : null;
+        this.input = hasInput ? new Input ('number') : null;
         if (!this.input) return;
 
         this.input._param = this;
@@ -96,14 +85,20 @@ extends UParameter
         this.div.appendChild(this.input.control);
 
 
-        this.input.addEventListener('connect', e =>
+        this.input.addEventListener('update', () =>
+        {
+            this.update();
+        });
+    
+        
+        this.input.addEventListener('connect', () =>
         {
             this.control.style.fontStyle = 'italic';
             this.control.inputConnected  = true;
         });
     
         
-        this.input.addEventListener('disconnect', e =>
+        this.input.addEventListener('disconnect', () =>
         {
             this.control.style.fontStyle = 'normal';
             this.control.inputConnected  = false;
@@ -114,7 +109,7 @@ extends UParameter
 
     initOutput(hasOutput)
     {
-        this.output = hasOutput ? new UOutput('number') : null;
+        this.output = hasOutput ? new Output('number') : null;
         if (!this.output) return;
 
         this.output._param = this;
@@ -134,12 +129,25 @@ extends UParameter
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true) 
+    update()
+    {
+        if (this.input.isConnected)
+        {
+            console.log(this.name+'.update()');
+            //this.op.invalidate();
+            this.setValue(this.input.data.value, false, false); // assuming the data types match
+        }
+    }
+
+
+
+    setValue(value, updateControl = true, confirm = true) 
     { 
-        this.op.invalidate();
-        this._control.setValue(value, false, false); 
-        
-        UParameter.prototype.setValue.call(this, value != this.oldValue, confirm);
+        if (updateControl)
+            this._control.setValue(value, false, false); 
+
+        super.setValue(value != this.oldValue, confirm);
+        //Parameter.prototype.setValue.call(this, value != this.oldValue, confirm);
     }    
 
 

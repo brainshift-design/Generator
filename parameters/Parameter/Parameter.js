@@ -1,4 +1,4 @@
-class UParameter
+class Parameter
 extends EventTarget
 {
     #type;
@@ -38,30 +38,34 @@ extends EventTarget
 
 
 
+    isDefault() { return false; }
+
+
+    
+    update()
+    {
+        // overrides should check inputs for data here
+    }
+
+
+
     setValue(valueChanged, confirm)
     {
-        this.op.valid = false;
-
         if (valueChanged)
         {
+            this.op.invalidate();
+            
             this.dispatchEvent(this.onchange);
-
+            
             if (confirm)
             {
                 actionManager.do(new SetValueAction(this, this.value));
                 this.dispatchEvent(this.onconfirm);
             }
-
-            //this.op.update();
-            uiGraph.updateNodes();
         }
     }
 
 
 
-    isDefault() { return false; }
-
-
-    
     save(nTab) {}
 }

@@ -45,7 +45,7 @@ graphView.selectFromIds = (nodeIds) =>
 
     for (const id of nodeIds)
     {
-        const node = uiGraph.nodes.find(n => n.id == id);
+        const node = graph.nodes.find(n => n.id == id);
         console.log('id = ' + id);
         console.log('node = ' + node);
         
@@ -106,7 +106,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
     const selected = [];
 
-    for (const node of uiGraph.nodes)
+    for (const node of graph.nodes)
     {
         if (intersectRects(
                 Rect.fromTypical(node.div.getBoundingClientRect()), 

@@ -1,136 +1,136 @@
-class GGraph
-{
-    nodes = [];
+// class GGraph
+// {
+//     nodes = [];
 
-    mutex = false;
+//     mutex = false;
 
-    deferNodes = [];
+//     deferNodes = [];
 
     
 
-    clear()
-    {
-        this.notes = [];
-    }
+//     clear()
+//     {
+//         this.notes = [];
+//     }
 
 
 
-    createNode(opType, id, name)
-    {
-        let node;
+//     createNode(opType, id, name)
+//     {
+//         let node;
 
-        switch (opType)
-        {
-            case 'number': node = new GOpNumber(); break;
-            case 'add':    node = new GOpAdd();    break;
-            case 'color':  node = new GOpColor();  break;
-            case 'random': node = new GOpRandom(); break;
-            case 'rect':   node = new GOpRect();   break;
-            case 'row':    node = new GOpRow();    break;
-            case 'column': node = new GOpColumn(); break;
-            case 'spread': node = new GOpSpread(); break;
-        }
+//         switch (opType)
+//         {
+//             case 'number': node = new GOpNumber(); break;
+//             case 'add':    node = new GOpAdd();    break;
+//             case 'color':  node = new GOpColor();  break;
+//             case 'random': node = new GOpRandom(); break;
+//             case 'rect':   node = new GOpRect();   break;
+//             case 'row':    node = new GOpRow();    break;
+//             case 'column': node = new GOpColumn(); break;
+//             case 'spread': node = new GOpSpread(); break;
+//         }
         
-        node.id   = id;
-        node.name = name;
+//         node.id   = id;
+//         node.name = name;
 
-        this.addNodes([node]);
+//         this.addNodes([node]);
 
-        return node;
-    }
+//         return node;
+//     }
 
 
 
-    addNodes(nodes)
-    {
-        for (const node of nodes)
-        {
-            node.graph = this;
-            this.nodes.push(node);
-        }
-    }
+//     addNodes(nodes)
+//     {
+//         for (const node of nodes)
+//         {
+//             node.graph = this;
+//             this.nodes.push(node);
+//         }
+//     }
     
 
 
-    deleteNodes(nodeIds)
-    {
-        let deleted = []; // this array of deleted notes will be put in a list for undo
+//     deleteNodes(nodeIds)
+//     {
+//         let deleted = []; // this array of deleted notes will be put in a list for undo
 
 
-        for (const nodeId of nodeIds)
-        {
-            const node = this.nodes.find(n => n.id == nodeId);
+//         for (const nodeId of nodeIds)
+//         {
+//             const node = this.nodes.find(n => n.id == nodeId);
 
-            for (const input of node.inputs)
-                if (input.connected) this.disconnect(input);
+//             for (const input of node.inputs)
+//                 if (input.connected) this.disconnect(input);
 
-            if (!!node.output)
-            {
-                for (const input of node.output.connectedInputs)
-                    this.disconnect(input);
-            }
+//             if (!!node.output)
+//             {
+//                 for (const input of node.output.connectedInputs)
+//                     this.disconnect(input);
+//             }
 
-            node.graph = null;
-            removeFromArray(this.nodes, node);
+//             node.graph = null;
+//             removeFromArray(this.nodes, node);
 
-            deleted.push(node);
-        }
-
-
-        return deleted;
-    }
+//             deleted.push(node);
+//         }
 
 
+//         return deleted;
+//     }
 
-    connect(output, input)
-    {
-        if (input.connectedOutput == output)
-            return false;
+
+
+//     connect(output, input)
+//     {
+//         if (input.connectedOutput == output)
+//             return false;
             
-        if (input.connectedOutput != null)
-            this.disconnect(input);
+//         if (input.connectedOutput != null)
+//             this.disconnect(input);
 
-        output.connect(input);
+//         output.connect(input);
 
-        input.connectedOutput = output;
+//         input.connectedOutput = output;
 
-        const conn = new GConnection(output, input);
+//         const conn = new GConnection(output, input);
 
-        input .connection = conn;
-        output.connection = conn;
+//         input .connection = conn;
+//         output.connection = conn;
         
-        input.op.valid = false;
+//         input.op.valid = false;
 
-        return true;
-    }
+//         return true;
+//     }
 
 
 
-    disconnect(input)
-    {
-        var output = input.connectedOutput;
-        if (!output) return false;
+//     disconnect(input)
+//     {
+//         var output = input.connectedOutput;
+//         if (!output) return false;
 
-        if (!!input.param)
-            input.param.value = input.data.value;
+//         if (!!input.param)
+//             input.param.value = input.data.value;
 
-        output.disconnect(input);
+//         output.disconnect(input);
         
-        input .connection     = null;
-        output.connection     = null;
+//         input .connection     = null;
+//         output.connection     = null;
 
-        input.connectedOutput = null;
+//         input.connectedOutput = null;
 
-        output.op.valid = false;
-        input .op.valid = false;
+//         output.op.valid = false;
+//         input .op.valid = false;
             
-        return true;
-    }
+//         return true;
+//     }
 
 
 
-    nodeFromId(id)
-    {
-        return this.nodes.find(n => n.id === id);
-    }
-}
+//     nodeFromId(id)
+//     {
+//         return this.nodes.find(n => n.id === id);
+//     }
+// }

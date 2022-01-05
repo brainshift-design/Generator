@@ -1,5 +1,5 @@
-class UNewInput
-extends UInput
+class NewInput
+extends Input
 {
     // #dataType;     
     // get dataType() { return this.#dataType; }

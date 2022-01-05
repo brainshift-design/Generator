@@ -4,7 +4,7 @@
 
     ../core/Noise.js
     
-    [../autojoin/goperators.aj]
+    //[../autojoin/goperators.aj]
 
     ../generator/generator.js
     ../generator/gutil.js

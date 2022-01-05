@@ -1,11 +1,11 @@
 function uiCreateNode(opType, updateUI = true, createdId = -1)
 {
-    let node = uiGraph.createNode(opType, createdId);
+    let node = graph.createNode(opType, createdId);
 
     
     // if (graphView.selected.length > 0)
     // {
-    //     const selNode = uiGraph.nodes.find(n => n.selected);
+    //     const selNode = graph.nodes.find(n => n.selected);
     //     const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
 
     //     if (   !!selNode
@@ -42,7 +42,7 @@ function uiCreateNode(opType, updateUI = true, createdId = -1)
 
 function uiDeleteNodes(nodeIds, actionId)
 {
-    uiGraph.deleteNodes(nodeIds);
+    graph.deleteNodes(nodeIds);
     
     uiPostMessageToGenerator({
         msg:     'genDeleteNodes',
@@ -57,7 +57,7 @@ function uiDeleteNodes(nodeIds, actionId)
 
 function uiUndeleteNodes(nodes, actionId)
 {
-    uiGraph.addNodes(nodes);
+    graph.addNodes(nodes);
 
 
     graphView.selected = nodes;
@@ -93,7 +93,7 @@ function uiDeleteNodeObjects(nodeIds)
 
 function uiSetNodeId(nodeId, newId)
 {
-    const node = uiGraph.nodeFromId(nodeId);
+    const node = graph.nodeFromId(nodeId);
 
     node.id = newId;
 
@@ -108,7 +108,7 @@ function uiSetNodeId(nodeId, newId)
 
 function uiConnect(output, input)
 {
-    uiGraph.connect(output, input);
+    graph.connect(output, input);
 
     uiPostMessageToGenerator({
         msg:     'genConnect', 
@@ -125,7 +125,7 @@ function uiConnect(output, input)
 
 function uiDisconnect(input)
 {
-    uiGraph.disconnect(input);
+    graph.disconnect(input);
 
     uiPostMessageToGenerator({
         msg: 'genDisconnect',
@@ -176,7 +176,7 @@ function uiMakeActive(nodeIds)
 {
     for (const nodeId in nodeIds)
     {
-        const node = uiGraph.nodeFromId(nodeId);
+        const node = graph.nodeFromId(nodeId);
         node.makeActive();
     }
 }
@@ -185,10 +185,10 @@ function uiMakeActive(nodeIds)
 
 function uiShowParamValue(nodeId, paramName, value)
 {
-    const node = uiGraph.nodeFromId(nodeId);
+    const node = graph.nodeFromId(nodeId);
             
     if (!!node) // this is for deleted nodes which still exist 
-    {           // in genGraph but no longer in uiGraph
+    {           // in genGraph but no longer in graph
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
@@ -198,37 +198,37 @@ function uiShowParamValue(nodeId, paramName, value)
 
 function uiUpdateNodes(nodeIds)
 {
-    if (uiGraph.mutex)
+    if (graph.mutex)
     {
         for (const nodeId of nodeIds)
-            uiGraph.deferNodeIds.push(nodeId);
+            graph.deferNodeIds.push(nodeId);
 
         return;
     }
     
 
-    uiGraph.mutex = true;
+    graph.mutex = true;
 
 
-    uiPostMessageToGenerator({
-        msg:    'genUpdateObjects',
-        nodeIds: nodeIds
-    });
+    // uiPostMessageToGenerator({
+    //     msg:    'genUpdateObjects',
+    //     nodeIds: nodeIds
+    // });
 }
 
 
 
 function uiUpdateGraph()
 {
-    uiGraph.mutex = false;
+    graph.mutex = false;
 
 
-    if (uiGraph.deferNodeIds.length > 0)
+    if (graph.deferNodeIds.length > 0)
     {
-        let deferNodes = Array.from(uiGraph.deferNodeIds).filter(
+        let deferNodes = Array.from(graph.deferNodeIds).filter(
             (value, index, self) => self.indexOf(value) === index);
             
-        uiGraph.deferNodeIds = [];
+        graph.deferNodeIds = [];
 
         uiUpdateNodes(deferNodes);
     }

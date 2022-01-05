@@ -1,4 +1,4 @@
-class UGraph
+class Graph
 {
     name         = 'Untitled';
     
@@ -8,7 +8,7 @@ class UGraph
     mutex        = false;
 
 
-    
+
     clear()
     {
         this.notes = [];
@@ -55,19 +55,19 @@ class UGraph
 
         switch (opType)
         {
-            case 'number': node = new UOpNumber(); break;
-            case 'add':    node = new UOpAdd();    break;
-            case 'color':  node = new UOpColor();  break;
-            case 'random': node = new UOpRandom(); break;
-            case 'rect':   node = new UOpRect();   break;
-            case 'row':    node = new UOpRow();    break;
-            case 'column': node = new UOpColumn(); break;
-            //case 'spread': node = new UOpSpread(); break;
+            case 'number': node = new OpNumber(); break;
+            // case 'add':    node = new OpAdd();    break;
+            // case 'color':  node = new OpColor();  break;
+            // case 'random': node = new OpRandom(); break;
+            // case 'rect':   node = new OpRect();   break;
+            // case 'row':    node = new OpRow();    break;
+            // case 'column': node = new OpColumn(); break;
+            //case 'spread': node = new OpSpread(); break;
         }
         
         if (createdNodeId > -1)
         {
-            UOperator.nextId--;
+            Operator.nextId--;
             node.id = createdNodeId;
         }
         
@@ -104,7 +104,7 @@ class UGraph
             this.nodes.push(node);
             graphView.appendChild(node.div);
 
-            node.div.style.zIndex = uiGraph.nodes.length-1;
+            node.div.style.zIndex = graph.nodes.length-1;
             node.div.style.left   = 100;
 
             // I subtract the full height of the node here as they grow down, so this
@@ -157,6 +157,14 @@ class UGraph
 
 
 
+    updateNodes()
+    {
+        for (let i = 0; i < this.invalidNodes.length; i = 0) // i is reset after each iteragion
+            this.invalidNodes[i].update();                   // as node.update() removes 1+ items
+    }
+
+
+
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -168,7 +176,7 @@ class UGraph
         output.connectedInputs.push(input);
         input .connectedOutput = output;
 
-        const conn = new UConnection(output, input);
+        const conn = new Connection(output, input);
 
         input .connection = conn;
         output.connection = conn;
