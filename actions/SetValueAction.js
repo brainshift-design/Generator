@@ -28,7 +28,7 @@ extends Action
 
     undo()
     {
-        this.param.setValue(this.oldValue, true, false);
+        this.param.setValue(this.oldValue, false, true);
     }
 
 

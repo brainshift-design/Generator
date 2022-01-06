@@ -168,47 +168,6 @@ function createNodeHeader(node)
         else
             node.makeActive();
     });
-
-
-
-    node.update = () =>
-    {
-        
-    };
-
-
-
-    node.updateInputs = () =>
-    {
-        for (const input of node.inputs)
-        {
-            if (input.connected) 
-                input.connection.wire.update(true);
-        }
-    };
-
-
-
-    node.updateOutput = () =>
-    {
-        if (   node.output 
-            && node.output.connected)
-        {
-            for (const input of node.output.connectedInputs)
-                input.connection.wire.update(true);
-        }
-    };
-
-
-
-    node.updateParams = () =>
-    {
-        for (const param of node.params)
-        {
-            if (param.input.connected) 
-                param.input.connection.wire.update(true);
-        }
-    };
 }
 
 
@@ -233,7 +192,7 @@ function setNodePosition(node, x, y)
 
     node.updateInputs();
     node.updateOutput();
-    node.updateParams();
+    node.updateWires();
 
     graphView.updateNodeTransform(node);
 }

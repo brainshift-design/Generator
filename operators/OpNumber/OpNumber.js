@@ -15,8 +15,6 @@ extends Operator
 
         this.#paramValue.addEventListener('change', () => 
         {
-            console.log(this.name + '.paramValue.onchange');
-            //this.output.data = dataFromNumber(this.#paramValue.value);
             this.invalidate();
             this.update();
         });
@@ -38,22 +36,22 @@ extends Operator
         if (this.valid) 
             return;
 
-        console.log(this.name + ' OpNumber.update()');
+        super.update()
+        
         this.output._data = dataFromNumber(this.#paramValue.value);
 
-        super.update()
+        for (const input of this.output.connectedInputs)
+            input.op.update();//Params();
     }
 
 
 
-    // updateParams()
-    // {
-    //     Operator.prototype.updateParams.call(this);
+    updateParams(dispatchEvents)
+    {
+        super.updateParams(dispatchEvents);
 
-    //     this.output._value = this.#value.value;
-
-    //     this.validate();
-    // }
+        this.output._value = this.#paramValue.value;
+    }
 
 
     

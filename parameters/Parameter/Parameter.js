@@ -42,19 +42,25 @@ extends EventTarget
 
 
     
-    update()
+    update(dispatchEvents)
     {
         // overrides should check inputs for data here
     }
 
 
 
-    setValue(valueChanged, confirm)
+    setValue(value, confirm, updateControl = true, dispatchEvents = true) 
+    {
+        if (dispatchEvents)
+            this.dispatchSetValueEvents(value != this.oldValue, confirm);
+    }
+
+
+
+    dispatchSetValueEvents(valueChanged, confirm)
     {
         if (valueChanged)
         {
-            this.op.invalidate();
-            
             this.dispatchEvent(this.onchange);
             
             if (confirm)

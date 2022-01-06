@@ -2130,6 +2130,13 @@ function getCtrlKey(e)
 }
 
 
+
+function dispatchNewEvent(target, proto)
+{
+    target.dispatchEvent(new proto.constructor(proto.type, proto));
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -4240,6 +4247,13 @@ function getCtrlKey(e)
 }
 
 
+
+function dispatchNewEvent(target, proto)
+{
+    target.dispatchEvent(new proto.constructor(proto.type, proto));
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -5116,19 +5130,25 @@ extends EventTarget
 
 
     
-    update()
+    update(dispatchEvents)
     {
         // overrides should check inputs for data here
     }
 
 
 
-    setValue(valueChanged, confirm)
+    setValue(value, confirm, updateControl = true, dispatchEvents = true) 
+    {
+        if (dispatchEvents)
+            this.dispatchSetValueEvents(value != this.oldValue, confirm);
+    }
+
+
+
+    dispatchSetValueEvents(valueChanged, confirm)
     {
         if (valueChanged)
         {
-            this.op.invalidate();
-            
             this.dispatchEvent(this.onchange);
             
             if (confirm)
@@ -5211,10 +5231,10 @@ extends Parameter
         this.initOutput(hasOutput);
 
 
-        this.input  .addEventListener('update',  () => { this.update(); });
+        // this.input  .addEventListener('update',  () => { this.update(); });
         
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, false, true ); });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
 
 
@@ -5232,10 +5252,10 @@ extends Parameter
         this.div.appendChild(this.input.control);
 
 
-        this.input.addEventListener('update', () =>
-        {
-            this.update();
-        });
+        // this.input.addEventListener('update', () =>
+        // {
+        //     this.update();
+        // });
     
         
         this.input.addEventListener('connect', () =>
@@ -5276,25 +5296,20 @@ extends Parameter
 
 
 
-    update()
+    update(dispatchEvents)
     {
         if (this.input.isConnected)
-        {
-            console.log(this.name+'.update()');
-            //this.op.invalidate();
-            this.setValue(this.input.data.value, false, false); // assuming the data types match
-        }
+            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
     }
 
 
 
-    setValue(value, updateControl = true, confirm = true) 
+    setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     { 
         if (updateControl)
             this._control.setValue(value, false, false); 
 
-        super.setValue(value != this.oldValue, confirm);
-        //Parameter.prototype.setValue.call(this, value != this.oldValue, confirm);
+        super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
 
 
@@ -5963,7 +5978,7 @@ extends EventTarget
     get isConnected() { return this.connectedOutput != null; }
 
 
-    onupdate     = new Event('update');
+    //onupdate     = new Event('update');
 
     onconnect    = new Event('connect');
     ondisconnect = new Event('disconnect');
@@ -6000,10 +6015,10 @@ extends EventTarget
 
 
 
-    update()
-    {
-        this.dispatchEvent(this.onupdate);
-    }
+    // update()
+    // {
+    //     this.dispatchEvent(this.onupdate);
+    // }
 
 
 
@@ -6585,8 +6600,6 @@ class Operator
         if (!this.valid) // stops an op with inputs from same output 
             return;      // from being invalidated more than once
     
-        console.log(this.id + '.Operator.invalidate()');
-
         this.#valid = false;
 
         if (this.output)
@@ -6600,24 +6613,58 @@ class Operator
 
     update()
     {
-        console.log(this.name+' Operator.update()');
+        this.updateParams(false);
         this.#valid = true;
     }
 
 
 
-    // updateParams()
-    // {
-    //     for (const param of params)
-    //         param.update();
+    updateParams(dispatchEvents)
+    {
+        for (const param of this.params)
+            param.update(dispatchEvents);
 
 
-    //     if (this.output)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //             input.op.updateParams();
-    //     }
-    // }
+        // if (this.output)
+        // {
+        //     for (const input of this.output.connectedInputs)
+        //         input.op.updateParams();
+        // }
+    }
+
+
+
+    updateInputs()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected) 
+                input.connection.wire.update(true);
+        }
+    }
+
+
+
+    updateOutput()
+    {
+        if (   this.output 
+            && this.output.connected)
+        {
+            for (const input of node.output.connectedInputs)
+                input.connection.wire.update(true);
+        }
+    }
+
+
+
+    updateWires()
+    {
+        for (const param of this.params)
+        {
+            if (param.input.connected) 
+                param.input.connection.wire.update(true);
+        }
+    }
 
 
 
@@ -6999,47 +7046,6 @@ function createNodeHeader(node)
         else
             node.makeActive();
     });
-
-
-
-    node.update = () =>
-    {
-        
-    };
-
-
-
-    node.updateInputs = () =>
-    {
-        for (const input of node.inputs)
-        {
-            if (input.connected) 
-                input.connection.wire.update(true);
-        }
-    };
-
-
-
-    node.updateOutput = () =>
-    {
-        if (   node.output 
-            && node.output.connected)
-        {
-            for (const input of node.output.connectedInputs)
-                input.connection.wire.update(true);
-        }
-    };
-
-
-
-    node.updateParams = () =>
-    {
-        for (const param of node.params)
-        {
-            if (param.input.connected) 
-                param.input.connection.wire.update(true);
-        }
-    };
 }
 
 
@@ -7064,7 +7070,7 @@ function setNodePosition(node, x, y)
 
     node.updateInputs();
     node.updateOutput();
-    node.updateParams();
+    node.updateWires();
 
     graphView.updateNodeTransform(node);
 }
@@ -7242,8 +7248,6 @@ extends Operator
 
         this.#paramValue.addEventListener('change', () => 
         {
-            console.log(this.name + '.paramValue.onchange');
-            //this.output.data = dataFromNumber(this.#paramValue.value);
             this.invalidate();
             this.update();
         });
@@ -7265,22 +7269,22 @@ extends Operator
         if (this.valid) 
             return;
 
-        console.log(this.name + ' OpNumber.update()');
+        super.update()
+        
         this.output._data = dataFromNumber(this.#paramValue.value);
 
-        super.update()
+        for (const input of this.output.connectedInputs)
+            input.op.update();//Params();
     }
 
 
 
-    // updateParams()
-    // {
-    //     Operator.prototype.updateParams.call(this);
+    updateParams(dispatchEvents)
+    {
+        super.updateParams(dispatchEvents);
 
-    //     this.output._value = this.#value.value;
-
-    //     this.validate();
-    // }
+        this.output._value = this.#paramValue.value;
+    }
 
 
     
@@ -8096,7 +8100,7 @@ extends Action
 
     undo()
     {
-        this.param.setValue(this.oldValue, true, false);
+        this.param.setValue(this.oldValue, false, true);
     }
 
 

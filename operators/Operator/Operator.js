@@ -145,8 +145,6 @@ class Operator
         if (!this.valid) // stops an op with inputs from same output 
             return;      // from being invalidated more than once
     
-        console.log(this.id + '.Operator.invalidate()');
-
         this.#valid = false;
 
         if (this.output)
@@ -160,24 +158,58 @@ class Operator
 
     update()
     {
-        console.log(this.name+' Operator.update()');
+        this.updateParams(false);
         this.#valid = true;
     }
 
 
 
-    // updateParams()
-    // {
-    //     for (const param of params)
-    //         param.update();
+    updateParams(dispatchEvents)
+    {
+        for (const param of this.params)
+            param.update(dispatchEvents);
 
 
-    //     if (this.output)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //             input.op.updateParams();
-    //     }
-    // }
+        // if (this.output)
+        // {
+        //     for (const input of this.output.connectedInputs)
+        //         input.op.updateParams();
+        // }
+    }
+
+
+
+    updateInputs()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.connected) 
+                input.connection.wire.update(true);
+        }
+    }
+
+
+
+    updateOutput()
+    {
+        if (   this.output 
+            && this.output.connected)
+        {
+            for (const input of node.output.connectedInputs)
+                input.connection.wire.update(true);
+        }
+    }
+
+
+
+    updateWires()
+    {
+        for (const param of this.params)
+        {
+            if (param.input.connected) 
+                param.input.connection.wire.update(true);
+        }
+    }
 
 
 

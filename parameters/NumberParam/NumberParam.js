@@ -64,10 +64,10 @@ extends Parameter
         this.initOutput(hasOutput);
 
 
-        this.input  .addEventListener('update',  () => { this.update(); });
+        // this.input  .addEventListener('update',  () => { this.update(); });
         
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, false, true ); });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
 
 
@@ -85,10 +85,10 @@ extends Parameter
         this.div.appendChild(this.input.control);
 
 
-        this.input.addEventListener('update', () =>
-        {
-            this.update();
-        });
+        // this.input.addEventListener('update', () =>
+        // {
+        //     this.update();
+        // });
     
         
         this.input.addEventListener('connect', () =>
@@ -129,25 +129,20 @@ extends Parameter
 
 
 
-    update()
+    update(dispatchEvents)
     {
         if (this.input.isConnected)
-        {
-            console.log(this.name+'.update()');
-            //this.op.invalidate();
-            this.setValue(this.input.data.value, false, false); // assuming the data types match
-        }
+            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
     }
 
 
 
-    setValue(value, updateControl = true, confirm = true) 
+    setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     { 
         if (updateControl)
             this._control.setValue(value, false, false); 
 
-        super.setValue(value != this.oldValue, confirm);
-        //Parameter.prototype.setValue.call(this, value != this.oldValue, confirm);
+        super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
 
 

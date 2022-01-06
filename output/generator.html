@@ -1402,6 +1402,13 @@ function getCtrlKey(e)
 }
 
 
+
+function dispatchNewEvent(target, proto)
+{
+    target.dispatchEvent(new proto.constructor(proto.type, proto));
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities

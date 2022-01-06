@@ -273,3 +273,10 @@ function getCtrlKey(e)
     return  isMac && e.metaKey
         || !isMac && e.ctrlKey;
 }
+
+
+
+function dispatchNewEvent(target, proto)
+{
+    target.dispatchEvent(new proto.constructor(proto.type, proto));
+}

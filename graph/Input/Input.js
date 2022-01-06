@@ -55,7 +55,7 @@ extends EventTarget
     get isConnected() { return this.connectedOutput != null; }
 
 
-    onupdate     = new Event('update');
+    //onupdate     = new Event('update');
 
     onconnect    = new Event('connect');
     ondisconnect = new Event('disconnect');
@@ -92,10 +92,10 @@ extends EventTarget
 
 
 
-    update()
-    {
-        this.dispatchEvent(this.onupdate);
-    }
+    // update()
+    // {
+    //     this.dispatchEvent(this.onupdate);
+    // }
 
 
 
