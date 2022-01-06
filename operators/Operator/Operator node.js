@@ -190,9 +190,9 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    node.updateInputs();
-    node.updateOutput();
-    node.updateWires();
+    node.updateInputWires ();
+    node.updateOutputWires();
+    node.updateParamWires ();
 
     graphView.updateNodeTransform(node);
 }

@@ -45,12 +45,13 @@ extends EventTarget
     }
 
 
-    connection   = null;
+    connection  = null;
     
-    connecting   = false;
+    connecting  = false;
     
-    initialSeed  = 0;
-    currentSeed  = 0;
+
+    initialSeed = 0;
+    currentSeed = 0;
 
     get isConnected() { return this.connectedOutput != null; }
 

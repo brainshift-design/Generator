@@ -13,7 +13,15 @@ extends Operator
 
         this.addParam(this.#paramValue = new NumberParam('', true, false));
 
+
         this.#paramValue.addEventListener('change', () => 
+        {
+            this.invalidate();
+            this.update();
+        });
+
+        
+        this.#paramValue.input.addEventListener('connect', () => 
         {
             this.invalidate();
             this.update();

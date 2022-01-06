@@ -5232,6 +5232,12 @@ extends Parameter
 
 
         // this.input  .addEventListener('update',  () => { this.update(); });
+
+        this.input.addEventListener('connect', () => 
+        {
+            this.op.invalidate();
+            this.op.update();
+        });
         
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
@@ -5968,12 +5974,13 @@ extends EventTarget
     }
 
 
-    connection   = null;
+    connection  = null;
     
-    connecting   = false;
+    connecting  = false;
     
-    initialSeed  = 0;
-    currentSeed  = 0;
+
+    initialSeed = 0;
+    currentSeed = 0;
 
     get isConnected() { return this.connectedOutput != null; }
 
@@ -6477,10 +6484,9 @@ class Operator
     graph = null;
     
     
-    params = [];
-    
     inputs = [];
     output = null;
+    params = [];
     
 
     
@@ -6623,18 +6629,11 @@ class Operator
     {
         for (const param of this.params)
             param.update(dispatchEvents);
-
-
-        // if (this.output)
-        // {
-        //     for (const input of this.output.connectedInputs)
-        //         input.op.updateParams();
-        // }
     }
 
 
 
-    updateInputs()
+    updateInputWires()
     {
         for (const input of this.inputs)
         {
@@ -6645,7 +6644,7 @@ class Operator
 
 
 
-    updateOutput()
+    updateOutputWires()
     {
         if (   this.output 
             && this.output.connected)
@@ -6657,11 +6656,13 @@ class Operator
 
 
 
-    updateWires()
+    updateParamWires()
     {
         for (const param of this.params)
         {
-            if (param.input.connected) 
+            console.log(param.input);
+            if (   param.input
+                && param.input.isConnected) 
                 param.input.connection.wire.update(true);
         }
     }
@@ -7068,9 +7069,9 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    node.updateInputs();
-    node.updateOutput();
-    node.updateWires();
+    node.updateInputWires ();
+    node.updateOutputWires();
+    node.updateParamWires ();
 
     graphView.updateNodeTransform(node);
 }
@@ -7246,7 +7247,15 @@ extends Operator
 
         this.addParam(this.#paramValue = new NumberParam('', true, false));
 
+
         this.#paramValue.addEventListener('change', () => 
+        {
+            this.invalidate();
+            this.update();
+        });
+
+        
+        this.#paramValue.input.addEventListener('connect', () => 
         {
             this.invalidate();
             this.update();

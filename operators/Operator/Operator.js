@@ -22,10 +22,9 @@ class Operator
     graph = null;
     
     
-    params = [];
-    
     inputs = [];
     output = null;
+    params = [];
     
 
     
@@ -168,18 +167,11 @@ class Operator
     {
         for (const param of this.params)
             param.update(dispatchEvents);
-
-
-        // if (this.output)
-        // {
-        //     for (const input of this.output.connectedInputs)
-        //         input.op.updateParams();
-        // }
     }
 
 
 
-    updateInputs()
+    updateInputWires()
     {
         for (const input of this.inputs)
         {
@@ -190,7 +182,7 @@ class Operator
 
 
 
-    updateOutput()
+    updateOutputWires()
     {
         if (   this.output 
             && this.output.connected)
@@ -202,11 +194,13 @@ class Operator
 
 
 
-    updateWires()
+    updateParamWires()
     {
         for (const param of this.params)
         {
-            if (param.input.connected) 
+            console.log(param.input);
+            if (   param.input
+                && param.input.isConnected) 
                 param.input.connection.wire.update(true);
         }
     }
