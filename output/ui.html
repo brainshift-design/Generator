@@ -198,8 +198,8 @@ input[type=text]::selection
     border-radius:  5px;
     margin:         0;
     position:       absolute;
-    top:            50%;
-    transform:      translateY(-50%);
+    /* top:            50%; */
+    /* transform:      translateY(-50%); */
     left:           4px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
@@ -687,11 +687,11 @@ input[type=text]::selection
     
     <button class='menuButton' id='btnCreateNumber' onclick='actionManager.do(new CreateNodeAction("number")); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateAdd'    onclick='actionManager.do(new CreateNodeAction("add"   )); this.blur();'>ADD</button>
-    <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
+    <!-- <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
     <button class='menuButton' id='btnCreateColor'  onclick='actionManager.do(new CreateNodeAction("color" )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>RCT</button>
     <button class='menuButton' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>ROW</button>
-    <button class='menuButton' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>CLM</button>
+    <button class='menuButton' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>CLM</button> -->
     <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
     
 </div>
@@ -5231,14 +5231,15 @@ extends Parameter
         this.initOutput(hasOutput);
 
 
-        // this.input  .addEventListener('update',  () => { this.update(); });
-
-        this.input.addEventListener('connect', () => 
+        if (this.input)
         {
-            this.op.invalidate();
-            this.op.update();
-        });
-        
+            this.input.addEventListener('connect', () => 
+            {
+                this.op.invalidate();
+                this.op.update();
+            });
+        }
+
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
@@ -5682,7 +5683,7 @@ class Graph
         switch (opType)
         {
             case 'number': node = new OpNumber(); break;
-            // case 'add':    node = new OpAdd();    break;
+            case 'add':    node = new OpAdd();    break;
             // case 'color':  node = new OpColor();  break;
             // case 'random': node = new OpRandom(); break;
             // case 'rect':   node = new OpRect();   break;
@@ -5711,7 +5712,7 @@ class Graph
             
         if (this.nodes.length > 0)
         {
-            const bounds = graphView.getNodeBounds();
+            const bounds = graphView.getNodeBoundsFromType(node.opType);
 
             bounds.x /= graphView.zoom;
             bounds.y /= graphView.zoom;
@@ -5754,7 +5755,7 @@ class Graph
 
             for (const input of node.inputs)
             {
-                if (!input.connected) continue;
+                if (!input.isConnected) continue;
 
                 input.connectedOutput.op.makeActive();
                 this.disconnect(input, true);
@@ -5905,7 +5906,7 @@ class Graph
 
             for (let j = 0; j < node.inputs.length; j++)
             {
-                if (!node.inputs[j].connected)
+                if (!node.inputs[j].isConnected)
                     continue;
 
                 save += '\n' + node.inputs[j].connection.save(4);
@@ -6038,105 +6039,6 @@ extends EventTarget
 
         return save;
     }
-}
-
-
-class NewInput
-extends Input
-{
-    // #dataType;     
-    // get dataType() { return this.#dataType; }
-
-    // get data()
-    // {
-    //     return (
-    //         this.connected
-    //         ? this.connectedOutput.data
-    //         : null);
-    // }
-
-
-    // _op    = null; get op   () { return this._op;    }
-    // _param = null; get param() { return this._param; }
-
-    // control;
-  
-
-    // _connectedOutput = null;
-    // get connectedOutput() { return this._connectedOutput; }
-    // set connectedOutput(output)
-    // {
-    //     if (this._connectedOutput)
-    //     {
-    //         this.dispatchEvent(new CustomEvent(
-    //             'disconnect', 
-    //             { 'input': this }));
-    //     }
-
-    //     this._connectedOutput = output;
-
-    //     if (this._connectedOutput)
-    //     {
-    //         this.dispatchEvent(new CustomEvent(
-    //             'connect', 
-    //             { 
-    //                 'output': output,
-    //                 'input':  this 
-    //             }));
-    //     }
-    // }
-
-
-    // connection      = null;
-    
-    // connecting      = false;
-    
-    // initialSeed     = 0;
-    // currentSeed     = 0;
-
-    // get connected() { return this.connectedOutput != null; }
-
-
-    // onconnect    = new Event('connect');
-    // ondisconnect = new Event('disconnect');
-
-
-    // constructor(dataType)
-    // {
-    //     super();
-        
-    //     this.#dataType = dataType;
-
-    //     this.control = document.createElement('div');
-    //     this.control.className = 'input';
-    //     this.control.input = this;
-    
-    //     this.control.addEventListener('pointerdown', e => e.preventDefault());
-
-    //     this.control.addEventListener('pointerenter', e => 
-    //     {
-    //         graphView.overInput = this;
-    //         e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
-    //     });
-
-    //     this.control.addEventListener('pointerleave', e => 
-    //     {
-    //         graphView.overInput = null;
-    //         e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
-    //     });
-    // }
-
-
-
-    // save()
-    // {
-    //     let save = this.op.name;
-
-    //     if (this.op.param != null)
-    //         save += '.' + this.op.param.name;
-
-    //     return save;
-    // }
 }
 
 
@@ -6404,7 +6306,7 @@ function activeNodeLeft(node)
 
     for (const input of node.inputs)
     {
-        if (input.connected)
+        if (input.isConnected)
         {
             const left = activeNodeLeft(input.connectedOutput.op);
             if (left) return left;
@@ -6511,7 +6413,7 @@ class Operator
         
     //     for (const input of this.inputs)
     //     {
-    //         if (input.connected)
+    //         if (input.isConnected)
     //             valid &= input.connectedOutput.op.valid;
     //     }
 
@@ -6583,7 +6485,7 @@ class Operator
         {
             input.currentSeed = input.initialSeed;
             
-            if (input.connected)
+            if (input.isConnected)
                 input.connectedOutput.op.reset();
         }
     }
@@ -6594,7 +6496,7 @@ class Operator
     {
         for (const input of this.inputs)
         {
-            if (input.connected)
+            if (input.isConnected)
                 input.connectedOutput.op.refresh();
         }
     }
@@ -6637,7 +6539,7 @@ class Operator
     {
         for (const input of this.inputs)
         {
-            if (input.connected) 
+            if (input.isConnected)
                 input.connection.wire.update(true);
         }
     }
@@ -6647,9 +6549,9 @@ class Operator
     updateOutputWires()
     {
         if (   this.output 
-            && this.output.connected)
+            && this.output.isConnected)
         {
-            for (const input of node.output.connectedInputs)
+            for (const input of this.output.connectedInputs)
                 input.connection.wire.update(true);
         }
     }
@@ -6660,7 +6562,6 @@ class Operator
     {
         for (const param of this.params)
         {
-            console.log(param.input);
             if (   param.input
                 && param.input.isConnected) 
                 param.input.connection.wire.update(true);
@@ -6671,8 +6572,11 @@ class Operator
 
     updateNode() 
     {
-        let headerColor = colorFromDataType(this.#dataType, false);
-        this.header.style.backgroundColor = headerColor;
+        this.header.style.backgroundColor = colorFromDataType(this.#dataType, false);
+
+        this.updateInputWires ();
+        this.updateOutputWires();
+        this.updateParamWires ();
     }
 
 
@@ -6743,7 +6647,7 @@ class Operator
     isBefore(node)
     {
         if (   !this.output
-            || !this.output.connected)
+            || !this.output.isConnected)
             return false;
 
         for (const input of output.connectedInputs)
@@ -6811,7 +6715,7 @@ class Operator
     {
         for (const input of this.inputs)
         {
-            if (input.connected)
+            if (input.isConnected)
             {
                 input.connectedOutput.op.makePassive();
                 input.connectedOutput.op.makeLeftPassive();            
@@ -7069,11 +6973,9 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    node.updateInputWires ();
-    node.updateOutputWires();
-    node.updateParamWires ();
-
     graphView.updateNodeTransform(node);
+
+    node.updateNode();
 }
 
 
@@ -7253,13 +7155,6 @@ extends Operator
             this.invalidate();
             this.update();
         });
-
-        
-        this.#paramValue.input.addEventListener('connect', () => 
-        {
-            this.invalidate();
-            this.update();
-        });
     }
 
 
@@ -7283,7 +7178,7 @@ extends Operator
         this.output._data = dataFromNumber(this.#paramValue.value);
 
         for (const input of this.output.connectedInputs)
-            input.op.update();//Params();
+            input.op.update();
     }
 
 
@@ -7296,7 +7191,7 @@ extends Operator
     }
 
 
-    
+
     // generate(callerInput)
     // {
     //     if (this.valid) return;
@@ -7314,7 +7209,7 @@ extends Operator
 class   OpAdd
 extends Operator
 {
-    #value;
+    #paramValue;
 
 
 
@@ -7322,433 +7217,96 @@ extends Operator
     {
         super('add', 'number');
 
-        this.addInput(new NewInput(this.dataType));
+        this.addNewInput();
         this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#value = new NumberParam('', false, false));
+        
+        this.addParam(this.#paramValue = new NumberParam('', false, false));
     }
-}
-
-
-class   OpRandom
-extends Operator
-{
-    #min;
-    #max;
-    #scale;
-    #seed;
-
     
-
-    constructor()
+    
+    
+    addNewInput()
     {
-        super('random', 'number');
+        const input = new Input(this.dataType);
 
-        this.setOutput(new Output(this.dataType));
+        input.addEventListener('connect',    () => onConnectInput(this));
+        input.addEventListener('disconnect', () => onDisconnectInput(this, input));
 
-        this.addParam(this.#min   = new NumberParam('min',   true,  0));
-        this.addParam(this.#max   = new NumberParam('max',   true, 10));
-        this.addParam(this.#scale = new NumberParam('scale', true,  1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed',  true,  1, 1));
-
-        this.#max.control.min = this.#min.value;
-        this.#min.control.max = this.#max.value;
-
-
-        this.#min.control.addEventListener('change', () =>
-        {
-            // if (this.#min.value > this.#max.value)
-            //     this.#min.value = this.#max.value;
-
-            this.#max.control.min = this.#min.value;
-            this.updateConnectedInputValueText();
-        });
-
-
-        this.#max.control.addEventListener('change', () =>
-        {
-            // if (this.#max.value < this.#min.value)
-            //     this.#max.value = this.#min.value;
-
-            this.#min.control.max = this.#max.value;
-            this.updateConnectedInputValueText();
-        });
+        this.addInput(input);
     }
 
 
 
-    updateConnectedInputValueText()
+    refresh()
     {
-        const val =
-            this.#min.value == this.#max.value
-            ? this.#min.value
-            : this.#min.value + '~' + this.#max.value;
-
-        if (this.output)
-        {
-            for (const input of this.output.connectedInputs)
-                input.param.valueText = val;
-        }
+        super.refresh();
+        
+        this._sampled = Number.NaN;
     }
-}
 
 
 
-
-
-// class   OpRandom
-// extends Operator
-// {
-//     #min;
-//     #max;
-//     #scale;
-//     #seed;
-
-
-//     constructor()
-//     {
-//         super('random', 'number');
-
-//         this.setOutput(new Output(this.dataType));
-
-//         this.addParam(this.#min   = new NumberParam('min'));
-//         this.addParam(this.#max   = new NumberParam('max'));
-//         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-//         this.addParam(this.#seed  = new NumberParam('seed'));
-
-//         this.#min.control.addEventListener('change', () =>
-//         {
-//             if (this.#min.control.value > this.#max.control.value)
-//                 this.#max.control.setValue(this.#min.control.value, false);
-//         });
-
-//         this.#max.control.addEventListener('change', () =>
-//         {
-//             if (this.#max.control.value < this.#min.control.value)
-//                 this.#min.control.setValue(this.#max.control.value, false);
-//         });
-//     }
-
-
-//     update()
-//     {
-//         if (this.valid) return;
-
-//         this.output._data = 
-//         {
-//             id:    this.id,
-//             type:  this.opType,
-            
-//             min:   this.#min  .value,
-//             max:   this.#max  .value,
-//             scale: this.#scale.value,
-//             seed:  this.#seed .value
-//         };
-
-//         super.update();
-//     }
-// }
-
-
-const colorTypes = ['RGB', 'HSV', 'HSL', 'HCL (OKLab)', 'HCL (CIE Lab)', 'HCL (CIE Luv)'];
-
-
-
-class   OpColor
-extends Operator
-{
-    #type;
-
-    #c1;
-    #c2;
-    #c3;
-
-
-
-    constructor()
+    update()
     {
-        super('color', 'color');
+        if (this.valid) 
+            return;
 
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        super.update()
+        
+        //this.output._data = dataFromNumber(this.#paramValue.value);
 
-
-        this.addParam(this.#type = new SelectParam('type', true, colorTypes));
-        this.addParam(this.#c1   = new NumberParam('c1',   true, 0, 0, 255));
-        this.addParam(this.#c2   = new NumberParam('c2',   true, 0, 0, 255));
-        this.addParam(this.#c3   = new NumberParam('c3',   true, 0, 0, 255));
-
-        this.#type.control.addEventListener('change', () => { this.updateNode(); });
-        this.#c1  .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c2  .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c3  .control.addEventListener('change', () => { this.updateNode(); });
-
-        this.#type.setValue(0);
+        for (const input of this.output.connectedInputs)
+            input.op.update();
     }
 
 
 
     updateNode()
     {
-        super.updateNode();
-        //Operator.prototype.updateNode.call(this);
+        const inputSize = 10;
+        const padding   =  8;
+        const gap       =  4;
 
-        switch (this.#type)
+            
+        let height = padding;
+
+        for (let i = 0; i < this.inputs.length; i++)
         {
-            case 0: this.#c1.name = 'R'; this.#c2.name = 'G'; this.#c3.name = 'B'; break;
-            case 1: this.#c1.name = 'H'; this.#c2.name = 'S'; this.#c3.name = 'V'; break;
-            case 2: this.#c1.name = 'H'; this.#c2.name = 'S'; this.#c3.name = 'L'; break;
-            case 3: 
-            case 4: 
-            case 5: this.#c1.name = 'H'; this.#c2.name = 'C'; this.#c3.name = 'L'; break;
+            const input = this.inputs[i];
+            
+            if (i > 0)
+                height += gap;
+
+            input.control.style.top = height;
+
+            height += inputSize;
         }
 
-        this.header.style.backgroundColor = colorStyle_(
-            this.#c1.value,
-            this.#c2.value,
-            this.#c3.value);
+        height += padding;
+
+
+        this.header.style.height = height;
+
+
+        super.updateNode();
     }
 }
 
 
-class   OpRect
-extends Operator
+
+function onConnectInput(op)
 {
-    #x;
-    #y;
-    #width;
-    #height;
-    #round;
-    #color;
-
-
-
-    constructor()
-    {
-        super('rect', 'object');
-
-        this.setOutput(new Output(this.dataType));
-
-        this.addParam(this.#x      = new NumberParam('x',      true,   0));
-        this.addParam(this.#y      = new NumberParam('y',      true,   0));
-        this.addParam(this.#width  = new NumberParam('width',  true, 100, 0.01));
-        this.addParam(this.#height = new NumberParam('height', true, 100, 0.01));
-        this.addParam(this.#round  = new NumberParam('round',  true,   0, 0));
-        this.addParam(this.#color  = new ColorParam ('color',  true));
-        
-        this.#x     ._control.addEventListener('change', () => this.updateRound());
-        this.#y     ._control.addEventListener('change', () => this.updateRound());
-        this.#width ._control.addEventListener('change', () => this.updateRound());
-        this.#height._control.addEventListener('change', () => this.updateRound());
-
-        this.updateRound();
-    }
-    
-    
-    
-    updateRound()
-    {
-        const min = Math.min(this.#width.value, this.#height.value);
-        this.setRoundMinMax(0, min/2);
-    }
-
-    
-
-    setRoundMinMax(min, max)
-    {
-        const control = this.#round._control;
-
-        control.min   = min;
-        control.max   = max;
-        //control.value = Math.min(control.value, control.max);
-
-        this.#round._control.update();
-    }
-
-
-
-    // update()
-    // {
-    //     if (this.valid) return;
-
-    //     this.output._data = 
-    //     {
-    //         nodeId: this.id,
-    //         opType: this.opType,
-
-    //         x:      0,
-    //         y:      0,
-    //         width:  this.#width .value,
-    //         height: this.#height.value
-    //     };
-
-    //     super.update();
-    // }
+    op.addNewInput(); 
+    updateGraphNode(op);
 }
 
 
-class   OpRow
-extends Operator
+
+function onDisconnectInput(op, input)
 {
-    #count;
-    #gap;
-
-
-    constructor()
-    {
-        super('row', 'object');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count = new NumberParam('count', true,  7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   true, 10, 0));
-    }
+    removeFromArray(op.inputs, input); 
+    updateGraphNode(op);
 }
-
-
-
-
-// class   OpRow
-// extends Operator
-// {
-//     #count;
-//     #gap;
-
-
-//     constructor()
-//     {
-//         super('row', 'object');
-
-//         this.addInput (new Input (this.dataType));
-//         this.setOutput(new Output(this.dataType));
-        
-//         this.addParam(this.#count = new NumberParam('count',  4, 1));
-//         this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
-//     }
-
-
-//     update()
-//     {
-//         if (this.valid) return;
-
-//         const input  = this.inputs[0];
-//         const output = this.output;
-
-//         if (!input.connected)
-//         {
-//             output._data = {};
-//             return;
-//         }
-
-    
-//         const objects = input.data;
-//         const bounds = getObjectBounds(objects);
-
-
-//         output._data = [];
-    
-//         for (var i = 0, x = 0; i < this.#count.value; i++)
-//         {
-//             for (var j = 0; j < objects.length; j++)
-//             {
-//                 const obj = shallowCopy(objects[j]);
-//                 obj.itemId = 'row_' + i + '_' + j;
-   
-//                 obj.x += x;
-                
-//                 output._data.push(obj);
-//             }
-            
-//             x += bounds.w + this.#gap.value;
-//         }
-
-        
-//         super.update();
-//     }
-// }
-
-
-class   OpColumn
-extends Operator
-{
-    #count;
-    #gap;
-
-
-
-    constructor()
-    {
-        super('column', 'object');
-
-        this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
-        
-        this.addParam(this.#count = new NumberParam('count', true,  7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   true, 10, 0));
-    }
-}
-
-
-
-// class   OpColumn
-// extends Operator
-// {
-//     #count;
-//     #gap;
-
-
-//     constructor()
-//     {
-//         super('row', 'object');
-
-//         this.addInput (new Input (this.dataType));
-//         this.setOutput(new Output(this.dataType));
-        
-//         this.addParam(this.#count = new NumberParam('count',  4, 1));
-//         this.addParam(this.#gap   = new NumberParam('gap',   10, 0));
-//     }
-
-
-//     update()
-//     {
-//         if (this.valid) return;
-
-//         const input  = this.inputs[0];
-//         const output = this.output;
-
-//         if (!input.connected)
-//         {
-//             output._data = {};
-//             return;
-//         }
-
-    
-//         const objects = input.data;
-//         const bounds = getObjectBounds(objects);
-
-
-//         output._data = [];
-    
-//         for (var i = 0, y = 0; i < this.#count.value; i++)
-//         {
-//             for (var j = 0; j < objects.length; j++)
-//             {
-//                 const obj = shallowCopy(objects[j]);
-//                 obj.itemId = 'column_' + i + '_' + j;
-   
-//                 obj.y += y;
-                
-//                 output._data.push(obj);
-//             }
-            
-//             y += bounds.h + this.#gap.value;
-//         }
-
-        
-//         super.update();
-//     }
-// }
 
 
 class Action
@@ -12435,19 +11993,47 @@ graphView.getNodeBounds = () =>
 
 
 
+graphView.getNodeBoundsFromType = (opType) =>
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    const nodes = graph.nodes.filter(n => n.opType == opType);
+
+    for (const node of nodes)
+    {
+        var bounds = node.div.getBoundingClientRect();
+
+        boundsL = Math.min(boundsL, bounds.left  );
+        boundsT = Math.min(boundsT, bounds.top   );
+        boundsR = Math.max(boundsR, bounds.right );
+        boundsB = Math.max(boundsB, bounds.bottom);
+    }
+
+    return {
+        x: boundsL - graphView.pan.x, 
+        y: boundsT - graphView.pan.y,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
+};
+
+
+
 graphView.putNodeOnTop = node =>
 {
     const topIndices = 
           1 
-        + node.inputs.filter(i => i.connected).length 
-        + (!!node.output && node.output.connected ? 1 : 0);
+        + node.inputs.filter(i => i.isConnected).length 
+        + (!!node.output && node.output.isConnected ? 1 : 0);
         
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
     var z = MAX_INT32-3; // -3 is for scrollbars
 
-    for (const input of node.inputs.filter(i => i.connected))
+    for (const input of node.inputs.filter(i => i.isConnected))
         input.connection.wire.style.zIndex = z--;
         
     if (!!node.output)
@@ -12479,7 +12065,7 @@ graphView.updateNodeTransform = function(node)
    
     for (const input of node.inputs)
     {
-        if (input.connected)
+        if (input.isConnected)
             graphView.updateWireTransform(input.connection.wire);        
     }
 

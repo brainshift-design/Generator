@@ -19,13 +19,6 @@ extends Operator
             this.invalidate();
             this.update();
         });
-
-        
-        this.#paramValue.input.addEventListener('connect', () => 
-        {
-            this.invalidate();
-            this.update();
-        });
     }
 
 
@@ -49,7 +42,7 @@ extends Operator
         this.output._data = dataFromNumber(this.#paramValue.value);
 
         for (const input of this.output.connectedInputs)
-            input.op.update();//Params();
+            input.op.update();
     }
 
 
@@ -62,7 +55,7 @@ extends Operator
     }
 
 
-    
+
     // generate(callerInput)
     // {
     //     if (this.valid) return;

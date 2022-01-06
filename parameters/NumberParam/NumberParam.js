@@ -64,14 +64,15 @@ extends Parameter
         this.initOutput(hasOutput);
 
 
-        // this.input  .addEventListener('update',  () => { this.update(); });
-
-        this.input.addEventListener('connect', () => 
+        if (this.input)
         {
-            this.op.invalidate();
-            this.op.update();
-        });
-        
+            this.input.addEventListener('connect', () => 
+            {
+                this.op.invalidate();
+                this.op.update();
+            });
+        }
+
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }

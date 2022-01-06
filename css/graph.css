@@ -96,8 +96,8 @@
     border-radius:  5px;
     margin:         0;
     position:       absolute;
-    top:            50%;
-    transform:      translateY(-50%);
+    /* top:            50%; */
+    /* transform:      translateY(-50%); */
     left:           4px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);

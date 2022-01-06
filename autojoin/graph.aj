@@ -8,7 +8,6 @@
 ../graph/Graph/Graph.js
 
 ../graph/Input/Input.js
-../graph/NewInput/NewInput.js
 ../graph/Output/Output.js
 ../graph/Connection/Connection.js
 
@@ -20,13 +19,13 @@
 
 ../operators/OpNumber/OpNumber.js
 ../operators/OpAdd/OpAdd.js
-../operators/OpRandom/OpRandom.js
+//../operators/OpRandom/OpRandom.js
 
-../operators/OpColor/OpColor.js
+//../operators/OpColor/OpColor.js
 
-../operators/OpRect/OpRect.js
+//../operators/OpRect/OpRect.js
 
-../operators/OpRow/OpRow.js
-../operators/OpColumn/OpColumn.js
+//../operators/OpRow/OpRow.js
+//../operators/OpColumn/OpColumn.js
 
 //../operators/OpSpread/UOpSpread.js

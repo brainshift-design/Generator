@@ -272,19 +272,47 @@ graphView.getNodeBounds = () =>
 
 
 
+graphView.getNodeBoundsFromType = (opType) =>
+{
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
+    
+    const nodes = graph.nodes.filter(n => n.opType == opType);
+
+    for (const node of nodes)
+    {
+        var bounds = node.div.getBoundingClientRect();
+
+        boundsL = Math.min(boundsL, bounds.left  );
+        boundsT = Math.min(boundsT, bounds.top   );
+        boundsR = Math.max(boundsR, bounds.right );
+        boundsB = Math.max(boundsB, bounds.bottom);
+    }
+
+    return {
+        x: boundsL - graphView.pan.x, 
+        y: boundsT - graphView.pan.y,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
+};
+
+
+
 graphView.putNodeOnTop = node =>
 {
     const topIndices = 
           1 
-        + node.inputs.filter(i => i.connected).length 
-        + (!!node.output && node.output.connected ? 1 : 0);
+        + node.inputs.filter(i => i.isConnected).length 
+        + (!!node.output && node.output.isConnected ? 1 : 0);
         
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
     var z = MAX_INT32-3; // -3 is for scrollbars
 
-    for (const input of node.inputs.filter(i => i.connected))
+    for (const input of node.inputs.filter(i => i.isConnected))
         input.connection.wire.style.zIndex = z--;
         
     if (!!node.output)
@@ -316,7 +344,7 @@ graphView.updateNodeTransform = function(node)
    
     for (const input of node.inputs)
     {
-        if (input.connected)
+        if (input.isConnected)
             graphView.updateWireTransform(input.connection.wire);        
     }
 

@@ -1,63 +1,63 @@
-class   GColorParam
-extends GParameter
-{
-    #value; // [r, g, b]
+// class   GColorParam
+// extends GParameter
+// {
+//     #value; // [r, g, b]
 
 
     
-    get value() 
-    {
-        let value = this.#value;
+//     get value() 
+//     {
+//         let value = this.#value;
 
-        if (this.input.connected)
-        {
-            value = this.input.data.value;
+//         if (this.input.isConnected)
+//         {
+//             value = this.input.data.value;
 
-            genPostMessageToUi({ 
-                msg:   'uiShowParamValue',
-                nodeId: this.op.id,
-                param:  this.name,
-                value:  value
-            });
-        }
+//             genPostMessageToUi({ 
+//                 msg:   'uiShowParamValue',
+//                 nodeId: this.op.id,
+//                 param:  this.name,
+//                 value:  value
+//             });
+//         }
 
-        return value;
-    }
+//         return value;
+//     }
 
     
 
-    set value(value) 
-    {
-        this.#value   = value;
-        this.op.valid = false;
-    }
+//     set value(value) 
+//     {
+//         this.#value   = value;
+//         this.op.valid = false;
+//     }
 
 
 
-    input;
-    output;
+//     input;
+//     output;
 
 
 
-    constructor(name, 
-                hasOutput,
-                value = [0, 0, 0])
-    {
-        super(name, 'color');
+//     constructor(name, 
+//                 hasOutput,
+//                 value = [0, 0, 0])
+//     {
+//         super(name, 'color');
 
-        this.#value = value;
+//         this.#value = value;
    
         
-        this.input = new GInput('color');
-        this.input._param = this;
+//         this.input = new GInput('color');
+//         this.input._param = this;
 
 
-        if (hasOutput)
-        {
-            this.output = new GOutput('color');
-            this.output._param = this;
-        }
-        else
-            this.output = null;
-    }
-}
+//         if (hasOutput)
+//         {
+//             this.output = new GOutput('color');
+//             this.output._param = this;
+//         }
+//         else
+//             this.output = null;
+//     }
+// }

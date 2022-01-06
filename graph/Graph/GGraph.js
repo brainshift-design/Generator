@@ -62,7 +62,7 @@
 //             const node = this.nodes.find(n => n.id == nodeId);
 
 //             for (const input of node.inputs)
-//                 if (input.connected) this.disconnect(input);
+//                 if (input.isConnected) this.disconnect(input);
 
 //             if (!!node.output)
 //             {

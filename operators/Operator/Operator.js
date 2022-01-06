@@ -49,7 +49,7 @@ class Operator
         
     //     for (const input of this.inputs)
     //     {
-    //         if (input.connected)
+    //         if (input.isConnected)
     //             valid &= input.connectedOutput.op.valid;
     //     }
 
@@ -121,7 +121,7 @@ class Operator
         {
             input.currentSeed = input.initialSeed;
             
-            if (input.connected)
+            if (input.isConnected)
                 input.connectedOutput.op.reset();
         }
     }
@@ -132,7 +132,7 @@ class Operator
     {
         for (const input of this.inputs)
         {
-            if (input.connected)
+            if (input.isConnected)
                 input.connectedOutput.op.refresh();
         }
     }
@@ -175,7 +175,7 @@ class Operator
     {
         for (const input of this.inputs)
         {
-            if (input.connected) 
+            if (input.isConnected)
                 input.connection.wire.update(true);
         }
     }
@@ -185,9 +185,9 @@ class Operator
     updateOutputWires()
     {
         if (   this.output 
-            && this.output.connected)
+            && this.output.isConnected)
         {
-            for (const input of node.output.connectedInputs)
+            for (const input of this.output.connectedInputs)
                 input.connection.wire.update(true);
         }
     }
@@ -198,7 +198,6 @@ class Operator
     {
         for (const param of this.params)
         {
-            console.log(param.input);
             if (   param.input
                 && param.input.isConnected) 
                 param.input.connection.wire.update(true);
@@ -209,8 +208,11 @@ class Operator
 
     updateNode() 
     {
-        let headerColor = colorFromDataType(this.#dataType, false);
-        this.header.style.backgroundColor = headerColor;
+        this.header.style.backgroundColor = colorFromDataType(this.#dataType, false);
+
+        this.updateInputWires ();
+        this.updateOutputWires();
+        this.updateParamWires ();
     }
 
 
@@ -281,7 +283,7 @@ class Operator
     isBefore(node)
     {
         if (   !this.output
-            || !this.output.connected)
+            || !this.output.isConnected)
             return false;
 
         for (const input of output.connectedInputs)
@@ -349,7 +351,7 @@ class Operator
     {
         for (const input of this.inputs)
         {
-            if (input.connected)
+            if (input.isConnected)
             {
                 input.connectedOutput.op.makePassive();
                 input.connectedOutput.op.makeLeftPassive();            

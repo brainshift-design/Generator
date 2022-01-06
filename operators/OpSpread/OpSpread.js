@@ -26,7 +26,7 @@ extends Operator
 
         var input = this.inputs[0];
 
-        if (   !input.connected
+        if (   !input.isConnected
             || isEmptyObject(input.connectedOutput.data)) 
         {
             this.output._data = {};

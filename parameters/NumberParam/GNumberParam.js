@@ -1,65 +1,65 @@
-class   GNumberParam
-extends GParameter
-{
-    #value;
+// class   GNumberParam
+// extends GParameter
+// {
+//     #value;
 
-    #min;
-    #max;
+//     #min;
+//     #max;
     
 
     
-    get value() 
-    {
-        let value = Math.min(Math.max(this.#min, this.#value), this.#max);
+//     get value() 
+//     {
+//         let value = Math.min(Math.max(this.#min, this.#value), this.#max);
 
-        if (this.input.connected)
-        {
-            value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
+//         if (this.input.isConnected)
+//         {
+//             value = Math.min(Math.max(this.#min, this.input.data.value), this.#max);
 
-            genPostMessageToUi({ 
-                msg:   'uiShowParamValue',
-                nodeId: this.op.id,
-                param:  this.name,
-                value:  value
-            });
-        }
+//             genPostMessageToUi({ 
+//                 msg:   'uiShowParamValue',
+//                 nodeId: this.op.id,
+//                 param:  this.name,
+//                 value:  value
+//             });
+//         }
 
-        return value;
-    }
+//         return value;
+//     }
 
 
     
-    set value(value) 
-    {
-        this.#value   = value;
-        this.op.valid = false;
-    }
+//     set value(value) 
+//     {
+//         this.#value   = value;
+//         this.op.valid = false;
+//     }
 
 
 
-    input;
-    output;
+//     input;
+//     output;
 
 
 
-    constructor(name,
-                hasInput,
-                hasOutput,
-                value = 0, 
-                min   = Number.MIN_SAFE_INTEGER, 
-                max   = Number.MAX_SAFE_INTEGER)
-    {
-        super(name, 'number');
+//     constructor(name,
+//                 hasInput,
+//                 hasOutput,
+//                 value = 0, 
+//                 min   = Number.MIN_SAFE_INTEGER, 
+//                 max   = Number.MAX_SAFE_INTEGER)
+//     {
+//         super(name, 'number');
 
-        this.#value = value;
+//         this.#value = value;
    
-        this.#min   = min;
-        this.#max   = max;
+//         this.#min   = min;
+//         this.#max   = max;
 
-        this.input  = hasInput  ? new GInput ('number') : null;
-        this.output = hasOutput ? new GOutput('number') : null;
+//         this.input  = hasInput  ? new GInput ('number') : null;
+//         this.output = hasOutput ? new GOutput('number') : null;
 
-        if (this.input ) this.input ._param = this;
-        if (this.output) this.output._param = this;
-    }
-}
+//         if (this.input ) this.input ._param = this;
+//         if (this.output) this.output._param = this;
+//     }
+// }

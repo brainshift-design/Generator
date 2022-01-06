@@ -56,7 +56,7 @@ class Graph
         switch (opType)
         {
             case 'number': node = new OpNumber(); break;
-            // case 'add':    node = new OpAdd();    break;
+            case 'add':    node = new OpAdd();    break;
             // case 'color':  node = new OpColor();  break;
             // case 'random': node = new OpRandom(); break;
             // case 'rect':   node = new OpRect();   break;
@@ -85,7 +85,7 @@ class Graph
             
         if (this.nodes.length > 0)
         {
-            const bounds = graphView.getNodeBounds();
+            const bounds = graphView.getNodeBoundsFromType(node.opType);
 
             bounds.x /= graphView.zoom;
             bounds.y /= graphView.zoom;
@@ -128,7 +128,7 @@ class Graph
 
             for (const input of node.inputs)
             {
-                if (!input.connected) continue;
+                if (!input.isConnected) continue;
 
                 input.connectedOutput.op.makeActive();
                 this.disconnect(input, true);
@@ -279,7 +279,7 @@ class Graph
 
             for (let j = 0; j < node.inputs.length; j++)
             {
-                if (!node.inputs[j].connected)
+                if (!node.inputs[j].isConnected)
                     continue;
 
                 save += '\n' + node.inputs[j].connection.save(4);

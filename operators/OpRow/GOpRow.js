@@ -25,7 +25,7 @@ extends GOperator
 
         const input = this.inputs[0];
 
-        if (!input.connected)
+        if (!input.isConnected)
         {
             this.output._data = [];
             return;

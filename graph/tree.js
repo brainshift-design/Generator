@@ -14,7 +14,7 @@ function activeNodeLeft(node)
 
     for (const input of node.inputs)
     {
-        if (input.connected)
+        if (input.isConnected)
         {
             const left = activeNodeLeft(input.connectedOutput.op);
             if (left) return left;
