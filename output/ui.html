@@ -151,7 +151,8 @@ input[type=text]::selection
     font-size:      11;
     padding:        0;
     margin:         0;
-    display:        inline-block;
+    display:        block;
+    width:          100%;
     height:         14;
     color:          black;
     text-align:     center;
@@ -1405,7 +1406,7 @@ function signedPosOnLine(p0, p1, p)
 
 
 
-function intersectRects(rect1, rect2)
+function rectsIntersect(rect1, rect2)
 {
     return !(
            rect1.l >= rect2.r
@@ -1418,7 +1419,7 @@ function intersectRects(rect1, rect2)
 
 function clipRect(rect, clip)
 {
-    if (!intersectRects(rect, clip))
+    if (!rectsIntersect(rect, clip))
         return Rect.NaN;
 
     return new AbsRect(
@@ -1477,7 +1478,16 @@ function xrotate(angle)
 
 
 
+function boundingRect(elem)
+{
+    const bounds = elem.getBoundingClientRect();
 
+    return new Rect(
+        bounds.x,
+        bounds.y,
+        bounds.width,
+        bounds.height);
+}
 
 
 var bigBuffer = new Uint8Array(2048);
@@ -3522,7 +3532,7 @@ function signedPosOnLine(p0, p1, p)
 
 
 
-function intersectRects(rect1, rect2)
+function rectsIntersect(rect1, rect2)
 {
     return !(
            rect1.l >= rect2.r
@@ -3535,7 +3545,7 @@ function intersectRects(rect1, rect2)
 
 function clipRect(rect, clip)
 {
-    if (!intersectRects(rect, clip))
+    if (!rectsIntersect(rect, clip))
         return Rect.NaN;
 
     return new AbsRect(
@@ -3594,7 +3604,16 @@ function xrotate(angle)
 
 
 
+function boundingRect(elem)
+{
+    const bounds = elem.getBoundingClientRect();
 
+    return new Rect(
+        bounds.x,
+        bounds.y,
+        bounds.width,
+        bounds.height);
+}
 
 
 var bigBuffer = new Uint8Array(2048);
@@ -5709,35 +5728,13 @@ class Graph
     {
         node.graph = this;
         node.setId(this.getNewNodeName(node)); // TODO: not checking return value here
-            
-        if (this.nodes.length > 0)
-        {
-            const bounds = graphView.getNodeBoundsFromType(node.opType);
-
-            bounds.x /= graphView.zoom;
-            bounds.y /= graphView.zoom;
-            bounds.w /= graphView.zoom;
-            bounds.h /= graphView.zoom;
-
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            const gap = 30;
-            node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y - controlBar.offsetHeight;
-        }
-        else // 0
-        {
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            node.div.style.zIndex = graph.nodes.length-1;
-            node.div.style.left   = 100;
-
-            // I subtract the full height of the node here as they grow down, so this
-            // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
-        }
+        
+        graphView.placeNewNode(node);
+        
+        this.nodes.push(node);
+        graphView.appendChild(node.div);
+        
+        node.div.style.zIndex = graph.nodes.length-1;
 
         graphView.putNodeOnTop(node);
         graphView.updateScroll();
@@ -5746,7 +5743,7 @@ class Graph
     }
     
 
-    
+
     deleteNodes(nodeIds)
     {
         for (const id of nodeIds)
@@ -6161,8 +6158,8 @@ class Connection
 
         this.wire.update = () =>
         {
-            let outRect = this.output.control.getBoundingClientRect();
-            let inRect  = this.input .control.getBoundingClientRect();
+            let outRect = boundingRect(this.output.control);
+            let inRect  = boundingRect(this.input .control);
 
 
             let x1 = (outRect.left + outRect.width /2) / graphView.zoom;
@@ -6197,7 +6194,7 @@ class Connection
 
         this.wire.updateFromOutput = (x, y) =>
         {
-            let outRect = this.output.control.getBoundingClientRect();
+            let outRect = boundingRect(this.output.control);
 
             let x1 = outRect.left + outRect.width /2;
             let y1 = outRect.top  + outRect.height/2;
@@ -6216,7 +6213,7 @@ class Connection
 
         this.wire.updateFromInput = (x, y) =>
         {
-            let inRect = this.input.control.getBoundingClientRect();
+            let inRect = boundingRect(this.input.control);
 
             let x2 = inRect.left + inRect.width /2;
             let y2 = inRect.top  + inRect.height/2;
@@ -6788,7 +6785,7 @@ function createNode(node)
     node.div.className   = 'node';
     node.div.op          = node;
 
-    node.div.style.width = '120px';
+    node.div.style.width = '100px';
     
     node.div.selectedSet = false;
     node.div.over        = false;
@@ -6828,11 +6825,11 @@ function createNodeHeader(node)
     node.header = document.createElement('div');
     node.header.className = 'nodeHeader';
     
+    createNodeLabel(node);
+
     node.inputControls = document.createElement('div');
     node.inputControls.className = 'inputControls';
     node.header.appendChild(node.inputControls);
-
-    createNodeLabel(node);
 
     node.outputControls = document.createElement('div');
     node.outputControls.className = 'outputControls';
@@ -6943,7 +6940,7 @@ function createNodeHeader(node)
 
     node.header.addEventListener('dblclick', e =>
     {
-        var bounds = node.label.getBoundingClientRect();
+        var bounds = boundingRect(node.label);
 
         if (   e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
@@ -7680,6 +7677,172 @@ extends Action
 }
 
 
+const panCursor = 
+      'url(data:image/svg+xml;base64,'
+    + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3Ln'
+    + 'czLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij48aW1hZ2UgeGxpbms6aHJlZj0i'
+    + 'ZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFFQUFBQUJBQ0FZQUFBQ3FhWE'
+    + 'hlQUFBSHFrbEVRVlI0WHUyYWY4aVY1Um5IUDlhbXpjM0tkRERkSDJ2WitpUEQvdEJTSEtLQ1EyVmJaTWdnbDAx'
+    + 'TENUUmJ0Q1hLSFA1Z1N1UWZNZGtmZ3lrMkZLTWtjU0wrV0RKbExOU2xwaWtSaEdRU1VTMU4zV2JiYW5OOG50M1'
+    + 'h1N3ZIOXpYUE9jOXp3dDczZ3B2M25QT2U4enpQOWIyLzE4Lzc2a1UzbDE3ZFhIOTZBT2hoUURkSG9NY0V1amtC'
+    + 'ZXB4Z2p3bTAwUVFFTzFiYzlnSVFxNDJQOHY5YnRZTUIzdU9xdEs0R0JnRTNBdThBYndML1R1cy9nS3V0VWpjQV'
+    + 'hsK2x2d0I4RVZnRXpNODBmQkZZRFR3UGZGd0NvaTNNcUJzQWxWZnhQc0R2Z0xFcVAyVElFSTRmUDU3djlGVGdq'
+    + 'OEJOd0YrQk54SWJaRWV0ektnRGdMQnphYS95MXdEZkIzNnJ4cHMyYldMS2xDbWNPSEdDdVhQbnNtM2JOai9lQl'
+    + 'h3TnVDMmhjaEJZRE93QlBrcnNxTVU4cWdTZ2JPdlMzcDN2Qzh3R2ZqNXk1RWoyN2R2WHNmT3JWNjltOW16LzFh'
+    + 'VThEdndhK0ZkZElGUUZRRGc1ZDF6RjF3SERnZXVBVjREWGdBZVhMRm5DNHNWdTdQOWt6NTQ5akI4L3ZuanQ1K1'
+    + 'BHamFOZnYzNXMzYm9Wdnd1OEM0d0FQZ0QrbVh5RXZxRXlxUUtBY0hTOTA0NmY3dXJwTGdYQXNXUEhHRHAwYU1k'
+    + 'UGUvWHFlTFFKd0NIZ2ZES0hTazJoQ2dEQzBYMEplQWFZcUJaYnRteGgrUERoTEZpd2dIWHJKQVRGcm5iRmdBc1'
+    + 'hQcm14TWtPR0FQY0RMd0IvU3l3d1dsVEdnbFlCOFBkU1h1Vy9BdndaK1BxcVZhdVlOMjlleDI0T0dEQ0EwNmRQ'
+    + 'Tnd2QVE4bEpHaDFrZ2Y1QUZnaEN5MnhvRlFCdFgrcC9PZGw3RWR2S3U3bDA2ZEpDK1NZWjhDandUV0JrOGlWUE'
+    + 'F5K1Y4b2FtR1ZFRkFJYTVmc0FOd0tzMUFOQ1pTM2tTK0VVV0hjd1htcEpXQWREK3BmKzF3SURrOGF0bUFLTkhq'
+    + 'MmI1OHVYSXBPUVhWRlpmc3pmNUJYT0ZwbGpRS2dCaC80YTdnY0RMVlROZzJMQmhIRGx5cEdOM1I0MGF4Zjc5Kz'
+    + 'MwdkEzNlovRUtFeUlaWlVBVUFKam9CZ09HcVN3WVlBVko4dnlnUDZDb0s3TjY5dThnUFFzS2ZKRDh3SmFYT0g2'
+    + 'WVErWmtDOEZYQUZMWmRBSGl2SHdCbmdMOG5mOUN3R1ZURmdPdVRDYlFUQU0zdFhzREV5eHpoSDgzNGdTc1pnTV'
+    + 'BBRHhNQTV4SUFEZWNGVnpJQWVzYjdnRk9BQU9nSGFnY2dBSXUvRmorR3dYQ0NCenJ6QVRvK25WZkZUckN0QU9T'
+    + 'bGJsUis2aHIxZmlSQ3BzS2RPa0hqOTlpeFl5K0tBZ0tqNk8xektWZUpuVVFCQVpoZVlrRERDZEhsbUVBb2JNen'
+    + 'ZiMDBEV0tHNTY2YSttNjE5QUIzaG56b0RvT0hZZElrZlpHR3dMUUJFc2VOT1c2ditDcml6aytjek0xbWJtaGNY'
+    + 'TWVCS0JzQlUxMkpITy84TmNJL0tyRnk1a2hFalJuRDQ4T0hDcnMrZDB3Y1ZEUXM3UUxVQ0VQNEVxSjBCN3I3S1'
+    + 'creVlkeityY3VYR3hjR0RCMW0wYUJFN2R1em8yT2h5VmxjbEE5b0pnTHZ2amxycVBnQThZVXBhZGxhaDNMSmx5'
+    + 'enFhSFo4WEFLTFEwY1BQQVg1V0xrektPN3RyMXk3bXo1L1BvVU5GU1ZDTHRKTUJPajRMSFV2ZE85TGhSY0dBdk'
+    + 'RncGEzbisvSG42OXZWbjljaG5CWUNsN25KZ3NtcHQzNzZkU1pNbTFhUGhwMXkxblFEa0ptQ3o0MmJnS2VBYlB1'
+    + 'UEdqUnVaT3RVRG5mWktPd0hJbmFCSmp1V3VKemNMMCtFbWE5ZXVaY2FNR1cxRm9BUkExQUkyVEswRktzMEVEWU'
+    + '9SNjBlcWE5L3ZGdUNud0xmVXZOd0JyaHVOVWlhWUYwT1d3NVVDb0M2UkNJVXpOQlYyYVFZL0FXNzFTeXRXckdE'
+    + 'aFFvbFJ2OHlhTllzMWE5WjRvejhBUDY2N0dveFVPRnJmTWtGekVBUVBNMlhDN1Q2TkFBaEUzYUx6M2JsenA3ZD'
+    + 'VEbGlXQUFnVHFLVWN0aGpTSVFxQ1RBZ1FCRUxuS0FpR3llSXdSSk9vVXdZT0hNaXBVN1lBaXFKTUVPd0lDWUFt'
+    + 'VUFzQTNxd3pFS3dHZ3cyUEFhUDlvazVSNTFpSDdOMjd0MmlSSi9rZThIbzZPQlVBYTVGYWU0S0NFSkhCNGtnbU'
+    + 'NJTG1JQkNQeEFDRTRkRXdXYlZNbno2ZDlldlhlMW1yVCszL0wxbFRWQUFhbHN2cEIrUVhEUkRDSER3UHpFRXda'
+    + 'YlpYd01TSkV6OVJJRFg4WktVZmJONjh1UmlzU0xJQStEM3dQbkEyaFVBUFJ4cVdSZ0h3QnJsakRDYVlMa2VFZU'
+    + 'JENHJsLzBkUGpBZ2FKTDFwS2NPWE9HL3YyOWZDRk9rM2dvOGw2cEk5eHdDQXhsbW5tNHZGR2lZd3dtaEUvNEVY'
+    + 'QjNGVXpJaHlpQXQ0RlppZnA2UW5lLzZUT0JWZ0NJMytZTmt6SUltc0xEZm5ITW1ERkZtSnc4dVNnbExrdk9uaj'
+    + 'NMaGcwYm1ETkhxeXJFM244a1BpcnYxRWljQnpnejBKUTBZd0w1amZMcGtKZ1IwQnhrZ2tzUXpKWDlqSmt6WnpK'
+    + 'dDJqUW1UQ2pjUktkeTlPalJRbkhYeVpNbjR6c2VoeitSS0cvWVUvbUkvZHArdytFdkx0d3FBRGtUSW0yV0NTcX'
+    + 'NjM1E1K25ZWDhKMjRhZS9ldlJrOGVEQ0RCZzJpVDUraWk0WjI3dVNZZnpQeGplMWlSMHg4cmVMU1BzNEJtajRV'
+    + 'clJLQU1naTIwT3dpR1NZRndpVW8xZzdmVGtOUGd6K0ZyOGRTejg4dTgxdHB0MVhjSmUxalVxVGxjWmtxR0pDRE'
+    + 'dWT2hnaEFtb2ZJdVFmRXp0OXoza1QrWVpTcFdjOUpiKzViV1puWXFxcE9UN2k1Zit6M0haR0tJc2luYnI1b0Ir'
+    + 'Zlh5ckZHRlhVYUtlQzBBNWhHQzVYSVRZaXhXcGR4VkZSUUFsUlVFbDYvOVRIQXFVVDZvMnhLQ1hmdzRRTkF2cU'
+    + 'd5TTBJWHlmcTd5Zmk5WUdDT3hBcUNTZ3FDTng0cGhTWlZ2T09YdFNza3FUYUI4ajRnUStiQjBERTNudXgvUEVG'
+    + 'TmZ3WUlBd3IvNUlIVmx5dGZKZ0J5TU9GcUxORHAvci9JNUFEa0lNaUlmbHE1VThicDh3S1hNS1pUTi8rYWJFQW'
+    + '9HQ0orTGNmazYvRXVsMTZ6VEIxVDZvSFZkckFlQXVwQzlVcTdiN1Jud1g2cWNXVzY0MVZ5REFBQUFBRWxGVGtT'
+    + 'dVFtQ0MiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIvPjwvc3ZnPg==) 15 15, auto';
+
+
+const zoomInCursor =
+      'url(data:image/svg+xml;base64,'
+    + 'PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbn'
+    + 'M9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWx0ZXI9InVybCgjZmlsdGVyMF9kKSI+PHBhdGgg'
+    + 'ZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNC41IDhDMTQuNSAxMS4wMzggMT'
+    + 'IuMDM4IDEzLjUgOSAxMy41QzUuOTYyIDEzLjUgMy41IDExLjAzOCAzLjUgOEMzLjUgNC45NjIgNS45NjIgMi41'
+    + 'IDkgMi41QzEyLjAzOCAyLjUgMTQuNSA0Ljk2MiAxNC41IDhaIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGZpbGwtcn'
+    + 'VsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNSA4QzE0LjUgMTEuMDM4IDEyLjAzOCAx'
+    + 'My41IDkgMTMuNUM1Ljk2MiAxMy41IDMuNSAxMS4wMzggMy41IDhDMy41IDQuOTYyIDUuOTYyIDIuNSA5IDIuNU'
+    + 'MxMi4wMzggMi41IDE0LjUgNC45NjIgMTQuNSA4WiIgc3Ryb2tlPSJibGFjayIvPjxwYXRoIGZpbGwtcnVsZT0i'
+    + 'ZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTcuNTg1NyAxOC4wMDAyTDE4Ljk5OTcgMTYuNTg2Mk'
+    + 'wxMy41NTA3IDExLjEzNzJMMTIuMTM2NyAxMi41NTEyTDE3LjU4NTcgMTguMDAwMloiIGZpbGw9ImJsYWNrIi8+'
+    + 'PC9nPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIgN0gxMFY1SD'
+    + 'hWN0g2VjguOThIOFYxMUgxMFY4Ljk4SDEyVjdaIiBmaWxsPSJibGFjayIvPjxkZWZzPjxmaWx0ZXIgaWQ9ImZp'
+    + 'bHRlcjBfZCIgeD0iMCIgeT0iMCIgd2lkdGg9IjIxLjk5OTciIGhlaWdodD0iMjIuMDAwMiIgZmlsdGVyVW5pdH'
+    + 'M9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPjxmZUZsb29kIGZs'
+    + 'b29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+PGZlQ29sb3JNYXRyaXggaW49Il'
+    + 'NvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAg'
+    + 'MCAwIDAgMTI3IDAiLz48ZmVPZmZzZXQgZHk9IjEiLz48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxLj'
+    + 'UiLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAg'
+    + 'MCAwIDAgMCAwIDAgMC4zNSAwIi8+PGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbjI9IkJhY2tncm91bmRJbWFnZU'
+    + 'ZpeCIgcmVzdWx0PSJlZmZlY3QxX2Ryb3BTaGFkb3ciLz48ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3Vy'
+    + 'Y2VHcmFwaGljIiBpbjI9ImVmZmVjdDFfZHJvcFNoYWRvdyIgcmVzdWx0PSJzaGFwZSIvPjwvZmlsdGVyPjwvZG'
+    + 'Vmcz48L3N2Zz4=) 8 8, auto';
+
+
+const zoomOutCursor =
+      'url(data:image/svg+xml;base64,'
+    + 'PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbn'
+    + 'M9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZCkiPgo8cGF0'
+    + 'aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE0LjUgOEMxNC41IDExLjAzOC'
+    + 'AxMi4wMzggMTMuNSA5IDEzLjVDNS45NjIgMTMuNSAzLjUgMTEuMDM4IDMuNSA4QzMuNSA0Ljk2MiA1Ljk2MiAy'
+    + 'LjUgOSAyLjVDMTIuMDM4IDIuNSAxNC41IDQuOTYyIDE0LjUgOFoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGZpbG'
+    + 'wtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNSA4QzE0LjUgMTEuMDM4IDEyLjAz'
+    + 'OCAxMy41IDkgMTMuNUM1Ljk2MiAxMy41IDMuNSAxMS4wMzggMy41IDhDMy41IDQuOTYyIDUuOTYyIDIuNSA5ID'
+    + 'IuNUMxMi4wMzggMi41IDE0LjUgNC45NjIgMTQuNSA4WiIgc3Ryb2tlPSJibGFjayIvPgo8cGF0aCBmaWxsLXJ1'
+    + 'bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE3LjU4NTcgMTguMDAwMkwxOC45OTk3IDE2Lj'
+    + 'U4NjJMMTMuNTUwNyAxMS4xMzcyTDEyLjEzNjcgMTIuNTUxMkwxNy41ODU3IDE4LjAwMDJaIiBmaWxsPSJibGFj'
+    + 'ayIvPgo8L2c+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIgN0'
+    + 'g2VjguOThIMTJWN1oiIGZpbGw9ImJsYWNrIi8+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2QiIHg9IjAi'
+    + 'IHk9IjAiIHdpZHRoPSIyMS45OTk3IiBoZWlnaHQ9IjIyLjAwMDIiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPbl'
+    + 'VzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0i'
+    + 'MCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIi'
+    + 'B0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAi'
+    + 'Lz4KPGZlT2Zmc2V0IGR5PSIxIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEuNSIvPgo8ZmVDb2'
+    + 'xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAw'
+    + 'IDAgMC4zNSAwIi8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3'
+    + 'VsdD0iZWZmZWN0MV9kcm9wU2hhZG93Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBo'
+    + 'aWMiIGluMj0iZWZmZWN0MV9kcm9wU2hhZG93IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8L2RlZnM+Cj'
+    + 'wvc3ZnPgo=) 8 8, auto';
+
+
+document.addEventListener('pointerdown', function(e)
+{
+    if (   e.button == 0
+        && (   document.canResizeX
+            || document.canResizeY))
+    {
+        document.startRect = new Rect(
+            e.clientX,
+            e.clientY,
+            window.innerWidth,
+            window.innerHeight);
+
+        document.body.setPointerCapture(e.pointerId);
+
+        document.resizingX = document.canResizeX;
+        document.resizingY = document.canResizeY;
+    }
+});
+
+
+
+document.addEventListener('pointermove', function(e)
+{
+    if (   document.resizingX
+        && document.resizingY)
+    {
+        resizeWindow(
+            document.startRect.w + e.clientX - document.startRect.x,
+            document.startRect.h + e.clientY - document.startRect.y);
+    }
+    else if (document.resizingX)
+    {
+        resizeWindow(
+            document.startRect.w + e.clientX - document.startRect.x,
+            window.innerHeight);
+    }
+    else if (document.resizingY)
+    {
+        resizeWindow(
+            window.innerWidth,
+            document.startRect.h + e.clientY - document.startRect.y);
+    }
+    else if (!graphView.selecting)
+        checkResize(e.clientX, e.clientY);
+});
+
+
+
+document.addEventListener('pointerup', function(e)
+{
+     if (   document.resizingX
+         || document.resizingY)
+    {
+        checkResize(e.clientX, e.clientY);
+        document.body.releasePointerCapture(e.pointerId);
+    }
+
+    document.resizingX = false;
+    document.resizingY = false;
+
+    scrollbarX.moving  = false;
+    scrollbarY.moving  = false;
+});
+
+
 // uiSaveLocal('state', null);
 //uiSaveLocal('windowWidth',  null);
 //uiSaveLocal('windowHeight', null);
@@ -7707,77 +7870,239 @@ uiPostMessageToFigma({
 });
 
 
-function uiEndLoadState(msg)
+document.addEventListener('keydown', e =>
 {
-    currentUser = msg.currentUser;
-    productKey  = msg.productKey;
-
-    initMenuSelect(menuSelect);
-    menuSelect.initMenu();
-
-    updateMenuSelectItems();
-}
-
-
-
-function updateMenuSelectItems()
-{
-    let items = 
-    [
-        {value: 'graph0',     text: 'Untitled'      },
-        {value: 'new',        text: 'New graph'     },
-        {value: 'loadLocal',  text: 'Load from file'}
-    ];
-
-    checkAddMenuItemsSave     (items);
-    checkAddMenuItemProductKey(items);
-
-    menuSelect.updateItems(items);
-}
-
-
-
-function checkAddMenuItemsSave(menuSelectItems)
-{
-    if (validateProductKey(currentUser.id, productKey))
+    // delete
+    if (e.key == 'Delete')
     {
-        menuSelectItems.push(...
-        [
-            {value: 'duplicate',  text: 'Duplicate'      },
-            {value: 'saveLocal',  text: 'Save local copy'},
-            {value: 'delete',     text: 'Delete'         } 
-        ]);
+        actionManager.do(new DeleteNodesAction(graphView.selected));
+        graphView._selected = [];
+    }
+
+    // select all
+    else if (e.code == 'KeyA'
+          && getCtrlKey(e))
+    {
+        graphView.selected = graph.nodes;
+    }
+
+    // undo/redo
+    else if (e.code == 'KeyZ'
+          && getCtrlKey(e))
+    {
+        if (e.shiftKey) actionManager.redo();
+        else            actionManager.undo();
+    }
+
+    //
+    else if (e.code == 'Minus')
+    {
+        graphView.zoom /= 2;
+    }
+
+    else if (e.code == 'Equal')
+    {
+        graphView.zoom *= 2;
+    }
+
+    else if (e.code == 'Digit0'
+          && e.shiftKey)
+    {
+        graphView.zoom = 1;
+        uiNotify('Zoom to 100%');
+    }
+
+    else if (e.code == 'Space'
+         && !getCtrlKey(e))
+    {
+        if (   !graphView.selecting
+            && !graphView.spaceDown)
+        {
+            graphView.spaceDown = true;
+            setCursor(panCursor);
+        }
+    }
+
+    else if (e.key == 'Control'
+          && graphView.spaceDown)
+    {
+        graphView.zoomSelecting = true;
+
+        if (e.altKey) setCursor(zoomOutCursor);
+        else          setCursor(zoomInCursor);
+    }
+
+    else if (e.key == 'Alt'
+          && graphView.spaceDown
+          && getCtrlKey(e))
+    {
+        setCursor(zoomOutCursor);
+    }
+});
+
+
+
+document.addEventListener('keyup', e =>
+{
+    if (e.code == 'Space')
+    {
+        if (graphView.spaceDown)
+        {
+            graphView.spaceDown     = false;
+            graphView.zoomSelecting = false;
+            setAutoCursor();
+        }
+    }
+
+    else if (e.key == 'Alt'
+          && graphView.spaceDown)
+    {
+        if (getCtrlKey(e)) 
+            setCursor(zoomInCursor);
+        else
+        {
+            setCursor(panCursor);
+            graphView.zoomSelecting = false;
+        }
+    }
+
+    else if (e.key == 'Control'
+          && graphView.spaceDown)
+    {
+        graphView.zoomSelecting = false;
+        setCursor(panCursor);
+    }
+});
+
+
+
+
+
+
+// --> from Figma
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+onmessage = e =>
+{
+    var msg = e.data.pluginMessage;
+
+    switch (msg.cmd)
+    {
+        case 'uiForwardToGen':    uiPostMessageToGenerator(msg.msg); break;
+        case 'uiEndLoadState':    uiEndLoadState          (msg);     break;
+        case 'uiEndFigmaMessage': uiPostNextMessageToFigma();        break;
+      //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
+    }    
+}    
+  
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// from Generator <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+generator.onmessage = function(e)
+{
+    switch (e.data.msg)
+    {
+        case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
+        case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
+        case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
+        case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+// <-- to Figma
+function uiPostMessageToFigma(msg)
+{
+    figMessages.push(msg);
+    uiPostNextMessageToFigma();
+}
+
+
+
+function uiPostNextMessageToFigma()
+{
+    if (figMessages.length > 0)
+    {
+        let msg = figMessages.shift();
+
+        if (msg.cmd == 'figResizeWindow')
+        {
+            // move along the queue since only the last message is important
+            while (figMessages.length > 0
+                && figMessages[0].cmd == msg.cmd)
+                msg = figMessages.shift();
+        }
+
+        parent.postMessage({pluginMessage: msg}, '*');    
     }
 }
 
 
 
-function checkAddMenuItemProductKey(menuSelectItems)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// to Generator -->
+function uiPostMessageToGenerator(msg)
 {
-    if (!validateProductKey(currentUser.id, productKey))
-        menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
+    generator.postMessage(msg);
 }
 
 
 
-function removeMenuItemProductKey()
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function setCursor(cursor, asyncForce = true)
 {
-    let index = menuSelect.items.findIndex(item => item.value == 'productKey');
-    removeAt(menuSelect.items, index);
-    menuSelect.updateItems();
+    document.body.style.cursor = cursor;
+    if (asyncForce) setTimeout(null, 0);
 }
 
 
 
-function uiNotify(text, prefix = 'Generator: ', delay = 4000)
+function setAutoCursor()
 {
-    uiPostMessageToFigma({ 
-        cmd:   'figNotify',
-        text:   text,
-        prefix: prefix,
-        delay:  delay
-    });        
-}    
+    if (graphView.zoomSelecting)
+        setCursor(zoomInCursor);
+    else if (graphView.spaceDown
+          || graphView.panning)
+        setCursor(panCursor);
+    else
+        setCursor('auto');
+};
+
+
+menuSelect.addEventListener('change', async function(e) 
+{
+    switch (e.detail.selectedValue)
+    {
+        case 'saveLocal':  saveToLocalFile('graph.json'); break;
+        case 'loadLocal':  loadFromLocalFile();           break;
+        case 'duplicate':  console.log(graph.save());   break;
+        case 'productKey': showProductKeyDialog();        break;
+    }
+});
+
+
+
+productKeyClose.addEventListener('click', e =>
+{
+    hideProductKeyDialog();
+});
 
 
 function uiCreateNode(opType, updateUI = true, createdId = -1)
@@ -8068,175 +8393,77 @@ function updateGraphNode(node)
 }
 
 
-menuSelect.addEventListener('change', async function(e) 
+function uiEndLoadState(msg)
 {
-    switch (e.detail.selectedValue)
+    currentUser = msg.currentUser;
+    productKey  = msg.productKey;
+
+    initMenuSelect(menuSelect);
+    menuSelect.initMenu();
+
+    updateMenuSelectItems();
+}
+
+
+
+function updateMenuSelectItems()
+{
+    let items = 
+    [
+        {value: 'graph0',     text: 'Untitled'      },
+        {value: 'new',        text: 'New graph'     },
+        {value: 'loadLocal',  text: 'Load from file'}
+    ];
+
+    checkAddMenuItemsSave     (items);
+    checkAddMenuItemProductKey(items);
+
+    menuSelect.updateItems(items);
+}
+
+
+
+function checkAddMenuItemsSave(menuSelectItems)
+{
+    if (validateProductKey(currentUser.id, productKey))
     {
-        case 'saveLocal':  saveToLocalFile('graph.json'); break;
-        case 'loadLocal':  loadFromLocalFile();           break;
-        case 'duplicate':  console.log(graph.save());   break;
-        case 'productKey': showProductKeyDialog();        break;
+        menuSelectItems.push(...
+        [
+            {value: 'duplicate',  text: 'Duplicate'      },
+            {value: 'saveLocal',  text: 'Save local copy'},
+            {value: 'delete',     text: 'Delete'         } 
+        ]);
     }
-});
+}
 
 
 
-productKeyClose.addEventListener('click', e =>
+function checkAddMenuItemProductKey(menuSelectItems)
 {
-    hideProductKeyDialog();
-});
+    if (!validateProductKey(currentUser.id, productKey))
+        menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
+}
 
 
-// --> from Figma
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
-onmessage = e =>
+function removeMenuItemProductKey()
 {
-    var msg = e.data.pluginMessage;
+    let index = menuSelect.items.findIndex(item => item.value == 'productKey');
+    removeAt(menuSelect.items, index);
+    menuSelect.updateItems();
+}
 
-    switch (msg.cmd)
-    {
-        case 'uiForwardToGen':    uiPostMessageToGenerator(msg.msg); break;
-        case 'uiEndLoadState':    uiEndLoadState          (msg);     break;
-        case 'uiEndFigmaMessage': uiPostNextMessageToFigma();        break;
-      //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
-    }    
+
+
+function uiNotify(text, prefix = 'Generator: ', delay = 4000)
+{
+    uiPostMessageToFigma({ 
+        cmd:   'figNotify',
+        text:   text,
+        prefix: prefix,
+        delay:  delay
+    });        
 }    
-  
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// from Generator <--
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-generator.onmessage = function(e)
-{
-    switch (e.data.msg)
-    {
-        case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
-        case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
-        case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
-        case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
-    }
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-// <-- to Figma
-function uiPostMessageToFigma(msg)
-{
-    figMessages.push(msg);
-    uiPostNextMessageToFigma();
-}
-
-
-
-function uiPostNextMessageToFigma()
-{
-    if (figMessages.length > 0)
-    {
-        let msg = figMessages.shift();
-
-        if (msg.cmd == 'figResizeWindow')
-        {
-            // move along the queue since only the last message is important
-            while (figMessages.length > 0
-                && figMessages[0].cmd == msg.cmd)
-                msg = figMessages.shift();
-        }
-
-        parent.postMessage({pluginMessage: msg}, '*');    
-    }
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// to Generator -->
-function uiPostMessageToGenerator(msg)
-{
-    generator.postMessage(msg);
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-document.addEventListener('pointerdown', function(e)
-{
-    if (   e.button == 0
-        && (   document.canResizeX
-            || document.canResizeY))
-    {
-        document.startRect = new Rect(
-            e.clientX,
-            e.clientY,
-            window.innerWidth,
-            window.innerHeight);
-
-        document.body.setPointerCapture(e.pointerId);
-
-        document.resizingX = document.canResizeX;
-        document.resizingY = document.canResizeY;
-    }
-});
-
-
-
-document.addEventListener('pointermove', function(e)
-{
-    if (   document.resizingX
-        && document.resizingY)
-    {
-        resizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
-            document.startRect.h + e.clientY - document.startRect.y);
-    }
-    else if (document.resizingX)
-    {
-        resizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
-            window.innerHeight);
-    }
-    else if (document.resizingY)
-    {
-        resizeWindow(
-            window.innerWidth,
-            document.startRect.h + e.clientY - document.startRect.y);
-    }
-    else if (!graphView.selecting)
-        checkResize(e.clientX, e.clientY);
-});
-
-
-
-document.addEventListener('pointerup', function(e)
-{
-     if (   document.resizingX
-         || document.resizingY)
-    {
-        checkResize(e.clientX, e.clientY);
-        document.body.releasePointerCapture(e.pointerId);
-    }
-
-    document.resizingX = false;
-    document.resizingY = false;
-
-    scrollbarX.moving  = false;
-    scrollbarY.moving  = false;
-});
 
 
 const resizeEdgeWidth = 8;
@@ -8275,236 +8502,6 @@ function checkResize(x, y)
     else if (document.canResizeY) setCursor('ns-resize',   false);   
     else                          setAutoCursor();
 }
-
-
-document.addEventListener('keydown', e =>
-{
-    // delete
-    if (e.key == 'Delete')
-    {
-        actionManager.do(new DeleteNodesAction(graphView.selected));
-        graphView._selected = [];
-    }
-
-    // select all
-    else if (e.code == 'KeyA'
-          && getCtrlKey(e))
-    {
-        graphView.selected = graph.nodes;
-    }
-
-    // undo/redo
-    else if (e.code == 'KeyZ'
-          && getCtrlKey(e))
-    {
-        if (e.shiftKey) actionManager.redo();
-        else            actionManager.undo();
-    }
-
-    //
-    else if (e.code == 'Minus')
-    {
-        graphView.zoom /= 2;
-    }
-
-    else if (e.code == 'Equal')
-    {
-        graphView.zoom *= 2;
-    }
-
-    else if (e.code == 'Digit0'
-          && e.shiftKey)
-    {
-        graphView.zoom = 1;
-        uiNotify('Zoom to 100%');
-    }
-
-    else if (e.code == 'Space'
-         && !getCtrlKey(e))
-    {
-        if (   !graphView.selecting
-            && !graphView.spaceDown)
-        {
-            graphView.spaceDown = true;
-            setCursor(panCursor);
-        }
-    }
-
-    else if (e.key == 'Control'
-          && graphView.spaceDown)
-    {
-        graphView.zoomSelecting = true;
-
-        if (e.altKey) setCursor(zoomOutCursor);
-        else          setCursor(zoomInCursor);
-    }
-
-    else if (e.key == 'Alt'
-          && graphView.spaceDown
-          && getCtrlKey(e))
-    {
-        setCursor(zoomOutCursor);
-    }
-});
-
-
-
-document.addEventListener('keyup', e =>
-{
-    if (e.code == 'Space')
-    {
-        if (graphView.spaceDown)
-        {
-            graphView.spaceDown     = false;
-            graphView.zoomSelecting = false;
-            setAutoCursor();
-        }
-    }
-
-    else if (e.key == 'Alt'
-          && graphView.spaceDown)
-    {
-        if (getCtrlKey(e)) 
-            setCursor(zoomInCursor);
-        else
-        {
-            setCursor(panCursor);
-            graphView.zoomSelecting = false;
-        }
-    }
-
-    else if (e.key == 'Control'
-          && graphView.spaceDown)
-    {
-        graphView.zoomSelecting = false;
-        setCursor(panCursor);
-    }
-});
-
-
-
-
-
-
-const panCursor = 
-      'url(data:image/svg+xml;base64,'
-    + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3Ln'
-    + 'czLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMzJweCIgaGVpZ2h0PSIzMnB4Ij48aW1hZ2UgeGxpbms6aHJlZj0i'
-    + 'ZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFFQUFBQUJBQ0FZQUFBQ3FhWE'
-    + 'hlQUFBSHFrbEVRVlI0WHUyYWY4aVY1Um5IUDlhbXpjM0tkRERkSDJ2WitpUEQvdEJTSEtLQ1EyVmJaTWdnbDAx'
-    + 'TENUUmJ0Q1hLSFA1Z1N1UWZNZGtmZ3lrMkZLTWtjU0wrV0RKbExOU2xwaWtSaEdRU1VTMU4zV2JiYW5OOG50M1'
-    + 'h1N3ZIOXpYUE9jOXp3dDczZ3B2M25QT2U4enpQOWIyLzE4Lzc2a1UzbDE3ZFhIOTZBT2hoUURkSG9NY0V1amtC'
-    + 'ZXB4Z2p3bTAwUVFFTzFiYzlnSVFxNDJQOHY5YnRZTUIzdU9xdEs0R0JnRTNBdThBYndML1R1cy9nS3V0VWpjQV'
-    + 'hsK2x2d0I4RVZnRXpNODBmQkZZRFR3UGZGd0NvaTNNcUJzQWxWZnhQc0R2Z0xFcVAyVElFSTRmUDU3djlGVGdq'
-    + 'OEJOd0YrQk54SWJaRWV0ektnRGdMQnphYS95MXdEZkIzNnJ4cHMyYldMS2xDbWNPSEdDdVhQbnNtM2JOai9lQl'
-    + 'h3TnVDMmhjaEJZRE93QlBrcnNxTVU4cWdTZ2JPdlMzcDN2Qzh3R2ZqNXk1RWoyN2R2WHNmT3JWNjltOW16LzFh'
-    + 'VThEdndhK0ZkZElGUUZRRGc1ZDF6RjF3SERnZXVBVjREWGdBZVhMRm5DNHNWdTdQOWt6NTQ5akI4L3ZuanQ1K1'
-    + 'BHamFOZnYzNXMzYm9Wdnd1OEM0d0FQZ0QrbVh5RXZxRXlxUUtBY0hTOTA0NmY3dXJwTGdYQXNXUEhHRHAwYU1k'
-    + 'UGUvWHFlTFFKd0NIZ2ZES0hTazJoQ2dEQzBYMEplQWFZcUJaYnRteGgrUERoTEZpd2dIWHJKQVRGcm5iRmdBc1'
-    + 'hQcm14TWtPR0FQY0RMd0IvU3l3d1dsVEdnbFlCOFBkU1h1Vy9BdndaK1BxcVZhdVlOMjlleDI0T0dEQ0EwNmRQ'
-    + 'Tnd2QVE4bEpHaDFrZ2Y1QUZnaEN5MnhvRlFCdFgrcC9PZGw3RWR2S3U3bDA2ZEpDK1NZWjhDandUV0JrOGlWUE'
-    + 'F5K1Y4b2FtR1ZFRkFJYTVmc0FOd0tzMUFOQ1pTM2tTK0VVV0hjd1htcEpXQWREK3BmKzF3SURrOGF0bUFLTkhq'
-    + 'MmI1OHVYSXBPUVhWRlpmc3pmNUJYT0ZwbGpRS2dCaC80YTdnY0RMVlROZzJMQmhIRGx5cEdOM1I0MGF4Zjc5Kz'
-    + 'MwdkEzNlovRUtFeUlaWlVBVUFKam9CZ09HcVN3WVlBVko4dnlnUDZDb0s3TjY5dThnUFFzS2ZKRDh3SmFYT0g2'
-    + 'WVErWmtDOEZYQUZMWmRBSGl2SHdCbmdMOG5mOUN3R1ZURmdPdVRDYlFUQU0zdFhzREV5eHpoSDgzNGdTc1pnTV'
-    + 'BBRHhNQTV4SUFEZWNGVnpJQWVzYjdnRk9BQU9nSGFnY2dBSXUvRmorR3dYQ0NCenJ6QVRvK25WZkZUckN0QU9T'
-    + 'bGJsUis2aHIxZmlSQ3BzS2RPa0hqOTlpeFl5K0tBZ0tqNk8xektWZUpuVVFCQVpoZVlrRERDZEhsbUVBb2JNen'
-    + 'ZiMDBEV0tHNTY2YSttNjE5QUIzaG56b0RvT0hZZElrZlpHR3dMUUJFc2VOT1c2ditDcml6aytjek0xbWJtaGNY'
-    + 'TWVCS0JzQlUxMkpITy84TmNJL0tyRnk1a2hFalJuRDQ4T0hDcnMrZDB3Y1ZEUXM3UUxVQ0VQNEVxSjBCN3I3S1'
-    + 'creVlkeityY3VYR3hjR0RCMW0wYUJFN2R1em8yT2h5VmxjbEE5b0pnTHZ2amxycVBnQThZVXBhZGxhaDNMSmx5'
-    + 'enFhSFo4WEFLTFEwY1BQQVg1V0xrektPN3RyMXk3bXo1L1BvVU5GU1ZDTHRKTUJPajRMSFV2ZE85TGhSY0dBdk'
-    + 'RncGEzbisvSG42OXZWbjljaG5CWUNsN25KZ3NtcHQzNzZkU1pNbTFhUGhwMXkxblFEa0ptQ3o0MmJnS2VBYlB1'
-    + 'UEdqUnVaT3RVRG5mWktPd0hJbmFCSmp1V3VKemNMMCtFbWE5ZXVaY2FNR1cxRm9BUkExQUkyVEswRktzMEVEWU'
-    + '9SNjBlcWE5L3ZGdUNud0xmVXZOd0JyaHVOVWlhWUYwT1d3NVVDb0M2UkNJVXpOQlYyYVFZL0FXNzFTeXRXckdE'
-    + 'aFFvbFJ2OHlhTllzMWE5WjRvejhBUDY2N0dveFVPRnJmTWtGekVBUVBNMlhDN1Q2TkFBaEUzYUx6M2JsenA3ZD'
-    + 'VEbGlXQUFnVHFLVWN0aGpTSVFxQ1RBZ1FCRUxuS0FpR3llSXdSSk9vVXdZT0hNaXBVN1lBaXFKTUVPd0lDWUFt'
-    + 'VUFzQTNxd3pFS3dHZ3cyUEFhUDlvazVSNTFpSDdOMjd0MmlSSi9rZThIbzZPQlVBYTVGYWU0S0NFSkhCNGtnbU'
-    + 'NJTG1JQkNQeEFDRTRkRXdXYlZNbno2ZDlldlhlMW1yVCszL0wxbFRWQUFhbHN2cEIrUVhEUkRDSER3UHpFRXda'
-    + 'YlpYd01TSkV6OVJJRFg4WktVZmJONjh1UmlzU0xJQStEM3dQbkEyaFVBUFJ4cVdSZ0h3QnJsakRDYVlMa2VFZU'
-    + 'JENHJsLzBkUGpBZ2FKTDFwS2NPWE9HL3YyOWZDRk9rM2dvOGw2cEk5eHdDQXhsbW5tNHZGR2lZd3dtaEUvNEVY'
-    + 'QjNGVXpJaHlpQXQ0RlppZnA2UW5lLzZUT0JWZ0NJMytZTmt6SUltc0xEZm5ITW1ERkZtSnc4dVNnbExrdk9uaj'
-    + 'NMaGcwYm1ETkhxeXJFM244a1BpcnYxRWljQnpnejBKUTBZd0w1amZMcGtKZ1IwQnhrZ2tzUXpKWDlqSmt6WnpK'
-    + 'dDJqUW1UQ2pjUktkeTlPalJRbkhYeVpNbjR6c2VoeitSS0cvWVUvbUkvZHArdytFdkx0d3FBRGtUSW0yV0NTcX'
-    + 'NjM1E1K25ZWDhKMjRhZS9ldlJrOGVEQ0RCZzJpVDUraWk0WjI3dVNZZnpQeGplMWlSMHg4cmVMU1BzNEJtajRV'
-    + 'clJLQU1naTIwT3dpR1NZRndpVW8xZzdmVGtOUGd6K0ZyOGRTejg4dTgxdHB0MVhjSmUxalVxVGxjWmtxR0pDRE'
-    + 'dWT2hnaEFtb2ZJdVFmRXp0OXoza1QrWVpTcFdjOUpiKzViV1puWXFxcE9UN2k1Zit6M0haR0tJc2luYnI1b0Ir'
-    + 'Zlh5ckZHRlhVYUtlQzBBNWhHQzVYSVRZaXhXcGR4VkZSUUFsUlVFbDYvOVRIQXFVVDZvMnhLQ1hmdzRRTkF2cU'
-    + 'd5TTBJWHlmcTd5Zmk5WUdDT3hBcUNTZ3FDTng0cGhTWlZ2T09YdFNza3FUYUI4ajRnUStiQjBERTNudXgvUEVG'
-    + 'TmZ3WUlBd3IvNUlIVmx5dGZKZ0J5TU9GcUxORHAvci9JNUFEa0lNaUlmbHE1VThicDh3S1hNS1pUTi8rYWJFQW'
-    + '9HQ0orTGNmazYvRXVsMTZ6VEIxVDZvSFZkckFlQXVwQzlVcTdiN1Jud1g2cWNXVzY0MVZ5REFBQUFBRWxGVGtT'
-    + 'dVFtQ0MiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIvPjwvc3ZnPg==) 15 15, auto';
-
-
-const zoomInCursor =
-      'url(data:image/svg+xml;base64,'
-    + 'PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbn'
-    + 'M9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWx0ZXI9InVybCgjZmlsdGVyMF9kKSI+PHBhdGgg'
-    + 'ZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNC41IDhDMTQuNSAxMS4wMzggMT'
-    + 'IuMDM4IDEzLjUgOSAxMy41QzUuOTYyIDEzLjUgMy41IDExLjAzOCAzLjUgOEMzLjUgNC45NjIgNS45NjIgMi41'
-    + 'IDkgMi41QzEyLjAzOCAyLjUgMTQuNSA0Ljk2MiAxNC41IDhaIiBmaWxsPSJ3aGl0ZSIvPjxwYXRoIGZpbGwtcn'
-    + 'VsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNSA4QzE0LjUgMTEuMDM4IDEyLjAzOCAx'
-    + 'My41IDkgMTMuNUM1Ljk2MiAxMy41IDMuNSAxMS4wMzggMy41IDhDMy41IDQuOTYyIDUuOTYyIDIuNSA5IDIuNU'
-    + 'MxMi4wMzggMi41IDE0LjUgNC45NjIgMTQuNSA4WiIgc3Ryb2tlPSJibGFjayIvPjxwYXRoIGZpbGwtcnVsZT0i'
-    + 'ZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTcuNTg1NyAxOC4wMDAyTDE4Ljk5OTcgMTYuNTg2Mk'
-    + 'wxMy41NTA3IDExLjEzNzJMMTIuMTM2NyAxMi41NTEyTDE3LjU4NTcgMTguMDAwMloiIGZpbGw9ImJsYWNrIi8+'
-    + 'PC9nPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIgN0gxMFY1SD'
-    + 'hWN0g2VjguOThIOFYxMUgxMFY4Ljk4SDEyVjdaIiBmaWxsPSJibGFjayIvPjxkZWZzPjxmaWx0ZXIgaWQ9ImZp'
-    + 'bHRlcjBfZCIgeD0iMCIgeT0iMCIgd2lkdGg9IjIxLjk5OTciIGhlaWdodD0iMjIuMDAwMiIgZmlsdGVyVW5pdH'
-    + 'M9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPjxmZUZsb29kIGZs'
-    + 'b29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+PGZlQ29sb3JNYXRyaXggaW49Il'
-    + 'NvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAg'
-    + 'MCAwIDAgMTI3IDAiLz48ZmVPZmZzZXQgZHk9IjEiLz48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxLj'
-    + 'UiLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAg'
-    + 'MCAwIDAgMCAwIDAgMC4zNSAwIi8+PGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbjI9IkJhY2tncm91bmRJbWFnZU'
-    + 'ZpeCIgcmVzdWx0PSJlZmZlY3QxX2Ryb3BTaGFkb3ciLz48ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3Vy'
-    + 'Y2VHcmFwaGljIiBpbjI9ImVmZmVjdDFfZHJvcFNoYWRvdyIgcmVzdWx0PSJzaGFwZSIvPjwvZmlsdGVyPjwvZG'
-    + 'Vmcz48L3N2Zz4=) 8 8, auto';
-
-
-const zoomOutCursor =
-      'url(data:image/svg+xml;base64,'
-    + 'PHN2ZyB3aWR0aD0iMjIiIGhlaWdodD0iMjIiIHZpZXdCb3g9IjAgMCAyMiAyMiIgZmlsbD0ibm9uZSIgeG1sbn'
-    + 'M9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZCkiPgo8cGF0'
-    + 'aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE0LjUgOEMxNC41IDExLjAzOC'
-    + 'AxMi4wMzggMTMuNSA5IDEzLjVDNS45NjIgMTMuNSAzLjUgMTEuMDM4IDMuNSA4QzMuNSA0Ljk2MiA1Ljk2MiAy'
-    + 'LjUgOSAyLjVDMTIuMDM4IDIuNSAxNC41IDQuOTYyIDE0LjUgOFoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGZpbG'
-    + 'wtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNSA4QzE0LjUgMTEuMDM4IDEyLjAz'
-    + 'OCAxMy41IDkgMTMuNUM1Ljk2MiAxMy41IDMuNSAxMS4wMzggMy41IDhDMy41IDQuOTYyIDUuOTYyIDIuNSA5ID'
-    + 'IuNUMxMi4wMzggMi41IDE0LjUgNC45NjIgMTQuNSA4WiIgc3Ryb2tlPSJibGFjayIvPgo8cGF0aCBmaWxsLXJ1'
-    + 'bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE3LjU4NTcgMTguMDAwMkwxOC45OTk3IDE2Lj'
-    + 'U4NjJMMTMuNTUwNyAxMS4xMzcyTDEyLjEzNjcgMTIuNTUxMkwxNy41ODU3IDE4LjAwMDJaIiBmaWxsPSJibGFj'
-    + 'ayIvPgo8L2c+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIgN0'
-    + 'g2VjguOThIMTJWN1oiIGZpbGw9ImJsYWNrIi8+CjxkZWZzPgo8ZmlsdGVyIGlkPSJmaWx0ZXIwX2QiIHg9IjAi'
-    + 'IHk9IjAiIHdpZHRoPSIyMS45OTk3IiBoZWlnaHQ9IjIyLjAwMDIiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPbl'
-    + 'VzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0i'
-    + 'MCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIi'
-    + 'B0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAi'
-    + 'Lz4KPGZlT2Zmc2V0IGR5PSIxIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEuNSIvPgo8ZmVDb2'
-    + 'xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAw'
-    + 'IDAgMC4zNSAwIi8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3'
-    + 'VsdD0iZWZmZWN0MV9kcm9wU2hhZG93Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBo'
-    + 'aWMiIGluMj0iZWZmZWN0MV9kcm9wU2hhZG93IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8L2RlZnM+Cj'
-    + 'wvc3ZnPgo=) 8 8, auto';
-
-
-function setCursor(cursor, asyncForce = true)
-{
-    document.body.style.cursor = cursor;
-    if (asyncForce) setTimeout(null, 0);
-}
-
-
-
-function setAutoCursor()
-{
-    if (graphView.zoomSelecting)
-        setCursor(zoomInCursor);
-    else if (graphView.spaceDown
-          || graphView.panning)
-        setCursor(panCursor);
-    else
-        setCursor('auto');
-};
 
 
 function initNumberSliderTextbox(slider)
@@ -8792,7 +8789,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             return;
         
 
-        let rect = slider.getBoundingClientRect();
+        let rect = boundingRect(slider);
         
         slider.mouseOver = 
                e.clientX >= rect.left
@@ -9384,7 +9381,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
             return;
         
 
-        let rect = slider.getBoundingClientRect();
+        let rect = boundingRect(slider);
         
         slider.mouseOver = 
                e.clientX >= rect.left
@@ -9976,7 +9973,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             return;
         
 
-        let rect = slider.getBoundingClientRect();
+        let rect = boundingRect(slider);
         
         slider.mouseOver = 
                e.clientX >= rect.left
@@ -10993,7 +10990,7 @@ function initMenuSelect(select)
             e.preventDefault();
             e.stopPropagation();
 
-            var rect = select.getBoundingClientRect();
+            var rect = boundingRect(select);
 
             if (e.clientX > rect.width - 20)
             {
@@ -11336,7 +11333,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
             w: selection.w,
             h: selection.h };
             
-        const wndHeight = window.innerHeight - controlBar.offsetHeight; 
+        const wndHeight = graphView.offsetHeight; 
 
         const diff = { w: (window.innerWidth - box.w) / 2,
                        h: (wndHeight         - box.h) / 2 };
@@ -11433,7 +11430,7 @@ scrollbarX.addEventListener('pointerup', e =>
         var bounds = Rect.NaN;
 
         for (const node of graph.nodes)
-            bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+            bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
 
         if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
             scrollbarX.style.display = 'none';
@@ -11531,7 +11528,7 @@ scrollbarY.addEventListener('pointerup', e =>
         var bounds = Rect.NaN;
 
         for (const node of graph.nodes)
-            bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+            bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
 
         if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
             scrollbarY.style.display = 'none';
@@ -11676,8 +11673,8 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
     for (const node of graph.nodes)
     {
-        if (intersectRects(
-                Rect.fromTypical(node.div.getBoundingClientRect()), 
+        if (rectsIntersect(
+                Rect.fromTypical(boundingRect(node.div)), 
                 selection))
             selected.push(node);
     }
@@ -11889,8 +11886,8 @@ graphView.addEventListener('wheel', e =>
 
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
-    const dWheelX = e.deltaX/120;
-    const dWheelY = e.deltaY/120;
+    const dWheelX = e.deltaX / 120;
+    const dWheelY = e.deltaY / 120;
 
     if (getCtrlKey(e))
     {
@@ -11960,28 +11957,28 @@ graphView.getAllNodeBounds = () =>
     const bounds = Rect.NaN;
 
     for (const node of graph.nodes)
-        bounds.expandFromRect(Rect.fromTypical(node.div.getBoundingClientRect()));
+        bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
 
     return bounds;
 };
 
 
 
-graphView.getNodeBounds = () =>
+graphView.getNodeBounds = (nodes) =>
 {
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
+    let boundsL = Number.MAX_SAFE_INTEGER;
+    let boundsT = Number.MAX_SAFE_INTEGER;
+    let boundsR = Number.MIN_SAFE_INTEGER;
+    let boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (const node of graph.nodes)
+    for (const node of nodes)
     {
-        var bounds = node.div.getBoundingClientRect();
+        const bounds = boundingRect(node.div);
 
-        boundsL = Math.min(boundsL, bounds.left  );
-        boundsT = Math.min(boundsT, bounds.top   );
-        boundsR = Math.max(boundsR, bounds.right );
-        boundsB = Math.max(boundsB, bounds.bottom);
+        boundsL = Math.min(boundsL, bounds.l);
+        boundsT = Math.min(boundsT, bounds.t);
+        boundsR = Math.max(boundsR, bounds.r);
+        boundsB = Math.max(boundsB, bounds.b);
     }
 
     return {
@@ -11993,30 +11990,37 @@ graphView.getNodeBounds = () =>
 
 
 
-graphView.getNodeBoundsFromType = (opType) =>
+graphView.getZoomedNodeBounds = (nodes) =>
 {
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
-    
-    const nodes = graph.nodes.filter(n => n.opType == opType);
+    let bounds = graphView.getNodeBounds(nodes);
 
-    for (const node of nodes)
+    bounds.x /= graphView.zoom;
+    bounds.y /= graphView.zoom;
+    bounds.w /= graphView.zoom;
+    bounds.h /= graphView.zoom;
+
+    return boundsl;
+}
+
+
+
+graphView.placeNewNode = node =>
+{
+    node.div.style.left = graphView.offsetWidth  / 6 - graphView.pan.x;
+    node.div.style.top  = graphView.offsetHeight / 4 - graphView.pan.y;
+
+
+    for (const _node of graph.nodes)
     {
-        var bounds = node.div.getBoundingClientRect();
+        const bounds = boundingRect(_node.div);
+        console.log(bounds);
 
-        boundsL = Math.min(boundsL, bounds.left  );
-        boundsT = Math.min(boundsT, bounds.top   );
-        boundsR = Math.max(boundsR, bounds.right );
-        boundsB = Math.max(boundsB, bounds.bottom);
+        if (!rectsIntersect(bounds, boundingRect(node.div)))
+            continue;
+
+        if (_node.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
+        else                             node.div.style.left = bounds.r + 30;
     }
-
-    return {
-        x: boundsL - graphView.pan.x, 
-        y: boundsT - graphView.pan.y,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
 };
 
 
@@ -12136,7 +12140,7 @@ graphView.getNodeOffsetRect = (node) =>
     const ox   = -graphView.pan.x / graphView.zoom;
     const oy   = -graphView.pan.y / graphView.zoom;
 
-    const rect = node.getBoundingClientRect();
+    const rect = boundingRect(node);
 
     return new DOMRect(
         ox + (rect.left / graphView.zoom),

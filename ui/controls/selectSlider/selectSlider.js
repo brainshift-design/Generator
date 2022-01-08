@@ -148,7 +148,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
             return;
         
 
-        let rect = slider.getBoundingClientRect();
+        let rect = boundingRect(slider);
         
         slider.mouseOver = 
                e.clientX >= rect.left

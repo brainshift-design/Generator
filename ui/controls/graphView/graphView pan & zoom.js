@@ -152,7 +152,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
             w: selection.w,
             h: selection.h };
             
-        const wndHeight = window.innerHeight - controlBar.offsetHeight; 
+        const wndHeight = graphView.offsetHeight; 
 
         const diff = { w: (window.innerWidth - box.w) / 2,
                        h: (wndHeight         - box.h) / 2 };

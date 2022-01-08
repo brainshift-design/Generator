@@ -5,7 +5,7 @@ function createNode(node)
     node.div.className   = 'node';
     node.div.op          = node;
 
-    node.div.style.width = '120px';
+    node.div.style.width = '100px';
     
     node.div.selectedSet = false;
     node.div.over        = false;
@@ -45,11 +45,11 @@ function createNodeHeader(node)
     node.header = document.createElement('div');
     node.header.className = 'nodeHeader';
     
+    createNodeLabel(node);
+
     node.inputControls = document.createElement('div');
     node.inputControls.className = 'inputControls';
     node.header.appendChild(node.inputControls);
-
-    createNodeLabel(node);
 
     node.outputControls = document.createElement('div');
     node.outputControls.className = 'outputControls';
@@ -160,7 +160,7 @@ function createNodeHeader(node)
 
     node.header.addEventListener('dblclick', e =>
     {
-        var bounds = node.label.getBoundingClientRect();
+        var bounds = boundingRect(node.label);
 
         if (   e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)

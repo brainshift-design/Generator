@@ -112,7 +112,7 @@ function signedPosOnLine(p0, p1, p)
 
 
 
-function intersectRects(rect1, rect2)
+function rectsIntersect(rect1, rect2)
 {
     return !(
            rect1.l >= rect2.r
@@ -125,7 +125,7 @@ function intersectRects(rect1, rect2)
 
 function clipRect(rect, clip)
 {
-    if (!intersectRects(rect, clip))
+    if (!rectsIntersect(rect, clip))
         return Rect.NaN;
 
     return new AbsRect(
@@ -184,3 +184,13 @@ function xrotate(angle)
 
 
 
+function boundingRect(elem)
+{
+    const bounds = elem.getBoundingClientRect();
+
+    return new Rect(
+        bounds.x,
+        bounds.y,
+        bounds.width,
+        bounds.height);
+}

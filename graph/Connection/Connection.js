@@ -46,8 +46,8 @@ class Connection
 
         this.wire.update = () =>
         {
-            let outRect = this.output.control.getBoundingClientRect();
-            let inRect  = this.input .control.getBoundingClientRect();
+            let outRect = boundingRect(this.output.control);
+            let inRect  = boundingRect(this.input .control);
 
 
             let x1 = (outRect.left + outRect.width /2) / graphView.zoom;
@@ -82,7 +82,7 @@ class Connection
 
         this.wire.updateFromOutput = (x, y) =>
         {
-            let outRect = this.output.control.getBoundingClientRect();
+            let outRect = boundingRect(this.output.control);
 
             let x1 = outRect.left + outRect.width /2;
             let y1 = outRect.top  + outRect.height/2;
@@ -101,7 +101,7 @@ class Connection
 
         this.wire.updateFromInput = (x, y) =>
         {
-            let inRect = this.input.control.getBoundingClientRect();
+            let inRect = boundingRect(this.input.control);
 
             let x2 = inRect.left + inRect.width /2;
             let y2 = inRect.top  + inRect.height/2;

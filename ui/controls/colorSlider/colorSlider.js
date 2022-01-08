@@ -140,7 +140,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             return;
         
 
-        let rect = slider.getBoundingClientRect();
+        let rect = boundingRect(slider);
         
         slider.mouseOver = 
                e.clientX >= rect.left

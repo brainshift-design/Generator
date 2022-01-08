@@ -82,35 +82,13 @@ class Graph
     {
         node.graph = this;
         node.setId(this.getNewNodeName(node)); // TODO: not checking return value here
-            
-        if (this.nodes.length > 0)
-        {
-            const bounds = graphView.getNodeBoundsFromType(node.opType);
-
-            bounds.x /= graphView.zoom;
-            bounds.y /= graphView.zoom;
-            bounds.w /= graphView.zoom;
-            bounds.h /= graphView.zoom;
-
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            const gap = 30;
-            node.div.style.left = bounds.x + bounds.w + gap;
-            node.div.style.top  = bounds.y - controlBar.offsetHeight;
-        }
-        else // 0
-        {
-            this.nodes.push(node);
-            graphView.appendChild(node.div);
-
-            node.div.style.zIndex = graph.nodes.length-1;
-            node.div.style.left   = 100;
-
-            // I subtract the full height of the node here as they grow down, so this
-            // gives a nice random-ish offset for the first line of nodes
-            node.div.style.top = graphView.offsetHeight/2 - node.div.offsetHeight;
-        }
+        
+        graphView.placeNewNode(node);
+        
+        this.nodes.push(node);
+        graphView.appendChild(node.div);
+        
+        node.div.style.zIndex = graph.nodes.length-1;
 
         graphView.putNodeOnTop(node);
         graphView.updateScroll();
@@ -119,7 +97,7 @@ class Graph
     }
     
 
-    
+
     deleteNodes(nodeIds)
     {
         for (const id of nodeIds)
