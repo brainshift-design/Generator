@@ -76,7 +76,7 @@ scrollbarX.addEventListener('pointerup', e =>
         var bounds = Rect.NaN;
 
         for (const node of graph.nodes)
-            bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
+            bounds = expandRect(bounds, boundingRect(node.div));
 
         if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
             scrollbarX.style.display = 'none';
@@ -174,7 +174,7 @@ scrollbarY.addEventListener('pointerup', e =>
         var bounds = Rect.NaN;
 
         for (const node of graph.nodes)
-            bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
+            bounds = expandRect(bounds, boundingRect(node.div));
 
         if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
             scrollbarY.style.display = 'none';

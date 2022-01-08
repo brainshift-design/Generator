@@ -83,10 +83,10 @@ class Graph
         node.graph = this;
         node.setId(this.getNewNodeName(node)); // TODO: not checking return value here
         
-        graphView.placeNewNode(node);
-        
         this.nodes.push(node);
         graphView.appendChild(node.div);
+        
+        graphView.placeNewNode(node);
         
         node.div.style.zIndex = graph.nodes.length-1;
 

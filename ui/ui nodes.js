@@ -174,7 +174,7 @@ function uiSetActive(node, active)
 
 function uiMakeActive(nodeIds)
 {
-    for (const nodeId in nodeIds)
+    for (const nodeId of nodeIds)
     {
         const node = graph.nodeFromId(nodeId);
         node.makeActive();

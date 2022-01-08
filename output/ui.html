@@ -1797,25 +1797,6 @@ class Rect
         this.w = rect.w;
         this.h = rect.h;
     }
-
-
-
-    expandFromRect(rect)
-    {
-        if (rect.isNaN  ) return this;
-        if (rect.isEmpty) return this;
-
-        if (this.isNaN  ) this.assign(rect);
-        if (this.isEmpty) return rect;
-        
-        const newRect = new AbsRect(
-            Math.min(this.l, rect.l),
-            Math.min(this.t, rect.t),
-            Math.max(this.r, rect.r),
-            Math.max(this.b, rect.b));
-
-        this.assign(newRect);
-    }
 }
 
 
@@ -1827,6 +1808,24 @@ extends Rect
         super(l, t, r-l, b-t);
     }
 }
+
+
+
+function expandRect(rect1, rect2)
+{
+    if (rect1.isNaN  ) return rect2;
+    if (rect1.isEmpty) return rect2;
+
+    if (rect2.isNaN  ) return rect1;
+    if (rect2.isEmpty) return rect1;
+    
+    return new AbsRect(
+        Math.min(rect2.l, rect1.l),
+        Math.min(rect2.t, rect1.t),
+        Math.max(rect2.r, rect1.r),
+        Math.max(rect2.b, rect1.b));
+}
+
 
 
 class Random
@@ -3923,25 +3922,6 @@ class Rect
         this.w = rect.w;
         this.h = rect.h;
     }
-
-
-
-    expandFromRect(rect)
-    {
-        if (rect.isNaN  ) return this;
-        if (rect.isEmpty) return this;
-
-        if (this.isNaN  ) this.assign(rect);
-        if (this.isEmpty) return rect;
-        
-        const newRect = new AbsRect(
-            Math.min(this.l, rect.l),
-            Math.min(this.t, rect.t),
-            Math.max(this.r, rect.r),
-            Math.max(this.b, rect.b));
-
-        this.assign(newRect);
-    }
 }
 
 
@@ -3953,6 +3933,24 @@ extends Rect
         super(l, t, r-l, b-t);
     }
 }
+
+
+
+function expandRect(rect1, rect2)
+{
+    if (rect1.isNaN  ) return rect2;
+    if (rect1.isEmpty) return rect2;
+
+    if (rect2.isNaN  ) return rect1;
+    if (rect2.isEmpty) return rect1;
+    
+    return new AbsRect(
+        Math.min(rect2.l, rect1.l),
+        Math.min(rect2.t, rect1.t),
+        Math.max(rect2.r, rect1.r),
+        Math.max(rect2.b, rect1.b));
+}
+
 
 
 class Random
@@ -5729,10 +5727,10 @@ class Graph
         node.graph = this;
         node.setId(this.getNewNodeName(node)); // TODO: not checking return value here
         
-        graphView.placeNewNode(node);
-        
         this.nodes.push(node);
         graphView.appendChild(node.div);
+        
+        graphView.placeNewNode(node);
         
         node.div.style.zIndex = graph.nodes.length-1;
 
@@ -8281,7 +8279,7 @@ function uiSetActive(node, active)
 
 function uiMakeActive(nodeIds)
 {
-    for (const nodeId in nodeIds)
+    for (const nodeId of nodeIds)
     {
         const node = graph.nodeFromId(nodeId);
         node.makeActive();
@@ -11430,7 +11428,7 @@ scrollbarX.addEventListener('pointerup', e =>
         var bounds = Rect.NaN;
 
         for (const node of graph.nodes)
-            bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
+            bounds = expandRect(bounds, boundingRect(node.div));
 
         if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
             scrollbarX.style.display = 'none';
@@ -11528,7 +11526,7 @@ scrollbarY.addEventListener('pointerup', e =>
         var bounds = Rect.NaN;
 
         for (const node of graph.nodes)
-            bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
+            bounds = expandRect(bounds, boundingRect(node.div));
 
         if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
             scrollbarY.style.display = 'none';
@@ -11674,7 +11672,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     for (const node of graph.nodes)
     {
         if (rectsIntersect(
-                Rect.fromTypical(boundingRect(node.div)), 
+                boundingRect(node.div), 
                 selection))
             selected.push(node);
     }
@@ -11954,10 +11952,10 @@ graphView.cancelConnection = () =>
 
 graphView.getAllNodeBounds = () =>
 {
-    const bounds = Rect.NaN;
+    let bounds = Rect.NaN;
 
     for (const node of graph.nodes)
-        bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
+        bounds = expandRect(bounds, boundingRect(node.div));
 
     return bounds;
 };
@@ -12010,18 +12008,39 @@ graphView.placeNewNode = node =>
     node.div.style.top  = graphView.offsetHeight / 4 - graphView.pan.y;
 
 
-    for (const _node of graph.nodes)
+    let intersecting;
+    while ((intersecting = graphView.intersectingNodes(node)).length > 0)
     {
-        const bounds = boundingRect(_node.div);
-        console.log(bounds);
+        let bounds = Rect.NaN;
+        
+        for (const n of intersecting)
+            bounds = expandRect(bounds, boundingRect(n.div));
 
-        if (!rectsIntersect(bounds, boundingRect(node.div)))
-            continue;
+        const right = intersecting.reduce((a, b) => 
+            boundingRect(a.div).r > boundingRect(b.div).r ? a : b);
 
-        if (_node.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
+        if (right.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
         else                             node.div.style.left = bounds.r + 30;
+
+        // node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
     }
 };
+
+
+
+graphView.intersectingNodes = node =>
+{
+    const intersecting = [];
+    
+    for (const n of graph.nodes)
+    {
+        if (   n != node
+            && rectsIntersect(boundingRect(n.div), boundingRect(node.div)))
+            intersecting.push(n);
+    }
+
+    return intersecting;
+}
 
 
 

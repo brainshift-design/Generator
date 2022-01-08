@@ -236,10 +236,10 @@ graphView.cancelConnection = () =>
 
 graphView.getAllNodeBounds = () =>
 {
-    const bounds = Rect.NaN;
+    let bounds = Rect.NaN;
 
     for (const node of graph.nodes)
-        bounds.expandFromRect(Rect.fromTypical(boundingRect(node.div)));
+        bounds = expandRect(bounds, boundingRect(node.div));
 
     return bounds;
 };
@@ -292,18 +292,39 @@ graphView.placeNewNode = node =>
     node.div.style.top  = graphView.offsetHeight / 4 - graphView.pan.y;
 
 
-    for (const _node of graph.nodes)
+    let intersecting;
+    while ((intersecting = graphView.intersectingNodes(node)).length > 0)
     {
-        const bounds = boundingRect(_node.div);
-        console.log(bounds);
+        let bounds = Rect.NaN;
+        
+        for (const n of intersecting)
+            bounds = expandRect(bounds, boundingRect(n.div));
 
-        if (!rectsIntersect(bounds, boundingRect(node.div)))
-            continue;
+        const right = intersecting.reduce((a, b) => 
+            boundingRect(a.div).r > boundingRect(b.div).r ? a : b);
 
-        if (_node.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
+        if (right.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
         else                             node.div.style.left = bounds.r + 30;
+
+        // node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
     }
 };
+
+
+
+graphView.intersectingNodes = node =>
+{
+    const intersecting = [];
+    
+    for (const n of graph.nodes)
+    {
+        if (   n != node
+            && rectsIntersect(boundingRect(n.div), boundingRect(node.div)))
+            intersecting.push(n);
+    }
+
+    return intersecting;
+}
 
 
 

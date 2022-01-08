@@ -109,7 +109,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     for (const node of graph.nodes)
     {
         if (rectsIntersect(
-                Rect.fromTypical(boundingRect(node.div)), 
+                boundingRect(node.div), 
                 selection))
             selected.push(node);
     }

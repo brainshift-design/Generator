@@ -98,25 +98,6 @@ class Rect
         this.w = rect.w;
         this.h = rect.h;
     }
-
-
-
-    expandFromRect(rect)
-    {
-        if (rect.isNaN  ) return this;
-        if (rect.isEmpty) return this;
-
-        if (this.isNaN  ) this.assign(rect);
-        if (this.isEmpty) return rect;
-        
-        const newRect = new AbsRect(
-            Math.min(this.l, rect.l),
-            Math.min(this.t, rect.t),
-            Math.max(this.r, rect.r),
-            Math.max(this.b, rect.b));
-
-        this.assign(newRect);
-    }
 }
 
 
@@ -127,4 +108,21 @@ extends Rect
     {
         super(l, t, r-l, b-t);
     }
+}
+
+
+
+function expandRect(rect1, rect2)
+{
+    if (rect1.isNaN  ) return rect2;
+    if (rect1.isEmpty) return rect2;
+
+    if (rect2.isNaN  ) return rect1;
+    if (rect2.isEmpty) return rect1;
+    
+    return new AbsRect(
+        Math.min(rect2.l, rect1.l),
+        Math.min(rect2.t, rect1.t),
+        Math.max(rect2.r, rect1.r),
+        Math.max(rect2.b, rect1.b));
 }
