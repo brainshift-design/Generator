@@ -5322,7 +5322,8 @@ extends Parameter
 
     update(dispatchEvents)
     {
-        if (this.input.isConnected)
+        if (   this.input
+            && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
     }
 
@@ -6532,11 +6533,11 @@ class Operator
 
     updateInputWires()
     {
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-                input.connection.wire.update(true);
-        }
+        // for (const input of this.inputs)
+        // {
+        //     if (input.isConnected)
+        //         input.connection.wire.update(true);
+        //}
     }
 
 
@@ -7247,8 +7248,22 @@ extends Operator
             return;
 
         super.update()
-        
-        //this.output._data = dataFromNumber(this.#paramValue.value);
+
+        console.log('OpAdd.update()');
+        for (const input of this.inputs)
+            input.op.update();
+
+        let result = 0;
+
+        for (let i = 0; i < this.inputs.length-1; i++)
+            result += this.inputs[i].data.value;
+
+
+        this.output._data = dataFromNumber(result);
+        console.log(result);
+
+        this.#paramValue.setValue(result, false, true, false);
+
 
         for (const input of this.output.connectedInputs)
             input.op.update();
@@ -8367,12 +8382,11 @@ function updateGraphNode(node)
     node.updateNode();
 
     
-    const selecting = 
-           !graphView.zoomSelecting
-        && !graphView.spaceDown;
-
-
     let boxShadow = '';
+
+    // const selecting = 
+    //        !graphView.zoomSelecting
+    //     && !graphView.spaceDown;
 
     // if (selecting)
     // {
@@ -12021,8 +12035,6 @@ graphView.placeNewNode = node =>
 
         if (right.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
         else                             node.div.style.left = bounds.r + 30;
-
-        // node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
     }
 };
 

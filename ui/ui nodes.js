@@ -262,12 +262,11 @@ function updateGraphNode(node)
     node.updateNode();
 
     
-    const selecting = 
-           !graphView.zoomSelecting
-        && !graphView.spaceDown;
-
-
     let boxShadow = '';
+
+    // const selecting = 
+    //        !graphView.zoomSelecting
+    //     && !graphView.spaceDown;
 
     // if (selecting)
     // {

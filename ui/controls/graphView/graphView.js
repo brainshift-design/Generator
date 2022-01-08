@@ -305,8 +305,6 @@ graphView.placeNewNode = node =>
 
         if (right.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
         else                             node.div.style.left = bounds.r + 30;
-
-        // node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
     }
 };
 

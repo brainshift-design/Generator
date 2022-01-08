@@ -173,11 +173,11 @@ class Operator
 
     updateInputWires()
     {
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-                input.connection.wire.update(true);
-        }
+        // for (const input of this.inputs)
+        // {
+        //     if (input.isConnected)
+        //         input.connection.wire.update(true);
+        //}
     }
 
 

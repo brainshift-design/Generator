@@ -44,8 +44,22 @@ extends Operator
             return;
 
         super.update()
-        
-        //this.output._data = dataFromNumber(this.#paramValue.value);
+
+        console.log('OpAdd.update()');
+        for (const input of this.inputs)
+            input.op.update();
+
+        let result = 0;
+
+        for (let i = 0; i < this.inputs.length-1; i++)
+            result += this.inputs[i].data.value;
+
+
+        this.output._data = dataFromNumber(result);
+        console.log(result);
+
+        this.#paramValue.setValue(result, false, true, false);
+
 
         for (const input of this.output.connectedInputs)
             input.op.update();
