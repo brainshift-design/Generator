@@ -5285,14 +5285,14 @@ extends Parameter
         this.input.addEventListener('connect', () =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.inputConnected  = true;
+            this.control.pointerEvents  = false;
         });
     
         
         this.input.addEventListener('disconnect', () =>
         {
             this.control.style.fontStyle = 'normal';
-            this.control.inputConnected  = false;
+            this.control.pointerEvents   = true;
         });
     }
 
@@ -5442,14 +5442,14 @@ extends Parameter
         this.input.addEventListener('connect', e =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.inputConnected  = true;
+            this.control.pointerEvents   = false;
         });
 
         
         this.input.addEventListener('disconnect', e =>
         {
             this.control.style.fontStyle = 'normal';
-            this.control.inputConnected  = false;
+            this.control.pointerEvents   = true;
         });
     }
 
@@ -5584,14 +5584,14 @@ extends Parameter
         this.input.addEventListener('connect', e =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.inputConnected  = true;
+            this.control.pointerEvents   = false;
         });
 
         
         this.input.addEventListener('disconnect', e =>
         {
             this.control.style.fontStyle = 'normal';
-            this.control.inputConnected  = false;
+            this.control.pointerEvents   = true;
         });
     }
 
@@ -7217,6 +7217,9 @@ extends Operator
         this.setOutput(new Output(this.dataType));
         
         this.addParam(this.#paramValue = new NumberParam('', false, false));
+
+        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.style.fontStyle = 'italic';
     }
     
     
@@ -7249,7 +7252,6 @@ extends Operator
 
         super.update()
 
-        console.log('OpAdd.update()');
         for (const input of this.inputs)
             input.op.update();
 
@@ -7260,7 +7262,6 @@ extends Operator
 
 
         this.output._data = dataFromNumber(result);
-        console.log(result);
 
         this.#paramValue.setValue(result, false, true, false);
 
@@ -7307,6 +7308,10 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput(); 
+
+    op.invalidate();
+    op.update();
+
     updateGraphNode(op);
 }
 
@@ -7315,6 +7320,10 @@ function onConnectInput(op)
 function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input); 
+
+    op.invalidate();
+    op.update();
+
     updateGraphNode(op);
 }
 
@@ -8723,7 +8732,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     
     slider.enableChangeEvent = true;
 
-    slider.inputConnected    = false;
+    slider.pointerEvents     = true;
 
     slider.valueText         = '';
 
@@ -8750,7 +8759,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
         if (e.button == 0)
         {
-            if (slider.inputConnected)
+            if (!slider.pointerEvents)
             {
                 e.stopPropagation();
                 return;
@@ -8797,7 +8806,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.addEventListener('pointermove', function(e)
     {
-        if (slider.inputConnected)
+        if (!slider.pointerEvents)
             return;
         
 
@@ -8909,7 +8918,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && !slider.inputConnected)
+            && slider.pointerEvents)
         {
             slider.style.cursor           = 'ew-resize';
             
@@ -8925,7 +8934,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.cursor     = 'default';
+        slider.style.cursor           = 'default';
         
         slider.focus.style.visibility = 'hidden';
         slider.focus.style.opacity    = 0;
@@ -8966,7 +8975,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     {
         if (   !graphView.spaceDown
             && !slider.buttonDown1
-            && !slider.inputConnected)
+            && slider.pointerEvents)
             slider.showTextbox();
     });
 
@@ -9309,7 +9318,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     
     slider.enableChangeEvent = true;
 
-    slider.inputConnected    = false;
+    slider.pointerEvents     = false;
 
     slider.valueText         = '';
 
@@ -9336,7 +9345,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
 
         if (e.button == 0)
         {
-            if (slider.inputConnected)
+            if (!slider.pointerEvents)
             {
                 e.stopPropagation();
                 return;
@@ -9389,7 +9398,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.addEventListener('pointermove', function(e)
     {
-        if (slider.inputConnected)
+        if (!slider.pointerEvents)
             return;
         
 
@@ -9501,7 +9510,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     slider.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && !slider.inputConnected)
+            && slider.pointerEvents)
         {
             slider.style.cursor           = 'ew-resize';
             
@@ -9558,7 +9567,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     {
         if (   !graphView.spaceDown
             && !slider.buttonDown1
-            && !slider.inputConnected)
+            && slider.pointerEvents)
             slider.showTextbox();
     });
 
@@ -9901,7 +9910,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     
     slider.enableChangeEvent = true;
 
-    slider.inputConnected    = false;
+    slider.pointerEvents     = true;
 
     slider.valueText         = '';
 
@@ -9928,7 +9937,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
         if (e.button == 0)
         {
-            if (slider.inputConnected)
+            if (!slider.pointerEvents)
             {
                 e.stopPropagation();
                 return;
@@ -9981,7 +9990,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.addEventListener('pointermove', function(e)
     {
-        if (slider.inputConnected)
+        if (!slider.pointerEvents)
             return;
         
 
@@ -10094,7 +10103,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     slider.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && !slider.inputConnected)
+            && slider.pointerEvents)
         {
             slider.style.cursor           = 'all-scroll';
             
@@ -10151,7 +10160,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     {
         if (   !graphView.spaceDown
             && !slider.buttonDown1
-            && !slider.inputConnected)
+            && slider.pointerEvents)
             slider.showTextbox();
     });
 

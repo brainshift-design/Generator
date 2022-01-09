@@ -56,7 +56,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     
     slider.enableChangeEvent = true;
 
-    slider.inputConnected    = false;
+    slider.pointerEvents     = true;
 
     slider.valueText         = '';
 
@@ -83,7 +83,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
         if (e.button == 0)
         {
-            if (slider.inputConnected)
+            if (!slider.pointerEvents)
             {
                 e.stopPropagation();
                 return;
@@ -136,7 +136,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.addEventListener('pointermove', function(e)
     {
-        if (slider.inputConnected)
+        if (!slider.pointerEvents)
             return;
         
 
@@ -249,7 +249,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     slider.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && !slider.inputConnected)
+            && slider.pointerEvents)
         {
             slider.style.cursor           = 'all-scroll';
             
@@ -306,7 +306,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     {
         if (   !graphView.spaceDown
             && !slider.buttonDown1
-            && !slider.inputConnected)
+            && slider.pointerEvents)
             slider.showTextbox();
     });
 

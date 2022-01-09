@@ -64,7 +64,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     
     slider.enableChangeEvent = true;
 
-    slider.inputConnected    = false;
+    slider.pointerEvents     = true;
 
     slider.valueText         = '';
 
@@ -91,7 +91,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
         if (e.button == 0)
         {
-            if (slider.inputConnected)
+            if (!slider.pointerEvents)
             {
                 e.stopPropagation();
                 return;
@@ -138,7 +138,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.addEventListener('pointermove', function(e)
     {
-        if (slider.inputConnected)
+        if (!slider.pointerEvents)
             return;
         
 
@@ -250,7 +250,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && !slider.inputConnected)
+            && slider.pointerEvents)
         {
             slider.style.cursor           = 'ew-resize';
             
@@ -266,7 +266,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.cursor     = 'default';
+        slider.style.cursor           = 'default';
         
         slider.focus.style.visibility = 'hidden';
         slider.focus.style.opacity    = 0;
@@ -307,7 +307,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     {
         if (   !graphView.spaceDown
             && !slider.buttonDown1
-            && !slider.inputConnected)
+            && slider.pointerEvents)
             slider.showTextbox();
     });
 

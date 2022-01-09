@@ -13,6 +13,9 @@ extends Operator
         this.setOutput(new Output(this.dataType));
         
         this.addParam(this.#paramValue = new NumberParam('', false, false));
+
+        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.style.fontStyle = 'italic';
     }
     
     
@@ -45,7 +48,6 @@ extends Operator
 
         super.update()
 
-        console.log('OpAdd.update()');
         for (const input of this.inputs)
             input.op.update();
 
@@ -56,7 +58,6 @@ extends Operator
 
 
         this.output._data = dataFromNumber(result);
-        console.log(result);
 
         this.#paramValue.setValue(result, false, true, false);
 
@@ -103,6 +104,10 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput(); 
+
+    op.invalidate();
+    op.update();
+
     updateGraphNode(op);
 }
 
@@ -111,5 +116,9 @@ function onConnectInput(op)
 function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input); 
+
+    op.invalidate();
+    op.update();
+
     updateGraphNode(op);
 }

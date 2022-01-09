@@ -93,14 +93,14 @@ extends Parameter
         this.input.addEventListener('connect', e =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.inputConnected  = true;
+            this.control.pointerEvents   = false;
         });
 
         
         this.input.addEventListener('disconnect', e =>
         {
             this.control.style.fontStyle = 'normal';
-            this.control.inputConnected  = false;
+            this.control.pointerEvents   = true;
         });
     }
 
