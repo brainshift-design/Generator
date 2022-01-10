@@ -1,13 +1,13 @@
-class   OpAdd
+class   OpArithmetic
 extends Operator
 {
     #paramValue;
 
 
 
-    constructor()
+    constructor(opType, shortType)
     {
-        super('add', 'number');
+        super(opType, shortType, 'number');
 
         this.addNewInput();
         this.setOutput(new Output(this.dataType));
@@ -51,19 +51,22 @@ extends Operator
         for (const input of this.inputs)
             input.op.update();
 
-        let result = 0;
 
-        for (let i = 0; i < this.inputs.length-1; i++)
-            result += this.inputs[i].data.value;
-
+        const result = this.getResult();
 
         this.output._data = dataFromNumber(result);
-
         this.#paramValue.setValue(result, false, true, false);
 
 
         for (const input of this.output.connectedInputs)
             input.op.update();
+    }
+
+
+
+    getResult()
+    {
+        return Number.NaN;
     }
 
 

@@ -7,7 +7,7 @@ extends Operator
 
     constructor()
     {
-        super('number', 'number');
+        super('number', 'num', 'number');
 
         this.setOutput(new Output(this.dataType));
 

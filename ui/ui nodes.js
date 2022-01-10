@@ -27,12 +27,12 @@ function uiCreateNode(opType, updateUI = true, createdId = -1)
     }
 
 
-    uiPostMessageToGenerator({
-        msg:     'genCreateNode',
-        opType:   opType,
-        nodeId:   node.id,
-        nodeName: node.name
-    });
+    // uiPostMessageToGenerator({
+    //     msg:     'genCreateNode',
+    //     opType:   opType,
+    //     nodeId:   node.id,
+    //     nodeName: node.name
+    // });
 
 
     return node;
@@ -44,11 +44,11 @@ function uiDeleteNodes(nodeIds, actionId)
 {
     graph.deleteNodes(nodeIds);
     
-    uiPostMessageToGenerator({
-        msg:     'genDeleteNodes',
-        nodeIds:  nodeIds,
-        actionId: actionId
-    });
+    // uiPostMessageToGenerator({
+    //     msg:     'genDeleteNodes',
+    //     nodeIds:  nodeIds,
+    //     actionId: actionId
+    // });
     
     uiDeleteNodeObjects(nodeIds);
 }
@@ -68,10 +68,10 @@ function uiUndeleteNodes(nodes, actionId)
     graphView.putNodeOnTop(lastOf(nodes));
 
 
-    uiPostMessageToGenerator({
-        msg:       'genUndeleteNodes',
-        uiActionId: actionId
-    });
+    // uiPostMessageToGenerator({
+    //     msg:       'genUndeleteNodes',
+    //     uiActionId: actionId
+    // });
 }
 
 
@@ -83,10 +83,10 @@ function uiDeleteNodeObjects(nodeIds)
         nodeIds: nodeIds
     });
 
-    uiPostMessageToGenerator({
-        cmd:    'genDeleteNodeObjects',
-        nodeIds: nodeIds
-    });
+    // uiPostMessageToGenerator({
+    //     cmd:    'genDeleteNodeObjects',
+    //     nodeIds: nodeIds
+    // });
 }
 
 
@@ -97,11 +97,11 @@ function uiSetNodeId(nodeId, newId)
 
     node.id = newId;
 
-    uiPostMessageToGenerator({
-        msg:   'genSetNodeId', 
-        nodeId: nodeId,
-        newId:  newId
-    });
+    // uiPostMessageToGenerator({
+    //     msg:   'genSetNodeId', 
+    //     nodeId: nodeId,
+    //     newId:  newId
+    // });
 }
 
 
@@ -110,15 +110,15 @@ function uiConnect(output, input)
 {
     graph.connect(output, input);
 
-    uiPostMessageToGenerator({
-        msg:     'genConnect', 
-        outputId: output.op.id, 
-        inputs:  
-        [{
-            nodeId: input.op.id, 
-            index:  input.op.inputs.indexOf(input)
-        }]
-    });
+    // uiPostMessageToGenerator({
+    //     msg:     'genConnect', 
+    //     outputId: output.op.id, 
+    //     inputs:  
+    //     [{
+    //         nodeId: input.op.id, 
+    //         index:  input.op.inputs.indexOf(input)
+    //     }]
+    // });
 }
 
 
@@ -127,47 +127,47 @@ function uiDisconnect(input)
 {
     graph.disconnect(input);
 
-    uiPostMessageToGenerator({
-        msg: 'genDisconnect',
-        input:
-        {
-            nodeId: input.op.id, 
-            index:  input.op.inputs.indexOf(input)
-        }
-    });
+    // uiPostMessageToGenerator({
+    //     msg: 'genDisconnect',
+    //     input:
+    //     {
+    //         nodeId: input.op.id, 
+    //         index:  input.op.inputs.indexOf(input)
+    //     }
+    // });
 }
 
 
 
 function uiSetParam(param, value)
 {
-    uiPostMessageToGenerator({
-        msg:   'genSetParam', 
-        nodeId: param.op.id, 
-        param:  param.name,
-        value:  value
-    });
+    // uiPostMessageToGenerator({
+    //     msg:   'genSetParam', 
+    //     nodeId: param.op.id, 
+    //     param:  param.name,
+    //     value:  value
+    // });
 }
 
 
 
 function uiInvalidate(node)
 {
-    uiPostMessageToGenerator({
-        msg:   'genInvalidate', 
-        nodeId: node.id
-    });
+    // uiPostMessageToGenerator({
+    //     msg:   'genInvalidate', 
+    //     nodeId: node.id
+    // });
 }
 
 
 
 function uiSetActive(node, active)
 {
-    uiPostMessageToGenerator({
-        msg:   'genSetActive', 
-        nodeId: node.id,
-        active: active
-    });
+    // uiPostMessageToGenerator({
+    //     msg:   'genSetActive', 
+    //     nodeId: node.id,
+    //     active: active
+    // });
 }
 
 

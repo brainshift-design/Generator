@@ -18,7 +18,7 @@ class Graph
 
     getNewNodeName(_node)
     {
-        let opType = _node.opType;
+        let opType = _node.shortTypeName;
 
         let maxNum = 0;
         
@@ -55,8 +55,12 @@ class Graph
 
         switch (opType)
         {
-            case 'number': node = new OpNumber(); break;
-            case 'add':    node = new OpAdd();    break;
+            case 'number':   node = new OpNumber();   break;
+            case 'add':      node = new OpAdd();      break;
+            case 'subtract': node = new OpSubtract(); break;
+            case 'multiply': node = new OpMultiply(); break;
+            case 'divide':   node = new OpDivide();   break;
+            case 'exponent': node = new OpExponent(); break;
             // case 'color':  node = new OpColor();  break;
             // case 'random': node = new OpRandom(); break;
             // case 'rect':   node = new OpRect();   break;

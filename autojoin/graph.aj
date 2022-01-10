@@ -4,22 +4,24 @@
 ../parameters/SelectParam/SelectParam.js
 
 ../graph/data.js
-
-../graph/Graph/Graph.js
-
-../graph/Input/Input.js
-../graph/Output/Output.js
-../graph/Connection/Connection.js
-
+../graph/Graph.js
+../graph/Input.js
+../graph/Output.js
+../graph/Connection.js
 ../graph/tree.js
 
-../operators/Operator/Operator.js
-../operators/Operator/Operator node.js
-../operators/Operator/Operator textbox.js
+../operators/Operator.js
+../operators/Operator node.js
+../operators/Operator textbox.js
 
-../operators/OpNumber/OpNumber.js
-../operators/OpAdd/OpAdd.js
-//../operators/OpRandom/OpRandom.js
+../operators/Math/OpNumber.js
+../operators/Math/OpArithmetic.js
+../operators/Math/OpAdd.js
+../operators/Math/OpSubtract.js
+../operators/Math/OpMultiply.js
+../operators/Math/OpDivide.js
+../operators/Math/OpExponent.js
+//../operators/Math/OpRandom.js
 
 //../operators/OpColor/OpColor.js
 

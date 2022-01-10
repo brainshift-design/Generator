@@ -13,6 +13,8 @@ class Operator
         this._name = name;
         this.label.innerHTML = name;
     }
+
+    shortTypeName;
     
 
     static nextId = 0;
@@ -103,12 +105,13 @@ class Operator
 
 
 
-    constructor(opType, dataType)
+    constructor(opType, shortType, dataType)
     {
-        this.#opType   = opType;   // this is the operator type
-        this.#dataType = dataType; // this is the op's main data type
+        this.#opType       = opType;   // this is the operator type
+        this.#dataType     = dataType; // this is the op's main data type
 
-        this._name = opType; // this is a temp until the op becomes a graph node
+        this.shortTypeName = shortType;
+        this._name         = shortType; // this is a temp until the op becomes a graph node
         
         createNode(this);
     }    

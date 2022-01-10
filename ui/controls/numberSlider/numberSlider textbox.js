@@ -120,7 +120,7 @@ function initNumberSliderTextbox(slider)
     };    
     
     
-    
+
     slider.showTextbox = function()
     {
         slider.inFocus = 
@@ -129,7 +129,8 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.position = 'absolute';
     
-        slider.textbox.style.left      = slider.offsetLeft   + 1;
+        slider.textbox.style.left      = '50%';//slider.offsetLeft   + 1;
+        slider.textbox.style.transform = 'translate(-50%)';
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
