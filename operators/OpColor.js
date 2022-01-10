@@ -1,4 +1,12 @@
-const colorTypes = ['RGB', 'HSV', 'HSL', 'HCL (OKLab)', 'HCL (CIE Lab)', 'HCL (CIE Luv)'];
+const colorTypes = 
+[
+    ['rgb',    'RGB'          ], 
+    ['hsv',    'HSV'          ], 
+    ['hsl',    'HSL'          ], 
+    ['hclokl', 'HCL (OKLab)'  ],
+    ['hcllab', 'HCL (CIE Lab)'],
+    ['hslluv', 'HCL (CIE Luv)']
+];
 
 
 
@@ -6,16 +14,18 @@ class   OpColor
 extends Operator
 {
     #type;
-
+    
     #c1;
     #c2;
     #c3;
+    
+    #color;
 
 
 
     constructor()
     {
-        super('color', 'color');
+        super('color', 'col', 'color');
 
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
@@ -36,10 +46,40 @@ extends Operator
 
 
 
+    update()
+    {
+        if (this.valid) 
+            return;
+
+        super.update()
+
+        for (const input of this.inputs)
+            input.op.update();
+
+        this.#color = this.getColor();
+
+        this.output._data = dataFromColor(this.#color);
+
+        this.updateNode();
+
+        for (const input of this.output.connectedInputs)
+            input.op.update();
+    }
+
+
+
+    getColor()
+    {
+        return this.inputs[0].data.value;        //this.#c1.value,
+        //this.#c2.value,
+        //this.#c3.value);
+    }
+
+
+
     updateNode()
     {
         super.updateNode();
-        //Operator.prototype.updateNode.call(this);
 
         switch (this.#type)
         {
@@ -51,9 +91,6 @@ extends Operator
             case 5: this.#c1.name = 'H'; this.#c2.name = 'C'; this.#c3.name = 'L'; break;
         }
 
-        this.header.style.backgroundColor = colorStyle_(
-            this.#c1.value,
-            this.#c2.value,
-            this.#c3.value);
+        this.header.style.backgroundColor = colorStyle(getColor());
     }
 }

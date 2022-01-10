@@ -61,8 +61,10 @@ class Graph
             case 'multiply': node = new OpMultiply(); break;
             case 'divide':   node = new OpDivide();   break;
             case 'exponent': node = new OpExponent(); break;
-            // case 'color':  node = new OpColor();  break;
             // case 'random': node = new OpRandom(); break;
+            
+            case 'color':  node = new OpColor();  break;
+            
             // case 'rect':   node = new OpRect();   break;
             // case 'row':    node = new OpRow();    break;
             // case 'column': node = new OpColumn(); break;
@@ -85,7 +87,7 @@ class Graph
     addNode(node)
     {
         node.graph = this;
-        node.setId(this.getNewNodeName(node)); // TODO: not checking return value here
+        node.setName(this.getNewNodeName(node)); // TODO: not checking return value here
         
         this.nodes.push(node);
         graphView.appendChild(node.div);

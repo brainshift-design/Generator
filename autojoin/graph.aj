@@ -1,7 +1,7 @@
-../parameters/Parameter/Parameter.js
-../parameters/NumberParam/NumberParam.js
-../parameters/ColorParam/ColorParam.js
-../parameters/SelectParam/SelectParam.js
+../parameters/Parameter.js
+../parameters/NumberParam.js
+../parameters/ColorParam.js
+../parameters/SelectParam.js
 
 ../graph/data.js
 ../graph/Graph.js
@@ -23,11 +23,9 @@
 ../operators/Math/OpExponent.js
 //../operators/Math/OpRandom.js
 
-//../operators/OpColor/OpColor.js
+../operators/OpColor.js
 
-//../operators/OpRect/OpRect.js
-
-//../operators/OpRow/OpRow.js
-//../operators/OpColumn/OpColumn.js
-
-//../operators/OpSpread/UOpSpread.js
+//../operators/OpRect.js
+//../operators/OpRow.js
+//../operators/OpColumn.js
+//../operators/UOpSpread.js

@@ -270,13 +270,13 @@ class Operator
 
 
 
-    setId(newId)
+    setName(newName)
     {
-        if (this.graph.nodes.find(node => node.id == newId))
+        if (this.graph.nodes.find(node => node.id == newName))
             return false; // graph already contains a node with this id
 
-        this._name = newId;
-        this.label.innerHTML = this.id + ': ' + newId;
+        this._name = newName;
+        this.label.innerHTML = this.id + ': ' + newName;
 
         return true;
     }

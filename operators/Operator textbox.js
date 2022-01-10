@@ -117,7 +117,7 @@ function initLabelTextbox(node)
         if (success) 
         {
             if (node.textbox.value != '')
-                setNodeId(node.id, node.textbox.value);
+                node.setName(node.textbox.value);
         }
 
         node.textbox.blur();

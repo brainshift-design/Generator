@@ -92,12 +92,6 @@ extends Parameter
         this.div.appendChild(this.input.control);
 
 
-        // this.input.addEventListener('update', () =>
-        // {
-        //     this.update();
-        // });
-    
-        
         this.input.addEventListener('connect', () =>
         {
             this.control.style.fontStyle = 'italic';

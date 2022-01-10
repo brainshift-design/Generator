@@ -46,6 +46,7 @@ extends Operator
         if (this.valid) 
             return;
 
+            
         super.update()
 
         for (const input of this.inputs)

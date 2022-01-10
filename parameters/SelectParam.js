@@ -29,6 +29,7 @@ extends Parameter
 
     
     constructor(name, 
+                hasInput,
                 hasOutput,
                 options,
                 value     = 0, 
@@ -56,7 +57,7 @@ extends Parameter
         this.div.appendChild(this.control);
 
 
-        this.initInput();
+        this.initInput (hasInput);
         this.initOutput(hasOutput);
 
             
@@ -76,9 +77,11 @@ extends Parameter
 
 
 
-    initInput()
+    initInput(hasInput)
     {
-        this.input = new Input('number');
+        this.input = hasInput ? new Input ('number') : null;
+        if (!this.input) return;
+
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
