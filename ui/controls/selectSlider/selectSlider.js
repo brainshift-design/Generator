@@ -367,6 +367,9 @@ function initSelectSlider(slider, width, height, name, options, def, backColor =
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
+
+        slider.style.backgroundColor = slider.backColor;
+        
         slider.bar.style.background =
             slider.value >= 0
             ? slider.valueColor

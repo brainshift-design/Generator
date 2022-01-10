@@ -7455,10 +7455,10 @@ extends Parameter
 
 
 
-    setValue(value, confirm, updateControl = true, dispatchEvents = true) 
+    setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
         if (updateControl)
-            this._control.setValue(value, false, false); 
+            this._control.setValue(value, false, false, forceChange); 
 
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
@@ -9635,7 +9635,6 @@ extends Operator
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
 
-
         this.addParam(this.#space = new SelectParam('space', true, true, OpColorTypes.map(t => t[1])));
         this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
         this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
@@ -9643,8 +9642,15 @@ extends Operator
 
         this.#space.control.addEventListener('change', () =>
         {
-                 if (this.control.oldValue == 0 && this.control.value == 1) this.convertRgb2hsv();
-            else if (this.control.oldValue == 0 && this.control.value == 2) this.convertRgb2hsl();
+            switch (this.#space.control.value)
+            {
+                case 0: this.convert2rgb(); break;
+                case 1: this.convert2hsv(); break;
+                case 2: this.convert2hsl(); break;
+                case 3:
+                case 4:
+                case 5: break;
+            }
 
             this.invalidate(); 
             this.update();
@@ -9655,6 +9661,147 @@ extends Operator
         this.#c3.control.addEventListener('change', () => { this.invalidate(); this.update(); });
 
         this.#space.setValue(0); // init all the params with names
+        this.switch2rgb();
+    }
+
+
+
+    col2rgb(space, col)
+    {
+        switch (space)
+        {
+            case 0: return col;
+            case 1: return hsv2rgb(col);
+            case 2: return hsl2rgb(col);
+        }
+        
+        return [0, 0, 0];
+    }
+
+
+
+    getColor(space)
+    {
+        switch (space)
+        {
+            case 0: return this.getColorRgb();
+            case 1: 
+            case 2: 
+            case 3: 
+            case 4: 
+            case 5: return this.getColorH();
+        }
+    }
+
+
+
+    getColorRgb()
+    {
+        return [
+            this.#c1.value / 255, 
+            this.#c2.value / 255, 
+            this.#c3.value / 255];
+    }
+
+
+
+    getColorH()
+    {
+        return [
+            this.#c1.value / 360, 
+            this.#c2.value / 100, 
+            this.#c3.value / 100];
+    }
+
+
+
+    switchControls(c1, c2, c3, c1min, c1max, c1wrap, c2min, c2max, c3min, c3max)
+    {
+        this.#c1.setName(c1, false); 
+        this.#c2.setName(c2, false); 
+        this.#c3.setName(c3, false);
+
+        this.#c1.control.wrapValue = c1wrap;
+
+        this.#c1.control.min = c1min; this.#c1.control.max = c1max; this.#c1.control.update();
+        this.#c2.control.min = c2min; this.#c2.control.max = c2max; this.#c2.control.update();
+        this.#c3.control.min = c3min; this.#c3.control.max = c3max; this.#c3.control.update();
+    }
+
+
+
+    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, false, 0, 255, 0, 255); }
+    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, true,  0, 100, 0, 100); }
+    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, true,  0, 100, 0, 100); }
+    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, true,  0, 100, 0, 100); }
+
+
+
+    convert2rgb()
+    {
+        const col = this.getColor(this.#space.oldValue);
+
+        let rgb;
+
+        switch (this.#space.oldValue)
+        {
+            case 0: rgb = col;          break;
+            case 1: rgb = hsv2rgb(col); break;
+            case 2: rgb = hsl2rgb(col); break;
+        }
+
+        this.switch2rgb();
+
+        this.#c1.setValue(rgb[0] * 255, false, true, false);
+        this.#c2.setValue(rgb[1] * 255, false, true, false);
+        this.#c3.setValue(rgb[2] * 255, false, true, false);
+    }
+
+
+
+    convert2hsv()
+    {
+        const col = this.getColor(this.#space.oldValue);
+
+        let hsv;
+
+        switch (this.#space.oldValue)
+        {
+            case 0: hsv = rgb2hsv(col);          break;
+            case 1: hsv = col;                   break;
+            case 2: hsv = rgb2hsv(hsl2rgb(col)); break;
+        }
+
+        if (isNaN(hsv[0]))
+            hsv[0] = 5/6;
+            
+        this.switch2hsv();
+
+        this.#c1.setValue(hsv[0] * 360, false, true, true);
+        this.#c2.setValue(hsv[1] * 100, false, true, true);
+        this.#c3.setValue(hsv[2] * 100, false, true, true);
+    }
+
+
+
+    convert2hsl()
+    {
+        const col = this.getColor(this.#space.oldValue);
+
+        let hsl;
+
+        switch (this.#space.oldValue)
+        {
+            case 0: hsl = rgb2hsl(col);          break;
+            case 1: hsl = rgb2hsl(hsv2rgb(col)); break;
+            case 2: hsl = col;                   break;
+        }
+
+        this.switch2hsl();
+
+        this.#c1.setValue(hsl[0] * 360, false, true, false);
+        this.#c2.setValue(hsl[1] * 100, false, true, false);
+        this.#c3.setValue(hsl[2] * 100, false, true, false);
     }
 
 
@@ -9683,66 +9830,21 @@ extends Operator
 
 
 
-    getColor(space)
-    {
-        switch (space)
-        {
-            case 0: return this.getColorRgb();
-            case 1: return this.getColorHsv();
-            case 2: return this.getColorHsl();
-            case 3: return [0, 0, 0];
-            case 4: return [0, 0, 0];
-            case 5: return [0, 0, 0];
-        }
-    }
-
-
-
-    getColorRgb()
-    {
-        return [
-            this.#c1.value / 255, 
-            this.#c2.value / 255, 
-            this.#c3.value / 255];
-    }
-
-
-
-    getColorHsv()
-    {
-        return [
-            this.#c1.value / 360, 
-            this.#c2.value / 100, 
-            this.#c3.value / 100];
-    }
-
-
-
-    getColorHsl()
-    {
-        return [
-            this.#c1.value / 360, 
-            this.#c2.value / 100, 
-            this.#c3.value / 100];
-    }
-
-
-
     updateNode()
     {
         super.updateNode();
 
-        switch (this.#space.value)
-        {
-            case 0: this.#c1.setName('R', false); this.#c2.setName('G', false); this.#c3.setName('B', false); break;
-            case 1: this.#c1.setName('H', false); this.#c2.setName('S', false); this.#c3.setName('V', false); break;
-            case 2: this.#c1.setName('H', false); this.#c2.setName('S', false); this.#c3.setName('L', false); break;
-            case 3: 
-            case 4: 
-            case 5: this.#c1.setName('H', false); this.#c2.setName('C', false); this.#c3.setName('L', false); break;
-        }
+        const col = this.col2rgb(this.#space.value, this.getColor(this.#space.value));
 
-        this.header.style.backgroundColor = colorStyle(this.getColor());
+        this.header.style.backgroundColor = colorStyle(col);
+
+        this.#space.control.backColor     = colorStyle(col);
+
+        let val = rgb2hsv(col);
+        val[2] = Math.max(0, val[2]-0.05);
+        val = hsv2rgb(val);
+
+        this.#space.control.valueColor = colorStyle(val);
     }
 }
 
@@ -11419,9 +11521,10 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false)
     {
         const oldValue = slider.value;
+
 
         if (slider.wrapValue)
         {
@@ -11431,24 +11534,24 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         else
             value = Math.min(Math.max(slider.min, value), slider.max);
         
-        if (  !confirm
-            || value != oldValue)
+
+        if (   value != oldValue
+            || forceChange)
+        {
             slider.value = value;
 
+            slider.update();
 
-        slider.update();
+            if (   fireChangeEvent
+                && slider.enableChangeEvent
+                && value != slider.prevValue)
+                slider.dispatchEvent(slider.onchange);
 
-
-        if (   fireChangeEvent
-            && slider.enableChangeEvent
-            && value != slider.prevValue)
-            slider.dispatchEvent(slider.onchange);
-
-
-        if (   confirm
-            && slider.enableChangeEvent
-            && value != oldValue)
-            slider.dispatchEvent(slider.onconfirm);
+            if (   confirm
+                && slider.enableChangeEvent
+                && value != oldValue)
+                slider.dispatchEvent(slider.onconfirm);
+        }
     };
 
 
@@ -11482,6 +11585,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
+
+        slider.style.backgroundColor = slider.backColor;
 
         slider.bar.style.background =
             slider.value >= 0
@@ -12063,6 +12168,9 @@ function initSelectSlider(slider, width, height, name, options, def, backColor =
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
+
+        slider.style.backgroundColor = slider.backColor;
+        
         slider.bar.style.background =
             slider.value >= 0
             ? slider.valueColor

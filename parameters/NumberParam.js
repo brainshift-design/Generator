@@ -147,10 +147,10 @@ extends Parameter
 
 
 
-    setValue(value, confirm, updateControl = true, dispatchEvents = true) 
+    setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
         if (updateControl)
-            this._control.setValue(value, false, false); 
+            this._control.setValue(value, false, false, forceChange); 
 
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    

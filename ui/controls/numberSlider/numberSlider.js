@@ -321,9 +321,10 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false)
     {
         const oldValue = slider.value;
+
 
         if (slider.wrapValue)
         {
@@ -333,24 +334,24 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         else
             value = Math.min(Math.max(slider.min, value), slider.max);
         
-        if (  !confirm
-            || value != oldValue)
+
+        if (   value != oldValue
+            || forceChange)
+        {
             slider.value = value;
 
+            slider.update();
 
-        slider.update();
+            if (   fireChangeEvent
+                && slider.enableChangeEvent
+                && value != slider.prevValue)
+                slider.dispatchEvent(slider.onchange);
 
-
-        if (   fireChangeEvent
-            && slider.enableChangeEvent
-            && value != slider.prevValue)
-            slider.dispatchEvent(slider.onchange);
-
-
-        if (   confirm
-            && slider.enableChangeEvent
-            && value != oldValue)
-            slider.dispatchEvent(slider.onconfirm);
+            if (   confirm
+                && slider.enableChangeEvent
+                && value != oldValue)
+                slider.dispatchEvent(slider.onconfirm);
+        }
     };
 
 
@@ -384,6 +385,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
+
+        slider.style.backgroundColor = slider.backColor;
 
         slider.bar.style.background =
             slider.value >= 0
