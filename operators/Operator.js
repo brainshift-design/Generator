@@ -202,13 +202,48 @@ class Operator
 
 
 
+    // updateInputWires()
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.isConnected)
+    //             input.connection.wire.update(true);
+    //     }
+    // }
+
+
+
+    // updateOutputWires()
+    // {
+    //     if (   this.output 
+    //         && this.output.isConnected)
+    //     {
+    //         for (const input of this.output.connectedInputs)
+    //             input.connection.wire.update(true);
+    //     }
+    // }
+
+
+
+    // updateParamWires()
+    // {
+    //     for (const param of this.params)
+    //     {
+    //         if (   param.input
+    //             && param.input.isConnected) 
+    //             param.input.connection.wire.update(true);
+    //     }
+    // }
+
+
+
     updateNode() 
     {
         this.header.style.backgroundColor = colorFromDataType(this.#dataType, false);
 
-        this.updateInputWires ();
-        this.updateOutputWires();
-        this.updateParamWires ();
+        // this.updateInputWires ();
+        // this.updateOutputWires();
+        // this.updateParamWires ();
     }
 
 

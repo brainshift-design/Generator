@@ -36,12 +36,20 @@ extends Operator
         this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
         this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
-        this.#space.control.addEventListener('change', () => { this.updateNode(); });
-        this.#c1   .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c2   .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c3   .control.addEventListener('change', () => { this.updateNode(); });
+        this.#space.control.addEventListener('change', () =>
+        {
+                 if (this.control.oldValue == 0 && this.control.value == 1) this.convertRgb2hsv();
+            else if (this.control.oldValue == 0 && this.control.value == 2) this.convertRgb2hsl();
 
-        this.#space.setValue(0);
+            this.invalidate(); 
+            this.update();
+        });
+
+        this.#c1.control.addEventListener('change', () => { this.invalidate(); this.update(); });
+        this.#c2.control.addEventListener('change', () => { this.invalidate(); this.update(); });
+        this.#c3.control.addEventListener('change', () => { this.invalidate(); this.update(); });
+
+        this.#space.setValue(0); // init all the params with names
     }
 
 
@@ -56,9 +64,11 @@ extends Operator
         for (const input of this.inputs)
             input.op.update();
 
-        this.#color = this.getColor();
+        this.#color = dataFromColor(
+            this.#space.value, 
+            this.getColor(this.#space.value));
 
-        this.output._data = dataFromColor(this.#color);
+        this.output._data = this.#color;
 
         this.updateNode();
 
@@ -68,16 +78,16 @@ extends Operator
 
 
 
-    getColor()
+    getColor(space)
     {
-        switch (this.#space.value)
+        switch (space)
         {
             case 0: return this.getColorRgb();
-            case 1: break;
-            case 2: break;
-            case 3: break;
-            case 4: break;
-            case 5: break;
+            case 1: return this.getColorHsv();
+            case 2: return this.getColorHsl();
+            case 3: return [0, 0, 0];
+            case 4: return [0, 0, 0];
+            case 5: return [0, 0, 0];
         }
     }
 
@@ -89,6 +99,26 @@ extends Operator
             this.#c1.value / 255, 
             this.#c2.value / 255, 
             this.#c3.value / 255];
+    }
+
+
+
+    getColorHsv()
+    {
+        return [
+            this.#c1.value / 360, 
+            this.#c2.value / 100, 
+            this.#c3.value / 100];
+    }
+
+
+
+    getColorHsl()
+    {
+        return [
+            this.#c1.value / 360, 
+            this.#c2.value / 100, 
+            this.#c3.value / 100];
     }
 
 

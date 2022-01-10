@@ -8,13 +8,13 @@ function dataFromNumber(num)
 
 
 
-function dataFromColor(col)
+function dataFromColor(space, col)
 {
     return {
         type: 'color',
-        space: col[0],
-        c0:    col[1], 
+        space: space,
+        c0:    col[0], 
         c1:    col[1], 
-        c2:    col[1] 
+        c2:    col[2] 
     };
 }
