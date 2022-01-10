@@ -123,6 +123,14 @@ extends Parameter
 
 
 
+    setName(name, dispatchEvents = true)
+    {
+        super.setName(name, dispatchEvents);
+        this.control.setName(name);
+    }
+
+
+
     isDefault()
     {
         return this.value == this.defaultValue;

@@ -5,7 +5,7 @@ extends EventTarget
     get type() { return this.#type; }
     
     #name;
-    get name() { return this.#name; }
+    get name()    { return this.#name; }
 
     _op;
     get op()   { return this._op; }
@@ -38,6 +38,14 @@ extends EventTarget
 
 
 
+    setName(name, dispatchEvents = true)
+    {
+        this.#name = name; 
+        this.update(dispatchEvents);
+    }
+
+
+
     isDefault() { return false; }
 
 
@@ -45,7 +53,7 @@ extends EventTarget
     update(dispatchEvents)
     {
         // overrides should check inputs for data here
-    }
+    }    
 
 
 

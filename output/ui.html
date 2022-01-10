@@ -5116,7 +5116,7 @@ extends EventTarget
     get type() { return this.#type; }
     
     #name;
-    get name() { return this.#name; }
+    get name()    { return this.#name; }
 
     _op;
     get op()   { return this._op; }
@@ -5149,6 +5149,14 @@ extends EventTarget
 
 
 
+    setName(name, dispatchEvents = true)
+    {
+        this.#name = name; 
+        this.update(dispatchEvents);
+    }
+
+
+
     isDefault() { return false; }
 
 
@@ -5156,7 +5164,7 @@ extends EventTarget
     update(dispatchEvents)
     {
         // overrides should check inputs for data here
-    }
+    }    
 
 
 
@@ -5309,6 +5317,14 @@ extends Parameter
         this.output.control.style.top       = '50%';
         this.output.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.output.control);
+    }
+
+
+
+    setName(name, dispatchEvents = true)
+    {
+        super.setName(name, dispatchEvents);
+        this.control.setName(name);
     }
 
 
@@ -5526,8 +5542,7 @@ extends Parameter
                 hasInput,
                 hasOutput,
                 options,
-                value     = 0, 
-                dragScale = 0.01)
+                value = 0)
     {
         super(name, 'number');
 
@@ -5538,14 +5553,13 @@ extends Parameter
         this.options      = options;
         this.defaultValue = value;
 
-
         initSelectSlider(
             this.control,
-            120,        // width
-            20,         // height
+            120, // width
+             20, // height
             this.name,  
-            value,      // default
-            dragScale); // suffix
+            this.options,
+            value); // default
 
 
         this.div.appendChild(this.control);
@@ -5622,10 +5636,10 @@ extends Parameter
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        //this._control.setValue(value, fireChangeEvent, confirm); 
-    }
+    // setValue(value, fireChangeEvent = true, confirm = true) 
+    // { 
+    //     this._control.setValue(value, fireChangeEvent, confirm); 
+    // }
 
 
 
@@ -7479,7 +7493,7 @@ extends OpArithmetic
 }
 
 
-const colorTypes = 
+const OpColorTypes = 
 [
     ['rgb',    'RGB'          ], 
     ['hsv',    'HSV'          ], 
@@ -7494,7 +7508,7 @@ const colorTypes =
 class   OpColor
 extends Operator
 {
-    #type;
+    #space;
     
     #c1;
     #c2;
@@ -7512,17 +7526,17 @@ extends Operator
         this.setOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#type = new SelectParam('type', true, colorTypes));
-        this.addParam(this.#c1   = new NumberParam('c1',   true, 0, 0, 255));
-        this.addParam(this.#c2   = new NumberParam('c2',   true, 0, 0, 255));
-        this.addParam(this.#c3   = new NumberParam('c3',   true, 0, 0, 255));
+        this.addParam(this.#space = new SelectParam('space', true, true, OpColorTypes.map(t => t[1])));
+        this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
+        this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
+        this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
-        this.#type.control.addEventListener('change', () => { this.updateNode(); });
-        this.#c1  .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c2  .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c3  .control.addEventListener('change', () => { this.updateNode(); });
+        this.#space.control.addEventListener('change', () => { this.updateNode(); });
+        this.#c1   .control.addEventListener('change', () => { this.updateNode(); });
+        this.#c2   .control.addEventListener('change', () => { this.updateNode(); });
+        this.#c3   .control.addEventListener('change', () => { this.updateNode(); });
 
-        this.#type.setValue(0);
+        this.#space.setValue(0);
     }
 
 
@@ -7551,7 +7565,7 @@ extends Operator
 
     getColor()
     {
-        return this.inputs[0].data.value;        //this.#c1.value,
+        return [0, 0, 0];//this.inputs[0].data.value;        //this.#c1.value,
         //this.#c2.value,
         //this.#c3.value);
     }
@@ -7562,17 +7576,17 @@ extends Operator
     {
         super.updateNode();
 
-        switch (this.#type)
+        switch (this.#space.value)
         {
-            case 0: this.#c1.name = 'R'; this.#c2.name = 'G'; this.#c3.name = 'B'; break;
-            case 1: this.#c1.name = 'H'; this.#c2.name = 'S'; this.#c3.name = 'V'; break;
-            case 2: this.#c1.name = 'H'; this.#c2.name = 'S'; this.#c3.name = 'L'; break;
+            case 0: this.#c1.setName('R', false); this.#c2.setName('G', false); this.#c3.setName('B', false); break;
+            case 1: this.#c1.setName('H', false); this.#c2.setName('S', false); this.#c3.setName('V', false); break;
+            case 2: this.#c1.setName('H', false); this.#c2.setName('S', false); this.#c3.setName('L', false); break;
             case 3: 
             case 4: 
-            case 5: this.#c1.name = 'H'; this.#c2.name = 'C'; this.#c3.name = 'L'; break;
+            case 5: this.#c1.setName('H', false); this.#c2.setName('C', false); this.#c3.setName('L', false); break;
         }
 
-        this.header.style.backgroundColor = colorStyle(getColor());
+        this.header.style.backgroundColor = colorStyle(this.getColor());
     }
 }
 
@@ -9241,6 +9255,14 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
 
     
+    slider.setName = function(name)
+    {
+        this.name = name;
+        this.update();
+    };
+
+
+
     slider.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
         const oldValue = slider.value;
@@ -9534,7 +9556,7 @@ function initSelectSliderChildren(slider)
 
 
 
-function initSelectSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initSelectSlider(slider, width, height, name, options, def, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
 
@@ -9544,19 +9566,11 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     slider.style.width       = width;
     slider.style.height      = height;
         
-    slider.min               = min;
-    slider.max               = max;
-    slider.value             = def;
-    slider.dec               = dec;
-    slider.editDec           = dec;
-    slider.acc               = acc;
-               
     slider.name              = name;
-    slider.suffix            = suffix;
-    slider.log               = log;
+    slider.options           = options;
+    slider.value             = def;
 
-    slider.dragScale         = dragScale;
-    slider.wheelStep         = wheelStep;
+    slider.dragScale         = 0.001;
         
     slider.backColor         = backColor;
     slider.valueColor        = valueColor;
@@ -9582,7 +9596,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     
     slider.enableChangeEvent = true;
 
-    slider.pointerEvents     = false;
+    slider.pointerEvents     = true;
 
     slider.valueText         = '';
 
@@ -9686,12 +9700,11 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
                 slider.movedX += e.movementX;
                 
                 let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let adaptive = 10;
                 
-                // TODO: if (log) do log scaling
                 let val = slider.oldValue - dx*slider.dragScale*adaptive;
-                
-                const grain = Math.pow(10, this.editDec);
+ 
+                const grain = 1;//Math.pow(10, this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -9808,7 +9821,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
             e.stopPropagation();
 
             slider.oldValue = slider.value;
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1));
             // TODO conform after a delay and/or another action, same with key changes 
         }
     });
@@ -9841,14 +9854,8 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     {
         const oldValue = slider.value;
 
-        if (slider.wrapValue)
-        {
-            while (value < slider.min) value += slider.max - slider.min;
-            while (value > slider.max) value -= slider.max - slider.min;
-        }
-        else
-            value = Math.min(Math.max(slider.min, value), slider.max);
-        
+        value = Math.min(Math.max(0, value), slider.options.length-1);
+
         if (  !confirm
             || value != oldValue)
             slider.value = value;
@@ -9874,27 +9881,29 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.update = function()
     {
-        let v  =  slider.value / (slider.max - slider.min);
-        let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        let v =  
+            slider.options.length > 0
+            ? slider.value / slider.options.length
+            : 0;
 
-        slider.bar.style.background = slider.valueColor;
+        slider.bar  .style.background = slider.valueColor;
+  
+        slider.bar  .style.top        = 0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height     = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
-        slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
-        slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
-
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
+        slider.focus.style.left       = 0;
+        slider.focus.style.top        = 0;
+        slider.focus.style.width      = slider.clientWidth;
+        slider.focus.style.height     = slider.clientHeight;
 
         if (v >= 0)
         {
-            slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
+            slider.bar.style.left  = slider.offsetLeft;
             slider.bar.style.width = Math.round(v * slider.clientWidth);
         }
         else
         {
-            slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
+            slider.bar.style.left  = slider.offsetLeft + v * slider.clientWidth;
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
@@ -9903,17 +9912,17 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
             ? slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
-        slider.text.innerHTML = '';
+        slider.text.innerHTML = 
+             slider.options.length > 0
+             ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
+             : '';
         
-        // if (slider.options.length > 0)
-        //     slider.text.innerHTML += '<span class="sliderName">' + slider.param.options[slider.param.value] + "</span>&nbsp;&nbsp;";
-        
-        let valueText = 
-            slider.valueText != ''
-            ? slider.valueText
-            : getNumberString(slider.value, slider.dec);
+        // let valueText = 
+        //     slider.valueText != ''
+        //     ? slider.valueText
+        //     : getNumberString(slider.value, slider.dec);
 
-        slider.text.innerHTML += valueText + slider.suffix;
+        // slider.text.innerHTML += valueText + slider.suffix;
     };
 
 

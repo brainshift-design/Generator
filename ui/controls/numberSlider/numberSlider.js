@@ -313,6 +313,14 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
 
     
+    slider.setName = function(name)
+    {
+        this.name = name;
+        this.update();
+    };
+
+
+
     slider.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
         const oldValue = slider.value;

@@ -16,7 +16,7 @@ function initSelectSliderChildren(slider)
 
 
 
-function initSelectSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initSelectSlider(slider, width, height, name, options, def, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
     slider.className         = 'slider';
 
@@ -26,19 +26,11 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     slider.style.width       = width;
     slider.style.height      = height;
         
-    slider.min               = min;
-    slider.max               = max;
-    slider.value             = def;
-    slider.dec               = dec;
-    slider.editDec           = dec;
-    slider.acc               = acc;
-               
     slider.name              = name;
-    slider.suffix            = suffix;
-    slider.log               = log;
+    slider.options           = options;
+    slider.value             = def;
 
-    slider.dragScale         = dragScale;
-    slider.wheelStep         = wheelStep;
+    slider.dragScale         = 0.001;
         
     slider.backColor         = backColor;
     slider.valueColor        = valueColor;
@@ -64,7 +56,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     
     slider.enableChangeEvent = true;
 
-    slider.pointerEvents     = false;
+    slider.pointerEvents     = true;
 
     slider.valueText         = '';
 
@@ -168,12 +160,11 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
                 slider.movedX += e.movementX;
                 
                 let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let adaptive = 10;
                 
-                // TODO: if (log) do log scaling
                 let val = slider.oldValue - dx*slider.dragScale*adaptive;
-                
-                const grain = Math.pow(10, this.editDec);
+ 
+                const grain = 1;//Math.pow(10, this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -290,7 +281,7 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
             e.stopPropagation();
 
             slider.oldValue = slider.value;
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1));
             // TODO conform after a delay and/or another action, same with key changes 
         }
     });
@@ -323,14 +314,8 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
     {
         const oldValue = slider.value;
 
-        if (slider.wrapValue)
-        {
-            while (value < slider.min) value += slider.max - slider.min;
-            while (value > slider.max) value -= slider.max - slider.min;
-        }
-        else
-            value = Math.min(Math.max(slider.min, value), slider.max);
-        
+        value = Math.min(Math.max(0, value), slider.options.length-1);
+
         if (  !confirm
             || value != oldValue)
             slider.value = value;
@@ -356,27 +341,29 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.update = function()
     {
-        let v  =  slider.value / (slider.max - slider.min);
-        let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        let v =  
+            slider.options.length > 0
+            ? slider.value / slider.options.length
+            : 0;
 
-        slider.bar.style.background = slider.valueColor;
+        slider.bar  .style.background = slider.valueColor;
+  
+        slider.bar  .style.top        = 0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height     = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
-        slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
-        slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
-
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
+        slider.focus.style.left       = 0;
+        slider.focus.style.top        = 0;
+        slider.focus.style.width      = slider.clientWidth;
+        slider.focus.style.height     = slider.clientHeight;
 
         if (v >= 0)
         {
-            slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
+            slider.bar.style.left  = slider.offsetLeft;
             slider.bar.style.width = Math.round(v * slider.clientWidth);
         }
         else
         {
-            slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
+            slider.bar.style.left  = slider.offsetLeft + v * slider.clientWidth;
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
@@ -385,17 +372,17 @@ function initSelectSlider(slider, width, height, name, min, max, def, dragScale,
             ? slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
-        slider.text.innerHTML = '';
+        slider.text.innerHTML = 
+             slider.options.length > 0
+             ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
+             : '';
         
-        // if (slider.options.length > 0)
-        //     slider.text.innerHTML += '<span class="sliderName">' + slider.param.options[slider.param.value] + "</span>&nbsp;&nbsp;";
-        
-        let valueText = 
-            slider.valueText != ''
-            ? slider.valueText
-            : getNumberString(slider.value, slider.dec);
+        // let valueText = 
+        //     slider.valueText != ''
+        //     ? slider.valueText
+        //     : getNumberString(slider.value, slider.dec);
 
-        slider.text.innerHTML += valueText + slider.suffix;
+        // slider.text.innerHTML += valueText + slider.suffix;
     };
 
 

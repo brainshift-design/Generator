@@ -32,8 +32,7 @@ extends Parameter
                 hasInput,
                 hasOutput,
                 options,
-                value     = 0, 
-                dragScale = 0.01)
+                value = 0)
     {
         super(name, 'number');
 
@@ -44,14 +43,13 @@ extends Parameter
         this.options      = options;
         this.defaultValue = value;
 
-
         initSelectSlider(
             this.control,
-            120,        // width
-            20,         // height
+            120, // width
+             20, // height
             this.name,  
-            value,      // default
-            dragScale); // suffix
+            this.options,
+            value); // default
 
 
         this.div.appendChild(this.control);
@@ -128,10 +126,10 @@ extends Parameter
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        //this._control.setValue(value, fireChangeEvent, confirm); 
-    }
+    // setValue(value, fireChangeEvent = true, confirm = true) 
+    // { 
+    //     this._control.setValue(value, fireChangeEvent, confirm); 
+    // }
 
 
 

@@ -1,4 +1,4 @@
-const colorTypes = 
+const OpColorTypes = 
 [
     ['rgb',    'RGB'          ], 
     ['hsv',    'HSV'          ], 
@@ -13,7 +13,7 @@ const colorTypes =
 class   OpColor
 extends Operator
 {
-    #type;
+    #space;
     
     #c1;
     #c2;
@@ -31,17 +31,17 @@ extends Operator
         this.setOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#type = new SelectParam('type', true, colorTypes));
-        this.addParam(this.#c1   = new NumberParam('c1',   true, 0, 0, 255));
-        this.addParam(this.#c2   = new NumberParam('c2',   true, 0, 0, 255));
-        this.addParam(this.#c3   = new NumberParam('c3',   true, 0, 0, 255));
+        this.addParam(this.#space = new SelectParam('space', true, true, OpColorTypes.map(t => t[1])));
+        this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
+        this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
+        this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
-        this.#type.control.addEventListener('change', () => { this.updateNode(); });
-        this.#c1  .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c2  .control.addEventListener('change', () => { this.updateNode(); });
-        this.#c3  .control.addEventListener('change', () => { this.updateNode(); });
+        this.#space.control.addEventListener('change', () => { this.updateNode(); });
+        this.#c1   .control.addEventListener('change', () => { this.updateNode(); });
+        this.#c2   .control.addEventListener('change', () => { this.updateNode(); });
+        this.#c3   .control.addEventListener('change', () => { this.updateNode(); });
 
-        this.#type.setValue(0);
+        this.#space.setValue(0);
     }
 
 
@@ -70,7 +70,7 @@ extends Operator
 
     getColor()
     {
-        return this.inputs[0].data.value;        //this.#c1.value,
+        return [0, 0, 0];//this.inputs[0].data.value;        //this.#c1.value,
         //this.#c2.value,
         //this.#c3.value);
     }
@@ -81,16 +81,16 @@ extends Operator
     {
         super.updateNode();
 
-        switch (this.#type)
+        switch (this.#space.value)
         {
-            case 0: this.#c1.name = 'R'; this.#c2.name = 'G'; this.#c3.name = 'B'; break;
-            case 1: this.#c1.name = 'H'; this.#c2.name = 'S'; this.#c3.name = 'V'; break;
-            case 2: this.#c1.name = 'H'; this.#c2.name = 'S'; this.#c3.name = 'L'; break;
+            case 0: this.#c1.setName('R', false); this.#c2.setName('G', false); this.#c3.setName('B', false); break;
+            case 1: this.#c1.setName('H', false); this.#c2.setName('S', false); this.#c3.setName('V', false); break;
+            case 2: this.#c1.setName('H', false); this.#c2.setName('S', false); this.#c3.setName('L', false); break;
             case 3: 
             case 4: 
-            case 5: this.#c1.name = 'H'; this.#c2.name = 'C'; this.#c3.name = 'L'; break;
+            case 5: this.#c1.setName('H', false); this.#c2.setName('C', false); this.#c3.setName('L', false); break;
         }
 
-        this.header.style.backgroundColor = colorStyle(getColor());
+        this.header.style.backgroundColor = colorStyle(this.getColor());
     }
 }
