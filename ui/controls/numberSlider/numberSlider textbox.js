@@ -4,6 +4,8 @@ function initNumberSliderTextbox(slider)
     slider.textbox.setAttribute('type', 'text'); 
     slider.textbox.className = 'sliderText';
     
+
+
     slider.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
@@ -78,10 +80,13 @@ function initNumberSliderTextbox(slider)
     });
 
 
+
     // slider.textbox.addEventListener('input', function()
     // {
     //     slider.setValue(Number(slider.textbox.value));
     // });
+
+
 
     slider.textbox.addEventListener('paste', function(e)
     {
@@ -93,12 +98,16 @@ function initNumberSliderTextbox(slider)
         slider.textbox.value = isNaN(val) ? '' : val;
     });
 
+
+
     slider.textbox.addEventListener('focusout', function()
     {
         slider.parentNode.removeChild(slider.textbox);
         slider.clicked = false;
     });
     
+
+
     slider.textbox.finish = function(success)
     {
         if (success) slider.setValue(Number(slider.textbox.value     ));
@@ -109,6 +118,7 @@ function initNumberSliderTextbox(slider)
         if (slider.inFocus)
             slider.focus();
     };    
+    
     
     
     slider.showTextbox = function()

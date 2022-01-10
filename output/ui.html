@@ -581,7 +581,9 @@ input[type=text]::selection
     font-family:    Inter;
     font-size:      11;
     pointer-events: none;
-    position:       relative;
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
     top:            3px;
 }
 
@@ -6472,7 +6474,35 @@ class Operator
         
         createNode(this);
     }    
-    
+
+
+
+    addInput(input)
+    {
+        input._op = this;
+        this.inputs.push(input);
+        this.inputControls.appendChild(input.control);
+    }
+
+
+
+    addParam(param)
+    {
+        this.params.push(param);
+        
+        param._op = this;
+
+        if (param.input)
+        {
+            param.input._op = this;
+            this.inputs.push(param.input);
+        }
+
+        param.control.style.display = 'inline-block';
+        
+        this.inner.appendChild(param.div);
+    }
+ 
     
 
     reset() // for the entire generation run
@@ -6584,15 +6614,6 @@ class Operator
 
 
 
-    addInput(input)
-    {
-        input._op = this;
-        this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
-    }
-
-
-
     setOutput(output)
     {
         if (this.output != null)
@@ -6607,25 +6628,6 @@ class Operator
     }
 
 
-
-    addParam(param)
-    {
-        this.params.push(param);
-        
-        param._op = this;
-
-        if (param.input)
-        {
-            param.input._op = this;
-            this.inputs.push(param.input);
-        }
-
-        param.control.style.display = 'inline-block';
-        
-        this.inner.appendChild(param.div);
-    }
- 
-    
 
     setId(newId)
     {
@@ -8531,6 +8533,8 @@ function initNumberSliderTextbox(slider)
     slider.textbox.setAttribute('type', 'text'); 
     slider.textbox.className = 'sliderText';
     
+
+
     slider.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
@@ -8605,10 +8609,13 @@ function initNumberSliderTextbox(slider)
     });
 
 
+
     // slider.textbox.addEventListener('input', function()
     // {
     //     slider.setValue(Number(slider.textbox.value));
     // });
+
+
 
     slider.textbox.addEventListener('paste', function(e)
     {
@@ -8620,12 +8627,16 @@ function initNumberSliderTextbox(slider)
         slider.textbox.value = isNaN(val) ? '' : val;
     });
 
+
+
     slider.textbox.addEventListener('focusout', function()
     {
         slider.parentNode.removeChild(slider.textbox);
         slider.clicked = false;
     });
     
+
+
     slider.textbox.finish = function(success)
     {
         if (success) slider.setValue(Number(slider.textbox.value     ));
@@ -8636,6 +8647,7 @@ function initNumberSliderTextbox(slider)
         if (slider.inFocus)
             slider.focus();
     };    
+    
     
     
     slider.showTextbox = function()
@@ -9019,17 +9031,19 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.update = function()
     {
         let v  =  slider.value / (slider.max - slider.min);
-        let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        let cx = -slider.min   / (slider.max - slider.min) * slider.clientWidth;
+
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = slider.clientWidth;
+        slider.focus.style.height = slider.clientHeight;
+
 
         slider.bar.style.background = slider.valueColor;
 
         slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
         slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
 
         if (v >= 0)
         {
@@ -9042,10 +9056,12 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
+
         slider.bar.style.background =
             slider.value >= 0
             ? slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
+
 
         slider.text.innerHTML = '';
         

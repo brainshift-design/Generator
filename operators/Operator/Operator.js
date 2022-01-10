@@ -112,7 +112,35 @@ class Operator
         
         createNode(this);
     }    
-    
+
+
+
+    addInput(input)
+    {
+        input._op = this;
+        this.inputs.push(input);
+        this.inputControls.appendChild(input.control);
+    }
+
+
+
+    addParam(param)
+    {
+        this.params.push(param);
+        
+        param._op = this;
+
+        if (param.input)
+        {
+            param.input._op = this;
+            this.inputs.push(param.input);
+        }
+
+        param.control.style.display = 'inline-block';
+        
+        this.inner.appendChild(param.div);
+    }
+ 
     
 
     reset() // for the entire generation run
@@ -224,15 +252,6 @@ class Operator
 
 
 
-    addInput(input)
-    {
-        input._op = this;
-        this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
-    }
-
-
-
     setOutput(output)
     {
         if (this.output != null)
@@ -247,25 +266,6 @@ class Operator
     }
 
 
-
-    addParam(param)
-    {
-        this.params.push(param);
-        
-        param._op = this;
-
-        if (param.input)
-        {
-            param.input._op = this;
-            this.inputs.push(param.input);
-        }
-
-        param.control.style.display = 'inline-block';
-        
-        this.inner.appendChild(param.div);
-    }
- 
-    
 
     setId(newId)
     {

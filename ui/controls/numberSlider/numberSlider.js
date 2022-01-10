@@ -351,17 +351,19 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.update = function()
     {
         let v  =  slider.value / (slider.max - slider.min);
-        let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        let cx = -slider.min   / (slider.max - slider.min) * slider.clientWidth;
+
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = slider.clientWidth;
+        slider.focus.style.height = slider.clientHeight;
+
 
         slider.bar.style.background = slider.valueColor;
 
         slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
         slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
 
         if (v >= 0)
         {
@@ -374,10 +376,12 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.bar.style.width = -v * slider.clientWidth;
         }
 
+
         slider.bar.style.background =
             slider.value >= 0
             ? slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
+
 
         slider.text.innerHTML = '';
         
