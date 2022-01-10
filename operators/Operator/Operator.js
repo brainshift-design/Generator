@@ -13,8 +13,6 @@ class Operator
         this._name = name;
         this.label.innerHTML = name;
     }
-
-    shortTypeName;
     
 
     static nextId = 0;
@@ -105,13 +103,12 @@ class Operator
 
 
 
-    constructor(opType, shortType, dataType)
+    constructor(opType, dataType)
     {
-        this.#opType       = opType;   // this is the operator type
-        this.#dataType     = dataType; // this is the op's main data type
+        this.#opType   = opType;   // this is the operator type
+        this.#dataType = dataType; // this is the op's main data type
 
-        this.shortTypeName = shortType;
-        this._name         = shortType; // this is a temp until the op becomes a graph node
+        this._name = opType; // this is a temp until the op becomes a graph node
         
         createNode(this);
     }    
@@ -202,6 +199,41 @@ class Operator
 
 
 
+    updateInputWires()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.isConnected)
+                input.connection.wire.update(true);
+        }
+    }
+
+
+
+    updateOutputWires()
+    {
+        if (   this.output 
+            && this.output.isConnected)
+        {
+            for (const input of this.output.connectedInputs)
+                input.connection.wire.update(true);
+        }
+    }
+
+
+
+    updateParamWires()
+    {
+        for (const param of this.params)
+        {
+            if (   param.input
+                && param.input.isConnected) 
+                param.input.connection.wire.update(true);
+        }
+    }
+
+
+
     updateNode() 
     {
         this.header.style.backgroundColor = colorFromDataType(this.#dataType, false);
@@ -235,13 +267,13 @@ class Operator
 
 
 
-    setName(newName)
+    setId(newId)
     {
-        if (this.graph.nodes.find(node => node.id == newName))
+        if (this.graph.nodes.find(node => node.id == newId))
             return false; // graph already contains a node with this id
 
-        this._name = newName;
-        this.label.innerHTML = this.id + ': ' + newName;
+        this._name = newId;
+        this.label.innerHTML = this.id + ': ' + newId;
 
         return true;
     }

@@ -162,16 +162,137 @@ function anglev_(x1, y1, x2, y2)
 
 
 
+function clipEdge(p, q, t0, t1)
+{
+    if (p == 0 && q < 0)
+    {
+        return null;
+    }
+    else if (p < 0)
+    {
+        let r = q/p;
+
+             if (r > t1) return null;
+        else if (r > t0) t0 = r;
+    }
+    else if (p > 0)
+    {
+        let r = q/p;
+
+             if (r < t0) return null;
+        else if (r < t1) t1 = r;
+    }
+
+    return [t0, t1];
+}
+
+
+
+function clipLine(x1, y1, x2, y2, left, top, right, bottom)
+{
+    let t0 = 0;
+    let t1 = 1;
+
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+
+    let cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
+    let cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    let ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    let cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+
+    if (t1 < 1)
+    {
+        x2 = x1 + t1*dx;
+        y2 = y1 + t1*dy;
+    }
+
+    if (t0 > 0)
+    {
+        x1 = x1 + t0*dx;
+        y1 = y1 + t0*dy;
+    }
+
+    return [
+        {x:x1, y:y1}, 
+        {x:x2, y:y2} ];
+}
+
+
+
+function intersect(p1, p2, q1, q2, segment)
+{
+    if (   equalv(p1, p2) 
+        || equalv(q1, q2)) 
+        return {x:NaN, y:NaN}; // undefined line
+
+    let v1 = subv(p2, p1);
+    let v2 = subv(q2, q1);
+
+    if (crossv2(v1, v2) == 0) 
+        return {x:NaN, y:NaN}; // parallel lines
+
+    let t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
+    let t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
+
+    if ((  0 <= t1 && t1 <= 1
+        && 0 <= t2 && t2 <= 1)
+        || !segment)
+        return addv(p1, mulvs(v1, t1));
+        
+    return {x:NaN, y:NaN};
+}
+
+
+
+function closestPointOnLine(l0, l1, p, segment)
+{
+    if (equalv(p, l0))
+        return l0;
+        
+    let d = mulvs(
+        unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
+        distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
+
+    return intersect(l0, l1, p, subv(p, d), segment);
+}
+
+
+
+function signedPosOnLine(p0, p1, p)
+{
+    let cp = closestPointOnLine(p0, p1, p, false);
+
+    let xform = mulm3m3(
+        xmove(negv(p0)),
+        xrotate(-anglev(p0, p1)));
+        
+    p0 = transform(p0, xform);
+    p1 = transform(p1, xform);
+    cp = transform(cp, xform);
+
+    return (cp.x - p0.x) / nozero(p1.x - p0.x);
+}
+
+
+
+function mulv3m3(v, m)
+{
+    let r = [0, 0, 0];
+
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            r[i] += v[j] * m[i][j];
+
+    return r;
+}
+
+
+
 function mulv2m3(v, m)
 {
-    var r = [0, 0, 0];
-
-    for (var i = 0; i < 3; i++)
-    {
-        // calculate the dot product of the ith row of m and v
-        for (var j = 0; j < 3; j++)
-            r[i] += m[i][j] * v[j];
-    }
+    let v3 = [v.x, v.y, 1];
+    let r  = mulv3m3(v3, m);
 
     return {x: r[0], y: r[1]};
 }
@@ -196,6 +317,83 @@ function mulm3m3(m1, m2)
     }
 
     return m;
+}
+
+
+
+function divm3s(m, s)
+{
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            m[i][j] /= s;
+
+    return m;
+}
+
+
+
+function cofactor(m)
+{
+    return [[  m[1][1] * m[2][2] - m[2][1] * m[1][2], -(m[1][0] * m[2][2] - m[2][0] * m[1][2]),  m[1][0] * m[2][1] - m[2][0] * m[1][1] ],
+            [-(m[0][1] * m[2][2] - m[2][1] * m[0][2]),  m[0][0] * m[2][2] - m[2][0] * m[0][2], -(m[0][0] * m[2][1] - m[2][0] * m[0][1])],
+            [  m[0][1] * m[1][2] - m[1][1] * m[0][2], -(m[0][0] * m[1][2] - m[1][0] * m[0][2]),  m[0][0] * m[1][1] - m[1][0] * m[0][1] ]]; 
+}
+
+
+
+function adjugate(m)
+{
+    return cofactor(transpose(m));
+}
+
+
+
+function determinant(m)
+{
+    return   m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+           - m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
+           + m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
+}
+
+
+
+function inverse(m)
+{
+    return divm3s(adjugate(m), determinant(m));
+}
+
+
+
+function transpose(m)
+{
+    return [[m[0][0], m[1][0], m[2][0]],
+            [m[0][1], m[1][1], m[2][1]],
+            [m[0][2], m[1][2], m[2][2]]];
+}
+
+
+
+function transform(p, xform)
+{
+    return mulv2m3(p, xform);
+}
+
+
+
+function xmove(v)
+{
+    return [[1, 0, v.x],
+            [0, 1, v.y],
+            [0, 0, 1  ]];
+}
+
+
+
+function xrotate(angle)
+{
+    return [[Math.cos(angle), -Math.sin(angle), 0],
+            [Math.sin(angle),  Math.cos(angle), 0],
+            [0,                0,               1]];
 }
 
 

@@ -70,9 +70,25 @@ extends Operator
 
     getColor()
     {
-        return [0, 0, 0];//this.inputs[0].data.value;        //this.#c1.value,
-        //this.#c2.value,
-        //this.#c3.value);
+        switch (this.#space.value)
+        {
+            case 0: return this.getColorRgb();
+            case 1: break;
+            case 2: break;
+            case 3: break;
+            case 4: break;
+            case 5: break;
+        }
+    }
+
+
+
+    getColorRgb()
+    {
+        return [
+            this.#c1.value / 255, 
+            this.#c2.value / 255, 
+            this.#c3.value / 255];
     }
 
 
