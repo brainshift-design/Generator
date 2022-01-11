@@ -2,7 +2,7 @@ function initSelectSliderTextbox(slider)
 {
     slider.textbox = document.createElement('INPUT');
     slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderText';
+    slider.textbox.className = 'selectSliderText';
     
     slider.textbox.addEventListener('keydown', function(e)
     {
@@ -30,7 +30,7 @@ function initSelectSliderTextbox(slider)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.slider, .select, .menuSelect, button, .menuButton');
+            var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
             var index = slider.tabIndex;
 
             for (var i = 0; i < tabs.length; i++) 

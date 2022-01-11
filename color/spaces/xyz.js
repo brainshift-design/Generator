@@ -1,11 +1,11 @@
-function rgb2xyz(rgb, cs)
+function rgb2xyz(rgb, cs = sRGB)
 { 
     return rgb2xyz_(rgb[0], rgb[1], rgb[2], cs);
 }    
 
 
 
-function rgb2xyz_(r, g, b, cs)
+function rgb2xyz_(r, g, b, cs = sRGB)
 { 
     let rgb = [
         cs.degamma(r),
@@ -17,14 +17,14 @@ function rgb2xyz_(r, g, b, cs)
 
 
 
-function lrgb2xyz(rgb, cs)
+function lrgb2xyz(rgb, cs = sRGB)
 {
     return mulv3m3(rgb, cs.lin2xyz);
 }        
 
 
 
-function xyz2rgb(xyz, cs)
+function xyz2rgb(xyz, cs = sRGB)
 {
     let rgb = xyz2lrgb(xyz, cs);
 
@@ -36,7 +36,7 @@ function xyz2rgb(xyz, cs)
 
 
 
-function xyz2lrgb(xyz, cs)
+function xyz2lrgb(xyz, cs = sRGB)
 {
     return mulv3m3(xyz, cs.xyz2lin);
 }

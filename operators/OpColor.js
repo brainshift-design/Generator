@@ -243,6 +243,12 @@ extends Operator
         this.#space.control.valueColor = colorStyle(colVal);
 
 
-        const colText = 
+        const colText = rgb2oklab(colBack)[0] > 0.69 ? 'black' : 'white';
+        console.log(rgb2oklab(colBack));
+
+        this.label.style.color = colText;
+
+        this.#space.control.textColor = colText;
+        this.#space.control.update();
     }
 }

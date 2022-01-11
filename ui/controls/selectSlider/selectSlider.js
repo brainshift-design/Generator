@@ -16,7 +16,7 @@ function initSelectSliderChildren(slider)
 
 
 
-function initSelectSlider(slider, width, height, name, options, def, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initSelectSlider(slider, width, height, name, options, def)
 {
     slider.className         = 'selectSlider';
 
@@ -32,10 +32,11 @@ function initSelectSlider(slider, width, height, name, options, def, backColor =
 
     slider.dragScale         = 0.001;
         
-    slider.backColor         = backColor;
-    slider.valueColor        = valueColor;
+    slider.backColor         = '#fff';
+    slider.valueColor        = '#eee';
+    slider.textColor         = '#000';
            
-    slider.fontSize          = fontSize;
+    slider.fontSize          = 11;
         
     slider.style.display     = 'inline';
         
@@ -380,12 +381,8 @@ function initSelectSlider(slider, width, height, name, options, def, backColor =
              ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
              : '';
         
-        // let valueText = 
-        //     slider.valueText != ''
-        //     ? slider.valueText
-        //     : getNumberString(slider.value, slider.dec);
 
-        // slider.text.innerHTML += valueText + slider.suffix;
+        slider.text.style.color = slider.textColor;
     };
 
 

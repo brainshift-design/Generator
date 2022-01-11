@@ -2,14 +2,14 @@ const okLabScale = 5.8209716167;
 
 
 
-function rgb2oklab(rgb, cs)
+function rgb2oklab(rgb, cs = sRGB)
 {
     return rgb2oklab_(rgb[0], rgb[1], rgb[2], cs);
 }
 
 
 
-function rgb2oklms_(r, g, b, cs) 
+function rgb2oklms_(r, g, b, cs = sRGB) 
 {
     r = cs.degamma(r);
     g = cs.degamma(g);
@@ -34,21 +34,21 @@ function oklms2oklab(lms)
     const b_ = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
 
     return [
-        l_ * 100,
-        a_ * 100, 
-        b_ * 100 ];
+        l_ /* * 100*/,
+        a_ /* * 100*/, 
+        b_ /* * 100*/ ];
 }
 
 
 
-function rgb2oklab_(r, g, b, cs) 
+function rgb2oklab_(r, g, b, cs = sRGB) 
 {
     return oklms2oklab(rgb2oklms_(r, g, b, cs));
 }
 
 
 
-function oklab2rgb(lab, cs)
+function oklab2rgb(lab, cs = sRGB)
 {
     return oklab2rgb_(lab[0], lab[1], lab[2], cs);
 }
@@ -64,9 +64,9 @@ function oklab2oklms(lab)
 
 function oklab2oklms_(l_, a_, b_) 
 {
-    l_ /= 100;
-    a_ /= 100;
-    b_ /= 100;
+    // l_ /= 100;
+    // a_ /= 100;
+    // b_ /= 100;
 
     return [
         l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
@@ -76,7 +76,7 @@ function oklab2oklms_(l_, a_, b_)
 
 
 
-function oklms2rgb(lms, cs) 
+function oklms2rgb(lms, cs = sRGB) 
 {
     const l = cube(lms[0]);
     const m = cube(lms[1]);
@@ -94,7 +94,7 @@ function oklms2rgb(lms, cs)
 
 
 
-function oklab2rgb_(l_, a_, b_, cs) 
+function oklab2rgb_(l_, a_, b_, cs = sRGB) 
 {
     return oklms2rgb(oklab2oklms_(l_, a_, b_), cs);
 }

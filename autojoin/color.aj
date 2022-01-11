@@ -12,3 +12,4 @@
 ../color/colorblind.js
 ../color/color conversion.js
 ../color/color util.js
+../color/hex color.js

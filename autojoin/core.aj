@@ -8,4 +8,3 @@
 ../core/random.js
 ../core/util.js
 ../core/base64.js
-../core/hex color.js

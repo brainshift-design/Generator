@@ -16,7 +16,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false)
 {
     slider.className         = 'numberSlider';
 
@@ -40,10 +40,11 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.dragScale         = dragScale;
     slider.wheelStep         = wheelStep;
         
-    slider.backColor         = backColor;
-    slider.valueColor        = valueColor;
+    slider.backColor         = '#fff';
+    slider.valueColor        = '#eee';
+    slider.textColor         = '#000';
            
-    slider.fontSize          = fontSize;
+    slider.fontSize          = 11;
         
     slider.style.display     = 'inline';
         
@@ -393,6 +394,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             ? slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
+
+        slider.text.style.color = slider.textColor;
 
         slider.text.innerHTML = '';
         

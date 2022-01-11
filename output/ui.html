@@ -2645,65 +2645,6 @@ function strToUTF8Arr(str)
 }
 
 
-function rgb2hex(rgb)
-{
-    let hex =
-          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
-
-    return hex;
-}
-
-
-
-function hex2rgb(hex)
-{
-    let rgb = [];
-
-    if (hex.length >= 6)
-    {
-        rgb[R] = parseInt(hex.slice(0, 2), 16); 
-        rgb[G] = parseInt(hex.slice(2, 4), 16); 
-        rgb[B] = parseInt(hex.slice(4, 6), 16); 
-    }
-    else if (hex.length >= 3)
-    {
-        rgb[R] = parseInt(hex[0], 16) * 0x11; 
-        rgb[G] = parseInt(hex[1], 16) * 0x11; 
-        rgb[B] = parseInt(hex[2], 16) * 0x11; 
-    }
-    else if (hex.length == 2)
-    {
-        let v = parseInt(hex, 16);
-        
-        rgb[R] = v; 
-        rgb[G] = v; 
-        rgb[B] = v; 
-    }
-    else if (hex.length == 1)
-    {
-        let v = parseInt(hex, 16);
-        
-        rgb[R] = v * 0x11; 
-        rgb[G] = v * 0x11; 
-        rgb[B] = v * 0x11; 
-    }
-    else if (hex.length == 0)
-    {
-        rgb[R] = 0; 
-        rgb[G] = 0; 
-        rgb[B] = 0;         
-    }
-
-    rgb[R] /= 0xff;
-    rgb[G] /= 0xff;
-    rgb[B] /= 0xff;
-
-    return rgb;
-}
-
-
 const INTER_STEP   = 0,
       INTER_LINEAR = 1,
       INTER_COSINE = 2,
@@ -4968,65 +4909,6 @@ function strToUTF8Arr(str)
 }
 
 
-function rgb2hex(rgb)
-{
-    let hex =
-          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
-
-    return hex;
-}
-
-
-
-function hex2rgb(hex)
-{
-    let rgb = [];
-
-    if (hex.length >= 6)
-    {
-        rgb[R] = parseInt(hex.slice(0, 2), 16); 
-        rgb[G] = parseInt(hex.slice(2, 4), 16); 
-        rgb[B] = parseInt(hex.slice(4, 6), 16); 
-    }
-    else if (hex.length >= 3)
-    {
-        rgb[R] = parseInt(hex[0], 16) * 0x11; 
-        rgb[G] = parseInt(hex[1], 16) * 0x11; 
-        rgb[B] = parseInt(hex[2], 16) * 0x11; 
-    }
-    else if (hex.length == 2)
-    {
-        let v = parseInt(hex, 16);
-        
-        rgb[R] = v; 
-        rgb[G] = v; 
-        rgb[B] = v; 
-    }
-    else if (hex.length == 1)
-    {
-        let v = parseInt(hex, 16);
-        
-        rgb[R] = v * 0x11; 
-        rgb[G] = v * 0x11; 
-        rgb[B] = v * 0x11; 
-    }
-    else if (hex.length == 0)
-    {
-        rgb[R] = 0; 
-        rgb[G] = 0; 
-        rgb[B] = 0;         
-    }
-
-    rgb[R] /= 0xff;
-    rgb[G] /= 0xff;
-    rgb[B] /= 0xff;
-
-    return rgb;
-}
-
-
 // Observer = 2°
 
 const D65 = [0.95047, 1, 1.08883]; 
@@ -5286,14 +5168,14 @@ function lms2xyz(lms)
 
 
 
-function rgb2xyz(rgb, cs)
+function rgb2xyz(rgb, cs = sRGB)
 { 
     return rgb2xyz_(rgb[0], rgb[1], rgb[2], cs);
 }    
 
 
 
-function rgb2xyz_(r, g, b, cs)
+function rgb2xyz_(r, g, b, cs = sRGB)
 { 
     let rgb = [
         cs.degamma(r),
@@ -5305,14 +5187,14 @@ function rgb2xyz_(r, g, b, cs)
 
 
 
-function lrgb2xyz(rgb, cs)
+function lrgb2xyz(rgb, cs = sRGB)
 {
     return mulv3m3(rgb, cs.lin2xyz);
 }        
 
 
 
-function xyz2rgb(xyz, cs)
+function xyz2rgb(xyz, cs = sRGB)
 {
     let rgb = xyz2lrgb(xyz, cs);
 
@@ -5324,7 +5206,7 @@ function xyz2rgb(xyz, cs)
 
 
 
-function xyz2lrgb(xyz, cs)
+function xyz2lrgb(xyz, cs = sRGB)
 {
     return mulv3m3(xyz, cs.xyz2lin);
 }
@@ -5449,14 +5331,14 @@ const okLabScale = 5.8209716167;
 
 
 
-function rgb2oklab(rgb, cs)
+function rgb2oklab(rgb, cs = sRGB)
 {
     return rgb2oklab_(rgb[0], rgb[1], rgb[2], cs);
 }
 
 
 
-function rgb2oklms_(r, g, b, cs) 
+function rgb2oklms_(r, g, b, cs = sRGB) 
 {
     r = cs.degamma(r);
     g = cs.degamma(g);
@@ -5481,21 +5363,21 @@ function oklms2oklab(lms)
     const b_ = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
 
     return [
-        l_ * 100,
-        a_ * 100, 
-        b_ * 100 ];
+        l_ /* * 100*/,
+        a_ /* * 100*/, 
+        b_ /* * 100*/ ];
 }
 
 
 
-function rgb2oklab_(r, g, b, cs) 
+function rgb2oklab_(r, g, b, cs = sRGB) 
 {
     return oklms2oklab(rgb2oklms_(r, g, b, cs));
 }
 
 
 
-function oklab2rgb(lab, cs)
+function oklab2rgb(lab, cs = sRGB)
 {
     return oklab2rgb_(lab[0], lab[1], lab[2], cs);
 }
@@ -5511,9 +5393,9 @@ function oklab2oklms(lab)
 
 function oklab2oklms_(l_, a_, b_) 
 {
-    l_ /= 100;
-    a_ /= 100;
-    b_ /= 100;
+    // l_ /= 100;
+    // a_ /= 100;
+    // b_ /= 100;
 
     return [
         l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
@@ -5523,7 +5405,7 @@ function oklab2oklms_(l_, a_, b_)
 
 
 
-function oklms2rgb(lms, cs) 
+function oklms2rgb(lms, cs = sRGB) 
 {
     const l = cube(lms[0]);
     const m = cube(lms[1]);
@@ -5541,7 +5423,7 @@ function oklms2rgb(lms, cs)
 
 
 
-function oklab2rgb_(l_, a_, b_, cs) 
+function oklab2rgb_(l_, a_, b_, cs = sRGB) 
 {
     return oklms2rgb(oklab2oklms_(l_, a_, b_), cs);
 }
@@ -5882,6 +5764,65 @@ function rgbToString(rgb)
     return '{' + Math.round(rgb[0] * 255) + ', '
                + Math.round(rgb[1] * 255) + ', '
                + Math.round(rgb[2] * 255) + '}';
+}
+
+
+function rgb2hex(rgb)
+{
+    let hex =
+          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+
+    return hex;
+}
+
+
+
+function hex2rgb(hex)
+{
+    let rgb = [];
+
+    if (hex.length >= 6)
+    {
+        rgb[R] = parseInt(hex.slice(0, 2), 16); 
+        rgb[G] = parseInt(hex.slice(2, 4), 16); 
+        rgb[B] = parseInt(hex.slice(4, 6), 16); 
+    }
+    else if (hex.length >= 3)
+    {
+        rgb[R] = parseInt(hex[0], 16) * 0x11; 
+        rgb[G] = parseInt(hex[1], 16) * 0x11; 
+        rgb[B] = parseInt(hex[2], 16) * 0x11; 
+    }
+    else if (hex.length == 2)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v; 
+        rgb[G] = v; 
+        rgb[B] = v; 
+    }
+    else if (hex.length == 1)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[R] = v * 0x11; 
+        rgb[G] = v * 0x11; 
+        rgb[B] = v * 0x11; 
+    }
+    else if (hex.length == 0)
+    {
+        rgb[R] = 0; 
+        rgb[G] = 0; 
+        rgb[B] = 0;         
+    }
+
+    rgb[R] /= 0xff;
+    rgb[G] /= 0xff;
+    rgb[B] /= 0xff;
+
+    return rgb;
 }
 
 
@@ -9063,7 +9004,13 @@ extends Operator
         this.#space.control.valueColor = colorStyle(colVal);
 
 
-        const colText = 
+        const colText = rgb2oklab(colBack)[0] > 0.69 ? 'black' : 'white';
+        console.log(rgb2oklab(colBack));
+
+        this.label.style.color = colText;
+
+        this.#space.control.textColor = colText;
+        this.#space.control.update();
     }
 }
 
@@ -10269,7 +10216,7 @@ function initNumberSliderTextbox(slider)
 {
     slider.textbox = document.createElement('INPUT');
     slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderText';
+    slider.textbox.className = 'numberSliderText';
     
 
 
@@ -10299,7 +10246,7 @@ function initNumberSliderTextbox(slider)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.slider, .select, .menuSelect, button, .menuButton');
+            var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
             var index = slider.tabIndex;
 
             for (var i = 0; i < tabs.length; i++) 
@@ -10435,7 +10382,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false)
 {
     slider.className         = 'numberSlider';
 
@@ -10459,10 +10406,11 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.dragScale         = dragScale;
     slider.wheelStep         = wheelStep;
         
-    slider.backColor         = backColor;
-    slider.valueColor        = valueColor;
+    slider.backColor         = '#fff';
+    slider.valueColor        = '#eee';
+    slider.textColor         = '#000';
            
-    slider.fontSize          = fontSize;
+    slider.fontSize          = 11;
         
     slider.style.display     = 'inline';
         
@@ -10813,6 +10761,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
 
+        slider.text.style.color = slider.textColor;
+
         slider.text.innerHTML = '';
         
         if (slider.name.length > 0)
@@ -10881,7 +10831,7 @@ function initSelectSliderTextbox(slider)
 {
     slider.textbox = document.createElement('INPUT');
     slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderText';
+    slider.textbox.className = 'selectSliderText';
     
     slider.textbox.addEventListener('keydown', function(e)
     {
@@ -10909,7 +10859,7 @@ function initSelectSliderTextbox(slider)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.slider, .select, .menuSelect, button, .menuButton');
+            var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
             var index = slider.tabIndex;
 
             for (var i = 0; i < tabs.length; i++) 
@@ -11036,7 +10986,7 @@ function initSelectSliderChildren(slider)
 
 
 
-function initSelectSlider(slider, width, height, name, options, def, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initSelectSlider(slider, width, height, name, options, def)
 {
     slider.className         = 'selectSlider';
 
@@ -11052,10 +11002,11 @@ function initSelectSlider(slider, width, height, name, options, def, backColor =
 
     slider.dragScale         = 0.001;
         
-    slider.backColor         = backColor;
-    slider.valueColor        = valueColor;
+    slider.backColor         = '#fff';
+    slider.valueColor        = '#eee';
+    slider.textColor         = '#000';
            
-    slider.fontSize          = fontSize;
+    slider.fontSize          = 11;
         
     slider.style.display     = 'inline';
         
@@ -11400,12 +11351,8 @@ function initSelectSlider(slider, width, height, name, options, def, backColor =
              ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
              : '';
         
-        // let valueText = 
-        //     slider.valueText != ''
-        //     ? slider.valueText
-        //     : getNumberString(slider.value, slider.dec);
 
-        // slider.text.innerHTML += valueText + slider.suffix;
+        slider.text.style.color = slider.textColor;
     };
 
 
