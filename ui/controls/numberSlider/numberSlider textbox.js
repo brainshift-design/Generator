@@ -129,7 +129,7 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.position = 'absolute';
     
-        slider.textbox.style.left      = '50%';//slider.offsetLeft   + 1;
+        slider.textbox.style.left      = '50%';
         slider.textbox.style.transform = 'translate(-50%)';
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
@@ -139,7 +139,7 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value = numToString(slider.value, slider.editDec);
+        slider.textbox.value      = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);

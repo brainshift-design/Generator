@@ -15,6 +15,7 @@ function initLabelTextbox(node)
             e.preventDefault();
             document.execCommand("copy");
         }
+
         else if (e.code == 'KeyV'
               && getCtrlKey(e))
         {
@@ -134,16 +135,19 @@ function initLabelTextbox(node)
                 node == document.activeElement
             && !node.clicked;
     
-        node.textbox.style.width     = node.header.offsetWidth  - 2;
-        node.textbox.style.height    = node.header.offsetHeight - 4;
-        node.textbox.style.position  = 'absolute';
-        node.textbox.style.left      = '50%';
-        node.textbox.style.top       = '50%';
-        node.textbox.style.transform = 'translateX(-50%) translateY(-50%)';
-        node.textbox.style.textAlign = 'center';
-    
-        node.textbox.value      = node.name;
-        node.textbox.savedValue = node.textbox.value;
+        node.textbox.style.width           = node.header.offsetWidth  - 2;
+        node.textbox.style.height          = node.header.offsetHeight - 4;
+        node.textbox.style.position        = 'absolute';
+        node.textbox.style.left            = '50%';
+        node.textbox.style.top             = '50%';
+        node.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
+        node.textbox.style.textAlign       = 'center';
+
+        node.textbox.style.backgroundColor = node.header.style.backgroundColor;
+        node.textbox.style.color           = node.label.style.color;
+
+        node.textbox.value                 = node.name;
+        node.textbox.savedValue            = node.textbox.value;
         
         node.header.appendChild(node.textbox);
         

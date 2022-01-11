@@ -209,7 +209,9 @@ extends Operator
         super.update()
 
         for (const input of this.inputs)
-            input.op.update();
+            if (input.isConnected)
+                input.op.update();
+
 
         this.#color = dataFromColor(
             this.#space.value, 
@@ -217,7 +219,9 @@ extends Operator
 
         this.output._data = this.#color;
 
+
         this.updateNode();
+
 
         for (const input of this.output.connectedInputs)
             input.op.update();
@@ -232,23 +236,39 @@ extends Operator
 
         const colBack = this.col2rgb(this.#space.value, this.getColor(this.#space.value));
 
-        this.header.style.backgroundColor = colorStyle(colBack);
-
-        this.#space.control.backColor     = colorStyle(colBack);
-
         let colVal = rgb2hsv(colBack);
-        colVal[2] = Math.max(0, colVal[2]-0.05);
-        colVal = hsv2rgb(colVal);
+        colVal[2]  = Math.max(0, colVal[2]-0.05);
+        colVal     = hsv2rgb(colVal);
+        
+        const darkText = rgb2oklab(colBack)[0] > 0.71;
+        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
 
-        this.#space.control.valueColor = colorStyle(colVal);
+
+        this.header.style.backgroundColor = colorStyleRgb(colBack);
+        this.label .style.color           = colorStyleRgb(colText);
 
 
-        const colText = rgb2oklab(colBack)[0] > 0.69 ? 'black' : 'white';
-        console.log(rgb2oklab(colBack));
-
-        this.label.style.color = colText;
-
-        this.#space.control.textColor = colText;
+        this.#space.control.backColor  = colorStyleRgb(colBack);
+        this.#space.control.valueColor = colorStyleRgb(colVal);
+        this.#space.control.textColor  = colorStyleRgb(colText);
         this.#space.control.update();
+        
+
+        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.5 );
+        const colOut = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
+
+
+        this.inputs[0].color = colIn;
+        this.inputs[0].updateControl();
+        
+        this.output.color = colOut;
+        this.output.updateControl();
+
+
+        this.#space.input.color = colIn;
+        this.#space.input.updateControl();
+
+        this.#space.output.color = colOut;
+        this.#space.output.updateControl();
     }
 }

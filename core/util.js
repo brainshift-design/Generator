@@ -48,52 +48,6 @@ function forwardEvent(event, element)
 
 
 
-function removeFromArray(array, obj)
-{
-    var index = array.indexOf(obj);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-
 function numToString(num, dec)
 {
     var str = Number(num).toFixed(dec).toString();
@@ -227,6 +181,24 @@ function arraysEqual(arr1, arr2)
     }
 
     return true;
+}
+
+
+
+function removeFromArray(array, obj)
+{
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
 }
 
 

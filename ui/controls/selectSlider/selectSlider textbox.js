@@ -117,19 +117,23 @@ function initSelectSliderTextbox(slider)
                 slider == document.activeElement
             && !slider.clicked;
     
-        slider.textbox.style.position = 'absolute';
+        slider.textbox.style.position        = 'absolute';
+      
+        slider.textbox.style.left            = '50%';
+        slider.textbox.style.transform       = 'translate(-50%)';
+        slider.textbox.style.top             = slider.offsetTop    + 1;
+        slider.textbox.style.width           = slider.offsetWidth  - 2;
+        slider.textbox.style.height          = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow       = '0 0 0 1px ' + activeObjectColor;
+        slider.textbox.style.outline         = 'none';
+      
+        slider.textbox.style.textAlign       = 'center';
     
-        slider.textbox.style.left      = slider.offsetLeft   + 1;
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
-        slider.textbox.style.outline   = 'none';
-    
-        slider.textbox.style.textAlign = 'center';
-    
-        slider.textbox.value = numToString(slider.value, slider.editDec);
-        slider.textbox.savedValue = slider.textbox.value;
+        slider.textbox.style.backgroundColor = slider.backColor;
+        slider.textbox.style.color           = slider.textColor;
+
+        slider.textbox.value                 = numToString(slider.value, slider.editDec);
+        slider.textbox.savedValue            = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);
         

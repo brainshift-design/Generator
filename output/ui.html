@@ -304,6 +304,7 @@ input[type=text]:focus
 input[type=text]::selection
 {
     background-color: #b9e2fe;
+    color:            black;
 }
 
 
@@ -446,8 +447,8 @@ input[type=text]::selection
     border-radius:  5px;
     margin:         0;
     position:       absolute;
-    /* top:            50%; */
-    /* transform:      translateY(-50%); */
+    top:            50%;
+    transform:      translateY(-50%);
     left:           4px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
@@ -2187,52 +2188,6 @@ function forwardEvent(event, element)
 
 
 
-function removeFromArray(array, obj)
-{
-    var index = array.indexOf(obj);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-
 function numToString(num, dec)
 {
     var str = Number(num).toFixed(dec).toString();
@@ -2366,6 +2321,24 @@ function arraysEqual(arr1, arr2)
     }
 
     return true;
+}
+
+
+
+function removeFromArray(array, obj)
+{
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
 }
 
 
@@ -4451,52 +4424,6 @@ function forwardEvent(event, element)
 
 
 
-function removeFromArray(array, obj)
-{
-    var index = array.indexOf(obj);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function clearChildren(parent) 
-{
-    while (parent.firstChild)
-        parent.removeChild(parent.firstChild);
-}
-
-
-
-function colorStyle_(r, g, b, a)
-{
-    if (a != undefined)
-    {
-        return 'rgba('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ', '
-            + a + ')';
-    }
-    else
-    {
-        return 'rgb('
-            + Math.round(r * 0xff) + ', '
-            + Math.round(g * 0xff) + ', '
-            + Math.round(b * 0xff) + ')';
-    }
-}
-
-
-
-function colorStyle(rgb)
-{
-    return colorStyle_(rgb[R], rgb[G], rgb[B], 1);
-}
-
-
-
 function numToString(num, dec)
 {
     var str = Number(num).toFixed(dec).toString();
@@ -4630,6 +4557,24 @@ function arraysEqual(arr1, arr2)
     }
 
     return true;
+}
+
+
+
+function removeFromArray(array, obj)
+{
+    var index = array.indexOf(obj);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function clearChildren(parent) 
+{
+    while (parent.firstChild)
+        parent.removeChild(parent.firstChild);
 }
 
 
@@ -5764,6 +5709,55 @@ function rgbToString(rgb)
     return '{' + Math.round(rgb[0] * 255) + ', '
                + Math.round(rgb[1] * 255) + ', '
                + Math.round(rgb[2] * 255) + '}';
+}
+
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+
+function colorStyleRgb_(r, g, b)
+{
+    return colorStyle_(r, g, b, 1);
+}
+
+
+
+function colorStyleRgb(rgb)
+{
+    return colorStyle_(rgb[0], rgb[1], rgb[2], 1);
+}
+
+
+
+function colorStyleRgba_(r, g, b, a)
+{
+    return colorStyle_(r, g, b, a);
+}
+
+
+
+function colorStyleRgba(rgb, a)
+{
+    return colorStyle_(rgb[0], rgb[1], rgb[2], a);
 }
 
 
@@ -7245,6 +7239,7 @@ extends EventTarget
     _param = null; get param() { return this._param; }
 
     
+    color;
     control;
   
 
@@ -7300,6 +7295,9 @@ extends EventTarget
         this.control = document.createElement('div');
         this.control.className = 'input';
         this.control.input = this;
+        
+        this.color = colorStyleRgba_(0, 0, 0, 0.14);
+        this.updateControl();
     
         
         this.control.addEventListener('pointerdown', e => e.preventDefault());
@@ -7308,14 +7306,15 @@ extends EventTarget
         this.control.addEventListener('pointerenter', e => 
         {
             graphView.overInput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+            // this.color = colorFromDataType(e.target.input.dataType, true);
+            // this.updateControl();
         });
 
 
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overInput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
+            //this.control.style.boxShadow = '0 0 0 1px ' + inputColor;
         });
     }
 
@@ -7325,6 +7324,13 @@ extends EventTarget
     // {
     //     this.dispatchEvent(this.onupdate);
     // }
+
+
+
+    updateControl()
+    {
+        this.control.style.boxShadow = '0 0 0 1px ' + this.color;
+    }
 
 
 
@@ -7348,6 +7354,7 @@ class Output
     _op = null; get op() { return this._op; }
     
     
+    color;
     control;
 
     
@@ -7373,6 +7380,7 @@ class Output
     }
 
 
+
     get isConnected() { return this.connectedInputs.length > 0; }
 
 
@@ -7385,21 +7393,29 @@ class Output
         this.control.className = 'output';
         this.control.output    = this;
 
+        this.color = colorStyleRgba_(0, 0, 0, 0.12);
+        this.updateControl();
 
 
         this.control.addEventListener('pointerenter', e => 
         {
             graphView.overOutput = this;
-            e.target.style.backgroundColor = colorFromDataType(e.target.output.dataType, true);
+            //e.target.style.backgroundColor = colorFromDataType(e.target.output.dataType, true);
         });
-
 
 
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overOutput = null;
-            e.target.style.backgroundColor = inputColor;
+            //e.target.style.backgroundColor = inputColor;
         });
+    }
+
+
+
+    updateControl()
+    {
+        this.control.style.backgroundColor = this.color;
     }
 
 
@@ -8297,6 +8313,7 @@ function initLabelTextbox(node)
             e.preventDefault();
             document.execCommand("copy");
         }
+
         else if (e.code == 'KeyV'
               && getCtrlKey(e))
         {
@@ -8416,16 +8433,19 @@ function initLabelTextbox(node)
                 node == document.activeElement
             && !node.clicked;
     
-        node.textbox.style.width     = node.header.offsetWidth  - 2;
-        node.textbox.style.height    = node.header.offsetHeight - 4;
-        node.textbox.style.position  = 'absolute';
-        node.textbox.style.left      = '50%';
-        node.textbox.style.top       = '50%';
-        node.textbox.style.transform = 'translateX(-50%) translateY(-50%)';
-        node.textbox.style.textAlign = 'center';
-    
-        node.textbox.value      = node.name;
-        node.textbox.savedValue = node.textbox.value;
+        node.textbox.style.width           = node.header.offsetWidth  - 2;
+        node.textbox.style.height          = node.header.offsetHeight - 4;
+        node.textbox.style.position        = 'absolute';
+        node.textbox.style.left            = '50%';
+        node.textbox.style.top             = '50%';
+        node.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
+        node.textbox.style.textAlign       = 'center';
+
+        node.textbox.style.backgroundColor = node.header.style.backgroundColor;
+        node.textbox.style.color           = node.label.style.color;
+
+        node.textbox.value                 = node.name;
+        node.textbox.savedValue            = node.textbox.value;
         
         node.header.appendChild(node.textbox);
         
@@ -8970,7 +8990,9 @@ extends Operator
         super.update()
 
         for (const input of this.inputs)
-            input.op.update();
+            if (input.isConnected)
+                input.op.update();
+
 
         this.#color = dataFromColor(
             this.#space.value, 
@@ -8978,7 +9000,9 @@ extends Operator
 
         this.output._data = this.#color;
 
+
         this.updateNode();
+
 
         for (const input of this.output.connectedInputs)
             input.op.update();
@@ -8993,24 +9017,40 @@ extends Operator
 
         const colBack = this.col2rgb(this.#space.value, this.getColor(this.#space.value));
 
-        this.header.style.backgroundColor = colorStyle(colBack);
-
-        this.#space.control.backColor     = colorStyle(colBack);
-
         let colVal = rgb2hsv(colBack);
-        colVal[2] = Math.max(0, colVal[2]-0.05);
-        colVal = hsv2rgb(colVal);
+        colVal[2]  = Math.max(0, colVal[2]-0.05);
+        colVal     = hsv2rgb(colVal);
+        
+        const darkText = rgb2oklab(colBack)[0] > 0.71;
+        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
 
-        this.#space.control.valueColor = colorStyle(colVal);
+
+        this.header.style.backgroundColor = colorStyleRgb(colBack);
+        this.label .style.color           = colorStyleRgb(colText);
 
 
-        const colText = rgb2oklab(colBack)[0] > 0.69 ? 'black' : 'white';
-        console.log(rgb2oklab(colBack));
-
-        this.label.style.color = colText;
-
-        this.#space.control.textColor = colText;
+        this.#space.control.backColor  = colorStyleRgb(colBack);
+        this.#space.control.valueColor = colorStyleRgb(colVal);
+        this.#space.control.textColor  = colorStyleRgb(colText);
         this.#space.control.update();
+        
+
+        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.5 );
+        const colOut = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
+
+
+        this.inputs[0].color = colIn;
+        this.inputs[0].updateControl();
+        
+        this.output.color = colOut;
+        this.output.updateControl();
+
+
+        this.#space.input.color = colIn;
+        this.#space.input.updateControl();
+
+        this.#space.output.color = colOut;
+        this.#space.output.updateControl();
     }
 }
 
@@ -10343,7 +10383,7 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.position = 'absolute';
     
-        slider.textbox.style.left      = '50%';//slider.offsetLeft   + 1;
+        slider.textbox.style.left      = '50%';
         slider.textbox.style.transform = 'translate(-50%)';
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
@@ -10353,7 +10393,7 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value = numToString(slider.value, slider.editDec);
+        slider.textbox.value      = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);
@@ -10946,19 +10986,23 @@ function initSelectSliderTextbox(slider)
                 slider == document.activeElement
             && !slider.clicked;
     
-        slider.textbox.style.position = 'absolute';
+        slider.textbox.style.position        = 'absolute';
+      
+        slider.textbox.style.left            = '50%';
+        slider.textbox.style.transform       = 'translate(-50%)';
+        slider.textbox.style.top             = slider.offsetTop    + 1;
+        slider.textbox.style.width           = slider.offsetWidth  - 2;
+        slider.textbox.style.height          = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow       = '0 0 0 1px ' + activeObjectColor;
+        slider.textbox.style.outline         = 'none';
+      
+        slider.textbox.style.textAlign       = 'center';
     
-        slider.textbox.style.left      = slider.offsetLeft   + 1;
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
-        slider.textbox.style.outline   = 'none';
-    
-        slider.textbox.style.textAlign = 'center';
-    
-        slider.textbox.value = numToString(slider.value, slider.editDec);
-        slider.textbox.savedValue = slider.textbox.value;
+        slider.textbox.style.backgroundColor = slider.backColor;
+        slider.textbox.style.color           = slider.textColor;
+
+        slider.textbox.value                 = numToString(slider.value, slider.editDec);
+        slider.textbox.savedValue            = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);
         
@@ -11000,7 +11044,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.options           = options;
     slider.value             = def;
 
-    slider.dragScale         = 0.001;
+    slider.dragScale         = 0.0004;
         
     slider.backColor         = '#fff';
     slider.valueColor        = '#eee';

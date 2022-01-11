@@ -17,6 +17,7 @@ extends EventTarget
     _param = null; get param() { return this._param; }
 
     
+    color;
     control;
   
 
@@ -72,6 +73,9 @@ extends EventTarget
         this.control = document.createElement('div');
         this.control.className = 'input';
         this.control.input = this;
+        
+        this.color = colorStyleRgba_(0, 0, 0, 0.14);
+        this.updateControl();
     
         
         this.control.addEventListener('pointerdown', e => e.preventDefault());
@@ -80,14 +84,15 @@ extends EventTarget
         this.control.addEventListener('pointerenter', e => 
         {
             graphView.overInput = this;
-            e.target.style.boxShadow = '0 0 0 1px ' + colorFromDataType(e.target.input.dataType, true);
+            // this.color = colorFromDataType(e.target.input.dataType, true);
+            // this.updateControl();
         });
 
 
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overInput = null;
-            e.target.style.boxShadow = '0 0 0 1px ' + inputColor;
+            //this.control.style.boxShadow = '0 0 0 1px ' + inputColor;
         });
     }
 
@@ -97,6 +102,13 @@ extends EventTarget
     // {
     //     this.dispatchEvent(this.onupdate);
     // }
+
+
+
+    updateControl()
+    {
+        this.control.style.boxShadow = '0 0 0 1px ' + this.color;
+    }
 
 
 

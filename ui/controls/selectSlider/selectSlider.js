@@ -30,7 +30,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.options           = options;
     slider.value             = def;
 
-    slider.dragScale         = 0.001;
+    slider.dragScale         = 0.0004;
         
     slider.backColor         = '#fff';
     slider.valueColor        = '#eee';
