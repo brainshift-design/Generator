@@ -229,16 +229,20 @@ extends Operator
     {
         super.updateNode();
 
-        const col = this.col2rgb(this.#space.value, this.getColor(this.#space.value));
 
-        this.header.style.backgroundColor = colorStyle(col);
+        const colBack = this.col2rgb(this.#space.value, this.getColor(this.#space.value));
 
-        this.#space.control.backColor     = colorStyle(col);
+        this.header.style.backgroundColor = colorStyle(colBack);
 
-        let val = rgb2hsv(col);
-        val[2] = Math.max(0, val[2]-0.05);
-        val = hsv2rgb(val);
+        this.#space.control.backColor     = colorStyle(colBack);
 
-        this.#space.control.valueColor = colorStyle(val);
+        let colVal = rgb2hsv(colBack);
+        colVal[2] = Math.max(0, colVal[2]-0.05);
+        colVal = hsv2rgb(colVal);
+
+        this.#space.control.valueColor = colorStyle(colVal);
+
+
+        const colText = 
     }
 }

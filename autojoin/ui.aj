@@ -2,6 +2,12 @@
 
     ../css/*.css
 
+    ../ui/controls/graphView/graphView.css
+    ../ui/controls/numberSlider/numberSlider.css
+    ../ui/controls/selectSlider/selectSlider.css
+    ../ui/controls/menuSelect/menuSelect.css
+    ../ui/controls/select/select.css
+
 ../html/ui_1.html
 
     ../output/generator.html
@@ -9,6 +15,7 @@
 ../html/ui_2.html
 
     [../autojoin/core.aj]
+    [../autojoin/color.aj]
 
     ../core/storage.js
     ../core/crypto.js

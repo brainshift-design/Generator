@@ -1,13 +1,13 @@
 function initNumberSliderChildren(slider)
 {
     slider.bar = document.createElement('div');
-    slider.bar.className = 'sliderBar';
+    slider.bar.className = 'numberSliderBar';
 
     slider.text = document.createElement('div');
-    slider.text.className = 'sliderText';
+    slider.text.className = 'numberSliderText';
 
     slider.focus = document.createElement('div');
-    slider.focus.className = 'sliderFocus';
+    slider.focus.className = 'numberSliderFocus';
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -18,7 +18,7 @@ function initNumberSliderChildren(slider)
 
 function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
-    slider.className         = 'slider';
+    slider.className         = 'numberSlider';
 
     slider.width             = width;
     slider.height            = height;

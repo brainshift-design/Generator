@@ -14,27 +14,6 @@ const CAT = [[ 0.7328, 0.4296, -0.1624],
 const invCAT = inverse(CAT);
 
 
-// achromatopsia
-const ACR = [0.212656, 0.715158, 0.072186];
-
-
-const lmsW = xyz2lms(lrgb2xyz([1, 1, 1], sRGB));
-const lmsB = xyz2lms(lrgb2xyz([0, 0, 1], sRGB));
-const lmsR = xyz2lms(lrgb2xyz([1, 0, 0], sRGB));
-
-const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
-const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
-
-const mq1 = (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]) / (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]);
-const mq2 = (lmsW[0]*lmsB[1] - lmsB[0]*lmsW[1]) / (lmsW[0]*lmsB[2] - lmsB[0]*lmsW[2]);
-
-const sq1 = (lmsW[1]*lmsR[2] - lmsR[1]*lmsW[2]) / (lmsW[1]*lmsR[0] - lmsR[1]*lmsW[0]);
-const sq2 = (lmsW[0]*lmsR[2] - lmsR[0]*lmsW[2]) / (lmsW[0]*lmsR[1] - lmsR[0]*lmsW[1]);
-
-const bq1 = lmsW[0] / lmsW[2];
-const bq2 = lmsW[1] / lmsW[2];
-
-
 
 function validRgb(rgb)
 {

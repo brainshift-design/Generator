@@ -1,13 +1,13 @@
 function initSelectSliderChildren(slider)
 {
     slider.bar = document.createElement('div');
-    slider.bar.className = 'sliderBar';
+    slider.bar.className = 'selectSliderBar';
 
     slider.text = document.createElement('div');
-    slider.text.className = 'sliderText';
+    slider.text.className = 'selectSliderText';
 
     slider.focus = document.createElement('div');
-    slider.focus.className = 'sliderFocus';
+    slider.focus.className = 'selectSliderFocus';
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -18,7 +18,7 @@ function initSelectSliderChildren(slider)
 
 function initSelectSlider(slider, width, height, name, options, def, backColor = '#fff', valueColor = '#eee', fontSize = 11)
 {
-    slider.className         = 'slider';
+    slider.className         = 'selectSlider';
 
     slider.width             = width;
     slider.height            = height;
@@ -369,7 +369,7 @@ function initSelectSlider(slider, width, height, name, options, def, backColor =
 
 
         slider.style.backgroundColor = slider.backColor;
-        
+
         slider.bar.style.background =
             slider.value >= 0
             ? slider.valueColor
