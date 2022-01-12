@@ -107,6 +107,9 @@ function initLabelTextbox(node)
     
     node.textbox.addEventListener('focusout', function()
     {
+        if (node.textbox.value != '')
+            node.setName(node.textbox.value); // this is good UX
+
         node.header.removeChild(node.textbox);
         node.clicked = false;
     });

@@ -77,7 +77,7 @@ extends Parameter
 
     initInput(hasInput)
     {
-        this.input = hasInput ? new Input ('number') : null;
+        this.input = hasInput ? new Input('number') : null;
         if (!this.input) return;
 
         this.input._param = this;
@@ -126,10 +126,22 @@ extends Parameter
 
 
 
-    // setValue(value, fireChangeEvent = true, confirm = true) 
-    // { 
-    //     this._control.setValue(value, fireChangeEvent, confirm); 
-    // }
+    update(dispatchEvents)
+    {
+        if (   this.input
+            && this.input.isConnected)
+            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+    }
+
+
+
+    setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
+    { 
+        if (updateControl)
+            this._control.setValue(value, false, false, forceChange); 
+
+        super.setValue(value, confirm, updateControl, dispatchEvents);
+    }    
 
 
 

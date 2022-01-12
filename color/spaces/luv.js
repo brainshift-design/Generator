@@ -1,4 +1,8 @@
-function xyz2luv(xyz, W)
+const hueBiasLuv       = 0.18;  // brings H=0 back to conventional Rgb red
+
+
+
+function xyz2luv(xyz, W = sRGB.W)
 {
     const x = xyz[0], 
           y = xyz[1], 
@@ -28,7 +32,7 @@ function xyz2luv(xyz, W)
 
 
 
-function luv2xyz(luv, W)
+function luv2xyz(luv, W = sRGB.W)
 {
     const l = luv[0], 
           u = luv[1], 

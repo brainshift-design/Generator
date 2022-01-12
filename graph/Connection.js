@@ -13,6 +13,7 @@ class Connection
         this.output = output;
         this.input  = input;
 
+
         this.wire = createSvg('svg');
         this.wire.style.position = 'absolute';
         this.wire.style.left     = 0;
@@ -21,6 +22,7 @@ class Connection
         this.wire.style.height   = '100vh';
         this.wire.scale          = 1;
 
+
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
         //this.wire.curve.style.stroke    = activeObjectColor;
@@ -28,15 +30,18 @@ class Connection
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
+
         this.wire.outBall = createSvg('circle');
         //this.wire.outBall.style.fill   = activeObjectColor;
         this.wire.outBall.style.position = 'absolute';
         this.wire.outBall.style.r        = 3 * this.wire.scale;
 
+
         this.wire.inBall = createSvg('circle');
         //this.wire.inBall.style.fill   = activeObjectColor;
         this.wire.inBall.style.position = 'absolute';
         this.wire.inBall.style.r        = 3 * this.wire.scale;
+
 
         this.wire.appendChild(this.wire.curve);
         this.wire.appendChild(this.wire.outBall);
@@ -63,8 +68,9 @@ class Connection
             
             switch (this.output.dataType)
             {
-                case 'object': color = activeObjectColor; break;
                 case 'number': color = activeNumberColor; break;
+                case 'color':  color = activeColorColor;  break;
+                case 'object': color = activeObjectColor; break;
             }
 
 

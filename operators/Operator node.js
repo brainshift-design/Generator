@@ -5,7 +5,7 @@ function createNode(node)
     node.div.className   = 'node';
     node.div.op          = node;
 
-    node.div.style.width = '100px';
+    node.div.style.width = node.defaultWidth + 'px';
     
     node.div.selectedSet = false;
     node.div.over        = false;
@@ -15,8 +15,8 @@ function createNode(node)
     node.inner           = document.createElement('div');
     node.inner.className = 'nodeInner';
 
-    node.div.appendChild(node.inner);
 
+    node.div.appendChild(node.inner);
 
 
     node.div.addEventListener('pointerenter', function(e)
@@ -26,7 +26,6 @@ function createNode(node)
     });
 
 
-
     node.div.addEventListener('pointerleave', function(e)
     {
         node.div.over = false;
@@ -34,7 +33,6 @@ function createNode(node)
     });
 
     
-
     createNodeHeader(node);
 }     
 

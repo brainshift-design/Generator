@@ -15,7 +15,7 @@ class Operator
     }
 
     shortTypeName;
-    
+    defaultWidth;
 
     static nextId = 0;
     id = Operator.nextId++;
@@ -83,8 +83,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'object': return activeObjectColor;
             case 'number': return numberColor; //activeNumberColor;
+            case 'color':  return activeColorColor;
+            case 'object': return activeObjectColor;
         }
 
         return 'magenta';
@@ -96,8 +97,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'object': return objectColor;
             case 'number': return numberColor;
+            case 'color':  return colorColor;
+            case 'object': return objectColor;
         }
 
         return 'magenta';
@@ -105,13 +107,15 @@ class Operator
 
 
 
-    constructor(opType, shortType, dataType)
+    constructor(opType, shortType, dataType, defWidth = 100)
     {
         this.#opType       = opType;   // this is the operator type
         this.#dataType     = dataType; // this is the op's main data type
-
+        
         this.shortTypeName = shortType;
         this._name         = shortType; // this is a temp until the op becomes a graph node
+        
+        this.defaultWidth  = defWidth;
         
         createNode(this);
     }    
@@ -186,9 +190,29 @@ class Operator
 
 
 
+    pushUpdate()
+    {
+        this.invalidate(); 
+        lastNodesInTreeFrom(this).forEach(n => n.update());
+    }
+
+
+
+    needsUpdate()
+    {
+        if (this.valid)
+            return false;
+
+        this.updateParams(false);
+
+        return true;
+    }
+
+
+
     update()
     {
-        this.updateParams(false);
+        this.updateNode();
         this.#valid = true;
     }
 
@@ -276,7 +300,7 @@ class Operator
             return false; // graph already contains a node with this id
 
         this._name = newName;
-        this.label.innerHTML = this.id + ': ' + newName;
+        this.label.innerHTML = newName;//this.id + ': ' + newName;
 
         return true;
     }

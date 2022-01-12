@@ -65,13 +65,7 @@ extends Parameter
 
 
         if (this.input)
-        {
-            this.input.addEventListener('connect', () => 
-            {
-                this.op.invalidate();
-                this.op.update();
-            });
-        }
+            this.input.addEventListener('connect', () => this.op.pushUpdate());
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
@@ -81,7 +75,7 @@ extends Parameter
 
     initInput(hasInput)
     {
-        this.input = hasInput ? new Input ('number') : null;
+        this.input = hasInput ? new Input('number') : null;
         if (!this.input) return;
 
         this.input._param = this;

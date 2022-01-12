@@ -1,11 +1,19 @@
-const OpColorTypes = 
+/* 
+    the data type 'color' contains four elements: 
+        color space 
+        c1
+        c2
+        c3
+*/
+
+
+
+const OpColorSpaces = 
 [
-    ['rgb',    'RGB'          ], 
-    ['hsv',    'HSV'          ], 
-    ['hsl',    'HSL'          ], 
-    ['hclokl', 'HCL (OKLab)'  ],
-    ['hcllab', 'HCL (CIE Lab)'],
-    ['hslluv', 'HCL (CIE Luv)']
+    ['RGB'], 
+    ['HSV'], 
+    ['HSL'], 
+    ['HCL']
 ];
 
 
@@ -25,35 +33,33 @@ extends Operator
 
     constructor()
     {
-        super('color', 'col', 'color');
+        super('color', 'col', 'color', 80);
 
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#space = new SelectParam('space', true, true, OpColorTypes.map(t => t[1])));
+        this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces));
         this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
         this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
         this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
-        this.#space.control.addEventListener('change', () =>
+        this.#space.control.addEventListener('change', () => 
         {
-            switch (this.#space.control.value)
+            console.log(this.#color);
+            switch (this.#color[0])
             {
-                case 0: this.convert2rgb(); break;
-                case 1: this.convert2hsv(); break;
-                case 2: this.convert2hsl(); break;
-                case 3:
-                case 4:
-                case 5: break;
+                case 0: this.convert2rgb(this.#color); break;
+                case 1: this.convert2hsv(this.#color); break;
+                case 2: this.convert2hsl(this.#color); break;
+                case 3: this.convert2hcl(this.#color); break;
             }
 
-            this.invalidate(); 
-            this.update();
+            this.pushUpdate();
         });
-
-        this.#c1.control.addEventListener('change', () => { this.invalidate(); this.update(); });
-        this.#c2.control.addEventListener('change', () => { this.invalidate(); this.update(); });
-        this.#c3.control.addEventListener('change', () => { this.invalidate(); this.update(); });
+        
+        this.#c1.control.addEventListener('change', () => this.pushUpdate());
+        this.#c2.control.addEventListener('change', () => this.pushUpdate());
+        this.#c3.control.addEventListener('change', () => this.pushUpdate());
 
         this.#space.setValue(0); // init all the params with names
         this.switch2rgb();
@@ -61,62 +67,91 @@ extends Operator
 
 
 
-    col2rgb(space, col)
+    color2array(color)
     {
-        switch (space)
+        return [
+            color[1], 
+            color[2], 
+            color[3]];
+    }
+
+
+
+    color2rgb(color)
+    {
+        const col = this.color2array(color);
+
+        switch (color[0])
         {
             case 0: return col;
             case 1: return hsv2rgb(col);
             case 2: return hsl2rgb(col);
+            case 3: return okhcl2rgb(col);
         }
-        
-        return [0, 0, 0];
     }
 
 
 
-    getColor(space)
+    getColorFromParams()
     {
-        switch (space)
+        const color = [
+            this.#space.value,
+            this.#c1   .value,
+            this.#c2   .value,
+            this.#c3   .value];
+
+        const col = this.getNormalColor(color);
+
+        color[1] = col[0];
+        color[2] = col[1];
+        color[3] = col[2];
+
+        return color;
+    }
+
+
+
+    getNormalColor(color)
+    {
+        switch (color[0])
         {
-            case 0: return this.getColorRgb();
-            case 1: 
-            case 2: 
-            case 3: 
-            case 4: 
-            case 5: return this.getColorH();
+            case 0: return this.getNormalColorRgb(color[1], color[2], color[3]);
+            case 1:
+            case 2:
+            case 3: return this.getNormalColorH(color[1], color[2], color[3]);
         }
     }
 
 
 
-    getColorRgb()
+    getNormalColorRgb(c1, c2, c3)
     {
         return [
-            this.#c1.value / 255, 
-            this.#c2.value / 255, 
-            this.#c3.value / 255];
+            c1 / 255, 
+            c2 / 255, 
+            c3 / 255];
     }
 
 
 
-    getColorH()
+    getNormalColorH(c1, c2, c3)
     {
         return [
-            this.#c1.value / 360, 
-            this.#c2.value / 100, 
-            this.#c3.value / 100];
+            c1 / 360, 
+            c2 / 100, 
+            c3 / 100];
     }
 
 
 
-    switchControls(c1, c2, c3, c1min, c1max, c1wrap, c2min, c2max, c3min, c3max)
+    switchControls(c1, c2, c3, c1min, c1max, c1suffix, c1wrap, c2min, c2max, c3min, c3max)
     {
         this.#c1.setName(c1, false); 
         this.#c2.setName(c2, false); 
         this.#c3.setName(c3, false);
 
         this.#c1.control.wrapValue = c1wrap;
+        this.#c1.control.suffix    = c1suffix;
 
         this.#c1.control.min = c1min; this.#c1.control.max = c1max; this.#c1.control.update();
         this.#c2.control.min = c2min; this.#c2.control.max = c2max; this.#c2.control.update();
@@ -125,46 +160,92 @@ extends Operator
 
 
 
-    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, false, 0, 255, 0, 255); }
-    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, true,  0, 100, 0, 100); }
-    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, true,  0, 100, 0, 100); }
-    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, true,  0, 100, 0, 100); }
+    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, '',  false, 0, 255, 0, 255); }
+    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, '°', true,  0, 100, 0, 100); }
+    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
+    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
 
 
 
-    convert2rgb()
+    setParamControls(space, col)
     {
-        const col = this.getColor(this.#space.oldValue);
+        this.#space.setValue(space, false, true, true);
 
-        let rgb;
+        let mult;
 
-        switch (this.#space.oldValue)
+        switch (space)
         {
-            case 0: rgb = col;          break;
-            case 1: rgb = hsv2rgb(col); break;
-            case 2: rgb = hsl2rgb(col); break;
+        case 0:
+            this.#c1.control.wrapValue = false;
+            this.#c1.control.suffix = '';
+            mult = [255, 255, 255];
+            break;
+
+        case 1:
+        case 2:
+        case 3:
+            this.#c1.control.wrapValue = true;
+            this.#c1.control.suffix = '°';
+            mult = [360, 100, 100];
+            break;
         }
 
-        this.switch2rgb();
-
-        this.#c1.setValue(rgb[0] * 255, false, true, false);
-        this.#c2.setValue(rgb[1] * 255, false, true, false);
-        this.#c3.setValue(rgb[2] * 255, false, true, false);
+        this.#c1.setValue(col[0] * mult[0], false, true, true);
+        this.#c2.setValue(col[1] * mult[1], false, true, true);
+        this.#c3.setValue(col[2] * mult[2], false, true, true);
     }
 
 
 
-    convert2hsv()
+    convertColorFrom(space)
     {
-        const col = this.getColor(this.#space.oldValue);
+        switch (space)
+        {
+            case 0: this.#color = this.convert2rgb(this.#color); break;
+            case 1: this.#color = this.convert2hsv(this.#color); break;
+            case 2: this.#color = this.convert2hsl(this.#color); break;
+            case 3: this.#color = this.convert2hcl(this.#color); break;
+        }
+    }
+
+
+
+    convert2rgb(color)
+    {
+        const col = this.color2array(color);
+
+        let rgb;
+
+        switch (color[0])
+        {
+            case 0: rgb = col;            break;
+            case 1: rgb = hsv2rgb(col);   break;
+            case 2: rgb = hsl2rgb(col);   break;
+            case 2: rgb = okhcl2rgb(col); break;
+        }
+
+        this.switch2rgb();
+
+        this.setParams(
+            rgb[0] * 255,
+            rgb[1] * 255,
+            rgb[2] * 255);
+    }
+
+
+
+    convert2hsv(color)
+    {
+        const col = this.color2array(color);
 
         let hsv;
 
-        switch (this.#space.oldValue)
+        switch (color[0])
         {
-            case 0: hsv = rgb2hsv(col);          break;
-            case 1: hsv = col;                   break;
-            case 2: hsv = rgb2hsv(hsl2rgb(col)); break;
+            case 0: hsv = rgb2hsv(col);            break;
+            case 1: hsv = col;                     break;
+            case 2: hsv = rgb2hsv(hsl2rgb(col));   break;
+            case 2: hsv = rgb2hsv(okhcl2rgb(col)); break;
         }
 
         if (isNaN(hsv[0]))
@@ -172,59 +253,99 @@ extends Operator
             
         this.switch2hsv();
 
-        this.#c1.setValue(hsv[0] * 360, false, true, true);
-        this.#c2.setValue(hsv[1] * 100, false, true, true);
-        this.#c3.setValue(hsv[2] * 100, false, true, true);
+        this.setParams(
+            hsv[0] * 360,
+            hsv[1] * 100,
+            hsv[2] * 100);
     }
 
 
 
     convert2hsl()
     {
-        const col = this.getColor(this.#space.oldValue);
+        const col = this.color2array(color);
 
         let hsl;
 
-        switch (this.#space.oldValue)
+        switch (color[0])
         {
-            case 0: hsl = rgb2hsl(col);          break;
-            case 1: hsl = rgb2hsl(hsv2rgb(col)); break;
-            case 2: hsl = col;                   break;
+            case 0: hsl = rgb2hsl(col);            break;
+            case 1: hsl = rgb2hsl(hsv2rgb(col));   break;
+            case 2: hsl = col;                     break;
+            case 3: hsl = rgb2hsl(okhcl2rgb(col)); break;
         }
 
         this.switch2hsl();
 
-        this.#c1.setValue(hsl[0] * 360, false, true, false);
-        this.#c2.setValue(hsl[1] * 100, false, true, false);
-        this.#c3.setValue(hsl[2] * 100, false, true, false);
+        this.setParams(
+            hsl[0] * 360,
+            hsl[1] * 100,
+            hsl[2] * 100);
+    }
+
+
+
+    convert2hcl()
+    {
+        const col = this.color2array(color);
+
+        let hcl;
+
+        switch (color[0])
+        {
+            case 0: hcl = rgb2okhcl(col);          break;
+            case 1: hcl = rgb2okhcl(hsv2rgb(col)); break;
+            case 2: hcl = rgb2okhcl(hsl2rgb(col)); break;
+            case 3: hcl = col;                     break;
+        }
+
+        this.switch2hcl();
+
+        this.setParams(
+            hcl[0] * 360,
+            hcl[1] * 100,
+            hcl[2] * 100);
+    }
+
+
+
+    setParams(c1, c2, c3)
+    {
+        this.#c1.setValue(c1, false, true, true);
+        this.#c2.setValue(c2, false, true, true);
+        this.#c3.setValue(c3, false, true, true);
     }
 
 
 
     update()
     {
-        if (this.valid) 
+        console.log(this.name + '.OpColor.update()');
+        if (!this.needsUpdate())
             return;
 
-        super.update()
 
-        for (const input of this.inputs)
-            if (input.isConnected)
-                input.op.update();
+        const oldColorSpace = this.#color[0];
 
 
-        this.#color = dataFromColor(
-            this.#space.value, 
-            this.getColor(this.#space.value));
+        const input = this.inputs[0];
+
+        if (input.isConnected)
+        {
+            input.connectedOutput.op.update();
+            this.#color = input.data.color;
+        }
+        else
+            this.#color = this.getColorFromParams();
+
+
+        if (oldColorSpace != this.#space.value)
+            this.convertColorFrom(oldColorSpace);
+
 
         this.output._data = this.#color;
 
-
-        this.updateNode();
-
-
-        for (const input of this.output.connectedInputs)
-            input.op.update();
+        super.update()
     }
 
 
@@ -234,13 +355,13 @@ extends Operator
         super.updateNode();
 
 
-        const colBack = this.col2rgb(this.#space.value, this.getColor(this.#space.value));
+        const colBack = this.color2rgb(this.getColorFromParams());
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
         colVal     = hsv2rgb(colVal);
         
-        const darkText = rgb2oklab(colBack)[0] > 0.71;
+        const darkText = rgb2okhcl(colBack)[2] > 0.71;
         const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
 
 
@@ -248,13 +369,13 @@ extends Operator
         this.label .style.color           = colorStyleRgb(colText);
 
 
-        this.#space.control.backColor  = colorStyleRgb(colBack);
-        this.#space.control.valueColor = colorStyleRgb(colVal);
-        this.#space.control.textColor  = colorStyleRgb(colText);
+        this.#space.control.backColor  = colBack;
+        this.#space.control.valueColor = colVal;
+        this.#space.control.textColor  = colText;
         this.#space.control.update();
         
 
-        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.5 );
+        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );
         const colOut = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
 
 

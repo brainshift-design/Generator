@@ -1,20 +1,21 @@
+
+
+
+
 function dataFromNumber(num)
 {
     return {
-        type:  'number',
+        type: 'number',
         value: num 
     };
 }
 
 
 
-function dataFromColor(space, col)
+function dataFromColor(color)
 {
     return {
         type: 'color',
-        space: space,
-        c0:    col[0], 
-        c1:    col[1], 
-        c2:    col[2] 
+        color: color
     };
 }

@@ -7,7 +7,7 @@ extends Operator
 
     constructor(opType, shortType)
     {
-        super(opType, shortType, 'number');
+        super(opType, shortType, 'number', 65);
 
         this.addNewInput();
         this.setOutput(new Output(this.dataType));
@@ -43,14 +43,12 @@ extends Operator
 
     update()
     {
-        if (this.valid) 
+        if (!this.needsUpdate())
             return;
 
-            
-        super.update()
-
         for (const input of this.inputs)
-            input.op.update();
+            if (input.isConnected)
+                input.connectedOutput.op.update();
 
 
         const result = this.getResult();
@@ -59,8 +57,7 @@ extends Operator
         this.#paramValue.setValue(result, false, true, false);
 
 
-        for (const input of this.output.connectedInputs)
-            input.op.update();
+        super.update()
     }
 
 

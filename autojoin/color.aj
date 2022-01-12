@@ -7,6 +7,7 @@
 ../color/spaces/luv.js
 ../color/spaces/lab.js
 ../color/spaces/oklab.js
+../color/spaces/hcl.js
 
 ../color/color.js
 ../color/colorblind.js

@@ -9,6 +9,13 @@ function rgb2oklab(rgb, cs = sRGB)
 
 
 
+function rgb2oklab_(r, g, b, cs = sRGB) 
+{
+    return oklms2oklab(rgb2oklms_(r, g, b, cs));
+}
+
+
+
 function rgb2oklms_(r, g, b, cs = sRGB) 
 {
     r = cs.degamma(r);
@@ -19,7 +26,7 @@ function rgb2oklms_(r, g, b, cs = sRGB)
         0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
 	    0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
 	    0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b ];
-}
+}        
 
 
 
@@ -37,14 +44,7 @@ function oklms2oklab(lms)
         l_ /* * 100*/,
         a_ /* * 100*/, 
         b_ /* * 100*/ ];
-}
-
-
-
-function rgb2oklab_(r, g, b, cs = sRGB) 
-{
-    return oklms2oklab(rgb2oklms_(r, g, b, cs));
-}
+}        
 
 
 

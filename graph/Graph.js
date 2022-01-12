@@ -141,11 +141,11 @@ class Graph
 
 
 
-    updateNodes()
-    {
-        for (let i = 0; i < this.invalidNodes.length; i = 0) // i is reset after each iteragion
-            this.invalidNodes[i].update();                   // as node.update() removes 1+ items
-    }
+    // updateNodes()
+    // {
+    //     for (let i = 0; i < this.invalidNodes.length; i = 0) // i is reset after each iteragion
+    //         this.invalidNodes[i].update();                   // as node.update() removes 1+ items
+    // }
 
 
 
@@ -157,8 +157,10 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
+
         output.connectedInputs.push(input);
         input .connectedOutput = output;
+
 
         const conn = new Connection(output, input);
 
@@ -167,15 +169,19 @@ class Graph
         
         graphView.addWire(conn.wire);
 
+
         output.op.makePassive();
         
         //invalidate(input.op);
     
+
         if (!activeNodeInTree(input.op))
             input.op.makeActive();
+       
             
         output.op.updateConnectedInputValueText();
         conn.wire.style.zIndex = MAX_INT32;
+
 
         return true;
     }

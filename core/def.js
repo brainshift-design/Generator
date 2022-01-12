@@ -4,8 +4,8 @@ const activeObjectColor = '#18a0fb';
 const numberColor       = '#ddd';
 const activeNumberColor = '#787878';
 
-const colorColor        = '#aaa';
-const activeColorColor  = '#666';
+const colorColor        = '#c3c';
+const activeColorColor  = '#f0f';
 
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';

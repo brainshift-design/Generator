@@ -7,18 +7,11 @@ extends Operator
 
     constructor()
     {
-        super('number', 'num', 'number');
+        super('number', 'num', 'number', 70);
 
         this.setOutput(new Output(this.dataType));
-
         this.addParam(this.#paramValue = new NumberParam('', true, false));
-
-
-        this.#paramValue.addEventListener('change', () => 
-        {
-            this.invalidate();
-            this.update();
-        });
+        this.#paramValue.addEventListener('change', () => this.pushUpdate());
     }
 
 
@@ -34,15 +27,14 @@ extends Operator
 
     update()
     {
-        if (this.valid) 
+        if (!this.needsUpdate())
             return;
-
-        super.update()
+            
+        this.updateParams(false);
         
         this.output._data = dataFromNumber(this.#paramValue.value);
-
-        for (const input of this.output.connectedInputs)
-            input.op.update();
+            
+        super.update()
     }
 
 

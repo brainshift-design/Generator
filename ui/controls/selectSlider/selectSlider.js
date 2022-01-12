@@ -32,9 +32,9 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.dragScale         = 0.0004;
         
-    slider.backColor         = '#fff';
-    slider.valueColor        = '#eee';
-    slider.textColor         = '#000';
+    slider.backColor         = [0xff, 0xff, 0xff];
+    //slider.valueColor        = [0xee, 0xee, 0xee];
+    slider.textColor         = [0x00, 0x00, 0x00];
            
     slider.fontSize          = 11;
         
@@ -347,7 +347,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             ? slider.value / slider.options.length
             : 0;
 
-        slider.bar  .style.background = slider.valueColor;
+        // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
   
         slider.bar  .style.top        = 0;//slider.mouseOver ? 1 : 0;
         slider.bar  .style.height     = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
@@ -369,11 +369,14 @@ function initSelectSlider(slider, width, height, name, options, def)
         }
 
 
-        slider.style.backgroundColor = slider.backColor;
+        slider.style.backgroundColor = colorStyleRgb(slider.backColor);
+
+
+        const darkText = rgb2okhcl(slider.backColor)[2] > 0.71;
 
         slider.bar.style.background =
             slider.value >= 0
-            ? slider.valueColor
+            ? colorStyleRgba(slider.textColor, darkText ? 0.08 : 0.2)//slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
         slider.text.innerHTML = 
@@ -382,7 +385,7 @@ function initSelectSlider(slider, width, height, name, options, def)
              : '';
         
 
-        slider.text.style.color = slider.textColor;
+        slider.text.style.color = colorStyleRgb(slider.textColor);
     };
 
 

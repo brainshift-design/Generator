@@ -815,8 +815,8 @@ const activeObjectColor = '#18a0fb';
 const numberColor       = '#ddd';
 const activeNumberColor = '#787878';
 
-const colorColor        = '#aaa';
-const activeColorColor  = '#666';
+const colorColor        = '#c3c';
+const activeColorColor  = '#f0f';
 
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
@@ -2261,9 +2261,9 @@ function colorFromDataType(dataType, active)
 {
     switch (dataType)
     {
-        case 'object': return active ? activeObjectColor : objectColor;
         case 'number': return active ? activeNumberColor : numberColor;
         case 'color':  return active ? activeColorColor  : colorColor;
+        case 'object': return active ? activeObjectColor : objectColor;
     }
 
     return 'magenta';
@@ -3051,8 +3051,8 @@ const activeObjectColor = '#18a0fb';
 const numberColor       = '#ddd';
 const activeNumberColor = '#787878';
 
-const colorColor        = '#aaa';
-const activeColorColor  = '#666';
+const colorColor        = '#c3c';
+const activeColorColor  = '#f0f';
 
 
 const inputColor        = 'rgba(0, 0, 0, 0.12)';
@@ -4497,9 +4497,9 @@ function colorFromDataType(dataType, active)
 {
     switch (dataType)
     {
-        case 'object': return active ? activeObjectColor : objectColor;
         case 'number': return active ? activeNumberColor : numberColor;
         case 'color':  return active ? activeColorColor  : colorColor;
+        case 'object': return active ? activeObjectColor : objectColor;
     }
 
     return 'magenta';
@@ -5161,7 +5161,11 @@ function xyz2lrgb(xyz, cs = sRGB)
 
 
 
-function xyz2luv(xyz, W)
+const hueBiasLuv       = 0.18;  // brings H=0 back to conventional Rgb red
+
+
+
+function xyz2luv(xyz, W = sRGB.W)
 {
     const x = xyz[0], 
           y = xyz[1], 
@@ -5191,7 +5195,7 @@ function xyz2luv(xyz, W)
 
 
 
-function luv2xyz(luv, W)
+function luv2xyz(luv, W = sRGB.W)
 {
     const l = luv[0], 
           u = luv[1], 
@@ -5221,7 +5225,11 @@ function luv2xyz(luv, W)
 }
 
 
-function xyz2lab(xyz, W)
+const hueBiasLab       = 0.5;    
+
+
+
+function xyz2lab(xyz, W = sRGB.W)
 {
     const x = xyz[0], 
           y = xyz[1], 
@@ -5247,7 +5255,7 @@ function xyz2lab(xyz, W)
 
 
 
-function lab2xyz(lab, W)
+function lab2xyz(lab, W = sRGB.W)
 {
     const l = lab[0], 
           a = lab[1], 
@@ -5283,6 +5291,13 @@ function rgb2oklab(rgb, cs = sRGB)
 
 
 
+function rgb2oklab_(r, g, b, cs = sRGB) 
+{
+    return oklms2oklab(rgb2oklms_(r, g, b, cs));
+}
+
+
+
 function rgb2oklms_(r, g, b, cs = sRGB) 
 {
     r = cs.degamma(r);
@@ -5293,7 +5308,7 @@ function rgb2oklms_(r, g, b, cs = sRGB)
         0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
 	    0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
 	    0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b ];
-}
+}        
 
 
 
@@ -5311,14 +5326,7 @@ function oklms2oklab(lms)
         l_ /* * 100*/,
         a_ /* * 100*/, 
         b_ /* * 100*/ ];
-}
-
-
-
-function rgb2oklab_(r, g, b, cs = sRGB) 
-{
-    return oklms2oklab(rgb2oklms_(r, g, b, cs));
-}
+}        
 
 
 
@@ -5372,6 +5380,112 @@ function oklab2rgb_(l_, a_, b_, cs = sRGB)
 {
     return oklms2rgb(oklab2oklms_(l_, a_, b_), cs);
 }
+
+
+function lab2hcl(lab) 
+{
+    // either lab or luv, 
+    // the polar transformation is the same
+
+    const l = lab[0], 
+          a = lab[1], 
+          b = lab[2];
+
+    const c = Math.sqrt(a*a + b*b);
+    const h = Math.atan2(b, a);
+
+    return [h, c, l];
+}
+
+
+
+function hcl2lab(hcl)
+{
+    // either lab or luv, 
+    // the polar transformation is the same
+
+    const h = hcl[0], 
+          c = hcl[1], 
+          l = hcl[2];
+
+    const a = c * Math.cos(h);
+    const b = c * Math.sin(h);
+
+    return [l, a, b];
+}
+
+
+
+// function _hcl2rgb(h, c, l, colorSpace, cones)
+// {
+//     if (colorSpace == 0)
+//     {
+//         return allConesWork(cones)
+//              ? okhcl2rgb_  (h, c, l)
+//              : okhcl2rgb_CB(h, c, l, colorSpace, cones);
+//     }
+//     else
+//     {
+//         return allConesWork(cones)
+//              ? hcl2rgb_  (h, c, l, colorSpace)
+//              : hcl2rgb_CB(h, c, l, colorSpace, cones);
+//     }
+// }
+
+ 
+
+// function hcl2rgb_(h, c, l)//, colorSpace)
+// {
+//     const col = hcl2col([
+//         h,// + (colorSpace == 1 ? hueBiasLab : hueBiasLuv),
+//         c * l/100, 
+//         l]);
+
+//     const xyz = col2xyz(col, colorSpace);
+
+//     return xyz2rgb(xyz, sRGB);
+// }    
+    
+    
+    
+function okhcl2rgb(hcl)
+{
+    return okhcl2rgb_(hcl[0], hcl[1], hcl[2]);
+}    
+    
+    
+    
+function okhcl2rgb_(h, c, l)
+{
+    const lab = hcl2lab([
+        h + hueBiasLab,
+        c/okLabScale * l/100, 
+        l]);
+
+    return oklab2rgb(lab, sRGB);
+}    
+    
+    
+    
+function rgb2okhcl(rgb)//, colorSpace)
+{
+    return rgb2okhcl_(rgb[0], rgb[1], rgb[2]);//, colorSpace);
+}
+
+
+
+function rgb2okhcl_(r, g, b)
+{
+    return lab2hcl(rgb2oklab_(r, g, b));
+}
+
+
+
+// function rgb2hcl_(r, g, b, colorSpace)
+// {
+//     if (colorSpace == 0) return lab2hcl(rgb2oklab_(r, g, b));
+//     else                 return lab2hcl(xyz2col(rgb2xyz_(r, g, b), sRGB.W));
+// }
 
 
 // Hunt-Pointer-Estevez
@@ -5489,7 +5603,7 @@ function lch2rgb_CB(l, c, h, colorSpace, cones)
         c * l/100, 
         h + (colorSpace == 1 ? hueBiasLab : hueBiasLuv)]);
 
-    const xyz = col2xyz(col, sRGB.W, colorSpace);
+    const xyz = col2xyz(col, colorSpace);
     
 
     let rgb;
@@ -5585,113 +5699,20 @@ function oklch2rgb_CB(l, c, h, colorSpace, cones)
 
 
 
-function lab2lch(lab) 
-{
-    // either lab or luv, 
-    // the polar transformation is the same
-
-    const l = lab[0], 
-          a = lab[1], 
-          b = lab[2];
-
-    const c = Math.sqrt(a*a + b*b);
-    const h = Math.atan2(b, a);
-
-    return [l, c, h];
-}
-
-
-
-function lch2lab(lch)
-{
-    // either lab or luv, 
-    // the polar transformation is the same
-
-    const l = lch[0], 
-          c = lch[1], 
-          h = lch[2];
-
-    const a = c * Math.cos(h);
-    const b = c * Math.sin(h);
-
-    return [l, a, b];
-}
-
-
-
-function _lch2rgb(l, c, h, colorSpace, cones)
-{
-    if (colorSpace == 0)
-    {
-        return allConesWork(cones)
-             ? oklch2rgb_(l, c, h)
-             : oklch2rgb_CB(l, c, h, colorSpace, cones);
-    }
-    else
-    {
-        return allConesWork(cones)
-             ? lch2rgb_(l, c, h, colorSpace)
-             : lch2rgb_CB(l, c, h, colorSpace, cones);
-    }
-}
-
- 
-
-function col2xyz(col, w, colorSpace)
+function col2xyz(col, colorSpace, w = sRGB.W)
 {
     if (colorSpace == 1) return lab2xyz(col, w);
     else                 return luv2xyz(col, w);
 }
 
 
-function xyz2col(col, w)
+function xyz2col(col, w = sRGB.W)
 {
     switch (setColorSpace)
     {
         case 2: return xyz2lab(col, w);
         case 1: return xyz2luv(col, w);
     }
-}
-    
-    
-
-function lch2rgb_(l, c, h, colorSpace)
-{
-    const col = lch2col([
-        l, 
-        c * l/100, 
-        h + (colorSpace == 1 ? hueBiasLab : hueBiasLuv)]);
-
-    const xyz = col2xyz(col, sRGB.W, colorSpace);
-
-    return xyz2rgb(xyz, sRGB);
-}    
-    
-    
-    
-function oklch2rgb_(l, c, h)
-{
-    const lab = lch2col([
-        l, 
-        c/okLabScale * l/100, 
-        h + hueBiasLab ]);
-
-    return oklab2rgb(lab, sRGB);
-}    
-    
-    
-    
-function rgb2lch(rgb, colorSpace)
-{
-    return rgb2lch_(rgb[0], rgb[1], rgb[2], colorSpace);
-}
-
-
-
-function rgb2lch_(r, g, b, colorSpace)
-{
-    if (colorSpace == 0) return lab2lch(rgb2oklab_(r, g, b, sRGB));
-    else                 return lab2lch(xyz2col(rgb2xyz_(r, g, b, sRGB), sRGB.W));
 }
 
 
@@ -6523,13 +6544,7 @@ extends Parameter
 
 
         if (this.input)
-        {
-            this.input.addEventListener('connect', () => 
-            {
-                this.op.invalidate();
-                this.op.update();
-            });
-        }
+            this.input.addEventListener('connect', () => this.op.pushUpdate());
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
@@ -6539,7 +6554,7 @@ extends Parameter
 
     initInput(hasInput)
     {
-        this.input = hasInput ? new Input ('number') : null;
+        this.input = hasInput ? new Input('number') : null;
         if (!this.input) return;
 
         this.input._param = this;
@@ -6847,7 +6862,7 @@ extends Parameter
 
     initInput(hasInput)
     {
-        this.input = hasInput ? new Input ('number') : null;
+        this.input = hasInput ? new Input('number') : null;
         if (!this.input) return;
 
         this.input._param = this;
@@ -6896,10 +6911,22 @@ extends Parameter
 
 
 
-    // setValue(value, fireChangeEvent = true, confirm = true) 
-    // { 
-    //     this._control.setValue(value, fireChangeEvent, confirm); 
-    // }
+    update(dispatchEvents)
+    {
+        if (   this.input
+            && this.input.isConnected)
+            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+    }
+
+
+
+    setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
+    { 
+        if (updateControl)
+            this._control.setValue(value, false, false, forceChange); 
+
+        super.setValue(value, confirm, updateControl, dispatchEvents);
+    }    
 
 
 
@@ -6911,24 +6938,25 @@ extends Parameter
 }
 
 
+
+
+
+
 function dataFromNumber(num)
 {
     return {
-        type:  'number',
+        type: 'number',
         value: num 
     };
 }
 
 
 
-function dataFromColor(space, col)
+function dataFromColor(color)
 {
     return {
         type: 'color',
-        space: space,
-        c0:    col[0], 
-        c1:    col[1], 
-        c2:    col[2] 
+        color: color
     };
 }
 
@@ -7076,11 +7104,11 @@ class Graph
 
 
 
-    updateNodes()
-    {
-        for (let i = 0; i < this.invalidNodes.length; i = 0) // i is reset after each iteragion
-            this.invalidNodes[i].update();                   // as node.update() removes 1+ items
-    }
+    // updateNodes()
+    // {
+    //     for (let i = 0; i < this.invalidNodes.length; i = 0) // i is reset after each iteragion
+    //         this.invalidNodes[i].update();                   // as node.update() removes 1+ items
+    // }
 
 
 
@@ -7092,8 +7120,10 @@ class Graph
         if (input.connectedOutput != null)
             this.disconnect(input);
 
+
         output.connectedInputs.push(input);
         input .connectedOutput = output;
+
 
         const conn = new Connection(output, input);
 
@@ -7102,15 +7132,19 @@ class Graph
         
         graphView.addWire(conn.wire);
 
+
         output.op.makePassive();
         
         //invalidate(input.op);
     
+
         if (!activeNodeInTree(input.op))
             input.op.makeActive();
+       
             
         output.op.updateConnectedInputValueText();
         conn.wire.style.zIndex = MAX_INT32;
+
 
         return true;
     }
@@ -7442,6 +7476,7 @@ class Connection
         this.output = output;
         this.input  = input;
 
+
         this.wire = createSvg('svg');
         this.wire.style.position = 'absolute';
         this.wire.style.left     = 0;
@@ -7450,6 +7485,7 @@ class Connection
         this.wire.style.height   = '100vh';
         this.wire.scale          = 1;
 
+
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
         //this.wire.curve.style.stroke    = activeObjectColor;
@@ -7457,15 +7493,18 @@ class Connection
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
+
         this.wire.outBall = createSvg('circle');
         //this.wire.outBall.style.fill   = activeObjectColor;
         this.wire.outBall.style.position = 'absolute';
         this.wire.outBall.style.r        = 3 * this.wire.scale;
 
+
         this.wire.inBall = createSvg('circle');
         //this.wire.inBall.style.fill   = activeObjectColor;
         this.wire.inBall.style.position = 'absolute';
         this.wire.inBall.style.r        = 3 * this.wire.scale;
+
 
         this.wire.appendChild(this.wire.curve);
         this.wire.appendChild(this.wire.outBall);
@@ -7492,8 +7531,9 @@ class Connection
             
             switch (this.output.dataType)
             {
-                case 'object': color = activeObjectColor; break;
                 case 'number': color = activeNumberColor; break;
+                case 'color':  color = activeColorColor;  break;
+                case 'object': color = activeObjectColor; break;
             }
 
 
@@ -7650,29 +7690,41 @@ function activeNodeRight(node)
 
 
 
-function lastNodeInTree(node) 
-{ 
-    const right = lastNodeRight(node); 
-    return !!right ? right : null;
-}
+// function lastNodeInTree(node) 
+// { 
+//     const right = lastNodeRight(node); 
+//     return !!right ? right : null;
+// }
 
 
 
-function lastNodeRight(node)
+// function lastNodeRight(node)
+// {
+//     let right = null;
+
+//     if (!!node.output)
+//     {
+//         for (const input of node.output.connectedInputs)
+//         {
+//             const _right = lastNodeRight(input.op);
+//             if (_right && !!right) return node;
+//             right = _right;
+//         }
+//     }
+
+//     return !!right ? right : node;
+// }
+
+
+
+function lastNodesInTreeFrom(node)
 {
-    var right = null;
+    let right = [];
 
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const _right = lastNodeRight(input.op);
-            if (_right && !!right) return node;
-            right = _right;
-        }
-    }
+    for (const input of node.output.connectedInputs)
+        right.push(...lastNodesInTreeFrom(input.op));
 
-    return !!right ? right : node;
+    return right.length > 0 ? right : [node];
 }
 
 
@@ -7693,7 +7745,7 @@ class Operator
     }
 
     shortTypeName;
-    
+    defaultWidth;
 
     static nextId = 0;
     id = Operator.nextId++;
@@ -7761,8 +7813,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'object': return activeObjectColor;
             case 'number': return numberColor; //activeNumberColor;
+            case 'color':  return activeColorColor;
+            case 'object': return activeObjectColor;
         }
 
         return 'magenta';
@@ -7774,8 +7827,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'object': return objectColor;
             case 'number': return numberColor;
+            case 'color':  return colorColor;
+            case 'object': return objectColor;
         }
 
         return 'magenta';
@@ -7783,13 +7837,15 @@ class Operator
 
 
 
-    constructor(opType, shortType, dataType)
+    constructor(opType, shortType, dataType, defWidth = 100)
     {
         this.#opType       = opType;   // this is the operator type
         this.#dataType     = dataType; // this is the op's main data type
-
+        
         this.shortTypeName = shortType;
         this._name         = shortType; // this is a temp until the op becomes a graph node
+        
+        this.defaultWidth  = defWidth;
         
         createNode(this);
     }    
@@ -7864,9 +7920,29 @@ class Operator
 
 
 
+    pushUpdate()
+    {
+        this.invalidate(); 
+        lastNodesInTreeFrom(this).forEach(n => n.update());
+    }
+
+
+
+    needsUpdate()
+    {
+        if (this.valid)
+            return false;
+
+        this.updateParams(false);
+
+        return true;
+    }
+
+
+
     update()
     {
-        this.updateParams(false);
+        this.updateNode();
         this.#valid = true;
     }
 
@@ -7954,7 +8030,7 @@ class Operator
             return false; // graph already contains a node with this id
 
         this._name = newName;
-        this.label.innerHTML = this.id + ': ' + newName;
+        this.label.innerHTML = newName;//this.id + ': ' + newName;
 
         return true;
     }
@@ -8105,7 +8181,7 @@ function createNode(node)
     node.div.className   = 'node';
     node.div.op          = node;
 
-    node.div.style.width = '100px';
+    node.div.style.width = node.defaultWidth + 'px';
     
     node.div.selectedSet = false;
     node.div.over        = false;
@@ -8115,8 +8191,8 @@ function createNode(node)
     node.inner           = document.createElement('div');
     node.inner.className = 'nodeInner';
 
-    node.div.appendChild(node.inner);
 
+    node.div.appendChild(node.inner);
 
 
     node.div.addEventListener('pointerenter', function(e)
@@ -8126,7 +8202,6 @@ function createNode(node)
     });
 
 
-
     node.div.addEventListener('pointerleave', function(e)
     {
         node.div.over = false;
@@ -8134,7 +8209,6 @@ function createNode(node)
     });
 
     
-
     createNodeHeader(node);
 }     
 
@@ -8405,6 +8479,9 @@ function initLabelTextbox(node)
     
     node.textbox.addEventListener('focusout', function()
     {
+        if (node.textbox.value != '')
+            node.setName(node.textbox.value); // this is good UX
+
         node.header.removeChild(node.textbox);
         node.clicked = false;
     });
@@ -8464,18 +8541,11 @@ extends Operator
 
     constructor()
     {
-        super('number', 'num', 'number');
+        super('number', 'num', 'number', 70);
 
         this.setOutput(new Output(this.dataType));
-
         this.addParam(this.#paramValue = new NumberParam('', true, false));
-
-
-        this.#paramValue.addEventListener('change', () => 
-        {
-            this.invalidate();
-            this.update();
-        });
+        this.#paramValue.addEventListener('change', () => this.pushUpdate());
     }
 
 
@@ -8491,15 +8561,14 @@ extends Operator
 
     update()
     {
-        if (this.valid) 
+        if (!this.needsUpdate())
             return;
-
-        super.update()
+            
+        this.updateParams(false);
         
         this.output._data = dataFromNumber(this.#paramValue.value);
-
-        for (const input of this.output.connectedInputs)
-            input.op.update();
+            
+        super.update()
     }
 
 
@@ -8536,7 +8605,7 @@ extends Operator
 
     constructor(opType, shortType)
     {
-        super(opType, shortType, 'number');
+        super(opType, shortType, 'number', 65);
 
         this.addNewInput();
         this.setOutput(new Output(this.dataType));
@@ -8572,14 +8641,12 @@ extends Operator
 
     update()
     {
-        if (this.valid) 
+        if (!this.needsUpdate())
             return;
 
-            
-        super.update()
-
         for (const input of this.inputs)
-            input.op.update();
+            if (input.isConnected)
+                input.connectedOutput.op.update();
 
 
         const result = this.getResult();
@@ -8588,8 +8655,7 @@ extends Operator
         this.#paramValue.setValue(result, false, true, false);
 
 
-        for (const input of this.output.connectedInputs)
-            input.op.update();
+        super.update()
     }
 
 
@@ -8779,14 +8845,22 @@ extends OpArithmetic
 }
 
 
-const OpColorTypes = 
+/* 
+    the data type 'color' contains four elements: 
+        color space 
+        c1
+        c2
+        c3
+*/
+
+
+
+const OpColorSpaces = 
 [
-    ['rgb',    'RGB'          ], 
-    ['hsv',    'HSV'          ], 
-    ['hsl',    'HSL'          ], 
-    ['hclokl', 'HCL (OKLab)'  ],
-    ['hcllab', 'HCL (CIE Lab)'],
-    ['hslluv', 'HCL (CIE Luv)']
+    ['RGB'], 
+    ['HSV'], 
+    ['HSL'], 
+    ['HCL']
 ];
 
 
@@ -8806,35 +8880,33 @@ extends Operator
 
     constructor()
     {
-        super('color', 'col', 'color');
+        super('color', 'col', 'color', 80);
 
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#space = new SelectParam('space', true, true, OpColorTypes.map(t => t[1])));
+        this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces));
         this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
         this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
         this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
-        this.#space.control.addEventListener('change', () =>
+        this.#space.control.addEventListener('change', () => 
         {
-            switch (this.#space.control.value)
+            console.log(this.#color);
+            switch (this.#color[0])
             {
-                case 0: this.convert2rgb(); break;
-                case 1: this.convert2hsv(); break;
-                case 2: this.convert2hsl(); break;
-                case 3:
-                case 4:
-                case 5: break;
+                case 0: this.convert2rgb(this.#color); break;
+                case 1: this.convert2hsv(this.#color); break;
+                case 2: this.convert2hsl(this.#color); break;
+                case 3: this.convert2hcl(this.#color); break;
             }
 
-            this.invalidate(); 
-            this.update();
+            this.pushUpdate();
         });
-
-        this.#c1.control.addEventListener('change', () => { this.invalidate(); this.update(); });
-        this.#c2.control.addEventListener('change', () => { this.invalidate(); this.update(); });
-        this.#c3.control.addEventListener('change', () => { this.invalidate(); this.update(); });
+        
+        this.#c1.control.addEventListener('change', () => this.pushUpdate());
+        this.#c2.control.addEventListener('change', () => this.pushUpdate());
+        this.#c3.control.addEventListener('change', () => this.pushUpdate());
 
         this.#space.setValue(0); // init all the params with names
         this.switch2rgb();
@@ -8842,62 +8914,91 @@ extends Operator
 
 
 
-    col2rgb(space, col)
+    color2array(color)
     {
-        switch (space)
+        return [
+            color[1], 
+            color[2], 
+            color[3]];
+    }
+
+
+
+    color2rgb(color)
+    {
+        const col = this.color2array(color);
+
+        switch (color[0])
         {
             case 0: return col;
             case 1: return hsv2rgb(col);
             case 2: return hsl2rgb(col);
+            case 3: return okhcl2rgb(col);
         }
-        
-        return [0, 0, 0];
     }
 
 
 
-    getColor(space)
+    getColorFromParams()
     {
-        switch (space)
+        const color = [
+            this.#space.value,
+            this.#c1   .value,
+            this.#c2   .value,
+            this.#c3   .value];
+
+        const col = this.getNormalColor(color);
+
+        color[1] = col[0];
+        color[2] = col[1];
+        color[3] = col[2];
+
+        return color;
+    }
+
+
+
+    getNormalColor(color)
+    {
+        switch (color[0])
         {
-            case 0: return this.getColorRgb();
-            case 1: 
-            case 2: 
-            case 3: 
-            case 4: 
-            case 5: return this.getColorH();
+            case 0: return this.getNormalColorRgb(color[1], color[2], color[3]);
+            case 1:
+            case 2:
+            case 3: return this.getNormalColorH(color[1], color[2], color[3]);
         }
     }
 
 
 
-    getColorRgb()
+    getNormalColorRgb(c1, c2, c3)
     {
         return [
-            this.#c1.value / 255, 
-            this.#c2.value / 255, 
-            this.#c3.value / 255];
+            c1 / 255, 
+            c2 / 255, 
+            c3 / 255];
     }
 
 
 
-    getColorH()
+    getNormalColorH(c1, c2, c3)
     {
         return [
-            this.#c1.value / 360, 
-            this.#c2.value / 100, 
-            this.#c3.value / 100];
+            c1 / 360, 
+            c2 / 100, 
+            c3 / 100];
     }
 
 
 
-    switchControls(c1, c2, c3, c1min, c1max, c1wrap, c2min, c2max, c3min, c3max)
+    switchControls(c1, c2, c3, c1min, c1max, c1suffix, c1wrap, c2min, c2max, c3min, c3max)
     {
         this.#c1.setName(c1, false); 
         this.#c2.setName(c2, false); 
         this.#c3.setName(c3, false);
 
         this.#c1.control.wrapValue = c1wrap;
+        this.#c1.control.suffix    = c1suffix;
 
         this.#c1.control.min = c1min; this.#c1.control.max = c1max; this.#c1.control.update();
         this.#c2.control.min = c2min; this.#c2.control.max = c2max; this.#c2.control.update();
@@ -8906,46 +9007,92 @@ extends Operator
 
 
 
-    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, false, 0, 255, 0, 255); }
-    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, true,  0, 100, 0, 100); }
-    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, true,  0, 100, 0, 100); }
-    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, true,  0, 100, 0, 100); }
+    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, '',  false, 0, 255, 0, 255); }
+    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, '°', true,  0, 100, 0, 100); }
+    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
+    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
 
 
 
-    convert2rgb()
+    setParamControls(space, col)
     {
-        const col = this.getColor(this.#space.oldValue);
+        this.#space.setValue(space, false, true, true);
 
-        let rgb;
+        let mult;
 
-        switch (this.#space.oldValue)
+        switch (space)
         {
-            case 0: rgb = col;          break;
-            case 1: rgb = hsv2rgb(col); break;
-            case 2: rgb = hsl2rgb(col); break;
+        case 0:
+            this.#c1.control.wrapValue = false;
+            this.#c1.control.suffix = '';
+            mult = [255, 255, 255];
+            break;
+
+        case 1:
+        case 2:
+        case 3:
+            this.#c1.control.wrapValue = true;
+            this.#c1.control.suffix = '°';
+            mult = [360, 100, 100];
+            break;
         }
 
-        this.switch2rgb();
-
-        this.#c1.setValue(rgb[0] * 255, false, true, false);
-        this.#c2.setValue(rgb[1] * 255, false, true, false);
-        this.#c3.setValue(rgb[2] * 255, false, true, false);
+        this.#c1.setValue(col[0] * mult[0], false, true, true);
+        this.#c2.setValue(col[1] * mult[1], false, true, true);
+        this.#c3.setValue(col[2] * mult[2], false, true, true);
     }
 
 
 
-    convert2hsv()
+    convertColorFrom(space)
     {
-        const col = this.getColor(this.#space.oldValue);
+        switch (space)
+        {
+            case 0: this.#color = this.convert2rgb(this.#color); break;
+            case 1: this.#color = this.convert2hsv(this.#color); break;
+            case 2: this.#color = this.convert2hsl(this.#color); break;
+            case 3: this.#color = this.convert2hcl(this.#color); break;
+        }
+    }
+
+
+
+    convert2rgb(color)
+    {
+        const col = this.color2array(color);
+
+        let rgb;
+
+        switch (color[0])
+        {
+            case 0: rgb = col;            break;
+            case 1: rgb = hsv2rgb(col);   break;
+            case 2: rgb = hsl2rgb(col);   break;
+            case 2: rgb = okhcl2rgb(col); break;
+        }
+
+        this.switch2rgb();
+
+        this.setParams(
+            rgb[0] * 255,
+            rgb[1] * 255,
+            rgb[2] * 255);
+    }
+
+
+
+    convert2hsv(color)
+    {
+        const col = this.color2array(color);
 
         let hsv;
 
-        switch (this.#space.oldValue)
+        switch (color[0])
         {
-            case 0: hsv = rgb2hsv(col);          break;
-            case 1: hsv = col;                   break;
-            case 2: hsv = rgb2hsv(hsl2rgb(col)); break;
+            case 0: hsv = rgb2hsv(col);            break;
+            case 1: hsv = col;                     break;
+            case 2: hsv = rgb2hsv(hsl2rgb(col));   break;
+            case 2: hsv = rgb2hsv(okhcl2rgb(col)); break;
         }
 
         if (isNaN(hsv[0]))
@@ -8953,59 +9100,99 @@ extends Operator
             
         this.switch2hsv();
 
-        this.#c1.setValue(hsv[0] * 360, false, true, true);
-        this.#c2.setValue(hsv[1] * 100, false, true, true);
-        this.#c3.setValue(hsv[2] * 100, false, true, true);
+        this.setParams(
+            hsv[0] * 360,
+            hsv[1] * 100,
+            hsv[2] * 100);
     }
 
 
 
     convert2hsl()
     {
-        const col = this.getColor(this.#space.oldValue);
+        const col = this.color2array(color);
 
         let hsl;
 
-        switch (this.#space.oldValue)
+        switch (color[0])
         {
-            case 0: hsl = rgb2hsl(col);          break;
-            case 1: hsl = rgb2hsl(hsv2rgb(col)); break;
-            case 2: hsl = col;                   break;
+            case 0: hsl = rgb2hsl(col);            break;
+            case 1: hsl = rgb2hsl(hsv2rgb(col));   break;
+            case 2: hsl = col;                     break;
+            case 3: hsl = rgb2hsl(okhcl2rgb(col)); break;
         }
 
         this.switch2hsl();
 
-        this.#c1.setValue(hsl[0] * 360, false, true, false);
-        this.#c2.setValue(hsl[1] * 100, false, true, false);
-        this.#c3.setValue(hsl[2] * 100, false, true, false);
+        this.setParams(
+            hsl[0] * 360,
+            hsl[1] * 100,
+            hsl[2] * 100);
+    }
+
+
+
+    convert2hcl()
+    {
+        const col = this.color2array(color);
+
+        let hcl;
+
+        switch (color[0])
+        {
+            case 0: hcl = rgb2okhcl(col);          break;
+            case 1: hcl = rgb2okhcl(hsv2rgb(col)); break;
+            case 2: hcl = rgb2okhcl(hsl2rgb(col)); break;
+            case 3: hcl = col;                     break;
+        }
+
+        this.switch2hcl();
+
+        this.setParams(
+            hcl[0] * 360,
+            hcl[1] * 100,
+            hcl[2] * 100);
+    }
+
+
+
+    setParams(c1, c2, c3)
+    {
+        this.#c1.setValue(c1, false, true, true);
+        this.#c2.setValue(c2, false, true, true);
+        this.#c3.setValue(c3, false, true, true);
     }
 
 
 
     update()
     {
-        if (this.valid) 
+        console.log(this.name + '.OpColor.update()');
+        if (!this.needsUpdate())
             return;
 
-        super.update()
 
-        for (const input of this.inputs)
-            if (input.isConnected)
-                input.op.update();
+        const oldColorSpace = this.#color[0];
 
 
-        this.#color = dataFromColor(
-            this.#space.value, 
-            this.getColor(this.#space.value));
+        const input = this.inputs[0];
+
+        if (input.isConnected)
+        {
+            input.connectedOutput.op.update();
+            this.#color = input.data.color;
+        }
+        else
+            this.#color = this.getColorFromParams();
+
+
+        if (oldColorSpace != this.#space.value)
+            this.convertColorFrom(oldColorSpace);
+
 
         this.output._data = this.#color;
 
-
-        this.updateNode();
-
-
-        for (const input of this.output.connectedInputs)
-            input.op.update();
+        super.update()
     }
 
 
@@ -9015,13 +9202,13 @@ extends Operator
         super.updateNode();
 
 
-        const colBack = this.col2rgb(this.#space.value, this.getColor(this.#space.value));
+        const colBack = this.color2rgb(this.getColorFromParams());
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
         colVal     = hsv2rgb(colVal);
         
-        const darkText = rgb2oklab(colBack)[0] > 0.71;
+        const darkText = rgb2okhcl(colBack)[2] > 0.71;
         const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
 
 
@@ -9029,13 +9216,13 @@ extends Operator
         this.label .style.color           = colorStyleRgb(colText);
 
 
-        this.#space.control.backColor  = colorStyleRgb(colBack);
-        this.#space.control.valueColor = colorStyleRgb(colVal);
-        this.#space.control.textColor  = colorStyleRgb(colText);
+        this.#space.control.backColor  = colBack;
+        this.#space.control.valueColor = colVal;
+        this.#space.control.textColor  = colText;
         this.#space.control.update();
         
 
-        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.5 );
+        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );
         const colOut = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
 
 
@@ -11046,9 +11233,9 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.dragScale         = 0.0004;
         
-    slider.backColor         = '#fff';
-    slider.valueColor        = '#eee';
-    slider.textColor         = '#000';
+    slider.backColor         = [0xff, 0xff, 0xff];
+    //slider.valueColor        = [0xee, 0xee, 0xee];
+    slider.textColor         = [0x00, 0x00, 0x00];
            
     slider.fontSize          = 11;
         
@@ -11361,7 +11548,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             ? slider.value / slider.options.length
             : 0;
 
-        slider.bar  .style.background = slider.valueColor;
+        // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
   
         slider.bar  .style.top        = 0;//slider.mouseOver ? 1 : 0;
         slider.bar  .style.height     = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
@@ -11383,11 +11570,14 @@ function initSelectSlider(slider, width, height, name, options, def)
         }
 
 
-        slider.style.backgroundColor = slider.backColor;
+        slider.style.backgroundColor = colorStyleRgb(slider.backColor);
+
+
+        const darkText = rgb2okhcl(slider.backColor)[2] > 0.71;
 
         slider.bar.style.background =
             slider.value >= 0
-            ? slider.valueColor
+            ? colorStyleRgba(slider.textColor, darkText ? 0.08 : 0.2)//slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
         slider.text.innerHTML = 
@@ -11396,7 +11586,7 @@ function initSelectSlider(slider, width, height, name, options, def)
              : '';
         
 
-        slider.text.style.color = slider.textColor;
+        slider.text.style.color = colorStyleRgb(slider.textColor);
     };
 
 

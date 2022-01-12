@@ -44,27 +44,39 @@ function activeNodeRight(node)
 
 
 
-function lastNodeInTree(node) 
-{ 
-    const right = lastNodeRight(node); 
-    return !!right ? right : null;
-}
+// function lastNodeInTree(node) 
+// { 
+//     const right = lastNodeRight(node); 
+//     return !!right ? right : null;
+// }
 
 
 
-function lastNodeRight(node)
+// function lastNodeRight(node)
+// {
+//     let right = null;
+
+//     if (!!node.output)
+//     {
+//         for (const input of node.output.connectedInputs)
+//         {
+//             const _right = lastNodeRight(input.op);
+//             if (_right && !!right) return node;
+//             right = _right;
+//         }
+//     }
+
+//     return !!right ? right : node;
+// }
+
+
+
+function lastNodesInTreeFrom(node)
 {
-    var right = null;
+    let right = [];
 
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-        {
-            const _right = lastNodeRight(input.op);
-            if (_right && !!right) return node;
-            right = _right;
-        }
-    }
+    for (const input of node.output.connectedInputs)
+        right.push(...lastNodesInTreeFrom(input.op));
 
-    return !!right ? right : node;
+    return right.length > 0 ? right : [node];
 }

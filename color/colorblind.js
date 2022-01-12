@@ -35,7 +35,7 @@ function lch2rgb_CB(l, c, h, colorSpace, cones)
         c * l/100, 
         h + (colorSpace == 1 ? hueBiasLab : hueBiasLuv)]);
 
-    const xyz = col2xyz(col, sRGB.W, colorSpace);
+    const xyz = col2xyz(col, colorSpace);
     
 
     let rgb;
