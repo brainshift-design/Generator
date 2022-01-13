@@ -47,14 +47,15 @@ extends Operator
 
         this.#space.control.addEventListener('change', () => 
         {
-            switch (this.#space.value)
-            {
-                case 0: this.convert2rgb(this.#color); break;
-                case 1: this.convert2hsv(this.#color); break;
-                case 2: this.convert2hsl(this.#color); break;
-                case 3: this.convert2hcl(this.#color); break;
-            }
+            const toSpace = OpColorSpaces[this.#space.value][0];
 
+            console.log('this.#color 1', this.#color);
+            this.#color = this.convertColorTo(this.#color, toSpace);
+            this.switchToSpace(toSpace);
+            console.log('this.#color 2', this.#color);
+
+            this.setColorParams(this.#color, false);
+            this.switchToSpace(toSpace);
             this.pushUpdate();
         });
         
@@ -99,37 +100,46 @@ extends Operator
 
     getColorFromParams()
     {
-        const color = [
+        const col = this.getNormalColor_(
             OpColorSpaces[this.#space.value][0],
             this.#c1.value,
             this.#c2.value,
-            this.#c3.value];
+            this.#c3.value);
 
-        const col = this.getNormalColor(color);
-
-        color[1] = col[0];
-        color[2] = col[1];
-        color[3] = col[2];
-
-        return color;
+        return [
+            OpColorSpaces[this.#space.value][0],
+            col[0],
+            col[1],
+            col[2] ];
     }
 
 
 
     getNormalColor(color)
     {
-        switch (color[0])
+        return this.getNormalColor_(
+            color[0], 
+            color[1], 
+            color[2], 
+            color[3])
+    }
+
+
+
+    getNormalColor_(space, c1, c2, c3)
+    {
+        switch (space)
         {
-            case 'rgb': return this.getNormalColorRgb(color[1], color[2], color[3]);
+            case 'rgb': return this.getNormalColorRgb_(c1, c2, c3);
             case 'hsv':
             case 'hsl':
-            case 'hcl': return this.getNormalColorH(color[1], color[2], color[3]);
+            case 'hcl': return this.getNormalColorH_(c1, c2, c3);
         }
     }
 
 
 
-    getNormalColorRgb(c1, c2, c3)
+    getNormalColorRgb_(c1, c2, c3)
     {
         return [
             c1 / 255, 
@@ -139,7 +149,7 @@ extends Operator
 
 
 
-    getNormalColorH(c1, c2, c3)
+    getNormalColorH_(c1, c2, c3)
     {
         return [
             c1 / 360, 
@@ -149,6 +159,59 @@ extends Operator
 
 
 
+    getSliderColor(color)
+    {
+        switch (color[0])
+        {
+            case 'rgb': return this.getSliderColorRgb_(color[1], color[2], color[3]);
+            case 'hsv':
+            case 'hsl':
+            case 'hcl': return this.getSliderColorH_(color[1], color[2], color[3]);
+        }
+    }
+
+
+
+    getSliderColorRgb_(c1, c2, c3)
+    {
+        return [
+            c1 * 255, 
+            c2 * 255, 
+            c3 * 255];
+    }
+
+
+
+    getSliderColorH_(c1, c2, c3)
+    {
+        return [
+            c1 * 360, 
+            c2 * 100, 
+            c3 * 100];
+    }
+
+
+
+    switchToSpace(space)
+    {
+        switch (space)
+        {
+            case 'rgb': this.switch2rgb(); break;
+            case 'hsv': this.switch2hsv(); break;
+            case 'hsl': this.switch2hsl(); break;
+            case 'hcl': this.switch2hcl(); break;
+        }
+    }
+
+
+
+    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, '',  false, 0, 255, 0, 255); }
+    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, '°', true,  0, 100, 0, 100); }
+    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
+    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
+    
+    
+    
     switchControls(c1, c2, c3, c1min, c1max, c1suffix, c1wrap, c2min, c2max, c3min, c3max)
     {
         this.#c1.setName(c1, false); 
@@ -165,52 +228,45 @@ extends Operator
 
 
 
-    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, '',  false, 0, 255, 0, 255); }
-    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, '°', true,  0, 100, 0, 100); }
-    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
-    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
+    // setParamControls(space, col)
+    // {
+    //     this.#space.setValue(space, false, true, true);
+
+    //     let mult;
+
+    //     switch (space)
+    //     {
+    //     case 'rgb':
+    //         this.#c1.control.wrapValue = false;
+    //         this.#c1.control.suffix = '';
+    //         mult = [255, 255, 255];
+    //         break;
+
+    //     case 'hsv':
+    //     case 'hsl':
+    //     case 'hcl':
+    //         this.#c1.control.wrapValue = true;
+    //         this.#c1.control.suffix = '°';
+    //         mult = [360, 100, 100];
+    //         break;
+    //     }
+
+    //     this.setParams(
+    //         col[0] * mult[0],
+    //         col[1] * mult[1],
+    //         col[2] * mult[2]);
+    // }
 
 
 
-    setParamControls(space, col)
+    convertColorTo(color, toSpace)
     {
-        this.#space.setValue(space, false, true, true);
-
-        let mult;
-
-        switch (space)
+        switch (toSpace)
         {
-        case 'rgb':
-            this.#c1.control.wrapValue = false;
-            this.#c1.control.suffix = '';
-            mult = [255, 255, 255];
-            break;
-
-        case 'hsv':
-        case 'hsl':
-        case 'hcl':
-            this.#c1.control.wrapValue = true;
-            this.#c1.control.suffix = '°';
-            mult = [360, 100, 100];
-            break;
-        }
-
-        this.setParams(
-            col[0] * mult[0],
-            col[1] * mult[1],
-            col[2] * mult[2]);
-    }
-
-
-
-    convertColorFrom(space)
-    {
-        switch (space)
-        {
-            case 'rgb': this.#color = this.convert2rgb(this.#color); break;
-            case 'hsv': this.#color = this.convert2hsv(this.#color); break;
-            case 'hsl': this.#color = this.convert2hsl(this.#color); break;
-            case 'hcl': this.#color = this.convert2hcl(this.#color); break;
+            case 'rgb': return this.convert2rgb(color);
+            case 'hsv': return this.convert2hsv(color);
+            case 'hsl': return this.convert2hsl(color);
+            case 'hcl': return this.convert2hcl(color);
         }
     }
 
@@ -230,12 +286,18 @@ extends Operator
             case 'hcl': rgb = okhcl2rgb(col); break;
         }
 
-        this.switch2rgb();
-
-        this.setParams(
-            rgb[0] * 255,
-            rgb[1] * 255,
-            rgb[2] * 255);
+        // this.switch2rgb();
+       
+        // this.setParams(
+        //     rgb[0] * 255,
+        //     rgb[1] * 255,
+        //     rgb[2] * 255);
+            
+        return [
+           'rgb',
+            rgb[0],
+            rgb[1],
+            rgb[2] ];
     }
 
 
@@ -243,9 +305,9 @@ extends Operator
     convert2hsv(color)
     {
         const col = this.color2array(color);
-
+        
         let hsv;
-
+        
         switch (color[0])
         {
             case 'rgb': hsv = rgb2hsv(col);            break;
@@ -253,16 +315,22 @@ extends Operator
             case 'hsl': hsv = rgb2hsv(hsl2rgb(col));   break;
             case 'hcl': hsv = rgb2hsv(okhcl2rgb(col)); break;
         }
-
+        
         if (isNaN(hsv[0]))
             hsv[0] = 5/6;
-            
-        this.switch2hsv();
+        
+        // this.switch2hsv();
 
-        this.setParams(
-            hsv[0] * 360,
-            hsv[1] * 100,
-            hsv[2] * 100);
+        // this.setParams(
+        //     hsv[0] * 360,
+        //     hsv[1] * 100,
+        //     hsv[2] * 100);
+
+        return [
+           'hsv',
+            hsv[0],
+            hsv[1],
+            hsv[2] ];
     }
 
 
@@ -281,12 +349,18 @@ extends Operator
             case 'hcl': hsl = rgb2hsl(okhcl2rgb(col)); break;
         }
 
-        this.switch2hsl();
+        // this.switch2hsl();
 
-        this.setParams(
-            hsl[0] * 360,
-            hsl[1] * 100,
-            hsl[2] * 100);
+        // this.setParams(
+        //     hsl[0] * 360,
+        //     hsl[1] * 100,
+        //     hsl[2] * 100);
+
+        return [
+           'hsl',
+            hsl[0],
+            hsl[1],
+            hsl[2] ];
     }
 
 
@@ -305,22 +379,42 @@ extends Operator
             case 'hcl': hcl = col;                     break;
         }
 
-        this.switch2hcl();
+        // this.switch2hcl();
 
-        this.setParams(
-            hcl[0] * 360,
-            hcl[1] * 100,
-            hcl[2] * 100);
+        // this.setParams(
+        //     hcl[0] * 360,
+        //     hcl[1] * 100,
+        //     hcl[2] * 100);
+
+        return [
+           'hcl',
+            hcl[0],
+            hcl[1],
+            hcl[2] ];
     }
 
 
 
-    setParams(c1, c2, c3)
+    setColorParams(color, dispatchEvents)
     {
-        this.#c1.setValue(c1, false, true, true);
-        this.#c2.setValue(c2, false, true, true);
-        this.#c3.setValue(c3, false, true, true);
+        console.log('color', color);
+        const col = this.getSliderColor(color);
+        console.log('col', col);
+        
+        //this.#space.setValue(OpColorSpaces.indexOf(s => s[0] == color[0]), false, true, dispatchEvents);
+        this.#c1.setValue(col[0], false, true, dispatchEvents);
+        this.#c2.setValue(col[1], false, true, dispatchEvents);
+        this.#c3.setValue(col[2], false, true, dispatchEvents);
     }
+
+
+
+    // setParams(c1, c2, c3, dispatchEvents = true)
+    // {
+    //     this.#c1.setValue(c1, false, true, dispatchEvents);
+    //     this.#c2.setValue(c2, false, true, dispatchEvents);
+    //     this.#c3.setValue(c3, false, true, dispatchEvents);
+    // }
 
 
 
@@ -337,24 +431,29 @@ extends Operator
             return;
 
 
-        // const oldColorSpace = this.#color[0];
-
-        // if (oldColorSpace != this.#space.value)
-        //     this.convertColorFrom(oldColorSpace);
-
-
         const input = this.inputs[0];
         
-        this.#color = 
-            input.isConnected 
-            ? input.data 
-            : this.getColorFromParams();
-            
-            
+        if (input.isConnected)
+        {
+            //this.#color = input.data;
+            //console.log('this.#color 1', this.#color);
+            this.convertColorFrom(input.data);
+            //console.log('this.#color 2', this.#color);
 
-        //this.updateParams(true);
+            // const col = this.getSliderColor(this.#color);
+    
+            // this.setParams(
+            //     col[0],
+            //     col[1],
+            //     col[2],
+            //     false);
+        }
+        else
+        {
+            this.#color = this.getColorFromParams();
+        }
 
-
+    
         this.output._data = this.#color;
 
         super.update()

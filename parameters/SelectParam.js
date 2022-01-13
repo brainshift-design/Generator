@@ -36,12 +36,12 @@ extends Parameter
     {
         super(name, 'number');
 
-        this._control = document.createElement('div');
+        this._control       = document.createElement('div');
         this.control.param  = this;
         this.control.zIndex = 0;
 
-        this.options      = options;
-        this.defaultValue = value;
+        this.options        = options;
+        this.defaultValue   = value;
 
         initSelectSlider(
             this.control,
