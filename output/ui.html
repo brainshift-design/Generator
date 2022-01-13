@@ -2257,20 +2257,6 @@ function hide(element) { element.style.visibility = 'hidden'; }
 
 
 
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'number': return active ? activeNumberColor : numberColor;
-        case 'color':  return active ? activeColorColor  : colorColor;
-        case 'object': return active ? activeObjectColor : objectColor;
-    }
-
-    return 'magenta';
-}
-
-
-
 function position(e)
 {
     return {
@@ -4493,20 +4479,6 @@ function hide(element) { element.style.visibility = 'hidden'; }
 
 
 
-function colorFromDataType(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'number': return active ? activeNumberColor : numberColor;
-        case 'color':  return active ? activeColorColor  : colorColor;
-        case 'object': return active ? activeObjectColor : objectColor;
-    }
-
-    return 'magenta';
-}
-
-
-
 function position(e)
 {
     return {
@@ -6408,10 +6380,8 @@ extends EventTarget
     _div;      get div()      { return this._div;      }
 
 
-
     onchange  = new Event('change' );
     onconfirm = new Event('confirm');
-
 
 
     constructor(name, type)
@@ -6452,14 +6422,14 @@ extends EventTarget
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
         if (dispatchEvents)
-            this.dispatchSetValueEvents(value != this.oldValue, confirm);
+            this.dispatchSetValueEvents(this.oldValue, value, confirm);
     }
 
 
 
-    dispatchSetValueEvents(valueChanged, confirm)
+    dispatchSetValueEvents(oldValue, newValue, confirm)
     {
-        if (valueChanged)
+        if (newValue != oldValue)
         {
             this.dispatchEvent(this.onchange);
             
@@ -6938,7 +6908,17 @@ extends Parameter
 }
 
 
+function colorFromDataType(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'number': return active ? activeNumberColor : numberColor;
+        case 'color':  return active ? activeColorColor  : colorColor;
+        case 'object': return active ? activeObjectColor : objectColor;
+    }
 
+    return 'magenta';
+}
 
 
 
@@ -7428,6 +7408,7 @@ class Output
         this.control.output    = this;
 
         this.color = colorStyleRgba_(0, 0, 0, 0.12);
+        
         this.updateControl();
 
 
@@ -7489,7 +7470,7 @@ class Connection
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
         //this.wire.curve.style.stroke    = activeObjectColor;
-        this.wire.curve.style.strokeWidth = 1.2 * this.wire.scale;
+        //this.wire.curve.style.strokeWidth = 1.2 * this.wire.scale;
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
@@ -7527,20 +7508,10 @@ class Connection
             y2 -= controlBar.offsetHeight / graphView.zoom;
 
 
-            let color;
-            
-            switch (this.output.dataType)
-            {
-                case 'number': color = activeNumberColor; break;
-                case 'color':  color = activeColorColor;  break;
-                case 'object': color = activeObjectColor; break;
-            }
-
-
             this.wire.updateCurve  (x1, y1, x2, y2);
             this.wire.updateOutBall(x1, y1        );
             this.wire.updateInBall (        x2, y2);
-            this.wire.updateStyle(color);
+            this.wire.updateStyle  (this.wire.getColor());
 
 
             show(this.wire.outBall);
@@ -7561,7 +7532,7 @@ class Connection
 
             this.wire.updateCurve  (x1, y1, x, y);
             this.wire.updateOutBall(x1, y1      );
-            this.wire.updateStyle(colorFromDataType(this.output.dataType, true));
+            this.wire.updateStyle(this.wire.getColor());
 
             hide(this.wire.inBall);
         };
@@ -7580,7 +7551,7 @@ class Connection
 
             this.wire.updateCurve (x, y, x2, y2);
             this.wire.updateInBall(      x2, y2);
-            this.wire.updateStyle(colorFromDataType(this.input.dataType, true));
+            this.wire.updateStyle(this.wire.getColor());
 
             hide(this.wire.outBall);
         };
@@ -7594,6 +7565,16 @@ class Connection
                 + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
                 + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
                 + ' '   +  (x2                ) + ',' + y2);
+        };
+
+
+
+        this.wire.getColor = () =>
+        {
+            return colorStyleRgb(
+                this.output
+                ? this.output.op.getOutputDataColor()
+                : this.output.op.getDefaultOutputDataColor());
         };
 
 
@@ -7620,9 +7601,9 @@ class Connection
             this.wire. inBall.style.fill   = color;
             this.wire.outBall.style.fill   = color;
 
-            this.wire.curve  .style.strokeWidth = 1.2 * this.wire.scale;
-            this.wire. inBall.style.r           = 3   * this.wire.scale;
-            this.wire.outBall.style.r           = 3   * this.wire.scale;
+            this.wire.curve  .style.strokeWidth = 2 * this.wire.scale;
+            this.wire. inBall.style.r           = 3 * this.wire.scale;
+            this.wire.outBall.style.r           = 3 * this.wire.scale;
         };
     }
 
@@ -7874,11 +7855,26 @@ class Operator
         }
 
         param.control.style.display = 'inline-block';
+        param.control.style.width   = '100%';
         
         this.inner.appendChild(param.div);
     }
  
     
+
+    getOutputDataColor()
+    {
+        return this.getDefaultOutputDataColor();
+    }
+
+
+
+    getDefaultOutputDataColor()
+    {
+        return colorFromDataType(this.#dataType, false);
+    }
+
+
 
     reset() // for the entire generation run
     {
@@ -7933,8 +7929,6 @@ class Operator
         if (this.valid)
             return false;
 
-        this.updateParams(false);
-
         return true;
     }
 
@@ -7956,48 +7950,50 @@ class Operator
 
 
 
-    // updateInputWires()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             input.connection.wire.update(true);
-    //     }
-    // }
+    updateInputWires()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.isConnected)
+                input.connection.wire.update();
+        }
+    }
 
 
 
-    // updateOutputWires()
-    // {
-    //     if (   this.output 
-    //         && this.output.isConnected)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //             input.connection.wire.update(true);
-    //     }
-    // }
+    updateOutputWires()
+    {
+        if (   this.output 
+            && this.output.isConnected)
+        {
+            for (const input of this.output.connectedInputs)
+                input.connection.wire.update();
+        }
+    }
 
 
 
-    // updateParamWires()
-    // {
-    //     for (const param of this.params)
-    //     {
-    //         if (   param.input
-    //             && param.input.isConnected) 
-    //             param.input.connection.wire.update(true);
-    //     }
-    // }
+    updateParamWires()
+    {
+        for (const param of this.params)
+        {
+            if (   param.input
+                && param.input.isConnected) 
+                param.input.connection.wire.update();
+        }
+    }
 
 
 
     updateNode() 
     {
-        this.header.style.backgroundColor = colorFromDataType(this.#dataType, false);
+        this.header.style.backgroundColor = this.getOutputDataColor();
 
-        // this.updateInputWires ();
-        // this.updateOutputWires();
-        // this.updateParamWires ();
+        //this.updateParams(false);
+
+        this.updateInputWires ();
+        this.updateOutputWires();
+        this.updateParamWires ();
     }
 
 
@@ -8857,10 +8853,10 @@ extends OpArithmetic
 
 const OpColorSpaces = 
 [
-    ['RGB'], 
-    ['HSV'], 
-    ['HSL'], 
-    ['HCL']
+    ['rgb', 'RGB'], 
+    ['hsv', 'HSV'], 
+    ['hsl', 'HSL'], 
+    ['hcl', 'HCL']
 ];
 
 
@@ -8868,13 +8864,13 @@ const OpColorSpaces =
 class   OpColor
 extends Operator
 {
+    #color;
+
     #space;
     
     #c1;
     #c2;
     #c3;
-    
-    #color;
 
 
 
@@ -8882,18 +8878,19 @@ extends Operator
     {
         super('color', 'col', 'color', 80);
 
+        this.#color = ['rgb', 128, 128, 128];
+
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
 
-        this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces));
+        this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
         this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
         this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
         this.#space.control.addEventListener('change', () => 
         {
-            console.log(this.#color);
-            switch (this.#color[0])
+            switch (this.#space.value)
             {
                 case 0: this.convert2rgb(this.#color); break;
                 case 1: this.convert2hsv(this.#color); break;
@@ -8908,8 +8905,12 @@ extends Operator
         this.#c2.control.addEventListener('change', () => this.pushUpdate());
         this.#c3.control.addEventListener('change', () => this.pushUpdate());
 
-        this.#space.setValue(0); // init all the params with names
-        this.switch2rgb();
+        setTimeout(() => 
+        {
+            this.update();
+            this.#space.setValue(0); // init all the params with names
+            this.switch2rgb();
+        });
     }
 
 
@@ -8930,10 +8931,10 @@ extends Operator
 
         switch (color[0])
         {
-            case 0: return col;
-            case 1: return hsv2rgb(col);
-            case 2: return hsl2rgb(col);
-            case 3: return okhcl2rgb(col);
+            case 'rgb': return col;
+            case 'hsv': return hsv2rgb(col);
+            case 'hsl': return hsl2rgb(col);
+            case 'hcl': return okhcl2rgb(col);
         }
     }
 
@@ -8942,10 +8943,10 @@ extends Operator
     getColorFromParams()
     {
         const color = [
-            this.#space.value,
-            this.#c1   .value,
-            this.#c2   .value,
-            this.#c3   .value];
+            OpColorSpaces[this.#space.value][0],
+            this.#c1.value,
+            this.#c2.value,
+            this.#c3.value];
 
         const col = this.getNormalColor(color);
 
@@ -8962,10 +8963,10 @@ extends Operator
     {
         switch (color[0])
         {
-            case 0: return this.getNormalColorRgb(color[1], color[2], color[3]);
-            case 1:
-            case 2:
-            case 3: return this.getNormalColorH(color[1], color[2], color[3]);
+            case 'rgb': return this.getNormalColorRgb(color[1], color[2], color[3]);
+            case 'hsv':
+            case 'hsl':
+            case 'hcl': return this.getNormalColorH(color[1], color[2], color[3]);
         }
     }
 
@@ -9022,24 +9023,25 @@ extends Operator
 
         switch (space)
         {
-        case 0:
+        case 'rgb':
             this.#c1.control.wrapValue = false;
             this.#c1.control.suffix = '';
             mult = [255, 255, 255];
             break;
 
-        case 1:
-        case 2:
-        case 3:
+        case 'hsv':
+        case 'hsl':
+        case 'hcl':
             this.#c1.control.wrapValue = true;
             this.#c1.control.suffix = '°';
             mult = [360, 100, 100];
             break;
         }
 
-        this.#c1.setValue(col[0] * mult[0], false, true, true);
-        this.#c2.setValue(col[1] * mult[1], false, true, true);
-        this.#c3.setValue(col[2] * mult[2], false, true, true);
+        this.setParams(
+            col[0] * mult[0],
+            col[1] * mult[1],
+            col[2] * mult[2]);
     }
 
 
@@ -9048,10 +9050,10 @@ extends Operator
     {
         switch (space)
         {
-            case 0: this.#color = this.convert2rgb(this.#color); break;
-            case 1: this.#color = this.convert2hsv(this.#color); break;
-            case 2: this.#color = this.convert2hsl(this.#color); break;
-            case 3: this.#color = this.convert2hcl(this.#color); break;
+            case 'rgb': this.#color = this.convert2rgb(this.#color); break;
+            case 'hsv': this.#color = this.convert2hsv(this.#color); break;
+            case 'hsl': this.#color = this.convert2hsl(this.#color); break;
+            case 'hcl': this.#color = this.convert2hcl(this.#color); break;
         }
     }
 
@@ -9065,10 +9067,10 @@ extends Operator
 
         switch (color[0])
         {
-            case 0: rgb = col;            break;
-            case 1: rgb = hsv2rgb(col);   break;
-            case 2: rgb = hsl2rgb(col);   break;
-            case 2: rgb = okhcl2rgb(col); break;
+            case 'rgb': rgb = col;            break;
+            case 'hsv': rgb = hsv2rgb(col);   break;
+            case 'hsl': rgb = hsl2rgb(col);   break;
+            case 'hcl': rgb = okhcl2rgb(col); break;
         }
 
         this.switch2rgb();
@@ -9089,10 +9091,10 @@ extends Operator
 
         switch (color[0])
         {
-            case 0: hsv = rgb2hsv(col);            break;
-            case 1: hsv = col;                     break;
-            case 2: hsv = rgb2hsv(hsl2rgb(col));   break;
-            case 2: hsv = rgb2hsv(okhcl2rgb(col)); break;
+            case 'rgb': hsv = rgb2hsv(col);            break;
+            case 'hsv': hsv = col;                     break;
+            case 'hsl': hsv = rgb2hsv(hsl2rgb(col));   break;
+            case 'hcl': hsv = rgb2hsv(okhcl2rgb(col)); break;
         }
 
         if (isNaN(hsv[0]))
@@ -9108,7 +9110,7 @@ extends Operator
 
 
 
-    convert2hsl()
+    convert2hsl(color)
     {
         const col = this.color2array(color);
 
@@ -9116,10 +9118,10 @@ extends Operator
 
         switch (color[0])
         {
-            case 0: hsl = rgb2hsl(col);            break;
-            case 1: hsl = rgb2hsl(hsv2rgb(col));   break;
-            case 2: hsl = col;                     break;
-            case 3: hsl = rgb2hsl(okhcl2rgb(col)); break;
+            case 'rgb': hsl = rgb2hsl(col);            break;
+            case 'hsv': hsl = rgb2hsl(hsv2rgb(col));   break;
+            case 'hsl': hsl = col;                     break;
+            case 'hcl': hsl = rgb2hsl(okhcl2rgb(col)); break;
         }
 
         this.switch2hsl();
@@ -9132,7 +9134,7 @@ extends Operator
 
 
 
-    convert2hcl()
+    convert2hcl(color)
     {
         const col = this.color2array(color);
 
@@ -9140,10 +9142,10 @@ extends Operator
 
         switch (color[0])
         {
-            case 0: hcl = rgb2okhcl(col);          break;
-            case 1: hcl = rgb2okhcl(hsv2rgb(col)); break;
-            case 2: hcl = rgb2okhcl(hsl2rgb(col)); break;
-            case 3: hcl = col;                     break;
+            case 'rgb': hcl = rgb2okhcl(col);          break;
+            case 'hsv': hcl = rgb2okhcl(hsv2rgb(col)); break;
+            case 'hsl': hcl = rgb2okhcl(hsl2rgb(col)); break;
+            case 'hcl': hcl = col;                     break;
         }
 
         this.switch2hcl();
@@ -9165,29 +9167,35 @@ extends Operator
 
 
 
+    getOutputDataColor()
+    {
+        return this.color2rgb(this.#color);
+    }
+
+
+
     update()
     {
-        console.log(this.name + '.OpColor.update()');
         if (!this.needsUpdate())
             return;
 
 
-        const oldColorSpace = this.#color[0];
+        // const oldColorSpace = this.#color[0];
+
+        // if (oldColorSpace != this.#space.value)
+        //     this.convertColorFrom(oldColorSpace);
 
 
         const input = this.inputs[0];
+        
+        this.#color = 
+            input.isConnected 
+            ? input.data 
+            : this.getColorFromParams();
+            
+            
 
-        if (input.isConnected)
-        {
-            input.connectedOutput.op.update();
-            this.#color = input.data.color;
-        }
-        else
-            this.#color = this.getColorFromParams();
-
-
-        if (oldColorSpace != this.#space.value)
-            this.convertColorFrom(oldColorSpace);
+        //this.updateParams(true);
 
 
         this.output._data = this.#color;
@@ -9199,10 +9207,7 @@ extends Operator
 
     updateNode()
     {
-        super.updateNode();
-
-
-        const colBack = this.color2rgb(this.getColorFromParams());
+        const colBack = this.color2rgb(this.#color);//this.getColorFromParams());
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
@@ -9238,6 +9243,9 @@ extends Operator
 
         this.#space.output.color = colOut;
         this.#space.output.updateControl();
+
+
+        super.updateNode();
     }
 }
 
@@ -11545,7 +11553,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     {
         let v =  
             slider.options.length > 0
-            ? slider.value / slider.options.length
+            ? slider.value / (slider.options.length-1)
             : 0;
 
         // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
@@ -11561,7 +11569,7 @@ function initSelectSlider(slider, width, height, name, options, def)
         if (v >= 0)
         {
             slider.bar.style.left  = slider.offsetLeft;
-            slider.bar.style.width = Math.round(v * slider.clientWidth);
+            slider.bar.style.width = v * slider.clientWidth;
         }
         else
         {
@@ -13087,6 +13095,38 @@ function initMenuSelect(select)
 
 
 
+graphView.startConnectionFromOutput = output =>
+{
+    graphView.tempConn = new Connection(output, null);
+    graphView.addWireFromOutput(graphView.tempConn.wire, output);
+    graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
+    graphView.tempConn.wire.scale        = graphView.zoom;
+    graphView.tempConn.wire.output       = output;
+    graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
+};
+
+
+
+graphView.startConnectionFromInput = input =>
+{
+    graphView.tempConn = new Connection(null, input);
+    graphView.addWireFromInput(graphView.tempConn.wire, input);    
+    graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
+    graphView.tempConn.wire.scale        = graphView.zoom;
+    graphView.tempConn.wire.input        = input;
+    graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
+};
+
+
+
+graphView.cancelConnection = () =>
+{
+    graphView.removeWire(graphView.tempConn.wire);    
+    graphView.tempConn = null;
+};
+
+
+
 graphView.endConnection = function()
 {
     if (graphView.tempConn.output) // FROM OUTPUT
@@ -13875,38 +13915,6 @@ graphView.addEventListener('wheel', e =>
         }
     }
 });
-
-
-
-graphView.startConnectionFromOutput = output =>
-{
-    graphView.tempConn = new Connection(output, null);
-    graphView.addWireFromOutput(graphView.tempConn.wire, output);
-    graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
-    graphView.tempConn.wire.scale        = graphView.zoom;
-    graphView.tempConn.wire.output       = output;
-    graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
-};
-
-
-
-graphView.startConnectionFromInput = input =>
-{
-    graphView.tempConn = new Connection(null, input);
-    graphView.addWireFromInput(graphView.tempConn.wire, input);    
-    graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
-    graphView.tempConn.wire.scale        = graphView.zoom;
-    graphView.tempConn.wire.input        = input;
-    graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
-};
-
-
-
-graphView.cancelConnection = () =>
-{
-    graphView.removeWire(graphView.tempConn.wire);    
-    graphView.tempConn = null;
-};
 
 
 

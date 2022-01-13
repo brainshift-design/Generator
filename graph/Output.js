@@ -46,6 +46,7 @@ class Output
         this.control.output    = this;
 
         this.color = colorStyleRgba_(0, 0, 0, 0.12);
+        
         this.updateControl();
 
 

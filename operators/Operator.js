@@ -144,11 +144,26 @@ class Operator
         }
 
         param.control.style.display = 'inline-block';
+        param.control.style.width   = '100%';
         
         this.inner.appendChild(param.div);
     }
  
     
+
+    getOutputDataColor()
+    {
+        return this.getDefaultOutputDataColor();
+    }
+
+
+
+    getDefaultOutputDataColor()
+    {
+        return colorFromDataType(this.#dataType, false);
+    }
+
+
 
     reset() // for the entire generation run
     {
@@ -203,8 +218,6 @@ class Operator
         if (this.valid)
             return false;
 
-        this.updateParams(false);
-
         return true;
     }
 
@@ -226,48 +239,50 @@ class Operator
 
 
 
-    // updateInputWires()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             input.connection.wire.update(true);
-    //     }
-    // }
+    updateInputWires()
+    {
+        for (const input of this.inputs)
+        {
+            if (input.isConnected)
+                input.connection.wire.update();
+        }
+    }
 
 
 
-    // updateOutputWires()
-    // {
-    //     if (   this.output 
-    //         && this.output.isConnected)
-    //     {
-    //         for (const input of this.output.connectedInputs)
-    //             input.connection.wire.update(true);
-    //     }
-    // }
+    updateOutputWires()
+    {
+        if (   this.output 
+            && this.output.isConnected)
+        {
+            for (const input of this.output.connectedInputs)
+                input.connection.wire.update();
+        }
+    }
 
 
 
-    // updateParamWires()
-    // {
-    //     for (const param of this.params)
-    //     {
-    //         if (   param.input
-    //             && param.input.isConnected) 
-    //             param.input.connection.wire.update(true);
-    //     }
-    // }
+    updateParamWires()
+    {
+        for (const param of this.params)
+        {
+            if (   param.input
+                && param.input.isConnected) 
+                param.input.connection.wire.update();
+        }
+    }
 
 
 
     updateNode() 
     {
-        this.header.style.backgroundColor = colorFromDataType(this.#dataType, false);
+        this.header.style.backgroundColor = this.getOutputDataColor();
 
-        // this.updateInputWires ();
-        // this.updateOutputWires();
-        // this.updateParamWires ();
+        //this.updateParams(false);
+
+        this.updateInputWires ();
+        this.updateOutputWires();
+        this.updateParamWires ();
     }
 
 

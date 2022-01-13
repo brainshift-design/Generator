@@ -14,14 +14,14 @@
 ../operators/Operator node.js
 ../operators/Operator textbox.js
 
-../operators/Math/OpNumber.js
-../operators/Math/OpArithmetic.js
-../operators/Math/OpAdd.js
-../operators/Math/OpSubtract.js
-../operators/Math/OpMultiply.js
-../operators/Math/OpDivide.js
-../operators/Math/OpExponent.js
-//../operators/Math/OpRandom.js
+../operators/math/OpNumber.js
+../operators/math/OpArithmetic.js
+../operators/math/OpAdd.js
+../operators/math/OpSubtract.js
+../operators/math/OpMultiply.js
+../operators/math/OpDivide.js
+../operators/math/OpExponent.js
+//../operators/math/OpRandom.js
 
 ../operators/OpColor.js
 

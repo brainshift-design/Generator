@@ -16,10 +16,8 @@ extends EventTarget
     _div;      get div()      { return this._div;      }
 
 
-
     onchange  = new Event('change' );
     onconfirm = new Event('confirm');
-
 
 
     constructor(name, type)
@@ -60,14 +58,14 @@ extends EventTarget
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
         if (dispatchEvents)
-            this.dispatchSetValueEvents(value != this.oldValue, confirm);
+            this.dispatchSetValueEvents(this.oldValue, value, confirm);
     }
 
 
 
-    dispatchSetValueEvents(valueChanged, confirm)
+    dispatchSetValueEvents(oldValue, newValue, confirm)
     {
-        if (valueChanged)
+        if (newValue != oldValue)
         {
             this.dispatchEvent(this.onchange);
             

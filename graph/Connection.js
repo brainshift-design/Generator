@@ -26,7 +26,7 @@ class Connection
         this.wire.curve = createSvg('path');
         this.wire.curve.style.fill        = 'none';
         //this.wire.curve.style.stroke    = activeObjectColor;
-        this.wire.curve.style.strokeWidth = 1.2 * this.wire.scale;
+        //this.wire.curve.style.strokeWidth = 1.2 * this.wire.scale;
         this.wire.curve.style.position    = 'absolute';
         this.wire.appendChild(this.wire.curve);
 
@@ -64,20 +64,10 @@ class Connection
             y2 -= controlBar.offsetHeight / graphView.zoom;
 
 
-            let color;
-            
-            switch (this.output.dataType)
-            {
-                case 'number': color = activeNumberColor; break;
-                case 'color':  color = activeColorColor;  break;
-                case 'object': color = activeObjectColor; break;
-            }
-
-
             this.wire.updateCurve  (x1, y1, x2, y2);
             this.wire.updateOutBall(x1, y1        );
             this.wire.updateInBall (        x2, y2);
-            this.wire.updateStyle(color);
+            this.wire.updateStyle  (this.wire.getColor());
 
 
             show(this.wire.outBall);
@@ -98,7 +88,7 @@ class Connection
 
             this.wire.updateCurve  (x1, y1, x, y);
             this.wire.updateOutBall(x1, y1      );
-            this.wire.updateStyle(colorFromDataType(this.output.dataType, true));
+            this.wire.updateStyle(this.wire.getColor());
 
             hide(this.wire.inBall);
         };
@@ -117,7 +107,7 @@ class Connection
 
             this.wire.updateCurve (x, y, x2, y2);
             this.wire.updateInBall(      x2, y2);
-            this.wire.updateStyle(colorFromDataType(this.input.dataType, true));
+            this.wire.updateStyle(this.wire.getColor());
 
             hide(this.wire.outBall);
         };
@@ -131,6 +121,16 @@ class Connection
                 + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
                 + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
                 + ' '   +  (x2                ) + ',' + y2);
+        };
+
+
+
+        this.wire.getColor = () =>
+        {
+            return colorStyleRgb(
+                this.output
+                ? this.output.op.getOutputDataColor()
+                : this.output.op.getDefaultOutputDataColor());
         };
 
 
@@ -157,9 +157,9 @@ class Connection
             this.wire. inBall.style.fill   = color;
             this.wire.outBall.style.fill   = color;
 
-            this.wire.curve  .style.strokeWidth = 1.2 * this.wire.scale;
-            this.wire. inBall.style.r           = 3   * this.wire.scale;
-            this.wire.outBall.style.r           = 3   * this.wire.scale;
+            this.wire.curve  .style.strokeWidth = 2 * this.wire.scale;
+            this.wire. inBall.style.r           = 3 * this.wire.scale;
+            this.wire.outBall.style.r           = 3 * this.wire.scale;
         };
     }
 

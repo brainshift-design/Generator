@@ -344,7 +344,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     {
         let v =  
             slider.options.length > 0
-            ? slider.value / slider.options.length
+            ? slider.value / (slider.options.length-1)
             : 0;
 
         // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
@@ -360,7 +360,7 @@ function initSelectSlider(slider, width, height, name, options, def)
         if (v >= 0)
         {
             slider.bar.style.left  = slider.offsetLeft;
-            slider.bar.style.width = Math.round(v * slider.clientWidth);
+            slider.bar.style.width = v * slider.clientWidth;
         }
         else
         {
