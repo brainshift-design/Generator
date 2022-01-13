@@ -299,7 +299,7 @@ graphView.putNodeOnTop = node =>
     const topIndices = 
           1 
         + node.inputs.filter(i => i.isConnected).length 
-        + (!!node.output && node.output.isConnected ? 1 : 0);
+        + (node.outputs.find(o => o.isConnected) ? 1 : 0);
         
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
@@ -309,11 +309,9 @@ graphView.putNodeOnTop = node =>
     for (const input of node.inputs.filter(i => i.isConnected))
         input.connection.wire.style.zIndex = z--;
         
-    if (!!node.output)
-    {
-        for (const input of node.output.connectedInputs)
-            input.connection.wire.style.zIndex = z--;
-    }
+    for (const output of node.outputs)
+        for (const connInput of output.connectedInputs)
+            connInput.connection.wire.style.zIndex = z--;
     
     node.div.style.zIndex = z;
 };
@@ -343,11 +341,9 @@ graphView.updateNodeTransform = function(node)
     }
 
 
-    if (node.output)
-    {
-        for (const input of node.output.connectedInputs)
-            graphView.updateWireTransform(input.connection.wire);        
-    }
+    for (const output of node.outputs)
+        for (const connInput of output.connectedInputs)
+            graphView.updateWireTransform(connInput.connection.wire);
 };
 
 
@@ -358,7 +354,7 @@ graphView.updateWireTransform = function(wire)
     wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
 
     wire.setAttribute('viewBox',
-                0
+                 0
         + ' ' + 20                     / graphView.zoom // 20 seems to be the plugin title bar
         + ' ' + graphView.clientWidth  / graphView.zoom
         + ' ' + graphView.clientHeight / graphView.zoom);

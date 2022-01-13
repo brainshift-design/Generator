@@ -14,7 +14,7 @@ extends Operator
     {
         super('rect', 'object');
 
-        this.setOutput(new Output(this.dataType));
+        this.addOutput(new Output(this.dataType));
 
         this.addParam(this.#x      = new NumberParam('x',      true,   0));
         this.addParam(this.#y      = new NumberParam('y',      true,   0));

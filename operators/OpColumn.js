@@ -11,7 +11,7 @@ extends Operator
         super('column', 'object');
 
         this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        this.addOutput(new Output(this.dataType));
         
         this.addParam(this.#count = new NumberParam('count', true,  7, 1));
         this.addParam(this.#gap   = new NumberParam('gap',   true, 10, 0));
@@ -32,7 +32,7 @@ extends Operator
 //         super('row', 'object');
 
 //         this.addInput (new Input (this.dataType));
-//         this.setOutput(new Output(this.dataType));
+//         this.addOutput(new Output(this.dataType));
         
 //         this.addParam(this.#count = new NumberParam('count',  4, 1));
 //         this.addParam(this.#gap   = new NumberParam('gap',   10, 0));

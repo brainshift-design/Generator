@@ -9,7 +9,7 @@ extends Operator
     {
         super('number', 'num', 'number', 70);
 
-        this.setOutput(new Output(this.dataType));
+        this.addOutput(new Output(this.dataType));
         this.addParam(this.#paramValue = new NumberParam('', true, false));
         this.#paramValue.addEventListener('change', () => this.pushUpdate());
     }
@@ -32,7 +32,7 @@ extends Operator
             
         this.updateParams(false);
         
-        this.output._data = dataFromNumber(this.#paramValue.value);
+        this.outputs[0]._data = dataFromNumber(this.#paramValue.value);
             
         super.update()
     }
@@ -43,7 +43,7 @@ extends Operator
     {
         super.updateParams(dispatchEvents);
 
-        this.output._value = this.#paramValue.value;
+        this.outputs[0]._value = this.#paramValue.value;
     }
 
 

@@ -3,6 +3,9 @@ extends Parameter
 {
     defaultValue;
 
+    input;
+    output;
+
     options = [];
     
 
@@ -12,12 +15,7 @@ extends Parameter
     
     get oldValue()   { return this._control.oldValue; }
 
-    
 
-    input;
-    output;
-
-    
 
     get valueText() { return this.control.valueText; }
     set valueText(text) 
@@ -59,18 +57,20 @@ extends Parameter
         this.initOutput(hasOutput);
 
             
-        this.control.addEventListener('change', e =>
-        {
-            this.op.valid = false;
-            uiSetParam(this, this.value);
-        });
+        this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
+        // this.control.addEventListener('change', e =>
+        // {
+        //     this.op.valid = false;
+        //     uiSetParam(this, this.value);
+        // });
 
 
-        this.control.addEventListener('confirm', e =>
-        {
-            this.op.valid = false;
-            actionManager.do(new SetValueAction(this, this.value));
-        });
+        // this.control.addEventListener('confirm', e =>
+        // {
+        //     this.op.valid = false;
+        //     actionManager.do(new SetValueAction(this, this.value));
+        // });
     }
 
 

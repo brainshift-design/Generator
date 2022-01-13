@@ -118,14 +118,14 @@ class Graph
                 this.disconnect(input, true);
             }
             
-            if (!!node.output)
+            for (const output of node.outputs)
             {
-                for (const input of node.output.connectedInputs)
+                for (const connInput of output.connectedInputs)
                 {
-                    this.disconnect(input, true);
+                    this.disconnect(connInput, true);
                     
-                    if (!activeNodeInTree(input.op))
-                    input.op.lastNodeInTree.makeActive();
+                    if (!activeNodeInTree(connInput.op))
+                    connInput.op.lastNodeInTree.makeActive();
                 }
             }
             

@@ -30,11 +30,11 @@ function activeNodeRight(node)
 {
     if (node.active) return node;
 
-    if (!!node.output)
+    for (const output of node.outputs)
     {
-        for (const input of node.output.connectedInputs)
+        for (const connInput of output.connectedInputs)
         {
-            const right = activeNodeRight(input.op);
+            const right = activeNodeRight(connInput.op);
             if (right) return right;
         }
     }
@@ -75,8 +75,9 @@ function lastNodesInTreeFrom(node)
 {
     let right = [];
 
-    for (const input of node.output.connectedInputs)
-        right.push(...lastNodesInTreeFrom(input.op));
+    for (const output of node.outputs)
+        for (const input of output.connectedInputs)
+            right.push(...lastNodesInTreeFrom(input.op));
 
     return right.length > 0 ? right : [node];
 }

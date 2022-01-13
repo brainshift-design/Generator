@@ -24,9 +24,9 @@ class Operator
     graph = null;
     
     
-    inputs = [];
-    output = null;
-    params = [];
+    inputs  = [];
+    outputs = [];
+    params  = [];
     
 
     
@@ -131,6 +131,15 @@ class Operator
 
 
 
+    addOutput(output)
+    {
+        output._op = this;
+        this.outputs.push(output);
+        this.outputControls.appendChild(output.control);
+    }
+
+
+
     addParam(param)
     {
         this.params.push(param);
@@ -143,6 +152,12 @@ class Operator
             this.inputs.push(param.input);
         }
 
+        if (param.output)
+        {
+            param.output._op = this;
+            this.outputs.push(param.output);
+        }
+
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
         
@@ -151,16 +166,30 @@ class Operator
  
     
 
-    getOutputDataColor()
+    getHeaderColor()
     {
-        return this.getDefaultOutputDataColor();
+        return this.getDefaultHeaderColor();
     }
 
 
 
-    getDefaultOutputDataColor()
+    getDefaultHeaderColor()
     {
         return colorFromDataType(this.#dataType, false);
+    }
+
+
+
+    getOutputWireColor()
+    {
+        return this.getDefaultOutputWireColor();
+    }
+
+
+
+    getDefaultOutputWireColor()
+    {
+        return colorFromDataType(this.#dataType, true);
     }
 
 
@@ -196,11 +225,10 @@ class Operator
     
         this.#valid = false;
 
-        if (this.output)
-        {
-            for (const input of this.output.connectedInputs)
-                input.op.invalidate();
-        }
+
+        for (const output of this.outputs)
+            for (const connInput of output.connectedInputs)
+                connInput.op.invalidate();
     }
 
 
@@ -252,11 +280,10 @@ class Operator
 
     updateOutputWires()
     {
-        if (   this.output 
-            && this.output.isConnected)
+        for (const output of this.outputs)
         {
-            for (const input of this.output.connectedInputs)
-                input.connection.wire.update();
+            for (const connInput of output.connectedInputs)
+                connInput.connection.wire.update();
         }
     }
 
@@ -276,13 +303,11 @@ class Operator
 
     updateNode() 
     {
-        this.header.style.backgroundColor = this.getOutputDataColor();
+        this.header.style.backgroundColor = this.getHeaderColor();
 
-        //this.updateParams(false);
-
-        this.updateInputWires ();
-        this.updateOutputWires();
-        this.updateParamWires ();
+        //this.updateInputWires ();
+        //this.updateOutputWires();
+        //this.updateParamWires ();
     }
 
 
@@ -294,18 +319,18 @@ class Operator
 
 
 
-    setOutput(output)
-    {
-        if (this.output != null)
-        {
-            this.outputControls.removeChild(this.output.control);
-            this.output._op = null;
-        }
+    // addOutput(output)
+    // {
+    //     if (this.output != null)
+    //     {
+    //         this.outputControls.removeChild(this.output.control);
+    //         this.output._op = null;
+    //     }
 
-        output._op = this;
-        this.output = output;
-        this.outputControls.appendChild(output.control);
-    }
+    //     output._op = this;
+    //     this.output = output;
+    //     this.outputControls.appendChild(output.control);
+    // }
 
 
 
@@ -324,8 +349,7 @@ class Operator
 
     isBefore(node)
     {
-        if (   !this.output
-            || !this.output.isConnected)
+        if (!this.outputs.find(o => o.isConnected))
             return false;
 
         for (const input of output.connectedInputs)
@@ -405,12 +429,12 @@ class Operator
 
     makeRightPassive()
     {
-        if (this.output)
+        for (const output of this.outputs)
         {
-            for (const input of this.output.connectedInputs)
+            for (const connInput of output.connectedInputs)
             {
-                input.op.makePassive();
-                input.op.makeRightPassive();            
+                connInput.op.makePassive();
+                connInput.op.makeRightPassive();            
             }
         }
     }

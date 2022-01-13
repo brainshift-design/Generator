@@ -39,7 +39,7 @@ extends Operator
 
 
         this.addInput (new Input (this.dataType));
-        this.setOutput(new Output(this.dataType));
+        this.addOutput(new Output(this.dataType));
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -47,6 +47,8 @@ extends Operator
             this.#c1.control.style.fontStyle = 'italic'; this.#c1.control.pointerEvents = false;
             this.#c2.control.style.fontStyle = 'italic'; this.#c2.control.pointerEvents = false;
             this.#c3.control.style.fontStyle = 'italic'; this.#c3.control.pointerEvents = false;
+
+            this.pushUpdate();
         });
     
         
@@ -55,6 +57,8 @@ extends Operator
             if (!this.#c1.input.isConnected) { this.#c1.control.style.fontStyle = 'normal'; this.#c1.control.pointerEvents = true; }
             if (!this.#c2.input.isConnected) { this.#c2.control.style.fontStyle = 'normal'; this.#c2.control.pointerEvents = true; }
             if (!this.#c3.input.isConnected) { this.#c3.control.style.fontStyle = 'normal'; this.#c3.control.pointerEvents = true; }
+
+            this.pushUpdate();
         });
 
 
@@ -361,9 +365,7 @@ extends Operator
 
     setColorParams(color, dispatchEvents)
     {
-        console.log('color', color);
         const col = this.getSliderColor(color);
-        console.log('col', col);
         
         this.#c1.setValue(col[0], false, true, dispatchEvents);
         this.#c2.setValue(col[1], false, true, dispatchEvents);
@@ -372,10 +374,8 @@ extends Operator
 
 
 
-    getOutputDataColor()
-    {
-        return this.color2rgb(this.#color);
-    }
+    getHeaderColor()     { return colorStyleRgb(this.color2rgb(this.#color)); }
+    getOutputWireColor() { return colorStyleRgb(this.color2rgb(this.#color)); }
 
 
 
@@ -385,13 +385,26 @@ extends Operator
             return;
 
 
+        this.updateParams(false);
+
         const input = this.inputs[0];
         
-        if (input.isConnected) this.setColorToCurrentSpace(input.data);
-        else                   this.#color = this.getColorFromParams();
+        if (input.isConnected) 
+        {
+            let color = input.data.color;
+
+            if (this.#c1.input.isConnected) color[1] = this.#c1.input.data.value;
+            if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
+            if (this.#c3.input.isConnected) color[3] = this.#c3.input.data.value;
+
+            this.setColorToCurrentSpace(color);
+        }
+        else
+            this.#color = this.getColorFromParams();
 
     
-        this.output._data = this.#color;
+        this.outputs[0]._data = dataFromColor(this.#color);
+
 
         super.update()
     }
@@ -427,8 +440,8 @@ extends Operator
         this.inputs[0].color = colIn;
         this.inputs[0].updateControl();
         
-        this.output.color = colOut;
-        this.output.updateControl();
+        this.outputs[0].color = colOut;
+        this.outputs[0].updateControl();
 
 
         this.#space.input.color = colIn;
@@ -437,6 +450,8 @@ extends Operator
         this.#space.output.color = colOut;
         this.#space.output.updateControl();
 
+
+        this.updateOutputWires();
 
         super.updateNode();
     }

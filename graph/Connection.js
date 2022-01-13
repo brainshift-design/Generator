@@ -34,13 +34,13 @@ class Connection
         this.wire.outBall = createSvg('circle');
         //this.wire.outBall.style.fill   = activeObjectColor;
         this.wire.outBall.style.position = 'absolute';
-        this.wire.outBall.style.r        = 3 * this.wire.scale;
+        //this.wire.outBall.style.r        = 3 * this.wire.scale;
 
 
         this.wire.inBall = createSvg('circle');
         //this.wire.inBall.style.fill   = activeObjectColor;
         this.wire.inBall.style.position = 'absolute';
-        this.wire.inBall.style.r        = 3 * this.wire.scale;
+        //this.wire.inBall.style.r        = 3 * this.wire.scale;
 
 
         this.wire.appendChild(this.wire.curve);
@@ -67,7 +67,8 @@ class Connection
             this.wire.updateCurve  (x1, y1, x2, y2);
             this.wire.updateOutBall(x1, y1        );
             this.wire.updateInBall (        x2, y2);
-            this.wire.updateStyle  (this.wire.getColor());
+            
+            this.wire.updateStyle(this.wire.getColor());
 
 
             show(this.wire.outBall);
@@ -88,6 +89,7 @@ class Connection
 
             this.wire.updateCurve  (x1, y1, x, y);
             this.wire.updateOutBall(x1, y1      );
+
             this.wire.updateStyle(this.wire.getColor());
 
             hide(this.wire.inBall);
@@ -107,6 +109,7 @@ class Connection
 
             this.wire.updateCurve (x, y, x2, y2);
             this.wire.updateInBall(      x2, y2);
+            
             this.wire.updateStyle(this.wire.getColor());
 
             hide(this.wire.outBall);
@@ -127,10 +130,9 @@ class Connection
 
         this.wire.getColor = () =>
         {
-            return colorStyleRgb(
-                this.output
-                ? this.output.op.getOutputDataColor()
-                : this.output.op.getDefaultOutputDataColor());
+                 if (this.output) return this.output.op.getOutputWireColor();
+            else if (this.input ) return this.input .op.getDefaultOutputWireColor();
+            else                  return [255, 0, 255];
         };
 
 
@@ -157,9 +159,9 @@ class Connection
             this.wire. inBall.style.fill   = color;
             this.wire.outBall.style.fill   = color;
 
-            this.wire.curve  .style.strokeWidth = 2 * this.wire.scale;
-            this.wire. inBall.style.r           = 3 * this.wire.scale;
-            this.wire.outBall.style.r           = 3 * this.wire.scale;
+            this.wire.curve  .style.strokeWidth = 1.8 * this.wire.scale;
+            this.wire. inBall.style.r           = 3   * this.wire.scale;
+            this.wire.outBall.style.r           = 3   * this.wire.scale;
         };
     }
 

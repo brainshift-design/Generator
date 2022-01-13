@@ -10,7 +10,7 @@ extends Operator
         super(opType, shortType, 'number', 65);
 
         this.addNewInput();
-        this.setOutput(new Output(this.dataType));
+        this.addOutput(new Output(this.dataType));
         
         this.addParam(this.#paramValue = new NumberParam('', false, false));
 
@@ -53,7 +53,7 @@ extends Operator
 
         const result = this.getResult();
 
-        this.output._data = dataFromNumber(result);
+        this.outputs[0]._data = dataFromNumber(result);
         this.#paramValue.setValue(result, false, true, false);
 
 
