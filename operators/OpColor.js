@@ -37,32 +37,45 @@ extends Operator
 
         this.#color = ['rgb', 128, 128, 128];
 
+
         this.addInput (new Input (this.dataType));
         this.setOutput(new Output(this.dataType));
+
+
+        this.inputs[0].addEventListener('connect', () =>
+        {
+            this.#c1.control.style.fontStyle = 'italic'; this.#c1.control.pointerEvents = false;
+            this.#c2.control.style.fontStyle = 'italic'; this.#c2.control.pointerEvents = false;
+            this.#c3.control.style.fontStyle = 'italic'; this.#c3.control.pointerEvents = false;
+        });
+    
+        
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            if (!this.#c1.input.isConnected) { this.#c1.control.style.fontStyle = 'normal'; this.#c1.control.pointerEvents = true; }
+            if (!this.#c2.input.isConnected) { this.#c2.control.style.fontStyle = 'normal'; this.#c2.control.pointerEvents = true; }
+            if (!this.#c3.input.isConnected) { this.#c3.control.style.fontStyle = 'normal'; this.#c3.control.pointerEvents = true; }
+        });
+
 
         this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
         this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
         this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
+
         this.#space.control.addEventListener('change', () => 
         {
-            const toSpace = OpColorSpaces[this.#space.value][0];
-
-            console.log('this.#color 1', this.#color);
-            this.#color = this.convertColorTo(this.#color, toSpace);
-            this.switchToSpace(toSpace);
-            console.log('this.#color 2', this.#color);
-
-            this.setColorParams(this.#color, false);
-            this.switchToSpace(toSpace);
+            this.setColorToCurrentSpace(this.#color);
             this.pushUpdate();
         });
         
+
         this.#c1.control.addEventListener('change', () => this.pushUpdate());
         this.#c2.control.addEventListener('change', () => this.pushUpdate());
         this.#c3.control.addEventListener('change', () => this.pushUpdate());
 
+        
         setTimeout(() => 
         {
             this.update();
@@ -228,34 +241,13 @@ extends Operator
 
 
 
-    // setParamControls(space, col)
-    // {
-    //     this.#space.setValue(space, false, true, true);
-
-    //     let mult;
-
-    //     switch (space)
-    //     {
-    //     case 'rgb':
-    //         this.#c1.control.wrapValue = false;
-    //         this.#c1.control.suffix = '';
-    //         mult = [255, 255, 255];
-    //         break;
-
-    //     case 'hsv':
-    //     case 'hsl':
-    //     case 'hcl':
-    //         this.#c1.control.wrapValue = true;
-    //         this.#c1.control.suffix = '°';
-    //         mult = [360, 100, 100];
-    //         break;
-    //     }
-
-    //     this.setParams(
-    //         col[0] * mult[0],
-    //         col[1] * mult[1],
-    //         col[2] * mult[2]);
-    // }
+    setColorToCurrentSpace(color)
+    {
+        const toSpace = OpColorSpaces[this.#space.value][0];
+        this.#color = this.convertColorTo(color, toSpace);
+        this.switchToSpace(toSpace);
+        this.setColorParams(this.#color, false);
+    }
 
 
 
@@ -286,13 +278,6 @@ extends Operator
             case 'hcl': rgb = okhcl2rgb(col); break;
         }
 
-        // this.switch2rgb();
-       
-        // this.setParams(
-        //     rgb[0] * 255,
-        //     rgb[1] * 255,
-        //     rgb[2] * 255);
-            
         return [
            'rgb',
             rgb[0],
@@ -319,13 +304,6 @@ extends Operator
         if (isNaN(hsv[0]))
             hsv[0] = 5/6;
         
-        // this.switch2hsv();
-
-        // this.setParams(
-        //     hsv[0] * 360,
-        //     hsv[1] * 100,
-        //     hsv[2] * 100);
-
         return [
            'hsv',
             hsv[0],
@@ -348,13 +326,6 @@ extends Operator
             case 'hsl': hsl = col;                     break;
             case 'hcl': hsl = rgb2hsl(okhcl2rgb(col)); break;
         }
-
-        // this.switch2hsl();
-
-        // this.setParams(
-        //     hsl[0] * 360,
-        //     hsl[1] * 100,
-        //     hsl[2] * 100);
 
         return [
            'hsl',
@@ -379,13 +350,6 @@ extends Operator
             case 'hcl': hcl = col;                     break;
         }
 
-        // this.switch2hcl();
-
-        // this.setParams(
-        //     hcl[0] * 360,
-        //     hcl[1] * 100,
-        //     hcl[2] * 100);
-
         return [
            'hcl',
             hcl[0],
@@ -401,20 +365,10 @@ extends Operator
         const col = this.getSliderColor(color);
         console.log('col', col);
         
-        //this.#space.setValue(OpColorSpaces.indexOf(s => s[0] == color[0]), false, true, dispatchEvents);
         this.#c1.setValue(col[0], false, true, dispatchEvents);
         this.#c2.setValue(col[1], false, true, dispatchEvents);
         this.#c3.setValue(col[2], false, true, dispatchEvents);
     }
-
-
-
-    // setParams(c1, c2, c3, dispatchEvents = true)
-    // {
-    //     this.#c1.setValue(c1, false, true, dispatchEvents);
-    //     this.#c2.setValue(c2, false, true, dispatchEvents);
-    //     this.#c3.setValue(c3, false, true, dispatchEvents);
-    // }
 
 
 
@@ -433,25 +387,8 @@ extends Operator
 
         const input = this.inputs[0];
         
-        if (input.isConnected)
-        {
-            //this.#color = input.data;
-            //console.log('this.#color 1', this.#color);
-            this.convertColorFrom(input.data);
-            //console.log('this.#color 2', this.#color);
-
-            // const col = this.getSliderColor(this.#color);
-    
-            // this.setParams(
-            //     col[0],
-            //     col[1],
-            //     col[2],
-            //     false);
-        }
-        else
-        {
-            this.#color = this.getColorFromParams();
-        }
+        if (input.isConnected) this.setColorToCurrentSpace(input.data);
+        else                   this.#color = this.getColorFromParams();
 
     
         this.output._data = this.#color;
@@ -463,7 +400,7 @@ extends Operator
 
     updateNode()
     {
-        const colBack = this.color2rgb(this.#color);//this.getColorFromParams());
+        const colBack = this.color2rgb(this.#color);
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
