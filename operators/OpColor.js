@@ -62,15 +62,14 @@ extends Operator
         });
 
 
-        this.addParam(this.#space = new SelectParam('space', true, false, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#c1    = new NumberParam('c1',    true, true,  128, 0, 255));
-        this.addParam(this.#c2    = new NumberParam('c2',    true, true,  128, 0, 255));
-        this.addParam(this.#c3    = new NumberParam('c3',    true, true,  128, 0, 255));
+        this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
+        this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
+        this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
 
 
         this.#space.addEventListener('change', () => 
         {
-            //console.log(this.name + '.#space.change()');
             this.setColorToCurrentSpace(this.#color);
             this.pushUpdate();
         });
@@ -191,6 +190,8 @@ extends Operator
             if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
             if (this.#c3.input.isConnected) color[3] = this.#c3.input.data.value;
 
+            console.log(color);
+            this.switchToSpace(OpColorSpaces[this.inputs[1].data.value][0]);
             this.setColorToCurrentSpace(color);
         }
         else if (this.inputs[0].isConnected) 
@@ -241,7 +242,7 @@ extends Operator
 
 
         this.outputs[0].wireColor = colBack;
-        this.outputs[0].control.style.top = '85%';
+        //this.outputs[0].control.style.top = '85%';
         
 
         const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );
@@ -256,10 +257,10 @@ extends Operator
 
 
         this.#space.input .color = colIn;
-        //this.#space.output.color = colOut;
+        this.#space.output.color = colOut;
 
         this.#space.input .updateControl();
-        //this.#space.output.updateControl();
+        this.#space.output.updateControl();
 
 
         super.updateNode();
