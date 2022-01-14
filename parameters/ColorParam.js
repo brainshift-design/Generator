@@ -79,48 +79,6 @@ extends Parameter
 
 
 
-    initInput()
-    {
-        this.input = new Input('color');
-        this.input._param = this;
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.input.control);
-
-
-        this.input.addEventListener('connect', e =>
-        {
-            this.control.style.fontStyle = 'italic';
-            this.control.pointerEvents   = false;
-        });
-
-        
-        this.input.addEventListener('disconnect', e =>
-        {
-            this.control.style.fontStyle = 'normal';
-            this.control.pointerEvents   = true;
-        });
-    }
-
-
-
-    initOutput(hasOutput)
-    {
-        this.output = hasOutput ? new Output('color') : null;
-        if (!this.output) return;
-
-        this.output._param = this;
-        this.output.control.style.float     = 'left';
-        this.output.control.style.position  = 'absolute';
-        this.output.control.style.top       = '50%';
-        this.output.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.output.control);
-    }
-
-
-
     isDefault()
     {
         return this.value == this.defaultValue;

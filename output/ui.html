@@ -809,16 +809,6 @@ input[type=text]::selection
 
 
 
-const rgbObject       = [0xbe, 0xe0, 0xff];
-const rgbActiveObject = [0x18, 0xa0, 0xfb];
-
-const rgbNumber       = [0xdd, 0xdd, 0xdd];
-const rgbActiveNumber = [0x78, 0x78, 0x78];
-
-const rgbColor        = [0xcc, 0x33, 0xcc]; // these are normally
-const rgbActiveColor  = [0xff, 0x00, 0xff]; // not used
-
-
 //const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
 const smallScrollGap    =  6;
@@ -3029,16 +3019,6 @@ function getObjectBounds(objects)
 <script>
 
 ////////////////////////////////////////////////////
-
-
-const rgbObject       = [0xbe, 0xe0, 0xff];
-const rgbActiveObject = [0x18, 0xa0, 0xfb];
-
-const rgbNumber       = [0xdd, 0xdd, 0xdd];
-const rgbActiveNumber = [0x78, 0x78, 0x78];
-
-const rgbColor        = [0xcc, 0x33, 0xcc]; // these are normally
-const rgbActiveColor  = [0xff, 0x00, 0xff]; // not used
 
 
 //const inputColor        = 'rgba(0, 0, 0, 0.12)';
@@ -5776,42 +5756,42 @@ function hex2rgb(hex)
 
     if (hex.length >= 6)
     {
-        rgb[R] = parseInt(hex.slice(0, 2), 16); 
-        rgb[G] = parseInt(hex.slice(2, 4), 16); 
-        rgb[B] = parseInt(hex.slice(4, 6), 16); 
+        rgb[0] = parseInt(hex.slice(0, 2), 16); 
+        rgb[1] = parseInt(hex.slice(2, 4), 16); 
+        rgb[2] = parseInt(hex.slice(4, 6), 16); 
     }
     else if (hex.length >= 3)
     {
-        rgb[R] = parseInt(hex[0], 16) * 0x11; 
-        rgb[G] = parseInt(hex[1], 16) * 0x11; 
-        rgb[B] = parseInt(hex[2], 16) * 0x11; 
+        rgb[0] = parseInt(hex[0], 16) * 0x11; 
+        rgb[1] = parseInt(hex[1], 16) * 0x11; 
+        rgb[2] = parseInt(hex[2], 16) * 0x11; 
     }
     else if (hex.length == 2)
     {
         let v = parseInt(hex, 16);
         
-        rgb[R] = v; 
-        rgb[G] = v; 
-        rgb[B] = v; 
+        rgb[0] = v; 
+        rgb[1] = v; 
+        rgb[2] = v; 
     }
     else if (hex.length == 1)
     {
         let v = parseInt(hex, 16);
         
-        rgb[R] = v * 0x11; 
-        rgb[G] = v * 0x11; 
-        rgb[B] = v * 0x11; 
+        rgb[0] = v * 0x11; 
+        rgb[1] = v * 0x11; 
+        rgb[2] = v * 0x11; 
     }
     else if (hex.length == 0)
     {
-        rgb[R] = 0; 
-        rgb[G] = 0; 
-        rgb[B] = 0;         
+        rgb[0] = 0; 
+        rgb[1] = 0; 
+        rgb[2] = 0;         
     }
 
-    rgb[R] /= 0xff;
-    rgb[G] /= 0xff;
-    rgb[B] /= 0xff;
+    rgb[0] /= 0xff;
+    rgb[1] /= 0xff;
+    rgb[2] /= 0xff;
 
     return rgb;
 }
@@ -6593,7 +6573,6 @@ extends Parameter
 
     update(dispatchEvents)
     {
-        console.log('this.input', this.input);
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
@@ -6704,48 +6683,6 @@ extends Parameter
             this.op.valid = false;
             actionManager.do(new SetValueAction(this, this.value));
         });
-    }
-
-
-
-    initInput()
-    {
-        this.input = new Input('color');
-        this.input._param = this;
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.input.control);
-
-
-        this.input.addEventListener('connect', e =>
-        {
-            this.control.style.fontStyle = 'italic';
-            this.control.pointerEvents   = false;
-        });
-
-        
-        this.input.addEventListener('disconnect', e =>
-        {
-            this.control.style.fontStyle = 'normal';
-            this.control.pointerEvents   = true;
-        });
-    }
-
-
-
-    initOutput(hasOutput)
-    {
-        this.output = hasOutput ? new Output('color') : null;
-        if (!this.output) return;
-
-        this.output._param = this;
-        this.output.control.style.float     = 'left';
-        this.output.control.style.position  = 'absolute';
-        this.output.control.style.top       = '50%';
-        this.output.control.style.transform = 'translateY(-50%)';
-        this.div.appendChild(this.output.control);
     }
 
 
@@ -6877,6 +6814,15 @@ extends Parameter
         return pos + '"' + this.name  + '": "' + this.value + '"';
     }
 }
+
+
+const rgbObject       = hex2rgb('#bee0ff');
+const rgbActiveObject = hex2rgb('#18a0fb');
+const rgbNumber       = hex2rgb('#ddd');
+const rgbActiveNumber = hex2rgb('#787878');
+const rgbColor        = hex2rgb('#cc33cc'); // these are normally
+const rgbActiveColor  = hex2rgb('#ff00ff'); // not used
+
 
 
 function rgbFromDataType(dataType, active)
@@ -7249,9 +7195,9 @@ class Connection
 
         this.wire.update = () =>
         {
-            console.log('(' 
-                + (this.output ? this.output.op.name : '') + ') -> ('
-                + (this.input  ? this.input .op.name : '') + ')');
+            // console.log('(' 
+            //     + (this.output ? this.output.op.name : '') + ') -> ('
+            //     + (this.input  ? this.input .op.name : '') + ')');
 
             let outRect = boundingRect(this.output.control);
             let inRect  = boundingRect(this.input .control);
@@ -7357,11 +7303,9 @@ class Connection
 
         this.wire.updateStyle = (color) =>
         {
-            console.log('wire.updateStyle(' + color + ')');
-            this.wire.curve  .style.stroke = color;
-            console.log('colorStyleRgb(' + color + ')');
-            this.wire. inBall.style.fill   = colorStyleRgb(color);
-            this.wire.outBall.style.fill   = colorStyleRgb(color);
+            this.wire.curve  .style.stroke      = colorStyleRgb(color);
+            this.wire. inBall.style.fill        = colorStyleRgb(color);
+            this.wire.outBall.style.fill        = colorStyleRgb(color);
 
             this.wire.curve  .style.strokeWidth = 1.8 * this.wire.scale;
             this.wire. inBall.style.r           = 3   * this.wire.scale;
@@ -7943,11 +7887,42 @@ class Operator
 
     updateNode() 
     {
-        console.log(this.name + '.Operator.updateNode()');
-        console.log('this.getHeaderColor()', this.getHeaderColor());
-        console.log('colorStyleRgb(this.getHeaderColor())', colorStyleRgb(this.getHeaderColor()));
         this.header.style.backgroundColor = colorStyleRgb(this.getHeaderColor());
     }
+
+
+
+    // updateInputWires()
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.isConnected)
+    //             input.connection.wire.update();
+    //     }
+    // }
+
+
+
+    updateOutputWires()
+    {
+        for (const output of this.outputs)
+        {
+            for (const connInput of output.connectedInputs)
+                connInput.connection.wire.update();
+        }
+    }
+
+
+
+    // updateParamWires()
+    // {
+    //     for (const param of this.params)
+    //     {
+    //         if (   param.input
+    //             && param.input.isConnected) 
+    //             param.input.connection.wire.update();
+    //     }
+    // }
 
 
 
@@ -8513,7 +8488,6 @@ extends Operator
         if (!this.needsUpdate())
             return;
             
-        console.log(this.name + '.update()');
         this.updateParams(false);
         
         this.outputs[0]._data = dataFromNumber(this.#paramValue.value);
@@ -8633,7 +8607,8 @@ extends Operator
             if (i > 0)
                 height += gap;
 
-            input.control.style.top = height;
+            input.control.style.top       = height;
+            input.control.style.transform = 'none';
 
             height += inputSize;
         }
@@ -8859,22 +8834,23 @@ extends Operator
         });
 
 
-        this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
-        this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
-        this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
+        this.addParam(this.#space = new SelectParam('space', true, false, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#c1    = new NumberParam('c1',    true, true,  128, 0, 255));
+        this.addParam(this.#c2    = new NumberParam('c2',    true, true,  128, 0, 255));
+        this.addParam(this.#c3    = new NumberParam('c3',    true, true,  128, 0, 255));
 
 
-        this.#space.control.addEventListener('change', () => 
+        this.#space.addEventListener('change', () => 
         {
+            //console.log(this.name + '.#space.change()');
             this.setColorToCurrentSpace(this.#color);
             this.pushUpdate();
         });
         
 
-        this.#c1.control.addEventListener('change', () => this.pushUpdate());
-        this.#c2.control.addEventListener('change', () => this.pushUpdate());
-        this.#c3.control.addEventListener('change', () => this.pushUpdate());
+        this.#c1.addEventListener('change', () => this.pushUpdate());
+        this.#c2.addEventListener('change', () => this.pushUpdate());
+        this.#c3.addEventListener('change', () => this.pushUpdate());
 
         
         setTimeout(() => 
@@ -8963,7 +8939,6 @@ extends Operator
 
     getHeaderColor() 
     {
-        console.log(this.name + '.getHeaderColor()', color2rgb(this.#color));
         return color2rgb(this.#color); 
     }
 
@@ -8971,17 +8946,28 @@ extends Operator
 
     update()
     {
+        console.log(this.name + '.update()');
+
         if (!this.needsUpdate())
             return;
 
-        console.log(this.name + '.update()');
+            
         this.updateParams(false);
 
-        const input = this.inputs[0];
-        
-        if (input.isConnected) 
+
+        if (this.inputs[1].isConnected) 
         {
-            let color = input.data.color;
+            const color = this.#color;
+
+            if (this.#c1.input.isConnected) color[1] = this.#c1.input.data.value;
+            if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
+            if (this.#c3.input.isConnected) color[3] = this.#c3.input.data.value;
+
+            this.setColorToCurrentSpace(color);
+        }
+        else if (this.inputs[0].isConnected) 
+        {
+            const color = this.inputs[0].data.color;
 
             if (this.#c1.input.isConnected) color[1] = this.#c1.input.data.value;
             if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
@@ -8997,6 +8983,8 @@ extends Operator
 
 
         super.update()
+
+        //this.updateOutputWires();
     }
 
 
@@ -9013,6 +9001,7 @@ extends Operator
         const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
 
 
+        this.inner .style.backgroundColor = colorStyleRgb(colBack);
         this.header.style.backgroundColor = colorStyleRgb(colBack);
         this.label .style.color           = colorStyleRgb(colText);
 
@@ -9022,7 +9011,9 @@ extends Operator
         this.#space.control.textColor  = colText;
         this.#space.control.update();
 
+
         this.outputs[0].wireColor = colBack;
+        this.outputs[0].control.style.top = '85%';
         
 
         const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );
@@ -9037,10 +9028,10 @@ extends Operator
 
 
         this.#space.input .color = colIn;
-        this.#space.output.color = colOut;
+        //this.#space.output.color = colOut;
 
         this.#space.input .updateControl();
-        this.#space.output.updateControl();
+        //this.#space.output.updateControl();
 
 
         super.updateNode();

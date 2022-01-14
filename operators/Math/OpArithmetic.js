@@ -85,7 +85,8 @@ extends Operator
             if (i > 0)
                 height += gap;
 
-            input.control.style.top = height;
+            input.control.style.top       = height;
+            input.control.style.transform = 'none';
 
             height += inputSize;
         }

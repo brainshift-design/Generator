@@ -42,9 +42,9 @@ class Connection
 
         this.wire.update = () =>
         {
-            console.log('(' 
-                + (this.output ? this.output.op.name : '') + ') -> ('
-                + (this.input  ? this.input .op.name : '') + ')');
+            // console.log('(' 
+            //     + (this.output ? this.output.op.name : '') + ') -> ('
+            //     + (this.input  ? this.input .op.name : '') + ')');
 
             let outRect = boundingRect(this.output.control);
             let inRect  = boundingRect(this.input .control);
@@ -150,11 +150,9 @@ class Connection
 
         this.wire.updateStyle = (color) =>
         {
-            console.log('wire.updateStyle(' + color + ')');
-            this.wire.curve  .style.stroke = color;
-            console.log('colorStyleRgb(' + color + ')');
-            this.wire. inBall.style.fill   = colorStyleRgb(color);
-            this.wire.outBall.style.fill   = colorStyleRgb(color);
+            this.wire.curve  .style.stroke      = colorStyleRgb(color);
+            this.wire. inBall.style.fill        = colorStyleRgb(color);
+            this.wire.outBall.style.fill        = colorStyleRgb(color);
 
             this.wire.curve  .style.strokeWidth = 1.8 * this.wire.scale;
             this.wire. inBall.style.r           = 3   * this.wire.scale;

@@ -264,11 +264,42 @@ class Operator
 
     updateNode() 
     {
-        console.log(this.name + '.Operator.updateNode()');
-        console.log('this.getHeaderColor()', this.getHeaderColor());
-        console.log('colorStyleRgb(this.getHeaderColor())', colorStyleRgb(this.getHeaderColor()));
         this.header.style.backgroundColor = colorStyleRgb(this.getHeaderColor());
     }
+
+
+
+    // updateInputWires()
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.isConnected)
+    //             input.connection.wire.update();
+    //     }
+    // }
+
+
+
+    updateOutputWires()
+    {
+        for (const output of this.outputs)
+        {
+            for (const connInput of output.connectedInputs)
+                connInput.connection.wire.update();
+        }
+    }
+
+
+
+    // updateParamWires()
+    // {
+    //     for (const param of this.params)
+    //     {
+    //         if (   param.input
+    //             && param.input.isConnected) 
+    //             param.input.connection.wire.update();
+    //     }
+    // }
 
 
 
