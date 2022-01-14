@@ -67,7 +67,7 @@ extends EventTarget
         this.input.addEventListener('connect', () =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.pointerEvents  = false;
+            this.control.pointerEvents   = false;
         });
     
         
@@ -103,6 +103,10 @@ extends EventTarget
     {
         // overrides should check inputs for data here
     }    
+
+
+
+    setOutputData() { }
 
 
 

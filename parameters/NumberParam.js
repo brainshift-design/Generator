@@ -93,6 +93,14 @@ extends Parameter
 
 
 
+    setOutputData()
+    {
+        if (this.output)
+            this.output._data = dataFromNumber(this._control.value);
+    }
+
+
+
     setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         if (updateControl)

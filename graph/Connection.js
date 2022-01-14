@@ -125,8 +125,8 @@ class Connection
 
         this.wire.getColor = () =>
         {
-                 if (this.output) return this.output.op.getOutputWireColor();
-            else if (this.input ) return this.input .op.getDefaultOutputWireColor();
+                 if (this.output) return this.output.wireColor;
+            else if (this.input ) return this.input .wireColor;
             else                  return [255, 0, 255];
         };
 
@@ -150,9 +150,11 @@ class Connection
 
         this.wire.updateStyle = (color) =>
         {
+            console.log('wire.updateStyle(' + color + ')');
             this.wire.curve  .style.stroke = color;
-            this.wire. inBall.style.fill   = color;
-            this.wire.outBall.style.fill   = color;
+            console.log('colorStyleRgb(' + color + ')');
+            this.wire. inBall.style.fill   = colorStyleRgb(color);
+            this.wire.outBall.style.fill   = colorStyleRgb(color);
 
             this.wire.curve  .style.strokeWidth = 1.8 * this.wire.scale;
             this.wire. inBall.style.r           = 3   * this.wire.scale;

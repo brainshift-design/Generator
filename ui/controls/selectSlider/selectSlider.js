@@ -113,7 +113,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
             
             
 
@@ -154,7 +154,7 @@ function initSelectSlider(slider, width, height, name, options, def)
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
             
             if (slider.isPointerLocked())
             {

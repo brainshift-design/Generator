@@ -18,6 +18,8 @@ extends EventTarget
 
     
     color;
+    wireColor;
+
     control;
   
 
@@ -74,7 +76,9 @@ extends EventTarget
         this.control.className = 'input';
         this.control.input = this;
         
-        this.color = colorStyleRgba_(0, 0, 0, 0.14);
+        this.color     = colorStyleRgba_(0, 0, 0, 0.14);
+        this.wireColor = rgbFromDataType(this.#dataType, true);
+
         this.updateControl();
     
         
@@ -84,7 +88,7 @@ extends EventTarget
         this.control.addEventListener('pointerenter', e => 
         {
             graphView.overInput = this;
-            // this.color = colorFromDataType(e.target.input.dataType, true);
+            // this.color = rgbFromDataType(e.target.input.dataType, true);
             // this.updateControl();
         });
 

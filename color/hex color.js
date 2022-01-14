@@ -12,6 +12,10 @@ function rgb2hex(rgb)
 
 function hex2rgb(hex)
 {
+    if (hex[0] == '#')
+        hex = hex.substring(1);
+
+        
     let rgb = [];
 
     if (hex.length >= 6)

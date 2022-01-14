@@ -57,6 +57,9 @@ extends Parameter
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
+
+
+    
     isDefault()
     {
         return this.value == this.defaultValue;
@@ -73,11 +76,22 @@ extends Parameter
 
 
 
+    setOutputData()
+    {
+        if (this.output)
+            this.output._data = dataFromNumber(this._control.value);
+    }
+
+
+
     setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
+        if (this.output)
+            this.output._data = dataFromNumber(value);
+            
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
 

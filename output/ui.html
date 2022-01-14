@@ -28,7 +28,7 @@
 
 .button:active
 {
-    box-shadow: 0 0 0 2px var(--activeObjectColor) inset;
+    box-shadow: 0 0 0 2px var(--rgbActiveObject) inset;
     outline:    none;
 }
 
@@ -88,7 +88,7 @@ input[type=text]:hover
 
 input[type=text]:focus
 {
-    box-shadow: 0 0 0 1px var(--activeObjectColor);
+    box-shadow: 0 0 0 1px var(--rgbActiveObject);
     outline: none;
 }
 
@@ -129,7 +129,7 @@ input[type=text]::selection
 
 .menuButton:focus
 {
-    background:var(--activeObjectColor);
+    background:var(--rgbActiveObject);
     color:     white;
 }
 
@@ -296,7 +296,7 @@ input[type=text]:hover
 
 input[type=text]:focus
 {
-    box-shadow: 0 0 0 2px var(--activeObjectColor);
+    box-shadow: 0 0 0 2px var(--rgbActiveObject);
     outline:    none;
 }
 
@@ -310,13 +310,13 @@ input[type=text]::selection
 
 :root
 {
-    --activeObjectColor: #18a0fb;
+    --rgbActiveObject: #18a0fb;
 }
 
 
 #selectBox
 {
-    outline:          1pt solid var(--activeObjectColor);
+    outline:          1pt solid var(--rgbActiveObject);
     background-color: #18A0FB20;
     pointer-events:   none;
     margin:           0;
@@ -514,7 +514,7 @@ input[type=text]::selection
 {
     position:       absolute;
     pointer-events: none;
-    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
+    box-shadow:     0 0 0 1px var(--rgbActiveObject) inset;
     visibility:     hidden;
     opacity:        0;
 }
@@ -530,8 +530,8 @@ input[type=text]::selection
 {
     outline:    none;
     box-sizing: border-box;
-    border:     solid 2px var(--activeObjectColor);
-    box-shadow: 0 0 0 -2px var(--activeObjectColor) inset;
+    border:     solid 2px var(--rgbActiveObject);
+    box-shadow: 0 0 0 -2px var(--rgbActiveObject) inset;
 }     */
 
 
@@ -578,7 +578,7 @@ input[type=text]::selection
 {
     position:       absolute;
     pointer-events: none;
-    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
+    box-shadow:     0 0 0 1px var(--rgbActiveObject) inset;
     visibility:     hidden;
     opacity:        0;
 }
@@ -594,8 +594,8 @@ input[type=text]::selection
 {
     outline:    none;
     box-sizing: border-box;
-    border:     solid 2px var(--activeObjectColor);
-    box-shadow: 0 0 0 -2px var(--activeObjectColor) inset;
+    border:     solid 2px var(--rgbActiveObject);
+    box-shadow: 0 0 0 -2px var(--rgbActiveObject) inset;
 }     */
 
 
@@ -643,7 +643,7 @@ input[type=text]::selection
     background-position: calc(100% - 14px) 50%;
     background-repeat:   no-repeat;
     padding-right:       30;
-    box-shadow:          0 0 0 2px var(--activeObjectColor);
+    box-shadow:          0 0 0 2px var(--rgbActiveObject);
     outline:             none;
 }
 
@@ -731,7 +731,7 @@ input[type=text]::selection
     background-position: calc(100% - 6px) 50%;
     background-repeat:   no-repeat;
     padding-right:       30;
-    box-shadow:          0 0 0 2px var(--activeObjectColor);
+    box-shadow:          0 0 0 2px var(--rgbActiveObject);
     outline:             none;
 }
 
@@ -809,17 +809,17 @@ input[type=text]::selection
 
 
 
-const objectColor       = '#bee0ff';
-const activeObjectColor = '#18a0fb';
+const rgbObject       = [0xbe, 0xe0, 0xff];
+const rgbActiveObject = [0x18, 0xa0, 0xfb];
 
-const numberColor       = '#ddd';
-const activeNumberColor = '#787878';
+const rgbNumber       = [0xdd, 0xdd, 0xdd];
+const rgbActiveNumber = [0x78, 0x78, 0x78];
 
-const colorColor        = '#c3c';
-const activeColorColor  = '#f0f';
+const rgbColor        = [0xcc, 0x33, 0xcc]; // these are normally
+const rgbActiveColor  = [0xff, 0x00, 0xff]; // not used
 
 
-const inputColor        = 'rgba(0, 0, 0, 0.12)';
+//const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
 const smallScrollGap    =  6;
 const largeScrollGap    = 14;
@@ -3031,17 +3031,17 @@ function getObjectBounds(objects)
 ////////////////////////////////////////////////////
 
 
-const objectColor       = '#bee0ff';
-const activeObjectColor = '#18a0fb';
+const rgbObject       = [0xbe, 0xe0, 0xff];
+const rgbActiveObject = [0x18, 0xa0, 0xfb];
 
-const numberColor       = '#ddd';
-const activeNumberColor = '#787878';
+const rgbNumber       = [0xdd, 0xdd, 0xdd];
+const rgbActiveNumber = [0x78, 0x78, 0x78];
 
-const colorColor        = '#c3c';
-const activeColorColor  = '#f0f';
+const rgbColor        = [0xcc, 0x33, 0xcc]; // these are normally
+const rgbActiveColor  = [0xff, 0x00, 0xff]; // not used
 
 
-const inputColor        = 'rgba(0, 0, 0, 0.12)';
+//const inputColor        = 'rgba(0, 0, 0, 0.12)';
 
 const smallScrollGap    =  6;
 const largeScrollGap    = 14;
@@ -5768,6 +5768,10 @@ function rgb2hex(rgb)
 
 function hex2rgb(hex)
 {
+    if (hex[0] == '#')
+        hex = hex.substring(1);
+
+        
     let rgb = [];
 
     if (hex.length >= 6)
@@ -6358,7 +6362,7 @@ function setGoodProductKeyInput()
 function setDefaultProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px ' + activeObjectColor; 
+    productKeyInput.style.boxShadow = '0 0 0 2px ' + rgbActiveObject; 
 }
 
 
@@ -6431,7 +6435,7 @@ extends EventTarget
         this.input.addEventListener('connect', () =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.pointerEvents  = false;
+            this.control.pointerEvents   = false;
         });
     
         
@@ -6467,6 +6471,10 @@ extends EventTarget
     {
         // overrides should check inputs for data here
     }    
+
+
+
+    setOutputData() { }
 
 
 
@@ -6589,6 +6597,14 @@ extends Parameter
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+    }
+
+
+
+    setOutputData()
+    {
+        if (this.output)
+            this.output._data = dataFromNumber(this._control.value);
     }
 
 
@@ -6815,6 +6831,9 @@ extends Parameter
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
+
+
+    
     isDefault()
     {
         return this.value == this.defaultValue;
@@ -6831,11 +6850,22 @@ extends Parameter
 
 
 
+    setOutputData()
+    {
+        if (this.output)
+            this.output._data = dataFromNumber(this._control.value);
+    }
+
+
+
     setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
+        if (this.output)
+            this.output._data = dataFromNumber(value);
+            
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
 
@@ -6849,13 +6879,13 @@ extends Parameter
 }
 
 
-function colorFromDataType(dataType, active)
+function rgbFromDataType(dataType, active)
 {
     switch (dataType)
     {
-        case 'number': return active ? activeNumberColor : numberColor;
-        case 'color':  return active ? activeColorColor  : colorColor;
-        case 'object': return active ? activeObjectColor : objectColor;
+        case 'number': return active ? rgbActiveNumber : rgbNumber;
+        case 'color':  return active ? rgbActiveColor  : rgbColor;
+        case 'object': return active ? rgbActiveObject : rgbObject;
     }
 
     return 'magenta';
@@ -7175,214 +7205,6 @@ class Graph
 }
 
 
-class   Input
-extends EventTarget
-{
-    #dataType;     
-    get dataType() { return this.#dataType; }
-
-    get data()
-    {
-        return (
-            this.isConnected
-            ? this.connectedOutput.data
-            : null);
-    }
-
-
-    _op    = null; get op   () { return this._op;    }
-    _param = null; get param() { return this._param; }
-
-    
-    color;
-    control;
-  
-
-    _connectedOutput = null;
-    get connectedOutput() { return this._connectedOutput; }
-    set connectedOutput(output)
-    {
-        if (this._connectedOutput)
-        {
-            this.dispatchEvent(new CustomEvent(
-                'disconnect', 
-                { 'input': this }));
-        }
-
-        this._connectedOutput = output;
-
-        if (this._connectedOutput)
-        {
-            this.dispatchEvent(new CustomEvent(
-                'connect', 
-                { 
-                    'output': output,
-                    'input':  this 
-                }));
-        }
-    }
-
-
-    connection  = null;
-    
-    connecting  = false;
-    
-
-    initialSeed = 0;
-    currentSeed = 0;
-
-    get isConnected() { return this.connectedOutput != null; }
-
-
-    //onupdate     = new Event('update');
-
-    onconnect    = new Event('connect');
-    ondisconnect = new Event('disconnect');
-
-
-
-    constructor(dataType)
-    {
-        super();
-        
-        this.#dataType = dataType;
-
-        this.control = document.createElement('div');
-        this.control.className = 'input';
-        this.control.input = this;
-        
-        this.color = colorStyleRgba_(0, 0, 0, 0.14);
-        this.updateControl();
-    
-        
-        this.control.addEventListener('pointerdown', e => e.preventDefault());
-
-
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overInput = this;
-            // this.color = colorFromDataType(e.target.input.dataType, true);
-            // this.updateControl();
-        });
-
-
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overInput = null;
-            //this.control.style.boxShadow = '0 0 0 1px ' + inputColor;
-        });
-    }
-
-
-
-    // update()
-    // {
-    //     this.dispatchEvent(this.onupdate);
-    // }
-
-
-
-    updateControl()
-    {
-        this.control.style.boxShadow = '0 0 0 1px ' + this.color;
-    }
-
-
-
-    save()
-    {
-        let save = this.op.name;
-
-        if (this.op.param != null)
-            save += '.' + this.op.param.name;
-
-        return save;
-    }
-}
-
-
-class Output
-{
-    #dataType;     
-    get dataType() { return this.#dataType; }
-
-    _op = null; get op() { return this._op; }
-    
-    
-    color;
-    control;
-
-    
-    connectedInputs = [];
-    
-    connecting = false;
-    
-
-    _data;
-
-    get data() 
-    {
-        this.op.update();
-        return this._data;
-    }
-    
-    set data(value)
-    {
-        this._data = value;
-
-        for (const input of this.connectedInputs)
-            input.update();
-    }
-
-
-
-    get isConnected() { return this.connectedInputs.length > 0; }
-
-
-
-    constructor(dataType)
-    {
-        this.#dataType = dataType;
-        
-        this.control = document.createElement('div');
-        this.control.className = 'output';
-        this.control.output    = this;
-
-        this.color = colorStyleRgba_(0, 0, 0, 0.12);
-        
-        this.updateControl();
-
-
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overOutput = this;
-            //e.target.style.backgroundColor = colorFromDataType(e.target.output.dataType, true);
-        });
-
-
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overOutput = null;
-            //e.target.style.backgroundColor = inputColor;
-        });
-    }
-
-
-
-    updateControl()
-    {
-        this.control.style.backgroundColor = this.color;
-    }
-
-
-
-    save()
-    {
-        return this.op.name;
-    }
-}
-
-
 class Connection
 {
     output;
@@ -7510,8 +7332,8 @@ class Connection
 
         this.wire.getColor = () =>
         {
-                 if (this.output) return this.output.op.getOutputWireColor();
-            else if (this.input ) return this.input .op.getDefaultOutputWireColor();
+                 if (this.output) return this.output.wireColor;
+            else if (this.input ) return this.input .wireColor;
             else                  return [255, 0, 255];
         };
 
@@ -7535,9 +7357,11 @@ class Connection
 
         this.wire.updateStyle = (color) =>
         {
+            console.log('wire.updateStyle(' + color + ')');
             this.wire.curve  .style.stroke = color;
-            this.wire. inBall.style.fill   = color;
-            this.wire.outBall.style.fill   = color;
+            console.log('colorStyleRgb(' + color + ')');
+            this.wire. inBall.style.fill   = colorStyleRgb(color);
+            this.wire.outBall.style.fill   = colorStyleRgb(color);
 
             this.wire.curve  .style.strokeWidth = 1.8 * this.wire.scale;
             this.wire. inBall.style.r           = 3   * this.wire.scale;
@@ -7648,6 +7472,211 @@ function lastNodesInTreeFrom(node)
 }
 
 
+class   Input
+extends EventTarget
+{
+    #dataType;     
+    get dataType() { return this.#dataType; }
+
+    get data()
+    {
+        return (
+            this.isConnected
+            ? this.connectedOutput.data
+            : null);
+    }
+
+
+    _op    = null; get op   () { return this._op;    }
+    _param = null; get param() { return this._param; }
+
+    
+    color;
+    wireColor;
+
+    control;
+  
+
+    _connectedOutput = null;
+    get connectedOutput() { return this._connectedOutput; }
+    set connectedOutput(output)
+    {
+        if (this._connectedOutput)
+        {
+            this.dispatchEvent(new CustomEvent(
+                'disconnect', 
+                { 'input': this }));
+        }
+
+        this._connectedOutput = output;
+
+        if (this._connectedOutput)
+        {
+            this.dispatchEvent(new CustomEvent(
+                'connect', 
+                { 
+                    'output': output,
+                    'input':  this 
+                }));
+        }
+    }
+
+
+    connection  = null;
+    
+    connecting  = false;
+    
+
+    initialSeed = 0;
+    currentSeed = 0;
+
+    get isConnected() { return this.connectedOutput != null; }
+
+
+    //onupdate     = new Event('update');
+
+    onconnect    = new Event('connect');
+    ondisconnect = new Event('disconnect');
+
+
+
+    constructor(dataType)
+    {
+        super();
+        
+        this.#dataType = dataType;
+
+        this.control = document.createElement('div');
+        this.control.className = 'input';
+        this.control.input = this;
+        
+        this.color     = colorStyleRgba_(0, 0, 0, 0.14);
+        this.wireColor = rgbFromDataType(this.#dataType, true);
+
+        this.updateControl();
+    
+        
+        this.control.addEventListener('pointerdown', e => e.preventDefault());
+
+
+        this.control.addEventListener('pointerenter', e => 
+        {
+            graphView.overInput = this;
+            // this.color = rgbFromDataType(e.target.input.dataType, true);
+            // this.updateControl();
+        });
+
+
+        this.control.addEventListener('pointerleave', e => 
+        {
+            graphView.overInput = null;
+            //this.control.style.boxShadow = '0 0 0 1px ' + inputColor;
+        });
+    }
+
+
+
+    // update()
+    // {
+    //     this.dispatchEvent(this.onupdate);
+    // }
+
+
+
+    updateControl()
+    {
+        this.control.style.boxShadow = '0 0 0 1px ' + this.color;
+    }
+
+
+
+    save()
+    {
+        let save = this.op.name;
+
+        if (this.op.param != null)
+            save += '.' + this.op.param.name;
+
+        return save;
+    }
+}
+
+
+class Output
+{
+    #dataType;     
+    get dataType() { return this.#dataType; }
+
+    _op = null; get op() { return this._op; }
+    
+    
+    color;
+    wireColor;
+
+    control;
+
+    
+    connectedInputs = [];
+    
+    connecting = false;
+    
+
+    _data;
+
+    get data() 
+    {
+        this.op.update();
+        return this._data;
+    }
+    
+    set data(value)
+    {
+        this._data = value;
+
+        for (const input of this.connectedInputs)
+            input.update();
+    }
+
+
+
+    get isConnected() { return this.connectedInputs.length > 0; }
+
+
+
+    constructor(dataType)
+    {
+        this.#dataType = dataType;
+        
+        this.control = document.createElement('div');
+        this.control.className = 'output';
+        this.control.output    = this;
+        
+        this.color     = colorStyleRgba_(0, 0, 0, 0.12);
+        this.wireColor = rgbFromDataType(this.#dataType, true);
+        
+        this.updateControl();
+
+        
+        this.control.addEventListener('pointerenter', e => { graphView.overOutput = this; });
+        this.control.addEventListener('pointerleave', e => { graphView.overOutput = null; });
+    }
+
+
+
+    updateControl()
+    {
+        this.control.style.backgroundColor = this.color;
+    }
+
+
+
+    save()
+    {
+        return this.op.name;
+    }
+}
+
+
 class Operator
 {
     #opType;
@@ -7733,9 +7762,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'number': return numberColor; //activeNumberColor;
-            case 'color':  return activeColorColor;
-            case 'object': return activeObjectColor;
+            case 'number': return rgbNumber; //activeNumberColor;
+            case 'color':  return rgbActiveColor;
+            case 'object': return rgbActiveObject;
         }
 
         return 'magenta';
@@ -7747,9 +7776,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'number': return numberColor;
-            case 'color':  return colorColor;
-            case 'object': return objectColor;
+            case 'number': return rgbNumber;
+            case 'color':  return rgbColor;
+            case 'object': return rgbObject;
         }
 
         return 'magenta';
@@ -7790,6 +7819,21 @@ class Operator
 
 
 
+    // addOutput(output)
+    // {
+    //     if (this.output != null)
+    //     {
+    //         this.outputControls.removeChild(this.output.control);
+    //         this.output._op = null;
+    //     }
+
+    //     output._op = this;
+    //     this.output = output;
+    //     this.outputControls.appendChild(output.control);
+    // }
+
+
+
     addParam(param)
     {
         this.params.push(param);
@@ -7825,21 +7869,7 @@ class Operator
 
     getDefaultHeaderColor()
     {
-        return colorFromDataType(this.#dataType, false);
-    }
-
-
-
-    getOutputWireColor()
-    {
-        return this.getDefaultOutputWireColor();
-    }
-
-
-
-    getDefaultOutputWireColor()
-    {
-        return colorFromDataType(this.#dataType, true);
+        return rgbFromDataType(this.#dataType, false);
     }
 
 
@@ -7903,8 +7933,20 @@ class Operator
 
     update()
     {
+        this.setParamOutputData();
         this.updateNode();
+
         this.#valid = true;
+    }
+
+
+
+    updateNode() 
+    {
+        console.log(this.name + '.Operator.updateNode()');
+        console.log('this.getHeaderColor()', this.getHeaderColor());
+        console.log('colorStyleRgb(this.getHeaderColor())', colorStyleRgb(this.getHeaderColor()));
+        this.header.style.backgroundColor = colorStyleRgb(this.getHeaderColor());
     }
 
 
@@ -7917,47 +7959,10 @@ class Operator
 
 
 
-    // updateInputWires()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             input.connection.wire.update();
-    //     }
-    // }
-
-
-
-    // updateOutputWires()
-    // {
-    //     for (const output of this.outputs)
-    //     {
-    //         for (const connInput of output.connectedInputs)
-    //             connInput.connection.wire.update();
-    //     }
-    // }
-
-
-
-    // updateParamWires()
-    // {
-    //     for (const param of this.params)
-    //     {
-    //         if (   param.input
-    //             && param.input.isConnected) 
-    //             param.input.connection.wire.update();
-    //     }
-    // }
-
-
-
-    updateNode() 
+    setParamOutputData()
     {
-        this.header.style.backgroundColor = this.getHeaderColor();
-
-        //this.updateInputWires ();
-        //this.updateOutputWires();
-        //this.updateParamWires ();
+        for (const param of this.params)
+            param.setOutputData();
     }
 
 
@@ -7966,21 +7971,6 @@ class Operator
     { 
         // create the generation object here
     }
-
-
-
-    // addOutput(output)
-    // {
-    //     if (this.output != null)
-    //     {
-    //         this.outputControls.removeChild(this.output.control);
-    //         this.output._op = null;
-    //     }
-
-    //     output._op = this;
-    //     this.output = output;
-    //     this.outputControls.appendChild(output.control);
-    // }
 
 
 
@@ -8039,7 +8029,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + activeObjectColor
+            ? '0 0 0 2px ' + rgbActiveObject
             : 'none';
     }
     
@@ -8971,8 +8961,11 @@ extends Operator
 
 
 
-    getHeaderColor()     { return colorStyleRgb(color2rgb(this.#color)); }
-    getOutputWireColor() { return colorStyleRgb(color2rgb(this.#color)); }
+    getHeaderColor() 
+    {
+        console.log(this.name + '.getHeaderColor()', color2rgb(this.#color));
+        return color2rgb(this.#color); 
+    }
 
 
 
@@ -9028,6 +9021,8 @@ extends Operator
         this.#space.control.valueColor = colVal;
         this.#space.control.textColor  = colText;
         this.#space.control.update();
+
+        this.outputs[0].wireColor = colBack;
         
 
         const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );
@@ -10342,7 +10337,7 @@ function updateGraphNode(node)
     //         + ', ';
     // } 
 
-    boxShadow += '0 0 0 1px ' + (node.div.over ? activeObjectColor : '#00000008');
+    boxShadow += '0 0 0 1px ' + (node.div.over ? rgbActiveObject : '#00000008');
 
 
     node.inner.style.boxShadow = boxShadow;
@@ -10596,7 +10591,7 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
         slider.textbox.style.outline   = 'none';
     
         slider.textbox.style.textAlign = 'center';
@@ -10735,7 +10730,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
 
             slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
@@ -10770,7 +10765,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
             
             if (slider.isPointerLocked())
             {
@@ -11201,7 +11196,7 @@ function initSelectSliderTextbox(slider)
         slider.textbox.style.top             = slider.offsetTop    + 1;
         slider.textbox.style.width           = slider.offsetWidth  - 2;
         slider.textbox.style.height          = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow       = '0 0 0 1px ' + activeObjectColor;
+        slider.textbox.style.boxShadow       = '0 0 0 1px ' + rgbActiveObject;
         slider.textbox.style.outline         = 'none';
       
         slider.textbox.style.textAlign       = 'center';
@@ -11335,7 +11330,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
             
             
 
@@ -11376,7 +11371,7 @@ function initSelectSlider(slider, width, height, name, options, def)
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
             
             if (slider.isPointerLocked())
             {
@@ -11794,7 +11789,7 @@ function initColorSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
         slider.textbox.style.outline   = 'none';
     
         slider.textbox.style.textAlign = 'center';
@@ -11924,7 +11919,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + activeObjectColor + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
             
             
 
@@ -11965,7 +11960,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
             
             if (slider.isPointerLocked())
             {
@@ -12293,7 +12288,7 @@ function initSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = 'calc(100% + 1px)';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = activeObjectColor;
+    select.selectBox.style.backgroundColor = rgbActiveObject;
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = -1; // -1 = border
     
@@ -12635,7 +12630,7 @@ function initMenuSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = '100%';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = activeObjectColor;
+    select.selectBox.style.backgroundColor = rgbActiveObject;
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = 0; // -1 = border
     
@@ -12860,7 +12855,7 @@ function initMenuSelectTextbox(select)
         select.textbox.style.top       = select.offsetTop    + 1;
         select.textbox.style.width     = select.offsetWidth  - 2;
         select.textbox.style.height    = select.offsetHeight - 2;
-        select.textbox.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+        select.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
         select.textbox.style.outline   = 'none';
     
         select.textbox.style.textAlign = 'center';

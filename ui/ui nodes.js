@@ -278,7 +278,7 @@ function updateGraphNode(node)
     //         + ', ';
     // } 
 
-    boxShadow += '0 0 0 1px ' + (node.div.over ? activeObjectColor : '#00000008');
+    boxShadow += '0 0 0 1px ' + (node.div.over ? rgbActiveObject : '#00000008');
 
 
     node.inner.style.boxShadow = boxShadow;

@@ -28,7 +28,7 @@ function initMenuSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = '100%';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = activeObjectColor;
+    select.selectBox.style.backgroundColor = rgbActiveObject;
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = 0; // -1 = border
     

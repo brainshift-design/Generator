@@ -83,9 +83,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'number': return numberColor; //activeNumberColor;
-            case 'color':  return activeColorColor;
-            case 'object': return activeObjectColor;
+            case 'number': return rgbNumber; //activeNumberColor;
+            case 'color':  return rgbActiveColor;
+            case 'object': return rgbActiveObject;
         }
 
         return 'magenta';
@@ -97,9 +97,9 @@ class Operator
     {
         switch (this.#dataType)
         {
-            case 'number': return numberColor;
-            case 'color':  return colorColor;
-            case 'object': return objectColor;
+            case 'number': return rgbNumber;
+            case 'color':  return rgbColor;
+            case 'object': return rgbObject;
         }
 
         return 'magenta';
@@ -140,6 +140,21 @@ class Operator
 
 
 
+    // addOutput(output)
+    // {
+    //     if (this.output != null)
+    //     {
+    //         this.outputControls.removeChild(this.output.control);
+    //         this.output._op = null;
+    //     }
+
+    //     output._op = this;
+    //     this.output = output;
+    //     this.outputControls.appendChild(output.control);
+    // }
+
+
+
     addParam(param)
     {
         this.params.push(param);
@@ -175,21 +190,7 @@ class Operator
 
     getDefaultHeaderColor()
     {
-        return colorFromDataType(this.#dataType, false);
-    }
-
-
-
-    getOutputWireColor()
-    {
-        return this.getDefaultOutputWireColor();
-    }
-
-
-
-    getDefaultOutputWireColor()
-    {
-        return colorFromDataType(this.#dataType, true);
+        return rgbFromDataType(this.#dataType, false);
     }
 
 
@@ -253,8 +254,20 @@ class Operator
 
     update()
     {
+        this.setParamOutputData();
         this.updateNode();
+
         this.#valid = true;
+    }
+
+
+
+    updateNode() 
+    {
+        console.log(this.name + '.Operator.updateNode()');
+        console.log('this.getHeaderColor()', this.getHeaderColor());
+        console.log('colorStyleRgb(this.getHeaderColor())', colorStyleRgb(this.getHeaderColor()));
+        this.header.style.backgroundColor = colorStyleRgb(this.getHeaderColor());
     }
 
 
@@ -267,47 +280,10 @@ class Operator
 
 
 
-    // updateInputWires()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             input.connection.wire.update();
-    //     }
-    // }
-
-
-
-    // updateOutputWires()
-    // {
-    //     for (const output of this.outputs)
-    //     {
-    //         for (const connInput of output.connectedInputs)
-    //             connInput.connection.wire.update();
-    //     }
-    // }
-
-
-
-    // updateParamWires()
-    // {
-    //     for (const param of this.params)
-    //     {
-    //         if (   param.input
-    //             && param.input.isConnected) 
-    //             param.input.connection.wire.update();
-    //     }
-    // }
-
-
-
-    updateNode() 
+    setParamOutputData()
     {
-        this.header.style.backgroundColor = this.getHeaderColor();
-
-        //this.updateInputWires ();
-        //this.updateOutputWires();
-        //this.updateParamWires ();
+        for (const param of this.params)
+            param.setOutputData();
     }
 
 
@@ -316,21 +292,6 @@ class Operator
     { 
         // create the generation object here
     }
-
-
-
-    // addOutput(output)
-    // {
-    //     if (this.output != null)
-    //     {
-    //         this.outputControls.removeChild(this.output.control);
-    //         this.output._op = null;
-    //     }
-
-    //     output._op = this;
-    //     this.output = output;
-    //     this.outputControls.appendChild(output.control);
-    // }
 
 
 
@@ -389,7 +350,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + activeObjectColor
+            ? '0 0 0 2px ' + rgbActiveObject
             : 'none';
     }
     

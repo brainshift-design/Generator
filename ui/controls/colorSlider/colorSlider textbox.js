@@ -131,7 +131,7 @@ function initColorSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + activeObjectColor;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
         slider.textbox.style.outline   = 'none';
     
         slider.textbox.style.textAlign = 'center';

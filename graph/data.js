@@ -1,10 +1,10 @@
-function colorFromDataType(dataType, active)
+function rgbFromDataType(dataType, active)
 {
     switch (dataType)
     {
-        case 'number': return active ? activeNumberColor : numberColor;
-        case 'color':  return active ? activeColorColor  : colorColor;
-        case 'object': return active ? activeObjectColor : objectColor;
+        case 'number': return active ? rgbActiveNumber : rgbNumber;
+        case 'color':  return active ? rgbActiveColor  : rgbColor;
+        case 'object': return active ? rgbActiveObject : rgbObject;
     }
 
     return 'magenta';

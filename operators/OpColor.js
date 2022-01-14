@@ -164,8 +164,11 @@ extends Operator
 
 
 
-    getHeaderColor()     { return colorStyleRgb(color2rgb(this.#color)); }
-    getOutputWireColor() { return colorStyleRgb(color2rgb(this.#color)); }
+    getHeaderColor() 
+    {
+        console.log(this.name + '.getHeaderColor()', color2rgb(this.#color));
+        return color2rgb(this.#color); 
+    }
 
 
 
@@ -221,6 +224,8 @@ extends Operator
         this.#space.control.valueColor = colVal;
         this.#space.control.textColor  = colText;
         this.#space.control.update();
+
+        this.outputs[0].wireColor = colBack;
         
 
         const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );

@@ -7,6 +7,8 @@ class Output
     
     
     color;
+    wireColor;
+
     control;
 
     
@@ -44,24 +46,15 @@ class Output
         this.control = document.createElement('div');
         this.control.className = 'output';
         this.control.output    = this;
-
-        this.color = colorStyleRgba_(0, 0, 0, 0.12);
+        
+        this.color     = colorStyleRgba_(0, 0, 0, 0.12);
+        this.wireColor = rgbFromDataType(this.#dataType, true);
         
         this.updateControl();
 
-
-        this.control.addEventListener('pointerenter', e => 
-        {
-            graphView.overOutput = this;
-            //e.target.style.backgroundColor = colorFromDataType(e.target.output.dataType, true);
-        });
-
-
-        this.control.addEventListener('pointerleave', e => 
-        {
-            graphView.overOutput = null;
-            //e.target.style.backgroundColor = inputColor;
-        });
+        
+        this.control.addEventListener('pointerenter', e => { graphView.overOutput = this; });
+        this.control.addEventListener('pointerleave', e => { graphView.overOutput = null; });
     }
 
 

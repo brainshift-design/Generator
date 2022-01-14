@@ -97,5 +97,5 @@ function setGoodProductKeyInput()
 function setDefaultProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px ' + activeObjectColor; 
+    productKeyInput.style.boxShadow = '0 0 0 2px ' + rgbActiveObject; 
 }
