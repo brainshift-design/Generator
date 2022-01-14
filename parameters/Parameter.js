@@ -16,6 +16,10 @@ extends EventTarget
     _div;      get div()      { return this._div;      }
 
 
+    input;
+    output;
+
+    
     onchange  = new Event('change' );
     onconfirm = new Event('confirm');
 
@@ -32,6 +36,9 @@ extends EventTarget
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
+
+        this.input  = null;
+        this.output = null;
     }
 
 
@@ -40,6 +47,50 @@ extends EventTarget
     {
         this.#name = name; 
         this.update(dispatchEvents);
+    }
+
+
+
+    initInput(hasInput, dataType)
+    {
+        this.input = hasInput ? new Input(dataType) : null;
+        if (!this.input) return;
+
+        this.input._param = this;
+        this.input.control.style.float     = 'left';
+        this.input.control.style.position  = 'absolute';
+        this.input.control.style.top       = '50%';
+        this.input.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.input.control);
+
+
+        this.input.addEventListener('connect', () =>
+        {
+            this.control.style.fontStyle = 'italic';
+            this.control.pointerEvents  = false;
+        });
+    
+        
+        this.input.addEventListener('disconnect', () =>
+        {
+            this.control.style.fontStyle = 'normal';
+            this.control.pointerEvents   = true;
+        });
+    }
+
+
+
+    initOutput(hasOutput, dataType)
+    {
+        this.output = hasOutput ? new Output(dataType) : null;
+        if (!this.output) return;
+
+        this.output._param = this;
+        this.output.control.style.float     = 'right';
+        this.output.control.style.position  = 'absolute';
+        this.output.control.style.top       = '50%';
+        this.output.control.style.transform = 'translateY(-50%)';
+        this.div.appendChild(this.output.control);
     }
 
 

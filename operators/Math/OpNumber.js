@@ -30,6 +30,7 @@ extends Operator
         if (!this.needsUpdate())
             return;
             
+        console.log(this.name + '.update()');
         this.updateParams(false);
         
         this.outputs[0]._data = dataFromNumber(this.#paramValue.value);

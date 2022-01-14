@@ -90,125 +90,6 @@ extends Operator
 
 
 
-    color2array(color)
-    {
-        return [
-            color[1], 
-            color[2], 
-            color[3]];
-    }
-
-
-
-    color2rgb(color)
-    {
-        const col = this.color2array(color);
-
-        switch (color[0])
-        {
-            case 'rgb': return col;
-            case 'hsv': return hsv2rgb(col);
-            case 'hsl': return hsl2rgb(col);
-            case 'hcl': return okhcl2rgb(col);
-        }
-    }
-
-
-
-    getColorFromParams()
-    {
-        const col = this.getNormalColor_(
-            OpColorSpaces[this.#space.value][0],
-            this.#c1.value,
-            this.#c2.value,
-            this.#c3.value);
-
-        return [
-            OpColorSpaces[this.#space.value][0],
-            col[0],
-            col[1],
-            col[2] ];
-    }
-
-
-
-    getNormalColor(color)
-    {
-        return this.getNormalColor_(
-            color[0], 
-            color[1], 
-            color[2], 
-            color[3])
-    }
-
-
-
-    getNormalColor_(space, c1, c2, c3)
-    {
-        switch (space)
-        {
-            case 'rgb': return this.getNormalColorRgb_(c1, c2, c3);
-            case 'hsv':
-            case 'hsl':
-            case 'hcl': return this.getNormalColorH_(c1, c2, c3);
-        }
-    }
-
-
-
-    getNormalColorRgb_(c1, c2, c3)
-    {
-        return [
-            c1 / 255, 
-            c2 / 255, 
-            c3 / 255];
-    }
-
-
-
-    getNormalColorH_(c1, c2, c3)
-    {
-        return [
-            c1 / 360, 
-            c2 / 100, 
-            c3 / 100];
-    }
-
-
-
-    getSliderColor(color)
-    {
-        switch (color[0])
-        {
-            case 'rgb': return this.getSliderColorRgb_(color[1], color[2], color[3]);
-            case 'hsv':
-            case 'hsl':
-            case 'hcl': return this.getSliderColorH_(color[1], color[2], color[3]);
-        }
-    }
-
-
-
-    getSliderColorRgb_(c1, c2, c3)
-    {
-        return [
-            c1 * 255, 
-            c2 * 255, 
-            c3 * 255];
-    }
-
-
-
-    getSliderColorH_(c1, c2, c3)
-    {
-        return [
-            c1 * 360, 
-            c2 * 100, 
-            c3 * 100];
-    }
-
-
-
     switchToSpace(space)
     {
         switch (space)
@@ -248,124 +129,33 @@ extends Operator
     setColorToCurrentSpace(color)
     {
         const toSpace = OpColorSpaces[this.#space.value][0];
-        this.#color = this.convertColorTo(color, toSpace);
+        this.#color = convertColorTo(color, toSpace);
         this.switchToSpace(toSpace);
         this.setColorParams(this.#color, false);
     }
 
 
 
-    convertColorTo(color, toSpace)
+    getColorFromParams()
     {
-        switch (toSpace)
-        {
-            case 'rgb': return this.convert2rgb(color);
-            case 'hsv': return this.convert2hsv(color);
-            case 'hsl': return this.convert2hsl(color);
-            case 'hcl': return this.convert2hcl(color);
-        }
-    }
-
-
-
-    convert2rgb(color)
-    {
-        const col = this.color2array(color);
-
-        let rgb;
-
-        switch (color[0])
-        {
-            case 'rgb': rgb = col;            break;
-            case 'hsv': rgb = hsv2rgb(col);   break;
-            case 'hsl': rgb = hsl2rgb(col);   break;
-            case 'hcl': rgb = okhcl2rgb(col); break;
-        }
-
+        const col = getNormalColor_(
+            OpColorSpaces[this.#space.value][0],
+            this.#c1.value,
+            this.#c2.value,
+            this.#c3.value);
+    
         return [
-           'rgb',
-            rgb[0],
-            rgb[1],
-            rgb[2] ];
+            OpColorSpaces[this.#space.value][0],
+            col[0],
+            col[1],
+            col[2] ];
     }
-
-
-
-    convert2hsv(color)
-    {
-        const col = this.color2array(color);
-        
-        let hsv;
-        
-        switch (color[0])
-        {
-            case 'rgb': hsv = rgb2hsv(col);            break;
-            case 'hsv': hsv = col;                     break;
-            case 'hsl': hsv = rgb2hsv(hsl2rgb(col));   break;
-            case 'hcl': hsv = rgb2hsv(okhcl2rgb(col)); break;
-        }
-        
-        if (isNaN(hsv[0]))
-            hsv[0] = 5/6;
-        
-        return [
-           'hsv',
-            hsv[0],
-            hsv[1],
-            hsv[2] ];
-    }
-
-
-
-    convert2hsl(color)
-    {
-        const col = this.color2array(color);
-
-        let hsl;
-
-        switch (color[0])
-        {
-            case 'rgb': hsl = rgb2hsl(col);            break;
-            case 'hsv': hsl = rgb2hsl(hsv2rgb(col));   break;
-            case 'hsl': hsl = col;                     break;
-            case 'hcl': hsl = rgb2hsl(okhcl2rgb(col)); break;
-        }
-
-        return [
-           'hsl',
-            hsl[0],
-            hsl[1],
-            hsl[2] ];
-    }
-
-
-
-    convert2hcl(color)
-    {
-        const col = this.color2array(color);
-
-        let hcl;
-
-        switch (color[0])
-        {
-            case 'rgb': hcl = rgb2okhcl(col);          break;
-            case 'hsv': hcl = rgb2okhcl(hsv2rgb(col)); break;
-            case 'hsl': hcl = rgb2okhcl(hsl2rgb(col)); break;
-            case 'hcl': hcl = col;                     break;
-        }
-
-        return [
-           'hcl',
-            hcl[0],
-            hcl[1],
-            hcl[2] ];
-    }
-
-
-
+    
+    
+    
     setColorParams(color, dispatchEvents)
     {
-        const col = this.getSliderColor(color);
+        const col = getSliderColor(color);
         
         this.#c1.setValue(col[0], false, true, dispatchEvents);
         this.#c2.setValue(col[1], false, true, dispatchEvents);
@@ -374,8 +164,8 @@ extends Operator
 
 
 
-    getHeaderColor()     { return colorStyleRgb(this.color2rgb(this.#color)); }
-    getOutputWireColor() { return colorStyleRgb(this.color2rgb(this.#color)); }
+    getHeaderColor()     { return colorStyleRgb(color2rgb(this.#color)); }
+    getOutputWireColor() { return colorStyleRgb(color2rgb(this.#color)); }
 
 
 
@@ -384,7 +174,7 @@ extends Operator
         if (!this.needsUpdate())
             return;
 
-
+        console.log(this.name + '.update()');
         this.updateParams(false);
 
         const input = this.inputs[0];
@@ -413,7 +203,7 @@ extends Operator
 
     updateNode()
     {
-        const colBack = this.color2rgb(this.#color);
+        const colBack = color2rgb(this.#color);
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
@@ -437,22 +227,230 @@ extends Operator
         const colOut = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
 
 
-        this.inputs[0].color = colIn;
-        this.inputs[0].updateControl();
-        
+        this.inputs [0].color = colIn;
         this.outputs[0].color = colOut;
+        
+        this.inputs [0].updateControl();
         this.outputs[0].updateControl();
 
 
-        this.#space.input.color = colIn;
-        this.#space.input.updateControl();
-
+        this.#space.input .color = colIn;
         this.#space.output.color = colOut;
+
+        this.#space.input .updateControl();
         this.#space.output.updateControl();
 
 
-        this.updateOutputWires();
-
         super.updateNode();
     }
+}
+
+
+
+function color2array(color)
+{
+    return [
+        color[1], 
+        color[2], 
+        color[3]];
+}
+
+
+
+function color2rgb(color)
+{
+    const col = color2array(color);
+
+    switch (color[0])
+    {
+        case 'rgb': return col;
+        case 'hsv': return hsv2rgb(col);
+        case 'hsl': return hsl2rgb(col);
+        case 'hcl': return okhcl2rgb(col);
+    }
+}
+
+
+
+function getNormalColor(color)
+{
+    return getNormalColor_(
+        color[0], 
+        color[1], 
+        color[2], 
+        color[3])
+}
+
+
+
+function getNormalColor_(space, c1, c2, c3)
+{
+    switch (space)
+    {
+        case 'rgb': return getNormalColorRgb_(c1, c2, c3);
+        case 'hsv':
+        case 'hsl':
+        case 'hcl': return getNormalColorH_(c1, c2, c3);
+    }
+}
+
+
+
+function getNormalColorRgb_(c1, c2, c3)
+{
+    return [
+        c1 / 255, 
+        c2 / 255, 
+        c3 / 255];
+}
+
+
+
+function getNormalColorH_(c1, c2, c3)
+{
+    return [
+        c1 / 360, 
+        c2 / 100, 
+        c3 / 100];
+}
+
+
+
+function getSliderColor(color)
+{
+    switch (color[0])
+    {
+        case 'rgb': return getSliderColorRgb_(color[1], color[2], color[3]);
+        case 'hsv':
+        case 'hsl':
+        case 'hcl': return getSliderColorH_(color[1], color[2], color[3]);
+    }
+}
+
+
+
+function getSliderColorRgb_(c1, c2, c3)
+{
+    return [
+        c1 * 255, 
+        c2 * 255, 
+        c3 * 255];
+}
+
+
+
+function getSliderColorH_(c1, c2, c3)
+{
+    return [
+        c1 * 360, 
+        c2 * 100, 
+        c3 * 100];
+}
+
+
+
+function convertColorTo(color, toSpace)
+{
+    switch (toSpace)
+    {
+        case 'rgb': return convert2rgb(color);
+        case 'hsv': return convert2hsv(color);
+        case 'hsl': return convert2hsl(color);
+        case 'hcl': return convert2hcl(color);
+    }
+}
+
+
+
+function convert2rgb(color)
+{
+    const col = color2array(color);
+
+    let rgb;
+
+    switch (color[0])
+    {
+        case 'rgb': rgb = col;            break;
+        case 'hsv': rgb = hsv2rgb(col);   break;
+        case 'hsl': rgb = hsl2rgb(col);   break;
+        case 'hcl': rgb = okhcl2rgb(col); break;
+    }
+
+    return [
+       'rgb',
+        rgb[0],
+        rgb[1],
+        rgb[2] ];
+}
+
+
+
+function convert2hsv(color)
+{
+    const col = color2array(color);
+    
+    let hsv;
+    
+    switch (color[0])
+    {
+        case 'rgb': hsv = rgb2hsv(col);            break;
+        case 'hsv': hsv = col;                     break;
+        case 'hsl': hsv = rgb2hsv(hsl2rgb(col));   break;
+        case 'hcl': hsv = rgb2hsv(okhcl2rgb(col)); break;
+    }
+    
+    if (isNaN(hsv[0]))
+        hsv[0] = 5/6;
+    
+    return [
+       'hsv',
+        hsv[0],
+        hsv[1],
+        hsv[2] ];
+}
+
+
+
+function convert2hsl(color)
+{
+    const col = color2array(color);
+
+    let hsl;
+
+    switch (color[0])
+    {
+        case 'rgb': hsl = rgb2hsl(col);            break;
+        case 'hsv': hsl = rgb2hsl(hsv2rgb(col));   break;
+        case 'hsl': hsl = col;                     break;
+        case 'hcl': hsl = rgb2hsl(okhcl2rgb(col)); break;
+    }
+
+    return [
+       'hsl',
+        hsl[0],
+        hsl[1],
+        hsl[2] ];
+}
+
+
+
+function convert2hcl(color)
+{
+    const col = color2array(color);
+
+    let hcl;
+
+    switch (color[0])
+    {
+        case 'rgb': hcl = rgb2okhcl(col);          break;
+        case 'hsv': hcl = rgb2okhcl(hsv2rgb(col)); break;
+        case 'hsl': hcl = rgb2okhcl(hsl2rgb(col)); break;
+        case 'hcl': hcl = col;                     break;
+    }
+
+    return [
+       'hcl',
+        hcl[0],
+        hcl[1],
+        hcl[2] ];
 }

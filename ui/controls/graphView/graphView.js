@@ -367,9 +367,8 @@ graphView.updateWireTransform = function(wire)
 graphView.addWire = wire =>
 {
     graphView.wires.push(wire);
-    graphView.appendChild(wire);  
+    graphView.appendChild(wire);
     graphView.updateWireTransform(wire);
-    wire.update();
 };
 
 
@@ -378,7 +377,6 @@ graphView.addWireFromOutput = (wire, output) =>
 {
     graphView.wires.push(wire);
     graphView.appendChild(wire);
-    //wire.updateFromOutput(output);  
 };
 
 
@@ -387,7 +385,6 @@ graphView.addWireFromInput = (wire, input) =>
 {
     graphView.wires.push(wire);
     graphView.appendChild(wire);  
-    //wire.updateFromInput(input);  
 };
 
 
