@@ -349,8 +349,10 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
   
-        slider.bar  .style.top        = 0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height     = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        const barHeight = 3;
+
+        slider.bar  .style.top        = slider.clientHeight - barHeight; //0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height     = barHeight; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         slider.focus.style.left       = 0;
         slider.focus.style.top        = 0;
