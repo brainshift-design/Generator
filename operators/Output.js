@@ -62,6 +62,13 @@ class Output
     updateControl()
     {
         this.control.style.backgroundColor = this.color;
+
+        this.control.style.boxShadow = 
+               this.connectedInputs.length > 0
+            ||    graphView.tempConn
+               && graphView.tempConn.output == this
+            ? '0 0 0 1px ' + this.color
+            : 'none';
     }
 
 

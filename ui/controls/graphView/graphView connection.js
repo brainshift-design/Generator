@@ -6,6 +6,8 @@ graphView.startConnectionFromOutput = output =>
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.output       = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
+
+    output.updateControl();
 };
 
 
@@ -18,14 +20,20 @@ graphView.startConnectionFromInput = input =>
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.input        = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
+
+    output.updateControl();
 };
 
 
 
 graphView.cancelConnection = () =>
 {
+    const output = graphView.tempConn.output;
+    
     graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
+
+    output.updateControl();
 };
 
 

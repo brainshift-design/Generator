@@ -215,7 +215,6 @@ extends Operator
     updateNode()
     {
         const colBack = color2rgb(this.#color);
-        console.log(this.name + '.updateNode().colBack', colBack);
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);

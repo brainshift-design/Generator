@@ -171,9 +171,8 @@ class Graph
 
 
         output.op.makePassive();
+        output.updateControl();
         
-        //invalidate(input.op);
-    
 
         if (!activeNodeInTree(input.op))
             input.op.makeActive();

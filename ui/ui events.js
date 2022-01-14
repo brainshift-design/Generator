@@ -4,7 +4,7 @@ menuSelect.addEventListener('change', async function(e)
     {
         case 'saveLocal':  saveToLocalFile('graph.json'); break;
         case 'loadLocal':  loadFromLocalFile();           break;
-        case 'duplicate':  console.log(graph.save());   break;
+        case 'duplicate':  console.log(graph.save());     break;
         case 'productKey': showProductKeyDialog();        break;
     }
 });

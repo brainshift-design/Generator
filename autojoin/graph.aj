@@ -5,11 +5,14 @@
 
 ../graph/data.js
 ../graph/Graph.js
-../graph/Connection.js
 ../graph/tree.js
+
+//../operators/*.js
+//../operators/math/*.js
 
 ../operators/Input.js
 ../operators/Output.js
+../operators/Connection.js
 ../operators/Operator.js
 ../operators/Operator node.js
 ../operators/Operator textbox.js
