@@ -173,8 +173,6 @@ extends Operator
 
     update()
     {
-        console.log(this.name + '.update()');
-
         if (!this.needsUpdate())
             return;
 
@@ -182,30 +180,26 @@ extends Operator
         this.updateParams(false);
 
 
-        if (this.inputs[1].isConnected) 
+        if (this.inputs[0].isConnected) 
         {
-            const color = this.#color;
+            let color = this.inputs[0].data.color;
 
-            if (this.#c1.input.isConnected) color[1] = this.#c1.input.data.value;
-            if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
-            if (this.#c3.input.isConnected) color[3] = this.#c3.input.data.value;
+            color = convertColorTo(color, OpColorSpaces[this.#space.value][0]);
 
-            console.log(color);
-            this.switchToSpace(OpColorSpaces[this.inputs[1].data.value][0]);
+            if (this.#c1.input.isConnected) color[1] = getNormalValue(this.#c1.input.data.value, color[0], 0);
+            if (this.#c2.input.isConnected) color[2] = getNormalValue(this.#c2.input.data.value, color[0], 1);
+            if (this.#c3.input.isConnected) color[3] = getNormalValue(this.#c3.input.data.value, color[0], 2);
+
             this.setColorToCurrentSpace(color);
         }
-        else if (this.inputs[0].isConnected) 
+        else if (this.inputs[1].isConnected) 
         {
-            const color = this.inputs[0].data.color;
-
-            if (this.#c1.input.isConnected) color[1] = this.#c1.input.data.value;
-            if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
-            if (this.#c3.input.isConnected) color[3] = this.#c3.input.data.value;
-
-            this.setColorToCurrentSpace(color);
+            this.switchToSpace(OpColorSpaces[this.inputs[1].data.value][0]);
         }
         else
+        {
             this.#color = this.getColorFromParams();
+        }
 
     
         this.outputs[0]._data = dataFromColor(this.#color);
@@ -213,7 +207,7 @@ extends Operator
 
         super.update()
 
-        //this.updateOutputWires();
+        this.updateOutputWires();
     }
 
 
@@ -221,6 +215,7 @@ extends Operator
     updateNode()
     {
         const colBack = color2rgb(this.#color);
+        console.log(this.name + '.updateNode().colBack', colBack);
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
@@ -289,6 +284,43 @@ function color2rgb(color)
         case 'hsv': return hsv2rgb(col);
         case 'hsl': return hsl2rgb(col);
         case 'hcl': return okhcl2rgb(col);
+    }
+}
+
+
+
+function getNormalValue(value, space, chan)
+{
+    switch (space)
+    {
+        case 'rgb': return getNormalValueRgb_(value, chan);
+        case 'hsv':
+        case 'hsl':
+        case 'hcl': return getNormalValueH_(value, chan);
+    }
+}
+
+
+
+function getNormalValueRgb_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / 255;
+        case 1: return value / 255; 
+        case 2: return value / 255;
+    }
+}
+
+
+
+function getNormalValueH_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / 360;
+        case 1: return value / 100; 
+        case 2: return value / 100;
     }
 }
 

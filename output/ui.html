@@ -5177,7 +5177,7 @@ function luv2xyz(luv, W = sRGB.W)
 }
 
 
-const hueBiasLab       = 0.5;    
+const hueBiasLab = 0.5;    
 
 
 
@@ -5343,10 +5343,13 @@ function lab2hcl(lab)
           a = lab[1], 
           b = lab[2];
 
-    const c = Math.sqrt(a*a + b*b);
     const h = Math.atan2(b, a);
+    const c = Math.sqrt(a*a + b*b);
 
-    return [h, c, l];
+    return [
+        h/Tau, 
+        c*okLabScale, 
+        l];
 }
 
 
@@ -5368,38 +5371,6 @@ function hcl2lab(hcl)
 
 
 
-// function _hcl2rgb(h, c, l, colorSpace, cones)
-// {
-//     if (colorSpace == 0)
-//     {
-//         return allConesWork(cones)
-//              ? okhcl2rgb_  (h, c, l)
-//              : okhcl2rgb_CB(h, c, l, colorSpace, cones);
-//     }
-//     else
-//     {
-//         return allConesWork(cones)
-//              ? hcl2rgb_  (h, c, l, colorSpace)
-//              : hcl2rgb_CB(h, c, l, colorSpace, cones);
-//     }
-// }
-
- 
-
-// function hcl2rgb_(h, c, l)//, colorSpace)
-// {
-//     const col = hcl2col([
-//         h,// + (colorSpace == 1 ? hueBiasLab : hueBiasLuv),
-//         c * l/100, 
-//         l]);
-
-//     const xyz = col2xyz(col, colorSpace);
-
-//     return xyz2rgb(xyz, sRGB);
-// }    
-    
-    
-    
 function okhcl2rgb(hcl)
 {
     return okhcl2rgb_(hcl[0], hcl[1], hcl[2]);
@@ -5410,8 +5381,8 @@ function okhcl2rgb(hcl)
 function okhcl2rgb_(h, c, l)
 {
     const lab = hcl2lab([
-        h + hueBiasLab,
-        c/okLabScale * l/100, 
+        h*Tau,// + hueBiasLab,
+        c/okLabScale,// * l/100, 
         l]);
 
     return oklab2rgb(lab, sRGB);
@@ -8950,8 +8921,6 @@ extends Operator
 
     update()
     {
-        console.log(this.name + '.update()');
-
         if (!this.needsUpdate())
             return;
 
@@ -8959,30 +8928,26 @@ extends Operator
         this.updateParams(false);
 
 
-        if (this.inputs[1].isConnected) 
+        if (this.inputs[0].isConnected) 
         {
-            const color = this.#color;
+            let color = this.inputs[0].data.color;
 
-            if (this.#c1.input.isConnected) color[1] = this.#c1.input.data.value;
-            if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
-            if (this.#c3.input.isConnected) color[3] = this.#c3.input.data.value;
+            color = convertColorTo(color, OpColorSpaces[this.#space.value][0]);
 
-            console.log(color);
-            this.switchToSpace(OpColorSpaces[this.inputs[1].data.value][0]);
+            if (this.#c1.input.isConnected) color[1] = getNormalValue(this.#c1.input.data.value, color[0], 0);
+            if (this.#c2.input.isConnected) color[2] = getNormalValue(this.#c2.input.data.value, color[0], 1);
+            if (this.#c3.input.isConnected) color[3] = getNormalValue(this.#c3.input.data.value, color[0], 2);
+
             this.setColorToCurrentSpace(color);
         }
-        else if (this.inputs[0].isConnected) 
+        else if (this.inputs[1].isConnected) 
         {
-            const color = this.inputs[0].data.color;
-
-            if (this.#c1.input.isConnected) color[1] = this.#c1.input.data.value;
-            if (this.#c2.input.isConnected) color[2] = this.#c2.input.data.value;
-            if (this.#c3.input.isConnected) color[3] = this.#c3.input.data.value;
-
-            this.setColorToCurrentSpace(color);
+            this.switchToSpace(OpColorSpaces[this.inputs[1].data.value][0]);
         }
         else
+        {
             this.#color = this.getColorFromParams();
+        }
 
     
         this.outputs[0]._data = dataFromColor(this.#color);
@@ -8990,7 +8955,7 @@ extends Operator
 
         super.update()
 
-        //this.updateOutputWires();
+        this.updateOutputWires();
     }
 
 
@@ -8998,6 +8963,7 @@ extends Operator
     updateNode()
     {
         const colBack = color2rgb(this.#color);
+        console.log(this.name + '.updateNode().colBack', colBack);
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
@@ -9066,6 +9032,43 @@ function color2rgb(color)
         case 'hsv': return hsv2rgb(col);
         case 'hsl': return hsl2rgb(col);
         case 'hcl': return okhcl2rgb(col);
+    }
+}
+
+
+
+function getNormalValue(value, space, chan)
+{
+    switch (space)
+    {
+        case 'rgb': return getNormalValueRgb_(value, chan);
+        case 'hsv':
+        case 'hsl':
+        case 'hcl': return getNormalValueH_(value, chan);
+    }
+}
+
+
+
+function getNormalValueRgb_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / 255;
+        case 1: return value / 255; 
+        case 2: return value / 255;
+    }
+}
+
+
+
+function getNormalValueH_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / 360;
+        case 1: return value / 100; 
+        case 2: return value / 100;
     }
 }
 

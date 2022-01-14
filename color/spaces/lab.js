@@ -1,4 +1,4 @@
-const hueBiasLab       = 0.5;    
+const hueBiasLab = 0.5;    
 
 
 

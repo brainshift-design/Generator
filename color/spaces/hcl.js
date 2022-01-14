@@ -7,10 +7,13 @@ function lab2hcl(lab)
           a = lab[1], 
           b = lab[2];
 
-    const c = Math.sqrt(a*a + b*b);
     const h = Math.atan2(b, a);
+    const c = Math.sqrt(a*a + b*b);
 
-    return [h, c, l];
+    return [
+        h/Tau, 
+        c*okLabScale, 
+        l];
 }
 
 
@@ -32,38 +35,6 @@ function hcl2lab(hcl)
 
 
 
-// function _hcl2rgb(h, c, l, colorSpace, cones)
-// {
-//     if (colorSpace == 0)
-//     {
-//         return allConesWork(cones)
-//              ? okhcl2rgb_  (h, c, l)
-//              : okhcl2rgb_CB(h, c, l, colorSpace, cones);
-//     }
-//     else
-//     {
-//         return allConesWork(cones)
-//              ? hcl2rgb_  (h, c, l, colorSpace)
-//              : hcl2rgb_CB(h, c, l, colorSpace, cones);
-//     }
-// }
-
- 
-
-// function hcl2rgb_(h, c, l)//, colorSpace)
-// {
-//     const col = hcl2col([
-//         h,// + (colorSpace == 1 ? hueBiasLab : hueBiasLuv),
-//         c * l/100, 
-//         l]);
-
-//     const xyz = col2xyz(col, colorSpace);
-
-//     return xyz2rgb(xyz, sRGB);
-// }    
-    
-    
-    
 function okhcl2rgb(hcl)
 {
     return okhcl2rgb_(hcl[0], hcl[1], hcl[2]);
@@ -74,8 +45,8 @@ function okhcl2rgb(hcl)
 function okhcl2rgb_(h, c, l)
 {
     const lab = hcl2lab([
-        h + hueBiasLab,
-        c/okLabScale * l/100, 
+        h*Tau,// + hueBiasLab,
+        c/okLabScale,// * l/100, 
         l]);
 
     return oklab2rgb(lab, sRGB);
