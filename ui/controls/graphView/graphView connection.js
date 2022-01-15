@@ -29,11 +29,13 @@ graphView.startConnectionFromInput = input =>
 graphView.cancelConnection = () =>
 {
     const output = graphView.tempConn.output;
+    const input  = graphView.tempConn.input;
     
     graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
 
-    output.updateControl();
+    if (output) output.updateControl();
+    if (input ) input .updateControl();
 };
 
 

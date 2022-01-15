@@ -235,8 +235,8 @@ extends Operator
         this.#space.control.update();
 
 
+        this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
-        //this.outputs[0].control.style.top = '85%';
         
 
         const colIn  = colorStyleRgba(colText, darkText ? 0.12 : 0.24);

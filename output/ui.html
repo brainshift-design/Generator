@@ -9077,8 +9077,8 @@ extends Operator
         this.#space.control.update();
 
 
+        this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
-        //this.outputs[0].control.style.top = '85%';
         
 
         const colIn  = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
@@ -11399,10 +11399,10 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.options           = options;
     slider.value             = def;
 
-    slider.dragScale         = 0.002;
+    slider.dragScale         = 0.001;
         
     slider.backColor         = [0xff, 0xff, 0xff];
-    //slider.valueColor        = [0xee, 0xee, 0xee];
+    //slider.valueColor      = [0xee, 0xee, 0xee];
     slider.textColor         = [0x00, 0x00, 0x00];
            
     slider.fontSize          = 11;
@@ -13286,11 +13286,13 @@ graphView.startConnectionFromInput = input =>
 graphView.cancelConnection = () =>
 {
     const output = graphView.tempConn.output;
+    const input  = graphView.tempConn.input;
     
     graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
 
-    output.updateControl();
+    if (output) output.updateControl();
+    if (input ) input .updateControl();
 };
 
 
