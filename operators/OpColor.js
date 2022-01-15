@@ -221,12 +221,12 @@ extends Operator
         colVal     = hsv2rgb(colVal);
         
         const darkText = rgb2okhcl(colBack)[2] > 0.71;
-        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
+        const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
 
 
-        this.inner .style.backgroundColor = colorStyleRgb(colBack);
-        this.header.style.backgroundColor = colorStyleRgb(colBack);
-        this.label .style.color           = colorStyleRgb(colText);
+        this.inner .style.backgroundColor = colorStyleRgb (colBack);
+        this.header.style.backgroundColor = colorStyleRgb (colBack);
+        this.label .style.color           = colorStyleRgba(colText);
 
 
         this.#space.control.backColor  = colBack;
@@ -239,8 +239,8 @@ extends Operator
         //this.outputs[0].control.style.top = '85%';
         
 
-        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );
-        const colOut = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
+        const colIn  = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
+        const colOut = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
 
 
         this.inputs [0].color = colIn;

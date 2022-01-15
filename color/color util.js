@@ -58,7 +58,14 @@ function colorStyleRgba_(r, g, b, a)
 
 
 
-function colorStyleRgba(rgb, a)
+function colorStyleRgba(rgba)
+{
+    return colorStyle_(rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
+
+
+function colorStyleRgb_a(rgb, a)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], a);
 }

@@ -5699,7 +5699,14 @@ function colorStyleRgba_(r, g, b, a)
 
 
 
-function colorStyleRgba(rgb, a)
+function colorStyleRgba(rgba)
+{
+    return colorStyle_(rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
+
+
+function colorStyleRgb_a(rgb, a)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], a);
 }
@@ -8975,12 +8982,12 @@ extends Operator
         colVal     = hsv2rgb(colVal);
         
         const darkText = rgb2okhcl(colBack)[2] > 0.71;
-        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
+        const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
 
 
-        this.inner .style.backgroundColor = colorStyleRgb(colBack);
-        this.header.style.backgroundColor = colorStyleRgb(colBack);
-        this.label .style.color           = colorStyleRgb(colText);
+        this.inner .style.backgroundColor = colorStyleRgb (colBack);
+        this.header.style.backgroundColor = colorStyleRgb (colBack);
+        this.label .style.color           = colorStyleRgba(colText);
 
 
         this.#space.control.backColor  = colBack;
@@ -8993,8 +9000,8 @@ extends Operator
         //this.outputs[0].control.style.top = '85%';
         
 
-        const colIn  = colorStyleRgba(colText, darkText ? 0.22 : 0.4 );
-        const colOut = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
+        const colIn  = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
+        const colOut = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
 
 
         this.inputs [0].color = colIn;
@@ -11569,7 +11576,6 @@ function initSelectSlider(slider, width, height, name, options, def)
             ? slider.value / (slider.options.length-1)
             : 0;
 
-        // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
   
         const barHeight = 3.2;
 
@@ -11600,7 +11606,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.bar.style.background =
             slider.value >= 0
-            ? colorStyleRgba(slider.textColor, darkText ? 0.1 : 0.24)//slider.valueColor
+            ? colorStyleRgb_a(slider.textColor, darkText ? 0.1 : 0.24)//slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
         slider.text.innerHTML = 
@@ -11609,7 +11615,7 @@ function initSelectSlider(slider, width, height, name, options, def)
              : '';
         
 
-        slider.text.style.color = colorStyleRgb(slider.textColor);
+        slider.text.style.color = colorStyleRgba(slider.textColor);
     };
 
 

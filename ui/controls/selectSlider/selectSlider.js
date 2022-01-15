@@ -347,7 +347,6 @@ function initSelectSlider(slider, width, height, name, options, def)
             ? slider.value / (slider.options.length-1)
             : 0;
 
-        // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
   
         const barHeight = 3.2;
 
@@ -378,7 +377,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.bar.style.background =
             slider.value >= 0
-            ? colorStyleRgba(slider.textColor, darkText ? 0.1 : 0.24)//slider.valueColor
+            ? colorStyleRgb_a(slider.textColor, darkText ? 0.1 : 0.24)//slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
         slider.text.innerHTML = 
@@ -387,7 +386,7 @@ function initSelectSlider(slider, width, height, name, options, def)
              : '';
         
 
-        slider.text.style.color = colorStyleRgb(slider.textColor);
+        slider.text.style.color = colorStyleRgba(slider.textColor);
     };
 
 
