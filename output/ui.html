@@ -28,7 +28,7 @@
 
 .button:active
 {
-    box-shadow: 0 0 0 2px var(--rgbActiveObject) inset;
+    box-shadow: 0 0 0 2px var(--activeObjectColor) inset;
     outline:    none;
 }
 
@@ -88,7 +88,7 @@ input[type=text]:hover
 
 input[type=text]:focus
 {
-    box-shadow: 0 0 0 1px var(--rgbActiveObject);
+    box-shadow: 0 0 0 1px var(--activeObjectColor);
     outline: none;
 }
 
@@ -129,7 +129,7 @@ input[type=text]::selection
 
 .menuButton:focus
 {
-    background:var(--rgbActiveObject);
+    background:var(--activeObjectColor);
     color:     white;
 }
 
@@ -296,7 +296,7 @@ input[type=text]:hover
 
 input[type=text]:focus
 {
-    box-shadow: 0 0 0 2px var(--rgbActiveObject);
+    box-shadow: 0 0 0 2px var(--activeObjectColor);
     outline:    none;
 }
 
@@ -310,13 +310,13 @@ input[type=text]::selection
 
 :root
 {
-    --rgbActiveObject: #18a0fb;
+    --activeObjectColor: #18a0fb;
 }
 
 
 #selectBox
 {
-    outline:          1pt solid var(--rgbActiveObject);
+    outline:          1pt solid var(--activeObjectColor);
     background-color: #18A0FB20;
     pointer-events:   none;
     margin:           0;
@@ -514,7 +514,7 @@ input[type=text]::selection
 {
     position:       absolute;
     pointer-events: none;
-    box-shadow:     0 0 0 1px var(--rgbActiveObject) inset;
+    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
 }
@@ -530,8 +530,8 @@ input[type=text]::selection
 {
     outline:    none;
     box-sizing: border-box;
-    border:     solid 2px var(--rgbActiveObject);
-    box-shadow: 0 0 0 -2px var(--rgbActiveObject) inset;
+    border:     solid 2px var(--activeObjectColor);
+    box-shadow: 0 0 0 -2px var(--activeObjectColor) inset;
 }     */
 
 
@@ -578,7 +578,7 @@ input[type=text]::selection
 {
     position:       absolute;
     pointer-events: none;
-    box-shadow:     0 0 0 1px var(--rgbActiveObject) inset;
+    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
 }
@@ -594,8 +594,8 @@ input[type=text]::selection
 {
     outline:    none;
     box-sizing: border-box;
-    border:     solid 2px var(--rgbActiveObject);
-    box-shadow: 0 0 0 -2px var(--rgbActiveObject) inset;
+    border:     solid 2px var(--activeObjectColor);
+    box-shadow: 0 0 0 -2px var(--activeObjectColor) inset;
 }     */
 
 
@@ -643,7 +643,7 @@ input[type=text]::selection
     background-position: calc(100% - 14px) 50%;
     background-repeat:   no-repeat;
     padding-right:       30;
-    box-shadow:          0 0 0 2px var(--rgbActiveObject);
+    box-shadow:          0 0 0 2px var(--activeObjectColor);
     outline:             none;
 }
 
@@ -731,7 +731,7 @@ input[type=text]::selection
     background-position: calc(100% - 6px) 50%;
     background-repeat:   no-repeat;
     padding-right:       30;
-    box-shadow:          0 0 0 2px var(--rgbActiveObject);
+    box-shadow:          0 0 0 2px var(--activeObjectColor);
     outline:             none;
 }
 
@@ -6313,7 +6313,7 @@ function setGoodProductKeyInput()
 function setDefaultProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px ' + rgbActiveObject; 
+    productKeyInput.style.boxShadow = '0 0 0 2px ' + colorStyleRgb(rgbActiveObject); 
 }
 
 
@@ -7986,7 +7986,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + rgbActiveObject
+            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
             : 'none';
     }
     
@@ -10342,7 +10342,7 @@ function updateGraphNode(node)
     //         + ', ';
     // } 
 
-    boxShadow += '0 0 0 1px ' + (node.div.over ? rgbActiveObject : '#00000008');
+    boxShadow += '0 0 0 1px ' + (node.div.over ? colorStyleRgb(rgbActiveObject) : '#00000008');
 
 
     node.inner.style.boxShadow = boxShadow;
@@ -10596,7 +10596,7 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline   = 'none';
     
         slider.textbox.style.textAlign = 'center';
@@ -10735,7 +10735,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
 
             slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
@@ -10770,7 +10770,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
             
             if (slider.isPointerLocked())
             {
@@ -11201,7 +11201,7 @@ function initSelectSliderTextbox(slider)
         slider.textbox.style.top             = slider.offsetTop    + 1;
         slider.textbox.style.width           = slider.offsetWidth  - 2;
         slider.textbox.style.height          = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow       = '0 0 0 1px ' + rgbActiveObject;
+        slider.textbox.style.boxShadow       = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline         = 'none';
       
         slider.textbox.style.textAlign       = 'center';
@@ -11335,7 +11335,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
             
             
 
@@ -11376,7 +11376,7 @@ function initSelectSlider(slider, width, height, name, options, def)
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
             
             if (slider.isPointerLocked())
             {
@@ -11571,10 +11571,10 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
   
-        const barHeight = 3;
+        const barHeight = 3.2;
 
         slider.bar  .style.top        = slider.clientHeight - barHeight; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height     = barHeight; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.bar  .style.height     = barHeight+'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         slider.focus.style.left       = 0;
         slider.focus.style.top        = 0;
@@ -11600,7 +11600,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.bar.style.background =
             slider.value >= 0
-            ? colorStyleRgba(slider.textColor, darkText ? 0.08 : 0.2)//slider.valueColor
+            ? colorStyleRgba(slider.textColor, darkText ? 0.1 : 0.24)//slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
         slider.text.innerHTML = 
@@ -11796,7 +11796,7 @@ function initColorSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline   = 'none';
     
         slider.textbox.style.textAlign = 'center';
@@ -11926,7 +11926,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
             
             
 
@@ -11967,7 +11967,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
             
             if (slider.isPointerLocked())
             {
@@ -12295,7 +12295,7 @@ function initSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = 'calc(100% + 1px)';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = rgbActiveObject;
+    select.selectBox.style.backgroundColor = colorStyleRgb(rgbActiveObject);
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = -1; // -1 = border
     
@@ -12637,7 +12637,7 @@ function initMenuSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = '100%';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = rgbActiveObject;
+    select.selectBox.style.backgroundColor = colorStyleRgb(rgbActiveObject);
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = 0; // -1 = border
     
@@ -12862,7 +12862,7 @@ function initMenuSelectTextbox(select)
         select.textbox.style.top       = select.offsetTop    + 1;
         select.textbox.style.width     = select.offsetWidth  - 2;
         select.textbox.style.height    = select.offsetHeight - 2;
-        select.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+        select.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         select.textbox.style.outline   = 'none';
     
         select.textbox.style.textAlign = 'center';

@@ -112,7 +112,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
             
             
 
@@ -153,7 +153,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
             
             if (slider.isPointerLocked())
             {

@@ -126,7 +126,7 @@ function initMenuSelectTextbox(select)
         select.textbox.style.top       = select.offsetTop    + 1;
         select.textbox.style.width     = select.offsetWidth  - 2;
         select.textbox.style.height    = select.offsetHeight - 2;
-        select.textbox.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+        select.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         select.textbox.style.outline   = 'none';
     
         select.textbox.style.textAlign = 'center';

@@ -381,7 +381,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + rgbActiveObject
+            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
             : 'none';
     }
     

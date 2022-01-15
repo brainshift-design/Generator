@@ -113,7 +113,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
             
             
 
@@ -154,7 +154,7 @@ function initSelectSlider(slider, width, height, name, options, def)
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
             
             if (slider.isPointerLocked())
             {
@@ -349,10 +349,10 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         // slider.bar  .style.background = colorStyleRgba(slider.textColor, ;
   
-        const barHeight = 3;
+        const barHeight = 3.2;
 
         slider.bar  .style.top        = slider.clientHeight - barHeight; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height     = barHeight; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.bar  .style.height     = barHeight+'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         slider.focus.style.left       = 0;
         slider.focus.style.top        = 0;
@@ -378,7 +378,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.bar.style.background =
             slider.value >= 0
-            ? colorStyleRgba(slider.textColor, darkText ? 0.08 : 0.2)//slider.valueColor
+            ? colorStyleRgba(slider.textColor, darkText ? 0.1 : 0.24)//slider.valueColor
             : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
         slider.text.innerHTML = 

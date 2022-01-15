@@ -27,6 +27,6 @@
 
 .menuButton:focus
 {
-    background:var(--rgbActiveObject);
+    background:var(--activeObjectColor);
     color:     white;
 }

@@ -121,7 +121,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             slider.prevValue    = slider.value;
             slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + rgbActiveObject + ' inset';
+            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
 
             slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
@@ -156,7 +156,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + rgbActiveObject;
+            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
             
             if (slider.isPointerLocked())
             {
