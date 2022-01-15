@@ -110,6 +110,11 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.finish = function(success)
     {
+        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    slider.textbox.value,
+            'oldValue': slider.textbox.savedValue }}));
+
         if (success) slider.setValue(Number(slider.textbox.value     ));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
@@ -139,6 +144,8 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
+        console.log(slider.value);
+        console.log(slider.editDec);
         slider.textbox.value      = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue = slider.textbox.value;
         

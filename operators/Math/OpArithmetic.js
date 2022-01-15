@@ -46,16 +46,26 @@ extends Operator
         if (!this.needsUpdate())
             return;
 
+        let maxDec = 0;
+
         for (const input of this.inputs)
+        {
             if (input.isConnected)
+            {
                 input.connectedOutput.op.update();
+                maxDec = Math.max(maxDec, input.data.decimals);
+            }
+        }
 
 
         const result = this.getResult();
 
         this.outputs[0]._data = dataFromNumber(result);
+
         this.#paramValue.setValue(result, false, true, false);
 
+        this.#paramValue.control.dec = maxDec;
+        this.#paramValue.control.update();
 
         super.update()
     }

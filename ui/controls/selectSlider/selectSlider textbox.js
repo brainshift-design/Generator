@@ -4,6 +4,8 @@ function initSelectSliderTextbox(slider)
     slider.textbox.setAttribute('type', 'text'); 
     slider.textbox.className = 'selectSliderText';
     
+
+
     slider.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
@@ -78,10 +80,13 @@ function initSelectSliderTextbox(slider)
     });
 
 
+
     // slider.textbox.addEventListener('input', function()
     // {
     //     slider.setValue(Number(slider.textbox.value));
     // });
+
+
 
     slider.textbox.addEventListener('paste', function(e)
     {
@@ -93,15 +98,24 @@ function initSelectSliderTextbox(slider)
         slider.textbox.value = isNaN(val) ? '' : val;
     });
 
+
+
     slider.textbox.addEventListener('focusout', function()
     {
         slider.parentNode.removeChild(slider.textbox);
         slider.clicked = false;
     });
     
+
+
     slider.textbox.finish = function(success)
     {
-        if (success) slider.setValue(Number(slider.textbox.value     ));
+        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    slider.textbox.value,
+            'oldValue': slider.textbox.savedValue }}));
+
+            if (success) slider.setValue(Number(slider.textbox.value     ));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
@@ -111,6 +125,7 @@ function initSelectSliderTextbox(slider)
     };    
     
     
+
     slider.showTextbox = function()
     {
         slider.inFocus = 

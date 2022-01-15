@@ -48,6 +48,17 @@ function forwardEvent(event, element)
 
 
 
+function getUserDecimalSeparator()
+{
+    const num = 1.1;
+
+    return num
+        .toLocaleString(navigator.language)
+        .substring(1, 2);
+}
+
+
+
 function numToString(num, dec)
 {
     var str = Number(num).toFixed(dec).toString();

@@ -3,6 +3,9 @@ extends Parameter
 {
     defaultValue;
     
+    allowEditDecimals;
+    
+
     get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
     
@@ -26,7 +29,7 @@ extends Parameter
                 min       = Number.MIN_SAFE_INTEGER, 
                 max       = Number.MAX_SAFE_INTEGER,
                 decimals  = 0,
-                dragScale = 0.01)
+                dragScale = 0.05)
     {
         super(name, 'number');
 
@@ -35,6 +38,8 @@ extends Parameter
         this.control.zIndex = 0;
 
         this.defaultValue = value;
+
+        this.allowEditDecimals = false;
 
 
         initNumberSlider(
@@ -48,8 +53,7 @@ extends Parameter
             dragScale, // drag scale
             1,         // wheel step
             decimals,  // decimals
-            0,         // acceleration
-            '');       // suffix
+            0);        // acceleration
 
 
         this.div.appendChild(this.control);
@@ -64,6 +68,26 @@ extends Parameter
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
+
+        this.control.addEventListener('finishedit', e =>
+        { 
+            if (   e.detail.success
+                && this.allowEditDecimals)
+            {
+                const decIndex = e.detail.value.indexOf(getUserDecimalSeparator());
+
+                const nDec =
+                    decIndex >= 0
+                    ? e.detail.value.length-1 - decIndex
+                    : 0;
+
+                this.control.dec     = nDec;
+                this.control.editDec = nDec;
+                this.control.update();
+
+                this.op.pushUpdate();
+            }
+        });
     }
 
 

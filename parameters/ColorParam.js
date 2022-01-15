@@ -28,7 +28,7 @@ extends Parameter
     constructor(name, 
                 hasOutput,
                 value     = [0, 0, 0],
-                dragScale = 0.01)
+                dragScale = 0.05)
     {
         super(name, 'color');
 

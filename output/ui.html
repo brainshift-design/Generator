@@ -838,7 +838,7 @@ function nozero(x)
 
 function getDigitCount(i)
 {
-    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+    let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
     return l + 1;
 }
 
@@ -846,7 +846,7 @@ function getDigitCount(i)
 
 function isDigit(key)
 {
-    var is = 
+    let is = 
            key >= '0' 
         && key <= '9';
 
@@ -857,7 +857,7 @@ function isDigit(key)
 
 function isHexLetter(key)
 {
-    var is =
+    let is =
            key.length == 1
         && (   key >= 'A' && key <= 'F'
             || key >= 'a' && key <= 'f');
@@ -869,27 +869,34 @@ function isHexLetter(key)
 
 function getNumberString(num, dec)
 {
-    var str = Number(num).toFixed(dec).toString();
+    let _dec = Math.abs(dec);
+    let  str = Number(num).toFixed(_dec).toString();
 
-    var i = 0;
+    let i = 0;
 
     // find decimal place
 
-    while (i < str.length && str[i] !== '.' && str[i] !== ',')
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
         return str;
 
+        
     i = str.length-1;
 
-    while (i >= 0 && str[i] === '0')
-    str = str.substring(0, i--);
-    
-    if (   str[i] === '.' 
-        || str[i] === ',') // hack because JavaScript
-        str = str.substring(0, i--);
-    
+    if (dec < 0)
+    {
+        while (i >= 0 && str[i] === '0')
+            str = str.substring(0, i--);
+        
+        if (   str[i] === '.' 
+            || str[i] === ',') // hack because JavaScript
+            str = str.substring(0, i--);
+    }    
+
     return str;
 }
 
@@ -915,7 +922,7 @@ function removeLast(array)
     if (array.length == 0)
         return null;
 
-    var last = lastOf(array);
+    let last = lastOf(array);
     array.splice(array.length-1, 1)
 
     return last;
@@ -932,7 +939,7 @@ function lastOf(array)
 
 function capitalize(str)
 {
-    var cap = "";
+    let cap = "";
 
     if (str.length > 0)
         cap += str[0].toUpperCase();
@@ -968,9 +975,9 @@ function stringToArray(str)
 
 function arrayToString(bytes) 
 {
-    var str = '';
+    let str = '';
 
-    for (var i = 0; i < bytes.length; i++)
+    for (let i = 0; i < bytes.length; i++)
         str += String.fromCharCode(bytes[i]);
 
     return str;
@@ -983,9 +990,9 @@ function getQueryVariable(strVar)
     var query = window.location.search.substring(1);
     var vars  = query.split('&');
 
-    for (var i = 0; i < vars.length; i++) 
+    for (let i = 0; i < vars.length; i++) 
     {
-        var pair = vars[i].split('=');
+        let pair = vars[i].split('=');
 
         if (pair[0] == strVar)
             return pair[1];
@@ -2175,6 +2182,17 @@ function forwardEvent(event, element)
 //
 //     element.dispatchEvent(e);
 // }
+
+
+
+function getUserDecimalSeparator()
+{
+    const num = 1.1;
+
+    return num
+        .toLocaleString(navigator.language)
+        .substring(1, 2);
+}
 
 
 
@@ -3050,7 +3068,7 @@ function nozero(x)
 
 function getDigitCount(i)
 {
-    var l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+    let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
     return l + 1;
 }
 
@@ -3058,7 +3076,7 @@ function getDigitCount(i)
 
 function isDigit(key)
 {
-    var is = 
+    let is = 
            key >= '0' 
         && key <= '9';
 
@@ -3069,7 +3087,7 @@ function isDigit(key)
 
 function isHexLetter(key)
 {
-    var is =
+    let is =
            key.length == 1
         && (   key >= 'A' && key <= 'F'
             || key >= 'a' && key <= 'f');
@@ -3081,27 +3099,34 @@ function isHexLetter(key)
 
 function getNumberString(num, dec)
 {
-    var str = Number(num).toFixed(dec).toString();
+    let _dec = Math.abs(dec);
+    let  str = Number(num).toFixed(_dec).toString();
 
-    var i = 0;
+    let i = 0;
 
     // find decimal place
 
-    while (i < str.length && str[i] !== '.' && str[i] !== ',')
+    while (   i < str.length 
+           && str[i] !== '.' 
+           && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
         return str;
 
+        
     i = str.length-1;
 
-    while (i >= 0 && str[i] === '0')
-    str = str.substring(0, i--);
-    
-    if (   str[i] === '.' 
-        || str[i] === ',') // hack because JavaScript
-        str = str.substring(0, i--);
-    
+    if (dec < 0)
+    {
+        while (i >= 0 && str[i] === '0')
+            str = str.substring(0, i--);
+        
+        if (   str[i] === '.' 
+            || str[i] === ',') // hack because JavaScript
+            str = str.substring(0, i--);
+    }    
+
     return str;
 }
 
@@ -3127,7 +3152,7 @@ function removeLast(array)
     if (array.length == 0)
         return null;
 
-    var last = lastOf(array);
+    let last = lastOf(array);
     array.splice(array.length-1, 1)
 
     return last;
@@ -3144,7 +3169,7 @@ function lastOf(array)
 
 function capitalize(str)
 {
-    var cap = "";
+    let cap = "";
 
     if (str.length > 0)
         cap += str[0].toUpperCase();
@@ -3180,9 +3205,9 @@ function stringToArray(str)
 
 function arrayToString(bytes) 
 {
-    var str = '';
+    let str = '';
 
-    for (var i = 0; i < bytes.length; i++)
+    for (let i = 0; i < bytes.length; i++)
         str += String.fromCharCode(bytes[i]);
 
     return str;
@@ -3195,9 +3220,9 @@ function getQueryVariable(strVar)
     var query = window.location.search.substring(1);
     var vars  = query.split('&');
 
-    for (var i = 0; i < vars.length; i++) 
+    for (let i = 0; i < vars.length; i++) 
     {
-        var pair = vars[i].split('=');
+        let pair = vars[i].split('=');
 
         if (pair[0] == strVar)
             return pair[1];
@@ -4387,6 +4412,17 @@ function forwardEvent(event, element)
 //
 //     element.dispatchEvent(e);
 // }
+
+
+
+function getUserDecimalSeparator()
+{
+    const num = 1.1;
+
+    return num
+        .toLocaleString(navigator.language)
+        .substring(1, 2);
+}
 
 
 
@@ -6469,6 +6505,9 @@ extends Parameter
 {
     defaultValue;
     
+    allowEditDecimals;
+    
+
     get value()      { return this._control.value;    }
     set value(value) { this._control.setValue(value); }
     
@@ -6492,7 +6531,7 @@ extends Parameter
                 min       = Number.MIN_SAFE_INTEGER, 
                 max       = Number.MAX_SAFE_INTEGER,
                 decimals  = 0,
-                dragScale = 0.01)
+                dragScale = 0.05)
     {
         super(name, 'number');
 
@@ -6501,6 +6540,8 @@ extends Parameter
         this.control.zIndex = 0;
 
         this.defaultValue = value;
+
+        this.allowEditDecimals = false;
 
 
         initNumberSlider(
@@ -6514,8 +6555,7 @@ extends Parameter
             dragScale, // drag scale
             1,         // wheel step
             decimals,  // decimals
-            0,         // acceleration
-            '');       // suffix
+            0);        // acceleration
 
 
         this.div.appendChild(this.control);
@@ -6530,6 +6570,26 @@ extends Parameter
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
+
+        this.control.addEventListener('finishedit', e =>
+        { 
+            if (   e.detail.success
+                && this.allowEditDecimals)
+            {
+                const decIndex = e.detail.value.indexOf(getUserDecimalSeparator());
+
+                const nDec =
+                    decIndex >= 0
+                    ? e.detail.value.length-1 - decIndex
+                    : 0;
+
+                this.control.dec     = nDec;
+                this.control.editDec = nDec;
+                this.control.update();
+
+                this.op.pushUpdate();
+            }
+        });
     }
 
 
@@ -6614,7 +6674,7 @@ extends Parameter
     constructor(name, 
                 hasOutput,
                 value     = [0, 0, 0],
-                dragScale = 0.01)
+                dragScale = 0.05)
     {
         super(name, 'color');
 
@@ -6822,11 +6882,12 @@ function rgbFromDataType(dataType, active)
 
 
 
-function dataFromNumber(num)
+function dataFromNumber(num, dec = -1)
 {
     return {
-        type: 'number',
-        value: num 
+        type:    'number',
+        value:    num,
+        decimals: dec
     };
 }
 
@@ -8448,7 +8509,7 @@ function initLabelTextbox(node)
 class   OpNumber
 extends Operator
 {
-    #paramValue;
+    #value;
 
 
 
@@ -8457,8 +8518,11 @@ extends Operator
         super('number', 'num', 'number', 70);
 
         this.addOutput(new Output(this.dataType));
-        this.addParam(this.#paramValue = new NumberParam('', true, false));
-        this.#paramValue.addEventListener('change', () => this.pushUpdate());
+
+        this.addParam(this.#value = new NumberParam('', true, false));
+        
+        this.#value.allowEditDecimals = true;
+        this.#value.addEventListener('change', () => this.pushUpdate());
     }
 
 
@@ -8479,7 +8543,9 @@ extends Operator
             
         this.updateParams(false);
         
-        this.outputs[0]._data = dataFromNumber(this.#paramValue.value);
+        this.outputs[0]._data = dataFromNumber(
+            this.#value.value, 
+            this.#value.control.dec);
             
         super.update()
     }
@@ -8490,7 +8556,7 @@ extends Operator
     {
         super.updateParams(dispatchEvents);
 
-        this.outputs[0]._value = this.#paramValue.value;
+        this.outputs[0]._value = this.#value.value;
     }
 
 
@@ -8557,16 +8623,26 @@ extends Operator
         if (!this.needsUpdate())
             return;
 
+        let maxDec = 0;
+
         for (const input of this.inputs)
+        {
             if (input.isConnected)
+            {
                 input.connectedOutput.op.update();
+                maxDec = Math.max(maxDec, input.data.decimals);
+            }
+        }
 
 
         const result = this.getResult();
 
         this.outputs[0]._data = dataFromNumber(result);
+
         this.#paramValue.setValue(result, false, true, false);
 
+        this.#paramValue.control.dec = maxDec;
+        this.#paramValue.control.update();
 
         super.update()
     }
@@ -10579,6 +10655,11 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.finish = function(success)
     {
+        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    slider.textbox.value,
+            'oldValue': slider.textbox.savedValue }}));
+
         if (success) slider.setValue(Number(slider.textbox.value     ));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
@@ -10608,6 +10689,8 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
+        console.log(slider.value);
+        console.log(slider.editDec);
         slider.textbox.value      = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue = slider.textbox.value;
         
@@ -10785,11 +10868,13 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
                 
                 let dx       = slider.sx - slider.movedX;             
                 let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let drag     = slider.dragScale * Math.pow(10, -slider.editDec);
+
                 
                 // TODO: if (log) do log scaling
-                let val = slider.oldValue - dx*slider.dragScale*adaptive;
+                let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
                 
-                const grain = Math.pow(10, this.editDec);
+                const grain = Math.pow(10, -this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -10900,13 +10985,18 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.addEventListener('wheel', e =>
     {
+        if (!slider.pointerEvents)
+            return;
+
         if (   !getCtrlKey(e)
             && !slider.buttonDown1)
         {
             e.stopPropagation();
 
             slider.oldValue = slider.value;
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+
+            const dec = Math.pow(10, -slider.editDec);
+            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec);
             // TODO conform after a delay and/or another action, same with key changes 
         }
     });
@@ -11023,7 +11113,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        let valueText = 
+        console.log('slider.dec = ', slider.dec);
+        const valueText = 
             slider.valueText != ''
             ? slider.valueText
             : getNumberString(slider.value, slider.dec);
@@ -11088,6 +11179,8 @@ function initSelectSliderTextbox(slider)
     slider.textbox.setAttribute('type', 'text'); 
     slider.textbox.className = 'selectSliderText';
     
+
+
     slider.textbox.addEventListener('keydown', function(e)
     {
         if (   e.code == 'KeyC'
@@ -11162,10 +11255,13 @@ function initSelectSliderTextbox(slider)
     });
 
 
+
     // slider.textbox.addEventListener('input', function()
     // {
     //     slider.setValue(Number(slider.textbox.value));
     // });
+
+
 
     slider.textbox.addEventListener('paste', function(e)
     {
@@ -11177,15 +11273,24 @@ function initSelectSliderTextbox(slider)
         slider.textbox.value = isNaN(val) ? '' : val;
     });
 
+
+
     slider.textbox.addEventListener('focusout', function()
     {
         slider.parentNode.removeChild(slider.textbox);
         slider.clicked = false;
     });
     
+
+
     slider.textbox.finish = function(success)
     {
-        if (success) slider.setValue(Number(slider.textbox.value     ));
+        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    slider.textbox.value,
+            'oldValue': slider.textbox.savedValue }}));
+
+            if (success) slider.setValue(Number(slider.textbox.value     ));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
@@ -11195,6 +11300,7 @@ function initSelectSliderTextbox(slider)
     };    
     
     
+
     slider.showTextbox = function()
     {
         slider.inFocus = 
@@ -11259,7 +11365,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.options           = options;
     slider.value             = def;
 
-    slider.dragScale         = 0.0004;
+    slider.dragScale         = 0.002;
         
     slider.backColor         = [0xff, 0xff, 0xff];
     //slider.valueColor        = [0xee, 0xee, 0xee];
@@ -11985,8 +12091,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
                 // TODO: if (log) do log scaling
                 let val = slider.oldValue - dx*slider.dragScale*adaptive;
                 
-                let editDec = 0;
-                const grain = Math.pow(10, editDec);
+                const grain = Math.pow(10, -slider.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -14029,7 +14134,6 @@ graphView.getZoomedNodeBounds = node =>
 graphView.getIntersectingNodes = node =>
 {
     const nodeBounds = graphView.getZoomedNodeBounds(node);
-    console.log('getIntersectingNodes().nodeBounds = ', nodeBounds);
 
     const intersecting = [];
     
@@ -14040,7 +14144,6 @@ graphView.getIntersectingNodes = node =>
         if (   n != node
             && rectsIntersect(nBounds, nodeBounds))
         {
-            console.log('getIntersectingNodes().nBounds = ', nBounds);
             intersecting.push(n);
         }
     }

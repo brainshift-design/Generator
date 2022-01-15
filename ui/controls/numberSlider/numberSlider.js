@@ -164,11 +164,13 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
                 
                 let dx       = slider.sx - slider.movedX;             
                 let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                let drag     = slider.dragScale * Math.pow(10, -slider.editDec);
+
                 
                 // TODO: if (log) do log scaling
-                let val = slider.oldValue - dx*slider.dragScale*adaptive;
+                let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
                 
-                const grain = Math.pow(10, this.editDec);
+                const grain = Math.pow(10, -this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -279,13 +281,18 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.addEventListener('wheel', e =>
     {
+        if (!slider.pointerEvents)
+            return;
+
         if (   !getCtrlKey(e)
             && !slider.buttonDown1)
         {
             e.stopPropagation();
 
             slider.oldValue = slider.value;
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
+
+            const dec = Math.pow(10, -slider.editDec);
+            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec);
             // TODO conform after a delay and/or another action, same with key changes 
         }
     });
@@ -402,7 +409,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        let valueText = 
+        console.log('slider.dec = ', slider.dec);
+        const valueText = 
             slider.valueText != ''
             ? slider.valueText
             : getNumberString(slider.value, slider.dec);

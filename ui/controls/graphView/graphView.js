@@ -284,7 +284,6 @@ graphView.getZoomedNodeBounds = node =>
 graphView.getIntersectingNodes = node =>
 {
     const nodeBounds = graphView.getZoomedNodeBounds(node);
-    console.log('getIntersectingNodes().nodeBounds = ', nodeBounds);
 
     const intersecting = [];
     
@@ -295,7 +294,6 @@ graphView.getIntersectingNodes = node =>
         if (   n != node
             && rectsIntersect(nBounds, nodeBounds))
         {
-            console.log('getIntersectingNodes().nBounds = ', nBounds);
             intersecting.push(n);
         }
     }

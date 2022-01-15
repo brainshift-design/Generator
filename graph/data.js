@@ -21,11 +21,12 @@ function rgbFromDataType(dataType, active)
 
 
 
-function dataFromNumber(num)
+function dataFromNumber(num, dec = -1)
 {
     return {
-        type: 'number',
-        value: num 
+        type:    'number',
+        value:    num,
+        decimals: dec
     };
 }
 
