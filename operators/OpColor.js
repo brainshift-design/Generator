@@ -106,7 +106,7 @@ extends Operator
     switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, '',  false, 0, 255, 0, 255); }
     switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, '°', true,  0, 100, 0, 100); }
     switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
-    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
+    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, '°', true,  0, 400, 0, 400); }
     
     
     
@@ -294,8 +294,8 @@ function getNormalValue(value, space, chan)
     {
         case 'rgb': return getNormalValueRgb_(value, chan);
         case 'hsv':
-        case 'hsl':
-        case 'hcl': return getNormalValueH_(value, chan);
+        case 'hsl': return getNormalValueHs_(value, chan);
+        case 'hcl': return getNormalValueHcl(value, chan);
     }
 }
 
@@ -313,7 +313,19 @@ function getNormalValueRgb_(value, chan)
 
 
 
-function getNormalValueH_(value, chan)
+function getNormalValueHs_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / 360;
+        case 1: return value / 100; 
+        case 2: return value / 100;
+    }
+}
+
+
+
+function getNormalValueHcl(value, chan)
 {
     switch (chan)
     {
@@ -342,8 +354,8 @@ function getNormalColor_(space, c1, c2, c3)
     {
         case 'rgb': return getNormalColorRgb_(c1, c2, c3);
         case 'hsv':
-        case 'hsl':
-        case 'hcl': return getNormalColorH_(c1, c2, c3);
+        case 'hsl': return getNormalColorHs_(c1, c2, c3);
+        case 'hcl': return getNormalColorHcl(c1, c2, c3);
     }
 }
 
@@ -359,7 +371,17 @@ function getNormalColorRgb_(c1, c2, c3)
 
 
 
-function getNormalColorH_(c1, c2, c3)
+function getNormalColorHs_(c1, c2, c3)
+{
+    return [
+        c1 / 360, 
+        c2 / 100, 
+        c3 / 100];
+}
+
+
+
+function getNormalColorHcl(c1, c2, c3)
 {
     return [
         c1 / 360, 
@@ -375,8 +397,8 @@ function getSliderColor(color)
     {
         case 'rgb': return getSliderColorRgb_(color[1], color[2], color[3]);
         case 'hsv':
-        case 'hsl':
-        case 'hcl': return getSliderColorH_(color[1], color[2], color[3]);
+        case 'hsl': return getSliderColorHs_(color[1], color[2], color[3]);
+        case 'hcl': return getSliderColorHcl(color[1], color[2], color[3]);
     }
 }
 
@@ -392,7 +414,17 @@ function getSliderColorRgb_(c1, c2, c3)
 
 
 
-function getSliderColorH_(c1, c2, c3)
+function getSliderColorHs_(c1, c2, c3)
+{
+    return [
+        c1 * 360, 
+        c2 * 100, 
+        c3 * 100];
+}
+
+
+
+function getSliderColorHcl(c1, c2, c3)
 {
     return [
         c1 * 360, 

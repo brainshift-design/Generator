@@ -409,7 +409,6 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         if (slider.name.length > 0)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        console.log('slider.dec = ', slider.dec);
         const valueText = 
             slider.valueText != ''
             ? slider.valueText

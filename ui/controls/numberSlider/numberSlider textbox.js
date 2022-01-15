@@ -144,8 +144,6 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        console.log(slider.value);
-        console.log(slider.editDec);
         slider.textbox.value      = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue = slider.textbox.value;
         

@@ -21,7 +21,7 @@ graphView.startConnectionFromInput = input =>
     graphView.tempConn.wire.input        = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
 
-    output.updateControl();
+    input.updateControl();
 };
 
 

@@ -45,8 +45,8 @@ function okhcl2rgb(hcl)
 function okhcl2rgb_(h, c, l)
 {
     const lab = hcl2lab([
-        h*Tau,// + hueBiasLab,
-        c/okLabScale,// * l/100, 
+        h*Tau,//(h + hueBiasLab) * Tau,
+        c / okLabScale,
         l]);
 
     return oklab2rgb(lab, sRGB);
@@ -54,16 +54,21 @@ function okhcl2rgb_(h, c, l)
     
     
     
-function rgb2okhcl(rgb)//, colorSpace)
+function rgb2okhcl(rgb)
 {
-    return rgb2okhcl_(rgb[0], rgb[1], rgb[2]);//, colorSpace);
+    return rgb2okhcl_(rgb[0], rgb[1], rgb[2]);
 }
 
 
 
 function rgb2okhcl_(r, g, b)
 {
-    return lab2hcl(rgb2oklab_(r, g, b));
+    const hcl = lab2hcl(rgb2oklab_(r, g, b));
+    return hcl;
+    // return [
+    //     hcl[0]/Tau - hueBiasLab,
+    //     hcl[1] * okLabScale,
+    //     hcl[2]];
 }
 
 
