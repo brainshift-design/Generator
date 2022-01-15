@@ -11579,13 +11579,13 @@ function initSelectSlider(slider, width, height, name, options, def)
   
         const barHeight = 3.2;
 
-        slider.bar  .style.top        = slider.clientHeight - barHeight; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height     = barHeight+'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.bar  .style.top     = (slider.clientHeight - barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height  = barHeight + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
-        slider.focus.style.left       = 0;
-        slider.focus.style.top        = 0;
-        slider.focus.style.width      = slider.clientWidth;
-        slider.focus.style.height     = slider.clientHeight;
+        slider.focus.style.left    = 0;
+        slider.focus.style.top     = 0;
+        slider.focus.style.width   = slider.clientWidth;
+        slider.focus.style.height  = slider.clientHeight;
 
         if (v >= 0)
         {
@@ -13269,6 +13269,16 @@ graphView.setZoomAndPan = (zoom, pan) =>
 
 
 
+graphView.startPan = pointerId =>
+{
+    graphView.panning  = true;
+    graphView.panStart = graphView.pan;
+    graphView.setPointerCapture(pointerId);
+    setCursor(panCursor);
+};
+
+
+
 graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
@@ -13277,16 +13287,6 @@ graphView.updatePanAndZoom = () =>
     graphView.updateScroll();
 
     //console.log('zoom = ' + graphView.zoom + ', pan = ' + graphView.pan.x + ', ' + graphView.pan.y);
-};
-
-
-
-graphView.startPan = pointerId =>
-{
-    graphView.panning  = true;
-    graphView.panStart = graphView.pan;
-    graphView.setPointerCapture(pointerId);
-    setCursor(panCursor);
 };
 
 
@@ -13959,83 +13959,125 @@ graphView.getAllNodeBounds = () =>
 
 
 
-graphView.getNodeBounds = (nodes) =>
-{
-    let boundsL = Number.MAX_SAFE_INTEGER;
-    let boundsT = Number.MAX_SAFE_INTEGER;
-    let boundsR = Number.MIN_SAFE_INTEGER;
-    let boundsB = Number.MIN_SAFE_INTEGER;
+// graphView.getNodeBounds = (nodes) =>
+// {
+//     let boundsL = Number.MAX_SAFE_INTEGER;
+//     let boundsT = Number.MAX_SAFE_INTEGER;
+//     let boundsR = Number.MIN_SAFE_INTEGER;
+//     let boundsB = Number.MIN_SAFE_INTEGER;
     
-    for (const node of nodes)
-    {
-        const bounds = boundingRect(node.div);
+//     for (const node of nodes)
+//     {
+//         const bounds = boundingRect(node.div);
 
-        boundsL = Math.min(boundsL, bounds.l);
-        boundsT = Math.min(boundsT, bounds.t);
-        boundsR = Math.max(boundsR, bounds.r);
-        boundsB = Math.max(boundsB, bounds.b);
-    }
+//         boundsL = Math.min(boundsL, bounds.l);
+//         boundsT = Math.min(boundsT, bounds.t);
+//         boundsR = Math.max(boundsR, bounds.r);
+//         boundsB = Math.max(boundsB, bounds.b);
+//     }
 
-    return {
-        x: boundsL - graphView.pan.x, 
-        y: boundsT - graphView.pan.y,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
+//     return {
+//         x: boundsL - graphView.pan.x, 
+//         y: boundsT - graphView.pan.y,
+//         w: boundsR - boundsL,
+//         h: boundsB - boundsT };
+// };
+
+
+
+// graphView.getZoomedNodeBounds = (nodes) =>
+// {
+//     let bounds = graphView.getNodeBounds(nodes);
+
+//     bounds.x /= graphView.zoom;
+//     bounds.y /= graphView.zoom;
+//     bounds.w /= graphView.zoom;
+//     bounds.h /= graphView.zoom;
+
+//     return boundsl;
+// }
+
+
+
+graphView.getNodeBounds = node =>
+{
+    const bounds = boundingRect(node.div);
+
+    return new Rect(
+        parseFloat(node.div.style.left ),
+        parseFloat(node.div.style.top  ),
+        parseFloat(node.div.style.width),
+        bounds.h / graphView.zoom); // node height isn't defined
+}
+
+
+
+graphView.getZoomedNodeBounds = node =>
+{
+    const bounds = graphView.getNodeBounds(node);
+
+    bounds.x += graphView.pan.x / graphView.zoom;
+    bounds.y += graphView.pan.y / graphView.zoom;
+    bounds.w /= graphView.zoom;
+    bounds.h /= graphView.zoom;
+
+    return bounds;
 };
 
 
 
-graphView.getZoomedNodeBounds = (nodes) =>
+graphView.getIntersectingNodes = node =>
 {
-    let bounds = graphView.getNodeBounds(nodes);
+    const nodeBounds = graphView.getZoomedNodeBounds(node);
+    console.log('getIntersectingNodes().nodeBounds = ', nodeBounds);
 
-    bounds.x /= graphView.zoom;
-    bounds.y /= graphView.zoom;
-    bounds.w /= graphView.zoom;
-    bounds.h /= graphView.zoom;
+    const intersecting = [];
+    
+    for (const n of graph.nodes)
+    {
+        const nBounds = graphView.getZoomedNodeBounds(n);
+        
+        if (   n != node
+            && rectsIntersect(nBounds, nodeBounds))
+        {
+            console.log('getIntersectingNodes().nBounds = ', nBounds);
+            intersecting.push(n);
+        }
+    }
 
-    return boundsl;
+    return intersecting;
 }
 
 
 
 graphView.placeNewNode = node =>
 {
-    node.div.style.left = graphView.offsetWidth  / 6 - graphView.pan.x;
-    node.div.style.top  = graphView.offsetHeight / 4 - graphView.pan.y;
+    node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
+    node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
 
 
+    const dx = 30;
+    const dy = 20;
+
+
+    let maxLength = 100; // stack overflow safeguard
+    
     let intersecting;
-    while ((intersecting = graphView.intersectingNodes(node)).length > 0)
+    while (   maxLength-- > 0
+           && (intersecting = graphView.getIntersectingNodes(node)).length > 0)
     {
         let bounds = Rect.NaN;
         
         for (const n of intersecting)
-            bounds = expandRect(bounds, boundingRect(n.div));
+            bounds = expandRect(bounds, graphView.getNodeBounds(n));
 
         const right = intersecting.reduce((a, b) => 
-            boundingRect(a.div).r > boundingRect(b.div).r ? a : b);
+            graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
-        if (right.opType == node.opType) node.div.style.top  = bounds.b + 20 - controlBar.offsetHeight;
-        else                             node.div.style.left = bounds.r + 30;
+        if (right.opType == node.opType) node.div.style.top  = bounds.b + dy;
+        else                             node.div.style.left = bounds.r + dx;
     }
 };
-
-
-
-graphView.intersectingNodes = node =>
-{
-    const intersecting = [];
-    
-    for (const n of graph.nodes)
-    {
-        if (   n != node
-            && rectsIntersect(boundingRect(n.div), boundingRect(node.div)))
-            intersecting.push(n);
-    }
-
-    return intersecting;
-}
 
 
 

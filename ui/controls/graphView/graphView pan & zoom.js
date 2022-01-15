@@ -61,6 +61,16 @@ graphView.setZoomAndPan = (zoom, pan) =>
 
 
 
+graphView.startPan = pointerId =>
+{
+    graphView.panning  = true;
+    graphView.panStart = graphView.pan;
+    graphView.setPointerCapture(pointerId);
+    setCursor(panCursor);
+};
+
+
+
 graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
@@ -69,16 +79,6 @@ graphView.updatePanAndZoom = () =>
     graphView.updateScroll();
 
     //console.log('zoom = ' + graphView.zoom + ', pan = ' + graphView.pan.x + ', ' + graphView.pan.y);
-};
-
-
-
-graphView.startPan = pointerId =>
-{
-    graphView.panning  = true;
-    graphView.panStart = graphView.pan;
-    graphView.setPointerCapture(pointerId);
-    setCursor(panCursor);
 };
 
 

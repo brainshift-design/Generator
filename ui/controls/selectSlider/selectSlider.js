@@ -350,13 +350,13 @@ function initSelectSlider(slider, width, height, name, options, def)
   
         const barHeight = 3.2;
 
-        slider.bar  .style.top        = slider.clientHeight - barHeight; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height     = barHeight+'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.bar  .style.top     = (slider.clientHeight - barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height  = barHeight + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
-        slider.focus.style.left       = 0;
-        slider.focus.style.top        = 0;
-        slider.focus.style.width      = slider.clientWidth;
-        slider.focus.style.height     = slider.clientHeight;
+        slider.focus.style.left    = 0;
+        slider.focus.style.top     = 0;
+        slider.focus.style.width   = slider.clientWidth;
+        slider.focus.style.height  = slider.clientHeight;
 
         if (v >= 0)
         {
