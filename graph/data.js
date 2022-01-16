@@ -32,7 +32,7 @@ function dataFromNumber(num, dec = -1)
 
 
 
-function dataFromColor(color)
+function dataFromDataColor(color)
 {
     return {
         type: 'color',

@@ -57,7 +57,8 @@ function initNumberSliderTextbox(slider)
         {
             if (   e.key.length == 1
                 && !isDigit(e.key)
-                && e.key != '.'
+                && (slider.showHex && !isHexDigit(e.key))
+                && e.key != getUserDecimalSeparator()
                 && !(   (   e.code == 'Minus'
                          || e.code == 'NumpadSubtract')
                      && slider.min < 0))
@@ -92,7 +93,13 @@ function initNumberSliderTextbox(slider)
     {
         e.preventDefault();
 
-        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        const str = e.clipboardData.getData('text/plain');
+
+        var val = 
+            slider.showHex
+            ? parseInt(str, 16)
+            : parseFloat(str);
+
         val = Math.min(Math.max(slider.min, val), slider.max);
 
         slider.textbox.value = isNaN(val) ? '' : val;
@@ -115,7 +122,12 @@ function initNumberSliderTextbox(slider)
             'value':    slider.textbox.value,
             'oldValue': slider.textbox.savedValue }}));
 
-        if (success) slider.setValue(Number(slider.textbox.value     ));
+        var val = 
+            slider.showHex
+            ? parseInt(slider.textbox.value, 16)
+            : parseFloat(str);
+
+        if (success) slider.setValue(Number(val));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
@@ -144,7 +156,7 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value      = numToString(slider.value, slider.editDec);
+        slider.textbox.value      = getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);

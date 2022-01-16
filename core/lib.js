@@ -36,7 +36,7 @@ function isDigit(key)
 
 
 
-function isHexLetter(key)
+function isHexDigit(key)
 {
     let is =
            key.length == 1
@@ -48,18 +48,29 @@ function isHexLetter(key)
 
 
 
-function getNumberString(num, dec)
+function getNumberString(num, dec, showHex = false)
 {
-    let _dec = Math.abs(dec);
-    let  str = Number(num).toFixed(_dec).toString();
+    if (showHex)
+    {
+        let str = Number(num).toString(16);
 
+        if (str.length % 2 > 0)
+            str = '0' + str;
+
+        return str;
+    }
+
+    
+    let _dec = Math.abs(dec);
+    let  str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
+    
     let i = 0;
 
     // find decimal place
 
     while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
+        && str[i] !== '.' 
+        && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place

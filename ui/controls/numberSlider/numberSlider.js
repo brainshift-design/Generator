@@ -62,6 +62,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.oldValue;
 
     slider.wrapValue         = false;
+    slider.showHex           = false;
     
     slider.enableChangeEvent = true;
 
@@ -412,7 +413,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         const valueText = 
             slider.valueText != ''
             ? slider.valueText
-            : getNumberString(slider.value, slider.dec);
+            : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
 
         slider.text.innerHTML += valueText + slider.suffix;
     };

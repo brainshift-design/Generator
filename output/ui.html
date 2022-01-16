@@ -855,7 +855,7 @@ function isDigit(key)
 
 
 
-function isHexLetter(key)
+function isHexDigit(key)
 {
     let is =
            key.length == 1
@@ -867,18 +867,29 @@ function isHexLetter(key)
 
 
 
-function getNumberString(num, dec)
+function getNumberString(num, dec, showHex = false)
 {
-    let _dec = Math.abs(dec);
-    let  str = Number(num).toFixed(_dec).toString();
+    if (showHex)
+    {
+        let str = Number(num).toString(16);
 
+        if (str.length % 2 > 0)
+            str = '0' + str;
+
+        return str;
+    }
+
+    
+    let _dec = Math.abs(dec);
+    let  str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
+    
     let i = 0;
 
     // find decimal place
 
     while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
+        && str[i] !== '.' 
+        && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -3085,7 +3096,7 @@ function isDigit(key)
 
 
 
-function isHexLetter(key)
+function isHexDigit(key)
 {
     let is =
            key.length == 1
@@ -3097,18 +3108,29 @@ function isHexLetter(key)
 
 
 
-function getNumberString(num, dec)
+function getNumberString(num, dec, showHex = false)
 {
-    let _dec = Math.abs(dec);
-    let  str = Number(num).toFixed(_dec).toString();
+    if (showHex)
+    {
+        let str = Number(num).toString(16);
 
+        if (str.length % 2 > 0)
+            str = '0' + str;
+
+        return str;
+    }
+
+    
+    let _dec = Math.abs(dec);
+    let  str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
+    
     let i = 0;
 
     // find decimal place
 
     while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
+        && str[i] !== '.' 
+        && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -5370,14 +5392,14 @@ function oklab2rgb_(l_, a_, b_, cs = sRGB)
 }
 
 
-function lab2hcl(lab) 
+function opp2pol(opp) // opponent to polar
 {
     // either lab or luv, 
     // the polar transformation is the same
 
-    const l = lab[0], 
-          a = lab[1], 
-          b = lab[2];
+    const l = opp[0], 
+          a = opp[1], 
+          b = opp[2];
 
     const h = Math.atan2(b, a);
     const c = Math.sqrt(a*a + b*b);
@@ -5390,14 +5412,14 @@ function lab2hcl(lab)
 
 
 
-function hcl2lab(hcl)
+function pol2opp(pol) // polar to opponent
 {
     // either lab or luv, 
     // the polar transformation is the same
 
-    const h = hcl[0], 
-          c = hcl[1], 
-          l = hcl[2];
+    const h = pol[0], 
+          c = pol[1], 
+          l = pol[2];
 
     const a = c * Math.cos(h);
     const b = c * Math.sin(h);
@@ -5416,7 +5438,7 @@ function okhcl2rgb(hcl)
     
 function okhcl2rgb_(h, c, l)
 {
-    const lab = hcl2lab([
+    const lab = pol2opp([
         h*Tau,//(h + hueBiasLab) * Tau,
         c / okLabScale,
         l]);
@@ -5435,7 +5457,7 @@ function rgb2okhcl(rgb)
 
 function rgb2okhcl_(r, g, b)
 {
-    const hcl = lab2hcl(rgb2oklab_(r, g, b));
+    const hcl = opp2pol(rgb2oklab_(r, g, b));
     return hcl;
     // return [
     //     hcl[0]/Tau - hueBiasLab,
@@ -5447,8 +5469,8 @@ function rgb2okhcl_(r, g, b)
 
 // function rgb2hcl_(r, g, b, colorSpace)
 // {
-//     if (colorSpace == 0) return lab2hcl(rgb2oklab_(r, g, b));
-//     else                 return lab2hcl(xyz2col(rgb2xyz_(r, g, b), sRGB.W));
+//     if (colorSpace == 0) return opp2pol(rgb2oklab_(r, g, b));
+//     else                 return opp2pol(xyz2col(rgb2xyz_(r, g, b), sRGB.W));
 // }
 
 
@@ -6898,7 +6920,7 @@ function dataFromNumber(num, dec = -1)
 
 
 
-function dataFromColor(color)
+function dataFromDataColor(color)
 {
     return {
         type: 'color',
@@ -8852,10 +8874,14 @@ extends OpArithmetic
 
 const OpColorSpaces = 
 [
-    ['rgb', 'RGB'], 
-    ['hsv', 'HSV'], 
-    ['hsl', 'HSL'], 
-    ['hcl', 'HCL']
+    ['hex',    'Hex'    ],
+    ['rgbhex', '#RGB'   ],
+    ['rgb',    'RGB'    ], 
+    ['hsv',    'HSV'    ], 
+    ['hsl',    'HSL'    ], 
+    ['hclokl', 'HCL OKL'],
+    ['hcllab', 'HCL Lab'],
+    ['hclluv', 'HCL Luv']
 ];
 
 
@@ -8863,21 +8889,22 @@ const OpColorSpaces =
 class   OpColor
 extends Operator
 {
-    #color;
+    _color;
 
-    #space;
+    _space;
     
-    #c1;
-    #c2;
-    #c3;
+    _c1;
+    _c2;
+    _c3;
 
+    hexbox;
 
 
     constructor()
     {
         super('color', 'col', 'color', 80);
 
-        this.#color = ['rgb', 128, 128, 128];
+        this._color = ['rgb', 0.5, 0.5, 0.5];
 
 
         this.addInput (new Input (this.dataType));
@@ -8886,9 +8913,9 @@ extends Operator
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this.#c1.control.style.fontStyle = 'italic'; this.#c1.control.pointerEvents = false;
-            this.#c2.control.style.fontStyle = 'italic'; this.#c2.control.pointerEvents = false;
-            this.#c3.control.style.fontStyle = 'italic'; this.#c3.control.pointerEvents = false;
+            this._c1.control.style.fontStyle = 'italic'; this._c1.control.pointerEvents = false;
+            this._c2.control.style.fontStyle = 'italic'; this._c2.control.pointerEvents = false;
+            this._c3.control.style.fontStyle = 'italic'; this._c3.control.pointerEvents = false;
 
             this.pushUpdate();
         });
@@ -8896,119 +8923,110 @@ extends Operator
         
         this.inputs[0].addEventListener('disconnect', () =>
         {
-            if (!this.#c1.input.isConnected) { this.#c1.control.style.fontStyle = 'normal'; this.#c1.control.pointerEvents = true; }
-            if (!this.#c2.input.isConnected) { this.#c2.control.style.fontStyle = 'normal'; this.#c2.control.pointerEvents = true; }
-            if (!this.#c3.input.isConnected) { this.#c3.control.style.fontStyle = 'normal'; this.#c3.control.pointerEvents = true; }
+            if (!this._c1.input.isConnected) { this._c1.control.style.fontStyle = 'normal'; this._c1.control.pointerEvents = true; }
+            if (!this._c2.input.isConnected) { this._c2.control.style.fontStyle = 'normal'; this._c2.control.pointerEvents = true; }
+            if (!this._c3.input.isConnected) { this._c3.control.style.fontStyle = 'normal'; this._c3.control.pointerEvents = true; }
 
             this.pushUpdate();
         });
 
 
-        this.addParam(this.#space = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#c1    = new NumberParam('c1',    true, true, 128, 0, 255));
-        this.addParam(this.#c2    = new NumberParam('c2',    true, true, 128, 0, 255));
-        this.addParam(this.#c3    = new NumberParam('c3',    true, true, 128, 0, 255));
+        this.addParam(this._space = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this._c1    = new NumberParam('c1',    true, true, this._color[1], 0, 255));
+        this.addParam(this._c2    = new NumberParam('c2',    true, true, this._color[2], 0, 255));
+        this.addParam(this._c3    = new NumberParam('c3',    true, true, this._color[3], 0, 255));
 
 
-        this.#space.addEventListener('change', () => 
+        this._space.addEventListener('change', () => 
         {
-            this.setColorToCurrentSpace(this.#color);
+            setDataColorToCurrentSpace(this, this._color);
             this.pushUpdate();
         });
         
 
-        this.#c1.addEventListener('change', () => this.pushUpdate());
-        this.#c2.addEventListener('change', () => this.pushUpdate());
-        this.#c3.addEventListener('change', () => this.pushUpdate());
+        this._c1.addEventListener('change', () => this.pushUpdate());
+        this._c2.addEventListener('change', () => this.pushUpdate());
+        this._c3.addEventListener('change', () => this.pushUpdate());
+
+        
+        this.initHexbox();
 
         
         setTimeout(() => 
         {
-            this.update();
-            this.#space.setValue(0); // init all the params with names
-            this.switch2rgb();
+            this._space.setValue(0); // init all the params with names
         });
     }
 
 
 
-    switchToSpace(space)
+    initHexbox()
     {
-        switch (space)
+        this.hexbox = document.createElement('INPUT');
+        
+        this.hexbox.setAttribute('type', 'text');
+        
+        this.hexbox.style.textAlign = 'center';
+        this.hexbox.style.width     = '100%';
+        this.hexbox.style.height    = 26;
+        
+        this.hexbox.op      = this;
+        this.hexbox.editing = false;
+        
+        
+        this.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
+        this.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
+        this.hexbox.addEventListener('focusout',    onHexboxFocusOut);
+        this.hexbox.addEventListener('input',       onHexboxInput);
+        this.hexbox.addEventListener('keydown',     onHexboxKeyDown);
+    }
+
+
+
+    getNormalColorFromParams()
+    {
+        if (this._space.value == 0)
         {
-            case 'rgb': this.switch2rgb(); break;
-            case 'hsv': this.switch2hsv(); break;
-            case 'hsl': this.switch2hsl(); break;
-            case 'hcl': this.switch2hcl(); break;
+            const rgb = hex2rgb(this.hexbox.value);
+
+            return [
+                'rgb',
+                rgb[0],
+                rgb[1],
+                rgb[2] ];
         }
-    }
-
-
-
-    switch2rgb() { this.switchControls('R', 'G', 'B', 0, 255, '',  false, 0, 255, 0, 255); }
-    switch2hsv() { this.switchControls('H', 'S', 'V', 0, 360, '°', true,  0, 100, 0, 100); }
-    switch2hsl() { this.switchControls('H', 'S', 'L', 0, 360, '°', true,  0, 100, 0, 100); }
-    switch2hcl() { this.switchControls('H', 'C', 'L', 0, 360, '°', true,  0, 400, 0, 400); }
-    
-    
-    
-    switchControls(c1, c2, c3, c1min, c1max, c1suffix, c1wrap, c2min, c2max, c3min, c3max)
-    {
-        this.#c1.setName(c1, false); 
-        this.#c2.setName(c2, false); 
-        this.#c3.setName(c3, false);
-
-        this.#c1.control.wrapValue = c1wrap;
-        this.#c1.control.suffix    = c1suffix;
-
-        this.#c1.control.min = c1min; this.#c1.control.max = c1max; this.#c1.control.update();
-        this.#c2.control.min = c2min; this.#c2.control.max = c2max; this.#c2.control.update();
-        this.#c3.control.min = c3min; this.#c3.control.max = c3max; this.#c3.control.update();
-    }
-
-
-
-    setColorToCurrentSpace(color)
-    {
-        const toSpace = OpColorSpaces[this.#space.value][0];
-        this.#color = convertColorTo(color, toSpace);
-        this.switchToSpace(toSpace);
-        this.setColorParams(this.#color, false);
-    }
-
-
-
-    getColorFromParams()
-    {
-        const col = getNormalColor_(
-            OpColorSpaces[this.#space.value][0],
-            this.#c1.value,
-            this.#c2.value,
-            this.#c3.value);
-    
-        return [
-            OpColorSpaces[this.#space.value][0],
-            col[0],
-            col[1],
-            col[2] ];
+        else
+        {
+            const col = getNormalColor_(
+                getCurrentDataColorSpace(this),
+                this._c1.value,
+                this._c2.value,
+                this._c3.value);
+        
+            return [
+                getCurrentDataColorSpace(this),
+                col[0],
+                col[1],
+                col[2] ];
+        }
     }
     
     
     
     setColorParams(color, dispatchEvents)
     {
-        const col = getSliderColor(color);
+        const col = getDataColor(color);
         
-        this.#c1.setValue(col[0], false, true, dispatchEvents);
-        this.#c2.setValue(col[1], false, true, dispatchEvents);
-        this.#c3.setValue(col[2], false, true, dispatchEvents);
+        this._c1.setValue(col[0], false, true, dispatchEvents);
+        this._c2.setValue(col[1], false, true, dispatchEvents);
+        this._c3.setValue(col[2], false, true, dispatchEvents);
     }
 
 
 
     getHeaderColor() 
     {
-        return color2rgb(this.#color); 
+        return dataColor2rgb(this._color); 
     }
 
 
@@ -9024,27 +9042,25 @@ extends Operator
 
         if (this.inputs[0].isConnected) 
         {
-            let color = this.inputs[0].data.color;
+            const color = convertDataColorTo(
+                this.inputs[0].data.color, 
+                this.getCurrentDataColorSpace());
 
-            color = convertColorTo(color, OpColorSpaces[this.#space.value][0]);
+            if (this._c1.input.isConnected) color[1] = getNormalValue(this._c1.input.data.value, color[0], 0);
+            if (this._c2.input.isConnected) color[2] = getNormalValue(this._c2.input.data.value, color[0], 1);
+            if (this._c3.input.isConnected) color[3] = getNormalValue(this._c3.input.data.value, color[0], 2);
 
-            if (this.#c1.input.isConnected) color[1] = getNormalValue(this.#c1.input.data.value, color[0], 0);
-            if (this.#c2.input.isConnected) color[2] = getNormalValue(this.#c2.input.data.value, color[0], 1);
-            if (this.#c3.input.isConnected) color[3] = getNormalValue(this.#c3.input.data.value, color[0], 2);
-
-            this.setColorToCurrentSpace(color);
+            setDataColorToCurrentSpace(this, color);
         }
+
         else if (this.inputs[1].isConnected) 
-        {
-            this.switchToSpace(OpColorSpaces[this.inputs[1].data.value][0]);
-        }
+            switchToSpace(this, OpColorSpaces[this.inputs[1].data.value][0]);
+
         else
-        {
-            this.#color = this.getColorFromParams();
-        }
+            this._color = this.getNormalColorFromParams();
 
     
-        this.outputs[0]._data = dataFromColor(this.#color);
+        this.outputs[0]._data = dataFromDataColor(this._color);
 
 
         super.update()
@@ -9056,7 +9072,7 @@ extends Operator
 
     updateNode()
     {
-        const colBack = color2rgb(this.#color);
+        const colBack = dataColor2rgb(this._color);
 
         let colVal = rgb2hsv(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
@@ -9071,10 +9087,10 @@ extends Operator
         this.label .style.color           = colorStyleRgba(colText);
 
 
-        this.#space.control.backColor  = colBack;
-        this.#space.control.valueColor = colVal;
-        this.#space.control.textColor  = colText;
-        this.#space.control.update();
+        this._space.control.backColor  = colBack;
+        this._space.control.valueColor = colVal;
+        this._space.control.textColor  = colText;
+        this._space.control.update();
 
 
         this.inputs [0].wireColor = colBack;
@@ -9092,11 +9108,11 @@ extends Operator
         this.outputs[0].updateControl();
 
 
-        this.#space.input .color = colIn;
-        this.#space.output.color = colOut;
+        this._space.input .color = colIn;
+        this._space.output.color = colOut;
 
-        this.#space.input .updateControl();
-        this.#space.output.updateControl();
+        this._space.input .updateControl();
+        this._space.output.updateControl();
 
 
         super.updateNode();
@@ -9104,8 +9120,212 @@ extends Operator
 }
 
 
+function switchToSpace(op, space)
+{
+    switch (space)
+    {
+        case 'hex':    switchToHex(op);    break;
+        case 'rgbhex': switchToRgbHex(op); break;
+        case 'rgb':    switchToRgb(op);    break;
+        case 'hsv':    switchToHsv(op);    break;
+        case 'hsl':    switchToHsl(op);    break;
+        case 'hclokl': switchToHclOkl(op); break;
+        case 'hcllab': switchToHclLab(op); break;
+        case 'hclluv': switchToHclLuv(op); break;
+    }
+}
 
-function color2array(color)
+
+
+function switchToTextbox(op)
+{
+    if (!op.inner.contains(op.hexbox))
+    {
+        op.inner.removeChild(op._c1.div);
+        op.inner.removeChild(op._c2.div);
+        op.inner.removeChild(op._c3.div);
+        
+        op.inner.appendChild(op.hexbox);
+    }
+}
+
+
+
+function switchToSliders(op)
+{
+    if (op.inner.contains(op.hexbox))
+    {
+        op.inner.removeChild(op.hexbox);
+
+        op.inner.appendChild(op._c1.div);
+        op.inner.appendChild(op._c2.div);
+        op.inner.appendChild(op._c3.div);
+    }
+}
+
+
+
+function switchToHex(op)   
+{ 
+    switchToTextbox(op);
+    op.hexbox.value = rgb2hex(dataColor2rgb(op._color));
+}
+
+function switchToRgbHex(op) { switchToRgbControls(op);  showControlHex(op, true ); }
+function switchToRgb(op)    { switchToRgbControls(op);  showControlHex(op, false); }
+function switchToHsv(op)    { switchToHs_Controls(op, 'V'); }
+function switchToHsl(op)    { switchToHs_Controls(op, 'L'); }
+function switchToHclOkl(op) { switchToHclControls(op); }
+function switchToHclLab(op) { switchToHclControls(op); }
+function switchToHclLuv(op) { switchToHclControls(op); }
+   
+
+function switchToRgbControls(op)         { switchToControls(op, 'R', 'G', 'B',    0, 255, '',  false, 0, 255, 0, 255); }
+function switchToHs_Controls(op, v_or_l) { switchToControls(op, 'H', 'S', v_or_l, 0, 360, '°', true,  0, 100, 0, 100);  op.showControlHex(false); }
+function switchToHclControls(op)         { switchToControls(op, 'H', 'C', 'L',    0, 360, '°', true,  0, 400, 0, 400);  op.showControlHex(false); }
+
+
+
+function showControlHex(op, show)
+{
+    op._c1.control.showHex = show;
+    op._c2.control.showHex = show;
+    op._c3.control.showHex = show;
+}
+
+
+
+function switchToControls(op, c1, c2, c3, c1min, c1max, c1suffix, c1wrap, c2min, c2max, c3min, c3max)
+{
+    switchToSliders(op);
+
+    op._c1.setName(c1, false); 
+    op._c2.setName(c2, false); 
+    op._c3.setName(c3, false);
+
+    op._c1.control.wrapValue = c1wrap;
+    op._c1.control.suffix    = c1suffix;
+
+    op._c1.control.min = c1min; op._c1.control.max = c1max; op._c1.control.update();
+    op._c2.control.min = c2min; op._c2.control.max = c2max; op._c2.control.update();
+    op._c3.control.min = c3min; op._c3.control.max = c3max; op._c3.control.update();
+}
+
+
+
+function setDataColorToCurrentSpace(op, color)
+{
+    const toSpace = OpColorSpaces[op._space.value][0];
+
+    op._color = convertDataColorTo(color, toSpace);
+
+    switchToSpace(op, toSpace);
+    op.setColorParams(op._color, false);
+}
+
+
+
+function getCurrentDataColorSpace(op)
+{
+    var index = op._space.value;
+    if (index < 2) index = 2;
+
+    return OpColorSpaces[index][0];
+}
+
+
+function onHexboxPointerDown(e)
+{
+    e.stopPropagation();
+}
+
+
+
+function onHexboxPointerUp(e)
+{
+    const hexbox = e.target;
+
+    if (!hexbox.editing)
+    {
+        e.preventDefault();
+
+        hexbox.savedValue = hexbox.value;
+
+        hexbox.select();
+        hexbox.editing = true;
+    }
+}
+
+
+
+function onHexboxFocusOut(e)
+{
+    const hexbox = e.target;
+    hexboxFinish(hexbox.op, false);
+}
+
+
+
+function onHexboxInput(e)
+{
+    const hexbox = e.target;
+    
+    let val = hexbox.value;
+
+    if (val.trim() == '')
+        return;
+
+         if (   val.length > 7 
+             && val[0] == '#') hexbox.value = val.trim().slice(0, 7);
+    else if (val.length > 6)   hexbox.value = val.trim().slice(0, 6);
+}
+
+
+
+function onHexboxKeyDown(e)
+{
+    const hexbox = e.target;
+
+    if (   getCtrlKey(e)
+        && e.code == 'KeyV')
+    {
+        e.preventDefault();
+        document.execCommand('paste');
+    }
+
+    else if (e.code == 'Enter'
+          || e.code == 'NumpadEnter')
+        hexboxFinish(hexbox.op, true);
+
+    else if (e.code == 'Escape')
+        hexboxFinish(hexbox.op, false);
+
+    else if (e.key.length == 1
+         && !isDigit(e.key)
+         && !isHexDigit(e.key))
+        e.preventDefault();
+}
+
+
+
+function hexboxFinish(op, success)
+{
+    var rgb = hex2rgb(op.hexbox.value);
+
+    console.log('rgb', rgb);
+
+    if (success) 
+    {
+        op._color = rgb2dataColor(rgb);
+        op.hexbox.op.pushUpdate();
+    }
+    
+    op.hexbox.editing = false;
+    op.hexbox.blur();
+};
+
+
+function dataColor2array(color)
 {
     return [
         color[1], 
@@ -9115,17 +9335,31 @@ function color2array(color)
 
 
 
-function color2rgb(color)
+function dataColor2rgb(color)
 {
-    const col = color2array(color);
+    const col = dataColor2array(color);
 
     switch (color[0])
     {
-        case 'rgb': return col;
-        case 'hsv': return hsv2rgb(col);
-        case 'hsl': return hsl2rgb(col);
-        case 'hcl': return okhcl2rgb(col);
+        case 'rgbhex': 
+        case 'rgb':    return col;
+        case 'hsv':    return hsv2rgb  (col);
+        case 'hsl':    return hsl2rgb  (col);
+        case 'hclokl': return okhcl2rgb(col);
+        case 'hcllab': return lab2rgb  (col);
+        case 'hclluv': return luv2rgb  (col);
     }
+}
+
+
+
+function rgb2dataColor(rgb)
+{
+    return [
+       'rgb',
+        rgb[0],
+        rgb[1],
+        rgb[2] ];
 }
 
 
@@ -9134,10 +9368,13 @@ function getNormalValue(value, space, chan)
 {
     switch (space)
     {
-        case 'rgb': return getNormalValueRgb_(value, chan);
-        case 'hsv':
-        case 'hsl': return getNormalValueHs_(value, chan);
-        case 'hcl': return getNormalValueHcl(value, chan);
+        case 'rgbhex':
+        case 'rgb':    return getNormalValueRgb_(value, chan);
+        case 'hsv':   
+        case 'hsl':    return getNormalValueHs_ (value, chan);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getNormalValueHcl (value, chan);
     }
 }
 
@@ -9194,10 +9431,13 @@ function getNormalColor_(space, c1, c2, c3)
 {
     switch (space)
     {
-        case 'rgb': return getNormalColorRgb_(c1, c2, c3);
-        case 'hsv':
-        case 'hsl': return getNormalColorHs_(c1, c2, c3);
-        case 'hcl': return getNormalColorHcl(c1, c2, c3);
+        case 'rgbhex':
+        case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
+        case 'hsv':   
+        case 'hsl':    return getNormalColorHs_ (c1, c2, c3);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getNormalColorHcl (c1, c2, c3);
     }
 }
 
@@ -9233,20 +9473,23 @@ function getNormalColorHcl(c1, c2, c3)
 
 
 
-function getSliderColor(color)
+function getDataColor(color)
 {
     switch (color[0])
     {
-        case 'rgb': return getSliderColorRgb_(color[1], color[2], color[3]);
-        case 'hsv':
-        case 'hsl': return getSliderColorHs_(color[1], color[2], color[3]);
-        case 'hcl': return getSliderColorHcl(color[1], color[2], color[3]);
+        case 'rgbhex':    
+        case 'rgb':    return getDataColorRgb_(color[1], color[2], color[3]);
+        case 'hsv':   
+        case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getDataColorHcl(color[1], color[2], color[3]);
     }
 }
 
 
 
-function getSliderColorRgb_(c1, c2, c3)
+function getDataColorRgb_(c1, c2, c3)
 {
     return [
         c1 * 255, 
@@ -9256,7 +9499,7 @@ function getSliderColorRgb_(c1, c2, c3)
 
 
 
-function getSliderColorHs_(c1, c2, c3)
+function getDataColorHs_(c1, c2, c3)
 {
     return [
         c1 * 360, 
@@ -9266,7 +9509,7 @@ function getSliderColorHs_(c1, c2, c3)
 
 
 
-function getSliderColorHcl(c1, c2, c3)
+function getDataColorHcl(c1, c2, c3)
 {
     return [
         c1 * 360, 
@@ -9276,54 +9519,58 @@ function getSliderColorHcl(c1, c2, c3)
 
 
 
-function convertColorTo(color, toSpace)
+function convertDataColorTo(color, toSpace)
 {
     switch (toSpace)
     {
-        case 'rgb': return convert2rgb(color);
-        case 'hsv': return convert2hsv(color);
-        case 'hsl': return convert2hsl(color);
-        case 'hcl': return convert2hcl(color);
+        case 'hex':    return convert2rgb   (color);
+        case 'rgbhex': return convert2rgb   (color);
+        case 'rgb':    return convert2rgb   (color);
+        case 'hsv':    return convert2hsv   (color);
+        case 'hsl':    return convert2hsl   (color);
+        case 'hclokl': return convert2hclokl(color);
+        case 'hcllab': return convert2hcllab(color);
+        case 'hclluv': return convert2hclluv(color);
     }
 }
 
 
 
-function convert2rgb(color)
+function convert2rgb(fromColor)
 {
-    const col = color2array(color);
+    const col = dataColor2array(fromColor);
 
     let rgb;
 
-    switch (color[0])
+    switch (fromColor[0])
     {
-        case 'rgb': rgb = col;            break;
-        case 'hsv': rgb = hsv2rgb(col);   break;
-        case 'hsl': rgb = hsl2rgb(col);   break;
-        case 'hcl': rgb = okhcl2rgb(col); break;
+        case 'rgb':    rgb = col;                   break;
+        case 'hsv':    rgb = hsv2rgb(col);          break;
+        case 'hsl':    rgb = hsl2rgb(col);          break;
+        case 'hclokl': rgb = okhcl2rgb(col);        break;
+        case 'hcllab': rgb = lab2rgb(pol2opp(col)); break;
+        case 'hclluv': rgb = luv2rgb(pol2opp(col)); break;
     }
 
-    return [
-       'rgb',
-        rgb[0],
-        rgb[1],
-        rgb[2] ];
+    return rgb2dataColor(rgb);
 }
 
 
 
-function convert2hsv(color)
+function convert2hsv(fromColor)
 {
-    const col = color2array(color);
+    const col = dataColor2array(fromColor);
     
     let hsv;
     
-    switch (color[0])
+    switch (fromColor[0])
     {
-        case 'rgb': hsv = rgb2hsv(col);            break;
-        case 'hsv': hsv = col;                     break;
-        case 'hsl': hsv = rgb2hsv(hsl2rgb(col));   break;
-        case 'hcl': hsv = rgb2hsv(okhcl2rgb(col)); break;
+        case 'rgb':    hsv = rgb2hsv(col);                   break;
+        case 'hsv':    hsv = col;                            break;
+        case 'hsl':    hsv = rgb2hsv(hsl2rgb(col));          break;
+        case 'hclokl': hsv = rgb2hsv(okhcl2rgb(col));        break;
+        case 'hcllab': hsv = rgb2hsv(lab2rgb(hsl2lab(col))); break;
+        case 'hclluv': hsv = rgb2hsv(luv2rgb(hsl2lab(col))); break;
     }
     
     if (isNaN(hsv[0]))
@@ -9338,18 +9585,20 @@ function convert2hsv(color)
 
 
 
-function convert2hsl(color)
+function convert2hsl(fromColor)
 {
-    const col = color2array(color);
+    const col = dataColor2array(fromColor);
 
     let hsl;
 
-    switch (color[0])
+    switch (fromColor[0])
     {
-        case 'rgb': hsl = rgb2hsl(col);            break;
-        case 'hsv': hsl = rgb2hsl(hsv2rgb(col));   break;
-        case 'hsl': hsl = col;                     break;
-        case 'hcl': hsl = rgb2hsl(okhcl2rgb(col)); break;
+        case 'rgb':    hsl = rgb2hsl(col);                   break;
+        case 'hsv':    hsl = rgb2hsl(hsv2rgb(col));          break;
+        case 'hsl':    hsl = col;                            break;
+        case 'hclokl': hsl = rgb2hsl(okhcl2rgb(col));        break;
+        case 'hcllab': hsl = rgb2hsl(lab2rgb(hsl2lab(col))); break;
+        case 'hclluv': hsl = rgb2hsl(luv2rgb(hsl2lab(col))); break;
     }
 
     return [
@@ -9361,18 +9610,70 @@ function convert2hsl(color)
 
 
 
-function convert2hcl(color)
+function convert2hclokl(fromColor)
 {
-    const col = color2array(color);
+    const col = dataColor2array(fromColor);
 
     let hcl;
 
-    switch (color[0])
+    switch (fromColor[0])
     {
-        case 'rgb': hcl = rgb2okhcl(col);          break;
-        case 'hsv': hcl = rgb2okhcl(hsv2rgb(col)); break;
-        case 'hsl': hcl = rgb2okhcl(hsl2rgb(col)); break;
-        case 'hcl': hcl = col;                     break;
+        case 'rgb':    hcl = rgb2okhcl(col);                   break;
+        case 'hsv':    hcl = rgb2okhcl(hsv2rgb(col));          break;
+        case 'hsl':    hcl = rgb2okhcl(hsl2rgb(col));          break;
+        case 'hclokl': hcl = col;                              break;
+        case 'hcllab': hcl = rgb2okhcl(lab2rgb(pol2opp(col))); break;
+        case 'hclluv': hcl = rgb2okhcl(luv2rgb(pol2opp(col))); break;
+    }
+
+    return [
+       'hcl',
+        hcl[0],
+        hcl[1],
+        hcl[2] ];
+}
+
+
+
+function convert2hcllab(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let hcl;
+
+    switch (fromColor[0])
+    {
+        case 'rgb':    hcl = opp2pol(rgb2lab(col));            break;
+        case 'hsv':    hcl = opp2pol(rgb2lab(hsv2rgb(col)));   break;
+        case 'hsl':    hcl = opp2pol(rgb2lab(hsl2rgb(col)));   break;
+        case 'hclokl': hcl = opp2pol(rgb2lab(okhcl2rgb(col))); break;
+        case 'hcllab': hcl = col;                              break;
+        case 'hclluv': hcl = opp2pol(rgb2lab(luv2rgb(col)));   break;
+    }
+
+    return [
+       'hcl',
+        hcl[0],
+        hcl[1],
+        hcl[2] ];
+}
+
+
+
+function convert2hclluv(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let hcl;
+
+    switch (fromColor[0])
+    {
+        case 'rgb':    hcl = opp2pol(rgb2luv(col));            break;
+        case 'hsv':    hcl = opp2pol(rgb2luv(hsv2rgb(col)));   break;
+        case 'hsl':    hcl = opp2pol(rgb2luv(hsl2rgb(col)));   break;
+        case 'hclokl': hcl = opp2pol(rgb2luv(okhcl2rgb(col))); break;
+        case 'hcllab': hcl = opp2pol(rgb2luv(lab2rgb(col)));   break;
+        case 'hclluv': hcl = col;                              break;
     }
 
     return [
@@ -10639,7 +10940,8 @@ function initNumberSliderTextbox(slider)
         {
             if (   e.key.length == 1
                 && !isDigit(e.key)
-                && e.key != '.'
+                && (slider.showHex && !isHexDigit(e.key))
+                && e.key != getUserDecimalSeparator()
                 && !(   (   e.code == 'Minus'
                          || e.code == 'NumpadSubtract')
                      && slider.min < 0))
@@ -10674,7 +10976,13 @@ function initNumberSliderTextbox(slider)
     {
         e.preventDefault();
 
-        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        const str = e.clipboardData.getData('text/plain');
+
+        var val = 
+            slider.showHex
+            ? parseInt(str, 16)
+            : parseFloat(str);
+
         val = Math.min(Math.max(slider.min, val), slider.max);
 
         slider.textbox.value = isNaN(val) ? '' : val;
@@ -10697,7 +11005,12 @@ function initNumberSliderTextbox(slider)
             'value':    slider.textbox.value,
             'oldValue': slider.textbox.savedValue }}));
 
-        if (success) slider.setValue(Number(slider.textbox.value     ));
+        var val = 
+            slider.showHex
+            ? parseInt(slider.textbox.value, 16)
+            : parseFloat(str);
+
+        if (success) slider.setValue(Number(val));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
@@ -10726,7 +11039,7 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value      = numToString(slider.value, slider.editDec);
+        slider.textbox.value      = getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);
@@ -10801,6 +11114,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.oldValue;
 
     slider.wrapValue         = false;
+    slider.showHex           = false;
     
     slider.enableChangeEvent = true;
 
@@ -11151,7 +11465,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         const valueText = 
             slider.valueText != ''
             ? slider.valueText
-            : getNumberString(slider.value, slider.dec);
+            : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
 
         slider.text.innerHTML += valueText + slider.suffix;
     };

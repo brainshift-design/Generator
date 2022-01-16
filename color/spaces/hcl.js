@@ -1,11 +1,11 @@
-function lab2hcl(lab) 
+function opp2pol(opp) // opponent to polar
 {
     // either lab or luv, 
     // the polar transformation is the same
 
-    const l = lab[0], 
-          a = lab[1], 
-          b = lab[2];
+    const l = opp[0], 
+          a = opp[1], 
+          b = opp[2];
 
     const h = Math.atan2(b, a);
     const c = Math.sqrt(a*a + b*b);
@@ -18,14 +18,14 @@ function lab2hcl(lab)
 
 
 
-function hcl2lab(hcl)
+function pol2opp(pol) // polar to opponent
 {
     // either lab or luv, 
     // the polar transformation is the same
 
-    const h = hcl[0], 
-          c = hcl[1], 
-          l = hcl[2];
+    const h = pol[0], 
+          c = pol[1], 
+          l = pol[2];
 
     const a = c * Math.cos(h);
     const b = c * Math.sin(h);
@@ -44,7 +44,7 @@ function okhcl2rgb(hcl)
     
 function okhcl2rgb_(h, c, l)
 {
-    const lab = hcl2lab([
+    const lab = pol2opp([
         h*Tau,//(h + hueBiasLab) * Tau,
         c / okLabScale,
         l]);
@@ -63,7 +63,7 @@ function rgb2okhcl(rgb)
 
 function rgb2okhcl_(r, g, b)
 {
-    const hcl = lab2hcl(rgb2oklab_(r, g, b));
+    const hcl = opp2pol(rgb2oklab_(r, g, b));
     return hcl;
     // return [
     //     hcl[0]/Tau - hueBiasLab,
@@ -75,6 +75,6 @@ function rgb2okhcl_(r, g, b)
 
 // function rgb2hcl_(r, g, b, colorSpace)
 // {
-//     if (colorSpace == 0) return lab2hcl(rgb2oklab_(r, g, b));
-//     else                 return lab2hcl(xyz2col(rgb2xyz_(r, g, b), sRGB.W));
+//     if (colorSpace == 0) return opp2pol(rgb2oklab_(r, g, b));
+//     else                 return opp2pol(xyz2col(rgb2xyz_(r, g, b), sRGB.W));
 // }

@@ -27,6 +27,9 @@
 //../operators/math/OpRandom.js
 
 ../operators/OpColor.js
+../operators/OpColor spaces.js
+../operators/OpColor hexbox.js
+../operators/OpColor convert.js
 
 //../operators/OpRect.js
 //../operators/OpRow.js
