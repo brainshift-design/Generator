@@ -397,10 +397,10 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
         slider.style.backgroundColor = slider.backColor;
 
-        slider.bar.style.background =
-            slider.value >= 0
-            ? slider.valueColor
-            : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
+        slider.bar.style.background = slider.valueColor;
+            // slider.value >= 0
+            // ? slider.valueColor
+            // : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
 
         slider.text.style.color = slider.textColor;

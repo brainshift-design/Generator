@@ -1,3 +1,26 @@
+function initHexbox(op)
+{
+    op.hexbox = document.createElement('INPUT');
+    
+    op.hexbox.setAttribute('type', 'text');
+    
+    op.hexbox.style.textAlign = 'center';
+    op.hexbox.style.width     = '100%';
+    op.hexbox.style.height    = 26;
+    
+    op.hexbox.op      = op;
+    op.hexbox.editing = false;
+    
+    
+    op.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
+    op.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
+    op.hexbox.addEventListener('focusout',    onHexboxFocusOut);
+    op.hexbox.addEventListener('input',       onHexboxInput);
+    op.hexbox.addEventListener('keydown',     onHexboxKeyDown);
+}
+
+
+
 function onHexboxPointerDown(e)
 {
     e.stopPropagation();
@@ -75,8 +98,6 @@ function onHexboxKeyDown(e)
 function hexboxFinish(op, success)
 {
     var rgb = hex2rgb(op.hexbox.value);
-
-    console.log('rgb', rgb);
 
     if (success) 
     {

@@ -7,10 +7,10 @@
 ../color/spaces/luv.js
 ../color/spaces/lab.js
 ../color/spaces/oklab.js
+../color/spaces/polar.js
 ../color/spaces/hcl.js
 
 ../color/color.js
 ../color/colorblind.js
-../color/color conversion.js
 ../color/color util.js
 ../color/hex color.js

@@ -52,7 +52,7 @@ function getNumberString(num, dec, showHex = false)
 {
     if (showHex)
     {
-        let str = Number(num).toString(16);
+        let str = Math.round(Number(num)).toString(16);
 
         if (str.length % 2 > 0)
             str = '0' + str;

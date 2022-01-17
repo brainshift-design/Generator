@@ -27,7 +27,7 @@ function xyz2luv(xyz, W = sRGB.W)
 
     const yw = y / W[1];
 
-    const l = 
+    let l = 
         yw > e
         ? 116 * Math.cbrt(yw) - 16
         : k * yw;
@@ -41,18 +41,21 @@ function xyz2luv(xyz, W = sRGB.W)
     const u = 13*l * (u_ - uw);
     const v = 13*l * (v_ - vw);
 
-    return [l, u, v];
+    return [
+        l / 100, 
+        u / 100, 
+        v / 100];
 }
 
 
 
 function luv2xyz(luv, W = sRGB.W)
 {
-    const l = luv[0], 
-          u = luv[1], 
-          v = luv[2];
+    let l = luv[0] * 100, 
+        u = luv[1] * 100, 
+        v = luv[2] * 100;
 
-    const e = cube(6/29);
+    const e = cube(6/29);    
     const k = cube(29/3);
 
     const uw = 4*W[0] / (W[0] + 15*W[1] + 3*W[2]);
@@ -60,7 +63,7 @@ function luv2xyz(luv, W = sRGB.W)
     
     const y = 
         l > e*k
-        ? cube((l + 16)/116)
+        ? cube((l + 16) / 116)
         : l / k;
     
     const a = (52*l / nozero(u + 13*l*uw) - 1) / 3;

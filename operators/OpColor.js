@@ -7,7 +7,6 @@
 */
 
 
-
 const OpColorSpaces = 
 [
     ['hex',    'Hex'    ],
@@ -17,8 +16,28 @@ const OpColorSpaces =
     ['hsl',    'HSL'    ], 
     ['hclokl', 'HCL OKL'],
     ['hcllab', 'HCL Lab'],
-    ['hclluv', 'HCL Luv']
+    ['hclluv', 'HCL Luv'],
+    ['oklab',  'OKLab'  ],
+    ['lab',    'Lab'    ],
+    ['luv',    'Luv'    ]
 ];
+
+
+const rgbFactorR = 255;
+const rgbFactorG = 255;
+const rgbFactorB = 255;
+
+const hs_FactorH = 360;
+const hs_FactorS = 100;
+const hs_Factor_ = 100;
+
+const oppFactorL = 100;
+const oppFactor1 = 100;
+const oppFactor2 = 100;
+
+const hclFactorH = 360;
+const hclFactorC = 100;
+const hclFactorL = 100;
 
 
 
@@ -90,36 +109,13 @@ extends Operator
         this._c3.addEventListener('change', () => this.pushUpdate());
 
         
-        this.initHexbox();
+        initHexbox(this);
 
         
         setTimeout(() => 
         {
             this._space.setValue(0); // init all the params with names
         });
-    }
-
-
-
-    initHexbox()
-    {
-        this.hexbox = document.createElement('INPUT');
-        
-        this.hexbox.setAttribute('type', 'text');
-        
-        this.hexbox.style.textAlign = 'center';
-        this.hexbox.style.width     = '100%';
-        this.hexbox.style.height    = 26;
-        
-        this.hexbox.op      = this;
-        this.hexbox.editing = false;
-        
-        
-        this.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
-        this.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
-        this.hexbox.addEventListener('focusout',    onHexboxFocusOut);
-        this.hexbox.addEventListener('input',       onHexboxInput);
-        this.hexbox.addEventListener('keydown',     onHexboxKeyDown);
     }
 
 
@@ -215,11 +211,11 @@ extends Operator
     {
         const colBack = dataColor2rgb(this._color);
 
-        let colVal = rgb2hsv(colBack);
+        let colVal = rgb2hclokl(colBack);
         colVal[2]  = Math.max(0, colVal[2]-0.05);
-        colVal     = hsv2rgb(colVal);
+        colVal     = hclokl2rgb(colVal);
         
-        const darkText = rgb2okhcl(colBack)[2] > 0.71;
+        const darkText = rgb2hclokl(colBack)[2] > 0.71;
         const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
 
 

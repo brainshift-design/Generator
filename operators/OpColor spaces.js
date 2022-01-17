@@ -1,15 +1,224 @@
+function rgb2dataColor(rgb)
+{
+    return [
+       'rgb',
+        rgb[0],
+        rgb[1],
+        rgb[2] ];
+}
+
+
+
+function getNormalValue(value, space, chan)
+{
+    switch (space)
+    {
+        case 'rgbhex':
+        case 'rgb':    return getNormalValueRgb_(value, chan);
+        case 'hsv':   
+        case 'hsl':    return getNormalValueHs_ (value, chan);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getNormalValueHcl (value, chan);
+        case 'oklab':  
+        case 'lab':    
+        case 'luv':    return getNormalValuesOpp(value, chan);
+    }
+}
+
+
+
+function getNormalValueRgb_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / rgbFactorR;
+        case 1: return value / rgbFactorG; 
+        case 2: return value / rgbFactorB;
+    }
+}
+
+
+
+function getNormalValueHs_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / hs_FactorH;
+        case 1: return value / hs_FactorS; 
+        case 2: return value / hs_Factor_;
+    }
+}
+
+
+
+function getNormalValueOpp(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / oppFactorL;
+        case 1: return value / oppFactor1; 
+        case 2: return value / oppFactor2;
+    }
+}
+
+
+
+function getNormalValueHcl(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / hclFactorH;
+        case 1: return value / hclFactorC; 
+        case 2: return value / hclFactorL;
+    }
+}
+
+
+
+function getNormalColor(color)
+{
+    return getNormalColor_(
+        color[0], 
+        color[1], 
+        color[2], 
+        color[3])
+}
+
+
+
+function getNormalColor_(space, c1, c2, c3)
+{
+    switch (space)
+    {
+        case 'rgbhex':
+        case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
+        case 'hsv':   
+        case 'hsl':    return getNormalColorHs_(c1, c2, c3);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getNormalColorHcl(c1, c2, c3);
+        case 'oklab': 
+        case 'lab': 
+        case 'luv':    return getNormalColorOpp(c1, c2, c3);
+    }
+}
+
+
+
+function getNormalColorRgb_(c1, c2, c3)
+{
+    return [
+        c1 / rgbFactorR, 
+        c2 / rgbFactorG, 
+        c3 / rgbFactorB];
+}
+
+
+
+function getNormalColorHs_(c1, c2, c3)
+{
+    return [
+        c1 / hs_FactorH, 
+        c2 / hs_FactorS, 
+        c3 / hs_Factor_];
+}
+
+
+
+function getNormalColorOpp(c1, c2, c3)
+{
+    return [
+        c1 / oppFactorL, 
+        c2 / oppFactor1, 
+        c3 / oppFactor2];
+}
+
+
+
+function getNormalColorHcl(c1, c2, c3)
+{
+    return [
+        c1 / hclFactorH, 
+        c2 / hclFactorC, 
+        c3 / hclFactorL];
+}
+
+
+
+function getDataColor(color)
+{
+    switch (color[0])
+    {
+        case 'rgbhex':    
+        case 'rgb':    return getDataColorRgb_(color[1], color[2], color[3]);
+        case 'hsv':   
+        case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getDataColorHcl(color[1], color[2], color[3]);
+        case 'oklab': 
+        case 'lab': 
+        case 'luv':    return getDataColorOpp(color[1], color[2], color[3]);
+    }
+}
+
+
+
+function getDataColorRgb_(c1, c2, c3)
+{
+    return [
+        c1 * rgbFactorR, 
+        c2 * rgbFactorG, 
+        c3 * rgbFactorB];
+}
+
+
+
+function getDataColorHs_(c1, c2, c3)
+{
+    return [
+        c1 * hs_FactorH, 
+        c2 * hs_FactorS, 
+        c3 * hs_Factor_];
+}
+
+
+
+function getDataColorOpp(c1, c2, c3)
+{
+    return [
+        c1 * oppFactorL, 
+        c2 * oppFactor1, 
+        c3 * oppFactor2];
+}
+
+
+
+function getDataColorHcl(c1, c2, c3)
+{
+    return [
+        c1 * hclFactorH, 
+        c2 * hclFactorC, 
+        c3 * hclFactorL];
+}
+
+
 function switchToSpace(op, space)
 {
     switch (space)
     {
-        case 'hex':    switchToHex(op);    break;
+        case 'hex':    switchToHex   (op); break;
         case 'rgbhex': switchToRgbHex(op); break;
-        case 'rgb':    switchToRgb(op);    break;
-        case 'hsv':    switchToHsv(op);    break;
-        case 'hsl':    switchToHsl(op);    break;
+        case 'rgb':    switchToRgb   (op); break;
+        case 'hsv':    switchToHsv   (op); break;
+        case 'hsl':    switchToHsl   (op); break;
         case 'hclokl': switchToHclOkl(op); break;
         case 'hcllab': switchToHclLab(op); break;
         case 'hclluv': switchToHclLuv(op); break;
+        case 'oklab':  switchToOklab (op); break;
+        case 'lab':    switchToLab   (op); break;
+        case 'luv':    switchToLuv   (op); break;
     }
 }
 
@@ -50,17 +259,61 @@ function switchToHex(op)
 }
 
 function switchToRgbHex(op) { switchToRgbControls(op);  showControlHex(op, true ); }
-function switchToRgb(op)    { switchToRgbControls(op);  showControlHex(op, false); }
-function switchToHsv(op)    { switchToHs_Controls(op, 'V'); }
-function switchToHsl(op)    { switchToHs_Controls(op, 'L'); }
+function switchToRgb   (op) { switchToRgbControls(op);  showControlHex(op, false); }
+function switchToHsv   (op) { switchToHs_Controls(op, 'V'); }
+function switchToHsl   (op) { switchToHs_Controls(op, 'L'); }
+function switchToOklab (op) { switchToOppControls(op, 'a', 'b'); }
+function switchToLab   (op) { switchToOppControls(op, 'a', 'b'); }
+function switchToLuv   (op) { switchToOppControls(op, 'u', 'v'); }
 function switchToHclOkl(op) { switchToHclControls(op); }
 function switchToHclLab(op) { switchToHclControls(op); }
 function switchToHclLuv(op) { switchToHclControls(op); }
    
 
-function switchToRgbControls(op)         { switchToControls(op, 'R', 'G', 'B',    0, 255, '',  false, 0, 255, 0, 255); }
-function switchToHs_Controls(op, v_or_l) { switchToControls(op, 'H', 'S', v_or_l, 0, 360, '°', true,  0, 100, 0, 100);  showControlHex(op, false); }
-function switchToHclControls(op)         { switchToControls(op, 'H', 'C', 'L',    0, 360, '°', true,  0, 400, 0, 400);  showControlHex(op, false); }
+
+function switchToRgbControls(op)
+{
+    switchToControls(op, 
+        'R', 0, rgbFactorR, '', false, 
+        'G', 0, rgbFactorG, 
+        'B', 0, rgbFactorB);  
+}
+
+
+
+function switchToHs_Controls(op, v_or_l) 
+{ 
+    switchToControls(op, 
+        'H',    0, hs_FactorH, '°', true,  
+        'S',    0, hs_FactorS, 
+        v_or_l, 0, hs_Factor_);  
+
+    showControlHex(op, false); 
+}
+
+
+
+function switchToOppControls(op, c2, c3) 
+{ 
+    switchToControls(op, 
+        'L', 0,              oppFactorL, '', false,  
+        c2, -oppFactor1 * 5, oppFactor1 * 5, 
+        c3, -oppFactor2 * 2, oppFactor2 * 2);  
+
+    showControlHex(op, false); 
+}
+
+
+
+function switchToHclControls(op) 
+{ 
+    switchToControls(op, 
+        'H', 0, 360, '°', true,  
+        'C', 0, 400, 
+        'L', 0, 400);  
+
+    showControlHex(op, false); 
+}
 
 
 
@@ -73,7 +326,7 @@ function showControlHex(op, show)
 
 
 
-function switchToControls(op, c1, c2, c3, c1min, c1max, c1suffix, c1wrap, c2min, c2max, c3min, c3max)
+function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
 {
     switchToSliders(op);
 

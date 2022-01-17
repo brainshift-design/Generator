@@ -373,7 +373,7 @@ function initSelectSlider(slider, width, height, name, options, def)
         slider.style.backgroundColor = colorStyleRgb(slider.backColor);
 
 
-        const darkText = rgb2okhcl(slider.backColor)[2] > 0.71;
+        const darkText = rgb2hclokl(slider.backColor)[2] > 0.71;
 
         slider.bar.style.background =
             slider.value >= 0
