@@ -5384,16 +5384,23 @@ function oklms2oklab(lms)
     const b_ = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
 
     return [
-        l_ /* * 100*/,
-        a_ /* * 100*/, 
-        b_ /* * 100*/ ];
+        l_,
+        a_, 
+        b_ ];
 }        
 
 
 
 function oklab2rgb(lab, cs = sRGB)
 {
-    return oklab2rgb_(lab[0], lab[1], lab[2], cs);
+    return oklms2rgb(oklab2oklms(lab), cs);
+}
+
+
+
+function oklab2rgb_(l, a, b, cs = sRGB) 
+{
+    return oklab2rgb([l, a, b], cs);
 }
 
 
@@ -5407,10 +5414,6 @@ function oklab2oklms(lab)
 
 function oklab2oklms_(l_, a_, b_) 
 {
-    // l_ /= 100;
-    // a_ /= 100;
-    // b_ /= 100;
-
     return [
         l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
         l_ - 0.1055613458 * a_ - 0.0638541728 * b_,
@@ -5436,13 +5439,6 @@ function oklms2rgb(lms, cs = sRGB)
 }
 
 
-
-function oklab2rgb_(l_, a_, b_, cs = sRGB) 
-{
-    return oklms2rgb(oklab2oklms_(l_, a_, b_), cs);
-}
-
-
 function opp2pol(opp) // opponent to polar
 {
     // either lab or luv, 
@@ -5456,8 +5452,8 @@ function opp2pol(opp) // opponent to polar
     const c = Math.sqrt(a*a + b*b);
 
     return [
-        h/Tau, 
-        c*okLabScale, 
+        h,
+        c,
         l];
 }
 
@@ -5495,14 +5491,22 @@ function hclokl2rgb_(h, c, l, cs = sRGB)
     
 function rgb2hclokl(rgb, cs = sRGB)
 {
-    return rgb2hclokl_(rgb[0], rgb[1], rgb[2], cs);
+    const oklab = rgb2oklab(rgb, cs);
+    console.log('oklab:', oklab);
+
+    const okhcl = opp2pol(oklab, cs);
+    console.log('okhcl:', okhcl);
+
+    return okhcl;
+    
+    //return opp2pol(rgb2oklab(rgb, cs));
 }
 
 
 
 function rgb2hclokl_(r, g, b, cs = sRGB)
 {
-    return opp2pol(rgb2oklab_(r, g, b, cs));
+    return rgb2hclokl([r, g, b], cs);
 }
 
 

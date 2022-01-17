@@ -11,8 +11,8 @@ function opp2pol(opp) // opponent to polar
     const c = Math.sqrt(a*a + b*b);
 
     return [
-        h/Tau, 
-        c*okLabScale, 
+        h,
+        c,
         l];
 }
 

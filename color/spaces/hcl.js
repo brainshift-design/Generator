@@ -14,14 +14,22 @@ function hclokl2rgb_(h, c, l, cs = sRGB)
     
 function rgb2hclokl(rgb, cs = sRGB)
 {
-    return rgb2hclokl_(rgb[0], rgb[1], rgb[2], cs);
+    const oklab = rgb2oklab(rgb, cs);
+    console.log('oklab:', oklab);
+
+    const okhcl = opp2pol(oklab, cs);
+    console.log('okhcl:', okhcl);
+
+    return okhcl;
+    
+    //return opp2pol(rgb2oklab(rgb, cs));
 }
 
 
 
 function rgb2hclokl_(r, g, b, cs = sRGB)
 {
-    return opp2pol(rgb2oklab_(r, g, b, cs));
+    return rgb2hclokl([r, g, b], cs);
 }
 
 
