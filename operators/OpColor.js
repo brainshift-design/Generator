@@ -75,7 +75,12 @@ extends Operator
 
         this._space.addEventListener('change', () => 
         {
+            this._c1.allowEditDecimals = this._space.value > 1;
+            this._c2.allowEditDecimals = this._space.value > 1;
+            this._c3.allowEditDecimals = this._space.value > 1;
+
             setDataColorToCurrentSpace(this, this._color);
+
             this.pushUpdate();
         });
         
