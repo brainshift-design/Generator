@@ -52,7 +52,7 @@ function lch2rgb_CB(l, c, h, colorSpace, cones)
     const col = lch2col([
         l, 
         c * l/100, 
-        h + (colorSpace == 1 ? hueBiasLab : hueBiasLuv)]);
+        h]);
 
     const xyz = col2xyz(col, colorSpace);
     
@@ -107,8 +107,8 @@ function oklch2rgb_CB(l, c, h, colorSpace, cones)
     {
         const lab = lch2col([
             l, 
-            c/okLabScale * l/100, 
-            h + hueBiasLab ]);
+            c,//okLabScale * l/100, 
+            h ]);
     
         rgb = oklab2rgb(lab, sRGB);
 

@@ -10,10 +10,7 @@ function opp2pol(opp) // opponent to polar
     const h = Math.atan2(b, a);
     const c = Math.sqrt(a*a + b*b);
 
-    return [
-        h,
-        c,
-        l];
+    return [h, c, l];
 }
 
 

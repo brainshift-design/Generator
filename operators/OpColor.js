@@ -52,6 +52,8 @@ extends Operator
     _c2;
     _c3;
 
+    #overlay;
+
     hexbox;
 
 
@@ -110,6 +112,11 @@ extends Operator
 
         
         initHexbox(this);
+
+
+        this.#overlay = this.control = document.createElement('div');
+        this.#overlay.className = 'colorWarningOverlay';
+        this.inner.appendChild(this.#overlay);
 
         
         setTimeout(() => 
@@ -215,21 +222,30 @@ extends Operator
         colVal[2]  = Math.max(0, colVal[2]-0.05);
         colVal     = hclokl2rgb(colVal);
         
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
+        const colText   = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const textStyle = colorStyleRgba(colText);
 
+        this.inner .style.backgroundColor = colorStyleRgb(colBack);
+        this.header.style.backgroundColor = colorStyleRgb(colBack);
+        this.label .style.color           = textStyle;
 
-        this.inner .style.backgroundColor = colorStyleRgb (colBack);
-        this.header.style.backgroundColor = colorStyleRgb (colBack);
-        this.label .style.color           = colorStyleRgba(colText);
-
-
-        this._space.control.backColor  = colBack;
+        
         this._space.control.valueColor = colVal;
         this._space.control.textColor  = colText;
         this._space.control.update();
+        this._space.control.backColor  = colBack;
+        
+        this.#overlay.style.background =
+            isValidRgb(colBack)
+            ? 'transparent'
+            : 'repeating-linear-gradient('
+                  + '-45deg, '
+                  + 'transparent 0 7px,'
+                  +  textStyle + ' 8px 15px,'
+                  + 'transparent 16px';
 
-
+        
         this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
         

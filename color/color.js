@@ -27,9 +27,9 @@ function validRgb(rgb)
 
 function isValidRgb(rgb, lim = -Eps)
 {
-    return (rgb[R] >= 0 + lim && rgb[R] <= 1 - lim 
-         && rgb[G] >= 0 + lim && rgb[G] <= 1 - lim 
-         && rgb[B] >= 0 + lim && rgb[B] <= 1 - lim);
+    return (rgb[0] >= 0 + lim && rgb[0] <= 1 - lim 
+         && rgb[1] >= 0 + lim && rgb[1] <= 1 - lim 
+         && rgb[2] >= 0 + lim && rgb[2] <= 1 - lim);
 }
 
 

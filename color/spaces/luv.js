@@ -1,7 +1,3 @@
-const hueBiasLuv       = 0.18;  // brings H=0 back to conventional Rgb red
-
-
-
 function rgb2luv(rgb, cs = sRGB)
 {
     return xyz2luv(rgb2xyz(rgb, cs), cs.W);
