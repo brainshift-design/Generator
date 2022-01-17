@@ -3,7 +3,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('add', 'add');
+        super('add', 'add', '+');
     }
     
     

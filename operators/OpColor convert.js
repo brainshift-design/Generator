@@ -16,11 +16,11 @@ function dataColor2rgb(color)
     {
         case 'rgbhex': 
         case 'rgb':    return col;
-        case 'hsv':    return hsv2rgb  (col);
-        case 'hsl':    return hsl2rgb  (col);
+        case 'hsv':    return hsv2rgb(col);
+        case 'hsl':    return hsl2rgb(col);
         case 'hclokl': return okhcl2rgb(col);
-        case 'hcllab': return lab2rgb  (col);
-        case 'hclluv': return luv2rgb  (col);
+        case 'hcllab': return lab2rgb(pol2opp(col));
+        case 'hclluv': return luv2rgb(pol2opp(col));
     }
 }
 
@@ -192,7 +192,7 @@ function getDataColorHcl(c1, c2, c3)
 
 
 
-function convertDataColorTo(color, toSpace)
+function convertDataColorToSpace(color, toSpace)
 {
     switch (toSpace)
     {
@@ -242,8 +242,8 @@ function convert2hsv(fromColor)
         case 'hsv':    hsv = col;                            break;
         case 'hsl':    hsv = rgb2hsv(hsl2rgb(col));          break;
         case 'hclokl': hsv = rgb2hsv(okhcl2rgb(col));        break;
-        case 'hcllab': hsv = rgb2hsv(lab2rgb(hsl2lab(col))); break;
-        case 'hclluv': hsv = rgb2hsv(luv2rgb(hsl2lab(col))); break;
+        case 'hcllab': hsv = rgb2hsv(lab2rgb(pol2opp(col))); break;
+        case 'hclluv': hsv = rgb2hsv(luv2rgb(pol2opp(col))); break;
     }
     
     if (isNaN(hsv[0]))
@@ -270,8 +270,8 @@ function convert2hsl(fromColor)
         case 'hsv':    hsl = rgb2hsl(hsv2rgb(col));          break;
         case 'hsl':    hsl = col;                            break;
         case 'hclokl': hsl = rgb2hsl(okhcl2rgb(col));        break;
-        case 'hcllab': hsl = rgb2hsl(lab2rgb(hsl2lab(col))); break;
-        case 'hclluv': hsl = rgb2hsl(luv2rgb(hsl2lab(col))); break;
+        case 'hcllab': hsl = rgb2hsl(lab2rgb(pol2opp(col))); break;
+        case 'hclluv': hsl = rgb2hsl(luv2rgb(pol2opp(col))); break;
     }
 
     return [
@@ -300,7 +300,7 @@ function convert2hclokl(fromColor)
     }
 
     return [
-       'hcl',
+       'hclokl',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -325,7 +325,7 @@ function convert2hcllab(fromColor)
     }
 
     return [
-       'hcl',
+       'hcllab',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -350,7 +350,7 @@ function convert2hclluv(fromColor)
     }
 
     return [
-       'hcl',
+       'hclluv',
         hcl[0],
         hcl[1],
         hcl[2] ];

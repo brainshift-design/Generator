@@ -19,6 +19,9 @@ const generator = new Worker(
 const buf = new SharedArrayBuffer(1024);
 
         
+console.clear();
+
+
 uiPostMessageToFigma({ 
     cmd:    'figLoadState',
     onLoad: 'figLoadState'

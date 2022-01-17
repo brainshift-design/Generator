@@ -178,9 +178,9 @@ extends Operator
 
         if (this.inputs[0].isConnected) 
         {
-            const color = convertDataColorTo(
+            const color = convertDataColorToSpace(
                 this.inputs[0].data.color, 
-                this.getCurrentDataColorSpace());
+                getCurrentDataColorSpace(this));
 
             if (this._c1.input.isConnected) color[1] = getNormalValue(this._c1.input.data.value, color[0], 0);
             if (this._c2.input.isConnected) color[2] = getNormalValue(this._c2.input.data.value, color[0], 1);

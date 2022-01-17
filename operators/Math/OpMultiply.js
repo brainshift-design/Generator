@@ -3,7 +3,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('multiply', 'mul');
+        super('multiply', 'mul', '×');
     }
     
     

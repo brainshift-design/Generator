@@ -1,3 +1,9 @@
+:root
+{
+    --arithmeticSymbolSize: 26;
+}
+
+
 #graphView
 {
     z-index:  0;
@@ -118,4 +124,18 @@
     right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
+
+
+
+.arithmeticSymbol
+{
+    font-family:    Inter;
+    font-size:      20px;
+    width:          var(--arithmeticSymbolSize);
+    height:         var(--arithmeticSymbolSize);
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-25%);
+    pointer-events: none;
 }

@@ -25,7 +25,7 @@ function onHexboxPointerUp(e)
 function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
-    hexboxFinish(hexbox.op, false);
+    hexboxFinish(hexbox.op, true);
 }
 
 

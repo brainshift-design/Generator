@@ -59,8 +59,8 @@ function switchToHclLuv(op) { switchToHclControls(op); }
    
 
 function switchToRgbControls(op)         { switchToControls(op, 'R', 'G', 'B',    0, 255, '',  false, 0, 255, 0, 255); }
-function switchToHs_Controls(op, v_or_l) { switchToControls(op, 'H', 'S', v_or_l, 0, 360, '°', true,  0, 100, 0, 100);  op.showControlHex(false); }
-function switchToHclControls(op)         { switchToControls(op, 'H', 'C', 'L',    0, 360, '°', true,  0, 400, 0, 400);  op.showControlHex(false); }
+function switchToHs_Controls(op, v_or_l) { switchToControls(op, 'H', 'S', v_or_l, 0, 360, '°', true,  0, 100, 0, 100);  showControlHex(op, false); }
+function switchToHclControls(op)         { switchToControls(op, 'H', 'C', 'L',    0, 360, '°', true,  0, 400, 0, 400);  showControlHex(op, false); }
 
 
 
@@ -95,7 +95,7 @@ function setDataColorToCurrentSpace(op, color)
 {
     const toSpace = OpColorSpaces[op._space.value][0];
 
-    op._color = convertDataColorTo(color, toSpace);
+    op._color = convertDataColorToSpace(color, toSpace);
 
     switchToSpace(op, toSpace);
     op.setColorParams(op._color, false);

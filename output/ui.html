@@ -310,7 +310,7 @@ input[type=text]::selection
 
 :root
 {
-    --activeObjectColor: #18a0fb;
+    --activeObjectColor:    #18a0fb;
 }
 
 
@@ -345,6 +345,12 @@ input[type=text]::selection
     position:         absolute;
     display:          none;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+
+:root
+{
+    --arithmeticSymbolSize: 26;
 }
 
 
@@ -468,6 +474,20 @@ input[type=text]::selection
     right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
+
+
+
+.arithmeticSymbol
+{
+    font-family:    Inter;
+    font-size:      20px;
+    width:          var(--arithmeticSymbolSize);
+    height:         var(--arithmeticSymbolSize);
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-25%);
+    pointer-events: none;
 }
 
 
@@ -5175,6 +5195,20 @@ const hueBiasLuv       = 0.18;  // brings H=0 back to conventional Rgb red
 
 
 
+function rgb2luv(rgb, cs = sRGB)
+{
+    return xyz2luv(rgb2xyz(rgb, cs), cs.W);
+}
+
+
+
+function luv2rgb(luv, cs = sRGB)
+{
+    return xyz2rgb(luv2xyz(luv, cs.W), cs);
+}
+
+
+
 function xyz2luv(xyz, W = sRGB.W)
 {
     const x = xyz[0], 
@@ -5236,6 +5270,20 @@ function luv2xyz(luv, W = sRGB.W)
 
 
 const hueBiasLab = 0.5;    
+
+
+
+function rgb2lab(rgb, cs = sRGB)
+{
+    return xyz2lab(rgb2xyz(rgb, cs), cs.W);
+}
+
+
+
+function lab2rgb(lab, cs = sRGB)
+{
+    return xyz2rgb(lab2xyz(lab, cs.W), cs);
+}
 
 
 
@@ -8607,9 +8655,11 @@ extends Operator
 {
     #paramValue;
 
+    _symbol;
+    _showOnlySymbol;
 
 
-    constructor(opType, shortType)
+    constructor(opType, shortType, symbol)
     {
         super(opType, shortType, 'number', 65);
 
@@ -8620,6 +8670,16 @@ extends Operator
 
         this.#paramValue.control.pointerEvents   = false;
         this.#paramValue.control.style.fontStyle = 'italic';
+
+
+        this._symbol = document.createElement('div');
+        this._symbol.className = 'arithmeticSymbol';
+        this._symbol.innerHTML = symbol;
+
+        this.header.appendChild(this._symbol);
+
+        this._showOnlySymbol = true;
+        this.textbox.addEventListener('focus', () => { this._showOnlySymbol = false; });
     }
     
     
@@ -8711,6 +8771,24 @@ extends Operator
         this.header.style.height = height;
 
 
+        if (this._showOnlySymbol)
+        {
+            this._symbol.style.fontSize = 20;
+            this._symbol.style.left     = 'calc(50% + 1.5px)';
+            this._symbol.style.top      = height/2 - 14;
+        }
+        else
+        {
+            this._symbol.style.fontSize = 12;
+            this._symbol.style.left     = 'calc(50% + 3px)';
+            this._symbol.style.top      = height/2 - 2;
+            this.label  .style.top      = 'calc(50% - 3px)';
+        }
+       
+        
+        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
+
+
         super.updateNode();
     }
 }
@@ -8745,7 +8823,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('add', 'add');
+        super('add', 'add', '+');
     }
     
     
@@ -8767,7 +8845,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('subtract', 'sub');
+        super('subtract', 'sub', '−');
     }
     
     
@@ -8792,7 +8870,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('multiply', 'mul');
+        super('multiply', 'mul', '×');
     }
     
     
@@ -8817,7 +8895,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('divide', 'div');
+        super('divide', 'div', '÷');
     }
     
     
@@ -8842,7 +8920,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('exponent', 'exp');
+        super('exponent', 'exp', 'xʸ'); // placeholder symbol, actual symbol set in updateNode()
     }
     
     
@@ -8858,6 +8936,21 @@ extends OpArithmetic
             result = Math.pow(result, this.inputs[i].data.value);
 
         return result;
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this._symbol.innerHTML =
+            this._showOnlySymbol
+            ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
+            : '<span style="position: relative; top: -1.5px; font-size: 8px;">x</span><span style="position: relative; left: -0.5px; top: -5.15px; font-size: 3.75px; font-weight: bold;">y</span>';
+
+        this._symbol.style.left      = 'calc(50% + ' + (this._showOnlySymbol ? 2.5 : 5) + 'px)';
+        this._symbol.style.top       = parseFloat(this._symbol.style.top) + 6;
     }
 }
 
@@ -9042,9 +9135,9 @@ extends Operator
 
         if (this.inputs[0].isConnected) 
         {
-            const color = convertDataColorTo(
+            const color = convertDataColorToSpace(
                 this.inputs[0].data.color, 
-                this.getCurrentDataColorSpace());
+                getCurrentDataColorSpace(this));
 
             if (this._c1.input.isConnected) color[1] = getNormalValue(this._c1.input.data.value, color[0], 0);
             if (this._c2.input.isConnected) color[2] = getNormalValue(this._c2.input.data.value, color[0], 1);
@@ -9181,8 +9274,8 @@ function switchToHclLuv(op) { switchToHclControls(op); }
    
 
 function switchToRgbControls(op)         { switchToControls(op, 'R', 'G', 'B',    0, 255, '',  false, 0, 255, 0, 255); }
-function switchToHs_Controls(op, v_or_l) { switchToControls(op, 'H', 'S', v_or_l, 0, 360, '°', true,  0, 100, 0, 100);  op.showControlHex(false); }
-function switchToHclControls(op)         { switchToControls(op, 'H', 'C', 'L',    0, 360, '°', true,  0, 400, 0, 400);  op.showControlHex(false); }
+function switchToHs_Controls(op, v_or_l) { switchToControls(op, 'H', 'S', v_or_l, 0, 360, '°', true,  0, 100, 0, 100);  showControlHex(op, false); }
+function switchToHclControls(op)         { switchToControls(op, 'H', 'C', 'L',    0, 360, '°', true,  0, 400, 0, 400);  showControlHex(op, false); }
 
 
 
@@ -9217,7 +9310,7 @@ function setDataColorToCurrentSpace(op, color)
 {
     const toSpace = OpColorSpaces[op._space.value][0];
 
-    op._color = convertDataColorTo(color, toSpace);
+    op._color = convertDataColorToSpace(color, toSpace);
 
     switchToSpace(op, toSpace);
     op.setColorParams(op._color, false);
@@ -9261,7 +9354,7 @@ function onHexboxPointerUp(e)
 function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
-    hexboxFinish(hexbox.op, false);
+    hexboxFinish(hexbox.op, true);
 }
 
 
@@ -9343,11 +9436,11 @@ function dataColor2rgb(color)
     {
         case 'rgbhex': 
         case 'rgb':    return col;
-        case 'hsv':    return hsv2rgb  (col);
-        case 'hsl':    return hsl2rgb  (col);
+        case 'hsv':    return hsv2rgb(col);
+        case 'hsl':    return hsl2rgb(col);
         case 'hclokl': return okhcl2rgb(col);
-        case 'hcllab': return lab2rgb  (col);
-        case 'hclluv': return luv2rgb  (col);
+        case 'hcllab': return lab2rgb(pol2opp(col));
+        case 'hclluv': return luv2rgb(pol2opp(col));
     }
 }
 
@@ -9519,7 +9612,7 @@ function getDataColorHcl(c1, c2, c3)
 
 
 
-function convertDataColorTo(color, toSpace)
+function convertDataColorToSpace(color, toSpace)
 {
     switch (toSpace)
     {
@@ -9569,8 +9662,8 @@ function convert2hsv(fromColor)
         case 'hsv':    hsv = col;                            break;
         case 'hsl':    hsv = rgb2hsv(hsl2rgb(col));          break;
         case 'hclokl': hsv = rgb2hsv(okhcl2rgb(col));        break;
-        case 'hcllab': hsv = rgb2hsv(lab2rgb(hsl2lab(col))); break;
-        case 'hclluv': hsv = rgb2hsv(luv2rgb(hsl2lab(col))); break;
+        case 'hcllab': hsv = rgb2hsv(lab2rgb(pol2opp(col))); break;
+        case 'hclluv': hsv = rgb2hsv(luv2rgb(pol2opp(col))); break;
     }
     
     if (isNaN(hsv[0]))
@@ -9597,8 +9690,8 @@ function convert2hsl(fromColor)
         case 'hsv':    hsl = rgb2hsl(hsv2rgb(col));          break;
         case 'hsl':    hsl = col;                            break;
         case 'hclokl': hsl = rgb2hsl(okhcl2rgb(col));        break;
-        case 'hcllab': hsl = rgb2hsl(lab2rgb(hsl2lab(col))); break;
-        case 'hclluv': hsl = rgb2hsl(luv2rgb(hsl2lab(col))); break;
+        case 'hcllab': hsl = rgb2hsl(lab2rgb(pol2opp(col))); break;
+        case 'hclluv': hsl = rgb2hsl(luv2rgb(pol2opp(col))); break;
     }
 
     return [
@@ -9627,7 +9720,7 @@ function convert2hclokl(fromColor)
     }
 
     return [
-       'hcl',
+       'hclokl',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -9652,7 +9745,7 @@ function convert2hcllab(fromColor)
     }
 
     return [
-       'hcl',
+       'hcllab',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -9677,7 +9770,7 @@ function convert2hclluv(fromColor)
     }
 
     return [
-       'hcl',
+       'hclluv',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -10242,6 +10335,9 @@ const generator = new Worker(
 const buf = new SharedArrayBuffer(1024);
 
         
+console.clear();
+
+
 uiPostMessageToFigma({ 
     cmd:    'figLoadState',
     onLoad: 'figLoadState'
@@ -11008,7 +11104,7 @@ function initNumberSliderTextbox(slider)
         var val = 
             slider.showHex
             ? parseInt(slider.textbox.value, 16)
-            : parseFloat(str);
+            : parseFloat(slider.textbox.value);
 
         if (success) slider.setValue(Number(val));
         else         slider.setValue(Number(slider.textbox.savedValue));

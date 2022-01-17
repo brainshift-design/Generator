@@ -2,6 +2,20 @@ const hueBiasLab = 0.5;
 
 
 
+function rgb2lab(rgb, cs = sRGB)
+{
+    return xyz2lab(rgb2xyz(rgb, cs), cs.W);
+}
+
+
+
+function lab2rgb(lab, cs = sRGB)
+{
+    return xyz2rgb(lab2xyz(lab, cs.W), cs);
+}
+
+
+
 function xyz2lab(xyz, W = sRGB.W)
 {
     const x = xyz[0], 

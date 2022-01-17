@@ -125,7 +125,7 @@ function initNumberSliderTextbox(slider)
         var val = 
             slider.showHex
             ? parseInt(slider.textbox.value, 16)
-            : parseFloat(str);
+            : parseFloat(slider.textbox.value);
 
         if (success) slider.setValue(Number(val));
         else         slider.setValue(Number(slider.textbox.savedValue));

@@ -3,9 +3,11 @@ extends Operator
 {
     #paramValue;
 
+    _symbol;
+    _showOnlySymbol;
 
 
-    constructor(opType, shortType)
+    constructor(opType, shortType, symbol)
     {
         super(opType, shortType, 'number', 65);
 
@@ -16,6 +18,16 @@ extends Operator
 
         this.#paramValue.control.pointerEvents   = false;
         this.#paramValue.control.style.fontStyle = 'italic';
+
+
+        this._symbol = document.createElement('div');
+        this._symbol.className = 'arithmeticSymbol';
+        this._symbol.innerHTML = symbol;
+
+        this.header.appendChild(this._symbol);
+
+        this._showOnlySymbol = true;
+        this.textbox.addEventListener('focus', () => { this._showOnlySymbol = false; });
     }
     
     
@@ -105,6 +117,24 @@ extends Operator
 
 
         this.header.style.height = height;
+
+
+        if (this._showOnlySymbol)
+        {
+            this._symbol.style.fontSize = 20;
+            this._symbol.style.left     = 'calc(50% + 1.5px)';
+            this._symbol.style.top      = height/2 - 14;
+        }
+        else
+        {
+            this._symbol.style.fontSize = 12;
+            this._symbol.style.left     = 'calc(50% + 3px)';
+            this._symbol.style.top      = height/2 - 2;
+            this.label  .style.top      = 'calc(50% - 3px)';
+        }
+       
+        
+        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
 
 
         super.updateNode();
