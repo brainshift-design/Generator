@@ -181,20 +181,6 @@ class Operator
  
     
 
-    getHeaderColor()
-    {
-        return this.getDefaultHeaderColor();
-    }
-
-
-
-    getDefaultHeaderColor()
-    {
-        return rgbFromDataType(this.#dataType, false);
-    }
-
-
-
     reset() // for the entire generation run
     {
         for (const input of this.inputs)
@@ -264,7 +250,14 @@ class Operator
 
     updateNode() 
     {
-        this.header.style.backgroundColor = colorStyleRgb(this.getHeaderColor());
+        this.updateHeader();
+    }
+
+
+
+    updateHeader()
+    {
+        this.header.style.backgroundColor = colorStyleRgb(rgbFromDataType(this.#dataType, false));
     }
 
 
@@ -395,9 +388,9 @@ class Operator
         this._active = true;
         uiSetActive(this, true);
 
-        this.header.style.backgroundColor = this.activeColor;
-        this.header.style.boxShadow       = 'none';
-        this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
+        //this.header.style.backgroundColor = this.activeColor;
+        //this.header.style.boxShadow       = 'none';
+        //this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
         
         if (this.dataType == 'object')
             uiGenerateObjects([this.id]);
@@ -437,9 +430,9 @@ class Operator
     {
         if (this.active)
         {
-            this.header.style.backgroundColor = this.passiveColor;
-            this.header.style.boxShadow       = '0 0 0 1px #0001 inset';
-            this.label .style.color           = 'black';
+            // this.header.style.backgroundColor = this.passiveColor;
+            // this.header.style.boxShadow       = '0 0 0 1px #0001 inset';
+            // this.label .style.color           = 'black';
 
             uiDeleteNodeObjects([this.id]);
         }

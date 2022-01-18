@@ -121,9 +121,9 @@ extends Operator
 
         if (this._showOnlySymbol)
         {
-            this._symbol.style.fontSize = 20;
+            this._symbol.style.fontSize = 17;
             this._symbol.style.left     = 'calc(50% + 1.5px)';
-            this._symbol.style.top      = height/2 - 14;
+            this._symbol.style.top      = height/2 - 12;
         }
         else
         {

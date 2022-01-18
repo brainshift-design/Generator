@@ -41,11 +41,12 @@
 
 .nodeHeader
 {
-    background:    #BEDFFF;
+    background:    'magenta';
     display:       flex;
     width:         100%;
     position:      relative;
     border-radius: 4px 4px 0 0;
+    z-index:       1;
 }
 
 
@@ -143,10 +144,20 @@
 
 .colorWarningOverlay
 {
-    background-color: blue;
     width:            100%;
     height:           45px;
     z-index:          1000;
+    position:         absolute;
+    top:              0;
+    pointer-events:   none;
+}
+
+
+.colorBack
+{
+    width:            100%;
+    height:           45px;
+    z-index:          0;
     position:         absolute;
     top:              0;
     pointer-events:   none;

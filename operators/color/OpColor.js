@@ -52,7 +52,8 @@ extends Operator
     _c2;
     _c3;
 
-    #overlay;
+    #colorBack;
+    #warningOverlay;
 
     hexbox;
 
@@ -62,6 +63,11 @@ extends Operator
         super('color', 'col', 'color', 80);
 
         this._color = ['rgb', 0.5, 0.5, 0.5];
+
+
+        this.#colorBack = document.createElement('div');
+        this.#colorBack.className = 'colorBack';
+        this.inner.appendChild(this.#colorBack);
 
 
         this.addInput (new Input (this.dataType));
@@ -114,9 +120,9 @@ extends Operator
         initHexbox(this);
 
 
-        this.#overlay = this.control = document.createElement('div');
-        this.#overlay.className = 'colorWarningOverlay';
-        this.inner.appendChild(this.#overlay);
+        this.#warningOverlay = this.control = document.createElement('div');
+        this.#warningOverlay.className = 'colorWarningOverlay';
+        this.inner.appendChild(this.#warningOverlay);
 
         
         setTimeout(() => 
@@ -218,40 +224,45 @@ extends Operator
     {
         const colBack = dataColor2rgb(this._color);
 
-        let colVal = rgb2hclokl(colBack);
-        colVal[2]  = Math.max(0, colVal[2]-0.05);
-        colVal     = hclokl2rgb(colVal);
+        // let colVal = rgb2hclokl(colBack);
+        // colVal[2]  = Math.max(0, colVal[2]-0.05);
+        // colVal     = hclokl2rgb(colVal);
         
-        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-        const colText   = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
-        const textStyle = colorStyleRgba(colText);
+        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
 
-        this.inner .style.backgroundColor = colorStyleRgb(colBack);
-        this.header.style.backgroundColor = colorStyleRgb(colBack);
-        this.label .style.color           = textStyle;
+        const colText      = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+
+        const textStyle    = colorStyleRgba(colText);
+        const warningStyle = colorStyleRgba(colWarning);
 
         
-        this._space.control.valueColor = colVal;
-        this._space.control.textColor  = colText;
+        this.#colorBack.style.background = colorStyleRgb(colBack);
+        this.label     .style.color      = textStyle;
+
+        
+        this._space.control.valueColor = warningStyle;
+        this._space.control.textColor  = textStyle;
+        this._space.control.backColor  = 'transparent';
         this._space.control.update();
-        this._space.control.backColor  = colBack;
         
-        this.#overlay.style.background =
+
+        this.#warningOverlay.style.background =
             isValidRgb(colBack)
             ? 'transparent'
-            : 'repeating-linear-gradient('
-                  + '-45deg, '
-                  + 'transparent 0 7px,'
-                  +  textStyle + ' 8px 15px,'
-                  + 'transparent 16px';
+            :   'repeating-linear-gradient('
+              + '-45deg, '
+              + 'transparent 0 7px,'
+              +  warningStyle + ' 8px 15px,'
+              + 'transparent 16px';
 
         
         this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
         
 
-        const colIn  = colorStyleRgba(colText, darkText ? 0.12 : 0.24);
-        const colOut = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
+        const colIn  = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
+        const colOut = colorStyleRgba(colText, darkText ? 0.06 : 0.12);
 
 
         this.inputs [0].color = colIn;
@@ -269,5 +280,12 @@ extends Operator
 
 
         super.updateNode();
+    }
+
+
+
+    updateHeader()
+    {
+        this.header.style.background = 'transparent';
     }
 }

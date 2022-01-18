@@ -8,9 +8,9 @@ const sRGB = createColorSpace
      0.715158,
      0.072186], // Y
 
-    D65, // W
+    D65,        // W
 
-    2.4, // gamma
+    2.4,        // gamma
 
 
 

@@ -32,9 +32,9 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.dragScale         = 0.001;
         
-    slider.backColor         = [0xff, 0xff, 0xff];
-    //slider.valueColor      = [0xee, 0xee, 0xee];
-    slider.textColor         = [0x00, 0x00, 0x00];
+    slider.backColor         = 'white';
+    slider.valueColor        = 'black';
+    slider.textColor         = 'black';
            
     slider.fontSize          = 11;
         
@@ -370,15 +370,10 @@ function initSelectSlider(slider, width, height, name, options, def)
         }
 
 
-        slider.style.backgroundColor = colorStyleRgb(slider.backColor);
+        slider.style.backgroundColor = slider.backColor;
 
 
-        const darkText = rgb2hclokl(slider.backColor)[2] > 0.71;
-
-        slider.bar.style.background =
-            slider.value >= 0
-            ? colorStyleRgb_a(slider.textColor, darkText ? 0.1 : 0.24)//slider.valueColor
-            : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
+        slider.bar.style.background = slider.valueColor;
 
         slider.text.innerHTML = 
              slider.options.length > 0
@@ -386,7 +381,7 @@ function initSelectSlider(slider, width, height, name, options, def)
              : '';
         
 
-        slider.text.style.color = colorStyleRgba(slider.textColor);
+        slider.text.style.color = slider.textColor;
     };
 
 

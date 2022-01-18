@@ -309,8 +309,8 @@ function switchToHclControls(op)
 { 
     switchToControls(op, 
         'H', 0, 360, '°', true,  
-        'C', 0, 400, 
-        'L', 0, 400);  
+        'C', 0, 100, 
+        'L', 0, 100);  
 
     showControlHex(op, false); 
 }

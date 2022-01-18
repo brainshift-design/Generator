@@ -26,10 +26,11 @@
 ../operators/math/OpExponent.js
 //../operators/math/OpRandom.js
 
-../operators/OpColor.js
-../operators/OpColor spaces.js
-../operators/OpColor hexbox.js
-../operators/OpColor convert.js
+../operators/color/OpColor.js
+../operators/color/OpColor spaces.js
+../operators/color/OpColor hexbox.js
+../operators/color/OpColor convert.js
+../operators/color/OpWebContrast.js
 
 //../operators/OpRect.js
 //../operators/OpRow.js
