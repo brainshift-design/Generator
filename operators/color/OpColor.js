@@ -107,6 +107,7 @@ extends Operator
 
             setDataColorToCurrentSpace(this, this._color);
 
+
             this.pushUpdate();
         });
         
@@ -301,14 +302,10 @@ extends Operator
 
     updateControls(rgb)
     {
-        if (!this.inputs[0].isConnected) 
+        if (!this.inputs[0].isConnected)  
             this.updateAllControlRanges();
         else
-        {
-            this._c1.control.resetRanges();
-            this._c2.control.resetRanges();
-            this._c3.control.resetRanges();
-        }
+            this.resetAllControlRanges();
 
         this.updateSlider(this._c1.control, isValidRgb(rgb));
         this.updateSlider(this._c2.control, isValidRgb(rgb));
@@ -327,6 +324,15 @@ extends Operator
             : '';
 
         slider.update();
+    }
+
+
+
+    resetAllControlRanges()
+    {
+        this._c1.control.resetRanges();
+        this._c2.control.resetRanges();
+        this._c3.control.resetRanges();
     }
 
 
@@ -382,9 +388,7 @@ extends Operator
         }
         else // no warning ranges
         {
-            this._c1.control.resetRanges();
-            this._c2.control.resetRanges();
-            this._c3.control.resetRanges();
+            this.resetAllControlRanges();
         }
     }
 
@@ -434,5 +438,8 @@ extends Operator
             if (first) slider.range1end = 1;
             else       slider.range2end = 1;
         }
+        else if (!range
+              && first)
+            slider.resetRanges();
     }
 }
