@@ -31,14 +31,13 @@ const hs_FactorH = 360;
 const hs_FactorS = 100;
 const hs_Factor_ = 100;
 
-const oppFactorL = 100;
-const oppFactor1 = 100;
-const oppFactor2 = 100;
-
 const hclFactorH = 360;
 const hclFactorC = 100;
 const hclFactorL = 100;
 
+const oppFactorL = 100;
+const oppFactor1 = 100;
+const oppFactor2 = 100;
 
 
 class   OpColor
@@ -242,7 +241,10 @@ extends Operator
         this._space.control.textColor  = textStyle;
         this._space.control.backColor  = 'transparent';
         this._space.control.update();
-        
+
+
+        this.updateControls(colBack);
+
 
         this.#warningOverlay.style.background =
             isValidRgb(colBack)
@@ -255,11 +257,10 @@ extends Operator
 
         this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
-        
 
+        
         const colIn  = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
         const colOut = colorStyleRgba(colText, darkText ? 0.06 : 0.12);
-
 
         this.inputs [0].color = colIn;
         this.outputs[0].color = colOut;
@@ -283,5 +284,144 @@ extends Operator
     updateHeader()
     {
         this.header.style.background = 'transparent';
+    }
+
+
+
+    updateControls(rgb)
+    {
+        if (!this.inputs[0].isConnected) 
+            this.updateAllControlRanges();
+        else
+        {
+            this._c1.control.resetRanges();
+            this._c2.control.resetRanges();
+            this._c3.control.resetRanges();
+        }
+
+        this.updateSlider(this._c1.control, isValidRgb(rgb));
+        this.updateSlider(this._c2.control, isValidRgb(rgb));
+        this.updateSlider(this._c3.control, isValidRgb(rgb));
+    }
+
+
+
+    updateSlider(slider, isValid)
+    {
+        slider.valueText = 
+               this.inputs[0].isConnected 
+            && this.inputs[0].data.color[0] != this._color[0]
+            && !isValid 
+            ? '?' 
+            : '';
+
+        slider.update();
+    }
+
+
+
+    // showInvalidControlRanges()
+    // {
+    //     this._c1.control.range1start = 0;
+    //     this._c1.control.range1end   = 1;
+    //     this._c1.control.range2start = 1;
+    //     this._c1.control.range2end   = 1;
+
+    //     this._c2.control.range1start = 0;
+    //     this._c2.control.range1end   = 1;
+    //     this._c2.control.range2start = 1;
+    //     this._c2.control.range2end   = 1;
+
+    //     this._c3.control.range1start = 0;
+    //     this._c3.control.range1end   = 1;
+    //     this._c3.control.range2start = 1;
+    //     this._c3.control.range2end   = 1;
+    // }
+
+
+
+    updateAllControlRanges()
+    {
+        if (this._space.value > 4) // warning ranges
+        {
+            this.updateControlRanges(this._c1.control, f =>
+                dataColor2rgb([
+                    this._color[0],
+                    (this._c1.control.min + f * (this._c1.control.max - this._c1.control.min)) / getColorSpaceFactor(this._color[0], 0),
+                    this._color[2],
+                    this._color[3]]));
+
+            this.updateControlRanges(this._c2.control, f =>
+                dataColor2rgb([
+                    this._color[0],
+                    this._color[1],
+                    (this._c2.control.min + f * (this._c2.control.max - this._c2.control.min)) / getColorSpaceFactor(this._color[0], 1),
+                    this._color[3]]));
+
+            this.updateControlRanges(this._c3.control, f =>
+                dataColor2rgb([
+                    this._color[0],
+                    this._color[1],
+                    this._color[2],
+                    (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0], 2)]));
+
+            this.validateControlRanges(this._c1.control);
+            this.validateControlRanges(this._c2.control);
+            this.validateControlRanges(this._c3.control);
+        }
+        else // no warning ranges
+        {
+            this._c1.control.resetRanges();
+            this._c2.control.resetRanges();
+            this._c3.control.resetRanges();
+        }
+    }
+
+
+
+    validateControlRanges(slider)
+    {
+        if (   slider.range1start < slider.range2end
+            && slider.range1end   > slider.range2start)
+        {
+            slider.range1end   = slider.range2end;
+            slider.range2start = slider.range2end = 1;
+        }
+    }
+
+
+
+    updateControlRanges(slider, getRgb)
+    {
+        const precision = 0.01;
+            
+        let range = false;
+        let first = true;
+
+        for (let f = 0; f <= 1; f += precision)
+        {
+            const rgb = getRgb(f);
+
+            if (!range && !isValidRgb(rgb)) 
+            {
+                range = true;
+
+                if (first) slider.range1start = f;
+                else       slider.range2start = f;
+            }
+            else if (range && isValidRgb(rgb)) 
+            {
+                range = false;
+
+                if (first) { slider.range1end = f; first = false; }
+                else         slider.range2end = f;
+            }
+        }
+
+        if (range)
+        {
+            if (first) slider.range1end = 1;
+            else       slider.range2end = 1;
+        }
     }
 }

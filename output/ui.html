@@ -577,11 +577,14 @@ input[type=text]::selection
     position:       absolute;
     pointer-events: none;
     z-index:        1000;
-    background:     repeating-linear-gradient(
+    background:     rgba(255, 0, 0, 0.15);
+    /* background:     repeating-linear-gradient(
                         -45deg, 
-                        transparent           0px 2.5px, 
-                        rgba(0, 0, 0, 0.05) 2.5px 5px);
+                        transparent            0px 1px, 
+                        rgba(255, 0, 0, 0.2) 1px 2px,
+                        transparent            2px 3px); */
 }
+
 
 
 .selectSlider
@@ -2445,6 +2448,15 @@ function getCtrlKey(e)
 function dispatchNewEvent(target, proto)
 {
     target.dispatchEvent(new proto.constructor(proto.type, proto));
+}
+
+
+
+function createDiv(className)
+{
+    const div = document.createElement('div');
+    div.className = className;
+    return div;
 }
 
 
@@ -4686,6 +4698,15 @@ function getCtrlKey(e)
 function dispatchNewEvent(target, proto)
 {
     target.dispatchEvent(new proto.constructor(proto.type, proto));
+}
+
+
+
+function createDiv(className)
+{
+    const div = document.createElement('div');
+    div.className = className;
+    return div;
 }
 
 
@@ -9024,14 +9045,13 @@ const hs_FactorH = 360;
 const hs_FactorS = 100;
 const hs_Factor_ = 100;
 
-const oppFactorL = 100;
-const oppFactor1 = 100;
-const oppFactor2 = 100;
-
 const hclFactorH = 360;
 const hclFactorC = 100;
 const hclFactorL = 100;
 
+const oppFactorL = 100;
+const oppFactor1 = 100;
+const oppFactor2 = 100;
 
 
 class   OpColor
@@ -9235,7 +9255,10 @@ extends Operator
         this._space.control.textColor  = textStyle;
         this._space.control.backColor  = 'transparent';
         this._space.control.update();
-        
+
+
+        this.updateControls(colBack);
+
 
         this.#warningOverlay.style.background =
             isValidRgb(colBack)
@@ -9248,11 +9271,10 @@ extends Operator
 
         this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
-        
 
+        
         const colIn  = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
         const colOut = colorStyleRgba(colText, darkText ? 0.06 : 0.12);
-
 
         this.inputs [0].color = colIn;
         this.outputs[0].color = colOut;
@@ -9277,7 +9299,196 @@ extends Operator
     {
         this.header.style.background = 'transparent';
     }
+
+
+
+    updateControls(rgb)
+    {
+        if (!this.inputs[0].isConnected) 
+            this.updateAllControlRanges();
+        else
+        {
+            this._c1.control.resetRanges();
+            this._c2.control.resetRanges();
+            this._c3.control.resetRanges();
+        }
+
+        this.updateSlider(this._c1.control, isValidRgb(rgb));
+        this.updateSlider(this._c2.control, isValidRgb(rgb));
+        this.updateSlider(this._c3.control, isValidRgb(rgb));
+    }
+
+
+
+    updateSlider(slider, isValid)
+    {
+        slider.valueText = 
+               this.inputs[0].isConnected 
+            && this.inputs[0].data.color[0] != this._color[0]
+            && !isValid 
+            ? '?' 
+            : '';
+
+        slider.update();
+    }
+
+
+
+    // showInvalidControlRanges()
+    // {
+    //     this._c1.control.range1start = 0;
+    //     this._c1.control.range1end   = 1;
+    //     this._c1.control.range2start = 1;
+    //     this._c1.control.range2end   = 1;
+
+    //     this._c2.control.range1start = 0;
+    //     this._c2.control.range1end   = 1;
+    //     this._c2.control.range2start = 1;
+    //     this._c2.control.range2end   = 1;
+
+    //     this._c3.control.range1start = 0;
+    //     this._c3.control.range1end   = 1;
+    //     this._c3.control.range2start = 1;
+    //     this._c3.control.range2end   = 1;
+    // }
+
+
+
+    updateAllControlRanges()
+    {
+        if (this._space.value > 4) // warning ranges
+        {
+            this.updateControlRanges(this._c1.control, f =>
+                dataColor2rgb([
+                    this._color[0],
+                    (this._c1.control.min + f * (this._c1.control.max - this._c1.control.min)) / getColorSpaceFactor(this._color[0], 0),
+                    this._color[2],
+                    this._color[3]]));
+
+            this.updateControlRanges(this._c2.control, f =>
+                dataColor2rgb([
+                    this._color[0],
+                    this._color[1],
+                    (this._c2.control.min + f * (this._c2.control.max - this._c2.control.min)) / getColorSpaceFactor(this._color[0], 1),
+                    this._color[3]]));
+
+            this.updateControlRanges(this._c3.control, f =>
+                dataColor2rgb([
+                    this._color[0],
+                    this._color[1],
+                    this._color[2],
+                    (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0], 2)]));
+
+            this.validateControlRanges(this._c1.control);
+            this.validateControlRanges(this._c2.control);
+            this.validateControlRanges(this._c3.control);
+        }
+        else // no warning ranges
+        {
+            this._c1.control.resetRanges();
+            this._c2.control.resetRanges();
+            this._c3.control.resetRanges();
+        }
+    }
+
+
+
+    validateControlRanges(slider)
+    {
+        if (   slider.range1start < slider.range2end
+            && slider.range1end   > slider.range2start)
+        {
+            slider.range1end   = slider.range2end;
+            slider.range2start = slider.range2end = 1;
+        }
+    }
+
+
+
+    updateControlRanges(slider, getRgb)
+    {
+        const precision = 0.01;
+            
+        let range = false;
+        let first = true;
+
+        for (let f = 0; f <= 1; f += precision)
+        {
+            const rgb = getRgb(f);
+
+            if (!range && !isValidRgb(rgb)) 
+            {
+                range = true;
+
+                if (first) slider.range1start = f;
+                else       slider.range2start = f;
+            }
+            else if (range && isValidRgb(rgb)) 
+            {
+                range = false;
+
+                if (first) { slider.range1end = f; first = false; }
+                else         slider.range2end = f;
+            }
+        }
+
+        if (range)
+        {
+            if (first) slider.range1end = 1;
+            else       slider.range2end = 1;
+        }
+    }
 }
+
+
+function getColorSpaceFactor(space, chan)
+{
+    switch (space)
+    {
+        case 'rgbhex':
+        case 'rgb':   
+            switch (chan)
+            {
+                case 0: return rgbFactorR;
+                case 1: return rgbFactorG;
+                case 2: return rgbFactorB;
+            }
+            break;
+
+        case 'hsv':   
+        case 'hsl':   
+            switch (chan)
+            {
+                case 0: return hs_FactorH;
+                case 1: return hs_FactorS;
+                case 2: return hs_Factor_;
+            }
+            break;
+
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv':
+            switch (chan)
+            {
+                case 0: return hclFactorH;
+                case 1: return hclFactorC;
+                case 2: return hclFactorL;
+            }
+            break;
+
+        case 'oklab':  
+        case 'lab':    
+        case 'luv':
+            switch (chan)
+            {
+                case 0: return oppFactorL;
+                case 1: return oppFactor1;
+                case 2: return oppFactor2;
+            }
+            break;
+    }
+}
+
 
 
 function rgb2dataColor(rgb)
@@ -11500,20 +11711,11 @@ function initNumberSliderTextbox(slider)
 
 function initNumberSliderChildren(slider)
 {
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'numberSliderBar';
-
-    slider.text = document.createElement('div');
-    slider.text.className = 'numberSliderText';
-
-    slider.focus = document.createElement('div');
-    slider.focus.className = 'numberSliderFocus';
-
-    slider.range1 = document.createElement('div');
-    slider.range1.className = 'numberSliderRange';
-
-    slider.range2 = document.createElement('div');
-    slider.range2.className = 'numberSliderRange';
+    slider.bar    = createDiv('numberSliderBar'  );
+    slider.text   = createDiv('numberSliderText' );
+    slider.focus  = createDiv('numberSliderFocus');
+    slider.range1 = createDiv('numberSliderRange');
+    slider.range2 = createDiv('numberSliderRange');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -11936,31 +12138,37 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.updateRanges = function()
     {
         if (slider.range1start == slider.range1end)
-        {
             slider.range1.style.display = 'none';
-        }
         else
         {
             slider.range1.style.display = 'block';
             slider.range1.style.left    = slider.clientWidth * slider.range1start;  
             slider.range1.style.top     = 0;
-            slider.range1.style.width   = slider.clientWidth * slider.range1end;
+            slider.range1.style.width   = slider.clientWidth * (slider.range1end - slider.range1start);
             slider.range1.style.height  = slider.clientHeight;
         }
 
-        
+
         if (slider.range2start == slider.range2end)
-        {
             slider.range2.style.display = 'none';
-        }
         else
         {
             slider.range2.style.display = 'block';
             slider.range2.style.left   = slider.clientWidth * slider.range2start;
             slider.range2.style.top    = 0;
-            slider.range2.style.width  = slider.clientWidth * slider.range2end;
+            slider.range2.style.width  = slider.clientWidth * (slider.range2end - slider.range2start);
             slider.range2.style.height = slider.clientHeight;
         }
+    };
+
+
+
+    slider.resetRanges = function()
+    {
+        slider.range1start = 
+        slider.range1end   = 
+        slider.range2start = 
+        slider.range2end   = 0;
     };
 
 

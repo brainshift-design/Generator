@@ -51,8 +51,10 @@
     position:       absolute;
     pointer-events: none;
     z-index:        1000;
-    background:     repeating-linear-gradient(
+    background:     rgba(255, 0, 0, 0.15);
+    /* background:     repeating-linear-gradient(
                         -45deg, 
-                        transparent           0px 2.5px, 
-                        rgba(0, 0, 0, 0.05) 2.5px 5px);
+                        transparent            0px 1px, 
+                        rgba(255, 0, 0, 0.2) 1px 2px,
+                        transparent            2px 3px); */
 }

@@ -1,3 +1,53 @@
+function getColorSpaceFactor(space, chan)
+{
+    switch (space)
+    {
+        case 'rgbhex':
+        case 'rgb':   
+            switch (chan)
+            {
+                case 0: return rgbFactorR;
+                case 1: return rgbFactorG;
+                case 2: return rgbFactorB;
+            }
+            break;
+
+        case 'hsv':   
+        case 'hsl':   
+            switch (chan)
+            {
+                case 0: return hs_FactorH;
+                case 1: return hs_FactorS;
+                case 2: return hs_Factor_;
+            }
+            break;
+
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv':
+            switch (chan)
+            {
+                case 0: return hclFactorH;
+                case 1: return hclFactorC;
+                case 2: return hclFactorL;
+            }
+            break;
+
+        case 'oklab':  
+        case 'lab':    
+        case 'luv':
+            switch (chan)
+            {
+                case 0: return oppFactorL;
+                case 1: return oppFactor1;
+                case 2: return oppFactor2;
+            }
+            break;
+    }
+}
+
+
+
 function rgb2dataColor(rgb)
 {
     return [

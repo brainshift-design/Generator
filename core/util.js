@@ -249,3 +249,12 @@ function dispatchNewEvent(target, proto)
 {
     target.dispatchEvent(new proto.constructor(proto.type, proto));
 }
+
+
+
+function createDiv(className)
+{
+    const div = document.createElement('div');
+    div.className = className;
+    return div;
+}

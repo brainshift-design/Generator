@@ -1,19 +1,10 @@
 function initNumberSliderChildren(slider)
 {
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'numberSliderBar';
-
-    slider.text = document.createElement('div');
-    slider.text.className = 'numberSliderText';
-
-    slider.focus = document.createElement('div');
-    slider.focus.className = 'numberSliderFocus';
-
-    slider.range1 = document.createElement('div');
-    slider.range1.className = 'numberSliderRange';
-
-    slider.range2 = document.createElement('div');
-    slider.range2.className = 'numberSliderRange';
+    slider.bar    = createDiv('numberSliderBar'  );
+    slider.text   = createDiv('numberSliderText' );
+    slider.focus  = createDiv('numberSliderFocus');
+    slider.range1 = createDiv('numberSliderRange');
+    slider.range2 = createDiv('numberSliderRange');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -436,31 +427,37 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.updateRanges = function()
     {
         if (slider.range1start == slider.range1end)
-        {
             slider.range1.style.display = 'none';
-        }
         else
         {
             slider.range1.style.display = 'block';
             slider.range1.style.left    = slider.clientWidth * slider.range1start;  
             slider.range1.style.top     = 0;
-            slider.range1.style.width   = slider.clientWidth * slider.range1end;
+            slider.range1.style.width   = slider.clientWidth * (slider.range1end - slider.range1start);
             slider.range1.style.height  = slider.clientHeight;
         }
 
-        
+
         if (slider.range2start == slider.range2end)
-        {
             slider.range2.style.display = 'none';
-        }
         else
         {
             slider.range2.style.display = 'block';
             slider.range2.style.left   = slider.clientWidth * slider.range2start;
             slider.range2.style.top    = 0;
-            slider.range2.style.width  = slider.clientWidth * slider.range2end;
+            slider.range2.style.width  = slider.clientWidth * (slider.range2end - slider.range2start);
             slider.range2.style.height = slider.clientHeight;
         }
+    };
+
+
+
+    slider.resetRanges = function()
+    {
+        slider.range1start = 
+        slider.range1end   = 
+        slider.range2start = 
+        slider.range2end   = 0;
     };
 
 
