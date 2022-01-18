@@ -153,6 +153,16 @@
 }
 
 
+.colorValueWarningOverlay
+{
+    width:            100%;
+    z-index:          1000;
+    position:         absolute;
+    top:              45;
+    pointer-events:   none;
+}
+
+
 .colorBack
 {
     width:            100%;

@@ -1,6 +1,7 @@
 function hclokl2rgb(hcl, cs = sRGB)
 {
     hcl[0] *= Tau;
+    hcl[1] *= hcl[2]; 
     return oklab2rgb(pol2opp(hcl), cs);
 }    
 
@@ -17,6 +18,7 @@ function rgb2hclokl(rgb, cs = sRGB)
 {
     const hcl = opp2pol(rgb2oklab(rgb, cs));
     hcl[0] /= Tau;
+    hcl[1] /= hcl[2];
     return hcl;
 }
 
@@ -28,29 +30,21 @@ function rgb2hclokl_(r, g, b, cs = sRGB)
 }
 
 
-const hcllabOffset = 0.5;
-
-function rgb2hcllab(rgb, cs = sRGB)
-{
-    let hcl = opp2pol(rgb2lab(rgb, cs));
-    hcl[0] = hcl[0] / Tau;
-    return hcl;
-}
-
-
 
 function hcllab2rgb(hcl, cs = sRGB)
 {
-    hcl[0] = hcl[0] * Tau;
+    hcl[0] *= Tau;
+    hcl[1] *= hcl[2];
     return lab2rgb(pol2opp(hcl), cs);
 }
 
 
 
-function rgb2hclluv(rgb, cs = sRGB)
+function rgb2hcllab(rgb, cs = sRGB)
 {
-    let hcl = opp2pol(rgb2luv(rgb, cs));
+    let hcl = opp2pol(rgb2lab(rgb, cs));
     hcl[0] /= Tau;
+    hcl[1] /= hcl[2];
     return hcl;
 }
 
@@ -59,5 +53,16 @@ function rgb2hclluv(rgb, cs = sRGB)
 function hclluv2rgb(hcl, cs = sRGB)
 {
     hcl[0] *= Tau;
+    hcl[1] *= hcl[2];
     return luv2rgb(pol2opp(hcl), cs);
+}
+
+
+
+function rgb2hclluv(rgb, cs = sRGB)
+{
+    let hcl = opp2pol(rgb2luv(rgb, cs));
+    hcl[0] /= Tau;
+    hcl[1] /= hcl[2];
+    return hcl;
 }

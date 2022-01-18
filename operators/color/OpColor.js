@@ -124,7 +124,7 @@ extends Operator
         this.#warningOverlay.className = 'colorWarningOverlay';
         this.inner.appendChild(this.#warningOverlay);
 
-        
+
         setTimeout(() => 
         {
             this._space.setValue(0); // init all the params with names
@@ -222,12 +222,8 @@ extends Operator
 
     updateNode()
     {
-        const colBack = dataColor2rgb(this._color);
+        const colBack      = dataColor2rgb(this._color);
 
-        // let colVal = rgb2hclokl(colBack);
-        // colVal[2]  = Math.max(0, colVal[2]-0.05);
-        // colVal     = hclokl2rgb(colVal);
-        
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
 
         const colText      = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
@@ -256,7 +252,7 @@ extends Operator
               +  warningStyle + ' 8px 15px,'
               + 'transparent 16px';
 
-        
+
         this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
         
