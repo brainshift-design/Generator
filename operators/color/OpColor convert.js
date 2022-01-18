@@ -19,8 +19,8 @@ function dataColor2rgb(color)
         case 'hsv':    return hsv2rgb(col);
         case 'hsl':    return hsl2rgb(col);
         case 'hclokl': return hclokl2rgb(col);
-        case 'hcllab': return lab2rgb(pol2opp(col));
-        case 'hclluv': return luv2rgb(pol2opp(col));
+        case 'hcllab': return hcllab2rgb(col);
+        case 'hclluv': return hclluv2rgb(col);
         case 'oklab':  return oklab2rgb(col);
         case 'lab':    return lab2rgb(col);
         case 'luv':    return luv2rgb(col);
