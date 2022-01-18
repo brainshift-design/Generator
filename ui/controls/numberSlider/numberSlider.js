@@ -77,6 +77,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.range2end         = 0;
 
 
+    
     initNumberSliderChildren(slider);    
     initNumberSliderTextbox(slider);
 

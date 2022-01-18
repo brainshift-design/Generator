@@ -22,6 +22,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.width             = width;
     slider.height            = height;
+    slider.barHeight         = 1;
         
     slider.style.width       = width;
     slider.style.height      = height;
@@ -32,9 +33,9 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.dragScale         = 0.001;
         
-    slider.backColor         = 'white';
-    slider.valueColor        = 'black';
-    slider.textColor         = 'black';
+    slider.backColor         = '#fff';
+    slider.valueColor        = '#eee';
+    slider.textColor         = '#000';
            
     slider.fontSize          = 11;
         
@@ -62,7 +63,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.valueText         = '';
 
 
-
+    
     initSelectSliderChildren(slider);    
     initSelectSliderTextbox(slider);
 
@@ -348,10 +349,8 @@ function initSelectSlider(slider, width, height, name, options, def)
             : 0;
 
   
-        const barHeight = 3.2;
-
-        slider.bar  .style.top     = (slider.clientHeight - barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height  = barHeight + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.bar  .style.top     = (slider.clientHeight - slider.clientHeight * slider.barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height  = (slider.clientHeight * slider.barHeight) + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         slider.focus.style.left    = 0;
         slider.focus.style.top     = 0;

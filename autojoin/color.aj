@@ -14,3 +14,4 @@
 ../color/colorblind.js
 ../color/color util.js
 ../color/hex color.js
+../color/wcag.js

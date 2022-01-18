@@ -3,8 +3,8 @@ class Operator
     #opType;
     get opType() { return this.#opType; }
     
-    #dataType;
-    get dataType() { return this.#dataType; }
+    _dataType;
+    get dataType() { return this._dataType; }
 
     _name;
     get name() { return this._name; }
@@ -44,8 +44,8 @@ class Operator
     #valid = false; // this is the flag for regeneration
 
 
-    set valid(val) { this.#valid = val; }
-    get valid() { return this.#valid; }
+    set valid(val) { this.#valid = val;  }
+    get valid()    { return this.#valid; }
     // {
     //     let valid = this.#valid;
         
@@ -81,7 +81,7 @@ class Operator
     
     get activeColor()
     {
-        switch (this.#dataType)
+        switch (this._dataType)
         {
             case 'number': return rgbNumber; //activeNumberColor;
             case 'color':  return rgbActiveColor;
@@ -95,7 +95,7 @@ class Operator
 
     get passiveColor()
     {
-        switch (this.#dataType)
+        switch (this._dataType)
         {
             case 'number': return rgbNumber;
             case 'color':  return rgbColor;
@@ -110,7 +110,7 @@ class Operator
     constructor(opType, shortType, dataType, defWidth = 100)
     {
         this.#opType       = opType;   // this is the operator type
-        this.#dataType     = dataType; // this is the op's main data type
+        this._dataType     = dataType; // this is the op's main data type
         
         this.shortTypeName = shortType;
         this._name         = shortType; // this is a temp until the op becomes a graph node
@@ -251,13 +251,42 @@ class Operator
     updateNode() 
     {
         this.updateHeader();
+
+
+        const headerInputs = this.inputs.filter(i => !i.param);
+
+        const inputSize = 10;
+        const padding   =  8;
+        const gap       =  4;
+
+            
+        let height = padding;
+
+
+        for (let i = 0; i < headerInputs.length; i++)
+        {
+            const input = headerInputs[i];
+            
+            if (i > 0)
+                height += gap;
+
+            input.control.style.top       = height;
+            input.control.style.transform = 'none';
+
+            height += inputSize;
+        }
+
+        height += padding;
+
+
+        this.header.style.height = height;
     }
 
 
 
     updateHeader()
     {
-        this.header.style.backgroundColor = colorStyleRgb(rgbFromDataType(this.#dataType, false));
+        this.header.style.backgroundColor = colorStyleRgb(rgbFromDataType(this._dataType, false));
     }
 
 

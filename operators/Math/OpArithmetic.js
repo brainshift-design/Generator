@@ -93,51 +93,25 @@ extends Operator
 
     updateNode()
     {
-        const inputSize = 10;
-        const padding   =  8;
-        const gap       =  4;
-
-            
-        let height = padding;
-
-        for (let i = 0; i < this.inputs.length; i++)
-        {
-            const input = this.inputs[i];
-            
-            if (i > 0)
-                height += gap;
-
-            input.control.style.top       = height;
-            input.control.style.transform = 'none';
-
-            height += inputSize;
-        }
-
-        height += padding;
-
-
-        this.header.style.height = height;
+        super.updateNode();
 
 
         if (this._showOnlySymbol)
         {
             this._symbol.style.fontSize = 17;
             this._symbol.style.left     = 'calc(50% + 1.5px)';
-            this._symbol.style.top      = height/2 - 12;
+            this._symbol.style.top      = this.header.offsetHeight/2 - 12;
         }
         else
         {
             this._symbol.style.fontSize = 12;
             this._symbol.style.left     = 'calc(50% + 3px)';
-            this._symbol.style.top      = height/2 - 2;
+            this._symbol.style.top      = this.header.offsetHeight/2 - 2;
             this.label  .style.top      = 'calc(50% - 3px)';
         }
        
         
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-
-
-        super.updateNode();
     }
 }
 

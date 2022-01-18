@@ -812,13 +812,14 @@ input[type=text]::selection
     
     <div id='menuSelect' style='margin-left: 10px;'></div>
     
-    <button class='menuButton' id='btnCreateNumber'   onclick='actionManager.do(new CreateNodeAction("number"  )); this.blur();'>NUM</button>
-    <button class='menuButton' id='btnCreateAdd'      onclick='actionManager.do(new CreateNodeAction("add"     )); this.blur();'>ADD</button>
-    <button class='menuButton' id='btnCreateSubtract' onclick='actionManager.do(new CreateNodeAction("subtract")); this.blur();'>SUB</button>
-    <button class='menuButton' id='btnCreateMultiply' onclick='actionManager.do(new CreateNodeAction("multiply")); this.blur();'>MUL</button>
-    <button class='menuButton' id='btnCreateDivide'   onclick='actionManager.do(new CreateNodeAction("divide"  )); this.blur();'>DIV</button>
-    <button class='menuButton' id='btnCreateExponent' onclick='actionManager.do(new CreateNodeAction("exponent")); this.blur();'>EXP</button>
-    <button class='menuButton' id='btnCreateColor'    onclick='actionManager.do(new CreateNodeAction("color"   )); this.blur();'>COL</button>
+    <button class='menuButton' id='btnCreateNumber'      onclick='actionManager.do(new CreateNodeAction("number"     )); this.blur();'>NUM</button>
+    <button class='menuButton' id='btnCreateAdd'         onclick='actionManager.do(new CreateNodeAction("add"        )); this.blur();'>ADD</button>
+    <button class='menuButton' id='btnCreateSubtract'    onclick='actionManager.do(new CreateNodeAction("subtract"   )); this.blur();'>SUB</button>
+    <button class='menuButton' id='btnCreateMultiply'    onclick='actionManager.do(new CreateNodeAction("multiply"   )); this.blur();'>MUL</button>
+    <button class='menuButton' id='btnCreateDivide'      onclick='actionManager.do(new CreateNodeAction("divide"     )); this.blur();'>DIV</button>
+    <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
+    <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
+    <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCT</button>
     <!-- <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
     <button class='menuButton' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>RCT</button>
     <button class='menuButton' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>ROW</button>
@@ -5950,6 +5951,251 @@ function hex2rgb(hex)
 }
 
 
+function getContrastRatio2(textColor, backColor)
+{
+    if (!isValidRgb(textColor))
+        return Number.NaN;
+
+    const yText = sRGB.luminance(textColor);
+    const yBack = sRGB.luminance(backColor);
+
+    return (
+        yBack > yText
+        ? (yBack + 0.05) / (yText + 0.05)
+        : (yText + 0.05) / (yBack + 0.05));
+}
+
+
+
+function getContrastRating2(ratio)
+{
+         if (ratio >= 7  ) return 'AAA';
+    else if (ratio >= 4.5) return 'AA';
+    else if (ratio >= 3  ) return 'AA<sub>L</sub>'
+    else                   return '';
+}
+
+
+
+function getContrastRatio3(textColor, backColor)
+{
+    if (!isValidRgb(textColor))
+        return Number.NaN;
+
+    return APCAcontrast(
+        sRGB.luminance(textColor),
+        sRGB.luminance(backColor));
+        // sRGBtoY(textColor),
+        // sRGBtoY(contrastBackColor));
+}
+
+
+
+// I copied the code below from https://stackoverflow.com/questions/66567403/how-do-you-find-the-color-contrast-using-apca-advanced-perpetual-contrast-algor.
+// It's almost verbatim, I only reformatted it a tiny bit to better fit my code style.
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+/////
+/////    APCA - Advanced Perceptual Contrast Algorithm - Beta 0.98G-4g
+/////     
+/////    Function to parse color values and determine SAPC/APCA contrast
+/////    Copyright © 2019-2021 by Andrew Somers. All Rights Reserved.
+/////    LICENSE: APCA version to be licensed under W3 cooperative agrmnt.
+/////    CONTACT: For SAPC/APCA Please use the ISSUES tab at:
+/////    https://github.com/Myndex/SAPC-APCA/
+/////
+///////////////////////////////////////////////////////////////////////////////
+/////
+/////    USAGE:
+/////        Use sRGBtoY(color) to convert sRGB to Luminance (Y)
+/////        Then send Y-text and Y-background to APCAcontrast(Text, BG)
+/////
+/////    Lc = APCAcontrast( sRGBtoY(TEXTcolor) , sRGBtoY(BACKGNDcolor) );
+/////
+/////    Live Demonstrator at https://www.myndex.com/APCA/
+/////
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////   APCA G - 4g Constants   //////////////////////////////////////
+
+
+const mainTRC     = 2.4; // 2.4 exponent emulates actual monitor perception
+       
+const sRco        = 0.2126729, 
+      sGco        = 0.7151522, 
+      sBco        = 0.0721750; // sRGB coefficients
+   
+const normBG      = 0.56, 
+      normTXT     = 0.57,
+      revTXT      = 0.62,
+      revBG       = 0.65;  // G-4g constants for use with 2.4 exponent
+   
+const blkThrs     = 0.022,
+      blkClmp     = 1.414, 
+      scaleBoW    = 1.14,
+      scaleWoB    = 1.14,
+      loBoWthresh = 
+      loWoBthresh = 0.035991,
+      loBoWfactor = 
+      loWoBfactor = 27.7847239587675,
+      loBoWoffset = 
+      loWoBoffset = 0.027,
+      loClip      = 0.001,
+      deltaYmin   = 0.0005;
+
+
+
+////////// ƒ sRGBtoY()   ///////////////////////////////////////////////
+
+// function sRGBtoY(rgb) 
+// {
+//     // linearize r, g, or b then apply coefficients
+//     // and sum then return the resulting luminance
+    
+//     return sRco * Math.pow(rgb[0], mainTRC) 
+//          + sGco * Math.pow(rgb[1], mainTRC)
+//          + sBco * Math.pow(rgb[2], mainTRC);
+// }
+
+
+
+////////// ƒ APCAcontrast()   //////////////////////////////////////////
+
+function APCAcontrast(txtY, bgY) 
+{
+    // send linear Y (luminance) for text and background.
+    // IMPORTANT: Do not swap, polarity is important.
+        
+    let SAPC           = 0; // For raw SAPC values
+    let outputContrast = 0; // For weighted final values
+    
+    // TUTORIAL
+    
+    // Use Y for text and BG, and soft clamp black,
+    // return 0 for very close luminances, determine
+    // polarity, and calculate SAPC raw contrast
+    // Then scale for easy to remember levels.
+  
+    // Note that reverse contrast (white text on black)
+    // intentionally returns a negative number
+    // Proper polarity is important!
+ 
+//////////   BLACK SOFT CLAMP   ///////////////////////////////////////////
+
+    // Soft clamps Y for either color if it is near black.
+    txtY = 
+        txtY > blkThrs 
+        ? txtY 
+        : txtY + Math.pow(blkThrs - txtY, blkClmp);
+        
+    bgY = 
+        bgY > blkThrs 
+        ? bgY 
+        : bgY + Math.pow(blkThrs - bgY, blkClmp);
+
+    ///// Return 0 Early for extremely low ∆Y
+    if (Math.abs(bgY - txtY) < deltaYmin)  
+        return 0; 
+
+
+//////////   APCA/SAPC CONTRAST   /////////////////////////////////////////
+
+    if (bgY > txtY) 
+    {  
+        // For normal polarity, black text on white (BoW)
+
+        // Calculate the SAPC contrast value and scale
+      
+        SAPC = (Math.pow(bgY, normBG) - Math.pow(txtY, normTXT)) * scaleBoW;
+
+        // Low Contrast smooth rollout to prevent polarity reversal
+        // and also a low-clip for very low contrasts
+        outputContrast = 
+            SAPC < loClip 
+            ? 0 
+            : (SAPC < loBoWthresh
+               ? SAPC - SAPC * loBoWfactor * loBoWoffset 
+               : SAPC - loBoWoffset);
+
+    } 
+    else 
+    {  
+        // For reverse polarity, light text on dark (WoB)
+        // WoB should always return negative value.
+
+        SAPC = (Math.pow(bgY, revBG) - Math.pow(txtY, revTXT)) * scaleWoB;
+
+        outputContrast = 
+            SAPC > -loClip 
+            ? 0 
+            : (SAPC > -loWoBthresh 
+               ? SAPC - SAPC * loWoBfactor * loWoBoffset 
+               : SAPC + loWoBoffset);
+    }
+
+    // return Lc (lightness contrast) as a signed numeric value 
+    // It is permissible to round to the nearest whole number.
+       
+    return outputContrast * 100;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+/////
+/////                 SAPC Method and APCA Algorithm
+/////
+/////   Thanks To: 
+/////   • This project references the research and work of Dr.Legge, Dr.Arditi,
+/////     Dr.Lovie-Kitchin, M.Fairchild, R.Hunt, M.Stone, Dr.Poynton, L.Arend, &
+/////     many others — see refs at https://www.myndex.com/WEB/WCAG_CE17polarity
+/////   • Stoyan Stefanov for his input parsing idea, Twitter @stoyanstefanov
+/////   • Bruce Bailey of USAccessBoard for his encouragement, ideas, & feedback
+/////   • Chris Loiselle of Oracle for getting us back on track in a pandemic
+/////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+/////
+/////   *****  SAPC BLOCK  *****
+/////
+/////   For Evaluations, this is referred to as: SAPC-8, 0.98 G-series constants
+/////                S-LUV Advanced Perceptual Contrast
+/////   Copyright © 2019-2021 by Andrew Somers. All Rights Reserved.
+/////   SIMPLE VERSION — Only the basic APCA contrast predictor.
+/////
+/////   Included Extensions & Model Features in this file:
+/////       • SAPC-8 Core Contrast (Base APCA) 
+/////       • G series constants, group "G-4g" using a 2.4 monitor exponent
+/////       • sRGB to Y, parses numeric sRGB color to luminance
+/////       • SmoothScale™ scaling technique (non-clinical use only)
+/////       • SoftToe black level soft clamp and flare compensation.
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////
+/////
+/////                DISCLAIMER AND LIMITATIONS OF USE
+/////     APCA is an embodiment of certain suprathreshold contrast
+/////     prediction technologies and it is licensed to the W3 on a
+/////     limited basis for use in certain specific accessibility
+/////     guidelines for web content only. APCA may be used for 
+/////     predicting colors for web content use without royalty.
+/////
+/////     However, Any such license excludes other use cases
+/////     not related to web content. Prohibited uses include
+/////     medical, clinical evaluation, human safety related,
+/////     aerospace, transportation, military applications, 
+/////     and uses which are not specific to web based content
+/////     presented on self-illuminated displays or devices.
+/////
+/////
+////////////////////////////////////////////////////////////////////////////////
+
+
 function uiLoadState(state)
 {
     uiResizeWindow(
@@ -6524,6 +6770,7 @@ extends EventTarget
     onchange  = new Event('change' );
     onconfirm = new Event('confirm');
 
+    
 
     constructor(name, type)
     {
@@ -7002,8 +7249,8 @@ const rgbObject       = hex2rgb('#bee0ff');
 const rgbActiveObject = hex2rgb('#18a0fb');
 const rgbNumber       = hex2rgb('#ddd');
 const rgbActiveNumber = hex2rgb('#787878');
-const rgbColor        = hex2rgb('#cc33cc'); // these are normally
-const rgbActiveColor  = hex2rgb('#ff00ff'); // not used
+const rgbColor        = hex2rgb('#ddd');//hex2rgb('#cc33cc'); // these are normally
+const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
@@ -7098,15 +7345,16 @@ class Graph
 
         switch (opType)
         {
-            case 'number':   node = new OpNumber();   break;
-            case 'add':      node = new OpAdd();      break;
-            case 'subtract': node = new OpSubtract(); break;
-            case 'multiply': node = new OpMultiply(); break;
-            case 'divide':   node = new OpDivide();   break;
-            case 'exponent': node = new OpExponent(); break;
+            case 'number':      node = new OpNumber();      break;
+            case 'add':         node = new OpAdd();         break;
+            case 'subtract':    node = new OpSubtract();    break;
+            case 'multiply':    node = new OpMultiply();    break;
+            case 'divide':      node = new OpDivide();      break;
+            case 'exponent':    node = new OpExponent();    break;
             // case 'random': node = new OpRandom(); break;
             
-            case 'color':  node = new OpColor();  break;
+            case 'color':       node = new OpColor();       break;
+            case 'webcontrast': node = new OpWebContrast(); break;
             
             // case 'rect':   node = new OpRect();   break;
             // case 'row':    node = new OpRow();    break;
@@ -7421,8 +7669,8 @@ function lastNodesInTreeFrom(node)
 class   Input
 extends EventTarget
 {
-    #dataType;     
-    get dataType() { return this.#dataType; }
+    _dataType;     
+    get dataType() { return this._dataType; }
 
     get data()
     {
@@ -7490,14 +7738,14 @@ extends EventTarget
     {
         super();
         
-        this.#dataType = dataType;
+        this._dataType = dataType;
 
         this.control = document.createElement('div');
         this.control.className = 'input';
         this.control.input = this;
         
         this.color     = colorStyleRgba_(0, 0, 0, 0.14);
-        this.wireColor = rgbFromDataType(this.#dataType, true);
+        this.wireColor = rgbFromDataType(this._dataType, true);
 
         this.updateControl();
     
@@ -7550,10 +7798,11 @@ extends EventTarget
 
 class Output
 {
-    #dataType;     
-    get dataType() { return this.#dataType; }
+    _dataType;     
+    get dataType() { return this._dataType; }
 
-    _op = null; get op() { return this._op; }
+    _op    = null; get op()    { return this._op;    }
+    _param = null; get param() { return this._param; }
     
     
     color;
@@ -7591,14 +7840,14 @@ class Output
 
     constructor(dataType)
     {
-        this.#dataType = dataType;
+        this._dataType = dataType;
         
         this.control = document.createElement('div');
         this.control.className = 'output';
         this.control.output    = this;
         
         this.color     = colorStyleRgba_(0, 0, 0, 0.12);
-        this.wireColor = rgbFromDataType(this.#dataType, true);
+        this.wireColor = rgbFromDataType(this._dataType, true);
         
         this.updateControl();
 
@@ -7815,8 +8064,8 @@ class Operator
     #opType;
     get opType() { return this.#opType; }
     
-    #dataType;
-    get dataType() { return this.#dataType; }
+    _dataType;
+    get dataType() { return this._dataType; }
 
     _name;
     get name() { return this._name; }
@@ -7856,8 +8105,8 @@ class Operator
     #valid = false; // this is the flag for regeneration
 
 
-    set valid(val) { this.#valid = val; }
-    get valid() { return this.#valid; }
+    set valid(val) { this.#valid = val;  }
+    get valid()    { return this.#valid; }
     // {
     //     let valid = this.#valid;
         
@@ -7893,7 +8142,7 @@ class Operator
     
     get activeColor()
     {
-        switch (this.#dataType)
+        switch (this._dataType)
         {
             case 'number': return rgbNumber; //activeNumberColor;
             case 'color':  return rgbActiveColor;
@@ -7907,7 +8156,7 @@ class Operator
 
     get passiveColor()
     {
-        switch (this.#dataType)
+        switch (this._dataType)
         {
             case 'number': return rgbNumber;
             case 'color':  return rgbColor;
@@ -7922,7 +8171,7 @@ class Operator
     constructor(opType, shortType, dataType, defWidth = 100)
     {
         this.#opType       = opType;   // this is the operator type
-        this.#dataType     = dataType; // this is the op's main data type
+        this._dataType     = dataType; // this is the op's main data type
         
         this.shortTypeName = shortType;
         this._name         = shortType; // this is a temp until the op becomes a graph node
@@ -8063,13 +8312,42 @@ class Operator
     updateNode() 
     {
         this.updateHeader();
+
+
+        const headerInputs = this.inputs.filter(i => !i.param);
+
+        const inputSize = 10;
+        const padding   =  8;
+        const gap       =  4;
+
+            
+        let height = padding;
+
+
+        for (let i = 0; i < headerInputs.length; i++)
+        {
+            const input = headerInputs[i];
+            
+            if (i > 0)
+                height += gap;
+
+            input.control.style.top       = height;
+            input.control.style.transform = 'none';
+
+            height += inputSize;
+        }
+
+        height += padding;
+
+
+        this.header.style.height = height;
     }
 
 
 
     updateHeader()
     {
-        this.header.style.backgroundColor = colorStyleRgb(rgbFromDataType(this.#dataType, false));
+        this.header.style.backgroundColor = colorStyleRgb(rgbFromDataType(this._dataType, false));
     }
 
 
@@ -8802,51 +9080,25 @@ extends Operator
 
     updateNode()
     {
-        const inputSize = 10;
-        const padding   =  8;
-        const gap       =  4;
-
-            
-        let height = padding;
-
-        for (let i = 0; i < this.inputs.length; i++)
-        {
-            const input = this.inputs[i];
-            
-            if (i > 0)
-                height += gap;
-
-            input.control.style.top       = height;
-            input.control.style.transform = 'none';
-
-            height += inputSize;
-        }
-
-        height += padding;
-
-
-        this.header.style.height = height;
+        super.updateNode();
 
 
         if (this._showOnlySymbol)
         {
             this._symbol.style.fontSize = 17;
             this._symbol.style.left     = 'calc(50% + 1.5px)';
-            this._symbol.style.top      = height/2 - 12;
+            this._symbol.style.top      = this.header.offsetHeight/2 - 12;
         }
         else
         {
             this._symbol.style.fontSize = 12;
             this._symbol.style.left     = 'calc(50% + 3px)';
-            this._symbol.style.top      = height/2 - 2;
+            this._symbol.style.top      = this.header.offsetHeight/2 - 2;
             this.label  .style.top      = 'calc(50% - 3px)';
         }
        
         
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-
-
-        super.updateNode();
     }
 }
 
@@ -9006,8 +9258,8 @@ extends OpArithmetic
             ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
             : '<span style="position: relative; top: -1.5px; font-size: 8px;">x</span><span style="position: relative; left: -0.5px; top: -5.15px; font-size: 3.75px; font-weight: bold;">y</span>';
 
-        this._symbol.style.left      = 'calc(50% + ' + (this._showOnlySymbol ? 2.5 : 5) + 'px)';
-        this._symbol.style.top       = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 3 : 5);
+        this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 2.5 : 5) + 'px)';
+        this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 3 : 5);
     }
 }
 
@@ -9112,6 +9364,8 @@ extends Operator
         this.addParam(this._c2    = new NumberParam('c2',    true, true, this._color[2], 0, 255));
         this.addParam(this._c3    = new NumberParam('c3',    true, true, this._color[3], 0, 255));
 
+        this._space.control.barHeight = 0.2;
+        
 
         this._space.addEventListener('change', () => 
         {
@@ -10291,29 +10545,25 @@ function convert2hclluv(fromColor)
 class   OpWebContrast
 extends Operator
 {
+    #standard;
     #value;
 
 
 
     constructor()
     {
-        super('number', 'num', 'number', 70);
+        super('webcontrast', 'contrast', 'color', 90);
 
-        this.addOutput(new Output(this.dataType));
+        this.addInput(new Input(this.dataType));
+        this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#value = new NumberParam('', true, false));
+        this.addParam(this.#standard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
+        this.addParam(this.#value    = new NumberParam('', false, true, 0, 0, 100));
         
-        this.#value.allowEditDecimals = true;
-        this.#value.addEventListener('change', () => this.pushUpdate());
-    }
+        this.#value.control.pointerEvents   = false;
+        this.#value.control.style.fontStyle = 'italic';
 
-
-
-    refresh()
-    {
-        super.refresh();
-        
-        this._sampled = Number.NaN;
+         setTimeout(() => this.#standard.setValue(1));
     }
 
 
@@ -10322,24 +10572,117 @@ extends Operator
     {
         if (!this.needsUpdate())
             return;
+
             
-        this.updateParams(false);
-        
-        this.outputs[0]._data = dataFromNumber(
-            this.#value.value, 
-            this.#value.control.dec);
-            
+        if (   this.inputs[0].isConnected
+            && this.inputs[1].isConnected)
+        {
+            this.#value.control.valueText = '';
+
+            if (this.#standard.value == 0)
+            {
+                const ratio = getContrastRatio2(
+                    dataColor2rgb(this.inputs[0].data.color),
+                    dataColor2rgb(this.inputs[1].data.color));
+
+                let rating = getContrastRating2(ratio);
+
+                if (rating != '')
+                    rating = '&nbsp;&nbsp;' + rating;
+
+                this.#value.control.min    = 0;
+                this.#value.control.max    = 21;
+                this.#value.control.suffix = rating;
+                this.#value.control.setValue(ratio);
+            }
+            else
+            {
+                const ratio = getContrastRatio3(
+                    dataColor2rgb(this.inputs[0].data.color),
+                    dataColor2rgb(this.inputs[1].data.color));
+                    
+                this.#value.control.min    = -110;
+                this.#value.control.max    =  110;
+                this.#value.control.suffix = '';
+                this.#value.control.setValue(ratio);
+            }
+        }
+        else
+        {
+            this.#value.control.valueText = '?';
+            this.#value.setValue(0);
+        }
+
+           
         super.update()
     }
 
 
 
-    updateParams(dispatchEvents)
+    updateHeader()
     {
-        super.updateParams(dispatchEvents);
+        const colBack = 
+            this.inputs[1].isConnected
+            ? dataColor2rgb(this.inputs[1].data.color)
+            : rgbFromDataType(this._dataType);
 
-        this.outputs[0]._value = this.#value.value;
+        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+
+        const colText = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+
+
+        for (const input of this.inputs.filter(i => !i.param))
+        {
+            const colIn = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
+
+            input.wireColor = colBack;
+            input.color     = colIn;
+            
+            input.updateControl();
+        }
+
+
+        for (const output of this.outputs.filter(i => !i.param))
+        {
+            const colOut = colorStyleRgba(colText, darkText ? 0.06 : 0.12);
+
+            output.wireColor = colBack;
+            output.color     = colOut;
+
+            output.updateControl();
+        }
+
+
+        this.label.style.fontWeight = 
+               this.inputs[0].isConnected
+            && this.inputs[1].isConnected
+            ? 'bold'
+            : 'normal';
+
+
+        if (   this.inputs[0].isConnected 
+            && this.inputs[1].isConnected)
+            this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
+        else if (this.inputs[0].isConnected)
+            this.label.style.color = 'black';
+        else if (this.inputs[1].isConnected)
+            this.label.style.color = colorStyleRgba(colText);
+
+
+        this.header.style.background = 
+            this.inputs[1].isConnected 
+            ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
+            : colorStyleRgb(rgbFromDataType(this._dataType, false));
     }
+
+
+
+    // updateParams(dispatchEvents)
+    // {
+    //     super.updateParams(dispatchEvents);
+
+    //     // this.outputs[0]._value = this.#value.value;
+    // }
 
 
 
@@ -11805,6 +12148,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.range2end         = 0;
 
 
+    
     initNumberSliderChildren(slider);    
     initNumberSliderTextbox(slider);
 
@@ -12423,6 +12767,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.width             = width;
     slider.height            = height;
+    slider.barHeight         = 1;
         
     slider.style.width       = width;
     slider.style.height      = height;
@@ -12433,9 +12778,9 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.dragScale         = 0.001;
         
-    slider.backColor         = 'white';
-    slider.valueColor        = 'black';
-    slider.textColor         = 'black';
+    slider.backColor         = '#fff';
+    slider.valueColor        = '#eee';
+    slider.textColor         = '#000';
            
     slider.fontSize          = 11;
         
@@ -12463,7 +12808,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.valueText         = '';
 
 
-
+    
     initSelectSliderChildren(slider);    
     initSelectSliderTextbox(slider);
 
@@ -12749,10 +13094,8 @@ function initSelectSlider(slider, width, height, name, options, def)
             : 0;
 
   
-        const barHeight = 3.2;
-
-        slider.bar  .style.top     = (slider.clientHeight - barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height  = barHeight + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.bar  .style.top     = (slider.clientHeight - slider.clientHeight * slider.barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height  = (slider.clientHeight * slider.barHeight) + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         slider.focus.style.left    = 0;
         slider.focus.style.top     = 0;

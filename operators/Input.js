@@ -1,8 +1,8 @@
 class   Input
 extends EventTarget
 {
-    #dataType;     
-    get dataType() { return this.#dataType; }
+    _dataType;     
+    get dataType() { return this._dataType; }
 
     get data()
     {
@@ -70,14 +70,14 @@ extends EventTarget
     {
         super();
         
-        this.#dataType = dataType;
+        this._dataType = dataType;
 
         this.control = document.createElement('div');
         this.control.className = 'input';
         this.control.input = this;
         
         this.color     = colorStyleRgba_(0, 0, 0, 0.14);
-        this.wireColor = rgbFromDataType(this.#dataType, true);
+        this.wireColor = rgbFromDataType(this._dataType, true);
 
         this.updateControl();
     

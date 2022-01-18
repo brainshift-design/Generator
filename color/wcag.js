@@ -1,37 +1,37 @@
-function getContrastRatio2(textColor)
+function getContrastRatio2(textColor, backColor)
 {
     if (!isValidRgb(textColor))
         return Number.NaN;
 
-    const yBack = sRGB.luminance(contrastBackColor);
-    const yTxt  = sRGB.luminance(textColor);
+    const yText = sRGB.luminance(textColor);
+    const yBack = sRGB.luminance(backColor);
 
     return (
-        yBack > yTxt
-        ? (yBack + 0.05) / (yTxt  + 0.05)
-        : (yTxt  + 0.05) / (yBack + 0.05));
+        yBack > yText
+        ? (yBack + 0.05) / (yText + 0.05)
+        : (yText + 0.05) / (yBack + 0.05));
 }
 
 
 
-//// WCAG 2 rating
+function getContrastRating2(ratio)
+{
+         if (ratio >= 7  ) return 'AAA';
+    else if (ratio >= 4.5) return 'AA';
+    else if (ratio >= 3  ) return 'AA<sub>L</sub>'
+    else                   return '';
+}
 
-//     if (cr >= 7  ) rating = '&nbsp;&nbsp;AAA';
-//else if (cr >= 4.5) rating = '&nbsp;&nbsp;AA';
-//else if (cr >= 3  ) rating = '&nbsp;&nbsp;AA<sub>L</sub>';
-
-////////////
 
 
-
-function getContrastRatio3(textColor)
+function getContrastRatio3(textColor, backColor)
 {
     if (!isValidRgb(textColor))
         return Number.NaN;
 
     return APCAcontrast(
         sRGB.luminance(textColor),
-        sRGB.luminance(contrastBackColor));
+        sRGB.luminance(backColor));
         // sRGBtoY(textColor),
         // sRGBtoY(contrastBackColor));
 }

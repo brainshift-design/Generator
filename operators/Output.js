@@ -1,9 +1,10 @@
 class Output
 {
-    #dataType;     
-    get dataType() { return this.#dataType; }
+    _dataType;     
+    get dataType() { return this._dataType; }
 
-    _op = null; get op() { return this._op; }
+    _op    = null; get op()    { return this._op;    }
+    _param = null; get param() { return this._param; }
     
     
     color;
@@ -41,14 +42,14 @@ class Output
 
     constructor(dataType)
     {
-        this.#dataType = dataType;
+        this._dataType = dataType;
         
         this.control = document.createElement('div');
         this.control.className = 'output';
         this.control.output    = this;
         
         this.color     = colorStyleRgba_(0, 0, 0, 0.12);
-        this.wireColor = rgbFromDataType(this.#dataType, true);
+        this.wireColor = rgbFromDataType(this._dataType, true);
         
         this.updateControl();
 

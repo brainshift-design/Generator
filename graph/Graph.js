@@ -55,15 +55,16 @@ class Graph
 
         switch (opType)
         {
-            case 'number':   node = new OpNumber();   break;
-            case 'add':      node = new OpAdd();      break;
-            case 'subtract': node = new OpSubtract(); break;
-            case 'multiply': node = new OpMultiply(); break;
-            case 'divide':   node = new OpDivide();   break;
-            case 'exponent': node = new OpExponent(); break;
+            case 'number':      node = new OpNumber();      break;
+            case 'add':         node = new OpAdd();         break;
+            case 'subtract':    node = new OpSubtract();    break;
+            case 'multiply':    node = new OpMultiply();    break;
+            case 'divide':      node = new OpDivide();      break;
+            case 'exponent':    node = new OpExponent();    break;
             // case 'random': node = new OpRandom(); break;
             
-            case 'color':  node = new OpColor();  break;
+            case 'color':       node = new OpColor();       break;
+            case 'webcontrast': node = new OpWebContrast(); break;
             
             // case 'rect':   node = new OpRect();   break;
             // case 'row':    node = new OpRow();    break;

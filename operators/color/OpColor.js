@@ -98,6 +98,8 @@ extends Operator
         this.addParam(this._c2    = new NumberParam('c2',    true, true, this._color[2], 0, 255));
         this.addParam(this._c3    = new NumberParam('c3',    true, true, this._color[3], 0, 255));
 
+        this._space.control.barHeight = 0.2;
+        
 
         this._space.addEventListener('change', () => 
         {
