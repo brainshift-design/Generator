@@ -124,7 +124,7 @@ extends Operator
         this.#warningOverlay.className = 'colorWarningOverlay';
         this.inner.appendChild(this.#warningOverlay);
 
-
+        
         setTimeout(() => 
         {
             this._space.setValue(0); // init all the params with names
@@ -222,23 +222,26 @@ extends Operator
 
     updateNode()
     {
-        const colBack       = dataColor2rgb(this._color);
- 
-        const darkText      = rgb2hclokl(colBack)[2] > 0.71;
- 
-        const colText       = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
-        const colWarning    = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-        const colSpaceVal   = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
- 
-        const textStyle     = colorStyleRgba(colText);
-        const warningStyle  = colorStyleRgba(colWarning);
+        const colBack = dataColor2rgb(this._color);
+
+        // let colVal = rgb2hclokl(colBack);
+        // colVal[2]  = Math.max(0, colVal[2]-0.05);
+        // colVal     = hclokl2rgb(colVal);
+        
+        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
+
+        const colText      = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+
+        const textStyle    = colorStyleRgba(colText);
+        const warningStyle = colorStyleRgba(colWarning);
 
         
         this.#colorBack.style.background = colorStyleRgb(colBack);
         this.label     .style.color      = textStyle;
 
         
-        this._space.control.valueColor = colorStyleRgba(colSpaceVal);
+        this._space.control.valueColor = warningStyle;
         this._space.control.textColor  = textStyle;
         this._space.control.backColor  = 'transparent';
         this._space.control.update();
@@ -247,12 +250,13 @@ extends Operator
         this.#warningOverlay.style.background =
             isValidRgb(colBack)
             ? 'transparent'
-            : 'repeating-linear-gradient('
+            :   'repeating-linear-gradient('
               + '-45deg, '
               + 'transparent 0 7px,'
-              +  warningStyle + ' 7px 14px)';
+              +  warningStyle + ' 8px 15px,'
+              + 'transparent 16px)';
 
-
+        
         this.inputs [0].wireColor = colBack;
         this.outputs[0].wireColor = colBack;
         

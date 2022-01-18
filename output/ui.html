@@ -529,8 +529,6 @@ input[type=text]::selection
     padding:          0;
     width:            74px;
     height:           26px;
-    /* box-shadow:    0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset; */
-    /* border-radius: 1px; */
     overflow:         hidden;
     background-color: white;
     text-align:       center;
@@ -573,19 +571,17 @@ input[type=text]::selection
 }
 
 
-/* .numberSlider:hover
+.numberSliderRange
 {
-    box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
-}     */
-
-
-/* .numberSlider:focus
-{
-    outline:    none;
-    box-sizing: border-box;
-    border:     solid 2px var(--activeObjectColor);
-    box-shadow: 0 0 0 -2px var(--activeObjectColor) inset;
-}     */
+    display:        block;
+    position:       absolute;
+    pointer-events: none;
+    z-index:        1000;
+    background:     repeating-linear-gradient(
+                        -45deg, 
+                        transparent           0px 2.5px, 
+                        rgba(0, 0, 0, 0.05) 2.5px 5px);
+}
 
 
 .selectSlider
@@ -9219,22 +9215,23 @@ extends Operator
 
     updateNode()
     {
-        const colBack      = dataColor2rgb(this._color);
-
-        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
-
-        const colText      = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
-        const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-
-        const textStyle    = colorStyleRgba(colText);
-        const warningStyle = colorStyleRgba(colWarning);
+        const colBack       = dataColor2rgb(this._color);
+ 
+        const darkText      = rgb2hclokl(colBack)[2] > 0.71;
+ 
+        const colText       = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const colWarning    = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+        const colSpaceVal   = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
+ 
+        const textStyle     = colorStyleRgba(colText);
+        const warningStyle  = colorStyleRgba(colWarning);
 
         
         this.#colorBack.style.background = colorStyleRgb(colBack);
         this.label     .style.color      = textStyle;
 
         
-        this._space.control.valueColor = warningStyle;
+        this._space.control.valueColor = colorStyleRgba(colSpaceVal);
         this._space.control.textColor  = textStyle;
         this._space.control.backColor  = 'transparent';
         this._space.control.update();
@@ -9243,11 +9240,10 @@ extends Operator
         this.#warningOverlay.style.background =
             isValidRgb(colBack)
             ? 'transparent'
-            :   'repeating-linear-gradient('
+            : 'repeating-linear-gradient('
               + '-45deg, '
               + 'transparent 0 7px,'
-              +  warningStyle + ' 8px 15px,'
-              + 'transparent 16px';
+              +  warningStyle + ' 7px 14px)';
 
 
         this.inputs [0].wireColor = colBack;
@@ -11513,9 +11509,17 @@ function initNumberSliderChildren(slider)
     slider.focus = document.createElement('div');
     slider.focus.className = 'numberSliderFocus';
 
+    slider.range1 = document.createElement('div');
+    slider.range1.className = 'numberSliderRange';
+
+    slider.range2 = document.createElement('div');
+    slider.range2.className = 'numberSliderRange';
+
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
+    slider.appendChild(slider.range1);
+    slider.appendChild(slider.range2);
 }
 
 
@@ -11574,6 +11578,12 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.valueText         = '';
 
+
+    slider.range1start       = 0;
+    slider.range1end         = 0;
+
+    slider.range2start       = 0;
+    slider.range2end         = 0;
 
 
     initNumberSliderChildren(slider);    
@@ -11916,6 +11926,41 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
 
         slider.text.innerHTML += valueText + slider.suffix;
+
+
+        slider.updateRanges();
+    };
+
+
+
+    slider.updateRanges = function()
+    {
+        if (slider.range1start == slider.range1end)
+        {
+            slider.range1.style.display = 'none';
+        }
+        else
+        {
+            slider.range1.style.display = 'block';
+            slider.range1.style.left    = slider.clientWidth * slider.range1start;  
+            slider.range1.style.top     = 0;
+            slider.range1.style.width   = slider.clientWidth * slider.range1end;
+            slider.range1.style.height  = slider.clientHeight;
+        }
+
+        
+        if (slider.range2start == slider.range2end)
+        {
+            slider.range2.style.display = 'none';
+        }
+        else
+        {
+            slider.range2.style.display = 'block';
+            slider.range2.style.left   = slider.clientWidth * slider.range2start;
+            slider.range2.style.top    = 0;
+            slider.range2.style.width  = slider.clientWidth * slider.range2end;
+            slider.range2.style.height = slider.clientHeight;
+        }
     };
 
 

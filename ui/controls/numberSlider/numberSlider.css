@@ -3,8 +3,6 @@
     padding:          0;
     width:            74px;
     height:           26px;
-    /* box-shadow:    0 -2px 0 -1px rgba(0, 0, 0, 0.1) inset; */
-    /* border-radius: 1px; */
     overflow:         hidden;
     background-color: white;
     text-align:       center;
@@ -47,16 +45,14 @@
 }
 
 
-/* .numberSlider:hover
+.numberSliderRange
 {
-    box-shadow: 0 0 0 -1px rgba(0, 0, 0, 0.1);
-}     */
-
-
-/* .numberSlider:focus
-{
-    outline:    none;
-    box-sizing: border-box;
-    border:     solid 2px var(--activeObjectColor);
-    box-shadow: 0 0 0 -2px var(--activeObjectColor) inset;
-}     */
+    display:        block;
+    position:       absolute;
+    pointer-events: none;
+    z-index:        1000;
+    background:     repeating-linear-gradient(
+                        -45deg, 
+                        transparent           0px 2.5px, 
+                        rgba(0, 0, 0, 0.05) 2.5px 5px);
+}

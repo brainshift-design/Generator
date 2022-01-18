@@ -9,9 +9,17 @@ function initNumberSliderChildren(slider)
     slider.focus = document.createElement('div');
     slider.focus.className = 'numberSliderFocus';
 
+    slider.range1 = document.createElement('div');
+    slider.range1.className = 'numberSliderRange';
+
+    slider.range2 = document.createElement('div');
+    slider.range2.className = 'numberSliderRange';
+
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
+    slider.appendChild(slider.range1);
+    slider.appendChild(slider.range2);
 }
 
 
@@ -70,6 +78,12 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.valueText         = '';
 
+
+    slider.range1start       = 0;
+    slider.range1end         = 0;
+
+    slider.range2start       = 0;
+    slider.range2end         = 0;
 
 
     initNumberSliderChildren(slider);    
@@ -412,6 +426,41 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
             : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
 
         slider.text.innerHTML += valueText + slider.suffix;
+
+
+        slider.updateRanges();
+    };
+
+
+
+    slider.updateRanges = function()
+    {
+        if (slider.range1start == slider.range1end)
+        {
+            slider.range1.style.display = 'none';
+        }
+        else
+        {
+            slider.range1.style.display = 'block';
+            slider.range1.style.left    = slider.clientWidth * slider.range1start;  
+            slider.range1.style.top     = 0;
+            slider.range1.style.width   = slider.clientWidth * slider.range1end;
+            slider.range1.style.height  = slider.clientHeight;
+        }
+
+        
+        if (slider.range2start == slider.range2end)
+        {
+            slider.range2.style.display = 'none';
+        }
+        else
+        {
+            slider.range2.style.display = 'block';
+            slider.range2.style.left   = slider.clientWidth * slider.range2start;
+            slider.range2.style.top    = 0;
+            slider.range2.style.width  = slider.clientWidth * slider.range2end;
+            slider.range2.style.height = slider.clientHeight;
+        }
     };
 
 
