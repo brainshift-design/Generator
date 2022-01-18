@@ -79,7 +79,7 @@ extends Operator
             this._c2.control.style.fontStyle = 'italic'; this._c2.control.pointerEvents = false;
             this._c3.control.style.fontStyle = 'italic'; this._c3.control.pointerEvents = false;
 
-            this.pushUpdate();
+            setTimeout(() => this.pushUpdate());
         });
     
         
@@ -89,7 +89,7 @@ extends Operator
             if (!this._c2.input.isConnected) { this._c2.control.style.fontStyle = 'normal'; this._c2.control.pointerEvents = true; }
             if (!this._c3.input.isConnected) { this._c3.control.style.fontStyle = 'normal'; this._c3.control.pointerEvents = true; }
 
-            this.pushUpdate();
+            setTimeout(() => this.pushUpdate());
         });
 
 
@@ -243,6 +243,17 @@ extends Operator
         this._space.control.update();
 
 
+        this.hexbox.value = 
+            isValidRgb(colBack)
+            ? rgb2hex(colBack)
+            : '?';
+
+        this.hexbox.style.fontStyle = 
+            this.inputs[0].isConnected
+            ? 'italic'
+            : 'normal';
+
+
         this.updateControls(colBack);
 
 
@@ -393,7 +404,7 @@ extends Operator
 
     updateControlRanges(slider, getRgb)
     {
-        const precision = 0.01;
+        const precision = 0.005;
             
         let range = false;
         let first = true;

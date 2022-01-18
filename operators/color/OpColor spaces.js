@@ -220,7 +220,7 @@ function getDataColorRgb_(c1, c2, c3)
     return [
         c1 * rgbFactorR, 
         c2 * rgbFactorG, 
-        c3 * rgbFactorB];
+        c3 * rgbFactorB ];
 }
 
 
@@ -230,7 +230,7 @@ function getDataColorHs_(c1, c2, c3)
     return [
         c1 * hs_FactorH, 
         c2 * hs_FactorS, 
-        c3 * hs_Factor_];
+        c3 * hs_Factor_ ];
 }
 
 
@@ -240,7 +240,7 @@ function getDataColorOpp(c1, c2, c3)
     return [
         c1 * oppFactorL, 
         c2 * oppFactor1, 
-        c3 * oppFactor2];
+        c3 * oppFactor2 ];
 }
 
 
@@ -250,7 +250,7 @@ function getDataColorHcl(c1, c2, c3)
     return [
         c1 * hclFactorH, 
         c2 * hclFactorC, 
-        c3 * hclFactorL];
+        c3 * hclFactorL ];
 }
 
 
@@ -270,6 +270,10 @@ function switchToSpace(op, space)
         case 'lab':    switchToLab   (op); break;
         case 'luv':    switchToLuv   (op); break;
     }
+
+    op._c1.control.resetRanges();
+    op._c2.control.resetRanges();
+    op._c3.control.resetRanges();
 }
 
 
@@ -302,22 +306,17 @@ function switchToSliders(op)
 
 
 
-function switchToHex(op)   
-{ 
-    switchToTextbox(op);
-    op.hexbox.value = rgb2hex(dataColor2rgb(op._color));
-}
-
+function switchToHex   (op) { switchToTextbox(op); }
 function switchToRgbHex(op) { switchToRgbControls(op);  showControlHex(op, true ); }
 function switchToRgb   (op) { switchToRgbControls(op);  showControlHex(op, false); }
 function switchToHsv   (op) { switchToHs_Controls(op, 'V'); }
 function switchToHsl   (op) { switchToHs_Controls(op, 'L'); }
-function switchToOklab (op) { switchToOppControls(op, 'a', 'b'); }
-function switchToLab   (op) { switchToOppControls(op, 'a', 'b'); }
-function switchToLuv   (op) { switchToOppControls(op, 'u', 'v'); }
 function switchToHclOkl(op) { switchToHclControls(op); }
 function switchToHclLab(op) { switchToHclControls(op); }
 function switchToHclLuv(op) { switchToHclControls(op); }
+function switchToOklab (op) { switchToOppControls(op, 'a', 'b'); }
+function switchToLab   (op) { switchToOppControls(op, 'a', 'b'); }
+function switchToLuv   (op) { switchToOppControls(op, 'u', 'v'); }
    
 
 
@@ -347,8 +346,8 @@ function switchToOppControls(op, c2, c3)
 { 
     switchToControls(op, 
         'L', 0,              oppFactorL, '', false,  
-        c2, -oppFactor1 * 5, oppFactor1 * 5, 
-        c3, -oppFactor2 * 2, oppFactor2 * 2);  
+        c2, -oppFactor1, oppFactor1, 
+        c3, -oppFactor2, oppFactor2);  
 
     showControlHex(op, false); 
 }
