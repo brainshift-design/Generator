@@ -3,14 +3,10 @@ function initNumberSliderChildren(slider)
     slider.bar    = createDiv('numberSliderBar'  );
     slider.text   = createDiv('numberSliderText' );
     slider.focus  = createDiv('numberSliderFocus');
-    slider.range1 = createDiv('numberSliderRange');
-    slider.range2 = createDiv('numberSliderRange');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
-    slider.appendChild(slider.range1);
-    slider.appendChild(slider.range2);
 }
 
 

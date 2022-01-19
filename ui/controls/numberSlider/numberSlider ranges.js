@@ -2,14 +2,22 @@ class NumberSliderRange
 {
     start;
     end;
+
     background;
 
+    top;
+    bottom;
 
-    constructor(start, end = start, background = 'magenta')
+
+    constructor(start, end = start, background = 'magenta', top = 0, bottom = 1)
     {
         this.start      = start;
         this.end        = end;
+
         this.background = background;
+
+        this.top        = top;
+        this.bottom     = bottom;
     }
 }
 
@@ -54,11 +62,10 @@ function updateSliderRangeDiv(slider, range, div)
     {
         div.style.display    = 'block';
         div.style.left       = slider.clientWidth * range.start;  
-        div.style.top        = 0;
+        div.style.top        = range.top * slider.clientHeight;
         div.style.width      = slider.clientWidth * (range.end - range.start);
-        div.style.height     = slider.clientHeight;
+        div.style.height     = (range.bottom - range.top) * slider.clientHeight;
         div.style.background = range.background;
-        console.log(range.background);
     }
 };
 

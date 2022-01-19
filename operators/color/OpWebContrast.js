@@ -5,6 +5,8 @@ extends Operator
     #value;
 
 
+    #warningOverlay;
+
 
     constructor()
     {
@@ -16,10 +18,42 @@ extends Operator
         this.addParam(this.#standard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
         this.addParam(this.#value    = new NumberParam('', false, true, 0));
         
+        this.#standard.addEventListener('change', () =>
+        {
+            this.setRanges();
+        });
+
         this.#value.control.pointerEvents   = false;
         this.#value.control.style.fontStyle = 'italic';
 
-         setTimeout(() => this.#standard.setValue(1));
+
+        this.#warningOverlay = document.createElement('div');
+        this.#warningOverlay.className = 'colorWarningOverlay';
+        this.inner.appendChild(this.#warningOverlay);
+
+
+        setTimeout(() => this.#standard.setValue(1));
+    }
+
+
+
+    setRanges()
+    {
+        if (this.#standard.value == 0)
+            this.#value.control.ranges = [];
+        else
+        {
+            this.#value.control.ranges = [
+                new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0, 0, 0.4)', 0.8),
+                new NumberSliderRange(15/108,  30/108, 'rgba(255,  68, 0, 0.4)', 0.8),
+                new NumberSliderRange(30/108,  45/108, 'rgba(255, 105, 0, 0.4)', 0.8),
+                new NumberSliderRange(45/108,  60/108, 'rgba(255, 136, 0, 0.4)', 0.8),
+                new NumberSliderRange(60/108,  75/108, 'rgba(255, 204, 0, 0.4)', 0.8),
+                new NumberSliderRange(75/108,  90/108, 'rgba(255, 255, 0, 0.4)', 0.8),
+                new NumberSliderRange(90/108, 108/108, 'transparent')];
+        }
+
+        this.#value.control.update();
     }
 
 
@@ -30,21 +64,6 @@ extends Operator
             return;
 
             
-        if (this.#standard.value == 0)
-            this.#value.control.ranges = [];
-        else
-        {
-            this.#value.control.ranges = [
-                new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0, 0, 0.2)'),
-                new NumberSliderRange(15/108,  30/108, 'rgba(255,  68, 0, 0.2)'),
-                new NumberSliderRange(30/108,  45/108, 'rgba(255, 105, 0, 0.2)'),
-                new NumberSliderRange(45/108,  60/108, 'rgba(255, 136, 0, 0.2)'),
-                new NumberSliderRange(60/108,  75/108, 'rgba(255, 204, 0, 0.2)'),
-                new NumberSliderRange(75/108,  90/108, 'rgba(255, 255, 0, 0.2)'),
-                new NumberSliderRange(90/108, 108/108, 'transparent')];
-        }
-
-
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
@@ -98,6 +117,44 @@ extends Operator
 
            
         super.update()
+    }
+
+
+
+    updateNode()
+    {
+        if (   this.inputs[0].isConnected
+            && this.inputs[1].isConnected)
+        {
+            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            
+            if (   !isValidRgb(rgb0)
+                || !isValidRgb(rgb1))
+            {
+                const colBack = 
+                    this.inputs[1].isConnected
+                    ? dataColor2rgb(this.inputs[1].data.color)
+                    : rgbFromDataType(this._dataType);
+
+                const darkText = rgb2hclokl(colBack)[2] > 0.71;
+
+                const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+                const warningStyle = colorStyleRgba(colWarning);
+        
+                this.#warningOverlay.style.background =
+                    'repeating-linear-gradient('
+                    + '-45deg, '
+                    + 'transparent 0 7px,'
+                    +  warningStyle + ' 7px 14px)';
+            }
+            else
+            {
+                this.#warningOverlay.style.background = 'transparent';
+            }
+        }
+             
+        super.updateNode();
     }
 
 

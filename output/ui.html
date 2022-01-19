@@ -6858,7 +6858,7 @@ extends EventTarget
         if (dispatchEvents)
         {
             this.dispatchSetValueEvents(this.oldValue, value, confirm);
-            this.op.pushUpdate();//setTimeout(() => this.op.pushUpdate());
+            setTimeout(() => this.op.pushUpdate());
         }
     }
 
@@ -7385,7 +7385,9 @@ class Graph
         graphView.putNodeOnTop(node);
         graphView.updateScroll();
 
-        updateGraphNodes();
+        //updateGraphNodes();
+
+        setTimeout(() => node.pushUpdate());
     }
     
 
@@ -9284,21 +9286,19 @@ const OpColorSpaces =
 ];
 
 
-const rgbFactorR = 255;
-const rgbFactorG = 255;
-const rgbFactorB = 255;
+const rgbFactor   = [255, 255, 255];
+const hs_Factor   = [360, 100, 100];
+const hclFactor   = [360, 100, 100];
+const oppFactor   = [100, 100, 100];
 
-const hs_FactorH = 360;
-const hs_FactorS = 100;
-const hs_Factor_ = 100;
-
-const hclFactorH = 360;
-const hclFactorC = 100;
-const hclFactorL = 100;
-
-const oppFactorL = 100;
-const oppFactor1 = 100;
-const oppFactor2 = 100;
+const rgbScale    = [255, 255, 255];
+const hs_Scale    = [360, 100, 100];
+const hcloklScale = [360,  51, 100];
+const hcllabScale = [360, 100, 100];
+const hclluvScale = [360, 100, 100];
+const oklabScale  = [100,  30,  30];
+const labScale    = [100, 100, 100];
+const luvScale    = [100, 150, 150];
 
 
 class   OpColor
@@ -9371,7 +9371,7 @@ extends Operator
         initHexbox(this);
 
 
-        this.#warningOverlay = this.control = document.createElement('div');
+        this.#warningOverlay = document.createElement('div');
         this.#warningOverlay.className = 'colorWarningOverlay';
         this.inner.appendChild(this.#warningOverlay);
 
@@ -9589,7 +9589,7 @@ extends Operator
             this.updateControlRanges(this._c1.control, f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this._c1.control.min + f * (this._c1.control.max - this._c1.control.min)) / getColorSpaceFactor(this._color[0], 0),
+                    (this._c1.control.min + f * (this._c1.control.max - this._c1.control.min)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
@@ -9597,7 +9597,7 @@ extends Operator
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this._c2.control.min + f * (this._c2.control.max - this._c2.control.min)) / getColorSpaceFactor(this._color[0], 1),
+                    (this._c2.control.min + f * (this._c2.control.max - this._c2.control.min)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
             this.updateControlRanges(this._c3.control, f =>
@@ -9605,7 +9605,7 @@ extends Operator
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0], 2)]));
+                    (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
@@ -9652,51 +9652,150 @@ extends Operator
 }
 
 
-function getColorSpaceFactor(space, chan)
+function switchToSpace(op, space)
 {
     switch (space)
     {
-        case 'rgbhex':
-        case 'rgb':   
-            switch (chan)
-            {
-                case 0: return rgbFactorR;
-                case 1: return rgbFactorG;
-                case 2: return rgbFactorB;
-            }
-            break;
+        case 'hex':    switchToHex   (op); break;
+        case 'rgbhex': switchToRgbHex(op); break;
+        case 'rgb':    switchToRgb   (op); break;
+        case 'hsv':    switchToHsv   (op); break;
+        case 'hsl':    switchToHsl   (op); break;
+        case 'hclokl': switchToHclOkl(op); break;
+        case 'hcllab': switchToHclLab(op); break;
+        case 'hclluv': switchToHclLuv(op); break;
+        case 'oklab':  switchToOklab (op); break;
+        case 'lab':    switchToLab   (op); break;
+        case 'luv':    switchToLuv   (op); break;
+    }
 
-        case 'hsv':   
-        case 'hsl':   
-            switch (chan)
-            {
-                case 0: return hs_FactorH;
-                case 1: return hs_FactorS;
-                case 2: return hs_Factor_;
-            }
-            break;
+    op.resetAllControlRanges();
+}
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv':
-            switch (chan)
-            {
-                case 0: return hclFactorH;
-                case 1: return hclFactorC;
-                case 2: return hclFactorL;
-            }
-            break;
 
-        case 'oklab':  
-        case 'lab':    
-        case 'luv':
-            switch (chan)
-            {
-                case 0: return oppFactorL;
-                case 1: return oppFactor1;
-                case 2: return oppFactor2;
-            }
-            break;
+
+function switchToHex   (op) { switchToTextbox(op); }
+function switchToRgbHex(op) { switchToRgbControls(op);  showControlHex(op, true ); }
+function switchToRgb   (op) { switchToRgbControls(op);  showControlHex(op, false); }
+function switchToHsv   (op) { switchToHs_Controls(op, 'V'); }
+function switchToHsl   (op) { switchToHs_Controls(op, 'L'); }
+function switchToHclOkl(op) { switchToHclOklControls(op); }
+function switchToHclLab(op) { switchToHclLabControls(op); }
+function switchToHclLuv(op) { switchToHclLuvControls(op); }
+function switchToOklab (op) { switchToOklabControls(op, 'a', 'b'); }
+function switchToLab   (op) { switchToLabControls(op, 'a', 'b'); }
+function switchToLuv   (op) { switchToLuvControls(op, 'u', 'v'); }
+   
+
+
+function switchToRgbControls(op)
+{
+    switchToControls(op, 
+        'R', 0, rgbScale[0], '', false, 
+        'G', 0, rgbScale[1], 
+        'B', 0, rgbScale[2]);  
+}
+
+
+
+function switchToHs_Controls(op, v_or_l) 
+{ 
+    switchToControls(op, 
+        'H',    0, hs_Scale[0], '°', true,  
+        'S',    0, hs_Scale[1], 
+        v_or_l, 0, hs_Scale[2]);  
+
+    showControlHex(op, false); 
+}
+
+
+
+function switchToHclControls(op, scale) 
+{ 
+    switchToControls(op, 
+        'H', 0, scale[0], '°', true,  
+        'C', 0, scale[1], 
+        'L', 0, scale[2]);  
+
+    showControlHex(op, false); 
+}
+
+
+
+function switchToHclOklControls(op) { switchToHclControls(op, hcloklScale); }
+function switchToHclLabControls(op) { switchToHclControls(op, hcllabScale); }
+function switchToHclLuvControls(op) { switchToHclControls(op, hclluvScale); }
+
+
+
+function switchToOppControls(op, c2, c3, scale)
+{ 
+    switchToControls(op, 
+        'L', 0,        scale[0], '', false,  
+        c2, -scale[1], scale[1], 
+        c3, -scale[2], scale[2]);  
+
+    showControlHex(op, false); 
+}
+
+
+
+function switchToOklabControls(op) { switchToOppControls(op, 'a', 'b', oklabScale); }
+function switchToLabControls  (op) { switchToOppControls(op, 'a', 'b', labScale  ); }
+function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale  ); }
+
+
+
+function showControlHex(op, show)
+{
+    op._c1.control.showHex = show;
+    op._c2.control.showHex = show;
+    op._c3.control.showHex = show;
+}
+
+
+
+function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
+{
+    switchToSliders(op);
+
+    op._c1.setName(c1, false); 
+    op._c2.setName(c2, false); 
+    op._c3.setName(c3, false);
+
+    op._c1.control.wrapValue = c1wrap;
+    op._c1.control.suffix    = c1suffix;
+
+    op._c1.control.min = c1min; op._c1.control.max = c1max; op._c1.control.update();
+    op._c2.control.min = c2min; op._c2.control.max = c2max; op._c2.control.update();
+    op._c3.control.min = c3min; op._c3.control.max = c3max; op._c3.control.update();
+}
+
+
+
+function switchToTextbox(op)
+{
+    if (!op.inner.contains(op.hexbox))
+    {
+        op.inner.removeChild(op._c1.div);
+        op.inner.removeChild(op._c2.div);
+        op.inner.removeChild(op._c3.div);
+        
+        op.inner.appendChild(op.hexbox);
+    }
+}
+
+
+
+function switchToSliders(op)
+{
+    if (op.inner.contains(op.hexbox))
+    {
+        op.inner.removeChild(op.hexbox);
+
+        op.inner.appendChild(op._c1.div);
+        op.inner.appendChild(op._c2.div);
+        op.inner.appendChild(op._c3.div);
     }
 }
 
@@ -9813,9 +9912,9 @@ function getNormalColor_(space, c1, c2, c3)
 function getNormalColorRgb_(c1, c2, c3)
 {
     return [
-        c1 / rgbFactorR, 
-        c2 / rgbFactorG, 
-        c3 / rgbFactorB];
+        c1 / rgbFactor[0], 
+        c2 / rgbFactor[1], 
+        c3 / rgbFactor[2]];
 }
 
 
@@ -9823,9 +9922,9 @@ function getNormalColorRgb_(c1, c2, c3)
 function getNormalColorHs_(c1, c2, c3)
 {
     return [
-        c1 / hs_FactorH, 
-        c2 / hs_FactorS, 
-        c3 / hs_Factor_];
+        c1 / hs_Factor[0], 
+        c2 / hs_Factor[1], 
+        c3 / hs_Factor[2]];
 }
 
 
@@ -9833,9 +9932,9 @@ function getNormalColorHs_(c1, c2, c3)
 function getNormalColorOpp(c1, c2, c3)
 {
     return [
-        c1 / oppFactorL, 
-        c2 / oppFactor1, 
-        c3 / oppFactor2];
+        c1 / oppFactor[0], 
+        c2 / oppFactor[1], 
+        c3 / oppFactor[2]];
 }
 
 
@@ -9843,9 +9942,9 @@ function getNormalColorOpp(c1, c2, c3)
 function getNormalColorHcl(c1, c2, c3)
 {
     return [
-        c1 / hclFactorH, 
-        c2 / hclFactorC, 
-        c3 / hclFactorL];
+        c1 / hclFactor[0], 
+        c2 / hclFactor[1], 
+        c3 / hclFactor[2]];
 }
 
 
@@ -9855,7 +9954,7 @@ function getDataColor(color)
     switch (color[0])
     {
         case 'rgbhex':    
-        case 'rgb':    return getDataColorRgb_(color[1], color[2], color[3]);
+        case 'rgb':    return getDataColorRgb(color[1], color[2], color[3]);
         case 'hsv':   
         case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
         case 'hclokl': 
@@ -9869,12 +9968,12 @@ function getDataColor(color)
 
 
 
-function getDataColorRgb_(c1, c2, c3)
+function getDataColorRgb(c1, c2, c3)
 {
     return [
-        c1 * rgbFactorR, 
-        c2 * rgbFactorG, 
-        c3 * rgbFactorB ];
+        c1 * rgbFactor[0], 
+        c2 * rgbFactor[1], 
+        c3 * rgbFactor[2] ];
 }
 
 
@@ -9882,9 +9981,9 @@ function getDataColorRgb_(c1, c2, c3)
 function getDataColorHs_(c1, c2, c3)
 {
     return [
-        c1 * hs_FactorH, 
-        c2 * hs_FactorS, 
-        c3 * hs_Factor_ ];
+        c1 * hs_Factor[0], 
+        c2 * hs_Factor[1], 
+        c3 * hs_Factor[2] ];
 }
 
 
@@ -9892,9 +9991,9 @@ function getDataColorHs_(c1, c2, c3)
 function getDataColorOpp(c1, c2, c3)
 {
     return [
-        c1 * oppFactorL, 
-        c2 * oppFactor1, 
-        c3 * oppFactor2 ];
+        c1 * oppFactor[0], 
+        c2 * oppFactor[1], 
+        c3 * oppFactor[2] ];
 }
 
 
@@ -9902,147 +10001,10 @@ function getDataColorOpp(c1, c2, c3)
 function getDataColorHcl(c1, c2, c3)
 {
     return [
-        c1 * hclFactorH, 
-        c2 * hclFactorC, 
-        c3 * hclFactorL ];
+        c1 * hclFactor[0], 
+        c2 * hclFactor[1], 
+        c3 * hclFactor[2] ];
 }
-
-
-function switchToSpace(op, space)
-{
-    switch (space)
-    {
-        case 'hex':    switchToHex   (op); break;
-        case 'rgbhex': switchToRgbHex(op); break;
-        case 'rgb':    switchToRgb   (op); break;
-        case 'hsv':    switchToHsv   (op); break;
-        case 'hsl':    switchToHsl   (op); break;
-        case 'hclokl': switchToHclOkl(op); break;
-        case 'hcllab': switchToHclLab(op); break;
-        case 'hclluv': switchToHclLuv(op); break;
-        case 'oklab':  switchToOklab (op); break;
-        case 'lab':    switchToLab   (op); break;
-        case 'luv':    switchToLuv   (op); break;
-    }
-
-    op.resetAllControlRanges();
-}
-
-
-
-function switchToTextbox(op)
-{
-    if (!op.inner.contains(op.hexbox))
-    {
-        op.inner.removeChild(op._c1.div);
-        op.inner.removeChild(op._c2.div);
-        op.inner.removeChild(op._c3.div);
-        
-        op.inner.appendChild(op.hexbox);
-    }
-}
-
-
-
-function switchToSliders(op)
-{
-    if (op.inner.contains(op.hexbox))
-    {
-        op.inner.removeChild(op.hexbox);
-
-        op.inner.appendChild(op._c1.div);
-        op.inner.appendChild(op._c2.div);
-        op.inner.appendChild(op._c3.div);
-    }
-}
-
-
-
-function switchToHex   (op) { switchToTextbox(op); }
-function switchToRgbHex(op) { switchToRgbControls(op);  showControlHex(op, true ); }
-function switchToRgb   (op) { switchToRgbControls(op);  showControlHex(op, false); }
-function switchToHsv   (op) { switchToHs_Controls(op, 'V'); }
-function switchToHsl   (op) { switchToHs_Controls(op, 'L'); }
-function switchToHclOkl(op) { switchToHclControls(op); }
-function switchToHclLab(op) { switchToHclControls(op); }
-function switchToHclLuv(op) { switchToHclControls(op); }
-function switchToOklab (op) { switchToOppControls(op, 'a', 'b'); }
-function switchToLab   (op) { switchToOppControls(op, 'a', 'b'); }
-function switchToLuv   (op) { switchToOppControls(op, 'u', 'v'); }
-   
-
-
-function switchToRgbControls(op)
-{
-    switchToControls(op, 
-        'R', 0, rgbFactorR, '', false, 
-        'G', 0, rgbFactorG, 
-        'B', 0, rgbFactorB);  
-}
-
-
-
-function switchToHs_Controls(op, v_or_l) 
-{ 
-    switchToControls(op, 
-        'H',    0, hs_FactorH, '°', true,  
-        'S',    0, hs_FactorS, 
-        v_or_l, 0, hs_Factor_);  
-
-    showControlHex(op, false); 
-}
-
-
-
-function switchToOppControls(op, c2, c3) 
-{ 
-    switchToControls(op, 
-        'L', 0,              oppFactorL, '', false,  
-        c2, -oppFactor1, oppFactor1, 
-        c3, -oppFactor2, oppFactor2);  
-
-    showControlHex(op, false); 
-}
-
-
-
-function switchToHclControls(op) 
-{ 
-    switchToControls(op, 
-        'H', 0, 360, '°', true,  
-        'C', 0, 100, 
-        'L', 0, 100);  
-
-    showControlHex(op, false); 
-}
-
-
-
-function showControlHex(op, show)
-{
-    op._c1.control.showHex = show;
-    op._c2.control.showHex = show;
-    op._c3.control.showHex = show;
-}
-
-
-
-function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
-{
-    switchToSliders(op);
-
-    op._c1.setName(c1, false); 
-    op._c2.setName(c2, false); 
-    op._c3.setName(c3, false);
-
-    op._c1.control.wrapValue = c1wrap;
-    op._c1.control.suffix    = c1suffix;
-
-    op._c1.control.min = c1min; op._c1.control.max = c1max; op._c1.control.update();
-    op._c2.control.min = c2min; op._c2.control.max = c2max; op._c2.control.update();
-    op._c3.control.min = c3min; op._c3.control.max = c3max; op._c3.control.update();
-}
-
 
 
 function setDataColorToCurrentSpace(op, color)
@@ -10063,6 +10025,42 @@ function getCurrentDataColorSpace(op)
     if (index < 2) index = 2;
 
     return OpColorSpaces[index][0];
+}
+
+
+
+function getColorSpaceFactor(space)
+{
+    switch (space)
+    {
+        case 'rgb':    return rgbFactor;
+        case 'hsv':   
+        case 'hsl':    return hs_Factor;
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return hclFactor;
+        case 'oklab': 
+        case 'lab': 
+        case 'luv':    return oppFactor;
+    }    
+}
+
+
+
+function getColorSpaceScale(space)
+{
+    switch (space)
+    {
+        case 'rgb':    return rgbScale;
+        case 'hsv':   
+        case 'hsl':    return hs_Scale;
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return hclScale;
+        case 'oklab': 
+        case 'lab': 
+        case 'luv':    return oppScale;
+    }    
 }
 
 
@@ -10492,6 +10490,8 @@ extends Operator
     #value;
 
 
+    #warningOverlay;
+
 
     constructor()
     {
@@ -10503,10 +10503,42 @@ extends Operator
         this.addParam(this.#standard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
         this.addParam(this.#value    = new NumberParam('', false, true, 0));
         
+        this.#standard.addEventListener('change', () =>
+        {
+            this.setRanges();
+        });
+
         this.#value.control.pointerEvents   = false;
         this.#value.control.style.fontStyle = 'italic';
 
-         setTimeout(() => this.#standard.setValue(1));
+
+        this.#warningOverlay = document.createElement('div');
+        this.#warningOverlay.className = 'colorWarningOverlay';
+        this.inner.appendChild(this.#warningOverlay);
+
+
+        setTimeout(() => this.#standard.setValue(1));
+    }
+
+
+
+    setRanges()
+    {
+        if (this.#standard.value == 0)
+            this.#value.control.ranges = [];
+        else
+        {
+            this.#value.control.ranges = [
+                new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0, 0, 0.4)', 0.8),
+                new NumberSliderRange(15/108,  30/108, 'rgba(255,  68, 0, 0.4)', 0.8),
+                new NumberSliderRange(30/108,  45/108, 'rgba(255, 105, 0, 0.4)', 0.8),
+                new NumberSliderRange(45/108,  60/108, 'rgba(255, 136, 0, 0.4)', 0.8),
+                new NumberSliderRange(60/108,  75/108, 'rgba(255, 204, 0, 0.4)', 0.8),
+                new NumberSliderRange(75/108,  90/108, 'rgba(255, 255, 0, 0.4)', 0.8),
+                new NumberSliderRange(90/108, 108/108, 'transparent')];
+        }
+
+        this.#value.control.update();
     }
 
 
@@ -10517,21 +10549,6 @@ extends Operator
             return;
 
             
-        if (this.#standard.value == 0)
-            this.#value.control.ranges = [];
-        else
-        {
-            this.#value.control.ranges = [
-                new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0, 0, 0.2)'),
-                new NumberSliderRange(15/108,  30/108, 'rgba(255,  68, 0, 0.2)'),
-                new NumberSliderRange(30/108,  45/108, 'rgba(255, 105, 0, 0.2)'),
-                new NumberSliderRange(45/108,  60/108, 'rgba(255, 136, 0, 0.2)'),
-                new NumberSliderRange(60/108,  75/108, 'rgba(255, 204, 0, 0.2)'),
-                new NumberSliderRange(75/108,  90/108, 'rgba(255, 255, 0, 0.2)'),
-                new NumberSliderRange(90/108, 108/108, 'transparent')];
-        }
-
-
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
@@ -10585,6 +10602,44 @@ extends Operator
 
            
         super.update()
+    }
+
+
+
+    updateNode()
+    {
+        if (   this.inputs[0].isConnected
+            && this.inputs[1].isConnected)
+        {
+            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            
+            if (   !isValidRgb(rgb0)
+                || !isValidRgb(rgb1))
+            {
+                const colBack = 
+                    this.inputs[1].isConnected
+                    ? dataColor2rgb(this.inputs[1].data.color)
+                    : rgbFromDataType(this._dataType);
+
+                const darkText = rgb2hclokl(colBack)[2] > 0.71;
+
+                const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+                const warningStyle = colorStyleRgba(colWarning);
+        
+                this.#warningOverlay.style.background =
+                    'repeating-linear-gradient('
+                    + '-45deg, '
+                    + 'transparent 0 7px,'
+                    +  warningStyle + ' 7px 14px)';
+            }
+            else
+            {
+                this.#warningOverlay.style.background = 'transparent';
+            }
+        }
+             
+        super.updateNode();
     }
 
 
@@ -11844,14 +11899,22 @@ class NumberSliderRange
 {
     start;
     end;
+
     background;
 
+    top;
+    bottom;
 
-    constructor(start, end = start, background = 'magenta')
+
+    constructor(start, end = start, background = 'magenta', top = 0, bottom = 1)
     {
         this.start      = start;
         this.end        = end;
+
         this.background = background;
+
+        this.top        = top;
+        this.bottom     = bottom;
     }
 }
 
@@ -11896,11 +11959,10 @@ function updateSliderRangeDiv(slider, range, div)
     {
         div.style.display    = 'block';
         div.style.left       = slider.clientWidth * range.start;  
-        div.style.top        = 0;
+        div.style.top        = range.top * slider.clientHeight;
         div.style.width      = slider.clientWidth * (range.end - range.start);
-        div.style.height     = slider.clientHeight;
+        div.style.height     = (range.bottom - range.top) * slider.clientHeight;
         div.style.background = range.background;
-        console.log(range.background);
     }
 };
 
@@ -12098,14 +12160,10 @@ function initNumberSliderChildren(slider)
     slider.bar    = createDiv('numberSliderBar'  );
     slider.text   = createDiv('numberSliderText' );
     slider.focus  = createDiv('numberSliderFocus');
-    slider.range1 = createDiv('numberSliderRange');
-    slider.range2 = createDiv('numberSliderRange');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
-    slider.appendChild(slider.range1);
-    slider.appendChild(slider.range2);
 }
 
 

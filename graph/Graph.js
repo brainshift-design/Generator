@@ -100,7 +100,9 @@ class Graph
         graphView.putNodeOnTop(node);
         graphView.updateScroll();
 
-        updateGraphNodes();
+        //updateGraphNodes();
+
+        setTimeout(() => node.pushUpdate());
     }
     
 

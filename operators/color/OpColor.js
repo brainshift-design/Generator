@@ -23,21 +23,19 @@ const OpColorSpaces =
 ];
 
 
-const rgbFactorR = 255;
-const rgbFactorG = 255;
-const rgbFactorB = 255;
+const rgbFactor   = [255, 255, 255];
+const hs_Factor   = [360, 100, 100];
+const hclFactor   = [360, 100, 100];
+const oppFactor   = [100, 100, 100];
 
-const hs_FactorH = 360;
-const hs_FactorS = 100;
-const hs_Factor_ = 100;
-
-const hclFactorH = 360;
-const hclFactorC = 100;
-const hclFactorL = 100;
-
-const oppFactorL = 100;
-const oppFactor1 = 100;
-const oppFactor2 = 100;
+const rgbScale    = [255, 255, 255];
+const hs_Scale    = [360, 100, 100];
+const hcloklScale = [360,  51, 100];
+const hcllabScale = [360, 100, 100];
+const hclluvScale = [360, 100, 100];
+const oklabScale  = [100,  30,  30];
+const labScale    = [100, 100, 100];
+const luvScale    = [100, 150, 150];
 
 
 class   OpColor
@@ -110,7 +108,7 @@ extends Operator
         initHexbox(this);
 
 
-        this.#warningOverlay = this.control = document.createElement('div');
+        this.#warningOverlay = document.createElement('div');
         this.#warningOverlay.className = 'colorWarningOverlay';
         this.inner.appendChild(this.#warningOverlay);
 
@@ -328,7 +326,7 @@ extends Operator
             this.updateControlRanges(this._c1.control, f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this._c1.control.min + f * (this._c1.control.max - this._c1.control.min)) / getColorSpaceFactor(this._color[0], 0),
+                    (this._c1.control.min + f * (this._c1.control.max - this._c1.control.min)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
@@ -336,7 +334,7 @@ extends Operator
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this._c2.control.min + f * (this._c2.control.max - this._c2.control.min)) / getColorSpaceFactor(this._color[0], 1),
+                    (this._c2.control.min + f * (this._c2.control.max - this._c2.control.min)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
             this.updateControlRanges(this._c3.control, f =>
@@ -344,7 +342,7 @@ extends Operator
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0], 2)]));
+                    (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
