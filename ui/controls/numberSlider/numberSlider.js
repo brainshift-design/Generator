@@ -416,74 +416,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         slider.text.innerHTML += valueText + slider.suffix;
 
 
-        slider.updateRanges();
+        updateSliderRanges(slider);
     };
-
-
-
-    slider.updateRanges = function()
-    {
-        if (slider.ranges.length == slider.rangeDivs.length) // update
-        {
-            for (let i = 0; i < slider.ranges.length; i++)
-            {
-                slider.updateRangeDiv(
-                    slider.ranges   [i],
-                    slider.rangeDivs[i]);
-            }
-        }
-        else // recreate
-        {
-            slider.resetRangeDivs();
-
-            for (let i = 0; i < slider.ranges.length; i++)
-            {
-                const range = slider.ranges[i];
-
-                const div = createDiv('numberSliderRange');
-                slider.rangeDivs.push(div);
-                slider.appendChild(div);
-            
-                slider.updateRangeDiv(range, div);
-            }
-        }
-    };
-
-
-
-    slider.updateRangeDiv = function(range, div)
-    {
-        if (range.start == range.end)
-            div.style.display = 'none';
-        else
-        {
-            div.style.display    = 'block';
-            div.style.left       = slider.clientWidth * range.start;  
-            div.style.top        = 0;
-            div.style.width      = slider.clientWidth * (range.end - range.start);
-            div.style.height     = slider.clientHeight;
-            div.style.background = range.background;
-        }
-    };
-
-
-
-    slider.resetRanges = function()
-    {
-        slider.ranges = [];
-        slider.resetRangeDivs();        
-    };
-
-
-
-    slider.resetRangeDivs = function()
-    {
-        for (const div of slider.rangeDivs)
-            if (slider.contains(div))
-                slider.removeChild(div);
-
-        slider.rangeDivs = [];
-    }
 
 
 

@@ -578,12 +578,6 @@ input[type=text]::selection
     position:       absolute;
     pointer-events: none;
     z-index:        1000;
-    background:     rgba(255, 0, 0, 0.1);
-    /* background:     repeating-linear-gradient(
-                        -45deg, 
-                        transparent            0px 1px, 
-                        rgba(255, 0, 0, 0.2) 1px 2px,
-                        transparent            2px 3px); */
 }
 
 
@@ -6864,7 +6858,7 @@ extends EventTarget
         if (dispatchEvents)
         {
             this.dispatchSetValueEvents(this.oldValue, value, confirm);
-            setTimeout(() => this.op.pushUpdate());
+            this.op.pushUpdate();//setTimeout(() => this.op.pushUpdate());
         }
     }
 
@@ -9581,9 +9575,9 @@ extends Operator
 
     resetAllControlRanges()
     {
-        this._c1.control.resetRanges();
-        this._c2.control.resetRanges();
-        this._c3.control.resetRanges();
+        resetSliderRanges(this._c1.control);
+        resetSliderRanges(this._c2.control);
+        resetSliderRanges(this._c3.control);
     }
 
 
@@ -9633,12 +9627,9 @@ extends Operator
         {
             const rgb = getRgb(f);
 
-            if (!open && !isValidRgb(rgb)) 
+            if (!open && !isValidRgb(rgb))
             {
-                const range = new NumberSliderRange(f);
-                range.background = 'rgba(255, 0, 0, 0.1)';
-                ranges.push(range);
-
+                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.1)'));
                 open = true;
             }
             else if (open && isValidRgb(rgb)) 
@@ -9653,7 +9644,7 @@ extends Operator
             lastOf(ranges).end = 1;
         else if (!open
               && ranges.length == 0)
-            slider.resetRanges();
+            resetSliderRanges(slider);
 
 
         slider.ranges = ranges;
@@ -10526,10 +10517,26 @@ extends Operator
             return;
 
             
+        if (this.#standard.value == 0)
+            this.#value.control.ranges = [];
+        else
+        {
+            this.#value.control.ranges = [
+                new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0, 0, 0.2)'),
+                new NumberSliderRange(15/108,  30/108, 'rgba(255,  68, 0, 0.2)'),
+                new NumberSliderRange(30/108,  45/108, 'rgba(255, 105, 0, 0.2)'),
+                new NumberSliderRange(45/108,  60/108, 'rgba(255, 136, 0, 0.2)'),
+                new NumberSliderRange(60/108,  75/108, 'rgba(255, 204, 0, 0.2)'),
+                new NumberSliderRange(75/108,  90/108, 'rgba(255, 255, 0, 0.2)'),
+                new NumberSliderRange(90/108, 108/108, 'transparent')];
+        }
+
+
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
             this.#value.control.valueText = '';
+
 
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
@@ -10559,10 +10566,10 @@ extends Operator
                         dataColor2rgb(this.inputs[0].data.color),
                         dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#value.control.min    = -108;
-                    this.#value.control.max    =  106;
+                    this.#value.control.min    = 0;
+                    this.#value.control.max    = 108;
                     this.#value.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
-                    this.#value.control.setValue(ratio);
+                    this.#value.control.setValue(Math.abs(ratio));
                 }
 
 
@@ -11840,17 +11847,81 @@ class NumberSliderRange
     background;
 
 
-    constructor(start)
+    constructor(start, end = start, background = 'magenta')
     {
         this.start      = start;
-        this.end        = start;
-        this.background = 'magenta';
+        this.end        = end;
+        this.background = background;
     }
 }
 
 
 
+function updateSliderRanges(slider)
+{
+    if (slider.ranges.length == slider.rangeDivs.length) // update
+    {
+        for (let i = 0; i < slider.ranges.length; i++)
+        {
+            updateSliderRangeDiv(
+                slider,
+                slider.ranges   [i],
+                slider.rangeDivs[i]);
+        }
+    }
+    else // recreate
+    {
+        resetSliderRangeDivs(slider);
 
+        for (let i = 0; i < slider.ranges.length; i++)
+        {
+            const range = slider.ranges[i];
+
+            const div = createDiv('numberSliderRange');
+            slider.rangeDivs.push(div);
+            slider.appendChild(div);
+        
+            updateSliderRangeDiv(slider, range, div);
+        }
+    }
+};
+
+
+
+function updateSliderRangeDiv(slider, range, div)
+{
+    if (range.start == range.end)
+        div.style.display = 'none';
+    else
+    {
+        div.style.display    = 'block';
+        div.style.left       = slider.clientWidth * range.start;  
+        div.style.top        = 0;
+        div.style.width      = slider.clientWidth * (range.end - range.start);
+        div.style.height     = slider.clientHeight;
+        div.style.background = range.background;
+        console.log(range.background);
+    }
+};
+
+
+
+function resetSliderRanges(slider)
+{
+    slider.ranges = [];
+    resetSliderRangeDivs(slider);        
+};
+
+
+
+function resetSliderRangeDivs(slider)
+{
+    for (const div of slider.rangeDivs)
+        if (slider.contains(div))
+            slider.removeChild(div);
+
+    slider.rangeDivs = [];
+}
 
 
 function initNumberSliderTextbox(slider)
@@ -12440,74 +12511,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         slider.text.innerHTML += valueText + slider.suffix;
 
 
-        slider.updateRanges();
+        updateSliderRanges(slider);
     };
-
-
-
-    slider.updateRanges = function()
-    {
-        if (slider.ranges.length == slider.rangeDivs.length) // update
-        {
-            for (let i = 0; i < slider.ranges.length; i++)
-            {
-                slider.updateRangeDiv(
-                    slider.ranges   [i],
-                    slider.rangeDivs[i]);
-            }
-        }
-        else // recreate
-        {
-            slider.resetRangeDivs();
-
-            for (let i = 0; i < slider.ranges.length; i++)
-            {
-                const range = slider.ranges[i];
-
-                const div = createDiv('numberSliderRange');
-                slider.rangeDivs.push(div);
-                slider.appendChild(div);
-            
-                slider.updateRangeDiv(range, div);
-            }
-        }
-    };
-
-
-
-    slider.updateRangeDiv = function(range, div)
-    {
-        if (range.start == range.end)
-            div.style.display = 'none';
-        else
-        {
-            div.style.display    = 'block';
-            div.style.left       = slider.clientWidth * range.start;  
-            div.style.top        = 0;
-            div.style.width      = slider.clientWidth * (range.end - range.start);
-            div.style.height     = slider.clientHeight;
-            div.style.background = range.background;
-        }
-    };
-
-
-
-    slider.resetRanges = function()
-    {
-        slider.ranges = [];
-        slider.resetRangeDivs();        
-    };
-
-
-
-    slider.resetRangeDivs = function()
-    {
-        for (const div of slider.rangeDivs)
-            if (slider.contains(div))
-                slider.removeChild(div);
-
-        slider.rangeDivs = [];
-    }
 
 
 

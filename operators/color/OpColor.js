@@ -314,9 +314,9 @@ extends Operator
 
     resetAllControlRanges()
     {
-        this._c1.control.resetRanges();
-        this._c2.control.resetRanges();
-        this._c3.control.resetRanges();
+        resetSliderRanges(this._c1.control);
+        resetSliderRanges(this._c2.control);
+        resetSliderRanges(this._c3.control);
     }
 
 
@@ -366,12 +366,9 @@ extends Operator
         {
             const rgb = getRgb(f);
 
-            if (!open && !isValidRgb(rgb)) 
+            if (!open && !isValidRgb(rgb))
             {
-                const range = new NumberSliderRange(f);
-                range.background = 'rgba(255, 0, 0, 0.1)';
-                ranges.push(range);
-
+                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.1)'));
                 open = true;
             }
             else if (open && isValidRgb(rgb)) 
@@ -386,7 +383,7 @@ extends Operator
             lastOf(ranges).end = 1;
         else if (!open
               && ranges.length == 0)
-            slider.resetRanges();
+            resetSliderRanges(slider);
 
 
         slider.ranges = ranges;

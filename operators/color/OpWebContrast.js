@@ -30,10 +30,26 @@ extends Operator
             return;
 
             
+        if (this.#standard.value == 0)
+            this.#value.control.ranges = [];
+        else
+        {
+            this.#value.control.ranges = [
+                new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0, 0, 0.2)'),
+                new NumberSliderRange(15/108,  30/108, 'rgba(255,  68, 0, 0.2)'),
+                new NumberSliderRange(30/108,  45/108, 'rgba(255, 105, 0, 0.2)'),
+                new NumberSliderRange(45/108,  60/108, 'rgba(255, 136, 0, 0.2)'),
+                new NumberSliderRange(60/108,  75/108, 'rgba(255, 204, 0, 0.2)'),
+                new NumberSliderRange(75/108,  90/108, 'rgba(255, 255, 0, 0.2)'),
+                new NumberSliderRange(90/108, 108/108, 'transparent')];
+        }
+
+
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
             this.#value.control.valueText = '';
+
 
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
@@ -63,10 +79,10 @@ extends Operator
                         dataColor2rgb(this.inputs[0].data.color),
                         dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#value.control.min    = -108;
-                    this.#value.control.max    =  106;
+                    this.#value.control.min    = 0;
+                    this.#value.control.max    = 108;
                     this.#value.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
-                    this.#value.control.setValue(ratio);
+                    this.#value.control.setValue(Math.abs(ratio));
                 }
 
 
