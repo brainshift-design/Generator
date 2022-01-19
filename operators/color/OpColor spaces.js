@@ -129,11 +129,11 @@ function switchToTextbox(op)
         
         op.inner.appendChild(op.hexbox);
 
-        for (const input of op.inputs)
+        for (const input of op.inputs.filter(i => i.param))
             if (input.isConnected)
                 graph.disconnect(input);
 
-        for (const output of op.outputs)
+        for (const output of op.outputs.filter(o => o.param))
             for (const input of output.connectedInputs)
                 graph.disconnect(input);
     }

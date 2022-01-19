@@ -45,11 +45,11 @@ extends Operator
         {
             this.#value.control.ranges = [
                 new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0,  64, 0.2 )', 0.8),
-                new NumberSliderRange(15/108,  30/108, 'rgba(255,  112,   0, 0.2 )', 0.8),
-                new NumberSliderRange(30/108,  45/108, 'rgba(255, 192,   0, 0.2 )', 0.8),
+                new NumberSliderRange(15/108,  30/108, 'rgba(255, 112,   0, 0.2 )', 0.8),
+                new NumberSliderRange(30/108,  45/108, 'rgba(255, 185,   0, 0.2 )', 0.8),
                 new NumberSliderRange(45/108,  60/108, 'rgba(255, 255,   0, 0.2 )', 0.8),
-                new NumberSliderRange(60/108,  75/108, 'rgba(64,   255, 64, 0.2 )', 0.8),
-                new NumberSliderRange(75/108,  90/108, 'rgba(0,    0, 255, 0.07)', 0.8),
+                new NumberSliderRange(60/108,  75/108, 'rgba(64,  255,  64, 0.2 )', 0.8),
+                new NumberSliderRange(75/108,  90/108, 'rgba(0,     0, 255, 0.07)', 0.8),
                 new NumberSliderRange(90/108, 108/108, 'transparent')];
         }
 
@@ -62,6 +62,13 @@ extends Operator
     {
         if (!this.needsUpdate())
             return;
+
+
+        if (this.inputs[0].isConnected)
+            this.inputs[0].connectedOutput.op.update();
+            
+        if (this.inputs[1].isConnected)
+            this.inputs[1].connectedOutput.op.update();
 
             
         if (   this.inputs[0].isConnected

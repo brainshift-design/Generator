@@ -374,14 +374,16 @@ graphView.updateNodeTransform = function(node)
    
     for (const input of node.inputs)
     {
-        if (input.isConnected)
+        if (   input.isConnected
+            && input.connection)
             graphView.updateWireTransform(input.connection.wire);        
     }
 
 
     for (const output of node.outputs)
         for (const connInput of output.connectedInputs)
-            graphView.updateWireTransform(connInput.connection.wire);
+            if (connInput.connection)
+                graphView.updateWireTransform(connInput.connection.wire);
 };
 
 

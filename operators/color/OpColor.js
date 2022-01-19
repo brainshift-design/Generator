@@ -366,7 +366,7 @@ extends Operator
 
             if (!open && !isValidRgb(rgb))
             {
-                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.1)'));
+                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.2)', 0.8));
                 open = true;
             }
             else if (open && isValidRgb(rgb)) 
