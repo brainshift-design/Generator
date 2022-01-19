@@ -85,7 +85,7 @@ extends Parameter
                 this.control.editDec = nDec;
                 this.control.update();
 
-                this.op.pushUpdate();
+                setTimeout(() => this.op.pushUpdate());
             }
         });
     }

@@ -14,7 +14,7 @@ extends Operator
         this.addInput(new Input(this.dataType));
 
         this.addParam(this.#standard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
-        this.addParam(this.#value    = new NumberParam('', false, true, 0, 0, 100));
+        this.addParam(this.#value    = new NumberParam('', false, true, 0));
         
         this.#value.control.pointerEvents   = false;
         this.#value.control.style.fontStyle = 'italic';
@@ -35,39 +35,50 @@ extends Operator
         {
             this.#value.control.valueText = '';
 
-            if (this.#standard.value == 0)
+            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            
+            if (   isValidRgb(rgb0)
+                && isValidRgb(rgb1))
             {
-                const ratio = getContrastRatio2(
-                    dataColor2rgb(this.inputs[0].data.color),
-                    dataColor2rgb(this.inputs[1].data.color));
+                if (this.#standard.value == 0)
+                {
+                    const ratio = getContrastRatio2(
+                        dataColor2rgb(this.inputs[0].data.color),
+                        dataColor2rgb(this.inputs[1].data.color));
 
-                let rating = getContrastRating2(ratio);
+                    let rating = getContrastRating2(ratio);
 
-                if (rating != '')
-                    rating = '&nbsp;&nbsp;' + rating;
+                    if (rating != '')
+                        rating = '&nbsp;&nbsp;' + rating;
 
-                this.#value.control.min    = 0;
-                this.#value.control.max    = 21;
-                this.#value.control.suffix = rating;
-                this.#value.control.setValue(ratio);
+                    this.#value.control.min    = 0;
+                    this.#value.control.max    = 21;
+                    this.#value.control.suffix = rating;
+                    this.#value.control.setValue(ratio);
+                }
+                else
+                {
+                    const ratio = getContrastRatio3(
+                        dataColor2rgb(this.inputs[0].data.color),
+                        dataColor2rgb(this.inputs[1].data.color));
+                        
+                    this.#value.control.min    = -108;
+                    this.#value.control.max    =  106;
+                    this.#value.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
+                    this.#value.control.setValue(ratio);
+                }
+
+
+                super.update();
+                return;
             }
-            else
-            {
-                const ratio = getContrastRatio3(
-                    dataColor2rgb(this.inputs[0].data.color),
-                    dataColor2rgb(this.inputs[1].data.color));
-                    
-                this.#value.control.min    = -110;
-                this.#value.control.max    =  110;
-                this.#value.control.suffix = '';
-                this.#value.control.setValue(ratio);
-            }
+            
         }
-        else
-        {
-            this.#value.control.valueText = '?';
-            this.#value.setValue(0);
-        }
+
+
+        this.#value.control.valueText = '?';
+        this.#value.setValue(0, false, true, false);
 
            
         super.update()
@@ -109,13 +120,6 @@ extends Operator
         }
 
 
-        this.label.style.fontWeight = 
-               this.inputs[0].isConnected
-            && this.inputs[1].isConnected
-            ? 'bold'
-            : 'normal';
-
-
         if (   this.inputs[0].isConnected 
             && this.inputs[1].isConnected)
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
@@ -130,27 +134,4 @@ extends Operator
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : colorStyleRgb(rgbFromDataType(this._dataType, false));
     }
-
-
-
-    // updateParams(dispatchEvents)
-    // {
-    //     super.updateParams(dispatchEvents);
-
-    //     // this.outputs[0]._value = this.#value.value;
-    // }
-
-
-
-    // generate(callerInput)
-    // {
-    //     if (this.valid) return;
-    //     super.generate(callerInput);
-
-
-    //     if (isNaN(this._sampled))
-    //         this._sampled = this._value.value;
-
-    //     this.output._data = dataFromNumber(this._sampled);
-    // }
 }

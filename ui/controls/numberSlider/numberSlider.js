@@ -76,6 +76,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.range2start       = 0;
     slider.range2end         = 0;
 
+    //slider.ranges            = []; // start, end, colorStyle
 
     
     initNumberSliderChildren(slider);    

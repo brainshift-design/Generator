@@ -78,8 +78,6 @@ extends Operator
             this._c1.control.style.fontStyle = 'italic'; this._c1.control.pointerEvents = false;
             this._c2.control.style.fontStyle = 'italic'; this._c2.control.pointerEvents = false;
             this._c3.control.style.fontStyle = 'italic'; this._c3.control.pointerEvents = false;
-
-            setTimeout(() => this.pushUpdate());
         });
     
         
@@ -88,8 +86,6 @@ extends Operator
             if (!this._c1.input.isConnected) { this._c1.control.style.fontStyle = 'normal'; this._c1.control.pointerEvents = true; }
             if (!this._c2.input.isConnected) { this._c2.control.style.fontStyle = 'normal'; this._c2.control.pointerEvents = true; }
             if (!this._c3.input.isConnected) { this._c3.control.style.fontStyle = 'normal'; this._c3.control.pointerEvents = true; }
-
-            setTimeout(() => this.pushUpdate());
         });
 
 
@@ -108,17 +104,9 @@ extends Operator
             this._c3.allowEditDecimals = this._space.value > 1;
 
             setDataColorToCurrentSpace(this, this._color);
-
-
-            this.pushUpdate();
         });
         
 
-        this._c1.addEventListener('change', () => this.pushUpdate());
-        this._c2.addEventListener('change', () => this.pushUpdate());
-        this._c3.addEventListener('change', () => this.pushUpdate());
-
-        
         initHexbox(this);
 
 
@@ -127,10 +115,7 @@ extends Operator
         this.inner.appendChild(this.#warningOverlay);
 
 
-        setTimeout(() => 
-        {
-            this._space.setValue(0); // init all the params with names
-        });
+        setTimeout(() => { this._space.setValue(0); }); // init all the params with names
     }
 
 
@@ -304,10 +289,10 @@ extends Operator
 
     updateControls(rgb)
     {
-        if (!this.inputs[0].isConnected)  
+        // if (!this.inputs[0].isConnected)  
             this.updateAllControlRanges();
-        else
-            this.resetAllControlRanges();
+        // else
+        //     this.resetAllControlRanges();
 
         this.updateSlider(this._c1.control, isValidRgb(rgb));
         this.updateSlider(this._c2.control, isValidRgb(rgb));
@@ -336,26 +321,6 @@ extends Operator
         this._c2.control.resetRanges();
         this._c3.control.resetRanges();
     }
-
-
-
-    // showInvalidControlRanges()
-    // {
-    //     this._c1.control.range1start = 0;
-    //     this._c1.control.range1end   = 1;
-    //     this._c1.control.range2start = 1;
-    //     this._c1.control.range2end   = 1;
-
-    //     this._c2.control.range1start = 0;
-    //     this._c2.control.range1end   = 1;
-    //     this._c2.control.range2start = 1;
-    //     this._c2.control.range2end   = 1;
-
-    //     this._c3.control.range1start = 0;
-    //     this._c3.control.range1end   = 1;
-    //     this._c3.control.range2start = 1;
-    //     this._c3.control.range2end   = 1;
-    // }
 
 
 

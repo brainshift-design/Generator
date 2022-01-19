@@ -351,6 +351,7 @@ input[type=text]::selection
 :root
 {
     --arithmeticSymbolSize: 26;
+    --colorBackSize:        46px;
 }
 
 
@@ -508,7 +509,7 @@ input[type=text]::selection
     width:            100%;
     z-index:          1000;
     position:         absolute;
-    top:              45;
+    top:              var(--colorBackSize);
     pointer-events:   none;
 }
 
@@ -516,7 +517,7 @@ input[type=text]::selection
 .colorBack
 {
     width:            100%;
-    height:           45px;
+    height:           var(--colorBackSize);
     z-index:          0;
     position:         absolute;
     top:              0;
@@ -577,7 +578,7 @@ input[type=text]::selection
     position:       absolute;
     pointer-events: none;
     z-index:        1000;
-    background:     rgba(255, 0, 0, 0.15);
+    background:     rgba(255, 0, 0, 0.1);
     /* background:     repeating-linear-gradient(
                         -45deg, 
                         transparent            0px 1px, 
@@ -6770,7 +6771,7 @@ extends EventTarget
     onchange  = new Event('change' );
     onconfirm = new Event('confirm');
 
-    
+
 
     constructor(name, type)
     {
@@ -6861,7 +6862,10 @@ extends EventTarget
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
         if (dispatchEvents)
+        {
             this.dispatchSetValueEvents(this.oldValue, value, confirm);
+            setTimeout(() => this.op.pushUpdate());
+        }
     }
 
 
@@ -6973,7 +6977,7 @@ extends Parameter
                 this.control.editDec = nDec;
                 this.control.update();
 
-                this.op.pushUpdate();
+                setTimeout(() => this.op.pushUpdate());
             }
         });
     }
@@ -7189,9 +7193,6 @@ extends Parameter
 
         this.initInput (hasInput,  'number');
         this.initOutput(hasOutput, 'number');
-
-        if (this.input)
-            this.input.addEventListener('connect', () => this.op.pushUpdate());
 
             
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -7432,14 +7433,6 @@ class Graph
 
 
 
-    // updateNodes()
-    // {
-    //     for (let i = 0; i < this.invalidNodes.length; i = 0) // i is reset after each iteragion
-    //         this.invalidNodes[i].update();                   // as node.update() removes 1+ items
-    // }
-
-
-
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -7471,6 +7464,9 @@ class Graph
             
         output.op.updateConnectedInputValueText();
         conn.wire.style.zIndex = MAX_INT32;
+
+
+        setTimeout(() => output.op.pushUpdate());
 
 
         return true;
@@ -7511,6 +7507,10 @@ class Graph
            // && !deletingOutput)
              output.op.makeActive();
             
+
+        setTimeout(() => input.op.pushUpdate());
+
+
         return true;
     }
 
@@ -8283,7 +8283,8 @@ class Operator
 
     pushUpdate()
     {
-        this.invalidate(); 
+        this.invalidate();
+        
         lastNodesInTreeFrom(this).forEach(n => n.update());
     }
 
@@ -8932,7 +8933,7 @@ extends Operator
         this.addParam(this.#value = new NumberParam('', true, false));
         
         this.#value.allowEditDecimals = true;
-        this.#value.addEventListener('change', () => this.pushUpdate());
+        //this.#value.addEventListener('change', () => this.pushUpdate());
     }
 
 
@@ -9344,8 +9345,6 @@ extends Operator
             this._c1.control.style.fontStyle = 'italic'; this._c1.control.pointerEvents = false;
             this._c2.control.style.fontStyle = 'italic'; this._c2.control.pointerEvents = false;
             this._c3.control.style.fontStyle = 'italic'; this._c3.control.pointerEvents = false;
-
-            setTimeout(() => this.pushUpdate());
         });
     
         
@@ -9354,8 +9353,6 @@ extends Operator
             if (!this._c1.input.isConnected) { this._c1.control.style.fontStyle = 'normal'; this._c1.control.pointerEvents = true; }
             if (!this._c2.input.isConnected) { this._c2.control.style.fontStyle = 'normal'; this._c2.control.pointerEvents = true; }
             if (!this._c3.input.isConnected) { this._c3.control.style.fontStyle = 'normal'; this._c3.control.pointerEvents = true; }
-
-            setTimeout(() => this.pushUpdate());
         });
 
 
@@ -9374,17 +9371,9 @@ extends Operator
             this._c3.allowEditDecimals = this._space.value > 1;
 
             setDataColorToCurrentSpace(this, this._color);
-
-
-            this.pushUpdate();
         });
         
 
-        this._c1.addEventListener('change', () => this.pushUpdate());
-        this._c2.addEventListener('change', () => this.pushUpdate());
-        this._c3.addEventListener('change', () => this.pushUpdate());
-
-        
         initHexbox(this);
 
 
@@ -9393,10 +9382,7 @@ extends Operator
         this.inner.appendChild(this.#warningOverlay);
 
 
-        setTimeout(() => 
-        {
-            this._space.setValue(0); // init all the params with names
-        });
+        setTimeout(() => { this._space.setValue(0); }); // init all the params with names
     }
 
 
@@ -9570,10 +9556,10 @@ extends Operator
 
     updateControls(rgb)
     {
-        if (!this.inputs[0].isConnected)  
+        // if (!this.inputs[0].isConnected)  
             this.updateAllControlRanges();
-        else
-            this.resetAllControlRanges();
+        // else
+        //     this.resetAllControlRanges();
 
         this.updateSlider(this._c1.control, isValidRgb(rgb));
         this.updateSlider(this._c2.control, isValidRgb(rgb));
@@ -9602,26 +9588,6 @@ extends Operator
         this._c2.control.resetRanges();
         this._c3.control.resetRanges();
     }
-
-
-
-    // showInvalidControlRanges()
-    // {
-    //     this._c1.control.range1start = 0;
-    //     this._c1.control.range1end   = 1;
-    //     this._c1.control.range2start = 1;
-    //     this._c1.control.range2end   = 1;
-
-    //     this._c2.control.range1start = 0;
-    //     this._c2.control.range1end   = 1;
-    //     this._c2.control.range2start = 1;
-    //     this._c2.control.range2end   = 1;
-
-    //     this._c3.control.range1start = 0;
-    //     this._c3.control.range1end   = 1;
-    //     this._c3.control.range2start = 1;
-    //     this._c3.control.range2end   = 1;
-    // }
 
 
 
@@ -10154,6 +10120,11 @@ function initHexbox(op)
 
 function onHexboxPointerDown(e)
 {
+    const hexbox = e.target;
+
+    if (hexbox.op.inputs[0].isConnected)
+        e.preventDefault();
+
     e.stopPropagation();
 }
 
@@ -10163,7 +10134,8 @@ function onHexboxPointerUp(e)
 {
     const hexbox = e.target;
 
-    if (!hexbox.editing)
+    if (   !hexbox.editing
+        && !hexbox.op.inputs[0].isConnected)
     {
         e.preventDefault();
 
@@ -10558,7 +10530,7 @@ extends Operator
         this.addInput(new Input(this.dataType));
 
         this.addParam(this.#standard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
-        this.addParam(this.#value    = new NumberParam('', false, true, 0, 0, 100));
+        this.addParam(this.#value    = new NumberParam('', false, true, 0));
         
         this.#value.control.pointerEvents   = false;
         this.#value.control.style.fontStyle = 'italic';
@@ -10579,39 +10551,50 @@ extends Operator
         {
             this.#value.control.valueText = '';
 
-            if (this.#standard.value == 0)
+            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            
+            if (   isValidRgb(rgb0)
+                && isValidRgb(rgb1))
             {
-                const ratio = getContrastRatio2(
-                    dataColor2rgb(this.inputs[0].data.color),
-                    dataColor2rgb(this.inputs[1].data.color));
+                if (this.#standard.value == 0)
+                {
+                    const ratio = getContrastRatio2(
+                        dataColor2rgb(this.inputs[0].data.color),
+                        dataColor2rgb(this.inputs[1].data.color));
 
-                let rating = getContrastRating2(ratio);
+                    let rating = getContrastRating2(ratio);
 
-                if (rating != '')
-                    rating = '&nbsp;&nbsp;' + rating;
+                    if (rating != '')
+                        rating = '&nbsp;&nbsp;' + rating;
 
-                this.#value.control.min    = 0;
-                this.#value.control.max    = 21;
-                this.#value.control.suffix = rating;
-                this.#value.control.setValue(ratio);
+                    this.#value.control.min    = 0;
+                    this.#value.control.max    = 21;
+                    this.#value.control.suffix = rating;
+                    this.#value.control.setValue(ratio);
+                }
+                else
+                {
+                    const ratio = getContrastRatio3(
+                        dataColor2rgb(this.inputs[0].data.color),
+                        dataColor2rgb(this.inputs[1].data.color));
+                        
+                    this.#value.control.min    = -108;
+                    this.#value.control.max    =  106;
+                    this.#value.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
+                    this.#value.control.setValue(ratio);
+                }
+
+
+                super.update();
+                return;
             }
-            else
-            {
-                const ratio = getContrastRatio3(
-                    dataColor2rgb(this.inputs[0].data.color),
-                    dataColor2rgb(this.inputs[1].data.color));
-                    
-                this.#value.control.min    = -110;
-                this.#value.control.max    =  110;
-                this.#value.control.suffix = '';
-                this.#value.control.setValue(ratio);
-            }
+            
         }
-        else
-        {
-            this.#value.control.valueText = '?';
-            this.#value.setValue(0);
-        }
+
+
+        this.#value.control.valueText = '?';
+        this.#value.setValue(0, false, true, false);
 
            
         super.update()
@@ -10653,13 +10636,6 @@ extends Operator
         }
 
 
-        this.label.style.fontWeight = 
-               this.inputs[0].isConnected
-            && this.inputs[1].isConnected
-            ? 'bold'
-            : 'normal';
-
-
         if (   this.inputs[0].isConnected 
             && this.inputs[1].isConnected)
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
@@ -10674,29 +10650,6 @@ extends Operator
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : colorStyleRgb(rgbFromDataType(this._dataType, false));
     }
-
-
-
-    // updateParams(dispatchEvents)
-    // {
-    //     super.updateParams(dispatchEvents);
-
-    //     // this.outputs[0]._value = this.#value.value;
-    // }
-
-
-
-    // generate(callerInput)
-    // {
-    //     if (this.valid) return;
-    //     super.generate(callerInput);
-
-
-    //     if (isNaN(this._sampled))
-    //         this._sampled = this._value.value;
-
-    //     this.output._data = dataFromNumber(this._sampled);
-    // }
 }
 
 
@@ -12147,6 +12100,7 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.range2start       = 0;
     slider.range2end         = 0;
 
+    //slider.ranges            = []; // start, end, colorStyle
 
     
     initNumberSliderChildren(slider);    
@@ -13094,13 +13048,14 @@ function initSelectSlider(slider, width, height, name, options, def)
             : 0;
 
   
-        slider.bar  .style.top     = (slider.clientHeight - slider.clientHeight * slider.barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height  = (slider.clientHeight * slider.barHeight) + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
-
         slider.focus.style.left    = 0;
         slider.focus.style.top     = 0;
         slider.focus.style.width   = slider.clientWidth;
         slider.focus.style.height  = slider.clientHeight;
+
+
+        slider.bar  .style.top     = slider.clientHeight - slider.clientHeight * slider.barHeight; //0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height  = slider.clientHeight * slider.barHeight; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         if (v >= 0)
         {
@@ -13115,15 +13070,13 @@ function initSelectSlider(slider, width, height, name, options, def)
 
 
         slider.style.backgroundColor = slider.backColor;
+        slider.bar.style.background  = slider.valueColor;
 
-
-        slider.bar.style.background = slider.valueColor;
 
         slider.text.innerHTML = 
              slider.options.length > 0
              ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
              : '';
-        
 
         slider.text.style.color = slider.textColor;
     };

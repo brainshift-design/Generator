@@ -23,7 +23,7 @@ extends EventTarget
     onchange  = new Event('change' );
     onconfirm = new Event('confirm');
 
-    
+
 
     constructor(name, type)
     {
@@ -114,7 +114,10 @@ extends EventTarget
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
         if (dispatchEvents)
+        {
             this.dispatchSetValueEvents(this.oldValue, value, confirm);
+            setTimeout(() => this.op.pushUpdate());
+        }
     }
 
 

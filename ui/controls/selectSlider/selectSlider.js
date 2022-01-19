@@ -349,13 +349,14 @@ function initSelectSlider(slider, width, height, name, options, def)
             : 0;
 
   
-        slider.bar  .style.top     = (slider.clientHeight - slider.clientHeight * slider.barHeight) + 'px'; //0;//slider.mouseOver ? 1 : 0;
-        slider.bar  .style.height  = (slider.clientHeight * slider.barHeight) + 'px'; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
-
         slider.focus.style.left    = 0;
         slider.focus.style.top     = 0;
         slider.focus.style.width   = slider.clientWidth;
         slider.focus.style.height  = slider.clientHeight;
+
+
+        slider.bar  .style.top     = slider.clientHeight - slider.clientHeight * slider.barHeight; //0;//slider.mouseOver ? 1 : 0;
+        slider.bar  .style.height  = slider.clientHeight * slider.barHeight; //slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
 
         if (v >= 0)
         {
@@ -370,15 +371,13 @@ function initSelectSlider(slider, width, height, name, options, def)
 
 
         slider.style.backgroundColor = slider.backColor;
+        slider.bar.style.background  = slider.valueColor;
 
-
-        slider.bar.style.background = slider.valueColor;
 
         slider.text.innerHTML = 
              slider.options.length > 0
              ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
              : '';
-        
 
         slider.text.style.color = slider.textColor;
     };

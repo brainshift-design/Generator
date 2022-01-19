@@ -23,6 +23,11 @@ function initHexbox(op)
 
 function onHexboxPointerDown(e)
 {
+    const hexbox = e.target;
+
+    if (hexbox.op.inputs[0].isConnected)
+        e.preventDefault();
+
     e.stopPropagation();
 }
 
@@ -32,7 +37,8 @@ function onHexboxPointerUp(e)
 {
     const hexbox = e.target;
 
-    if (!hexbox.editing)
+    if (   !hexbox.editing
+        && !hexbox.op.inputs[0].isConnected)
     {
         e.preventDefault();
 

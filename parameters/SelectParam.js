@@ -55,9 +55,6 @@ extends Parameter
         this.initInput (hasInput,  'number');
         this.initOutput(hasOutput, 'number');
 
-        if (this.input)
-            this.input.addEventListener('connect', () => this.op.pushUpdate());
-
             
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });

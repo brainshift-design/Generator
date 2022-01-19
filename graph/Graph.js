@@ -142,14 +142,6 @@ class Graph
 
 
 
-    // updateNodes()
-    // {
-    //     for (let i = 0; i < this.invalidNodes.length; i = 0) // i is reset after each iteragion
-    //         this.invalidNodes[i].update();                   // as node.update() removes 1+ items
-    // }
-
-
-
     connect(output, input)
     {
         if (input.connectedOutput == output)
@@ -181,6 +173,9 @@ class Graph
             
         output.op.updateConnectedInputValueText();
         conn.wire.style.zIndex = MAX_INT32;
+
+
+        setTimeout(() => output.op.pushUpdate());
 
 
         return true;
@@ -221,6 +216,10 @@ class Graph
            // && !deletingOutput)
              output.op.makeActive();
             
+
+        setTimeout(() => input.op.pushUpdate());
+
+
         return true;
     }
 

@@ -222,7 +222,8 @@ class Operator
 
     pushUpdate()
     {
-        this.invalidate(); 
+        this.invalidate();
+        
         lastNodesInTreeFrom(this).forEach(n => n.update());
     }
 

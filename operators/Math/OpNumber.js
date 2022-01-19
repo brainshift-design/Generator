@@ -14,7 +14,7 @@ extends Operator
         this.addParam(this.#value = new NumberParam('', true, false));
         
         this.#value.allowEditDecimals = true;
-        this.#value.addEventListener('change', () => this.pushUpdate());
+        //this.#value.addEventListener('change', () => this.pushUpdate());
     }
 
 
