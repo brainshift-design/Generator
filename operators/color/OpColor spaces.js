@@ -189,9 +189,9 @@ function getNormalValueRgb_(value, chan)
 {
     switch (chan)
     {
-        case 0: return value / rgbFactorR;
-        case 1: return value / rgbFactorG; 
-        case 2: return value / rgbFactorB;
+        case 0: return value / rgbFactor[0];
+        case 1: return value / rgbFactor[1]; 
+        case 2: return value / rgbFactor[2];
     }
 }
 
@@ -201,9 +201,9 @@ function getNormalValueHs_(value, chan)
 {
     switch (chan)
     {
-        case 0: return value / hs_FactorH;
-        case 1: return value / hs_FactorS; 
-        case 2: return value / hs_Factor_;
+        case 0: return value / hs_Factor[0];
+        case 1: return value / hs_Factor[1]; 
+        case 2: return value / hs_Factor[2];
     }
 }
 
@@ -213,9 +213,9 @@ function getNormalValueOpp(value, chan)
 {
     switch (chan)
     {
-        case 0: return value / oppFactorL;
-        case 1: return value / oppFactor1; 
-        case 2: return value / oppFactor2;
+        case 0: return value / oppFactor[0];
+        case 1: return value / oppFactor[1]; 
+        case 2: return value / oppFactor[2];
     }
 }
 
@@ -225,9 +225,9 @@ function getNormalValueHcl(value, chan)
 {
     switch (chan)
     {
-        case 0: return value / hclFactorH;
-        case 1: return value / hclFactorC; 
-        case 2: return value / hclFactorL;
+        case 0: return value / hclFactor[0];
+        case 1: return value / hclFactor[1]; 
+        case 2: return value / hclFactor[2];
     }
 }
 
