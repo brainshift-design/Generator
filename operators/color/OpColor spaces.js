@@ -128,6 +128,14 @@ function switchToTextbox(op)
         op.inner.removeChild(op._c3.div);
         
         op.inner.appendChild(op.hexbox);
+
+        for (const input of op.inputs)
+            if (input.isConnected)
+                graph.disconnect(input);
+
+        for (const output of op.outputs)
+            for (const input of output.connectedInputs)
+                graph.disconnect(input);
     }
 }
 
