@@ -271,9 +271,7 @@ function switchToSpace(op, space)
         case 'luv':    switchToLuv   (op); break;
     }
 
-    op._c1.control.resetRanges();
-    op._c2.control.resetRanges();
-    op._c3.control.resetRanges();
+    op.resetAllControlRanges();
 }
 
 

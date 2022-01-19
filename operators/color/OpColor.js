@@ -289,10 +289,7 @@ extends Operator
 
     updateControls(rgb)
     {
-        // if (!this.inputs[0].isConnected)  
-            this.updateAllControlRanges();
-        // else
-        //     this.resetAllControlRanges();
+        this.updateAllControlRanges();
 
         this.updateSlider(this._c1.control, isValidRgb(rgb));
         this.updateSlider(this._c2.control, isValidRgb(rgb));
@@ -348,10 +345,6 @@ extends Operator
                     this._color[1],
                     this._color[2],
                     (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0], 2)]));
-
-            this.validateControlRanges(this._c1.control);
-            this.validateControlRanges(this._c2.control);
-            this.validateControlRanges(this._c3.control);
         }
         else // no warning ranges
         {
@@ -361,52 +354,41 @@ extends Operator
 
 
 
-    validateControlRanges(slider)
-    {
-        if (   slider.range1start < slider.range2end
-            && slider.range1end   > slider.range2start)
-        {
-            slider.range1end   = slider.range2end;
-            slider.range2start = slider.range2end = 1;
-        }
-    }
-
-
-
     updateControlRanges(slider, getRgb)
     {
+        const ranges = [];
+ 
+        
         const precision = 0.005;
-            
-        let range = false;
-        let first = true;
+        let   open      = false;
 
         for (let f = 0; f <= 1; f += precision)
         {
             const rgb = getRgb(f);
 
-            if (!range && !isValidRgb(rgb)) 
+            if (!open && !isValidRgb(rgb)) 
             {
-                range = true;
+                const range = new NumberSliderRange(f);
+                range.background = 'rgba(255, 0, 0, 0.1)';
+                ranges.push(range);
 
-                if (first) slider.range1start = f;
-                else       slider.range2start = f;
+                open = true;
             }
-            else if (range && isValidRgb(rgb)) 
+            else if (open && isValidRgb(rgb)) 
             {
-                range = false;
-
-                if (first) { slider.range1end = f; first = false; }
-                else         slider.range2end = f;
+                ranges[ranges.length-1].end = f;
+                open = false;
             }
         }
 
-        if (range)
-        {
-            if (first) slider.range1end = 1;
-            else       slider.range2end = 1;
-        }
-        else if (!range
-              && first)
+        
+        if (open)
+            lastOf(ranges).end = 1;
+        else if (!open
+              && ranges.length == 0)
             slider.resetRanges();
+
+
+        slider.ranges = ranges;
     }
 }

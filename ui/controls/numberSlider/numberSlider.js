@@ -70,13 +70,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.valueText         = '';
 
 
-    slider.range1start       = 0;
-    slider.range1end         = 0;
-
-    slider.range2start       = 0;
-    slider.range2end         = 0;
-
-    //slider.ranges            = []; // start, end, colorStyle
+    slider.ranges            = [];
+    slider.rangeDivs         = [];
 
     
     initNumberSliderChildren(slider);    
@@ -428,27 +423,46 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.updateRanges = function()
     {
-        if (slider.range1start == slider.range1end)
-            slider.range1.style.display = 'none';
-        else
+        if (slider.ranges.length == slider.rangeDivs.length) // update
         {
-            slider.range1.style.display = 'block';
-            slider.range1.style.left    = slider.clientWidth * slider.range1start;  
-            slider.range1.style.top     = 0;
-            slider.range1.style.width   = slider.clientWidth * (slider.range1end - slider.range1start);
-            slider.range1.style.height  = slider.clientHeight;
+            for (let i = 0; i < slider.ranges.length; i++)
+            {
+                slider.updateRangeDiv(
+                    slider.ranges   [i],
+                    slider.rangeDivs[i]);
+            }
         }
+        else // recreate
+        {
+            slider.resetRangeDivs();
+
+            for (let i = 0; i < slider.ranges.length; i++)
+            {
+                const range = slider.ranges[i];
+
+                const div = createDiv('numberSliderRange');
+                slider.rangeDivs.push(div);
+                slider.appendChild(div);
+            
+                slider.updateRangeDiv(range, div);
+            }
+        }
+    };
 
 
-        if (slider.range2start == slider.range2end)
-            slider.range2.style.display = 'none';
+
+    slider.updateRangeDiv = function(range, div)
+    {
+        if (range.start == range.end)
+            div.style.display = 'none';
         else
         {
-            slider.range2.style.display = 'block';
-            slider.range2.style.left   = slider.clientWidth * slider.range2start;
-            slider.range2.style.top    = 0;
-            slider.range2.style.width  = slider.clientWidth * (slider.range2end - slider.range2start);
-            slider.range2.style.height = slider.clientHeight;
+            div.style.display    = 'block';
+            div.style.left       = slider.clientWidth * range.start;  
+            div.style.top        = 0;
+            div.style.width      = slider.clientWidth * (range.end - range.start);
+            div.style.height     = slider.clientHeight;
+            div.style.background = range.background;
         }
     };
 
@@ -456,11 +470,20 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
     slider.resetRanges = function()
     {
-        slider.range1start = 
-        slider.range1end   = 
-        slider.range2start = 
-        slider.range2end   = 0;
+        slider.ranges = [];
+        slider.resetRangeDivs();        
     };
+
+
+
+    slider.resetRangeDivs = function()
+    {
+        for (const div of slider.rangeDivs)
+            if (slider.contains(div))
+                slider.removeChild(div);
+
+        slider.rangeDivs = [];
+    }
 
 
 
