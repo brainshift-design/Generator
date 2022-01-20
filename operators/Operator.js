@@ -117,7 +117,7 @@ class Operator
         
         this.defaultWidth  = defWidth;
         
-        createNode(this);
+        createOperatorNode(this);
     }    
 
 

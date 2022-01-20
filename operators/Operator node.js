@@ -1,4 +1,4 @@
-function createNode(node)
+function createOperatorNode(node)
 {
     node.div = document.createElement('div');
 

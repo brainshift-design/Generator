@@ -11,7 +11,6 @@ extends Action
     constructor(opType)
     {
         super('Create ' + capitalize(opType) + ' node');
-        
         this.opType = opType;
     }
 
