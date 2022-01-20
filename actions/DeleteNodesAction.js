@@ -2,6 +2,7 @@ class DeleteNodesAction
 extends Action
 {
     nodeIds     = [];
+    nodes       = [];
     connections = [];
 
 
@@ -9,8 +10,8 @@ extends Action
     constructor(nodeIds)
     {
         super('Delete nodes');
-        
         this.nodeIds = [...nodeIds]; // clone the array
+        this.nodes   = graph.nodes.filter(n => this.nodeIds.includes(n.id));
     }
 
 
@@ -25,7 +26,7 @@ extends Action
 
     undo()
     {
-        uiUndeleteNodes(this.nodeIds);
+        uiUndeleteNodes(this.nodes);
         // TODO restore connections
     }
 }

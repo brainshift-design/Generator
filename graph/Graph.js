@@ -83,6 +83,14 @@ class Graph
 
 
 
+    addNodes(nodes)
+    {
+        for (const node of nodes)
+            this.addNode(node);
+    }
+
+
+
     addNode(node)
     {
         node.graph = this;

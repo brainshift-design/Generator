@@ -3,7 +3,7 @@ document.addEventListener('keydown', e =>
     // delete
     if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected));
+        actionManager.do(new DeleteNodesAction(graphView.selectedIds()));
         graphView._selected = [];
     }
 

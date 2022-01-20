@@ -7371,6 +7371,14 @@ class Graph
 
 
 
+    addNodes(nodes)
+    {
+        for (const node of nodes)
+            this.addNode(node);
+    }
+
+
+
     addNode(node)
     {
         node.graph = this;
@@ -10956,6 +10964,7 @@ class DeleteNodesAction
 extends Action
 {
     nodeIds     = [];
+    nodes       = [];
     connections = [];
 
 
@@ -10963,8 +10972,8 @@ extends Action
     constructor(nodeIds)
     {
         super('Delete nodes');
-        
         this.nodeIds = [...nodeIds]; // clone the array
+        this.nodes   = graph.nodes.filter(n => this.nodeIds.includes(n.id));
     }
 
 
@@ -10979,7 +10988,7 @@ extends Action
 
     undo()
     {
-        uiUndeleteNodes(this.nodeIds);
+        uiUndeleteNodes(this.nodes);
         // TODO restore connections
     }
 }
@@ -11349,7 +11358,7 @@ document.addEventListener('keydown', e =>
     // delete
     if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected));
+        actionManager.do(new DeleteNodesAction(graphView.selectedIds()));
         graphView._selected = [];
     }
 
@@ -15219,9 +15228,9 @@ scrollbarY.addEventListener('pointermove', e =>
 });
 
 
-graphView._selected     = [];
-graphView._prevSelected = [];
-graphView.lastSelected  = [];
+graphView._selected     = []; // these are
+graphView._prevSelected = []; // nodes,
+graphView.lastSelected  = []; // not IDs
 
 
 Object.defineProperty(graphView, 'selected',

@@ -1,6 +1,6 @@
-graphView._selected     = [];
-graphView._prevSelected = [];
-graphView.lastSelected  = [];
+graphView._selected     = []; // these are
+graphView._prevSelected = []; // nodes,
+graphView.lastSelected  = []; // not IDs
 
 
 Object.defineProperty(graphView, 'selected',
