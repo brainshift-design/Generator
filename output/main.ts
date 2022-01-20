@@ -212,7 +212,6 @@ figma.on('close',           figOnPluginClose);
 figma.showUI(__html__);
 
 
-
 function figLoadState(msg)
 {
     (async function()
@@ -253,7 +252,8 @@ function figLoadState(msg)
 
 figma.ui.onmessage = msg => 
 {
-    console.log(msg.cmd);//figma.notify(msg.cmd);
+    //figma.notify(msg.cmd);
+    console.log(msg.cmd);
     switch (msg.cmd)
     {
         case 'figLoadState':         figLoadState        (msg);                             break;

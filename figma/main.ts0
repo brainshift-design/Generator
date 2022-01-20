@@ -19,7 +19,6 @@ figma.on('close',           figOnPluginClose);
 figma.showUI(__html__);
 
 
-
 function figLoadState(msg)
 {
     (async function()

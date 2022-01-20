@@ -4,11 +4,12 @@
   "description": "Generative design for Figma",
   "main": "output/main.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc "
   },
   "author": "",
   "license": "",
   "devDependencies": {
-    "@figma/plugin-typings": "^1.37.0"
+    "@figma/plugin-typings": "^1.41.1"
   }
 }

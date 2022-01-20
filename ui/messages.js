@@ -47,13 +47,13 @@ generator.onmessage = function(e)
 function uiPostMessageToFigma(msg)
 {
     figMessages.push(msg);
+    uiPostNextMessageToFigma();
 }
 
 
 
 function uiPostNextMessageToFigma()
 {
-    console.log('uiPostNextMessageToFigma()');
     if (figMessages.length > 0)
     {
         let msg = figMessages.shift();

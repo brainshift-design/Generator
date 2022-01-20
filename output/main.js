@@ -121,6 +121,7 @@ function figOnSelectionChange() {
     }
 }
 function figOnPluginClose() {
+    figPostMessageToUi({ msg: 'uiClosePlugin' });
     figDeleteAllObjects();
 }
 const OBJ_RECT = 1;
@@ -166,6 +167,8 @@ function figLoadState(msg) {
 // from UI <--
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 figma.ui.onmessage = msg => {
+    //figma.notify(msg.cmd);
+    console.log(msg.cmd);
     switch (msg.cmd) {
         case 'figLoadState':
             figLoadState(msg);
@@ -175,6 +178,9 @@ figma.ui.onmessage = msg => {
             break;
         case 'figSaveLocal':
             figSaveLocal(msg.key, msg.value);
+            break;
+        case 'figGetPluginData':
+            figGetPluginData(msg.key);
             break;
         case 'figSetPluginData':
             figSetPluginData(msg.key, msg.value);
@@ -189,7 +195,7 @@ figma.ui.onmessage = msg => {
             figNotify(msg.text, msg.prefix, msg.delay);
             break;
     }
-    figPostMessageToUi({ cmd: 'uiEndFigmaMessage' });
+    figPostMessageToUi({ cmd: 'uiFigMsgReceived' });
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to UI -->
@@ -211,6 +217,15 @@ function figLoadLocal(key) {
 }
 function figSaveLocal(key, value) {
     figma.clientStorage.setAsync(key, value);
+}
+function figGetPluginData(key) {
+    //figma.notify('figGetPluginData()');
+    const data = figma.currentPage.getPluginData(key);
+    // figPostMessageToUi({
+    //     msg:  'uiGetPluginDataReturn',
+    //     key:   key,
+    //     value: data
+    // });
 }
 function figSetPluginData(key, value) {
     figma.currentPage.setPluginData(key, value);
