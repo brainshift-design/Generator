@@ -169,9 +169,9 @@ class Connection
         
         let json = 
               pos + '{\n'
-            + pos + tab + '"outputOp"   : "' + this.output.op.name + '",\n'
+            + pos + tab + '"outputOp" : "' + this.output.op.name + '",\n'
             + (this.output.param ? pos + tab + '"outputIndex": "' + this.output.param.name + '",\n' : '')
-            + pos + tab + '"inputOp"    : "' + this.input.op.name + '"\n'
+            + pos + tab + '"inputOp" : "' + this.input.op.name + '"\n'
             + (this.input.param ? pos + tab + '"inputIndex" : "' + this.input.param.name + '"\n' : '')
             + pos + '}';
 

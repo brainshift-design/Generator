@@ -14,15 +14,13 @@ function figSaveLocal(key, value)
 
 function figGetPluginData(key)
 {
-    //figma.notify('figGetPluginData()');
-
     const data = figma.currentPage.getPluginData(key);
 
-    // figPostMessageToUi({
-    //     msg:  'uiGetPluginDataReturn',
-    //     key:   key,
-    //     value: data
-    // });
+    figPostMessageToUi({
+        cmd:  'uiGetPluginDataReturn',
+        key:   key,
+        value: data
+    });
 }
 
 

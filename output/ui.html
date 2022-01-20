@@ -6199,7 +6199,6 @@ function uiLoadState(state)
 
 function uiGetPluginData(key)
 {
-    console.log('uiGetPluginData()');
     uiPostMessageToFigma({ 
         cmd: 'figGetPluginData', 
         key:  key
@@ -6210,7 +6209,6 @@ function uiGetPluginData(key)
 
 function uiGetPluginDataReturn(msg)
 {
-    console.log('uiGetPluginDataReturns()');
     // choose here which data is being returned
 
     switch (msg.key)
@@ -7055,8 +7053,8 @@ extends Parameter
     toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
-        
-        return pos + '"' + this.name  + '": "' + this.value + '"';
+       
+        return pos + '["' + this.name  + '", "' + this.value + '"]';
     }
 }
 
@@ -7159,7 +7157,8 @@ extends Parameter
     toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
-        return pos + '"' + this.name  + '": "' + this.value + '"';
+        
+        return pos + '["' + this.name  + '", "' + this.value + '"]';
     }
 }
 
@@ -7268,7 +7267,8 @@ extends Parameter
     toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
-        return pos + '"' + this.name  + '": "' + this.value + '"';
+
+        return pos + '["' + this.name  + '", "' + this.value + '"]';
     }
 }
 
@@ -7564,19 +7564,18 @@ class Graph
 
         let json = 
               '{\n'
-            + tab + '"zoom" : "' + graphView.zoom  + '",\n'
-            + tab + '"pan-x": "' + graphView.pan.x + '",\n'
-            + tab + '"pan-y": "' + graphView.pan.y + '",\n'
+            + tab + '"zoom": "' + graphView.zoom  + '",\n'
+            + tab + '"panx": "' + graphView.pan.x + '",\n'
+            + tab + '"pany": "' + graphView.pan.y + '",\n'
             + tab + '"nodes":\n'
             + tab + '[';
             
 
+        let first = true;
         for (let i = 0; i < this.nodes.length; i++)
         {
+            if (!first) json += ','; first = false;
             json += '\n' + this.nodes[i].toJson(4);
-            
-            if (i < this.nodes.length-1)
-                json += ',';
         }
         
 
@@ -7587,6 +7586,7 @@ class Graph
             + tab + '[';
 
             
+        first = true;
         for (let i = 0; i < this.nodes.length; i++)
         {
             let node = this.nodes[i];
@@ -7596,10 +7596,8 @@ class Graph
                 if (!node.inputs[j].isConnected)
                     continue;
 
+                if (!first) json += ','; first = false;
                 json += '\n' + node.inputs[j].connection.toJson(4);
-                
-                if (i < node.inputs.length-1)
-                    json += ',';
             }
         }
         
@@ -8065,9 +8063,9 @@ class Connection
         
         let json = 
               pos + '{\n'
-            + pos + tab + '"outputOp"   : "' + this.output.op.name + '",\n'
+            + pos + tab + '"outputOp" : "' + this.output.op.name + '",\n'
             + (this.output.param ? pos + tab + '"outputIndex": "' + this.output.param.name + '",\n' : '')
-            + pos + tab + '"inputOp"    : "' + this.input.op.name + '"\n'
+            + pos + tab + '"inputOp" : "' + this.input.op.name + '"\n'
             + (this.input.param ? pos + tab + '"inputIndex" : "' + this.input.param.name + '"\n' : '')
             + pos + '}';
 
@@ -8560,10 +8558,10 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type":   "' + this.opType         + '",\n'
-            + pos + tab + '"name":   "' + this.name           + '",\n'
-            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
-            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
+              pos + tab + '"type": "' + this.opType + '",\n'
+            + pos + tab + '"name": "' + this.name   + '",\n'
+            + pos + tab + '"x": "' + this.div.style.left + '",\n'
+            + pos + tab + '"y": "' + this.div.style.top  + '"';
 
         return json;
     }
@@ -8578,19 +8576,60 @@ class Operator
         let json = 
               pos + '{\n'
             + this.toJsonBase(nTab);
-        
-        for (const param of this.params)
+
+        if (this.params.filter(p => !p.isDefault()).length > 0)
         {
-            if (   !param.isDefault()
-                && (   !param.input
-                    || !param.input.isConnected))
-                json += ',\n' + param.toJson(nTab + 2);
+            json +=
+                ',\n'
+                + pos + tab + '"params":\n'
+                + pos + tab + '[\n';
+
+            json += this.paramsToJson(nTab);
+
+            json += 
+                pos + tab + ']';
         }
 
         json += '\n' + pos + '}';
 
         return json;
     }
+
+
+
+    paramsToJson(nTab)
+    {
+        let pos = ' '.repeat(nTab);
+
+        let json = '';
+
+        let first = true;
+        for (const param of this.params)
+        {
+            if (   !param.isDefault()
+                && (   !param.input
+                    || !param.input.isConnected))
+            {
+                if (!first) json += ',\n'; first = false;
+                json += pos + param.toJson(nTab);
+            }
+        }
+
+        if (!first)
+            json += '\n';
+
+        return json;
+    }
+
+
+
+    // loadParams(_node)
+    // {
+    //     for (let i = 4; i < _node.length; i++) // 4 to skip type, name, x and y
+    //     {
+    //         const _param = _node.
+    //     }
+    // }
 }
 
 
@@ -8963,21 +9002,21 @@ extends Operator
     {
         super('number', 'num', 'number', 70);
 
-        //this.addOutput(new Output(this.dataType));
+        this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue = new NumberParam('value', false, true, true));
+        this.addParam(this.#paramValue = new NumberParam('value', false, true, false));
         
         this.#paramValue.allowEditDecimals = true;
     }
 
 
 
-    refresh()
-    {
-        super.refresh();
+    // refresh()
+    // {
+    //     super.refresh();
         
-        //this._sampled = Number.NaN;
-    }
+    //     //this._sampled = Number.NaN;
+    // }
 
 
 
@@ -8988,19 +9027,19 @@ extends Operator
             
         this.updateParams(false);
         
-        // this.outputs[0]._data = dataFromNumber(
-        //     this.#value.value, 
-        //     this.#value.control.dec);
+        this.outputs[0]._data = dataFromNumber(
+            this.#paramValue.value, 
+            this.#paramValue.control.dec);
             
         super.update()
     }
 
 
 
-    updateNode()
-    {
-        super.updateNode();
-    }
+    // updateNode()
+    // {
+    //     super.updateNode();
+    // }
 
 
 
@@ -9142,6 +9181,23 @@ extends Operator
         
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
     }
+
+
+
+    // paramsToJson(nTab)
+    // {
+    //     let json = '';
+
+    //     for (const param of this.params)
+    //     {
+    //         if (   !param.isDefault()
+    //             && (   !param.input
+    //                 || !param.input.isConnected))
+    //             json += ',\n' + param.toJson(nTab + 2);
+    //     }
+
+    //     return json;
+    // }
 
 
 
@@ -9764,25 +9820,27 @@ extends Operator
 
 
 
-    toJson(nTab = 0) 
+    paramsToJson(nTab = 0) 
     {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        let pos = ' '.repeat(nTab);
         
-        let json = 
-              pos + '{\n'
-            + this.toJsonBase(nTab);
+        let json = '';
         
+        let first = true;
         for (const param of this.params)
         {
             if (   !param.isDefault()
                 && (   !param.input
                     || !param.input.isConnected)
                 && !this.inputs[0].isConnected)
-                json += ',\n' + param.toJson(nTab + 2);
+            {
+                if (!first) json += ',\n'; first = false;
+                json += pos + param.toJson(nTab);
+            }
         }
 
-        json += '\n' + pos + '}';
+        if (!first)
+            json += '\n';
 
         return json;
     }
@@ -10655,7 +10713,7 @@ extends Operator
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
+        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
       
         
@@ -10858,26 +10916,26 @@ extends Operator
 
 
 
-    toJson(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+    // toJson(nTab = 0) 
+    // {
+    //     let   pos = ' '.repeat(nTab);
+    //     const tab = '  ';
         
-        let json = 
-              pos + '{\n'
-            + this.toJsonBase(nTab);
+    //     let json = 
+    //           pos + '{\n'
+    //         + this.toJsonBase(nTab);
         
-        const param = this.params[0];
+    //     const param = this.params[0];
 
-        if (   !param.isDefault()
-            && (   !param.input
-                || !param.input.isConnected))
-            json += ',\n' + param.toJson(nTab + 2);
+    //     if (   !param.isDefault()
+    //         && (   !param.input
+    //             || !param.input.isConnected))
+    //         json += ',\n' + param.toJson(nTab + 2);
 
-        json += '\n' + pos + '}';
+    //     json += '\n' + pos + '}';
 
-        return json;
-    }
+    //     return json;
+    // }
 }
 
 
@@ -11571,7 +11629,7 @@ onmessage = e =>
         case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
         case 'uiClosePlugin':         uiClosePlugin();                   break;
 
-        case 'uiFigMsgReceived':      uiPostNextMessageToFigma();        break;
+        case 'uiEndFigMessage':       uiPostNextMessageToFigma();        break;
       //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
     }    
 }    
@@ -15949,41 +16007,51 @@ graphView.getNodeOffsetRect = (node) =>
 }
 
 
-function saveToLocalFile(filename, str) 
-{
-    const link = document.createElement('a');
-    link.style.display = 'none';
+// function saveToLocalFile(filename, str) 
+// {
+//     const link = document.createElement('a');
+//     link.style.display = 'none';
     
-    link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
-    link.setAttribute('download', filename);
+//     link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
+//     link.setAttribute('download', filename);
     
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+// }
 
 
 
 function loadGraph(json)
 {
-    console.log('loadGraph()');
-    const reader = new FileReader();
+    const data = JSON.parse(json);
 
-    reader.onload = () =>
+
+    graphView.setZoomAndPan(
+        data.zoom,
+        data.panx, 
+        data.pany);
+
+
+    for (const _node of data.nodes)
     {
-        graph.clear();
+        const node = graph.createNode(_node.type);
 
-        
-        let load = JSON.parse(reader.result);
+        node.name = _node.name;
 
-        for (const nodeInfo of load.nodes)
-        {
-            let node = uiCreateNode(nodeInfo.type, false);
-            node.name = nodeInfo.name;
-        }
-    };
+        setNodePosition(
+            node, 
+            _node.nodex, 
+            _node.nodey);
 
-    reader.readAsText(json);
+        node.loadParams(_node);
+    }
+
+
+    for (const _conn of data.connections)
+    {
+
+    }
 }
 
 

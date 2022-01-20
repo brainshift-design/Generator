@@ -1,36 +1,46 @@
-function saveToLocalFile(filename, str) 
-{
-    const link = document.createElement('a');
-    link.style.display = 'none';
+// function saveToLocalFile(filename, str) 
+// {
+//     const link = document.createElement('a');
+//     link.style.display = 'none';
     
-    link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
-    link.setAttribute('download', filename);
+//     link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
+//     link.setAttribute('download', filename);
     
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+// }
 
 
 
 function loadGraph(json)
 {
-    console.log('loadGraph()');
-    const reader = new FileReader();
+    const data = JSON.parse(json);
 
-    reader.onload = () =>
+
+    graphView.setZoomAndPan(
+        data.zoom,
+        data.panx, 
+        data.pany);
+
+
+    for (const _node of data.nodes)
     {
-        graph.clear();
+        const node = graph.createNode(_node.type);
 
-        
-        let load = JSON.parse(reader.result);
+        node.name = _node.name;
 
-        for (const nodeInfo of load.nodes)
-        {
-            let node = uiCreateNode(nodeInfo.type, false);
-            node.name = nodeInfo.name;
-        }
-    };
+        setNodePosition(
+            node, 
+            _node.nodex, 
+            _node.nodey);
 
-    reader.readAsText(json);
+        node.loadParams(_node);
+    }
+
+
+    for (const _conn of data.connections)
+    {
+
+    }
 }

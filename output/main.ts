@@ -238,6 +238,10 @@ function figLoadState(msg)
         if (productKey == null) productKey = '';
 
 
+        // load graph
+        
+
+
         // end load state
         figPostMessageToUi({
             cmd:        'uiEndLoadState',
@@ -252,8 +256,6 @@ function figLoadState(msg)
 
 figma.ui.onmessage = msg => 
 {
-    //figma.notify(msg.cmd);
-    console.log(msg.cmd);
     switch (msg.cmd)
     {
         case 'figLoadState':         figLoadState        (msg);                             break;
@@ -266,7 +268,7 @@ figma.ui.onmessage = msg =>
         case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
     }
 
-    figPostMessageToUi({cmd: 'uiFigMsgReceived'});
+    figPostMessageToUi({cmd: 'uiEndFigMessage'});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -311,15 +313,13 @@ function figSaveLocal(key, value)
 
 function figGetPluginData(key)
 {
-    //figma.notify('figGetPluginData()');
-
     const data = figma.currentPage.getPluginData(key);
 
-    // figPostMessageToUi({
-    //     msg:  'uiGetPluginDataReturn',
-    //     key:   key,
-    //     value: data
-    // });
+    figPostMessageToUi({
+        cmd:  'uiGetPluginDataReturn',
+        key:   key,
+        value: data
+    });
 }
 
 

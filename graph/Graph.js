@@ -246,19 +246,18 @@ class Graph
 
         let json = 
               '{\n'
-            + tab + '"zoom" : "' + graphView.zoom  + '",\n'
-            + tab + '"pan-x": "' + graphView.pan.x + '",\n'
-            + tab + '"pan-y": "' + graphView.pan.y + '",\n'
+            + tab + '"zoom": "' + graphView.zoom  + '",\n'
+            + tab + '"panx": "' + graphView.pan.x + '",\n'
+            + tab + '"pany": "' + graphView.pan.y + '",\n'
             + tab + '"nodes":\n'
             + tab + '[';
             
 
+        let first = true;
         for (let i = 0; i < this.nodes.length; i++)
         {
+            if (!first) json += ','; first = false;
             json += '\n' + this.nodes[i].toJson(4);
-            
-            if (i < this.nodes.length-1)
-                json += ',';
         }
         
 
@@ -269,6 +268,7 @@ class Graph
             + tab + '[';
 
             
+        first = true;
         for (let i = 0; i < this.nodes.length; i++)
         {
             let node = this.nodes[i];
@@ -278,10 +278,8 @@ class Graph
                 if (!node.inputs[j].isConnected)
                     continue;
 
+                if (!first) json += ','; first = false;
                 json += '\n' + node.inputs[j].connection.toJson(4);
-                
-                if (i < node.inputs.length-1)
-                    json += ',';
             }
         }
         

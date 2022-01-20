@@ -9,7 +9,6 @@ function uiLoadState(state)
 
 function uiGetPluginData(key)
 {
-    console.log('uiGetPluginData()');
     uiPostMessageToFigma({ 
         cmd: 'figGetPluginData', 
         key:  key
@@ -20,7 +19,6 @@ function uiGetPluginData(key)
 
 function uiGetPluginDataReturn(msg)
 {
-    console.log('uiGetPluginDataReturns()');
     // choose here which data is being returned
 
     switch (msg.key)

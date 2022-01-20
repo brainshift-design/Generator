@@ -482,10 +482,10 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type":   "' + this.opType         + '",\n'
-            + pos + tab + '"name":   "' + this.name           + '",\n'
-            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
-            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
+              pos + tab + '"type": "' + this.opType + '",\n'
+            + pos + tab + '"name": "' + this.name   + '",\n'
+            + pos + tab + '"x": "' + this.div.style.left + '",\n'
+            + pos + tab + '"y": "' + this.div.style.top  + '"';
 
         return json;
     }
@@ -500,17 +500,58 @@ class Operator
         let json = 
               pos + '{\n'
             + this.toJsonBase(nTab);
-        
-        for (const param of this.params)
+
+        if (this.params.filter(p => !p.isDefault()).length > 0)
         {
-            if (   !param.isDefault()
-                && (   !param.input
-                    || !param.input.isConnected))
-                json += ',\n' + param.toJson(nTab + 2);
+            json +=
+                ',\n'
+                + pos + tab + '"params":\n'
+                + pos + tab + '[\n';
+
+            json += this.paramsToJson(nTab);
+
+            json += 
+                pos + tab + ']';
         }
 
         json += '\n' + pos + '}';
 
         return json;
     }
+
+
+
+    paramsToJson(nTab)
+    {
+        let pos = ' '.repeat(nTab);
+
+        let json = '';
+
+        let first = true;
+        for (const param of this.params)
+        {
+            if (   !param.isDefault()
+                && (   !param.input
+                    || !param.input.isConnected))
+            {
+                if (!first) json += ',\n'; first = false;
+                json += pos + param.toJson(nTab);
+            }
+        }
+
+        if (!first)
+            json += '\n';
+
+        return json;
+    }
+
+
+
+    // loadParams(_node)
+    // {
+    //     for (let i = 4; i < _node.length; i++) // 4 to skip type, name, x and y
+    //     {
+    //         const _param = _node.
+    //     }
+    // }
 }

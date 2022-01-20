@@ -435,25 +435,27 @@ extends Operator
 
 
 
-    toJson(nTab = 0) 
+    paramsToJson(nTab = 0) 
     {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        let pos = ' '.repeat(nTab);
         
-        let json = 
-              pos + '{\n'
-            + this.toJsonBase(nTab);
+        let json = '';
         
+        let first = true;
         for (const param of this.params)
         {
             if (   !param.isDefault()
                 && (   !param.input
                     || !param.input.isConnected)
                 && !this.inputs[0].isConnected)
-                json += ',\n' + param.toJson(nTab + 2);
+            {
+                if (!first) json += ',\n'; first = false;
+                json += pos + param.toJson(nTab);
+            }
         }
 
-        json += '\n' + pos + '}';
+        if (!first)
+            json += '\n';
 
         return json;
     }

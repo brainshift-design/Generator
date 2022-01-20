@@ -139,7 +139,7 @@ extends Parameter
     toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
-        
-        return pos + '"' + this.name  + '": "' + this.value + '"';
+       
+        return pos + '["' + this.name  + '", "' + this.value + '"]';
     }
 }

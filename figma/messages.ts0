@@ -3,8 +3,6 @@
 
 figma.ui.onmessage = msg => 
 {
-    //figma.notify(msg.cmd);
-    console.log(msg.cmd);
     switch (msg.cmd)
     {
         case 'figLoadState':         figLoadState        (msg);                             break;
@@ -17,7 +15,7 @@ figma.ui.onmessage = msg =>
         case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
     }
 
-    figPostMessageToUi({cmd: 'uiFigMsgReceived'});
+    figPostMessageToUi({cmd: 'uiEndFigMessage'});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

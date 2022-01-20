@@ -15,7 +15,7 @@ extends Operator
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
+        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
       
         
@@ -218,24 +218,24 @@ extends Operator
 
 
 
-    toJson(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+    // toJson(nTab = 0) 
+    // {
+    //     let   pos = ' '.repeat(nTab);
+    //     const tab = '  ';
         
-        let json = 
-              pos + '{\n'
-            + this.toJsonBase(nTab);
+    //     let json = 
+    //           pos + '{\n'
+    //         + this.toJsonBase(nTab);
         
-        const param = this.params[0];
+    //     const param = this.params[0];
 
-        if (   !param.isDefault()
-            && (   !param.input
-                || !param.input.isConnected))
-            json += ',\n' + param.toJson(nTab + 2);
+    //     if (   !param.isDefault()
+    //         && (   !param.input
+    //             || !param.input.isConnected))
+    //         json += ',\n' + param.toJson(nTab + 2);
 
-        json += '\n' + pos + '}';
+    //     json += '\n' + pos + '}';
 
-        return json;
-    }
+    //     return json;
+    // }
 }

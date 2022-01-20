@@ -12,7 +12,7 @@ onmessage = e =>
         case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
         case 'uiClosePlugin':         uiClosePlugin();                   break;
 
-        case 'uiFigMsgReceived':      uiPostNextMessageToFigma();        break;
+        case 'uiEndFigMessage':       uiPostNextMessageToFigma();        break;
       //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
     }    
 }    
