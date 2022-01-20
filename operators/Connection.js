@@ -162,17 +162,19 @@ class Connection
 
 
 
-    save(nTab) 
+    toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
         
-        let save = 
+        let json = 
               pos + '{\n'
-            + pos + tab + '"output": "' + this.output.save() + '",\n'
-            + pos + tab + '"input" : "' + this.input .save() + '"\n'
+            + pos + tab + '"outputOp"   : "' + this.output.op.name + '",\n'
+            + (this.output.param ? pos + tab + '"outputIndex": "' + this.output.param.name + '",\n' : '')
+            + pos + tab + '"inputOp"    : "' + this.input.op.name + '"\n'
+            + (this.input.param ? pos + tab + '"inputIndex" : "' + this.input.param.name + '"\n' : '')
             + pos + '}';
 
-        return save;
+        return json;
     }
 }

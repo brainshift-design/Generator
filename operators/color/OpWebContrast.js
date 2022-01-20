@@ -1,8 +1,8 @@
 class   OpWebContrast
 extends Operator
 {
-    #standard;
-    #value;
+    #paramStandard;
+    #paramValue;
 
 
     #warningOverlay;
@@ -15,16 +15,17 @@ extends Operator
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#standard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
-        this.addParam(this.#value    = new NumberParam('', false, true, 0));
+        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
+        this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
+      
         
-        this.#standard.addEventListener('change', () =>
+        this.#paramStandard.addEventListener('change', () =>
         {
             this.setRanges();
         });
 
-        this.#value.control.pointerEvents   = false;
-        this.#value.control.style.fontStyle = 'italic';
+        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.style.fontStyle = 'italic';
 
 
         this.#warningOverlay = document.createElement('div');
@@ -32,18 +33,18 @@ extends Operator
         this.inner.appendChild(this.#warningOverlay);
 
 
-        setTimeout(() => this.#standard.setValue(1));
+        setTimeout(() => this.#paramStandard.setValue(1));
     }
 
 
 
     setRanges()
     {
-        if (this.#standard.value == 0)
-            this.#value.control.ranges = [];
+        if (this.#paramStandard.value == 0)
+            this.#paramValue.control.ranges = [];
         else
         {
-            this.#value.control.ranges = [
+            this.#paramValue.control.ranges = [
                 new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0,  64, 0.2 )', 0.8),
                 new NumberSliderRange(15/108,  30/108, 'rgba(255, 112,   0, 0.2 )', 0.8),
                 new NumberSliderRange(30/108,  45/108, 'rgba(255, 185,   0, 0.2 )', 0.8),
@@ -53,7 +54,7 @@ extends Operator
                 new NumberSliderRange(90/108, 108/108, 'transparent')];
         }
 
-        this.#value.control.update();
+        this.#paramValue.control.update();
     }
 
 
@@ -74,7 +75,7 @@ extends Operator
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
-            this.#value.control.valueText = '';
+            this.#paramValue.control.valueText = '';
 
 
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
@@ -83,7 +84,7 @@ extends Operator
             if (   isValidRgb(rgb0)
                 && isValidRgb(rgb1))
             {
-                if (this.#standard.value == 0)
+                if (this.#paramStandard.value == 0)
                 {
                     const ratio = getContrastRatio2(
                         dataColor2rgb(this.inputs[0].data.color),
@@ -94,10 +95,10 @@ extends Operator
                     if (rating != '')
                         rating = '&nbsp;&nbsp;' + rating;
 
-                    this.#value.control.min    = 0;
-                    this.#value.control.max    = 21;
-                    this.#value.control.suffix = rating;
-                    this.#value.control.setValue(ratio);
+                    this.#paramValue.control.min    = 0;
+                    this.#paramValue.control.max    = 21;
+                    this.#paramValue.control.suffix = rating;
+                    this.#paramValue.control.setValue(ratio);
                 }
                 else
                 {
@@ -105,10 +106,10 @@ extends Operator
                         dataColor2rgb(this.inputs[0].data.color),
                         dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#value.control.min    = 0;
-                    this.#value.control.max    = 108;
-                    this.#value.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
-                    this.#value.control.setValue(Math.abs(ratio));
+                    this.#paramValue.control.min    = 0;
+                    this.#paramValue.control.max    = 108;
+                    this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
+                    this.#paramValue.control.setValue(Math.abs(ratio));
                 }
 
 
@@ -119,8 +120,8 @@ extends Operator
         }
 
 
-        this.#value.control.valueText = '?';
-        this.#value.setValue(0, false, true, false);
+        this.#paramValue.control.valueText = '?';
+        this.#paramValue.setValue(0, false, true, false);
 
            
         super.update()
@@ -213,5 +214,28 @@ extends Operator
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : colorStyleRgb(rgbFromDataType(this._dataType, false));
+    }
+
+
+
+    toJson(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let json = 
+              pos + '{\n'
+            + this.toJsonBase(nTab);
+        
+        const param = this.params[0];
+
+        if (   !param.isDefault()
+            && (   !param.input
+                || !param.input.isConnected))
+            json += ',\n' + param.toJson(nTab + 2);
+
+        json += '\n' + pos + '}';
+
+        return json;
     }
 }

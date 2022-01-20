@@ -4,7 +4,7 @@
 //     {
 //         case 'saveLocal':  saveToLocalFile('graph.json'); break;
 //         case 'loadLocal':  loadFromLocalFile();           break;
-//         case 'duplicate':  console.log(graph.save());     break;
+//         case 'duplicate':  console.log(graph.toJson());     break;
 //         case 'productKey': showProductKeyDialog();        break;
 //     }
 // });

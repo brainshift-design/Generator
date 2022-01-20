@@ -69,3 +69,17 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
         delay:  delay
     });        
 }    
+
+
+
+// function uiLoadGraph()
+// {
+//     uiGetPluginData()
+// }
+
+
+
+function uiClosePlugin()
+{
+    //uiSetPluginData('graph', graph.toJson());
+}

@@ -476,26 +476,41 @@ class Operator
 
 
 
-    save(nTab) 
+    toJsonBase(nTab)
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        let json =
+              pos + tab + '"type":   "' + this.opType         + '",\n'
+            + pos + tab + '"name":   "' + this.name           + '",\n'
+            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
+            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
+
+        return json;
+    }
+
+
+
+    toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
         
-        let save = 
+        let json = 
               pos + '{\n'
-            + pos + tab + '"type":   "' + this.opType         + '",\n'
-            + pos + tab + '"name":   "' + this.name           + '",\n'
-            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
-            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
+            + this.toJsonBase(nTab);
         
         for (const param of this.params)
         {
-            if (!param.isDefault())
-                save += ',\n' + param.save(nTab + 2);
+            if (   !param.isDefault()
+                && (   !param.input
+                    || !param.input.isConnected))
+                json += ',\n' + param.toJson(nTab + 2);
         }
 
-        save += '\n' + pos + '}';
+        json += '\n' + pos + '}';
 
-        return save;
+        return json;
     }
 }

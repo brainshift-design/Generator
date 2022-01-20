@@ -113,16 +113,4 @@ extends EventTarget
     {
         this.control.style.boxShadow = '0 0 0 1px ' + this.color;
     }
-
-
-
-    save()
-    {
-        let save = this.op.name;
-
-        if (this.op.param != null)
-            save += '.' + this.op.param.name;
-
-        return save;
-    }
 }

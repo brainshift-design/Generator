@@ -13,39 +13,15 @@ function saveToLocalFile(filename, str)
 
 
 
-function loadFromLocalFile()
+function loadGraph(json)
 {
-    const input = document.createElement('input');
-
-    input.type          = 'file';
-    input.style.display = 'none';
-
-    input.addEventListener('change', e =>
-    {
-        const files = e.target.files;
-
-        if (files.length > 0)
-            loadGraphFromFile(files[0]);
-    },
-    false);
-
-    //document.body.appendChild(input);
-    input.click();
-    //document.body.removeChild(input);
-}
-
-
-
-function loadGraphFromFile(file, graph)
-{
+    console.log('loadGraph()');
     const reader = new FileReader();
 
     reader.onload = () =>
     {
         graph.clear();
 
-        
-        // load file contents
         
         let load = JSON.parse(reader.result);
 
@@ -56,5 +32,5 @@ function loadGraphFromFile(file, graph)
         }
     };
 
-    reader.readAsText(file);
+    reader.readAsText(json);
 }

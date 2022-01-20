@@ -240,13 +240,12 @@ class Graph
 
 
 
-    save()
+    toJson()
     {
         const tab = '  ';
 
-        let save = 
+        let json = 
               '{\n'
-            + tab + '"name" : "' + this.name       + '",\n'
             + tab + '"zoom" : "' + graphView.zoom  + '",\n'
             + tab + '"pan-x": "' + graphView.pan.x + '",\n'
             + tab + '"pan-y": "' + graphView.pan.y + '",\n'
@@ -256,14 +255,14 @@ class Graph
 
         for (let i = 0; i < this.nodes.length; i++)
         {
-            save += '\n' + this.nodes[i].save(4);
+            json += '\n' + this.nodes[i].toJson(4);
             
             if (i < this.nodes.length-1)
-                save += ',';
+                json += ',';
         }
         
 
-        save += 
+        json += 
               '\n' + 
               tab + '],\n'
             + tab + '"connections":\n'
@@ -279,20 +278,20 @@ class Graph
                 if (!node.inputs[j].isConnected)
                     continue;
 
-                save += '\n' + node.inputs[j].connection.save(4);
+                json += '\n' + node.inputs[j].connection.toJson(4);
                 
                 if (i < node.inputs.length-1)
-                    save += ',';
+                    json += ',';
             }
         }
         
 
-        save += 
+        json += 
                 '\n' + 
                 tab + ']\n'
             + '}';
 
 
-        return save;
+        return json;
     }
 }

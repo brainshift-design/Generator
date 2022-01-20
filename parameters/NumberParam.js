@@ -23,6 +23,7 @@ extends Parameter
 
     
     constructor(name, 
+                showName,
                 hasInput,
                 hasOutput,
                 value     = 0, 
@@ -47,6 +48,7 @@ extends Parameter
             120,       // width
             20,        // height
             this.name, 
+            showName,
             min,
             max,
             value,     // default
@@ -134,9 +136,10 @@ extends Parameter
 
 
 
-    save(nTab)
+    toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
+        
         return pos + '"' + this.name  + '": "' + this.value + '"';
     }
 }

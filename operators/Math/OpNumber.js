@@ -1,7 +1,7 @@
 class   OpNumber
 extends Operator
 {
-    #value;
+    #paramValue;
 
 
 
@@ -11,9 +11,9 @@ extends Operator
 
         //this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#value = new NumberParam('', true, true));
+        this.addParam(this.#paramValue = new NumberParam('value', false, true, true));
         
-        this.#value.allowEditDecimals = true;
+        this.#paramValue.allowEditDecimals = true;
     }
 
 
@@ -54,7 +54,7 @@ extends Operator
     {
         super.updateParams(dispatchEvents);
 
-        this.outputs[0]._value = this.#value.value;
+        this.outputs[0]._value = this.#paramValue.value;
     }
 
 

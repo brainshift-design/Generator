@@ -16,7 +16,11 @@ extends OpArithmetic
         let result = this.inputs[0].data.value;
 
         for (let i = 1; i < this.inputs.length-1; i++)
-            result /= this.inputs[i].data.value;
+        {
+            const div = this.inputs[i].data.value;
+            if (div == 0) return Number.NaN;
+            result /= div;
+        }
 
         return result;
     }

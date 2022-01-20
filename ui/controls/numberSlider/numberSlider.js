@@ -11,7 +11,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false)
+function initNumberSlider(slider, width, height, name, showName, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false)
 {
     slider.className         = 'numberSlider';
 
@@ -57,6 +57,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.oldValue;
 
     slider.wrapValue         = false;
+
+    slider.showName          = showName;
     slider.showHex           = false;
     
     slider.enableChangeEvent = true;
@@ -392,7 +394,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
         slider.text.innerHTML = '';
         
-        if (slider.name.length > 0)
+        if (   slider.name.length > 0
+            && slider.showName)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
         const valueText = 

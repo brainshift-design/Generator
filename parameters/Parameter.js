@@ -141,5 +141,8 @@ extends EventTarget
 
 
 
-    save(nTab) {}
+    toJson(nTab = 0)
+    {
+        
+    }
 }

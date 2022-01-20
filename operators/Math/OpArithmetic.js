@@ -14,7 +14,7 @@ extends Operator
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
         
-        this.addParam(this.#paramValue = new NumberParam('', false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
 
         this.#paramValue.control.pointerEvents   = false;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -113,7 +113,23 @@ extends Operator
         
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
     }
-}
+
+
+
+    toJson(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let json = 
+              pos + '{\n'
+            + this.toJsonBase(nTab)
+            + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
+        
+        json += '\n' + pos + '}';
+
+        return json;
+    }}
 
 
 

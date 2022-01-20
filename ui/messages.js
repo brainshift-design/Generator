@@ -7,9 +7,12 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':    uiPostMessageToGenerator(msg.msg); break;
-        case 'uiEndLoadState':    uiEndLoadState          (msg);     break;
-        case 'uiEndFigmaMessage': uiPostNextMessageToFigma();        break;
+        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg); break;
+        case 'uiEndLoadState':        uiEndLoadState(msg);               break;
+        case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
+        case 'uiClosePlugin':         uiClosePlugin();                   break;
+
+        case 'uiFigMsgReceived':      uiPostNextMessageToFigma();        break;
       //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
     }    
 }    
@@ -44,13 +47,13 @@ generator.onmessage = function(e)
 function uiPostMessageToFigma(msg)
 {
     figMessages.push(msg);
-    uiPostNextMessageToFigma();
 }
 
 
 
 function uiPostNextMessageToFigma()
 {
+    console.log('uiPostNextMessageToFigma()');
     if (figMessages.length > 0)
     {
         let msg = figMessages.shift();

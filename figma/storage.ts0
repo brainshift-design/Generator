@@ -12,6 +12,21 @@ function figSaveLocal(key, value)
 
 
 
+function figGetPluginData(key)
+{
+    //figma.notify('figGetPluginData()');
+
+    const data = figma.currentPage.getPluginData(key);
+
+    // figPostMessageToUi({
+    //     msg:  'uiGetPluginDataReturn',
+    //     key:   key,
+    //     value: data
+    // });
+}
+
+
+
 function figSetPluginData(key, value)
 {
     figma.currentPage.setPluginData(key, value);

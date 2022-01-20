@@ -814,12 +814,9 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateDivide'      onclick='actionManager.do(new CreateNodeAction("divide"     )); this.blur();'>DIV</button>
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
-    <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCT</button>
-    <!-- <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
-    <button class='menuButton' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>RCT</button>
-    <button class='menuButton' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>ROW</button>
-    <button class='menuButton' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>CLM</button> -->
-    <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
+    <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
+    <button class='menuButton' id='btnLoad'              onclick='uiGetPluginData("graph");                              this.blur();'>LOAD</button>
+    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     
 </div>
     
@@ -6200,6 +6197,32 @@ function uiLoadState(state)
 
 
 
+function uiGetPluginData(key)
+{
+    console.log('uiGetPluginData()');
+    uiPostMessageToFigma({ 
+        cmd: 'figGetPluginData', 
+        key:  key
+    });
+}
+
+
+
+function uiGetPluginDataReturn(msg)
+{
+    console.log('uiGetPluginDataReturns()');
+    // choose here which data is being returned
+
+    switch (msg.key)
+    {
+        case 'graph':
+            loadGraph(msg.value);
+            break;
+    }
+}
+
+
+
 function uiSetPluginData(key, value)
 {
     uiPostMessageToFigma({ 
@@ -6224,9 +6247,10 @@ function uiSaveLocal(key, value)
 
 // function uiSaveState()
 // {
-//     uiSetPluginData('state',
-//     {
-//         //windowHeight: window.innerHeight
+//     uiPostMessageToFigma({ 
+//         cmd:  'figSaveState', 
+//         key:   key,
+//         value: value
 //     });
 // }
 
@@ -6883,7 +6907,10 @@ extends EventTarget
 
 
 
-    save(nTab) {}
+    toJson(nTab = 0)
+    {
+        
+    }
 }
 
 
@@ -6912,6 +6939,7 @@ extends Parameter
 
     
     constructor(name, 
+                showName,
                 hasInput,
                 hasOutput,
                 value     = 0, 
@@ -6936,6 +6964,7 @@ extends Parameter
             120,       // width
             20,        // height
             this.name, 
+            showName,
             min,
             max,
             value,     // default
@@ -7023,9 +7052,10 @@ extends Parameter
 
 
 
-    save(nTab)
+    toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
+        
         return pos + '"' + this.name  + '": "' + this.value + '"';
     }
 }
@@ -7126,7 +7156,7 @@ extends Parameter
 
 
 
-    save(nTab)
+    toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
         return pos + '"' + this.name  + '": "' + this.value + '"';
@@ -7235,7 +7265,7 @@ extends Parameter
 
 
 
-    save(nTab)
+    toJson(nTab = 0)
     {
         let pos = ' '.repeat(nTab);
         return pos + '"' + this.name  + '": "' + this.value + '"';
@@ -7528,13 +7558,12 @@ class Graph
 
 
 
-    save()
+    toJson()
     {
         const tab = '  ';
 
-        let save = 
+        let json = 
               '{\n'
-            + tab + '"name" : "' + this.name       + '",\n'
             + tab + '"zoom" : "' + graphView.zoom  + '",\n'
             + tab + '"pan-x": "' + graphView.pan.x + '",\n'
             + tab + '"pan-y": "' + graphView.pan.y + '",\n'
@@ -7544,14 +7573,14 @@ class Graph
 
         for (let i = 0; i < this.nodes.length; i++)
         {
-            save += '\n' + this.nodes[i].save(4);
+            json += '\n' + this.nodes[i].toJson(4);
             
             if (i < this.nodes.length-1)
-                save += ',';
+                json += ',';
         }
         
 
-        save += 
+        json += 
               '\n' + 
               tab + '],\n'
             + tab + '"connections":\n'
@@ -7567,21 +7596,21 @@ class Graph
                 if (!node.inputs[j].isConnected)
                     continue;
 
-                save += '\n' + node.inputs[j].connection.save(4);
+                json += '\n' + node.inputs[j].connection.toJson(4);
                 
                 if (i < node.inputs.length-1)
-                    save += ',';
+                    json += ',';
             }
         }
         
 
-        save += 
+        json += 
                 '\n' + 
                 tab + ']\n'
             + '}';
 
 
-        return save;
+        return json;
     }
 }
 
@@ -7786,18 +7815,6 @@ extends EventTarget
     {
         this.control.style.boxShadow = '0 0 0 1px ' + this.color;
     }
-
-
-
-    save()
-    {
-        let save = this.op.name;
-
-        if (this.op.param != null)
-            save += '.' + this.op.param.name;
-
-        return save;
-    }
 }
 
 
@@ -7873,13 +7890,6 @@ class Output
                && graphView.tempConn.output == this
             ? '0 0 0 1px ' + this.color
             : 'none';
-    }
-
-
-
-    save()
-    {
-        return this.op.name;
     }
 }
 
@@ -8048,18 +8058,20 @@ class Connection
 
 
 
-    save(nTab) 
+    toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
         
-        let save = 
+        let json = 
               pos + '{\n'
-            + pos + tab + '"output": "' + this.output.save() + '",\n'
-            + pos + tab + '"input" : "' + this.input .save() + '"\n'
+            + pos + tab + '"outputOp"   : "' + this.output.op.name + '",\n'
+            + (this.output.param ? pos + tab + '"outputIndex": "' + this.output.param.name + '",\n' : '')
+            + pos + tab + '"inputOp"    : "' + this.input.op.name + '"\n'
+            + (this.input.param ? pos + tab + '"inputIndex" : "' + this.input.param.name + '"\n' : '')
             + pos + '}';
 
-        return save;
+        return json;
     }
 }
 
@@ -8542,27 +8554,42 @@ class Operator
 
 
 
-    save(nTab) 
+    toJsonBase(nTab)
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        let json =
+              pos + tab + '"type":   "' + this.opType         + '",\n'
+            + pos + tab + '"name":   "' + this.name           + '",\n'
+            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
+            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
+
+        return json;
+    }
+
+
+
+    toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
         
-        let save = 
+        let json = 
               pos + '{\n'
-            + pos + tab + '"type":   "' + this.opType         + '",\n'
-            + pos + tab + '"name":   "' + this.name           + '",\n'
-            + pos + tab + '"node_x": "' + this.div.style.left + '",\n'
-            + pos + tab + '"node_y": "' + this.div.style.top  + '"';
+            + this.toJsonBase(nTab);
         
         for (const param of this.params)
         {
-            if (!param.isDefault())
-                save += ',\n' + param.save(nTab + 2);
+            if (   !param.isDefault()
+                && (   !param.input
+                    || !param.input.isConnected))
+                json += ',\n' + param.toJson(nTab + 2);
         }
 
-        save += '\n' + pos + '}';
+        json += '\n' + pos + '}';
 
-        return save;
+        return json;
     }
 }
 
@@ -8928,7 +8955,7 @@ function initLabelTextbox(node)
 class   OpNumber
 extends Operator
 {
-    #value;
+    #paramValue;
 
 
 
@@ -8938,9 +8965,9 @@ extends Operator
 
         //this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#value = new NumberParam('', true, true));
+        this.addParam(this.#paramValue = new NumberParam('value', false, true, true));
         
-        this.#value.allowEditDecimals = true;
+        this.#paramValue.allowEditDecimals = true;
     }
 
 
@@ -8981,7 +9008,7 @@ extends Operator
     {
         super.updateParams(dispatchEvents);
 
-        this.outputs[0]._value = this.#value.value;
+        this.outputs[0]._value = this.#paramValue.value;
     }
 
 
@@ -9016,7 +9043,7 @@ extends Operator
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
         
-        this.addParam(this.#paramValue = new NumberParam('', false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
 
         this.#paramValue.control.pointerEvents   = false;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -9115,7 +9142,23 @@ extends Operator
         
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
     }
-}
+
+
+
+    toJson(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let json = 
+              pos + '{\n'
+            + this.toJsonBase(nTab)
+            + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
+        
+        json += '\n' + pos + '}';
+
+        return json;
+    }}
 
 
 
@@ -9233,7 +9276,11 @@ extends OpArithmetic
         let result = this.inputs[0].data.value;
 
         for (let i = 1; i < this.inputs.length-1; i++)
-            result /= this.inputs[i].data.value;
+        {
+            const div = this.inputs[i].data.value;
+            if (div == 0) return Number.NaN;
+            result /= div;
+        }
 
         return result;
     }
@@ -9323,19 +9370,19 @@ const luvScale    = [100, 150, 150];
 class   OpColor
 extends Operator
 {
-    _color;
-
-    _space;
+    paramSpace;
     
-    _c1;
-    _c2;
-    _c3;
+    param1;
+    param2;
+    param3;
 
     #colorBack;
     #warningOverlay;
 
     hexbox;
 
+
+    _color;
 
     #init = false;
 
@@ -9358,33 +9405,33 @@ extends Operator
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this._c1.control.style.fontStyle = 'italic'; this._c1.control.pointerEvents = false;
-            this._c2.control.style.fontStyle = 'italic'; this._c2.control.pointerEvents = false;
-            this._c3.control.style.fontStyle = 'italic'; this._c3.control.pointerEvents = false;
+            this.param1.control.style.fontStyle = 'italic'; this.param1.control.pointerEvents = false;
+            this.param2.control.style.fontStyle = 'italic'; this.param2.control.pointerEvents = false;
+            this.param3.control.style.fontStyle = 'italic'; this.param3.control.pointerEvents = false;
         });
     
         
         this.inputs[0].addEventListener('disconnect', () =>
         {
-            if (!this._c1.input.isConnected) { this._c1.control.style.fontStyle = 'normal'; this._c1.control.pointerEvents = true; }
-            if (!this._c2.input.isConnected) { this._c2.control.style.fontStyle = 'normal'; this._c2.control.pointerEvents = true; }
-            if (!this._c3.input.isConnected) { this._c3.control.style.fontStyle = 'normal'; this._c3.control.pointerEvents = true; }
+            if (!this.param1.input.isConnected) { this.param1.control.style.fontStyle = 'normal'; this.param1.control.pointerEvents = true; }
+            if (!this.param2.input.isConnected) { this.param2.control.style.fontStyle = 'normal'; this.param2.control.pointerEvents = true; }
+            if (!this.param3.input.isConnected) { this.param3.control.style.fontStyle = 'normal'; this.param3.control.pointerEvents = true; }
         });
 
 
-        this.addParam(this._space = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this._c1    = new NumberParam('c1',    true, true, this._color[1], 0, 255));
-        this.addParam(this._c2    = new NumberParam('c2',    true, true, this._color[2], 0, 255));
-        this.addParam(this._c3    = new NumberParam('c3',    true, true, this._color[3], 0, 255));
+        this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.param1    = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
+        this.addParam(this.param2    = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
+        this.addParam(this.param3    = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2]), 0, 255));
 
-        this._space.control.barHeight = 0.2;
+        this.paramSpace.control.barHeight = 0.2;
         
 
         // this._space.addEventListener('change', () => 
         // {
-        //     this._c1.allowEditDecimals = this._space.value > 1;
-        //     this._c2.allowEditDecimals = this._space.value > 1;
-        //     this._c3.allowEditDecimals = this._space.value > 1;
+        //     this.param1.allowEditDecimals = this.paramSpace.value > 1;
+        //     this.param2.allowEditDecimals = this.paramSpace.value > 1;
+        //     this.param3.allowEditDecimals = this.paramSpace.value > 1;
 
         //     setDataColorToCurrentSpace(this, this._color);
         // });
@@ -9398,14 +9445,14 @@ extends Operator
         this.inner.appendChild(this.#warningOverlay);
 
 
-        setTimeout(() => { this._space.setValue(0); }); // init all the params with names
+        setTimeout(() => { this.paramSpace.setValue(0); }); // init all the params with names
     }
 
 
 
     getNormalColorFromParams()
     {
-        if (this._space.value == 0)
+        if (this.paramSpace.value == 0)
         {
             const rgb = hex2rgb(this.hexbox.value);
 
@@ -9419,9 +9466,9 @@ extends Operator
         {
             const col = getNormalColor_(
                 getCurrentDataColorSpace(this),
-                this._c1.value,
-                this._c2.value,
-                this._c3.value);
+                this.param1.value,
+                this.param2.value,
+                this.param3.value);
         
             return [
                 getCurrentDataColorSpace(this),
@@ -9435,7 +9482,7 @@ extends Operator
     
     getNormalColorFromParamsWithOnlyInput1(space)
     {
-        if (this._space.value == 0)
+        if (this.paramSpace.value == 0)
         {
             const rgb = hex2rgb(this.hexbox.value);
 
@@ -9449,9 +9496,9 @@ extends Operator
         {
             const col = getNormalColor_(
                 getCurrentDataColorSpace(this),
-                this._c1.value,
-                this._c2.value,
-                this._c3.value);
+                this.param1.value,
+                this.param2.value,
+                this.param3.value);
         
             return [
                 getCurrentDataColorSpace(this),
@@ -9467,9 +9514,9 @@ extends Operator
     {
         const col = getDataColor(color);
         
-        this._c1.setValue(col[0], false, true, dispatchEvents);
-        this._c2.setValue(col[1], false, true, dispatchEvents);
-        this._c3.setValue(col[2], false, true, dispatchEvents);
+        this.param1.setValue(col[0], false, true, dispatchEvents);
+        this.param2.setValue(col[1], false, true, dispatchEvents);
+        this.param3.setValue(col[2], false, true, dispatchEvents);
     }
 
 
@@ -9496,20 +9543,20 @@ extends Operator
                 this.inputs[0].data.color, 
                 getCurrentDataColorSpace(this));
 
-            if (this._c1.input.isConnected) color[1] = getNormalValue(this._c1.input.data.value, color[0], 0);
-            if (this._c2.input.isConnected) color[2] = getNormalValue(this._c2.input.data.value, color[0], 1);
-            if (this._c3.input.isConnected) color[3] = getNormalValue(this._c3.input.data.value, color[0], 2);
+            if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
+            if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
+            if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
             setDataColorToCurrentSpace(this, color);
         }
         else
         {
             if (  !this.#init
-                || this._color[0] != OpColorSpaces[this._space.value][0])
+                || this._color[0] != OpColorSpaces[this.paramSpace.value][0])
             {
-                this._c1.allowEditDecimals = this._space.value > 1;
-                this._c2.allowEditDecimals = this._space.value > 1;
-                this._c3.allowEditDecimals = this._space.value > 1;
+                this.param1.allowEditDecimals = this.paramSpace.value > 1;
+                this.param2.allowEditDecimals = this.paramSpace.value > 1;
+                this.param3.allowEditDecimals = this.paramSpace.value > 1;
                 
                 setDataColorToCurrentSpace(this, this._color);
 
@@ -9551,10 +9598,10 @@ extends Operator
         this.label     .style.color      = textStyle;
 
         
-        this._space.control.valueColor = colorStyleRgba(colSpaceVal);
-        this._space.control.textColor  = textStyle;
-        this._space.control.backColor  = 'transparent';
-        this._space.control.update();
+        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceVal);
+        this.paramSpace.control.textColor  = textStyle;
+        this.paramSpace.control.backColor  = 'transparent';
+        this.paramSpace.control.update();
 
 
         this.hexbox.value = 
@@ -9594,11 +9641,11 @@ extends Operator
         this.outputs[0].updateControl();
 
 
-        this._space.input .color = colIn;
-        this._space.output.color = colOut;
+        this.paramSpace.input .color = colIn;
+        this.paramSpace.output.color = colOut;
 
-        this._space.input .updateControl();
-        this._space.output.updateControl();
+        this.paramSpace.input .updateControl();
+        this.paramSpace.output.updateControl();
 
 
         super.updateNode();
@@ -9617,9 +9664,9 @@ extends Operator
     {
         this.updateAllControlRanges();
 
-        this.updateSlider(this._c1.control, isValidRgb(rgb));
-        this.updateSlider(this._c2.control, isValidRgb(rgb));
-        this.updateSlider(this._c3.control, isValidRgb(rgb));
+        this.updateSlider(this.param1.control, isValidRgb(rgb));
+        this.updateSlider(this.param2.control, isValidRgb(rgb));
+        this.updateSlider(this.param3.control, isValidRgb(rgb));
     }
 
 
@@ -9640,37 +9687,37 @@ extends Operator
 
     resetAllControlRanges()
     {
-        resetSliderRanges(this._c1.control);
-        resetSliderRanges(this._c2.control);
-        resetSliderRanges(this._c3.control);
+        resetSliderRanges(this.param1.control);
+        resetSliderRanges(this.param2.control);
+        resetSliderRanges(this.param3.control);
     }
 
 
 
     updateAllControlRanges()
     {
-        if (this._space.value > 4) // warning ranges
+        if (this.paramSpace.value > 4) // warning ranges
         {
-            this.updateControlRanges(this._c1.control, f =>
+            this.updateControlRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this._c1.control.min + f * (this._c1.control.max - this._c1.control.min)) / getColorSpaceFactor(this._color[0])[0],
+                    (this.param1.control.min + f * (this.param1.control.max - this.param1.control.min)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateControlRanges(this._c2.control, f =>
+            this.updateControlRanges(this.param2.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this._c2.control.min + f * (this._c2.control.max - this._c2.control.min)) / getColorSpaceFactor(this._color[0])[1],
+                    (this.param2.control.min + f * (this.param2.control.max - this.param2.control.min)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateControlRanges(this._c3.control, f =>
+            this.updateControlRanges(this.param3.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this._c3.control.min + f * (this._c3.control.max - this._c3.control.min)) / getColorSpaceFactor(this._color[0])[2]]));
+                    (this.param3.control.min + f * (this.param3.control.max - this.param3.control.min)) / getColorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
@@ -9713,6 +9760,31 @@ extends Operator
 
 
         slider.ranges = ranges;
+    }
+
+
+
+    toJson(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let json = 
+              pos + '{\n'
+            + this.toJsonBase(nTab);
+        
+        for (const param of this.params)
+        {
+            if (   !param.isDefault()
+                && (   !param.input
+                    || !param.input.isConnected)
+                && !this.inputs[0].isConnected)
+                json += ',\n' + param.toJson(nTab + 2);
+        }
+
+        json += '\n' + pos + '}';
+
+        return json;
     }
 }
 
@@ -9813,9 +9885,9 @@ function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale 
 
 function showControlHex(op, show)
 {
-    op._c1.control.showHex = show;
-    op._c2.control.showHex = show;
-    op._c3.control.showHex = show;
+    op.param1.control.showHex = show;
+    op.param2.control.showHex = show;
+    op.param3.control.showHex = show;
 }
 
 
@@ -9824,16 +9896,16 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 {
     switchToSliders(op);
 
-    op._c1.setName(c1, false); 
-    op._c2.setName(c2, false); 
-    op._c3.setName(c3, false);
+    op.param1.setName(c1, false); 
+    op.param2.setName(c2, false); 
+    op.param3.setName(c3, false);
 
-    op._c1.control.wrapValue = c1wrap;
-    op._c1.control.suffix    = c1suffix;
+    op.param1.control.wrapValue = c1wrap;
+    op.param1.control.suffix    = c1suffix;
 
-    op._c1.control.min = c1min; op._c1.control.max = c1max; op._c1.control.update();
-    op._c2.control.min = c2min; op._c2.control.max = c2max; op._c2.control.update();
-    op._c3.control.min = c3min; op._c3.control.max = c3max; op._c3.control.update();
+    op.param1.control.min = c1min; op.param1.control.max = c1max; op.param1.control.update();
+    op.param2.control.min = c2min; op.param2.control.max = c2max; op.param2.control.update();
+    op.param3.control.min = c3min; op.param3.control.max = c3max; op.param3.control.update();
 }
 
 
@@ -9842,9 +9914,9 @@ function switchToTextbox(op)
 {
     if (!op.inner.contains(op.hexbox))
     {
-        op.inner.removeChild(op._c1.div);
-        op.inner.removeChild(op._c2.div);
-        op.inner.removeChild(op._c3.div);
+        op.inner.removeChild(op.param1.div);
+        op.inner.removeChild(op.param2.div);
+        op.inner.removeChild(op.param3.div);
         
         op.inner.appendChild(op.hexbox);
 
@@ -9876,9 +9948,9 @@ function switchToSliders(op)
     {
         op.inner.removeChild(op.hexbox);
 
-        op.inner.appendChild(op._c1.div);
-        op.inner.appendChild(op._c2.div);
-        op.inner.appendChild(op._c3.div);
+        op.inner.appendChild(op.param1.div);
+        op.inner.appendChild(op.param2.div);
+        op.inner.appendChild(op.param3.div);
     }
 }
 
@@ -10092,7 +10164,7 @@ function getDataColorHcl(c1, c2, c3)
 
 function setDataColorToCurrentSpace(op, color)
 {
-    const toSpace = OpColorSpaces[op._space.value][0];
+    const toSpace = OpColorSpaces[op.paramSpace.value][0];
 
     op._color = convertDataColorToSpace(color, toSpace);
 
@@ -10104,7 +10176,7 @@ function setDataColorToCurrentSpace(op, color)
 
 function getCurrentDataColorSpace(op)
 {
-    var index = op._space.value;
+    var index = op.paramSpace.value;
     if (index < 2) index = 2;
 
     return OpColorSpaces[index][0];
@@ -10569,8 +10641,8 @@ function convert2hclluv(fromColor)
 class   OpWebContrast
 extends Operator
 {
-    #standard;
-    #value;
+    #paramStandard;
+    #paramValue;
 
 
     #warningOverlay;
@@ -10583,16 +10655,17 @@ extends Operator
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#standard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
-        this.addParam(this.#value    = new NumberParam('', false, true, 0));
+        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3']));
+        this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
+      
         
-        this.#standard.addEventListener('change', () =>
+        this.#paramStandard.addEventListener('change', () =>
         {
             this.setRanges();
         });
 
-        this.#value.control.pointerEvents   = false;
-        this.#value.control.style.fontStyle = 'italic';
+        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.style.fontStyle = 'italic';
 
 
         this.#warningOverlay = document.createElement('div');
@@ -10600,18 +10673,18 @@ extends Operator
         this.inner.appendChild(this.#warningOverlay);
 
 
-        setTimeout(() => this.#standard.setValue(1));
+        setTimeout(() => this.#paramStandard.setValue(1));
     }
 
 
 
     setRanges()
     {
-        if (this.#standard.value == 0)
-            this.#value.control.ranges = [];
+        if (this.#paramStandard.value == 0)
+            this.#paramValue.control.ranges = [];
         else
         {
-            this.#value.control.ranges = [
+            this.#paramValue.control.ranges = [
                 new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0,  64, 0.2 )', 0.8),
                 new NumberSliderRange(15/108,  30/108, 'rgba(255, 112,   0, 0.2 )', 0.8),
                 new NumberSliderRange(30/108,  45/108, 'rgba(255, 185,   0, 0.2 )', 0.8),
@@ -10621,7 +10694,7 @@ extends Operator
                 new NumberSliderRange(90/108, 108/108, 'transparent')];
         }
 
-        this.#value.control.update();
+        this.#paramValue.control.update();
     }
 
 
@@ -10642,7 +10715,7 @@ extends Operator
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
-            this.#value.control.valueText = '';
+            this.#paramValue.control.valueText = '';
 
 
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
@@ -10651,7 +10724,7 @@ extends Operator
             if (   isValidRgb(rgb0)
                 && isValidRgb(rgb1))
             {
-                if (this.#standard.value == 0)
+                if (this.#paramStandard.value == 0)
                 {
                     const ratio = getContrastRatio2(
                         dataColor2rgb(this.inputs[0].data.color),
@@ -10662,10 +10735,10 @@ extends Operator
                     if (rating != '')
                         rating = '&nbsp;&nbsp;' + rating;
 
-                    this.#value.control.min    = 0;
-                    this.#value.control.max    = 21;
-                    this.#value.control.suffix = rating;
-                    this.#value.control.setValue(ratio);
+                    this.#paramValue.control.min    = 0;
+                    this.#paramValue.control.max    = 21;
+                    this.#paramValue.control.suffix = rating;
+                    this.#paramValue.control.setValue(ratio);
                 }
                 else
                 {
@@ -10673,10 +10746,10 @@ extends Operator
                         dataColor2rgb(this.inputs[0].data.color),
                         dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#value.control.min    = 0;
-                    this.#value.control.max    = 108;
-                    this.#value.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
-                    this.#value.control.setValue(Math.abs(ratio));
+                    this.#paramValue.control.min    = 0;
+                    this.#paramValue.control.max    = 108;
+                    this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
+                    this.#paramValue.control.setValue(Math.abs(ratio));
                 }
 
 
@@ -10687,8 +10760,8 @@ extends Operator
         }
 
 
-        this.#value.control.valueText = '?';
-        this.#value.setValue(0, false, true, false);
+        this.#paramValue.control.valueText = '?';
+        this.#paramValue.setValue(0, false, true, false);
 
            
         super.update()
@@ -10781,6 +10854,29 @@ extends Operator
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : colorStyleRgb(rgbFromDataType(this._dataType, false));
+    }
+
+
+
+    toJson(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+        
+        let json = 
+              pos + '{\n'
+            + this.toJsonBase(nTab);
+        
+        const param = this.params[0];
+
+        if (   !param.isDefault()
+            && (   !param.input
+                || !param.input.isConnected))
+            json += ',\n' + param.toJson(nTab + 2);
+
+        json += '\n' + pos + '}';
+
+        return json;
     }
 }
 
@@ -11470,9 +11566,12 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':    uiPostMessageToGenerator(msg.msg); break;
-        case 'uiEndLoadState':    uiEndLoadState          (msg);     break;
-        case 'uiEndFigmaMessage': uiPostNextMessageToFigma();        break;
+        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg); break;
+        case 'uiEndLoadState':        uiEndLoadState(msg);               break;
+        case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
+        case 'uiClosePlugin':         uiClosePlugin();                   break;
+
+        case 'uiFigMsgReceived':      uiPostNextMessageToFigma();        break;
       //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
     }    
 }    
@@ -11507,13 +11606,13 @@ generator.onmessage = function(e)
 function uiPostMessageToFigma(msg)
 {
     figMessages.push(msg);
-    uiPostNextMessageToFigma();
 }
 
 
 
 function uiPostNextMessageToFigma()
 {
+    console.log('uiPostNextMessageToFigma()');
     if (figMessages.length > 0)
     {
         let msg = figMessages.shift();
@@ -11574,7 +11673,7 @@ function setAutoCursor()
 //     {
 //         case 'saveLocal':  saveToLocalFile('graph.json'); break;
 //         case 'loadLocal':  loadFromLocalFile();           break;
-//         case 'duplicate':  console.log(graph.save());     break;
+//         case 'duplicate':  console.log(graph.toJson());     break;
 //         case 'productKey': showProductKeyDialog();        break;
 //     }
 // });
@@ -11946,6 +12045,20 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 }    
 
 
+
+// function uiLoadGraph()
+// {
+//     uiGetPluginData()
+// }
+
+
+
+function uiClosePlugin()
+{
+    //uiSetPluginData('graph', graph.toJson());
+}
+
+
 const resizeEdgeWidth = 8;
 
 document.canResizeX = false;
@@ -12261,7 +12374,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(slider, width, height, name, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false)
+function initNumberSlider(slider, width, height, name, showName, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false)
 {
     slider.className         = 'numberSlider';
 
@@ -12307,6 +12420,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
     slider.oldValue;
 
     slider.wrapValue         = false;
+
+    slider.showName          = showName;
     slider.showHex           = false;
     
     slider.enableChangeEvent = true;
@@ -12642,7 +12757,8 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
 
         slider.text.innerHTML = '';
         
-        if (slider.name.length > 0)
+        if (   slider.name.length > 0
+            && slider.showName)
             slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
         const valueText = 
@@ -15848,39 +15964,15 @@ function saveToLocalFile(filename, str)
 
 
 
-function loadFromLocalFile()
+function loadGraph(json)
 {
-    const input = document.createElement('input');
-
-    input.type          = 'file';
-    input.style.display = 'none';
-
-    input.addEventListener('change', e =>
-    {
-        const files = e.target.files;
-
-        if (files.length > 0)
-            loadGraphFromFile(files[0]);
-    },
-    false);
-
-    //document.body.appendChild(input);
-    input.click();
-    //document.body.removeChild(input);
-}
-
-
-
-function loadGraphFromFile(file, graph)
-{
+    console.log('loadGraph()');
     const reader = new FileReader();
 
     reader.onload = () =>
     {
         graph.clear();
 
-        
-        // load file contents
         
         let load = JSON.parse(reader.result);
 
@@ -15891,7 +15983,7 @@ function loadGraphFromFile(file, graph)
         }
     };
 
-    reader.readAsText(file);
+    reader.readAsText(json);
 }
 
 

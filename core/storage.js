@@ -7,6 +7,32 @@ function uiLoadState(state)
 
 
 
+function uiGetPluginData(key)
+{
+    console.log('uiGetPluginData()');
+    uiPostMessageToFigma({ 
+        cmd: 'figGetPluginData', 
+        key:  key
+    });
+}
+
+
+
+function uiGetPluginDataReturn(msg)
+{
+    console.log('uiGetPluginDataReturns()');
+    // choose here which data is being returned
+
+    switch (msg.key)
+    {
+        case 'graph':
+            loadGraph(msg.value);
+            break;
+    }
+}
+
+
+
 function uiSetPluginData(key, value)
 {
     uiPostMessageToFigma({ 
@@ -31,8 +57,9 @@ function uiSaveLocal(key, value)
 
 // function uiSaveState()
 // {
-//     uiSetPluginData('state',
-//     {
-//         //windowHeight: window.innerHeight
+//     uiPostMessageToFigma({ 
+//         cmd:  'figSaveState', 
+//         key:   key,
+//         value: value
 //     });
 // }

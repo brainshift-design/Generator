@@ -186,6 +186,7 @@ function figOnSelectionChange()
 
 function figOnPluginClose()
 {
+    figPostMessageToUi({msg: 'uiClosePlugin'});
     figDeleteAllObjects();
 }
 
@@ -252,18 +253,20 @@ function figLoadState(msg)
 
 figma.ui.onmessage = msg => 
 {
+    console.log(msg.cmd);//figma.notify(msg.cmd);
     switch (msg.cmd)
     {
         case 'figLoadState':         figLoadState        (msg);                             break;
         case 'figResizeWindow':      figResizeWindow     (msg.width, msg.height);           break; 
         case 'figSaveLocal':         figSaveLocal        (msg.key, msg.value);              break;
+        case 'figGetPluginData':     figGetPluginData    (msg.key);                         break;
         case 'figSetPluginData':     figSetPluginData    (msg.key, msg.value);              break;
         case 'figDeleteNodeObjects': figDeleteNodeObjects(msg.nodeIds);                     break; 
         case 'figUpdateObjects':     figUpdateObjects    (msg.objects);                     break;
         case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
     }
 
-    figPostMessageToUi({cmd: 'uiEndFigmaMessage'});
+    figPostMessageToUi({cmd: 'uiFigMsgReceived'});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,10 +309,26 @@ function figSaveLocal(key, value)
 
 
 
+function figGetPluginData(key)
+{
+    //figma.notify('figGetPluginData()');
+
+    const data = figma.currentPage.getPluginData(key);
+
+    // figPostMessageToUi({
+    //     msg:  'uiGetPluginDataReturn',
+    //     key:   key,
+    //     value: data
+    // });
+}
+
+
+
 function figSetPluginData(key, value)
 {
     figma.currentPage.setPluginData(key, value);
 }
+
 
 
 function figResizeWindow(width, height)

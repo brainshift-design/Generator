@@ -94,9 +94,9 @@ function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale 
 
 function showControlHex(op, show)
 {
-    op._c1.control.showHex = show;
-    op._c2.control.showHex = show;
-    op._c3.control.showHex = show;
+    op.param1.control.showHex = show;
+    op.param2.control.showHex = show;
+    op.param3.control.showHex = show;
 }
 
 
@@ -105,16 +105,16 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 {
     switchToSliders(op);
 
-    op._c1.setName(c1, false); 
-    op._c2.setName(c2, false); 
-    op._c3.setName(c3, false);
+    op.param1.setName(c1, false); 
+    op.param2.setName(c2, false); 
+    op.param3.setName(c3, false);
 
-    op._c1.control.wrapValue = c1wrap;
-    op._c1.control.suffix    = c1suffix;
+    op.param1.control.wrapValue = c1wrap;
+    op.param1.control.suffix    = c1suffix;
 
-    op._c1.control.min = c1min; op._c1.control.max = c1max; op._c1.control.update();
-    op._c2.control.min = c2min; op._c2.control.max = c2max; op._c2.control.update();
-    op._c3.control.min = c3min; op._c3.control.max = c3max; op._c3.control.update();
+    op.param1.control.min = c1min; op.param1.control.max = c1max; op.param1.control.update();
+    op.param2.control.min = c2min; op.param2.control.max = c2max; op.param2.control.update();
+    op.param3.control.min = c3min; op.param3.control.max = c3max; op.param3.control.update();
 }
 
 
@@ -123,9 +123,9 @@ function switchToTextbox(op)
 {
     if (!op.inner.contains(op.hexbox))
     {
-        op.inner.removeChild(op._c1.div);
-        op.inner.removeChild(op._c2.div);
-        op.inner.removeChild(op._c3.div);
+        op.inner.removeChild(op.param1.div);
+        op.inner.removeChild(op.param2.div);
+        op.inner.removeChild(op.param3.div);
         
         op.inner.appendChild(op.hexbox);
 
@@ -157,9 +157,9 @@ function switchToSliders(op)
     {
         op.inner.removeChild(op.hexbox);
 
-        op.inner.appendChild(op._c1.div);
-        op.inner.appendChild(op._c2.div);
-        op.inner.appendChild(op._c3.div);
+        op.inner.appendChild(op.param1.div);
+        op.inner.appendChild(op.param2.div);
+        op.inner.appendChild(op.param3.div);
     }
 }
 
@@ -373,7 +373,7 @@ function getDataColorHcl(c1, c2, c3)
 
 function setDataColorToCurrentSpace(op, color)
 {
-    const toSpace = OpColorSpaces[op._space.value][0];
+    const toSpace = OpColorSpaces[op.paramSpace.value][0];
 
     op._color = convertDataColorToSpace(color, toSpace);
 
@@ -385,7 +385,7 @@ function setDataColorToCurrentSpace(op, color)
 
 function getCurrentDataColorSpace(op)
 {
-    var index = op._space.value;
+    var index = op.paramSpace.value;
     if (index < 2) index = 2;
 
     return OpColorSpaces[index][0];

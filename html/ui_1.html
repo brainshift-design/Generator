@@ -11,12 +11,9 @@
     <button class='menuButton' id='btnCreateDivide'      onclick='actionManager.do(new CreateNodeAction("divide"     )); this.blur();'>DIV</button>
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
-    <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCT</button>
-    <!-- <button class='menuButton' id='btnCreateRandom' onclick='actionManager.do(new CreateNodeAction("random")); this.blur();'>RND</button>
-    <button class='menuButton' id='btnCreateRect'   onclick='actionManager.do(new CreateNodeAction("rect"  )); this.blur();'>RCT</button>
-    <button class='menuButton' id='btnCreateRow'    onclick='actionManager.do(new CreateNodeAction("row"   )); this.blur();'>ROW</button>
-    <button class='menuButton' id='btnCreateColumn' onclick='actionManager.do(new CreateNodeAction("column")); this.blur();'>CLM</button> -->
-    <!-- <button class='button' id='btnCreateSpread' onclick='uiCreateNode("spread"); this.blur();'>Spr</button> -->
+    <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
+    <button class='menuButton' id='btnLoad'              onclick='uiGetPluginData("graph");                              this.blur();'>LOAD</button>
+    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     
 </div>
     

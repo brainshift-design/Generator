@@ -71,11 +71,4 @@ class Output
             ? '0 0 0 1px ' + this.color
             : 'none';
     }
-
-
-
-    save()
-    {
-        return this.op.name;
-    }
 }
