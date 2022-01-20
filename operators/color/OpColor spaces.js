@@ -129,14 +129,24 @@ function switchToTextbox(op)
         
         op.inner.appendChild(op.hexbox);
 
-        for (const input of op.inputs.filter(i => i.param))
-            if (input.isConnected)
-                graph.disconnect(input);
-
-        for (const output of op.outputs.filter(o => o.param))
-            for (const input of output.connectedInputs)
-                graph.disconnect(input);
+        removeOpColorParamWires(op);
     }
+}
+
+
+
+function removeOpColorParamWires(op)
+{
+    const inputs  = op. inputs.filter(i => i.param);
+    const outputs = op.outputs.filter(o => o.param);
+
+    for (let i = 1; i < inputs.length; i++)
+        if (inputs[i].isConnected)
+            graph.disconnect(input[i]);
+
+    for (let i = 1; i < outputs.length; i++)
+        for (const input of outputs[i].connectedInputs)
+            graph.disconnect(input);
 }
 
 

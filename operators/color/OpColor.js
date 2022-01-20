@@ -55,6 +55,9 @@ extends Operator
     hexbox;
 
 
+    #init = false;
+
+
     constructor()
     {
         super('color', 'col', 'color', 80);
@@ -95,14 +98,14 @@ extends Operator
         this._space.control.barHeight = 0.2;
         
 
-        this._space.addEventListener('change', () => 
-        {
-            this._c1.allowEditDecimals = this._space.value > 1;
-            this._c2.allowEditDecimals = this._space.value > 1;
-            this._c3.allowEditDecimals = this._space.value > 1;
+        // this._space.addEventListener('change', () => 
+        // {
+        //     this._c1.allowEditDecimals = this._space.value > 1;
+        //     this._c2.allowEditDecimals = this._space.value > 1;
+        //     this._c3.allowEditDecimals = this._space.value > 1;
 
-            setDataColorToCurrentSpace(this, this._color);
-        });
+        //     setDataColorToCurrentSpace(this, this._color);
+        // });
         
 
         initHexbox(this);
@@ -119,6 +122,36 @@ extends Operator
 
 
     getNormalColorFromParams()
+    {
+        if (this._space.value == 0)
+        {
+            const rgb = hex2rgb(this.hexbox.value);
+
+            return [
+                'rgb',
+                rgb[0],
+                rgb[1],
+                rgb[2] ];
+        }
+        else
+        {
+            const col = getNormalColor_(
+                getCurrentDataColorSpace(this),
+                this._c1.value,
+                this._c2.value,
+                this._c3.value);
+        
+            return [
+                getCurrentDataColorSpace(this),
+                col[0],
+                col[1],
+                col[2] ];
+        }
+    }
+    
+    
+    
+    getNormalColorFromParamsWithOnlyInput1(space)
     {
         if (this._space.value == 0)
         {
@@ -187,15 +220,28 @@ extends Operator
 
             setDataColorToCurrentSpace(this, color);
         }
-
-        else if (this.inputs[1].isConnected) 
-            switchToSpace(this, OpColorSpaces[this.inputs[1].data.value][0]);
-
         else
+        {
+            if (  !this.#init
+                || this._color[0] != OpColorSpaces[this._space.value][0])
+            {
+                this._c1.allowEditDecimals = this._space.value > 1;
+                this._c2.allowEditDecimals = this._space.value > 1;
+                this._c3.allowEditDecimals = this._space.value > 1;
+                
+                setDataColorToCurrentSpace(this, this._color);
+
+                this.#init = true;
+            }
+
             this._color = this.getNormalColorFromParams();
+        }
 
     
         this.outputs[0]._data = dataFromDataColor(this._color);
+
+        for (const param of this.params.filter(p => p.dataType == 'number'))
+            param.valueIsValid = !isValidRgb(dataColor2rgb(this._color));
 
 
         super.update()
@@ -357,7 +403,7 @@ extends Operator
         const ranges = [];
  
         
-        const precision = 0.005;
+        const precision = 0.01;
         let   open      = false;
 
         for (let f = 0; f <= 1; f += precision)

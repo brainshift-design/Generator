@@ -3,10 +3,10 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    initMenuSelect(menuSelect);
-    menuSelect.initMenu();
+    // initMenuSelect(menuSelect);
+    // menuSelect.initMenu();
 
-    updateMenuSelectItems();
+    //updateMenuSelectItems();
 }
 
 

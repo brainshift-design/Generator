@@ -155,21 +155,16 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-            
             if (slider.isPointerLocked())
             {
                 slider.movedX += e.movementX;
                 
-                let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                let drag     = slider.dragScale * Math.pow(10, -slider.editDec);
-
+                const dx       = slider.sx - slider.movedX;             
+                const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
+                const grain    = Math.pow(10, -this.editDec);
                 
-                // TODO: if (log) do log scaling
                 let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
-                
-                const grain = Math.pow(10, -this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -185,10 +180,6 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
                 }
             }
         }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-        
-        // slider.update();
     });
     
     
@@ -407,7 +398,9 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         const valueText = 
             slider.valueText != ''
             ? slider.valueText
-            : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+            : (isNaN(slider.value)
+               ? '?'
+               : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase());
 
         slider.text.innerHTML += valueText + slider.suffix;
 

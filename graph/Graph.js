@@ -1,7 +1,5 @@
 class Graph
 {
-    name         = 'Untitled';
-    
     nodes        = [];
     deferNodeIds = [];
     

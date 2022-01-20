@@ -496,7 +496,7 @@ input[type=text]::selection
 .colorWarningOverlay
 {
     width:            100%;
-    height:           45px;
+    height:           46px;
     z-index:          1000;
     position:         absolute;
     top:              0;
@@ -805,7 +805,7 @@ input[type=text]::selection
 
 <div id='controlBar'>
     
-    <div id='menuSelect' style='margin-left: 10px;'></div>
+    <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
     <button class='menuButton' id='btnCreateNumber'      onclick='actionManager.do(new CreateNodeAction("number"     )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateAdd'         onclick='actionManager.do(new CreateNodeAction("add"        )); this.blur();'>ADD</button>
@@ -6652,7 +6652,7 @@ function showProductKeyDialog()
     productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value = '';
     
-    menuSelect.setSelectedIndex(0);
+    //menuSelect.setSelectedIndex(0);
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
 }
@@ -6702,7 +6702,7 @@ productKeyInput.addEventListener('input', () =>
             window.setTimeout(() => 
             {
                 hideProductKeyDialog();
-                updateMenuSelectItems();
+                //updateMenuSelectItems();
 
                 uiNotify('✨ Thank you for subscribing to Generator! ✨', '', 6000);    
             }, 
@@ -6753,6 +6753,9 @@ extends EventTarget
     get op()   { return this._op; }
 
 
+    valueIsValid = true;
+
+    
     // _operator; get operator() { return this._operator; }
     _control;  get control()  { return this._control;  }
     _div;      get div()      { return this._div;      }
@@ -7285,8 +7288,6 @@ function dataFromDataColor(color)
 
 class Graph
 {
-    name         = 'Untitled';
-    
     nodes        = [];
     deferNodeIds = [];
     
@@ -8927,12 +8928,11 @@ extends Operator
     {
         super('number', 'num', 'number', 70);
 
-        this.addOutput(new Output(this.dataType));
+        //this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#value = new NumberParam('', true, false));
+        this.addParam(this.#value = new NumberParam('', true, true));
         
         this.#value.allowEditDecimals = true;
-        //this.#value.addEventListener('change', () => this.pushUpdate());
     }
 
 
@@ -8941,7 +8941,7 @@ extends Operator
     {
         super.refresh();
         
-        this._sampled = Number.NaN;
+        //this._sampled = Number.NaN;
     }
 
 
@@ -8953,11 +8953,18 @@ extends Operator
             
         this.updateParams(false);
         
-        this.outputs[0]._data = dataFromNumber(
-            this.#value.value, 
-            this.#value.control.dec);
+        // this.outputs[0]._data = dataFromNumber(
+        //     this.#value.value, 
+        //     this.#value.control.dec);
             
         super.update()
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
     }
 
 
@@ -9035,7 +9042,7 @@ extends Operator
     {
         super.refresh();
         
-        this._sampled = Number.NaN;
+        //this._sampled = Number.NaN;
     }
 
 
@@ -9321,6 +9328,9 @@ extends Operator
     hexbox;
 
 
+    #init = false;
+
+
     constructor()
     {
         super('color', 'col', 'color', 80);
@@ -9361,14 +9371,14 @@ extends Operator
         this._space.control.barHeight = 0.2;
         
 
-        this._space.addEventListener('change', () => 
-        {
-            this._c1.allowEditDecimals = this._space.value > 1;
-            this._c2.allowEditDecimals = this._space.value > 1;
-            this._c3.allowEditDecimals = this._space.value > 1;
+        // this._space.addEventListener('change', () => 
+        // {
+        //     this._c1.allowEditDecimals = this._space.value > 1;
+        //     this._c2.allowEditDecimals = this._space.value > 1;
+        //     this._c3.allowEditDecimals = this._space.value > 1;
 
-            setDataColorToCurrentSpace(this, this._color);
-        });
+        //     setDataColorToCurrentSpace(this, this._color);
+        // });
         
 
         initHexbox(this);
@@ -9385,6 +9395,36 @@ extends Operator
 
 
     getNormalColorFromParams()
+    {
+        if (this._space.value == 0)
+        {
+            const rgb = hex2rgb(this.hexbox.value);
+
+            return [
+                'rgb',
+                rgb[0],
+                rgb[1],
+                rgb[2] ];
+        }
+        else
+        {
+            const col = getNormalColor_(
+                getCurrentDataColorSpace(this),
+                this._c1.value,
+                this._c2.value,
+                this._c3.value);
+        
+            return [
+                getCurrentDataColorSpace(this),
+                col[0],
+                col[1],
+                col[2] ];
+        }
+    }
+    
+    
+    
+    getNormalColorFromParamsWithOnlyInput1(space)
     {
         if (this._space.value == 0)
         {
@@ -9453,15 +9493,28 @@ extends Operator
 
             setDataColorToCurrentSpace(this, color);
         }
-
-        else if (this.inputs[1].isConnected) 
-            switchToSpace(this, OpColorSpaces[this.inputs[1].data.value][0]);
-
         else
+        {
+            if (  !this.#init
+                || this._color[0] != OpColorSpaces[this._space.value][0])
+            {
+                this._c1.allowEditDecimals = this._space.value > 1;
+                this._c2.allowEditDecimals = this._space.value > 1;
+                this._c3.allowEditDecimals = this._space.value > 1;
+                
+                setDataColorToCurrentSpace(this, this._color);
+
+                this.#init = true;
+            }
+
             this._color = this.getNormalColorFromParams();
+        }
 
     
         this.outputs[0]._data = dataFromDataColor(this._color);
+
+        for (const param of this.params.filter(p => p.dataType == 'number'))
+            param.valueIsValid = !isValidRgb(dataColor2rgb(this._color));
 
 
         super.update()
@@ -9623,7 +9676,7 @@ extends Operator
         const ranges = [];
  
         
-        const precision = 0.005;
+        const precision = 0.01;
         let   open      = false;
 
         for (let f = 0; f <= 1; f += precision)
@@ -9786,14 +9839,24 @@ function switchToTextbox(op)
         
         op.inner.appendChild(op.hexbox);
 
-        for (const input of op.inputs.filter(i => i.param))
-            if (input.isConnected)
-                graph.disconnect(input);
-
-        for (const output of op.outputs.filter(o => o.param))
-            for (const input of output.connectedInputs)
-                graph.disconnect(input);
+        removeOpColorParamWires(op);
     }
+}
+
+
+
+function removeOpColorParamWires(op)
+{
+    const inputs  = op. inputs.filter(i => i.param);
+    const outputs = op.outputs.filter(o => o.param);
+
+    for (let i = 1; i < inputs.length; i++)
+        if (inputs[i].isConnected)
+            graph.disconnect(input[i]);
+
+    for (let i = 1; i < outputs.length; i++)
+        for (const input of outputs[i].connectedInputs)
+            graph.disconnect(input);
 }
 
 
@@ -11250,7 +11313,7 @@ document.addEventListener('pointerup', function(e)
 });
 
 
-// uiSaveLocal('state', null);
+//uiSaveLocal('state', null);
 //uiSaveLocal('windowWidth',  null);
 //uiSaveLocal('windowHeight', null);
 //uiSaveLocal('productKey', null);
@@ -11496,16 +11559,16 @@ function setAutoCursor()
 };
 
 
-menuSelect.addEventListener('change', async function(e) 
-{
-    switch (e.detail.selectedValue)
-    {
-        case 'saveLocal':  saveToLocalFile('graph.json'); break;
-        case 'loadLocal':  loadFromLocalFile();           break;
-        case 'duplicate':  console.log(graph.save());     break;
-        case 'productKey': showProductKeyDialog();        break;
-    }
-});
+// menuSelect.addEventListener('change', async function(e) 
+// {
+//     switch (e.detail.selectedValue)
+//     {
+//         case 'saveLocal':  saveToLocalFile('graph.json'); break;
+//         case 'loadLocal':  loadFromLocalFile();           break;
+//         case 'duplicate':  console.log(graph.save());     break;
+//         case 'productKey': showProductKeyDialog();        break;
+//     }
+// });
 
 
 
@@ -11807,10 +11870,10 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    initMenuSelect(menuSelect);
-    menuSelect.initMenu();
+    // initMenuSelect(menuSelect);
+    // menuSelect.initMenu();
 
-    updateMenuSelectItems();
+    //updateMenuSelectItems();
 }
 
 
@@ -12162,7 +12225,11 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value      = getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+        slider.textbox.value =
+            isNaN(slider.value)
+            ? '?'
+            : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+            
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);
@@ -12330,21 +12397,16 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         
         if (slider.buttonDown0)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-            
             if (slider.isPointerLocked())
             {
                 slider.movedX += e.movementX;
                 
-                let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                let drag     = slider.dragScale * Math.pow(10, -slider.editDec);
-
+                const dx       = slider.sx - slider.movedX;             
+                const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
+                const grain    = Math.pow(10, -this.editDec);
                 
-                // TODO: if (log) do log scaling
                 let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
-                
-                const grain = Math.pow(10, -this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
@@ -12360,10 +12422,6 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
                 }
             }
         }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-        
-        // slider.update();
     });
     
     
@@ -12582,7 +12640,9 @@ function initNumberSlider(slider, width, height, name, min, max, def, dragScale,
         const valueText = 
             slider.valueText != ''
             ? slider.valueText
-            : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+            : (isNaN(slider.value)
+               ? '?'
+               : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase());
 
         slider.text.innerHTML += valueText + slider.suffix;
 

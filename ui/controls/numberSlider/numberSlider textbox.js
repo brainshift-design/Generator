@@ -156,7 +156,11 @@ function initNumberSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value      = getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+        slider.textbox.value =
+            isNaN(slider.value)
+            ? '?'
+            : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+            
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);

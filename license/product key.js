@@ -13,7 +13,7 @@ function showProductKeyDialog()
     productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value = '';
     
-    menuSelect.setSelectedIndex(0);
+    //menuSelect.setSelectedIndex(0);
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
 }
@@ -63,7 +63,7 @@ productKeyInput.addEventListener('input', () =>
             window.setTimeout(() => 
             {
                 hideProductKeyDialog();
-                updateMenuSelectItems();
+                //updateMenuSelectItems();
 
                 uiNotify('✨ Thank you for subscribing to Generator! ✨', '', 6000);    
             }, 

@@ -48,7 +48,7 @@ extends Operator
     {
         super.refresh();
         
-        this._sampled = Number.NaN;
+        //this._sampled = Number.NaN;
     }
 
 

@@ -9,12 +9,11 @@ extends Operator
     {
         super('number', 'num', 'number', 70);
 
-        this.addOutput(new Output(this.dataType));
+        //this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#value = new NumberParam('', true, false));
+        this.addParam(this.#value = new NumberParam('', true, true));
         
         this.#value.allowEditDecimals = true;
-        //this.#value.addEventListener('change', () => this.pushUpdate());
     }
 
 
@@ -23,7 +22,7 @@ extends Operator
     {
         super.refresh();
         
-        this._sampled = Number.NaN;
+        //this._sampled = Number.NaN;
     }
 
 
@@ -35,11 +34,18 @@ extends Operator
             
         this.updateParams(false);
         
-        this.outputs[0]._data = dataFromNumber(
-            this.#value.value, 
-            this.#value.control.dec);
+        // this.outputs[0]._data = dataFromNumber(
+        //     this.#value.value, 
+        //     this.#value.control.dec);
             
         super.update()
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
     }
 
 
