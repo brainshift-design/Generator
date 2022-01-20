@@ -131,7 +131,8 @@ function onConnectInput(op)
 
 function onDisconnectInput(op, input)
 {
-    removeFromArray(op.inputs, input); 
+    removeFromArray(op.inputs, input);
+    op.inputControls.removeChild(input.control);
 
     op.invalidate();
     op.update();
