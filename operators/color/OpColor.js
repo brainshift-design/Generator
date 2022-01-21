@@ -113,60 +113,17 @@ extends Operator
 
     getDataColorFromParams()
     {
-        if (this.paramSpace.value == 0)
-        {
-            const rgb = hex2rgb(this.hexbox.value);
-
-            return [
-                'rgb',
-                rgb[0],
-                rgb[1],
-                rgb[2] ];
-        }
-        else
-        {
-            const col = getNormalColor_(
-                getCurrentDataColorSpace(this),
-                this.param1.value,
-                this.param2.value,
-                this.param3.value);
-        
-            return [
-                getCurrentDataColorSpace(this),
-                col[0],
-                col[1],
-                col[2] ];
-        }
-    }
+        const col = getNormalColor_(
+            getCurrentDataColorSpace(this),
+            this.param1.value,
+            this.param2.value,
+            this.param3.value);
     
-    
-    
-    getDataColorFromParamsWithOnlyInput1(space)
-    {
-        if (this.paramSpace.value == 0)
-        {
-            const rgb = hex2rgb(this.hexbox.value);
-
-            return [
-                'rgb',
-                rgb[0],
-                rgb[1],
-                rgb[2] ];
-        }
-        else
-        {
-            const col = getNormalColor_(
-                getCurrentDataColorSpace(this),
-                this.param1.value,
-                this.param2.value,
-                this.param3.value);
-        
-            return [
-                getCurrentDataColorSpace(this),
-                col[0],
-                col[1],
-                col[2] ];
-        }
+        return [
+            getCurrentDataColorSpace(this),
+            col[0],
+            col[1],
+            col[2] ];
     }
     
     
@@ -217,7 +174,6 @@ extends Operator
             if (  !this.#init
                 || this._oldSpace != toSpace)
             {
-                console.log('this.#init = ', this.#init);
                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
