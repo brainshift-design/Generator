@@ -5,7 +5,7 @@ extends EventTarget
     get type() { return this.#type; }
     
     #name;
-    get name()    { return this.#name; }
+    get name() { return this.#name; }
 
     _op;
     get op()   { return this._op; }

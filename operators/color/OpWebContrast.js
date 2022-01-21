@@ -215,27 +215,4 @@ extends Operator
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : colorStyleRgb(rgbFromDataType(this._dataType, false));
     }
-
-
-
-    // toJson(nTab = 0) 
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = '  ';
-        
-    //     let json = 
-    //           pos + '{\n'
-    //         + this.toJsonBase(nTab);
-        
-    //     const param = this.params[0];
-
-    //     if (   !param.isDefault()
-    //         && (   !param.input
-    //             || !param.input.isConnected))
-    //         json += ',\n' + param.toJson(nTab + 2);
-
-    //     json += '\n' + pos + '}';
-
-    //     return json;
-    // }
 }

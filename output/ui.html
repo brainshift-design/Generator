@@ -6769,7 +6769,7 @@ extends EventTarget
     get type() { return this.#type; }
     
     #name;
-    get name()    { return this.#name; }
+    get name() { return this.#name; }
 
     _op;
     get op()   { return this._op; }
@@ -7327,7 +7327,7 @@ class Graph
 
     clear()
     {
-        this.notes = [];
+        this.deleteNodes(this.nodes.map(n => n.id));
     }
 
 
@@ -8062,12 +8062,14 @@ class Connection
         const tab = '  ';
         
         let json = 
-              pos + '{\n'
-            + pos + tab + '"outputOp" : "' + this.output.op.name + '",\n'
-            + (this.output.param ? pos + tab + '"outputIndex": "' + this.output.param.name + '",\n' : '')
-            + pos + tab + '"inputOp" : "' + this.input.op.name + '"\n'
-            + (this.input.param ? pos + tab + '"inputIndex" : "' + this.input.param.name + '"\n' : '')
-            + pos + '}';
+              pos + '{'
+            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.name + '"'
+            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.findIndex(o => o == this.output) + '"'
+            + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
+            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.name + '"'
+            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.findIndex(i => i == this.input) + '"'
+            + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
+            +  '\n' + pos + '}';
 
         return json;
     }
@@ -8623,13 +8625,13 @@ class Operator
 
 
 
-    // loadParams(_node)
-    // {
-    //     for (let i = 4; i < _node.length; i++) // 4 to skip type, name, x and y
-    //     {
-    //         const _param = _node.
-    //     }
-    // }
+    loadParams(_node)
+    {
+        // for (const _param of _node.params)
+        // {
+
+        // }
+    }
 }
 
 
@@ -9011,15 +9013,6 @@ extends Operator
 
 
 
-    // refresh()
-    // {
-    //     super.refresh();
-        
-    //     //this._sampled = Number.NaN;
-    // }
-
-
-
     update()
     {
         if (!this.needsUpdate())
@@ -9033,13 +9026,6 @@ extends Operator
             
         super.update()
     }
-
-
-
-    // updateNode()
-    // {
-    //     super.updateNode();
-    // }
 
 
 
@@ -9063,6 +9049,17 @@ extends Operator
 
     //     this.output._data = dataFromNumber(this._sampled);
     // }
+
+
+
+    loadParams(_params)
+    {
+        for (const _param of _params)
+        {
+            if (_param[0] == 'value')
+                this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+        }
+    }
 }
 
 
@@ -9181,23 +9178,6 @@ extends Operator
         
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
     }
-
-
-
-    // paramsToJson(nTab)
-    // {
-    //     let json = '';
-
-    //     for (const param of this.params)
-    //     {
-    //         if (   !param.isDefault()
-    //             && (   !param.input
-    //                 || !param.input.isConnected))
-    //             json += ',\n' + param.toJson(nTab + 2);
-    //     }
-
-    //     return json;
-    // }
 
 
 
@@ -10913,29 +10893,6 @@ extends Operator
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : colorStyleRgb(rgbFromDataType(this._dataType, false));
     }
-
-
-
-    // toJson(nTab = 0) 
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = '  ';
-        
-    //     let json = 
-    //           pos + '{\n'
-    //         + this.toJsonBase(nTab);
-        
-    //     const param = this.params[0];
-
-    //     if (   !param.isDefault()
-    //         && (   !param.input
-    //             || !param.input.isConnected))
-    //         json += ',\n' + param.toJson(nTab + 2);
-
-    //     json += '\n' + pos + '}';
-
-    //     return json;
-    // }
 }
 
 
@@ -16024,13 +15981,16 @@ graphView.getNodeOffsetRect = (node) =>
 
 function loadGraph(json)
 {
+    graph.clear();
+
+
     const data = JSON.parse(json);
 
 
     graphView.setZoomAndPan(
-        data.zoom,
-        data.panx, 
-        data.pany);
+        parseFloat(data.zoom),
+        { x: parseFloat(data.panx), 
+          y: parseFloat(data.pany) });
 
 
     for (const _node of data.nodes)
@@ -16041,16 +16001,19 @@ function loadGraph(json)
 
         setNodePosition(
             node, 
-            _node.nodex, 
-            _node.nodey);
+            parseFloat(_node.x), 
+            parseFloat(_node.y));
 
-        node.loadParams(_node);
+        if (_node.params)
+            node.loadParams(_node.params);
     }
 
 
     for (const _conn of data.connections)
     {
-
+        uiConnect(
+            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
+            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
     }
 }
 

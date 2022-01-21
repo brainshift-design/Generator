@@ -18,15 +18,6 @@ extends Operator
 
 
 
-    // refresh()
-    // {
-    //     super.refresh();
-        
-    //     //this._sampled = Number.NaN;
-    // }
-
-
-
     update()
     {
         if (!this.needsUpdate())
@@ -40,13 +31,6 @@ extends Operator
             
         super.update()
     }
-
-
-
-    // updateNode()
-    // {
-    //     super.updateNode();
-    // }
 
 
 
@@ -70,4 +54,15 @@ extends Operator
 
     //     this.output._data = dataFromNumber(this._sampled);
     // }
+
+
+
+    loadParams(_params)
+    {
+        for (const _param of _params)
+        {
+            if (_param[0] == 'value')
+                this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+        }
+    }
 }

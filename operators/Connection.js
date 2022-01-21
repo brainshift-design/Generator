@@ -168,12 +168,14 @@ class Connection
         const tab = '  ';
         
         let json = 
-              pos + '{\n'
-            + pos + tab + '"outputOp" : "' + this.output.op.name + '",\n'
-            + (this.output.param ? pos + tab + '"outputIndex": "' + this.output.param.name + '",\n' : '')
-            + pos + tab + '"inputOp" : "' + this.input.op.name + '"\n'
-            + (this.input.param ? pos + tab + '"inputIndex" : "' + this.input.param.name + '"\n' : '')
-            + pos + '}';
+              pos + '{'
+            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.name + '"'
+            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.findIndex(o => o == this.output) + '"'
+            + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
+            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.name + '"'
+            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.findIndex(i => i == this.input) + '"'
+            + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
+            +  '\n' + pos + '}';
 
         return json;
     }

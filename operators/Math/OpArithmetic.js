@@ -116,23 +116,6 @@ extends Operator
 
 
 
-    // paramsToJson(nTab)
-    // {
-    //     let json = '';
-
-    //     for (const param of this.params)
-    //     {
-    //         if (   !param.isDefault()
-    //             && (   !param.input
-    //                 || !param.input.isConnected))
-    //             json += ',\n' + param.toJson(nTab + 2);
-    //     }
-
-    //     return json;
-    // }
-
-
-
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);

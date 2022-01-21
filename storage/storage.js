@@ -15,13 +15,16 @@
 
 function loadGraph(json)
 {
+    graph.clear();
+
+
     const data = JSON.parse(json);
 
 
     graphView.setZoomAndPan(
-        data.zoom,
-        data.panx, 
-        data.pany);
+        parseFloat(data.zoom),
+        { x: parseFloat(data.panx), 
+          y: parseFloat(data.pany) });
 
 
     for (const _node of data.nodes)
@@ -32,15 +35,18 @@ function loadGraph(json)
 
         setNodePosition(
             node, 
-            _node.nodex, 
-            _node.nodey);
+            parseFloat(_node.x), 
+            parseFloat(_node.y));
 
-        node.loadParams(_node);
+        if (_node.params)
+            node.loadParams(_node.params);
     }
 
 
     for (const _conn of data.connections)
     {
-
+        uiConnect(
+            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
+            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
     }
 }

@@ -547,11 +547,11 @@ class Operator
 
 
 
-    // loadParams(_node)
-    // {
-    //     for (let i = 4; i < _node.length; i++) // 4 to skip type, name, x and y
-    //     {
-    //         const _param = _node.
-    //     }
-    // }
+    loadParams(_node)
+    {
+        // for (const _param of _node.params)
+        // {
+
+        // }
+    }
 }

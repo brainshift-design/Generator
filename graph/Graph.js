@@ -9,7 +9,7 @@ class Graph
 
     clear()
     {
-        this.notes = [];
+        this.deleteNodes(this.nodes.map(n => n.id));
     }
 
 
