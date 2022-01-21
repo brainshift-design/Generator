@@ -11,6 +11,9 @@ extends Operator
     {
         super(opType, shortType, 'number', 65);
 
+        this.alwaysLoadParams = true;
+
+
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
         
@@ -129,7 +132,16 @@ extends Operator
         json += '\n' + pos + '}';
 
         return json;
-    }}
+    }
+
+
+
+    loadParams(_node)
+    {
+        if (_node.showOnlySymbol)
+            this._showOnlySymbol = _node.showOnlySymbol == 'true';
+    }
+}
 
 
 

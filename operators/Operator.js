@@ -29,6 +29,8 @@ class Operator
     params  = [];
     
 
+    alwaysLoadParams;
+
     
     // node UI
 
@@ -109,14 +111,16 @@ class Operator
 
     constructor(opType, shortType, dataType, defWidth = 100)
     {
-        this.#opType       = opType;   // this is the operator type
-        this._dataType     = dataType; // this is the op's main data type
+        this.#opType          = opType;   // this is the operator type
+        this._dataType        = dataType; // this is the op's main data type
+           
+        this.shortTypeName    = shortType;
+        this._name            = shortType; // this is a temp until the op becomes a graph node
+           
+        this.defaultWidth     = defWidth;
         
-        this.shortTypeName = shortType;
-        this._name         = shortType; // this is a temp until the op becomes a graph node
-        
-        this.defaultWidth  = defWidth;
-        
+        this.alwaysLoadParams = false;
+
         createOperatorNode(this);
     }    
 

@@ -57,12 +57,15 @@ extends Operator
 
 
 
-    loadParams(_params)
+    loadParams(_node)
     {
-        for (const _param of _params)
+        for (const _param of _node.params)
         {
             if (_param[0] == 'value')
+            {
+                this.#paramValue.setDecimals(_param[1]);
                 this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+            }
         }
     }
 }

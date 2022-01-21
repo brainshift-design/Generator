@@ -96,13 +96,4 @@ extends Parameter
             
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
-
-
-
-    toJson(nTab = 0)
-    {
-        let pos = ' '.repeat(nTab);
-
-        return pos + '["' + this.name  + '", "' + this.value + '"]';
-    }
 }

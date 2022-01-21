@@ -91,21 +91,11 @@ extends Operator
 
 
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.param1    = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
-        this.addParam(this.param2    = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
-        this.addParam(this.param3    = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2]), 0, 255));
+        this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
+        this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
+        this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2]), 0, 255));
 
         this.paramSpace.control.barHeight = 0.2;
-        
-
-        // this._space.addEventListener('change', () => 
-        // {
-        //     this.param1.allowEditDecimals = this.paramSpace.value > 1;
-        //     this.param2.allowEditDecimals = this.paramSpace.value > 1;
-        //     this.param3.allowEditDecimals = this.paramSpace.value > 1;
-
-        //     setDataColorToCurrentSpace(this, this._color);
-        // });
         
 
         initHexbox(this);
@@ -114,9 +104,6 @@ extends Operator
         this.#warningOverlay = document.createElement('div');
         this.#warningOverlay.className = 'colorWarningOverlay';
         this.inner.appendChild(this.#warningOverlay);
-
-
-        setTimeout(() => { this.paramSpace.setValue(0); }); // init all the params with names
     }
 
 
@@ -220,21 +207,18 @@ extends Operator
 
             setDataColorToCurrentSpace(this, color);
         }
-        else
+        else if (!this.#init
+               || this._color[0] != OpColorSpaces[this.paramSpace.value][0])
         {
-            if (  !this.#init
-                || this._color[0] != OpColorSpaces[this.paramSpace.value][0])
-            {
-                this.param1.allowEditDecimals = this.paramSpace.value > 1;
-                this.param2.allowEditDecimals = this.paramSpace.value > 1;
-                this.param3.allowEditDecimals = this.paramSpace.value > 1;
-                
-                setDataColorToCurrentSpace(this, this._color);
-
-                this.#init = true;
-            }
-
             this._color = this.getNormalColorFromParams();
+
+            this.param1.allowEditDecimals = this.paramSpace.value > 1;
+            this.param2.allowEditDecimals = this.paramSpace.value > 1;
+            this.param3.allowEditDecimals = this.paramSpace.value > 1;
+            
+            setDataColorToCurrentSpace(this, this._color);
+
+            this.#init = true;
         }
 
     
@@ -246,7 +230,8 @@ extends Operator
 
         super.update()
 
-        this.updateOutputWires();
+
+        //this.updateOutputWires();
     }
 
 
@@ -442,15 +427,17 @@ extends Operator
         let json = '';
         
         let first = true;
-        for (const param of this.params)
+        for (let i = 0; i < this.params.length; i++)
         {
+            const param = this.params[i];
+
             if (   !param.isDefault()
                 && (   !param.input
                     || !param.input.isConnected)
                 && !this.inputs[0].isConnected)
             {
                 if (!first) json += ',\n'; first = false;
-                json += pos + param.toJson(nTab);
+                json += pos + param.toJson(nTab, i > 0 ? 'param' + i : '');
             }
         }
 
@@ -458,5 +445,35 @@ extends Operator
             json += '\n';
 
         return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'space':
+                    this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
+                    break;
+                    
+                    case 'param1':
+                    this.param1.setDecimals(_param[1]);
+                    this.param1.setValue(parseFloat(_param[1]), true, true, false);
+                    break;
+
+                case 'param2':
+                    this.param2.setDecimals(_param[1]);
+                    this.param2.setValue(parseFloat(_param[1]), true, true, false);
+                    break;
+
+                case 'param3':
+                    this.param3.setDecimals(_param[1]);
+                    this.param3.setValue(parseFloat(_param[1]), true, true, false);
+                    break;
+            }
+        }
     }
 }

@@ -38,8 +38,9 @@ function loadGraph(json)
             parseFloat(_node.x), 
             parseFloat(_node.y));
 
-        if (_node.params)
-            node.loadParams(_node.params);
+        if (  _node.params
+            || node.alwaysLoadParams)
+            node.loadParams(_node);
     }
 
 

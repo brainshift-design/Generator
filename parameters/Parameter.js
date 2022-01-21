@@ -141,8 +141,13 @@ extends EventTarget
 
 
 
-    toJson(nTab = 0)
+    toJson(nTab = 0, name = '')
     {
-        
+        let pos = ' '.repeat(nTab);
+
+        if (name == '')
+            name = this.name;
+
+        return pos + '["' + name  + '", "' + this.value + '"]';
     }
 }

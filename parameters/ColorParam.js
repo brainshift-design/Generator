@@ -90,13 +90,4 @@ extends Parameter
     { 
         //this._control.setValue(value, fireChangeEvent, confirm); 
     }
-
-
-
-    toJson(nTab = 0)
-    {
-        let pos = ' '.repeat(nTab);
-        
-        return pos + '["' + this.name  + '", "' + this.value + '"]';
-    }
 }

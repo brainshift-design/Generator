@@ -75,20 +75,7 @@ extends Parameter
         { 
             if (   e.detail.success
                 && this.allowEditDecimals)
-            {
-                const decIndex = e.detail.value.indexOf(getUserDecimalSeparator());
-
-                const nDec =
-                    decIndex >= 0
-                    ? e.detail.value.length-1 - decIndex
-                    : 0;
-
-                this.control.dec     = nDec;
-                this.control.editDec = nDec;
-                this.control.update();
-
-                setTimeout(() => this.op.pushUpdate());
-            }
+                this.setDecimals(e.detail.value);
         });
     }
 
@@ -98,6 +85,24 @@ extends Parameter
     {
         super.setName(name, dispatchEvents);
         this.control.setName(name);
+    }
+
+
+
+    setDecimals(strValue)
+    {
+        const decIndex = strValue.indexOf(getUserDecimalSeparator());
+
+        const nDec =
+            decIndex >= 0
+            ? strValue.length-1 - decIndex
+            : 0;
+
+        this.control.dec     = nDec;
+        this.control.editDec = nDec;
+        this.control.update();
+
+        setTimeout(() => this.op.pushUpdate());
     }
 
 
@@ -136,10 +141,13 @@ extends Parameter
 
 
 
-    toJson(nTab = 0)
+    toJson(nTab = 0, name = '')
     {
         let pos = ' '.repeat(nTab);
-       
-        return pos + '["' + this.name  + '", "' + this.value + '"]';
+        
+        if (name == '')
+            name = this.name;
+
+        return pos + '["' + name  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
     }
 }

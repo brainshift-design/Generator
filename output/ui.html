@@ -386,7 +386,7 @@ input[type=text]::selection
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
-    box-shadow:    0px 5px 20px #0001;
+    /* box-shadow:    0px 5px 20px #0001; */
 }    
 
 
@@ -6905,9 +6905,14 @@ extends EventTarget
 
 
 
-    toJson(nTab = 0)
+    toJson(nTab = 0, name = '')
     {
-        
+        let pos = ' '.repeat(nTab);
+
+        if (name == '')
+            name = this.name;
+
+        return pos + '["' + name  + '", "' + this.value + '"]';
     }
 }
 
@@ -6989,20 +6994,7 @@ extends Parameter
         { 
             if (   e.detail.success
                 && this.allowEditDecimals)
-            {
-                const decIndex = e.detail.value.indexOf(getUserDecimalSeparator());
-
-                const nDec =
-                    decIndex >= 0
-                    ? e.detail.value.length-1 - decIndex
-                    : 0;
-
-                this.control.dec     = nDec;
-                this.control.editDec = nDec;
-                this.control.update();
-
-                setTimeout(() => this.op.pushUpdate());
-            }
+                this.setDecimals(e.detail.value);
         });
     }
 
@@ -7012,6 +7004,24 @@ extends Parameter
     {
         super.setName(name, dispatchEvents);
         this.control.setName(name);
+    }
+
+
+
+    setDecimals(strValue)
+    {
+        const decIndex = strValue.indexOf(getUserDecimalSeparator());
+
+        const nDec =
+            decIndex >= 0
+            ? strValue.length-1 - decIndex
+            : 0;
+
+        this.control.dec     = nDec;
+        this.control.editDec = nDec;
+        this.control.update();
+
+        setTimeout(() => this.op.pushUpdate());
     }
 
 
@@ -7050,11 +7060,14 @@ extends Parameter
 
 
 
-    toJson(nTab = 0)
+    toJson(nTab = 0, name = '')
     {
         let pos = ' '.repeat(nTab);
-       
-        return pos + '["' + this.name  + '", "' + this.value + '"]';
+        
+        if (name == '')
+            name = this.name;
+
+        return pos + '["' + name  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
     }
 }
 
@@ -7150,15 +7163,6 @@ extends Parameter
     setValue(value, fireChangeEvent = true, confirm = true) 
     { 
         //this._control.setValue(value, fireChangeEvent, confirm); 
-    }
-
-
-
-    toJson(nTab = 0)
-    {
-        let pos = ' '.repeat(nTab);
-        
-        return pos + '["' + this.name  + '", "' + this.value + '"]';
     }
 }
 
@@ -7261,15 +7265,6 @@ extends Parameter
             
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
-
-
-
-    toJson(nTab = 0)
-    {
-        let pos = ' '.repeat(nTab);
-
-        return pos + '["' + this.name  + '", "' + this.value + '"]';
-    }
 }
 
 
@@ -8107,6 +8102,8 @@ class Operator
     params  = [];
     
 
+    alwaysLoadParams;
+
     
     // node UI
 
@@ -8187,14 +8184,16 @@ class Operator
 
     constructor(opType, shortType, dataType, defWidth = 100)
     {
-        this.#opType       = opType;   // this is the operator type
-        this._dataType     = dataType; // this is the op's main data type
+        this.#opType          = opType;   // this is the operator type
+        this._dataType        = dataType; // this is the op's main data type
+           
+        this.shortTypeName    = shortType;
+        this._name            = shortType; // this is a temp until the op becomes a graph node
+           
+        this.defaultWidth     = defWidth;
         
-        this.shortTypeName = shortType;
-        this._name         = shortType; // this is a temp until the op becomes a graph node
-        
-        this.defaultWidth  = defWidth;
-        
+        this.alwaysLoadParams = false;
+
         createOperatorNode(this);
     }    
 
@@ -9052,12 +9051,15 @@ extends Operator
 
 
 
-    loadParams(_params)
+    loadParams(_node)
     {
-        for (const _param of _params)
+        for (const _param of _node.params)
         {
             if (_param[0] == 'value')
+            {
+                this.#paramValue.setDecimals(_param[1]);
                 this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+            }
         }
     }
 }
@@ -9075,6 +9077,9 @@ extends Operator
     constructor(opType, shortType, symbol)
     {
         super(opType, shortType, 'number', 65);
+
+        this.alwaysLoadParams = true;
+
 
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
@@ -9194,7 +9199,16 @@ extends Operator
         json += '\n' + pos + '}';
 
         return json;
-    }}
+    }
+
+
+
+    loadParams(_node)
+    {
+        if (_node.showOnlySymbol)
+            this._showOnlySymbol = _node.showOnlySymbol == 'true';
+    }
+}
 
 
 
@@ -9456,21 +9470,11 @@ extends Operator
 
 
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.param1    = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
-        this.addParam(this.param2    = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
-        this.addParam(this.param3    = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2]), 0, 255));
+        this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
+        this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
+        this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2]), 0, 255));
 
         this.paramSpace.control.barHeight = 0.2;
-        
-
-        // this._space.addEventListener('change', () => 
-        // {
-        //     this.param1.allowEditDecimals = this.paramSpace.value > 1;
-        //     this.param2.allowEditDecimals = this.paramSpace.value > 1;
-        //     this.param3.allowEditDecimals = this.paramSpace.value > 1;
-
-        //     setDataColorToCurrentSpace(this, this._color);
-        // });
         
 
         initHexbox(this);
@@ -9479,9 +9483,6 @@ extends Operator
         this.#warningOverlay = document.createElement('div');
         this.#warningOverlay.className = 'colorWarningOverlay';
         this.inner.appendChild(this.#warningOverlay);
-
-
-        setTimeout(() => { this.paramSpace.setValue(0); }); // init all the params with names
     }
 
 
@@ -9585,21 +9586,18 @@ extends Operator
 
             setDataColorToCurrentSpace(this, color);
         }
-        else
+        else if (!this.#init
+               || this._color[0] != OpColorSpaces[this.paramSpace.value][0])
         {
-            if (  !this.#init
-                || this._color[0] != OpColorSpaces[this.paramSpace.value][0])
-            {
-                this.param1.allowEditDecimals = this.paramSpace.value > 1;
-                this.param2.allowEditDecimals = this.paramSpace.value > 1;
-                this.param3.allowEditDecimals = this.paramSpace.value > 1;
-                
-                setDataColorToCurrentSpace(this, this._color);
-
-                this.#init = true;
-            }
-
             this._color = this.getNormalColorFromParams();
+
+            this.param1.allowEditDecimals = this.paramSpace.value > 1;
+            this.param2.allowEditDecimals = this.paramSpace.value > 1;
+            this.param3.allowEditDecimals = this.paramSpace.value > 1;
+            
+            setDataColorToCurrentSpace(this, this._color);
+
+            this.#init = true;
         }
 
     
@@ -9611,7 +9609,8 @@ extends Operator
 
         super.update()
 
-        this.updateOutputWires();
+
+        //this.updateOutputWires();
     }
 
 
@@ -9807,15 +9806,17 @@ extends Operator
         let json = '';
         
         let first = true;
-        for (const param of this.params)
+        for (let i = 0; i < this.params.length; i++)
         {
+            const param = this.params[i];
+
             if (   !param.isDefault()
                 && (   !param.input
                     || !param.input.isConnected)
                 && !this.inputs[0].isConnected)
             {
                 if (!first) json += ',\n'; first = false;
-                json += pos + param.toJson(nTab);
+                json += pos + param.toJson(nTab, i > 0 ? 'param' + i : '');
             }
         }
 
@@ -9823,6 +9824,36 @@ extends Operator
             json += '\n';
 
         return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'space':
+                    this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
+                    break;
+                    
+                    case 'param1':
+                    this.param1.setDecimals(_param[1]);
+                    this.param1.setValue(parseFloat(_param[1]), true, true, false);
+                    break;
+
+                case 'param2':
+                    this.param2.setDecimals(_param[1]);
+                    this.param2.setValue(parseFloat(_param[1]), true, true, false);
+                    break;
+
+                case 'param3':
+                    this.param3.setDecimals(_param[1]);
+                    this.param3.setValue(parseFloat(_param[1]), true, true, false);
+                    break;
+            }
+        }
     }
 }
 
@@ -16004,8 +16035,9 @@ function loadGraph(json)
             parseFloat(_node.x), 
             parseFloat(_node.y));
 
-        if (_node.params)
-            node.loadParams(_node.params);
+        if (  _node.params
+            || node.alwaysLoadParams)
+            node.loadParams(_node);
     }
 
 
