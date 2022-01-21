@@ -10,7 +10,7 @@
 const OpColorSpaces = 
 [
     ['hex',    'Hex'    ],
-    ['rgbhex', '#RGB'   ],
+    ['rgbhex', '# RGB'   ],
     ['rgb',    'RGB'    ], 
     ['hsv',    'HSV'    ], 
     ['hsl',    'HSL'    ], 
@@ -32,7 +32,7 @@ const rgbScale    = [255, 255, 255];
 const hs_Scale    = [360, 100, 100];
 const hcloklScale = [360,  51, 100];
 const hcllabScale = [360, 100, 100];
-const hclluvScale = [360, 100, 100];
+const hclluvScale = [360, 330, 100];
 const oklabScale  = [100,  30,  30];
 const labScale    = [100, 100, 100];
 const luvScale    = [100, 150, 150];
@@ -55,6 +55,8 @@ extends Operator
 
     _color;
 
+    _oldSpace;
+
     #init = false;
 
 
@@ -63,6 +65,7 @@ extends Operator
         super('color', 'col', 'color', 80);
 
         this._color = ['rgb', 0.5, 0.5, 0.5];
+        this._oldSpace = 'rgb';
 
 
         this.#colorBack = document.createElement('div');
@@ -108,7 +111,7 @@ extends Operator
 
 
 
-    getNormalColorFromParams()
+    getDataColorFromParams()
     {
         if (this.paramSpace.value == 0)
         {
@@ -138,7 +141,7 @@ extends Operator
     
     
     
-    getNormalColorFromParamsWithOnlyInput1(space)
+    getDataColorFromParamsWithOnlyInput1(space)
     {
         if (this.paramSpace.value == 0)
         {
@@ -171,7 +174,7 @@ extends Operator
     setColorParams(color, dispatchEvents)
     {
         const col = getDataColor(color);
-        
+
         this.param1.setValue(col[0], false, true, dispatchEvents);
         this.param2.setValue(col[1], false, true, dispatchEvents);
         this.param3.setValue(col[2], false, true, dispatchEvents);
@@ -205,20 +208,32 @@ extends Operator
             if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
             if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-            setDataColorToCurrentSpace(this, color);
+            setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
         }
-        else if (!this.#init
-               || this._color[0] != OpColorSpaces[this.paramSpace.value][0])
+        else
         {
-            this._color = this.getNormalColorFromParams();
+            const toSpace = OpColorSpaces[this.paramSpace.value][0];
 
-            this.param1.allowEditDecimals = this.paramSpace.value > 1;
-            this.param2.allowEditDecimals = this.paramSpace.value > 1;
-            this.param3.allowEditDecimals = this.paramSpace.value > 1;
-            
-            setDataColorToCurrentSpace(this, this._color);
+            if (  !this.#init
+                || this._oldSpace != toSpace)
+            {
+                console.log('this.#init = ', this.#init);
+                this.param1.allowEditDecimals = this.paramSpace.value > 1;
+                this.param2.allowEditDecimals = this.paramSpace.value > 1;
+                this.param3.allowEditDecimals = this.paramSpace.value > 1;
+             
+                const color =
+                    this.loaded 
+                    ? this.getDataColorFromParams()
+                    : this._color;
+                    
+                setDataColorToCurrentSpace(this, color);
 
-            this.#init = true;
+                this.#init = true;
+            }
+
+            this._color    = this.getDataColorFromParams();
+            this._oldSpace = toSpace;
         }
 
     
@@ -459,7 +474,7 @@ extends Operator
                     this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
                     break;
                     
-                    case 'param1':
+                case 'param1':
                     this.param1.setDecimals(_param[1]);
                     this.param1.setValue(parseFloat(_param[1]), true, true, false);
                     break;

@@ -29,9 +29,10 @@ function loadGraph(json)
 
     for (const _node of data.nodes)
     {
-        const node = graph.createNode(_node.type);
+        const node  = graph.createNode(_node.type);
 
-        node.name = _node.name;
+        node.name   = _node.name;
+        node.loaded = true;
 
         setNodePosition(
             node, 
@@ -44,6 +45,7 @@ function loadGraph(json)
     }
 
 
+    console.log('after params');
     for (const _conn of data.connections)
     {
         uiConnect(

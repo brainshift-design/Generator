@@ -30,6 +30,7 @@ class Operator
     
 
     alwaysLoadParams;
+    loaded;
 
     
     // node UI
@@ -119,6 +120,7 @@ class Operator
            
         this.defaultWidth     = defWidth;
         
+        this.loaded           = false;
         this.alwaysLoadParams = false;
 
         createOperatorNode(this);
@@ -249,6 +251,7 @@ class Operator
         this.updateNode();
 
         this.#valid = true;
+        this.loaded = false;
     }
 
 

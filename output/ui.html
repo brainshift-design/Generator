@@ -8103,6 +8103,7 @@ class Operator
     
 
     alwaysLoadParams;
+    loaded;
 
     
     // node UI
@@ -8192,6 +8193,7 @@ class Operator
            
         this.defaultWidth     = defWidth;
         
+        this.loaded           = false;
         this.alwaysLoadParams = false;
 
         createOperatorNode(this);
@@ -8322,6 +8324,7 @@ class Operator
         this.updateNode();
 
         this.#valid = true;
+        this.loaded = false;
     }
 
 
@@ -9389,7 +9392,7 @@ extends OpArithmetic
 const OpColorSpaces = 
 [
     ['hex',    'Hex'    ],
-    ['rgbhex', '#RGB'   ],
+    ['rgbhex', '# RGB'   ],
     ['rgb',    'RGB'    ], 
     ['hsv',    'HSV'    ], 
     ['hsl',    'HSL'    ], 
@@ -9411,7 +9414,7 @@ const rgbScale    = [255, 255, 255];
 const hs_Scale    = [360, 100, 100];
 const hcloklScale = [360,  51, 100];
 const hcllabScale = [360, 100, 100];
-const hclluvScale = [360, 100, 100];
+const hclluvScale = [360, 330, 100];
 const oklabScale  = [100,  30,  30];
 const labScale    = [100, 100, 100];
 const luvScale    = [100, 150, 150];
@@ -9434,6 +9437,8 @@ extends Operator
 
     _color;
 
+    _oldSpace;
+
     #init = false;
 
 
@@ -9442,6 +9447,7 @@ extends Operator
         super('color', 'col', 'color', 80);
 
         this._color = ['rgb', 0.5, 0.5, 0.5];
+        this._oldSpace = 'rgb';
 
 
         this.#colorBack = document.createElement('div');
@@ -9487,7 +9493,7 @@ extends Operator
 
 
 
-    getNormalColorFromParams()
+    getDataColorFromParams()
     {
         if (this.paramSpace.value == 0)
         {
@@ -9517,7 +9523,7 @@ extends Operator
     
     
     
-    getNormalColorFromParamsWithOnlyInput1(space)
+    getDataColorFromParamsWithOnlyInput1(space)
     {
         if (this.paramSpace.value == 0)
         {
@@ -9550,7 +9556,7 @@ extends Operator
     setColorParams(color, dispatchEvents)
     {
         const col = getDataColor(color);
-        
+
         this.param1.setValue(col[0], false, true, dispatchEvents);
         this.param2.setValue(col[1], false, true, dispatchEvents);
         this.param3.setValue(col[2], false, true, dispatchEvents);
@@ -9584,20 +9590,32 @@ extends Operator
             if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
             if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-            setDataColorToCurrentSpace(this, color);
+            setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
         }
-        else if (!this.#init
-               || this._color[0] != OpColorSpaces[this.paramSpace.value][0])
+        else
         {
-            this._color = this.getNormalColorFromParams();
+            const toSpace = OpColorSpaces[this.paramSpace.value][0];
 
-            this.param1.allowEditDecimals = this.paramSpace.value > 1;
-            this.param2.allowEditDecimals = this.paramSpace.value > 1;
-            this.param3.allowEditDecimals = this.paramSpace.value > 1;
-            
-            setDataColorToCurrentSpace(this, this._color);
+            if (  !this.#init
+                || this._oldSpace != toSpace)
+            {
+                console.log('this.#init = ', this.#init);
+                this.param1.allowEditDecimals = this.paramSpace.value > 1;
+                this.param2.allowEditDecimals = this.paramSpace.value > 1;
+                this.param3.allowEditDecimals = this.paramSpace.value > 1;
+             
+                const color =
+                    this.loaded 
+                    ? this.getDataColorFromParams()
+                    : this._color;
+                    
+                setDataColorToCurrentSpace(this, color);
 
-            this.#init = true;
+                this.#init = true;
+            }
+
+            this._color    = this.getDataColorFromParams();
+            this._oldSpace = toSpace;
         }
 
     
@@ -9838,7 +9856,7 @@ extends Operator
                     this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
                     break;
                     
-                    case 'param1':
+                case 'param1':
                     this.param1.setDecimals(_param[1]);
                     this.param1.setValue(parseFloat(_param[1]), true, true, false);
                     break;
@@ -9880,18 +9898,30 @@ function switchToSpace(op, space)
 
 
 
-function switchToHex   (op) { switchToTextbox(op); }
-function switchToRgbHex(op) { switchToRgbControls(op);  showControlHex(op, true ); }
-function switchToRgb   (op) { switchToRgbControls(op);  showControlHex(op, false); }
-function switchToHsv   (op) { switchToHs_Controls(op, 'V'); }
-function switchToHsl   (op) { switchToHs_Controls(op, 'L'); }
-function switchToHclOkl(op) { switchToHclOklControls(op); }
-function switchToHclLab(op) { switchToHclLabControls(op); }
-function switchToHclLuv(op) { switchToHclLuvControls(op); }
-function switchToOklab (op) { switchToOklabControls(op, 'a', 'b'); }
-function switchToLab   (op) { switchToLabControls(op, 'a', 'b'); }
-function switchToLuv   (op) { switchToLuvControls(op, 'u', 'v'); }
+function switchToHex   (op) { switchToTextbox       (op);           }
+function switchToRgbHex(op) { switchToRgbHexControls(op);           }
+function switchToRgb   (op) { switchToRgbControls   (op);           }
+function switchToHsv   (op) { switchToHs_Controls   (op, 'V');      }
+function switchToHsl   (op) { switchToHs_Controls   (op, 'L');      }
+function switchToHclOkl(op) { switchToHclOklControls(op);           }
+function switchToHclLab(op) { switchToHclLabControls(op);           }
+function switchToHclLuv(op) { switchToHclLuvControls(op);           }
+function switchToOklab (op) { switchToOklabControls (op, 'a', 'b'); }
+function switchToLab   (op) { switchToLabControls   (op, 'a', 'b'); }
+function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
    
+
+
+function switchToRgbHexControls(op)
+{
+    switchToControls(op, 
+        'R', 0, rgbScale[0], '', false, 
+        'G', 0, rgbScale[1], 
+        'B', 0, rgbScale[2]);  
+
+    showRgbControlHex(op, true);
+}
+
 
 
 function switchToRgbControls(op)
@@ -9900,6 +9930,8 @@ function switchToRgbControls(op)
         'R', 0, rgbScale[0], '', false, 
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
+
+    showRgbControlHex(op, false);    
 }
 
 
@@ -9911,7 +9943,7 @@ function switchToHs_Controls(op, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    showControlHex(op, false); 
+    showRgbControlHex(op, false); 
 }
 
 
@@ -9923,7 +9955,7 @@ function switchToHclControls(op, scale)
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    showControlHex(op, false); 
+    showRgbControlHex(op, false); 
 }
 
 
@@ -9941,7 +9973,7 @@ function switchToOppControls(op, c2, c3, scale)
         c2, -scale[1], scale[1], 
         c3, -scale[2], scale[2]);  
 
-    showControlHex(op, false); 
+    showRgbControlHex(op, false); 
 }
 
 
@@ -9952,7 +9984,7 @@ function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale 
 
 
 
-function showControlHex(op, show)
+function showRgbControlHex(op, show)
 {
     op.param1.control.showHex = show;
     op.param2.control.showHex = show;
@@ -10040,7 +10072,7 @@ function getNormalValue(value, space, chan)
 {
     switch (space)
     {
-        case 'rgbhex':
+        //case 'rgbhex':
         case 'rgb':    return getNormalValueRgb_(value, chan);
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
@@ -10118,7 +10150,7 @@ function getNormalColor_(space, c1, c2, c3)
 {
     switch (space)
     {
-        case 'rgbhex':
+        //case 'rgbhex':
         case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
@@ -10177,7 +10209,7 @@ function getDataColor(color)
 {
     switch (color[0])
     {
-        case 'rgbhex':    
+        //case 'rgbhex':    
         case 'rgb':    return getDataColorRgb(color[1], color[2], color[3]);
         case 'hsv':   
         case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
@@ -10231,11 +10263,23 @@ function getDataColorHcl(c1, c2, c3)
 }
 
 
+function setDataColorToSpace(op, color, toSpace)
+{
+    op._color = convertDataColorToSpace(color, toSpace);
+    op._oldSpace = op._color[0];
+
+    switchToSpace(op, toSpace);
+    op.setColorParams(op._color, false);
+}
+
+
+
 function setDataColorToCurrentSpace(op, color)
 {
     const toSpace = OpColorSpaces[op.paramSpace.value][0];
 
     op._color = convertDataColorToSpace(color, toSpace);
+    //op._oldSpace = op._color[0];
 
     switchToSpace(op, toSpace);
     op.setColorParams(op._color, false);
@@ -10257,6 +10301,7 @@ function getColorSpaceFactor(space)
 {
     switch (space)
     {
+        //case 'rgbhex':    
         case 'rgb':    return rgbFactor;
         case 'hsv':   
         case 'hsl':    return hs_Factor;
@@ -10275,6 +10320,7 @@ function getColorSpaceScale(space)
 {
     switch (space)
     {
+        //case 'rgbhex':    
         case 'rgb':    return rgbScale;
         case 'hsv':   
         case 'hsl':    return hs_Scale;
@@ -10441,8 +10487,8 @@ function convertDataColorToSpace(color, toSpace)
 {
     switch (toSpace)
     {
-        case 'hex':    return convert2rgb   (color);
-        case 'rgbhex': return convert2rgb   (color);
+        case 'hex':    
+        case 'rgbhex': 
         case 'rgb':    return convert2rgb   (color);
         case 'hsv':    return convert2hsv   (color);
         case 'hsl':    return convert2hsl   (color);
@@ -10465,6 +10511,7 @@ function convert2rgb(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    rgb = col;             break;
         case 'hsv':    rgb = hsv2rgb(col);    break;
         case 'hsl':    rgb = hsl2rgb(col);    break;
@@ -10489,6 +10536,7 @@ function convert2hsv(fromColor)
     
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hsv = rgb2hsv(col);             break;
         case 'hsv':    hsv = col;                      break;
         case 'hsl':    hsv = rgb2hsv(hsl2rgb(col));    break;
@@ -10520,6 +10568,7 @@ function convert2hsl(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hsl = rgb2hsl(col);             break;
         case 'hsv':    hsl = rgb2hsl(hsv2rgb(col));    break;
         case 'hsl':    hsl = col;                      break;
@@ -10548,6 +10597,7 @@ function convert2oklab(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    lab = rgb2oklab(col);             break;
         case 'hsv':    lab = rgb2oklab(hsv2rgb(col));    break;
         case 'hsl':    lab = rgb2oklab(hsl2rgb(col));    break;
@@ -10576,6 +10626,7 @@ function convert2lab(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    lab = rgb2lab(col);             break;
         case 'hsv':    lab = rgb2lab(hsv2rgb(col));    break;
         case 'hsl':    lab = rgb2lab(hsl2rgb(col));    break;
@@ -10604,6 +10655,7 @@ function convert2luv(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    luv = rgb2luv(col);             break;
         case 'hsv':    luv = rgb2luv(hsv2rgb(col));    break;
         case 'hsl':    luv = rgb2luv(hsl2rgb(col));    break;
@@ -10632,6 +10684,7 @@ function convert2hclokl(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hcl = rgb2hclokl(col);             break;
         case 'hsv':    hcl = rgb2hclokl(hsv2rgb(col));    break;
         case 'hsl':    hcl = rgb2hclokl(hsl2rgb(col));    break;
@@ -10660,6 +10713,7 @@ function convert2hcllab(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hcl = rgb2hcllab(col);             break;
         case 'hsv':    hcl = rgb2hcllab(hsv2rgb(col));    break;
         case 'hsl':    hcl = rgb2hcllab(hsl2rgb(col));    break;
@@ -10688,6 +10742,7 @@ function convert2hclluv(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hcl = rgb2hclluv(col);             break;
         case 'hsv':    hcl = rgb2hclluv(hsv2rgb(col));    break;
         case 'hsl':    hcl = rgb2hclluv(hsl2rgb(col));    break;
@@ -11121,7 +11176,12 @@ extends Action
 
     do()
     {
-        // TODO remember and remove the connections
+        for (const nodeId of this.nodeIds)
+        {
+            const node = graph.nodes.find(n => n.id == node.di)
+        }
+
+
         uiDeleteNodes(this.nodeIds, this.id);
     }
 
@@ -16026,9 +16086,10 @@ function loadGraph(json)
 
     for (const _node of data.nodes)
     {
-        const node = graph.createNode(_node.type);
+        const node  = graph.createNode(_node.type);
 
-        node.name = _node.name;
+        node.name   = _node.name;
+        node.loaded = true;
 
         setNodePosition(
             node, 
@@ -16041,6 +16102,7 @@ function loadGraph(json)
     }
 
 
+    console.log('after params');
     for (const _conn of data.connections)
     {
         uiConnect(

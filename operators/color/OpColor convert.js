@@ -33,8 +33,8 @@ function convertDataColorToSpace(color, toSpace)
 {
     switch (toSpace)
     {
-        case 'hex':    return convert2rgb   (color);
-        case 'rgbhex': return convert2rgb   (color);
+        case 'hex':    
+        case 'rgbhex': 
         case 'rgb':    return convert2rgb   (color);
         case 'hsv':    return convert2hsv   (color);
         case 'hsl':    return convert2hsl   (color);
@@ -57,6 +57,7 @@ function convert2rgb(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    rgb = col;             break;
         case 'hsv':    rgb = hsv2rgb(col);    break;
         case 'hsl':    rgb = hsl2rgb(col);    break;
@@ -81,6 +82,7 @@ function convert2hsv(fromColor)
     
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hsv = rgb2hsv(col);             break;
         case 'hsv':    hsv = col;                      break;
         case 'hsl':    hsv = rgb2hsv(hsl2rgb(col));    break;
@@ -112,6 +114,7 @@ function convert2hsl(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hsl = rgb2hsl(col);             break;
         case 'hsv':    hsl = rgb2hsl(hsv2rgb(col));    break;
         case 'hsl':    hsl = col;                      break;
@@ -140,6 +143,7 @@ function convert2oklab(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    lab = rgb2oklab(col);             break;
         case 'hsv':    lab = rgb2oklab(hsv2rgb(col));    break;
         case 'hsl':    lab = rgb2oklab(hsl2rgb(col));    break;
@@ -168,6 +172,7 @@ function convert2lab(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    lab = rgb2lab(col);             break;
         case 'hsv':    lab = rgb2lab(hsv2rgb(col));    break;
         case 'hsl':    lab = rgb2lab(hsl2rgb(col));    break;
@@ -196,6 +201,7 @@ function convert2luv(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    luv = rgb2luv(col);             break;
         case 'hsv':    luv = rgb2luv(hsv2rgb(col));    break;
         case 'hsl':    luv = rgb2luv(hsl2rgb(col));    break;
@@ -224,6 +230,7 @@ function convert2hclokl(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hcl = rgb2hclokl(col);             break;
         case 'hsv':    hcl = rgb2hclokl(hsv2rgb(col));    break;
         case 'hsl':    hcl = rgb2hclokl(hsl2rgb(col));    break;
@@ -252,6 +259,7 @@ function convert2hcllab(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hcl = rgb2hcllab(col);             break;
         case 'hsv':    hcl = rgb2hcllab(hsv2rgb(col));    break;
         case 'hsl':    hcl = rgb2hcllab(hsl2rgb(col));    break;
@@ -280,6 +288,7 @@ function convert2hclluv(fromColor)
 
     switch (fromColor[0])
     {
+        case 'rgbhex':
         case 'rgb':    hcl = rgb2hclluv(col);             break;
         case 'hsv':    hcl = rgb2hclluv(hsv2rgb(col));    break;
         case 'hsl':    hcl = rgb2hclluv(hsl2rgb(col));    break;

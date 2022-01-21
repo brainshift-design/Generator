@@ -18,7 +18,12 @@ extends Action
 
     do()
     {
-        // TODO remember and remove the connections
+        for (const nodeId of this.nodeIds)
+        {
+            const node = graph.nodes.find(n => n.id == node.di)
+        }
+
+
         uiDeleteNodes(this.nodeIds, this.id);
     }
 
