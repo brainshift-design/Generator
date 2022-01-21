@@ -19,10 +19,10 @@ extends Operator
         this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
       
         
-        this.#paramStandard.addEventListener('change', () =>
-        {
-            this.setRanges();
-        });
+        // this.#paramStandard.addEventListener('change', () =>
+        // {
+        //     this.setRanges();
+        // });
 
         this.#paramValue.control.pointerEvents   = false;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -71,7 +71,10 @@ extends Operator
         if (this.inputs[1].isConnected)
             this.inputs[1].connectedOutput.op.update();
 
-            
+
+        this.updateParams(false);
+
+        
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
@@ -131,6 +134,8 @@ extends Operator
 
     updateNode()
     {
+        this.setRanges();
+        
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {

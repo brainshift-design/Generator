@@ -21,14 +21,12 @@
     ../core/crypto.js
     ../core/base32.js
     
-    ../license/*.js
-    
+    [../autojoin/controls.aj]
     [../autojoin/graph.aj]
 
+    ../actions/*.js
     ../ui/*.js
-
-    [../autojoin/controls.aj]
-
     ../storage/*.js
+    ../license/*.js
 
 ../html/ui_3.html

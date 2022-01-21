@@ -31,7 +31,7 @@ const oppFactor   = [100, 100, 100];
 const rgbScale    = [255, 255, 255];
 const hs_Scale    = [360, 100, 100];
 const hcloklScale = [360,  51, 100];
-const hcllabScale = [360, 100, 100];
+const hcllabScale = [360, 400, 100];
 const hclluvScale = [360, 330, 100];
 const oklabScale  = [100,  30,  30];
 const labScale    = [100, 100, 100];
@@ -200,9 +200,6 @@ extends Operator
 
 
         super.update()
-
-
-        //this.updateOutputWires();
     }
 
 

@@ -24,9 +24,6 @@ scrollbarY.style.zIndex = MAX_INT32-2;
 
 graphView.addEventListener('pointerdown', e =>
 {
-    graphView.setPointerCapture(e.pointerId);
-
-
     graphView.pStart = { x: e.clientX, 
                          y: e.clientY };
 
@@ -89,7 +86,6 @@ graphView.addEventListener('pointerdown', e =>
 
 graphView.addEventListener('pointermove', e =>
 {
-    console.log('pointermove');
     graphView.p = { 
         x: e.clientX, 
         y: e.clientY };
@@ -158,9 +154,6 @@ graphView.addEventListener('pointerup', e =>
         graphView.btn1down = false;
         graphView.endPan(e.pointerId, true);
     }
-
-
-    graphView.releasePointerCapture(e.pointerId);
 });
 
 

@@ -17,7 +17,7 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
 graphView.startConnectionFromInput = (pointerId, input) =>
 {
     //graphView.setPointerCapture(pointerId);
-    console.log(graphView.hasPointerCapture(pointerId));
+    //console.log(graphView.hasPointerCapture(pointerId));
 
     graphView.tempConn = new Connection(null, input);
     graphView.addWireFromInput(graphView.tempConn.wire, input);
