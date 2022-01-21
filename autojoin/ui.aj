@@ -2,11 +2,11 @@
 
     ../css/*.css
 
-    ../ui/controls/graphView/graphView.css
-    ../ui/controls/numberSlider/numberSlider.css
-    ../ui/controls/selectSlider/selectSlider.css
-    ../ui/controls/menuSelect/menuSelect.css
-    ../ui/controls/select/select.css
+    ../controls/graphView/graphView.css
+    ../controls/numberSlider/numberSlider.css
+    ../controls/selectSlider/selectSlider.css
+    ../controls/menuSelect/menuSelect.css
+    ../controls/select/select.css
 
 ../html/ui_1.html
 
@@ -25,16 +25,9 @@
     
     [../autojoin/graph.aj]
 
-    ../actions/*.js
-
     ../ui/*.js
 
-    ../ui/controls/numberSlider/*.js
-    ../ui/controls/selectSlider/*.js
-    ../ui/controls/colorSlider/*.js
-    ../ui/controls/select/*.js
-    ../ui/controls/menuSelect/*.js
-    ../ui/controls/graphView/*.js
+    [../autojoin/controls.aj]
 
     ../storage/*.js
 

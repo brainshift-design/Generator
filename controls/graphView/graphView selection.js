@@ -58,7 +58,7 @@ graphView.selectFromIds = (nodeIds) =>
 
 graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
 {
-    graphView.setPointerCapture(pointerId);
+    //graphView.setPointerCapture(pointerId);
 
     graphView.selecting = true;
 
@@ -137,7 +137,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
 graphView.endSelection = pointerId =>
 {
-    graphView.releasePointerCapture(pointerId);
+    //graphView.releasePointerCapture(pointerId);
 
     graphView.selecting     = false;
     graphView.selectionRect = Rect.NaN;

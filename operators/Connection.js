@@ -14,7 +14,7 @@ class Connection
         this.input  = input;
 
 
-        this.wire = createSvg('svg');
+        this.wire                = createSvg('svg');
         this.wire.style.position = 'absolute';
         this.wire.style.left     = 0;
         this.wire.style.top      = 0;
@@ -23,15 +23,15 @@ class Connection
         this.wire.scale          = 1;
 
 
-        this.wire.curve = createSvg('path');
-        this.wire.curve.style.fill        = 'none';
-        this.wire.curve.style.position    = 'absolute';
+        this.wire.curve                  = createSvg('path');
+        this.wire.curve.style.fill       = 'none';
+        this.wire.curve.style.position   = 'absolute';
 
-        this.wire.outBall                 = createSvg('circle');
-        this.wire.outBall.style.position  = 'absolute';
+        this.wire.outBall                = createSvg('circle');
+        this.wire.outBall.style.position = 'absolute';
 
-        this.wire.inBall                  = createSvg('circle');
-        this.wire.inBall.style.position   = 'absolute';
+        this.wire.inBall                 = createSvg('circle');
+        this.wire.inBall.style.position  = 'absolute';
 
 
         this.wire.appendChild(this.wire.curve);
@@ -178,5 +178,14 @@ class Connection
             +  '\n' + pos + '}';
 
         return json;
+    }
+
+
+
+    static parseJson(_conn)
+    {
+        uiConnect(
+            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
+            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
     }
 }

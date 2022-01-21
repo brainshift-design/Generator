@@ -7903,7 +7903,7 @@ class Connection
         this.input  = input;
 
 
-        this.wire = createSvg('svg');
+        this.wire                = createSvg('svg');
         this.wire.style.position = 'absolute';
         this.wire.style.left     = 0;
         this.wire.style.top      = 0;
@@ -7912,15 +7912,15 @@ class Connection
         this.wire.scale          = 1;
 
 
-        this.wire.curve = createSvg('path');
-        this.wire.curve.style.fill        = 'none';
-        this.wire.curve.style.position    = 'absolute';
+        this.wire.curve                  = createSvg('path');
+        this.wire.curve.style.fill       = 'none';
+        this.wire.curve.style.position   = 'absolute';
 
-        this.wire.outBall                 = createSvg('circle');
-        this.wire.outBall.style.position  = 'absolute';
+        this.wire.outBall                = createSvg('circle');
+        this.wire.outBall.style.position = 'absolute';
 
-        this.wire.inBall                  = createSvg('circle');
-        this.wire.inBall.style.position   = 'absolute';
+        this.wire.inBall                 = createSvg('circle');
+        this.wire.inBall.style.position  = 'absolute';
 
 
         this.wire.appendChild(this.wire.curve);
@@ -8067,6 +8067,15 @@ class Connection
             +  '\n' + pos + '}';
 
         return json;
+    }
+
+
+
+    static parseJson(_conn)
+    {
+        uiConnect(
+            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
+            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
     }
 }
 
@@ -10934,382 +10943,6 @@ extends Operator
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : colorStyleRgb(rgbFromDataType(this._dataType, false));
-    }
-}
-
-
-class Action
-{
-    manager;
- 
-    id;
-    name;
-  
-    prevAction; // these are used to link actions into sequences
-    nextAction; 
-  
-    data;
-  
-    onBefore;
-    onAfter;
-
-    onBeforeUndo;
-    onAfterUndo;
-
-
-
-    constructor(name)
-    {
-        this.name = name;
-
-        console.assert(
-               this.name != undefined
-            && this.name != null
-            && this.name != '');
-    }
-
-
-
-    do() {}
-
-
-
-    redo()
-    {
-        this.do();
-    }
-
-
-
-    undo() {}
-
-
-
-	link(prevAction, action)
-	{
-		prevAction.nextAction = action;
-		action    .prevAction = prevAction;
-	}
-
-
-
-    // checkForPrevLink(condition)
-    // {
-    //     var index = manager.actions.indexOf(this);
-
-    //     if (manager.actions[index-1].)
-    //         && !PrevAction)
-    //     {
-    //         auto before = std::static_pointer_cast<T>((*Manager)[index-1]);
-
-    //         if (condition(before))
-    //             link(before, shared_from_this());
-    //     }
-    // }
-};
-
-
-
-class ActionManager
-{
-    actions      = [];
-    redoActions  = [];
-    
-    nextActionId = 0;
-   
-    
-    
-    do(action)
-    {
-        // this is a fresh new action so any 
-        // old redo queue is no longer relevant
-        this.redoActions = [];
-
-        this.actions.push(action);
-
-        action.id      = this.nextActionId++;
-        action.manager = this;
-        
-        console.log("DO " + action.name);
-        action.do();
-    }
-
-
-
-    undo()
-    {
-        if (this.actions.length == 0)
-            return;
-
-        var last = removeLast(this.actions);
-        this.redoActions.push(last);
-
-        console.log("UNDO " + last.name);
-        last.undo();
-    }
-
-
-
-    redo()
-    {
-        if (this.redoActions.length == 0)
-            return;
-
-        var last = removeLast(this.redoActions);
-        this.actions.push(last);
-
-        console.log("REDO " + last.name);
-        last.redo();
-    }
-}
-
-
-
-const actionManager = new ActionManager();
-
-
-
-
-
-class CreateNodeAction
-extends Action
-{
-    opType;
-    createdNodeId;    
-
-    prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
-
-
-
-    constructor(opType)
-    {
-        super('Create ' + capitalize(opType) + ' node');
-        this.opType = opType;
-    }
-
-
-
-    do()
-    {
-        this.prevSelectedIds = graphView.selectedIds();
-        this.createdNodeId   = uiCreateNode(this.opType).id;
-    }
-
-
-
-    undo()
-    {
-        uiDeleteNodes([this.createdNodeId]);
-        graphView.selectFromIds(this.prevSelectedIds);
-    }
-
-
-
-    redo()
-    {
-        uiCreateNode(this.opType, this.createdNodeId);
-    }
-}
-
-
-class DeleteNodesAction
-extends Action
-{
-    nodeIds     = [];
-    nodes       = [];
-    connections = [];
-
-
-
-    constructor(nodeIds)
-    {
-        super('Delete nodes');
-        this.nodeIds = [...nodeIds]; // clone the array
-        this.nodes   = graph.nodes.filter(n => this.nodeIds.includes(n.id));
-    }
-
-
-
-    do()
-    {
-        for (const nodeId of this.nodeIds)
-        {
-            const node = graph.nodes.find(n => n.id == node.di)
-        }
-
-
-        uiDeleteNodes(this.nodeIds, this.id);
-    }
-
-
-
-    undo()
-    {
-        uiUndeleteNodes(this.nodes);
-        // TODO restore connections
-    }
-}
-
-
-
-
-
-class MoveNodesAction
-extends Action
-{
-    nodeIds;
-
-    fromPos;
-    toPos;
-
-    from;
-    to;
-
-
-
-    constructor(nodeIds, fromPos, toPos)
-    {
-        super('Move nodes');
-
-
-        this.nodeIds = [...nodeIds];
-
-        this.fromPos = fromPos;
-        this.toPos   = toPos;
-
-        const dx = this.toPos.x - this.fromPos.x;
-        const dy = this.toPos.y - this.fromPos.y;
-
-
-        this.from = [];
-        this.to   = [];
-
-        for (const id of this.nodeIds)
-        {
-            const node = graph.nodeFromId(id);
-
-            this.from.push({ x: node.div.slx,      y: node.div.sly      });
-            this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
-        }
-    }
-
-
-
-    do()
-    {
-        for (var i = 0; i < this.nodeIds.length; i++)
-        {
-            const node = graph.nodeFromId(this.nodeIds[i]);
-
-            setNodePosition(
-                node.div.op,
-                this.to[i].x,
-                this.to[i].y);
-        }
-    }
-
-
-
-    undo()
-    {
-        for (var i = 0; i < this.nodeIds.length; i++)
-        {
-            const node = graph.nodeFromId(this.nodeIds[i]);
-
-            setNodePosition(
-                node.div.op,
-                this.from[i].x,
-                this.from[i].y);
-        }
-    }
-}
-
-
-
-
-
-class SelectNodesAction
-extends Action
-{
-    selectedIds     = [];
-    prevSelectedIds = [];
-
-
-
-    constructor(selectedIds, prevSelectedIds)
-    {
-        super('Select nodes');
-
-        this.selectedIds     = [...selectedIds];
-        this.prevSelectedIds = [...prevSelectedIds];
-    }
-
-
-
-    do()
-    {
-        // this happens in the UI
-    }
-
-
-
-    undo()
-    {
-        console.log('select undo prevSelectedIds');
-        console.log(this.prevSelectedIds);
-        graphView.selectFromIds(this.prevSelectedIds);
-        console.log(graphView.selected);
-    }
-
-
-
-    redo()
-    {
-        graphView.selectFromIds(this.selectedIds);
-        console.log(graphView.selected);
-    }
-}
-
-
-class SetValueAction
-extends Action
-{
-    param;
-
-    oldValue;
-    newValue;
-
-
-
-    constructor(param, newValue)
-    {
-        super('Set Value');
-
-        this.param    = param;
-        this.newValue = newValue;
-    }
-
-
-
-    do()
-    {
-        this.oldValue = this.param.oldValue;
-        uiSetParam(this.param, this.newValue);
-    }
-
-
-
-    undo()
-    {
-        this.param.setValue(this.oldValue, false, true);
-    }
-
-
-
-    redo()
-    {
-        uiSetParam(this.param, this.newValue);
-        this.param.setValue(this.newValue, false, false);
     }
 }
 
@@ -14928,8 +14561,10 @@ function initMenuSelect(select)
 
 
 
-graphView.startConnectionFromOutput = output =>
+graphView.startConnectionFromOutput = (pointerId, output) =>
 {
+    //graphView.setPointerCapture(pointerId);
+
     graphView.tempConn = new Connection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
     graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
@@ -14942,10 +14577,13 @@ graphView.startConnectionFromOutput = output =>
 
 
 
-graphView.startConnectionFromInput = input =>
+graphView.startConnectionFromInput = (pointerId, input) =>
 {
+    //graphView.setPointerCapture(pointerId);
+    console.log(graphView.hasPointerCapture(pointerId));
+
     graphView.tempConn = new Connection(null, input);
-    graphView.addWireFromInput(graphView.tempConn.wire, input);    
+    graphView.addWireFromInput(graphView.tempConn.wire, input);
     graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.input        = input;
@@ -14956,8 +14594,10 @@ graphView.startConnectionFromInput = input =>
 
 
 
-graphView.cancelConnection = () =>
+graphView.cancelConnection = pointerId =>
 {
+    //graphView.releasePointerCapture(pointerId);
+
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
     
@@ -14970,7 +14610,7 @@ graphView.cancelConnection = () =>
 
 
 
-graphView.endConnection = function()
+graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
@@ -15001,7 +14641,7 @@ graphView.endConnection = function()
             uiDisconnect(savedInput)
         }
         
-        graphView.cancelConnection();
+        graphView.cancelConnection(pointerId);
     }
     
     else if (graphView.tempConn.input) // FROM INPUT
@@ -15015,7 +14655,7 @@ graphView.endConnection = function()
             && output.dataType == input.dataType) // TO OUTPUT
             graph.connect(output, input); // connect new
 
-        graphView.cancelConnection();
+        graphView.cancelConnection(pointerId);
     }
 };
 
@@ -15087,7 +14727,7 @@ graphView.startPan = pointerId =>
 {
     graphView.panning  = true;
     graphView.panStart = graphView.pan;
-    graphView.setPointerCapture(pointerId);
+    //graphView.setPointerCapture(pointerId);
     setCursor(panCursor);
 };
 
@@ -15108,7 +14748,7 @@ graphView.updatePanAndZoom = () =>
 graphView.endPan = (pointerId, changeCursor) =>
 {
     graphView.panning = false;
-    graphView.releasePointerCapture(pointerId);
+    //graphView.releasePointerCapture(pointerId);
 
     if (changeCursor)
         setAutoCursor();
@@ -15118,7 +14758,7 @@ graphView.endPan = (pointerId, changeCursor) =>
 
 graphView.startZoomSelection = (pointerId, x, y) =>
 {
-    graphView.setPointerCapture(pointerId);
+    //graphView.setPointerCapture(pointerId);
 
     graphView.zoomSelecting = true;
     graphView.selectionRect = new Rect(x, y, 0, 0);
@@ -15157,7 +14797,7 @@ graphView.updateZoomSelectBox = () =>
 
 graphView.endZoomSelection = (pointerId, zoom) =>
 {
-    graphView.releasePointerCapture(pointerId);
+    //graphView.releasePointerCapture(pointerId);
 
     graphView.zoomSelecting    = false;
     selectBox.style.visibility = 'hidden';
@@ -15464,7 +15104,7 @@ graphView.selectFromIds = (nodeIds) =>
 
 graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
 {
-    graphView.setPointerCapture(pointerId);
+    //graphView.setPointerCapture(pointerId);
 
     graphView.selecting = true;
 
@@ -15543,7 +15183,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
 graphView.endSelection = pointerId =>
 {
-    graphView.releasePointerCapture(pointerId);
+    //graphView.releasePointerCapture(pointerId);
 
     graphView.selecting     = false;
     graphView.selectionRect = Rect.NaN;
@@ -15583,6 +15223,9 @@ scrollbarY.style.zIndex = MAX_INT32-2;
 
 graphView.addEventListener('pointerdown', e =>
 {
+    graphView.setPointerCapture(e.pointerId);
+
+
     graphView.pStart = { x: e.clientX, 
                          y: e.clientY };
 
@@ -15601,14 +15244,14 @@ graphView.addEventListener('pointerdown', e =>
         else if (graphView.overOutput)
         {
             graphView.overOutput.connecting = true;
-            graphView.startConnectionFromOutput(graphView.overOutput);
+            graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
             graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
         }
         else if (graphView.overInput)
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
-                graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+                graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
                 graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
@@ -15617,7 +15260,7 @@ graphView.addEventListener('pointerdown', e =>
             else
             {
                 graphView.overInput.connecting = true;
-                graphView.startConnectionFromInput(graphView.overInput);
+                graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
                 graphView.tempConn.wire.updateFromInput(e.clientX, e.clientY)
             }
         }
@@ -15645,6 +15288,7 @@ graphView.addEventListener('pointerdown', e =>
 
 graphView.addEventListener('pointermove', e =>
 {
+    console.log('pointermove');
     graphView.p = { 
         x: e.clientX, 
         y: e.clientY };
@@ -15705,7 +15349,7 @@ graphView.addEventListener('pointerup', e =>
 
     else if (e.button == 0
           && graphView.tempConn)
-        graphView.endConnection();
+        graphView.endConnection(e.pointerId);
 
     else if (e.button == 1
           && graphView.panning)
@@ -15713,6 +15357,9 @@ graphView.addEventListener('pointerup', e =>
         graphView.btn1down = false;
         graphView.endPan(e.pointerId, true);
     }
+
+
+    graphView.releasePointerCapture(e.pointerId);
 });
 
 
@@ -16058,13 +15705,8 @@ function loadGraph(json)
     }
 
 
-    console.log('after params');
     for (const _conn of data.connections)
-    {
-        uiConnect(
-            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
-            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
-    }
+        Connection.parseJson(_conn);
 }
 
 

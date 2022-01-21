@@ -24,6 +24,9 @@ scrollbarY.style.zIndex = MAX_INT32-2;
 
 graphView.addEventListener('pointerdown', e =>
 {
+    graphView.setPointerCapture(e.pointerId);
+
+
     graphView.pStart = { x: e.clientX, 
                          y: e.clientY };
 
@@ -42,14 +45,14 @@ graphView.addEventListener('pointerdown', e =>
         else if (graphView.overOutput)
         {
             graphView.overOutput.connecting = true;
-            graphView.startConnectionFromOutput(graphView.overOutput);
+            graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
             graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
         }
         else if (graphView.overInput)
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
-                graphView.startConnectionFromOutput(graphView.overInput.connectedOutput);
+                graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
                 graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
@@ -58,7 +61,7 @@ graphView.addEventListener('pointerdown', e =>
             else
             {
                 graphView.overInput.connecting = true;
-                graphView.startConnectionFromInput(graphView.overInput);
+                graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
                 graphView.tempConn.wire.updateFromInput(e.clientX, e.clientY)
             }
         }
@@ -86,6 +89,7 @@ graphView.addEventListener('pointerdown', e =>
 
 graphView.addEventListener('pointermove', e =>
 {
+    console.log('pointermove');
     graphView.p = { 
         x: e.clientX, 
         y: e.clientY };
@@ -146,7 +150,7 @@ graphView.addEventListener('pointerup', e =>
 
     else if (e.button == 0
           && graphView.tempConn)
-        graphView.endConnection();
+        graphView.endConnection(e.pointerId);
 
     else if (e.button == 1
           && graphView.panning)
@@ -154,6 +158,9 @@ graphView.addEventListener('pointerup', e =>
         graphView.btn1down = false;
         graphView.endPan(e.pointerId, true);
     }
+
+
+    graphView.releasePointerCapture(e.pointerId);
 });
 
 

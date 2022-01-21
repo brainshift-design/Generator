@@ -45,11 +45,6 @@ function loadGraph(json)
     }
 
 
-    console.log('after params');
     for (const _conn of data.connections)
-    {
-        uiConnect(
-            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
-            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
-    }
+        Connection.parseJson(_conn);
 }

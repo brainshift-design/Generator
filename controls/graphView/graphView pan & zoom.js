@@ -65,7 +65,7 @@ graphView.startPan = pointerId =>
 {
     graphView.panning  = true;
     graphView.panStart = graphView.pan;
-    graphView.setPointerCapture(pointerId);
+    //graphView.setPointerCapture(pointerId);
     setCursor(panCursor);
 };
 
@@ -86,7 +86,7 @@ graphView.updatePanAndZoom = () =>
 graphView.endPan = (pointerId, changeCursor) =>
 {
     graphView.panning = false;
-    graphView.releasePointerCapture(pointerId);
+    //graphView.releasePointerCapture(pointerId);
 
     if (changeCursor)
         setAutoCursor();
@@ -96,7 +96,7 @@ graphView.endPan = (pointerId, changeCursor) =>
 
 graphView.startZoomSelection = (pointerId, x, y) =>
 {
-    graphView.setPointerCapture(pointerId);
+    //graphView.setPointerCapture(pointerId);
 
     graphView.zoomSelecting = true;
     graphView.selectionRect = new Rect(x, y, 0, 0);
@@ -135,7 +135,7 @@ graphView.updateZoomSelectBox = () =>
 
 graphView.endZoomSelection = (pointerId, zoom) =>
 {
-    graphView.releasePointerCapture(pointerId);
+    //graphView.releasePointerCapture(pointerId);
 
     graphView.zoomSelecting    = false;
     selectBox.style.visibility = 'hidden';

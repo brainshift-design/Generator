@@ -3,7 +3,7 @@ extends Action
 {
     nodeIds     = [];
     nodes       = [];
-    connections = [];
+    connections = []; // JSON definitions
 
 
 
@@ -20,7 +20,33 @@ extends Action
     {
         for (const nodeId of this.nodeIds)
         {
-            const node = graph.nodes.find(n => n.id == node.di)
+            const node = graph.nodes.find(n => n.id == nodeId);
+
+
+            for (const input of node.inputs)
+            {
+                if (input.isConnected)
+                    this.connections.push(input.connection.toJson());
+            }
+
+            for (const output of node.outputs)
+            {
+                for (const input of output.connectedInputs)
+                    this.connections.push(input.connection.toJson());
+            }
+
+            
+            for (const input of node.inputs)
+            {
+                if (input.isConnected)
+                    uiDisconnect(input);
+            }
+
+            for (const output of node.outputs)
+            {
+                for (const input of output.connectedInputs)
+                    uiDisconnect(input);
+            }
         }
 
 
@@ -32,6 +58,15 @@ extends Action
     undo()
     {
         uiUndeleteNodes(this.nodes);
-        // TODO restore connections
+ 
+        for (const json of this.connections)
+        {
+            const _conn = JSON.parse(json);
+            console.log(_conn);
+
+            Connection.parseJson(_conn);
+        }
+
+        this.connections = [];
     }
 }

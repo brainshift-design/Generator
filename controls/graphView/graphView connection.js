@@ -1,5 +1,7 @@
-graphView.startConnectionFromOutput = output =>
+graphView.startConnectionFromOutput = (pointerId, output) =>
 {
+    //graphView.setPointerCapture(pointerId);
+
     graphView.tempConn = new Connection(output, null);
     graphView.addWireFromOutput(graphView.tempConn.wire, output);
     graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
@@ -12,10 +14,13 @@ graphView.startConnectionFromOutput = output =>
 
 
 
-graphView.startConnectionFromInput = input =>
+graphView.startConnectionFromInput = (pointerId, input) =>
 {
+    //graphView.setPointerCapture(pointerId);
+    console.log(graphView.hasPointerCapture(pointerId));
+
     graphView.tempConn = new Connection(null, input);
-    graphView.addWireFromInput(graphView.tempConn.wire, input);    
+    graphView.addWireFromInput(graphView.tempConn.wire, input);
     graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
     graphView.tempConn.wire.scale        = graphView.zoom;
     graphView.tempConn.wire.input        = input;
@@ -26,8 +31,10 @@ graphView.startConnectionFromInput = input =>
 
 
 
-graphView.cancelConnection = () =>
+graphView.cancelConnection = pointerId =>
 {
+    //graphView.releasePointerCapture(pointerId);
+
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
     
@@ -40,7 +47,7 @@ graphView.cancelConnection = () =>
 
 
 
-graphView.endConnection = function()
+graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
@@ -71,7 +78,7 @@ graphView.endConnection = function()
             uiDisconnect(savedInput)
         }
         
-        graphView.cancelConnection();
+        graphView.cancelConnection(pointerId);
     }
     
     else if (graphView.tempConn.input) // FROM INPUT
@@ -85,6 +92,6 @@ graphView.endConnection = function()
             && output.dataType == input.dataType) // TO OUTPUT
             graph.connect(output, input); // connect new
 
-        graphView.cancelConnection();
+        graphView.cancelConnection(pointerId);
     }
 };
