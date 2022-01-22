@@ -122,6 +122,15 @@ function removeLast(array)
 
 
 
+function beforeLastOf(array)
+{
+    return array.length > 1 
+         ? array[array.length-2]
+         : null;
+}
+
+
+
 function lastOf(array)
 {
     return array[array.length-1];

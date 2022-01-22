@@ -117,18 +117,21 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.finish = function(success)
     {
-        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
-            'success':  success,
-            'value':    slider.textbox.value,
-            'oldValue': slider.textbox.savedValue }}));
+        const value      = slider.textbox.value;
+        const savedValue = slider.textbox.savedValue;
 
-        var val = 
+        let val = 
             slider.showHex
-            ? parseInt(slider.textbox.value, 16)
-            : parseFloat(slider.textbox.value);
+            ? parseInt(value, 16)
+            : parseFloat(value);
 
         if (success) slider.setValue(Number(val));
-        else         slider.setValue(Number(slider.textbox.savedValue));
+        else         slider.setValue(Number(savedValue));
+
+        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    value,
+            'oldValue': savedValue }}));
 
         slider.textbox.blur();
 

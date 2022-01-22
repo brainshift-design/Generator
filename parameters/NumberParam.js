@@ -75,7 +75,9 @@ extends Parameter
         { 
             if (   e.detail.success
                 && this.allowEditDecimals)
-                this.setDecimals(e.detail.value);
+            {
+                actionManager.do(new SetParamDecimalsAction(this, e.detail.value, e.detail.oldValue), true);
+            }
         });
     }
 

@@ -986,6 +986,15 @@ function removeLast(array)
 
 
 
+function beforeLastOf(array)
+{
+    return array.length > 1 
+         ? array[array.length-2]
+         : null;
+}
+
+
+
 function lastOf(array)
 {
     return array[array.length-1];
@@ -3240,6 +3249,15 @@ function removeLast(array)
     array.splice(array.length-1, 1)
 
     return last;
+}
+
+
+
+function beforeLastOf(array)
+{
+    return array.length > 1 
+         ? array[array.length-2]
+         : null;
 }
 
 
@@ -6809,18 +6827,21 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.finish = function(success)
     {
-        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
-            'success':  success,
-            'value':    slider.textbox.value,
-            'oldValue': slider.textbox.savedValue }}));
+        const value      = slider.textbox.value;
+        const savedValue = slider.textbox.savedValue;
 
-        var val = 
+        let val = 
             slider.showHex
-            ? parseInt(slider.textbox.value, 16)
-            : parseFloat(slider.textbox.value);
+            ? parseInt(value, 16)
+            : parseFloat(value);
 
         if (success) slider.setValue(Number(val));
-        else         slider.setValue(Number(slider.textbox.savedValue));
+        else         slider.setValue(Number(savedValue));
+
+        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    value,
+            'oldValue': savedValue }}));
 
         slider.textbox.blur();
 
@@ -10687,7 +10708,9 @@ extends Parameter
         { 
             if (   e.detail.success
                 && this.allowEditDecimals)
-                this.setDecimals(e.detail.value);
+            {
+                actionManager.do(new SetParamDecimalsAction(this, e.detail.value, e.detail.oldValue), true);
+            }
         });
     }
 
@@ -14736,32 +14759,15 @@ class Action
 
 
     undo() {}
-
-
-
-	link(prevAction, action)
-	{
-		prevAction.nextAction = action;
-		action    .prevAction = prevAction;
-	}
-
-
-
-    // checkForPrevLink(condition)
-    // {
-    //     var index = manager.actions.indexOf(this);
-
-    //     if (manager.actions[index-1].)
-    //         && !PrevAction)
-    //     {
-    //         auto before = std::static_pointer_cast<T>((*Manager)[index-1]);
-
-    //         if (condition(before))
-    //             link(before, shared_from_this());
-    //     }
-    // }
 };
 
+
+
+function linkActions(prevAction, action)
+{
+    prevAction.nextAction = action;
+    action    .prevAction = prevAction;
+}
 
 
 class ActionManager
@@ -14773,7 +14779,7 @@ class ActionManager
    
     
     
-    do(action)
+    do(action, linkWithPrevious = false)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
@@ -14783,7 +14789,15 @@ class ActionManager
 
         action.id      = this.nextActionId++;
         action.manager = this;
-        
+
+        if (   linkWithPrevious
+            && this.actions.length > 1)
+        {
+            linkActions(
+                beforeLastOf(this.actions),
+                lastOf(this.actions));
+        }
+
         console.log("DO " + action.name);
         action.do();
     }
@@ -14795,11 +14809,18 @@ class ActionManager
         if (this.actions.length == 0)
             return;
 
-        var last = removeLast(this.actions);
-        this.redoActions.push(last);
+        for (;;)
+        {
+            let last = removeLast(this.actions);
+            this.redoActions.push(last);
 
-        console.log("UNDO " + last.name);
-        last.undo();
+            console.log("UNDO " + last.name);
+            last.undo();
+
+            if (   this.actions.length == 0
+                || last.prevAction != lastOf(this.actions))
+                break;
+        }
     }
 
 
@@ -14809,11 +14830,18 @@ class ActionManager
         if (this.redoActions.length == 0)
             return;
 
-        var last = removeLast(this.redoActions);
-        this.actions.push(last);
+        for (;;)
+        {
+            let last = removeLast(this.redoActions);
+            this.actions.push(last);
 
-        console.log("REDO " + last.name);
-        last.redo();
+            console.log("REDO " + last.name);
+            last.redo();
+        
+            if (   this.redoActions.length == 0
+                || last.nextAction != lastOf(this.redoActions))
+                break;
+        }
     }
 }
 
@@ -15323,6 +15351,51 @@ extends Action
 }
 
 
+class SetParamDecimalsAction
+extends Action
+{
+    nodeId;
+    paramIndex;
+
+    get param() { return graph.nodes.find(n => n.id == this.nodeId).params[this.paramIndex]; } 
+
+
+    newDecimals;
+    oldDecimals;
+
+
+
+    constructor(param, dec, oldDec)
+    {
+        super('set param settins');
+
+        this.nodeId      = param.op.id;
+        this.paramIndex  = param.op.params.indexOf(param);
+
+        this.newDecimals = dec;
+        this.oldDecimals = oldDec;
+    }
+
+
+
+    do()
+    {
+        // if (   this.param.allowEditDecimals
+        //     && this.param.setDecimals)
+            this.param.setDecimals(this.newDecimals);
+    }
+
+
+
+    undo()
+    {
+        // if (   this.param.allowEditDecimals
+        //     && this.param.setDecimals)
+            this.param.setDecimals(this.oldDecimals);
+    }
+}
+
+
 class SetParamValueAction
 extends Action
 {
@@ -15333,7 +15406,7 @@ extends Action
 
 
     oldValue;
-    value;
+    newValue;
 
 
 
@@ -15344,7 +15417,7 @@ extends Action
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
 
-        this.value      = value;
+        this.newValue   = value;
     }
 
 
@@ -15367,7 +15440,7 @@ extends Action
     redo()
     {
         //uiSetParam(this.param, this.value);
-        this.param.setValue(this.value);
+        this.param.setValue(this.newValue);
     }
 }
 

@@ -8,7 +8,7 @@ extends Action
 
 
     oldValue;
-    value;
+    newValue;
 
 
 
@@ -19,7 +19,7 @@ extends Action
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
 
-        this.value      = value;
+        this.newValue   = value;
     }
 
 
@@ -42,6 +42,6 @@ extends Action
     redo()
     {
         //uiSetParam(this.param, this.value);
-        this.param.setValue(this.value);
+        this.param.setValue(this.newValue);
     }
 }
