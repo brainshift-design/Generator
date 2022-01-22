@@ -41,9 +41,10 @@ extends Operator
 
     updateNode()
     {
+        this.#paramValue.control.pointerEvents   = !this.inputs[0].isConnected;
+        this.#paramValue.control.style.fontStyle = !this.inputs[0].isConnected ? 'normal' : 'italic';
+        
         super.updateNode();
-    
-    
     }
 
 
@@ -57,23 +58,9 @@ extends Operator
 
 
 
-    // generate(callerInput)
-    // {
-    //     if (this.valid) return;
-    //     super.generate(callerInput);
-
-
-    //     if (isNaN(this._sampled))
-    //         this._sampled = this._value.value;
-
-    //     this.output._data = dataFromNumber(this._sampled);
-    // }
-
-
-
     generate()
     {
-        return 
+        //return 
     }
 
 
