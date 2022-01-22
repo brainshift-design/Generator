@@ -179,4 +179,17 @@ class Connection
 
         return json;
     }
+
+
+
+    static parseJson(_conn)
+    {
+        const outputOp    = graph.nodes.find(n => n.name == _conn.outputOp);
+        const outputIndex = parseInt(_conn.outputIndex);
+
+        const inputOp     = graph.nodes.find(n => n.name == _conn.inputOp);
+        const inputIndex  = parseInt(_conn.inputIndex);
+
+        uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
+    }
 }

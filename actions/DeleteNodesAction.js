@@ -3,6 +3,7 @@ extends Action
 {
     nodeIds     = [];
     nodes       = [];
+    nodePos     = [];
     connections = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
 
 
@@ -41,6 +42,10 @@ extends Action
         {
             const node = graph.nodes.find(n => n.id == nodeId);
 
+            this.nodePos.push({
+                x: node.div.offsetLeft, 
+                y: node.div.offsetTop});
+
             for (const input of node.inputs.filter(i => i.isConnected))
                 this.addConnection(input.connection);
 
@@ -70,7 +75,7 @@ extends Action
 
     undo()
     {
-        uiUndeleteNodes(this.nodes);
+        uiUndeleteNodes(this.nodes, this.nodePos);
  
         for (const conn of this.connections)
         {
@@ -80,6 +85,7 @@ extends Action
             uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
         }
 
+        this.nodePos     = [];
         this.connections = [];
     }
 }

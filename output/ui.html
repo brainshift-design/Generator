@@ -11768,6 +11768,19 @@ class Connection
 
         return json;
     }
+
+
+
+    static parseJson(_conn)
+    {
+        const outputOp    = graph.nodes.find(n => n.name == _conn.outputOp);
+        const outputIndex = parseInt(_conn.outputIndex);
+
+        const inputOp     = graph.nodes.find(n => n.name == _conn.inputOp);
+        const inputIndex  = parseInt(_conn.inputIndex);
+
+        uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
+    }
 }
 
 
@@ -14917,6 +14930,7 @@ extends Action
 {
     nodeIds     = [];
     nodes       = [];
+    nodePos     = [];
     connections = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
 
 
@@ -14955,6 +14969,10 @@ extends Action
         {
             const node = graph.nodes.find(n => n.id == nodeId);
 
+            this.nodePos.push({
+                x: node.div.offsetLeft, 
+                y: node.div.offsetTop});
+
             for (const input of node.inputs.filter(i => i.isConnected))
                 this.addConnection(input.connection);
 
@@ -14984,7 +15002,7 @@ extends Action
 
     undo()
     {
-        uiUndeleteNodes(this.nodes);
+        uiUndeleteNodes(this.nodes, this.nodePos);
  
         for (const conn of this.connections)
         {
@@ -14994,6 +15012,7 @@ extends Action
             uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
         }
 
+        this.nodePos     = [];
         this.connections = [];
     }
 }
@@ -15780,7 +15799,7 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiUndeleteNodes(nodes, actionId)
+function uiUndeleteNodes(nodes, nodePos, actionId)
 {
     graph.addNodes(nodes);
 
@@ -15789,8 +15808,13 @@ function uiUndeleteNodes(nodes, actionId)
     
     graphView.putNodeOnTop(lastOf(nodes));
 
-    for (const node of nodes)
-        graphView.updateNodeTransform(node);
+    for (let i = 0; i < nodes.length; i++)
+    {
+        setNodePosition(
+            nodes[i], 
+            nodePos[i].x, 
+            nodePos[i].y);
+    }
         
 
     // uiPostMessageToGenerator({

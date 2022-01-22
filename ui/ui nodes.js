@@ -54,7 +54,7 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiUndeleteNodes(nodes, actionId)
+function uiUndeleteNodes(nodes, nodePos, actionId)
 {
     graph.addNodes(nodes);
 
@@ -63,8 +63,13 @@ function uiUndeleteNodes(nodes, actionId)
     
     graphView.putNodeOnTop(lastOf(nodes));
 
-    for (const node of nodes)
-        graphView.updateNodeTransform(node);
+    for (let i = 0; i < nodes.length; i++)
+    {
+        setNodePosition(
+            nodes[i], 
+            nodePos[i].x, 
+            nodePos[i].y);
+    }
         
 
     // uiPostMessageToGenerator({
