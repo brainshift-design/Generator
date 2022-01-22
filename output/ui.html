@@ -11768,15 +11768,6 @@ class Connection
 
         return json;
     }
-
-
-
-    static parseJson(_conn)
-    {
-        uiConnect(
-            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
-            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
-    }
 }
 
 
@@ -14874,21 +14865,6 @@ extends Action
             const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
 
             uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
-            // if (inputOp._variableInputs)
-            // {
-            //     const input = lastOf(inputOp.inputs);
-
-            //     uiConnect(
-            //         oldOutputOp.outputs[this.oldOutputIndex],
-            //         input,
-            //         this.inputIndex);
-            // }
-            // else
-            // {
-            //     uiConnect(
-            //         oldOutputOp.outputs[this.oldOutputIndex],
-            //             inputOp. inputs[this.    inputIndex]);
-            // }
         }
     }
 }
@@ -14941,7 +14917,7 @@ extends Action
 {
     nodeIds     = [];
     nodes       = [];
-    connections = []; // JSON definitions
+    connections = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
 
 
 
@@ -14954,37 +14930,50 @@ extends Action
 
 
 
+    addConnection(conn)
+    {
+        const outputIndex = conn.output.op.outputs.indexOf(conn.output);
+        const  inputIndex = conn.input .op. inputs.indexOf(conn. input);
+
+        if (!this.connections.find(c => 
+                   c.outputOpId  == conn.output.op.id
+                && c.outputIndex == outputIndex
+                && c.inputOpId   == conn.input.op.id
+                && c.inputIndex  == inputIndex))
+            this.connections.push({
+                outputOpId:  conn.output.op.id,
+                outputIndex: conn.output.op.outputs.indexOf(conn.output),
+                inputOpId:   conn.input .op.id,
+                inputIndex:  conn.input .op. inputs.indexOf(conn. input)});
+    }
+
+
+
     do()
     {
         for (const nodeId of this.nodeIds)
         {
             const node = graph.nodes.find(n => n.id == nodeId);
 
-
-            for (const input of node.inputs)
-            {
-                if (input.isConnected)
-                    this.connections.push(input.connection.toJson());
-            }
+            for (const input of node.inputs.filter(i => i.isConnected))
+                this.addConnection(input.connection);
 
             for (const output of node.outputs)
-            {
                 for (const input of output.connectedInputs)
-                    this.connections.push(input.connection.toJson());
-            }
+                    this.addConnection(input.connection);
+        }
 
-            
-            for (const input of node.inputs)
-            {
-                if (input.isConnected)
-                    uiDisconnect(input);
-            }
+
+        for (const nodeId of this.nodeIds)
+        {
+            const node = graph.nodes.find(n => n.id == nodeId);
+
+            for (const input of node.inputs.filter(i => i.isConnected))
+                uiDisconnect(input);
 
             for (const output of node.outputs)
-            {
                 for (const input of output.connectedInputs)
                     uiDisconnect(input);
-            }
         }
 
 
@@ -14997,12 +14986,12 @@ extends Action
     {
         uiUndeleteNodes(this.nodes);
  
-        for (const json of this.connections)
+        for (const conn of this.connections)
         {
-            const _conn = JSON.parse(json);
-            console.log(_conn);
+            const outputOp = graph.nodes.find(n => n.id == conn.outputOpId);
+            const inputOp  = graph.nodes.find(n => n.id == conn. inputOpId);
 
-            Connection.parseJson(_conn);
+            uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
         }
 
         this.connections = [];
@@ -15055,29 +15044,7 @@ extends Action
         const  inputOp = graph.nodes.find(n => n.id == this. inputOpId);
 
         uiVariableConnect(outputOp, this.outputIndex, inputOp, this.inputIndex);
-        // if (inputOp._variableInputs)
-        // {
-        //     const input = lastOf(inputOp.inputs);
-
-        //     uiConnect(
-        //         outputOp.outputs[this.outputIndex],
-        //         input,
-        //         this.inputIndex);
-        // }
-        // else
-        // {
-        //     uiConnect(
-        //         outputOp.outputs[this.outputIndex],
-        //          inputOp. inputs[this. inputIndex]);
-        // }
     }
-
-
-
-    // redo()
-    // {
-        
-    // }
 }
 
 
@@ -15221,21 +15188,6 @@ extends Action
         const oldInputOp = graph.nodes.find(n => n.id == this.oldInputOpId);
 
         uiVariableConnect(outputOp, this.outputIndex, oldInputOp, this.oldInputIndex);
-        // if (oldInputOp._variableInputs)
-        // {
-        //     const input = lastOf(oldInputOp.inputs);
-
-        //     uiConnect(
-        //         outputOp.outputs[this.outputIndex],
-        //         input,
-        //         this.oldInputIndex);
-        // }
-        // else
-        // {
-        //     uiConnect(
-        //           outputOp.outputs[this.  outputIndex],
-        //         oldInputOp. inputs[this.oldInputIndex]);
-        // }
 
 
         if (this.oldOutputOpId > -1)
@@ -15244,21 +15196,6 @@ extends Action
             const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
 
             uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
-            // if (inputOp._variableInputs)
-            // {
-            //     const input = lastOf(inputOp.inputs);
-
-            //     uiConnect(
-            //         oldOutputOp.outputs[this.oldOutputIndex],
-            //         input,
-            //         this.inputIndex);
-            // }
-            // else
-            // {
-            //     uiConnect(
-            //         oldOutputOp.outputs[this.oldOutputIndex],
-            //             inputOp. inputs[this.    inputIndex]);
-            // }
         }
     }
 }

@@ -43,27 +43,5 @@ extends Action
         const  inputOp = graph.nodes.find(n => n.id == this. inputOpId);
 
         uiVariableConnect(outputOp, this.outputIndex, inputOp, this.inputIndex);
-        // if (inputOp._variableInputs)
-        // {
-        //     const input = lastOf(inputOp.inputs);
-
-        //     uiConnect(
-        //         outputOp.outputs[this.outputIndex],
-        //         input,
-        //         this.inputIndex);
-        // }
-        // else
-        // {
-        //     uiConnect(
-        //         outputOp.outputs[this.outputIndex],
-        //          inputOp. inputs[this. inputIndex]);
-        // }
     }
-
-
-
-    // redo()
-    // {
-        
-    // }
 }

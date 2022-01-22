@@ -179,13 +179,4 @@ class Connection
 
         return json;
     }
-
-
-
-    static parseJson(_conn)
-    {
-        uiConnect(
-            graph.nodes.find(n => n.name == _conn.outputOp).outputs[parseInt(_conn.outputIndex)],
-            graph.nodes.find(n => n.name == _conn. inputOp). inputs[parseInt(_conn. inputIndex)]);
-    }
 }
