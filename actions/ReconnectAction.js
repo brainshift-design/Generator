@@ -27,8 +27,9 @@ extends Action
         const     inIndex =    input.op. inputs.indexOf(input); 
         
 
-        super(  
-              output.op.name + '.outputs[' + outIndex + ']'
+        super(
+             'reconnect '
+            + output.op.name + '.outputs[' + outIndex + ']'
             + ' ( <- '
             + oldInput.op.name + '.inputs[' + oldInIndex + '])'
             + ' -> '

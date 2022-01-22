@@ -8,7 +8,7 @@ extends Action
 
     constructor(selectedIds, prevSelectedIds)
     {
-        super('Select nodes');
+        super('select ' + selectedIds.length + ' node' + (selectedIds.length == 1 ? '' : 's'));
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];

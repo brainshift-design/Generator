@@ -10,7 +10,8 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('Delete nodes');
+        super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
+
         this.nodeIds = [...nodeIds]; // clone the array
         this.nodes   = graph.nodes.filter(n => this.nodeIds.includes(n.id));
     }

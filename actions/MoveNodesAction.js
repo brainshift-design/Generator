@@ -13,7 +13,7 @@ extends Action
 
     constructor(nodeIds, fromPos, toPos)
     {
-        super('Move nodes');
+        super('move nodes');
 
 
         this.nodeIds = [...nodeIds];

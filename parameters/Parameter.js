@@ -133,7 +133,7 @@ extends EventTarget
             
             if (confirm)
             {
-                actionManager.do(new SetValueAction(this, this.value));
+                actionManager.do(new SetParamValueAction(this, this.value));
                 this.dispatchEvent(this.onconfirm);
             }
         }

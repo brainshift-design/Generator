@@ -1,4 +1,4 @@
-class SetValueAction
+class SetParamValueAction
 extends Action
 {
     nodeId;
@@ -14,7 +14,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('Set Value');
+        super('set param value');
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);

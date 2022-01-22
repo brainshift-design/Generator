@@ -21,7 +21,7 @@ extends Action
         const     inIndex = input.op.inputs.indexOf(input); 
 
 
-        super('Connect ' 
+        super('connect ' 
             + output.op.name + '.outputs[' + outIndex + ']'
             + ' -> '
             + input.op.name + '.inputs[' + inIndex + ']');

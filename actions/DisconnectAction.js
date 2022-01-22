@@ -17,7 +17,7 @@ extends Action
         const  inputIndex = input .op. inputs.indexOf( input); 
 
 
-        super('Disconnect ' 
+        super('disconnect ' 
             + output.op.name + '.outputs[' + outputIndex + ']'
             + ' -> '
             + input.op.name + '.inputs[' + inputIndex + ']');

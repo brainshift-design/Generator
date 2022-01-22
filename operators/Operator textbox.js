@@ -121,7 +121,7 @@ function initLabelTextbox(node)
         if (success) 
         {
             if (node.textbox.value != '')
-                node.setName(node.textbox.value);
+                actionManager.do(new RenameNodeAction(node.id, node.textbox.value));
         }
 
         node.textbox.blur();

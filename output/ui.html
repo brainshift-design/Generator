@@ -10590,7 +10590,7 @@ extends EventTarget
             
             if (confirm)
             {
-                actionManager.do(new SetValueAction(this, this.value));
+                actionManager.do(new SetParamValueAction(this, this.value));
                 this.dispatchEvent(this.onconfirm);
             }
         }
@@ -10840,7 +10840,7 @@ extends Parameter
         this.control.addEventListener('confirm', e =>
         {
             this.op.valid = false;
-            actionManager.do(new SetValueAction(this, this.value));
+            actionManager.do(new SetParamValueAction(this, this.value));
         });
     }
 
@@ -12696,7 +12696,7 @@ function initLabelTextbox(node)
         if (success) 
         {
             if (node.textbox.value != '')
-                node.setName(node.textbox.value);
+                actionManager.do(new RenameNodeAction(node.id, node.textbox.value));
         }
 
         node.textbox.blur();
@@ -14841,7 +14841,7 @@ extends Action
         const     inIndex = input.op.inputs.indexOf(input); 
 
 
-        super('Connect ' 
+        super('connect ' 
             + output.op.name + '.outputs[' + outIndex + ']'
             + ' -> '
             + input.op.name + '.inputs[' + inIndex + ']');
@@ -14939,7 +14939,8 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('Delete nodes');
+        super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
+
         this.nodeIds = [...nodeIds]; // clone the array
         this.nodes   = graph.nodes.filter(n => this.nodeIds.includes(n.id));
     }
@@ -15039,7 +15040,7 @@ extends Action
         const  inputIndex = input .op. inputs.indexOf( input); 
 
 
-        super('Disconnect ' 
+        super('disconnect ' 
             + output.op.name + '.outputs[' + outputIndex + ']'
             + ' -> '
             + input.op.name + '.inputs[' + inputIndex + ']');
@@ -15087,7 +15088,7 @@ extends Action
 
     constructor(nodeIds, fromPos, toPos)
     {
-        super('Move nodes');
+        super('move nodes');
 
 
         this.nodeIds = [...nodeIds];
@@ -15172,8 +15173,9 @@ extends Action
         const     inIndex =    input.op. inputs.indexOf(input); 
         
 
-        super(  
-              output.op.name + '.outputs[' + outIndex + ']'
+        super(
+             'reconnect '
+            + output.op.name + '.outputs[' + outIndex + ']'
             + ' ( <- '
             + oldInput.op.name + '.inputs[' + oldInIndex + '])'
             + ' -> '
@@ -15231,7 +15233,47 @@ extends Action
 }
 
 
+class RenameNodeAction
+extends Action
+{
+    nodeId;
+    get node() { return graph.nodes.find(n => n.id == this.nodeId) } 
 
+    oldName;
+    newName;
+
+
+
+    constructor(nodeId, name)
+    {
+        super('rename node');
+
+        this.nodeId  = nodeId;
+        this.newName = name;
+    }
+
+
+
+    do()
+    {
+        this.oldName = this.node.name;
+        this.node.setName(this.newName);
+    }
+
+
+
+    undo()
+    {
+        this.node.setName(this.oldName);
+    }
+
+
+
+    redo()
+    {
+        this.node.setName(this.newName);
+    }
+}
 
 
 class SelectNodesAction
@@ -15244,7 +15286,7 @@ extends Action
 
     constructor(selectedIds, prevSelectedIds)
     {
-        super('Select nodes');
+        super('select ' + selectedIds.length + ' node' + (selectedIds.length == 1 ? '' : 's'));
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];
@@ -15277,7 +15319,7 @@ extends Action
 }
 
 
-class SetValueAction
+class SetParamValueAction
 extends Action
 {
     nodeId;
@@ -15293,7 +15335,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('Set Value');
+        super('set param value');
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
