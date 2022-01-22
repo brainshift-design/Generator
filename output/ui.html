@@ -9498,7 +9498,7 @@ graphView.zoomSelecting = false;
 
 
 
-graphView.setZoomAndPan = (zoom, pan) =>
+graphView.setPanAndZoom = (pan, zoom) =>
 {
     if (   graphView._zoom == zoom
         && graphView._pan  == pan) 
@@ -9506,8 +9506,8 @@ graphView.setZoomAndPan = (zoom, pan) =>
 
     graphView.oldZoom = graphView.zoom;
 
-    graphView._zoom = zoom;
-    graphView._pan  = pan;
+    graphView._zoom   = zoom;
+    graphView._pan    = pan;
 
     graphView.updatePanAndZoom();
 };
@@ -9528,6 +9528,9 @@ graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
         graphView.updateNodeTransform(node);
+
+    if (graphView.tempConn)
+        graphView.tempConn.wire.scale = graphView.zoom;
 
     graphView.updateScroll();
 };
@@ -9610,12 +9613,12 @@ graphView.endZoomSelection = (pointerId, zoom) =>
 
         //console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
 
-        graphView.setZoomAndPan(
+        graphView.setPanAndZoom(
+            { x: -(box.x - diff.w) * graphView.zoom,
+              y: -(box.y - diff.h) * graphView.zoom },
             graphView.zoom * Math.min(
                 window.innerWidth / box.w,
-                wndHeight         / box.h),
-            { x: -(box.x - diff.w) * graphView.zoom,
-              y: -(box.y - diff.h) * graphView.zoom });
+                wndHeight         / box.h));
     }
 
     graphView.selectionRect = Rect.NaN;
@@ -10072,7 +10075,11 @@ graphView.addEventListener('pointerdown', e =>
 
 
 
-graphView.addEventListener('pointermove', e =>
+graphView.addEventListener('pointermove', graphView_onpointermove);
+
+
+
+function graphView_onpointermove(e)
 {
     graphView.p = { 
         x: e.clientX, 
@@ -10096,7 +10103,7 @@ graphView.addEventListener('pointermove', e =>
              if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
         else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
     }
-});
+}
 
 
 
@@ -10162,7 +10169,7 @@ graphView.addEventListener('wheel', e =>
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
         const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
 
-        graphView.setZoomAndPan(zoom, pan);
+        graphView.setPanAndZoom(pan, zoom);
     }
     else
     {
@@ -10184,6 +10191,10 @@ graphView.addEventListener('wheel', e =>
                 e.shiftKey);
         }
     }
+
+
+    if (graphView.tempConn)
+        graphView_onpointermove(e);
 });
 
 
@@ -15946,10 +15957,10 @@ function loadGraph(json)
     const data = JSON.parse(json);
 
 
-    graphView.setZoomAndPan(
-        parseFloat(data.zoom),
+    graphView.setPanAndZoom(
         { x: parseFloat(data.panx), 
-          y: parseFloat(data.pany) });
+          y: parseFloat(data.pany) },
+        parseFloat(data.zoom));
 
 
     for (const _node of data.nodes)

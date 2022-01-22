@@ -45,7 +45,7 @@ graphView.zoomSelecting = false;
 
 
 
-graphView.setZoomAndPan = (zoom, pan) =>
+graphView.setPanAndZoom = (pan, zoom) =>
 {
     if (   graphView._zoom == zoom
         && graphView._pan  == pan) 
@@ -53,8 +53,8 @@ graphView.setZoomAndPan = (zoom, pan) =>
 
     graphView.oldZoom = graphView.zoom;
 
-    graphView._zoom = zoom;
-    graphView._pan  = pan;
+    graphView._zoom   = zoom;
+    graphView._pan    = pan;
 
     graphView.updatePanAndZoom();
 };
@@ -75,6 +75,9 @@ graphView.updatePanAndZoom = () =>
 {
     for (const node of graph.nodes)
         graphView.updateNodeTransform(node);
+
+    if (graphView.tempConn)
+        graphView.tempConn.wire.scale = graphView.zoom;
 
     graphView.updateScroll();
 };
@@ -157,12 +160,12 @@ graphView.endZoomSelection = (pointerId, zoom) =>
 
         //console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
 
-        graphView.setZoomAndPan(
+        graphView.setPanAndZoom(
+            { x: -(box.x - diff.w) * graphView.zoom,
+              y: -(box.y - diff.h) * graphView.zoom },
             graphView.zoom * Math.min(
                 window.innerWidth / box.w,
-                wndHeight         / box.h),
-            { x: -(box.x - diff.w) * graphView.zoom,
-              y: -(box.y - diff.h) * graphView.zoom });
+                wndHeight         / box.h));
     }
 
     graphView.selectionRect = Rect.NaN;

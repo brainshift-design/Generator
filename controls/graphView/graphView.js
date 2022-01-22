@@ -84,7 +84,11 @@ graphView.addEventListener('pointerdown', e =>
 
 
 
-graphView.addEventListener('pointermove', e =>
+graphView.addEventListener('pointermove', graphView_onpointermove);
+
+
+
+function graphView_onpointermove(e)
 {
     graphView.p = { 
         x: e.clientX, 
@@ -108,7 +112,7 @@ graphView.addEventListener('pointermove', e =>
              if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
         else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
     }
-});
+}
 
 
 
@@ -174,7 +178,7 @@ graphView.addEventListener('wheel', e =>
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
         const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
 
-        graphView.setZoomAndPan(zoom, pan);
+        graphView.setPanAndZoom(pan, zoom);
     }
     else
     {
@@ -196,6 +200,10 @@ graphView.addEventListener('wheel', e =>
                 e.shiftKey);
         }
     }
+
+
+    if (graphView.tempConn)
+        graphView_onpointermove(e);
 });
 
 

@@ -21,10 +21,10 @@ function loadGraph(json)
     const data = JSON.parse(json);
 
 
-    graphView.setZoomAndPan(
-        parseFloat(data.zoom),
+    graphView.setPanAndZoom(
         { x: parseFloat(data.panx), 
-          y: parseFloat(data.pany) });
+          y: parseFloat(data.pany) },
+        parseFloat(data.zoom));
 
 
     for (const _node of data.nodes)
