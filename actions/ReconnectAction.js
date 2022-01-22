@@ -3,16 +3,20 @@ extends Action
 {
     outputOpId;
     outputIndex;
+    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
 
     oldOutputOpId;
     oldOutputIndex;
+    get oldOutputOp() { return graph.nodes.find(n => n.id == this.oldOutputOpId); }
+
+    inputOpId;
+    inputIndex;
+    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
 
     oldInputOpId;
     oldInputIndex;
+    get oldInputOp() { return graph.nodes.find(n => n.id == this.oldInputOpId); }
     
-    inputOpId;
-    inputIndex;
-
 
 
     constructor(output, oldInput, input)
@@ -48,11 +52,11 @@ extends Action
 
     do()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this.oldInputOpId)  .inputs[this.oldInputIndex ]);
+        uiDisconnect(this.oldInputOp.inputs[this.oldInputIndex]);
 
         uiConnect(
-            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex],
+            this.outputOp.outputs[this.outputIndex], 
+            this. inputOp. inputs[this. inputIndex],
             this.inputIndex);
     }
 
@@ -60,21 +64,23 @@ extends Action
 
     undo()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
+        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
 
-        const outputOp   = graph.nodes.find(n => n.id == this.  outputOpId);
-        const oldInputOp = graph.nodes.find(n => n.id == this.oldInputOpId);
-
-        uiVariableConnect(outputOp, this.outputIndex, oldInputOp, this.oldInputIndex);
+        uiVariableConnect(
+            this.outputOp, 
+            this.outputIndex, 
+            this.oldInputOp, 
+            this.oldInputIndex);
 
 
         if (this.oldOutputOpId > -1)
         {
-            const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
-            const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
-
-            uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
+            uiVariableConnect(
+                this.oldOutputOp, 
+                this.oldOutputIndex, 
+                this.inputOp, 
+                this.inputIndex);
         }
     }
 }

@@ -3,9 +3,11 @@ extends Action
 {
     outputOpId;
     outputIndex;
+    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
 
     inputOpId;
     inputIndex;
+    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
 
 
 
@@ -32,16 +34,17 @@ extends Action
 
     do()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
     }
     
     
     
     undo()
     {
-        const outputOp = graph.nodes.find(n => n.id == this.outputOpId);
-        const  inputOp = graph.nodes.find(n => n.id == this. inputOpId);
-
-        uiVariableConnect(outputOp, this.outputIndex, inputOp, this.inputIndex);
+        uiVariableConnect(
+            this.outputOp, 
+            this.outputIndex, 
+            this.inputOp, 
+            this.inputIndex);
     }
 }

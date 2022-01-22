@@ -14823,13 +14823,15 @@ extends Action
 {
     outputOpId;
     outputIndex;
+    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
 
     oldOutputOpId;
     oldOutputIndex;
+    get oldOutputOp() { return graph.nodes.find(n => n.id == this.oldOutputOpId); }
 
     inputOpId;
     inputIndex;
-
+    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
 
 
     constructor(output, input)
@@ -14860,8 +14862,8 @@ extends Action
     do()
     {
         uiConnect(
-            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex],
+            this.outputOp.outputs[this.outputIndex], 
+            this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
     }
 
@@ -14870,14 +14872,14 @@ extends Action
     undo()
     {
         uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
-
         
         if (this.oldOutputOpId > -1)
         {
-            const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
-            const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
-
-            uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
+            uiVariableConnect(
+                this.oldOutputOp, 
+                this.oldOutputIndex, 
+                this.inputOp, 
+                this.inputIndex);
         }
     }
 }
@@ -15023,9 +15025,11 @@ extends Action
 {
     outputOpId;
     outputIndex;
+    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
 
     inputOpId;
     inputIndex;
+    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
 
 
 
@@ -15052,17 +15056,18 @@ extends Action
 
     do()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
     }
     
     
     
     undo()
     {
-        const outputOp = graph.nodes.find(n => n.id == this.outputOpId);
-        const  inputOp = graph.nodes.find(n => n.id == this. inputOpId);
-
-        uiVariableConnect(outputOp, this.outputIndex, inputOp, this.inputIndex);
+        uiVariableConnect(
+            this.outputOp, 
+            this.outputIndex, 
+            this.inputOp, 
+            this.inputIndex);
     }
 }
 
@@ -15143,16 +15148,20 @@ extends Action
 {
     outputOpId;
     outputIndex;
+    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
 
     oldOutputOpId;
     oldOutputIndex;
+    get oldOutputOp() { return graph.nodes.find(n => n.id == this.oldOutputOpId); }
+
+    inputOpId;
+    inputIndex;
+    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
 
     oldInputOpId;
     oldInputIndex;
+    get oldInputOp() { return graph.nodes.find(n => n.id == this.oldInputOpId); }
     
-    inputOpId;
-    inputIndex;
-
 
 
     constructor(output, oldInput, input)
@@ -15188,11 +15197,11 @@ extends Action
 
     do()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this.oldInputOpId)  .inputs[this.oldInputIndex ]);
+        uiDisconnect(this.oldInputOp.inputs[this.oldInputIndex]);
 
         uiConnect(
-            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex],
+            this.outputOp.outputs[this.outputIndex], 
+            this. inputOp. inputs[this. inputIndex],
             this.inputIndex);
     }
 
@@ -15200,21 +15209,23 @@ extends Action
 
     undo()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
+        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
 
-        const outputOp   = graph.nodes.find(n => n.id == this.  outputOpId);
-        const oldInputOp = graph.nodes.find(n => n.id == this.oldInputOpId);
-
-        uiVariableConnect(outputOp, this.outputIndex, oldInputOp, this.oldInputIndex);
+        uiVariableConnect(
+            this.outputOp, 
+            this.outputIndex, 
+            this.oldInputOp, 
+            this.oldInputIndex);
 
 
         if (this.oldOutputOpId > -1)
         {
-            const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
-            const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
-
-            uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
+            uiVariableConnect(
+                this.oldOutputOp, 
+                this.oldOutputIndex, 
+                this.inputOp, 
+                this.inputIndex);
         }
     }
 }
@@ -15269,19 +15280,25 @@ extends Action
 class SetValueAction
 extends Action
 {
-    param;
+    nodeId;
+    paramIndex;
+
+    get param() { return graph.nodes.find(n => n.id == this.nodeId).params[this.paramIndex]; } 
+
 
     oldValue;
-    newValue;
+    value;
 
 
 
-    constructor(param, newValue)
+    constructor(param, value)
     {
         super('Set Value');
 
-        this.param    = param;
-        this.newValue = newValue;
+        this.nodeId     = param.op.id;
+        this.paramIndex = param.op.params.indexOf(param);
+
+        this.value      = value;
     }
 
 
@@ -15289,7 +15306,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        uiSetParam(this.param, this.newValue);
+        //uiSetParam(this.param, this.value);
     }
 
 
@@ -15303,8 +15320,8 @@ extends Action
 
     redo()
     {
-        uiSetParam(this.param, this.newValue);
-        this.param.setValue(this.newValue, false, false);
+        //uiSetParam(this.param, this.value);
+        this.param.setValue(this.value);
     }
 }
 

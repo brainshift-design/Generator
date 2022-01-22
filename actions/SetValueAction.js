@@ -1,19 +1,25 @@
 class SetValueAction
 extends Action
 {
-    param;
+    nodeId;
+    paramIndex;
+
+    get param() { return graph.nodes.find(n => n.id == this.nodeId).params[this.paramIndex]; } 
+
 
     oldValue;
-    newValue;
+    value;
 
 
 
-    constructor(param, newValue)
+    constructor(param, value)
     {
         super('Set Value');
 
-        this.param    = param;
-        this.newValue = newValue;
+        this.nodeId     = param.op.id;
+        this.paramIndex = param.op.params.indexOf(param);
+
+        this.value      = value;
     }
 
 
@@ -21,7 +27,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        uiSetParam(this.param, this.newValue);
+        //uiSetParam(this.param, this.value);
     }
 
 
@@ -35,7 +41,7 @@ extends Action
 
     redo()
     {
-        uiSetParam(this.param, this.newValue);
-        this.param.setValue(this.newValue, false, false);
+        //uiSetParam(this.param, this.value);
+        this.param.setValue(this.value);
     }
 }
