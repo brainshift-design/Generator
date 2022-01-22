@@ -136,10 +136,13 @@ function createNodeHeader(node)
         if (   e.button == 0
             && node.div.dragging)
         {
-            actionManager.do(new MoveNodesAction(
-                graphView.selected.map(n => n.id), 
-                { x: node.div.slx,        y: node.div.sly       },
-                { x: node.div.offsetLeft, y: node.div.offsetTop }));
+            if (node.div.moved)
+            {
+                actionManager.do(new MoveNodesAction(
+                    graphView.selected.map(n => n.id), 
+                    { x: node.div.slx,        y: node.div.sly       },
+                    { x: node.div.offsetLeft, y: node.div.offsetTop }));
+            }
 
 
             if (   !node.div.selectedSet
@@ -149,6 +152,7 @@ function createNodeHeader(node)
                 else            graphView.selected = [node];
             }
 
+            
             node.div.dragging = false;
             node.header.releasePointerCapture(e.pointerId);
         }
