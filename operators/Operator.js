@@ -344,35 +344,6 @@ class Operator
 
 
 
-    toString() 
-    { 
-        // create the definition string here
-
-        /*
-
-        A definition string is only to calculate graph results.
-        
-
-
-        *               input
-        N               number value
-        C               color value
-
-
-        OpNumber        number N
-                        number number N (two numbers linked together)
-
-
-
-        OpArithmetic    add [onlySymbol] number 1 number 2
-                        add number
-
-
-        */
-    }
-
-
-
     setParamOutputData()
     {
         for (const param of this.params)
@@ -582,5 +553,39 @@ class Operator
         // {
 
         // }
+    }
+
+
+
+    toString() 
+    { 
+        // create the definition string here
+
+        /*
+
+            A definition string is only to calculate graph results.
+
+            [ ] = optional
+            ... = list
+
+            The general format is
+
+                opType [params...] [inputs...]
+
+
+            #               # of following values
+            N               number value
+            C               color value
+
+
+            OpNumber        number [N]
+
+            OpArithmetic    add [onlySymbol] # N...
+
+            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
+
+            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
+
+        */
     }
 }

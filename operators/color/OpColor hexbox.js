@@ -103,12 +103,11 @@ function onHexboxKeyDown(e)
 
 function hexboxFinish(op, success)
 {
-    console.log('hexboxFinish()');
     var rgb = hex2rgb(op.hexbox.value);
-console.log('rgb', rgb);
+
     if (success) 
     {
-        op._color = rgb2dataColor(rgb);
+        setDataColorToCurrentSpace(op, rgb2dataColor(rgb));
         op.hexbox.op.pushUpdate();
     }
     

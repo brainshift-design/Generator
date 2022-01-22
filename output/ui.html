@@ -12104,35 +12104,6 @@ class Operator
 
 
 
-    toString() 
-    { 
-        // create the definition string here
-
-        /*
-
-        A definition string is only to calculate graph results.
-        
-
-
-        *               input
-        N               number value
-        C               color value
-
-
-        OpNumber        number N
-                        number number N (two numbers linked together)
-
-
-
-        OpArithmetic    add [onlySymbol] number 1 number 2
-                        add number
-
-
-        */
-    }
-
-
-
     setParamOutputData()
     {
         for (const param of this.params)
@@ -12342,6 +12313,40 @@ class Operator
         // {
 
         // }
+    }
+
+
+
+    toString() 
+    { 
+        // create the definition string here
+
+        /*
+
+            A definition string is only to calculate graph results.
+
+            [ ] = optional
+            ... = list
+
+            The general format is
+
+                opType [params...] [inputs...]
+
+
+            #               # of following values
+            N               number value
+            C               color value
+
+
+            OpNumber        number [N]
+
+            OpArithmetic    add [onlySymbol] # N...
+
+            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
+
+            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
+
+        */
     }
 }
 
@@ -12764,13 +12769,6 @@ extends Operator
 
 
 
-    generate()
-    {
-        //return 
-    }
-
-
-
     loadParams(_node)
     {
         for (const _param of _node.params)
@@ -12781,6 +12779,18 @@ extends Operator
                 this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
             }
         }
+    }
+
+
+
+    toString()
+    {
+        // let str = opType;
+
+        // if (this.inputs[0].isConnected)
+        //     str +=
+
+        // return str;
     }
 }
 
@@ -14109,12 +14119,11 @@ function onHexboxKeyDown(e)
 
 function hexboxFinish(op, success)
 {
-    console.log('hexboxFinish()');
     var rgb = hex2rgb(op.hexbox.value);
-console.log('rgb', rgb);
+
     if (success) 
     {
-        op._color = rgb2dataColor(rgb);
+        setDataColorToCurrentSpace(op, rgb2dataColor(rgb));
         op.hexbox.op.pushUpdate();
     }
     

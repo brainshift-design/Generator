@@ -58,13 +58,6 @@ extends Operator
 
 
 
-    generate()
-    {
-        //return 
-    }
-
-
-
     loadParams(_node)
     {
         for (const _param of _node.params)
@@ -75,5 +68,17 @@ extends Operator
                 this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
             }
         }
+    }
+
+
+
+    toString()
+    {
+        // let str = opType;
+
+        // if (this.inputs[0].isConnected)
+        //     str +=
+
+        // return str;
     }
 }
