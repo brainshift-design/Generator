@@ -129,6 +129,16 @@ function lastOf(array)
 
 
 
+// function moveIn(array, from, to)
+// {
+//     array = 
+//         array.slice(0, to)
+//         .concat([array[from]])
+//         .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
+// }
+
+
+
 function capitalize(str)
 {
     let cap = "";

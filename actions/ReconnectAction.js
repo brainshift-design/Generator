@@ -14,9 +14,9 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const   outIndex =   output.op.outputs.findIndex(o => o == output  );
-        const oldInIndex = oldInput.op. inputs.findIndex(i => i == oldInput); 
-        const    inIndex =    input.op. inputs.findIndex(i => i == input   ); 
+        const   outIndex =   output.op.outputs.indexOf(output  );
+        const oldInIndex = oldInput.op. inputs.indexOf(oldInput); 
+        const    inIndex =    input.op. inputs.indexOf(input   ); 
         
 
         super(  
@@ -26,7 +26,7 @@ extends Action
             + ' -> '
             + input.op.name + '.inputs[' + inIndex + ']');
 
-            
+
         this.outputOpId    = output.op.id;
         this.outputIndex   = outIndex;
         

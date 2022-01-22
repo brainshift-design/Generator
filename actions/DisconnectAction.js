@@ -11,21 +11,25 @@ extends Action
 
     constructor(output, input)
     {
-        const outIndex = output.op.outputs.findIndex(o => o == output);
-        const  inIndex = input .op. inputs.findIndex(i => i ==  input); 
+        console.log(output);
+        console.log(input);
+        const outputIndex = output.op.outputs.indexOf(output);
+        const  inputIndex = input .op. inputs.indexOf( input); 
 
+        console.log(outputIndex);
+        console.log(inputIndex );
 
         super('Disconnect ' 
-            + output.op.name + '.outputs[' + outIndex + ']'
+            + output.op.name + '.outputs[' + outputIndex + ']'
             + ' -> '
-            + input.op.name + '.inputs[' + inIndex + ']');
+            + input.op.name + '.inputs[' + inputIndex + ']');
 
-            
+
         this.outputOpId  = output.op.id;
-        this.outputIndex = outIndex;
+        this.outputIndex = outputIndex;
 
         this.inputOpId   = input.op.id;
-        this.inputIndex  = inIndex;
+        this.inputIndex  = inputIndex;
     }
 
 

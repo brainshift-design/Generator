@@ -28,7 +28,7 @@ class Operator
     outputs = [];
     params  = [];
     
-
+    
     alwaysLoadParams;
     loaded;
 

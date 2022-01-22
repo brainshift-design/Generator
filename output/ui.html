@@ -993,6 +993,16 @@ function lastOf(array)
 
 
 
+// function moveIn(array, from, to)
+// {
+//     array = 
+//         array.slice(0, to)
+//         .concat([array[from]])
+//         .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
+// }
+
+
+
 function capitalize(str)
 {
     let cap = "";
@@ -3240,6 +3250,16 @@ function lastOf(array)
 {
     return array[array.length-1];
 }
+
+
+
+// function moveIn(array, from, to)
+// {
+//     array = 
+//         array.slice(0, to)
+//         .concat([array[from]])
+//         .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
+// }
 
 
 
@@ -9425,7 +9445,7 @@ graphView.endConnection = pointerId =>
                 actionManager.do(new ConnectAction(output, input));
         }
         else if (savedInput) // disconnect old
-            actionManager.do(new DisconnectAction(output, input));
+            actionManager.do(new DisconnectAction(output, savedInput));
         
         graphView.cancelConnection(pointerId);
     }
@@ -11145,8 +11165,23 @@ class Graph
         if (input.connectedOutput == output)
             return false;
             
-        if (input.connectedOutput != null)
+        if (input.connectedOutput)
+        {
+            const index = input.op.inputs.indexOf(input);
+            
             this.disconnect(input);
+
+            if (input.op._variableInputs)
+            {
+                input = lastOf(input.op.inputs);
+                
+                // move new input back to correct index
+                input.op.inputs =
+                            input.op.inputs.slice(0, index)
+                    .concat([input])
+                    .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
+            }
+        }
 
 
         output.connectedInputs.push(input);
@@ -11181,13 +11216,13 @@ class Graph
 
 
 
-    disconnect(input)//, deletingOutput = false)
+    disconnect(input)
     {
         // first remove the current output
 
-        //if (input.op)
         if (!!activeNodeInTree(input.op))
             uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
+
 
         // then disconnect
 
@@ -11207,11 +11242,7 @@ class Graph
             input.param.valueText = '';
 
 
-        // invalidate(input.op);
-        // invalidate(output.op);
-
         if (!activeNodeInTree(output.op))
-           // && !deletingOutput)
              output.op.makeActive();
             
 
@@ -11736,10 +11767,10 @@ class Connection
         let json = 
               pos + '{'
             +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.name + '"'
-            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.findIndex(o => o == this.output) + '"'
+            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.indexOf(this.output) + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.name + '"'
-            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.findIndex(i => i == this.input) + '"'
+            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.indexOf(this.input) + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
 
@@ -11787,7 +11818,7 @@ class Operator
     outputs = [];
     params  = [];
     
-
+    
     alwaysLoadParams;
     loaded;
 
@@ -12807,6 +12838,7 @@ extends Operator
     {
         super(opType, shortType, 'number', 65);
 
+        this._variableInputs  = true;
         this.alwaysLoadParams = true;
 
 
@@ -12839,6 +12871,8 @@ extends Operator
         input.addEventListener('disconnect', () => onDisconnectInput(this, input));
 
         this.addInput(input);
+
+        return input;
     }
 
 
@@ -12944,11 +12978,7 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput(); 
-
-    op.invalidate();
-    op.update();
-
-    updateGraphNode(op);
+    op.pushUpdate();
 }
 
 
@@ -12957,11 +12987,7 @@ function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input);
     op.inputControls.removeChild(input.control);
-
-    op.invalidate();
-    op.update();
-
-    updateGraphNode(op);
+    op.pushUpdate();
 }
 
 
@@ -14812,9 +14838,9 @@ extends Action
 
     constructor(output, input)
     {
-        const    outIndex = output.op.outputs.findIndex(o => o == output);
-        const oldOutIndex = input.isConnected ? input.connectedOutput.op.outputs.findIndex(o => o == input.connectedOutput) : -1; 
-        const     inIndex = input.op.inputs.findIndex(i => i == input); 
+        const    outIndex = output.op.outputs.indexOf(output);
+        const oldOutIndex = input.isConnected ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) : -1; 
+        const     inIndex = input.op.inputs.indexOf(input); 
 
 
         super('Connect ' 
@@ -14831,6 +14857,14 @@ extends Action
 
         this.inputOpId      = input.op.id;
         this.inputIndex     = inIndex;
+
+
+        console.log('this.outputOpId  = ', this.outputOpId);
+        console.log('this.outputIndex = ', this.outputIndex);
+        console.log('this.oldOutputOpId  = ', this.oldOutputOpId);
+        console.log('this.oldOutputIndex = ', this.oldOutputIndex);
+        console.log('this.inputOpId  = ', this.inputOpId);
+        console.log('this.inputIndex = ', this.inputIndex);
     }
 
 
@@ -14850,19 +14884,30 @@ extends Action
 
         if (this.oldOutputOpId > -1)
         {
-            uiConnect(
-                graph.nodes.find(n => n.id == this.oldOutputOpId).outputs[this.oldOutputIndex], 
-                graph.nodes.find(n => n.id == this.    inputOpId). inputs[this.    inputIndex]);
+            const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
+            const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
+
+            if (inputOp._variableInputs)
+            {
+                const input = lastOf(inputOp.inputs);
+
+                uiConnect(
+                    oldOutputOp.outputs[this.oldOutputIndex],
+                    input);
+
+                // move new input back to correct index
+                inputOp.inputs =
+                            inputOp.inputs.slice(0, this.inputIndex)
+                    .concat([input])
+                    .concat(inputOp.inputs.slice(this.inputIndex, inputOp.inputs.length-1));
+            }
+            else
+            {
+                uiConnect(
+                    oldOutputOp.outputs[this.oldOutputIndex],
+                        inputOp. inputs[this.    inputIndex]);
+            }
         }
-    }
-
-
-
-    redo()
-    {
-        uiConnect(
-            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
     }
 }
 
@@ -14996,21 +15041,25 @@ extends Action
 
     constructor(output, input)
     {
-        const outIndex = output.op.outputs.findIndex(o => o == output);
-        const  inIndex = input .op. inputs.findIndex(i => i ==  input); 
+        console.log(output);
+        console.log(input);
+        const outputIndex = output.op.outputs.indexOf(output);
+        const  inputIndex = input .op. inputs.indexOf( input); 
 
+        console.log(outputIndex);
+        console.log(inputIndex );
 
         super('Disconnect ' 
-            + output.op.name + '.outputs[' + outIndex + ']'
+            + output.op.name + '.outputs[' + outputIndex + ']'
             + ' -> '
-            + input.op.name + '.inputs[' + inIndex + ']');
+            + input.op.name + '.inputs[' + inputIndex + ']');
 
-            
+
         this.outputOpId  = output.op.id;
-        this.outputIndex = outIndex;
+        this.outputIndex = outputIndex;
 
         this.inputOpId   = input.op.id;
-        this.inputIndex  = inIndex;
+        this.inputIndex  = inputIndex;
     }
 
 
@@ -15125,9 +15174,9 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const   outIndex =   output.op.outputs.findIndex(o => o == output  );
-        const oldInIndex = oldInput.op. inputs.findIndex(i => i == oldInput); 
-        const    inIndex =    input.op. inputs.findIndex(i => i == input   ); 
+        const   outIndex =   output.op.outputs.indexOf(output  );
+        const oldInIndex = oldInput.op. inputs.indexOf(oldInput); 
+        const    inIndex =    input.op. inputs.indexOf(input   ); 
         
 
         super(  
@@ -15137,7 +15186,7 @@ extends Action
             + ' -> '
             + input.op.name + '.inputs[' + inIndex + ']');
 
-            
+
         this.outputOpId    = output.op.id;
         this.outputIndex   = outIndex;
         

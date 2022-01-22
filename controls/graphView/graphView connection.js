@@ -71,7 +71,7 @@ graphView.endConnection = pointerId =>
                 actionManager.do(new ConnectAction(output, input));
         }
         else if (savedInput) // disconnect old
-            actionManager.do(new DisconnectAction(output, input));
+            actionManager.do(new DisconnectAction(output, savedInput));
         
         graphView.cancelConnection(pointerId);
     }

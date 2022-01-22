@@ -11,6 +11,7 @@ extends Operator
     {
         super(opType, shortType, 'number', 65);
 
+        this._variableInputs  = true;
         this.alwaysLoadParams = true;
 
 
@@ -43,6 +44,8 @@ extends Operator
         input.addEventListener('disconnect', () => onDisconnectInput(this, input));
 
         this.addInput(input);
+
+        return input;
     }
 
 
@@ -148,11 +151,7 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput(); 
-
-    op.invalidate();
-    op.update();
-
-    updateGraphNode(op);
+    op.pushUpdate();
 }
 
 
@@ -161,9 +160,5 @@ function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input);
     op.inputControls.removeChild(input.control);
-
-    op.invalidate();
-    op.update();
-
-    updateGraphNode(op);
+    op.pushUpdate();
 }

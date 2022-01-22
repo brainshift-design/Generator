@@ -170,10 +170,10 @@ class Connection
         let json = 
               pos + '{'
             +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.name + '"'
-            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.findIndex(o => o == this.output) + '"'
+            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.indexOf(this.output) + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.name + '"'
-            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.findIndex(i => i == this.input) + '"'
+            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.indexOf(this.input) + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
 
