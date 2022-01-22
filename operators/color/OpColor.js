@@ -255,21 +255,21 @@ extends Operator
         this.outputs[0].wireColor = colBack;
 
         
-        const colIn  = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
-        const colOut = colorStyleRgba(colText, darkText ? 0.06 : 0.12);
+        const colIn  = rgb_a(colText, darkText ? 0.08 : 0.16);
+        const colOut = rgb_a(colText, darkText ? 0.06 : 0.12);
 
         this.inputs [0].color = colIn;
         this.outputs[0].color = colOut;
         
-        this.inputs [0].updateControl();
-        this.outputs[0].updateControl();
+        //this.inputs [0].updateControl();
+        //this.outputs[0].updateControl();
 
 
         this.paramSpace.input .color = colIn;
         this.paramSpace.output.color = colOut;
 
-        this.paramSpace.input .updateControl();
-        this.paramSpace.output.updateControl();
+        // this.paramSpace.input .updateControl();
+        // this.paramSpace.output.updateControl();
 
 
         super.updateNode();

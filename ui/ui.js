@@ -3,6 +3,8 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
+    uiGetPluginData('graph');
+
     // initMenuSelect(menuSelect);
     // menuSelect.initMenu();
 
@@ -11,35 +13,35 @@ function uiEndLoadState(msg)
 
 
 
-function updateMenuSelectItems()
-{
-    let items = 
-    [
-        {value: 'graph0',     text: 'Untitled'      },
-        {value: 'new',        text: 'New graph'     },
-        {value: 'loadLocal',  text: 'Load from file'}
-    ];
+// function updateMenuSelectItems()
+// {
+//     let items = 
+//     [
+//         {value: 'graph0',     text: 'Untitled'      },
+//         {value: 'new',        text: 'New graph'     },
+//         {value: 'loadLocal',  text: 'Load from file'}
+//     ];
 
-    checkAddMenuItemsSave     (items);
-    checkAddMenuItemProductKey(items);
+//     checkAddMenuItemsSave     (items);
+//     checkAddMenuItemProductKey(items);
 
-    menuSelect.updateItems(items);
-}
+//     menuSelect.updateItems(items);
+// }
 
 
 
-function checkAddMenuItemsSave(menuSelectItems)
-{
-    if (validateProductKey(currentUser.id, productKey))
-    {
-        menuSelectItems.push(...
-        [
-            {value: 'duplicate',  text: 'Duplicate'      },
-            {value: 'saveLocal',  text: 'Save local copy'},
-            {value: 'delete',     text: 'Delete'         } 
-        ]);
-    }
-}
+// function checkAddMenuItemsSave(menuSelectItems)
+// {
+//     if (validateProductKey(currentUser.id, productKey))
+//     {
+//         menuSelectItems.push(...
+//         [
+//             {value: 'duplicate',  text: 'Duplicate'      },
+//             {value: 'saveLocal',  text: 'Save local copy'},
+//             {value: 'delete',     text: 'Delete'         } 
+//         ]);
+//     }
+// }
 
 
 
@@ -72,14 +74,10 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 
 
 
-// function uiLoadGraph()
-// {
-//     uiGetPluginData()
-// }
-
-
-
 function uiClosePlugin()
 {
-    //uiSetPluginData('graph', graph.toJson());
+    console.log('uiClosePlugin()');
+    const json = graph.toJson(); 
+    //console.log(json);
+    uiSetPluginData('graph', json);
 }

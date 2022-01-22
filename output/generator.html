@@ -1481,8 +1481,8 @@ function createSvg(element)
 
 
 
-function show(element) { element.style.visibility = 'visible'; }
-function hide(element) { element.style.visibility = 'hidden';  }
+function show(element, show) { element.style.visibility = show ? 'visible' : 'hidden'; }
+function hide(element)       { element.style.visibility = 'hidden';  }
 
 
 

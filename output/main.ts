@@ -186,7 +186,7 @@ function figOnSelectionChange()
 
 function figOnPluginClose()
 {
-    figPostMessageToUi({msg: 'uiClosePlugin'});
+    figPostMessageToUi({cmd: 'uiClosePlugin'});
     figDeleteAllObjects();
 }
 

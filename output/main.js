@@ -121,7 +121,7 @@ function figOnSelectionChange() {
     }
 }
 function figOnPluginClose() {
-    figPostMessageToUi({ msg: 'uiClosePlugin' });
+    figPostMessageToUi({ cmd: 'uiClosePlugin' });
     figDeleteAllObjects();
 }
 const OBJ_RECT = 1;

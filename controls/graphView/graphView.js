@@ -53,7 +53,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
-                hide(graphView.overInput.connection.wire.outBall);
+                //hide(graphView.overInput.connection.wire.outBall);
             }
             else
             {

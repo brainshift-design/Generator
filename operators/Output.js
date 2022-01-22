@@ -11,6 +11,7 @@ class Output
     wireColor;
 
     control;
+    wireBall;
 
     
     connectedInputs = [];
@@ -46,29 +47,57 @@ class Output
         
         this.control = document.createElement('div');
         this.control.className = 'output';
-        this.control.output    = this;
+        this.control.output = this;
         
-        this.color     = colorStyleRgba_(0, 0, 0, 0.12);
+        this.wireBall = document.createElement('div');
+        this.wireBall.className = 'outputBall';
+        
+        this.control.appendChild(this.wireBall);
+
+        this.color     = [0, 0, 0, 0.12];
         this.wireColor = rgbFromDataType(this._dataType, true);
         
         this.updateControl();
 
         
-        this.control.addEventListener('pointerenter', e => { graphView.overOutput = this; });
-        this.control.addEventListener('pointerleave', e => { graphView.overOutput = null; });
+        this.control.addEventListener('pointerenter', e => 
+        { 
+            graphView.overOutput = this; 
+            
+            this.color = [0, 0, 0, 0.24];
+            this.updateControl();
+        });
+
+        this.control.addEventListener('pointerleave', e => 
+        { 
+            graphView.overOutput = null; 
+
+            this.color = [0, 0, 0, 0.12];
+            this.updateControl();
+        });
     }
 
 
 
     updateControl()
     {
-        this.control.style.backgroundColor = this.color;
+        this.control.style.backgroundColor = colorStyleRgba(toRgba(this.color));
 
-        this.control.style.boxShadow = 
+        // this.control.style.boxShadow = 
+        //        this.connectedInputs.length > 0
+        //     ||    graphView.tempConn
+        //        && graphView.tempConn.output == this
+        //     ? '0 0 0 1px ' + colorStyleRgba(toRgba(this.color))
+        //     : 'none';
+
+        this.wireBall.style.backgroundColor = colorStyleRgba(toRgba(this.wireColor));
+
+        this.wireBall.style.zIndex = MAX_INT32;
+
+        show(
+            this.wireBall,
                this.connectedInputs.length > 0
             ||    graphView.tempConn
-               && graphView.tempConn.output == this
-            ? '0 0 0 1px ' + this.color
-            : 'none';
+               && graphView.tempConn.output == this);
     }
 }

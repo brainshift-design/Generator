@@ -3,8 +3,9 @@
 
 onmessage = e =>
 {
-    var msg = e.data.pluginMessage;
+    let msg = e.data.pluginMessage;
 
+    console.log(msg.cmd);
     switch (msg.cmd)
     {
         case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg); break;

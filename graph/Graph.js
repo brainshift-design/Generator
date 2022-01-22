@@ -181,6 +181,7 @@ class Graph
         
         graphView.addWire(conn.wire);
 
+        console.log('conn = ', conn);
 
         output.op.makePassive();
         output.updateControl();
@@ -191,7 +192,7 @@ class Graph
        
             
         output.op.updateConnectedInputValueText();
-        conn.wire.style.zIndex = MAX_INT32;
+        //conn.wire.style.zIndex = 0;//MAX_INT32;
 
 
         setTimeout(() => output.op.pushUpdate());

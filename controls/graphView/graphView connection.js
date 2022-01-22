@@ -63,7 +63,7 @@ graphView.endConnection = pointerId =>
             if (input == savedInput) // reconnect old
             {
                 show(input.connection.wire);
-                show(input.connection.wire.outBall);
+                //show(input.connection.wire.outBall);
             }
             else if (savedInput) // disconnect old, connect new
                 actionManager.do(new ReconnectAction(output, savedInput, input));

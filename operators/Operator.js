@@ -29,6 +29,8 @@ class Operator
     params  = [];
     
     
+    _variableInputs = false;
+
     alwaysLoadParams;
     loaded;
 
@@ -259,6 +261,10 @@ class Operator
     updateNode() 
     {
         this.updateHeader();
+
+
+        for (const  input of this. inputs)  input.updateControl();
+        for (const output of this.outputs) output.updateControl();
 
 
         const headerInputs = this.inputs.filter(i => !i.param);

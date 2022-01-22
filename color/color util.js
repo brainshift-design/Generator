@@ -69,3 +69,19 @@ function colorStyleRgb_a(rgb, a)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], a);
 }
+
+
+
+function toRgba(rgb_)
+{
+    return rgb_.length == 3
+         ? [...rgb_, 1]
+         : rgb_;
+}
+
+
+
+function rgb_a(rgb, a)
+{
+    return [rgb[0], rgb[1], rgb[2], a];
+}

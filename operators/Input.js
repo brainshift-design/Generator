@@ -21,6 +21,7 @@ extends EventTarget
     wireColor;
 
     control;
+    wireBall;
   
 
     _connectedOutput = null;
@@ -76,11 +77,14 @@ extends EventTarget
         this.control.className = 'input';
         this.control.input = this;
         
-        this.color     = colorStyleRgba_(0, 0, 0, 0.14);
+        this.wireBall = document.createElement('div');
+        this.wireBall.className = 'inputBall';
+
+        this.control.appendChild(this.wireBall);
+
+        this.color     = [0, 0, 0, 0.14];
         this.wireColor = rgbFromDataType(this._dataType, true);
 
-        this.updateControl();
-    
         
         this.control.addEventListener('pointerdown', e => e.preventDefault());
 
@@ -88,15 +92,18 @@ extends EventTarget
         this.control.addEventListener('pointerenter', e => 
         {
             graphView.overInput = this;
-            // this.color = rgbFromDataType(e.target.input.dataType, true);
-            // this.updateControl();
+
+            this.color = [0, 0, 0, 0.28];
+            this.updateControl();
         });
 
 
         this.control.addEventListener('pointerleave', e => 
         {
             graphView.overInput = null;
-            //this.control.style.boxShadow = '0 0 0 1px ' + inputColor;
+
+            this.color = [0, 0, 0, 0.14];
+            this.updateControl();
         });
     }
 
@@ -111,6 +118,20 @@ extends EventTarget
 
     updateControl()
     {
-        this.control.style.boxShadow = '0 0 0 1px ' + this.color;
+        this.control.style.boxShadow = '0 0 0 1px ' + colorStyleRgba(toRgba(this.color));
+
+        this.wireBall.style.backgroundColor = colorStyleRgba(
+            this.isConnected
+            ? toRgba(this.connectedOutput.wireColor)
+            : toRgba(this.wireColor));
+
+        this.wireBall.style.zIndex = MAX_INT32;
+
+        show(
+            this.wireBall, 
+               this.isConnected
+            ||    graphView.tempConn
+               && graphView.tempConn.input == this);
+
     }
 }

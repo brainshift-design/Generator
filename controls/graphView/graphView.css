@@ -87,16 +87,6 @@
 }
 
 
-.outputControls
-{
-    width:          20px;
-    height:         25px;
-    float:          right;
-    margin-left:    auto;
-    pointer-events: none;
-}
-
-
 .input
 {
     width:          8px;
@@ -110,6 +100,31 @@
     left:           4px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+
+.inputBall
+{
+    width:          6px;
+    height:         6px;
+    border-radius:  6px;
+    margin:         0;
+    position:       absolute;
+    top:            1px;
+    right:          1px;
+    pointer-events: none;
+    /* z-index:        10; */
+    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
+
+
+.outputControls
+{
+    width:          20px;
+    height:         25px;
+    float:          right;
+    margin-left:    auto;
+    pointer-events: none;
 }
 
 
@@ -128,6 +143,20 @@
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
 
+
+.outputBall
+{
+    width:          6px;
+    height:         6px;
+    border-radius:  6px;
+    margin:         0;
+    position:       absolute;
+    top:            0px;
+    right:          0px;
+    pointer-events: none;
+    /* z-index:        10; */
+    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
 
 
 .arithmeticSymbol
