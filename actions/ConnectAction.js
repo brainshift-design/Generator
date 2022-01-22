@@ -57,21 +57,22 @@ extends Action
             const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
             const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
 
-            if (inputOp._variableInputs)
-            {
-                const input = lastOf(inputOp.inputs);
+            uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
+            // if (inputOp._variableInputs)
+            // {
+            //     const input = lastOf(inputOp.inputs);
 
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                    input,
-                    this.inputIndex);
-            }
-            else
-            {
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                        inputOp. inputs[this.    inputIndex]);
-            }
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //         input,
+            //         this.inputIndex);
+            // }
+            // else
+            // {
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //             inputOp. inputs[this.    inputIndex]);
+            // }
         }
     }
 }

@@ -105,6 +105,27 @@ function uiSetNodeId(nodeId, newId)
 
 
 
+function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
+{
+    if (inputOp._variableInputs)
+    {
+        const input = lastOf(inputOp.inputs);
+
+        uiConnect(
+            outputOp.outputs[outputIndex],
+            input,
+            inputIndex);
+    }
+    else
+    {
+        uiConnect(
+            outputOp.outputs[outputIndex],
+             inputOp. inputs[ inputIndex]);
+    }
+}
+
+
+
 function uiConnect(output, input, inputIndex = -1)
 {
     graph.connect(output, input, inputIndex);

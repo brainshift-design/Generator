@@ -11,13 +11,9 @@ extends Action
 
     constructor(output, input)
     {
-        console.log(output);
-        console.log(input);
         const outputIndex = output.op.outputs.indexOf(output);
         const  inputIndex = input .op. inputs.indexOf( input); 
 
-        console.log(outputIndex);
-        console.log(inputIndex );
 
         super('Disconnect ' 
             + output.op.name + '.outputs[' + outputIndex + ']'
@@ -43,9 +39,25 @@ extends Action
     
     undo()
     {
-        uiConnect(
-            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+        const outputOp = graph.nodes.find(n => n.id == this.outputOpId);
+        const  inputOp = graph.nodes.find(n => n.id == this. inputOpId);
+
+        uiVariableConnect(outputOp, this.outputIndex, inputOp, this.inputIndex);
+        // if (inputOp._variableInputs)
+        // {
+        //     const input = lastOf(inputOp.inputs);
+
+        //     uiConnect(
+        //         outputOp.outputs[this.outputIndex],
+        //         input,
+        //         this.inputIndex);
+        // }
+        // else
+        // {
+        //     uiConnect(
+        //         outputOp.outputs[this.outputIndex],
+        //          inputOp. inputs[this. inputIndex]);
+        // }
     }
 
 

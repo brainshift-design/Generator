@@ -66,21 +66,22 @@ extends Action
         const outputOp   = graph.nodes.find(n => n.id == this.  outputOpId);
         const oldInputOp = graph.nodes.find(n => n.id == this.oldInputOpId);
 
-        if (oldInputOp._variableInputs)
-        {
-            const input = lastOf(oldInputOp.inputs);
+        uiVariableConnect(outputOp, this.outputIndex, oldInputOp, this.oldInputIndex);
+        // if (oldInputOp._variableInputs)
+        // {
+        //     const input = lastOf(oldInputOp.inputs);
 
-            uiConnect(
-                outputOp.outputs[this.outputIndex],
-                input,
-                this.oldInputIndex);
-        }
-        else
-        {
-            uiConnect(
-                  outputOp.outputs[this.  outputIndex],
-                oldInputOp. inputs[this.oldInputIndex]);
-        }
+        //     uiConnect(
+        //         outputOp.outputs[this.outputIndex],
+        //         input,
+        //         this.oldInputIndex);
+        // }
+        // else
+        // {
+        //     uiConnect(
+        //           outputOp.outputs[this.  outputIndex],
+        //         oldInputOp. inputs[this.oldInputIndex]);
+        // }
 
 
         if (this.oldOutputOpId > -1)
@@ -88,21 +89,22 @@ extends Action
             const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
             const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
 
-            if (inputOp._variableInputs)
-            {
-                const input = lastOf(inputOp.inputs);
+            uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
+            // if (inputOp._variableInputs)
+            // {
+            //     const input = lastOf(inputOp.inputs);
 
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                    input,
-                    this.inputIndex);
-            }
-            else
-            {
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                        inputOp. inputs[this.    inputIndex]);
-            }
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //         input,
+            //         this.inputIndex);
+            // }
+            // else
+            // {
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //             inputOp. inputs[this.    inputIndex]);
+            // }
         }
     }
 }

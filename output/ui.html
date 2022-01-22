@@ -14873,21 +14873,22 @@ extends Action
             const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
             const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
 
-            if (inputOp._variableInputs)
-            {
-                const input = lastOf(inputOp.inputs);
+            uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
+            // if (inputOp._variableInputs)
+            // {
+            //     const input = lastOf(inputOp.inputs);
 
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                    input,
-                    this.inputIndex);
-            }
-            else
-            {
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                        inputOp. inputs[this.    inputIndex]);
-            }
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //         input,
+            //         this.inputIndex);
+            // }
+            // else
+            // {
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //             inputOp. inputs[this.    inputIndex]);
+            // }
         }
     }
 }
@@ -15022,13 +15023,9 @@ extends Action
 
     constructor(output, input)
     {
-        console.log(output);
-        console.log(input);
         const outputIndex = output.op.outputs.indexOf(output);
         const  inputIndex = input .op. inputs.indexOf( input); 
 
-        console.log(outputIndex);
-        console.log(inputIndex );
 
         super('Disconnect ' 
             + output.op.name + '.outputs[' + outputIndex + ']'
@@ -15054,9 +15051,25 @@ extends Action
     
     undo()
     {
-        uiConnect(
-            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+        const outputOp = graph.nodes.find(n => n.id == this.outputOpId);
+        const  inputOp = graph.nodes.find(n => n.id == this. inputOpId);
+
+        uiVariableConnect(outputOp, this.outputIndex, inputOp, this.inputIndex);
+        // if (inputOp._variableInputs)
+        // {
+        //     const input = lastOf(inputOp.inputs);
+
+        //     uiConnect(
+        //         outputOp.outputs[this.outputIndex],
+        //         input,
+        //         this.inputIndex);
+        // }
+        // else
+        // {
+        //     uiConnect(
+        //         outputOp.outputs[this.outputIndex],
+        //          inputOp. inputs[this. inputIndex]);
+        // }
     }
 
 
@@ -15207,21 +15220,22 @@ extends Action
         const outputOp   = graph.nodes.find(n => n.id == this.  outputOpId);
         const oldInputOp = graph.nodes.find(n => n.id == this.oldInputOpId);
 
-        if (oldInputOp._variableInputs)
-        {
-            const input = lastOf(oldInputOp.inputs);
+        uiVariableConnect(outputOp, this.outputIndex, oldInputOp, this.oldInputIndex);
+        // if (oldInputOp._variableInputs)
+        // {
+        //     const input = lastOf(oldInputOp.inputs);
 
-            uiConnect(
-                outputOp.outputs[this.outputIndex],
-                input,
-                this.oldInputIndex);
-        }
-        else
-        {
-            uiConnect(
-                  outputOp.outputs[this.  outputIndex],
-                oldInputOp. inputs[this.oldInputIndex]);
-        }
+        //     uiConnect(
+        //         outputOp.outputs[this.outputIndex],
+        //         input,
+        //         this.oldInputIndex);
+        // }
+        // else
+        // {
+        //     uiConnect(
+        //           outputOp.outputs[this.  outputIndex],
+        //         oldInputOp. inputs[this.oldInputIndex]);
+        // }
 
 
         if (this.oldOutputOpId > -1)
@@ -15229,21 +15243,22 @@ extends Action
             const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
             const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
 
-            if (inputOp._variableInputs)
-            {
-                const input = lastOf(inputOp.inputs);
+            uiVariableConnect(oldOutputOp, this.oldOutputIndex, inputOp, this.inputIndex);
+            // if (inputOp._variableInputs)
+            // {
+            //     const input = lastOf(inputOp.inputs);
 
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                    input,
-                    this.inputIndex);
-            }
-            else
-            {
-                uiConnect(
-                    oldOutputOp.outputs[this.oldOutputIndex],
-                        inputOp. inputs[this.    inputIndex]);
-            }
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //         input,
+            //         this.inputIndex);
+            // }
+            // else
+            // {
+            //     uiConnect(
+            //         oldOutputOp.outputs[this.oldOutputIndex],
+            //             inputOp. inputs[this.    inputIndex]);
+            // }
         }
     }
 }
@@ -15875,6 +15890,27 @@ function uiSetNodeId(nodeId, newId)
     //     nodeId: nodeId,
     //     newId:  newId
     // });
+}
+
+
+
+function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
+{
+    if (inputOp._variableInputs)
+    {
+        const input = lastOf(inputOp.inputs);
+
+        uiConnect(
+            outputOp.outputs[outputIndex],
+            input,
+            inputIndex);
+    }
+    else
+    {
+        uiConnect(
+            outputOp.outputs[outputIndex],
+             inputOp. inputs[ inputIndex]);
+    }
 }
 
 
