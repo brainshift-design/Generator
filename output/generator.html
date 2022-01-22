@@ -141,14 +141,12 @@ function lastOf(array)
 
 
 
-// function moveIn(array, from, to)
-// {
-//     array = 
-//         array.slice(0, to)
-//         .concat([array[from]])
-//         .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
-// }
-
+function moveIn(array, from, to) 
+{
+    const item = array[from];
+    array.splice(from, 1);
+    array.splice(to, 0, item);
+}
 
 
 function capitalize(str)

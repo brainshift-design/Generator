@@ -33,23 +33,16 @@ extends Action
 
         this.inputOpId      = input.op.id;
         this.inputIndex     = inIndex;
-
-
-        console.log('this.outputOpId  = ', this.outputOpId);
-        console.log('this.outputIndex = ', this.outputIndex);
-        console.log('this.oldOutputOpId  = ', this.oldOutputOpId);
-        console.log('this.oldOutputIndex = ', this.oldOutputIndex);
-        console.log('this.inputOpId  = ', this.inputOpId);
-        console.log('this.inputIndex = ', this.inputIndex);
     }
 
 
-
+    
     do()
     {
         uiConnect(
             graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex],
+            this.inputIndex);
     }
 
 
@@ -69,13 +62,15 @@ extends Action
 
                 uiConnect(
                     oldOutputOp.outputs[this.oldOutputIndex],
-                    input);
+                    input,
+                    this.inputIndex);
 
                 // move new input back to correct index
-                inputOp.inputs =
-                            inputOp.inputs.slice(0, this.inputIndex)
-                    .concat([input])
-                    .concat(inputOp.inputs.slice(this.inputIndex, inputOp.inputs.length-1));
+                // inputOp.inputs =
+                //             inputOp.inputs.slice(0, this.inputIndex)
+                //     .concat(inputOp.inputs[inputOp.inputs.length-2])
+                //     .concat(inputOp.inputs.slice(this.inputIndex, inputOp.inputs.length-2)
+                //     .concat(inputOp.inputs.slice(inputOp.inputs.length)));
             }
             else
             {

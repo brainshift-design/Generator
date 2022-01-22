@@ -993,14 +993,12 @@ function lastOf(array)
 
 
 
-// function moveIn(array, from, to)
-// {
-//     array = 
-//         array.slice(0, to)
-//         .concat([array[from]])
-//         .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
-// }
-
+function moveIn(array, from, to) 
+{
+    const item = array[from];
+    array.splice(from, 1);
+    array.splice(to, 0, item);
+}
 
 
 function capitalize(str)
@@ -3253,14 +3251,12 @@ function lastOf(array)
 
 
 
-// function moveIn(array, from, to)
-// {
-//     array = 
-//         array.slice(0, to)
-//         .concat([array[from]])
-//         .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
-// }
-
+function moveIn(array, from, to) 
+{
+    const item = array[from];
+    array.splice(from, 1);
+    array.splice(to, 0, item);
+}
 
 
 function capitalize(str)
@@ -11160,27 +11156,23 @@ class Graph
 
 
 
-    connect(output, input)
+    connect(output, input, inputIndex = -1)
     {
         if (input.connectedOutput == output)
             return false;
             
+
         if (input.connectedOutput)
-        {
-            const index = input.op.inputs.indexOf(input);
-            
             this.disconnect(input);
 
-            if (input.op._variableInputs)
-            {
-                input = lastOf(input.op.inputs);
-                
-                // move new input back to correct index
-                input.op.inputs =
-                            input.op.inputs.slice(0, index)
-                    .concat([input])
-                    .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
-            }
+
+        if (   input.op._variableInputs
+            && inputIndex > -1)
+        {
+            input = lastOf(input.op.inputs);
+            
+            // move new input back to correct index
+            moveIn(input.op.inputs, input.op.inputs.length-1, inputIndex);
         }
 
 
@@ -14857,23 +14849,16 @@ extends Action
 
         this.inputOpId      = input.op.id;
         this.inputIndex     = inIndex;
-
-
-        console.log('this.outputOpId  = ', this.outputOpId);
-        console.log('this.outputIndex = ', this.outputIndex);
-        console.log('this.oldOutputOpId  = ', this.oldOutputOpId);
-        console.log('this.oldOutputIndex = ', this.oldOutputIndex);
-        console.log('this.inputOpId  = ', this.inputOpId);
-        console.log('this.inputIndex = ', this.inputIndex);
     }
 
 
-
+    
     do()
     {
         uiConnect(
             graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex],
+            this.inputIndex);
     }
 
 
@@ -14893,13 +14878,15 @@ extends Action
 
                 uiConnect(
                     oldOutputOp.outputs[this.oldOutputIndex],
-                    input);
+                    input,
+                    this.inputIndex);
 
                 // move new input back to correct index
-                inputOp.inputs =
-                            inputOp.inputs.slice(0, this.inputIndex)
-                    .concat([input])
-                    .concat(inputOp.inputs.slice(this.inputIndex, inputOp.inputs.length-1));
+                // inputOp.inputs =
+                //             inputOp.inputs.slice(0, this.inputIndex)
+                //     .concat(inputOp.inputs[inputOp.inputs.length-2])
+                //     .concat(inputOp.inputs.slice(this.inputIndex, inputOp.inputs.length-2)
+                //     .concat(inputOp.inputs.slice(inputOp.inputs.length)));
             }
             else
             {
@@ -15858,9 +15845,9 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiConnect(output, input)
+function uiConnect(output, input, inputIndex = -1)
 {
-    graph.connect(output, input);
+    graph.connect(output, input, inputIndex);
 
     // uiPostMessageToGenerator({
     //     msg:     'genConnect', 

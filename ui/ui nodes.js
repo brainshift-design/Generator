@@ -105,9 +105,9 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiConnect(output, input)
+function uiConnect(output, input, inputIndex = -1)
 {
-    graph.connect(output, input);
+    graph.connect(output, input, inputIndex);
 
     // uiPostMessageToGenerator({
     //     msg:     'genConnect', 

@@ -150,27 +150,23 @@ class Graph
 
 
 
-    connect(output, input)
+    connect(output, input, inputIndex = -1)
     {
         if (input.connectedOutput == output)
             return false;
             
+
         if (input.connectedOutput)
-        {
-            const index = input.op.inputs.indexOf(input);
-            
             this.disconnect(input);
 
-            if (input.op._variableInputs)
-            {
-                input = lastOf(input.op.inputs);
-                
-                // move new input back to correct index
-                input.op.inputs =
-                            input.op.inputs.slice(0, index)
-                    .concat([input])
-                    .concat(input.op.inputs.slice(index, input.op.inputs.length-1));
-            }
+
+        if (   input.op._variableInputs
+            && inputIndex > -1)
+        {
+            input = lastOf(input.op.inputs);
+            
+            // move new input back to correct index
+            moveIn(input.op.inputs, input.op.inputs.length-1, inputIndex);
         }
 
 
