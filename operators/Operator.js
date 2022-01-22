@@ -344,17 +344,39 @@ class Operator
 
 
 
-    setParamOutputData()
-    {
-        for (const param of this.params)
-            param.setOutputData();
+    toString() 
+    { 
+        // create the definition string here
+
+        /*
+
+        A definition string is only to calculate graph results.
+        
+
+
+        *               input
+        N               number value
+        C               color value
+
+
+        OpNumber        number N
+                        number number N (two numbers linked together)
+
+
+
+        OpArithmetic    add [onlySymbol] number 1 number 2
+                        add number
+
+
+        */
     }
 
 
 
-    generate() 
-    { 
-        // create the generation object here
+    setParamOutputData()
+    {
+        for (const param of this.params)
+            param.setOutputData();
     }
 
 

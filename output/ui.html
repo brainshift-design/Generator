@@ -12104,17 +12104,39 @@ class Operator
 
 
 
-    setParamOutputData()
-    {
-        for (const param of this.params)
-            param.setOutputData();
+    toString() 
+    { 
+        // create the definition string here
+
+        /*
+
+        A definition string is only to calculate graph results.
+        
+
+
+        *               input
+        N               number value
+        C               color value
+
+
+        OpNumber        number N
+                        number number N (two numbers linked together)
+
+
+
+        OpArithmetic    add [onlySymbol] number 1 number 2
+                        add number
+
+
+        */
     }
 
 
 
-    generate() 
-    { 
-        // create the generation object here
+    setParamOutputData()
+    {
+        for (const param of this.params)
+            param.setOutputData();
     }
 
 
@@ -12693,9 +12715,10 @@ extends Operator
     {
         super('number', 'num', 'number', 70);
 
+        this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue = new NumberParam('value', false, true, false));
+        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
         
         this.#paramValue.allowEditDecimals = true;
     }
@@ -12706,14 +12729,27 @@ extends Operator
     {
         if (!this.needsUpdate())
             return;
-            
-        this.updateParams(false);
+        
+        if (this.inputs[0].isConnected)
+        {
+            this.#paramValue.control.dec = this.inputs[0].data.decimals;
+            this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
+        }
         
         this.outputs[0]._data = dataFromNumber(
-            this.#paramValue.value, 
-            this.#paramValue.control.dec);
-            
+                  this.#paramValue.value, 
+                  this.#paramValue.control.dec);
+                  
         super.update()
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+    
+    
     }
 
 
@@ -12738,6 +12774,13 @@ extends Operator
 
     //     this.output._data = dataFromNumber(this._sampled);
     // }
+
+
+
+    generate()
+    {
+        return 
+    }
 
 
 
@@ -14079,8 +14122,9 @@ function onHexboxKeyDown(e)
 
 function hexboxFinish(op, success)
 {
+    console.log('hexboxFinish()');
     var rgb = hex2rgb(op.hexbox.value);
-
+console.log('rgb', rgb);
     if (success) 
     {
         op._color = rgb2dataColor(rgb);

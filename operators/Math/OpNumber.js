@@ -9,9 +9,10 @@ extends Operator
     {
         super('number', 'num', 'number', 70);
 
+        this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue = new NumberParam('value', false, true, false));
+        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
         
         this.#paramValue.allowEditDecimals = true;
     }
@@ -22,14 +23,27 @@ extends Operator
     {
         if (!this.needsUpdate())
             return;
-            
-        this.updateParams(false);
+        
+        if (this.inputs[0].isConnected)
+        {
+            this.#paramValue.control.dec = this.inputs[0].data.decimals;
+            this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
+        }
         
         this.outputs[0]._data = dataFromNumber(
-            this.#paramValue.value, 
-            this.#paramValue.control.dec);
-            
+                  this.#paramValue.value, 
+                  this.#paramValue.control.dec);
+                  
         super.update()
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+    
+    
     }
 
 
@@ -54,6 +68,13 @@ extends Operator
 
     //     this.output._data = dataFromNumber(this._sampled);
     // }
+
+
+
+    generate()
+    {
+        return 
+    }
 
 
 
