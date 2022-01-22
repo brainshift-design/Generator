@@ -4,6 +4,9 @@ extends Action
     outputOpId;
     outputIndex;
 
+    oldOutputOpId;
+    oldOutputIndex;
+
     oldInputOpId;
     oldInputIndex;
     
@@ -14,9 +17,10 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const   outIndex =   output.op.outputs.indexOf(output  );
-        const oldInIndex = oldInput.op. inputs.indexOf(oldInput); 
-        const    inIndex =    input.op. inputs.indexOf(input   ); 
+        const    outIndex =   output.op.outputs.indexOf(output);
+        const oldOutIndex = input.isConnected ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) : -1; 
+        const  oldInIndex = oldInput.op. inputs.indexOf(oldInput); 
+        const     inIndex =    input.op. inputs.indexOf(input); 
         
 
         super(  
@@ -30,6 +34,9 @@ extends Action
         this.outputOpId    = output.op.id;
         this.outputIndex   = outIndex;
         
+        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : -1;
+        this.oldOutputIndex = oldOutIndex;
+
         this.oldInputOpId  = oldInput.op.id;
         this.oldInputIndex = oldInIndex;
 
@@ -45,7 +52,8 @@ extends Action
 
         uiConnect(
             graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
-            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex],
+            this.inputIndex);
     }
 
 
@@ -54,15 +62,47 @@ extends Action
     {
         uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
 
-        uiConnect(
-            graph.nodes.find(n => n.id == this.  outputOpId).outputs[this.  outputIndex], 
-            graph.nodes.find(n => n.id == this.oldInputOpId). inputs[this.oldInputIndex]);
+
+        const outputOp   = graph.nodes.find(n => n.id == this.  outputOpId);
+        const oldInputOp = graph.nodes.find(n => n.id == this.oldInputOpId);
+
+        if (oldInputOp._variableInputs)
+        {
+            const input = lastOf(oldInputOp.inputs);
+
+            uiConnect(
+                outputOp.outputs[this.outputIndex],
+                input,
+                this.oldInputIndex);
+        }
+        else
+        {
+            uiConnect(
+                  outputOp.outputs[this.  outputIndex],
+                oldInputOp. inputs[this.oldInputIndex]);
+        }
+
+
+        if (this.oldOutputOpId > -1)
+        {
+            const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
+            const inputOp     = graph.nodes.find(n => n.id == this.inputOpId);
+
+            if (inputOp._variableInputs)
+            {
+                const input = lastOf(inputOp.inputs);
+
+                uiConnect(
+                    oldOutputOp.outputs[this.oldOutputIndex],
+                    input,
+                    this.inputIndex);
+            }
+            else
+            {
+                uiConnect(
+                    oldOutputOp.outputs[this.oldOutputIndex],
+                        inputOp. inputs[this.    inputIndex]);
+            }
+        }
     }
-
-
-
-    // redo()
-    // {
-        
-    // }
 }

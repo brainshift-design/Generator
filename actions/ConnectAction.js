@@ -51,6 +51,7 @@ extends Action
     {
         uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
 
+        
         if (this.oldOutputOpId > -1)
         {
             const oldOutputOp = graph.nodes.find(n => n.id == this.oldOutputOpId);
@@ -64,13 +65,6 @@ extends Action
                     oldOutputOp.outputs[this.oldOutputIndex],
                     input,
                     this.inputIndex);
-
-                // move new input back to correct index
-                // inputOp.inputs =
-                //             inputOp.inputs.slice(0, this.inputIndex)
-                //     .concat(inputOp.inputs[inputOp.inputs.length-2])
-                //     .concat(inputOp.inputs.slice(this.inputIndex, inputOp.inputs.length-2)
-                //     .concat(inputOp.inputs.slice(inputOp.inputs.length)));
             }
             else
             {
