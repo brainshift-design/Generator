@@ -66,17 +66,12 @@ graphView.endConnection = pointerId =>
                 show(input.connection.wire.outBall);
             }
             else if (savedInput) // disconnect old, connect new
-            {
-                uiDisconnect(savedInput);
-                uiConnect(output, input);
-            }
+                actionManager.do(new ReconnectAction(output, savedInput, input));
             else // connect new
-                uiConnect(output, input);
+                actionManager.do(new ConnectAction(output, input));
         }
         else if (savedInput) // disconnect old
-        {
-            uiDisconnect(savedInput)
-        }
+            actionManager.do(new DisconnectAction(output, input));
         
         graphView.cancelConnection(pointerId);
     }
@@ -90,7 +85,7 @@ graphView.endConnection = pointerId =>
         
         if (   output
             && output.dataType == input.dataType) // TO OUTPUT
-            graph.connect(output, input); // connect new
+            actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
     }

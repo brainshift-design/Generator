@@ -9420,17 +9420,12 @@ graphView.endConnection = pointerId =>
                 show(input.connection.wire.outBall);
             }
             else if (savedInput) // disconnect old, connect new
-            {
-                uiDisconnect(savedInput);
-                uiConnect(output, input);
-            }
+                actionManager.do(new ReconnectAction(output, savedInput, input));
             else // connect new
-                uiConnect(output, input);
+                actionManager.do(new ConnectAction(output, input));
         }
         else if (savedInput) // disconnect old
-        {
-            uiDisconnect(savedInput)
-        }
+            actionManager.do(new DisconnectAction(output, input));
         
         graphView.cancelConnection(pointerId);
     }
@@ -9444,7 +9439,7 @@ graphView.endConnection = pointerId =>
         
         if (   output
             && output.dataType == input.dataType) // TO OUTPUT
-            graph.connect(output, input); // connect new
+            actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
     }
@@ -9863,13 +9858,6 @@ graphView.deselectAll = () =>
         node.setSelected(false);
 
     graphView._selected = [];
-};
-
-
-
-graphView.selectedIds = () =>
-{
-    return graphView._selected.map(n => n.id);
 };
 
 
@@ -12501,7 +12489,7 @@ function createNodeHeader(node)
             && node.div.dragging)
         {
             actionManager.do(new MoveNodesAction(
-                graphView.selectedIds(), 
+                graphView.selected.map(n => n.id), 
                 { x: node.div.slx,        y: node.div.sly       },
                 { x: node.div.offsetLeft, y: node.div.offsetTop }));
 
@@ -14808,14 +14796,66 @@ class ActionManager
 const actionManager = new ActionManager();
 
 
+class ConnectAction
+extends Action
+{
+    outputOpId;
+    outputIndex;
 
+    inputOpId;
+    inputIndex;
+
+
+
+    constructor(output, input)
+    {
+        const outIndex = output.op.outputs.findIndex(o => o == output);
+        const  inIndex = input .op. inputs.findIndex(i => i ==  input); 
+
+
+        super('Connect ' 
+            + output.op.name + '.outputs[' + outIndex + ']'
+            + ' -> '
+            + input.op.name + '.inputs[' + inIndex + ']');
+
+            
+        this.outputOpId  = output.op.id;
+        this.outputIndex = outIndex;
+
+        this.inputOpId   = input.op.id;
+        this.inputIndex  = inIndex;
+    }
+
+
+
+    do()
+    {
+        uiConnect(
+            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
+            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+    }
+
+
+
+    undo()
+    {
+        uiDisconnect(graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+    }
+
+
+
+    // redo()
+    // {
+        
+    // }
+}
 
 
 class CreateNodeAction
 extends Action
 {
     opType;
-    createdNodeId;    
+    createdNodeId;
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
@@ -14823,7 +14863,8 @@ extends Action
 
     constructor(opType)
     {
-        super('Create ' + capitalize(opType) + ' node');
+        super('create node \'' + opType + '\'');
+        
         this.opType = opType;
     }
 
@@ -14831,7 +14872,7 @@ extends Action
 
     do()
     {
-        this.prevSelectedIds = graphView.selectedIds();
+        this.prevSelectedIds = graphView.selected.map(n => n.id);
         this.createdNodeId   = uiCreateNode(this.opType).id;
     }
 
@@ -14926,7 +14967,59 @@ extends Action
 }
 
 
+class DisconnectAction
+extends Action
+{
+    outputOpId;
+    outputIndex;
 
+    inputOpId;
+    inputIndex;
+
+
+
+    constructor(output, input)
+    {
+        const outIndex = output.op.outputs.findIndex(o => o == output);
+        const  inIndex = input .op. inputs.findIndex(i => i ==  input); 
+
+
+        super('Disconnect ' 
+            + output.op.name + '.outputs[' + outIndex + ']'
+            + ' -> '
+            + input.op.name + '.inputs[' + inIndex + ']');
+
+            
+        this.outputOpId  = output.op.id;
+        this.outputIndex = outIndex;
+
+        this.inputOpId   = input.op.id;
+        this.inputIndex  = inIndex;
+    }
+
+
+
+    do()
+    {
+        uiDisconnect(graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+    }
+    
+    
+    
+    undo()
+    {
+        uiConnect(
+            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
+            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+    }
+
+
+
+    // redo()
+    // {
+        
+    // }
+}
 
 
 class MoveNodesAction
@@ -14997,6 +15090,76 @@ extends Action
                 this.from[i].y);
         }
     }
+}
+
+
+class ReconnectAction
+extends Action
+{
+    outputOpId;
+    outputIndex;
+
+    oldInputOpId;
+    oldInputIndex;
+    
+    inputOpId;
+    inputIndex;
+
+
+
+    constructor(output, oldInput, input)
+    {
+        const   outIndex =   output.op.outputs.findIndex(o => o == output  );
+        const oldInIndex = oldInput.op. inputs.findIndex(i => i == oldInput); 
+        const    inIndex =    input.op. inputs.findIndex(i => i == input   ); 
+        
+
+        super(  
+              output.op.name + '.outputs[' + outIndex + ']'
+            + ' ( <- '
+            + oldInput.op.name + '.inputs[' + oldInIndex + '])'
+            + ' -> '
+            + input.op.name + '.inputs[' + inIndex + ']');
+
+            
+        this.outputOpId    = output.op.id;
+        this.outputIndex   = outIndex;
+        
+        this.oldInputOpId  = oldInput.op.id;
+        this.oldInputIndex = oldInIndex;
+
+        this.inputOpId     = input.op.id;
+        this.inputIndex    = inIndex;
+    }
+
+
+
+    do()
+    {
+        uiDisconnect(graph.nodes.find(n => n.id == this.oldInputOpId)  .inputs[this.oldInputIndex ]);
+
+        uiConnect(
+            graph.nodes.find(n => n.id == this.outputOpId).outputs[this.outputIndex], 
+            graph.nodes.find(n => n.id == this. inputOpId). inputs[this. inputIndex]);
+    }
+
+
+
+    undo()
+    {
+        uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
+
+        uiConnect(
+            graph.nodes.find(n => n.id == this.  outputOpId).outputs[this.  outputIndex], 
+            graph.nodes.find(n => n.id == this.oldInputOpId). inputs[this.oldInputIndex]);
+    }
+
+
+
+    // redo()
+    // {
+        
+    // }
 }
 
 
@@ -15290,7 +15453,7 @@ document.addEventListener('keydown', e =>
     // delete
     if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selectedIds()));
+        actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
         graphView._selected = [];
     }
 

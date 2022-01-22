@@ -2,7 +2,7 @@ class CreateNodeAction
 extends Action
 {
     opType;
-    createdNodeId;    
+    createdNodeId;
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
@@ -10,7 +10,8 @@ extends Action
 
     constructor(opType)
     {
-        super('Create ' + capitalize(opType) + ' node');
+        super('create node \'' + opType + '\'');
+        
         this.opType = opType;
     }
 
@@ -18,7 +19,7 @@ extends Action
 
     do()
     {
-        this.prevSelectedIds = graphView.selectedIds();
+        this.prevSelectedIds = graphView.selected.map(n => n.id);
         this.createdNodeId   = uiCreateNode(this.opType).id;
     }
 

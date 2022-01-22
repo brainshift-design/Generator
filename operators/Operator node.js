@@ -137,7 +137,7 @@ function createNodeHeader(node)
             && node.div.dragging)
         {
             actionManager.do(new MoveNodesAction(
-                graphView.selectedIds(), 
+                graphView.selected.map(n => n.id), 
                 { x: node.div.slx,        y: node.div.sly       },
                 { x: node.div.offsetLeft, y: node.div.offsetTop }));
 

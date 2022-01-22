@@ -29,13 +29,6 @@ graphView.deselectAll = () =>
 
 
 
-graphView.selectedIds = () =>
-{
-    return graphView._selected.map(n => n.id);
-};
-
-
-
 graphView.selectFromIds = (nodeIds) =>
 {
     graphView.deselectAll();
