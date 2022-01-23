@@ -76,7 +76,9 @@ extends Parameter
             if (   e.detail.success
                 && this.allowEditDecimals)
             {
-                actionManager.do(new SetParamDecimalsAction(this, e.detail.value, e.detail.oldValue), true);
+                actionManager.do(new SetParamDecimalsAction(this,
+                    getDecimalCount(e.detail.value), 
+                    getDecimalCount(e.detail.oldValue)), true);
             }
         });
     }
@@ -91,17 +93,18 @@ extends Parameter
 
 
 
-    setDecimals(strValue)
+    setDecimalsFrom(strValue)
     {
-        const decIndex = strValue.indexOf(getUserDecimalSeparator());
+        this.setDecimals(getDecimalCount(strValue));
+        setTimeout(() => this.op.pushUpdate());
+    }
 
-        const nDec =
-            decIndex >= 0
-            ? strValue.length-1 - decIndex
-            : 0;
 
-        this.control.dec     = nDec;
-        this.control.editDec = nDec;
+
+    setDecimals(dec)
+    {
+        this.control.dec     = dec;
+        this.control.editDec = dec;
         this.control.update();
 
         setTimeout(() => this.op.pushUpdate());

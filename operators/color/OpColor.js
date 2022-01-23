@@ -417,18 +417,18 @@ extends Operator
                     break;
                     
                 case 'param1':
-                    this.param1.setDecimals(_param[1]);
                     this.param1.setValue(parseFloat(_param[1]), true, true, false);
+                    this.param1.setDecimalsFrom(_param[1]);
                     break;
 
                 case 'param2':
-                    this.param2.setDecimals(_param[1]);
                     this.param2.setValue(parseFloat(_param[1]), true, true, false);
+                    this.param2.setDecimalsFrom(_param[1]);
                     break;
 
                 case 'param3':
-                    this.param3.setDecimals(_param[1]);
                     this.param3.setValue(parseFloat(_param[1]), true, true, false);
+                    this.param3.setDecimalsFrom(_param[1]);
                     break;
             }
         }

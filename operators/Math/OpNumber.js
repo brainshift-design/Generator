@@ -15,6 +15,7 @@ extends Operator
         this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
         
         this.#paramValue.allowEditDecimals = true;
+        this.alwaysLoadParams = true;
     }
 
 
@@ -60,14 +61,35 @@ extends Operator
 
     loadParams(_node)
     {
-        for (const _param of _node.params)
+        if (_node.params)
         {
-            if (_param[0] == 'value')
+            for (const _param of _node.params)
             {
-                this.#paramValue.setDecimals(_param[1]);
-                this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+                if (_param[0] == 'value')
+                {
+                    this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramValue.setDecimalsFrom(_param[1]);
+                }
             }
         }
+        else if (_node.decimals)
+            this.#paramValue.setDecimals(parseInt(_node.decimals));
+    }
+
+
+
+    toJsonBase(nTab)
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+
+        let json = super.toJsonBase(nTab);
+
+        json += ',\n'
+            + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
+
+        return json;
     }
 
 

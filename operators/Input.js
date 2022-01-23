@@ -135,7 +135,7 @@ extends EventTarget
                this.isConnected
             ||    graphView.tempConn
                && (   graphView.tempConn.input == this
-                   || graphView.tempConn.input != graphView.overInput));
+                   || this.mouseOver));
 
     }
 }

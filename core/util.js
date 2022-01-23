@@ -48,6 +48,17 @@ function forwardEvent(event, element)
 
 
 
+function getDecimalCount(strValue)
+{
+    const decIndex = strValue.indexOf(getUserDecimalSeparator());
+
+    return decIndex >= 0
+         ? strValue.length-1 - decIndex
+         : 0;
+}
+
+
+
 function getUserDecimalSeparator()
 {
     const num = 1.1;
