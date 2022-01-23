@@ -1,3 +1,8 @@
+const autoSaveDelay = 2; // seconds
+
+
+
+
 // function saveToLocalFile(filename, str) 
 // {
 //     const link = document.createElement('a');
@@ -51,11 +56,8 @@ function loadGraph(json)
 
 
 
-setTimeout(autoSave, 2000);
-
-
-
 function autoSave()
 {
     uiSetPluginData("graph", graph.toJson());
+    setTimeout(autoSave, autoSaveDelay * 1000);
 }
