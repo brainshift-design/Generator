@@ -11516,6 +11516,7 @@ extends EventTarget
     connection  = null;
     
     connecting  = false;
+    mouseOver   = false;
     
 
     initialSeed = 0;
@@ -11546,7 +11547,7 @@ extends EventTarget
 
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.14];
+        this.color     = [0, 0, 0, 0.2];
         this.wireColor = rgbFromDataType(this._dataType, true);
 
         
@@ -11557,7 +11558,7 @@ extends EventTarget
         {
             graphView.overInput = this;
 
-            this.color = [0, 0, 0, 0.28];
+            this.mouseOver = true;
             this.updateControl();
         });
 
@@ -11566,7 +11567,7 @@ extends EventTarget
         {
             graphView.overInput = null;
 
-            this.color = [0, 0, 0, 0.14];
+            this.mouseOver = false;
             this.updateControl();
         });
     }
@@ -11582,12 +11583,14 @@ extends EventTarget
 
     updateControl()
     {
-        this.control.style.boxShadow = '0 0 0 1px ' + colorStyleRgba(toRgba(this.color));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        this.wireBall.style.backgroundColor = colorStyleRgba(
+        this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
+
+        this.wireBall.style.backgroundColor = 
             this.isConnected
-            ? toRgba(this.connectedOutput.wireColor)
-            : toRgba(this.wireColor));
+            ? colorStyleRgba(toRgba(this.connectedOutput.wireColor))
+            : colorStyle;
 
         this.wireBall.style.zIndex = MAX_INT32;
 
@@ -11615,13 +11618,14 @@ class Output
 
     control;
     wireBall;
-
+    
     
     connectedInputs = [];
     
+    mouseOver  = false;
     connecting = false;
     
-
+    
     _data;
 
     get data() 
@@ -11657,7 +11661,7 @@ class Output
         
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.12];
+        this.color     = [0, 0, 0, 0.14];
         this.wireColor = rgbFromDataType(this._dataType, true);
         
         this.updateControl();
@@ -11667,7 +11671,7 @@ class Output
         { 
             graphView.overOutput = this; 
             
-            this.color = [0, 0, 0, 0.24];
+            this.mouseOver = true;
             this.updateControl();
         });
 
@@ -11675,7 +11679,7 @@ class Output
         { 
             graphView.overOutput = null; 
 
-            this.color = [0, 0, 0, 0.12];
+            this.mouseOver = false;
             this.updateControl();
         });
     }
@@ -11684,14 +11688,16 @@ class Output
 
     updateControl()
     {
-        this.control.style.backgroundColor = colorStyleRgba(toRgba(this.color));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        // this.control.style.boxShadow = 
-        //        this.connectedInputs.length > 0
-        //     ||    graphView.tempConn
-        //        && graphView.tempConn.output == this
-        //     ? '0 0 0 1px ' + colorStyleRgba(toRgba(this.color))
-        //     : 'none';
+        this.control.style.backgroundColor = colorStyle;
+
+        this.control.style.boxShadow = 
+               this.connectedInputs.length > 0
+            ||    graphView.tempConn
+               && graphView.tempConn.output == this
+            ? '0 0 0 1px ' + colorStyle
+            : 'none';
 
         this.wireBall.style.backgroundColor = colorStyleRgba(toRgba(this.wireColor));
 
@@ -13512,25 +13518,14 @@ extends Operator
               +  warningStyle + ' 7px 14px)';
 
 
-        this.inputs [0].wireColor = colBack;
-        this.outputs[0].wireColor = colBack;
-
+        this.inputs [0].wireColor    = colBack;
+        this.outputs[0].wireColor    = colBack;
+           
+        this.inputs [0].color        = colText;
+        this.outputs[0].color        = colText;
         
-        const colIn  = rgb_a(colText, darkText ? 0.08 : 0.16);
-        const colOut = rgb_a(colText, darkText ? 0.06 : 0.12);
-
-        this.inputs [0].color = colIn;
-        this.outputs[0].color = colOut;
-        
-        //this.inputs [0].updateControl();
-        //this.outputs[0].updateControl();
-
-
-        this.paramSpace.input .color = colIn;
-        this.paramSpace.output.color = colOut;
-
-        // this.paramSpace.input .updateControl();
-        // this.paramSpace.output.updateControl();
+        this.paramSpace.input .color = colText;
+        this.paramSpace.output.color = colText;
 
 
         super.updateNode();
@@ -14661,11 +14656,8 @@ extends Operator
             return;
 
 
-        if (this.inputs[0].isConnected)
-            this.inputs[0].connectedOutput.op.update();
-            
-        if (this.inputs[1].isConnected)
-            this.inputs[1].connectedOutput.op.update();
+        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
+        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
 
 
         this.updateParams(false);
@@ -14732,22 +14724,19 @@ extends Operator
     {
         this.setRanges();
         
+        
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
+            const colBack  = dataColor2rgb(this.inputs[1].data.color);
+            const darkText = rgb2hclokl(colBack)[2] > 0.71;
+
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
-            
+
             if (   !isValidRgb(rgb0)
                 || !isValidRgb(rgb1))
             {
-                const colBack = 
-                    this.inputs[1].isConnected
-                    ? dataColor2rgb(this.inputs[1].data.color)
-                    : rgbFromDataType(this._dataType);
-
-                const darkText = rgb2hclokl(colBack)[2] > 0.71;
-
                 const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
                 const warningStyle = colorStyleRgba(colWarning);
         
@@ -14763,6 +14752,7 @@ extends Operator
             }
         }
              
+
         super.updateNode();
     }
 
@@ -14782,10 +14772,8 @@ extends Operator
 
         for (const input of this.inputs.filter(i => !i.param))
         {
-            const colIn = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
-
             input.wireColor = colBack;
-            input.color     = colIn;
+            input.color     = colText;
             
             input.updateControl();
         }
@@ -14793,10 +14781,8 @@ extends Operator
 
         for (const output of this.outputs.filter(i => !i.param))
         {
-            const colOut = colorStyleRgba(colText, darkText ? 0.06 : 0.12);
-
             output.wireColor = colBack;
-            output.color     = colOut;
+            output.color     = colText;
 
             output.updateControl();
         }
@@ -15861,7 +15847,6 @@ onmessage = e =>
 {
     let msg = e.data.pluginMessage;
 
-    console.log(msg.cmd);
     switch (msg.cmd)
     {
         case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg); break;

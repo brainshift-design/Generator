@@ -52,6 +52,7 @@ extends EventTarget
     connection  = null;
     
     connecting  = false;
+    mouseOver   = false;
     
 
     initialSeed = 0;
@@ -82,7 +83,7 @@ extends EventTarget
 
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.14];
+        this.color     = [0, 0, 0, 0.2];
         this.wireColor = rgbFromDataType(this._dataType, true);
 
         
@@ -93,7 +94,7 @@ extends EventTarget
         {
             graphView.overInput = this;
 
-            this.color = [0, 0, 0, 0.28];
+            this.mouseOver = true;
             this.updateControl();
         });
 
@@ -102,7 +103,7 @@ extends EventTarget
         {
             graphView.overInput = null;
 
-            this.color = [0, 0, 0, 0.14];
+            this.mouseOver = false;
             this.updateControl();
         });
     }
@@ -118,12 +119,14 @@ extends EventTarget
 
     updateControl()
     {
-        this.control.style.boxShadow = '0 0 0 1px ' + colorStyleRgba(toRgba(this.color));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        this.wireBall.style.backgroundColor = colorStyleRgba(
+        this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
+
+        this.wireBall.style.backgroundColor = 
             this.isConnected
-            ? toRgba(this.connectedOutput.wireColor)
-            : toRgba(this.wireColor));
+            ? colorStyleRgba(toRgba(this.connectedOutput.wireColor))
+            : colorStyle;
 
         this.wireBall.style.zIndex = MAX_INT32;
 

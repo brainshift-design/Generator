@@ -12,13 +12,14 @@ class Output
 
     control;
     wireBall;
-
+    
     
     connectedInputs = [];
     
+    mouseOver  = false;
     connecting = false;
     
-
+    
     _data;
 
     get data() 
@@ -54,7 +55,7 @@ class Output
         
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.12];
+        this.color     = [0, 0, 0, 0.14];
         this.wireColor = rgbFromDataType(this._dataType, true);
         
         this.updateControl();
@@ -64,7 +65,7 @@ class Output
         { 
             graphView.overOutput = this; 
             
-            this.color = [0, 0, 0, 0.24];
+            this.mouseOver = true;
             this.updateControl();
         });
 
@@ -72,7 +73,7 @@ class Output
         { 
             graphView.overOutput = null; 
 
-            this.color = [0, 0, 0, 0.12];
+            this.mouseOver = false;
             this.updateControl();
         });
     }
@@ -81,14 +82,16 @@ class Output
 
     updateControl()
     {
-        this.control.style.backgroundColor = colorStyleRgba(toRgba(this.color));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        // this.control.style.boxShadow = 
-        //        this.connectedInputs.length > 0
-        //     ||    graphView.tempConn
-        //        && graphView.tempConn.output == this
-        //     ? '0 0 0 1px ' + colorStyleRgba(toRgba(this.color))
-        //     : 'none';
+        this.control.style.backgroundColor = colorStyle;
+
+        this.control.style.boxShadow = 
+               this.connectedInputs.length > 0
+            ||    graphView.tempConn
+               && graphView.tempConn.output == this
+            ? '0 0 0 1px ' + colorStyle
+            : 'none';
 
         this.wireBall.style.backgroundColor = colorStyleRgba(toRgba(this.wireColor));
 

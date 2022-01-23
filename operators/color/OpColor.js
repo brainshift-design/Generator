@@ -251,25 +251,14 @@ extends Operator
               +  warningStyle + ' 7px 14px)';
 
 
-        this.inputs [0].wireColor = colBack;
-        this.outputs[0].wireColor = colBack;
-
+        this.inputs [0].wireColor    = colBack;
+        this.outputs[0].wireColor    = colBack;
+           
+        this.inputs [0].color        = colText;
+        this.outputs[0].color        = colText;
         
-        const colIn  = rgb_a(colText, darkText ? 0.08 : 0.16);
-        const colOut = rgb_a(colText, darkText ? 0.06 : 0.12);
-
-        this.inputs [0].color = colIn;
-        this.outputs[0].color = colOut;
-        
-        //this.inputs [0].updateControl();
-        //this.outputs[0].updateControl();
-
-
-        this.paramSpace.input .color = colIn;
-        this.paramSpace.output.color = colOut;
-
-        // this.paramSpace.input .updateControl();
-        // this.paramSpace.output.updateControl();
+        this.paramSpace.input .color = colText;
+        this.paramSpace.output.color = colText;
 
 
         super.updateNode();

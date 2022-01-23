@@ -65,11 +65,8 @@ extends Operator
             return;
 
 
-        if (this.inputs[0].isConnected)
-            this.inputs[0].connectedOutput.op.update();
-            
-        if (this.inputs[1].isConnected)
-            this.inputs[1].connectedOutput.op.update();
+        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
+        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
 
 
         this.updateParams(false);
@@ -136,22 +133,19 @@ extends Operator
     {
         this.setRanges();
         
+        
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
+            const colBack  = dataColor2rgb(this.inputs[1].data.color);
+            const darkText = rgb2hclokl(colBack)[2] > 0.71;
+
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
-            
+
             if (   !isValidRgb(rgb0)
                 || !isValidRgb(rgb1))
             {
-                const colBack = 
-                    this.inputs[1].isConnected
-                    ? dataColor2rgb(this.inputs[1].data.color)
-                    : rgbFromDataType(this._dataType);
-
-                const darkText = rgb2hclokl(colBack)[2] > 0.71;
-
                 const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
                 const warningStyle = colorStyleRgba(colWarning);
         
@@ -167,6 +161,7 @@ extends Operator
             }
         }
              
+
         super.updateNode();
     }
 
@@ -186,10 +181,8 @@ extends Operator
 
         for (const input of this.inputs.filter(i => !i.param))
         {
-            const colIn = colorStyleRgba(colText, darkText ? 0.08 : 0.16);
-
             input.wireColor = colBack;
-            input.color     = colIn;
+            input.color     = colText;
             
             input.updateControl();
         }
@@ -197,10 +190,8 @@ extends Operator
 
         for (const output of this.outputs.filter(i => !i.param))
         {
-            const colOut = colorStyleRgba(colText, darkText ? 0.06 : 0.12);
-
             output.wireColor = colBack;
-            output.color     = colOut;
+            output.color     = colText;
 
             output.updateControl();
         }
