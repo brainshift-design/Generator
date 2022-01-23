@@ -126,6 +126,7 @@ extends EventTarget
             this.isConnected
             ? colorStyleRgba(toRgba(this.connectedOutput.wireColor))
             : (   graphView.tempConn
+               && graphView.tempConn.output
                && graphView.overInput == this
                ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
                : colorStyle);
