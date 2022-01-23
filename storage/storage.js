@@ -48,3 +48,14 @@ function loadGraph(json)
     for (const _conn of data.connections)
         Connection.parseJson(_conn);
 }
+
+
+
+setTimeout(autoSave, 2500);
+
+
+
+function autoSave()
+{
+    uiSetPluginData("graph", graph.toJson());
+}

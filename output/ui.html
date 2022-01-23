@@ -844,8 +844,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
-    <button class='menuButton' id='btnLoad'              onclick='uiGetPluginData("graph");                              this.blur();'>LOAD</button>
-    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
+    <!-- <button class='menuButton' id='btnLoad'              onclick='uiGetPluginData("graph");                              this.blur();'>LOAD</button>
+    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button> -->
     
 </div>
     
@@ -16496,6 +16496,17 @@ function loadGraph(json)
 
     for (const _conn of data.connections)
         Connection.parseJson(_conn);
+}
+
+
+
+setTimeout(autoSave, 2500);
+
+
+
+function autoSave()
+{
+    uiSetPluginData("graph", graph.toJson());
 }
 
 
