@@ -134,7 +134,8 @@ extends EventTarget
             this.wireBall, 
                this.isConnected
             ||    graphView.tempConn
-               && graphView.tempConn.input == this);
+               && (   graphView.tempConn.input == this
+                   || graphView.tempConn.input != graphView.overInput));
 
     }
 }
