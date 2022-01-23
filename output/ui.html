@@ -844,8 +844,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
-    <!-- <button class='menuButton' id='btnLoad'              onclick='uiGetPluginData("graph");                              this.blur();'>LOAD</button>
-    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button> -->
+    <!-- <button class='menuButton' id='btnLoad'              onclick='uiGetPluginData("graph");                              this.blur();'>LOAD</button> -->
+    <!-- <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button> -->
     
 </div>
     
@@ -6316,6 +6316,7 @@ function uiGetPluginDataReturn(msg)
     {
         case 'graph':
             loadGraph(msg.value);
+            graphView.updateScroll();
             break;
     }
 }
@@ -11310,6 +11311,7 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
+        
         graphView.removeWire(input.connection.wire);
 
         removeFromArray(output.connectedInputs, input);
@@ -13904,7 +13906,7 @@ function removeOpColorParamWires(op)
 
     for (let i = 1; i < inputs.length; i++)
         if (inputs[i].isConnected)
-            graph.disconnect(input[i]);
+            graph.disconnect(inputs[i]);
 
     for (let i = 1; i < outputs.length; i++)
         for (const input of outputs[i].connectedInputs)
@@ -16500,7 +16502,7 @@ function loadGraph(json)
 
 
 
-setTimeout(autoSave, 2500);
+setTimeout(autoSave, 2000);
 
 
 

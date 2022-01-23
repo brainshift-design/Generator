@@ -51,7 +51,7 @@ function loadGraph(json)
 
 
 
-setTimeout(autoSave, 2500);
+setTimeout(autoSave, 2000);
 
 
 

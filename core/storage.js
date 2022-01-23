@@ -25,6 +25,7 @@ function uiGetPluginDataReturn(msg)
     {
         case 'graph':
             loadGraph(msg.value);
+            graphView.updateScroll();
             break;
     }
 }

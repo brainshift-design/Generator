@@ -156,7 +156,7 @@ function removeOpColorParamWires(op)
 
     for (let i = 1; i < inputs.length; i++)
         if (inputs[i].isConnected)
-            graph.disconnect(input[i]);
+            graph.disconnect(inputs[i]);
 
     for (let i = 1; i < outputs.length; i++)
         for (const input of outputs[i].connectedInputs)
