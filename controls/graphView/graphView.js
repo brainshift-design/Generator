@@ -352,12 +352,12 @@ graphView.putNodeOnTop = node =>
         
     var z = MAX_INT32-3; // -3 is for scrollbars
 
-    for (const input of node.inputs.filter(i => i.isConnected))
-        input.connection.wire.style.zIndex = z--;
+    // for (const input of node.inputs.filter(i => i.isConnected))
+    //     input.connection.wire.style.zIndex = z--;
         
-    for (const output of node.outputs)
-        for (const connInput of output.connectedInputs)
-            connInput.connection.wire.style.zIndex = z--;
+    // for (const output of node.outputs)
+    //     for (const connInput of output.connectedInputs)
+    //         connInput.connection.wire.style.zIndex = z--;
     
     node.div.style.zIndex = z;
 };
