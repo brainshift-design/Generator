@@ -9,7 +9,7 @@ extends Operator
 
     constructor(opType, shortType, symbol)
     {
-        super(opType, shortType, 'number', 45);
+        super(opType, shortType, 'number', 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;

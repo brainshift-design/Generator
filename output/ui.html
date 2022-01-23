@@ -2373,8 +2373,8 @@ function createSvg(element)
 
 
 
-function show(element, show) { element.style.visibility = show ? 'visible' : 'hidden'; }
-function hide(element)       { element.style.visibility = 'hidden';  }
+function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
+function hide(element)              { element.style.visibility = 'hidden';  }
 
 
 
@@ -4651,8 +4651,8 @@ function createSvg(element)
 
 
 
-function show(element, show) { element.style.visibility = show ? 'visible' : 'hidden'; }
-function hide(element)       { element.style.visibility = 'hidden';  }
+function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
+function hide(element)              { element.style.visibility = 'hidden';  }
 
 
 
@@ -9519,10 +9519,7 @@ graphView.endConnection = pointerId =>
             && input.dataType == output.dataType) // TO INPUT
         {
             if (input == savedInput) // reconnect old
-            {
                 show(input.connection.wire);
-                //show(input.connection.wire.outBall);
-            }
             else if (savedInput) // disconnect old, connect new
                 actionManager.do(new ReconnectAction(output, savedInput, input));
             else // connect new
@@ -13015,7 +13012,7 @@ extends Operator
 
     constructor(opType, shortType, symbol)
     {
-        super(opType, shortType, 'number', 45);
+        super(opType, shortType, 'number', 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
