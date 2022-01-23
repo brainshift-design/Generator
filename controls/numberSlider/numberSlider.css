@@ -35,6 +35,17 @@
 }
 
 
+.numberSliderTextbox
+{
+    font-family:    Inter;
+    font-size:      11;
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+    white-space:    nowrap;
+}
+
+
 .numberSliderFocus
 {
     position:       absolute;

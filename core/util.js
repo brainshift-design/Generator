@@ -238,34 +238,3 @@ function logVar(x)
         Object.keys  (x)[0] + ' =', 
         Object.values(x)[0]);
 }
-
-
-
-function getStyleValue(obj, style)
-{
-    return window.getComputedStyle(obj, null).getPropertyValue(style);
-}
-
-
-
-function getCtrlKey(e)
-{
-    return  isMac && e.metaKey
-        || !isMac && e.ctrlKey;
-}
-
-
-
-function dispatchNewEvent(target, proto)
-{
-    target.dispatchEvent(new proto.constructor(proto.type, proto));
-}
-
-
-
-function createDiv(className)
-{
-    const div = document.createElement('div');
-    div.className = className;
-    return div;
-}

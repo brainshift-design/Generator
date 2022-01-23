@@ -25,7 +25,7 @@ function uiGetPluginDataReturn(msg)
     {
         case 'graph':
             loadGraph(msg.value);
-            graphView.updatePanAndZoom();
+            graphView.updateScroll();
             break;
     }
 }
@@ -34,12 +34,7 @@ function uiGetPluginDataReturn(msg)
 
 function uiEndResizeWindow()
 {
-    // graphView.updatePanAndZoom();
-
-    for (const conn of graph.connections)
-        graphView.updateWireTransform(conn.wire);
-
-    graphView.updateScroll();
+    graphView.updatePanAndZoom();
 }
 
 

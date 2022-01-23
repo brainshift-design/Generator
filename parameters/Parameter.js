@@ -35,7 +35,7 @@ extends EventTarget
         this.#type = type;
         this.#name = name;
 
-        this._div = document.createElement('div');
+        this._div = createDiv();
 
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
@@ -71,14 +71,14 @@ extends EventTarget
         this.input.addEventListener('connect', () =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.pointerEvents   = false;
+            this.control.readOnly        = true;
         });
     
         
         this.input.addEventListener('disconnect', () =>
         {
             this.control.style.fontStyle = 'normal';
-            this.control.pointerEvents   = true;
+            this.control.readOnly        = false;
         });
     }
 

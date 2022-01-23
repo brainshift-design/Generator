@@ -1,8 +1,7 @@
 function initSelectMenu(select)
 {
-    select.menu = document.createElement('DIV');
+    select.menu = createDiv('selectMenu');
 
-    select.menu.className        = 'selectMenu';
     select.menu.hoverIndex       =  0;
     select.menu.tabIndex         =  0;
 
@@ -29,7 +28,7 @@ function initSelectMenu(select)
     select.menu.hoverIndex = 0;
 
 
-    select.selectBox = document.createElement('DIV');
+    select.selectBox = createDiv();
         
     // width is set with menu width in showMenu()
     select.selectBox.style.display         = 'inline-block';
@@ -42,7 +41,7 @@ function initSelectMenu(select)
     select.menu.appendChild(select.selectBox);
     
 
-    select.menuWrap = document.createElement('DIV');
+    select.menuWrap = createDiv();
     
     select.menuWrap.style.width         = 'auto';
     select.menuWrap.style.height        = '100%';

@@ -74,12 +74,11 @@ extends EventTarget
         
         this._dataType = dataType;
 
-        this.control = document.createElement('div');
-        this.control.className = 'input';
+        this.control  = createDiv('input');
+        this.wireBall = createDiv('inputBall');
+        
         this.control.input = this;
         
-        this.wireBall = document.createElement('div');
-        this.wireBall.className = 'inputBall';
 
         this.control.appendChild(this.wireBall);
 

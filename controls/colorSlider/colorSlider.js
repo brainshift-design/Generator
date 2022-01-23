@@ -1,10 +1,7 @@
 function initColorSliderChildren(slider)
 {
-    slider.text = document.createElement('div');
-    slider.text.className = 'sliderText';
-
-    slider.focus = document.createElement('div');
-    slider.focus.className = 'sliderFocus';
+    slider.text  = createDiv('sliderText');
+    slider.focus = createDiv('sliderFocus');
 
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);

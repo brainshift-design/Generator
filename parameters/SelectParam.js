@@ -31,7 +31,8 @@ extends Parameter
     {
         super(name, 'number');
 
-        this._control       = document.createElement('div');
+        this._control       = createDiv();
+        
         this.control.param  = this;
         this.control.zIndex = 0;
 

@@ -24,12 +24,11 @@ extends Operator
         //     this.setRanges();
         // });
 
-        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
 
 
-        this.#warningOverlay = document.createElement('div');
-        this.#warningOverlay.className = 'colorWarningOverlay';
+        this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
 
 

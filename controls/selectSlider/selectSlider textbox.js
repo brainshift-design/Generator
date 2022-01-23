@@ -1,9 +1,20 @@
 function initSelectSliderTextbox(slider)
 {
-    slider.textbox = document.createElement('INPUT');
-    slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'selectSliderText';
+    slider.textbox = createTextbox('selectSliderTextbox');
     
+
+
+    slider.textbox.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+    });
+
+    slider.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+        slider.textbox.style.cursor = 'text';
+    });
+
 
 
     slider.textbox.addEventListener('keydown', function(e)
@@ -115,7 +126,7 @@ function initSelectSliderTextbox(slider)
             'value':    slider.textbox.value,
             'oldValue': slider.textbox.savedValue }}));
 
-            if (success) slider.setValue(Number(slider.textbox.value     ));
+        if (success) slider.setValue(Number(slider.textbox.value));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
@@ -141,11 +152,15 @@ function initSelectSliderTextbox(slider)
         slider.textbox.style.height          = slider.offsetHeight - 2;
         slider.textbox.style.boxShadow       = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline         = 'none';
-      
         slider.textbox.style.textAlign       = 'center';
-    
-        slider.textbox.style.backgroundColor = slider.backColor;
-        slider.textbox.style.color           = slider.textColor;
+
+        
+        slider.textbox.style.backgroundColor = 
+            slider.backColor != 'transparent' 
+            ? rgb_a(slider.backColor, 0.9) 
+            : '#fffd';
+
+        slider.textbox.style.color           = 'black';//slider.textColor;
 
         slider.textbox.value                 = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue            = slider.textbox.value;
@@ -154,5 +169,7 @@ function initSelectSliderTextbox(slider)
         
         slider.textbox.focus();
         slider.textbox.select();
+
+        slider.textbox.style.cursor = 'text';
     }
 }

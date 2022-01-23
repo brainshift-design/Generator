@@ -1,8 +1,6 @@
 function initLabelTextbox(node)
 {
-    node.textbox = document.createElement('INPUT');
-    node.textbox.setAttribute('type', 'text'); 
-    node.textbox.className  = 'nodeLabelTextbox';
+    node.textbox = createTextbox('nodeLabelTextbox');
     node.textbox.spellcheck = false;
     
 

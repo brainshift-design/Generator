@@ -1,8 +1,8 @@
 function initNumberSliderChildren(slider)
 {
-    slider.bar    = createDiv('numberSliderBar'  );
-    slider.text   = createDiv('numberSliderText' );
-    slider.focus  = createDiv('numberSliderFocus');
+    slider.bar   = createDiv('numberSliderBar');
+    slider.text  = createDiv('numberSliderText');
+    slider.focus = createDiv('numberSliderFocus');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -35,7 +35,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
     slider.dragScale         = dragScale;
     slider.wheelStep         = wheelStep;
         
-    slider.backColor         = '#fffd';
+    slider.backColor         = 'transparent';//'#fffe';
     slider.valueColor        = '#7772';
     slider.textColor         = '#000';
            
@@ -64,6 +64,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
     slider.enableChangeEvent = true;
 
     slider.pointerEvents     = true;
+    slider.readOnly          = false;
 
     slider.valueText         = '';
 
@@ -112,15 +113,20 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
-
+                
             slider.buttonDown0  = true;
             slider.buttonDown0_ = true;
             slider.moved        = false;
             slider.clientX      = 0;
-            slider.oldValue     = slider.value;
 
-            slider.prevValue    = slider.value;
-            slider.sx           = e.clientX;
+
+            if (!slider.readOnly)
+            {
+                slider.oldValue  = slider.value;
+                slider.prevValue = slider.value;
+                slider.sx        = e.clientX;
+            }
+
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
 
@@ -151,11 +157,15 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
             && e.clientX <  rect.right
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
-        
+
+
         slider.clientX = e.clientX;
 
+        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+
         
-        if (slider.buttonDown0)
+        if (    slider.buttonDown0
+            && !slider.readOnly)
         {
             if (slider.isPointerLocked())
             {
@@ -170,7 +180,6 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
-
                 slider.prevValue = slider.value;
             }
             else
@@ -247,7 +256,11 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            slider.style.cursor           = 'ew-resize';
+            slider.style.cursor = 
+                   slider.readOnly 
+                || containsChild(slider, slider.textbox) 
+                ? 'text' 
+                : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';

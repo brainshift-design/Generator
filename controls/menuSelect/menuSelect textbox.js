@@ -1,8 +1,7 @@
 function initMenuSelectTextbox(select)
 {
-    select.textbox = document.createElement('INPUT');
-    select.textbox.setAttribute('type', 'text'); 
-    select.textbox.className = 'menuSelectText';
+    select.textbox = createTextbox('menuSelectText');
+    
     
     select.textbox.addEventListener('keydown', function(e)
     {

@@ -1,8 +1,6 @@
 function createOperatorNode(node)
 {
-    node.div = document.createElement('div');
-
-    node.div.className   = 'node';
+    node.div             = createDiv('node');
     node.div.op          = node;
 
     node.div.style.width = node.defaultWidth + 'px';
@@ -12,8 +10,7 @@ function createOperatorNode(node)
     node.div.dragging    = false;
     node.div.moved       = false;
 
-    node.inner           = document.createElement('div');
-    node.inner.className = 'nodeInner';
+    node.inner           = createDiv('nodeInner');
 
 
     node.div.appendChild(node.inner);
@@ -40,17 +37,14 @@ function createOperatorNode(node)
 
 function createNodeHeader(node)
 {
-    node.header = document.createElement('div');
-    node.header.className = 'nodeHeader';
+    node.header = createDiv('nodeHeader');
     
     createNodeLabel(node);
 
-    node.inputControls = document.createElement('div');
-    node.inputControls.className = 'inputControls';
-    node.header.appendChild(node.inputControls);
+    node. inputControls = createDiv('inputControls');
+    node.outputControls = createDiv('outputControls');
 
-    node.outputControls = document.createElement('div');
-    node.outputControls.className = 'outputControls';
+    node.header.appendChild(node. inputControls);
     node.header.appendChild(node.outputControls);
 
     node.inner.appendChild(node.header);
@@ -152,7 +146,7 @@ function createNodeHeader(node)
                 else            graphView.selected = [node];
             }
 
-            
+
             node.div.dragging = false;
             node.header.releasePointerCapture(e.pointerId);
         }
@@ -176,8 +170,7 @@ function createNodeHeader(node)
 
 function createNodeLabel(node)
 {
-    node.label           = document.createElement('div');
-    node.label.className = 'nodeLabel';
+    node.label           = createDiv('nodeLabel');
     node.label.op        = node;
     
     node.header.appendChild(node.label);

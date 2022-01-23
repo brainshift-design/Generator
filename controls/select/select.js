@@ -15,7 +15,7 @@ function initSelect(select, items)
 
     select.initMenu = function()
     {
-        select.check = document.createElement('DIV');
+        select.check = createDiv();
         
         select.check.style.width    = 16;
         select.check.style.height   = 16;
@@ -40,8 +40,8 @@ function initSelect(select, items)
         
         for (let i = 0; i < select.items.length; i++)
         {
-            let item = document.createElement('DIV');
-            let sub  = document.createElement('DIV');
+            let item = createDiv();
+            let sub  = createDiv();
             
             item.style.width       = 'auto';
             item.style.display     = 'block';

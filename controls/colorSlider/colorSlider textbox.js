@@ -1,8 +1,7 @@
 function initColorSliderTextbox(slider)
 {
-    slider.textbox = document.createElement('INPUT');
-    slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderText';
+    slider.textbox = createTextbox('sliderText');
+    
     
     slider.textbox.addEventListener('keydown', function(e)
     {

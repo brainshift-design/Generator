@@ -1,16 +1,16 @@
 function initHexbox(op)
 {
-    op.hexbox = document.createElement('INPUT');
+    op.hexbox = createTextbox();
     
-    op.hexbox.setAttribute('type', 'text');
     
-    op.hexbox.style.textAlign = 'center';
-    op.hexbox.style.width     = '100%';
-    op.hexbox.style.height    = 26;
+    op.hexbox.style.textAlign  = 'center';
+    op.hexbox.style.width      = '100%';
+    op.hexbox.style.height     = 26;
+    op.hexbox.style.background = 'transparent';
+    op.hexbox.style.cursor     = 'text';
     
     op.hexbox.op      = op;
     op.hexbox.editing = false;
-    
     
     op.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
     op.hexbox.addEventListener('pointerup',   onHexboxPointerUp);

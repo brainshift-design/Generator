@@ -46,12 +46,11 @@ class Output
     {
         this._dataType = dataType;
         
-        this.control = document.createElement('div');
-        this.control.className = 'output';
+        this.control  = createDiv('output');
+        this.wireBall = createDiv('outputBall');
+        
         this.control.output = this;
         
-        this.wireBall = document.createElement('div');
-        this.wireBall.className = 'outputBall';
         
         this.control.appendChild(this.wireBall);
 

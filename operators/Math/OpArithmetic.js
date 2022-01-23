@@ -20,12 +20,11 @@ extends Operator
         
         this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
 
-        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
 
 
-        this._symbol = document.createElement('div');
-        this._symbol.className = 'arithmeticSymbol';
+        this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
 
         this.header.appendChild(this._symbol);

@@ -386,6 +386,7 @@ input[type=text]::selection
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
+    background:    #fffe;
     box-shadow:    0 0 0 1px #0001;
     /* box-shadow:    0px 5px 20px #0001; */
 }    
@@ -592,6 +593,17 @@ input[type=text]::selection
 }
 
 
+.numberSliderTextbox
+{
+    font-family:    Inter;
+    font-size:      11;
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+    white-space:    nowrap;
+}
+
+
 .numberSliderFocus
 {
     position:       absolute;
@@ -647,6 +659,17 @@ input[type=text]::selection
     left:           50%;
     transform:      translateX(-50%);
     top:            3px;
+    white-space:    nowrap;
+}
+
+
+.selectSliderTextbox
+{
+    font-family:    Inter;
+    font-size:      11;
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
     white-space:    nowrap;
 }
 
@@ -2480,37 +2503,6 @@ function logVar(x)
 }
 
 
-
-function getStyleValue(obj, style)
-{
-    return window.getComputedStyle(obj, null).getPropertyValue(style);
-}
-
-
-
-function getCtrlKey(e)
-{
-    return  isMac && e.metaKey
-        || !isMac && e.ctrlKey;
-}
-
-
-
-function dispatchNewEvent(target, proto)
-{
-    target.dispatchEvent(new proto.constructor(proto.type, proto));
-}
-
-
-
-function createDiv(className)
-{
-    const div = document.createElement('div');
-    div.className = className;
-    return div;
-}
-
-
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -2732,6 +2724,61 @@ function strToUTF8Arr(str)
 
 
     return bytes;
+}
+
+
+function getStyleValue(obj, style)
+{
+    return window.getComputedStyle(obj, null).getPropertyValue(style);
+}
+
+
+
+function getCtrlKey(e)
+{
+    return  isMac && e.metaKey
+        || !isMac && e.ctrlKey;
+}
+
+
+
+function dispatchNewEvent(target, proto)
+{
+    target.dispatchEvent(new proto.constructor(proto.type, proto));
+}
+
+
+
+function createDiv(className = '')
+{
+    const div = document.createElement('div');
+    
+    if (className.trim() != '')
+        div.className = className;
+    
+    return div;
+}
+
+
+
+function createTextbox(className = '')
+{
+    const textbox = document.createElement('INPUT');
+    textbox.setAttribute('type', 'text'); 
+
+    if (className.trim() != '')
+        textbox.className = className;
+    
+    return textbox;
+}
+
+
+
+function enableSliderText(slider, enable)
+{
+    slider.style.fontStyle  = enable ? 'normal' : 'italic'; 
+    slider.textbox.readOnly = !enable;
+    slider.readOnly         = !enable;
 }
 
 
@@ -4758,37 +4805,6 @@ function logVar(x)
 }
 
 
-
-function getStyleValue(obj, style)
-{
-    return window.getComputedStyle(obj, null).getPropertyValue(style);
-}
-
-
-
-function getCtrlKey(e)
-{
-    return  isMac && e.metaKey
-        || !isMac && e.ctrlKey;
-}
-
-
-
-function dispatchNewEvent(target, proto)
-{
-    target.dispatchEvent(new proto.constructor(proto.type, proto));
-}
-
-
-
-function createDiv(className)
-{
-    const div = document.createElement('div');
-    div.className = className;
-    return div;
-}
-
-
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -5010,6 +5026,61 @@ function strToUTF8Arr(str)
 
 
     return bytes;
+}
+
+
+function getStyleValue(obj, style)
+{
+    return window.getComputedStyle(obj, null).getPropertyValue(style);
+}
+
+
+
+function getCtrlKey(e)
+{
+    return  isMac && e.metaKey
+        || !isMac && e.ctrlKey;
+}
+
+
+
+function dispatchNewEvent(target, proto)
+{
+    target.dispatchEvent(new proto.constructor(proto.type, proto));
+}
+
+
+
+function createDiv(className = '')
+{
+    const div = document.createElement('div');
+    
+    if (className.trim() != '')
+        div.className = className;
+    
+    return div;
+}
+
+
+
+function createTextbox(className = '')
+{
+    const textbox = document.createElement('INPUT');
+    textbox.setAttribute('type', 'text'); 
+
+    if (className.trim() != '')
+        textbox.className = className;
+    
+    return textbox;
+}
+
+
+
+function enableSliderText(slider, enable)
+{
+    slider.style.fontStyle  = enable ? 'normal' : 'italic'; 
+    slider.textbox.readOnly = !enable;
+    slider.readOnly         = !enable;
 }
 
 
@@ -6317,7 +6388,7 @@ function uiGetPluginDataReturn(msg)
     {
         case 'graph':
             loadGraph(msg.value);
-            graphView.updatePanAndZoom();
+            graphView.updateScroll();
             break;
     }
 }
@@ -6326,12 +6397,7 @@ function uiGetPluginDataReturn(msg)
 
 function uiEndResizeWindow()
 {
-    // graphView.updatePanAndZoom();
-
-    for (const conn of graph.connections)
-        graphView.updateWireTransform(conn.wire);
-
-    graphView.updateScroll();
+    graphView.updatePanAndZoom();
 }
 
 
@@ -6791,10 +6857,21 @@ function resetSliderRangeDivs(slider)
 
 function initNumberSliderTextbox(slider)
 {
-    slider.textbox = document.createElement('INPUT');
-    slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'numberSliderText';
+    slider.textbox = createTextbox('numberSliderTextbox');
     
+
+
+    slider.textbox.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+    });
+
+    slider.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+        slider.textbox.style.cursor = 'text';
+    });
+
 
 
     slider.textbox.addEventListener('keydown', function(e)
@@ -6924,6 +7001,7 @@ function initNumberSliderTextbox(slider)
             'value':    value,
             'oldValue': savedValue }}));
 
+
         slider.textbox.blur();
 
         if (slider.inFocus)
@@ -6947,8 +7025,8 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.height    = slider.offsetHeight - 2;
         slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline   = 'none';
-    
         slider.textbox.style.textAlign = 'center';
+
     
         slider.textbox.value =
             isNaN(slider.value)
@@ -6961,15 +7039,17 @@ function initNumberSliderTextbox(slider)
         
         slider.textbox.focus();
         slider.textbox.select();
+
+        slider.textbox.style.cursor = 'text';
     }
 }
 
 
 function initNumberSliderChildren(slider)
 {
-    slider.bar    = createDiv('numberSliderBar'  );
-    slider.text   = createDiv('numberSliderText' );
-    slider.focus  = createDiv('numberSliderFocus');
+    slider.bar   = createDiv('numberSliderBar');
+    slider.text  = createDiv('numberSliderText');
+    slider.focus = createDiv('numberSliderFocus');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -7002,7 +7082,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
     slider.dragScale         = dragScale;
     slider.wheelStep         = wheelStep;
         
-    slider.backColor         = '#fffd';
+    slider.backColor         = 'transparent';//'#fffe';
     slider.valueColor        = '#7772';
     slider.textColor         = '#000';
            
@@ -7031,6 +7111,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
     slider.enableChangeEvent = true;
 
     slider.pointerEvents     = true;
+    slider.readOnly          = false;
 
     slider.valueText         = '';
 
@@ -7079,15 +7160,20 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
-
+                
             slider.buttonDown0  = true;
             slider.buttonDown0_ = true;
             slider.moved        = false;
             slider.clientX      = 0;
-            slider.oldValue     = slider.value;
 
-            slider.prevValue    = slider.value;
-            slider.sx           = e.clientX;
+
+            if (!slider.readOnly)
+            {
+                slider.oldValue  = slider.value;
+                slider.prevValue = slider.value;
+                slider.sx        = e.clientX;
+            }
+
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
 
@@ -7118,11 +7204,15 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
             && e.clientX <  rect.right
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
-        
+
+
         slider.clientX = e.clientX;
 
+        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+
         
-        if (slider.buttonDown0)
+        if (    slider.buttonDown0
+            && !slider.readOnly)
         {
             if (slider.isPointerLocked())
             {
@@ -7137,7 +7227,6 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
-
                 slider.prevValue = slider.value;
             }
             else
@@ -7214,7 +7303,11 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            slider.style.cursor           = 'ew-resize';
+            slider.style.cursor = 
+                   slider.readOnly 
+                || containsChild(slider, slider.textbox) 
+                ? 'text' 
+                : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';
@@ -7431,10 +7524,21 @@ function onSliderClickTimer(slider)
 
 function initSelectSliderTextbox(slider)
 {
-    slider.textbox = document.createElement('INPUT');
-    slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'selectSliderText';
+    slider.textbox = createTextbox('selectSliderTextbox');
     
+
+
+    slider.textbox.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+    });
+
+    slider.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+        slider.textbox.style.cursor = 'text';
+    });
+
 
 
     slider.textbox.addEventListener('keydown', function(e)
@@ -7546,7 +7650,7 @@ function initSelectSliderTextbox(slider)
             'value':    slider.textbox.value,
             'oldValue': slider.textbox.savedValue }}));
 
-            if (success) slider.setValue(Number(slider.textbox.value     ));
+        if (success) slider.setValue(Number(slider.textbox.value));
         else         slider.setValue(Number(slider.textbox.savedValue));
 
         slider.textbox.blur();
@@ -7572,11 +7676,15 @@ function initSelectSliderTextbox(slider)
         slider.textbox.style.height          = slider.offsetHeight - 2;
         slider.textbox.style.boxShadow       = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline         = 'none';
-      
         slider.textbox.style.textAlign       = 'center';
-    
-        slider.textbox.style.backgroundColor = slider.backColor;
-        slider.textbox.style.color           = slider.textColor;
+
+        
+        slider.textbox.style.backgroundColor = 
+            slider.backColor != 'transparent' 
+            ? rgb_a(slider.backColor, 0.9) 
+            : '#fffd';
+
+        slider.textbox.style.color           = 'black';//slider.textColor;
 
         slider.textbox.value                 = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue            = slider.textbox.value;
@@ -7585,20 +7693,17 @@ function initSelectSliderTextbox(slider)
         
         slider.textbox.focus();
         slider.textbox.select();
+
+        slider.textbox.style.cursor = 'text';
     }
 }
 
 
 function initSelectSliderChildren(slider)
 {
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'selectSliderBar';
-
-    slider.text = document.createElement('div');
-    slider.text.className = 'selectSliderText';
-
-    slider.focus = document.createElement('div');
-    slider.focus.className = 'selectSliderFocus';
+    slider.bar   = createDiv('selectSliderBar');
+    slider.text  = createDiv('selectSliderText');
+    slider.focus = createDiv('selectSliderFocus');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -7624,8 +7729,8 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.dragScale         = 0.001;
         
-    slider.backColor         = '#fff';
-    slider.valueColor        = '#eee';
+    slider.backColor         = 'transparent';//'#fffe';
+    slider.valueColor        = '#7772';
     slider.textColor         = '#000';
            
     slider.fontSize          = 11;
@@ -7650,6 +7755,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.enableChangeEvent = true;
 
     slider.pointerEvents     = true;
+    slider.readOnly          = false;
 
     slider.valueText         = '';
 
@@ -7700,23 +7806,23 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.buttonDown0_ = true;
             slider.moved        = false;
             slider.clientX      = 0;
-            slider.oldValue     = slider.value;
 
-            slider.prevValue    = slider.value;
-            slider.sx           = e.clientX;
+
+            if (!slider.readOnly)
+            {
+                slider.oldValue     = slider.value;
+                slider.prevValue    = slider.value;
+                slider.sx           = e.clientX;
+            }
+
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
             
-            
+            slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
-
-            slider.clickTimer = setTimeout(function() 
-            {
-                onSliderClickTimer(slider); 
-            }, 500);
         }
         else if (e.button == 1)
         {
@@ -7741,27 +7847,27 @@ function initSelectSlider(slider, width, height, name, options, def)
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
         
+
         slider.clientX = e.clientX;
 
+        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+
         
-        if (slider.buttonDown0)
+        if (    slider.buttonDown0
+            && !slider.readOnly)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-            
             if (slider.isPointerLocked())
             {
                 slider.movedX += e.movementX;
                 
-                let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10;
+                const dx       = slider.sx - slider.movedX;             
+                const adaptive = 10;
+                const grain    = 1;
                 
                 let val = slider.oldValue - dx*slider.dragScale*adaptive;
- 
-                const grain = 1;//Math.pow(10, this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
-
                 slider.prevValue = slider.value;
             }
             else
@@ -7773,10 +7879,6 @@ function initSelectSlider(slider, width, height, name, options, def)
                 }
             }
         }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-        
-        // slider.update();
     });
     
     
@@ -7842,7 +7944,11 @@ function initSelectSlider(slider, width, height, name, options, def)
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            slider.style.cursor           = 'ew-resize';
+            slider.style.cursor = 
+                   slider.readOnly 
+                || containsChild(slider, slider.textbox) 
+                ? 'text' 
+                : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';
@@ -7856,7 +7962,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.cursor     = 'default';
+        slider.style.cursor           = 'default';
         
         slider.focus.style.visibility = 'hidden';
         slider.focus.style.opacity    = 0;
@@ -8026,9 +8132,8 @@ function onSliderClickTimer(slider)
 
 function initColorSliderTextbox(slider)
 {
-    slider.textbox = document.createElement('INPUT');
-    slider.textbox.setAttribute('type', 'text'); 
-    slider.textbox.className = 'sliderText';
+    slider.textbox = createTextbox('sliderText');
+    
     
     slider.textbox.addEventListener('keydown', function(e)
     {
@@ -8175,11 +8280,8 @@ function initColorSliderTextbox(slider)
 
 function initColorSliderChildren(slider)
 {
-    slider.text = document.createElement('div');
-    slider.text.className = 'sliderText';
-
-    slider.focus = document.createElement('div');
-    slider.focus.className = 'sliderFocus';
+    slider.text  = createDiv('sliderText');
+    slider.focus = createDiv('sliderFocus');
 
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
@@ -8620,9 +8722,8 @@ function onSliderClickTimer(slider)
 
 function initSelectMenu(select)
 {
-    select.menu = document.createElement('DIV');
+    select.menu = createDiv('selectMenu');
 
-    select.menu.className        = 'selectMenu';
     select.menu.hoverIndex       =  0;
     select.menu.tabIndex         =  0;
 
@@ -8649,7 +8750,7 @@ function initSelectMenu(select)
     select.menu.hoverIndex = 0;
 
 
-    select.selectBox = document.createElement('DIV');
+    select.selectBox = createDiv();
         
     // width is set with menu width in showMenu()
     select.selectBox.style.display         = 'inline-block';
@@ -8662,7 +8763,7 @@ function initSelectMenu(select)
     select.menu.appendChild(select.selectBox);
     
 
-    select.menuWrap = document.createElement('DIV');
+    select.menuWrap = createDiv();
     
     select.menuWrap.style.width         = 'auto';
     select.menuWrap.style.height        = '100%';
@@ -8761,7 +8862,7 @@ function initSelect(select, items)
 
     select.initMenu = function()
     {
-        select.check = document.createElement('DIV');
+        select.check = createDiv();
         
         select.check.style.width    = 16;
         select.check.style.height   = 16;
@@ -8786,8 +8887,8 @@ function initSelect(select, items)
         
         for (let i = 0; i < select.items.length; i++)
         {
-            let item = document.createElement('DIV');
-            let sub  = document.createElement('DIV');
+            let item = createDiv();
+            let sub  = createDiv();
             
             item.style.width       = 'auto';
             item.style.display     = 'block';
@@ -8969,9 +9070,8 @@ function onSelectClickTimer(select)
 
 function initMenuSelectMenu(select)
 {
-    select.menu = document.createElement('DIV');
+    select.menu = createDiv('menuSelectMenu');
 
-    select.menu.className    = 'menuSelectMenu';
     select.menu.hoverIndex   = 0;
     select.menu.tabIndex     = 0;
 
@@ -8991,7 +9091,7 @@ function initMenuSelectMenu(select)
     
     
 
-    select.selectBox = document.createElement('DIV');
+    select.selectBox = createDiv();
         
     // width is set with menu width in showMenu()
     select.selectBox.style.display         = 'inline-block';
@@ -9004,7 +9104,7 @@ function initMenuSelectMenu(select)
     select.menu.appendChild(select.selectBox);
     
 
-    select.menuWrap = document.createElement('DIV');
+    select.menuWrap = createDiv();
     
     select.menuWrap.style.width         = 'auto';
     select.menuWrap.style.height        = '100%';
@@ -9096,9 +9196,8 @@ function initMenuSelectMenu(select)
 
 function initMenuSelectTextbox(select)
 {
-    select.textbox = document.createElement('INPUT');
-    select.textbox.setAttribute('type', 'text'); 
-    select.textbox.className = 'menuSelectText';
+    select.textbox = createTextbox('menuSelectText');
+    
     
     select.textbox.addEventListener('keydown', function(e)
     {
@@ -9258,7 +9357,7 @@ function initMenuSelect(select)
 
     select.initMenu = function()
     {
-        select.check = document.createElement('DIV');
+        select.check = createDiv();
         
         select.check.style.width    = 16;
         select.check.style.height   = 16;
@@ -9288,8 +9387,8 @@ function initMenuSelect(select)
 
         for (let i = 0; i < select.items.length; i++)
         {
-            let item = document.createElement('DIV');
-            let sub  = document.createElement('DIV');
+            let item = createDiv();
+            let sub  = createDiv();
             
             item.style.width       = 'auto';
             item.style.display     = 'block';
@@ -10591,7 +10690,7 @@ extends EventTarget
         this.#type = type;
         this.#name = name;
 
-        this._div = document.createElement('div');
+        this._div = createDiv();
 
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
@@ -10627,14 +10726,14 @@ extends EventTarget
         this.input.addEventListener('connect', () =>
         {
             this.control.style.fontStyle = 'italic';
-            this.control.pointerEvents   = false;
+            this.control.readOnly        = true;
         });
     
         
         this.input.addEventListener('disconnect', () =>
         {
             this.control.style.fontStyle = 'normal';
-            this.control.pointerEvents   = true;
+            this.control.readOnly        = false;
         });
     }
 
@@ -10745,7 +10844,8 @@ extends Parameter
     {
         super(name, 'number');
 
-        this._control = document.createElement('div');
+        this._control = createDiv();
+        
         this.control.param  = this;
         this.control.zIndex = 0;
 
@@ -10903,7 +11003,8 @@ extends Parameter
     {
         super(name, 'color');
 
-        this._control = document.createElement('div');
+        this._control = createDiv();
+        
         this.control.param  = this;
         this.control.zIndex = 0;
 
@@ -10997,7 +11098,8 @@ extends Parameter
     {
         super(name, 'number');
 
-        this._control       = document.createElement('div');
+        this._control       = createDiv();
+        
         this.control.param  = this;
         this.control.zIndex = 0;
 
@@ -11598,12 +11700,11 @@ extends EventTarget
         
         this._dataType = dataType;
 
-        this.control = document.createElement('div');
-        this.control.className = 'input';
+        this.control  = createDiv('input');
+        this.wireBall = createDiv('inputBall');
+        
         this.control.input = this;
         
-        this.wireBall = document.createElement('div');
-        this.wireBall.className = 'inputBall';
 
         this.control.appendChild(this.wireBall);
 
@@ -11716,12 +11817,11 @@ class Output
     {
         this._dataType = dataType;
         
-        this.control = document.createElement('div');
-        this.control.className = 'output';
+        this.control  = createDiv('output');
+        this.wireBall = createDiv('outputBall');
+        
         this.control.output = this;
         
-        this.wireBall = document.createElement('div');
-        this.wireBall.className = 'outputBall';
         
         this.control.appendChild(this.wireBall);
 
@@ -12526,9 +12626,7 @@ class Operator
 
 function createOperatorNode(node)
 {
-    node.div = document.createElement('div');
-
-    node.div.className   = 'node';
+    node.div             = createDiv('node');
     node.div.op          = node;
 
     node.div.style.width = node.defaultWidth + 'px';
@@ -12538,8 +12636,7 @@ function createOperatorNode(node)
     node.div.dragging    = false;
     node.div.moved       = false;
 
-    node.inner           = document.createElement('div');
-    node.inner.className = 'nodeInner';
+    node.inner           = createDiv('nodeInner');
 
 
     node.div.appendChild(node.inner);
@@ -12566,17 +12663,14 @@ function createOperatorNode(node)
 
 function createNodeHeader(node)
 {
-    node.header = document.createElement('div');
-    node.header.className = 'nodeHeader';
+    node.header = createDiv('nodeHeader');
     
     createNodeLabel(node);
 
-    node.inputControls = document.createElement('div');
-    node.inputControls.className = 'inputControls';
-    node.header.appendChild(node.inputControls);
+    node. inputControls = createDiv('inputControls');
+    node.outputControls = createDiv('outputControls');
 
-    node.outputControls = document.createElement('div');
-    node.outputControls.className = 'outputControls';
+    node.header.appendChild(node. inputControls);
     node.header.appendChild(node.outputControls);
 
     node.inner.appendChild(node.header);
@@ -12678,7 +12772,7 @@ function createNodeHeader(node)
                 else            graphView.selected = [node];
             }
 
-            
+
             node.div.dragging = false;
             node.header.releasePointerCapture(e.pointerId);
         }
@@ -12702,8 +12796,7 @@ function createNodeHeader(node)
 
 function createNodeLabel(node)
 {
-    node.label           = document.createElement('div');
-    node.label.className = 'nodeLabel';
+    node.label           = createDiv('nodeLabel');
     node.label.op        = node;
     
     node.header.appendChild(node.label);
@@ -12726,9 +12819,7 @@ function setNodePosition(node, x, y)
 
 function initLabelTextbox(node)
 {
-    node.textbox = document.createElement('INPUT');
-    node.textbox.setAttribute('type', 'text'); 
-    node.textbox.className  = 'nodeLabelTextbox';
+    node.textbox = createTextbox('nodeLabelTextbox');
     node.textbox.spellcheck = false;
     
 
@@ -12930,7 +13021,7 @@ extends Operator
 
     updateNode()
     {
-        this.#paramValue.control.pointerEvents   = !this.inputs[0].isConnected;
+        this.#paramValue.control.readOnly        =  this.inputs[0].isConnected;
         this.#paramValue.control.style.fontStyle = !this.inputs[0].isConnected ? 'normal' : 'italic';
         
         super.updateNode();
@@ -13016,12 +13107,11 @@ extends Operator
         
         this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
 
-        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
 
 
-        this._symbol = document.createElement('div');
-        this._symbol.className = 'arithmeticSymbol';
+        this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
 
         this.header.appendChild(this._symbol);
@@ -13371,8 +13461,7 @@ extends Operator
         this._oldSpace = 'rgb';
 
 
-        this.#colorBack = document.createElement('div');
-        this.#colorBack.className = 'colorBack';
+        this.#colorBack = createDiv('colorBack');
         this.inner.appendChild(this.#colorBack);
 
 
@@ -13382,17 +13471,17 @@ extends Operator
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this.param1.control.style.fontStyle = 'italic'; this.param1.control.pointerEvents = false;
-            this.param2.control.style.fontStyle = 'italic'; this.param2.control.pointerEvents = false;
-            this.param3.control.style.fontStyle = 'italic'; this.param3.control.pointerEvents = false;
+            enableSliderText(this.param1.control, false);
+            enableSliderText(this.param2.control, false);
+            enableSliderText(this.param3.control, false);
         });
     
         
         this.inputs[0].addEventListener('disconnect', () =>
         {
-            if (!this.param1.input.isConnected) { this.param1.control.style.fontStyle = 'normal'; this.param1.control.pointerEvents = true; }
-            if (!this.param2.input.isConnected) { this.param2.control.style.fontStyle = 'normal'; this.param2.control.pointerEvents = true; }
-            if (!this.param3.input.isConnected) { this.param3.control.style.fontStyle = 'normal'; this.param3.control.pointerEvents = true; }
+            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
+            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
+            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
         });
 
 
@@ -13407,8 +13496,7 @@ extends Operator
         initHexbox(this);
 
 
-        this.#warningOverlay = document.createElement('div');
-        this.#warningOverlay.className = 'colorWarningOverlay';
+        this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
     }
 
@@ -14199,17 +14287,17 @@ function getColorSpaceScale(space)
 
 function initHexbox(op)
 {
-    op.hexbox = document.createElement('INPUT');
+    op.hexbox = createTextbox();
     
-    op.hexbox.setAttribute('type', 'text');
     
-    op.hexbox.style.textAlign = 'center';
-    op.hexbox.style.width     = '100%';
-    op.hexbox.style.height    = 26;
+    op.hexbox.style.textAlign  = 'center';
+    op.hexbox.style.width      = '100%';
+    op.hexbox.style.height     = 26;
+    op.hexbox.style.background = 'transparent';
+    op.hexbox.style.cursor     = 'text';
     
     op.hexbox.op      = op;
     op.hexbox.editing = false;
-    
     
     op.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
     op.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
@@ -14651,12 +14739,11 @@ extends Operator
         //     this.setRanges();
         // });
 
-        this.#paramValue.control.pointerEvents   = false;
+        this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
 
 
-        this.#warningOverlay = document.createElement('div');
-        this.#warningOverlay.className = 'colorWarningOverlay';
+        this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
 
 

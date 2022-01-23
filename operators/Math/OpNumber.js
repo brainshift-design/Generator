@@ -42,7 +42,7 @@ extends Operator
 
     updateNode()
     {
-        this.#paramValue.control.pointerEvents   = !this.inputs[0].isConnected;
+        this.#paramValue.control.readOnly        =  this.inputs[0].isConnected;
         this.#paramValue.control.style.fontStyle = !this.inputs[0].isConnected ? 'normal' : 'italic';
         
         super.updateNode();

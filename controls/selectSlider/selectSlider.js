@@ -1,13 +1,8 @@
 function initSelectSliderChildren(slider)
 {
-    slider.bar = document.createElement('div');
-    slider.bar.className = 'selectSliderBar';
-
-    slider.text = document.createElement('div');
-    slider.text.className = 'selectSliderText';
-
-    slider.focus = document.createElement('div');
-    slider.focus.className = 'selectSliderFocus';
+    slider.bar   = createDiv('selectSliderBar');
+    slider.text  = createDiv('selectSliderText');
+    slider.focus = createDiv('selectSliderFocus');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -33,8 +28,8 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.dragScale         = 0.001;
         
-    slider.backColor         = '#fff';
-    slider.valueColor        = '#eee';
+    slider.backColor         = 'transparent';//'#fffe';
+    slider.valueColor        = '#7772';
     slider.textColor         = '#000';
            
     slider.fontSize          = 11;
@@ -59,6 +54,7 @@ function initSelectSlider(slider, width, height, name, options, def)
     slider.enableChangeEvent = true;
 
     slider.pointerEvents     = true;
+    slider.readOnly          = false;
 
     slider.valueText         = '';
 
@@ -109,23 +105,23 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.buttonDown0_ = true;
             slider.moved        = false;
             slider.clientX      = 0;
-            slider.oldValue     = slider.value;
 
-            slider.prevValue    = slider.value;
-            slider.sx           = e.clientX;
+
+            if (!slider.readOnly)
+            {
+                slider.oldValue     = slider.value;
+                slider.prevValue    = slider.value;
+                slider.sx           = e.clientX;
+            }
+
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
             
-            
+            slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
-
-            slider.clickTimer = setTimeout(function() 
-            {
-                onSliderClickTimer(slider); 
-            }, 500);
         }
         else if (e.button == 1)
         {
@@ -150,27 +146,27 @@ function initSelectSlider(slider, width, height, name, options, def)
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
         
+
         slider.clientX = e.clientX;
 
+        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+
         
-        if (slider.buttonDown0)
+        if (    slider.buttonDown0
+            && !slider.readOnly)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-            
             if (slider.isPointerLocked())
             {
                 slider.movedX += e.movementX;
                 
-                let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10;
+                const dx       = slider.sx - slider.movedX;             
+                const adaptive = 10;
+                const grain    = 1;
                 
                 let val = slider.oldValue - dx*slider.dragScale*adaptive;
- 
-                const grain = 1;//Math.pow(10, this.editDec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);
-
                 slider.prevValue = slider.value;
             }
             else
@@ -182,10 +178,6 @@ function initSelectSlider(slider, width, height, name, options, def)
                 }
             }
         }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-        
-        // slider.update();
     });
     
     
@@ -251,7 +243,11 @@ function initSelectSlider(slider, width, height, name, options, def)
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            slider.style.cursor           = 'ew-resize';
+            slider.style.cursor = 
+                   slider.readOnly 
+                || containsChild(slider, slider.textbox) 
+                ? 'text' 
+                : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';
@@ -265,7 +261,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
     slider.addEventListener('pointerout', function(e)
     {
-        slider.style.cursor     = 'default';
+        slider.style.cursor           = 'default';
         
         slider.focus.style.visibility = 'hidden';
         slider.focus.style.opacity    = 0;

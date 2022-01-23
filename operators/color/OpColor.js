@@ -68,8 +68,7 @@ extends Operator
         this._oldSpace = 'rgb';
 
 
-        this.#colorBack = document.createElement('div');
-        this.#colorBack.className = 'colorBack';
+        this.#colorBack = createDiv('colorBack');
         this.inner.appendChild(this.#colorBack);
 
 
@@ -79,17 +78,17 @@ extends Operator
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this.param1.control.style.fontStyle = 'italic'; this.param1.control.pointerEvents = false;
-            this.param2.control.style.fontStyle = 'italic'; this.param2.control.pointerEvents = false;
-            this.param3.control.style.fontStyle = 'italic'; this.param3.control.pointerEvents = false;
+            enableSliderText(this.param1.control, false);
+            enableSliderText(this.param2.control, false);
+            enableSliderText(this.param3.control, false);
         });
     
         
         this.inputs[0].addEventListener('disconnect', () =>
         {
-            if (!this.param1.input.isConnected) { this.param1.control.style.fontStyle = 'normal'; this.param1.control.pointerEvents = true; }
-            if (!this.param2.input.isConnected) { this.param2.control.style.fontStyle = 'normal'; this.param2.control.pointerEvents = true; }
-            if (!this.param3.input.isConnected) { this.param3.control.style.fontStyle = 'normal'; this.param3.control.pointerEvents = true; }
+            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
+            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
+            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
         });
 
 
@@ -104,8 +103,7 @@ extends Operator
         initHexbox(this);
 
 
-        this.#warningOverlay = document.createElement('div');
-        this.#warningOverlay.className = 'colorWarningOverlay';
+        this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
     }
 
