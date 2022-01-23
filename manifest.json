@@ -4,5 +4,6 @@
   "api":  "1.0.0",
   "main": "output/main.js",
   "ui":   "output/ui.html",
+  "editorType":  ["figma"],
   "permissions": [ "currentuser" ]
 }

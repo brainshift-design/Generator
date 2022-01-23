@@ -26,7 +26,7 @@ class ActionManager
                 lastOf(this.actions));
         }
 
-        console.log("DO " + action.name);
+        //console.log("DO " + action.name);
         action.do();
     }
 
@@ -42,7 +42,7 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            console.log("UNDO " + last.name);
+            //console.log("UNDO " + last.name);
             last.undo();
 
             if (   this.actions.length == 0
@@ -63,7 +63,7 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            console.log("REDO " + last.name);
+            //console.log("REDO " + last.name);
             last.redo();
         
             if (   this.redoActions.length == 0

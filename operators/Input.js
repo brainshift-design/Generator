@@ -126,7 +126,10 @@ extends EventTarget
         this.wireBall.style.backgroundColor = 
             this.isConnected
             ? colorStyleRgba(toRgba(this.connectedOutput.wireColor))
-            : colorStyle;
+            : (   graphView.tempConn
+               && graphView.overInput == this
+               ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
+               : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
 

@@ -7,7 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "watch": "tsc "
   },
-  "author": "",
+  "author": "Alex Bourt",
   "license": "",
   "devDependencies": {
     "@figma/plugin-typings": "^1.41.1"

@@ -7,6 +7,13 @@ document.addEventListener('keydown', e =>
         uiCopyNodes(graphView.selected.map(n => n.id));
     }
 
+    // paste
+    else if (e.code == 'KeyV'
+          && getCtrlKey(e))
+    {
+        uiPasteNodes(graphView.selected.map(n => n.id));
+    }
+
     // delete
     else if (e.key == 'Delete')
     {

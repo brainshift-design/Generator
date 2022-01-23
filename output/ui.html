@@ -9981,14 +9981,14 @@ graphView.selectFromIds = (nodeIds) =>
 {
     graphView.deselectAll();
 
-    console.log('graphView.selectFromIds');
-    console.log(nodeIds);
+    //console.log('graphView.selectFromIds');
+    //console.log(nodeIds);
 
     for (const id of nodeIds)
     {
         const node = graph.nodes.find(n => n.id == id);
-        console.log('id = ' + id);
-        console.log('node = ' + node);
+        //console.log('id = ' + id);
+        //console.log('node = ' + node);
         
         graphView._selected.push(node);
         node.setSelected(true);
@@ -11369,54 +11369,71 @@ class Graph
     {
         const tab = '  ';
 
-        let json = 
-              '{\n'
+        let json = '{\n'
             + tab + '"zoom": "' + graphView.zoom  + '",\n'
             + tab + '"panx": "' + graphView.pan.x + '",\n'
-            + tab + '"pany": "' + graphView.pan.y + '",\n'
-            + tab + '"nodes":\n'
-            + tab + '[';
-            
+            + tab + '"pany": "' + graphView.pan.y + '",\n';
 
-        let first = true;
-        for (let i = 0; i < this.nodes.length; i++)
-        {
-            if (!first) json += ','; first = false;
-            json += '\n' + this.nodes[i].toJson(4);
-        }
-        
+        json += nodesToJson(this.nodes, false);
 
-        json += 
-              '\n' + 
-              tab + '],\n'
-            + tab + '"connections":\n'
-            + tab + '[';
-
-            
-        first = true;
-        for (let i = 0; i < this.nodes.length; i++)
-        {
-            let node = this.nodes[i];
-
-            for (let j = 0; j < node.inputs.length; j++)
-            {
-                if (!node.inputs[j].isConnected)
-                    continue;
-
-                if (!first) json += ','; first = false;
-                json += '\n' + node.inputs[j].connection.toJson(4);
-            }
-        }
-        
-
-        json += 
-                '\n' + 
-                tab + ']\n'
-            + '}';
+        json += '\n}';
 
 
         return json;
     }
+}
+
+
+
+function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
+{
+    const tab = '  ';
+
+    let json = 
+          (encloseBraces ? '{\n' : '')
+          + tab + '"nodes":\n'
+          + tab + '[';
+
+
+    let first = true;
+    for (let i = 0; i < nodes.length; i++)
+    {
+        if (!first) json += ','; first = false;
+        json += '\n' + nodes[i].toJson(4);
+    }
+    
+
+    json += 
+            '\n' + 
+          tab + '],\n'
+        + tab + '"connections":\n'
+        + tab + '[';
+
+        
+    first = true;
+    for (let i = 0; i < nodes.length; i++)
+    {
+        let node = nodes[i];
+
+        for (let j = 0; j < node.inputs.length; j++)
+        {
+            if (   !node.inputs[j].isConnected
+                ||    !nodes.includes(node.inputs[j].connectedOutput.op)
+                   && connOutputMustBeInNodes)
+                continue;
+
+            if (!first) json += ','; first = false;
+            json += '\n' + node.inputs[j].connection.toJson(4);
+        }
+    }
+    
+
+    json += '\n'
+        + tab + ']'
+        + (encloseBraces ? '\n}' :'');
+
+
+    return json;
 }
 
 
@@ -11633,7 +11650,10 @@ extends EventTarget
         this.wireBall.style.backgroundColor = 
             this.isConnected
             ? colorStyleRgba(toRgba(this.connectedOutput.wireColor))
-            : colorStyle;
+            : (   graphView.tempConn
+               && graphView.overInput == this
+               ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
+               : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
 
@@ -14904,7 +14924,7 @@ class ActionManager
                 lastOf(this.actions));
         }
 
-        console.log("DO " + action.name);
+        //console.log("DO " + action.name);
         action.do();
     }
 
@@ -14920,7 +14940,7 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            console.log("UNDO " + last.name);
+            //console.log("UNDO " + last.name);
             last.undo();
 
             if (   this.actions.length == 0
@@ -14941,7 +14961,7 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            console.log("REDO " + last.name);
+            //console.log("REDO " + last.name);
             last.redo();
         
             if (   this.redoActions.length == 0
@@ -15441,10 +15461,10 @@ extends Action
 
     undo()
     {
-        console.log('select undo prevSelectedIds');
-        console.log(this.prevSelectedIds);
+        //console.log('select undo prevSelectedIds');
+        //console.log(this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);
-        console.log(graphView.selected);
+        //console.log(graphView.selected);
     }
 
 
@@ -15452,7 +15472,7 @@ extends Action
     redo()
     {
         graphView.selectFromIds(this.selectedIds);
-        console.log(graphView.selected);
+        //console.log(graphView.selected);
     }
 }
 
@@ -15737,7 +15757,10 @@ const generator = new Worker(
 
 const buf = new SharedArrayBuffer(1024);
 
-        
+
+var copiedJson = '';
+
+
 console.clear();
 
 
@@ -15754,6 +15777,13 @@ document.addEventListener('keydown', e =>
         && getCtrlKey(e))
     {
         uiCopyNodes(graphView.selected.map(n => n.id));
+    }
+
+    // paste
+    else if (e.code == 'KeyV'
+          && getCtrlKey(e))
+    {
+        uiPasteNodes(graphView.selected.map(n => n.id));
     }
 
     // delete
@@ -16269,17 +16299,16 @@ function uiUpdateObjects(objects)
 
 function uiCopyNodes(nodeIds)
 {
-    let json = '';
-
-
-    // for (const )
+    const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
+    copiedJson = nodesToJson(nodes);
+    console.log(copiedJson);
 }
 
 
 
 function uiPasteNodes()
 {
-
+    console.log('paste');
 }
 
 

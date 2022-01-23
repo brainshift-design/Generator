@@ -259,52 +259,69 @@ class Graph
     {
         const tab = '  ';
 
-        let json = 
-              '{\n'
+        let json = '{\n'
             + tab + '"zoom": "' + graphView.zoom  + '",\n'
             + tab + '"panx": "' + graphView.pan.x + '",\n'
-            + tab + '"pany": "' + graphView.pan.y + '",\n'
-            + tab + '"nodes":\n'
-            + tab + '[';
-            
+            + tab + '"pany": "' + graphView.pan.y + '",\n';
 
-        let first = true;
-        for (let i = 0; i < this.nodes.length; i++)
-        {
-            if (!first) json += ','; first = false;
-            json += '\n' + this.nodes[i].toJson(4);
-        }
-        
+        json += nodesToJson(this.nodes, false);
 
-        json += 
-              '\n' + 
-              tab + '],\n'
-            + tab + '"connections":\n'
-            + tab + '[';
-
-            
-        first = true;
-        for (let i = 0; i < this.nodes.length; i++)
-        {
-            let node = this.nodes[i];
-
-            for (let j = 0; j < node.inputs.length; j++)
-            {
-                if (!node.inputs[j].isConnected)
-                    continue;
-
-                if (!first) json += ','; first = false;
-                json += '\n' + node.inputs[j].connection.toJson(4);
-            }
-        }
-        
-
-        json += 
-                '\n' + 
-                tab + ']\n'
-            + '}';
+        json += '\n}';
 
 
         return json;
     }
+}
+
+
+
+function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
+{
+    const tab = '  ';
+
+    let json = 
+          (encloseBraces ? '{\n' : '')
+          + tab + '"nodes":\n'
+          + tab + '[';
+
+
+    let first = true;
+    for (let i = 0; i < nodes.length; i++)
+    {
+        if (!first) json += ','; first = false;
+        json += '\n' + nodes[i].toJson(4);
+    }
+    
+
+    json += 
+            '\n' + 
+          tab + '],\n'
+        + tab + '"connections":\n'
+        + tab + '[';
+
+        
+    first = true;
+    for (let i = 0; i < nodes.length; i++)
+    {
+        let node = nodes[i];
+
+        for (let j = 0; j < node.inputs.length; j++)
+        {
+            if (   !node.inputs[j].isConnected
+                ||    !nodes.includes(node.inputs[j].connectedOutput.op)
+                   && connOutputMustBeInNodes)
+                continue;
+
+            if (!first) json += ','; first = false;
+            json += '\n' + node.inputs[j].connection.toJson(4);
+        }
+    }
+    
+
+    json += '\n'
+        + tab + ']'
+        + (encloseBraces ? '\n}' :'');
+
+
+    return json;
 }

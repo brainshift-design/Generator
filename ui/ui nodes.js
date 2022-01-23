@@ -275,17 +275,16 @@ function uiUpdateObjects(objects)
 
 function uiCopyNodes(nodeIds)
 {
-    let json = '';
-
-
-    // for (const )
+    const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
+    copiedJson = nodesToJson(nodes);
+    console.log(copiedJson);
 }
 
 
 
 function uiPasteNodes()
 {
-
+    console.log('paste');
 }
 
 

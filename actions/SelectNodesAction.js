@@ -25,10 +25,10 @@ extends Action
 
     undo()
     {
-        console.log('select undo prevSelectedIds');
-        console.log(this.prevSelectedIds);
+        //console.log('select undo prevSelectedIds');
+        //console.log(this.prevSelectedIds);
         graphView.selectFromIds(this.prevSelectedIds);
-        console.log(graphView.selected);
+        //console.log(graphView.selected);
     }
 
 
@@ -36,6 +36,6 @@ extends Action
     redo()
     {
         graphView.selectFromIds(this.selectedIds);
-        console.log(graphView.selected);
+        //console.log(graphView.selected);
     }
 }

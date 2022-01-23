@@ -18,7 +18,10 @@ const generator = new Worker(
 
 const buf = new SharedArrayBuffer(1024);
 
-        
+
+var copiedJson = '';
+
+
 console.clear();
 
 
