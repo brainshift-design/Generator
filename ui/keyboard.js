@@ -1,7 +1,14 @@
 document.addEventListener('keydown', e =>
 {
+    // copy
+    if (   e.code == 'KeyC'
+        && getCtrlKey(e))
+    {
+        uiCopyNodes(graphView.selected.map(n => n.id));
+    }
+
     // delete
-    if (e.key == 'Delete')
+    else if (e.key == 'Delete')
     {
         actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
         graphView._selected = [];

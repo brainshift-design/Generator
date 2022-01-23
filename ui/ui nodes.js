@@ -273,6 +273,23 @@ function uiUpdateObjects(objects)
 
 
 
+function uiCopyNodes(nodeIds)
+{
+    let json = '';
+
+
+    // for (const )
+}
+
+
+
+function uiPasteNodes()
+{
+
+}
+
+
+
 function updateGraphNodes()
 {
     for (const node of graphView.selected)      updateGraphNode(node);
@@ -303,7 +320,7 @@ function updateGraphNode(node)
     //         + ', ';
     // } 
 
-    boxShadow += '0 0 0 1px ' + (node.div.over ? colorStyleRgb(rgbActiveObject) : '#00000008');
+    boxShadow += '0 0 0 1px ' + (node.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
 
 
     node.inner.style.boxShadow = boxShadow;

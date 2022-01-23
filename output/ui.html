@@ -46,7 +46,7 @@
 body
 {
     margin:           0;
-    background-color: #eee;
+    background-color: #f4f4f4;
     user-select:      none;
 }
 
@@ -386,6 +386,7 @@ input[type=text]::selection
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
+    box-shadow:    0 0 0 1px #0001;
     /* box-shadow:    0px 5px 20px #0001; */
 }    
 
@@ -6316,7 +6317,7 @@ function uiGetPluginDataReturn(msg)
     {
         case 'graph':
             loadGraph(msg.value);
-            graphView.updateScroll();
+            graphView.updatePanAndZoom();
             break;
     }
 }
@@ -15748,8 +15749,15 @@ uiPostMessageToFigma({
 
 document.addEventListener('keydown', e =>
 {
+    // copy
+    if (   e.code == 'KeyC'
+        && getCtrlKey(e))
+    {
+        uiCopyNodes(graphView.selected.map(n => n.id));
+    }
+
     // delete
-    if (e.key == 'Delete')
+    else if (e.key == 'Delete')
     {
         actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
         graphView._selected = [];
@@ -16259,6 +16267,23 @@ function uiUpdateObjects(objects)
 
 
 
+function uiCopyNodes(nodeIds)
+{
+    let json = '';
+
+
+    // for (const )
+}
+
+
+
+function uiPasteNodes()
+{
+
+}
+
+
+
 function updateGraphNodes()
 {
     for (const node of graphView.selected)      updateGraphNode(node);
@@ -16289,7 +16314,7 @@ function updateGraphNode(node)
     //         + ', ';
     // } 
 
-    boxShadow += '0 0 0 1px ' + (node.div.over ? colorStyleRgb(rgbActiveObject) : '#00000008');
+    boxShadow += '0 0 0 1px ' + (node.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
 
 
     node.inner.style.boxShadow = boxShadow;
