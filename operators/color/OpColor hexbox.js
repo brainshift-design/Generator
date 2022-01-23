@@ -1,8 +1,7 @@
 function initHexbox(op)
 {
     op.hexbox = createTextbox();
-    
-    
+       
     op.hexbox.style.textAlign  = 'center';
     op.hexbox.style.width      = '100%';
     op.hexbox.style.height     = 26;
@@ -25,8 +24,8 @@ function onHexboxPointerDown(e)
 {
     const hexbox = e.target;
 
-    if (hexbox.op.inputs[0].isConnected)
-        e.preventDefault();
+    // if (hexbox.op.inputs[0].isConnected)
+    //     e.preventDefault();
 
     e.stopPropagation();
 }
@@ -37,13 +36,14 @@ function onHexboxPointerUp(e)
 {
     const hexbox = e.target;
 
-    if (   !hexbox.editing
-        && !hexbox.op.inputs[0].isConnected)
+    if (   !hexbox.editing)
+        //&& !hexbox.op.inputs[0].isConnected)
     {
         e.preventDefault();
 
         hexbox.savedValue = hexbox.value;
 
+        hexbox.focus();
         hexbox.select();
         hexbox.editing = true;
     }
@@ -79,23 +79,34 @@ function onHexboxKeyDown(e)
 {
     const hexbox = e.target;
 
+    const isConnected =
+           hexbox.op.inputs[0].isConnected
+        || hexbox.op.inputs[2].isConnected
+        || hexbox.op.inputs[3].isConnected
+        || hexbox.op.inputs[4].isConnected
+
+
     if (   getCtrlKey(e)
-        && e.code == 'KeyV')
+        && e.code == 'KeyV'
+        && !isConnected)
     {
         e.preventDefault();
         document.execCommand('paste');
     }
 
-    else if (e.code == 'Enter'
-          || e.code == 'NumpadEnter')
+    else if ((   e.code == 'Enter'
+              || e.code == 'NumpadEnter')
+           && !isConnected)
         hexboxFinish(hexbox.op, true);
 
     else if (e.code == 'Escape')
         hexboxFinish(hexbox.op, false);
 
-    else if (e.key.length == 1
-         && !isDigit(e.key)
-         && !isHexDigit(e.key))
+    else if (   e.key.length == 1
+             && !isDigit(e.key)
+             && !isHexDigit(e.key)
+         ||     isConnected
+            && !isArrow(e.code))
         e.preventDefault();
 }
 
@@ -111,6 +122,7 @@ function hexboxFinish(op, success)
         op.hexbox.op.pushUpdate();
     }
     
+    op.hexbox.selectionEnd = op.hexbox.selectionStart;
     op.hexbox.editing = false;
     op.hexbox.blur();
 };

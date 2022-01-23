@@ -48,6 +48,16 @@ function isHexDigit(key)
 
 
 
+function isArrow(code)
+{
+    return code == 'ArrowLeft'
+        || code == 'ArrowRight'
+        || code == 'ArrowUp'
+        || code == 'ArrowDown';
+}
+
+
+
 function getNumberString(num, dec, showHex = false)
 {
     if (showHex)

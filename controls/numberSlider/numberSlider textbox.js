@@ -26,14 +26,16 @@ function initNumberSliderTextbox(slider)
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && getCtrlKey(e))
+              && getCtrlKey(e)
+              && !slider.readOnly)
         {
             e.preventDefault();
             document.execCommand("paste");
         }
         
-        else if (e.code == 'Enter'
-              || e.code == 'NumpadEnter')
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && !slider.readOnly)
             slider.textbox.finish(true);
 
         else if (e.code == 'Escape')
@@ -66,13 +68,15 @@ function initNumberSliderTextbox(slider)
 
         else 
         {
-            if (   e.key.length == 1
-                && !isDigit(e.key)
-                && (slider.showHex && !isHexDigit(e.key))
-                && e.key != getUserDecimalSeparator()
-                && !(   (   e.code == 'Minus'
-                         || e.code == 'NumpadSubtract')
-                     && slider.min < 0))
+            if (      e.key.length == 1
+                   && !isDigit(e.key)
+                   && (slider.showHex && !isHexDigit(e.key))
+                   && e.key != getUserDecimalSeparator()
+                   && !(   (   e.code == 'Minus'
+                            || e.code == 'NumpadSubtract')
+                        && slider.min < 0)
+                ||     slider.readOnly
+                   && !isArrow(e.code))
                 e.preventDefault();
 
             var t = slider.textbox;
@@ -169,6 +173,7 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline   = 'none';
         slider.textbox.style.textAlign = 'center';
+        slider.textbox.style.fontStyle = slider.readOnly ? 'italic' : 'normal';
 
     
         slider.textbox.value =

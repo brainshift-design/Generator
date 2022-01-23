@@ -60,6 +60,16 @@ function isHexDigit(key)
 
 
 
+function isArrow(code)
+{
+    return code == 'ArrowLeft'
+        || code == 'ArrowRight'
+        || code == 'ArrowUp'
+        || code == 'ArrowDown';
+}
+
+
+
 function getNumberString(num, dec, showHex = false)
 {
     if (showHex)
@@ -1872,7 +1882,7 @@ function createTextbox(className = '')
 function enableSliderText(slider, enable)
 {
     slider.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    slider.textbox.readOnly = !enable;
+    //slider.textbox.readOnly = !enable;
     slider.readOnly         = !enable;
 }
 

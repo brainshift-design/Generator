@@ -965,6 +965,16 @@ function isHexDigit(key)
 
 
 
+function isArrow(code)
+{
+    return code == 'ArrowLeft'
+        || code == 'ArrowRight'
+        || code == 'ArrowUp'
+        || code == 'ArrowDown';
+}
+
+
+
 function getNumberString(num, dec, showHex = false)
 {
     if (showHex)
@@ -2777,7 +2787,7 @@ function createTextbox(className = '')
 function enableSliderText(slider, enable)
 {
     slider.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    slider.textbox.readOnly = !enable;
+    //slider.textbox.readOnly = !enable;
     slider.readOnly         = !enable;
 }
 
@@ -3267,6 +3277,16 @@ function isHexDigit(key)
 
 
 
+function isArrow(code)
+{
+    return code == 'ArrowLeft'
+        || code == 'ArrowRight'
+        || code == 'ArrowUp'
+        || code == 'ArrowDown';
+}
+
+
+
 function getNumberString(num, dec, showHex = false)
 {
     if (showHex)
@@ -5079,7 +5099,7 @@ function createTextbox(className = '')
 function enableSliderText(slider, enable)
 {
     slider.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    slider.textbox.readOnly = !enable;
+    //slider.textbox.readOnly = !enable;
     slider.readOnly         = !enable;
 }
 
@@ -6883,14 +6903,16 @@ function initNumberSliderTextbox(slider)
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && getCtrlKey(e))
+              && getCtrlKey(e)
+              && !slider.readOnly)
         {
             e.preventDefault();
             document.execCommand("paste");
         }
         
-        else if (e.code == 'Enter'
-              || e.code == 'NumpadEnter')
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && !slider.readOnly)
             slider.textbox.finish(true);
 
         else if (e.code == 'Escape')
@@ -6923,13 +6945,15 @@ function initNumberSliderTextbox(slider)
 
         else 
         {
-            if (   e.key.length == 1
-                && !isDigit(e.key)
-                && (slider.showHex && !isHexDigit(e.key))
-                && e.key != getUserDecimalSeparator()
-                && !(   (   e.code == 'Minus'
-                         || e.code == 'NumpadSubtract')
-                     && slider.min < 0))
+            if (      e.key.length == 1
+                   && !isDigit(e.key)
+                   && (slider.showHex && !isHexDigit(e.key))
+                   && e.key != getUserDecimalSeparator()
+                   && !(   (   e.code == 'Minus'
+                            || e.code == 'NumpadSubtract')
+                        && slider.min < 0)
+                ||     slider.readOnly
+                   && !isArrow(e.code))
                 e.preventDefault();
 
             var t = slider.textbox;
@@ -7026,6 +7050,7 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline   = 'none';
         slider.textbox.style.textAlign = 'center';
+        slider.textbox.style.fontStyle = slider.readOnly ? 'italic' : 'normal';
 
     
         slider.textbox.value =
@@ -7550,14 +7575,16 @@ function initSelectSliderTextbox(slider)
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && getCtrlKey(e))
+              && getCtrlKey(e)
+              && !slider.readOnly)
         {
             e.preventDefault();
             document.execCommand("paste");
         }
         
-        else if (e.code == 'Enter'
-              || e.code == 'NumpadEnter')
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && !slider.readOnly)
             slider.textbox.finish(true);
 
         else if (e.code == 'Escape')
@@ -7590,13 +7617,15 @@ function initSelectSliderTextbox(slider)
 
         else 
         {
-            if (   e.key.length == 1
-                && !isDigit(e.key)
-                && e.key != '.'
-                && !(   (   e.code == 'Minus'
-                         || e.code == 'NumpadSubtract')
-                     && slider.min < 0))
-                e.preventDefault();
+            if (      e.key.length == 1
+                   && !isDigit(e.key)
+                   && e.key != '.'
+                   && !(   (   e.code == 'Minus'
+                            || e.code == 'NumpadSubtract')
+                        && slider.min < 0)
+                ||     slider.readOnly
+                   && !isArrow(e.code))
+                  e.preventDefault();
 
             var t = slider.textbox;
 
@@ -7677,14 +7706,14 @@ function initSelectSliderTextbox(slider)
         slider.textbox.style.boxShadow       = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline         = 'none';
         slider.textbox.style.textAlign       = 'center';
-
+        slider.textbox.style.color           = 'black';//slider.textColor;
+        slider.textbox.style.fontStyle = slider.readOnly ? 'italic' : 'normal';
         
         slider.textbox.style.backgroundColor = 
             slider.backColor != 'transparent' 
             ? rgb_a(slider.backColor, 0.9) 
             : '#fffd';
 
-        slider.textbox.style.color           = 'black';//slider.textColor;
 
         slider.textbox.value                 = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue            = slider.textbox.value;
@@ -13624,11 +13653,14 @@ extends Operator
             ? rgb2hex(colBack)
             : '?';
 
-        this.hexbox.style.fontStyle = 
-            this.inputs[0].isConnected
-            ? 'italic'
-            : 'normal';
+        const isConnected =
+               this.inputs[0].isConnected
+            || this.inputs[2].isConnected
+            || this.inputs[3].isConnected
+            || this.inputs[4].isConnected
 
+        this.hexbox.style.fontStyle = isConnected ? 'italic' : 'normal';
+        //this.hexbox.readOnly        = isConnected;
 
         this.updateControls(colBack);
 
@@ -13683,6 +13715,8 @@ extends Operator
             && !isValid 
             ? '?' 
             : '';
+
+        slider.textbox.style.fontStyle = this.inputs[0].isConnected ? 'italic' : 'normal';
 
         slider.update();
     }
@@ -14288,8 +14322,7 @@ function getColorSpaceScale(space)
 function initHexbox(op)
 {
     op.hexbox = createTextbox();
-    
-    
+       
     op.hexbox.style.textAlign  = 'center';
     op.hexbox.style.width      = '100%';
     op.hexbox.style.height     = 26;
@@ -14312,8 +14345,8 @@ function onHexboxPointerDown(e)
 {
     const hexbox = e.target;
 
-    if (hexbox.op.inputs[0].isConnected)
-        e.preventDefault();
+    // if (hexbox.op.inputs[0].isConnected)
+    //     e.preventDefault();
 
     e.stopPropagation();
 }
@@ -14324,13 +14357,14 @@ function onHexboxPointerUp(e)
 {
     const hexbox = e.target;
 
-    if (   !hexbox.editing
-        && !hexbox.op.inputs[0].isConnected)
+    if (   !hexbox.editing)
+        //&& !hexbox.op.inputs[0].isConnected)
     {
         e.preventDefault();
 
         hexbox.savedValue = hexbox.value;
 
+        hexbox.focus();
         hexbox.select();
         hexbox.editing = true;
     }
@@ -14366,23 +14400,34 @@ function onHexboxKeyDown(e)
 {
     const hexbox = e.target;
 
+    const isConnected =
+           hexbox.op.inputs[0].isConnected
+        || hexbox.op.inputs[2].isConnected
+        || hexbox.op.inputs[3].isConnected
+        || hexbox.op.inputs[4].isConnected
+
+
     if (   getCtrlKey(e)
-        && e.code == 'KeyV')
+        && e.code == 'KeyV'
+        && !isConnected)
     {
         e.preventDefault();
         document.execCommand('paste');
     }
 
-    else if (e.code == 'Enter'
-          || e.code == 'NumpadEnter')
+    else if ((   e.code == 'Enter'
+              || e.code == 'NumpadEnter')
+           && !isConnected)
         hexboxFinish(hexbox.op, true);
 
     else if (e.code == 'Escape')
         hexboxFinish(hexbox.op, false);
 
-    else if (e.key.length == 1
-         && !isDigit(e.key)
-         && !isHexDigit(e.key))
+    else if (   e.key.length == 1
+             && !isDigit(e.key)
+             && !isHexDigit(e.key)
+         ||     isConnected
+            && !isArrow(e.code))
         e.preventDefault();
 }
 
@@ -14398,6 +14443,7 @@ function hexboxFinish(op, success)
         op.hexbox.op.pushUpdate();
     }
     
+    op.hexbox.selectionEnd = op.hexbox.selectionStart;
     op.hexbox.editing = false;
     op.hexbox.blur();
 };
@@ -14733,19 +14779,11 @@ extends Operator
         this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
       
-        
-        // this.#paramStandard.addEventListener('change', () =>
-        // {
-        //     this.setRanges();
-        // });
-
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
 
-
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
-
 
         setTimeout(() => this.#paramStandard.setValue(1));
     }

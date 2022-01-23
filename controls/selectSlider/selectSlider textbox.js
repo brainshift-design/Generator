@@ -26,14 +26,16 @@ function initSelectSliderTextbox(slider)
             document.execCommand("copy");
         }
         else if (e.code == 'KeyV'
-              && getCtrlKey(e))
+              && getCtrlKey(e)
+              && !slider.readOnly)
         {
             e.preventDefault();
             document.execCommand("paste");
         }
         
-        else if (e.code == 'Enter'
-              || e.code == 'NumpadEnter')
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && !slider.readOnly)
             slider.textbox.finish(true);
 
         else if (e.code == 'Escape')
@@ -66,13 +68,15 @@ function initSelectSliderTextbox(slider)
 
         else 
         {
-            if (   e.key.length == 1
-                && !isDigit(e.key)
-                && e.key != '.'
-                && !(   (   e.code == 'Minus'
-                         || e.code == 'NumpadSubtract')
-                     && slider.min < 0))
-                e.preventDefault();
+            if (      e.key.length == 1
+                   && !isDigit(e.key)
+                   && e.key != '.'
+                   && !(   (   e.code == 'Minus'
+                            || e.code == 'NumpadSubtract')
+                        && slider.min < 0)
+                ||     slider.readOnly
+                   && !isArrow(e.code))
+                  e.preventDefault();
 
             var t = slider.textbox;
 
@@ -153,14 +157,14 @@ function initSelectSliderTextbox(slider)
         slider.textbox.style.boxShadow       = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline         = 'none';
         slider.textbox.style.textAlign       = 'center';
-
+        slider.textbox.style.color           = 'black';//slider.textColor;
+        slider.textbox.style.fontStyle = slider.readOnly ? 'italic' : 'normal';
         
         slider.textbox.style.backgroundColor = 
             slider.backColor != 'transparent' 
             ? rgb_a(slider.backColor, 0.9) 
             : '#fffd';
 
-        slider.textbox.style.color           = 'black';//slider.textColor;
 
         slider.textbox.value                 = numToString(slider.value, slider.editDec);
         slider.textbox.savedValue            = slider.textbox.value;

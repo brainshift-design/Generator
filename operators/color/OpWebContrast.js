@@ -18,19 +18,11 @@ extends Operator
         this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
       
-        
-        // this.#paramStandard.addEventListener('change', () =>
-        // {
-        //     this.setRanges();
-        // });
-
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
 
-
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
-
 
         setTimeout(() => this.#paramStandard.setValue(1));
     }

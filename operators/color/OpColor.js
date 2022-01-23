@@ -231,11 +231,14 @@ extends Operator
             ? rgb2hex(colBack)
             : '?';
 
-        this.hexbox.style.fontStyle = 
-            this.inputs[0].isConnected
-            ? 'italic'
-            : 'normal';
+        const isConnected =
+               this.inputs[0].isConnected
+            || this.inputs[2].isConnected
+            || this.inputs[3].isConnected
+            || this.inputs[4].isConnected
 
+        this.hexbox.style.fontStyle = isConnected ? 'italic' : 'normal';
+        //this.hexbox.readOnly        = isConnected;
 
         this.updateControls(colBack);
 
@@ -290,6 +293,8 @@ extends Operator
             && !isValid 
             ? '?' 
             : '';
+
+        slider.textbox.style.fontStyle = this.inputs[0].isConnected ? 'italic' : 'normal';
 
         slider.update();
     }
