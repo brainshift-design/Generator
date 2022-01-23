@@ -1,10 +1,10 @@
 const resizeEdgeWidth = 8;
 
-document.canResizeX = false;
-document.canResizeY = false;
-
-document.resizingX  = false;
-document.resizingY  = false;
+document.canResizeX    = false;
+document.canResizeY    = false;
+   
+document.resizingX     = false;
+document.resizingY     = false;
 
 document.startRect = new Rect();
 
@@ -12,7 +12,8 @@ document.startRect = new Rect();
 
 function resizeWindow(width, height)
 {
-    graphView.updatePanAndZoom();
+    // for (const conn of graph.connections)
+    //     graphView.updateWireTransform(conn.wire);
 
     uiPostMessageToFigma({ 
         cmd:   'figResizeWindow', 

@@ -5,6 +5,8 @@ class Graph
     
     mutex        = false;
 
+    connections  = [];
+
 
 
     clear()
@@ -181,6 +183,9 @@ class Graph
         
         graphView.addWire(conn.wire);
 
+        this.connections.push(conn);
+
+        
         output.op.makePassive();
         output.updateControl();
         
@@ -214,8 +219,11 @@ class Graph
         var output = input.connectedOutput;
         if (!output) return false;
 
-        
+
         graphView.removeWire(input.connection.wire);
+
+        removeFromArray(this.connections, input.connection);
+
 
         removeFromArray(output.connectedInputs, input);
         

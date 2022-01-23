@@ -234,7 +234,7 @@ function figResizeWindow(width, height) {
     figma.ui.resize(width, height);
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
-    figPostMessageToUi({ cmd: 'uiUpdatePanAndZoom' });
+    figPostMessageToUi({ cmd: 'uiEndResizeWindow' });
 }
 function figNotify(text, prefix = 'Generator ', delay = 400) {
     figma.notify(prefix + text, { timeout: delay });

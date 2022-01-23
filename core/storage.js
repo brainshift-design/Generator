@@ -32,6 +32,18 @@ function uiGetPluginDataReturn(msg)
 
 
 
+function uiEndResizeWindow()
+{
+    // graphView.updatePanAndZoom();
+
+    for (const conn of graph.connections)
+        graphView.updateWireTransform(conn.wire);
+
+    graphView.updateScroll();
+}
+
+
+
 function uiSetPluginData(key, value)
 {
     uiPostMessageToFigma({ 

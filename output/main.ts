@@ -341,7 +341,8 @@ function figResizeWindow(width, height)
     figma.clientStorage.setAsync('windowWidth',  width);
     figma.clientStorage.setAsync('windowHeight', height);
 
-    figPostMessageToUi({cmd: 'uiUpdatePanAndZoom'});
+
+    figPostMessageToUi({cmd: 'uiEndResizeWindow'});
 }
 
 

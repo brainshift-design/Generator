@@ -10,10 +10,10 @@ onmessage = e =>
         case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg); break;
         case 'uiEndLoadState':        uiEndLoadState(msg);               break;
         case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
+        case 'uiEndResizeWindow':     uiEndResizeWindow();               break;
         case 'uiClosePlugin':         uiClosePlugin();                   break;
 
         case 'uiEndFigMessage':       uiPostNextMessageToFigma();        break;
-      //case 'uiUpdatePanAndZoom': graphView.updatePanAndZoom();     break;
     }    
 }    
   
