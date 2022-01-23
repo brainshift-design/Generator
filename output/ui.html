@@ -13817,7 +13817,9 @@ extends Operator
             if (   !param.isDefault()
                 && (   !param.input
                     || !param.input.isConnected)
-                && !this.inputs[0].isConnected)
+                && (  !this.inputs[0].isConnected
+                    ||     param.input == this.inputs[1]
+                       && !param.input.isConnected))
             {
                 if (!first) json += ',\n'; first = false;
                 json += pos + param.toJson(nTab, i > 0 ? 'param' + i : '');
