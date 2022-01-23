@@ -303,7 +303,7 @@ class Operator
 
     updateHeader()
     {
-        this.header.style.backgroundColor = colorStyleRgb(rgbFromDataType(this._dataType, false));
+        this.header.style.backgroundColor = colorStyleRgb_a(rgbFromDataType(this._dataType, false), 0.95);
     }
 
 

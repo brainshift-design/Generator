@@ -6966,8 +6966,8 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
     slider.dragScale         = dragScale;
     slider.wheelStep         = wheelStep;
         
-    slider.backColor         = '#fff';
-    slider.valueColor        = '#eee';
+    slider.backColor         = '#fffd';
+    slider.valueColor        = '#7772';
     slider.textColor         = '#000';
            
     slider.fontSize          = 11;
@@ -11255,8 +11255,6 @@ class Graph
         
         graphView.addWire(conn.wire);
 
-        console.log('conn = ', conn);
-
         output.op.makePassive();
         output.updateControl();
         
@@ -12216,7 +12214,7 @@ class Operator
 
     updateHeader()
     {
-        this.header.style.backgroundColor = colorStyleRgb(rgbFromDataType(this._dataType, false));
+        this.header.style.backgroundColor = colorStyleRgb_a(rgbFromDataType(this._dataType, false), 0.95);
     }
 
 

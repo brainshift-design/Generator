@@ -181,8 +181,6 @@ class Graph
         
         graphView.addWire(conn.wire);
 
-        console.log('conn = ', conn);
-
         output.op.makePassive();
         output.updateControl();
         

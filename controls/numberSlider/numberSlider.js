@@ -35,8 +35,8 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
     slider.dragScale         = dragScale;
     slider.wheelStep         = wheelStep;
         
-    slider.backColor         = '#fff';
-    slider.valueColor        = '#eee';
+    slider.backColor         = '#fffd';
+    slider.valueColor        = '#7772';
     slider.textColor         = '#000';
            
     slider.fontSize          = 11;
