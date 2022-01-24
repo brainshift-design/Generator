@@ -12431,7 +12431,7 @@ class Operator
             return false; // graph already contains a node with this id
 
         this._name = newName;
-        this.label.innerHTML = newName;//this.id + ': ' + newName;
+        this.label.innerHTML = this.id + ': ' + newName;
 
         return true;
     }
@@ -15508,27 +15508,30 @@ extends Action
 {
     copiedNodesJson;
 
+    pasteOutsideConnections;
+
     pastedNodeIds = [];
     pastedNodePos = [];
 
     prevSelectedNodeIds = [];
 
 
-    constructor(copiedNodesJson)
+    constructor(copiedNodesJson, pasteOutsideConnections)
     {
         const data = JSON.parse(copiedNodesJson);
 
         super('paste ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
 
-        this.copiedNodesJson     = copiedNodesJson;
-        this.prevSelectedNodeIds = graphView.selected.map(n => n.id);
+        this.copiedNodesJson         = copiedNodesJson;
+        this.prevSelectedNodeIds     = graphView.selected.map(n => n.id);
+        this.pasteOutsideConnections = pasteOutsideConnections;
     }
 
 
 
     do()
     {
-        const nodes = uiPasteNodes(this.copiedNodesJson);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return { x: n.div.offsetLeft, y: n.div.offsetTop }});
@@ -15552,7 +15555,7 @@ extends Action
 
     redo()
     {
-        const nodes = uiPasteNodes(this.copiedNodesJson);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
         
         this.pastedNodeIds = nodes.map(n => n.id);
 
@@ -16056,7 +16059,7 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyV'
           && getCtrlKey(e))
     {
-        actionManager.do(new PasteNodesAction(copiedNodesJson));
+        actionManager.do(new PasteNodesAction(copiedNodesJson, e.shiftKey));
     }
 
     // duplicate
@@ -16064,7 +16067,7 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selected.map(n => n.id))));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selected.map(n => n.id)), e.shiftKey));
     }
 
     // select all
@@ -16588,7 +16591,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson)
+function uiPasteNodes(nodesJson, pasteOutsideConnections)
 {
     pasteOffset[0] += pasteOffsetDelta[0];
     pasteOffset[1] += pasteOffsetDelta[1];
@@ -16618,7 +16621,7 @@ function uiPasteNodes(nodesJson)
     correctConnections(data);
 
     
-    loadConnections(data);
+    loadConnections(data, pasteOutsideConnections);
     
     
     graphView.selected = nodes;
@@ -16864,10 +16867,15 @@ function loadNodes(data)
 
 
 
-function loadConnections(data)
+function loadConnections(data, loadOutsideConnections)
 {
     for (const _conn of data.connections)
-        Connection.parseJson(_conn);
+    {
+        if (      data.nodes.find(n => n.name == _conn.outputOp)
+               && data.nodes.find(n => n.name == _conn. inputOp)
+            || loadOutsideConnections)
+            Connection.parseJson(_conn);
+    }
 }
 
 
