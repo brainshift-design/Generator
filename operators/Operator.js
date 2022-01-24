@@ -279,14 +279,7 @@ class Operator
 
         for (let i = 0; i < headerInputs.length; i++)
         {
-            const input = headerInputs[i];
-            
-            if (i > 0)
-                height += gap;
-
-            //input.control.style.top = height - (input.isConnected ? 1 : 0);
-            //input.control.style.transform = input.isConnected ? 'none' : 'translateY(-2px)';
-
+            if (i > 0) height += gap;
             height += inputSize;
         }
 
@@ -304,40 +297,6 @@ class Operator
     {
         this.header.style.backgroundColor = colorStyleRgb_a(rgbFromDataType(this._dataType, false), 0.95);
     }
-
-
-
-    // updateInputWires()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             input.connection.wire.update();
-    //     }
-    // }
-
-
-
-    updateOutputWires()
-    {
-        for (const output of this.outputs)
-        {
-            for (const connInput of output.connectedInputs)
-                connInput.connection.wire.update();
-        }
-    }
-
-
-
-    // updateParamWires()
-    // {
-    //     for (const param of this.params)
-    //     {
-    //         if (   param.input
-    //             && param.input.isConnected) 
-    //             param.input.connection.wire.update();
-    //     }
-    // }
 
 
 

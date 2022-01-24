@@ -37,7 +37,8 @@ function loadGraph(json)
 
 function loadNodes(data)
 {
-    console.log(data);
+    //console.log(data);
+    
     const nodes = [];
     
     for (const _node of data.nodes)

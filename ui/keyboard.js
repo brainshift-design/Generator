@@ -4,21 +4,24 @@ document.addEventListener('keydown', e =>
     if (   e.code == 'KeyC'
         && getCtrlKey(e))
     {
-        uiCopyNodes(graphView.selected.map(n => n.id));
+        pasteOffset     = [0, 0];
+        copiedNodesJson = uiCopyNodes(graphView.selected.map(n => n.id));
     }
 
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e))
     {
-        uiPasteNodes(graphView.selected.map(n => n.id));
+        actionManager.do(new PasteNodesAction(copiedNodesJson));
     }
 
-    // delete
-    else if (e.key == 'Delete')
+    // duplicate
+    else if (e.code == 'KeyD'
+          && getCtrlKey(e))
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
-        graphView._selected = [];
+        pasteOffset = [0, 0];
+        actionManager.do(new PasteNodesAction(
+            uiCopyNodes(graphView.selected.map(n => n.id))));
     }
 
     // select all
@@ -34,6 +37,13 @@ document.addEventListener('keydown', e =>
     {
         if (e.shiftKey) actionManager.redo();
         else            actionManager.undo();
+    }
+
+    // delete
+    else if (e.key == 'Delete')
+    {
+        actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
+        graphView._selected = [];
     }
 
     //

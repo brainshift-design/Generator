@@ -276,42 +276,51 @@ function uiUpdateObjects(objects)
 
 function uiCopyNodes(nodeIds)
 {
-    const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
-    copiedNodesJson = nodesToJson(nodes, true, false);
-    console.log(copiedNodesJson);
-    pasteOffset = 0;
+    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const copiedJson = nodesToJson(nodes, true, false);
+
+    //console.log(copiedNodesJson);
+
+    return copiedJson;
 }
 
 
 
-function uiPasteNodes()
+function uiPasteNodes(nodesJson)
 {
-    pasteOffset += pasteOffsetDelta;
+    pasteOffset[0] += pasteOffsetDelta[0];
+    pasteOffset[1] += pasteOffsetDelta[1];
 
 
-    const data  = JSON.parse(copiedNodesJson);
+    const data  = JSON.parse(nodesJson);
 
+
+    // offset new nodes (must be done before loading)
     for (let i = 0; i < data.nodes.length; i++)
     {
-        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset / graphView.zoom;
-        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset / graphView.zoom;
+        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
+        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
     }
 
-
+    
     const nodes = loadNodes(data);
 
+    // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
         graph.addNode(nodes[i], false);
         data.nodes[i].newName = nodes[i].name;
     }
-
-
+    
+    // correct node names in connections
     correctConnections(data);
+
+    
     loadConnections(data);
-
-
+    
+    
     graphView.selected = nodes;
+    return nodes;
 }
 
 

@@ -73,14 +73,4 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
         prefix: prefix,
         delay:  delay
     });        
-}    
-
-
-
-function uiClosePlugin()
-{
-    console.log('uiClosePlugin()');
-    const json = graph.toJson(); 
-    //console.log(json);
-    uiSetPluginData('graph', json);
 }

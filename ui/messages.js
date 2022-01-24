@@ -11,7 +11,6 @@ onmessage = e =>
         case 'uiEndLoadState':        uiEndLoadState(msg);               break;
         case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
         case 'uiEndResizeWindow':     uiEndResizeWindow();               break;
-        case 'uiClosePlugin':         uiClosePlugin();                   break;
 
         case 'uiEndFigMessage':       uiPostNextMessageToFigma();        break;
     }    

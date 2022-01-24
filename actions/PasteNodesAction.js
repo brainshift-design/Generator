@@ -1,0 +1,40 @@
+class PasteNodesAction
+extends Action
+{
+    copiedNodesJson;
+
+    pastedNodeIds       = [];
+    prevSelectedNodeIds = [];
+
+
+    constructor(copiedNodesJson)
+    {
+        const data = JSON.parse(copiedNodesJson);
+
+        super('paste ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
+
+        this.copiedNodesJson     = copiedNodesJson;
+        this.prevSelectedNodeIds = graphView.selected.map(n => n.id);
+    }
+
+
+
+    do()
+    {
+        this.pastedNodeIds = uiPasteNodes(this.copiedNodesJson).map(n => n.id);
+    }
+
+
+
+    undo()
+    {
+        uiDeleteNodes(this.pastedNodeIds);
+        
+        Operator.nextId -= this.pastedNodeIds.length;
+
+        pasteOffset[0] -= pasteOffsetDelta[0];
+        pasteOffset[1] -= pasteOffsetDelta[1];
+
+        graphView.selected = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+    }
+}

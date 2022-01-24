@@ -12382,14 +12382,7 @@ class Operator
 
         for (let i = 0; i < headerInputs.length; i++)
         {
-            const input = headerInputs[i];
-            
-            if (i > 0)
-                height += gap;
-
-            //input.control.style.top = height - (input.isConnected ? 1 : 0);
-            //input.control.style.transform = input.isConnected ? 'none' : 'translateY(-2px)';
-
+            if (i > 0) height += gap;
             height += inputSize;
         }
 
@@ -12407,40 +12400,6 @@ class Operator
     {
         this.header.style.backgroundColor = colorStyleRgb_a(rgbFromDataType(this._dataType, false), 0.95);
     }
-
-
-
-    // updateInputWires()
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             input.connection.wire.update();
-    //     }
-    // }
-
-
-
-    updateOutputWires()
-    {
-        for (const output of this.outputs)
-        {
-            for (const connInput of output.connectedInputs)
-                connInput.connection.wire.update();
-        }
-    }
-
-
-
-    // updateParamWires()
-    // {
-    //     for (const param of this.params)
-    //     {
-    //         if (   param.input
-    //             && param.input.isConnected) 
-    //             param.input.connection.wire.update();
-    //     }
-    // }
 
 
 
@@ -15430,6 +15389,43 @@ extends Action
 }
 
 
+class DuplicateNodesAction
+extends Action
+{
+    copiedJson;
+    pastedNodeIds = [];
+
+
+    constructor(copiedJson)
+    {
+        const data = JSON.parse(copiedJson);
+
+        super('paste ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
+
+        this.copiedJson = copiedJson;
+    }
+
+
+
+    do()
+    {
+        this.pastedNodeIds = uiPasteNodes(this.copiedJson).map(n => n.id);
+    }
+
+
+
+    undo()
+    {
+        uiDeleteNodes(this.pastedNodeIds);
+        
+        Operator.nextId -= this.pastedNodeIds.length;
+
+        pasteOffset[0] -= pasteOffsetDelta[0];
+        pasteOffset[1] -= pasteOffsetDelta[1];
+    }
+}
+
+
 class MoveNodesAction
 extends Action
 {
@@ -15497,6 +15493,48 @@ extends Action
                 this.from[i].x,
                 this.from[i].y);
         }
+    }
+}
+
+
+class PasteNodesAction
+extends Action
+{
+    copiedNodesJson;
+
+    pastedNodeIds       = [];
+    prevSelectedNodeIds = [];
+
+
+    constructor(copiedNodesJson)
+    {
+        const data = JSON.parse(copiedNodesJson);
+
+        super('paste ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
+
+        this.copiedNodesJson     = copiedNodesJson;
+        this.prevSelectedNodeIds = graphView.selected.map(n => n.id);
+    }
+
+
+
+    do()
+    {
+        this.pastedNodeIds = uiPasteNodes(this.copiedNodesJson).map(n => n.id);
+    }
+
+
+
+    undo()
+    {
+        uiDeleteNodes(this.pastedNodeIds);
+        
+        Operator.nextId -= this.pastedNodeIds.length;
+
+        pasteOffset[0] -= pasteOffsetDelta[0];
+        pasteOffset[1] -= pasteOffsetDelta[1];
+
+        graphView.selected = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
     }
 }
 
@@ -15959,8 +15997,9 @@ const buf = new SharedArrayBuffer(1024);
 
 var copiedNodesJson  = '';
 
-var pasteOffset      = 0;
-var pasteOffsetDelta = 40;
+var pasteOffset      = [ 0,   0];
+var pasteOffsetDelta = [40, 100];
+
 
 console.clear();
 
@@ -15977,21 +16016,24 @@ document.addEventListener('keydown', e =>
     if (   e.code == 'KeyC'
         && getCtrlKey(e))
     {
-        uiCopyNodes(graphView.selected.map(n => n.id));
+        pasteOffset     = [0, 0];
+        copiedNodesJson = uiCopyNodes(graphView.selected.map(n => n.id));
     }
 
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e))
     {
-        uiPasteNodes(graphView.selected.map(n => n.id));
+        actionManager.do(new PasteNodesAction(copiedNodesJson));
     }
 
-    // delete
-    else if (e.key == 'Delete')
+    // duplicate
+    else if (e.code == 'KeyD'
+          && getCtrlKey(e))
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
-        graphView._selected = [];
+        pasteOffset = [0, 0];
+        actionManager.do(new PasteNodesAction(
+            uiCopyNodes(graphView.selected.map(n => n.id))));
     }
 
     // select all
@@ -16007,6 +16049,13 @@ document.addEventListener('keydown', e =>
     {
         if (e.shiftKey) actionManager.redo();
         else            actionManager.undo();
+    }
+
+    // delete
+    else if (e.key == 'Delete')
+    {
+        actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
+        graphView._selected = [];
     }
 
     //
@@ -16107,7 +16156,6 @@ onmessage = e =>
         case 'uiEndLoadState':        uiEndLoadState(msg);               break;
         case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
         case 'uiEndResizeWindow':     uiEndResizeWindow();               break;
-        case 'uiClosePlugin':         uiClosePlugin();                   break;
 
         case 'uiEndFigMessage':       uiPostNextMessageToFigma();        break;
     }    
@@ -16501,42 +16549,51 @@ function uiUpdateObjects(objects)
 
 function uiCopyNodes(nodeIds)
 {
-    const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
-    copiedNodesJson = nodesToJson(nodes, true, false);
-    console.log(copiedNodesJson);
-    pasteOffset = 0;
+    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const copiedJson = nodesToJson(nodes, true, false);
+
+    //console.log(copiedNodesJson);
+
+    return copiedJson;
 }
 
 
 
-function uiPasteNodes()
+function uiPasteNodes(nodesJson)
 {
-    pasteOffset += pasteOffsetDelta;
+    pasteOffset[0] += pasteOffsetDelta[0];
+    pasteOffset[1] += pasteOffsetDelta[1];
 
 
-    const data  = JSON.parse(copiedNodesJson);
+    const data  = JSON.parse(nodesJson);
 
+
+    // offset new nodes (must be done before loading)
     for (let i = 0; i < data.nodes.length; i++)
     {
-        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset / graphView.zoom;
-        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset / graphView.zoom;
+        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
+        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
     }
 
-
+    
     const nodes = loadNodes(data);
 
+    // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
         graph.addNode(nodes[i], false);
         data.nodes[i].newName = nodes[i].name;
     }
-
-
+    
+    // correct node names in connections
     correctConnections(data);
+
+    
     loadConnections(data);
-
-
+    
+    
     graphView.selected = nodes;
+    return nodes;
 }
 
 
@@ -16669,16 +16726,6 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
         prefix: prefix,
         delay:  delay
     });        
-}    
-
-
-
-function uiClosePlugin()
-{
-    console.log('uiClosePlugin()');
-    const json = graph.toJson(); 
-    //console.log(json);
-    uiSetPluginData('graph', json);
 }
 
 
@@ -16760,7 +16807,8 @@ function loadGraph(json)
 
 function loadNodes(data)
 {
-    console.log(data);
+    //console.log(data);
+    
     const nodes = [];
     
     for (const _node of data.nodes)

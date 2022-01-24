@@ -21,8 +21,9 @@ const buf = new SharedArrayBuffer(1024);
 
 var copiedNodesJson  = '';
 
-var pasteOffset      = 0;
-var pasteOffsetDelta = 40;
+var pasteOffset      = [ 0,   0];
+var pasteOffsetDelta = [40, 100];
+
 
 console.clear();
 
