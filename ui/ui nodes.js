@@ -1,6 +1,7 @@
 function uiCreateNode(opType, createdId = -1, updateUI = true)
 {
     let node = graph.createNode(opType, createdId);
+    graph.addNode(node);
     
     // if (graphView.selected.length > 0)
     // {
@@ -276,15 +277,57 @@ function uiUpdateObjects(objects)
 function uiCopyNodes(nodeIds)
 {
     const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
-    copiedJson = nodesToJson(nodes);
-    console.log(copiedJson);
+    copiedNodesJson = nodesToJson(nodes, true, false);
+    console.log(copiedNodesJson);
+    pasteOffset = 0;
 }
 
 
 
 function uiPasteNodes()
 {
-    console.log('paste');
+    pasteOffset += pasteOffsetDelta;
+
+
+    const data  = JSON.parse(copiedNodesJson);
+
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset / graphView.zoom;
+        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset / graphView.zoom;
+    }
+
+
+    const nodes = loadNodes(data);
+
+    for (let i = 0; i < nodes.length; i++)
+    {
+        graph.addNode(nodes[i], false);
+        data.nodes[i].newName = nodes[i].name;
+    }
+
+
+    correctConnections(data);
+    loadConnections(data);
+
+
+    graphView.selected = nodes;
+}
+
+
+
+function correctConnections(data)
+{
+    for (let i = 0; i < data.connections.length; i++)
+    {
+        const _conn = data.connections[i];
+
+        let outputOpIndex = data.nodes.findIndex(n => n.name == _conn.outputOp);
+        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newName;
+
+        const  inputOpIndex = data.nodes.findIndex(n => n.name == _conn. inputOp);
+        data.connections[i]. inputOp = data.nodes[ inputOpIndex].newName;
+    }
 }
 
 

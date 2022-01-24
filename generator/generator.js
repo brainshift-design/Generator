@@ -56,6 +56,7 @@ function genPostMessageToUi(msg)
 // function genCreateNode(type, id, name)
 // {
 //     const node = genGraph.createNode(type, id, name);
+//     genGraph.addNode(node);
 
 //     // on the UI side the node has already been created by this point
 

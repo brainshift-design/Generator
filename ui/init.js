@@ -19,8 +19,10 @@ const generator = new Worker(
 const buf = new SharedArrayBuffer(1024);
 
 
-var copiedJson = '';
+var copiedNodesJson  = '';
 
+var pasteOffset      = 0;
+var pasteOffsetDelta = 40;
 
 console.clear();
 

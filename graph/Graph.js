@@ -78,22 +78,20 @@ class Graph
             node.id = createdNodeId;
         }
         
-        this.addNode(node);
-
         return node;
     }
 
 
 
-    addNodes(nodes)
+    addNodes(nodes, placeNode = true)
     {
         for (const node of nodes)
-            this.addNode(node);
+            this.addNode(node, placeNode);
     }
 
 
 
-    addNode(node)
+    addNode(node, placeNode = true)
     {
         node.graph = this;
         node.setName(this.getNewNodeName(node)); // TODO: not checking return value here
@@ -101,7 +99,8 @@ class Graph
         this.nodes.push(node);
         graphView.appendChild(node.div);
         
-        graphView.placeNewNode(node);
+        if (placeNode)
+            graphView.placeNewNode(node);
         
         node.div.style.zIndex = graph.nodes.length-1;
 

@@ -309,7 +309,7 @@ graphView.getIntersectingNodes = node =>
 
 
 
-graphView.placeNewNode = node =>
+graphView.placeNewNode = (node) =>
 {
     node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
     node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;

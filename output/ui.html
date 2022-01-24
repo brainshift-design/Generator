@@ -3032,6 +3032,7 @@ function genPostMessageToUi(msg)
 // function genCreateNode(type, id, name)
 // {
 //     const node = genGraph.createNode(type, id, name);
+//     genGraph.addNode(node);
 
 //     // on the UI side the node has already been created by this point
 
@@ -10566,7 +10567,7 @@ graphView.getIntersectingNodes = node =>
 
 
 
-graphView.placeNewNode = node =>
+graphView.placeNewNode = (node) =>
 {
     node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
     node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
@@ -11354,22 +11355,20 @@ class Graph
             node.id = createdNodeId;
         }
         
-        this.addNode(node);
-
         return node;
     }
 
 
 
-    addNodes(nodes)
+    addNodes(nodes, placeNode = true)
     {
         for (const node of nodes)
-            this.addNode(node);
+            this.addNode(node, placeNode);
     }
 
 
 
-    addNode(node)
+    addNode(node, placeNode = true)
     {
         node.graph = this;
         node.setName(this.getNewNodeName(node)); // TODO: not checking return value here
@@ -11377,7 +11376,8 @@ class Graph
         this.nodes.push(node);
         graphView.appendChild(node.div);
         
-        graphView.placeNewNode(node);
+        if (placeNode)
+            graphView.placeNewNode(node);
         
         node.div.style.zIndex = graph.nodes.length-1;
 
@@ -15957,8 +15957,10 @@ const generator = new Worker(
 const buf = new SharedArrayBuffer(1024);
 
 
-var copiedJson = '';
+var copiedNodesJson  = '';
 
+var pasteOffset      = 0;
+var pasteOffsetDelta = 40;
 
 console.clear();
 
@@ -16224,6 +16226,7 @@ productKeyClose.addEventListener('click', e =>
 function uiCreateNode(opType, createdId = -1, updateUI = true)
 {
     let node = graph.createNode(opType, createdId);
+    graph.addNode(node);
     
     // if (graphView.selected.length > 0)
     // {
@@ -16499,15 +16502,57 @@ function uiUpdateObjects(objects)
 function uiCopyNodes(nodeIds)
 {
     const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
-    copiedJson = nodesToJson(nodes);
-    console.log(copiedJson);
+    copiedNodesJson = nodesToJson(nodes, true, false);
+    console.log(copiedNodesJson);
+    pasteOffset = 0;
 }
 
 
 
 function uiPasteNodes()
 {
-    console.log('paste');
+    pasteOffset += pasteOffsetDelta;
+
+
+    const data  = JSON.parse(copiedNodesJson);
+
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset / graphView.zoom;
+        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset / graphView.zoom;
+    }
+
+
+    const nodes = loadNodes(data);
+
+    for (let i = 0; i < nodes.length; i++)
+    {
+        graph.addNode(nodes[i], false);
+        data.nodes[i].newName = nodes[i].name;
+    }
+
+
+    correctConnections(data);
+    loadConnections(data);
+
+
+    graphView.selected = nodes;
+}
+
+
+
+function correctConnections(data)
+{
+    for (let i = 0; i < data.connections.length; i++)
+    {
+        const _conn = data.connections[i];
+
+        let outputOpIndex = data.nodes.findIndex(n => n.name == _conn.outputOp);
+        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newName;
+
+        const  inputOpIndex = data.nodes.findIndex(n => n.name == _conn. inputOp);
+        data.connections[i]. inputOp = data.nodes[ inputOpIndex].newName;
+    }
 }
 
 
@@ -16700,34 +16745,50 @@ function loadGraph(json)
 {
     graph.clear();
 
-
     const data = JSON.parse(json);
-
 
     graphView.setPanAndZoom(
         { x: parseFloat(data.panx), 
           y: parseFloat(data.pany) },
         parseFloat(data.zoom));
 
+    graph.addNodes(loadNodes(data), false);
+    loadConnections(data);
+}
 
+
+
+function loadNodes(data)
+{
+    console.log(data);
+    const nodes = [];
+    
     for (const _node of data.nodes)
     {
-        const node  = graph.createNode(_node.type);
+        const node = graph.createNode(_node.type);
 
         node.name   = _node.name;
         node.loaded = true;
+
+        if (  _node.params
+            || node.alwaysLoadParams)
+            node.loadParams(_node);
 
         setNodePosition(
             node, 
             parseFloat(_node.x), 
             parseFloat(_node.y));
 
-        if (  _node.params
-            || node.alwaysLoadParams)
-            node.loadParams(_node);
+        nodes.push(node);
     }
 
+    return nodes;
+}
 
+
+
+function loadConnections(data)
+{
     for (const _conn of data.connections)
         Connection.parseJson(_conn);
 }

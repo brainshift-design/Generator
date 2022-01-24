@@ -22,34 +22,50 @@ function loadGraph(json)
 {
     graph.clear();
 
-
     const data = JSON.parse(json);
-
 
     graphView.setPanAndZoom(
         { x: parseFloat(data.panx), 
           y: parseFloat(data.pany) },
         parseFloat(data.zoom));
 
+    graph.addNodes(loadNodes(data), false);
+    loadConnections(data);
+}
 
+
+
+function loadNodes(data)
+{
+    console.log(data);
+    const nodes = [];
+    
     for (const _node of data.nodes)
     {
-        const node  = graph.createNode(_node.type);
+        const node = graph.createNode(_node.type);
 
         node.name   = _node.name;
         node.loaded = true;
+
+        if (  _node.params
+            || node.alwaysLoadParams)
+            node.loadParams(_node);
 
         setNodePosition(
             node, 
             parseFloat(_node.x), 
             parseFloat(_node.y));
 
-        if (  _node.params
-            || node.alwaysLoadParams)
-            node.loadParams(_node);
+        nodes.push(node);
     }
 
+    return nodes;
+}
 
+
+
+function loadConnections(data)
+{
     for (const _conn of data.connections)
         Connection.parseJson(_conn);
 }
