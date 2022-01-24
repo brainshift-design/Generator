@@ -286,7 +286,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson)
+function uiPasteNodes(nodesJson, pasteOutsideConnections)
 {
     pasteOffset[0] += pasteOffsetDelta[0];
     pasteOffset[1] += pasteOffsetDelta[1];
@@ -316,7 +316,7 @@ function uiPasteNodes(nodesJson)
     correctConnections(data);
 
     
-    loadConnections(data);
+    loadConnections(data, pasteOutsideConnections);
     
     
     graphView.selected = nodes;

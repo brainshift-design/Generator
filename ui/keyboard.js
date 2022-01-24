@@ -15,7 +15,7 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyV'
           && getCtrlKey(e))
     {
-        actionManager.do(new PasteNodesAction(copiedNodesJson));
+        actionManager.do(new PasteNodesAction(copiedNodesJson, e.shiftKey));
     }
 
     // duplicate
@@ -23,7 +23,7 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selected.map(n => n.id))));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selected.map(n => n.id)), e.shiftKey));
     }
 
     // select all

@@ -65,10 +65,15 @@ function loadNodes(data)
 
 
 
-function loadConnections(data)
+function loadConnections(data, loadOutsideConnections)
 {
     for (const _conn of data.connections)
-        Connection.parseJson(_conn);
+    {
+        if (      data.nodes.find(n => n.name == _conn.outputOp)
+               && data.nodes.find(n => n.name == _conn. inputOp)
+            || loadOutsideConnections)
+            Connection.parseJson(_conn);
+    }
 }
 
 
