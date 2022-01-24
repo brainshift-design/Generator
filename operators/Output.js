@@ -54,7 +54,7 @@ class Output
         
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.14];
+        this.color     = [0, 0, 0, 0.1];
         this.wireColor = rgbFromDataType(this._dataType, true);
         
         this.updateControl();
@@ -81,7 +81,7 @@ class Output
 
     updateControl()
     {
-        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 

@@ -68,7 +68,9 @@
     left:           50%;
     top:            50%;
     transform:      translateX(-50%) translateY(-50%);
-    pointer-events: auto;
+    pointer-events: none;
+    /* box-shadow:     0 0 0 1px red inset; */
+    z-index:        10;
 }
 
 
@@ -81,12 +83,12 @@
 
 .inputControls
 {
-    width:          20px;
+    width:          12px;
     height:         auto;
     float:          left;
     margin-right:   auto;
     padding-top:    13px;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     pointer-events: none;
 }
 
@@ -126,12 +128,12 @@
 
 .outputControls
 {
-    width:          20px;
+    width:          12px;
     height:         auto;
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     pointer-events: none;
 }
 
@@ -140,10 +142,10 @@
 {
     width:          6px;
     height:         6px;
-    background:     rgba(0, 0, 0, 0.12);
+    /* background:     #00000008; */
     border-radius:  3px;
     margin:         0;
-    margin-left:    10px;
+    margin-left:    3px;
     margin-bottom:  6px;
     top:            50%;
     /* transform:      translateY(-50%); */

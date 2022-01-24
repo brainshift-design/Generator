@@ -418,7 +418,9 @@ input[type=text]::selection
     left:           50%;
     top:            50%;
     transform:      translateX(-50%) translateY(-50%);
-    pointer-events: auto;
+    pointer-events: none;
+    /* box-shadow:     0 0 0 1px red inset; */
+    z-index:        10;
 }
 
 
@@ -431,12 +433,12 @@ input[type=text]::selection
 
 .inputControls
 {
-    width:          20px;
+    width:          12px;
     height:         auto;
     float:          left;
     margin-right:   auto;
     padding-top:    13px;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     pointer-events: none;
 }
 
@@ -476,12 +478,12 @@ input[type=text]::selection
 
 .outputControls
 {
-    width:          20px;
+    width:          12px;
     height:         auto;
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     pointer-events: none;
 }
 
@@ -490,10 +492,10 @@ input[type=text]::selection
 {
     width:          6px;
     height:         6px;
-    background:     rgba(0, 0, 0, 0.12);
+    /* background:     #00000008; */
     border-radius:  3px;
     margin:         0;
-    margin-left:    10px;
+    margin-left:    3px;
     margin-bottom:  6px;
     top:            50%;
     /* transform:      translateY(-50%); */
@@ -11890,7 +11892,7 @@ class Output
         
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.14];
+        this.color     = [0, 0, 0, 0.1];
         this.wireColor = rgbFromDataType(this._dataType, true);
         
         this.updateControl();
@@ -11917,7 +11919,7 @@ class Output
 
     updateControl()
     {
-        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 
@@ -13468,7 +13470,7 @@ extends OpArithmetic
 const OpColorSpaces = 
 [
     ['hex',    'Hex'    ],
-    ['rgbhex', 'RGB<span class=\'hash\'>#</span>'   ],
+    ['rgbhex', '<span class=\'hash\'>#</span>RGB'],
     ['rgb',    'RGB'    ], 
     ['hsv',    'HSV'    ], 
     ['hsl',    'HSL'    ], 
@@ -13947,9 +13949,9 @@ function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
 function switchToRgbHexControls(op)
 {
     switchToControls(op, 
-        'R<span class=\'hash\'>#</span>', 0, rgbScale[0], '', false, 
-        'G<span class=\'hash\'>#</span>', 0, rgbScale[1], 
-        'B<span class=\'hash\'>#</span>', 0, rgbScale[2]);  
+        '<span class=\'hash\'>#</span>R', 0, rgbScale[0], '', false, 
+        '<span class=\'hash\'>#</span>G', 0, rgbScale[1], 
+        '<span class=\'hash\'>#</span>B', 0, rgbScale[2]);  
 
     showRgbControlHex(op, true);
 }
