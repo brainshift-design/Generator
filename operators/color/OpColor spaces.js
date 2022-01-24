@@ -37,9 +37,9 @@ function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
 function switchToRgbHexControls(op)
 {
     switchToControls(op, 
-        'R', 0, rgbScale[0], '', false, 
-        'G', 0, rgbScale[1], 
-        'B', 0, rgbScale[2]);  
+        'R<span class=\'hash\'>#</span>', 0, rgbScale[0], '', false, 
+        'G<span class=\'hash\'>#</span>', 0, rgbScale[1], 
+        'B<span class=\'hash\'>#</span>', 0, rgbScale[2]);  
 
     showRgbControlHex(op, true);
 }

@@ -10,7 +10,7 @@
 const OpColorSpaces = 
 [
     ['hex',    'Hex'    ],
-    ['rgbhex', '# RGB'   ],
+    ['rgbhex', 'RGB<span class=\'hash\'>#</span>'   ],
     ['rgb',    'RGB'    ], 
     ['hsv',    'HSV'    ], 
     ['hsl',    'HSL'    ], 

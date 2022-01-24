@@ -126,11 +126,14 @@ extends EventTarget
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        this.control.style.left         = (isConnected ? -1 : 0) + 'px';
-        //this.control.style.top          = 'calc(50% - ' + (isConnected ? 0 : 0) + 'px)';
+        this.control.style.transform = 
+              'translateX(' + (isConnected ? -1 : 0) + 'px)'
+            + 'translateY(-50%)';
+        
         this.control.style.width        = (isConnected ? 8 : 6) + 'px';
         this.control.style.height       = (isConnected ? 8 : 6) + 'px';
         this.control.style.borderRadius = (isConnected ? 4 : 4) + 'px';
+        this.control.style.marginBottom = (isConnected ? 4 : 6) + 'px';
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 

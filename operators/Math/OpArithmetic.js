@@ -104,13 +104,13 @@ extends Operator
         if (this._showOnlySymbol)
         {
             this._symbol.style.fontSize = 17;
-            this._symbol.style.left     = 'calc(50% + 1.5px)';
+            this._symbol.style.left     = 'calc(50% + 1px)';
             this._symbol.style.top      = this.header.offsetHeight/2 - 12;
         }
         else
         {
             this._symbol.style.fontSize = 12;
-            this._symbol.style.left     = 'calc(50% + 3px)';
+            this._symbol.style.left     = 'calc(50% + 2px)';
             this._symbol.style.top      = this.header.offsetHeight/2 - 2;
             this.label  .style.top      = 'calc(50% - 3px)';
         }

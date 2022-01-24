@@ -269,8 +269,8 @@ class Operator
 
         const headerInputs = this.inputs.filter(i => !i.param);
 
-        const inputSize = 10;
         const padding   = 8;
+        const inputSize = 9;
         const gap       = 4;
 
             

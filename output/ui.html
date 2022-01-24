@@ -432,11 +432,12 @@ input[type=text]::selection
 .inputControls
 {
     width:          20px;
-    height:         25px;
+    height:         auto;
     float:          left;
     margin-right:   auto;
-    pointer-events: none;
+    padding-top:    13px;
     box-shadow:     0 0 0 1px red inset;
+    pointer-events: none;
 }
 
 
@@ -448,11 +449,11 @@ input[type=text]::selection
     background:     transparent;
     border-radius:  3px;
     margin:         0;
-    margin-left:    5px;
-    /* position:       absolute;
+    margin-left:    3px;
+    margin-bottom:  6px;
+    /* position:       absolute; */
     top:            50%;
     transform:      translateY(-50%);
-    left:           5px; */
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -465,8 +466,8 @@ input[type=text]::selection
     border-radius:  6px;
     margin:         0;
     position:       absolute;
-    top:            0px;
-    left:           0px;
+    top:            50%;
+    left:           50%;
     pointer-events: none;
     /* z-index:        10; */
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -476,9 +477,11 @@ input[type=text]::selection
 .outputControls
 {
     width:          20px;
-    height:         25px;
+    height:         auto;
     float:          right;
     margin-left:    auto;
+    padding-top:    10px;
+    box-shadow:     0 0 0 1px red inset;
     pointer-events: none;
 }
 
@@ -490,10 +493,11 @@ input[type=text]::selection
     background:     rgba(0, 0, 0, 0.12);
     border-radius:  3px;
     margin:         0;
-    position:       absolute;
+    margin-left:    10px;
+    margin-bottom:  6px;
     top:            50%;
-    transform:      translateY(-50%);
-    right:          5px;
+    /* transform:      translateY(-50%); */
+    right:          3px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
@@ -505,7 +509,7 @@ input[type=text]::selection
     height:         6px;
     border-radius:  6px;
     margin:         0;
-    position:       absolute;
+    /* position:       absolute; */
     top:            0px;
     right:          0px;
     pointer-events: none;
@@ -596,6 +600,14 @@ input[type=text]::selection
 }
 
 
+.numberSliderText .hash
+{
+    font-size: 6;
+    position:  relative;
+    top:      -2px;
+}
+
+
 .numberSliderTextbox
 {
     font-family:    Inter;
@@ -663,6 +675,14 @@ input[type=text]::selection
     transform:      translateX(-50%);
     top:            3px;
     white-space:    nowrap;
+}
+
+
+.selectSliderText .hash
+{
+    font-size: 8;
+    position:  relative;
+    top:      -1px;
 }
 
 
@@ -11785,11 +11805,14 @@ extends EventTarget
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        this.control.style.left         = (isConnected ? -1 : 0) + 'px';
-        //this.control.style.top          = 'calc(50% - ' + (isConnected ? 0 : 0) + 'px)';
+        this.control.style.transform = 
+              'translateX(' + (isConnected ? -1 : 0) + 'px)'
+            + 'translateY(-50%)';
+        
         this.control.style.width        = (isConnected ? 8 : 6) + 'px';
         this.control.style.height       = (isConnected ? 8 : 6) + 'px';
         this.control.style.borderRadius = (isConnected ? 4 : 4) + 'px';
+        this.control.style.marginBottom = (isConnected ? 4 : 6) + 'px';
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
@@ -12338,8 +12361,8 @@ class Operator
 
         const headerInputs = this.inputs.filter(i => !i.param);
 
-        const inputSize = 10;
         const padding   = 8;
+        const inputSize = 9;
         const gap       = 4;
 
             
@@ -13233,13 +13256,13 @@ extends Operator
         if (this._showOnlySymbol)
         {
             this._symbol.style.fontSize = 17;
-            this._symbol.style.left     = 'calc(50% + 1.5px)';
+            this._symbol.style.left     = 'calc(50% + 1px)';
             this._symbol.style.top      = this.header.offsetHeight/2 - 12;
         }
         else
         {
             this._symbol.style.fontSize = 12;
-            this._symbol.style.left     = 'calc(50% + 3px)';
+            this._symbol.style.left     = 'calc(50% + 2px)';
             this._symbol.style.top      = this.header.offsetHeight/2 - 2;
             this.label  .style.top      = 'calc(50% - 3px)';
         }
@@ -13445,7 +13468,7 @@ extends OpArithmetic
 const OpColorSpaces = 
 [
     ['hex',    'Hex'    ],
-    ['rgbhex', '# RGB'   ],
+    ['rgbhex', 'RGB<span class=\'hash\'>#</span>'   ],
     ['rgb',    'RGB'    ], 
     ['hsv',    'HSV'    ], 
     ['hsl',    'HSL'    ], 
@@ -13924,9 +13947,9 @@ function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
 function switchToRgbHexControls(op)
 {
     switchToControls(op, 
-        'R', 0, rgbScale[0], '', false, 
-        'G', 0, rgbScale[1], 
-        'B', 0, rgbScale[2]);  
+        'R<span class=\'hash\'>#</span>', 0, rgbScale[0], '', false, 
+        'G<span class=\'hash\'>#</span>', 0, rgbScale[1], 
+        'B<span class=\'hash\'>#</span>', 0, rgbScale[2]);  
 
     showRgbControlHex(op, true);
 }

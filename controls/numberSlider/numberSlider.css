@@ -35,6 +35,14 @@
 }
 
 
+.numberSliderText .hash
+{
+    font-size: 6;
+    position:  relative;
+    top:      -2px;
+}
+
+
 .numberSliderTextbox
 {
     font-family:    Inter;
