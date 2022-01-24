@@ -45,10 +45,10 @@ function initNumberSliderTextbox(slider)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
-            var index = slider.tabIndex;
+            let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            let index = slider.tabIndex;
 
-            for (var i = 0; i < tabs.length; i++) 
+            for (let i = 0; i < tabs.length; i++) 
             {
                 if (   e.shiftKey && tabs[i].tabIndex == index - 1
                     ||               tabs[i].tabIndex == index + 1) 
@@ -68,26 +68,29 @@ function initNumberSliderTextbox(slider)
 
         else 
         {
+            console.log('e.key', e.key);
+            console.log('e.code', e.code);
+            
             if (      e.key.length == 1
-                   && !isDigit(e.key)
-                   && (slider.showHex && !isHexDigit(e.key))
-                   && e.key != getUserDecimalSeparator()
+                   && !isDigitChar(e.key)
+                   && (   !slider.showHex 
+                       || !isHexDigitChar(e.key))
+                   && (   slider.showHex
+                       || e.key != getUserDecimalSeparator())
                    && !(   (   e.code == 'Minus'
                             || e.code == 'NumpadSubtract')
                         && slider.min < 0)
                 ||     slider.readOnly
-                   && !isArrow(e.code))
+                   && !isArrowKey(e.code))
                 e.preventDefault();
 
-            var t = slider.textbox;
-
-            var curVal = t.value;
+            let curVal = slider.textbox.value;
 
             curVal = 
-                  curVal.substring(0, t.selectionStart) 
-                + curVal.substring(t.selectionEnd, curVal.length);
+                  curVal.substring(0,                           slider.textbox.selectionStart) 
+                + curVal.substring(slider.textbox.selectionEnd, curVal.length);
 
-            var nextVal = parseFloat(curVal + e.key);
+            let nextVal = parseFloat(curVal + e.key);
 
             if (   nextVal < slider.min - 0.001
                 || nextVal > slider.max)
@@ -110,7 +113,7 @@ function initNumberSliderTextbox(slider)
 
         const str = e.clipboardData.getData('text/plain');
 
-        var val = 
+        let val = 
             slider.showHex
             ? parseInt(str, 16)
             : parseFloat(str);

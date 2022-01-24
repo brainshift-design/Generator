@@ -915,7 +915,6 @@ const largeScrollGap    = 14;
 const MAX_INT32         = 2147483647;
 
 
-const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
 
@@ -942,30 +941,24 @@ function getDigitCount(i)
 
 
 
-function isDigit(key)
+function isDigitChar(key)
 {
-    let is = 
-           key >= '0' 
+    return key >= '0' 
         && key <= '9';
-
-    return is;
 }
 
 
 
-function isHexDigit(key)
+function isHexDigitChar(key)
 {
-    let is =
-           key.length == 1
+    return key.length == 1
         && (   key >= 'A' && key <= 'F'
             || key >= 'a' && key <= 'f');
-
-    return is;
 }
 
 
 
-function isArrow(code)
+function isArrowKey(code)
 {
     return code == 'ArrowLeft'
         || code == 'ArrowRight'
@@ -3227,7 +3220,6 @@ const largeScrollGap    = 14;
 const MAX_INT32         = 2147483647;
 
 
-const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
 
@@ -3254,30 +3246,24 @@ function getDigitCount(i)
 
 
 
-function isDigit(key)
+function isDigitChar(key)
 {
-    let is = 
-           key >= '0' 
+    return key >= '0' 
         && key <= '9';
-
-    return is;
 }
 
 
 
-function isHexDigit(key)
+function isHexDigitChar(key)
 {
-    let is =
-           key.length == 1
+    return key.length == 1
         && (   key >= 'A' && key <= 'F'
             || key >= 'a' && key <= 'f');
-
-    return is;
 }
 
 
 
-function isArrow(code)
+function isArrowKey(code)
 {
     return code == 'ArrowLeft'
         || code == 'ArrowRight'
@@ -5900,9 +5886,9 @@ function lch2rgb_CB(l, c, h, colorSpace, cones)
         rgb = xyz2rgb(xyz, sRGB);
 
         const a = 
-              ACR[0] * rgb[R]
-            + ACR[1] * rgb[G]
-            + ACR[2] * rgb[B];
+              ACR[0] * rgb[0]
+            + ACR[1] * rgb[1]
+            + ACR[2] * rgb[2];
 
         rgb = [a, a, a];
     }
@@ -5947,9 +5933,9 @@ function oklch2rgb_CB(l, c, h, colorSpace, cones)
         rgb = oklab2rgb(lab, sRGB);
 
         const a = 
-              ACR[0] * rgb[R]
-            + ACR[1] * rgb[G]
-            + ACR[2] * rgb[B];
+              ACR[0] * rgb[0]
+            + ACR[1] * rgb[1]
+            + ACR[2] * rgb[2];
 
         rgb = [a, a, a];
     }
@@ -6076,9 +6062,9 @@ function rgb_a(rgb, a)
 function rgb2hex(rgb)
 {
     let hex =
-          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+          Math.round(rgb[0] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[1] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[2] * 0xff).toString(16).padStart(2, '0').toUpperCase();
 
     return hex;
 }
@@ -6922,10 +6908,10 @@ function initNumberSliderTextbox(slider)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
-            var index = slider.tabIndex;
+            let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            let index = slider.tabIndex;
 
-            for (var i = 0; i < tabs.length; i++) 
+            for (let i = 0; i < tabs.length; i++) 
             {
                 if (   e.shiftKey && tabs[i].tabIndex == index - 1
                     ||               tabs[i].tabIndex == index + 1) 
@@ -6945,26 +6931,29 @@ function initNumberSliderTextbox(slider)
 
         else 
         {
+            console.log('e.key', e.key);
+            console.log('e.code', e.code);
+            
             if (      e.key.length == 1
-                   && !isDigit(e.key)
-                   && (slider.showHex && !isHexDigit(e.key))
-                   && e.key != getUserDecimalSeparator()
+                   && !isDigitChar(e.key)
+                   && (   !slider.showHex 
+                       || !isHexDigitChar(e.key))
+                   && (   slider.showHex
+                       || e.key != getUserDecimalSeparator())
                    && !(   (   e.code == 'Minus'
                             || e.code == 'NumpadSubtract')
                         && slider.min < 0)
                 ||     slider.readOnly
-                   && !isArrow(e.code))
+                   && !isArrowKey(e.code))
                 e.preventDefault();
 
-            var t = slider.textbox;
-
-            var curVal = t.value;
+            let curVal = slider.textbox.value;
 
             curVal = 
-                  curVal.substring(0, t.selectionStart) 
-                + curVal.substring(t.selectionEnd, curVal.length);
+                  curVal.substring(0,                           slider.textbox.selectionStart) 
+                + curVal.substring(slider.textbox.selectionEnd, curVal.length);
 
-            var nextVal = parseFloat(curVal + e.key);
+            let nextVal = parseFloat(curVal + e.key);
 
             if (   nextVal < slider.min - 0.001
                 || nextVal > slider.max)
@@ -6987,7 +6976,7 @@ function initNumberSliderTextbox(slider)
 
         const str = e.clipboardData.getData('text/plain');
 
-        var val = 
+        let val = 
             slider.showHex
             ? parseInt(str, 16)
             : parseFloat(str);
@@ -7618,13 +7607,13 @@ function initSelectSliderTextbox(slider)
         else 
         {
             if (      e.key.length == 1
-                   && !isDigit(e.key)
+                   && !isDigitChar(e.key)
                    && e.key != '.'
                    && !(   (   e.code == 'Minus'
                             || e.code == 'NumpadSubtract')
                         && slider.min < 0)
                 ||     slider.readOnly
-                   && !isArrow(e.code))
+                   && !isArrowKey(e.code))
                   e.preventDefault();
 
             var t = slider.textbox;
@@ -14432,10 +14421,10 @@ function onHexboxKeyDown(e)
         hexboxFinish(hexbox.op, false);
 
     else if (   e.key.length == 1
-             && !isDigit(e.key)
-             && !isHexDigit(e.key)
+             && !isDigitChar(e.key)
+             && !isHexDigitChar(e.key)
          ||     isConnected
-            && !isArrow(e.code))
+            && !isArrowKey(e.code))
         e.preventDefault();
 }
 

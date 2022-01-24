@@ -1,9 +1,9 @@
 function rgb2hex(rgb)
 {
     let hex =
-          Math.round(rgb[R] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[G] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[B] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+          Math.round(rgb[0] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[1] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[2] * 0xff).toString(16).padStart(2, '0').toUpperCase();
 
     return hex;
 }

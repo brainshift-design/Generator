@@ -66,9 +66,9 @@ function lch2rgb_CB(l, c, h, colorSpace, cones)
         rgb = xyz2rgb(xyz, sRGB);
 
         const a = 
-              ACR[0] * rgb[R]
-            + ACR[1] * rgb[G]
-            + ACR[2] * rgb[B];
+              ACR[0] * rgb[0]
+            + ACR[1] * rgb[1]
+            + ACR[2] * rgb[2];
 
         rgb = [a, a, a];
     }
@@ -113,9 +113,9 @@ function oklch2rgb_CB(l, c, h, colorSpace, cones)
         rgb = oklab2rgb(lab, sRGB);
 
         const a = 
-              ACR[0] * rgb[R]
-            + ACR[1] * rgb[G]
-            + ACR[2] * rgb[B];
+              ACR[0] * rgb[0]
+            + ACR[1] * rgb[1]
+            + ACR[2] * rgb[2];
 
         rgb = [a, a, a];
     }

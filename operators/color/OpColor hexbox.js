@@ -103,10 +103,10 @@ function onHexboxKeyDown(e)
         hexboxFinish(hexbox.op, false);
 
     else if (   e.key.length == 1
-             && !isDigit(e.key)
-             && !isHexDigit(e.key)
+             && !isDigitChar(e.key)
+             && !isHexDigitChar(e.key)
          ||     isConnected
-            && !isArrow(e.code))
+            && !isArrowKey(e.code))
         e.preventDefault();
 }
 

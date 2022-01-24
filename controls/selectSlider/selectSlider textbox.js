@@ -69,13 +69,13 @@ function initSelectSliderTextbox(slider)
         else 
         {
             if (      e.key.length == 1
-                   && !isDigit(e.key)
+                   && !isDigitChar(e.key)
                    && e.key != '.'
                    && !(   (   e.code == 'Minus'
                             || e.code == 'NumpadSubtract')
                         && slider.min < 0)
                 ||     slider.readOnly
-                   && !isArrow(e.code))
+                   && !isArrowKey(e.code))
                   e.preventDefault();
 
             var t = slider.textbox;

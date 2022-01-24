@@ -1,4 +1,3 @@
-const R = 0, G = 1, B = 2, A = 3;
 const Eps = 0.0000001;
 
 
@@ -25,30 +24,24 @@ function getDigitCount(i)
 
 
 
-function isDigit(key)
+function isDigitChar(key)
 {
-    let is = 
-           key >= '0' 
+    return key >= '0' 
         && key <= '9';
-
-    return is;
 }
 
 
 
-function isHexDigit(key)
+function isHexDigitChar(key)
 {
-    let is =
-           key.length == 1
+    return key.length == 1
         && (   key >= 'A' && key <= 'F'
             || key >= 'a' && key <= 'f');
-
-    return is;
 }
 
 
 
-function isArrow(code)
+function isArrowKey(code)
 {
     return code == 'ArrowLeft'
         || code == 'ArrowRight'
