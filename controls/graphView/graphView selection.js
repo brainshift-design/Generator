@@ -130,6 +130,15 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
 graphView.endSelection = pointerId =>
 {
+    if (   graphView.selected    .length > 0
+        || graphView.lastSelected.length > 0)
+    {
+        actionManager.do(new SelectNodesAction(
+            graphView.selected    .map(n => n.id), 
+            graphView.lastSelected.map(n => n.id)));
+    }
+
+
     graphView.releasePointerCapture(pointerId);
 
     graphView.selecting     = false;
@@ -137,8 +146,4 @@ graphView.endSelection = pointerId =>
     graphView._prevSelected = [];
 
     selectBox.style.visibility = 'hidden';
-
-    actionManager.do(new SelectNodesAction(
-        graphView.selected    .map(n => n.id), 
-        graphView.lastSelected.map(n => n.id)));
 };

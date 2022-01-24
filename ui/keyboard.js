@@ -129,6 +129,3 @@ document.addEventListener('keyup', e =>
         setCursor(panCursor);
     }
 });
-
-
-
