@@ -146,9 +146,10 @@
     border-radius:  3px;
     margin:         0;
     margin-left:    3px;
-    margin-bottom:  6px;
+    /* margin-bottom:  6px; */
+    position: absolute;
     top:            50%;
-    /* transform:      translateY(-50%); */
+    transform:      translateY(-50%);
     right:          3px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -174,12 +175,13 @@
 {
     font-family:    Inter;
     font-size:      20px;
-    width:          var(--arithmeticSymbolSize);
-    height:         var(--arithmeticSymbolSize);
+    width:          auto;/*var(--arithmeticSymbolSize);*/
+    height:         auto;/*var(--arithmeticSymbolSize);*/
     position:       absolute;
     left:           50%;
-    transform:      translateX(-25%);
-    pointer-events: none;
+    transform:      translateX(-50%);
+    /* pointer-events: none; */
+    /* box-shadow:     0 0 0 1px red inset; */
 }
 
 

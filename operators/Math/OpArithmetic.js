@@ -26,6 +26,29 @@ extends Operator
 
         this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
+        this._symbol.clicked0  = false;
+
+        this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
+        this._symbol.addEventListener('pointerout',   () => this._symbol.style.opacity = 1);
+
+        this._symbol.addEventListener('pointerdown', e => 
+        { 
+            if (e.button == 0)
+            {
+                if (this._symbol.clicked0)
+                {
+                    this._symbol.clicked0      = false;
+                    this._showOnlySymbol       = true;
+                    this._symbol.style.opacity = 1
+                    this.updateNode();
+                }
+                else
+                {
+                    this._symbol.clicked0 = true;
+                    setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
+                }
+            }
+        });
 
         this.header.appendChild(this._symbol);
 
@@ -105,13 +128,13 @@ extends Operator
         {
             this._symbol.style.fontSize = 17;
             this._symbol.style.left     = 'calc(50% + 1px)';
-            this._symbol.style.top      = this.header.offsetHeight/2 - 12;
+            this._symbol.style.top      = this.header.offsetHeight/2 - 11;
         }
         else
         {
             this._symbol.style.fontSize = 12;
-            this._symbol.style.left     = 'calc(50% + 2px)';
-            this._symbol.style.top      = this.header.offsetHeight/2 - 2;
+            this._symbol.style.left     = 'calc(50% + 1px)';
+            this._symbol.style.top      = this.header.offsetHeight/2 - 3;
             this.label  .style.top      = 'calc(50% - 3px)';
         }
        
