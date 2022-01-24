@@ -19,6 +19,9 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('keydown', function(e)
     {
+        e.stopPropagation();
+
+
         if (   e.code == 'KeyC'
             && getCtrlKey(e))
         {

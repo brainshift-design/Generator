@@ -7,6 +7,9 @@ function initLabelTextbox(node)
 
     node.textbox.addEventListener('keydown', function(e)
     {
+        e.stopPropagation();
+
+
         if (   e.code == 'KeyC'
             && getCtrlKey(e))
         {
