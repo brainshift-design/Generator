@@ -78,6 +78,8 @@ extends Operator
 
         this.inputs[0].addEventListener('connect', () =>
         {
+            this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
+            
             enableSliderText(this.param1.control, false);
             enableSliderText(this.param2.control, false);
             enableSliderText(this.param3.control, false);
@@ -133,6 +135,16 @@ extends Operator
         this.param1.setValue(col[0], false, true, dispatchEvents);
         this.param2.setValue(col[1], false, true, dispatchEvents);
         this.param3.setValue(col[2], false, true, dispatchEvents);
+    }
+
+
+
+    isConnected()
+    {
+        return this.inputs[0].isConnected
+            || this.inputs[2].isConnected
+            || this.inputs[3].isConnected
+            || this.inputs[4].isConnected;
     }
 
 
@@ -231,14 +243,7 @@ extends Operator
             ? rgb2hex(colBack)
             : '?';
 
-        const isConnected =
-               this.inputs[0].isConnected
-            || this.inputs[2].isConnected
-            || this.inputs[3].isConnected
-            || this.inputs[4].isConnected
-
-        this.hexbox.style.fontStyle = isConnected ? 'italic' : 'normal';
-        //this.hexbox.readOnly        = isConnected;
+        this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
 
         this.updateControls(colBack);
 

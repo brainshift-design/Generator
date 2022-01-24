@@ -68,9 +68,6 @@ function initNumberSliderTextbox(slider)
 
         else 
         {
-            console.log('e.key', e.key);
-            console.log('e.code', e.code);
-            
             if (      e.key.length == 1
                    && !isDigitChar(e.key)
                    && (   !slider.showHex 

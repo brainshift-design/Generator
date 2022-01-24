@@ -441,15 +441,15 @@ input[type=text]::selection
 
 .input
 {
-    width:          8px;
-    height:         8px;
+    width:          5px;
+    height:         5px;
     background:     transparent;
-    border-radius:  5px;
+    border-radius:  2.5px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    left:           4px;
+    left:           6px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -462,8 +462,8 @@ input[type=text]::selection
     border-radius:  6px;
     margin:         0;
     position:       absolute;
-    top:            1px;
-    right:          1px;
+    top:            0px;
+    left:           0px;
     pointer-events: none;
     /* z-index:        10; */
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -485,11 +485,11 @@ input[type=text]::selection
     width:          6px;
     height:         6px;
     background:     rgba(0, 0, 0, 0.12);
-    border-radius:  6px;
+    border-radius:  3px;
     margin:         0;
     position:       absolute;
     top:            50%;
-    transform:      translateY(-50%);
+    /* transform:      translateY(-50%); */
     right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -569,7 +569,7 @@ input[type=text]::selection
 
 .numberSliderName
 {
-    color: #b3b3b3;
+    color: #0006;
 }
 
 
@@ -6931,9 +6931,6 @@ function initNumberSliderTextbox(slider)
 
         else 
         {
-            console.log('e.key', e.key);
-            console.log('e.code', e.code);
-            
             if (      e.key.length == 1
                    && !isDigitChar(e.key)
                    && (   !slider.showHex 
@@ -7222,7 +7219,10 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
 
         slider.clientX = e.clientX;
 
-        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+        // slider.cursor = 
+        //     containsChild(slider, slider.textbox) 
+        //     ? (slider.readOnly ? 'default' : 'text') 
+        //     : 'ew-resize';
 
         
         if (    slider.buttonDown0
@@ -7320,7 +7320,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
             slider.style.cursor = 
                    slider.readOnly 
                 || containsChild(slider, slider.textbox) 
-                ? 'text' 
+                ? (slider.readOnly ? 'default' : 'text')
                 : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
@@ -7470,7 +7470,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
         
         if (   slider.name.length > 0
             && slider.showName)
-            slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
+            slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
         const valueText = 
             slider.valueText != ''
@@ -7868,7 +7868,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.clientX = e.clientX;
 
-        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+        // slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
 
         
         if (    slider.buttonDown0
@@ -7965,7 +7965,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.style.cursor = 
                    slider.readOnly 
                 || containsChild(slider, slider.textbox) 
-                ? 'text' 
+                ? (slider.readOnly ? 'default' : 'text')
                 : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
@@ -8091,7 +8091,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.text.innerHTML = 
              slider.options.length > 0
-             ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
+             ? slider.options[slider.value]
              : '';
 
         slider.text.style.color = slider.textColor;
@@ -11767,7 +11767,19 @@ extends EventTarget
 
     updateControl()
     {
+        const isConnected =
+               this.isConnected
+            ||     graphView.tempConn
+               && (   graphView.tempConn.input == this
+                   || this.mouseOver);
+
         const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
+
+        this.control.style.left         = (isConnected ? 5 : 6) + 'px';
+        //this.control.style.top          = 'calc(50% - ' + (isConnected ? 0 : 0) + 'px)';
+        this.control.style.width        = (isConnected ? 8 : 6) + 'px';
+        this.control.style.height       = (isConnected ? 8 : 6) + 'px';
+        this.control.style.borderRadius = (isConnected ? 4 : 4) + 'px';
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
@@ -11781,14 +11793,10 @@ extends EventTarget
                : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
+        this.wireBall.style.left   = '0.5px';
+        this.wireBall.style.top    = 'calc(50% - 3.5px)';
 
-        show(
-            this.wireBall, 
-               this.isConnected
-            ||    graphView.tempConn
-               && (   graphView.tempConn.input == this
-                   || this.mouseOver));
-
+        show(this.wireBall, isConnected); 
     }
 }
 
@@ -13495,6 +13503,8 @@ extends Operator
 
         this.inputs[0].addEventListener('connect', () =>
         {
+            this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
+            
             enableSliderText(this.param1.control, false);
             enableSliderText(this.param2.control, false);
             enableSliderText(this.param3.control, false);
@@ -13550,6 +13560,16 @@ extends Operator
         this.param1.setValue(col[0], false, true, dispatchEvents);
         this.param2.setValue(col[1], false, true, dispatchEvents);
         this.param3.setValue(col[2], false, true, dispatchEvents);
+    }
+
+
+
+    isConnected()
+    {
+        return this.inputs[0].isConnected
+            || this.inputs[2].isConnected
+            || this.inputs[3].isConnected
+            || this.inputs[4].isConnected;
     }
 
 
@@ -13648,14 +13668,7 @@ extends Operator
             ? rgb2hex(colBack)
             : '?';
 
-        const isConnected =
-               this.inputs[0].isConnected
-            || this.inputs[2].isConnected
-            || this.inputs[3].isConnected
-            || this.inputs[4].isConnected
-
-        this.hexbox.style.fontStyle = isConnected ? 'italic' : 'normal';
-        //this.hexbox.readOnly        = isConnected;
+        this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
 
         this.updateControls(colBack);
 
@@ -14331,6 +14344,7 @@ function initHexbox(op)
     
     op.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
     op.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
+    op.hexbox.addEventListener('focus',       onHexboxFocus);
     op.hexbox.addEventListener('focusout',    onHexboxFocusOut);
     op.hexbox.addEventListener('input',       onHexboxInput);
     op.hexbox.addEventListener('keydown',     onHexboxKeyDown);
@@ -14369,10 +14383,19 @@ function onHexboxPointerUp(e)
 
 
 
+function onHexboxFocus(e)
+{
+    const hexbox = e.target;
+    hexbox.style.cursor = 'text';
+}
+
+
+
 function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
     hexboxFinish(hexbox.op, true);
+    hexbox.style.cursor = hexbox.op.isConnected() ? 'default' : 'text';
 }
 
 
@@ -14397,16 +14420,9 @@ function onHexboxKeyDown(e)
 {
     const hexbox = e.target;
 
-    const isConnected =
-           hexbox.op.inputs[0].isConnected
-        || hexbox.op.inputs[2].isConnected
-        || hexbox.op.inputs[3].isConnected
-        || hexbox.op.inputs[4].isConnected
-
-
     if (   getCtrlKey(e)
         && e.code == 'KeyV'
-        && !isConnected)
+        && !hexbox.op.isConnected())
     {
         e.preventDefault();
         document.execCommand('paste');
@@ -14414,7 +14430,7 @@ function onHexboxKeyDown(e)
 
     else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
-           && !isConnected)
+           && !hexbox.op.isConnected())
         hexboxFinish(hexbox.op, true);
 
     else if (e.code == 'Escape')
@@ -14423,7 +14439,7 @@ function onHexboxKeyDown(e)
     else if (   e.key.length == 1
              && !isDigitChar(e.key)
              && !isHexDigitChar(e.key)
-         ||     isConnected
+         ||     hexbox.op.isConnected()
             && !isArrowKey(e.code))
         e.preventDefault();
 }

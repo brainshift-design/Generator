@@ -13,6 +13,7 @@ function initHexbox(op)
     
     op.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
     op.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
+    op.hexbox.addEventListener('focus',       onHexboxFocus);
     op.hexbox.addEventListener('focusout',    onHexboxFocusOut);
     op.hexbox.addEventListener('input',       onHexboxInput);
     op.hexbox.addEventListener('keydown',     onHexboxKeyDown);
@@ -51,10 +52,19 @@ function onHexboxPointerUp(e)
 
 
 
+function onHexboxFocus(e)
+{
+    const hexbox = e.target;
+    hexbox.style.cursor = 'text';
+}
+
+
+
 function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
     hexboxFinish(hexbox.op, true);
+    hexbox.style.cursor = hexbox.op.isConnected() ? 'default' : 'text';
 }
 
 
@@ -79,16 +89,9 @@ function onHexboxKeyDown(e)
 {
     const hexbox = e.target;
 
-    const isConnected =
-           hexbox.op.inputs[0].isConnected
-        || hexbox.op.inputs[2].isConnected
-        || hexbox.op.inputs[3].isConnected
-        || hexbox.op.inputs[4].isConnected
-
-
     if (   getCtrlKey(e)
         && e.code == 'KeyV'
-        && !isConnected)
+        && !hexbox.op.isConnected())
     {
         e.preventDefault();
         document.execCommand('paste');
@@ -96,7 +99,7 @@ function onHexboxKeyDown(e)
 
     else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
-           && !isConnected)
+           && !hexbox.op.isConnected())
         hexboxFinish(hexbox.op, true);
 
     else if (e.code == 'Escape')
@@ -105,7 +108,7 @@ function onHexboxKeyDown(e)
     else if (   e.key.length == 1
              && !isDigitChar(e.key)
              && !isHexDigitChar(e.key)
-         ||     isConnected
+         ||     hexbox.op.isConnected()
             && !isArrowKey(e.code))
         e.preventDefault();
 }

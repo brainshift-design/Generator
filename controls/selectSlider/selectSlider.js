@@ -149,7 +149,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.clientX = e.clientX;
 
-        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+        // slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
 
         
         if (    slider.buttonDown0
@@ -246,7 +246,7 @@ function initSelectSlider(slider, width, height, name, options, def)
             slider.style.cursor = 
                    slider.readOnly 
                 || containsChild(slider, slider.textbox) 
-                ? 'text' 
+                ? (slider.readOnly ? 'default' : 'text')
                 : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
@@ -372,7 +372,7 @@ function initSelectSlider(slider, width, height, name, options, def)
 
         slider.text.innerHTML = 
              slider.options.length > 0
-             ? '<span class="sliderName">' + slider.options[slider.value] + "</span>"
+             ? slider.options[slider.value]
              : '';
 
         slider.text.style.color = slider.textColor;

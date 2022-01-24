@@ -161,7 +161,10 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
 
         slider.clientX = e.clientX;
 
-        slider.cursor  = containsChild(slider, slider.textbox) ? 'text' : 'ew-resize';
+        // slider.cursor = 
+        //     containsChild(slider, slider.textbox) 
+        //     ? (slider.readOnly ? 'default' : 'text') 
+        //     : 'ew-resize';
 
         
         if (    slider.buttonDown0
@@ -259,7 +262,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
             slider.style.cursor = 
                    slider.readOnly 
                 || containsChild(slider, slider.textbox) 
-                ? 'text' 
+                ? (slider.readOnly ? 'default' : 'text')
                 : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
@@ -409,7 +412,7 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
         
         if (   slider.name.length > 0
             && slider.showName)
-            slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
+            slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
         const valueText = 
             slider.valueText != ''

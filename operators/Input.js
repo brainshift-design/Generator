@@ -118,7 +118,19 @@ extends EventTarget
 
     updateControl()
     {
+        const isConnected =
+               this.isConnected
+            ||     graphView.tempConn
+               && (   graphView.tempConn.input == this
+                   || this.mouseOver);
+
         const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
+
+        this.control.style.left         = (isConnected ? 5 : 6) + 'px';
+        //this.control.style.top          = 'calc(50% - ' + (isConnected ? 0 : 0) + 'px)';
+        this.control.style.width        = (isConnected ? 8 : 6) + 'px';
+        this.control.style.height       = (isConnected ? 8 : 6) + 'px';
+        this.control.style.borderRadius = (isConnected ? 4 : 4) + 'px';
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
@@ -132,13 +144,9 @@ extends EventTarget
                : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
+        this.wireBall.style.left   = '0.5px';
+        this.wireBall.style.top    = 'calc(50% - 3.5px)';
 
-        show(
-            this.wireBall, 
-               this.isConnected
-            ||    graphView.tempConn
-               && (   graphView.tempConn.input == this
-                   || this.mouseOver));
-
+        show(this.wireBall, isConnected); 
     }
 }

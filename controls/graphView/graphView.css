@@ -91,15 +91,15 @@
 
 .input
 {
-    width:          8px;
-    height:         8px;
+    width:          5px;
+    height:         5px;
     background:     transparent;
-    border-radius:  5px;
+    border-radius:  2.5px;
     margin:         0;
     position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    left:           4px;
+    left:           6px;
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -112,8 +112,8 @@
     border-radius:  6px;
     margin:         0;
     position:       absolute;
-    top:            1px;
-    right:          1px;
+    top:            0px;
+    left:           0px;
     pointer-events: none;
     /* z-index:        10; */
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -135,11 +135,11 @@
     width:          6px;
     height:         6px;
     background:     rgba(0, 0, 0, 0.12);
-    border-radius:  6px;
+    border-radius:  3px;
     margin:         0;
     position:       absolute;
     top:            50%;
-    transform:      translateY(-50%);
+    /* transform:      translateY(-50%); */
     right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
