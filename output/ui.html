@@ -10596,8 +10596,9 @@ graphView.placeNewNode = (node) =>
         const right = intersecting.reduce((a, b) => 
             graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
-        if (right.opType == node.opType) node.div.style.top  = bounds.b + dy;
-        else                             node.div.style.left = bounds.r + dx;
+        if (   right.opType == node.opType
+            && node.opType != 'color') node.div.style.top  = bounds.b + dy;
+        else                           node.div.style.left = bounds.r + dx;
     }
 };
 
