@@ -106,6 +106,8 @@ function initLabelTextbox(node)
             if (node.textbox.value != '')
                 actionManager.do(new RenameNodeAction(node.id, node.textbox.value));
         }
+        else
+            node.textbox.value = node.textbox.savedValue;
 
         node.textbox.blur();
         
