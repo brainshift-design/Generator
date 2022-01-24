@@ -126,7 +126,7 @@ extends EventTarget
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        this.control.style.left         = (isConnected ? 5 : 6) + 'px';
+        this.control.style.left         = (isConnected ? -1 : 0) + 'px';
         //this.control.style.top          = 'calc(50% - ' + (isConnected ? 0 : 0) + 'px)';
         this.control.style.width        = (isConnected ? 8 : 6) + 'px';
         this.control.style.height       = (isConnected ? 8 : 6) + 'px';

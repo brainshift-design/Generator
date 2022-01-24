@@ -270,8 +270,8 @@ class Operator
         const headerInputs = this.inputs.filter(i => !i.param);
 
         const inputSize = 10;
-        const padding   =  8;
-        const gap       =  4;
+        const padding   = 8;
+        const gap       = 4;
 
             
         let height = padding;
@@ -284,8 +284,8 @@ class Operator
             if (i > 0)
                 height += gap;
 
-            input.control.style.top       = height;
-            input.control.style.transform = 'none';
+            //input.control.style.top = height - (input.isConnected ? 1 : 0);
+            //input.control.style.transform = input.isConnected ? 'none' : 'translateY(-2px)';
 
             height += inputSize;
         }

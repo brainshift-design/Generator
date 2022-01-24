@@ -86,20 +86,23 @@
     float:          left;
     margin-right:   auto;
     pointer-events: none;
+    box-shadow:     0 0 0 1px red inset;
 }
 
 
 .input
 {
-    width:          5px;
-    height:         5px;
+    /* display:        inline-block; */
+    width:          6px;
+    height:         6px;
     background:     transparent;
-    border-radius:  2.5px;
+    border-radius:  3px;
     margin:         0;
-    position:       absolute;
+    margin-left:    5px;
+    /* position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    left:           6px;
+    left:           5px; */
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -139,7 +142,7 @@
     margin:         0;
     position:       absolute;
     top:            50%;
-    /* transform:      translateY(-50%); */
+    transform:      translateY(-50%);
     right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */

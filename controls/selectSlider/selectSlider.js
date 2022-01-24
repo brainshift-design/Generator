@@ -112,13 +112,12 @@ function initSelectSlider(slider, width, height, name, options, def)
                 slider.oldValue     = slider.value;
                 slider.prevValue    = slider.value;
                 slider.sx           = e.clientX;
+
+                slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
             }
 
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
-            
-            slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
-
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -177,6 +176,10 @@ function initSelectSlider(slider, width, height, name, options, def)
                     slider.lockPointer();
                 }
             }
+        }
+        else if (slider.readOnly)
+        {
+            slider.moved = true;
         }
     });
     

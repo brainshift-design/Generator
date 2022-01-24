@@ -86,14 +86,6 @@ extends Operator
         });
     
         
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
-            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
-            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
-        });
-
-
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
         this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
@@ -103,6 +95,18 @@ extends Operator
         
 
         initHexbox(this);
+
+
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
+            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
+            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
+        });
+
+        this.inputs[2].addEventListener('disconnect', () => { enableSliderText(this.param1.control, !this.inputs[0].isConnected); });
+        this.inputs[3].addEventListener('disconnect', () => { enableSliderText(this.param2.control, !this.inputs[0].isConnected); });
+        this.inputs[4].addEventListener('disconnect', () => { enableSliderText(this.param3.control, !this.inputs[0].isConnected); });
 
 
         this.#warningOverlay = createDiv('colorWarningOverlay');

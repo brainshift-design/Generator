@@ -436,20 +436,23 @@ input[type=text]::selection
     float:          left;
     margin-right:   auto;
     pointer-events: none;
+    box-shadow:     0 0 0 1px red inset;
 }
 
 
 .input
 {
-    width:          5px;
-    height:         5px;
+    /* display:        inline-block; */
+    width:          6px;
+    height:         6px;
     background:     transparent;
-    border-radius:  2.5px;
+    border-radius:  3px;
     margin:         0;
-    position:       absolute;
+    margin-left:    5px;
+    /* position:       absolute;
     top:            50%;
     transform:      translateY(-50%);
-    left:           6px;
+    left:           5px; */
     pointer-events: auto;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -489,7 +492,7 @@ input[type=text]::selection
     margin:         0;
     position:       absolute;
     top:            50%;
-    /* transform:      translateY(-50%); */
+    transform:      translateY(-50%);
     right:          5px;
     pointer-events: auto;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -7183,12 +7186,12 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
                 slider.oldValue  = slider.value;
                 slider.prevValue = slider.value;
                 slider.sx        = e.clientX;
+
+                slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
             }
 
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
-
-            slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -7251,6 +7254,10 @@ function initNumberSlider(slider, width, height, name, showName, min, max, def, 
                     slider.lockPointer();
                 }
             }
+        }
+        else if (slider.readOnly)
+        {
+            slider.moved = true;
         }
     });
     
@@ -7831,13 +7838,12 @@ function initSelectSlider(slider, width, height, name, options, def)
                 slider.oldValue     = slider.value;
                 slider.prevValue    = slider.value;
                 slider.sx           = e.clientX;
+
+                slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
             }
 
 
             slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
-            
-            slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
-
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -7896,6 +7902,10 @@ function initSelectSlider(slider, width, height, name, options, def)
                     slider.lockPointer();
                 }
             }
+        }
+        else if (slider.readOnly)
+        {
+            slider.moved = true;
         }
     });
     
@@ -11775,7 +11785,7 @@ extends EventTarget
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
 
-        this.control.style.left         = (isConnected ? 5 : 6) + 'px';
+        this.control.style.left         = (isConnected ? -1 : 0) + 'px';
         //this.control.style.top          = 'calc(50% - ' + (isConnected ? 0 : 0) + 'px)';
         this.control.style.width        = (isConnected ? 8 : 6) + 'px';
         this.control.style.height       = (isConnected ? 8 : 6) + 'px';
@@ -12329,8 +12339,8 @@ class Operator
         const headerInputs = this.inputs.filter(i => !i.param);
 
         const inputSize = 10;
-        const padding   =  8;
-        const gap       =  4;
+        const padding   = 8;
+        const gap       = 4;
 
             
         let height = padding;
@@ -12343,8 +12353,8 @@ class Operator
             if (i > 0)
                 height += gap;
 
-            input.control.style.top       = height;
-            input.control.style.transform = 'none';
+            //input.control.style.top = height - (input.isConnected ? 1 : 0);
+            //input.control.style.transform = input.isConnected ? 'none' : 'translateY(-2px)';
 
             height += inputSize;
         }
@@ -13511,14 +13521,6 @@ extends Operator
         });
     
         
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
-            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
-            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
-        });
-
-
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
         this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
@@ -13528,6 +13530,18 @@ extends Operator
         
 
         initHexbox(this);
+
+
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
+            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
+            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
+        });
+
+        this.inputs[2].addEventListener('disconnect', () => { enableSliderText(this.param1.control, !this.inputs[0].isConnected); });
+        this.inputs[3].addEventListener('disconnect', () => { enableSliderText(this.param2.control, !this.inputs[0].isConnected); });
+        this.inputs[4].addEventListener('disconnect', () => { enableSliderText(this.param3.control, !this.inputs[0].isConnected); });
 
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
