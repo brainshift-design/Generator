@@ -3,7 +3,9 @@ extends Action
 {
     copiedNodesJson;
 
-    pastedNodeIds       = [];
+    pastedNodeIds = [];
+    pastedNodePos = [];
+
     prevSelectedNodeIds = [];
 
 
@@ -21,7 +23,10 @@ extends Action
 
     do()
     {
-        this.pastedNodeIds = uiPasteNodes(this.copiedNodesJson).map(n => n.id);
+        const nodes = uiPasteNodes(this.copiedNodesJson);
+
+        this.pastedNodeIds = nodes.map(n => n.id);
+        this.pastedNodePos = nodes.map(n => { return { x: n.div.offsetLeft, y: n.div.offsetTop }});
     }
 
 
@@ -36,5 +41,22 @@ extends Action
         pasteOffset[1] -= pasteOffsetDelta[1];
 
         graphView.selected = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+    }
+
+
+
+    redo()
+    {
+        const nodes = uiPasteNodes(this.copiedNodesJson);
+        
+        this.pastedNodeIds = nodes.map(n => n.id);
+
+        for (let i = 0; i < nodes.length; i++)
+        {
+            setNodePosition(
+                nodes[i], 
+                this.pastedNodePos[i].x,
+                this.pastedNodePos[i].y);
+        }
     }
 }

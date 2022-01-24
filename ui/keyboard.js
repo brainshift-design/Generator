@@ -1,5 +1,8 @@
 document.addEventListener('keydown', e =>
 {
+    let setLastKeyDown = true;
+
+
     // copy
     if (   e.code == 'KeyC'
         && getCtrlKey(e))
@@ -20,8 +23,7 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(
-            uiCopyNodes(graphView.selected.map(n => n.id))));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selected.map(n => n.id))));
     }
 
     // select all
@@ -37,6 +39,8 @@ document.addEventListener('keydown', e =>
     {
         if (e.shiftKey) actionManager.redo();
         else            actionManager.undo();
+
+        setLastKeyDown = false;
     }
 
     // delete
