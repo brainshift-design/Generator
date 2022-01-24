@@ -295,7 +295,6 @@ class Operator
 
         this.header.style.height = height;
 
-
         graphView.updateNodeTransform(this);
     }
 

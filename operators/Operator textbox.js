@@ -58,31 +58,6 @@ function initLabelTextbox(node)
                 }
             }
         }
-
-        // else 
-        // {
-        //     if (   e.key.length == 1
-        //         && !isDigit(e.key)
-        //         && e.key != '.'
-        //         && !(   (   e.code == 'Minus'
-        //                  || e.code == 'NumpadSubtract')
-        //              && node.min < 0))
-        //         e.preventDefault();
-
-        //     var t = node.textbox;
-
-        //     var curVal = t.value;
-
-        //     curVal = 
-        //           curVal.substring(0, t.selectionStart) 
-        //         + curVal.substring(t.selectionEnd, curVal.length);
-
-        //     var nextVal = parseFloat(curVal + e.key);
-
-        //     if (   nextVal < node.min - 0.001
-        //         || nextVal > node.max)
-        //         e.preventDefault();            
-        // }
     });
 
 
@@ -91,6 +66,11 @@ function initLabelTextbox(node)
     // {
     //     node.setValue(Number(node.textbox.value));
     // });
+
+
+
+    node.textbox.addEventListener('pointerdown', e => e.stopPropagation());
+    node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'text');
 
 
 
@@ -111,6 +91,8 @@ function initLabelTextbox(node)
         if (node.textbox.value != '')
             node.setName(node.textbox.value); // this is good UX
 
+        node.label.style.display = 'block';
+
         node.header.removeChild(node.textbox);
         node.clicked = false;
     });
@@ -126,6 +108,8 @@ function initLabelTextbox(node)
         }
 
         node.textbox.blur();
+        
+        node.label.style.display = 'block';
 
         if (node.inFocus)
             node.focus();
@@ -154,6 +138,8 @@ function initLabelTextbox(node)
         node.textbox.savedValue            = node.textbox.value;
         
         node.header.appendChild(node.textbox);
+
+        node.label.style.display           = 'none';
         
         node.textbox.focus();
         node.textbox.select();

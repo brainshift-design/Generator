@@ -67,7 +67,8 @@
     position:       absolute;
     left:           50%;
     top:            50%;
-    transform:      translateX(-50%) translateY(-50%);
+    transform:      translateX(-50%) 
+                    translateY(calc(-50% - 0.5px));
     pointer-events: none;
     /* box-shadow:     0 0 0 1px red inset; */
     z-index:        10;

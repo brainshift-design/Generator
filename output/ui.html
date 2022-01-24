@@ -417,7 +417,8 @@ input[type=text]::selection
     position:       absolute;
     left:           50%;
     top:            50%;
-    transform:      translateX(-50%) translateY(-50%);
+    transform:      translateX(-50%) 
+                    translateY(calc(-50% - 0.5px));
     pointer-events: none;
     /* box-shadow:     0 0 0 1px red inset; */
     z-index:        10;
@@ -12397,7 +12398,6 @@ class Operator
 
         this.header.style.height = height;
 
-
         graphView.updateNodeTransform(this);
     }
 
@@ -12952,31 +12952,6 @@ function initLabelTextbox(node)
                 }
             }
         }
-
-        // else 
-        // {
-        //     if (   e.key.length == 1
-        //         && !isDigit(e.key)
-        //         && e.key != '.'
-        //         && !(   (   e.code == 'Minus'
-        //                  || e.code == 'NumpadSubtract')
-        //              && node.min < 0))
-        //         e.preventDefault();
-
-        //     var t = node.textbox;
-
-        //     var curVal = t.value;
-
-        //     curVal = 
-        //           curVal.substring(0, t.selectionStart) 
-        //         + curVal.substring(t.selectionEnd, curVal.length);
-
-        //     var nextVal = parseFloat(curVal + e.key);
-
-        //     if (   nextVal < node.min - 0.001
-        //         || nextVal > node.max)
-        //         e.preventDefault();            
-        // }
     });
 
 
@@ -12985,6 +12960,11 @@ function initLabelTextbox(node)
     // {
     //     node.setValue(Number(node.textbox.value));
     // });
+
+
+
+    node.textbox.addEventListener('pointerdown', e => e.stopPropagation());
+    node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'text');
 
 
 
@@ -13005,6 +12985,8 @@ function initLabelTextbox(node)
         if (node.textbox.value != '')
             node.setName(node.textbox.value); // this is good UX
 
+        node.label.style.display = 'block';
+
         node.header.removeChild(node.textbox);
         node.clicked = false;
     });
@@ -13020,6 +13002,8 @@ function initLabelTextbox(node)
         }
 
         node.textbox.blur();
+        
+        node.label.style.display = 'block';
 
         if (node.inFocus)
             node.focus();
@@ -13048,6 +13032,8 @@ function initLabelTextbox(node)
         node.textbox.savedValue            = node.textbox.value;
         
         node.header.appendChild(node.textbox);
+
+        node.label.style.display           = 'none';
         
         node.textbox.focus();
         node.textbox.select();
@@ -13487,7 +13473,7 @@ extends OpArithmetic
             : '<span style="position: relative; top: -1.5px; font-size: 8px;">x</span><span style="position: relative; left: -0.5px; top: -5.15px; font-size: 3.75px; font-weight: bold;">y</span>';
 
         this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-        this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 6);
+        this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
     }
 }
 
