@@ -9651,9 +9651,9 @@ graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
-        var output     = graphView.tempConn.output;
-        var input      = graphView.overInput;
-        var savedInput = graphView.tempConn.savedInput;
+        let output     = graphView.tempConn.output;
+        let input      = graphView.overInput;
+        let savedInput = graphView.tempConn.savedInput;
         
         output.connecting = false;
         
@@ -9662,9 +9662,14 @@ graphView.endConnection = pointerId =>
         {
             if (input == savedInput) // reconnect old
                 show(input.connection.wire);
-            else if (savedInput) // disconnect old, connect new
-                actionManager.do(new ReconnectAction(output, savedInput, input));
-            else // connect new
+            else if (savedInput)
+            {
+                if (!input.op._variableInputs) // disconnect old, connect new
+                    actionManager.do(new ReconnectAction(output, savedInput, input));
+                else
+                    show(savedInput.connection.wire); // show old wire
+            }
+            else if (!savedInput) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }
         else if (savedInput) // disconnect old
@@ -9675,8 +9680,8 @@ graphView.endConnection = pointerId =>
     
     else if (graphView.tempConn.input) // FROM INPUT
     {
-        var input  = graphView.tempConn.input;
-        var output = graphView.overOutput;
+        let input  = graphView.tempConn.input;
+        let output = graphView.overOutput;
 
         input.connecting = false;
         
