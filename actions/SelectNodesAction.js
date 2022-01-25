@@ -8,7 +8,10 @@ extends Action
 
     constructor(selectedIds, prevSelectedIds)
     {
-        super('select ' + selectedIds.length + ' node' + (selectedIds.length == 1 ? '' : 's'));
+        super(
+              'select ' + selectedIds.length 
+            + ' node' + (selectedIds.length == 1 ? '' : 's') + ', '
+            + prevSelectedIds.length + ' selected before');
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];
@@ -25,17 +28,13 @@ extends Action
 
     undo()
     {
-        //console.log('select undo prevSelectedIds');
-        //console.log(this.prevSelectedIds);
-        graphView.select(this.prevSelectedIds);
-        //console.log(graphView.selected);
+        graphView.selectByIds(this.prevSelectedIds);
     }
 
 
 
     redo()
     {
-        graphView.select(this.selectedIds);
-        //console.log(graphView.selected);
+        graphView.selectByIds(this.selectedIds);
     }
 }

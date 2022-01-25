@@ -10115,21 +10115,21 @@ scrollbarY.addEventListener('pointermove', e =>
 });
 
 
-graphView._selected     = []; // these are
-graphView._prevSelected = []; // nodes,
-graphView.lastSelected  = []; // not IDs
+graphView._selectedNodes     = [];
+graphView._prevSelectedNodes = [];
+graphView.lastSelectedNodes  = [];
 
 
-Object.defineProperty(graphView, 'selected',
+Object.defineProperty(graphView, 'selectedNodes',
 {
-    get: () => graphView._selected,
-    set: selected =>
+    get: () => graphView._selectedNodes,
+    set: selectedNodes =>
     {
         graphView.deselectAll();
 
-        graphView._selected = [...selected];
+        graphView._selectedNodes = [...selectedNodes];
     
-        for (const node of graphView._selected)
+        for (const node of graphView._selectedNodes)
             node.setSelected(true);
     }
 });
@@ -10138,22 +10138,22 @@ Object.defineProperty(graphView, 'selected',
 
 graphView.deselectAll = () =>
 {
-    for (const node of graphView._selected)            
+    for (const node of graphView._selectedNodes)            
         node.setSelected(false);
 
-    graphView._selected = [];
+    graphView._selectedNodes = [];
 };
 
 
 
-graphView.select = (nodeIds) =>
+graphView.selectByIds = (nodeIds) =>
 {
     graphView.deselectAll();
 
     for (const id of nodeIds)
     {
         const node = graph.nodes.find(n => n.id == id);
-        graphView._selected.push(node);
+        graphView._selectedNodes.push(node);
         node.setSelected(true);
     }
 };
@@ -10167,7 +10167,7 @@ graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
     graphView.selecting = true;
 
     graphView.selectionRect = new Rect(x, y, 0, 0);
-    graphView._prevSelected = [];
+    graphView._prevSelectedNodes = [];
    
     selectBox.style.visibility = 'visible';
 
@@ -10220,13 +10220,13 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
 
     if (ctrlKey)
-        graphView.selected = graphView.lastSelected.concat(selected);
+        graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
     else if (shiftKey)
-        graphView.selected = graphView.lastSelected
+        graphView.selectedNodes = graphView.lastSelectedNodes
                              .filter(node => !selected.includes(node))
-                             .concat(selected.filter(node => !graphView.lastSelected.includes(node)));
+                             .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
     else
-        graphView.selected = selected;
+        graphView.selectedNodes = selected;
     
         
     selectBox.style.zIndex = MAX_INT32-3;
@@ -10234,19 +10234,19 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
         
     updateGraphNodes();
 
-    graphView._prevSelected = selected;
+    graphView._prevSelectedNodes = selected;
 };
 
 
 
 graphView.endSelection = pointerId =>
 {
-    if (   graphView.selected    .length > 0
-        || graphView.lastSelected.length > 0)
+    if (   graphView.selectedNodes    .length > 0
+        || graphView.lastSelectedNodes.length > 0)
     {
         actionManager.do(new SelectNodesAction(
-            graphView.selected    .map(n => n.id), 
-            graphView.lastSelected.map(n => n.id)));
+            graphView.selectedNodes    .map(n => n.id), 
+            graphView.lastSelectedNodes.map(n => n.id)));
     }
 
 
@@ -10254,7 +10254,7 @@ graphView.endSelection = pointerId =>
 
     graphView.selecting     = false;
     graphView.selectionRect = Rect.NaN;
-    graphView._prevSelected = [];
+    graphView._prevSelectedNodes = [];
 
     selectBox.style.visibility = 'hidden';
 };
@@ -10315,7 +10315,6 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
-                //hide(graphView.overInput.connection.wire.outBall);
             }
             else
             {
@@ -10326,7 +10325,7 @@ graphView.addEventListener('pointerdown', e =>
         }
         else // selection
         {
-            graphView.lastSelected = [...graphView.selected];
+            graphView.lastSelectedNodes = [...graphView.selectedNodes];
 
             graphView.startSelection(
                 e.pointerId, 
@@ -12209,12 +12208,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(graphView.selected, this);
+            removeFromArray(graphView.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            graphView.selected.push(this);
+            graphView.selectedNodes.push(this);
     }        
 
 
@@ -12696,17 +12695,18 @@ class Operator
 
 function createOperatorNode(node)
 {
-    node.div             = createDiv('node');
-    node.div.op          = node;
-
-    node.div.style.width = node.defaultWidth + 'px';
-    
-    node.div.selectedSet = false;
-    node.div.over        = false;
-    node.div.dragging    = false;
-    node.div.moved       = false;
-
-    node.inner           = createDiv('nodeInner');
+    node.div                    = createDiv('node');
+    node.div.op                 = node;
+       
+    node.div.style.width        = node.defaultWidth + 'px';
+           
+    node.div.selectedSet        = false;
+    node.div.over               = false;
+    node.div.dragging           = false;
+    node.div.shiftOnPointerDown = false;
+    node.div.moved              = false;
+       
+    node.inner                  = createDiv('nodeInner');
 
 
     node.div.appendChild(node.inner);
@@ -12753,7 +12753,7 @@ function createNodeHeader(node)
             return;
 
 
-        graphView.lastSelected = graphView.selected;
+        graphView.lastSelectedNodes = [...graphView.selectedNodes];
         
         graphView.putNodeOnTop(node);
 
@@ -12764,14 +12764,15 @@ function createNodeHeader(node)
         {
             e.stopPropagation();
 
-            node.div.selectedSet = false;
-            node.div.moved       = false;
+            node.div.selectedSet        = false;
+            node.div.moved              = false;
+            node.div.shiftOnPointerDown = e.shiftKey;
 
 
             if (!node.selected)
             {
                 if (e.shiftKey) node     .selected = true;
-                else            graphView.selected = [node];
+                else            graphView.selectedNodes = [node];
 
                 node.selectedSet = true;
             }
@@ -12781,7 +12782,7 @@ function createNodeHeader(node)
             node.div.sy = e.clientY;
 
 
-            for (const n of graphView.selected)
+            for (const n of graphView.selectedNodes)
             {
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
@@ -12805,7 +12806,7 @@ function createNodeHeader(node)
             const dx = (e.clientX - node.div.sx) / graphView.zoom;
             const dy = (e.clientY - node.div.sy) / graphView.zoom;
             
-            for (const n of graphView.selected)
+            for (const n of graphView.selectedNodes)
             {
                 setNodePosition(
                     n.div.op,
@@ -12828,24 +12829,42 @@ function createNodeHeader(node)
         {
             if (node.div.moved)
             {
-                actionManager.do(new MoveNodesAction(
-                    graphView.selected.map(n => n.id), 
+                actionManager.do(new SelectMoveNodesAction(
+                    graphView.lastSelectedNodes.map(n => n.id), 
+                    graphView.selectedNodes.map(n => n.id), 
                     { x: node.div.slx,        y: node.div.sly       },
-                    { x: node.div.offsetLeft, y: node.div.offsetTop }));
+                    { x: node.div.offsetLeft, y: node.div.offsetTop },
+                    node.div.shiftOnPointerDown ));
             }
+            else
+            {
+                actionManager.do(new SelectNodesAction(
+                    graphView.selectedNodes    .map(n => n.id), 
+                    graphView.lastSelectedNodes.map(n => n.id)));
+            }
+            // else
+            // {
+            //     actionManager.do(new MoveNodesAction(
+            //         graphView.selectedNodes.map(n => n.id), 
+            //         { x: node.div.slx,        y: node.div.sly       },
+            //         { x: node.div.offsetLeft, y: node.div.offsetTop }));
+            // }
 
 
             if (   !node.div.selectedSet
                 && !node.div.moved)
             {
-                if (e.shiftKey) node.selected      = true;
-                else            graphView.selected = [node];
+                if (e.shiftKey) node.selected           = true;
+                else            graphView.selectedNodes = [node];
             }
 
 
             node.div.dragging = false;
             node.header.releasePointerCapture(e.pointerId);
         }
+
+
+        node.div.shiftOnPointerDown = false;
     });
     
     
@@ -15258,7 +15277,7 @@ extends Action
 
     do()
     {
-        this.prevSelectedIds = graphView.selected.map(n => n.id);
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
         this.createdNodeId   = uiCreateNode(this.opType).id;
     }
 
@@ -15267,7 +15286,7 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        graphView.select(this.prevSelectedIds);
+        graphView.selectByIds(this.prevSelectedIds);
     }
 
 
@@ -15610,7 +15629,7 @@ extends Action
         super('paste ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
 
         this.copiedNodesJson         = copiedNodesJson;
-        this.prevSelectedNodeIds     = graphView.selected.map(n => n.id);
+        this.prevSelectedNodeIds     = graphView.selectedNodes.map(n => n.id);
         this.pasteOutsideConnections = pasteOutsideConnections;
     }
 
@@ -15635,7 +15654,7 @@ extends Action
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
 
-        graphView.selected = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+        graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
     }
 
 
@@ -15789,6 +15808,117 @@ extends Action
 }
 
 
+class SelectMoveNodesAction
+extends Action
+{
+    newSelectedIds  = [];
+    prevSelectedIds = [];
+
+    shiftPressed;
+
+    fromPos;
+    toPos;
+
+    from;
+    to;
+
+
+
+    constructor(prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
+    {
+        super(
+            'select move ' + newSelectedIds.length 
+          + ' node' + (newSelectedIds.length == 1 ? '' : 's') + ', '
+          + prevSelectedIds.length + ' selected before');
+
+
+        this.prevSelectedIds = [...prevSelectedIds];
+        this.newSelectedIds  = [...newSelectedIds];
+          
+        this.shiftPressed    = shiftPressed;
+
+        this.fromPos         = fromPos;
+        this.toPos           = toPos;
+
+
+        
+        const dx = this.toPos.x - this.fromPos.x;
+        const dy = this.toPos.y - this.fromPos.y;
+
+
+        this.from = [];
+        this.to   = [];
+
+        for (const id of this.getMovedIds())
+        {
+            const node = graph.nodeFromId(id);
+
+            this.from.push({ x: node.div.slx,      y: node.div.sly      });
+            this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
+        }
+    }
+
+
+
+    getMovedIds()
+    {
+        const movedIds = [];
+
+        if (this.shiftPressed)
+            movedIds.push(...this.prevSelectedIds);
+        
+        movedIds.push(...this.newSelectedIds);
+
+        return movedIds;
+    }
+
+
+
+    do()
+    {
+        const movedIds = this.getMovedIds();
+
+        for (var i = 0; i < movedIds.length; i++)
+        {
+            const node = graph.nodeFromId(movedIds[i]);
+
+            setNodePosition(
+                node.div.op,
+                this.to[i].x,
+                this.to[i].y);
+        }
+    }
+
+
+
+    undo()
+    {
+        const movedIds = this.getMovedIds();
+
+        for (var i = 0; i < movedIds.length; i++)
+        {
+            const node = graph.nodeFromId(movedIds[i]);
+
+            setNodePosition(
+                node.div.op,
+                this.from[i].x,
+                this.from[i].y);
+        }
+
+        graphView.selectByIds(this.prevSelectedIds);
+    }
+
+
+
+    redo()
+    {
+        this.do();
+
+        graphView.selectByIds(this.getMovedIds());
+    }
+}
+
+
 class SelectNodesAction
 extends Action
 {
@@ -15799,7 +15929,10 @@ extends Action
 
     constructor(selectedIds, prevSelectedIds)
     {
-        super('select ' + selectedIds.length + ' node' + (selectedIds.length == 1 ? '' : 's'));
+        super(
+              'select ' + selectedIds.length 
+            + ' node' + (selectedIds.length == 1 ? '' : 's') + ', '
+            + prevSelectedIds.length + ' selected before');
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];
@@ -15816,18 +15949,14 @@ extends Action
 
     undo()
     {
-        //console.log('select undo prevSelectedIds');
-        //console.log(this.prevSelectedIds);
-        graphView.select(this.prevSelectedIds);
-        //console.log(graphView.selected);
+        graphView.selectByIds(this.prevSelectedIds);
     }
 
 
 
     redo()
     {
-        graphView.select(this.selectedIds);
-        //console.log(graphView.selected);
+        graphView.selectByIds(this.selectedIds);
     }
 }
 
@@ -16139,7 +16268,7 @@ document.addEventListener('keydown', e =>
         && getCtrlKey(e))
     {
         pasteOffset     = [0, 0];
-        copiedNodesJson = uiCopyNodes(graphView.selected.map(n => n.id));
+        copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
     }
 
     // paste
@@ -16154,14 +16283,14 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selected.map(n => n.id)), e.shiftKey));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), e.shiftKey));
     }
 
     // select all
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
     {
-        graphView.selected = graph.nodes;
+        graphView.selectedNodes = graph.nodes;
     }
 
     // undo/redo
@@ -16177,7 +16306,7 @@ document.addEventListener('keydown', e =>
     // delete
     else if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
+        actionManager.do(new DeleteNodesAction(graphView.selectedNodes.map(n => n.id)));
         graphView._selected = [];
     }
 
@@ -16395,7 +16524,7 @@ function uiCreateNode(opType, createdId = -1, updateUI = true)
     let node = graph.createNode(opType, createdId);
     graph.addNode(node);
     
-    // if (graphView.selected.length > 0)
+    // if (graphView.selectedNodes.length > 0)
     // {
     //     const selNode = graph.nodes.find(n => n.selected);
     //     const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
@@ -16409,8 +16538,8 @@ function uiCreateNode(opType, createdId = -1, updateUI = true)
 
     if (updateUI)
     {
-        graphView.lastSelected = graphView.selected;
-        graphView.selected     = [node];
+        graphView.lastSelectedNodes = graphView.selectedNodes;
+        graphView.selectedNodes     = [node];
 
         graphView.putNodeOnTop(node);
         graphView.updateNodeTransform(node);
@@ -16452,7 +16581,7 @@ function uiDeleteNodes(nodeIds, actionId)
 //     graph.addNodes(nodes);
 
 
-//     graphView.selected = nodes;
+//     graphView.selectedNodes = nodes;
     
 //     graphView.putNodeOnTop(lastOf(nodes));
 
@@ -16711,7 +16840,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     loadConnections(data, pasteOutsideConnections);
     
     
-    graphView.selected = nodes;
+    graphView.selectedNodes = nodes;
     return nodes;
 }
 
@@ -16735,9 +16864,9 @@ function correctConnections(data)
 
 function updateGraphNodes()
 {
-    for (const node of graphView.selected)      updateGraphNode(node);
-    for (const node of graphView._prevSelected) updateGraphNode(node);
-    for (const node of graphView.lastSelected)  updateGraphNode(node);
+    for (const node of graphView.selectedNodes)      updateGraphNode(node);
+    for (const node of graphView._prevSelectedNodes) updateGraphNode(node);
+    for (const node of graphView.lastSelectedNodes)  updateGraphNode(node);
 }
 
 

@@ -1,18 +1,18 @@
-graphView._selected     = []; // these are
-graphView._prevSelected = []; // nodes,
-graphView.lastSelected  = []; // not IDs
+graphView._selectedNodes     = [];
+graphView._prevSelectedNodes = [];
+graphView.lastSelectedNodes  = [];
 
 
-Object.defineProperty(graphView, 'selected',
+Object.defineProperty(graphView, 'selectedNodes',
 {
-    get: () => graphView._selected,
-    set: selected =>
+    get: () => graphView._selectedNodes,
+    set: selectedNodes =>
     {
         graphView.deselectAll();
 
-        graphView._selected = [...selected];
+        graphView._selectedNodes = [...selectedNodes];
     
-        for (const node of graphView._selected)
+        for (const node of graphView._selectedNodes)
             node.setSelected(true);
     }
 });
@@ -21,22 +21,22 @@ Object.defineProperty(graphView, 'selected',
 
 graphView.deselectAll = () =>
 {
-    for (const node of graphView._selected)            
+    for (const node of graphView._selectedNodes)            
         node.setSelected(false);
 
-    graphView._selected = [];
+    graphView._selectedNodes = [];
 };
 
 
 
-graphView.select = (nodeIds) =>
+graphView.selectByIds = (nodeIds) =>
 {
     graphView.deselectAll();
 
     for (const id of nodeIds)
     {
         const node = graph.nodes.find(n => n.id == id);
-        graphView._selected.push(node);
+        graphView._selectedNodes.push(node);
         node.setSelected(true);
     }
 };
@@ -50,7 +50,7 @@ graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
     graphView.selecting = true;
 
     graphView.selectionRect = new Rect(x, y, 0, 0);
-    graphView._prevSelected = [];
+    graphView._prevSelectedNodes = [];
    
     selectBox.style.visibility = 'visible';
 
@@ -103,13 +103,13 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
 
     if (ctrlKey)
-        graphView.selected = graphView.lastSelected.concat(selected);
+        graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
     else if (shiftKey)
-        graphView.selected = graphView.lastSelected
+        graphView.selectedNodes = graphView.lastSelectedNodes
                              .filter(node => !selected.includes(node))
-                             .concat(selected.filter(node => !graphView.lastSelected.includes(node)));
+                             .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
     else
-        graphView.selected = selected;
+        graphView.selectedNodes = selected;
     
         
     selectBox.style.zIndex = MAX_INT32-3;
@@ -117,19 +117,19 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
         
     updateGraphNodes();
 
-    graphView._prevSelected = selected;
+    graphView._prevSelectedNodes = selected;
 };
 
 
 
 graphView.endSelection = pointerId =>
 {
-    if (   graphView.selected    .length > 0
-        || graphView.lastSelected.length > 0)
+    if (   graphView.selectedNodes    .length > 0
+        || graphView.lastSelectedNodes.length > 0)
     {
         actionManager.do(new SelectNodesAction(
-            graphView.selected    .map(n => n.id), 
-            graphView.lastSelected.map(n => n.id)));
+            graphView.selectedNodes    .map(n => n.id), 
+            graphView.lastSelectedNodes.map(n => n.id)));
     }
 
 
@@ -137,7 +137,7 @@ graphView.endSelection = pointerId =>
 
     graphView.selecting     = false;
     graphView.selectionRect = Rect.NaN;
-    graphView._prevSelected = [];
+    graphView._prevSelectedNodes = [];
 
     selectBox.style.visibility = 'hidden';
 };

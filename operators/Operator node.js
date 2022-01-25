@@ -1,16 +1,17 @@
 function createOperatorNode(node)
 {
-    node.div             = createDiv('node');
-    node.div.op          = node;
-
-    node.div.style.width = node.defaultWidth + 'px';
-    
-    node.div.selectedSet = false;
-    node.div.over        = false;
-    node.div.dragging    = false;
-    node.div.moved       = false;
-
-    node.inner           = createDiv('nodeInner');
+    node.div                    = createDiv('node');
+    node.div.op                 = node;
+       
+    node.div.style.width        = node.defaultWidth + 'px';
+           
+    node.div.selectedSet        = false;
+    node.div.over               = false;
+    node.div.dragging           = false;
+    node.div.shiftOnPointerDown = false;
+    node.div.moved              = false;
+       
+    node.inner                  = createDiv('nodeInner');
 
 
     node.div.appendChild(node.inner);
@@ -57,7 +58,7 @@ function createNodeHeader(node)
             return;
 
 
-        graphView.lastSelected = graphView.selected;
+        graphView.lastSelectedNodes = [...graphView.selectedNodes];
         
         graphView.putNodeOnTop(node);
 
@@ -68,14 +69,15 @@ function createNodeHeader(node)
         {
             e.stopPropagation();
 
-            node.div.selectedSet = false;
-            node.div.moved       = false;
+            node.div.selectedSet        = false;
+            node.div.moved              = false;
+            node.div.shiftOnPointerDown = e.shiftKey;
 
 
             if (!node.selected)
             {
                 if (e.shiftKey) node     .selected = true;
-                else            graphView.selected = [node];
+                else            graphView.selectedNodes = [node];
 
                 node.selectedSet = true;
             }
@@ -85,7 +87,7 @@ function createNodeHeader(node)
             node.div.sy = e.clientY;
 
 
-            for (const n of graphView.selected)
+            for (const n of graphView.selectedNodes)
             {
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
@@ -109,7 +111,7 @@ function createNodeHeader(node)
             const dx = (e.clientX - node.div.sx) / graphView.zoom;
             const dy = (e.clientY - node.div.sy) / graphView.zoom;
             
-            for (const n of graphView.selected)
+            for (const n of graphView.selectedNodes)
             {
                 setNodePosition(
                     n.div.op,
@@ -132,24 +134,42 @@ function createNodeHeader(node)
         {
             if (node.div.moved)
             {
-                actionManager.do(new MoveNodesAction(
-                    graphView.selected.map(n => n.id), 
+                actionManager.do(new SelectMoveNodesAction(
+                    graphView.lastSelectedNodes.map(n => n.id), 
+                    graphView.selectedNodes.map(n => n.id), 
                     { x: node.div.slx,        y: node.div.sly       },
-                    { x: node.div.offsetLeft, y: node.div.offsetTop }));
+                    { x: node.div.offsetLeft, y: node.div.offsetTop },
+                    node.div.shiftOnPointerDown ));
             }
+            else
+            {
+                actionManager.do(new SelectNodesAction(
+                    graphView.selectedNodes    .map(n => n.id), 
+                    graphView.lastSelectedNodes.map(n => n.id)));
+            }
+            // else
+            // {
+            //     actionManager.do(new MoveNodesAction(
+            //         graphView.selectedNodes.map(n => n.id), 
+            //         { x: node.div.slx,        y: node.div.sly       },
+            //         { x: node.div.offsetLeft, y: node.div.offsetTop }));
+            // }
 
 
             if (   !node.div.selectedSet
                 && !node.div.moved)
             {
-                if (e.shiftKey) node.selected      = true;
-                else            graphView.selected = [node];
+                if (e.shiftKey) node.selected           = true;
+                else            graphView.selectedNodes = [node];
             }
 
 
             node.div.dragging = false;
             node.header.releasePointerCapture(e.pointerId);
         }
+
+
+        node.div.shiftOnPointerDown = false;
     });
     
     

@@ -8,7 +8,7 @@ document.addEventListener('keydown', e =>
         && getCtrlKey(e))
     {
         pasteOffset     = [0, 0];
-        copiedNodesJson = uiCopyNodes(graphView.selected.map(n => n.id));
+        copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
     }
 
     // paste
@@ -23,14 +23,14 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selected.map(n => n.id)), e.shiftKey));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), e.shiftKey));
     }
 
     // select all
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
     {
-        graphView.selected = graph.nodes;
+        graphView.selectedNodes = graph.nodes;
     }
 
     // undo/redo
@@ -46,7 +46,7 @@ document.addEventListener('keydown', e =>
     // delete
     else if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selected.map(n => n.id)));
+        actionManager.do(new DeleteNodesAction(graphView.selectedNodes.map(n => n.id)));
         graphView._selected = [];
     }
 

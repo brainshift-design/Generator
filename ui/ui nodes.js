@@ -3,7 +3,7 @@ function uiCreateNode(opType, createdId = -1, updateUI = true)
     let node = graph.createNode(opType, createdId);
     graph.addNode(node);
     
-    // if (graphView.selected.length > 0)
+    // if (graphView.selectedNodes.length > 0)
     // {
     //     const selNode = graph.nodes.find(n => n.selected);
     //     const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
@@ -17,8 +17,8 @@ function uiCreateNode(opType, createdId = -1, updateUI = true)
 
     if (updateUI)
     {
-        graphView.lastSelected = graphView.selected;
-        graphView.selected     = [node];
+        graphView.lastSelectedNodes = graphView.selectedNodes;
+        graphView.selectedNodes     = [node];
 
         graphView.putNodeOnTop(node);
         graphView.updateNodeTransform(node);
@@ -60,7 +60,7 @@ function uiDeleteNodes(nodeIds, actionId)
 //     graph.addNodes(nodes);
 
 
-//     graphView.selected = nodes;
+//     graphView.selectedNodes = nodes;
     
 //     graphView.putNodeOnTop(lastOf(nodes));
 
@@ -319,7 +319,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     loadConnections(data, pasteOutsideConnections);
     
     
-    graphView.selected = nodes;
+    graphView.selectedNodes = nodes;
     return nodes;
 }
 
@@ -343,9 +343,9 @@ function correctConnections(data)
 
 function updateGraphNodes()
 {
-    for (const node of graphView.selected)      updateGraphNode(node);
-    for (const node of graphView._prevSelected) updateGraphNode(node);
-    for (const node of graphView.lastSelected)  updateGraphNode(node);
+    for (const node of graphView.selectedNodes)      updateGraphNode(node);
+    for (const node of graphView._prevSelectedNodes) updateGraphNode(node);
+    for (const node of graphView.lastSelectedNodes)  updateGraphNode(node);
 }
 
 

@@ -18,7 +18,7 @@ extends Action
         super('paste ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
 
         this.copiedNodesJson         = copiedNodesJson;
-        this.prevSelectedNodeIds     = graphView.selected.map(n => n.id);
+        this.prevSelectedNodeIds     = graphView.selectedNodes.map(n => n.id);
         this.pasteOutsideConnections = pasteOutsideConnections;
     }
 
@@ -43,7 +43,7 @@ extends Action
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
 
-        graphView.selected = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+        graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
     }
 
 

@@ -53,7 +53,6 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
-                //hide(graphView.overInput.connection.wire.outBall);
             }
             else
             {
@@ -64,7 +63,7 @@ graphView.addEventListener('pointerdown', e =>
         }
         else // selection
         {
-            graphView.lastSelected = [...graphView.selected];
+            graphView.lastSelectedNodes = [...graphView.selectedNodes];
 
             graphView.startSelection(
                 e.pointerId, 

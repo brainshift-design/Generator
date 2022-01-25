@@ -70,12 +70,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(graphView.selected, this);
+            removeFromArray(graphView.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            graphView.selected.push(this);
+            graphView.selectedNodes.push(this);
     }        
 
 

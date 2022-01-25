@@ -19,7 +19,7 @@ extends Action
 
     do()
     {
-        this.prevSelectedIds = graphView.selected.map(n => n.id);
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
         this.createdNodeId   = uiCreateNode(this.opType).id;
     }
 
@@ -28,7 +28,7 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        graphView.select(this.prevSelectedIds);
+        graphView.selectByIds(this.prevSelectedIds);
     }
 
 
