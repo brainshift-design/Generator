@@ -896,8 +896,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
-    <!-- <button class='menuButton' id='btnLoad'              onclick='uiGetPluginData("graph");                              this.blur();'>LOAD</button> -->
-    <!-- <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button> -->
+    <button class='menuButton' id='btnLoad'              onclick='graph.clear(); uiGetPluginData("graph"); this.blur();'>LOAD</button>
+    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     
 </div>
     
@@ -1051,7 +1051,8 @@ function removeFrom(array, item)
 
 function removeAt(array, index)
 {
-    if (index > -1)
+    if (   index > -1 
+        && index < array.length)
         array.splice(index, 1)
 }
 
@@ -3357,7 +3358,8 @@ function removeFrom(array, item)
 
 function removeAt(array, index)
 {
-    if (index > -1)
+    if (   index > -1 
+        && index < array.length)
         array.splice(index, 1)
 }
 
@@ -10141,19 +10143,13 @@ graphView.deselectAll = () =>
 
 
 
-graphView.selectFromIds = (nodeIds) =>
+graphView.select = (nodeIds) =>
 {
     graphView.deselectAll();
-
-    //console.log('graphView.selectFromIds');
-    //console.log(nodeIds);
 
     for (const id of nodeIds)
     {
         const node = graph.nodes.find(n => n.id == id);
-        //console.log('id = ' + id);
-        //console.log('node = ' + node);
-        
         graphView._selected.push(node);
         node.setSelected(true);
     }
@@ -11451,6 +11447,10 @@ class Graph
             
             // move new input back to correct index
             moveIn(input.op.inputs, input.op.inputs.length-1, inputIndex);
+
+            input.op.inputControls.insertBefore(
+                lastOf(input.op.inputControls.childNodes), 
+                input.op.inputControls.childNodes[inputIndex]);
         }
 
 
@@ -11469,15 +11469,15 @@ class Graph
 
         
         output.op.makePassive();
-        output.updateControl();
-        
 
         if (!activeNodeInTree(input.op))
             input.op.makeActive();
        
-            
+           
         output.op.updateConnectedInputValueText();
         //conn.wire.style.zIndex = 0;//MAX_INT32;
+
+        //output.updateControl();
 
 
         setTimeout(() => output.op.pushUpdate());
@@ -15237,7 +15237,7 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        graphView.selectFromIds(this.prevSelectedIds);
+        graphView.select(this.prevSelectedIds);
     }
 
 
@@ -15264,7 +15264,7 @@ extends Action
         super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
 
         this.nodeIds = [...nodeIds]; // clone the array
-        this.nodes   = graph.nodes.filter(n => this.nodeIds.includes(n.id));
+        this.nodes   = graph.nodes.filter(n => nodeIds.includes(n.id));
     }
 
 
@@ -15327,18 +15327,75 @@ extends Action
 
     undo()
     {
-        uiUndeleteNodes(this.nodes, this.nodePos);
- 
-        for (const conn of this.connections)
+        this.undeleteNodes();
+        this.undeleteConnections();
+
+        this.nodePos     = [];
+        this.connections = [];
+    }
+
+
+
+    undeleteNodes()
+    {
+        graph.addNodes(this.nodes);
+        graphView.selected = this.nodes;
+        graphView.putNodeOnTop(lastOf(this.nodes));
+    
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            setNodePosition(
+                this.nodes[i], 
+                this.nodePos[i].x, 
+                this.nodePos[i].y);
+        }
+
+        for (let i = 0; i < this.nodes.length; i++)
+            this.nodes[i].id = this.nodeIds[i];
+    }
+
+
+
+    undeleteConnections()
+    {
+        const connections    = [...this.connections];
+        const varConnections = [];
+       
+        
+        // connections going into variable inputs must be treated separately
+        for (let i = connections.length-1; i >= 0; i--)
+        {
+            if (graph.nodes.find(n => n.id == connections[i].inputOpId)._variableInputs)
+            {
+                varConnections.push(connections[i]);
+                removeAt(connections, i);
+            }
+        }
+
+        
+        varConnections.sort((c1, c2) => 
+        {
+            if (c1.inputOpId  != c2.inputOpId ) return c1.inputOpId  - c2.inputOpId;
+            if (c1.inputIndex != c2.inputIndex) return c1.inputIndex - c2.inputIndex;
+            return 0;
+        });
+        
+        
+        this.connect(connections);
+        this.connect(varConnections);
+    }
+
+
+
+    connect(connections)
+    {
+        for (const conn of connections)
         {
             const outputOp = graph.nodes.find(n => n.id == conn.outputOpId);
             const inputOp  = graph.nodes.find(n => n.id == conn. inputOpId);
 
             uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
         }
-
-        this.nodePos     = [];
-        this.connections = [];
     }
 }
 
@@ -15731,7 +15788,7 @@ extends Action
     {
         //console.log('select undo prevSelectedIds');
         //console.log(this.prevSelectedIds);
-        graphView.selectFromIds(this.prevSelectedIds);
+        graphView.select(this.prevSelectedIds);
         //console.log(graphView.selected);
     }
 
@@ -15739,7 +15796,7 @@ extends Action
 
     redo()
     {
-        graphView.selectFromIds(this.selectedIds);
+        graphView.select(this.selectedIds);
         //console.log(graphView.selected);
     }
 }
@@ -16360,29 +16417,29 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiUndeleteNodes(nodes, nodePos, actionId)
-{
-    graph.addNodes(nodes);
+// function uiUndeleteNodes(nodes, nodePos, actionId)
+// {
+//     graph.addNodes(nodes);
 
 
-    graphView.selected = nodes;
+//     graphView.selected = nodes;
     
-    graphView.putNodeOnTop(lastOf(nodes));
+//     graphView.putNodeOnTop(lastOf(nodes));
 
-    for (let i = 0; i < nodes.length; i++)
-    {
-        setNodePosition(
-            nodes[i], 
-            nodePos[i].x, 
-            nodePos[i].y);
-    }
+//     for (let i = 0; i < nodes.length; i++)
+//     {
+//         setNodePosition(
+//             nodes[i], 
+//             nodePos[i].x, 
+//             nodePos[i].y);
+//     }
         
 
-    // uiPostMessageToGenerator({
-    //     msg:       'genUndeleteNodes',
-    //     uiActionId: actionId
-    // });
-}
+//     // uiPostMessageToGenerator({
+//     //     msg:       'genUndeleteNodes',
+//     //     uiActionId: actionId
+//     // });
+// }
 
 
 
@@ -16690,7 +16747,7 @@ function uiEndLoadState(msg)
 
     uiGetPluginData('graph');
 
-    setTimeout(autoSave, autoSaveDelay * 1000);
+    //setTimeout(autoSave, autoSaveDelay * 1000);
 
 
     // initMenuSelect(menuSelect);

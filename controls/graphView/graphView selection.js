@@ -29,19 +29,13 @@ graphView.deselectAll = () =>
 
 
 
-graphView.selectFromIds = (nodeIds) =>
+graphView.select = (nodeIds) =>
 {
     graphView.deselectAll();
-
-    //console.log('graphView.selectFromIds');
-    //console.log(nodeIds);
 
     for (const id of nodeIds)
     {
         const node = graph.nodes.find(n => n.id == id);
-        //console.log('id = ' + id);
-        //console.log('node = ' + node);
-        
         graphView._selected.push(node);
         node.setSelected(true);
     }

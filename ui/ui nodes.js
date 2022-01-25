@@ -55,29 +55,29 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiUndeleteNodes(nodes, nodePos, actionId)
-{
-    graph.addNodes(nodes);
+// function uiUndeleteNodes(nodes, nodePos, actionId)
+// {
+//     graph.addNodes(nodes);
 
 
-    graphView.selected = nodes;
+//     graphView.selected = nodes;
     
-    graphView.putNodeOnTop(lastOf(nodes));
+//     graphView.putNodeOnTop(lastOf(nodes));
 
-    for (let i = 0; i < nodes.length; i++)
-    {
-        setNodePosition(
-            nodes[i], 
-            nodePos[i].x, 
-            nodePos[i].y);
-    }
+//     for (let i = 0; i < nodes.length; i++)
+//     {
+//         setNodePosition(
+//             nodes[i], 
+//             nodePos[i].x, 
+//             nodePos[i].y);
+//     }
         
 
-    // uiPostMessageToGenerator({
-    //     msg:       'genUndeleteNodes',
-    //     uiActionId: actionId
-    // });
-}
+//     // uiPostMessageToGenerator({
+//     //     msg:       'genUndeleteNodes',
+//     //     uiActionId: actionId
+//     // });
+// }
 
 
 

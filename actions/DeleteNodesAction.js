@@ -13,7 +13,7 @@ extends Action
         super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
 
         this.nodeIds = [...nodeIds]; // clone the array
-        this.nodes   = graph.nodes.filter(n => this.nodeIds.includes(n.id));
+        this.nodes   = graph.nodes.filter(n => nodeIds.includes(n.id));
     }
 
 
@@ -76,17 +76,74 @@ extends Action
 
     undo()
     {
-        uiUndeleteNodes(this.nodes, this.nodePos);
- 
-        for (const conn of this.connections)
+        this.undeleteNodes();
+        this.undeleteConnections();
+
+        this.nodePos     = [];
+        this.connections = [];
+    }
+
+
+
+    undeleteNodes()
+    {
+        graph.addNodes(this.nodes);
+        graphView.selected = this.nodes;
+        graphView.putNodeOnTop(lastOf(this.nodes));
+    
+        for (let i = 0; i < this.nodes.length; i++)
+        {
+            setNodePosition(
+                this.nodes[i], 
+                this.nodePos[i].x, 
+                this.nodePos[i].y);
+        }
+
+        for (let i = 0; i < this.nodes.length; i++)
+            this.nodes[i].id = this.nodeIds[i];
+    }
+
+
+
+    undeleteConnections()
+    {
+        const connections    = [...this.connections];
+        const varConnections = [];
+       
+        
+        // connections going into variable inputs must be treated separately
+        for (let i = connections.length-1; i >= 0; i--)
+        {
+            if (graph.nodes.find(n => n.id == connections[i].inputOpId)._variableInputs)
+            {
+                varConnections.push(connections[i]);
+                removeAt(connections, i);
+            }
+        }
+
+        
+        varConnections.sort((c1, c2) => 
+        {
+            if (c1.inputOpId  != c2.inputOpId ) return c1.inputOpId  - c2.inputOpId;
+            if (c1.inputIndex != c2.inputIndex) return c1.inputIndex - c2.inputIndex;
+            return 0;
+        });
+        
+        
+        this.connect(connections);
+        this.connect(varConnections);
+    }
+
+
+
+    connect(connections)
+    {
+        for (const conn of connections)
         {
             const outputOp = graph.nodes.find(n => n.id == conn.outputOpId);
             const inputOp  = graph.nodes.find(n => n.id == conn. inputOpId);
 
             uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
         }
-
-        this.nodePos     = [];
-        this.connections = [];
     }
 }

@@ -106,7 +106,8 @@ function removeFrom(array, item)
 
 function removeAt(array, index)
 {
-    if (index > -1)
+    if (   index > -1 
+        && index < array.length)
         array.splice(index, 1)
 }
 

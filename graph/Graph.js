@@ -168,6 +168,10 @@ class Graph
             
             // move new input back to correct index
             moveIn(input.op.inputs, input.op.inputs.length-1, inputIndex);
+
+            input.op.inputControls.insertBefore(
+                lastOf(input.op.inputControls.childNodes), 
+                input.op.inputControls.childNodes[inputIndex]);
         }
 
 
@@ -186,15 +190,15 @@ class Graph
 
         
         output.op.makePassive();
-        output.updateControl();
-        
 
         if (!activeNodeInTree(input.op))
             input.op.makeActive();
        
-            
+           
         output.op.updateConnectedInputValueText();
         //conn.wire.style.zIndex = 0;//MAX_INT32;
+
+        //output.updateControl();
 
 
         setTimeout(() => output.op.pushUpdate());
