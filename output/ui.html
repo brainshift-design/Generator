@@ -12556,6 +12556,15 @@ class Operator
 
 
 
+    paramIsConsideredDefault(param)
+    {
+        return param.isConsideredDefault()
+            ||    param.input 
+               && param.input.isConnected;
+    }
+
+
+
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
@@ -12565,7 +12574,7 @@ class Operator
               pos + '{\n'
             + this.toJsonBase(nTab);
 
-        if (this.params.filter(p => !p.isDefault()).length > 0)
+        if (this.params.filter(p => !this.paramIsConsideredDefault(p)).length > 0)
         {
             json +=
                 ',\n'
@@ -13092,6 +13101,14 @@ extends Operator
 
 
 
+    paramIsConsideredDefault(param)
+    {
+        return param.isDefault()
+            || this.inputs[0].isConnected;
+    }
+
+
+
     toJsonBase(nTab)
     {
         let   pos = ' '.repeat(nTab);
@@ -13100,9 +13117,13 @@ extends Operator
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n'
-            + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
+        if (this.#paramValue.control.dec != 0)
+        {
+            json += ',\n'
+                + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
+        }
 
+        
         return json;
     }
 
@@ -13671,16 +13692,16 @@ extends Operator
 
     updateNode()
     {
-        const colBack       = dataColor2rgb(this._color);
+        const colBack      = dataColor2rgb(this._color);
  
-        const darkText      = rgb2hclokl(colBack)[2] > 0.71;
+        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
  
-        const colText       = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
-        const colWarning    = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-        const colSpaceVal   = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
+        const colText      = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+        const colSpaceVal  = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
  
-        const textStyle     = colorStyleRgba(colText);
-        const warningStyle  = colorStyleRgba(colWarning);
+        const textStyle    = colorStyleRgba(colText);
+        const warningStyle = colorStyleRgba(colWarning);
 
         
         this.#colorBack.style.background = colorStyleRgb(colBack);
@@ -13836,6 +13857,14 @@ extends Operator
 
 
         slider.ranges = ranges;
+    }
+
+
+
+    paramIsConsideredDefault(param)
+    {
+        return super.paramIsConsideredDefault(param)
+            || this.inputs[0].isConnected;
     }
 
 

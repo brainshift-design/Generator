@@ -220,16 +220,16 @@ extends Operator
 
     updateNode()
     {
-        const colBack       = dataColor2rgb(this._color);
+        const colBack      = dataColor2rgb(this._color);
  
-        const darkText      = rgb2hclokl(colBack)[2] > 0.71;
+        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
  
-        const colText       = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
-        const colWarning    = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-        const colSpaceVal   = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
+        const colText      = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+        const colSpaceVal  = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
  
-        const textStyle     = colorStyleRgba(colText);
-        const warningStyle  = colorStyleRgba(colWarning);
+        const textStyle    = colorStyleRgba(colText);
+        const warningStyle = colorStyleRgba(colWarning);
 
         
         this.#colorBack.style.background = colorStyleRgb(colBack);
@@ -385,6 +385,14 @@ extends Operator
 
 
         slider.ranges = ranges;
+    }
+
+
+
+    paramIsConsideredDefault(param)
+    {
+        return super.paramIsConsideredDefault(param)
+            || this.inputs[0].isConnected;
     }
 
 

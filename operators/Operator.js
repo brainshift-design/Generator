@@ -456,6 +456,15 @@ class Operator
 
 
 
+    paramIsConsideredDefault(param)
+    {
+        return param.isConsideredDefault()
+            ||    param.input 
+               && param.input.isConnected;
+    }
+
+
+
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
@@ -465,7 +474,7 @@ class Operator
               pos + '{\n'
             + this.toJsonBase(nTab);
 
-        if (this.params.filter(p => !p.isDefault()).length > 0)
+        if (this.params.filter(p => !this.paramIsConsideredDefault(p)).length > 0)
         {
             json +=
                 ',\n'

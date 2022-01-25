@@ -89,6 +89,10 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
+    if (!graphView.btn1down)
+        graphView.panning = false;
+
+        
     graphView.p = { 
         x: e.clientX, 
         y: e.clientY };
@@ -181,13 +185,10 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
-        setTimeout(() =>
-        {
-            const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
-            const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
+        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
+        const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
 
-            graphView.setPanAndZoom(pan, zoom);
-        });
+        graphView.setPanAndZoom(pan, zoom);
     }
     else
     {

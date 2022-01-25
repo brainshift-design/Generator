@@ -78,6 +78,14 @@ extends Operator
 
 
 
+    paramIsConsideredDefault(param)
+    {
+        return param.isDefault()
+            || this.inputs[0].isConnected;
+    }
+
+
+
     toJsonBase(nTab)
     {
         let   pos = ' '.repeat(nTab);
@@ -86,9 +94,13 @@ extends Operator
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n'
-            + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
+        if (this.#paramValue.control.dec != 0)
+        {
+            json += ',\n'
+                + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
+        }
 
+        
         return json;
     }
 
