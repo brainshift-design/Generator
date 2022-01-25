@@ -9670,12 +9670,15 @@ graphView.cancelConnection = pointerId =>
 
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
-    
+
     graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
-
+    
     if (output) output.updateControl();
     if (input ) input .updateControl();
+
+    if (graphView.overInput ) graphView.overInput .updateControl();
+    if (graphView.overOutput) graphView.overOutput.updateControl();
 };
 
 
@@ -11826,9 +11829,15 @@ extends EventTarget
                this.isConnected
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
-                   || this.mouseOver);
+                   ||    this.mouseOver
+                      && !graphView.tempConn.input);
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
+        const mouseOver =
+               this.mouseOver
+            && (   !graphView.tempConn
+                || !graphView.tempConn.input);
+
+        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -11946,7 +11955,12 @@ class Output
 
     updateControl()
     {
-        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.2 : 0.1));
+        const mouseOver =
+               this.mouseOver
+            && (   !graphView.tempConn
+                || !graphView.tempConn.output);
+
+                const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 

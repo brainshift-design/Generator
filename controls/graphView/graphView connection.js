@@ -37,12 +37,15 @@ graphView.cancelConnection = pointerId =>
 
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
-    
+
     graphView.removeWire(graphView.tempConn.wire);    
     graphView.tempConn = null;
-
+    
     if (output) output.updateControl();
     if (input ) input .updateControl();
+
+    if (graphView.overInput ) graphView.overInput .updateControl();
+    if (graphView.overOutput) graphView.overOutput.updateControl();
 };
 
 

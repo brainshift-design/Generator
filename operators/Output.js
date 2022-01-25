@@ -81,7 +81,12 @@ class Output
 
     updateControl()
     {
-        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.2 : 0.1));
+        const mouseOver =
+               this.mouseOver
+            && (   !graphView.tempConn
+                || !graphView.tempConn.output);
+
+                const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 

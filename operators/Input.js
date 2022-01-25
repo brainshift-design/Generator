@@ -122,9 +122,15 @@ extends EventTarget
                this.isConnected
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
-                   || this.mouseOver);
+                   ||    this.mouseOver
+                      && !graphView.tempConn.input);
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, this.mouseOver ? 0.4 : 0.2));
+        const mouseOver =
+               this.mouseOver
+            && (   !graphView.tempConn
+                || !graphView.tempConn.input);
+
+        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
