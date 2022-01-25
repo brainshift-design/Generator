@@ -30,6 +30,7 @@ function loadGraph(json)
         parseFloat(data.zoom));
 
     graph.addNodes(loadNodes(data), false);
+
     loadConnections(data);
 }
 
@@ -69,8 +70,8 @@ function loadConnections(data, loadOutsideConnections)
 {
     for (const _conn of data.connections)
     {
-        if (      data.nodes.find(n => n.name == _conn.outputOp)
-               && data.nodes.find(n => n.name == _conn. inputOp)
+        if (      data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn.outputOp)
+               && data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn. inputOp)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
     }

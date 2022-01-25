@@ -133,9 +133,10 @@ class Graph
                 for (const connInput of output.connectedInputs)
                 {
                     this.disconnect(connInput, true);
-                    
-                    if (!activeNodeInTree(connInput.op))
-                    connInput.op.lastNodeInTree.makeActive();
+    
+                    // if (!activeNodeInTree(connInput.op))
+                    //     lastNodesInTreeFrom(connInput.op).forEach(n => n.makeActive());
+                    //     connInput.op.lastNodeInTree.makeActive();
                 }
             }
             
