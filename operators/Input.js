@@ -154,7 +154,11 @@ extends EventTarget
                && graphView.tempConn.output
                && graphView.overInput == this
                ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
-               : colorStyle);
+               : (   graphView.tempConn
+                  && graphView.tempConn.input
+                  && graphView.tempConn.input == this)
+                  ? colorStyleRgba(toRgba(graphView.tempConn.input.wireColor))
+                  : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
         this.wireBall.style.left   = '0.5px';
