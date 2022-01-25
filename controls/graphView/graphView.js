@@ -95,9 +95,16 @@ function graphView_onpointermove(e)
 
     if (graphView.panning)
     {
-        const dp = subv(graphView.p, graphView.pStart);
-        graphView.pan = addv(graphView.panStart, dp);
         setCursor(panCursor);
+
+        setTimeout(() =>
+        {
+            const dp = subv(graphView.p, graphView.pStart);
+
+            graphView.setPanAndZoom(
+                addv(graphView.panStart, dp), 
+                graphView.zoom);
+        });
     }
     
     else if (graphView.selecting)
@@ -174,10 +181,13 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
-        const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
+        setTimeout(() =>
+        {
+            const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
+            const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
 
-        graphView.setPanAndZoom(pan, zoom);
+            graphView.setPanAndZoom(pan, zoom);
+        });
     }
     else
     {
@@ -216,46 +226,6 @@ graphView.getAllNodeBounds = () =>
 
     return bounds;
 };
-
-
-
-// graphView.getNodeBounds = (nodes) =>
-// {
-//     let boundsL = Number.MAX_SAFE_INTEGER;
-//     let boundsT = Number.MAX_SAFE_INTEGER;
-//     let boundsR = Number.MIN_SAFE_INTEGER;
-//     let boundsB = Number.MIN_SAFE_INTEGER;
-    
-//     for (const node of nodes)
-//     {
-//         const bounds = boundingRect(node.div);
-
-//         boundsL = Math.min(boundsL, bounds.l);
-//         boundsT = Math.min(boundsT, bounds.t);
-//         boundsR = Math.max(boundsR, bounds.r);
-//         boundsB = Math.max(boundsB, bounds.b);
-//     }
-
-//     return {
-//         x: boundsL - graphView.pan.x, 
-//         y: boundsT - graphView.pan.y,
-//         w: boundsR - boundsL,
-//         h: boundsB - boundsT };
-// };
-
-
-
-// graphView.getZoomedNodeBounds = (nodes) =>
-// {
-//     let bounds = graphView.getNodeBounds(nodes);
-
-//     bounds.x /= graphView.zoom;
-//     bounds.y /= graphView.zoom;
-//     bounds.w /= graphView.zoom;
-//     bounds.h /= graphView.zoom;
-
-//     return boundsl;
-// }
 
 
 
@@ -350,16 +320,7 @@ graphView.putNodeOnTop = node =>
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    var z = MAX_INT32-3; // -3 is for scrollbars
-
-    // for (const input of node.inputs.filter(i => i.isConnected))
-    //     input.connection.wire.style.zIndex = z--;
-        
-    // for (const output of node.outputs)
-    //     for (const connInput of output.connectedInputs)
-    //         connInput.connection.wire.style.zIndex = z--;
-    
-    node.div.style.zIndex = z;
+    node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars
 };
 
 

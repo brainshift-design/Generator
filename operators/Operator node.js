@@ -147,13 +147,6 @@ function createNodeHeader(node)
                     graphView.selectedNodes    .map(n => n.id), 
                     graphView.lastSelectedNodes.map(n => n.id)));
             }
-            // else
-            // {
-            //     actionManager.do(new MoveNodesAction(
-            //         graphView.selectedNodes.map(n => n.id), 
-            //         { x: node.div.slx,        y: node.div.sly       },
-            //         { x: node.div.offsetLeft, y: node.div.offsetTop }));
-            // }
 
 
             if (   !node.div.selectedSet

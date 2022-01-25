@@ -896,8 +896,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
-    <button class='menuButton' id='btnLoad'              onclick='graph.clear(); uiGetPluginData("graph"); this.blur();'>LOAD</button>
-    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
+    <!-- <button class='menuButton' id='btnLoad'              onclick='graph.clear(); uiGetPluginData("graph"); this.blur();'>LOAD</button> -->
+    <!-- <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button> -->
     
 </div>
     
@@ -10357,9 +10357,16 @@ function graphView_onpointermove(e)
 
     if (graphView.panning)
     {
-        const dp = subv(graphView.p, graphView.pStart);
-        graphView.pan = addv(graphView.panStart, dp);
         setCursor(panCursor);
+
+        setTimeout(() =>
+        {
+            const dp = subv(graphView.p, graphView.pStart);
+
+            graphView.setPanAndZoom(
+                addv(graphView.panStart, dp), 
+                graphView.zoom);
+        });
     }
     
     else if (graphView.selecting)
@@ -10436,10 +10443,13 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
-        const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
+        setTimeout(() =>
+        {
+            const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
+            const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
 
-        graphView.setPanAndZoom(pan, zoom);
+            graphView.setPanAndZoom(pan, zoom);
+        });
     }
     else
     {
@@ -10478,46 +10488,6 @@ graphView.getAllNodeBounds = () =>
 
     return bounds;
 };
-
-
-
-// graphView.getNodeBounds = (nodes) =>
-// {
-//     let boundsL = Number.MAX_SAFE_INTEGER;
-//     let boundsT = Number.MAX_SAFE_INTEGER;
-//     let boundsR = Number.MIN_SAFE_INTEGER;
-//     let boundsB = Number.MIN_SAFE_INTEGER;
-    
-//     for (const node of nodes)
-//     {
-//         const bounds = boundingRect(node.div);
-
-//         boundsL = Math.min(boundsL, bounds.l);
-//         boundsT = Math.min(boundsT, bounds.t);
-//         boundsR = Math.max(boundsR, bounds.r);
-//         boundsB = Math.max(boundsB, bounds.b);
-//     }
-
-//     return {
-//         x: boundsL - graphView.pan.x, 
-//         y: boundsT - graphView.pan.y,
-//         w: boundsR - boundsL,
-//         h: boundsB - boundsT };
-// };
-
-
-
-// graphView.getZoomedNodeBounds = (nodes) =>
-// {
-//     let bounds = graphView.getNodeBounds(nodes);
-
-//     bounds.x /= graphView.zoom;
-//     bounds.y /= graphView.zoom;
-//     bounds.w /= graphView.zoom;
-//     bounds.h /= graphView.zoom;
-
-//     return boundsl;
-// }
 
 
 
@@ -10612,16 +10582,7 @@ graphView.putNodeOnTop = node =>
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    var z = MAX_INT32-3; // -3 is for scrollbars
-
-    // for (const input of node.inputs.filter(i => i.isConnected))
-    //     input.connection.wire.style.zIndex = z--;
-        
-    // for (const output of node.outputs)
-    //     for (const connInput of output.connectedInputs)
-    //         connInput.connection.wire.style.zIndex = z--;
-    
-    node.div.style.zIndex = z;
+    node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars
 };
 
 
@@ -12842,13 +12803,6 @@ function createNodeHeader(node)
                     graphView.selectedNodes    .map(n => n.id), 
                     graphView.lastSelectedNodes.map(n => n.id)));
             }
-            // else
-            // {
-            //     actionManager.do(new MoveNodesAction(
-            //         graphView.selectedNodes.map(n => n.id), 
-            //         { x: node.div.slx,        y: node.div.sly       },
-            //         { x: node.div.offsetLeft, y: node.div.offsetTop }));
-            // }
 
 
             if (   !node.div.selectedSet
@@ -15538,75 +15492,75 @@ extends Action
 }
 
 
-class MoveNodesAction
-extends Action
-{
-    nodeIds;
+// class MoveNodesAction
+// extends Action
+// {
+//     nodeIds;
 
-    fromPos;
-    toPos;
+//     fromPos;
+//     toPos;
 
-    from;
-    to;
-
-
-
-    constructor(nodeIds, fromPos, toPos)
-    {
-        super('move nodes');
-
-
-        this.nodeIds = [...nodeIds];
-
-        this.fromPos = fromPos;
-        this.toPos   = toPos;
-
-        const dx = this.toPos.x - this.fromPos.x;
-        const dy = this.toPos.y - this.fromPos.y;
-
-
-        this.from = [];
-        this.to   = [];
-
-        for (const id of this.nodeIds)
-        {
-            const node = graph.nodeFromId(id);
-
-            this.from.push({ x: node.div.slx,      y: node.div.sly      });
-            this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
-        }
-    }
+//     from;
+//     to;
 
 
 
-    do()
-    {
-        for (var i = 0; i < this.nodeIds.length; i++)
-        {
-            const node = graph.nodeFromId(this.nodeIds[i]);
-
-            setNodePosition(
-                node.div.op,
-                this.to[i].x,
-                this.to[i].y);
-        }
-    }
+//     constructor(nodeIds, fromPos, toPos)
+//     {
+//         super('move nodes');
 
 
+//         this.nodeIds = [...nodeIds];
 
-    undo()
-    {
-        for (var i = 0; i < this.nodeIds.length; i++)
-        {
-            const node = graph.nodeFromId(this.nodeIds[i]);
+//         this.fromPos = fromPos;
+//         this.toPos   = toPos;
 
-            setNodePosition(
-                node.div.op,
-                this.from[i].x,
-                this.from[i].y);
-        }
-    }
-}
+//         const dx = this.toPos.x - this.fromPos.x;
+//         const dy = this.toPos.y - this.fromPos.y;
+
+
+//         this.from = [];
+//         this.to   = [];
+
+//         for (const id of this.nodeIds)
+//         {
+//             const node = graph.nodeFromId(id);
+
+//             this.from.push({ x: node.div.slx,      y: node.div.sly      });
+//             this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
+//         }
+//     }
+
+
+
+//     do()
+//     {
+//         for (var i = 0; i < this.nodeIds.length; i++)
+//         {
+//             const node = graph.nodeFromId(this.nodeIds[i]);
+
+//             setNodePosition(
+//                 node.div.op,
+//                 this.to[i].x,
+//                 this.to[i].y);
+//         }
+//     }
+
+
+
+//     undo()
+//     {
+//         for (var i = 0; i < this.nodeIds.length; i++)
+//         {
+//             const node = graph.nodeFromId(this.nodeIds[i]);
+
+//             setNodePosition(
+//                 node.div.op,
+//                 this.from[i].x,
+//                 this.from[i].y);
+//         }
+//     }
+// }
 
 
 class PasteNodesAction
@@ -16906,7 +16860,7 @@ function uiEndLoadState(msg)
 
     uiGetPluginData('graph');
 
-    //setTimeout(autoSave, autoSaveDelay * 1000);
+    setTimeout(autoSave, autoSaveDelay * 1000);
 
 
     // initMenuSelect(menuSelect);
