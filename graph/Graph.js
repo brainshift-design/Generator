@@ -159,7 +159,11 @@ class Graph
             
 
         if (input.connectedOutput)
+        {
+            const output = input.connectedOutput;
             this.disconnect(input);
+            output.updateControl();
+        }
 
 
         if (   input.op._variableInputs
@@ -238,6 +242,9 @@ class Graph
 
         if (input.param)
             input.param.valueText = '';
+
+
+        output.updateControl();
 
 
         if (!activeNodeInTree(output.op))
