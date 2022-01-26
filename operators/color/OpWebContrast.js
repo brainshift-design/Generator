@@ -52,8 +52,8 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
+        if (this.valid)
+            return false;
 
 
         if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();

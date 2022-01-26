@@ -171,8 +171,8 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
+        if (this.valid)
+            return false;
 
             
         this.updateParams(true);

@@ -20,7 +20,11 @@ extends Action
     do()
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
-        this.createdNodeId   = uiCreateNode(this.opType).id;
+
+        const node = uiCreateNode(this.opType);
+        this.createdNodeId = node.id;
+
+        node.pushUpdate();
     }
 
 
@@ -36,5 +40,7 @@ extends Action
     redo()
     {
         uiCreateNode(this.opType, this.createdNodeId);
+
+        graph.nodes.find(n => n.id == this.createdNodeId).pushUpdate();
     }
 }

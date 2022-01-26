@@ -10279,29 +10279,30 @@ graphView.endSelection = pointerId =>
 };
 
 
-graphView.wires         = [];
+graphView.wires          = [];
+graphView.canUpdateNodes = true;
 
 
-graphView.overInput     = null;
-graphView.overOutput    = null;
+graphView.overInput      = null;
+graphView.overOutput     = null;
    
-graphView.tempConn      = null;
+graphView.tempConn       = null;
    
    
-graphView.selecting     = false;
-graphView.selectionRect = Rect.NaN;
+graphView.selecting      = false;
+graphView.selectionRect  = Rect.NaN;
 
-graphView.btn1down      = false; // this is to help deal with mouse wheels that send X values as
-                                 // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
-
-
-graphView.panning       = false;
-
-graphView.pStart        = {x:0, y:0};
+graphView.btn1down       = false; // this is to help deal with mouse wheels that send X values as
+                                  // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
 
-scrollbarX.style.zIndex = MAX_INT32-1;
-scrollbarY.style.zIndex = MAX_INT32-2;
+graphView.panning        = false;
+
+graphView.pStart         = {x:0, y:0};
+
+
+scrollbarX.style.zIndex  = MAX_INT32-1;
+scrollbarY.style.zIndex  = MAX_INT32-2;
 
 
 
@@ -10938,8 +10939,8 @@ extends Parameter
         this.initInput (hasInput,  'number');
         this.initOutput(hasOutput, 'number');
 
-        if (this.input)
-            this.input.addEventListener('connect', () => this.op.pushUpdate());
+        // if (this.input)
+        //     this.input.addEventListener('connect', () => this.op.pushUpdate());
 
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -11706,6 +11707,8 @@ function getTerminalsAfterNode(node)
 
 function updateTerminalsAfterNodes(nodes)
 {
+    console.log('updateTerminalsAfternodes()');
+    
     const terminals = [];
 
     for (const node of nodes)
@@ -12227,22 +12230,7 @@ class Operator
 
 
 
-    #valid = false; // this is the flag for regeneration
-
-
-    set valid(val) { this.#valid = val;  }
-    get valid()    { return this.#valid; }
-    // {
-    //     let valid = this.#valid;
-        
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             valid &= input.connectedOutput.op.valid;
-    //     }
-
-    //     return valid;
-    // }
+    valid = false; // this is the flag for regeneration
 
 
 
@@ -12399,7 +12387,7 @@ class Operator
         if (!this.valid) // stops an op with inputs from same output 
             return;      // from being invalidated more than once
     
-        this.#valid = false;
+        this.valid = false;
 
 
         for (const output of this.outputs)
@@ -12418,24 +12406,16 @@ class Operator
 
 
 
-    needsUpdate()
-    {
-        if (this.valid)
-            return false;
-
-        return true;
-    }
-
-
-
     update()
     {
         console.log(this.name + '.update()');
 
         this.setParamOutputData();
-        this.updateNode();
 
-        this.#valid = true;
+        if (graphView.canUpdateNodes)
+            this.updateNode();
+
+        this.valid  = true;
         this.loaded = false;
     }
 
@@ -12443,7 +12423,7 @@ class Operator
 
     updateNode() 
     {
-        console.log(this.name + '.updateNode()');
+        console.log('    ' + this.name + '.updateNode()');
 
         this.updateHeader();
 
@@ -12957,7 +12937,7 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    node.updateNode();
+    // node.updateNode();
 
     graphView.updateNodeTransform(node);
 }
@@ -13138,9 +13118,10 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
-        
+        if (this.valid)
+            return false;
+
+            
         if (this.inputs[0].isConnected)
         {
             this.#paramValue.control.dec = this.inputs[0].data.decimals;
@@ -13150,6 +13131,7 @@ extends Operator
         this.outputs[0]._data = dataFromNumber(
                   this.#paramValue.value, 
                   this.#paramValue.control.dec);
+            
                   
         super.update()
     }
@@ -13319,8 +13301,9 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
+        if (this.valid)
+            return false;
+
 
         let maxDec = 0;
 
@@ -13343,6 +13326,7 @@ extends Operator
         this.#paramValue.control.dec = maxDec;
         this.#paramValue.control.update();
 
+        
         super.update()
     }
 
@@ -13409,7 +13393,7 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput(); 
-    op.pushUpdate();
+    //op.pushUpdate();
 }
 
 
@@ -13418,7 +13402,7 @@ function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input);
     op.inputControls.removeChild(input.control);
-    op.pushUpdate();
+    //op.pushUpdate();
 }
 
 
@@ -13736,8 +13720,8 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
+        if (this.valid)
+            return false;
 
             
         this.updateParams(true);
@@ -15038,8 +15022,8 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
+        if (this.valid)
+            return false;
 
 
         if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
@@ -15419,7 +15403,11 @@ extends Action
     do()
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
-        this.createdNodeId   = uiCreateNode(this.opType).id;
+
+        const node = uiCreateNode(this.opType);
+        this.createdNodeId = node.id;
+
+        node.pushUpdate();
     }
 
 
@@ -15435,6 +15423,8 @@ extends Action
     redo()
     {
         uiCreateNode(this.opType, this.createdNodeId);
+
+        graph.nodes.find(n => n.id == this.createdNodeId).pushUpdate();
     }
 }
 
@@ -16017,34 +16007,34 @@ extends Action
 
     do()
     {
-        const movedIds = this.getMovedIds();
+        const movedIds   = this.getMovedIds();
+        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedIds.length; i++)
-        {
-            const node = graph.nodeFromId(movedIds[i]);
-
+        for (var i = 0; i < movedNodes.length; i++)
             setNodePosition(
-                node.div.op,
+                movedNodes[i].div.op,
                 this.to[i].x,
                 this.to[i].y);
-        }
+
+        for (const node of movedNodes)
+            node.updateNode();
     }
 
 
 
     undo()
     {
-        const movedIds = this.getMovedIds();
+        const movedIds   = this.getMovedIds();
+        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedIds.length; i++)
-        {
-            const node = graph.nodeFromId(movedIds[i]);
-
+        for (var i = 0; i < movedNodes.length; i++)
             setNodePosition(
-                node.div.op,
+                movedNodes[i].div.op,
                 this.from[i].x,
                 this.from[i].y);
-        }
+
+        for (const node of movedNodes)
+            node.updateNode();
 
         graphView.selectByIds(this.prevSelectedIds);
     }
@@ -16686,7 +16676,7 @@ function uiCreateNode(opType, createdId = -1, updateUI = true)
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
 
-        setTimeout(() => node.pushUpdate());
+        //node.pushUpdate();
         
         //graphView.putNodeOnTop(node);
         //graphView.updateNodeTransform(node);
@@ -17021,7 +17011,7 @@ function updateGraphNodes()
 function updateGraphNode(node)
 {
     console.log('updateGraphNode(' + node.name + ')');
-    
+
     node.updateNode();
 
     
@@ -17169,7 +17159,6 @@ const autoSaveDelay = 2; // seconds
 
 
 
-
 // function saveToLocalFile(filename, str) 
 // {
 //     const link = document.createElement('a');
@@ -17187,6 +17176,9 @@ const autoSaveDelay = 2; // seconds
 
 function loadGraph(json)
 {
+    graphView.canUpdateNodes = false;
+
+
     graph.clear();
 
     const data = JSON.parse(json);
@@ -17196,9 +17188,15 @@ function loadGraph(json)
           y: parseFloat(data.pany) },
         parseFloat(data.zoom));
 
-    graph.addNodes(loadNodes(data), false);
-
+    const nodes = loadNodes(data);
+    graph.addNodes(nodes, false);
+    
     loadConnections(data);
+    
+    
+    graphView.canUpdateNodes = true;
+    
+    updateTerminalsAfterNodes(nodes);
 }
 
 

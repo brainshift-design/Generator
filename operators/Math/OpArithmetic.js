@@ -83,8 +83,9 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
+        if (this.valid)
+            return false;
+
 
         let maxDec = 0;
 
@@ -107,6 +108,7 @@ extends Operator
         this.#paramValue.control.dec = maxDec;
         this.#paramValue.control.update();
 
+        
         super.update()
     }
 
@@ -173,7 +175,7 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput(); 
-    op.pushUpdate();
+    //op.pushUpdate();
 }
 
 
@@ -182,5 +184,5 @@ function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input);
     op.inputControls.removeChild(input.control);
-    op.pushUpdate();
+    //op.pushUpdate();
 }

@@ -2,7 +2,6 @@ const autoSaveDelay = 2; // seconds
 
 
 
-
 // function saveToLocalFile(filename, str) 
 // {
 //     const link = document.createElement('a');
@@ -20,6 +19,9 @@ const autoSaveDelay = 2; // seconds
 
 function loadGraph(json)
 {
+    graphView.canUpdateNodes = false;
+
+
     graph.clear();
 
     const data = JSON.parse(json);
@@ -29,9 +31,15 @@ function loadGraph(json)
           y: parseFloat(data.pany) },
         parseFloat(data.zoom));
 
-    graph.addNodes(loadNodes(data), false);
-
+    const nodes = loadNodes(data);
+    graph.addNodes(nodes, false);
+    
     loadConnections(data);
+    
+    
+    graphView.canUpdateNodes = true;
+    
+    updateTerminalsAfterNodes(nodes);
 }
 
 

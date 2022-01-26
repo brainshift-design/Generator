@@ -66,34 +66,34 @@ extends Action
 
     do()
     {
-        const movedIds = this.getMovedIds();
+        const movedIds   = this.getMovedIds();
+        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedIds.length; i++)
-        {
-            const node = graph.nodeFromId(movedIds[i]);
-
+        for (var i = 0; i < movedNodes.length; i++)
             setNodePosition(
-                node.div.op,
+                movedNodes[i].div.op,
                 this.to[i].x,
                 this.to[i].y);
-        }
+
+        for (const node of movedNodes)
+            node.updateNode();
     }
 
 
 
     undo()
     {
-        const movedIds = this.getMovedIds();
+        const movedIds   = this.getMovedIds();
+        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedIds.length; i++)
-        {
-            const node = graph.nodeFromId(movedIds[i]);
-
+        for (var i = 0; i < movedNodes.length; i++)
             setNodePosition(
-                node.div.op,
+                movedNodes[i].div.op,
                 this.from[i].x,
                 this.from[i].y);
-        }
+
+        for (const node of movedNodes)
+            node.updateNode();
 
         graphView.selectByIds(this.prevSelectedIds);
     }

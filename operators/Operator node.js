@@ -202,7 +202,7 @@ function setNodePosition(node, x, y)
     node.div.style.left = x;
     node.div.style.top  = y;
 
-    node.updateNode();
+    // node.updateNode();
 
     graphView.updateNodeTransform(node);
 }

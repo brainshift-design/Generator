@@ -22,9 +22,10 @@ extends Operator
 
     update()
     {
-        if (!this.needsUpdate())
-            return;
-        
+        if (this.valid)
+            return false;
+
+            
         if (this.inputs[0].isConnected)
         {
             this.#paramValue.control.dec = this.inputs[0].data.decimals;
@@ -34,6 +35,7 @@ extends Operator
         this.outputs[0]._data = dataFromNumber(
                   this.#paramValue.value, 
                   this.#paramValue.control.dec);
+            
                   
         super.update()
     }

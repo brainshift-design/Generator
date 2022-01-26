@@ -1,26 +1,27 @@
-graphView.wires         = [];
+graphView.wires          = [];
+graphView.canUpdateNodes = true;
 
 
-graphView.overInput     = null;
-graphView.overOutput    = null;
+graphView.overInput      = null;
+graphView.overOutput     = null;
    
-graphView.tempConn      = null;
+graphView.tempConn       = null;
    
    
-graphView.selecting     = false;
-graphView.selectionRect = Rect.NaN;
+graphView.selecting      = false;
+graphView.selectionRect  = Rect.NaN;
 
-graphView.btn1down      = false; // this is to help deal with mouse wheels that send X values as
-                                 // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
-
-
-graphView.panning       = false;
-
-graphView.pStart        = {x:0, y:0};
+graphView.btn1down       = false; // this is to help deal with mouse wheels that send X values as
+                                  // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
 
-scrollbarX.style.zIndex = MAX_INT32-1;
-scrollbarY.style.zIndex = MAX_INT32-2;
+graphView.panning        = false;
+
+graphView.pStart         = {x:0, y:0};
+
+
+scrollbarX.style.zIndex  = MAX_INT32-1;
+scrollbarY.style.zIndex  = MAX_INT32-2;
 
 
 

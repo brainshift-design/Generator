@@ -86,6 +86,8 @@ function getTerminalsAfterNode(node)
 
 function updateTerminalsAfterNodes(nodes)
 {
+    console.log('updateTerminalsAfternodes()');
+    
     const terminals = [];
 
     for (const node of nodes)

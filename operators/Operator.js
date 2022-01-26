@@ -47,22 +47,7 @@ class Operator
 
 
 
-    #valid = false; // this is the flag for regeneration
-
-
-    set valid(val) { this.#valid = val;  }
-    get valid()    { return this.#valid; }
-    // {
-    //     let valid = this.#valid;
-        
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.isConnected)
-    //             valid &= input.connectedOutput.op.valid;
-    //     }
-
-    //     return valid;
-    // }
+    valid = false; // this is the flag for regeneration
 
 
 
@@ -219,7 +204,7 @@ class Operator
         if (!this.valid) // stops an op with inputs from same output 
             return;      // from being invalidated more than once
     
-        this.#valid = false;
+        this.valid = false;
 
 
         for (const output of this.outputs)
@@ -238,24 +223,16 @@ class Operator
 
 
 
-    needsUpdate()
-    {
-        if (this.valid)
-            return false;
-
-        return true;
-    }
-
-
-
     update()
     {
         console.log(this.name + '.update()');
 
         this.setParamOutputData();
-        this.updateNode();
 
-        this.#valid = true;
+        if (graphView.canUpdateNodes)
+            this.updateNode();
+
+        this.valid  = true;
         this.loaded = false;
     }
 
@@ -263,7 +240,7 @@ class Operator
 
     updateNode() 
     {
-        console.log(this.name + '.updateNode()');
+        console.log('    ' + this.name + '.updateNode()');
 
         this.updateHeader();
 
