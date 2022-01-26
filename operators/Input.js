@@ -49,10 +49,10 @@ extends EventTarget
     }
 
 
-    connection  = null;
+    connection = null;
     
-    connecting  = false;
-    mouseOver   = false;
+    connecting = false;
+    mouseOver  = false;
     
 
     initialSeed = 0;

@@ -28,11 +28,7 @@ extends Action
                 && c.outputIndex == outputIndex
                 && c.inputOpId   == conn.input.op.id
                 && c.inputIndex  == inputIndex))
-            this.connections.push({
-                outputOpId:  conn.output.op.id,
-                outputIndex: conn.output.op.outputs.indexOf(conn.output),
-                inputOpId:   conn.input .op.id,
-                inputIndex:  conn.input .op. inputs.indexOf(conn. input)});
+            this.connections.push(getConnectionForArrayWithIds(conn));
     }
 
 

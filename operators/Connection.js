@@ -145,3 +145,25 @@ class Connection
         uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
     }
 }
+
+
+
+function getConnectionForArrayWithIds(conn)
+{
+    return {
+        outputOpId:  conn.output.op.id,
+        outputIndex: conn.output.op.outputs.indexOf(conn.output),
+        inputOpId:   conn.input .op.id,
+        inputIndex:  conn.input .op. inputs.indexOf(conn. input)};
+}
+
+
+
+function getConnectionForArrayWithNames(conn)
+{
+    return {
+        outputOpName: conn.output.op.name,
+        outputIndex:  conn.output.op.outputs.indexOf(conn.output),
+        inputOpName:  conn.input .op.name,
+        inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
+}

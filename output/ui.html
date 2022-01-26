@@ -10287,7 +10287,9 @@ graphView.btn1down      = false; // this is to help deal with mouse wheels that 
                                  // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
 
-graphView.pStart = {x:0, y:0};
+graphView.panning       = false;
+
+graphView.pStart        = {x:0, y:0};
 
 
 scrollbarX.style.zIndex = MAX_INT32-1;
@@ -10362,10 +10364,6 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
-    if (!graphView.btn1down)
-        graphView.panning = false;
-
-        
     graphView.p = { 
         x: e.clientX, 
         y: e.clientY };
@@ -10374,14 +10372,11 @@ function graphView_onpointermove(e)
     {
         setCursor(panCursor);
 
-        setTimeout(() =>
-        {
-            const dp = subv(graphView.p, graphView.pStart);
+        const dp = subv(graphView.p, graphView.pStart);
 
-            graphView.setPanAndZoom(
-                addv(graphView.panStart, dp), 
-                graphView.zoom);
-        });
+        graphView.setPanAndZoom(
+            addv(graphView.panStart, dp), 
+            graphView.zoom);
     }
     
     else if (graphView.selecting)
@@ -10720,8 +10715,9 @@ extends EventTarget
     output;
 
     
-    onchange  = new Event('change' );
-    onconfirm = new Event('confirm');
+    onbeforechange = new Event('beforechange');
+    onchange       = new Event('change');
+    onconfirm      = new Event('confirm');
 
 
 
@@ -10808,6 +10804,22 @@ extends EventTarget
 
 
     setOutputData() { }
+
+
+
+    preSetValue(value, confirm, dispatchEvents = true) 
+    {
+        if (dispatchEvents)
+            this.dispatchPreSetValueEvents(this.oldValue, value, confirm);
+    }
+
+
+
+    dispatchPreSetValueEvents(oldValue, newValue, confirm)
+    {
+        if (newValue != oldValue)
+            this.dispatchEvent(this.onbeforechange);
+    }
 
 
 
@@ -10991,6 +11003,8 @@ extends Parameter
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
+        this.preSetValue(value, confirm, dispatchEvents);
+
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
@@ -11198,6 +11212,8 @@ extends Parameter
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
+        this.preSetValue(value, confirm, dispatchEvents);
+
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
@@ -11728,10 +11744,10 @@ extends EventTarget
     }
 
 
-    connection  = null;
+    connection = null;
     
-    connecting  = false;
-    mouseOver   = false;
+    connecting = false;
+    mouseOver  = false;
     
 
     initialSeed = 0;
@@ -12106,6 +12122,28 @@ class Connection
 
         uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
     }
+}
+
+
+
+function getConnectionForArrayWithIds(conn)
+{
+    return {
+        outputOpId:  conn.output.op.id,
+        outputIndex: conn.output.op.outputs.indexOf(conn.output),
+        inputOpId:   conn.input .op.id,
+        inputIndex:  conn.input .op. inputs.indexOf(conn. input)};
+}
+
+
+
+function getConnectionForArrayWithNames(conn)
+{
+    return {
+        outputOpName: conn.output.op.name,
+        outputIndex:  conn.output.op.outputs.indexOf(conn.output),
+        inputOpName:  conn.input .op.name,
+        inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
 }
 
 
@@ -13542,12 +13580,15 @@ extends Operator
 
     hexbox;
 
-
+    
     _color;
-
+    
     _oldSpace;
+    _oldSpaceConnections = [];
+    
 
     #init = false;
+    
 
 
     constructor()
@@ -13583,6 +13624,9 @@ extends Operator
 
         this.paramSpace.control.barHeight = 0.2;
         
+        this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
+        this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
+
 
         initHexbox(this);
 
@@ -13656,7 +13700,7 @@ extends Operator
             return;
 
             
-        this.updateParams(false);
+        this.updateParams(true);
 
 
         if (this.inputs[0].isConnected) 
@@ -13941,6 +13985,58 @@ extends Operator
                     break;
             }
         }
+    }
+}
+
+
+
+function paramSpace_onbeforechange(paramSpace)
+{
+    if (   paramSpace.value == 0
+        && paramSpace.oldValue > 0)
+    {
+        for (let i = 2; i < paramSpace.op.inputs.length; i++)
+        {
+            const input = paramSpace.op.inputs[i];
+
+            if (input.isConnected)
+                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+        }   
+
+        for (let i = 2; i < paramSpace.op.outputs.length; i++)
+        {
+            const output = paramSpace.op.outputs[i];
+
+            for (const input of output.connectedInputs)
+                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+        }   
+    }
+}
+
+
+
+function paramSpace_onchange(paramSpace)
+{
+    // restore the old connections
+    
+    if (   paramSpace.value > 0
+        && paramSpace.oldValue == 0)
+    {
+        for (const conn of paramSpace.op._oldSpaceConnections)
+        {
+            const outputOp = graph.nodes.find(n => n.name == conn.outputOpName);
+            const  inputOp = graph.nodes.find(n => n.name == conn. inputOpName);
+
+            if (outputOp && inputOp)
+            {
+                const output = outputOp.outputs[conn.outputIndex];
+                const  input =  inputOp. inputs[conn. inputIndex];
+
+                uiConnect(output, input, conn.inputIndex);
+            }
+        }
+
+        paramSpace.op._oldSpaceConnections = [];
     }
 }
 
@@ -15327,11 +15423,7 @@ extends Action
                 && c.outputIndex == outputIndex
                 && c.inputOpId   == conn.input.op.id
                 && c.inputIndex  == inputIndex))
-            this.connections.push({
-                outputOpId:  conn.output.op.id,
-                outputIndex: conn.output.op.outputs.indexOf(conn.output),
-                inputOpId:   conn.input .op.id,
-                inputIndex:  conn.input .op. inputs.indexOf(conn. input)});
+            this.connections.push(getConnectionForArrayWithIds(conn));
     }
 
 

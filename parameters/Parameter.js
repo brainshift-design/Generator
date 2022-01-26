@@ -23,8 +23,9 @@ extends EventTarget
     output;
 
     
-    onchange  = new Event('change' );
-    onconfirm = new Event('confirm');
+    onbeforechange = new Event('beforechange');
+    onchange       = new Event('change');
+    onconfirm      = new Event('confirm');
 
 
 
@@ -111,6 +112,22 @@ extends EventTarget
 
 
     setOutputData() { }
+
+
+
+    preSetValue(value, confirm, dispatchEvents = true) 
+    {
+        if (dispatchEvents)
+            this.dispatchPreSetValueEvents(this.oldValue, value, confirm);
+    }
+
+
+
+    dispatchPreSetValueEvents(oldValue, newValue, confirm)
+    {
+        if (newValue != oldValue)
+            this.dispatchEvent(this.onbeforechange);
+    }
 
 
 

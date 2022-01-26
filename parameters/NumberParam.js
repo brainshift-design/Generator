@@ -139,6 +139,8 @@ extends Parameter
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
+        this.preSetValue(value, confirm, dispatchEvents);
+
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 

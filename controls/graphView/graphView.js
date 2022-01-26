@@ -14,7 +14,9 @@ graphView.btn1down      = false; // this is to help deal with mouse wheels that 
                                  // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
 
-graphView.pStart = {x:0, y:0};
+graphView.panning       = false;
+
+graphView.pStart        = {x:0, y:0};
 
 
 scrollbarX.style.zIndex = MAX_INT32-1;
@@ -89,10 +91,6 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
-    if (!graphView.btn1down)
-        graphView.panning = false;
-
-        
     graphView.p = { 
         x: e.clientX, 
         y: e.clientY };
@@ -101,14 +99,11 @@ function graphView_onpointermove(e)
     {
         setCursor(panCursor);
 
-        setTimeout(() =>
-        {
-            const dp = subv(graphView.p, graphView.pStart);
+        const dp = subv(graphView.p, graphView.pStart);
 
-            graphView.setPanAndZoom(
-                addv(graphView.panStart, dp), 
-                graphView.zoom);
-        });
+        graphView.setPanAndZoom(
+            addv(graphView.panStart, dp), 
+            graphView.zoom);
     }
     
     else if (graphView.selecting)

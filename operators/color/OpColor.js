@@ -52,12 +52,15 @@ extends Operator
 
     hexbox;
 
-
+    
     _color;
-
+    
     _oldSpace;
+    _oldSpaceConnections = [];
+    
 
     #init = false;
+    
 
 
     constructor()
@@ -93,6 +96,9 @@ extends Operator
 
         this.paramSpace.control.barHeight = 0.2;
         
+        this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
+        this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
+
 
         initHexbox(this);
 
@@ -166,7 +172,7 @@ extends Operator
             return;
 
             
-        this.updateParams(false);
+        this.updateParams(true);
 
 
         if (this.inputs[0].isConnected) 
@@ -451,5 +457,57 @@ extends Operator
                     break;
             }
         }
+    }
+}
+
+
+
+function paramSpace_onbeforechange(paramSpace)
+{
+    if (   paramSpace.value == 0
+        && paramSpace.oldValue > 0)
+    {
+        for (let i = 2; i < paramSpace.op.inputs.length; i++)
+        {
+            const input = paramSpace.op.inputs[i];
+
+            if (input.isConnected)
+                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+        }   
+
+        for (let i = 2; i < paramSpace.op.outputs.length; i++)
+        {
+            const output = paramSpace.op.outputs[i];
+
+            for (const input of output.connectedInputs)
+                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+        }   
+    }
+}
+
+
+
+function paramSpace_onchange(paramSpace)
+{
+    // restore the old connections
+    
+    if (   paramSpace.value > 0
+        && paramSpace.oldValue == 0)
+    {
+        for (const conn of paramSpace.op._oldSpaceConnections)
+        {
+            const outputOp = graph.nodes.find(n => n.name == conn.outputOpName);
+            const  inputOp = graph.nodes.find(n => n.name == conn. inputOpName);
+
+            if (outputOp && inputOp)
+            {
+                const output = outputOp.outputs[conn.outputIndex];
+                const  input =  inputOp. inputs[conn. inputIndex];
+
+                uiConnect(output, input, conn.inputIndex);
+            }
+        }
+
+        paramSpace.op._oldSpaceConnections = [];
     }
 }
