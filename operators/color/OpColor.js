@@ -392,7 +392,9 @@ extends Operator
     paramIsConsideredDefault(param)
     {
         return super.paramIsConsideredDefault(param)
-            || this.inputs[0].isConnected;
+            && !this.inputs[0].isConnected
+            && (  !this.inputs[1].isConnected
+                || this.paramSpace.value == 0);
     }
 
 

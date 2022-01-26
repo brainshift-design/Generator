@@ -81,7 +81,7 @@ extends Operator
     paramIsConsideredDefault(param)
     {
         return param.isDefault()
-            || this.inputs[0].isConnected;
+            && !this.inputs[0].isConnected;
     }
 
 
@@ -100,7 +100,7 @@ extends Operator
                 + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
         }
 
-        
+
         return json;
     }
 

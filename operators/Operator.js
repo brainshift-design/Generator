@@ -40,6 +40,7 @@ class Operator
     div;
     inner;
     header;
+    paramBack;
     label;
     inputControls;
     outputControls;
@@ -288,6 +289,10 @@ class Operator
 
         this.header.style.height = height;
 
+        this.paramBack.style.height = this.inner.offsetHeight - height;
+        this.paramBack.style.top    = height;
+
+
         graphView.updateNodeTransform(this);
     }
 
@@ -458,9 +463,9 @@ class Operator
 
     paramIsConsideredDefault(param)
     {
-        return param.isConsideredDefault()
-            ||    param.input 
-               && param.input.isConnected;
+        return param.isDefault()
+            && (   !param.input 
+                || !param.input.isConnected);
     }
 
 

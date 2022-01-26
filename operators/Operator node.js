@@ -16,13 +16,11 @@ function createOperatorNode(node)
 
     node.div.appendChild(node.inner);
 
-
     node.div.addEventListener('pointerenter', function(e)
     {
         node.div.over = true;
         updateGraphNode(node);
     });
-
 
     node.div.addEventListener('pointerleave', function(e)
     {
@@ -31,7 +29,11 @@ function createOperatorNode(node)
     });
 
     
-    createNodeHeader(node);
+    node.paramBack = createDiv('nodeParamBack');
+    node.inner.appendChild(node.paramBack);
+    
+
+    createNodeHeader(node);    
 }     
 
 

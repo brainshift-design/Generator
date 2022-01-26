@@ -386,7 +386,7 @@ input[type=text]::selection
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
-    background:    #fffe;
+    /* background:    #fffe; */
     box-shadow:    0 0 0 1px #0001;
     /* box-shadow:    0px 5px 20px #0001; */
 }    
@@ -400,6 +400,16 @@ input[type=text]::selection
     position:      relative;
     border-radius: 4px 4px 0 0;
     z-index:       1;
+}
+
+
+.nodeParamBack
+{
+    display:    block;
+    position:   absolute;
+    width:      100%;
+    height:     20;
+    background: #fffe;
 }
 
 
@@ -12140,6 +12150,7 @@ class Operator
     div;
     inner;
     header;
+    paramBack;
     label;
     inputControls;
     outputControls;
@@ -12388,6 +12399,10 @@ class Operator
 
         this.header.style.height = height;
 
+        this.paramBack.style.height = this.inner.offsetHeight - height;
+        this.paramBack.style.top    = height;
+
+
         graphView.updateNodeTransform(this);
     }
 
@@ -12558,9 +12573,9 @@ class Operator
 
     paramIsConsideredDefault(param)
     {
-        return param.isConsideredDefault()
-            ||    param.input 
-               && param.input.isConnected;
+        return param.isDefault()
+            && (   !param.input 
+                || !param.input.isConnected);
     }
 
 
@@ -12682,13 +12697,11 @@ function createOperatorNode(node)
 
     node.div.appendChild(node.inner);
 
-
     node.div.addEventListener('pointerenter', function(e)
     {
         node.div.over = true;
         updateGraphNode(node);
     });
-
 
     node.div.addEventListener('pointerleave', function(e)
     {
@@ -12697,7 +12710,11 @@ function createOperatorNode(node)
     });
 
     
-    createNodeHeader(node);
+    node.paramBack = createDiv('nodeParamBack');
+    node.inner.appendChild(node.paramBack);
+    
+
+    createNodeHeader(node);    
 }     
 
 
@@ -13104,7 +13121,7 @@ extends Operator
     paramIsConsideredDefault(param)
     {
         return param.isDefault()
-            || this.inputs[0].isConnected;
+            && !this.inputs[0].isConnected;
     }
 
 
@@ -13123,7 +13140,7 @@ extends Operator
                 + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
         }
 
-        
+
         return json;
     }
 
@@ -13864,7 +13881,9 @@ extends Operator
     paramIsConsideredDefault(param)
     {
         return super.paramIsConsideredDefault(param)
-            || this.inputs[0].isConnected;
+            && !this.inputs[0].isConnected
+            && (  !this.inputs[1].isConnected
+                || this.paramSpace.value == 0);
     }
 
 
