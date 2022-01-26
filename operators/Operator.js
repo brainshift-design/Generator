@@ -225,7 +225,7 @@ class Operator
 
     update()
     {
-        console.log(this.name + '.update()');
+        //console.log(this.name + '.update()');
 
         this.setParamOutputData();
 
@@ -240,7 +240,7 @@ class Operator
 
     updateNode() 
     {
-        console.log('    ' + this.name + '.updateNode()');
+        //console.log('    ' + this.name + '.updateNode()');
 
         this.updateHeader();
 
@@ -272,6 +272,27 @@ class Operator
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
+
+
+        let boxShadow = '';
+
+        // const selecting = 
+        //        !graphView.zoomSelecting
+        //     && !graphView.spaceDown;
+    
+        // if (selecting)
+        // {
+        //     boxShadow += 
+        //           '0px 5px ' 
+        //         + (node.selected ? 20 : 10)
+        //         + 'px ' 
+        //         + (node.selected ? '#0001' : '#00000008')
+        //         + ', ';
+        // } 
+    
+        boxShadow += '0 0 0 1px ' + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
+    
+        this.inner.style.boxShadow = boxShadow;
 
 
         graphView.updateNodeTransform(this);

@@ -187,7 +187,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 slider.setValue(val, true, false);
                 slider.prevValue = slider.value;
 
-                slider.param.op.pushUpdate();
+                setTimeout(() => slider.param.op.pushUpdate());
             }
             else
             {

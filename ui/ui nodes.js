@@ -346,38 +346,7 @@ function correctConnections(data)
 
 function updateGraphNodes()
 {
-    for (const node of graphView.selectedNodes)      updateGraphNode(node);
-    for (const node of graphView._prevSelectedNodes) updateGraphNode(node);
-    for (const node of graphView.lastSelectedNodes)  updateGraphNode(node);
-}
-
-
-
-function updateGraphNode(node)
-{
-    console.log('updateGraphNode(' + node.name + ')');
-
-    node.updateNode();
-
-    
-    let boxShadow = '';
-
-    // const selecting = 
-    //        !graphView.zoomSelecting
-    //     && !graphView.spaceDown;
-
-    // if (selecting)
-    // {
-    //     boxShadow += 
-    //           '0px 5px ' 
-    //         + (node.selected ? 20 : 10)
-    //         + 'px ' 
-    //         + (node.selected ? '#0001' : '#00000008')
-    //         + ', ';
-    // } 
-
-    boxShadow += '0 0 0 1px ' + (node.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
-
-
-    node.inner.style.boxShadow = boxShadow;
+    for (const node of graphView.selectedNodes)      node.updateNode();
+    for (const node of graphView._prevSelectedNodes) node.updateNode();
+    for (const node of graphView.lastSelectedNodes)  node.updateNode();
 }

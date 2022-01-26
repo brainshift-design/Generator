@@ -7290,7 +7290,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 slider.setValue(val, true, false);
                 slider.prevValue = slider.value;
 
-                slider.param.op.pushUpdate();
+                setTimeout(() => slider.param.op.pushUpdate());
             }
             else
             {
@@ -11707,8 +11707,8 @@ function getTerminalsAfterNode(node)
 
 function updateTerminalsAfterNodes(nodes)
 {
-    console.log('updateTerminalsAfternodes()');
-    
+    //console.log('updateTerminalsAfternodes()');
+
     const terminals = [];
 
     for (const node of nodes)
@@ -12408,7 +12408,7 @@ class Operator
 
     update()
     {
-        console.log(this.name + '.update()');
+        //console.log(this.name + '.update()');
 
         this.setParamOutputData();
 
@@ -12423,7 +12423,7 @@ class Operator
 
     updateNode() 
     {
-        console.log('    ' + this.name + '.updateNode()');
+        //console.log('    ' + this.name + '.updateNode()');
 
         this.updateHeader();
 
@@ -12455,6 +12455,27 @@ class Operator
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
+
+
+        let boxShadow = '';
+
+        // const selecting = 
+        //        !graphView.zoomSelecting
+        //     && !graphView.spaceDown;
+    
+        // if (selecting)
+        // {
+        //     boxShadow += 
+        //           '0px 5px ' 
+        //         + (node.selected ? 20 : 10)
+        //         + 'px ' 
+        //         + (node.selected ? '#0001' : '#00000008')
+        //         + ', ';
+        // } 
+    
+        boxShadow += '0 0 0 1px ' + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
+    
+        this.inner.style.boxShadow = boxShadow;
 
 
         graphView.updateNodeTransform(this);
@@ -12754,13 +12775,13 @@ function createOperatorNode(node)
     node.div.addEventListener('pointerenter', function(e)
     {
         node.div.over = true;
-        updateGraphNode(node);
+        node.updateNode();
     });
 
     node.div.addEventListener('pointerleave', function(e)
     {
         node.div.over = false;
-        updateGraphNode(node);
+        node.updateNode();
     });
 
     
@@ -12932,7 +12953,7 @@ function createNodeLabel(node)
 
 function setNodePosition(node, x, y)
 {
-    console.log('setNodePosition(' + node.name + ')');
+    //console.log('setNodePosition(' + node.name + ')');
 
     node.div.style.left = x;
     node.div.style.top  = y;
@@ -17001,40 +17022,9 @@ function correctConnections(data)
 
 function updateGraphNodes()
 {
-    for (const node of graphView.selectedNodes)      updateGraphNode(node);
-    for (const node of graphView._prevSelectedNodes) updateGraphNode(node);
-    for (const node of graphView.lastSelectedNodes)  updateGraphNode(node);
-}
-
-
-
-function updateGraphNode(node)
-{
-    console.log('updateGraphNode(' + node.name + ')');
-
-    node.updateNode();
-
-    
-    let boxShadow = '';
-
-    // const selecting = 
-    //        !graphView.zoomSelecting
-    //     && !graphView.spaceDown;
-
-    // if (selecting)
-    // {
-    //     boxShadow += 
-    //           '0px 5px ' 
-    //         + (node.selected ? 20 : 10)
-    //         + 'px ' 
-    //         + (node.selected ? '#0001' : '#00000008')
-    //         + ', ';
-    // } 
-
-    boxShadow += '0 0 0 1px ' + (node.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
-
-
-    node.inner.style.boxShadow = boxShadow;
+    for (const node of graphView.selectedNodes)      node.updateNode();
+    for (const node of graphView._prevSelectedNodes) node.updateNode();
+    for (const node of graphView.lastSelectedNodes)  node.updateNode();
 }
 
 

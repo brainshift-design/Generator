@@ -19,13 +19,13 @@ function createOperatorNode(node)
     node.div.addEventListener('pointerenter', function(e)
     {
         node.div.over = true;
-        updateGraphNode(node);
+        node.updateNode();
     });
 
     node.div.addEventListener('pointerleave', function(e)
     {
         node.div.over = false;
-        updateGraphNode(node);
+        node.updateNode();
     });
 
     
@@ -197,7 +197,7 @@ function createNodeLabel(node)
 
 function setNodePosition(node, x, y)
 {
-    console.log('setNodePosition(' + node.name + ')');
+    //console.log('setNodePosition(' + node.name + ')');
 
     node.div.style.left = x;
     node.div.style.top  = y;
