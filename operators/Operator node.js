@@ -197,6 +197,8 @@ function createNodeLabel(node)
 
 function setNodePosition(node, x, y)
 {
+    console.log('setNodePosition(' + node.name + ')');
+
     node.div.style.left = x;
     node.div.style.top  = y;
 

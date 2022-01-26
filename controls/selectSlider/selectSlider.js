@@ -11,8 +11,10 @@ function initSelectSliderChildren(slider)
 
 
 
-function initSelectSlider(slider, width, height, name, options, def)
+function initSelectSlider(param, slider, width, height, name, options, def)
 {
+    slider.param             = param;
+
     slider.className         = 'selectSlider';
 
     slider.width             = width;
@@ -167,6 +169,8 @@ function initSelectSlider(slider, width, height, name, options, def)
                 
                 slider.setValue(val, true, false);
                 slider.prevValue = slider.value;
+
+                slider.param.op.pushUpdate();
             }
             else
             {

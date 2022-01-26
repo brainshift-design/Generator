@@ -30,6 +30,8 @@ extends Action
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return { x: n.div.offsetLeft, y: n.div.offsetTop }});
+
+        updateTerminalsAfterNodes(nodes);
     }
 
 
@@ -61,5 +63,7 @@ extends Action
                 this.pastedNodePos[i].x,
                 this.pastedNodePos[i].y);
         }
+
+        updateTerminalsAfterNodes(nodes);
     }
 }

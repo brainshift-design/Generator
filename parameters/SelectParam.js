@@ -42,6 +42,7 @@ extends Parameter
 
 
         initSelectSlider(
+            this,
             this.control,
             120, // width
              20, // height

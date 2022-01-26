@@ -45,6 +45,8 @@ extends Action
             this.outputOp.outputs[this.outputIndex], 
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
+
+        this.inputOp.pushUpdate();
     }
 
 
@@ -52,7 +54,7 @@ extends Action
     undo()
     {
         uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
-        
+
         if (this.oldOutputOpId > -1)
         {
             uiVariableConnect(
@@ -61,5 +63,7 @@ extends Action
                 this.inputOp, 
                 this.inputIndex);
         }
+
+        this.inputOp.pushUpdate();
     }
 }

@@ -117,6 +117,9 @@ extends Operator
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
+
+
+        //this.paramSpace.setValue(0);
     }
 
 
@@ -510,4 +513,6 @@ function paramSpace_onchange(paramSpace)
 
         paramSpace.op._oldSpaceConnections = [];
     }
+
+    //setTimeout(() => paramSpace.op.pushUpdate());
 }

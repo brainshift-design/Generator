@@ -71,13 +71,34 @@ function activeNodeRight(node)
 
 
 
-function lastNodesInTreeFrom(node)
+function getTerminalsAfterNode(node)
 {
     let right = [];
 
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
-            right.push(...lastNodesInTreeFrom(input.op));
+            right.push(...getTerminalsAfterNode(input.op));
 
     return right.length > 0 ? right : [node];
+}
+
+
+
+function updateTerminalsAfterNodes(nodes)
+{
+    const terminals = [];
+
+    for (const node of nodes)
+    {
+        const tt = getTerminalsAfterNode(node);
+
+        for (const t of tt)
+        {
+            if (!terminals.includes(t))
+                terminals.push(t);
+        }
+    }
+
+    for (const t of terminals)
+        t.update();
 }

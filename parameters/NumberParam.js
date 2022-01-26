@@ -45,6 +45,7 @@ extends Parameter
 
 
         initNumberSlider(
+            this,
             this.control,
             120,       // width
             20,        // height
@@ -97,7 +98,7 @@ extends Parameter
     setDecimalsFrom(strValue)
     {
         this.setDecimals(getDecimalCount(strValue));
-        setTimeout(() => this.op.pushUpdate());
+        //setTimeout(() => this.op.pushUpdate());
     }
 
 
@@ -108,7 +109,7 @@ extends Parameter
         this.control.editDec = dec;
         this.control.update();
 
-        setTimeout(() => this.op.pushUpdate());
+        //setTimeout(() => this.op.pushUpdate());
     }
 
 

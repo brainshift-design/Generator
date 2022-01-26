@@ -1,6 +1,7 @@
 function uiCreateNode(opType, createdId = -1, updateUI = true)
 {
     let node = graph.createNode(opType, createdId);
+
     graph.addNode(node);
     
     // if (graphView.selectedNodes.length > 0)
@@ -20,10 +21,12 @@ function uiCreateNode(opType, createdId = -1, updateUI = true)
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
 
-        graphView.putNodeOnTop(node);
-        graphView.updateNodeTransform(node);
+        setTimeout(() => node.pushUpdate());
+        
+        //graphView.putNodeOnTop(node);
+        //graphView.updateNodeTransform(node);
 
-        updateGraphNodes();
+        //updateGraphNodes();
     }
 
 
@@ -352,6 +355,8 @@ function updateGraphNodes()
 
 function updateGraphNode(node)
 {
+    console.log('updateGraphNode(' + node.name + ')');
+    
     node.updateNode();
 
     

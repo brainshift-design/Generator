@@ -136,7 +136,7 @@ extends EventTarget
         if (dispatchEvents)
         {
             this.dispatchSetValueEvents(this.oldValue, value, confirm);
-            setTimeout(() => this.op.pushUpdate());
+            //setTimeout(() => this.op.pushUpdate());
         }
     }
 

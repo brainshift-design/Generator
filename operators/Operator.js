@@ -233,7 +233,7 @@ class Operator
     {
         this.invalidate();
         
-        lastNodesInTreeFrom(this).forEach(n => n.update());
+        getTerminalsAfterNode(this).forEach(n => n.update());
     }
 
 
@@ -250,6 +250,8 @@ class Operator
 
     update()
     {
+        console.log(this.name + '.update()');
+
         this.setParamOutputData();
         this.updateNode();
 
@@ -261,6 +263,8 @@ class Operator
 
     updateNode() 
     {
+        console.log(this.name + '.updateNode()');
+
         this.updateHeader();
 
 

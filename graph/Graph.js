@@ -109,7 +109,7 @@ class Graph
 
         //updateGraphNodes();
 
-        setTimeout(() => node.pushUpdate());
+        //setTimeout(() => node.pushUpdate());
     }
     
 
@@ -206,7 +206,7 @@ class Graph
         //output.updateControl();
 
 
-        setTimeout(() => output.op.pushUpdate());
+        //setTimeout(() => output.op.pushUpdate());
 
 
         return true;
@@ -251,7 +251,7 @@ class Graph
              output.op.makeActive();
             
 
-        setTimeout(() => input.op.pushUpdate());
+        //setTimeout(() => input.op.pushUpdate());
 
 
         return true;
