@@ -393,7 +393,7 @@ extends Operator
     {
         return super.paramIsConsideredDefault(param)
             && !this.inputs[0].isConnected
-            && (  !this.inputs[1].isConnected
+            && (  !this.paramSpace.input.isConnected
                 || this.paramSpace.value == 0);
     }
 
@@ -410,12 +410,7 @@ extends Operator
         {
             const param = this.params[i];
 
-            if (   !param.isDefault()
-                && (   !param.input
-                    || !param.input.isConnected)
-                && (  !this.inputs[0].isConnected
-                    ||     param.input == this.inputs[1]
-                       && !param.input.isConnected))
+            if (!this.paramIsConsideredDefault(param))
             {
                 if (!first) json += ',\n'; first = false;
                 json += pos + param.toJson(nTab, i > 0 ? 'param' + i : '');
