@@ -7,36 +7,6 @@
 */
 
 
-const OpColorSpaces = 
-[
-    ['hex',    'Hex'    ],
-    ['rgbhex', '<span class=\'hash\'>#</span>RGB'],
-    ['rgb',    'RGB'    ], 
-    ['hsv',    'HSV'    ], 
-    ['hsl',    'HSL'    ], 
-    ['hclokl', 'HCL OKL'],
-    ['hcllab', 'HCL Lab'],
-    ['hclluv', 'HCL Luv'],
-    ['oklab',  'OKLab'  ],
-    ['lab',    'Lab'    ],
-    ['luv',    'Luv'    ]
-];
-
-
-const rgbFactor   = [255, 255, 255];
-const hs_Factor   = [360, 100, 100];
-const hclFactor   = [360, 100, 100];
-const oppFactor   = [100, 100, 100];
-
-const rgbScale    = [255, 255, 255];
-const hs_Scale    = [360, 100, 100];
-const hcloklScale = [360,  51, 100];
-const hcllabScale = [360, 400, 100];
-const hclluvScale = [360, 330, 100];
-const oklabScale  = [100,  30,  30];
-const labScale    = [100, 100, 100];
-const luvScale    = [100, 150, 150];
-
 
 class   OpColor
 extends Operator
@@ -90,9 +60,9 @@ extends Operator
     
         
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0]), 0, 255));
-        this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1]), 0, 255));
-        this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2]), 0, 255));
+        this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         this.paramSpace.control.barHeight = 0.2;
         
@@ -233,7 +203,7 @@ extends Operator
  
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
  
-        const colText      = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const colText      = darkText ? [0, 0, 0, 0.14] : [1, 1, 1, 0.17];
         const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
         const colSpaceVal  = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
  
@@ -507,7 +477,7 @@ function paramSpace_onchange(paramSpace)
                 const output = outputOp.outputs[conn.outputIndex];
                 const  input =  inputOp. inputs[conn. inputIndex];
 
-                uiConnect(output, input, conn.inputIndex);
+                uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
             }
         }
 

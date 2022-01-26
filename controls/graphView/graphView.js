@@ -98,13 +98,16 @@ function graphView_onpointermove(e)
 
     if (graphView.panning)
     {
-        setCursor(panCursor);
+        setTimeout(() =>
+        {
 
-        const dp = subv(graphView.p, graphView.pStart);
+            setCursor(panCursor);
+            const dp = subv(graphView.p, graphView.pStart);
 
-        graphView.setPanAndZoom(
-            addv(graphView.panStart, dp), 
-            graphView.zoom);
+            graphView.setPanAndZoom(
+                addv(graphView.panStart, dp), 
+                graphView.zoom);
+        });
     }
     
     else if (graphView.selecting)

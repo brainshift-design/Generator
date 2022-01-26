@@ -1,3 +1,35 @@
+const OpColorSpaces = 
+[
+    ['hex',    'Hex'    ],
+    ['rgbhex', '<span class=\'hash\'>#</span>RGB'],
+    ['rgb',    'RGB'    ], 
+    ['hsv',    'HSV'    ], 
+    ['hsl',    'HSL'    ], 
+    ['hclokl', 'HCL OKL'],
+    ['hcllab', 'HCL Lab'],
+    ['hclluv', 'HCL Luv'],
+    ['oklab',  'OKLab'  ],
+    ['lab',    'Lab'    ],
+    ['luv',    'Luv'    ]
+];
+
+
+const rgbFactor   = [255, 255, 255];
+const hs_Factor   = [360, 100, 100];
+const hclFactor   = [360, 100, 100];
+const oppFactor   = [100, 100, 100];
+
+const rgbScale    = [255, 255, 255];
+const hs_Scale    = [360, 100, 100];
+const hcloklScale = [360,  51, 100];
+const hcllabScale = [360, 400, 100];
+const hclluvScale = [360, 330, 100];
+const oklabScale  = [100,  30,  30];
+const labScale    = [100, 100, 100];
+const luvScale    = [100, 150, 150];
+
+
+
 function switchToSpace(op, space)
 {
     switch (space)
