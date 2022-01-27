@@ -115,7 +115,10 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     selectBox.style.zIndex = MAX_INT32-3;
         
         
-    updateGraphNodes();
+    //updateGraphNodes();
+    for (const node of selected)
+        node.updateNode();
+
 
     graphView._prevSelectedNodes = selected;
 };

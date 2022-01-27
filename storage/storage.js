@@ -105,7 +105,7 @@ function loadConnectionsAsync(data, nodes, setProgress)
             const res = resolveLoadConnections(
                 data.connections, 
                 i, 
-                Math.min(i + chunkSize, data.nodes.length), // exclusive
+                Math.min(i + chunkSize, data.connections.length), // exclusive
                 data);
 
             setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
