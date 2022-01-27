@@ -161,8 +161,8 @@ extends EventTarget
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
-        this.wireBall.style.left   = '0.5px';
-        this.wireBall.style.top    = 'calc(50% - 3.5px)';
+        this.wireBall.style.left   = '1px';
+        this.wireBall.style.top    = 'calc(50% - 3px)';
 
         show(this.wireBall, isConnected); 
     }
