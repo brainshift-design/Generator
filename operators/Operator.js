@@ -277,7 +277,7 @@ class Operator
         this.updateNodeState();
 
 
-        graphView.updateNodeTransform(this);
+        //graphView.updateNodeTransform(this);
     }
 
 

@@ -348,13 +348,15 @@ graphView.updateNodeTransforms = function(nodes)
    
         for (const input of node.inputs)
             if (   input.isConnected
-                && input.connection)
+                && input.connection
+                && !wires.includes(input.connection.wire))
                 wires.push(input.connection.wire);        
 
 
         for (const output of node.outputs)
             for (const connInput of output.connectedInputs)
-                if (connInput.connection)
+                if (   connInput.connection
+                    && !wires.includes(connInput.connection.wire))
                     wires.push(connInput.connection.wire);
     }
 
