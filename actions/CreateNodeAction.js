@@ -25,6 +25,7 @@ extends Action
         this.createdNodeId = node.id;
 
         node.pushUpdate();
+        graphView.updateNodeTransform(node);
     }
 
 
