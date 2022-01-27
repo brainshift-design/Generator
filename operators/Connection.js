@@ -106,6 +106,11 @@ class Connection
 
         this.wire.updateStyle = (color) =>
         {
+            this.wire.curve.style.filter = 
+                rgb2hclokl(color)[2] > 0.9
+                ? 'drop-shadow(1px 1px 0 #00000008)'
+                : 'none';
+
             this.wire.curve.style.stroke      = colorStyleRgb(color);
             this.wire.curve.style.strokeWidth = 1.8 * this.wire.scale;
             this.wire      .style.zIndex      = 0;
