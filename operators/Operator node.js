@@ -195,7 +195,7 @@ function createNodeLabel(node)
 
 
 
-function setNodePosition(node, x, y)
+function setNodePosition(node, x, y, updateTransform = true)
 {
     //console.log('setNodePosition(' + node.name + ')');
 
@@ -204,5 +204,6 @@ function setNodePosition(node, x, y)
 
     // node.updateNode();
 
-    graphView.updateNodeTransform(node);
+    if (updateTransform)
+        graphView.updateNodeTransform(node);
 }

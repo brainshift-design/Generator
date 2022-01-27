@@ -154,7 +154,7 @@ class Graph
 
     connect(output, input, inputIndex = -1)
     {
-        console.log('graph.connect()');
+        //console.log('graph.connect()');
         if (input.connectedOutput == output)
             return false;
             
@@ -213,7 +213,7 @@ class Graph
 
     disconnect(input)
     {
-        console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
         if (activeNodeInTree(input.op))

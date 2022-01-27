@@ -1,4 +1,4 @@
-<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
 
 <style>
@@ -365,6 +365,77 @@ input[type=text]::selection
     background-position:center center;
     background-size: 100% 100%, auto; */
  }
+
+
+#loadingOverlay
+{
+    position:   absolute;
+    top:        0;
+    left:       0;
+    width:      100%;
+    height:     100%;
+    background: #e5e5e5;
+}
+
+
+#loadingGraphic 
+{
+    font-family: Inter;
+    font-size:   26;
+    font-weight: 700;
+    color:       #333;
+    position:    absolute;
+    left:        50%;
+    top:         45%;
+    transform:   translateX(-50%)
+                 translateY(-50%);
+}
+
+
+#loadingEmpty
+{
+    font-size:   12;
+    color:       #666;
+    margin-right: 6px;
+    position:     relative;
+    top:          -4px;
+}
+
+
+#loadingFull
+{
+    font-size:   8;
+    color:       #666;
+    margin-left: 7px;
+    position:     relative;
+    top:          -6px;
+}
+
+
+#loadingBar
+{
+    position:      absolute;
+    left:          50%;
+    top:           50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         180px;
+    height:        5px;   
+    background:    white;
+    border-radius: 2.5px;
+    overflow:      hidden;
+}
+
+
+#loadingProgress
+{
+    position:      absolute;
+    left:          0;
+    top:           0;
+    width:         0;
+    height:        5px;   
+    background:    #333;
+}
 
 
 .node
@@ -920,6 +991,17 @@ input[type=text]::selection
     <div id='scrollbarX'></div>
     <div id='scrollbarY'></div>
 </div>
+
+
+<div id='loadingOverlay'>
+    <div id='loadingGraphic'>
+        <span id='loadingEmpty'>○</span>G<span id='loadingFull'>●</span>
+    </div>
+    <div id='loadingBar'>
+        <div id='loadingProgress'></div>
+    </div>
+</div>
+
 
 <div id='productKeyBack'></div>
 
@@ -6438,7 +6520,6 @@ function uiGetPluginDataReturn(msg)
     {
         case 'graph':
             loadGraph(msg.value);
-            graphView.updatePanAndZoom();
             break;
     }
 }
@@ -10834,7 +10915,7 @@ extends EventTarget
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
-        console.log('    ' + this.name + '.setValue(' + value + ', dispatch = ' + dispatchEvents + ')');
+        //console.log('    ' + this.name + '.setValue(' + value + ', dispatch = ' + dispatchEvents + ')');
         if (dispatchEvents)
         {
             if (value != this.oldValue)
@@ -11201,7 +11282,7 @@ extends Parameter
 
     update(dispatchEvents)
     {
-        console.log('    ' + this.name + '.update()');
+        //console.log('    ' + this.name + '.update()');
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
@@ -11431,7 +11512,7 @@ class Graph
 
     connect(output, input, inputIndex = -1)
     {
-        console.log('graph.connect()');
+        //console.log('graph.connect()');
         if (input.connectedOutput == output)
             return false;
             
@@ -11490,7 +11571,7 @@ class Graph
 
     disconnect(input)
     {
-        console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
         if (activeNodeInTree(input.op))
@@ -12942,7 +13023,7 @@ function createNodeLabel(node)
 
 
 
-function setNodePosition(node, x, y)
+function setNodePosition(node, x, y, updateTransform = true)
 {
     //console.log('setNodePosition(' + node.name + ')');
 
@@ -12951,7 +13032,8 @@ function setNodePosition(node, x, y)
 
     // node.updateNode();
 
-    graphView.updateNodeTransform(node);
+    if (updateTransform)
+        graphView.updateNodeTransform(node);
 }
 
 
@@ -13323,11 +13405,11 @@ extends Operator
         if (this.valid)
             return false;
         
-        console.log(this.name + '.update()');
+        //console.log(this.name + '.update()');
 
         let maxDec = 0;
 
-        console.log('inputs #', this.inputs.length);
+        //console.log('inputs #', this.inputs.length);
         for (const input of this.inputs)
         {
             if (input.isConnected)
@@ -13716,7 +13798,7 @@ extends Operator
         if (this.valid)
             return false;
         
-        console.log(this.name + '.update()');
+        //console.log(this.name + '.update()');
             
         this.updateParams(true);
 
@@ -14233,7 +14315,7 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 
 function switchToTextbox(op)
 {
-    console.log('switchToTextbox(' + op.name + ')');
+    //console.log('switchToTextbox(' + op.name + ')');
     if (!op.inner.contains(op.hexbox))
     {
         removeOpColorParamWires(op);
@@ -16200,7 +16282,7 @@ extends Action
 
     do()
     {
-        console.log('SetParamValueAction()');
+        //console.log('SetParamValueAction()');
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
     }
@@ -17193,57 +17275,183 @@ function loadGraph(json)
           y: parseFloat(data.pany) },
         parseFloat(data.zoom));
 
-    const nodes = loadNodes(data);
-    graph.addNodes(nodes, false);
+
+    loadNodesAsync(data, setLoadingProgress);
+
+
+    // const nodes = loadNodes(data);
+
+    // graph.addNodes(nodes, false);
+
+    // loadConnections(data, false, setLoadingProgress);
     
-    loadConnections(data);
-    
-    
-    graphView.canUpdateNodes = true;
-    
-    updateTerminalsAfterNodes(nodes);
+    // graphView.canUpdateNodes = true;
+    // updateTerminalsAfterNodes(nodes);
+}
+
+
+
+function setLoadingProgress(progress)
+{
+    loadingProgress.style.width = (progress * 100) + '%';
+
+    // loadingBar.style.display = 'none';
+    // loadingBar.style.display = 'block';
+}
+
+
+
+function loadNodesAsync(data, setProgress)
+{
+    loadingProgress.style.width   = 0;
+    loadingOverlay .style.display = 'block';
+
+
+    let promise = Promise.resolve([]);
+
+
+    const chunkSize = 4; // nodes
+    for (let i = 0; i < data.nodes.length; i += chunkSize)
+    {
+        promise = promise.then(nodes => 
+        {
+            const res = resolveLoadNodes(
+                data.nodes, 
+                i, 
+                Math.min(i + chunkSize, data.nodes.length), // exclusive
+                nodes);
+
+            setProgress(i / (data.nodes.length + data.connections.length));
+            return res;
+        });
+    }
+
+
+    promise.then(nodes => 
+    {
+        graph.addNodes(nodes, false);
+        loadConnectionsAsync(data, nodes, setProgress);    
+    });
+}
+
+
+
+function loadConnectionsAsync(data, nodes, setProgress)
+{
+    let promise = Promise.resolve([]);
+
+
+    const chunkSize = 4; // nodes
+    for (let i = 0; i < data.connections.length; i += chunkSize)
+    {
+        promise = promise.then(() => 
+        {
+            const res = resolveLoadConnections(
+                data.connections, 
+                i, 
+                Math.min(i + chunkSize, data.nodes.length), // exclusive
+                data);
+
+            setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
+            return res;
+        });
+    }
+
+
+    promise.then(() => 
+    {
+        graphView.canUpdateNodes = true;
+        updateTerminalsAfterNodes(nodes);
+
+        graphView.updatePanAndZoom();
+        loadingOverlay.style.display = 'none';
+    });
+}
+
+
+
+function resolveLoadNodes(_nodes, first, last, nodes)
+{
+    return new Promise(resolve => 
+        requestAnimationFrame(() => 
+        {
+            for (let i = first; i < last; i++)
+                nodes.push(loadNode(_nodes[i]));
+
+            resolve(nodes);
+        }));
+}
+
+
+
+function resolveLoadConnections(_connections, first, last, data)
+{
+    return new Promise(resolve => 
+        requestAnimationFrame(() => 
+        {
+            for (let i = first; i < last; i++)
+            {
+                const _conn = _connections[i];
+
+                if (   data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn.outputOp)
+                    && data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn. inputOp)
+                    || loadOutsideConnections)
+                    Connection.parseJson(_conn);
+            }
+
+            resolve();
+        }));
 }
 
 
 
 function loadNodes(data)
 {
-    //console.log(data);
-    
     const nodes = [];
     
-    for (const _node of data.nodes)
-    {
-        const node = graph.createNode(_node.type);
-
-        node.name   = _node.name;
-        node.loaded = true;
-
-        if (  _node.params
-            || node.alwaysLoadParams)
-            node.loadParams(_node);
-
-        setNodePosition(
-            node, 
-            parseFloat(_node.x), 
-            parseFloat(_node.y));
-
-        nodes.push(node);
-    }
+    for (let i = 0; i < data.nodes.length; i++)
+        nodes.push(loadNode(data.nodes[i]));
 
     return nodes;
 }
 
 
 
-function loadConnections(data, loadOutsideConnections)
+function loadNode(_node)
 {
-    for (const _conn of data.connections)
+    const node = graph.createNode(_node.type);
+
+    node.name   = _node.name;
+    node.loaded = true;
+
+    if (  _node.params
+        || node.alwaysLoadParams)
+        node.loadParams(_node);
+
+    setNodePosition(
+        node, 
+        parseFloat(_node.x), 
+        parseFloat(_node.y),
+        false);
+
+    return node;
+}
+
+
+
+function loadConnections(data, loadOutsideConnections, setProgress = null)
+{
+    for (let i = 0; i < data.connections.length; i++)
     {
+        const _conn = data.connections[i];
+        
         if (      data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn.outputOp)
                && data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn. inputOp)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
+
+        if (setProgress)
+            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
     }
 }
 

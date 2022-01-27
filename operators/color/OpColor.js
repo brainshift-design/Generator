@@ -144,7 +144,7 @@ extends Operator
         if (this.valid)
             return false;
         
-        console.log(this.name + '.update()');
+        //console.log(this.name + '.update()');
             
         this.updateParams(true);
 

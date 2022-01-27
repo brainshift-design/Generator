@@ -167,7 +167,7 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 
 function switchToTextbox(op)
 {
-    console.log('switchToTextbox(' + op.name + ')');
+    //console.log('switchToTextbox(' + op.name + ')');
     if (!op.inner.contains(op.hexbox))
     {
         removeOpColorParamWires(op);
