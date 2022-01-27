@@ -47,26 +47,48 @@ function initNumberSliderTextbox(slider)
         else if (e.code == 'Tab')
         {
             e.preventDefault();
+            e.stopPropagation();
             
-            let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
-            let index = slider.tabIndex;
-
-            for (let i = 0; i < tabs.length; i++) 
+            if (slider.param)
             {
-                if (   e.shiftKey && tabs[i].tabIndex == index - 1
-                    ||               tabs[i].tabIndex == index + 1) 
-                {
-                    if (tabs[i].className == 'slider')
-                        tabs[i].showTextbox();
-                    else 
-                    {
-                        document.activeElement.blur();
-                        tabs[i].focus();
-                    }
+                const params = slider.param.op.params;
+                let   index  = params.indexOf(slider.param);
 
-                    break;
+                slider.textbox.finish(true, false);
+
+                if (   e.shiftKey 
+                    && index > 0)
+                {
+                    while (params[--index].control.readOnly);
+                    params[index].control.showTextbox();
+                }
+                else if (!e.shiftKey 
+                      && index < params.length-1) 
+                {
+                    while (params[++index].control.readOnly);
+                    params[index].control.showTextbox();
                 }
             }
+
+            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let index = slider.tabIndex;
+
+            // for (let i = 0; i < tabs.length; i++) 
+            // {
+            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
+            //         ||               tabs[i].tabIndex == index + 1) 
+            //     {
+            //         if (tabs[i].className == 'slider')
+            //             tabs[i].showTextbox();
+            //         else 
+            //         {
+            //             document.activeElement.blur();
+            //             tabs[i].focus();
+            //         }
+
+            //         break;
+            //     }
+            // }
         }
 
         else 
@@ -133,7 +155,7 @@ function initNumberSliderTextbox(slider)
     
 
 
-    slider.textbox.finish = function(success)
+    slider.textbox.finish = function(success, focusSlider = true)
     {
         const value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
@@ -154,7 +176,8 @@ function initNumberSliderTextbox(slider)
 
         slider.textbox.blur();
 
-        if (slider.inFocus)
+        if (   slider.inFocus
+            && focusSlider)
             slider.focus();
     };    
     

@@ -95,6 +95,9 @@ document.addEventListener('keydown', e =>
     {
         setCursor(zoomOutCursor);
     }
+
+    else if (e.code == 'Tab')
+        e.preventDefault();
 });
 
 

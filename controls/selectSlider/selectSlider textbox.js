@@ -48,25 +48,47 @@ function initSelectSliderTextbox(slider)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
-            var index = slider.tabIndex;
-
-            for (var i = 0; i < tabs.length; i++) 
+            if (slider.param)
             {
-                if (   e.shiftKey && tabs[i].tabIndex == index - 1
-                    ||               tabs[i].tabIndex == index + 1) 
-                {
-                    if (tabs[i].className == 'slider')
-                        tabs[i].showTextbox();
-                    else 
-                    {
-                        document.activeElement.blur();
-                        tabs[i].focus();
-                    }
+                const params = slider.param.op.params;
+                let   index  = params.indexOf(slider.param);
 
-                    break;
+                slider.textbox.finish(true, false);
+
+                if (   e.shiftKey 
+                    && index > 0)
+                {
+                    while (params[--index].control.readOnly);
+                    params[index].control.showTextbox();
+                }
+                else if (!e.shiftKey 
+                      && index < params.length-1) 
+                {
+                    while (params[++index].control.readOnly);
+                    params[index].control.showTextbox();
                 }
             }
+
+            // var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // var tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // var index = slider.tabIndex;
+
+            // for (var i = 0; i < tabs.length; i++) 
+            // {
+            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
+            //         ||               tabs[i].tabIndex == index + 1) 
+            //     {
+            //         if (tabs[i].className == 'slider')
+            //             tabs[i].showTextbox();
+            //         else 
+            //         {
+            //             document.activeElement.blur();
+            //             tabs[i].focus();
+            //         }
+
+            //         break;
+            //     }
+            // }
         }
 
         else 
@@ -126,7 +148,7 @@ function initSelectSliderTextbox(slider)
     
 
 
-    slider.textbox.finish = function(success)
+    slider.textbox.finish = function(success, focusSlider = true)
     {
         slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
             'success':  success,
@@ -138,7 +160,8 @@ function initSelectSliderTextbox(slider)
 
         slider.textbox.blur();
 
-        if (slider.inFocus)
+        if (   slider.inFocus
+            && focusSlider)
             slider.focus();
     };    
     
