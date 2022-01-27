@@ -110,17 +110,11 @@ function createNodeHeader(node)
     {
         if (node.div.dragging)
         {
-            const dx = (e.clientX - node.div.sx) / graphView.zoom;
-            const dy = (e.clientY - node.div.sy) / graphView.zoom;
+            setNodePositions(
+                graphView.selectedNodes,
+                (e.clientX - node.div.sx) / graphView.zoom,
+                (e.clientY - node.div.sy) / graphView.zoom);
             
-            for (const n of graphView.selectedNodes)
-            {
-                setNodePosition(
-                    n.div.op,
-                    n.div.slx + dx,
-                    n.div.sly + dy);
-            }
-
             node.div.moved = true;
 
             graphView.updateScroll();
@@ -195,14 +189,24 @@ function createNodeLabel(node)
 
 
 
+function setNodePositions(nodes, dx, dy, updateTransform = true)
+{
+    for (const node of nodes)
+    {
+        node.div.style.left = node.div.slx + dx;
+        node.div.style.top  = node.div.sly + dy;
+    }
+
+    if (updateTransform)
+        graphView.updateNodeTransforms(nodes);
+}
+
+
+
 function setNodePosition(node, x, y, updateTransform = true)
 {
-    //console.log('setNodePosition(' + node.name + ')');
-
     node.div.style.left = x;
     node.div.style.top  = y;
-
-    // node.updateNode();
 
     if (updateTransform)
         graphView.updateNodeTransform(node);

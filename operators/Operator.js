@@ -274,6 +274,16 @@ class Operator
         this.paramBack.style.top    = height;
 
 
+        this.updateNodeState();
+
+
+        graphView.updateNodeTransform(this);
+    }
+
+
+
+    updateNodeState()
+    {
         let boxShadow = '';
 
         // const selecting = 
@@ -293,9 +303,6 @@ class Operator
         boxShadow += '0 0 0 1px ' + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
     
         this.inner.style.boxShadow = boxShadow;
-
-
-        graphView.updateNodeTransform(this);
     }
 
 

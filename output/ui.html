@@ -10336,7 +10336,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
         
     //updateGraphNodes();
     for (const node of selected)
-        node.updateNode();
+        node.updateNodeState();
 
 
     graphView._prevSelectedNodes = selected;
@@ -10688,6 +10688,46 @@ graphView.putNodeOnTop = node =>
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
     node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars
+};
+
+
+
+graphView.updateNodeTransforms = function(nodes)
+{
+    const wires = [];
+
+
+    for (const node of nodes)
+    {
+        node.div.style.transform =
+            'translate(' 
+            + (graphView.pan.x * graphView.zoom) + 'px, '
+            + (graphView.pan.y * graphView.zoom) + 'px) '
+            + 'scale(' + graphView.zoom + ')';
+        
+
+        const nodeRect = graphView.getNodeOffsetRect(node.div);
+
+        node.div.style.transformOrigin = 
+            ((graphView.pan.x - node.div.offsetLeft) / nodeRect.width  * 100) + '% ' 
+            + ((graphView.pan.y - node.div.offsetTop ) / nodeRect.height * 100) + '%';  
+
+   
+        for (const input of node.inputs)
+            if (   input.isConnected
+                && input.connection)
+                wires.push(input.connection.wire);        
+
+
+        for (const output of node.outputs)
+            for (const connInput of output.connectedInputs)
+                if (connInput.connection)
+                    wires.push(connInput.connection.wire);
+    }
+
+
+    for (const wire of wires)
+        graphView.updateWireTransform(wire);
 };
 
 
@@ -12532,6 +12572,16 @@ class Operator
         this.paramBack.style.top    = height;
 
 
+        this.updateNodeState();
+
+
+        graphView.updateNodeTransform(this);
+    }
+
+
+
+    updateNodeState()
+    {
         let boxShadow = '';
 
         // const selecting = 
@@ -12551,9 +12601,6 @@ class Operator
         boxShadow += '0 0 0 1px ' + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
     
         this.inner.style.boxShadow = boxShadow;
-
-
-        graphView.updateNodeTransform(this);
     }
 
 
@@ -12941,17 +12988,11 @@ function createNodeHeader(node)
     {
         if (node.div.dragging)
         {
-            const dx = (e.clientX - node.div.sx) / graphView.zoom;
-            const dy = (e.clientY - node.div.sy) / graphView.zoom;
+            setNodePositions(
+                graphView.selectedNodes,
+                (e.clientX - node.div.sx) / graphView.zoom,
+                (e.clientY - node.div.sy) / graphView.zoom);
             
-            for (const n of graphView.selectedNodes)
-            {
-                setNodePosition(
-                    n.div.op,
-                    n.div.slx + dx,
-                    n.div.sly + dy);
-            }
-
             node.div.moved = true;
 
             graphView.updateScroll();
@@ -13026,14 +13067,24 @@ function createNodeLabel(node)
 
 
 
+function setNodePositions(nodes, dx, dy, updateTransform = true)
+{
+    for (const node of nodes)
+    {
+        node.div.style.left = node.div.slx + dx;
+        node.div.style.top  = node.div.sly + dy;
+    }
+
+    if (updateTransform)
+        graphView.updateNodeTransforms(nodes);
+}
+
+
+
 function setNodePosition(node, x, y, updateTransform = true)
 {
-    //console.log('setNodePosition(' + node.name + ')');
-
     node.div.style.left = x;
     node.div.style.top  = y;
-
-    // node.updateNode();
 
     if (updateTransform)
         graphView.updateNodeTransform(node);
@@ -16137,7 +16188,7 @@ extends Action
                 this.to[i].y);
 
         for (const node of movedNodes)
-            node.updateNode();
+            node.updateNodeState();
     }
 
 
@@ -16154,7 +16205,7 @@ extends Action
                 this.from[i].y);
 
         for (const node of movedNodes)
-            node.updateNode();
+            node.updateNodeState();
 
         graphView.selectByIds(this.prevSelectedIds);
     }

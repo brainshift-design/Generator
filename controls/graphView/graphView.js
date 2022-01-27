@@ -325,6 +325,46 @@ graphView.putNodeOnTop = node =>
 
 
 
+graphView.updateNodeTransforms = function(nodes)
+{
+    const wires = [];
+
+
+    for (const node of nodes)
+    {
+        node.div.style.transform =
+            'translate(' 
+            + (graphView.pan.x * graphView.zoom) + 'px, '
+            + (graphView.pan.y * graphView.zoom) + 'px) '
+            + 'scale(' + graphView.zoom + ')';
+        
+
+        const nodeRect = graphView.getNodeOffsetRect(node.div);
+
+        node.div.style.transformOrigin = 
+            ((graphView.pan.x - node.div.offsetLeft) / nodeRect.width  * 100) + '% ' 
+            + ((graphView.pan.y - node.div.offsetTop ) / nodeRect.height * 100) + '%';  
+
+   
+        for (const input of node.inputs)
+            if (   input.isConnected
+                && input.connection)
+                wires.push(input.connection.wire);        
+
+
+        for (const output of node.outputs)
+            for (const connInput of output.connectedInputs)
+                if (connInput.connection)
+                    wires.push(connInput.connection.wire);
+    }
+
+
+    for (const wire of wires)
+        graphView.updateWireTransform(wire);
+};
+
+
+
 graphView.updateNodeTransform = function(node)
 {
     node.div.style.transform =

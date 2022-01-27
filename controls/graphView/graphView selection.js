@@ -117,7 +117,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
         
     //updateGraphNodes();
     for (const node of selected)
-        node.updateNode();
+        node.updateNodeState();
 
 
     graphView._prevSelectedNodes = selected;
