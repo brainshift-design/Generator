@@ -1,19 +1,21 @@
 class DeleteNodesAction
 extends Action
 {
-    nodeIds     = [];
-    nodes       = [];
-    nodePos     = [];
-    connections = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
+    prevSelectedIds = [];
+    nodeIds         = [];
+    nodes           = [];
+    nodePos         = [];
+    connections     = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
 
 
 
-    constructor(nodeIds)
+    constructor(nodeIds, prevSelectedIds)
     {
         super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
 
-        this.nodeIds = [...nodeIds]; // clone the array
-        this.nodes   = graph.nodes.filter(n => nodeIds.includes(n.id));
+        this.nodeIds         = [...nodeIds]; // clone the array
+        this.nodes           = graph.nodes.filter(n => nodeIds.includes(n.id));
+        this.prevSelectedIds = [...prevSelectedIds];
     }
 
 
@@ -77,6 +79,8 @@ extends Action
 
         this.nodePos     = [];
         this.connections = [];
+
+        graphView.selectByIds(this.prevSelectedIds);
     }
 
 

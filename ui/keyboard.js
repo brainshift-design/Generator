@@ -46,7 +46,8 @@ document.addEventListener('keydown', e =>
     // delete
     else if (e.key == 'Delete')
     {
-        actionManager.do(new DeleteNodesAction(graphView.selectedNodes.map(n => n.id)));
+        const nodeIds = graphView.selectedNodes.map(n => n.id);
+        actionManager.do(new DeleteNodesAction(nodeIds, nodeIds));
         graphView._selected = [];
     }
 
