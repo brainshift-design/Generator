@@ -24,7 +24,7 @@ extends Operator
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
 
-        setTimeout(() => this.#paramStandard.setValue(1));
+        //setTimeout(() => this.#paramStandard.setValue(1));
     }
 
 
@@ -200,6 +200,6 @@ extends Operator
         this.header.style.background = 
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
-            : colorStyleRgb(rgbFromDataType(this._dataType, false));
+            : colorStyleRgb_a(rgbFromDataType(this._dataType, false), 0.95);
     }
 }

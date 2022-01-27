@@ -185,8 +185,7 @@ extends Operator
 
 function onConnectInput(op)
 {
-    op.addNewInput(); 
-    //op.pushUpdate();
+    op.addNewInput();
 }
 
 
@@ -195,5 +194,4 @@ function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input);
     op.inputControls.removeChild(input.control);
-    //op.pushUpdate();
 }

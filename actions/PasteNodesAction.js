@@ -32,6 +32,8 @@ extends Action
         this.pastedNodePos = nodes.map(n => { return { x: n.div.offsetLeft, y: n.div.offsetTop }});
 
         updateTerminalsAfterNodes(nodes);
+
+        graphView.updateNodeTransforms(nodes);
     }
 
 

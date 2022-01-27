@@ -177,6 +177,8 @@ function switchToTextbox(op)
         op.inner.removeChild(op.param3.div);
         
         op.inner.appendChild(op.hexbox);
+
+        graphView.updateNodeTransform(op);
     }
 }
 
@@ -204,6 +206,8 @@ function switchToSliders(op)
         op.inner.appendChild(op.param1.div);
         op.inner.appendChild(op.param2.div);
         op.inner.appendChild(op.param3.div);
+
+        graphView.updateNodeTransform(op);
     }
 }
 

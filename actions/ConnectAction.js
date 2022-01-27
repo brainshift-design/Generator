@@ -46,14 +46,15 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
 
-        this.inputOp.pushUpdate();
+            this.inputOp.pushUpdate();
+            graphView.updateNodeTransform(this.inputOp);
     }
 
 
 
     undo()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
+        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
         if (this.oldOutputOpId > -1)
         {
@@ -65,5 +66,6 @@ extends Action
         }
 
         this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputOp);
     }
 }

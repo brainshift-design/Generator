@@ -55,10 +55,17 @@ extends Action
     {
         uiDisconnect(this.oldInputOp.inputs[this.oldInputIndex]);
 
+        this.oldInputOp.pushUpdate();
+        graphView.updateNodeTransform(this.oldInputOp);
+
+
         uiConnect(
             this.outputOp.outputs[this.outputIndex], 
             this. inputOp. inputs[this. inputIndex],
             this.inputIndex);
+
+        this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputOp);
     }
 
 
@@ -74,6 +81,9 @@ extends Action
             this.oldInputOp, 
             this.oldInputIndex);
 
+        this.oldInputOp.pushUpdate();
+        graphView.updateNodeTransform(this.oldInputOp);
+    
 
         if (this.oldOutputOpId > -1)
         {
@@ -82,6 +92,9 @@ extends Action
                 this.oldOutputIndex, 
                 this.inputOp, 
                 this.inputIndex);
+
+            this.inputOp.pushUpdate();
+            graphView.updateNodeTransform(this.inputOp);
         }
     }
 }

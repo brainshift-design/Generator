@@ -303,8 +303,9 @@ graphView.placeNewNode = (node) =>
             graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
         if (   right.opType == node.opType
-            && node.opType != 'color') node.div.style.top  = bounds.b + dy;
-        else                           node.div.style.left = bounds.r + dx;
+            && node.opType != 'color'
+            && node.opType != 'webcontrast') node.div.style.top  = bounds.b + dy;
+        else                                 node.div.style.left = bounds.r + dx;
     }
 };
 

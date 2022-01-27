@@ -980,8 +980,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
-    <!-- <button class='menuButton' id='btnLoad'              onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button> -->
-    <!-- <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button> -->
+    <button class='menuButton' id='btnLoad'              onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
+    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     
 </div>
     
@@ -9802,10 +9802,10 @@ graphView.endConnection = pointerId =>
                 show(input.connection.wire);
             else if (savedInput)
             {
-                if (!input.op._variableInputs) // disconnect old, connect new
+                //if (!input.op._variableInputs) // disconnect old, connect new
                     actionManager.do(new ReconnectAction(output, savedInput, input));
-                else
-                    show(savedInput.connection.wire); // show old wire
+                //else
+                //    show(savedInput.connection.wire); // show old wire
             }
             else if (!savedInput) // connect new
                 actionManager.do(new ConnectAction(output, input));
@@ -10670,8 +10670,9 @@ graphView.placeNewNode = (node) =>
             graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
         if (   right.opType == node.opType
-            && node.opType != 'color') node.div.style.top  = bounds.b + dy;
-        else                           node.div.style.left = bounds.r + dx;
+            && node.opType != 'color'
+            && node.opType != 'webcontrast') node.div.style.top  = bounds.b + dy;
+        else                                 node.div.style.left = bounds.r + dx;
     }
 };
 
@@ -13553,8 +13554,7 @@ extends Operator
 
 function onConnectInput(op)
 {
-    op.addNewInput(); 
-    //op.pushUpdate();
+    op.addNewInput();
 }
 
 
@@ -13563,7 +13563,6 @@ function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input);
     op.inputControls.removeChild(input.control);
-    //op.pushUpdate();
 }
 
 
@@ -13854,7 +13853,6 @@ extends Operator
         if (this.valid)
             return false;
         
-        //console.log(this.name + '.update()');
             
         this.updateParams(true);
 
@@ -14381,6 +14379,8 @@ function switchToTextbox(op)
         op.inner.removeChild(op.param3.div);
         
         op.inner.appendChild(op.hexbox);
+
+        graphView.updateNodeTransform(op);
     }
 }
 
@@ -14408,6 +14408,8 @@ function switchToSliders(op)
         op.inner.appendChild(op.param1.div);
         op.inner.appendChild(op.param2.div);
         op.inner.appendChild(op.param3.div);
+
+        graphView.updateNodeTransform(op);
     }
 }
 
@@ -15159,7 +15161,7 @@ extends Operator
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
 
-        setTimeout(() => this.#paramStandard.setValue(1));
+        //setTimeout(() => this.#paramStandard.setValue(1));
     }
 
 
@@ -15335,7 +15337,7 @@ extends Operator
         this.header.style.background = 
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
-            : colorStyleRgb(rgbFromDataType(this._dataType, false));
+            : colorStyleRgb_a(rgbFromDataType(this._dataType, false), 0.95);
     }
 }
 
@@ -15523,14 +15525,15 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
 
-        this.inputOp.pushUpdate();
+            this.inputOp.pushUpdate();
+            graphView.updateNodeTransform(this.inputOp);
     }
 
 
 
     undo()
     {
-        uiDisconnect(graph.nodes.find(n => n.id == this.inputOpId).inputs[this.inputIndex]);
+        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
         if (this.oldOutputOpId > -1)
         {
@@ -15542,6 +15545,7 @@ extends Action
         }
 
         this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputOp);
     }
 }
 
@@ -15589,7 +15593,6 @@ extends Action
     redo()
     {
         uiCreateNode(this.opType, this.createdNodeId);
-
         graph.nodes.find(n => n.id == this.createdNodeId).pushUpdate();
     }
 }
@@ -15785,6 +15788,7 @@ extends Action
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
         this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputOp);
     }
     
     
@@ -15798,6 +15802,7 @@ extends Action
             this.inputIndex);
 
         this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputOp);
     }
 }
 
@@ -15944,6 +15949,8 @@ extends Action
         this.pastedNodePos = nodes.map(n => { return { x: n.div.offsetLeft, y: n.div.offsetTop }});
 
         updateTerminalsAfterNodes(nodes);
+
+        graphView.updateNodeTransforms(nodes);
     }
 
 
@@ -16038,10 +16045,17 @@ extends Action
     {
         uiDisconnect(this.oldInputOp.inputs[this.oldInputIndex]);
 
+        this.oldInputOp.pushUpdate();
+        graphView.updateNodeTransform(this.oldInputOp);
+
+
         uiConnect(
             this.outputOp.outputs[this.outputIndex], 
             this. inputOp. inputs[this. inputIndex],
             this.inputIndex);
+
+        this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputOp);
     }
 
 
@@ -16057,6 +16071,9 @@ extends Action
             this.oldInputOp, 
             this.oldInputIndex);
 
+        this.oldInputOp.pushUpdate();
+        graphView.updateNodeTransform(this.oldInputOp);
+    
 
         if (this.oldOutputOpId > -1)
         {
@@ -16065,6 +16082,9 @@ extends Action
                 this.oldOutputIndex, 
                 this.inputOp, 
                 this.inputIndex);
+
+            this.inputOp.pushUpdate();
+            graphView.updateNodeTransform(this.inputOp);
         }
     }
 }
@@ -17189,7 +17209,7 @@ function uiEndLoadState(msg)
 
     uiGetPluginData('graph');
 
-    setTimeout(autoSave, autoSaveDelay * 1000);
+    //setInterval(autoSave, 2000);
 
 
     // initMenuSelect(menuSelect);
@@ -17297,10 +17317,6 @@ function checkResize(x, y)
     else if (document.canResizeY) setCursor('ns-resize',   false);   
     else                          setAutoCursor();
 }
-
-
-const autoSaveDelay = 2; // seconds
-
 
 
 // function saveToLocalFile(filename, str) 
@@ -17516,8 +17532,7 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
 
 function autoSave()
 {
-    uiSetPluginData("graph", graph.toJson());
-    setTimeout(autoSave, autoSaveDelay * 1000);
+    uiSetPluginData('graph', graph.toJson());
 }
 
 
