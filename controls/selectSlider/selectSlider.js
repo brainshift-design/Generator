@@ -170,7 +170,7 @@ function initSelectSlider(param, slider, width, height, name, options, def)
                 slider.setValue(val, true, false);
                 slider.prevValue = slider.value;
 
-                slider.param.op.pushUpdate();
+                setTimeout(() => slider.param.op.pushUpdate());
             }
             else
             {
@@ -333,8 +333,8 @@ function initSelectSlider(param, slider, width, height, name, options, def)
             && slider.enableChangeEvent
             && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
-
-
+        
+        
         if (   confirm
             && slider.enableChangeEvent
             && value != oldValue)

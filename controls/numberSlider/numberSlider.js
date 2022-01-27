@@ -124,9 +124,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
             if (!slider.readOnly)
             {
-                slider.oldValue  = slider.value;
-                slider.prevValue = slider.value;
-                slider.sx        = e.clientX;
+                slider.oldValue   = slider.value;
+                slider.prevValue  = slider.value;
+                slider.sx         = e.clientX;
 
                 slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
             }

@@ -188,14 +188,14 @@ class Operator
 
 
 
-    refresh() // for repeats requests from nodes that duplicate their input, like row and column
-    {
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-                input.connectedOutput.op.refresh();
-        }
-    }
+    // refresh() // for repeats requests from nodes that duplicate their input, like row and column
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.isConnected)
+    //             input.connectedOutput.op.refresh();
+    //     }
+    // }
 
 
     

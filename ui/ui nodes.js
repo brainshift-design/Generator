@@ -116,6 +116,7 @@ function uiSetNodeId(nodeId, newId)
 
 function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
 {
+    //console.log('uiVariableConnect()');
     if (inputOp._variableInputs)
     {
         const input = lastOf(inputOp.inputs);

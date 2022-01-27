@@ -167,15 +167,16 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 
 function switchToTextbox(op)
 {
+    console.log('switchToTextbox(' + op.name + ')');
     if (!op.inner.contains(op.hexbox))
     {
+        removeOpColorParamWires(op);
+
         op.inner.removeChild(op.param1.div);
         op.inner.removeChild(op.param2.div);
         op.inner.removeChild(op.param3.div);
         
         op.inner.appendChild(op.hexbox);
-
-        removeOpColorParamWires(op);
     }
 }
 
@@ -183,16 +184,13 @@ function switchToTextbox(op)
 
 function removeOpColorParamWires(op)
 {
-    const inputs  = op. inputs.filter(i => i.param);
-    const outputs = op.outputs.filter(o => o.param);
+    for (let i = op.inputs.length-1; i >= 2; i--)
+        if (op.inputs[i].isConnected)
+            uiDisconnect(op.inputs[i]);
 
-    for (let i = 1; i < inputs.length; i++)
-        if (inputs[i].isConnected)
-            graph.disconnect(inputs[i]);
-
-    for (let i = 1; i < outputs.length; i++)
-        for (const input of outputs[i].connectedInputs)
-            graph.disconnect(input);
+    for (let i = op.outputs.length-1; i >= 2; i--)
+        for (const input of op.outputs[i].connectedInputs)
+            uiDisconnect(input);
 }
 
 

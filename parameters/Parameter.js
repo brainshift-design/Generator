@@ -118,40 +118,28 @@ extends EventTarget
     preSetValue(value, confirm, dispatchEvents = true) 
     {
         if (dispatchEvents)
-            this.dispatchPreSetValueEvents(this.oldValue, value, confirm);
-    }
-
-
-
-    dispatchPreSetValueEvents(oldValue, newValue, confirm)
-    {
-        if (newValue != oldValue)
-            this.dispatchEvent(this.onbeforechange);
+        {
+            if (value != this.oldValue)
+                this.dispatchEvent(this.onbeforechange);
+        }
     }
 
 
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
+        console.log('    ' + this.name + '.setValue(' + value + ', dispatch = ' + dispatchEvents + ')');
         if (dispatchEvents)
         {
-            this.dispatchSetValueEvents(this.oldValue, value, confirm);
-            //setTimeout(() => this.op.pushUpdate());
-        }
-    }
-
-
-
-    dispatchSetValueEvents(oldValue, newValue, confirm)
-    {
-        if (newValue != oldValue)
-        {
-            this.dispatchEvent(this.onchange);
-            
-            if (confirm)
+            if (value != this.oldValue)
             {
-                actionManager.do(new SetParamValueAction(this, this.value));
-                this.dispatchEvent(this.onconfirm);
+                this.dispatchEvent(this.onchange);
+                
+                if (confirm)
+                {
+                    actionManager.do(new SetParamValueAction(this, value));
+                    this.dispatchEvent(this.onconfirm);
+                }
             }
         }
     }

@@ -100,8 +100,8 @@ function graphView_onpointermove(e)
     {
         setTimeout(() =>
         {
-
             setCursor(panCursor);
+
             const dp = subv(graphView.p, graphView.pStart);
 
             graphView.setPanAndZoom(

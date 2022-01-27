@@ -35,6 +35,8 @@ extends Action
     do()
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+
+        this.inputOp.pushUpdate();
     }
     
     
@@ -46,5 +48,7 @@ extends Action
             this.outputIndex, 
             this.inputOp, 
             this.inputIndex);
+
+        this.inputOp.pushUpdate();
     }
 }

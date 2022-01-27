@@ -73,6 +73,7 @@ extends Parameter
 
     update(dispatchEvents)
     {
+        console.log('    ' + this.name + '.update()');
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match

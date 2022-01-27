@@ -154,6 +154,7 @@ class Graph
 
     connect(output, input, inputIndex = -1)
     {
+        console.log('graph.connect()');
         if (input.connectedOutput == output)
             return false;
             
@@ -200,13 +201,9 @@ class Graph
             input.op.makeActive();
        
            
-        output.op.updateConnectedInputValueText();
-        //conn.wire.style.zIndex = 0;//MAX_INT32;
+        //output.op.updateConnectedInputValueText();
 
-        //output.updateControl();
-
-
-        //setTimeout(() => output.op.pushUpdate());
+        output.updateControl();
 
 
         return true;
@@ -216,9 +213,10 @@ class Graph
 
     disconnect(input)
     {
+        console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
-        if (!!activeNodeInTree(input.op))
+        if (activeNodeInTree(input.op))
             uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
 
 
@@ -231,26 +229,23 @@ class Graph
         graphView.removeWire(input.connection.wire);
 
         removeFromArray(this.connections, input.connection);
-
-
         removeFromArray(output.connectedInputs, input);
-        
-        input .connection     = null;
-        output.connection     = null;
 
-        input.connectedOutput = null;
+        
+        input .connectedOutput = null;
+        input .connection      = null;
+        output.connection      = null;
+
 
         if (input.param)
             input.param.valueText = '';
 
 
-        output.updateControl();
-
-
         if (!activeNodeInTree(output.op))
              output.op.makeActive();
             
-
+        
+        output.updateControl();
         //setTimeout(() => input.op.pushUpdate());
 
 

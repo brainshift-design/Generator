@@ -26,9 +26,9 @@ extends Action
 
     do()
     {
+        console.log('SetParamValueAction()');
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
-        //uiSetParam(this.param, this.value);
     }
 
 
@@ -43,7 +43,6 @@ extends Action
 
     redo()
     {
-        //uiSetParam(this.param, this.value);
         this.param.setValue(this.newValue);
         this.param.op.pushUpdate();
     }

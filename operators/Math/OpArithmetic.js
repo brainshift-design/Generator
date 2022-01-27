@@ -72,11 +72,18 @@ extends Operator
 
 
 
-    refresh()
-    {
-        super.refresh();
+    // refresh()
+    // {
+    //     super.refresh();
         
-        //this._sampled = Number.NaN;
+    //     //this._sampled = Number.NaN;
+    // }
+
+
+
+    getResult()
+    {
+        return Number.NaN;
     }
 
 
@@ -85,15 +92,26 @@ extends Operator
     {
         if (this.valid)
             return false;
-
+        
+        console.log(this.name + '.update()');
 
         let maxDec = 0;
 
+        console.log('inputs #', this.inputs.length);
         for (const input of this.inputs)
         {
             if (input.isConnected)
             {
                 input.connectedOutput.op.update();
+
+                // ^ this could have removed one or more inputs and connections
+                // in which case abort
+                if (!input.isConnected)
+                {
+                    super.update();
+                    return;
+                }
+
                 maxDec = Math.max(maxDec, input.data.decimals);
             }
         }
@@ -110,13 +128,6 @@ extends Operator
 
         
         super.update()
-    }
-
-
-
-    getResult()
-    {
-        return Number.NaN;
     }
 
 

@@ -37,8 +37,8 @@ extends Operator
     {
         super('color', 'col', 'color', 80);
 
-        this._color = ['rgb', 0.5, 0.5, 0.5];
-        this._oldSpace = 'rgb';
+        this._color    = ['rgb', 0.5, 0.5, 0.5];
+        this._oldSpace =  'rgb';
 
 
         this.#colorBack = createDiv('colorBack');
@@ -66,8 +66,8 @@ extends Operator
 
         this.paramSpace.control.barHeight = 0.2;
         
-        this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
-        this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
+        // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
+        // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
 
 
         initHexbox(this);
@@ -143,7 +143,8 @@ extends Operator
     {
         if (this.valid)
             return false;
-
+        
+        console.log(this.name + '.update()');
             
         this.updateParams(true);
 
@@ -203,7 +204,10 @@ extends Operator
  
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
  
-        const colText      = darkText ? [0, 0, 0, 0.14] : [1, 1, 1, 0.17];
+        const colText      = darkText 
+                             ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4] 
+                             : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
+        
         const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
         const colSpaceVal  = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
  
@@ -264,7 +268,7 @@ extends Operator
 
     updateControls(rgb)
     {
-        this.updateAllControlRanges();
+        this.updateAllSliderRanges();
 
         this.updateSlider(this.param1.control, isValidRgb(rgb));
         this.updateSlider(this.param2.control, isValidRgb(rgb));
@@ -298,25 +302,25 @@ extends Operator
 
 
 
-    updateAllControlRanges()
+    updateAllSliderRanges()
     {
         if (this.paramSpace.value > 4) // warning ranges
         {
-            this.updateControlRanges(this.param1.control, f =>
+            this.updateSliderRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     (this.param1.control.min + f * (this.param1.control.max - this.param1.control.min)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param2.control, f =>
+            this.updateSliderRanges(this.param2.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     (this.param2.control.min + f * (this.param2.control.max - this.param2.control.min)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param3.control, f =>
+            this.updateSliderRanges(this.param3.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
@@ -331,7 +335,7 @@ extends Operator
 
 
 
-    updateControlRanges(slider, getRgb)
+    updateSliderRanges(slider, getRgb)
     {
         const ranges = [];
  
@@ -435,54 +439,54 @@ extends Operator
 
 
 
-function paramSpace_onbeforechange(paramSpace)
-{
-    if (   paramSpace.value == 0
-        && paramSpace.oldValue > 0)
-    {
-        for (let i = 2; i < paramSpace.op.inputs.length; i++)
-        {
-            const input = paramSpace.op.inputs[i];
+// function paramSpace_onbeforechange(paramSpace)
+// {
+//     if (   paramSpace.value == 0
+//         && paramSpace.oldValue > 0)
+//     {
+//         for (let i = 2; i < paramSpace.op.inputs.length; i++)
+//         {
+//             const input = paramSpace.op.inputs[i];
 
-            if (input.isConnected)
-                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
-        }   
+//             if (input.isConnected)
+//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//         }   
 
-        for (let i = 2; i < paramSpace.op.outputs.length; i++)
-        {
-            const output = paramSpace.op.outputs[i];
+//         for (let i = 2; i < paramSpace.op.outputs.length; i++)
+//         {
+//             const output = paramSpace.op.outputs[i];
 
-            for (const input of output.connectedInputs)
-                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
-        }   
-    }
-}
+//             for (const input of output.connectedInputs)
+//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//         }   
+//     }
+// }
 
 
 
-function paramSpace_onchange(paramSpace)
-{
-    // restore the old connections
+// function paramSpace_onchange(paramSpace)
+// {
+//     // restore the old connections
     
-    if (   paramSpace.value > 0
-        && paramSpace.oldValue == 0)
-    {
-        for (const conn of paramSpace.op._oldSpaceConnections)
-        {
-            const outputOp = graph.nodes.find(n => n.name == conn.outputOpName);
-            const  inputOp = graph.nodes.find(n => n.name == conn. inputOpName);
+//     if (   paramSpace.value > 0
+//         && paramSpace.oldValue == 0)
+//     {
+//         for (const conn of paramSpace.op._oldSpaceConnections)
+//         {
+//             const outputOp = graph.nodes.find(n => n.name == conn.outputOpName);
+//             const  inputOp = graph.nodes.find(n => n.name == conn. inputOpName);
 
-            if (outputOp && inputOp)
-            {
-                const output = outputOp.outputs[conn.outputIndex];
-                const  input =  inputOp. inputs[conn. inputIndex];
+//             if (outputOp && inputOp)
+//             {
+//                 const output = outputOp.outputs[conn.outputIndex];
+//                 const  input =  inputOp. inputs[conn. inputIndex];
 
-                uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
-            }
-        }
+//                 uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
+//             }
+//         }
 
-        paramSpace.op._oldSpaceConnections = [];
-    }
+//         paramSpace.op._oldSpaceConnections = [];
+//     }
 
-    //setTimeout(() => paramSpace.op.pushUpdate());
-}
+//     //setTimeout(() => paramSpace.op.pushUpdate());
+// }

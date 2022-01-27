@@ -7229,9 +7229,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
             if (!slider.readOnly)
             {
-                slider.oldValue  = slider.value;
-                slider.prevValue = slider.value;
-                slider.sx        = e.clientX;
+                slider.oldValue   = slider.value;
+                slider.prevValue  = slider.value;
+                slider.sx         = e.clientX;
 
                 slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
             }
@@ -7947,7 +7947,7 @@ function initSelectSlider(param, slider, width, height, name, options, def)
                 slider.setValue(val, true, false);
                 slider.prevValue = slider.value;
 
-                slider.param.op.pushUpdate();
+                setTimeout(() => slider.param.op.pushUpdate());
             }
             else
             {
@@ -8110,8 +8110,8 @@ function initSelectSlider(param, slider, width, height, name, options, def)
             && slider.enableChangeEvent
             && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
-
-
+        
+        
         if (   confirm
             && slider.enableChangeEvent
             && value != oldValue)
@@ -10383,8 +10383,8 @@ function graphView_onpointermove(e)
     {
         setTimeout(() =>
         {
-
             setCursor(panCursor);
+
             const dp = subv(graphView.p, graphView.pStart);
 
             graphView.setPanAndZoom(
@@ -10824,40 +10824,28 @@ extends EventTarget
     preSetValue(value, confirm, dispatchEvents = true) 
     {
         if (dispatchEvents)
-            this.dispatchPreSetValueEvents(this.oldValue, value, confirm);
-    }
-
-
-
-    dispatchPreSetValueEvents(oldValue, newValue, confirm)
-    {
-        if (newValue != oldValue)
-            this.dispatchEvent(this.onbeforechange);
+        {
+            if (value != this.oldValue)
+                this.dispatchEvent(this.onbeforechange);
+        }
     }
 
 
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
+        console.log('    ' + this.name + '.setValue(' + value + ', dispatch = ' + dispatchEvents + ')');
         if (dispatchEvents)
         {
-            this.dispatchSetValueEvents(this.oldValue, value, confirm);
-            //setTimeout(() => this.op.pushUpdate());
-        }
-    }
-
-
-
-    dispatchSetValueEvents(oldValue, newValue, confirm)
-    {
-        if (newValue != oldValue)
-        {
-            this.dispatchEvent(this.onchange);
-            
-            if (confirm)
+            if (value != this.oldValue)
             {
-                actionManager.do(new SetParamValueAction(this, this.value));
-                this.dispatchEvent(this.onconfirm);
+                this.dispatchEvent(this.onchange);
+                
+                if (confirm)
+                {
+                    actionManager.do(new SetParamValueAction(this, value));
+                    this.dispatchEvent(this.onconfirm);
+                }
             }
         }
     }
@@ -11018,7 +11006,7 @@ extends Parameter
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.log(this.name + '.setValue(' + value + ')');
+        //console.log(this.name + '.setValue(' + value + ')');
 
         this.preSetValue(value, confirm, dispatchEvents);
 
@@ -11118,7 +11106,7 @@ extends Parameter
         this.control.addEventListener('confirm', e =>
         {
             this.op.valid = false;
-            actionManager.do(new SetParamValueAction(this, this.value));
+            //actionManager.do(new SetParamValueAction(this, this.value));
         });
     }
 
@@ -11213,6 +11201,7 @@ extends Parameter
 
     update(dispatchEvents)
     {
+        console.log('    ' + this.name + '.update()');
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
@@ -11442,6 +11431,7 @@ class Graph
 
     connect(output, input, inputIndex = -1)
     {
+        console.log('graph.connect()');
         if (input.connectedOutput == output)
             return false;
             
@@ -11488,13 +11478,9 @@ class Graph
             input.op.makeActive();
        
            
-        output.op.updateConnectedInputValueText();
-        //conn.wire.style.zIndex = 0;//MAX_INT32;
+        //output.op.updateConnectedInputValueText();
 
-        //output.updateControl();
-
-
-        //setTimeout(() => output.op.pushUpdate());
+        output.updateControl();
 
 
         return true;
@@ -11504,9 +11490,10 @@ class Graph
 
     disconnect(input)
     {
+        console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
-        if (!!activeNodeInTree(input.op))
+        if (activeNodeInTree(input.op))
             uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
 
 
@@ -11519,26 +11506,23 @@ class Graph
         graphView.removeWire(input.connection.wire);
 
         removeFromArray(this.connections, input.connection);
-
-
         removeFromArray(output.connectedInputs, input);
-        
-        input .connection     = null;
-        output.connection     = null;
 
-        input.connectedOutput = null;
+        
+        input .connectedOutput = null;
+        input .connection      = null;
+        output.connection      = null;
+
 
         if (input.param)
             input.param.valueText = '';
 
 
-        output.updateControl();
-
-
         if (!activeNodeInTree(output.op))
              output.op.makeActive();
             
-
+        
+        output.updateControl();
         //setTimeout(() => input.op.pushUpdate());
 
 
@@ -12378,14 +12362,14 @@ class Operator
 
 
 
-    refresh() // for repeats requests from nodes that duplicate their input, like row and column
-    {
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-                input.connectedOutput.op.refresh();
-        }
-    }
+    // refresh() // for repeats requests from nodes that duplicate their input, like row and column
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.isConnected)
+    //             input.connectedOutput.op.refresh();
+    //     }
+    // }
 
 
     
@@ -13318,11 +13302,18 @@ extends Operator
 
 
 
-    refresh()
-    {
-        super.refresh();
+    // refresh()
+    // {
+    //     super.refresh();
         
-        //this._sampled = Number.NaN;
+    //     //this._sampled = Number.NaN;
+    // }
+
+
+
+    getResult()
+    {
+        return Number.NaN;
     }
 
 
@@ -13331,15 +13322,26 @@ extends Operator
     {
         if (this.valid)
             return false;
-
+        
+        console.log(this.name + '.update()');
 
         let maxDec = 0;
 
+        console.log('inputs #', this.inputs.length);
         for (const input of this.inputs)
         {
             if (input.isConnected)
             {
                 input.connectedOutput.op.update();
+
+                // ^ this could have removed one or more inputs and connections
+                // in which case abort
+                if (!input.isConnected)
+                {
+                    super.update();
+                    return;
+                }
+
                 maxDec = Math.max(maxDec, input.data.decimals);
             }
         }
@@ -13356,13 +13358,6 @@ extends Operator
 
         
         super.update()
-    }
-
-
-
-    getResult()
-    {
-        return Number.NaN;
     }
 
 
@@ -13614,8 +13609,8 @@ extends Operator
     {
         super('color', 'col', 'color', 80);
 
-        this._color = ['rgb', 0.5, 0.5, 0.5];
-        this._oldSpace = 'rgb';
+        this._color    = ['rgb', 0.5, 0.5, 0.5];
+        this._oldSpace =  'rgb';
 
 
         this.#colorBack = createDiv('colorBack');
@@ -13643,8 +13638,8 @@ extends Operator
 
         this.paramSpace.control.barHeight = 0.2;
         
-        this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
-        this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
+        // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
+        // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
 
 
         initHexbox(this);
@@ -13720,7 +13715,8 @@ extends Operator
     {
         if (this.valid)
             return false;
-
+        
+        console.log(this.name + '.update()');
             
         this.updateParams(true);
 
@@ -13780,7 +13776,10 @@ extends Operator
  
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
  
-        const colText      = darkText ? [0, 0, 0, 0.14] : [1, 1, 1, 0.17];
+        const colText      = darkText 
+                             ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4] 
+                             : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
+        
         const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
         const colSpaceVal  = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
  
@@ -13841,7 +13840,7 @@ extends Operator
 
     updateControls(rgb)
     {
-        this.updateAllControlRanges();
+        this.updateAllSliderRanges();
 
         this.updateSlider(this.param1.control, isValidRgb(rgb));
         this.updateSlider(this.param2.control, isValidRgb(rgb));
@@ -13875,25 +13874,25 @@ extends Operator
 
 
 
-    updateAllControlRanges()
+    updateAllSliderRanges()
     {
         if (this.paramSpace.value > 4) // warning ranges
         {
-            this.updateControlRanges(this.param1.control, f =>
+            this.updateSliderRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     (this.param1.control.min + f * (this.param1.control.max - this.param1.control.min)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param2.control, f =>
+            this.updateSliderRanges(this.param2.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     (this.param2.control.min + f * (this.param2.control.max - this.param2.control.min)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param3.control, f =>
+            this.updateSliderRanges(this.param3.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
@@ -13908,7 +13907,7 @@ extends Operator
 
 
 
-    updateControlRanges(slider, getRgb)
+    updateSliderRanges(slider, getRgb)
     {
         const ranges = [];
  
@@ -14012,57 +14011,57 @@ extends Operator
 
 
 
-function paramSpace_onbeforechange(paramSpace)
-{
-    if (   paramSpace.value == 0
-        && paramSpace.oldValue > 0)
-    {
-        for (let i = 2; i < paramSpace.op.inputs.length; i++)
-        {
-            const input = paramSpace.op.inputs[i];
+// function paramSpace_onbeforechange(paramSpace)
+// {
+//     if (   paramSpace.value == 0
+//         && paramSpace.oldValue > 0)
+//     {
+//         for (let i = 2; i < paramSpace.op.inputs.length; i++)
+//         {
+//             const input = paramSpace.op.inputs[i];
 
-            if (input.isConnected)
-                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
-        }   
+//             if (input.isConnected)
+//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//         }   
 
-        for (let i = 2; i < paramSpace.op.outputs.length; i++)
-        {
-            const output = paramSpace.op.outputs[i];
+//         for (let i = 2; i < paramSpace.op.outputs.length; i++)
+//         {
+//             const output = paramSpace.op.outputs[i];
 
-            for (const input of output.connectedInputs)
-                paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
-        }   
-    }
-}
+//             for (const input of output.connectedInputs)
+//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//         }   
+//     }
+// }
 
 
 
-function paramSpace_onchange(paramSpace)
-{
-    // restore the old connections
+// function paramSpace_onchange(paramSpace)
+// {
+//     // restore the old connections
     
-    if (   paramSpace.value > 0
-        && paramSpace.oldValue == 0)
-    {
-        for (const conn of paramSpace.op._oldSpaceConnections)
-        {
-            const outputOp = graph.nodes.find(n => n.name == conn.outputOpName);
-            const  inputOp = graph.nodes.find(n => n.name == conn. inputOpName);
+//     if (   paramSpace.value > 0
+//         && paramSpace.oldValue == 0)
+//     {
+//         for (const conn of paramSpace.op._oldSpaceConnections)
+//         {
+//             const outputOp = graph.nodes.find(n => n.name == conn.outputOpName);
+//             const  inputOp = graph.nodes.find(n => n.name == conn. inputOpName);
 
-            if (outputOp && inputOp)
-            {
-                const output = outputOp.outputs[conn.outputIndex];
-                const  input =  inputOp. inputs[conn. inputIndex];
+//             if (outputOp && inputOp)
+//             {
+//                 const output = outputOp.outputs[conn.outputIndex];
+//                 const  input =  inputOp. inputs[conn. inputIndex];
 
-                uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
-            }
-        }
+//                 uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
+//             }
+//         }
 
-        paramSpace.op._oldSpaceConnections = [];
-    }
+//         paramSpace.op._oldSpaceConnections = [];
+//     }
 
-    //setTimeout(() => paramSpace.op.pushUpdate());
-}
+//     //setTimeout(() => paramSpace.op.pushUpdate());
+// }
 
 
 const OpColorSpaces = 
@@ -14234,15 +14233,16 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 
 function switchToTextbox(op)
 {
+    console.log('switchToTextbox(' + op.name + ')');
     if (!op.inner.contains(op.hexbox))
     {
+        removeOpColorParamWires(op);
+
         op.inner.removeChild(op.param1.div);
         op.inner.removeChild(op.param2.div);
         op.inner.removeChild(op.param3.div);
         
         op.inner.appendChild(op.hexbox);
-
-        removeOpColorParamWires(op);
     }
 }
 
@@ -14250,16 +14250,13 @@ function switchToTextbox(op)
 
 function removeOpColorParamWires(op)
 {
-    const inputs  = op. inputs.filter(i => i.param);
-    const outputs = op.outputs.filter(o => o.param);
+    for (let i = op.inputs.length-1; i >= 2; i--)
+        if (op.inputs[i].isConnected)
+            uiDisconnect(op.inputs[i]);
 
-    for (let i = 1; i < inputs.length; i++)
-        if (inputs[i].isConnected)
-            graph.disconnect(inputs[i]);
-
-    for (let i = 1; i < outputs.length; i++)
-        for (const input of outputs[i].connectedInputs)
-            graph.disconnect(input);
+    for (let i = op.outputs.length-1; i >= 2; i--)
+        for (const input of op.outputs[i].connectedInputs)
+            uiDisconnect(input);
 }
 
 
@@ -15643,6 +15640,8 @@ extends Action
     do()
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+
+        this.inputOp.pushUpdate();
     }
     
     
@@ -15654,6 +15653,8 @@ extends Action
             this.outputIndex, 
             this.inputOp, 
             this.inputIndex);
+
+        this.inputOp.pushUpdate();
     }
 }
 
@@ -16195,9 +16196,9 @@ extends Action
 
     do()
     {
+        console.log('SetParamValueAction()');
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
-        //uiSetParam(this.param, this.value);
     }
 
 
@@ -16212,7 +16213,6 @@ extends Action
 
     redo()
     {
-        //uiSetParam(this.param, this.value);
         this.param.setValue(this.newValue);
         this.param.op.pushUpdate();
     }
@@ -16801,6 +16801,7 @@ function uiSetNodeId(nodeId, newId)
 
 function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
 {
+    //console.log('uiVariableConnect()');
     if (inputOp._variableInputs)
     {
         const input = lastOf(inputOp.inputs);
