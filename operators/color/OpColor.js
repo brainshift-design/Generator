@@ -253,6 +253,11 @@ extends Operator
         this.paramSpace.output.color = colText;
 
 
+        for (const output of this.outputs)
+            for (const input of output.connectedInputs)
+                input.connection.wire.update();
+
+                
         super.updateNode();
     }
 

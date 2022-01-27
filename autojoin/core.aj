@@ -9,3 +9,4 @@
 ../core/util.js
 ../core/base64.js
 ../core/web.js
+../core/clipboard.js

@@ -7,7 +7,7 @@
     &nbsp;
     <button class='menuButton' id='btnLoad'              onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
+    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); /*console.log(json);*/ uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateNumber'      onclick='actionManager.do(new CreateNodeAction("number"     )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateAdd'         onclick='actionManager.do(new CreateNodeAction("add"        )); this.blur();'>ADD</button>
