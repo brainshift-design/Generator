@@ -81,7 +81,7 @@ function loadNodesAsync(data, setProgress)
 
     promise.then(nodes => 
     {
-        graph.addNodes(nodes, false);
+        graph.addNodes(nodes, false, false);
         loadConnectionsAsync(data, nodes, setProgress);    
     });
 }

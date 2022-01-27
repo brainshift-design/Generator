@@ -83,18 +83,20 @@ class Graph
 
 
 
-    addNodes(nodes, placeNode = true)
+    addNodes(nodes, placeNode = true, createNewName = true)
     {
         for (const node of nodes)
-            this.addNode(node, placeNode);
+            this.addNode(node, placeNode, createNewName);
     }
 
 
 
-    addNode(node, placeNode = true)
+    addNode(node, placeNode = true, createNewName = true)
     {
         node.graph = this;
-        node.setName(this.getNewNodeName(node)); // TODO: not checking return value here
+
+        if (createNewName)
+            node.setName(this.getNewNodeName(node)); // TODO: not checking return value here
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
