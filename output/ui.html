@@ -972,6 +972,11 @@ input[type=text]::selection
     
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
+    &nbsp;
+    <button class='menuButton' id='btnLoad'              onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateNumber'      onclick='actionManager.do(new CreateNodeAction("number"     )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateAdd'         onclick='actionManager.do(new CreateNodeAction("add"        )); this.blur();'>ADD</button>
     <button class='menuButton' id='btnCreateSubtract'    onclick='actionManager.do(new CreateNodeAction("subtract"   )); this.blur();'>SUB</button>
@@ -980,8 +985,6 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
-    <button class='menuButton' id='btnLoad'              onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
-    <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); console.log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     
 </div>
     
@@ -15160,8 +15163,6 @@ extends Operator
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
-
-        //setTimeout(() => this.#paramStandard.setValue(1));
     }
 
 
@@ -15288,6 +15289,8 @@ extends Operator
                 this.#warningOverlay.style.background = 'transparent';
             }
         }
+
+        this.#paramStandard.control.update();
              
 
         super.updateNode();
@@ -16850,7 +16853,7 @@ productKeyClose.addEventListener('click', e =>
 function uiCreateNode(opType, createdId = -1, updateUI = true)
 {
     let node = graph.createNode(opType, createdId);
-
+    
     graph.addNode(node);
     
     // if (graphView.selectedNodes.length > 0)

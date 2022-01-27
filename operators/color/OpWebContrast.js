@@ -23,8 +23,6 @@ extends Operator
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.inner.appendChild(this.#warningOverlay);
-
-        //setTimeout(() => this.#paramStandard.setValue(1));
     }
 
 
@@ -151,6 +149,8 @@ extends Operator
                 this.#warningOverlay.style.background = 'transparent';
             }
         }
+
+        this.#paramStandard.control.update();
              
 
         super.updateNode();

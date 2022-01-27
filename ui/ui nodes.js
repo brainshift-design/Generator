@@ -1,7 +1,7 @@
 function uiCreateNode(opType, createdId = -1, updateUI = true)
 {
     let node = graph.createNode(opType, createdId);
-
+    
     graph.addNode(node);
     
     // if (graphView.selectedNodes.length > 0)
