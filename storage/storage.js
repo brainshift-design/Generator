@@ -19,6 +19,7 @@ function loadGraph(json)
 
 
     graph.clear();
+    
 
     const data = JSON.parse(json);
 

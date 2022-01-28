@@ -12,6 +12,7 @@ class Graph
     clear()
     {
         this.deleteNodes(this.nodes.map(n => n.id));
+        this.connections = [];
     }
 
 
@@ -122,16 +123,19 @@ class Graph
         {
             const node = this.nodes.find(n => n.id == id);
 
-            for (const input of node.inputs)
+            for (let i = node.inputs.length-1; i >= 0; i--) // backwards for the sake of variable inputs
             {
+                const input = node.inputs[i];
                 if (!input.isConnected) continue;
 
                 input.connectedOutput.op.makeActive();
                 this.disconnect(input, true);
             }
             
-            for (const output of node.outputs)
+            for (let i = node.outputs.length-1; i >= 0; i--)
             {
+                const output = node.outputs[i];
+                
                 for (const connInput of output.connectedInputs)
                 {
                     this.disconnect(connInput, true);

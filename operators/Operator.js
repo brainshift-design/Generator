@@ -169,7 +169,7 @@ class Operator
     {
         const outputs = this.outputs.filter(o => o.dataType == dataType);
 
-        return outputs && outputs.length == 1
+        return outputs.length == 1
                ? outputs[0]
                : null;
     }
