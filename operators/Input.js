@@ -160,7 +160,7 @@ extends EventTarget
                this.isConnected
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
-                   ||    this.mouseOver
+                   ||    graphView.overInput == this//this.mouseOver
                       && !graphView.tempConn.input)
                && !(   graphView.tempConn.output
                     && graphView.tempConn.output.dataType != this.dataType);
@@ -177,8 +177,6 @@ extends EventTarget
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
 
-        console.log('overOutput ', graphView.overOutput);
-        console.log('headerOutput ', graphView.headerOutput);
         this.wireBall.style.backgroundColor = 
             this.isConnected
             ? (    graphView.tempConn
