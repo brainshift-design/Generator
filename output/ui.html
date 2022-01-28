@@ -9993,10 +9993,14 @@ graphView.endConnection = pointerId =>
                 show(input.connection.wire);
             else if (savedInput)
             {
-                //if (!input.op._variableInputs) // disconnect old, connect new
+                if (  !input.op._variableInputs
+                    || input != lastOf(input.op.inputs)) // disconnect old, connect new
                     actionManager.do(new ReconnectAction(output, savedInput, input));
-                //else
-                //    show(savedInput.connection.wire); // show old wire
+                else
+                {
+                    show(savedInput.connection.wire); // show old wire
+                    savedInput.updateControl();
+                }
             }
             else if (!savedInput) // connect new
                 actionManager.do(new ConnectAction(output, input));
