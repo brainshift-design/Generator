@@ -65,11 +65,18 @@ class Output
         { 
             graphView.overOutput = this; 
             
+            if (graphView.headerOutput)
+            {
+                graphView.headerOutput.updateControl();
+                graphView.headerOutput = null;
+            }
+
             this.mouseOver = true;
             this.updateControl();
 
             if (   graphView.tempConn
-                && graphView.tempConn.input)
+                && graphView.tempConn.input
+                && graphView.tempConn.input.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
 
@@ -107,8 +114,11 @@ class Output
     {
         const mouseOver =
                this.mouseOver
-            && (   !graphView.tempConn
-                || !graphView.tempConn.output);
+            && !(   graphView.tempConn
+                 && graphView.tempConn.output)
+            && !(   graphView.tempConn
+                 && graphView.tempConn.input
+                 && graphView.tempConn.input.dataType != this.dataType);
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
 
@@ -125,13 +135,15 @@ class Output
 
         this.wireBall.style.zIndex = MAX_INT32;
 
-        
+
         const isConnected =
                this.connectedInputs.length > 0
             ||     graphView.tempConn
                && (   graphView.tempConn.output == this
                    ||    this.mouseOver
-                      && !graphView.tempConn.output);
+                      && !graphView.tempConn.output)
+               && !(   graphView.tempConn.input
+                    && graphView.tempConn.input.dataType != this.dataType);
 
         show(this.wireBall, isConnected);
     }

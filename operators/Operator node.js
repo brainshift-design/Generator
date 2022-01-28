@@ -66,23 +66,31 @@ function createNodeHeader(node)
                 graphView.overInput   = null;
                 graphView.headerInput = null;
                 
-                input.mouseOver = false;
-                input.updateControl();
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
                 
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.op != node)
             {
-                const output = graphView.overOutput;
+                const output = graphView.headerOutput;
                 
-                graphView.overOutput = null;
-                
-                output.mouseOver = false;
-                output.updateControl();
-                
+                graphView.overOutput   = null;
+                graphView.headerOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
                 graphView.tempConn.wire.outputPos = point_NaN;
-            }
+                graphView.tempConn.input.updateControl();
+           }
         }
     });
 
@@ -142,8 +150,6 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointermove', e =>
     {
-        console.log('header move');
-
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
         
@@ -168,7 +174,6 @@ function createNodeHeader(node)
                 const input = node.getAutoInput(graphView.tempConn.output.dataType);
                 if (!input) return;
 
-
                 graphView.overInput   = input;
                 graphView.headerInput = input;
                     
@@ -188,7 +193,8 @@ function createNodeHeader(node)
                 const output = node.getAutoOutput(graphView.tempConn.input.dataType);
                 if (!output) return;
 
-                graphView.overOutput = output;
+                graphView.overOutput   = output;
+                graphView.headerOutput = output;
                     
                 output.mouseOver = true;
                 output.updateControl();
@@ -199,6 +205,9 @@ function createNodeHeader(node)
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
+
+
+                graphView.tempConn.input.updateControl();
             }
         }
     });

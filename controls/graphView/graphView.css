@@ -271,7 +271,7 @@
 .colorWarningOverlay
 {
     width:            100%;
-    height:           46px;
+    height:           var(--colorBackSize);
     z-index:          1000;
     position:         absolute;
     top:              0;

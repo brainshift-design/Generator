@@ -83,7 +83,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.2];
-        this.wireColor = rgbFromDataType(this._dataType, true);
+        this.wireColor = rgbFromDataType(this.dataType, true);
 
         
         this.control.addEventListener('pointerdown', e => e.preventDefault());
@@ -103,7 +103,8 @@ extends EventTarget
             this.updateControl();
 
             if (   graphView.tempConn
-                && graphView.tempConn.output)
+                && graphView.tempConn.output
+                && graphView.tempConn.output.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
 
@@ -147,8 +148,11 @@ extends EventTarget
     {
         const mouseOver =
                this.mouseOver
-            && (   !graphView.tempConn
-                || !graphView.tempConn.input);
+            && !(   graphView.tempConn
+                 && graphView.tempConn.input)
+            && !(   graphView.tempConn
+                 && graphView.tempConn.output
+                 && graphView.tempConn.output.dataType != this.dataType);
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
 
@@ -157,7 +161,9 @@ extends EventTarget
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
                    ||    this.mouseOver
-                      && !graphView.tempConn.input);
+                      && !graphView.tempConn.input)
+               && !(   graphView.tempConn.output
+                    && graphView.tempConn.output.dataType != this.dataType);
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -170,7 +176,9 @@ extends EventTarget
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
-        
+
+        console.log('overOutput ', graphView.overOutput);
+        console.log('headerOutput ', graphView.headerOutput);
         this.wireBall.style.backgroundColor = 
             this.isConnected
             ? (    graphView.tempConn
@@ -180,12 +188,17 @@ extends EventTarget
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
             : (   graphView.tempConn
                && graphView.tempConn.output
+               && graphView.tempConn.output.dataType == this.dataType
                && graphView.overInput == this
                ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
                : (   graphView.tempConn
                   && graphView.tempConn.input
                   && graphView.tempConn.input == this)
-                  ? colorStyleRgba(toRgba(graphView.tempConn.input.wireColor))
+                  ? (graphView.overOutput
+                     ? colorStyleRgba(toRgba(graphView.overOutput.wireColor))
+                     : (graphView.headerOutput
+                        ? colorStyleRgba(toRgba(graphView.headerOutput.wireColor))
+                        : colorStyleRgba(toRgba(graphView.tempConn.input.wireColor))))
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;

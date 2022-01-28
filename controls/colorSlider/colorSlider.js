@@ -386,7 +386,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
         slider.text.innerHTML += valueText + slider.suffix;
 
-        slider.style.backgroundColor = colorStyle(slider.value);
+        slider.style.backgroundColor = colorStyleRgb(slider.value);
     };
 
 

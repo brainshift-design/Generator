@@ -621,7 +621,7 @@ input[type=text]::selection
 .colorWarningOverlay
 {
     width:            100%;
-    height:           46px;
+    height:           var(--colorBackSize);
     z-index:          1000;
     position:         absolute;
     top:              0;
@@ -9021,7 +9021,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
         slider.text.innerHTML += valueText + slider.suffix;
 
-        slider.style.backgroundColor = colorStyle(slider.value);
+        slider.style.backgroundColor = colorStyleRgb(slider.value);
     };
 
 
@@ -12126,7 +12126,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.2];
-        this.wireColor = rgbFromDataType(this._dataType, true);
+        this.wireColor = rgbFromDataType(this.dataType, true);
 
         
         this.control.addEventListener('pointerdown', e => e.preventDefault());
@@ -12146,7 +12146,8 @@ extends EventTarget
             this.updateControl();
 
             if (   graphView.tempConn
-                && graphView.tempConn.output)
+                && graphView.tempConn.output
+                && graphView.tempConn.output.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
 
@@ -12190,8 +12191,11 @@ extends EventTarget
     {
         const mouseOver =
                this.mouseOver
-            && (   !graphView.tempConn
-                || !graphView.tempConn.input);
+            && !(   graphView.tempConn
+                 && graphView.tempConn.input)
+            && !(   graphView.tempConn
+                 && graphView.tempConn.output
+                 && graphView.tempConn.output.dataType != this.dataType);
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
 
@@ -12200,7 +12204,9 @@ extends EventTarget
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
                    ||    this.mouseOver
-                      && !graphView.tempConn.input);
+                      && !graphView.tempConn.input)
+               && !(   graphView.tempConn.output
+                    && graphView.tempConn.output.dataType != this.dataType);
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -12213,7 +12219,9 @@ extends EventTarget
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
-        
+
+        console.log('overOutput ', graphView.overOutput);
+        console.log('headerOutput ', graphView.headerOutput);
         this.wireBall.style.backgroundColor = 
             this.isConnected
             ? (    graphView.tempConn
@@ -12223,12 +12231,17 @@ extends EventTarget
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
             : (   graphView.tempConn
                && graphView.tempConn.output
+               && graphView.tempConn.output.dataType == this.dataType
                && graphView.overInput == this
                ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
                : (   graphView.tempConn
                   && graphView.tempConn.input
                   && graphView.tempConn.input == this)
-                  ? colorStyleRgba(toRgba(graphView.tempConn.input.wireColor))
+                  ? (graphView.overOutput
+                     ? colorStyleRgba(toRgba(graphView.overOutput.wireColor))
+                     : (graphView.headerOutput
+                        ? colorStyleRgba(toRgba(graphView.headerOutput.wireColor))
+                        : colorStyleRgba(toRgba(graphView.tempConn.input.wireColor))))
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
@@ -12308,11 +12321,18 @@ class Output
         { 
             graphView.overOutput = this; 
             
+            if (graphView.headerOutput)
+            {
+                graphView.headerOutput.updateControl();
+                graphView.headerOutput = null;
+            }
+
             this.mouseOver = true;
             this.updateControl();
 
             if (   graphView.tempConn
-                && graphView.tempConn.input)
+                && graphView.tempConn.input
+                && graphView.tempConn.input.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
 
@@ -12350,8 +12370,11 @@ class Output
     {
         const mouseOver =
                this.mouseOver
-            && (   !graphView.tempConn
-                || !graphView.tempConn.output);
+            && !(   graphView.tempConn
+                 && graphView.tempConn.output)
+            && !(   graphView.tempConn
+                 && graphView.tempConn.input
+                 && graphView.tempConn.input.dataType != this.dataType);
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
 
@@ -12368,13 +12391,15 @@ class Output
 
         this.wireBall.style.zIndex = MAX_INT32;
 
-        
+
         const isConnected =
                this.connectedInputs.length > 0
             ||     graphView.tempConn
                && (   graphView.tempConn.output == this
                    ||    this.mouseOver
-                      && !graphView.tempConn.output);
+                      && !graphView.tempConn.output)
+               && !(   graphView.tempConn.input
+                    && graphView.tempConn.input.dataType != this.dataType);
 
         show(this.wireBall, isConnected);
     }
@@ -12494,9 +12519,20 @@ class Connection
 
         this.wire.getColor = () =>
         {
-                 if (this.output) return this.output.wireColor;
-            else if (this.input ) return this.input .wireColor;
-            else                  return [255, 0, 255];
+            if (this.output)
+                return this.output.wireColor;
+
+            else if (this.input)
+            {
+                if (   graphView.overOutput
+                    && graphView.overOutput.dataType == this.input.dataType) 
+                    return graphView.overOutput.wireColor;
+                else
+                    return this.input.wireColor;
+            }
+                
+            else 
+                return [255, 0, 255];
         };
 
 
@@ -13250,23 +13286,31 @@ function createNodeHeader(node)
                 graphView.overInput   = null;
                 graphView.headerInput = null;
                 
-                input.mouseOver = false;
-                input.updateControl();
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
                 
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.op != node)
             {
-                const output = graphView.overOutput;
+                const output = graphView.headerOutput;
                 
-                graphView.overOutput = null;
-                
-                output.mouseOver = false;
-                output.updateControl();
-                
+                graphView.overOutput   = null;
+                graphView.headerOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
                 graphView.tempConn.wire.outputPos = point_NaN;
-            }
+                graphView.tempConn.input.updateControl();
+           }
         }
     });
 
@@ -13326,8 +13370,6 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointermove', e =>
     {
-        console.log('header move');
-
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
         
@@ -13352,7 +13394,6 @@ function createNodeHeader(node)
                 const input = node.getAutoInput(graphView.tempConn.output.dataType);
                 if (!input) return;
 
-
                 graphView.overInput   = input;
                 graphView.headerInput = input;
                     
@@ -13372,7 +13413,8 @@ function createNodeHeader(node)
                 const output = node.getAutoOutput(graphView.tempConn.input.dataType);
                 if (!output) return;
 
-                graphView.overOutput = output;
+                graphView.overOutput   = output;
+                graphView.headerOutput = output;
                     
                 output.mouseOver = true;
                 output.updateControl();
@@ -13383,6 +13425,9 @@ function createNodeHeader(node)
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
+
+
+                graphView.tempConn.input.updateControl();
             }
         }
     });

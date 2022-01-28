@@ -111,9 +111,20 @@ class Connection
 
         this.wire.getColor = () =>
         {
-                 if (this.output) return this.output.wireColor;
-            else if (this.input ) return this.input .wireColor;
-            else                  return [255, 0, 255];
+            if (this.output)
+                return this.output.wireColor;
+
+            else if (this.input)
+            {
+                if (   graphView.overOutput
+                    && graphView.overOutput.dataType == this.input.dataType) 
+                    return graphView.overOutput.wireColor;
+                else
+                    return this.input.wireColor;
+            }
+                
+            else 
+                return [255, 0, 255];
         };
 
 
