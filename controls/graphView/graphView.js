@@ -5,6 +5,9 @@ graphView.canUpdateNodes = true;
 graphView.overInput      = null;
 graphView.overOutput     = null;
    
+graphView.headerInput    = null; // same as overInput, but when snapping from a header
+graphView.headerOutput   = null; // same as overOutput, but when snapping from a header
+   
 graphView.tempConn       = null;
    
    

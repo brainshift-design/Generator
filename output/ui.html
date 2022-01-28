@@ -1263,6 +1263,14 @@ const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
+const point_NaN = {x: Number.NaN, y: Number.NaN};
+
+
+function point(x, y) { return {x: x, y: y}; }
+
+function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 
@@ -3627,6 +3635,14 @@ function getQueryVariable(strVar)
 const Tau = Math.PI * 2;
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
+
+
+const point_NaN = {x: Number.NaN, y: Number.NaN};
+
+
+function point(x, y) { return {x: x, y: y}; }
+
+function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
 
 
 function sqr (x) { return x*x;   };
@@ -10539,6 +10555,9 @@ graphView.canUpdateNodes = true;
 graphView.overInput      = null;
 graphView.overOutput     = null;
    
+graphView.headerInput    = null; // same as overInput, but when snapping from a header
+graphView.headerOutput   = null; // same as overOutput, but when snapping from a header
+   
 graphView.tempConn       = null;
    
    
@@ -12109,18 +12128,45 @@ extends EventTarget
         {
             graphView.overInput = this;
 
+            if (graphView.headerInput)
+            {
+                graphView.headerInput.updateControl();
+                graphView.headerInput = null;
+            }
+
             this.mouseOver = true;
             this.updateControl();
+
+            if (   graphView.tempConn
+                && graphView.tempConn.output)
+            {
+                const rect = boundingRect(this.control);
+
+                graphView.tempConn.wire.inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
         });
 
 
         this.control.addEventListener('pointerleave', e => 
         {
-            graphView.overInput = null;
-
-            this.mouseOver = false;
-            this.updateControl();
+            this.endConnection();
         });
+    }
+
+
+
+    endConnection()
+    {
+        graphView.overInput = null;
+
+        this.mouseOver = false;
+        this.updateControl();
+
+        if (   graphView.tempConn
+            && graphView.tempConn.output)
+            graphView.tempConn.wire.inputPos = point_NaN;
     }
 
 
@@ -12134,19 +12180,19 @@ extends EventTarget
 
     updateControl()
     {
-        const isConnected =
-               this.isConnected
-            ||     graphView.tempConn
-               && (   graphView.tempConn.input == this
-                   ||    this.mouseOver
-                      && !graphView.tempConn.input);
-
         const mouseOver =
                this.mouseOver
             && (   !graphView.tempConn
                 || !graphView.tempConn.input);
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
+
+        const isConnected =
+               this.isConnected
+            ||     graphView.tempConn
+               && (   graphView.tempConn.input == this
+                   ||    this.mouseOver
+                      && !graphView.tempConn.input);
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -12159,6 +12205,7 @@ extends EventTarget
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
+        
         this.wireBall.style.backgroundColor = 
             this.isConnected
             ? (    graphView.tempConn
@@ -12179,6 +12226,7 @@ extends EventTarget
         this.wireBall.style.zIndex = MAX_INT32;
         this.wireBall.style.left   = '1px';
         this.wireBall.style.top    = 'calc(50% - 3px)';
+
 
         show(this.wireBall, isConnected); 
     }
@@ -12247,21 +12295,45 @@ class Output
         this.updateControl();
 
         
+
         this.control.addEventListener('pointerenter', e => 
         { 
             graphView.overOutput = this; 
             
             this.mouseOver = true;
             this.updateControl();
+
+            if (   graphView.tempConn
+                && graphView.tempConn.input)
+            {
+                const rect = boundingRect(this.control);
+
+                graphView.tempConn.wire.outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
         });
+
+
 
         this.control.addEventListener('pointerleave', e => 
         { 
-            graphView.overOutput = null; 
-
-            this.mouseOver = false;
-            this.updateControl();
+            this.endConnection();
         });
+    }
+
+
+
+    endConnection()
+    {
+        graphView.overOutput = null; 
+
+        this.mouseOver = false;
+        this.updateControl();
+
+        if (   graphView.tempConn
+            && graphView.tempConn.input)
+            graphView.tempConn.wire.outputPos = point_NaN;
     }
 
 
@@ -12273,7 +12345,7 @@ class Output
             && (   !graphView.tempConn
                 || !graphView.tempConn.output);
 
-                const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 
@@ -12288,11 +12360,15 @@ class Output
 
         this.wireBall.style.zIndex = MAX_INT32;
 
-        show(
-            this.wireBall,
+        
+        const isConnected =
                this.connectedInputs.length > 0
-            ||    graphView.tempConn
-               && graphView.tempConn.output == this);
+            ||     graphView.tempConn
+               && (   graphView.tempConn.output == this
+                   ||    this.mouseOver
+                      && !graphView.tempConn.output);
+
+        show(this.wireBall, isConnected);
     }
 }
 
@@ -12313,18 +12389,20 @@ class Connection
         this.input  = input;
 
 
-        this.wire                = createSvg('svg');
-        this.wire.style.position = 'absolute';
-        this.wire.style.left     = 0;
-        this.wire.style.top      = 0;
-        this.wire.style.width    = '100%';
-        this.wire.style.height   = '100vh';
-        this.wire.scale          = 1;
+        this.wire                      = createSvg('svg');
+        this.wire.style.position       = 'absolute';
+        this.wire.style.left           = 0;
+        this.wire.style.top            = 0;
+        this.wire.style.width          = '100%';
+        this.wire.style.height         = '100vh';
+        this.wire.scale                = 1;
 
+        this.wire.outputPos            = point_NaN;
+        this.wire. inputPos            = point_NaN;
 
-        this.wire.curve                  = createSvg('path');
-        this.wire.curve.style.fill       = 'none';
-        this.wire.curve.style.position   = 'absolute';
+        this.wire.curve                = createSvg('path');
+        this.wire.curve.style.fill     = 'none';
+        this.wire.curve.style.position = 'absolute';
 
         this.wire.appendChild(this.wire.curve);
 
@@ -12385,6 +12463,18 @@ class Connection
 
         this.wire.updateCurve = (x1, y1, x2, y2) =>
         {
+            if (!pointIsNaN(this.wire.outputPos))
+            {
+                x1 = this.wire.outputPos.x;
+                y1 = this.wire.outputPos.y;
+            }
+
+            if (!pointIsNaN(this.wire.inputPos))
+            {
+                x2 = this.wire.inputPos.x;
+                y2 = this.wire.inputPos.y;
+            }
+
             this.wire.curve.setAttribute('d',
                    'M ' +  (x1                ) + ',' + y1
                 + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
@@ -12405,9 +12495,13 @@ class Connection
 
         this.wire.updateStyle = (color) =>
         {
+            const l = rgb2hclokl(color)[2];
+            
+            const opacity = Math.round(Math.min((l-0.93) / 0.02, 1) * 9).toString(16).padStart(2, '0');
+
             this.wire.curve.style.filter = 
-                rgb2hclokl(color)[2] > 0.9
-                ? 'drop-shadow(1px 1px 0 #00000008)'
+                l > 0.9
+                ? 'drop-shadow(1px 1px 0 #000000' + opacity + ')'
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
@@ -12600,6 +12694,39 @@ class Operator
 
 
 
+    getAutoInput(dataType)
+    {
+        const inputs = this.inputs.filter(i => i.dataType == dataType);
+
+        
+        if (graphView.overInput)
+            return graphView.overInput;
+
+        if (graphView.tempConn.savedInput)
+            return graphView.tempConn.savedInput;
+        
+        else
+        {
+            if (this._variableInputs)
+                return lastOf(inputs);
+
+            else
+            {
+                for (const input of inputs)
+                {
+                    if (   !input.isConnected
+                        ||    graphView.tempConn 
+                           && graphView.tempConn.output)
+                        return input;
+                }
+            }
+
+            return null;
+        }
+    }
+
+
+
     addOutput(output)
     {
         output._op = this;
@@ -12609,18 +12736,14 @@ class Operator
 
 
 
-    // addOutput(output)
-    // {
-    //     if (this.output != null)
-    //     {
-    //         this.outputControls.removeChild(this.output.control);
-    //         this.output._op = null;
-    //     }
+    getAutoOutput(dataType)
+    {
+        const outputs = this.outputs.filter(o => o.dataType == dataType);
 
-    //     output._op = this;
-    //     this.output = output;
-    //     this.outputControls.appendChild(output.control);
-    // }
+        return outputs && outputs.length == 1
+               ? outputs[0]
+               : null;
+    }
 
 
 
@@ -13109,6 +13232,40 @@ function createNodeHeader(node)
 
 
 
+    node.header.addEventListener('pointerleave', e => 
+    { 
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.op != node)
+            {
+                const input = graphView.headerInput;
+                
+                graphView.overInput   = null;
+                graphView.headerInput = null;
+                
+                input.mouseOver = false;
+                input.updateControl();
+                
+                graphView.tempConn.wire.inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.op != node)
+            {
+                const output = graphView.overOutput;
+                
+                graphView.overOutput = null;
+                
+                output.mouseOver = false;
+                output.updateControl();
+                
+                graphView.tempConn.wire.outputPos = point_NaN;
+            }
+        }
+    });
+
+
+
     node.header.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)    
@@ -13163,6 +13320,11 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointermove', e =>
     {
+        console.log('header move');
+
+        const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
+
+        
         if (node.div.dragging)
         {
             setNodePositions(
@@ -13173,7 +13335,50 @@ function createNodeHeader(node)
             node.div.moved = true;
 
             graphView.updateScroll();
-        };
+        }
+        else if (   graphView.tempConn
+                 && (  !node._variableInputs
+                     || toTheRightOfInputs))
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.op != node)
+            {
+                const input = node.getAutoInput(graphView.tempConn.output.dataType);
+                if (!input) return;
+
+
+                graphView.overInput   = input;
+                graphView.headerInput = input;
+                    
+                input.mouseOver = true;
+                input.updateControl();
+
+
+                const rect = boundingRect(input.control);
+
+                graphView.tempConn.wire.inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.op != node)
+            {
+                const output = node.getAutoOutput(graphView.tempConn.input.dataType);
+                if (!output) return;
+
+                graphView.overOutput = output;
+                    
+                output.mouseOver = true;
+                output.updateControl();
+
+
+                const rect = boundingRect(output.control);
+
+                graphView.tempConn.wire.outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
+        }
     });
 
 
@@ -13210,6 +13415,21 @@ function createNodeHeader(node)
 
             node.div.dragging = false;
             node.header.releasePointerCapture(e.pointerId);
+        }
+        else if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.op != node)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overInput.endConnection();
+            }
+            else if (graphView.tempConn.output
+                  && graphView.tempConn.output.op != node)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overInput.endConnection();
+            }
         }
 
 
@@ -17532,16 +17752,6 @@ function loadGraph(json)
 
 
     loadNodesAsync(data, setLoadingProgress);
-
-
-    // const nodes = loadNodes(data);
-
-    // graph.addNodes(nodes, false);
-
-    // loadConnections(data, false, setLoadingProgress);
-    
-    // graphView.canUpdateNodes = true;
-    // updateTerminalsAfterNodes(nodes);
 }
 
 
@@ -17549,9 +17759,6 @@ function loadGraph(json)
 function setLoadingProgress(progress)
 {
     loadingProgress.style.width = (progress * 100) + '%';
-
-    // loadingBar.style.display = 'none';
-    // loadingBar.style.display = 'block';
 }
 
 
@@ -17565,7 +17772,7 @@ function loadNodesAsync(data, setProgress)
     let promise = Promise.resolve([]);
 
 
-    const chunkSize = 4; // nodes
+    const chunkSize = 8; // nodes
     for (let i = 0; i < data.nodes.length; i += chunkSize)
     {
         promise = promise.then(nodes => 
@@ -17596,7 +17803,7 @@ function loadConnectionsAsync(data, nodes, setProgress)
     let promise = Promise.resolve([]);
 
 
-    const chunkSize = 4; // nodes
+    const chunkSize = 8; // connections
     for (let i = 0; i < data.connections.length; i += chunkSize)
     {
         promise = promise.then(() => 

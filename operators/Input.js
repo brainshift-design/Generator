@@ -93,18 +93,45 @@ extends EventTarget
         {
             graphView.overInput = this;
 
+            if (graphView.headerInput)
+            {
+                graphView.headerInput.updateControl();
+                graphView.headerInput = null;
+            }
+
             this.mouseOver = true;
             this.updateControl();
+
+            if (   graphView.tempConn
+                && graphView.tempConn.output)
+            {
+                const rect = boundingRect(this.control);
+
+                graphView.tempConn.wire.inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
         });
 
 
         this.control.addEventListener('pointerleave', e => 
         {
-            graphView.overInput = null;
-
-            this.mouseOver = false;
-            this.updateControl();
+            this.endConnection();
         });
+    }
+
+
+
+    endConnection()
+    {
+        graphView.overInput = null;
+
+        this.mouseOver = false;
+        this.updateControl();
+
+        if (   graphView.tempConn
+            && graphView.tempConn.output)
+            graphView.tempConn.wire.inputPos = point_NaN;
     }
 
 
@@ -118,19 +145,19 @@ extends EventTarget
 
     updateControl()
     {
-        const isConnected =
-               this.isConnected
-            ||     graphView.tempConn
-               && (   graphView.tempConn.input == this
-                   ||    this.mouseOver
-                      && !graphView.tempConn.input);
-
         const mouseOver =
                this.mouseOver
             && (   !graphView.tempConn
                 || !graphView.tempConn.input);
 
         const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
+
+        const isConnected =
+               this.isConnected
+            ||     graphView.tempConn
+               && (   graphView.tempConn.input == this
+                   ||    this.mouseOver
+                      && !graphView.tempConn.input);
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -143,6 +170,7 @@ extends EventTarget
 
         this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
 
+        
         this.wireBall.style.backgroundColor = 
             this.isConnected
             ? (    graphView.tempConn
@@ -163,6 +191,7 @@ extends EventTarget
         this.wireBall.style.zIndex = MAX_INT32;
         this.wireBall.style.left   = '1px';
         this.wireBall.style.top    = 'calc(50% - 3px)';
+
 
         show(this.wireBall, isConnected); 
     }

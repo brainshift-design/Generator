@@ -60,21 +60,45 @@ class Output
         this.updateControl();
 
         
+
         this.control.addEventListener('pointerenter', e => 
         { 
             graphView.overOutput = this; 
             
             this.mouseOver = true;
             this.updateControl();
+
+            if (   graphView.tempConn
+                && graphView.tempConn.input)
+            {
+                const rect = boundingRect(this.control);
+
+                graphView.tempConn.wire.outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
         });
+
+
 
         this.control.addEventListener('pointerleave', e => 
         { 
-            graphView.overOutput = null; 
-
-            this.mouseOver = false;
-            this.updateControl();
+            this.endConnection();
         });
+    }
+
+
+
+    endConnection()
+    {
+        graphView.overOutput = null; 
+
+        this.mouseOver = false;
+        this.updateControl();
+
+        if (   graphView.tempConn
+            && graphView.tempConn.input)
+            graphView.tempConn.wire.outputPos = point_NaN;
     }
 
 
@@ -86,7 +110,7 @@ class Output
             && (   !graphView.tempConn
                 || !graphView.tempConn.output);
 
-                const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 
@@ -101,10 +125,14 @@ class Output
 
         this.wireBall.style.zIndex = MAX_INT32;
 
-        show(
-            this.wireBall,
+        
+        const isConnected =
                this.connectedInputs.length > 0
-            ||    graphView.tempConn
-               && graphView.tempConn.output == this);
+            ||     graphView.tempConn
+               && (   graphView.tempConn.output == this
+                   ||    this.mouseOver
+                      && !graphView.tempConn.output);
+
+        show(this.wireBall, isConnected);
     }
 }

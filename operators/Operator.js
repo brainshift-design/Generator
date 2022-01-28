@@ -125,6 +125,39 @@ class Operator
 
 
 
+    getAutoInput(dataType)
+    {
+        const inputs = this.inputs.filter(i => i.dataType == dataType);
+
+        
+        if (graphView.overInput)
+            return graphView.overInput;
+
+        if (graphView.tempConn.savedInput)
+            return graphView.tempConn.savedInput;
+        
+        else
+        {
+            if (this._variableInputs)
+                return lastOf(inputs);
+
+            else
+            {
+                for (const input of inputs)
+                {
+                    if (   !input.isConnected
+                        ||    graphView.tempConn 
+                           && graphView.tempConn.output)
+                        return input;
+                }
+            }
+
+            return null;
+        }
+    }
+
+
+
     addOutput(output)
     {
         output._op = this;
@@ -134,18 +167,14 @@ class Operator
 
 
 
-    // addOutput(output)
-    // {
-    //     if (this.output != null)
-    //     {
-    //         this.outputControls.removeChild(this.output.control);
-    //         this.output._op = null;
-    //     }
+    getAutoOutput(dataType)
+    {
+        const outputs = this.outputs.filter(o => o.dataType == dataType);
 
-    //     output._op = this;
-    //     this.output = output;
-    //     this.outputControls.appendChild(output.control);
-    // }
+        return outputs && outputs.length == 1
+               ? outputs[0]
+               : null;
+    }
 
 
 

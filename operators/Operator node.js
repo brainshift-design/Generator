@@ -54,6 +54,40 @@ function createNodeHeader(node)
 
 
 
+    node.header.addEventListener('pointerleave', e => 
+    { 
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.op != node)
+            {
+                const input = graphView.headerInput;
+                
+                graphView.overInput   = null;
+                graphView.headerInput = null;
+                
+                input.mouseOver = false;
+                input.updateControl();
+                
+                graphView.tempConn.wire.inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.op != node)
+            {
+                const output = graphView.overOutput;
+                
+                graphView.overOutput = null;
+                
+                output.mouseOver = false;
+                output.updateControl();
+                
+                graphView.tempConn.wire.outputPos = point_NaN;
+            }
+        }
+    });
+
+
+
     node.header.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)    
@@ -108,6 +142,11 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointermove', e =>
     {
+        console.log('header move');
+
+        const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
+
+        
         if (node.div.dragging)
         {
             setNodePositions(
@@ -118,7 +157,50 @@ function createNodeHeader(node)
             node.div.moved = true;
 
             graphView.updateScroll();
-        };
+        }
+        else if (   graphView.tempConn
+                 && (  !node._variableInputs
+                     || toTheRightOfInputs))
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.op != node)
+            {
+                const input = node.getAutoInput(graphView.tempConn.output.dataType);
+                if (!input) return;
+
+
+                graphView.overInput   = input;
+                graphView.headerInput = input;
+                    
+                input.mouseOver = true;
+                input.updateControl();
+
+
+                const rect = boundingRect(input.control);
+
+                graphView.tempConn.wire.inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.op != node)
+            {
+                const output = node.getAutoOutput(graphView.tempConn.input.dataType);
+                if (!output) return;
+
+                graphView.overOutput = output;
+                    
+                output.mouseOver = true;
+                output.updateControl();
+
+
+                const rect = boundingRect(output.control);
+
+                graphView.tempConn.wire.outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
+        }
     });
 
 
@@ -155,6 +237,21 @@ function createNodeHeader(node)
 
             node.div.dragging = false;
             node.header.releasePointerCapture(e.pointerId);
+        }
+        else if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.op != node)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overInput.endConnection();
+            }
+            else if (graphView.tempConn.output
+                  && graphView.tempConn.output.op != node)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overInput.endConnection();
+            }
         }
 
 

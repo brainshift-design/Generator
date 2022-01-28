@@ -29,16 +29,6 @@ function loadGraph(json)
 
 
     loadNodesAsync(data, setLoadingProgress);
-
-
-    // const nodes = loadNodes(data);
-
-    // graph.addNodes(nodes, false);
-
-    // loadConnections(data, false, setLoadingProgress);
-    
-    // graphView.canUpdateNodes = true;
-    // updateTerminalsAfterNodes(nodes);
 }
 
 
@@ -46,9 +36,6 @@ function loadGraph(json)
 function setLoadingProgress(progress)
 {
     loadingProgress.style.width = (progress * 100) + '%';
-
-    // loadingBar.style.display = 'none';
-    // loadingBar.style.display = 'block';
 }
 
 
@@ -62,7 +49,7 @@ function loadNodesAsync(data, setProgress)
     let promise = Promise.resolve([]);
 
 
-    const chunkSize = 4; // nodes
+    const chunkSize = 8; // nodes
     for (let i = 0; i < data.nodes.length; i += chunkSize)
     {
         promise = promise.then(nodes => 
@@ -93,7 +80,7 @@ function loadConnectionsAsync(data, nodes, setProgress)
     let promise = Promise.resolve([]);
 
 
-    const chunkSize = 4; // nodes
+    const chunkSize = 8; // connections
     for (let i = 0; i < data.connections.length; i += chunkSize)
     {
         promise = promise.then(() => 

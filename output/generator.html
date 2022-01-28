@@ -232,6 +232,14 @@ const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
+const point_NaN = {x: Number.NaN, y: Number.NaN};
+
+
+function point(x, y) { return {x: x, y: y}; }
+
+function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 

@@ -14,18 +14,20 @@ class Connection
         this.input  = input;
 
 
-        this.wire                = createSvg('svg');
-        this.wire.style.position = 'absolute';
-        this.wire.style.left     = 0;
-        this.wire.style.top      = 0;
-        this.wire.style.width    = '100%';
-        this.wire.style.height   = '100vh';
-        this.wire.scale          = 1;
+        this.wire                      = createSvg('svg');
+        this.wire.style.position       = 'absolute';
+        this.wire.style.left           = 0;
+        this.wire.style.top            = 0;
+        this.wire.style.width          = '100%';
+        this.wire.style.height         = '100vh';
+        this.wire.scale                = 1;
 
+        this.wire.outputPos            = point_NaN;
+        this.wire. inputPos            = point_NaN;
 
-        this.wire.curve                  = createSvg('path');
-        this.wire.curve.style.fill       = 'none';
-        this.wire.curve.style.position   = 'absolute';
+        this.wire.curve                = createSvg('path');
+        this.wire.curve.style.fill     = 'none';
+        this.wire.curve.style.position = 'absolute';
 
         this.wire.appendChild(this.wire.curve);
 
@@ -86,6 +88,18 @@ class Connection
 
         this.wire.updateCurve = (x1, y1, x2, y2) =>
         {
+            if (!pointIsNaN(this.wire.outputPos))
+            {
+                x1 = this.wire.outputPos.x;
+                y1 = this.wire.outputPos.y;
+            }
+
+            if (!pointIsNaN(this.wire.inputPos))
+            {
+                x2 = this.wire.inputPos.x;
+                y2 = this.wire.inputPos.y;
+            }
+
             this.wire.curve.setAttribute('d',
                    'M ' +  (x1                ) + ',' + y1
                 + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
@@ -106,9 +120,13 @@ class Connection
 
         this.wire.updateStyle = (color) =>
         {
+            const l = rgb2hclokl(color)[2];
+            
+            const opacity = Math.round(Math.min((l-0.93) / 0.02, 1) * 9).toString(16).padStart(2, '0');
+
             this.wire.curve.style.filter = 
-                rgb2hclokl(color)[2] > 0.9
-                ? 'drop-shadow(1px 1px 0 #00000008)'
+                l > 0.9
+                ? 'drop-shadow(1px 1px 0 #000000' + opacity + ')'
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
