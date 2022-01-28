@@ -7,8 +7,8 @@
 ../graph/Graph.js
 ../graph/tree.js
 
-//../operators/*.js
-//../operators/math/*.js
+
+// these have to be added in order because of dependencies
 
 ../operators/Input.js
 ../operators/Output.js
@@ -32,7 +32,7 @@
 ../operators/color/OpColor convert.js
 ../operators/color/OpWebContrast.js
 
-//../operators/OpRect.js
-//../operators/OpRow.js
-//../operators/OpColumn.js
-//../operators/UOpSpread.js
+../operators/geometry/OpRectangle.js
+//../operators/geometry/OpRow.js
+//../operators/geometry/OpColumn.js
+//../operators/geometry/UOpSpread.js

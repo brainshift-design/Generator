@@ -983,8 +983,11 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateMultiply'    onclick='actionManager.do(new CreateNodeAction("multiply"   )); this.blur();'>MUL</button>
     <button class='menuButton' id='btnCreateDivide'      onclick='actionManager.do(new CreateNodeAction("divide"     )); this.blur();'>DIV</button>
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class='menuButton' id='btnCreateRectangle'   onclick='actionManager.do(new CreateNodeAction("rectangle"  )); this.blur();'>RECT</button>
     
 </div>
     
@@ -11669,7 +11672,7 @@ class Graph
             case 'color':       node = new OpColor();       break;
             case 'webcontrast': node = new OpWebContrast(); break;
             
-            // case 'rect':   node = new OpRect();   break;
+            case 'rectangle':   node = new OpRectangle();   break;
             // case 'row':    node = new OpRow();    break;
             // case 'column': node = new OpColumn(); break;
             //case 'spread': node = new OpSpread(); break;
@@ -15798,6 +15801,81 @@ extends Operator
 }
 
 
+class   OpRectangle
+extends Operator
+{
+    #x;
+    #y;
+    #width;
+    #height;
+    #angle;
+    #round;
+    //#color;
+
+
+
+    constructor()
+    {
+        super('rectangle', 'rect', 'object');
+
+        this.addOutput(new Output(this.dataType));
+
+        this.addParam(this.#x      = new NumberParam('x',      true, true, true,   0));
+        this.addParam(this.#y      = new NumberParam('y',      true, true, true,   0));
+        this.addParam(this.#width  = new NumberParam('width',  true, true, true, 100, 0.01));
+        this.addParam(this.#height = new NumberParam('height', true, true, true, 100, 0.01));
+        this.addParam(this.#angle  = new NumberParam('angle',  true, true, true, 100, 0.01));
+        this.addParam(this.#round  = new NumberParam('round',  true, true, true,   0, 0));
+        //this.addParam(this.#color  = new ColorParam ('color',  true));
+        
+        this.#angle.control.suffix = '°';
+        
+        this.updateRound();
+    }
+    
+    
+    
+    updateRound()
+    {
+        const min = Math.min(this.#width.value, this.#height.value);
+        this.setRoundMinMax(0, min/2);
+    }
+
+    
+
+    setRoundMinMax(min, max)
+    {
+        const control = this.#round.control;
+
+        control.min   = min;
+        control.max   = max;
+        //control.value = Math.min(control.value, control.max);
+
+        this.#round.control.update();
+    }
+
+
+
+    // update()
+    // {
+    //     if (this.valid) return;
+
+    //     this.output._data = 
+    //     {
+    //         nodeId: this.id,
+    //         opType: this.opType,
+
+    //         x:      0,
+    //         y:      0,
+    //         width:  this.#width .value,
+    //         height: this.#height.value
+    //     };
+
+    //     super.update();
+    // }
+}
+
+
 class Action
 {
     manager;
@@ -16049,7 +16127,11 @@ extends Action
     redo()
     {
         uiCreateNode(this.opType, this.createdNodeId);
-        graph.nodes.find(n => n.id == this.createdNodeId).pushUpdate();
+
+        const node = graph.nodes.find(n => n.id == this.createdNodeId);
+
+        node.pushUpdate();
+        graphView.updateNodeTransform(node);
     }
 }
 

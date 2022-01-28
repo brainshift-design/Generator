@@ -22,7 +22,7 @@
     ../core/base32.js
     
     [../autojoin/controls.aj]
-    [../autojoin/graph.aj]
+    [../autojoin/operators.aj]
 
     ../actions/*.js
     ../ui/*.js

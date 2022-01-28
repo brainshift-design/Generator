@@ -41,6 +41,10 @@ extends Action
     redo()
     {
         uiCreateNode(this.opType, this.createdNodeId);
-        graph.nodes.find(n => n.id == this.createdNodeId).pushUpdate();
+
+        const node = graph.nodes.find(n => n.id == this.createdNodeId);
+
+        node.pushUpdate();
+        graphView.updateNodeTransform(node);
     }
 }

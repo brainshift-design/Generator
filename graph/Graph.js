@@ -67,7 +67,7 @@ class Graph
             case 'color':       node = new OpColor();       break;
             case 'webcontrast': node = new OpWebContrast(); break;
             
-            // case 'rect':   node = new OpRect();   break;
+            case 'rectangle':   node = new OpRectangle();   break;
             // case 'row':    node = new OpRow();    break;
             // case 'column': node = new OpColumn(); break;
             //case 'spread': node = new OpSpread(); break;
