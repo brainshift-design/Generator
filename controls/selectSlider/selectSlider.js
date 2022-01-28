@@ -250,11 +250,15 @@ function initSelectSlider(param, slider, width, height, name, options, def)
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            slider.style.cursor = 
-                   slider.readOnly 
-                || containsChild(slider, slider.textbox) 
-                ? (slider.readOnly ? 'default' : 'text')
-                : 'ew-resize';
+            if (graphView.tempConn)
+                slider.style.cursor = 'default';
+            
+            else
+                slider.style.cursor = 
+                       slider.readOnly 
+                    || containsChild(slider, slider.textbox) 
+                    ? (slider.readOnly ? 'default' : 'text')
+                    : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
             slider.focus.style.visibility = 'visible';

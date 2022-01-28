@@ -145,9 +145,7 @@ class Operator
             {
                 for (const input of inputs)
                 {
-                    if (   !input.isConnected
-                        ||    graphView.tempConn 
-                           && graphView.tempConn.output)
+                    if (!input.isConnected)
                         return input;
                 }
             }
