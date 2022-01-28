@@ -90,8 +90,7 @@ extends Operator
 
     update()
     {
-        if (this.valid)
-            return false;
+        if (this.valid) return;
         
         //console.log(this.name + '.update()');
 

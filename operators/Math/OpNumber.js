@@ -22,8 +22,7 @@ extends Operator
 
     update()
     {
-        if (this.valid)
-            return false;
+        if (this.valid) return;
 
             
         if (this.inputs[0].isConnected)

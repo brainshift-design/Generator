@@ -430,8 +430,8 @@ class Operator
         //this.header.style.boxShadow       = 'none';
         //this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
         
-        if (this.dataType == 'object')
-            uiGenerateObjects([this.id]);
+        // if (this.dataType == 'object')
+        //     uiGenerateObjects([this.id]);
     }
         
     

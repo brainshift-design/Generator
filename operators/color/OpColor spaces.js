@@ -167,7 +167,6 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 
 function switchToTextbox(op)
 {
-    //console.log('switchToTextbox(' + op.name + ')');
     if (!op.inner.contains(op.hexbox))
     {
         removeOpColorParamWires(op);
@@ -228,7 +227,6 @@ function getNormalValue(value, space, chan)
 {
     switch (space)
     {
-        //case 'rgbhex':
         case 'rgb':    return getNormalValueRgb_(value, chan);
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
@@ -306,7 +304,6 @@ function getNormalColor_(space, c1, c2, c3)
 {
     switch (space)
     {
-        //case 'rgbhex':
         case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
@@ -365,7 +362,6 @@ function getDataColor(color)
 {
     switch (color[0])
     {
-        //case 'rgbhex':    
         case 'rgb':    return getDataColorRgb(color[1], color[2], color[3]);
         case 'hsv':   
         case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
@@ -419,13 +415,15 @@ function getDataColorHcl(c1, c2, c3)
 }
 
 
+
 function setDataColorToSpace(op, color, toSpace)
 {
-    op._color = convertDataColorToSpace(color, toSpace);
+    op._color    = convertDataColorToSpace(color, toSpace);
     op._oldSpace = op._color[0];
 
     switchToSpace(op, toSpace);
-    op.setColorParams(op._color, false);
+
+    op.setColorParams(op._color);//, false);
 }
 
 
@@ -438,7 +436,8 @@ function setDataColorToCurrentSpace(op, color)
     //op._oldSpace = op._color[0];
 
     switchToSpace(op, toSpace);
-    op.setColorParams(op._color, false);
+
+    op.setColorParams(op._color);//, false);
 }
 
 
@@ -457,7 +456,6 @@ function getColorSpaceFactor(space)
 {
     switch (space)
     {
-        //case 'rgbhex':    
         case 'rgb':    return rgbFactor;
         case 'hsv':   
         case 'hsl':    return hs_Factor;
@@ -476,7 +474,6 @@ function getColorSpaceScale(space)
 {
     switch (space)
     {
-        //case 'rgbhex':    
         case 'rgb':    return rgbScale;
         case 'hsv':   
         case 'hsl':    return hs_Scale;

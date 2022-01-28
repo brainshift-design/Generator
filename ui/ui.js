@@ -5,7 +5,7 @@ function uiEndLoadState(msg)
 
     uiGetPluginData('graph');
 
-    //setInterval(autoSave, 2000);
+    setInterval(autoSave, 2000);
 
 
     // initMenuSelect(menuSelect);

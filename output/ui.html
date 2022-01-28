@@ -514,6 +514,12 @@ input[type=text]::selection
 }
 
 
+.nodeLabelTextbox::selection
+{
+    background-color: white;
+}
+
+
 .inputControls
 {
     width:          12px;
@@ -11603,6 +11609,26 @@ function dataFromDataColor(color)
 }
 
 
+
+function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, opType)
+{
+    return {
+        type: 'object',
+
+        //nodeId: nodeId,
+        //opType: opType,
+
+        x:      x,
+        y:      y,
+        width:  width,
+        height: height,
+        angle:  angle,
+        round:  round
+        //color: color
+    };
+}
+
+
 class Graph
 {
     nodes        = [];
@@ -13052,8 +13078,8 @@ class Operator
         //this.header.style.boxShadow       = 'none';
         //this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
         
-        if (this.dataType == 'object')
-            uiGenerateObjects([this.id]);
+        // if (this.dataType == 'object')
+        //     uiGenerateObjects([this.id]);
     }
         
     
@@ -13723,8 +13749,7 @@ extends Operator
 
     update()
     {
-        if (this.valid)
-            return false;
+        if (this.valid) return;
 
             
         if (this.inputs[0].isConnected)
@@ -13913,8 +13938,7 @@ extends Operator
 
     update()
     {
-        if (this.valid)
-            return false;
+        if (this.valid) return;
         
         //console.log(this.name + '.update()');
 
@@ -14216,11 +14240,17 @@ extends Operator
         {
             this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
             
-            enableSliderText(this.param1.control, false);
-            enableSliderText(this.param2.control, false);
-            enableSliderText(this.param3.control, false);
+            for (let i = 1; i < this.params.length; i++)
+                enableSliderText(this.params[i].control, false);
         });
     
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            for (let i = 1; i < this.params.length; i++)
+                if (!this.params[i].input.isConnected) 
+                    enableSliderText(this.params[i].control, true);
+        });
+
         
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0])));
@@ -14236,16 +14266,8 @@ extends Operator
         initHexbox(this);
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
-            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
-            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
-        });
-
-        this.inputs[2].addEventListener('disconnect', () => { enableSliderText(this.param1.control, !this.inputs[0].isConnected); });
-        this.inputs[3].addEventListener('disconnect', () => { enableSliderText(this.param2.control, !this.inputs[0].isConnected); });
-        this.inputs[4].addEventListener('disconnect', () => { enableSliderText(this.param3.control, !this.inputs[0].isConnected); });
+        for (let i = 1; i < this.params.length; i++)
+            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].isConnected); });
 
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
@@ -14274,13 +14296,13 @@ extends Operator
     
     
     
-    setColorParams(color, dispatchEvents)
+    setColorParams(color)//, dispatchEvents)
     {
         const col = getDataColor(color);
 
-        this.param1.setValue(col[0], false, true, dispatchEvents);
-        this.param2.setValue(col[1], false, true, dispatchEvents);
-        this.param3.setValue(col[2], false, true, dispatchEvents);
+        this.param1.setValue(col[0], false, true, false);//dispatchEvents);
+        this.param2.setValue(col[1], false, true, false);//dispatchEvents);
+        this.param3.setValue(col[2], false, true, false);//dispatchEvents);
     }
 
 
@@ -14304,8 +14326,7 @@ extends Operator
 
     update()
     {
-        if (this.valid)
-            return false;
+        if (this.valid) return;
         
             
         this.updateParams(true);
@@ -14828,7 +14849,6 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 
 function switchToTextbox(op)
 {
-    //console.log('switchToTextbox(' + op.name + ')');
     if (!op.inner.contains(op.hexbox))
     {
         removeOpColorParamWires(op);
@@ -14889,7 +14909,6 @@ function getNormalValue(value, space, chan)
 {
     switch (space)
     {
-        //case 'rgbhex':
         case 'rgb':    return getNormalValueRgb_(value, chan);
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
@@ -14967,7 +14986,6 @@ function getNormalColor_(space, c1, c2, c3)
 {
     switch (space)
     {
-        //case 'rgbhex':
         case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
@@ -15026,7 +15044,6 @@ function getDataColor(color)
 {
     switch (color[0])
     {
-        //case 'rgbhex':    
         case 'rgb':    return getDataColorRgb(color[1], color[2], color[3]);
         case 'hsv':   
         case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
@@ -15080,13 +15097,15 @@ function getDataColorHcl(c1, c2, c3)
 }
 
 
+
 function setDataColorToSpace(op, color, toSpace)
 {
-    op._color = convertDataColorToSpace(color, toSpace);
+    op._color    = convertDataColorToSpace(color, toSpace);
     op._oldSpace = op._color[0];
 
     switchToSpace(op, toSpace);
-    op.setColorParams(op._color, false);
+
+    op.setColorParams(op._color);//, false);
 }
 
 
@@ -15099,7 +15118,8 @@ function setDataColorToCurrentSpace(op, color)
     //op._oldSpace = op._color[0];
 
     switchToSpace(op, toSpace);
-    op.setColorParams(op._color, false);
+
+    op.setColorParams(op._color);//, false);
 }
 
 
@@ -15118,7 +15138,6 @@ function getColorSpaceFactor(space)
 {
     switch (space)
     {
-        //case 'rgbhex':    
         case 'rgb':    return rgbFactor;
         case 'hsv':   
         case 'hsl':    return hs_Factor;
@@ -15137,7 +15156,6 @@ function getColorSpaceScale(space)
 {
     switch (space)
     {
-        //case 'rgbhex':    
         case 'rgb':    return rgbScale;
         case 'hsv':   
         case 'hsl':    return hs_Scale;
@@ -15646,8 +15664,7 @@ extends Operator
 
     update()
     {
-        if (this.valid)
-            return false;
+        if (this.valid) return;
 
 
         if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
@@ -15818,19 +15835,34 @@ extends Operator
     {
         super('rectangle', 'rect', 'object');
 
+        this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#x      = new NumberParam('x',      true, true, true,   0));
-        this.addParam(this.#y      = new NumberParam('y',      true, true, true,   0));
-        this.addParam(this.#width  = new NumberParam('width',  true, true, true, 100, 0.01));
-        this.addParam(this.#height = new NumberParam('height', true, true, true, 100, 0.01));
-        this.addParam(this.#angle  = new NumberParam('angle',  true, true, true, 100, 0.01));
-        this.addParam(this.#round  = new NumberParam('round',  true, true, true,   0, 0));
+        this.addParam(this.#x      = new NumberParam('x',      true, true, true,         0));
+        this.addParam(this.#y      = new NumberParam('y',      true, true, true,         0));
+        this.addParam(this.#width  = new NumberParam('width',  true, true, true, 100,    0.01));
+        this.addParam(this.#height = new NumberParam('height', true, true, true, 100,    0.01));
+        this.addParam(this.#angle  = new NumberParam('angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.#round  = new NumberParam('round',  true, true, true,   0,    0));
         //this.addParam(this.#color  = new ColorParam ('color',  true));
         
         this.#angle.control.suffix = '°';
         
         this.updateRound();
+
+
+        this.inputs[0].addEventListener('connect', () =>
+        {
+            for (const param of this.params)
+                enableSliderText(param.control, false);
+        });
+
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            for (const param of this.params)
+                if (!param.input.isConnected) 
+                    enableSliderText(param.control, true);
+        });
     }
     
     
@@ -15856,23 +15888,110 @@ extends Operator
 
 
 
-    // update()
+    update()
+    {
+        if (this.valid) return;
+
+
+        this.updateParams(true);
+
+
+        if (this.inputs[0].isConnected) 
+        {
+            const data = this.inputs[0].data;
+
+            this.#x     .setValue(this.#x     .input.isConnected ? this.#x     .input.data.value : data.x,      false, true, false);
+            this.#y     .setValue(this.#y     .input.isConnected ? this.#y     .input.data.value : data.y,      false, true, false);
+            this.#width .setValue(this.#width .input.isConnected ? this.#width .input.data.value : data.width,  false, true, false);
+            this.#height.setValue(this.#height.input.isConnected ? this.#height.input.data.value : data.height, false, true, false);
+            this.#angle .setValue(this.#angle .input.isConnected ? this.#angle .input.data.value : data.angle,  false, true, false);
+            this.#round .setValue(this.#round .input.isConnected ? this.#round .input.data.value : data.round,  false, true, false);
+        }
+
+    
+        this.outputs[0]._data = dataFromRectangle(
+            this.#x     .value,
+            this.#y     .value,
+            this.#width .value,
+            this.#height.value,
+            this.#angle .value,
+            this.#round .value);
+
+
+        super.update()
+    }
+
+
+
+    updateNode()
+    {
+        // for (const param of this.params)
+        //     this.updateSlider(param.control, !isNaN(param.value));
+
+
+        super.updateNode();
+    }
+
+
+
+    // updateSlider(slider, isValid)
     // {
-    //     if (this.valid) return;
+    //     slider.valueText = 
+    //            this.inputs[0].isConnected 
+    //         && !isValid 
+    //         ? '?' 
+    //         : '';
 
-    //     this.output._data = 
-    //     {
-    //         nodeId: this.id,
-    //         opType: this.opType,
+    //     slider.textbox.style.fontStyle = 
+    //            this.inputs[0].isConnected 
+    //         || slider.param.input.isConnected 
+    //         ? 'italic' 
+    //         : 'normal';
 
-    //         x:      0,
-    //         y:      0,
-    //         width:  this.#width .value,
-    //         height: this.#height.value
-    //     };
-
-    //     super.update();
+    //     slider.update();
     // }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'x':
+                    this.#x.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#x.setDecimalsFrom(_param[1]);
+                    break;
+
+                case 'y':
+                    this.#y.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#y.setDecimalsFrom(_param[1]);
+                    break;
+
+                case 'width':
+                    this.#width.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#width.setDecimalsFrom(_param[1]);
+                    break;
+
+                case 'height':
+                    this.#height.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#height.setDecimalsFrom(_param[1]);
+                    break;
+
+                case 'angle':
+                    this.#angle.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#angle.setDecimalsFrom(_param[1]);
+                    break;
+
+                case 'round':
+                    this.#round.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#round.setDecimalsFrom(_param[1]);
+                    break;
+
+            }
+        }
+    }
 }
 
 
@@ -17750,7 +17869,7 @@ function uiEndLoadState(msg)
 
     uiGetPluginData('graph');
 
-    //setInterval(autoSave, 2000);
+    setInterval(autoSave, 2000);
 
 
     // initMenuSelect(menuSelect);

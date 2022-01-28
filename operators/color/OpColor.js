@@ -53,11 +53,17 @@ extends Operator
         {
             this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
             
-            enableSliderText(this.param1.control, false);
-            enableSliderText(this.param2.control, false);
-            enableSliderText(this.param3.control, false);
+            for (let i = 1; i < this.params.length; i++)
+                enableSliderText(this.params[i].control, false);
         });
     
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            for (let i = 1; i < this.params.length; i++)
+                if (!this.params[i].input.isConnected) 
+                    enableSliderText(this.params[i].control, true);
+        });
+
         
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0])));
@@ -73,16 +79,8 @@ extends Operator
         initHexbox(this);
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            if (!this.param1.input.isConnected) enableSliderText(this.param1.control, true);
-            if (!this.param2.input.isConnected) enableSliderText(this.param2.control, true);
-            if (!this.param3.input.isConnected) enableSliderText(this.param3.control, true);
-        });
-
-        this.inputs[2].addEventListener('disconnect', () => { enableSliderText(this.param1.control, !this.inputs[0].isConnected); });
-        this.inputs[3].addEventListener('disconnect', () => { enableSliderText(this.param2.control, !this.inputs[0].isConnected); });
-        this.inputs[4].addEventListener('disconnect', () => { enableSliderText(this.param3.control, !this.inputs[0].isConnected); });
+        for (let i = 1; i < this.params.length; i++)
+            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].isConnected); });
 
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
@@ -111,13 +109,13 @@ extends Operator
     
     
     
-    setColorParams(color, dispatchEvents)
+    setColorParams(color)//, dispatchEvents)
     {
         const col = getDataColor(color);
 
-        this.param1.setValue(col[0], false, true, dispatchEvents);
-        this.param2.setValue(col[1], false, true, dispatchEvents);
-        this.param3.setValue(col[2], false, true, dispatchEvents);
+        this.param1.setValue(col[0], false, true, false);//dispatchEvents);
+        this.param2.setValue(col[1], false, true, false);//dispatchEvents);
+        this.param3.setValue(col[2], false, true, false);//dispatchEvents);
     }
 
 
@@ -141,8 +139,7 @@ extends Operator
 
     update()
     {
-        if (this.valid)
-            return false;
+        if (this.valid) return;
         
             
         this.updateParams(true);

@@ -164,6 +164,12 @@
 }
 
 
+.nodeLabelTextbox::selection
+{
+    background-color: white;
+}
+
+
 .inputControls
 {
     width:          12px;

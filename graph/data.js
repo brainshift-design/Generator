@@ -39,3 +39,23 @@ function dataFromDataColor(color)
         color: color
     };
 }
+
+
+
+function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, opType)
+{
+    return {
+        type: 'object',
+
+        //nodeId: nodeId,
+        //opType: opType,
+
+        x:      x,
+        y:      y,
+        width:  width,
+        height: height,
+        angle:  angle,
+        round:  round
+        //color: color
+    };
+}
