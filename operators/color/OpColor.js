@@ -201,11 +201,16 @@ extends Operator
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
  
         const colText      = darkText 
-                             ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4] 
+                             ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4 ] 
                              : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
         
-        const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-        const colSpaceVal  = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
+        const colWarning   = darkText 
+                             ? [0, 0, 0, 0.12] 
+                             : [1, 1, 1, 0.2];
+
+        const colSpaceVal  = darkText 
+                             ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
+                             : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
  
         const textStyle    = colorStyleRgba(colText);
         const warningStyle = colorStyleRgba(colWarning);

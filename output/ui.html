@@ -6065,7 +6065,7 @@ const invCAT = inverse(CAT);
 
 
 
-function invalidRgb2valid(rgb)
+function invalid2validRgb(rgb)
 {
     return [
         Math.min(Math.max(0, rgb[0]), 1),
@@ -6371,6 +6371,16 @@ function rgb_a(rgb, a)
 function isDark(color, threshold = 0.71)
 {
     return rgb2hclokl(color)[2] > threshold;
+}
+
+
+
+function maxRgbDistance(col1, col2)
+{
+    return Math.max(Math.max(Math.max(
+        Math.abs(col2[0] - col1[0]),
+        Math.abs(col2[1] - col1[1])),
+        Math.abs(col2[2] - col1[2])));
 }
 
 
@@ -14502,11 +14512,16 @@ extends Operator
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
  
         const colText      = darkText 
-                             ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4] 
+                             ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4 ] 
                              : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
         
-        const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-        const colSpaceVal  = darkText ? [0, 0, 0, 0.06] : [1, 1, 1, 0.1];
+        const colWarning   = darkText 
+                             ? [0, 0, 0, 0.12] 
+                             : [1, 1, 1, 0.2];
+
+        const colSpaceVal  = darkText 
+                             ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
+                             : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
  
         const textStyle    = colorStyleRgba(colText);
         const warningStyle = colorStyleRgba(colWarning);
@@ -15863,8 +15878,11 @@ extends Operator
                 || !isValidRgb(rgb1))
             {
                 const colWarning = 
-                    !isValidRgb(rgb0)
-                    ? rgb_a(invalidRgb2valid(rgb0), 0.25)
+                      !isValidRgb(rgb0)
+                    && maxRgbDistance(
+                        rgb2hclokl(invalid2validRgb(rgb0)), 
+                        rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
+                    ? rgb_a(invalid2validRgb(rgb0), 0.25)
                     : (isDark(colBack)
                        ? [0, 0, 0, 0.12] 
                        : [1, 1, 1, 0.2]);

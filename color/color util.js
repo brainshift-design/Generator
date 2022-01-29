@@ -92,3 +92,13 @@ function isDark(color, threshold = 0.71)
 {
     return rgb2hclokl(color)[2] > threshold;
 }
+
+
+
+function maxRgbDistance(col1, col2)
+{
+    return Math.max(Math.max(Math.max(
+        Math.abs(col2[0] - col1[0]),
+        Math.abs(col2[1] - col1[1])),
+        Math.abs(col2[2] - col1[2])));
+}

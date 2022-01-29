@@ -135,8 +135,11 @@ extends Operator
                 || !isValidRgb(rgb1))
             {
                 const colWarning = 
-                    !isValidRgb(rgb0)
-                    ? rgb_a(invalidRgb2valid(rgb0), 0.25)
+                      !isValidRgb(rgb0)
+                    && maxRgbDistance(
+                        rgb2hclokl(invalid2validRgb(rgb0)), 
+                        rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
+                    ? rgb_a(invalid2validRgb(rgb0), 0.25)
                     : (isDark(colBack)
                        ? [0, 0, 0, 0.12] 
                        : [1, 1, 1, 0.2]);

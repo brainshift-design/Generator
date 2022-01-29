@@ -15,7 +15,7 @@ const invCAT = inverse(CAT);
 
 
 
-function invalidRgb2valid(rgb)
+function invalid2validRgb(rgb)
 {
     return [
         Math.min(Math.max(0, rgb[0]), 1),
