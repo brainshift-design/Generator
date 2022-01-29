@@ -156,19 +156,13 @@ extends Operator
 
 
 
-    toJson(nTab = 0) 
+    toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
-        
-        let json = 
-              pos + '{\n'
-            + this.toJsonBase(nTab)
-            + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
-        
-        json += '\n' + pos + '}';
 
-        return json;
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
     }
 
 

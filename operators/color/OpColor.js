@@ -109,13 +109,13 @@ extends Operator
     
     
     
-    setColorParams(color)//, dispatchEvents)
+    setColorParams(color)
     {
         const col = getDataColor(color);
 
-        this.param1.setValue(col[0], false, true, false);//dispatchEvents);
-        this.param2.setValue(col[1], false, true, false);//dispatchEvents);
-        this.param3.setValue(col[2], false, true, false);//dispatchEvents);
+        this.param1.setValue(col[0], false, true, false);
+        this.param2.setValue(col[1], false, true, false);
+        this.param3.setValue(col[2], false, true, false);
     }
 
 

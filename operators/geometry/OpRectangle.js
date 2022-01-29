@@ -143,6 +143,26 @@ extends Operator
 
 
 
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        let json = super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"proportional": "' + (this.#btnProportional.enabled ? 'true' : 'false') + '"';
+
+        if (this.#btnProportional.enabled)
+        {
+            json +=
+                  ',\n' + pos + tab + '"propWidth": "'    + this.#oldWidth  + '"'
+                + ',\n' + pos + tab + '"propHeight": "'   + this.#oldHeight + '"';
+        }
+
+        return json;
+    }
+
+
+
     loadParams(_node)
     {
         for (const _param of _node.params)
@@ -179,6 +199,19 @@ extends Operator
                     this.#paramRound.setDecimalsFrom(_param[1]);
                     break;
 
+            }
+        }
+
+
+        if (_node.proportional)
+        {
+            this.#btnProportional.enabled = _node.proportional == 'true';
+            this.#btnProportional.updateBackground(false);
+
+            if (this.#btnProportional.enabled)
+            {
+                this.#oldWidth  = parseFloat(_node.propWidth);
+                this.#oldHeight = parseFloat(_node.propHeight);
             }
         }
     }

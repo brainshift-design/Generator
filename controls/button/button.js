@@ -9,20 +9,18 @@ function createToggleButton(width, height)
 
         btn.setPointerCapture(e.pointerId);
         btn.enabled = !btn.enabled;
-        btn.updateBackground();
-        btn.style.backgroundColor = btn.enabled ? '#e6e6e6' : 'transparent';
+        btn.updateBackground(true);
     });
 
 
     btn.addEventListener('pointerup', e =>
     {
-        btn.updateBackground();
-        btn.style.backgroundColor = 'transparent';
         btn.releasePointerCapture(e.pointerId);
+        btn.updateBackground(false);
     });
 
 
-    btn.updateBackground = () =>
+    btn.updateBackground = (enabled) =>
     {
         btn.style.background = 
             btn.enabled 
@@ -31,6 +29,8 @@ function createToggleButton(width, height)
 
         btn.style.backgroundPosition = '50% 50%';
         btn.style.backgroundRepeat   = 'no-repeat';
+
+        btn.style.backgroundColor = btn.enabled && enabled ? '#e6e6e6' : 'transparent';
     };
 
 

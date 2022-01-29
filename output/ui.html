@@ -375,6 +375,7 @@ input[type=text]::selection
     width:      100%;
     height:     100%;
     background: #e5e5e5;
+    display:    none;
 }
 
 
@@ -7085,20 +7086,18 @@ function createToggleButton(width, height)
 
         btn.setPointerCapture(e.pointerId);
         btn.enabled = !btn.enabled;
-        btn.updateBackground();
-        btn.style.backgroundColor = btn.enabled ? '#e6e6e6' : 'transparent';
+        btn.updateBackground(true);
     });
 
 
     btn.addEventListener('pointerup', e =>
     {
-        btn.updateBackground();
-        btn.style.backgroundColor = 'transparent';
         btn.releasePointerCapture(e.pointerId);
+        btn.updateBackground(false);
     });
 
 
-    btn.updateBackground = () =>
+    btn.updateBackground = (enabled) =>
     {
         btn.style.background = 
             btn.enabled 
@@ -7107,6 +7106,8 @@ function createToggleButton(width, height)
 
         btn.style.backgroundPosition = '50% 50%';
         btn.style.backgroundRepeat   = 'no-repeat';
+
+        btn.style.backgroundColor = btn.enabled && enabled ? '#e6e6e6' : 'transparent';
     };
 
 
@@ -14078,19 +14079,13 @@ extends Operator
 
 
 
-    toJson(nTab = 0) 
+    toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
-        
-        let json = 
-              pos + '{\n'
-            + this.toJsonBase(nTab)
-            + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
-        
-        json += '\n' + pos + '}';
 
-        return json;
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
     }
 
 
@@ -14370,13 +14365,13 @@ extends Operator
     
     
     
-    setColorParams(color)//, dispatchEvents)
+    setColorParams(color)
     {
         const col = getDataColor(color);
 
-        this.param1.setValue(col[0], false, true, false);//dispatchEvents);
-        this.param2.setValue(col[1], false, true, false);//dispatchEvents);
-        this.param3.setValue(col[2], false, true, false);//dispatchEvents);
+        this.param1.setValue(col[0], false, true, false);
+        this.param2.setValue(col[1], false, true, false);
+        this.param3.setValue(col[2], false, true, false);
     }
 
 
@@ -16037,6 +16032,26 @@ extends Operator
 
 
 
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        let json = super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"proportional": "' + (this.#btnProportional.enabled ? 'true' : 'false') + '"';
+
+        if (this.#btnProportional.enabled)
+        {
+            json +=
+                  ',\n' + pos + tab + '"propWidth": "'    + this.#oldWidth  + '"'
+                + ',\n' + pos + tab + '"propHeight": "'   + this.#oldHeight + '"';
+        }
+
+        return json;
+    }
+
+
+
     loadParams(_node)
     {
         for (const _param of _node.params)
@@ -16073,6 +16088,19 @@ extends Operator
                     this.#paramRound.setDecimalsFrom(_param[1]);
                     break;
 
+            }
+        }
+
+
+        if (_node.proportional)
+        {
+            this.#btnProportional.enabled = _node.proportional == 'true';
+            this.#btnProportional.updateBackground(false);
+
+            if (this.#btnProportional.enabled)
+            {
+                this.#oldWidth  = parseFloat(_node.propWidth);
+                this.#oldHeight = parseFloat(_node.propHeight);
             }
         }
     }
@@ -17951,8 +17979,9 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
+    loadingOverlay.style.display = 'block';
     uiGetPluginData('graph');
-
+   
     setInterval(autoSave, 2000);
 
 
