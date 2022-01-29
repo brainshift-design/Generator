@@ -7,7 +7,7 @@ class Output
     _param = null; get param() { return this._param; }
     
     
-    color;
+    //color;
     wireColor;
 
     control;
@@ -54,8 +54,8 @@ class Output
         
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.1];
-        this.wireColor = rgbFromDataType(this._dataType, true);
+        //this.color     = [0, 0, 0, 0.1];
+        this.wireColor = dataType2rgb(this._dataType, true);
         
         this.updateControl();
 
@@ -120,7 +120,7 @@ class Output
                  && graphView.tempConn.input
                  && graphView.tempConn.input.dataType != this.dataType);
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.2 : 0.1));
+        const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 

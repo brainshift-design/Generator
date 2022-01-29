@@ -17,7 +17,7 @@ extends EventTarget
     _param = null; get param() { return this._param; }
 
     
-    color;
+    //color;
     wireColor;
 
     control;
@@ -82,8 +82,8 @@ extends EventTarget
 
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.2];
-        this.wireColor = rgbFromDataType(this.dataType, true);
+        //this.color     = [0, 0, 0, 0.2];
+        this.wireColor = dataType2rgb(this.dataType, true);
 
         
         this.control.addEventListener('pointerdown', e => e.preventDefault());
@@ -154,7 +154,7 @@ extends EventTarget
                  && graphView.tempConn.output
                  && graphView.tempConn.output.dataType != this.dataType);
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
+        const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
         const isConnected =
                this.isConnected

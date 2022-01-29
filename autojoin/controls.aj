@@ -1,3 +1,4 @@
+../controls/button/*.js
 ../controls/numberSlider/*.js
 ../controls/selectSlider/*.js
 ../controls/colorSlider/*.js

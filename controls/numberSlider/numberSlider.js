@@ -82,8 +82,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
     //
 
-    slider.onchange  = new Event('change');
-    slider.onconfirm = new Event('confirm');
+    slider.onstartchange = new Event('startchange');
+    slider.onchange      = new Event('change');
+    slider.onconfirm     = new Event('confirm');
 
 
 
@@ -195,6 +196,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 {
                     slider.moved = true;
                     slider.lockPointer();
+
+                    slider.dispatchEvent(slider.onstartchange);
                 }
             }
         }

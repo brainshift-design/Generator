@@ -1,14 +1,18 @@
 class   OpRectangle
 extends Operator
 {
-    #x;
-    #y;
-    #width;
-    #height;
-    #angle;
-    #round;
-    //#color;
+    #paramX;
+    #paramY;
+    #paramWidth;
+    #paramHeight;
+    #paramAngle;
+    #paramRound;
+    //#paramColor;
 
+    #btnProportional;
+
+    #oldWidth  = Number.NaN;
+    #oldHeight = Number.NaN;
 
 
     constructor()
@@ -18,17 +22,20 @@ extends Operator
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#x      = new NumberParam('x',      true, true, true,         0));
-        this.addParam(this.#y      = new NumberParam('y',      true, true, true,         0));
-        this.addParam(this.#width  = new NumberParam('width',  true, true, true, 100,    0.01));
-        this.addParam(this.#height = new NumberParam('height', true, true, true, 100,    0.01));
-        this.addParam(this.#angle  = new NumberParam('angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.#round  = new NumberParam('round',  true, true, true,   0,    0));
-        //this.addParam(this.#color  = new ColorParam ('color',  true));
+        this.addParam(this.#paramX      = new NumberParam('x',      true, true, true,   0));
+        this.addParam(this.#paramY      = new NumberParam('y',      true, true, true,   0));
+        this.addParam(this.#paramWidth  = new NumberParam('width',  true, true, true, 100,    0.01));
+        this.addParam(this.#paramHeight = new NumberParam('height', true, true, true, 100,    0.01));
+        this.addParam(this.#paramAngle  = new NumberParam('angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.#paramRound  = new NumberParam('round',  true, true, true,   0,    0));
+
         
-        this.#angle.control.suffix = '°';
+        this.#paramAngle.control.suffix = '°';
         
         this.updateRound();
+
+        this.#btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.#btnProportional);
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -37,11 +44,36 @@ extends Operator
                 enableSliderText(param.control, false);
         });
 
+
         this.inputs[0].addEventListener('disconnect', () =>
         {
             for (const param of this.params)
                 if (!param.input.isConnected) 
                     enableSliderText(param.control, true);
+        });
+
+
+        this.#btnProportional.addEventListener('click', () =>
+        {
+            if (this.#btnProportional.enabled)
+            {
+                this.#oldWidth  = this.#paramWidth .value;
+                this.#oldHeight = this.#paramHeight.value;
+            }
+        });
+
+
+        this.#paramWidth.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.value * this.#oldHeight / this.#oldWidth, false, true, false);
+        });
+
+
+        this.#paramHeight.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.value * this.#oldWidth / this.#oldHeight, false, true, false);
         });
     }
     
@@ -49,7 +81,7 @@ extends Operator
     
     updateRound()
     {
-        const min = Math.min(this.#width.value, this.#height.value);
+        const min = Math.min(this.#paramWidth.value, this.#paramHeight.value);
         this.setRoundMinMax(0, min/2);
     }
 
@@ -57,13 +89,12 @@ extends Operator
 
     setRoundMinMax(min, max)
     {
-        const control = this.#round.control;
+        const control = this.#paramRound.control;
 
         control.min   = min;
         control.max   = max;
-        //control.value = Math.min(control.value, control.max);
 
-        this.#round.control.update();
+        this.#paramRound.control.update();
     }
 
 
@@ -80,22 +111,22 @@ extends Operator
         {
             const data = this.inputs[0].data;
 
-            this.#x     .setValue(this.#x     .input.isConnected ? this.#x     .input.data.value : data.x,      false, true, false);
-            this.#y     .setValue(this.#y     .input.isConnected ? this.#y     .input.data.value : data.y,      false, true, false);
-            this.#width .setValue(this.#width .input.isConnected ? this.#width .input.data.value : data.width,  false, true, false);
-            this.#height.setValue(this.#height.input.isConnected ? this.#height.input.data.value : data.height, false, true, false);
-            this.#angle .setValue(this.#angle .input.isConnected ? this.#angle .input.data.value : data.angle,  false, true, false);
-            this.#round .setValue(this.#round .input.isConnected ? this.#round .input.data.value : data.round,  false, true, false);
+            this.#paramX     .setValue(this.#paramX     .input.isConnected ? this.#paramX     .input.data.value : data.x,      false, true, false);
+            this.#paramY     .setValue(this.#paramY     .input.isConnected ? this.#paramY     .input.data.value : data.y,      false, true, false);
+            this.#paramWidth .setValue(this.#paramWidth .input.isConnected ? this.#paramWidth .input.data.value : data.width,  false, true, false);
+            this.#paramHeight.setValue(this.#paramHeight.input.isConnected ? this.#paramHeight.input.data.value : data.height, false, true, false);
+            this.#paramAngle .setValue(this.#paramAngle .input.isConnected ? this.#paramAngle .input.data.value : data.angle,  false, true, false);
+            this.#paramRound .setValue(this.#paramRound .input.isConnected ? this.#paramRound .input.data.value : data.round,  false, true, false);
         }
 
     
         this.outputs[0]._data = dataFromRectangle(
-            this.#x     .value,
-            this.#y     .value,
-            this.#width .value,
-            this.#height.value,
-            this.#angle .value,
-            this.#round .value);
+            this.#paramX     .value,
+            this.#paramY     .value,
+            this.#paramWidth .value,
+            this.#paramHeight.value,
+            this.#paramAngle .value,
+            this.#paramRound .value);
 
 
         super.update()
@@ -105,31 +136,10 @@ extends Operator
 
     updateNode()
     {
-        // for (const param of this.params)
-        //     this.updateSlider(param.control, !isNaN(param.value));
-
+        this.#btnProportional.style.top = 79;
 
         super.updateNode();
     }
-
-
-
-    // updateSlider(slider, isValid)
-    // {
-    //     slider.valueText = 
-    //            this.inputs[0].isConnected 
-    //         && !isValid 
-    //         ? '?' 
-    //         : '';
-
-    //     slider.textbox.style.fontStyle = 
-    //            this.inputs[0].isConnected 
-    //         || slider.param.input.isConnected 
-    //         ? 'italic' 
-    //         : 'normal';
-
-    //     slider.update();
-    // }
 
 
 
@@ -140,33 +150,33 @@ extends Operator
             switch (_param[0])
             {
                 case 'x':
-                    this.#x.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#x.setDecimalsFrom(_param[1]);
+                    this.#paramX.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramX.setDecimalsFrom(_param[1]);
                     break;
 
                 case 'y':
-                    this.#y.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#y.setDecimalsFrom(_param[1]);
+                    this.#paramY.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramY.setDecimalsFrom(_param[1]);
                     break;
 
                 case 'width':
-                    this.#width.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#width.setDecimalsFrom(_param[1]);
+                    this.#paramWidth.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramWidth.setDecimalsFrom(_param[1]);
                     break;
 
                 case 'height':
-                    this.#height.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#height.setDecimalsFrom(_param[1]);
+                    this.#paramHeight.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramHeight.setDecimalsFrom(_param[1]);
                     break;
 
                 case 'angle':
-                    this.#angle.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#angle.setDecimalsFrom(_param[1]);
+                    this.#paramAngle.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramAngle.setDecimalsFrom(_param[1]);
                     break;
 
                 case 'round':
-                    this.#round.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#round.setDecimalsFrom(_param[1]);
+                    this.#paramRound.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramRound.setDecimalsFrom(_param[1]);
                     break;
 
             }

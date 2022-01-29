@@ -2,11 +2,12 @@
 
     ../css/*.css
 
-    ../controls/graphView/graphView.css
-    ../controls/numberSlider/numberSlider.css
-    ../controls/selectSlider/selectSlider.css
-    ../controls/menuSelect/menuSelect.css
-    ../controls/select/select.css
+    ../controls/graphView/*.css
+    ../controls/button/*.css
+    ../controls/numberSlider/*.css
+    ../controls/selectSlider/*.css
+    ../controls/menuSelect/*.css
+    ../controls/select/*.css
 
 ../html/ui_1.html
 
