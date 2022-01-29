@@ -85,3 +85,10 @@ function rgb_a(rgb, a)
 {
     return [rgb[0], rgb[1], rgb[2], a];
 }
+
+
+
+function isDark(color, threshold = 0.71)
+{
+    return rgb2hclokl(color)[2] > threshold;
+}

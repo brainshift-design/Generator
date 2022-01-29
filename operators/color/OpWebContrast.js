@@ -127,7 +127,6 @@ extends Operator
             && this.inputs[1].isConnected)
         {
             const colBack  = dataColor2rgb(this.inputs[1].data.color);
-            const darkText = rgb2hclokl(colBack)[2] > 0.71;
 
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
@@ -135,16 +134,14 @@ extends Operator
             if (   !isValidRgb(rgb0)
                 || !isValidRgb(rgb1))
             {
-                const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-                const warningStyle = colorStyleRgba(colWarning);
-        
-                this.#warningOverlay.style.display    = 'block';
-                this.#warningOverlay.style.height     = 35;
-                this.#warningOverlay.style.background =
-                    'repeating-linear-gradient('
-                    + '-45deg, '
-                    + 'transparent 0 7px,'
-                    +  warningStyle + ' 7px 14px)';
+                const colWarning = 
+                    !isValidRgb(rgb0)
+                    ? rgb_a(invalidRgb2valid(rgb0), 0.25)
+                    : (isDark(colBack)
+                       ? [0, 0, 0, 0.12] 
+                       : [1, 1, 1, 0.2]);
+
+                this.updateWarningOverlay(colorStyleRgba(colWarning));
             }
             else
             {
@@ -160,21 +157,13 @@ extends Operator
                 const colBack  = dataColor2rgb(this.inputs[1].data.color);
                 const darkText = rgb2hclokl(colBack)[2] > 0.71;
     
-                colWarning = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+                colWarning = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.16];
             }
             else
                 colWarning = [0.5, 1, 0.5, 0.2];
 
             
-            const warningStyle = colorStyleRgba(colWarning);
-        
-            this.#warningOverlay.style.display    = 'block';
-            this.#warningOverlay.style.height     = 38;
-            this.#warningOverlay.style.background =
-                'repeating-linear-gradient('
-                + '-45deg, '
-                + 'transparent 0 7px,'
-                +  warningStyle + ' 7px 14px)';
+            this.updateWarningOverlay(colorStyleRgba(colWarning));
         }
 
 
@@ -194,8 +183,7 @@ extends Operator
             : dataType2rgb(this._dataType);
 
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
-
-        const colText = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
 
 
         for (const input of this.inputs.filter(i => !i.param))
@@ -229,5 +217,18 @@ extends Operator
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
             : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
+    }
+
+
+
+    updateWarningOverlay(warningStyle)
+    {
+        this.#warningOverlay.style.display    = 'block';
+        this.#warningOverlay.style.height     = 38;
+        this.#warningOverlay.style.background =
+            'repeating-linear-gradient('
+            + '-45deg, '
+            + 'transparent 0 7px,'
+            +  warningStyle + ' 7px 14px)';
     }
 }
