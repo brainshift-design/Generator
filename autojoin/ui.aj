@@ -9,6 +9,8 @@
     ../controls/menuSelect/*.css
     ../controls/select/*.css
 
+    ../operators/*.css
+
 ../html/ui_1.html
 
     ../output/generator.html

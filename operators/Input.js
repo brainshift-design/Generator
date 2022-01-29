@@ -91,8 +91,6 @@ extends EventTarget
 
         this.control.addEventListener('pointerenter', e => 
         {
-            graphView.overInput = this;
-
             if (graphView.headerInput)
             {
                 graphView.headerInput.updateControl();
@@ -107,11 +105,19 @@ extends EventTarget
                 && graphView.tempConn.output.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
+                const loop = graphView.tempConn.output.op.follows(this.op);
 
-                graphView.tempConn.wire.inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                if (!loop)
+                {
+                    graphView.tempConn.wire.inputPos = point(
+                        rect.x + rect.w/2,
+                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                }
+
+                graph.overInput = !loop;
             }
+            else
+                graphView.overInput = this;
         });
 
 
@@ -152,7 +158,8 @@ extends EventTarget
                  && graphView.tempConn.input)
             && !(   graphView.tempConn
                  && graphView.tempConn.output
-                 && graphView.tempConn.output.dataType != this.dataType);
+                 && (   graphView.tempConn.output.dataType != this.dataType
+                     || graphView.tempConn.output.op.follows(this.op)));
 
         const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 

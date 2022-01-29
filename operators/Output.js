@@ -63,8 +63,6 @@ class Output
 
         this.control.addEventListener('pointerenter', e => 
         { 
-            graphView.overOutput = this; 
-            
             if (graphView.headerOutput)
             {
                 graphView.headerOutput.updateControl();
@@ -79,11 +77,19 @@ class Output
                 && graphView.tempConn.input.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
+                const loop = this.op.follows(graphView.tempConn.input.op);
 
-                graphView.tempConn.wire.outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                if (!loop)
+                {
+                    graphView.tempConn.wire.outputPos = point(
+                        rect.x + rect.w/2,
+                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                }
+
+                graph.overOutput = !loop;
             }
+            else
+                graphView.overOutput = this; 
         });
 
 
@@ -118,7 +124,8 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && graphView.tempConn.input.dataType != this.dataType);
+                 && (   graphView.tempConn.input.dataType != this.dataType
+                     || this.op.follows(graphView.tempConn.input.op)));
 
         const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
 
@@ -140,7 +147,7 @@ class Output
                this.connectedInputs.length > 0
             ||     graphView.tempConn
                && (   graphView.tempConn.output == this
-                   ||    this.mouseOver
+                   ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
                && !(   graphView.tempConn.input
                     && graphView.tempConn.input.dataType != this.dataType);

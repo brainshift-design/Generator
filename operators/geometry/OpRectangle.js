@@ -154,8 +154,8 @@ extends Operator
         if (this.#btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"propWidth": "'    + this.#oldWidth  + '"'
-                + ',\n' + pos + tab + '"propHeight": "'   + this.#oldHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'    + this.#oldWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "'   + this.#oldHeight + '"';
         }
 
         return json;

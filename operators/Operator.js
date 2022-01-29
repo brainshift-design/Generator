@@ -136,7 +136,7 @@ class Operator
         if (graphView.tempConn.savedInput)
             return graphView.tempConn.savedInput;
         
-        else
+        else if (!graphView.tempConn.output.op.follows(this))
         {
             if (this._variableInputs)
                 return lastOf(inputs);
@@ -169,7 +169,8 @@ class Operator
     {
         const outputs = this.outputs.filter(o => o.dataType == dataType);
 
-        return outputs.length == 1
+        return     outputs.length == 1
+               && !this.follows(graphView.tempConn.input.op)
                ? outputs[0]
                : null;
     }
@@ -477,6 +478,23 @@ class Operator
 
         this._active = false;
         uiSetActive(this, false);
+    }
+
+
+
+    follows(node)
+    {
+        for (const input of this.inputs)
+        {
+            if (input.op == node)
+                return true;
+                
+            else if (input.isConnected
+                  && input.connectedOutput.op.follows(node))
+                return true;
+        }
+
+        return false;
     }
 
 

@@ -3,7 +3,6 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    loadingOverlay.style.display = 'block';
     uiGetPluginData('graph');
    
     setInterval(autoSave, 2000);

@@ -439,176 +439,6 @@ input[type=text]::selection
 }
 
 
-.node
-{
-    display:       block;
-    position:      absolute;
-    height:        auto;
-    border-radius: 4px 4px 0 0;
-    padding:       0;
-}
-
-
-.nodeInner
-{
-    display:       block;
-    position:      relative;
-    width:         100%;
-    height:        auto;
-    overflow:      hidden;
-    border-radius: 4px 4px 0 0;
-    padding:       0;
-    /* background:    #fffe; */
-    box-shadow:    0 0 0 1px #0001;
-    /* box-shadow:    0px 5px 20px #0001; */
-}    
-
-
-.nodeHeader
-{
-    background:    'magenta';
-    display:       flex;
-    width:         100%;
-    position:      relative;
-    border-radius: 4px 4px 0 0;
-    z-index:       1;
-}
-
-
-.nodeParamBack
-{
-    display:    block;
-    position:   absolute;
-    width:      100%;
-    height:     20;
-    background: #fffe;
-    z-index:    -1;
-}
-
-
-.nodeLabel
-{
-    font-family:    Inter;
-    font-size:      11;
-    padding:        0;
-    margin:         0;
-    display:        block;
-    width:          100%;
-    height:         14;
-    color:          black;
-    text-align:     center;
-    position:       absolute;
-    left:           50%;
-    top:            50%;
-    transform:      translateX(-50%) 
-                    translateY(calc(-50% - 0.5px));
-    pointer-events: none;
-    /* box-shadow:     0 0 0 1px red inset; */
-    z-index:        10;
-}
-
-
-.nodeLabelTextbox
-{
-    font-family: Inter;
-    font-size:   11;
-}
-
-
-.nodeLabelTextbox::selection
-{
-    background-color: white;
-}
-
-
-.inputControls
-{
-    width:          12px;
-    height:         auto;
-    float:          left;
-    margin-right:   auto;
-    padding-top:    13px;
-    /* box-shadow:     0 0 0 1px red inset; */
-    pointer-events: none;
-}
-
-
-.input
-{
-    /* display:        inline-block; */
-    width:          6px;
-    height:         6px;
-    background:     transparent;
-    border-radius:  3px;
-    margin:         0;
-    margin-left:    3px;
-    margin-bottom:  6px;
-    /* position:       absolute; */
-    top:            50%;
-    transform:      translateY(-50%);
-    pointer-events: auto;
-    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
-}
-
-
-.inputBall
-{
-    width:          6px;
-    height:         6px;
-    border-radius:  3px;
-    margin:         0;
-    position:       absolute;
-    top:            50%;
-    left:           50%;
-    pointer-events: none;
-    /* z-index:        10; */
-    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
-}
-
-
-.outputControls
-{
-    width:          12px;
-    height:         auto;
-    float:          right;
-    margin-left:    auto;
-    padding-top:    10px;
-    /* box-shadow:     0 0 0 1px red inset; */
-    pointer-events: none;
-}
-
-
-.output
-{
-    width:          6px;
-    height:         6px;
-    /* background:     #00000008; */
-    border-radius:  3px;
-    margin:         0;
-    margin-left:    3px;
-    /* margin-bottom:  6px; */
-    position: absolute;
-    top:            50%;
-    transform:      translateY(-50%);
-    right:          3px;
-    pointer-events: auto;
-    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
-}
-
-
-.outputBall
-{
-    width:          6px;
-    height:         6px;
-    border-radius:  6px;
-    margin:         0;
-    /* position:       absolute; */
-    top:            0px;
-    right:          0px;
-    pointer-events: none;
-    /* z-index:        10; */
-    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
-}
 
 
 .arithmeticSymbol
@@ -1003,6 +833,179 @@ input[type=text]::selection
     box-shadow:    0px 2px 7px  rgba(0, 0, 0, 0.15),
                    0px 5px 17px rgba(0, 0, 0, 0.2);
     overflow:      hidden;
+}
+
+
+.inputControls
+{
+    width:          12px;
+    height:         auto;
+    float:          left;
+    margin-right:   auto;
+    padding-top:    13px;
+    /* box-shadow:     0 0 0 1px red inset; */
+    pointer-events: none;
+}
+
+
+.input
+{
+    /* display:        inline-block; */
+    width:          6px;
+    height:         6px;
+    background:     transparent;
+    border-radius:  3px;
+    margin:         0;
+    margin-left:    3px;
+    margin-bottom:  6px;
+    /* position:       absolute; */
+    top:            50%;
+    transform:      translateY(-50%);
+    pointer-events: auto;
+    box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+
+.inputBall
+{
+    width:          6px;
+    height:         6px;
+    border-radius:  3px;
+    margin:         0;
+    position:       absolute;
+    top:            50%;
+    left:           50%;
+    pointer-events: none;
+    /* z-index:        10; */
+    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
+
+
+.node
+{
+    display:       block;
+    position:      absolute;
+    height:        auto;
+    border-radius: 4px 4px 0 0;
+    padding:       0;
+}
+
+
+.nodeInner
+{
+    display:       block;
+    position:      relative;
+    width:         100%;
+    height:        auto;
+    overflow:      hidden;
+    border-radius: 4px 4px 0 0;
+    padding:       0;
+    /* background:    #fffe; */
+    box-shadow:    0 0 0 1px #0001;
+    /* box-shadow:    0px 5px 20px #0001; */
+}    
+
+
+.nodeHeader
+{
+    background:    'magenta';
+    display:       flex;
+    width:         100%;
+    position:      relative;
+    border-radius: 4px 4px 0 0;
+    z-index:       1;
+}
+
+
+.nodeParamBack
+{
+    display:    block;
+    position:   absolute;
+    width:      100%;
+    height:     20;
+    background: #fffe;
+    z-index:    -1;
+}
+
+
+.nodeLabel
+{
+    font-family:    Inter;
+    font-size:      11;
+    padding:        0;
+    margin:         0;
+    display:        block;
+    width:          auto;
+    height:         14;
+    color:          black;
+    text-align:     center;
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-50%) 
+                    translateY(calc(-50% - 0.5px));
+    pointer-events: none;
+    /* box-shadow:     0 0 0 1px red inset; */
+    z-index:        10;
+}
+
+
+.nodeLabelTextbox
+{
+    font-family: Inter;
+    font-size:   11;
+}
+
+
+.nodeLabelTextbox::selection
+{
+    background-color: white;
+}
+
+
+
+.outputControls
+{
+    width:          12px;
+    height:         auto;
+    float:          right;
+    margin-left:    auto;
+    padding-top:    10px;
+    /* box-shadow:     0 0 0 1px red inset; */
+    pointer-events: none;
+}
+
+
+.output
+{
+    width:          6px;
+    height:         6px;
+    /* background:     #00000008; */
+    border-radius:  3px;
+    margin:         0;
+    margin-left:    3px;
+    /* margin-bottom:  6px; */
+    position: absolute;
+    top:            50%;
+    transform:      translateY(-50%);
+    right:          3px;
+    pointer-events: auto;
+    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
+
+
+.outputBall
+{
+    width:          6px;
+    height:         6px;
+    border-radius:  6px;
+    margin:         0;
+    /* position:       absolute; */
+    top:            0px;
+    right:          0px;
+    pointer-events: none;
+    /* z-index:        10; */
+    /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
 
 
@@ -12246,8 +12249,6 @@ extends EventTarget
 
         this.control.addEventListener('pointerenter', e => 
         {
-            graphView.overInput = this;
-
             if (graphView.headerInput)
             {
                 graphView.headerInput.updateControl();
@@ -12262,11 +12263,19 @@ extends EventTarget
                 && graphView.tempConn.output.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
+                const loop = graphView.tempConn.output.op.follows(this.op);
 
-                graphView.tempConn.wire.inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                if (!loop)
+                {
+                    graphView.tempConn.wire.inputPos = point(
+                        rect.x + rect.w/2,
+                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                }
+
+                graph.overInput = !loop;
             }
+            else
+                graphView.overInput = this;
         });
 
 
@@ -12307,7 +12316,8 @@ extends EventTarget
                  && graphView.tempConn.input)
             && !(   graphView.tempConn
                  && graphView.tempConn.output
-                 && graphView.tempConn.output.dataType != this.dataType);
+                 && (   graphView.tempConn.output.dataType != this.dataType
+                     || graphView.tempConn.output.op.follows(this.op)));
 
         const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
@@ -12429,8 +12439,6 @@ class Output
 
         this.control.addEventListener('pointerenter', e => 
         { 
-            graphView.overOutput = this; 
-            
             if (graphView.headerOutput)
             {
                 graphView.headerOutput.updateControl();
@@ -12445,11 +12453,19 @@ class Output
                 && graphView.tempConn.input.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
+                const loop = this.op.follows(graphView.tempConn.input.op);
 
-                graphView.tempConn.wire.outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                if (!loop)
+                {
+                    graphView.tempConn.wire.outputPos = point(
+                        rect.x + rect.w/2,
+                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                }
+
+                graph.overOutput = !loop;
             }
+            else
+                graphView.overOutput = this; 
         });
 
 
@@ -12484,7 +12500,8 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && graphView.tempConn.input.dataType != this.dataType);
+                 && (   graphView.tempConn.input.dataType != this.dataType
+                     || this.op.follows(graphView.tempConn.input.op)));
 
         const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
 
@@ -12506,7 +12523,7 @@ class Output
                this.connectedInputs.length > 0
             ||     graphView.tempConn
                && (   graphView.tempConn.output == this
-                   ||    this.mouseOver
+                   ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
                && !(   graphView.tempConn.input
                     && graphView.tempConn.input.dataType != this.dataType);
@@ -12859,7 +12876,7 @@ class Operator
         if (graphView.tempConn.savedInput)
             return graphView.tempConn.savedInput;
         
-        else
+        else if (!graphView.tempConn.output.op.follows(this))
         {
             if (this._variableInputs)
                 return lastOf(inputs);
@@ -12892,7 +12909,8 @@ class Operator
     {
         const outputs = this.outputs.filter(o => o.dataType == dataType);
 
-        return outputs.length == 1
+        return     outputs.length == 1
+               && !this.follows(graphView.tempConn.input.op)
                ? outputs[0]
                : null;
     }
@@ -13200,6 +13218,23 @@ class Operator
 
         this._active = false;
         uiSetActive(this, false);
+    }
+
+
+
+    follows(node)
+    {
+        for (const input of this.inputs)
+        {
+            if (input.op == node)
+                return true;
+                
+            else if (input.isConnected
+                  && input.connectedOutput.op.follows(node))
+                return true;
+        }
+
+        return false;
     }
 
 
@@ -13580,16 +13615,18 @@ function createNodeHeader(node)
         else if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != node)
+                && graphView.tempConn.output.op != node
+                && graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
-            else if (graphView.tempConn.output
-                  && graphView.tempConn.output.op != node)
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.op != node
+                  && graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
-                graphView.overInput.endConnection();
+                graphView.overOutput.endConnection();
             }
         }
 
@@ -16043,8 +16080,8 @@ extends Operator
         if (this.#btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"propWidth": "'    + this.#oldWidth  + '"'
-                + ',\n' + pos + tab + '"propHeight": "'   + this.#oldHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'    + this.#oldWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "'   + this.#oldHeight + '"';
         }
 
         return json;
@@ -17979,7 +18016,6 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    loadingOverlay.style.display = 'block';
     uiGetPluginData('graph');
    
     setInterval(autoSave, 2000);

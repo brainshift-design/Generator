@@ -250,16 +250,18 @@ function createNodeHeader(node)
         else if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != node)
+                && graphView.tempConn.output.op != node
+                && graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
-            else if (graphView.tempConn.output
-                  && graphView.tempConn.output.op != node)
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.op != node
+                  && graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
-                graphView.overInput.endConnection();
+                graphView.overOutput.endConnection();
             }
         }
 
