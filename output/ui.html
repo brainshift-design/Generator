@@ -459,7 +459,7 @@ input[type=text]::selection
 {
     width:            100%;
     height:           var(--colorBackSize);
-    z-index:          1000;
+    z-index:          10;
     position:         absolute;
     top:              0;
     pointer-events:   none;
@@ -491,7 +491,7 @@ input[type=text]::selection
 .toggleButton
 {
     position:            absolute;
-    left:                17;
+    left:                16;
     transform:           translateX(-50%);
     width:               12;
     height:              12;
@@ -1004,7 +1004,6 @@ input[type=text]::selection
     top:            0px;
     right:          0px;
     pointer-events: none;
-    /* z-index:        10; */
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
 
@@ -12175,7 +12174,7 @@ extends EventTarget
     _param = null; get param() { return this._param; }
 
     
-    //color;
+    color;
     wireColor;
 
     control;
@@ -12240,7 +12239,7 @@ extends EventTarget
 
         this.control.appendChild(this.wireBall);
 
-        //this.color     = [0, 0, 0, 0.2];
+        this.color     = [0, 0, 0, 0.2];
         this.wireColor = dataType2rgb(this.dataType, true);
 
         
@@ -12319,13 +12318,14 @@ extends EventTarget
                  && (   graphView.tempConn.output.dataType != this.dataType
                      || graphView.tempConn.output.op.follows(this.op)));
 
-        const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
+        //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
         const isConnected =
                this.isConnected
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
-                   ||    graphView.overInput == this//this.mouseOver
+                   ||    graphView.overInput == this
                       && !graphView.tempConn.input)
                && !(   graphView.tempConn.output
                     && graphView.tempConn.output.dataType != this.dataType);
@@ -12383,7 +12383,7 @@ class Output
     _param = null; get param() { return this._param; }
     
     
-    //color;
+    color;
     wireColor;
 
     control;
@@ -12430,7 +12430,7 @@ class Output
         
         this.control.appendChild(this.wireBall);
 
-        //this.color     = [0, 0, 0, 0.1];
+        this.color     = [0, 0, 0, 0.1];
         this.wireColor = dataType2rgb(this._dataType, true);
         
         this.updateControl();
@@ -12503,7 +12503,8 @@ class Output
                  && (   graphView.tempConn.input.dataType != this.dataType
                      || this.op.follows(graphView.tempConn.input.op)));
 
-        const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.25 : 0.15));
+        //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
 
@@ -15742,7 +15743,8 @@ extends Operator
         this.#paramValue.control.style.fontStyle = 'italic';
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
-        this.inner.appendChild(this.#warningOverlay);
+        this.#warningOverlay.style.zIndex = 1;
+        this.header.appendChild(this.#warningOverlay);
     }
 
 
@@ -15857,6 +15859,8 @@ extends Operator
                 const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
                 const warningStyle = colorStyleRgba(colWarning);
         
+                this.#warningOverlay.style.display    = 'block';
+                this.#warningOverlay.style.height     = 35;
                 this.#warningOverlay.style.background =
                     'repeating-linear-gradient('
                     + '-45deg, '
@@ -15865,9 +15869,35 @@ extends Operator
             }
             else
             {
-                this.#warningOverlay.style.background = 'transparent';
+                this.#warningOverlay.style.display = 'none';
             }
         }
+        else
+        {
+            let colWarning;
+
+            if (this.inputs[1].isConnected)
+            {
+                const colBack  = dataColor2rgb(this.inputs[1].data.color);
+                const darkText = rgb2hclokl(colBack)[2] > 0.71;
+    
+                colWarning = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
+            }
+            else
+                colWarning = [0.5, 1, 0.5, 0.2];
+
+            
+            const warningStyle = colorStyleRgba(colWarning);
+        
+            this.#warningOverlay.style.display    = 'block';
+            this.#warningOverlay.style.height     = 38;
+            this.#warningOverlay.style.background =
+                'repeating-linear-gradient('
+                + '-45deg, '
+                + 'transparent 0 7px,'
+                +  warningStyle + ' 7px 14px)';
+        }
+
 
         this.#paramStandard.control.update();
              
@@ -15882,7 +15912,7 @@ extends Operator
         const colBack = 
             this.inputs[1].isConnected
             ? dataColor2rgb(this.inputs[1].data.color)
-            : rgbFromDataType(this._dataType);
+            : dataType2rgb(this._dataType);
 
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
 
@@ -15910,16 +15940,16 @@ extends Operator
         if (   this.inputs[0].isConnected 
             && this.inputs[1].isConnected)
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
-        else if (this.inputs[0].isConnected)
-            this.label.style.color = 'black';
         else if (this.inputs[1].isConnected)
             this.label.style.color = colorStyleRgba(colText);
+        else 
+            this.label.style.color = 'black';
 
 
         this.header.style.background = 
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
-            : colorStyleRgb_a(rgbFromDataType(this._dataType, false), 0.95);
+            : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
     }
 }
 

@@ -1,7 +1,7 @@
-class   OpWebContrast
+class   OpInterpolate
 extends Operator
 {
-    #paramStandard;
+    #paramFactor;
     #paramValue;
 
 
@@ -10,7 +10,7 @@ extends Operator
 
     constructor()
     {
-        super('webcontrast', 'contrast', 'color', 90);
+        super('interpolate', 'inter', 'number', 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
@@ -22,8 +22,7 @@ extends Operator
         this.#paramValue.control.style.fontStyle = 'italic';
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
-        this.#warningOverlay.style.zIndex = 1;
-        this.header.appendChild(this.#warningOverlay);
+        this.inner.appendChild(this.#warningOverlay);
     }
 
 
@@ -138,8 +137,6 @@ extends Operator
                 const colWarning   = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
                 const warningStyle = colorStyleRgba(colWarning);
         
-                this.#warningOverlay.style.display    = 'block';
-                this.#warningOverlay.style.height     = 35;
                 this.#warningOverlay.style.background =
                     'repeating-linear-gradient('
                     + '-45deg, '
@@ -148,35 +145,9 @@ extends Operator
             }
             else
             {
-                this.#warningOverlay.style.display = 'none';
+                this.#warningOverlay.style.background = 'transparent';
             }
         }
-        else
-        {
-            let colWarning;
-
-            if (this.inputs[1].isConnected)
-            {
-                const colBack  = dataColor2rgb(this.inputs[1].data.color);
-                const darkText = rgb2hclokl(colBack)[2] > 0.71;
-    
-                colWarning = darkText ? [0, 0, 0, 0.12] : [1, 1, 1, 0.2];
-            }
-            else
-                colWarning = [0.5, 1, 0.5, 0.2];
-
-            
-            const warningStyle = colorStyleRgba(colWarning);
-        
-            this.#warningOverlay.style.display    = 'block';
-            this.#warningOverlay.style.height     = 38;
-            this.#warningOverlay.style.background =
-                'repeating-linear-gradient('
-                + '-45deg, '
-                + 'transparent 0 7px,'
-                +  warningStyle + ' 7px 14px)';
-        }
-
 
         this.#paramStandard.control.update();
              
@@ -219,15 +190,15 @@ extends Operator
         if (   this.inputs[0].isConnected 
             && this.inputs[1].isConnected)
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
+        else if (this.inputs[0].isConnected)
+            this.label.style.color = 'black';
         else if (this.inputs[1].isConnected)
             this.label.style.color = colorStyleRgba(colText);
-        else 
-            this.label.style.color = 'black';
 
 
         this.header.style.background = 
             this.inputs[1].isConnected 
             ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
-            : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
+            : colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
     }
 }
