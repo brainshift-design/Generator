@@ -114,7 +114,8 @@ extends EventTarget
                         rect.y + rect.h/2 - controlBar.offsetHeight);
                 }
 
-                graph.overInput = !loop;
+                graphView.overInput = !loop ? this : null;
+                this.op.inputs.forEach(i => i.updateControl());
             }
             else
                 graphView.overInput = this;

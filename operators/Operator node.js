@@ -165,8 +165,7 @@ function createNodeHeader(node)
             graphView.updateScroll();
         }
         else if (   graphView.tempConn
-                 && (  !node._variableInputs
-                     || toTheRightOfInputs))
+                 && toTheRightOfInputs)
         {
             if (   graphView.tempConn.output
                 && graphView.tempConn.output.op != node)

@@ -86,7 +86,8 @@ class Output
                         rect.y + rect.h/2 - controlBar.offsetHeight);
                 }
 
-                graph.overOutput = !loop;
+                graphView.overOutput = !loop ? this : null;
+                this.op.outputs.forEach(o => o.updateControl());
             }
             else
                 graphView.overOutput = this; 
@@ -135,7 +136,8 @@ class Output
         this.control.style.boxShadow = 
                this.connectedInputs.length > 0
             ||    graphView.tempConn
-               && graphView.tempConn.output == this
+               && (   graphView.tempConn.output == this
+                   || graphView.overOutput == this)
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 
