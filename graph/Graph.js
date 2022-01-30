@@ -19,7 +19,11 @@ class Graph
 
     getNewNodeName(_node)
     {
-        let opType = _node.shortTypeName;
+        let name = 
+            _node.name == _node.shortTypeName 
+            ? _node.shortTypeName 
+            : _node.name;
+
 
         let maxNum = 0;
         
@@ -28,11 +32,12 @@ class Graph
             if (node == _node)
                 continue;
                 
-            if (   node.name.length < opType.length
-                || node.name.substring(0, opType.length) !== opType)
+            if (   node.name.length < name.length
+                || node.name.substring(0, name.length) !== name)
                 continue;
+     
                 
-            let num = parseInt(node.name.substring(opType.length));
+            let num = parseInt(node.name.substring(name.length));
             
             if (isNaN(num) || num == 0) 
                 num = 1;
@@ -40,12 +45,10 @@ class Graph
             maxNum = Math.max(num, maxNum);
         }
 
-        // if (maxNum == 0)
-        //     return opType;
 
         maxNum++;
 
-        return opType + maxNum;
+        return name + maxNum;
     }
     
     

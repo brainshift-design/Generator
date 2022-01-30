@@ -34,6 +34,8 @@ class Operator
     alwaysLoadParams;
     loaded;
 
+    labelOffsetFactor = 0;
+
     
     // node UI
 
@@ -41,6 +43,7 @@ class Operator
     inner;
     header;
     paramBack;
+    labelWrapper;
     label;
     inputControls;
     outputControls;
@@ -268,8 +271,6 @@ class Operator
 
     updateNode() 
     {
-        //console.log('    ' + this.name + '.updateNode()');
-
         this.updateHeader();
 
 
@@ -305,7 +306,7 @@ class Operator
         this.updateNodeState();
 
 
-        //graphView.updateNodeTransform(this);
+        updateNodeLabel(this);
     }
 
 
@@ -365,6 +366,8 @@ class Operator
 
         this._name = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;
+
+        updateNodeLabel(this);
 
         return true;
     }
@@ -505,10 +508,11 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "' + this.opType + '",\n'
-            + pos + tab + '"name": "' + this.name   + '",\n'
-            + pos + tab + '"x": "' + this.div.style.left + '",\n'
-            + pos + tab + '"y": "' + this.div.style.top  + '"';
+              pos + tab + '"type": "'        + this.opType            + '",\n'
+            + pos + tab + '"name": "'        + this.name              + '",\n'
+            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
+            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
+            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
 
         return json;
     }

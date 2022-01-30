@@ -157,48 +157,48 @@ extends Operator
 
 
 
-    updateHeader()
-    {
-        const colBack = 
-            this.inputs[1].isConnected
-            ? dataColor2rgb(this.inputs[1].data.color)
-            : dataType2rgb(this._dataType);
+    // updateHeader()
+    // {
+    //     const colBack = 
+    //         this.inputs[1].isConnected
+    //         ? dataColor2rgb(this.inputs[1].data.color)
+    //         : dataType2rgb(this._dataType);
 
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+    //     const darkText = rgb2hclokl(colBack)[2] > 0.71;
 
-        const colText = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+    //     const colText = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
 
 
-        for (const input of this.inputs.filter(i => !i.param))
-        {
-            input.wireColor = colBack;
-            input.color     = colText;
+    //     for (const input of this.inputs.filter(i => !i.param))
+    //     {
+    //         input.wireColor = colBack;
+    //         input.color     = colText;
             
-            input.updateControl();
-        }
+    //         input.updateControl();
+    //     }
 
 
-        for (const output of this.outputs.filter(i => !i.param))
-        {
-            output.wireColor = colBack;
-            output.color     = colText;
+    //     for (const output of this.outputs.filter(i => !i.param))
+    //     {
+    //         output.wireColor = colBack;
+    //         output.color     = colText;
 
-            output.updateControl();
-        }
-
-
-        if (   this.inputs[0].isConnected 
-            && this.inputs[1].isConnected)
-            this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
-        else if (this.inputs[0].isConnected)
-            this.label.style.color = 'black';
-        else if (this.inputs[1].isConnected)
-            this.label.style.color = colorStyleRgba(colText);
+    //         output.updateControl();
+    //     }
 
 
-        this.header.style.background = 
-            this.inputs[1].isConnected 
-            ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
-            : colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
-    }
+    //     if (   this.inputs[0].isConnected 
+    //         && this.inputs[1].isConnected)
+    //         this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
+    //     else if (this.inputs[0].isConnected)
+    //         this.label.style.color = 'black';
+    //     else if (this.inputs[1].isConnected)
+    //         this.label.style.color = colorStyleRgba(colText);
+
+
+    //     this.header.style.background = 
+    //         this.inputs[1].isConnected 
+    //         ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
+    //         : colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
+    // }
 }

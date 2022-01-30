@@ -69,8 +69,10 @@ class Output
                 graphView.headerOutput = null;
             }
 
+
             this.mouseOver = true;
             this.updateControl();
+
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
@@ -91,12 +93,16 @@ class Output
             }
             else
                 graphView.overOutput = this; 
+
+                
+            resetNodeLabel(this.op);
         });
 
 
 
         this.control.addEventListener('pointerleave', e => 
         { 
+            this.op.forceAlignLabelRight = false;
             this.endConnection();
         });
     }

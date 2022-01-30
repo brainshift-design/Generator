@@ -162,7 +162,9 @@ function loadNode(_node)
     const node = graph.createNode(_node.type);
 
     node.name   = _node.name;
-    node.loaded = true;
+
+    if (_node.labelOffset)
+        node.labelOffsetFactor = parseFloat(_node.labelOffset);
 
     if (  _node.params
         || node.alwaysLoadParams)
@@ -173,6 +175,8 @@ function loadNode(_node)
         parseFloat(_node.x), 
         parseFloat(_node.y),
         false);
+
+    node.loaded = true;
 
     return node;
 }

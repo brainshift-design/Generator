@@ -928,6 +928,15 @@ input[type=text]::selection
 }
 
 
+.nodeLabelWrapper
+{
+    position:   absolute;
+    width:      100%;
+    height:     100%;   
+    /* box-shadow: 0 0 0 1px blue inset; */
+}
+
+
 .nodeLabel
 {
     font-family:    Inter;
@@ -945,8 +954,12 @@ input[type=text]::selection
     transform:      translateX(-50%) 
                     translateY(calc(-50% - 0.5px));
     pointer-events: none;
-    /* box-shadow:     0 0 0 1px red inset; */
     z-index:        10;
+    white-space:    nowrap;
+    /* background:     linear-gradient(90deg, #0000, #000f 16%, #000f 84%, #0000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; */
+    /* box-shadow:     0 0 0 1px red inset; */
 }
 
 
@@ -11744,7 +11757,11 @@ class Graph
 
     getNewNodeName(_node)
     {
-        let opType = _node.shortTypeName;
+        let name = 
+            _node.name == _node.shortTypeName 
+            ? _node.shortTypeName 
+            : _node.name;
+
 
         let maxNum = 0;
         
@@ -11753,11 +11770,12 @@ class Graph
             if (node == _node)
                 continue;
                 
-            if (   node.name.length < opType.length
-                || node.name.substring(0, opType.length) !== opType)
+            if (   node.name.length < name.length
+                || node.name.substring(0, name.length) !== name)
                 continue;
+     
                 
-            let num = parseInt(node.name.substring(opType.length));
+            let num = parseInt(node.name.substring(name.length));
             
             if (isNaN(num) || num == 0) 
                 num = 1;
@@ -11765,12 +11783,10 @@ class Graph
             maxNum = Math.max(num, maxNum);
         }
 
-        // if (maxNum == 0)
-        //     return opType;
 
         maxNum++;
 
-        return opType + maxNum;
+        return name + maxNum;
     }
     
     
@@ -12463,8 +12479,10 @@ class Output
                 graphView.headerOutput = null;
             }
 
+
             this.mouseOver = true;
             this.updateControl();
+
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
@@ -12485,12 +12503,16 @@ class Output
             }
             else
                 graphView.overOutput = this; 
+
+                
+            resetNodeLabel(this.op);
         });
 
 
 
         this.control.addEventListener('pointerleave', e => 
         { 
+            this.op.forceAlignLabelRight = false;
             this.endConnection();
         });
     }
@@ -12795,6 +12817,8 @@ class Operator
     alwaysLoadParams;
     loaded;
 
+    labelOffsetFactor = 0;
+
     
     // node UI
 
@@ -12802,6 +12826,7 @@ class Operator
     inner;
     header;
     paramBack;
+    labelWrapper;
     label;
     inputControls;
     outputControls;
@@ -13029,8 +13054,6 @@ class Operator
 
     updateNode() 
     {
-        //console.log('    ' + this.name + '.updateNode()');
-
         this.updateHeader();
 
 
@@ -13066,7 +13089,7 @@ class Operator
         this.updateNodeState();
 
 
-        //graphView.updateNodeTransform(this);
+        updateNodeLabel(this);
     }
 
 
@@ -13126,6 +13149,8 @@ class Operator
 
         this._name = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;
+
+        updateNodeLabel(this);
 
         return true;
     }
@@ -13266,10 +13291,11 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "' + this.opType + '",\n'
-            + pos + tab + '"name": "' + this.name   + '",\n'
-            + pos + tab + '"x": "' + this.div.style.left + '",\n'
-            + pos + tab + '"y": "' + this.div.style.top  + '"';
+              pos + tab + '"type": "'        + this.opType            + '",\n'
+            + pos + tab + '"name": "'        + this.name              + '",\n'
+            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
+            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
+            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
 
         return json;
     }
@@ -13672,12 +13698,139 @@ function createNodeHeader(node)
 
 function createNodeLabel(node)
 {
-    node.label           = createDiv('nodeLabel');
-    node.label.op        = node;
+    node.labelWrapper = createDiv('nodeLabelWrapper');
+
+    node.label        = createDiv('nodeLabel');
+    node.label.op     = node;
     
-    node.header.appendChild(node.label);
+    node.labelWrapper.appendChild(node.label);
+    node.header.appendChild(node.labelWrapper);
+
+
+    node.labelWrapper.addEventListener('pointerdown', e =>
+    {
+        e.preventDefault();
+    });
+
+    node.labelWrapper.addEventListener('pointermove', e =>
+    {
+        const wrect      = boundingRect(node.labelWrapper);
+        const margin     = 14;
+        const viewMargin = margin * graphView.zoom;
+        
+        const x          = e.clientX - wrect.x;
+
+        updateNodeLabel(
+            node, 
+            (x - viewMargin) / (wrect.width - viewMargin*2));
+    });
+
+    node.labelWrapper.addEventListener('pointerleave', e =>
+    {
+        updateNodeLabel(node, 0);
+    });
+
 
     initLabelTextbox(node);
+}
+
+
+
+function updateNodeLabel(node, f = node.labelOffsetFactor)
+{
+    const margin     = 14;
+    const viewMargin = margin * graphView.zoom;
+
+    const wrect      = boundingRect(node.labelWrapper);
+    const rect       = boundingRect(node.label);
+
+    const rw         = wrect.width - viewMargin*2;
+    const x          = viewMargin + f * rw;
+
+
+    if (rect.width > rw)
+    {
+        if (x >= wrect.width - viewMargin)
+        {
+            node.labelOffsetFactor = 1;
+            updateNodeLabelGradient(node);
+        }
+        else if (x > viewMargin
+              && x < wrect.width - viewMargin)
+        {
+            node.labelOffsetFactor = f;
+            updateNodeLabelGradient(node);
+        }
+        else
+        {
+            updateNodeLabelGradient(node);
+        }
+    }
+    else
+    {
+        node.label.style.left      = '50%';
+        node.label.style.transform = 'translateX(-50%) '
+                                   + 'translateY(calc(-50% - 0.5px))';
+    }
+}
+
+
+
+function updateNodeLabelGradient(node)
+{
+    const margin     = 14;
+    const viewMargin = margin * graphView.zoom;
+
+    const wrect      = boundingRect(node.labelWrapper);
+    const rect       = boundingRect(node.label);
+
+    const sf         = (wrect.width - viewMargin*2) / rect.width;
+    const df         = viewMargin/rect.width/2;
+        
+    const s1         = node.labelOffsetFactor * (rect.width - (wrect.width - viewMargin*2)) / rect.width;
+    const s0         = s1 - df;
+    const s2         = s1 + sf;
+    const s3         = s2 + df;
+
+    node.label.style.left      = margin - node.labelOffsetFactor * (rect.width - wrect.width + viewMargin*2 - 1) / graphView.zoom;
+    node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
+
+    node.label.style.background = 
+          'linear-gradient(90deg, '
+        + '#0000 ' + (s0 * 100) + '%, '
+        + '#000f ' + (s1 * 100) + '%, '
+        + '#000f ' + (s2 * 100) + '%, '
+        + '#0000 ' + (s3 * 100) + '%)';
+
+    node.label.style.WebkitBackgroundClip = 'text';
+    node.label.style.WebkitTextFillColor  = 'transparent';
+}
+
+
+
+function resetNodeLabel(node)
+{
+    const wrect      = boundingRect(node.labelWrapper);
+    const rect       = boundingRect(node.label);
+
+    const margin     = 14;
+    const viewMargin = margin * graphView.zoom;
+
+    if (rect.width > wrect.width)
+    {
+        node.label.style.left      = margin - node.labelOffsetFactor * (rect.width - wrect.width + viewMargin*2 - 1) / graphView.zoom;
+        node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
+    }
+    else
+    {
+        node.label.style.left      = '50%';
+        node.label.style.transform = 'translateX(-50%)'
+                                   + ' translateY(calc(-50% - 0.5px))';
+    }
+
+    // node.label.style.background           = 'black';
+    // node.label.style.WebkitBackgroundClip = 'text';
+    // node.label.style.WebkitTextFillColor  = 'transparent';
 }
 
 
@@ -15763,6 +15916,8 @@ extends Operator
         this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
       
+        this.#paramStandard.control.barHeight = 0.2;
+
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
 
@@ -17999,7 +18154,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    //console.log(copiedJson);
+    console.log(copiedJson);
 
     return copiedJson;
 }
@@ -18028,6 +18183,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
+        console.log(nodes[i].name);
         graph.addNode(nodes[i], false);
         data.nodes[i].newName = nodes[i].name;
     }
@@ -18350,7 +18506,9 @@ function loadNode(_node)
     const node = graph.createNode(_node.type);
 
     node.name   = _node.name;
-    node.loaded = true;
+
+    if (_node.labelOffset)
+        node.labelOffsetFactor = parseFloat(_node.labelOffset);
 
     if (  _node.params
         || node.alwaysLoadParams)
@@ -18361,6 +18519,8 @@ function loadNode(_node)
         parseFloat(_node.x), 
         parseFloat(_node.y),
         false);
+
+    node.loaded = true;
 
     return node;
 }
