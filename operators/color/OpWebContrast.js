@@ -15,8 +15,8 @@ extends Operator
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
+        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
       
         this.#paramStandard.control.barHeight = 0.2;
 
