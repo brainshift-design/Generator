@@ -17,38 +17,55 @@ class Graph
 
 
 
-    getNewNodeName(_node)
+    getNewNodeName(name)
     {
-        let name = 
-            _node.name == _node.shortTypeName 
-            ? _node.shortTypeName 
-            : _node.name;
+        if (!this.nodes.find(n => n.name == name))
+            return name;
 
 
-        let maxNum = 0;
-        
-        for (const node of this.nodes)
+        let numLength = this.getNumLength(name);
+
+        if (numLength > 0)
         {
-            if (node == _node)
-                continue;
-                
-            if (   node.name.length < name.length
-                || node.name.substring(0, name.length) !== name)
-                continue;
-     
-                
-            let num = parseInt(node.name.substring(name.length));
-            
-            if (isNaN(num) || num == 0) 
-                num = 1;
-            
-            maxNum = Math.max(num, maxNum);
+            const len = name.length - numLength;
+            let   num = parseInt(name.substring(len));
+
+            let newName = '';
+            while (newName == '' || this.nodes.find(n => n.name == newName))
+                newName = name.substring(0, len) + (++num);
+
+            return newName;
         }
 
+        else if (numLength == 0)
+        {
+            const len = name.length;
 
-        maxNum++;
+            let newName = name + '2';
+            let num     = 2;
 
-        return name + maxNum;
+            while (this.nodes.find(n => n.name == newName))
+                newName = name.substring(0, len) + (++num);
+
+            return newName;
+        }
+        else
+            return name;
+    }
+    
+    
+    
+    getNumLength(name)
+    {
+        let numLength = 0;
+
+        for (let i = name.length - 1; i >= 0; i--)
+        {
+            if (isDigitChar(name[i])) numLength++;
+            else break;
+        }
+
+        return numLength;
     }
     
     
@@ -107,7 +124,7 @@ class Graph
         node.graph = this;
 
         if (createNewName)
-            node.setName(this.getNewNodeName(node)); // TODO: not checking return value here
+            node.setName(this.getNewNodeName(node.name)); // TODO: not checking return value here
         
         this.nodes.push(node);
         graphView.appendChild(node.div);

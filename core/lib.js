@@ -24,19 +24,19 @@ function getDigitCount(i)
 
 
 
-function isDigitChar(key)
+function isDigitChar(c)
 {
-    return key >= '0' 
-        && key <= '9';
+    return c >= '0' 
+        && c <= '9';
 }
 
 
 
-function isHexDigitChar(key)
+function isHexDigitChar(c)
 {
-    return key.length == 1
-        && (   key >= 'A' && key <= 'F'
-            || key >= 'a' && key <= 'f');
+    return c.length == 1
+        && (   c >= 'A' && c <= 'F'
+            || c >= 'a' && c <= 'f');
 }
 
 
