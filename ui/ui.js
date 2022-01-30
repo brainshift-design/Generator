@@ -3,48 +3,10 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    uiGetPluginData('graph');
+    //uiGetPluginData('graph'); // load graph from current page
    
-    setInterval(autoSave, 2000);
-
-
-    // initMenuSelect(menuSelect);
-    // menuSelect.initMenu();
-
-    //updateMenuSelectItems();
+    //setInterval(autoSave, 2000); // auto save every 2 seconds
 }
-
-
-
-// function updateMenuSelectItems()
-// {
-//     let items = 
-//     [
-//         {value: 'graph0',     text: 'Untitled'      },
-//         {value: 'new',        text: 'New graph'     },
-//         {value: 'loadLocal',  text: 'Load from file'}
-//     ];
-
-//     checkAddMenuItemsSave     (items);
-//     checkAddMenuItemProductKey(items);
-
-//     menuSelect.updateItems(items);
-// }
-
-
-
-// function checkAddMenuItemsSave(menuSelectItems)
-// {
-//     if (validateProductKey(currentUser.id, productKey))
-//     {
-//         menuSelectItems.push(...
-//         [
-//             {value: 'duplicate',  text: 'Duplicate'      },
-//             {value: 'saveLocal',  text: 'Save local copy'},
-//             {value: 'delete',     text: 'Delete'         } 
-//         ]);
-//     }
-// }
 
 
 

@@ -184,9 +184,9 @@ function initSelectSlider(param, slider, width, height, name, options, def)
         else if (graphView.tempConn
             && this.param)
       {
-          if (   graphView.tempConn.output
-              && graphView.tempConn.output.op != this.param.op
-              && this.param.input)
+          if (    graphView.tempConn.output
+              && !graphView.tempConn.output.op.follows(this.param.op)
+              &&  this.param.input)
           {
               graphView.overInput = this.param.input;
                   
@@ -199,9 +199,9 @@ function initSelectSlider(param, slider, width, height, name, options, def)
                   rect.x + rect.w/2,
                   rect.y + rect.h/2 - controlBar.offsetHeight);
           }
-          else if (graphView.tempConn.input
-                && graphView.tempConn.input.op != this.param.op
-                && this.param.output)
+          else if (   graphView.tempConn.input
+                   && !this.param.op.follows(graphView.tempConn.input.op)
+                   &&  this.param.output)
           {
               graphView.overOutput = this.param.output;
                   

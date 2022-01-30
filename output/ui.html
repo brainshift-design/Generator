@@ -7656,9 +7656,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         else if (graphView.tempConn
               && this.param)
         {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != this.param.op
-                && this.param.input)
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.op.follows(this.param.op)
+                &&  this.param.input)
             {
                 graphView.overInput = this.param.input;
                     
@@ -7672,8 +7672,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != this.param.op
-                  && this.param.output)
+                  && !this.param.op.follows(graphView.tempConn.input.op)
+                  &&  this.param.output)
             {
                 graphView.overOutput = this.param.output;
                     
@@ -8412,9 +8412,9 @@ function initSelectSlider(param, slider, width, height, name, options, def)
         else if (graphView.tempConn
             && this.param)
       {
-          if (   graphView.tempConn.output
-              && graphView.tempConn.output.op != this.param.op
-              && this.param.input)
+          if (    graphView.tempConn.output
+              && !graphView.tempConn.output.op.follows(this.param.op)
+              &&  this.param.input)
           {
               graphView.overInput = this.param.input;
                   
@@ -8427,9 +8427,9 @@ function initSelectSlider(param, slider, width, height, name, options, def)
                   rect.x + rect.w/2,
                   rect.y + rect.h/2 - controlBar.offsetHeight);
           }
-          else if (graphView.tempConn.input
-                && graphView.tempConn.input.op != this.param.op
-                && this.param.output)
+          else if (   graphView.tempConn.input
+                   && !this.param.op.follows(graphView.tempConn.input.op)
+                   &&  this.param.output)
           {
               graphView.overOutput = this.param.output;
                   
@@ -18401,48 +18401,10 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    uiGetPluginData('graph');
+    //uiGetPluginData('graph'); // load graph from current page
    
-    setInterval(autoSave, 2000);
-
-
-    // initMenuSelect(menuSelect);
-    // menuSelect.initMenu();
-
-    //updateMenuSelectItems();
+    //setInterval(autoSave, 2000); // auto save every 2 seconds
 }
-
-
-
-// function updateMenuSelectItems()
-// {
-//     let items = 
-//     [
-//         {value: 'graph0',     text: 'Untitled'      },
-//         {value: 'new',        text: 'New graph'     },
-//         {value: 'loadLocal',  text: 'Load from file'}
-//     ];
-
-//     checkAddMenuItemsSave     (items);
-//     checkAddMenuItemProductKey(items);
-
-//     menuSelect.updateItems(items);
-// }
-
-
-
-// function checkAddMenuItemsSave(menuSelectItems)
-// {
-//     if (validateProductKey(currentUser.id, productKey))
-//     {
-//         menuSelectItems.push(...
-//         [
-//             {value: 'duplicate',  text: 'Duplicate'      },
-//             {value: 'saveLocal',  text: 'Save local copy'},
-//             {value: 'delete',     text: 'Delete'         } 
-//         ]);
-//     }
-// }
 
 
 
