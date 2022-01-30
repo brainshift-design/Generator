@@ -90,12 +90,18 @@ class Graph
     addNodes(nodes, placeNode = true, createNewName = true)
     {
         for (const node of nodes)
-            this.addNode(node, placeNode, createNewName);
+            this.addNode(node, placeNode, createNewName, false);
+        
+        setTimeout(() =>
+        {
+            for (const node of nodes)
+                updateNodeLabel(node);
+        });
     }
 
 
 
-    addNode(node, placeNode = true, createNewName = true)
+    addNode(node, placeNode = true, createNewName = true, updateLabel = true)
     {
         node.graph = this;
 
@@ -113,9 +119,8 @@ class Graph
         graphView.putNodeOnTop(node);
         graphView.updateScroll();
 
-        //updateGraphNodes();
-
-        //setTimeout(() => node.pushUpdate());
+        if (updateLabel)
+            setTimeout(() => updateNodeLabel(node));
     }
     
 

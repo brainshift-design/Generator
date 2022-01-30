@@ -22,15 +22,28 @@ function createNodeLabel(node)
         
         const x          = e.clientX - wrect.x;
 
-        updateNodeLabel(
-            node, 
-            (x - viewMargin) / (wrect.width - viewMargin*2));
+        if (x >= wrect.width - viewMargin)
+        {
+            console.log('1');
+            updateNodeLabel(node, 1);
+        }
+        else if (x >= viewMargin
+              && x < wrect.width - viewMargin)
+              {
+                console.log('2');
+                updateNodeLabel(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+              }
+        else
+        {
+            console.log('3');
+            updateNodeLabel(node);
+        }
     });
 
-    node.labelWrapper.addEventListener('pointerleave', e =>
-    {
-        updateNodeLabel(node, 0);
-    });
+    // node.labelWrapper.addEventListener('pointerleave', e =>
+    // {
+    //     updateNodeLabel(node, 0);
+    // });
 
 
     initLabelTextbox(node);
@@ -57,6 +70,7 @@ function updateNodeLabel(node, f = node.labelOffsetFactor)
     const s0         = s1 - df;
     const s2         = s1 + sf;
     const s3         = s2 + df;
+
 
     if (rect.width > rw)
     {

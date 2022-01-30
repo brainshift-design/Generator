@@ -258,8 +258,6 @@ class Operator
 
     update()
     {
-        //console.log(this.name + '.update()');
-
         this.setParamOutputData();
 
         if (graphView.canUpdateNodes)

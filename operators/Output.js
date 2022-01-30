@@ -94,15 +94,14 @@ class Output
             else
                 graphView.overOutput = this; 
 
-                
-            resetNodeLabel(this.op);
+
+            //updateNodeLabel(this.op, 1);
         });
 
 
 
         this.control.addEventListener('pointerleave', e => 
         { 
-            this.op.forceAlignLabelRight = false;
             this.endConnection();
         });
     }
