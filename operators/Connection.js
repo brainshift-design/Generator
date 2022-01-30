@@ -100,11 +100,26 @@ class Connection
                 y2 = this.wire.inputPos.y;
             }
 
+            const _x0 = x1;
+            const _x3 = x2;
+
+            const yf = (0.3 + Math.min(Math.abs(y2 - y1) / 300, 0.8));
+
+            const df = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / 600, 0.65)), 0.5)
+                     * yf;
+
+            const dx = 
+                  (_x3 - _x0) * df 
+                * (_x3 < _x0 ? -1 : 1);
+
+            const _x1 = Math.max(_x0 + 100 * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
+            const _x2 = Math.min(_x3 - 100 * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
+
             this.wire.curve.setAttribute('d',
-                   'M ' +  (x1                ) + ',' + y1
-                + ' C ' +  (x1 + (x2 - x1)*2/5) + ',' + y1
-                + ' '   +  (x1 + (x2 - x1)*3/5) + ',' + y2
-                + ' '   +  (x2                ) + ',' + y2);
+                   'M ' + _x0 + ',' + y1
+                + ' C ' + _x1 + ',' + y1
+                + ' '   + _x2 + ',' + y2
+                + ' '   + _x3 + ',' + y2);
         };
 
 
@@ -141,7 +156,7 @@ class Connection
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire.curve.style.strokeWidth = 1.8 * this.wire.scale;
+            this.wire.curve.style.strokeWidth = 1.6 * this.wire.scale;
             this.wire      .style.zIndex      = 0;
         };
     }

@@ -3,9 +3,9 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    //uiGetPluginData('graph'); // load graph from current page
+    uiGetPluginData('graph'); // load graph from current page
    
-    //setInterval(autoSave, 2000); // auto save every 2 seconds
+    setInterval(autoSave, 2000); // auto save every 2 seconds
 }
 
 
