@@ -34,7 +34,7 @@ class Operator
     alwaysLoadParams;
     loaded;
 
-    labelOffsetFactor = 0;
+    labelOffsetFactor;
 
     
     // node UI
@@ -103,16 +103,18 @@ class Operator
 
     constructor(opType, shortType, dataType, defWidth = 100)
     {
-        this.#opType          = opType;   // this is the operator type
-        this._dataType        = dataType; // this is the op's main data type
+        this.#opType           = opType;   // this is the operator type
+        this._dataType         = dataType; // this is the op's main data type
            
-        this.shortTypeName    = shortType;
-        this._name            = shortType; // this is a temp until the op becomes a graph node
+        this.shortTypeName     = shortType;
+        this._name             = shortType; // this is a temp until the op becomes a graph node
            
-        this.defaultWidth     = defWidth;
+        this.defaultWidth      = defWidth;
         
-        this.loaded           = false;
-        this.alwaysLoadParams = false;
+        this.loaded            = false;
+        this.alwaysLoadParams  = false;
+
+        this.labelOffsetFactor = 0;
 
         createOperatorNode(this);
     }    

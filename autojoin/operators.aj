@@ -15,6 +15,7 @@
 ../operators/Connection.js
 ../operators/Operator.js
 ../operators/Operator node.js
+../operators/Operator label.js
 ../operators/Operator textbox.js
 
 ../operators/math/OpNumber.js

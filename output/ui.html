@@ -900,9 +900,7 @@ input[type=text]::selection
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
-    /* background:    #fffe; */
     box-shadow:    0 0 0 1px #0001;
-    /* box-shadow:    0px 5px 20px #0001; */
 }    
 
 
@@ -933,7 +931,7 @@ input[type=text]::selection
     position:   absolute;
     width:      100%;
     height:     100%;   
-    /* box-shadow: 0 0 0 1px blue inset; */
+    box-shadow: 0 0 0 1px blue inset;
 }
 
 
@@ -956,10 +954,7 @@ input[type=text]::selection
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
-    /* background:     linear-gradient(90deg, #0000, #000f 16%, #000f 84%, #0000);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; */
-    /* box-shadow:     0 0 0 1px red inset; */
+    box-shadow:     0 0 0 1px red inset;
 }
 
 
@@ -12817,7 +12812,7 @@ class Operator
     alwaysLoadParams;
     loaded;
 
-    labelOffsetFactor = 0;
+    labelOffsetFactor;
 
     
     // node UI
@@ -12886,16 +12881,18 @@ class Operator
 
     constructor(opType, shortType, dataType, defWidth = 100)
     {
-        this.#opType          = opType;   // this is the operator type
-        this._dataType        = dataType; // this is the op's main data type
+        this.#opType           = opType;   // this is the operator type
+        this._dataType         = dataType; // this is the op's main data type
            
-        this.shortTypeName    = shortType;
-        this._name            = shortType; // this is a temp until the op becomes a graph node
+        this.shortTypeName     = shortType;
+        this._name             = shortType; // this is a temp until the op becomes a graph node
            
-        this.defaultWidth     = defWidth;
+        this.defaultWidth      = defWidth;
         
-        this.loaded           = false;
-        this.alwaysLoadParams = false;
+        this.loaded            = false;
+        this.alwaysLoadParams  = false;
+
+        this.labelOffsetFactor = 0;
 
         createOperatorNode(this);
     }    
@@ -13696,6 +13693,30 @@ function createNodeHeader(node)
 
 
 
+function setNodePositions(nodes, dx, dy, updateTransform = true)
+{
+    for (const node of nodes)
+    {
+        node.div.style.left = node.div.slx + dx;
+        node.div.style.top  = node.div.sly + dy;
+    }
+
+    if (updateTransform)
+        graphView.updateNodeTransforms(nodes);
+}
+
+
+
+function setNodePosition(node, x, y, updateTransform = true)
+{
+    node.div.style.left = x;
+    node.div.style.top  = y;
+
+    if (updateTransform)
+        graphView.updateNodeTransform(node);
+}
+
+
 function createNodeLabel(node)
 {
     node.labelWrapper = createDiv('nodeLabelWrapper');
@@ -13738,6 +13759,9 @@ function createNodeLabel(node)
 
 function updateNodeLabel(node, f = node.labelOffsetFactor)
 {
+    node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
+
+
     const margin     = 14;
     const viewMargin = margin * graphView.zoom;
 
@@ -13745,55 +13769,28 @@ function updateNodeLabel(node, f = node.labelOffsetFactor)
     const rect       = boundingRect(node.label);
 
     const rw         = wrect.width - viewMargin*2;
-    const x          = viewMargin + f * rw;
-
-
-    if (rect.width > rw)
-    {
-        if (x >= wrect.width - viewMargin)
-        {
-            node.labelOffsetFactor = 1;
-            updateNodeLabelGradient(node);
-        }
-        else if (x > viewMargin
-              && x < wrect.width - viewMargin)
-        {
-            node.labelOffsetFactor = f;
-            updateNodeLabelGradient(node);
-        }
-        else
-        {
-            updateNodeLabelGradient(node);
-        }
-    }
-    else
-    {
-        node.label.style.left      = '50%';
-        node.label.style.transform = 'translateX(-50%) '
-                                   + 'translateY(calc(-50% - 0.5px))';
-    }
-}
-
-
-
-function updateNodeLabelGradient(node)
-{
-    const margin     = 14;
-    const viewMargin = margin * graphView.zoom;
-
-    const wrect      = boundingRect(node.labelWrapper);
-    const rect       = boundingRect(node.label);
-
-    const sf         = (wrect.width - viewMargin*2) / rect.width;
-    const df         = viewMargin/rect.width/2;
+    const sf         = rw / nozero(rect.width);
+    const df         = viewMargin / rect.width / 2;
         
-    const s1         = node.labelOffsetFactor * (rect.width - (wrect.width - viewMargin*2)) / rect.width;
+    const s1         = node.labelOffsetFactor * (rect.width - rw) / rect.width;
     const s0         = s1 - df;
     const s2         = s1 + sf;
     const s3         = s2 + df;
 
-    node.label.style.left      = margin - node.labelOffsetFactor * (rect.width - wrect.width + viewMargin*2 - 1) / graphView.zoom;
-    node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
+    if (rect.width > rw)
+    {
+        node.label.style.left = margin - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom;
+        node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
+    }
+    else
+    {
+        node.label.style.left = '50%';
+
+        node.label.style.transform = 
+              'translateX(-50%) '
+            + 'translateY(calc(-50% - 0.5px))';
+    }
+
 
     node.label.style.background = 
           'linear-gradient(90deg, '
@@ -13831,31 +13828,6 @@ function resetNodeLabel(node)
     // node.label.style.background           = 'black';
     // node.label.style.WebkitBackgroundClip = 'text';
     // node.label.style.WebkitTextFillColor  = 'transparent';
-}
-
-
-
-function setNodePositions(nodes, dx, dy, updateTransform = true)
-{
-    for (const node of nodes)
-    {
-        node.div.style.left = node.div.slx + dx;
-        node.div.style.top  = node.div.sly + dy;
-    }
-
-    if (updateTransform)
-        graphView.updateNodeTransforms(nodes);
-}
-
-
-
-function setNodePosition(node, x, y, updateTransform = true)
-{
-    node.div.style.left = x;
-    node.div.style.top  = y;
-
-    if (updateTransform)
-        graphView.updateNodeTransform(node);
 }
 
 
