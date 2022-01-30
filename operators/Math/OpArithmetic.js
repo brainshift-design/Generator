@@ -29,7 +29,7 @@ extends Operator
         this._symbol.clicked0  = false;
 
         this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-        this._symbol.addEventListener('pointerout',   () => this._symbol.style.opacity = 1);
+        this._symbol.addEventListener('pointerleave',   () => this._symbol.style.opacity = 1);
 
         this._symbol.addEventListener('pointerdown', e => 
         { 

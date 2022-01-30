@@ -181,7 +181,45 @@ function initSelectSlider(param, slider, width, height, name, options, def)
                 }
             }
         }
-        else if (slider.readOnly)
+        else if (graphView.tempConn
+            && this.param)
+      {
+          if (   graphView.tempConn.output
+              && graphView.tempConn.output.op != this.param.op
+              && this.param.input)
+          {
+              graphView.overInput = this.param.input;
+                  
+              this.param.input.mouseOver = true;
+              this.param.input.updateControl();
+
+              const rect = boundingRect(this.param.input.control);
+
+              graphView.tempConn.wire.inputPos = point(
+                  rect.x + rect.w/2,
+                  rect.y + rect.h/2 - controlBar.offsetHeight);
+          }
+          else if (graphView.tempConn.input
+                && graphView.tempConn.input.op != this.param.op
+                && this.param.output)
+          {
+              graphView.overOutput = this.param.output;
+                  
+              this.param.output.mouseOver = true;
+              this.param.output.updateControl();
+
+
+              const rect = boundingRect(this.param.output.control);
+
+              graphView.tempConn.wire.outputPos = point(
+                  rect.x + rect.w/2,
+                  rect.y + rect.h/2 - controlBar.offsetHeight);
+
+
+              graphView.tempConn.input.updateControl();
+          }
+      }
+      else if (slider.readOnly)
         {
             slider.moved = true;
         }
@@ -270,7 +308,7 @@ function initSelectSlider(param, slider, width, height, name, options, def)
 
 
 
-    slider.addEventListener('pointerout', function(e)
+    slider.addEventListener('pointerleave', function(e)
     {
         slider.style.cursor           = 'default';
         
@@ -278,6 +316,42 @@ function initSelectSlider(param, slider, width, height, name, options, def)
         slider.focus.style.opacity    = 0;
 
         slider.update();
+
+
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.op != this.param.op)
+            {
+                const input = graphView.overInput;
+                
+                graphView.overInput   = null;
+                
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
+                
+                graphView.tempConn.wire.inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.op != this.param.op)
+            {
+                const output = graphView.overOutput;
+                
+                graphView.overOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
+                graphView.tempConn.wire.outputPos = point_NaN;
+                graphView.tempConn.input.updateControl();
+           }
+        }
     });
 
 

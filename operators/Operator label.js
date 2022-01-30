@@ -42,7 +42,7 @@ function updateNodeLabel(node, f = node.labelOffsetFactor)
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
 
-    const margin     = 14;
+    const margin     = 15;
     const viewMargin = margin * graphView.zoom;
 
     const wrect      = boundingRect(node.labelWrapper);
@@ -86,31 +86,4 @@ function updateNodeLabel(node, f = node.labelOffsetFactor)
 
     node.label.style.WebkitBackgroundClip = 'text';
     node.label.style.WebkitTextFillColor  = 'transparent';
-}
-
-
-
-function resetNodeLabel(node)
-{
-    const wrect      = boundingRect(node.labelWrapper);
-    const rect       = boundingRect(node.label);
-
-    const margin     = 14;
-    const viewMargin = margin * graphView.zoom;
-
-    if (rect.width > wrect.width)
-    {
-        node.label.style.left      = margin - node.labelOffsetFactor * (rect.width - wrect.width + viewMargin*2 - 1) / graphView.zoom;
-        node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
-    }
-    else
-    {
-        node.label.style.left      = '50%';
-        node.label.style.transform = 'translateX(-50%)'
-                                   + ' translateY(calc(-50% - 0.5px))';
-    }
-
-    // node.label.style.background           = 'black';
-    // node.label.style.WebkitBackgroundClip = 'text';
-    // node.label.style.WebkitTextFillColor  = 'transparent';
 }

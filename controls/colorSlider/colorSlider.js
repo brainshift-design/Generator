@@ -259,7 +259,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
 
 
-    slider.addEventListener('pointerout', function(e)
+    slider.addEventListener('pointerleave', function(e)
     {
         slider.style.cursor     = 'default';
         
