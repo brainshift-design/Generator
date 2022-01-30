@@ -1,4 +1,4 @@
-class   OpInterpolateNumber
+class   OpInterpolateNumbers
 extends Operator
 {
     #paramFactor;
@@ -8,7 +8,7 @@ extends Operator
 
     constructor()
     {
-        super('interpolatenumber', 'lerp', 'number', 70);
+        super('interpolatenumbers', 'lerp', 'number', 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));

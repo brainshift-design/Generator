@@ -1027,18 +1027,18 @@ input[type=text]::selection
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'              onclick='const json = graph.toJson(); /*console.log(json);*/ uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateNumber'      onclick='actionManager.do(new CreateNodeAction("number"     )); this.blur();'>NUM</button>
-    <button class='menuButton' id='btnCreateAdd'         onclick='actionManager.do(new CreateNodeAction("add"        )); this.blur();'>ADD</button>
-    <button class='menuButton' id='btnCreateSubtract'    onclick='actionManager.do(new CreateNodeAction("subtract"   )); this.blur();'>SUB</button>
-    <button class='menuButton' id='btnCreateMultiply'    onclick='actionManager.do(new CreateNodeAction("multiply"   )); this.blur();'>MUL</button>
-    <button class='menuButton' id='btnCreateDivide'      onclick='actionManager.do(new CreateNodeAction("divide"     )); this.blur();'>DIV</button>
-    <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
-    <button class='menuButton' id='btnCreateInterpolate' onclick='actionManager.do(new CreateNodeAction("interpolatenumber")); this.blur();'>INTN</button>
+    <button class='menuButton' id='btnCreateNumber'      onclick='actionManager.do(new CreateNodeAction("number"            )); this.blur();'>NUM</button>
+    <button class='menuButton' id='btnCreateAdd'         onclick='actionManager.do(new CreateNodeAction("add"               )); this.blur();'>ADD</button>
+    <button class='menuButton' id='btnCreateSubtract'    onclick='actionManager.do(new CreateNodeAction("subtract"          )); this.blur();'>SUB</button>
+    <button class='menuButton' id='btnCreateMultiply'    onclick='actionManager.do(new CreateNodeAction("multiply"          )); this.blur();'>MUL</button>
+    <button class='menuButton' id='btnCreateDivide'      onclick='actionManager.do(new CreateNodeAction("divide"            )); this.blur();'>DIV</button>
+    <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"          )); this.blur();'>EXP</button>
+    <button class='menuButton' id='btnCreateInterpolate' onclick='actionManager.do(new CreateNodeAction("interpolatenumbers")); this.blur();'>INTN</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
-    <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
+    <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"             )); this.blur();'>COL</button>
+    <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast"       )); this.blur();'>WCTR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'   onclick='actionManager.do(new CreateNodeAction("rectangle"  )); this.blur();'>RECT</button>
+    <button class='menuButton' id='btnCreateRectangle'   onclick='actionManager.do(new CreateNodeAction("rectangle"         )); this.blur();'>RECT</button>
     
 </div>
     
@@ -11936,19 +11936,19 @@ class Graph
 
         switch (opType)
         {
-            case 'number':      node = new OpNumber();      break;
-            case 'add':         node = new OpAdd();         break;
-            case 'subtract':    node = new OpSubtract();    break;
-            case 'multiply':    node = new OpMultiply();    break;
-            case 'divide':      node = new OpDivide();      break;
-            case 'exponent':    node = new OpExponent();    break;
-            case 'interpolatenumber':    node = new OpInterpolateNumber();    break;
+            case 'number':             node = new OpNumber();      break;
+            case 'add':                node = new OpAdd();         break;
+            case 'subtract':           node = new OpSubtract();    break;
+            case 'multiply':           node = new OpMultiply();    break;
+            case 'divide':             node = new OpDivide();      break;
+            case 'exponent':           node = new OpExponent();    break;
+            case 'interpolatenumbers': node = new OpInterpolateNumbers();    break;
             // case 'random': node = new OpRandom(); break;
             
-            case 'color':       node = new OpColor();       break;
-            case 'webcontrast': node = new OpWebContrast(); break;
+            case 'color':              node = new OpColor();       break;
+            case 'webcontrast':        node = new OpWebContrast(); break;
             
-            case 'rectangle':   node = new OpRectangle();   break;
+            case 'rectangle':          node = new OpRectangle();   break;
             // case 'row':    node = new OpRow();    break;
             // case 'column': node = new OpColumn(); break;
             //case 'spread': node = new OpSpread(); break;
@@ -14558,7 +14558,7 @@ extends OpArithmetic
 }
 
 
-class   OpInterpolateNumber
+class   OpInterpolateNumbers
 extends Operator
 {
     #paramFactor;
@@ -14568,7 +14568,7 @@ extends Operator
 
     constructor()
     {
-        super('interpolatenumber', 'lerp', 'number', 70);
+        super('interpolatenumbers', 'lerp', 'number', 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
