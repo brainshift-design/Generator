@@ -283,7 +283,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    console.log(copiedJson);
+    //console.log(copiedJson);
 
     return copiedJson;
 }
@@ -312,7 +312,6 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
-        console.log(nodes[i].name);
         graph.addNode(nodes[i], false);
         data.nodes[i].newName = nodes[i].name;
     }

@@ -23,27 +23,13 @@ function createNodeLabel(node)
         const x          = e.clientX - wrect.x;
 
         if (x >= wrect.width - viewMargin)
-        {
-            console.log('1');
             updateNodeLabel(node, 1);
-        }
         else if (x >= viewMargin
               && x < wrect.width - viewMargin)
-              {
-                console.log('2');
-                updateNodeLabel(node, (x - viewMargin) / (wrect.width - viewMargin*2));
-              }
+            updateNodeLabel(node, (x - viewMargin) / (wrect.width - viewMargin*2));
         else
-        {
-            console.log('3');
             updateNodeLabel(node);
-        }
     });
-
-    // node.labelWrapper.addEventListener('pointerleave', e =>
-    // {
-    //     updateNodeLabel(node, 0);
-    // });
 
 
     initLabelTextbox(node);
@@ -80,18 +66,22 @@ function updateNodeLabel(node, f = node.labelOffsetFactor)
     else
     {
         node.label.style.left = '50%';
-
         node.label.style.transform = 
               'translateX(-50%) '
             + 'translateY(calc(-50% - 0.5px))';
     }
 
 
+    const color = 
+        node.label.style.color.trim() != ''
+        ? node.label.style.color
+        : 'black';
+
     node.label.style.background = 
           'linear-gradient(90deg, '
         + '#0000 ' + (s0 * 100) + '%, '
-        + '#000f ' + (s1 * 100) + '%, '
-        + '#000f ' + (s2 * 100) + '%, '
+        + color + ' ' + (s1 * 100) + '%, '
+        + color + ' ' + (s2 * 100) + '%, '
         + '#0000 ' + (s3 * 100) + '%)';
 
     node.label.style.WebkitBackgroundClip = 'text';
