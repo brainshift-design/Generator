@@ -65,6 +65,7 @@ class Graph
             case 'multiply':    node = new OpMultiply();    break;
             case 'divide':      node = new OpDivide();      break;
             case 'exponent':    node = new OpExponent();    break;
+            case 'interpolatenumber':    node = new OpInterpolateNumber();    break;
             // case 'random': node = new OpRandom(); break;
             
             case 'color':       node = new OpColor();       break;

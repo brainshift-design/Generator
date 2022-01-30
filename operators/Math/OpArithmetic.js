@@ -92,11 +92,9 @@ extends Operator
     {
         if (this.valid) return;
         
-        //console.log(this.name + '.update()');
 
         let maxDec = 0;
 
-        //console.log('inputs #', this.inputs.length);
         for (const input of this.inputs)
         {
             if (input.isConnected)

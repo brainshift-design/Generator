@@ -25,6 +25,7 @@
 ../operators/math/OpMultiply.js
 ../operators/math/OpDivide.js
 ../operators/math/OpExponent.js
+../operators/math/OpInterpolateNumber.js
 //../operators/math/OpRandom.js
 
 ../operators/color/OpColor.js

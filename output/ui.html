@@ -1033,6 +1033,7 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateMultiply'    onclick='actionManager.do(new CreateNodeAction("multiply"   )); this.blur();'>MUL</button>
     <button class='menuButton' id='btnCreateDivide'      onclick='actionManager.do(new CreateNodeAction("divide"     )); this.blur();'>DIV</button>
     <button class='menuButton' id='btnCreateExponent'    onclick='actionManager.do(new CreateNodeAction("exponent"   )); this.blur();'>EXP</button>
+    <button class='menuButton' id='btnCreateInterpolate' onclick='actionManager.do(new CreateNodeAction("interpolatenumber")); this.blur();'>INTN</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateColor'       onclick='actionManager.do(new CreateNodeAction("color"      )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateWebContrast' onclick='actionManager.do(new CreateNodeAction("webcontrast")); this.blur();'>WCTR</button>
@@ -11941,6 +11942,7 @@ class Graph
             case 'multiply':    node = new OpMultiply();    break;
             case 'divide':      node = new OpDivide();      break;
             case 'exponent':    node = new OpExponent();    break;
+            case 'interpolatenumber':    node = new OpInterpolateNumber();    break;
             // case 'random': node = new OpRandom(); break;
             
             case 'color':       node = new OpColor();       break;
@@ -14319,11 +14321,9 @@ extends Operator
     {
         if (this.valid) return;
         
-        //console.log(this.name + '.update()');
 
         let maxDec = 0;
 
-        //console.log('inputs #', this.inputs.length);
         for (const input of this.inputs)
         {
             if (input.isConnected)
@@ -14554,6 +14554,84 @@ extends OpArithmetic
 
         this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
         this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
+    }
+}
+
+
+class   OpInterpolateNumber
+extends Operator
+{
+    #paramFactor;
+    #paramValue;
+
+
+
+    constructor()
+    {
+        super('interpolate', 'lerp', 'number', 70);
+
+        this.addInput(new Input(this.dataType));
+        this.addInput(new Input(this.dataType));
+
+        this.addOutput(new Output(this.dataType));
+
+        this.addParam(this.#paramFactor = new NumberParam('factor', false,  true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramValue  = new NumberParam('value',  false, false, true, 0));
+      
+        this.#paramValue.control.readOnly        = true;
+        this.#paramValue.control.style.fontStyle = 'italic';
+    }
+
+
+
+    update()
+    {
+        if (this.valid) return;
+
+
+        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
+        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
+
+
+        this.updateParams();
+
+
+        let result = Number.NaN;
+        let maxDec = 0;
+
+        if (   this.inputs[0].isConnected
+            && this.inputs[1].isConnected)
+        {
+            const a = this.inputs[0].data.value; 
+            const b = this.inputs[1].data.value; 
+
+            result = a + (b - a) * this.#paramFactor.value;
+
+            maxDec = Math.max(
+                this.inputs[0].data.decimals,
+                this.inputs[1].data.decimals);
+        }
+        else if (this.inputs[0].isConnected)
+        {
+            result = this.inputs[0].data.value;
+            maxDec = this.inputs[0].data.decimals;
+        }
+        else if (this.inputs[1].isConnected)
+        {
+            result = this.inputs[1].data.value;
+            maxDec = this.inputs[1].data.decimals;
+        }
+
+
+        this.outputs[0]._data = dataFromNumber(result);
+
+        this.#paramValue.setValue(result, false, true, false);
+
+        this.#paramValue.control.dec = maxDec;
+        this.#paramValue.control.update();
+
+
+        super.update()
     }
 }
 
