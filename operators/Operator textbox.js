@@ -115,6 +115,8 @@ function initLabelTextbox(node)
 
         if (node.inFocus)
             node.focus();
+
+        setTimeout(() => updateNodeLabel(node));
     };    
  
     

@@ -369,8 +369,6 @@ class Operator
         this._name = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;
 
-        updateNodeLabel(this);
-
         return true;
     }
 

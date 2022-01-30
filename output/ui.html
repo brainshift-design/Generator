@@ -13147,8 +13147,6 @@ class Operator
         this._name = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;
 
-        updateNodeLabel(this);
-
         return true;
     }
 
@@ -13948,6 +13946,8 @@ function initLabelTextbox(node)
 
         if (node.inFocus)
             node.focus();
+
+        setTimeout(() => updateNodeLabel(node));
     };    
  
     
