@@ -1,4 +1,4 @@
-class   OpInterpolateNumbers
+class   OpInterpolate
 extends Operator
 {
     #paramFactor;
@@ -8,7 +8,7 @@ extends Operator
 
     constructor()
     {
-        super('interpolatenumbers', 'lerp', 'number', 70);
+        super('interpolate', 'lerp', 'number', 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
@@ -33,7 +33,7 @@ extends Operator
         if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
 
 
-        this.updateParams();
+        this.updateParams(false);
 
 
         let result = Number.NaN;

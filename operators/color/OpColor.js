@@ -70,7 +70,6 @@ extends Operator
         this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1])));
         this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
-        this.paramSpace.control.barHeight = 0.2;
         
         // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
         // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));

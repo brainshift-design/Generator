@@ -41,15 +41,19 @@ extends Parameter
         this.defaultValue   = value;
 
 
-        initSelectSlider(
+        initNumberSlider(
             this,
             this.control,
-            120, // width
-             20, // height
-            this.name,  
-            this.options,
-            value); // default
-
+            120,       // width
+            20,        // height
+            this.name, 
+            false,
+            0,
+            options.length-1,
+            value);        // default
+            
+        this.control.options = [...options];
+        this.control.barTop  = 0.8;
 
         this.div.appendChild(this.control);
 

@@ -25,7 +25,7 @@
 ../operators/math/OpMultiply.js
 ../operators/math/OpDivide.js
 ../operators/math/OpExponent.js
-../operators/math/OpInterpolateNumbers.js
+../operators/math/OpInterpolate.js
 //../operators/math/OpRandom.js
 
 ../operators/color/OpColor.js
@@ -33,6 +33,7 @@
 ../operators/color/OpColor hexbox.js
 ../operators/color/OpColor convert.js
 ../operators/color/OpWebContrast.js
+../operators/color/OpColorInterpolate.js
 
 ../operators/geometry/OpRectangle.js
 //../operators/geometry/OpRow.js

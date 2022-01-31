@@ -34,12 +34,12 @@ extends Parameter
     {
         super(name, 'number');
 
-        this._control = createDiv();
+        this._control          = createDiv();
         
-        this.control.param  = this;
-        this.control.zIndex = 0;
-
-        this.defaultValue = value;
+        this.control.param     = this;
+        this.control.zIndex    = 0;
+   
+        this.defaultValue      = value;
 
         this.allowEditDecimals = false;
 
@@ -47,17 +47,15 @@ extends Parameter
         initNumberSlider(
             this,
             this.control,
-            120,       // width
-            20,        // height
+            120,        // width
+            20,         // height
             this.name, 
             showName,
             min,
             max,
-            value,     // default
-            dragScale, // drag scale
-            1,         // wheel step
-            decimals,  // decimals
-            0);        // acceleration
+            value,      // default
+            decimals,   // decimals
+            dragScale); // drag scale
 
 
         this.div.appendChild(this.control);

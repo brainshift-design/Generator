@@ -11,7 +11,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(param, slider, width, height, name, showName, min, max, def, dragScale, wheelStep, dec, acc, suffix = '', log = false)
+function initNumberSlider(param, slider, width, height, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelStep = 1, acc = 0, suffix = '', log = false)
 {
     slider.param             = param;
 
@@ -70,9 +70,14 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
     slider.valueText         = '';
 
+    slider.barTop            = 0;
+    slider.barBottom         = 1;
 
     slider.ranges            = [];
     slider.rangeDivs         = [];
+
+    slider.options           = []; // if dec == 0, show named choices instead of a value
+
 
     
     initNumberSliderChildren(slider);    
@@ -255,20 +260,39 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     {
         clearTimeout(slider.clickTimer);
 
-        if (   slider.moved
+
+        if (graphView.tempConn)
+        {
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.op.follows(this.param.op)
+                &&  graphView.overInput)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overInput.endConnection();
+            }
+            else if (graphView.tempConn.input
+                && !this.param.op.follows(graphView.tempConn.input.op)
+                &&  graphView.overOutput)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overOutput.endConnection();
+            }
+        }
+        
+        else if (   slider.moved
             || document.menuHadFocus)
         {
             slider.unlockPointer(e.pointerId);
             return;            
-        }    
+        }
 
-        if (slider.buttonDown0_)
+        else if (slider.buttonDown0_)
         {
             slider.clicked = true;
             slider.showTextbox();
         }
-        
-        if (slider.buttonDown1)
+
+        else if (slider.buttonDown1)
             slider.buttonDown1 = false;
 
         slider.buttonDown0_ = false;
@@ -289,7 +313,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             if (slider.value != slider.oldValue)
                 slider.dispatchEvent(slider.onconfirm);
         }
-        if (   e.button == 1
+        else if (   e.button == 1
             && slider.buttonDown1)
         {
             slider.buttonDown1 = false;            
@@ -470,8 +494,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
         slider.bar.style.background = slider.valueColor;
 
-        slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
-        slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.bar.style.top        = slider.clientHeight * slider.barTop;
+        slider.bar.style.height     = slider.clientHeight * (slider.barBottom - slider.barTop);
 
 
         if (v >= 0)
@@ -498,12 +522,29 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             && slider.showName)
             slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        const valueText = 
-            slider.valueText != ''
-            ? slider.valueText
-            : (isNaN(slider.value)
-               ? '?'
-               : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase());
+        let valueText;
+        
+
+        if (   slider.options.length > 0
+            && slider.dec == 0)
+        {
+            if (   slider.value < 0 
+                || slider.value >= slider.options.length)
+                valueText = '?';
+            else
+                valueText = slider.options[Math.round(slider.value)];
+        }
+        else if (slider.valueText != '')
+        {
+            valueText = slider.valueText;
+        }
+        else
+        {
+            valueText = 
+                isNaN(slider.value)
+                ? '?'
+                : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+        }
 
         slider.text.innerHTML += valueText + slider.suffix;
 
