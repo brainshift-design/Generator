@@ -195,4 +195,24 @@ extends Operator
             + 'transparent 0 7px,'
             +  warningStyle + ' 7px 14px)';
     }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'space':
+                    this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
+                    break;
+
+                case 'factor':
+                    this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramFactor.setDecimalsFrom(_param[1]);
+                    break;
+            }
+        }
+    }
 }

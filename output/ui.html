@@ -13904,6 +13904,22 @@ extends Operator
 
         super.update()
     }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'factor':
+                    this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramFactor.setDecimalsFrom(_param[1]);
+                    break;
+            }
+        }
+    }
 }
 
 
@@ -15778,6 +15794,26 @@ extends Operator
             + '-45deg, '
             + 'transparent 0 7px,'
             +  warningStyle + ' 7px 14px)';
+    }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'space':
+                    this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
+                    break;
+
+                case 'factor':
+                    this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramFactor.setDecimalsFrom(_param[1]);
+                    break;
+            }
+        }
     }
 }
 
@@ -17799,7 +17835,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    //console.log(copiedJson);
+    console.log(copiedJson);
 
     return copiedJson;
 }
@@ -18111,7 +18147,7 @@ function loadNode(_node)
 {
     const node = graph.createNode(_node.type);
 
-    node.name   = _node.name;
+    node.name = _node.name;
 
     if (_node.labelOffset)
         node.labelOffsetFactor = parseFloat(_node.labelOffset);
