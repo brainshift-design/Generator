@@ -148,15 +148,17 @@ class Connection
         {
             const l = rgb2hclokl(color)[2];
             
-            const opacity = Math.round(Math.min((l-0.93) / 0.02, 1) * 9).toString(16).padStart(2, '0');
+            const bright  = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
+            console.log(bright);
+            const opacity = Math.round(bright * 42).toString(16).padStart(2, '0');
 
             this.wire.curve.style.filter = 
-                l > 0.9
-                ? 'drop-shadow(1px 1px 0 #000000' + opacity + ')'
+                l > 0.6
+                ? 'drop-shadow(0px 0px 2px #000000' + opacity + ')'
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire.curve.style.strokeWidth = 1.6 * this.wire.scale;
+            this.wire.curve.style.strokeWidth = (1.6 + 0.3 * bright) * this.wire.scale;
             this.wire      .style.zIndex      = 0;
         };
     }
