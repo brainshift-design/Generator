@@ -574,3 +574,25 @@ function lerp(a, b, t)
 {
     return a + (b - a) * t;
 }
+
+
+
+function normalAngle(angle)
+{
+    while (angle <  0  ) angle += Tau;
+    while (angle >= Tau) angle -= Tau;
+
+    return angle; // [0, Tau|
+}
+
+
+
+function angleDiff(a1, a2)
+{
+    let diff = a2 - a1;
+
+    while (diff <= -Tau/2) diff += Tau;
+    while (diff >   Tau/2) diff -= Tau;
+
+    return diff; // |-Tau/2, Tau/2]
+}

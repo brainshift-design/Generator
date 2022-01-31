@@ -61,6 +61,37 @@ extends Operator
 
 
 
+    interpolate(space, col0, col1, f, gamma)
+    {
+        const iSpace = OpColorSpaces.findIndex(s => s[0] == space);
+
+        const hasHue = 
+               iSpace >= 3
+            && iSpace <= 7;
+
+        
+        let h0, h1;
+
+        if (hasHue)
+        {
+            h0 = col0[0] * Tau;
+            h1 = col1[0] * Tau;
+        }
+
+        col0 = rgbPow(col0, gamma);
+        col1 = rgbPow(col1, gamma);
+
+        let col = rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+        col = rgbPow(col, 1/gamma);
+
+        if (hasHue)
+            col[0] = normalAngle(h0 + angleDiff(h0, h1) * f) / Tau;
+
+        return col;
+    }
+
+
+
     update()
     {
         if (this.valid) return;
@@ -77,20 +108,17 @@ extends Operator
             && this.inputs[1].isConnected)
         {
             const space = OpColorSpaces[this.#paramSpace.value][0];
-            
             const f     = this.#paramAmount.value;
             const gamma = this.#paramGamma .value;
             
-            let col0 = dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space));
-            let col1 = dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space));
+            const col   = this.interpolate(
+                space,
+                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+                f,
+                gamma);
 
-            col0 = rgbPow(col0, gamma);
-            col1 = rgbPow(col1, gamma);
-            col0 = rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-            col0 = rgbPow(col0, 1/gamma);
-
-            this._color = [space, col0[0], col0[1], col0[2]];
-
+            this._color = [space, col[0], col[1], col[2]];
             this.outputs[0]._data = dataFromDataColor(this._color);
         }
         else if(this.inputs[0].isConnected)

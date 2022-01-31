@@ -1808,6 +1808,28 @@ function lerp(a, b, t)
 }
 
 
+
+function normalAngle(angle)
+{
+    while (angle <  0  ) angle += Tau;
+    while (angle >= Tau) angle -= Tau;
+
+    return angle; // [0, Tau|
+}
+
+
+
+function angleDiff(a1, a2)
+{
+    let diff = a2 - a1;
+
+    while (diff <= -Tau/2) diff += Tau;
+    while (diff >   Tau/2) diff -= Tau;
+
+    return diff; // |-Tau/2, Tau/2]
+}
+
+
 function clipEdge(p, q, t0, t1)
 {
     if (p == 0 && q < 0)
@@ -4186,6 +4208,28 @@ function uintToBufferAt(val, buffer, start, bufferSize)
 function lerp(a, b, t)
 {
     return a + (b - a) * t;
+}
+
+
+
+function normalAngle(angle)
+{
+    while (angle <  0  ) angle += Tau;
+    while (angle >= Tau) angle -= Tau;
+
+    return angle; // [0, Tau|
+}
+
+
+
+function angleDiff(a1, a2)
+{
+    let diff = a2 - a1;
+
+    while (diff <= -Tau/2) diff += Tau;
+    while (diff >   Tau/2) diff -= Tau;
+
+    return diff; // |-Tau/2, Tau/2]
 }
 
 
@@ -12192,7 +12236,6 @@ class Connection
             const l = rgb2hclokl(color)[2];
             
             const bright  = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            console.log(bright);
             const opacity = Math.round(bright * 42).toString(16).padStart(2, '0');
 
             this.wire.curve.style.filter = 
@@ -15742,6 +15785,37 @@ extends Operator
 
 
 
+    interpolate(space, col0, col1, f, gamma)
+    {
+        const iSpace = OpColorSpaces.findIndex(s => s[0] == space);
+
+        const hasHue = 
+               iSpace >= 3
+            && iSpace <= 7;
+
+        
+        let h0, h1;
+
+        if (hasHue)
+        {
+            h0 = col0[0] * Tau;
+            h1 = col1[0] * Tau;
+        }
+
+        col0 = rgbPow(col0, gamma);
+        col1 = rgbPow(col1, gamma);
+
+        let col = rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+        col = rgbPow(col, 1/gamma);
+
+        if (hasHue)
+            col[0] = normalAngle(h0 + angleDiff(h0, h1) * f) / Tau;
+
+        return col;
+    }
+
+
+
     update()
     {
         if (this.valid) return;
@@ -15758,20 +15832,17 @@ extends Operator
             && this.inputs[1].isConnected)
         {
             const space = OpColorSpaces[this.#paramSpace.value][0];
-            
             const f     = this.#paramAmount.value;
             const gamma = this.#paramGamma .value;
             
-            let col0 = dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space));
-            let col1 = dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space));
+            const col   = this.interpolate(
+                space,
+                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+                f,
+                gamma);
 
-            col0 = rgbPow(col0, gamma);
-            col1 = rgbPow(col1, gamma);
-            col0 = rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-            col0 = rgbPow(col0, 1/gamma);
-
-            this._color = [space, col0[0], col0[1], col0[2]];
-
+            this._color = [space, col[0], col[1], col[2]];
             this.outputs[0]._data = dataFromDataColor(this._color);
         }
         else if(this.inputs[0].isConnected)

@@ -149,7 +149,6 @@ class Connection
             const l = rgb2hclokl(color)[2];
             
             const bright  = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            console.log(bright);
             const opacity = Math.round(bright * 42).toString(16).padStart(2, '0');
 
             this.wire.curve.style.filter = 
