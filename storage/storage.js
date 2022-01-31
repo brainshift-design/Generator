@@ -101,6 +101,8 @@ function loadConnectionsAsync(data, nodes, setProgress)
     promise.then(() => 
     {
         graphView.canUpdateNodes = true;
+
+        nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
         graphView.updatePanAndZoom();

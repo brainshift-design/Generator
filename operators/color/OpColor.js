@@ -139,8 +139,8 @@ extends Operator
     update()
     {
         if (this.valid) return;
+
         
-            
         this.updateParams(true);
 
 

@@ -11569,8 +11569,6 @@ function getTerminalsAfterNode(node)
 
 function updateTerminalsAfterNodes(nodes)
 {
-    //console.log('updateTerminalsAfternodes()');
-
     const terminals = [];
 
     for (const node of nodes)
@@ -14064,8 +14062,8 @@ extends Operator
     update()
     {
         if (this.valid) return;
+
         
-            
         this.updateParams(true);
 
 
@@ -17835,7 +17833,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    console.log(copiedJson);
+    //console.log(copiedJson);
 
     return copiedJson;
 }
@@ -18087,6 +18085,8 @@ function loadConnectionsAsync(data, nodes, setProgress)
     promise.then(() => 
     {
         graphView.canUpdateNodes = true;
+
+        nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
         graphView.updatePanAndZoom();
