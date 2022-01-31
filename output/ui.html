@@ -15601,7 +15601,8 @@ extends Operator
         this.addParam(this.#paramSpace  = new SelectParam('space',  true,  true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.#paramFactor = new NumberParam('factor', false, true,  true, 0, 0, 1, 2));
       
-        this.#paramSpace.control.barHeight = 0.2;
+        this.#paramSpace.control.min = 2;
+        this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
 
         // this.#paramValue.control.readOnly        = true;
         // this.#paramValue.control.style.fontStyle = 'italic';
