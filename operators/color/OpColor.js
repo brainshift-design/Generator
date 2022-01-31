@@ -205,7 +205,7 @@ extends Operator
         
         const colWarning   = darkText 
                              ? [0, 0, 0, 0.12] 
-                             : [1, 1, 1, 0.2];
+                             : [1, 1, 1, 0.2 ];
 
         const colSpaceVal  = darkText 
                              ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
@@ -342,7 +342,7 @@ extends Operator
 
     updateSliderRanges(slider, getRgb)
     {
-        const ranges = [];
+        const ranges    = [];
  
         
         const precision = 0.01;

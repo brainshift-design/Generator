@@ -87,6 +87,9 @@ function onHexboxInput(e)
 
 function onHexboxKeyDown(e)
 {
+    e.stopPropagation();
+
+    
     const hexbox = e.target;
 
     if (   getCtrlKey(e)

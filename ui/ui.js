@@ -5,7 +5,7 @@ function uiEndLoadState(msg)
 
     uiGetPluginData('graph'); // load graph from current page
    
-    setInterval(autoSave, 2000); // auto save every 2 seconds
+    setInterval(autoSave, 5000); // auto save every 5 seconds
 }
 
 

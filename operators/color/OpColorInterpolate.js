@@ -8,14 +8,21 @@ extends Operator
     #warningOverlay;
 
 
+    _color;
+
+
     constructor()
     {
         super('colorinterpolate', 'lerp', 'color', 90);
+
+        this._color = ['rgb', 0.5, 0.5, 0.5];
+
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
         this.addOutput(new Output(this.dataType));
+
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  true,  true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.#paramFactor = new NumberParam('factor', false, true,  true, 0, 0, 1, 2));
@@ -25,6 +32,7 @@ extends Operator
 
         // this.#paramValue.control.readOnly        = true;
         // this.#paramValue.control.style.fontStyle = 'italic';
+
 
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.#warningOverlay.style.zIndex = 1;
@@ -57,10 +65,15 @@ extends Operator
             if (   isValidRgb(rgb0)
                 && isValidRgb(rgb1))
             {
-//              const ratio = getContrastRatio3(
-//                  dataColor2rgb(this.inputs[0].data.color),
-//                  dataColor2rgb(this.inputs[1].data.color));
-                 
+                const col0 = dataColor2rgb(this.inputs[0].data.color);
+                const col1 = dataColor2rgb(this.inputs[1].data.color);
+                const f    = this.#paramFactor.value;
+
+                const col = rgbLerp(col0, col1, f);
+
+                this._color = rgb2dataColor(col);
+                this.outputs[0]._data = dataFromDataColor(this._color);
+                
 //              this.#paramValue.control.min    = 0;
 //              this.#paramValue.control.max    = 108;
 //              this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
@@ -166,16 +179,31 @@ extends Operator
 
         if (   this.inputs[0].isConnected 
             && this.inputs[1].isConnected)
-            this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
-        else if (this.inputs[1].isConnected)
-            this.label.style.color = colorStyleRgba(colText);
+        {
+            const colBack   = dataColor2rgb(this._color);
+ 
+            const darkText  = rgb2hclokl(colBack)[2] > 0.71;
+     
+            const colText   = darkText 
+                              ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4 ] 
+                              : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
+            
+            const textStyle = colorStyleRgba(colText);
+    
+            this.label .style.color      = textStyle;
+            this.header.style.background = colorStyleRgb(colBack);
+        }
         else 
-            this.label.style.color = 'black';
+        {
+            this.label .style.color      = 'black';
+            this.header.style.background = '#ead8eaee';
+        }
 
 
         this.header.style.background = 
-            this.inputs[1].isConnected 
-            ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
+               this.inputs[0].isConnected 
+            && this.inputs[1].isConnected 
+            ? colorStyleRgb(dataColor2rgb(this._color))
             : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
     }
 

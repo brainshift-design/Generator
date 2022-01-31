@@ -133,7 +133,7 @@ class Output
                  && (   graphView.tempConn.input.dataType != this.dataType
                      || this.op.follows(graphView.tempConn.input.op)));
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.25 : 0.15));
+        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12));
         //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
 
         this.control.style.backgroundColor = colorStyle;
