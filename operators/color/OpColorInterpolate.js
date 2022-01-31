@@ -164,9 +164,7 @@ extends Operator
             || this.inputs[1].isConnected)
         {
             const colBack   = dataColor2rgb(this._color);
- 
             const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-     
             const colText   = darkText 
                               ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4 ] 
                               : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
@@ -175,6 +173,10 @@ extends Operator
     
             this.label .style.color      = textStyle;
             this.header.style.background = colorStyleRgb(colBack);
+
+            this.inputs [0].color        = colText;
+            this.inputs [1].color        = colText;
+            this.outputs[0].color        = colText;
         }
         else 
         {
