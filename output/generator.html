@@ -798,6 +798,13 @@ function uintToBufferAt(val, buffer, start, bufferSize)
 }
 
 
+
+function lerp(a, b, t)
+{
+    return a + (b - a) * t;
+}
+
+
 function clipEdge(p, q, t0, t1)
 {
     if (p == 0 && q < 0)

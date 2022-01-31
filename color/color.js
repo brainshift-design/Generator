@@ -34,13 +34,6 @@ function isValidRgb(rgb, lim = -Eps)
 
 
 
-function lerp(a, b, t)
-{
-    return a + (b - a) * t;
-}
-
-
-
 function rgbLerp(rgb1, rgb2, t)
 {
     return [ lerp(rgb1[0], rgb2[0], t),
@@ -59,6 +52,24 @@ function rgbAdd(rgb1, rgb2)
 
 
 
+function rgbSub(rgb1, rgb2)
+{
+    return [ rgb1[0] - rgb2[0],
+             rgb1[1] - rgb2[1],
+             rgb1[2] - rgb2[2] ];
+}
+
+
+
+function rgbMuls(rgb, s)
+{
+    return [ rgb[0] * s,
+             rgb[1] * s,
+             rgb[2] * s ];
+}
+
+
+
 function rgbAvg(rgb1, rgb2)
 {
     return [ (rgb1[0] + rgb2[0]) / 2,
@@ -73,4 +84,14 @@ function rgbMax(rgb1, rgb2)
     return [ Math.max(rgb1[0], rgb2[0]),
              Math.max(rgb1[1], rgb2[1]),
              Math.max(rgb1[2], rgb2[2]) ];
+}
+
+
+
+function rgbPow(col, p)
+{
+    return [
+        Math.pow(col[0], p), 
+        Math.pow(col[1], p), 
+        Math.pow(col[2], p) ]
 }

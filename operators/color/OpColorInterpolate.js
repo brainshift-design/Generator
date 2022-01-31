@@ -2,7 +2,8 @@ class   OpColorInterpolate
 extends Operator
 {
     #paramSpace;
-    #paramFactor;
+    #paramAmount;
+    #paramGamma;
 
 
     #warningOverlay;
@@ -25,10 +26,14 @@ extends Operator
 
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  true,  true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramFactor = new NumberParam('factor', false, true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramAmount = new NumberParam('amount', true, true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  true, true,  true, 1, 0.01, 4, 2));
       
         this.#paramSpace.control.min = 2;
         this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
+
+        // this.#paramGamma.control.name = 'γ';
+        // this.#paramGamma.control.update();
 
         // this.#paramValue.control.readOnly        = true;
         // this.#paramValue.control.style.fontStyle = 'italic';
@@ -73,16 +78,18 @@ extends Operator
         {
             const space = OpColorSpaces[this.#paramSpace.value][0];
             
-            const col = rgbLerp(
-                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
-                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
-                this.#paramFactor.value);
+            const f     = this.#paramAmount.value;
+            const gamma = this.#paramGamma .value;
+            
+            let col0 = dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space));
+            let col1 = dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space));
 
-            this._color = [
-                space,
-                col[0],
-                col[1],
-                col[2] ];
+            col0 = rgbPow(col0, gamma);
+            col1 = rgbPow(col1, gamma);
+            col0 = rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+            col0 = rgbPow(col0, 1/gamma);
+
+            this._color = [space, col0[0], col0[1], col0[2]];
 
             this.outputs[0]._data = dataFromDataColor(this._color);
         }
@@ -177,6 +184,7 @@ extends Operator
             this.inputs [0].color        = colText;
             this.inputs [1].color        = colText;
             this.outputs[0].color        = colText;
+            this.outputs[0].wireColor    = colBack;
         }
         else 
         {
@@ -210,9 +218,14 @@ extends Operator
                     this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
                     break;
 
-                case 'factor':
-                    this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramFactor.setDecimalsFrom(_param[1]);
+                case 'amount':
+                    this.#paramAmount.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramAmount.setDecimalsFrom(_param[1]);
+                    break;
+
+                case 'gamma':
+                    this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramGamma.setDecimalsFrom(_param[1]);
                     break;
             }
         }

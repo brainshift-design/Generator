@@ -567,3 +567,10 @@ function uintToBufferAt(val, buffer, start, bufferSize)
         val >>= 8;
     }
 }
+
+
+
+function lerp(a, b, t)
+{
+    return a + (b - a) * t;
+}
