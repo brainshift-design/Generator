@@ -15048,15 +15048,15 @@ function dataColor2rgb(color)
     switch (color[0])
     {
         case 'rgbhex': 
-        case 'rgb':    return col;
-        case 'hsv':    return hsv2rgb(col);
-        case 'hsl':    return hsl2rgb(col);
+        case 'rgb':    return            col;
+        case 'hsv':    return hsv2rgb   (col);
+        case 'hsl':    return hsl2rgb   (col);
         case 'hclokl': return hclokl2rgb(col);
         case 'hcllab': return hcllab2rgb(col);
         case 'hclluv': return hclluv2rgb(col);
-        case 'oklab':  return oklab2rgb(col);
-        case 'lab':    return lab2rgb(col);
-        case 'luv':    return luv2rgb(col);
+        case 'oklab':  return oklab2rgb (col);
+        case 'lab':    return lab2rgb   (col);
+        case 'luv':    return luv2rgb   (col);
     }
 }
 
@@ -15091,15 +15091,15 @@ function convert2rgb(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    rgb = col;             break;
-        case 'hsv':    rgb = hsv2rgb(col);    break;
-        case 'hsl':    rgb = hsl2rgb(col);    break;
+        case 'rgb':    rgb =            col;  break;
+        case 'hsv':    rgb = hsv2rgb   (col); break;
+        case 'hsl':    rgb = hsl2rgb   (col); break;
         case 'hclokl': rgb = hclokl2rgb(col); break;
         case 'hcllab': rgb = hcllab2rgb(col); break;
         case 'hclluv': rgb = hclluv2rgb(col); break;
-        case 'oklab':  rgb = oklab2rgb(col);  break;
-        case 'lab':    rgb = lab2rgb(col);    break;
-        case 'luv':    rgb = luv2rgb(col);    break;
+        case 'oklab':  rgb = oklab2rgb (col); break;
+        case 'lab':    rgb = lab2rgb   (col); break;
+        case 'luv':    rgb = luv2rgb   (col); break;
     }
 
     return rgb2dataColor(rgb);
@@ -15116,15 +15116,15 @@ function convert2hsv(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    hsv = rgb2hsv(col);             break;
-        case 'hsv':    hsv = col;                      break;
-        case 'hsl':    hsv = rgb2hsv(hsl2rgb(col));    break;
+        case 'rgb':    hsv = rgb2hsv(           col ); break;
+        case 'hsv':    hsv =                    col;   break;
+        case 'hsl':    hsv = rgb2hsv(hsl2rgb   (col)); break;
         case 'hclokl': hsv = rgb2hsv(hclokl2rgb(col)); break;
         case 'hcllab': hsv = rgb2hsv(hcllab2rgb(col)); break;
         case 'hclluv': hsv = rgb2hsv(hclluv2rgb(col)); break;
-        case 'oklab':  hsv = rgb2hsv(oklab2rgb(col));  break;
-        case 'lab':    hsv = rgb2hsv(lab2rgb(col));    break;
-        case 'luv':    hsv = rgb2hsv(luv2rgb(col));    break;
+        case 'oklab':  hsv = rgb2hsv(oklab2rgb (col)); break;
+        case 'lab':    hsv = rgb2hsv(lab2rgb   (col)); break;
+        case 'luv':    hsv = rgb2hsv(luv2rgb   (col)); break;
     }
     
     if (isNaN(hsv[0]))
@@ -15148,15 +15148,15 @@ function convert2hsl(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    hsl = rgb2hsl(col);             break;
-        case 'hsv':    hsl = rgb2hsl(hsv2rgb(col));    break;
-        case 'hsl':    hsl = col;                      break;
+        case 'rgb':    hsl = rgb2hsl(           col ); break;
+        case 'hsv':    hsl = rgb2hsl(hsv2rgb   (col)); break;
+        case 'hsl':    hsl =                    col;   break;
         case 'hclokl': hsl = rgb2hsl(hclokl2rgb(col)); break;
         case 'hcllab': hsl = rgb2hsl(hcllab2rgb(col)); break;
         case 'hclluv': hsl = rgb2hsl(hclluv2rgb(col)); break;
-        case 'oklab':  hsl = rgb2hsl(oklab2rgb(col));  break;
-        case 'lab':    hsl = rgb2hsl(lab2rgb(col));    break;
-        case 'luv':    hsl = rgb2hsl(luv2rgb(col));    break;
+        case 'oklab':  hsl = rgb2hsl(oklab2rgb (col)); break;
+        case 'lab':    hsl = rgb2hsl(lab2rgb   (col)); break;
+        case 'luv':    hsl = rgb2hsl(luv2rgb   (col)); break;
     }
 
     return [
@@ -15177,15 +15177,15 @@ function convert2oklab(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    lab = rgb2oklab(col);             break;
-        case 'hsv':    lab = rgb2oklab(hsv2rgb(col));    break;
-        case 'hsl':    lab = rgb2oklab(hsl2rgb(col));    break;
+        case 'rgb':    lab = rgb2oklab(           col ); break;
+        case 'hsv':    lab = rgb2oklab(hsv2rgb   (col)); break;
+        case 'hsl':    lab = rgb2oklab(hsl2rgb   (col)); break;
         case 'hclokl': lab = rgb2oklab(hclokl2rgb(col)); break;
         case 'hcllab': lab = rgb2oklab(hcllab2rgb(col)); break;
         case 'hclluv': lab = rgb2oklab(hclluv2rgb(col)); break;
-        case 'oklab':  lab = col;                        break;
-        case 'lab':    lab = rgb2oklab(lab2rgb(col));    break;
-        case 'luv':    lab = rgb2oklab(luv2rgb(col));    break;
+        case 'oklab':  lab =                      col;   break;
+        case 'lab':    lab = rgb2oklab(lab2rgb   (col)); break;
+        case 'luv':    lab = rgb2oklab(luv2rgb   (col)); break;
     }
 
     return [
@@ -15206,15 +15206,15 @@ function convert2lab(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    lab = rgb2lab(col);             break;
-        case 'hsv':    lab = rgb2lab(hsv2rgb(col));    break;
-        case 'hsl':    lab = rgb2lab(hsl2rgb(col));    break;
+        case 'rgb':    lab = rgb2lab(           col ); break;
+        case 'hsv':    lab = rgb2lab(hsv2rgb   (col)); break;
+        case 'hsl':    lab = rgb2lab(hsl2rgb   (col)); break;
         case 'hclokl': lab = rgb2lab(hclokl2rgb(col)); break;
-        case 'hcllab': lab = pol2opp(col);             break;
+        case 'hcllab': lab = pol2opp           (col);  break;
         case 'hclluv': lab = rgb2lab(hclluv2rgb(col)); break;
-        case 'oklab':  lab = rgb2lab(oklab2rgb(col));  break;
-        case 'lab':    lab = col;                      break;
-        case 'luv':    lab = rgb2lab(luv2rgb(col));    break;
+        case 'oklab':  lab = rgb2lab(oklab2rgb (col)); break;
+        case 'lab':    lab =                    col;   break;
+        case 'luv':    lab = rgb2lab(luv2rgb   (col)); break;
     }
 
     return [
@@ -15235,15 +15235,15 @@ function convert2luv(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    luv = rgb2luv(col);             break;
-        case 'hsv':    luv = rgb2luv(hsv2rgb(col));    break;
-        case 'hsl':    luv = rgb2luv(hsl2rgb(col));    break;
+        case 'rgb':    luv = rgb2luv(           col ); break;
+        case 'hsv':    luv = rgb2luv(hsv2rgb   (col)); break;
+        case 'hsl':    luv = rgb2luv(hsl2rgb   (col)); break;
         case 'hclokl': luv = rgb2luv(hclokl2rgb(col)); break;
         case 'hcllab': luv = rgb2luv(hcllab2rgb(col)); break;
-        case 'hclluv': luv = pol2opp(col);             break;
-        case 'oklab':  luv = rgb2luv(oklab2rgb(col));  break;
-        case 'lab':    luv = rgb2luv(lab2rgb(col));    break;
-        case 'luv':    luv = col;                      break;
+        case 'hclluv': luv = pol2opp           (col);  break;
+        case 'oklab':  luv = rgb2luv(oklab2rgb (col)); break;
+        case 'lab':    luv = rgb2luv(lab2rgb   (col)); break;
+        case 'luv':    luv =                    col;   break;
     }
 
     return [
@@ -15264,15 +15264,15 @@ function convert2hclokl(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    hcl = rgb2hclokl(col);             break;
-        case 'hsv':    hcl = rgb2hclokl(hsv2rgb(col));    break;
-        case 'hsl':    hcl = rgb2hclokl(hsl2rgb(col));    break;
-        case 'hclokl': hcl = col;                         break;
+        case 'rgb':    hcl = rgb2hclokl(           col);  break;
+        case 'hsv':    hcl = rgb2hclokl(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclokl(hsl2rgb   (col)); break;
+        case 'hclokl': hcl =                       col;   break;
         case 'hcllab': hcl = rgb2hclokl(hcllab2rgb(col)); break;
         case 'hclluv': hcl = rgb2hclokl(hclluv2rgb(col)); break;
-        case 'oklab':  hcl = rgb2hclokl(oklab2rgb(col));  break;
-        case 'lab':    hcl = rgb2hclokl(lab2rgb(col));    break;
-        case 'luv':    hcl = rgb2hclokl(luv2rgb(col));    break;
+        case 'oklab':  hcl = rgb2hclokl(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hclokl(lab2rgb   (col)); break;
+        case 'luv':    hcl = rgb2hclokl(luv2rgb   (col)); break;
     }
 
     return [
@@ -15293,15 +15293,15 @@ function convert2hcllab(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    hcl = rgb2hcllab(col);             break;
-        case 'hsv':    hcl = rgb2hcllab(hsv2rgb(col));    break;
-        case 'hsl':    hcl = rgb2hcllab(hsl2rgb(col));    break;
+        case 'rgb':    hcl = rgb2hcllab(           col) ; break;
+        case 'hsv':    hcl = rgb2hcllab(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hcllab(hsl2rgb   (col)); break;
         case 'hclokl': hcl = rgb2hcllab(hclokl2rgb(col)); break;
-        case 'hcllab': hcl = col;                         break;
+        case 'hcllab': hcl =                       col;   break;
         case 'hclluv': hcl = rgb2hcllab(hclluv2rgb(col)); break;
-        case 'oklab':  hcl = rgb2hcllab(oklab2rgb(col));  break;
-        case 'lab':    hcl = opp2pol(col);                break;
-        case 'luv':    hcl = rgb2hcllab(luv2rgb(col));    break;
+        case 'oklab':  hcl = rgb2hcllab(oklab2rgb (col)); break;
+        case 'lab':    hcl = opp2pol              (col);  break;
+        case 'luv':    hcl = rgb2hcllab(luv2rgb   (col)); break;
     }
 
     return [
@@ -15322,15 +15322,15 @@ function convert2hclluv(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    hcl = rgb2hclluv(col);             break;
-        case 'hsv':    hcl = rgb2hclluv(hsv2rgb(col));    break;
-        case 'hsl':    hcl = rgb2hclluv(hsl2rgb(col));    break;
+        case 'rgb':    hcl = rgb2hclluv(           col );  break;
+        case 'hsv':    hcl = rgb2hclluv(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclluv(hsl2rgb   (col)); break;
         case 'hcllab': hcl = rgb2hclluv(hcllab2rgb(col)); break;
-        case 'hclluv': hcl = col;                         break;
+        case 'hclluv': hcl =                       col;   break;
         case 'hclokl': hcl = rgb2hclluv(hclokl2rgb(col)); break;
-        case 'oklab':  hcl = rgb2hclluv(oklab2rgb(col));  break;
-        case 'lab':    hcl = rgb2hclluv(lab2rgb(col));    break;
-        case 'luv':    hcl = opp2pol(col);                break;
+        case 'oklab':  hcl = rgb2hclluv(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hclluv(lab2rgb   (col)); break;
+        case 'luv':    hcl = opp2pol              (col);  break;
     }
 
     return [
@@ -15618,6 +15618,21 @@ extends Operator
         // this.#paramValue.control.style.fontStyle = 'italic';
 
 
+        this.inputs[0].addEventListener('connect', () => 
+        {
+            if (!this.inputs[1].isConnected) 
+                this.#paramSpace.setValue(
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]));
+        });
+
+        this.inputs[1].addEventListener('connect', () => 
+        {
+            if (!this.inputs[0].isConnected) 
+                this.#paramSpace.setValue(
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]));
+        });
+
+
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.#warningOverlay.style.zIndex = 1;
         this.header.appendChild(this.#warningOverlay);
@@ -15640,39 +15655,33 @@ extends Operator
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
-        //     this.#paramValue.control.valueText = '';
-
-
-            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            const space = OpColorSpaces[this.#paramSpace.value][0];
             
-            if (   isValidRgb(rgb0)
-                && isValidRgb(rgb1))
-            {
-                const col0 = dataColor2rgb(this.inputs[0].data.color);
-                const col1 = dataColor2rgb(this.inputs[1].data.color);
-                const f    = this.#paramFactor.value;
+            const col = rgbLerp(
+                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+                this.#paramFactor.value);
 
-                const col = rgbLerp(col0, col1, f);
+            this._color = [
+                space,
+                col[0],
+                col[1],
+                col[2] ];
 
-                this._color = rgb2dataColor(col);
-                this.outputs[0]._data = dataFromDataColor(this._color);
-                
-//              this.#paramValue.control.min    = 0;
-//              this.#paramValue.control.max    = 108;
-//              this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
-//              this.#paramValue.control.setValue(Math.abs(ratio));
-
-                super.update();
-                return;
-            }
+            this.outputs[0]._data = dataFromDataColor(this._color);
+        }
+        else if(this.inputs[0].isConnected)
+        {
+            this._color = this.inputs[0].data.color;
+            this.outputs[0]._data = dataFromDataColor(this._color);
+        }
+        else if(this.inputs[1].isConnected)
+        {
+            this._color = this.inputs[1].data.color;
+            this.outputs[0]._data = dataFromDataColor(this._color);
         }
 
 
-        // this.#paramValue.control.valueText = '?';
-        // this.#paramValue.setValue(0, false, true, false);
-
-           
         super.update()
     }
 
@@ -15681,50 +15690,24 @@ extends Operator
     updateNode()
     {
         if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
+            || this.inputs[1].isConnected)
         {
-            const colBack = dataColor2rgb(this.inputs[1].data.color);
+            const colBack = dataColor2rgb(this._color);
 
-            const rgb0    = dataColor2rgb(this.inputs[0].data.color);
-            const rgb1    = dataColor2rgb(this.inputs[1].data.color);
-
-            if (   !isValidRgb(rgb0)
-                || !isValidRgb(rgb1))
+            if (!isValidRgb(colBack))
             {
                 const colWarning = 
-                      !isValidRgb(rgb0)
-                    && maxRgbDistance(
-                        rgb2hclokl(invalid2validRgb(rgb0)), 
-                        rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
-                    ? rgb_a(invalid2validRgb(rgb0), 0.25)
-                    : (isDark(colBack)
-                       ? [0, 0, 0, 0.12] 
-                       : [1, 1, 1, 0.2]);
+                    isDark(colBack) 
+                    ? [0, 0, 0, 0.12]  
+                    : [1, 1, 1, 0.2 ];
 
                 this.updateWarningOverlay(colorStyleRgba(colWarning));
             }
             else
-            {
                 this.#warningOverlay.style.display = 'none';
-            }
         }
         else
-        {
-            let colWarning;
-
-            if (this.inputs[1].isConnected)
-            {
-                const colBack  = dataColor2rgb(this.inputs[1].data.color);
-                const darkText = rgb2hclokl(colBack)[2] > 0.71;
-    
-                colWarning = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.16];
-            }
-            else
-                colWarning = [0.5, 1, 0.5, 0.2];
-
-            
-            this.updateWarningOverlay(colorStyleRgba(colWarning));
-        }
+            this.updateWarningOverlay(colorStyleRgba([0.5, 1, 0.5, 0.2]));
 
 
         super.updateNode();
@@ -15762,7 +15745,7 @@ extends Operator
 
 
         if (   this.inputs[0].isConnected 
-            && this.inputs[1].isConnected)
+            || this.inputs[1].isConnected)
         {
             const colBack   = dataColor2rgb(this._color);
  
@@ -15782,13 +15765,6 @@ extends Operator
             this.label .style.color      = 'black';
             this.header.style.background = '#ead8eaee';
         }
-
-
-        this.header.style.background = 
-               this.inputs[0].isConnected 
-            && this.inputs[1].isConnected 
-            ? colorStyleRgb(dataColor2rgb(this._color))
-            : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
     }
 
 

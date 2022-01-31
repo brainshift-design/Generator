@@ -34,6 +34,21 @@ extends Operator
         // this.#paramValue.control.style.fontStyle = 'italic';
 
 
+        this.inputs[0].addEventListener('connect', () => 
+        {
+            if (!this.inputs[1].isConnected) 
+                this.#paramSpace.setValue(
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]));
+        });
+
+        this.inputs[1].addEventListener('connect', () => 
+        {
+            if (!this.inputs[0].isConnected) 
+                this.#paramSpace.setValue(
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]));
+        });
+
+
         this.#warningOverlay = createDiv('colorWarningOverlay');
         this.#warningOverlay.style.zIndex = 1;
         this.header.appendChild(this.#warningOverlay);
@@ -56,39 +71,33 @@ extends Operator
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
-        //     this.#paramValue.control.valueText = '';
-
-
-            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            const space = OpColorSpaces[this.#paramSpace.value][0];
             
-            if (   isValidRgb(rgb0)
-                && isValidRgb(rgb1))
-            {
-                const col0 = dataColor2rgb(this.inputs[0].data.color);
-                const col1 = dataColor2rgb(this.inputs[1].data.color);
-                const f    = this.#paramFactor.value;
+            const col = rgbLerp(
+                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+                this.#paramFactor.value);
 
-                const col = rgbLerp(col0, col1, f);
+            this._color = [
+                space,
+                col[0],
+                col[1],
+                col[2] ];
 
-                this._color = rgb2dataColor(col);
-                this.outputs[0]._data = dataFromDataColor(this._color);
-                
-//              this.#paramValue.control.min    = 0;
-//              this.#paramValue.control.max    = 108;
-//              this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
-//              this.#paramValue.control.setValue(Math.abs(ratio));
-
-                super.update();
-                return;
-            }
+            this.outputs[0]._data = dataFromDataColor(this._color);
+        }
+        else if(this.inputs[0].isConnected)
+        {
+            this._color = this.inputs[0].data.color;
+            this.outputs[0]._data = dataFromDataColor(this._color);
+        }
+        else if(this.inputs[1].isConnected)
+        {
+            this._color = this.inputs[1].data.color;
+            this.outputs[0]._data = dataFromDataColor(this._color);
         }
 
 
-        // this.#paramValue.control.valueText = '?';
-        // this.#paramValue.setValue(0, false, true, false);
-
-           
         super.update()
     }
 
@@ -97,50 +106,24 @@ extends Operator
     updateNode()
     {
         if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
+            || this.inputs[1].isConnected)
         {
-            const colBack = dataColor2rgb(this.inputs[1].data.color);
+            const colBack = dataColor2rgb(this._color);
 
-            const rgb0    = dataColor2rgb(this.inputs[0].data.color);
-            const rgb1    = dataColor2rgb(this.inputs[1].data.color);
-
-            if (   !isValidRgb(rgb0)
-                || !isValidRgb(rgb1))
+            if (!isValidRgb(colBack))
             {
                 const colWarning = 
-                      !isValidRgb(rgb0)
-                    && maxRgbDistance(
-                        rgb2hclokl(invalid2validRgb(rgb0)), 
-                        rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
-                    ? rgb_a(invalid2validRgb(rgb0), 0.25)
-                    : (isDark(colBack)
-                       ? [0, 0, 0, 0.12] 
-                       : [1, 1, 1, 0.2]);
+                    isDark(colBack) 
+                    ? [0, 0, 0, 0.12]  
+                    : [1, 1, 1, 0.2 ];
 
                 this.updateWarningOverlay(colorStyleRgba(colWarning));
             }
             else
-            {
                 this.#warningOverlay.style.display = 'none';
-            }
         }
         else
-        {
-            let colWarning;
-
-            if (this.inputs[1].isConnected)
-            {
-                const colBack  = dataColor2rgb(this.inputs[1].data.color);
-                const darkText = rgb2hclokl(colBack)[2] > 0.71;
-    
-                colWarning = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.16];
-            }
-            else
-                colWarning = [0.5, 1, 0.5, 0.2];
-
-            
-            this.updateWarningOverlay(colorStyleRgba(colWarning));
-        }
+            this.updateWarningOverlay(colorStyleRgba([0.5, 1, 0.5, 0.2]));
 
 
         super.updateNode();
@@ -178,7 +161,7 @@ extends Operator
 
 
         if (   this.inputs[0].isConnected 
-            && this.inputs[1].isConnected)
+            || this.inputs[1].isConnected)
         {
             const colBack   = dataColor2rgb(this._color);
  
@@ -198,13 +181,6 @@ extends Operator
             this.label .style.color      = 'black';
             this.header.style.background = '#ead8eaee';
         }
-
-
-        this.header.style.background = 
-               this.inputs[0].isConnected 
-            && this.inputs[1].isConnected 
-            ? colorStyleRgb(dataColor2rgb(this._color))
-            : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
     }
 
 
