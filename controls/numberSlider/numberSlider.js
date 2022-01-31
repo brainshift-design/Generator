@@ -29,7 +29,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     slider.dec               = dec;
     slider.editDec           = dec;
     slider.acc               = acc;
-
+    
+    slider.displayMin        = min;
+    slider.displayMax        = max;
     slider.displayMultiplier = 1;
     slider.displayDec        = dec;
                
@@ -155,7 +157,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
 
 
-    slider.addEventListener('pointermove', function(e)
+    slider.addEventListener('pointermove', e =>
     {
         if (!slider.pointerEvents)
             return;
@@ -183,14 +185,14 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 const dx       = slider.sx - slider.movedX;             
                 const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
-                const grain    = Math.pow(10, -this.editDec);
-                
+                const grain    = Math.pow(10, -slider.editDec);
+
                 let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
                 val = Math.floor(val / grain) * grain;
-                
-                slider.setValue(val, true, false);
-                slider.prevValue = slider.value;
 
+                slider.setValue(val, true, false, false, getCtrlKey(e));
+                slider.prevValue = slider.value;
+                
                 setTimeout(() => slider.param.op.pushUpdate());
             }
             else
@@ -205,34 +207,34 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             }
         }
         else if (graphView.tempConn
-              && this.param)
+              && slider.param)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.op.follows(this.param.op)
-                &&  this.param.input)
+                && !graphView.tempConn.output.op.follows(slider.param.op)
+                &&  slider.param.input)
             {
-                graphView.overInput = this.param.input;
+                graphView.overInput = slider.param.input;
                     
-                this.param.input.mouseOver = true;
-                this.param.input.updateControl();
+                slider.param.input.mouseOver = true;
+                slider.param.input.updateControl();
 
-                const rect = boundingRect(this.param.input.control);
+                const rect = boundingRect(slider.param.input.control);
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
             else if (graphView.tempConn.input
-                  && !this.param.op.follows(graphView.tempConn.input.op)
-                  &&  this.param.output)
+                  && !slider.param.op.follows(graphView.tempConn.input.op)
+                  &&  slider.param.output)
             {
-                graphView.overOutput = this.param.output;
+                graphView.overOutput = slider.param.output;
                     
-                this.param.output.mouseOver = true;
-                this.param.output.updateControl();
+                slider.param.output.mouseOver = true;
+                slider.param.output.updateControl();
 
 
-                const rect = boundingRect(this.param.output.control);
+                const rect = boundingRect(slider.param.output.control);
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
@@ -267,14 +269,14 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.op.follows(this.param.op)
+                && !graphView.tempConn.output.op.follows(slider.param.op)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !this.param.op.follows(graphView.tempConn.input.op)
+                && !slider.param.op.follows(graphView.tempConn.input.op)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -363,7 +365,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != this.param.op)
+                && graphView.tempConn.output.op != slider.param.op)
             {
                 const input = graphView.overInput;
                 
@@ -378,7 +380,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != this.param.op)
+                  && graphView.tempConn.input.op != slider.param.op)
             {
                 const output = graphView.overOutput;
                 
@@ -442,13 +444,13 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     
     slider.setName = function(name)
     {
-        this.name = name;
-        this.update();
+        slider.name = name;
+        slider.update();
     };
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
         const oldValue = slider.value;
 
@@ -458,8 +460,10 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             while (value < slider.min) value += slider.max - slider.min;
             while (value > slider.max) value -= slider.max - slider.min;
         }
-        else
+        else if (fullRange)
             value = Math.min(Math.max(slider.min, value), slider.max);
+        else
+            value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
         
 
         if (   value != oldValue
@@ -486,8 +490,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
     slider.update = function()
     {
-        let v  =  slider.value / (slider.max - slider.min);
-        let cx = -slider.min   / (slider.max - slider.min) * slider.clientWidth;
+        let v  =  slider.value      / (slider.displayMax - slider.displayMin);
+        let cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * slider.clientWidth;
 
         slider.focus.style.left   = 0;
         slider.focus.style.top    = 0;

@@ -31,6 +31,11 @@ extends Operator
       
         this.#paramSpace.control.min = 2;
         this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
+        
+        this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
+        this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
+
+        this.#paramGamma.control.max = 10;
 
 
         this.inputs[0].addEventListener('connect', () => 
