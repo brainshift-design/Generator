@@ -248,16 +248,16 @@ function createNodeHeader(node)
         }
         else if (graphView.tempConn)
         {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != node
-                && graphView.overInput)
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.op.follows(node)
+                &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
-            else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != node
-                  && graphView.overOutput)
+            else if ( graphView.tempConn.input
+                  && !node.follows(graphView.tempConn.input.op)
+                  &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overOutput.endConnection();

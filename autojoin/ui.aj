@@ -5,7 +5,6 @@
     ../controls/graphView/*.css
     ../controls/button/*.css
     ../controls/numberSlider/*.css
-    ../controls/selectSlider/*.css
     ../controls/menuSelect/*.css
     ../controls/select/*.css
 
