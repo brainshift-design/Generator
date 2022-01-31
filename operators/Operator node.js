@@ -16,15 +16,29 @@ function createOperatorNode(node)
 
     node.div.appendChild(node.inner);
 
-    node.div.addEventListener('pointerenter', function(e)
+
+    node.div.addEventListener('pointerenter', e =>
     {
-        node.div.over = true;
-        node.updateNode();
+        node.div.over      = true;
+        graphView.overNode = node;
+        
+        if (e.altKey) 
+            graphView.soloNode(node);
+        
+            node.updateNode();
     });
 
-    node.div.addEventListener('pointerleave', function(e)
+    
+    node.div.addEventListener('pointerleave', e =>
     {
         node.div.over = false;
+        
+        if (!e.altKey) 
+        {
+            graphView.overNode = null;
+            graphView.unsoloNode();
+        }
+
         node.updateNode();
     });
 

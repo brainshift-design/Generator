@@ -940,10 +940,10 @@ input[type=text]::selection
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
     &nbsp;
-    <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
+    <!-- <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='const json = graph.toJson(); /*console.log(json);*/ uiSetPluginData("graph", json); this.blur();'>SAVE</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
     <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract"        )); this.blur();'>SUB</button>
@@ -10093,6 +10093,7 @@ graphView.wires          = [];
 graphView.canUpdateNodes = true;
 
 
+graphView.overNode       = null;
 graphView.overInput      = null;
 graphView.overOutput     = null;
    
@@ -10100,7 +10101,8 @@ graphView.headerInput    = null; // same as overInput, but when snapping from a 
 graphView.headerOutput   = null; // same as overOutput, but when snapping from a header
    
 graphView.tempConn       = null;
-   
+
+graphView._soloNode      = null;
    
 graphView.selecting      = false;
 graphView.selectionRect  = Rect.NaN;
@@ -10543,7 +10545,7 @@ graphView.removeWire = wire =>
 
 
 
-graphView.getNodeOffsetRect = (node) =>
+graphView.getNodeOffsetRect = node =>
 {
     const ox   = -graphView.pan.x / graphView.zoom;
     const oy   = -graphView.pan.y / graphView.zoom;
@@ -10555,7 +10557,36 @@ graphView.getNodeOffsetRect = (node) =>
         oy + (rect.top  / graphView.zoom), 
         rect.width      / graphView.zoom, 
         rect.height     / graphView.zoom);
-}
+};
+
+
+
+graphView.soloNode = node =>
+{
+    graphView._soloNode = node;
+
+    graph.nodes.forEach(n => 
+        n.div.style.opacity = 
+            graphView._soloNode == n 
+            ? 1 
+            : 0.12);
+
+    graph.connections.forEach(c => 
+        c.wire.style.opacity = 
+               c.input  && graphView._soloNode == c.input .op
+            || c.output && graphView._soloNode == c.output.op
+            ? 1 
+            : 0.09);
+};
+
+
+
+graphView.unsoloNode = () =>
+{
+    graphView._soloNode = null;
+    graph.nodes.forEach(n => n.div.style.opacity = 1);
+    graph.connections.forEach(c => c.wire.style.opacity = 1);
+};
 
 
 class Parameter
@@ -12875,15 +12906,29 @@ function createOperatorNode(node)
 
     node.div.appendChild(node.inner);
 
-    node.div.addEventListener('pointerenter', function(e)
+
+    node.div.addEventListener('pointerenter', e =>
     {
-        node.div.over = true;
-        node.updateNode();
+        node.div.over      = true;
+        graphView.overNode = node;
+        
+        if (e.altKey) 
+            graphView.soloNode(node);
+        
+            node.updateNode();
     });
 
-    node.div.addEventListener('pointerleave', function(e)
+    
+    node.div.addEventListener('pointerleave', e =>
     {
         node.div.over = false;
+        
+        if (!e.altKey) 
+        {
+            graphView.overNode = null;
+            graphView.unsoloNode();
+        }
+
         node.updateNode();
     });
 
@@ -17425,11 +17470,13 @@ document.addEventListener('keydown', e =>
         else          setCursor(zoomInCursor);
     }
 
-    else if (e.key == 'Alt'
-          && graphView.spaceDown
-          && getCtrlKey(e))
+    else if (e.key == 'Alt')
     {
-        setCursor(zoomOutCursor);
+        if (   graphView.spaceDown
+            && getCtrlKey(e))
+            setCursor(zoomOutCursor);
+        else if (graphView.overNode)
+            graphView.soloNode(graphView.overNode);
     }
 
     else if (e.code == 'Tab')
@@ -17450,15 +17497,22 @@ document.addEventListener('keyup', e =>
         }
     }
 
-    else if (e.key == 'Alt'
-          && graphView.spaceDown)
+    else if (e.key == 'Alt')
     {
-        if (getCtrlKey(e)) 
-            setCursor(zoomInCursor);
-        else
+        if (graphView.spaceDown)
         {
-            setCursor(panCursor);
-            graphView.zoomSelecting = false;
+            if (getCtrlKey(e)) 
+                setCursor(zoomInCursor);
+            else
+            {
+                setCursor(panCursor);
+                graphView.zoomSelecting = false;
+            }
+        }
+        else if (graphView.overNode)
+        {
+            graphView.unsoloNode();
+            graphView.overNode = null;
         }
     }
 

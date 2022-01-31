@@ -2,6 +2,7 @@ graphView.wires          = [];
 graphView.canUpdateNodes = true;
 
 
+graphView.overNode       = null;
 graphView.overInput      = null;
 graphView.overOutput     = null;
    
@@ -9,7 +10,8 @@ graphView.headerInput    = null; // same as overInput, but when snapping from a 
 graphView.headerOutput   = null; // same as overOutput, but when snapping from a header
    
 graphView.tempConn       = null;
-   
+
+graphView._soloNode      = null;
    
 graphView.selecting      = false;
 graphView.selectionRect  = Rect.NaN;
@@ -452,7 +454,7 @@ graphView.removeWire = wire =>
 
 
 
-graphView.getNodeOffsetRect = (node) =>
+graphView.getNodeOffsetRect = node =>
 {
     const ox   = -graphView.pan.x / graphView.zoom;
     const oy   = -graphView.pan.y / graphView.zoom;
@@ -464,4 +466,33 @@ graphView.getNodeOffsetRect = (node) =>
         oy + (rect.top  / graphView.zoom), 
         rect.width      / graphView.zoom, 
         rect.height     / graphView.zoom);
-}
+};
+
+
+
+graphView.soloNode = node =>
+{
+    graphView._soloNode = node;
+
+    graph.nodes.forEach(n => 
+        n.div.style.opacity = 
+            graphView._soloNode == n 
+            ? 1 
+            : 0.12);
+
+    graph.connections.forEach(c => 
+        c.wire.style.opacity = 
+               c.input  && graphView._soloNode == c.input .op
+            || c.output && graphView._soloNode == c.output.op
+            ? 1 
+            : 0.09);
+};
+
+
+
+graphView.unsoloNode = () =>
+{
+    graphView._soloNode = null;
+    graph.nodes.forEach(n => n.div.style.opacity = 1);
+    graph.connections.forEach(c => c.wire.style.opacity = 1);
+};

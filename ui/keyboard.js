@@ -89,11 +89,13 @@ document.addEventListener('keydown', e =>
         else          setCursor(zoomInCursor);
     }
 
-    else if (e.key == 'Alt'
-          && graphView.spaceDown
-          && getCtrlKey(e))
+    else if (e.key == 'Alt')
     {
-        setCursor(zoomOutCursor);
+        if (   graphView.spaceDown
+            && getCtrlKey(e))
+            setCursor(zoomOutCursor);
+        else if (graphView.overNode)
+            graphView.soloNode(graphView.overNode);
     }
 
     else if (e.code == 'Tab')
@@ -114,15 +116,22 @@ document.addEventListener('keyup', e =>
         }
     }
 
-    else if (e.key == 'Alt'
-          && graphView.spaceDown)
+    else if (e.key == 'Alt')
     {
-        if (getCtrlKey(e)) 
-            setCursor(zoomInCursor);
-        else
+        if (graphView.spaceDown)
         {
-            setCursor(panCursor);
-            graphView.zoomSelecting = false;
+            if (getCtrlKey(e)) 
+                setCursor(zoomInCursor);
+            else
+            {
+                setCursor(panCursor);
+                graphView.zoomSelecting = false;
+            }
+        }
+        else if (graphView.overNode)
+        {
+            graphView.unsoloNode();
+            graphView.overNode = null;
         }
     }
 
