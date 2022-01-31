@@ -957,6 +957,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>LERP</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleWires(); this.blur();'>WIRES</button>
     
 </div>
     
@@ -10157,6 +10159,7 @@ graphView.headerOutput   = null; // same as overOutput, but when snapping from a
    
 graphView.tempConn       = null;
 
+graphView.showWires      = true;
 graphView._soloNode      = null;
    
 graphView.selecting      = false;
@@ -10639,8 +10642,28 @@ graphView.soloNode = node =>
 graphView.unsoloNode = () =>
 {
     graphView._soloNode = null;
+
     graph.nodes.forEach(n => n.div.style.opacity = 1);
     graph.connections.forEach(c => c.wire.style.opacity = 1);
+};
+
+
+
+graphView.toggleWires = () =>
+{
+    graphView.showWires = !graphView.showWires;
+    graphView.updateWires();
+};
+
+
+
+graphView.updateWires = () =>
+{
+    btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
+    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : '#2c2c2c';
+
+    graph.nodes.forEach(n => n.updateNode());
+    graph.connections.forEach(c => show(c.wire, graphView.showWires));
 };
 
 
@@ -11536,9 +11559,10 @@ class Graph
         const tab = '  ';
 
         let json = '{\n'
-            + tab + '"zoom": "' + graphView.zoom  + '",\n'
-            + tab + '"panx": "' + graphView.pan.x + '",\n'
-            + tab + '"pany": "' + graphView.pan.y + '",\n';
+            + tab + '"zoom": "'      + graphView.zoom  + '",\n'
+            + tab + '"panx": "'      + graphView.pan.x + '",\n'
+            + tab + '"pany": "'      + graphView.pan.y + '",\n'
+            + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '",\n';
 
         json += nodesToJson(this.nodes, false);
 
@@ -11873,7 +11897,11 @@ extends EventTarget
                  && (   graphView.tempConn.output.dataType != this.dataType
                      || graphView.tempConn.output.op.follows(this.op)));
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
+        const colorStyle = 
+            graphView.showWires
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2))
+            : 'transparent';
+
         //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
         const isConnected =
@@ -11889,12 +11917,12 @@ extends EventTarget
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
             + 'translateY(-50%)';
         
-        this.control.style.width        = (isConnected ? 8 : 6) + 'px';
-        this.control.style.height       = (isConnected ? 8 : 6) + 'px';
-        this.control.style.borderRadius = (isConnected ? 4 : 4) + 'px';
-        this.control.style.marginBottom = (isConnected ? 4 : 6) + 'px';
-
-        this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
+        this.control.style.width         = (isConnected ? 8 : 6) + 'px';
+        this.control.style.height        = (isConnected ? 8 : 6) + 'px';
+        this.control.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
+        this.control.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
+        this.control.style.boxShadow     = '0 0 0 1px ' + colorStyle;
+        this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
 
 
         this.wireBall.style.backgroundColor = 
@@ -12064,9 +12092,12 @@ class Output
                  && (   graphView.tempConn.input.dataType != this.dataType
                      || this.op.follows(graphView.tempConn.input.op)));
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12));
-        //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
+        const colorStyle = 
+            graphView.showWires
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12))
+            : 'transparent';
 
+        this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
         this.control.style.backgroundColor = colorStyle;
 
         this.control.style.boxShadow = 
@@ -18212,6 +18243,8 @@ function loadGraph(json)
           y: parseFloat(data.pany) },
         parseFloat(data.zoom));
 
+    graphView.showWires = data.showWires == 'true';
+
 
     loadNodesAsync(data, setLoadingProgress);
 }
@@ -18290,6 +18323,8 @@ function loadConnectionsAsync(data, nodes, setProgress)
         updateTerminalsAfterNodes(nodes);
 
         graphView.updatePanAndZoom();
+        graphView.updateWires();
+        
         loadingOverlay.style.display = 'none';
     });
 }

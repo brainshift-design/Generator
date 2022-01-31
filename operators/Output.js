@@ -133,9 +133,12 @@ class Output
                  && (   graphView.tempConn.input.dataType != this.dataType
                      || this.op.follows(graphView.tempConn.input.op)));
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12));
-        //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.2 : 0.1));
+        const colorStyle = 
+            graphView.showWires
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12))
+            : 'transparent';
 
+        this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
         this.control.style.backgroundColor = colorStyle;
 
         this.control.style.boxShadow = 

@@ -299,9 +299,10 @@ class Graph
         const tab = '  ';
 
         let json = '{\n'
-            + tab + '"zoom": "' + graphView.zoom  + '",\n'
-            + tab + '"panx": "' + graphView.pan.x + '",\n'
-            + tab + '"pany": "' + graphView.pan.y + '",\n';
+            + tab + '"zoom": "'      + graphView.zoom  + '",\n'
+            + tab + '"panx": "'      + graphView.pan.x + '",\n'
+            + tab + '"pany": "'      + graphView.pan.y + '",\n'
+            + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '",\n';
 
         json += nodesToJson(this.nodes, false);
 

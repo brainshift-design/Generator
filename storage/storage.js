@@ -28,6 +28,8 @@ function loadGraph(json)
           y: parseFloat(data.pany) },
         parseFloat(data.zoom));
 
+    graphView.showWires = data.showWires == 'true';
+
 
     loadNodesAsync(data, setLoadingProgress);
 }
@@ -106,6 +108,8 @@ function loadConnectionsAsync(data, nodes, setProgress)
         updateTerminalsAfterNodes(nodes);
 
         graphView.updatePanAndZoom();
+        graphView.updateWires();
+        
         loadingOverlay.style.display = 'none';
     });
 }

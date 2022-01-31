@@ -162,7 +162,11 @@ extends EventTarget
                  && (   graphView.tempConn.output.dataType != this.dataType
                      || graphView.tempConn.output.op.follows(this.op)));
 
-        const colorStyle = colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2));
+        const colorStyle = 
+            graphView.showWires
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2))
+            : 'transparent';
+
         //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
         const isConnected =
@@ -178,12 +182,12 @@ extends EventTarget
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
             + 'translateY(-50%)';
         
-        this.control.style.width        = (isConnected ? 8 : 6) + 'px';
-        this.control.style.height       = (isConnected ? 8 : 6) + 'px';
-        this.control.style.borderRadius = (isConnected ? 4 : 4) + 'px';
-        this.control.style.marginBottom = (isConnected ? 4 : 6) + 'px';
-
-        this.control.style.boxShadow = '0 0 0 1px ' + colorStyle;
+        this.control.style.width         = (isConnected ? 8 : 6) + 'px';
+        this.control.style.height        = (isConnected ? 8 : 6) + 'px';
+        this.control.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
+        this.control.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
+        this.control.style.boxShadow     = '0 0 0 1px ' + colorStyle;
+        this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
 
 
         this.wireBall.style.backgroundColor = 
