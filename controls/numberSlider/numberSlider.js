@@ -29,6 +29,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     slider.dec               = dec;
     slider.editDec           = dec;
     slider.acc               = acc;
+
+    slider.displayMultiplier = 1;
+    slider.displayDec        = dec;
                
     slider.name              = name;
     slider.suffix            = suffix;
@@ -528,7 +531,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         if (   slider.options.length > 0
             && slider.dec == 0)
         {
-            if (   slider.value < 0 
+            if (   slider.value <  0 
                 || slider.value >= slider.options.length)
                 valueText = '?';
             else
@@ -543,7 +546,11 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             valueText = 
                 isNaN(slider.value)
                 ? '?'
-                : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+                : getNumberString(
+                      slider.value * slider.displayMultiplier, 
+                      slider.displayDec, 
+                      slider.showHex
+                  ).toUpperCase();
         }
 
         slider.text.innerHTML += valueText + slider.suffix;

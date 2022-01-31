@@ -25,18 +25,12 @@ extends Operator
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  true,  true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramAmount = new NumberParam('amount', true, true,  true, 0, 0, 1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  true, true,  true, 1, 0.01, 4, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#paramAmount = new NumberParam('amount', true, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  true, true, true, 1, 0.01, 3, 2));
       
         this.#paramSpace.control.min = 2;
         this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
-
-        // this.#paramGamma.control.name = 'γ';
-        // this.#paramGamma.control.update();
-
-        // this.#paramValue.control.readOnly        = true;
-        // this.#paramValue.control.style.fontStyle = 'italic';
 
 
         this.inputs[0].addEventListener('connect', () => 
