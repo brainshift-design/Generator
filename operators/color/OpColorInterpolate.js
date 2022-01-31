@@ -174,7 +174,12 @@ extends Operator
             : dataType2rgb(this._dataType);
 
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+        
+        const colText = 
+            darkText 
+            ? [0, 0, 0, 0.24 * (1 + satBias)] 
+            : [1, 1, 1, 0.4  * (1 + satBias)];
 
 
         for (const input of this.inputs.filter(i => !i.param))
@@ -201,8 +206,8 @@ extends Operator
             const colBack   = dataColor2rgb(this._color);
             const darkText  = rgb2hclokl(colBack)[2] > 0.71;
             const colText   = darkText 
-                              ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4 ] 
-                              : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
+                              ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
+                              : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
             
             const textStyle = colorStyleRgba(colText);
     

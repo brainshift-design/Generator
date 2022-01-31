@@ -25,19 +25,17 @@ function createOperatorNode(node)
         if (e.altKey) 
             graphView.soloNode(node);
         
-            node.updateNode();
+        node.updateNode();
     });
 
     
     node.div.addEventListener('pointerleave', e =>
     {
-        node.div.over = false;
+        node.div.over      = false;
+        graphView.overNode = null;
         
         if (!e.altKey) 
-        {
-            graphView.overNode = null;
             graphView.unsoloNode();
-        }
 
         node.updateNode();
     });

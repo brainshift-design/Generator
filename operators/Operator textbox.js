@@ -58,6 +58,9 @@ function initLabelTextbox(node)
                 }
             }
         }
+
+        else if (e.key == 'Alt')
+            e.preventDefault();
     });
 
 

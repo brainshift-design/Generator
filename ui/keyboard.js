@@ -128,11 +128,8 @@ document.addEventListener('keyup', e =>
                 graphView.zoomSelecting = false;
             }
         }
-        else if (graphView.overNode)
-        {
+        else if (graphView._soloNode)
             graphView.unsoloNode();
-            graphView.overNode = null;
-        }
     }
 
     else if (e.key == 'Control'

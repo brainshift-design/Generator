@@ -12960,19 +12960,17 @@ function createOperatorNode(node)
         if (e.altKey) 
             graphView.soloNode(node);
         
-            node.updateNode();
+        node.updateNode();
     });
 
     
     node.div.addEventListener('pointerleave', e =>
     {
-        node.div.over = false;
+        node.div.over      = false;
+        graphView.overNode = null;
         
         if (!e.altKey) 
-        {
-            graphView.overNode = null;
             graphView.unsoloNode();
-        }
 
         node.updateNode();
     });
@@ -13408,6 +13406,9 @@ function initLabelTextbox(node)
                 }
             }
         }
+
+        else if (e.key == 'Alt')
+            e.preventDefault();
     });
 
 
@@ -14245,12 +14246,12 @@ extends Operator
     updateNode()
     {
         const colBack      = dataColor2rgb(this._color);
- 
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
- 
+        const satBias      = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+
         const colText      = darkText 
-                             ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4 ] 
-                             : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
+                             ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
+                             : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
         
         const colWarning   = darkText 
                              ? [0, 0, 0, 0.12] 
@@ -15644,8 +15645,12 @@ extends Operator
             {
                 const colBack  = dataColor2rgb(this.inputs[1].data.color);
                 const darkText = rgb2hclokl(colBack)[2] > 0.71;
+                const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
     
-                colWarning = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.16];
+                colWarning = 
+                    darkText 
+                    ? [0, 0, 0, 0.1  * (1 + satBias)] 
+                    : [1, 1, 1, 0.16 * (1 + satBias)];
             }
             else
                 colWarning = [0.5, 1, 0.5, 0.2];
@@ -15671,7 +15676,12 @@ extends Operator
             : dataType2rgb(this._dataType);
 
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+        
+        const colText = 
+            darkText 
+            ? [0, 0, 0, 0.24 * (1 + satBias)] 
+            : [1, 1, 1, 0.4  * (1 + satBias)];
 
 
         for (const input of this.inputs.filter(i => !i.param))
@@ -15898,7 +15908,12 @@ extends Operator
             : dataType2rgb(this._dataType);
 
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        const colText  = darkText ? [0, 0, 0, 0.24] : [1, 1, 1, 0.4];
+        const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+        
+        const colText = 
+            darkText 
+            ? [0, 0, 0, 0.24 * (1 + satBias)] 
+            : [1, 1, 1, 0.4  * (1 + satBias)];
 
 
         for (const input of this.inputs.filter(i => !i.param))
@@ -15925,8 +15940,8 @@ extends Operator
             const colBack   = dataColor2rgb(this._color);
             const darkText  = rgb2hclokl(colBack)[2] > 0.71;
             const colText   = darkText 
-                              ? [0, 0, 0, isValidRgb(colBack) ? 0.12 : 0.4 ] 
-                              : [1, 1, 1, isValidRgb(colBack) ? 0.14 : 0.35];
+                              ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
+                              : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
             
             const textStyle = colorStyleRgba(colText);
     
@@ -17582,11 +17597,8 @@ document.addEventListener('keyup', e =>
                 graphView.zoomSelecting = false;
             }
         }
-        else if (graphView.overNode)
-        {
+        else if (graphView._soloNode)
             graphView.unsoloNode();
-            graphView.overNode = null;
-        }
     }
 
     else if (e.key == 'Control'
