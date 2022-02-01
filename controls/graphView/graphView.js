@@ -52,14 +52,25 @@ graphView.addEventListener('pointerdown', e =>
         {
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
-            graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+
+            graphView.tempConn.wire.updateFromOutput(
+                e.clientX, 
+                e.clientY, 
+                boundingRect(graphView.overOutput.control),
+                controlBar.offsetHeight);
         }
         else if (graphView.overInput)
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
-                graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
+                
+                graphView.tempConn.wire.updateFromOutput(
+                    e.clientX, 
+                    e.clientY, 
+                    boundingRect(graphView.overInput.connectedOutput.control),
+                    controlBar.offsetHeight);
+                
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
             }
@@ -67,7 +78,12 @@ graphView.addEventListener('pointerdown', e =>
             {
                 graphView.overInput.connecting = true;
                 graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
-                graphView.tempConn.wire.updateFromInput(e.clientX, e.clientY)
+                
+                graphView.tempConn.wire.updateFromInput(
+                    e.clientX, 
+                    e.clientY,
+                    boundingRect(graphView.overInput.control),
+                    controlBar.offsetHeight);
             }
         }
         else // selection
@@ -124,8 +140,22 @@ function graphView_onpointermove(e)
     
     else if (graphView.tempConn)
     {
-             if (graphView.tempConn.output) graphView.tempConn.wire.updateFromOutput(e.clientX, e.clientY);
-        else if (graphView.tempConn.input ) graphView.tempConn.wire.updateFromInput (e.clientX, e.clientY);
+        if (graphView.tempConn.output)
+        { 
+            graphView.tempConn.wire.updateFromOutput(
+                e.clientX, 
+                e.clientY,
+                boundingRect(graphView.tempConn.output.control),
+                controlBar.offsetHeight);
+        }
+        else if (graphView.tempConn.input) 
+        {
+            graphView.tempConn.wire.updateFromInput(
+                e.clientX, 
+                e.clientY,
+                boundingRect(graphView.tempConn.input.control),
+                controlBar.offsetHeight);
+        };
     }
 }
 
@@ -190,10 +220,14 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
+        let pos = position(e);
+        pos.y -= controlBar.offsetHeight;
+
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
-        const pan  = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), zoom / graphView.zoom - 1));
+        const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
+        graphView.updatePanAndZoom();
     }
     else
     {
@@ -332,33 +366,25 @@ graphView.putNodeOnTop = node =>
 
 
 
-graphView.updateNodeTransforms = function(nodes)
+graphView.updateNodeTransforms = nodes =>
 {
-    const wires = [];
+    const nodeLeft = nodes.map(n => n.div.offsetLeft);
+    const nodeTop  = nodes.map(n => n.div.offsetTop);
+    const nodeRect = nodes.map(n => graphView.getNodeOffsetRect(n.div));
+    
+    for (let i = 0; i < nodes.length; i++)
+        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
 
+
+    const wires = [];
 
     for (const node of nodes)
     {
-        node.div.style.transform =
-            'translate(' 
-            + (graphView.pan.x * graphView.zoom) + 'px, '
-            + (graphView.pan.y * graphView.zoom) + 'px) '
-            + 'scale(' + graphView.zoom + ')';
-        
-
-        const nodeRect = graphView.getNodeOffsetRect(node.div);
-
-        node.div.style.transformOrigin = 
-            ((graphView.pan.x - node.div.offsetLeft) / nodeRect.width  * 100) + '% ' 
-            + ((graphView.pan.y - node.div.offsetTop ) / nodeRect.height * 100) + '%';  
-
-   
         for (const input of node.inputs)
             if (   input.isConnected
                 && input.connection
                 && !wires.includes(input.connection.wire))
                 wires.push(input.connection.wire);        
-
 
         for (const output of node.outputs)
             for (const connInput of output.connectedInputs)
@@ -368,59 +394,81 @@ graphView.updateNodeTransforms = function(nodes)
     }
 
 
-    for (const wire of wires)
-        graphView.updateWireTransform(wire);
+    graphView.updateWires(wires);
 };
 
 
 
-graphView.updateNodeTransform = function(node)
+graphView.updateNodeTransform = node =>
 {
-    node.div.style.transform =
-          'translate(' 
-        + (graphView.pan.x * graphView.zoom) + 'px, '
-        + (graphView.pan.y * graphView.zoom) + 'px) '
-        + 'scale(' + graphView.zoom + ')';
+    const nodeLeft = node.div.offsetLeft;
+    const nodeTop  = node.div.offsetTop;
+    const nodeRect = graphView.getNodeOffsetRect(node.div);
+    
+    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
     
 
-    const nodeRect = graphView.getNodeOffsetRect(node.div);
+    const wires = [];
 
-    node.div.style.transformOrigin = 
-          ((graphView.pan.x - node.div.offsetLeft) / nodeRect.width  * 100) + '% ' 
-        + ((graphView.pan.y - node.div.offsetTop ) / nodeRect.height * 100) + '%';  
-
-   
     for (const input of node.inputs)
-    {
         if (   input.isConnected
             && input.connection)
-            graphView.updateWireTransform(input.connection.wire);        
-    }
-
+            wires.push(input.connection.wire);        
 
     for (const output of node.outputs)
         for (const connInput of output.connectedInputs)
             if (connInput.connection)
-                graphView.updateWireTransform(connInput.connection.wire);
+                wires.push(connInput.connection.wire);
+
+
+    graphView.updateNodeWires(wires);
 };
 
 
 
-graphView.updateWireTransform = function(wire)
+graphView.setNodeTransform = (node, nodeLeft, nodeTop, nodeRect) =>
 {
-    const outRect = boundingRect(wire.connection.output.control);
-    const inRect  = boundingRect(wire.connection.input .control);
-    const yOffset = controlBar.offsetHeight;
+    node.div.style.transform =
+          'translate(' 
+        + (graphView.pan.x * graphView.zoom) + 'px, '  
+        + (graphView.pan.y * graphView.zoom) + 'px) '
+        + 'scale(' + graphView.zoom + ')';
     
+    node.div.style.transformOrigin = 
+          ((graphView.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
+        + ((graphView.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
+};
+
+
+
+graphView.updateNodeWires = wires =>
+{
+    const outRect = [];            
+    const inRect  = [];
     const cw      = graphView.clientWidth;
     const ch      = graphView.clientHeight;
+    const yOffset = controlBar.offsetHeight;
 
+    wires.forEach(w => 
+    {
+        outRect.push(boundingRect(w.connection.output.control));
+        inRect .push(boundingRect(w.connection.input .control));
+    });
+
+    for (let i = 0; i < wires.length; i++)
+        graphView.updateWireTransform(wires[i], outRect[i], inRect[i], cw, ch, yOffset);        
+};
+
+
+
+graphView.updateWireTransform = function(wire, outRect, inRect, cw, ch, yOffset)
+{
     wire.setAttribute('width',  cw / graphView.zoom);
     wire.setAttribute('height', ch / graphView.zoom);
 
     wire.setAttribute('viewBox',
                 0
-        + ' ' + yOffset/2 / graphView.zoom // 20 seems to be the plugin title bar
+        + ' ' + yOffset/2 / graphView.zoom // why is only half of yOffset taken???
         + ' ' + cw        / graphView.zoom
         + ' ' + ch        / graphView.zoom);
 
@@ -435,7 +483,15 @@ graphView.addWire = (wire, updateTransform = true) =>
     graphView.appendChild(wire);
 
     if (updateTransform)
-        graphView.updateWireTransform(wire);
+    {
+        const outRect = boundingRect(wire.connection.output.control);            
+        const inRect  = boundingRect(wire.connection.input .control);
+        const cw      = graphView.clientWidth;
+        const ch      = graphView.clientHeight;
+        const yOffset = controlBar.offsetHeight;
+
+        graphView.updateWireTransform(wire, outRect, inRect, cw, ch, yOffset);
+    }
 };
 
 

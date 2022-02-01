@@ -6,7 +6,12 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
     graphView.addWire(graphView.tempConn.wire, false);
     graphView.tempConn.wire.scale  = graphView.zoom;
     graphView.tempConn.wire.output = output;
-    graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
+
+    graphView.tempConn.wire.updateFromOutput(
+        graphView.pStart.x, 
+        graphView.pStart.y,
+        boundingRect(output.control),
+        controlBar.offsetHeight);
 
     output.updateControl();
 };
@@ -22,7 +27,12 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     graphView.addWire(graphView.tempConn.wire, false);
     graphView.tempConn.wire.scale = graphView.zoom;
     graphView.tempConn.wire.input = input;
-    graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
+
+    graphView.tempConn.wire.updateFromInput(
+        graphView.pStart.x, 
+        graphView.pStart.y,
+        boundingRect(input.control),
+        controlBar.offsetHeight);
 
     input.updateControl();
 };

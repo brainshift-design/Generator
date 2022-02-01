@@ -210,6 +210,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
               && slider.param)
         {
             if (    graphView.tempConn.output
+                &&  graphView.tempConn.output.dataType == slider.param.dataType
                 && !graphView.tempConn.output.op.follows(slider.param.op)
                 &&  slider.param.input)
             {
@@ -224,7 +225,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
-            else if (graphView.tempConn.input
+            else if ( graphView.tempConn.input
+                  &&  graphView.tempConn.input.dataType == slider.param.dataType
                   && !slider.param.op.follows(graphView.tempConn.input.op)
                   &&  slider.param.output)
             {

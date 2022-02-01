@@ -177,6 +177,7 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput();
+    graphView.updateNodeTransform(op);
 }
 
 

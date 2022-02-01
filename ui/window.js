@@ -12,9 +12,6 @@ document.startRect = new Rect();
 
 function resizeWindow(width, height)
 {
-    // for (const conn of graph.connections)
-    //     graphView.updateWireTransform(conn.wire);
-
     uiPostMessageToFigma({ 
         cmd:   'figResizeWindow', 
         width:  width,

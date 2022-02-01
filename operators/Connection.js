@@ -39,10 +39,10 @@ class Connection
             // the yOffset is to start wire coords just below the control bar,
             // not at the top of the window
 
-            let x1 = (outRect.left + outRect.width /2) / graphView.zoom;
-            let y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
-            let x2 = (inRect .left + inRect .width /2) / graphView.zoom;
-            let y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
+            let x1 = (outRect.x + outRect.width /2) / graphView.zoom;
+            let y1 = (outRect.y + outRect.height/2) / graphView.zoom;
+            let x2 = (inRect .x + inRect .width /2) / graphView.zoom;
+            let y2 = (inRect .y + inRect .height/2) / graphView.zoom;
 
             y1 -= yOffset / graphView.zoom;
             y2 -= yOffset / graphView.zoom;
@@ -53,15 +53,15 @@ class Connection
 
 
 
-        this.wire.updateFromOutput = (x, y) =>
+        this.wire.updateFromOutput = (x, y, outRect, yOffset) =>
         {
-            let outRect = boundingRect(this.output.control);
+            //let outRect = boundingRect(this.output.control);
 
-            let x1 = outRect.left + outRect.width /2;
-            let y1 = outRect.top  + outRect.height/2;
+            let x1 = outRect.x + outRect.width /2;
+            let y1 = outRect.y + outRect.height/2;
 
-            y1 -= controlBar.offsetHeight;
-            y  -= controlBar.offsetHeight;
+            y1 -= yOffset;
+            y  -= yOffset;
 
             this.wire.updateCurve(x1, y1, x, y);
             this.wire.updateStyle(this.wire.getColor());
@@ -69,15 +69,15 @@ class Connection
 
 
 
-        this.wire.updateFromInput = (x, y) =>
+        this.wire.updateFromInput = (x, y, inRect, yOffset) =>
         {
-            let inRect = boundingRect(this.input.control);
+            //let inRect = boundingRect(this.input.control);
 
-            let x2 = inRect.left + inRect.width /2;
-            let y2 = inRect.top  + inRect.height/2;
+            let x2 = inRect.x + inRect.width /2;
+            let y2 = inRect.y + inRect.height/2;
 
-            y  -= controlBar.offsetHeight;
-            y2 -= controlBar.offsetHeight;
+            y  -= yOffset;
+            y2 -= yOffset;
 
             this.wire.updateCurve(x, y, x2, y2);
             this.wire.updateStyle(this.wire.getColor());

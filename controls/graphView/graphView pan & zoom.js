@@ -75,12 +75,10 @@ graphView.startPan = pointerId =>
 
 graphView.updatePanAndZoom = () =>
 {
-    for (const node of graph.nodes)
-        graphView.updateNodeTransform(node);
-
     if (graphView.tempConn)
         graphView.tempConn.wire.scale = graphView.zoom;
 
+    graphView.updateNodeTransforms(graph.nodes);
     graphView.updateScroll();
 };
 

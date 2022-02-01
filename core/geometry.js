@@ -184,6 +184,17 @@ function xrotate(angle)
 
 
 
+function offsetRect(elem)
+{
+    return new Rect(
+        elem.offsetLeft,
+        elem.offsetTop,
+        elem.offsetWidth,
+        elem.offsetHeight);
+}
+
+
+
 function boundingRect(elem)
 {
     const bounds = elem.getBoundingClientRect();
