@@ -33,7 +33,6 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     slider.displayMin        = min;
     slider.displayMax        = max;
     slider.displayMultiplier = 1;
-    slider.displayDec        = dec;
                
     slider.name              = name;
     slider.suffix            = suffix;
@@ -553,7 +552,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 ? '?'
                 : getNumberString(
                       slider.value * slider.displayMultiplier, 
-                      slider.displayDec, 
+                      slider.dec, 
                       slider.showHex
                   ).toUpperCase();
         }

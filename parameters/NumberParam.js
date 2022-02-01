@@ -59,7 +59,7 @@ extends Parameter
 
         this.control.successOnFocusOut = true;
 
-        
+
         this.div.appendChild(this.control);
 
        
@@ -109,7 +109,7 @@ extends Parameter
         this.control.editDec = dec;
         this.control.update();
 
-        //setTimeout(() => this.op.pushUpdate());
+        setTimeout(() => this.op.pushUpdate());
     }
 
 
