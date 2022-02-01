@@ -47,8 +47,10 @@ graphView.zoomSelecting = false;
 
 graphView.setPanAndZoom = (pan, zoom) =>
 {
-    if (   graphView._zoom == zoom
-        && graphView._pan  == pan) 
+    if (      graphView._pan  == pan
+           && graphView._zoom == zoom
+        || zoom < 0.02
+        || zoom > 50) 
         return;
 
     graphView.oldZoom = graphView.zoom;
