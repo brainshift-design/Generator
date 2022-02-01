@@ -225,11 +225,14 @@ extends Operator
         this.paramSpace.control.update();
 
 
-        this.hexbox.value = 
-            isValidRgb(colBack)
-            ? rgb2hex(colBack)
-            : '?';
-
+        if (this.hexbox != document.activeElement)
+        {
+            this.hexbox.value = 
+                isValidRgb(colBack)
+                ? rgb2hex(colBack)
+                : '?';
+        }
+        
         this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
 
 
