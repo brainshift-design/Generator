@@ -232,8 +232,6 @@ extends Operator
 
         this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
 
-        this.updateControls(colBack);
-
 
         this.#warningOverlay.style.background =
             isValidRgb(colBack)
@@ -272,13 +270,15 @@ extends Operator
 
 
 
-    updateControls(rgb)
+    updateControls()
     {
+        const colBack = dataColor2rgb(this._color);
+
         this.updateAllSliderRanges();
 
-        this.updateSlider(this.param1.control, isValidRgb(rgb));
-        this.updateSlider(this.param2.control, isValidRgb(rgb));
-        this.updateSlider(this.param3.control, isValidRgb(rgb));
+        this.updateSlider(this.param1.control, isValidRgb(colBack));
+        this.updateSlider(this.param2.control, isValidRgb(colBack));
+        this.updateSlider(this.param3.control, isValidRgb(colBack));
     }
 
 

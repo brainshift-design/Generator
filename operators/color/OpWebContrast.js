@@ -176,7 +176,7 @@ extends Operator
         }
 
 
-        this.#paramStandard.control.update();
+        //this.#paramStandard.control.update();
              
 
         super.updateNode();

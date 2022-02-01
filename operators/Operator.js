@@ -271,6 +271,7 @@ class Operator
 
     updateNode() 
     {
+        this.updateControls();
         this.updateHeader();
 
 
@@ -302,11 +303,18 @@ class Operator
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
 
-
+       
         this.updateNodeState();
 
 
         updateNodeLabel(this);
+    }
+
+
+
+    updateControls()
+    {
+        this.params.forEach(p => p.control.update());
     }
 
 

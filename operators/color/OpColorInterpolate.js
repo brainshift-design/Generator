@@ -161,7 +161,7 @@ extends Operator
         else
             this.updateWarningOverlay(colorStyleRgba([0.5, 1, 0.5, 0.2]));
 
-
+        
         super.updateNode();
     }
 
