@@ -18437,7 +18437,7 @@ function loadNodesAsync(data, setProgress)
     let promise = Promise.resolve([]);
 
 
-    const chunkSize = 8; // nodes
+    const chunkSize = 10; // nodes
     for (let i = 0; i < data.nodes.length; i += chunkSize)
     {
         promise = promise.then(nodes => 
@@ -18468,7 +18468,7 @@ function loadConnectionsAsync(data, nodes, setProgress)
     let promise = Promise.resolve([]);
 
 
-    const chunkSize = 8; // connections
+    const chunkSize = 10; // connections
     for (let i = 0; i < data.connections.length; i += chunkSize)
     {
         promise = promise.then(() => 
