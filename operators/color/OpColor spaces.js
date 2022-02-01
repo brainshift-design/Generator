@@ -158,9 +158,17 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
     op.param1.control.wrapValue = c1wrap;
     op.param1.control.suffix    = c1suffix;
 
-    op.param1.control.min = c1min; op.param1.control.max = c1max; op.param1.control.update();
-    op.param2.control.min = c2min; op.param2.control.max = c2max; op.param2.control.update();
-    op.param3.control.min = c3min; op.param3.control.max = c3max; op.param3.control.update();
+    op.param1.control.setMin(c1min); 
+    op.param2.control.setMin(c2min); 
+    op.param3.control.setMin(c3min); 
+    
+    op.param1.control.setMax(c1max); 
+    op.param2.control.setMax(c2max); 
+    op.param3.control.setMax(c3max); 
+    
+    op.param1.control.update();
+    op.param2.control.update();
+    op.param3.control.update();
 }
 
 

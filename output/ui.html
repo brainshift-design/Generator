@@ -7168,7 +7168,7 @@ class NumberSliderRange
 
 
 
-function updateSliderRanges(slider)
+function updateSliderRanges(slider, sliderWidth, sliderHeight)
 {
     if (slider.ranges.length == slider.rangeDivs.length) // update
     {
@@ -7177,7 +7177,9 @@ function updateSliderRanges(slider)
             updateSliderRangeDiv(
                 slider,
                 slider.ranges   [i],
-                slider.rangeDivs[i]);
+                slider.rangeDivs[i],
+                sliderWidth,
+                sliderHeight);
         }
     }
     else // recreate
@@ -7192,24 +7194,24 @@ function updateSliderRanges(slider)
             slider.rangeDivs.push(div);
             slider.appendChild(div);
         
-            updateSliderRangeDiv(slider, range, div);
+            updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight);
         }
     }
 };
 
 
 
-function updateSliderRangeDiv(slider, range, div)
+function updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight)
 {
     if (range.start == range.end)
         div.style.display = 'none';
     else
     {
         div.style.display    = 'block';
-        div.style.left       = slider.clientWidth * range.start;  
-        div.style.top        = range.top * slider.clientHeight;
-        div.style.width      = slider.clientWidth * (range.end - range.start);
-        div.style.height     = (range.bottom - range.top) * slider.clientHeight;
+        div.style.left       = sliderWidth * range.start;  
+        div.style.top        = range.top * sliderHeight;
+        div.style.width      = sliderWidth * (range.end - range.start);
+        div.style.height     = (range.bottom - range.top) * sliderHeight;
         div.style.background = range.background;
     }
 };
@@ -7650,7 +7652,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
                 val = Math.floor(val / grain) * grain;
 
-                slider.setValue(val, true, false, false, getCtrlKey(e));
+                slider.setValue(val, true, false, false, !getCtrlKey(e));
                 slider.prevValue = slider.value;
                 
                 setTimeout(() => slider.param.op.pushUpdate());
@@ -7950,30 +7952,35 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
     slider.update = function()
     {
-        let v  =  slider.value      / (slider.displayMax - slider.displayMin);
-        let cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * slider.clientWidth;
+        const sx = slider.offsetLeft;
 
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
+        const sw = slider.clientWidth;
+        const sh = slider.clientHeight;
+
+        let v    =  slider.value      / (slider.displayMax - slider.displayMin);
+        let cx   = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
+
+        slider.focus.style.left     = 0;
+        slider.focus.style.top      = 0;
+        slider.focus.style.width    = sw;
+        slider.focus.style.height   = sh;
 
 
         slider.bar.style.background = slider.valueColor;
 
-        slider.bar.style.top        = slider.clientHeight * slider.barTop;
-        slider.bar.style.height     = slider.clientHeight * (slider.barBottom - slider.barTop);
+        slider.bar.style.top        = sh * slider.barTop;
+        slider.bar.style.height     = sh * (slider.barBottom - slider.barTop);
 
 
         if (v >= 0)
         {
-            slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
-            slider.bar.style.width = Math.round(v * slider.clientWidth);
+            slider.bar.style.left  = sx + Math.round(cx);
+            slider.bar.style.width = Math.round(v * sw);
         }
         else
         {
-            slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
-            slider.bar.style.width = -v * slider.clientWidth;
+            slider.bar.style.left  = sx + cx + v * sw;
+            slider.bar.style.width = -v * sw;
         }
 
 
@@ -8020,7 +8027,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         slider.text.innerHTML += valueText + slider.suffix;
 
 
-        updateSliderRanges(slider);
+        updateSliderRanges(slider, sw, sh);
     };
 
 
@@ -8057,6 +8064,22 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
              || document.mozPointerLockElement === slider);
     }
     
+
+
+    slider.setMin = min =>
+    {
+        slider.min        = min;
+        slider.displayMin = min;
+    };
+
+
+
+    slider.setMax = max =>
+    {
+        slider.max        = max;
+        slider.displayMax = max;
+    };
+
 
 
     slider.update();
@@ -14744,9 +14767,17 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
     op.param1.control.wrapValue = c1wrap;
     op.param1.control.suffix    = c1suffix;
 
-    op.param1.control.min = c1min; op.param1.control.max = c1max; op.param1.control.update();
-    op.param2.control.min = c2min; op.param2.control.max = c2max; op.param2.control.update();
-    op.param3.control.min = c3min; op.param3.control.max = c3max; op.param3.control.update();
+    op.param1.control.setMin(c1min); 
+    op.param2.control.setMin(c2min); 
+    op.param3.control.setMin(c3min); 
+    
+    op.param1.control.setMax(c1max); 
+    op.param2.control.setMax(c2max); 
+    op.param3.control.setMax(c3max); 
+    
+    op.param1.control.update();
+    op.param2.control.update();
+    op.param3.control.update();
 }
 
 
@@ -15800,7 +15831,7 @@ extends Operator
         this.addParam(this.#paramAmount = new NumberParam('amount', true, true, true, 0, 0,    1, 2));
         this.addParam(this.#paramGamma  = new NumberParam('gamma',  true, true, true, 1, 0.01, 3, 2));
       
-        this.#paramSpace.control.min = 2;
+        this.#paramSpace.control.setMin(2);
         this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
         
         this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;

@@ -29,7 +29,7 @@ extends Operator
         this.addParam(this.#paramAmount = new NumberParam('amount', true, true, true, 0, 0,    1, 2));
         this.addParam(this.#paramGamma  = new NumberParam('gamma',  true, true, true, 1, 0.01, 3, 2));
       
-        this.#paramSpace.control.min = 2;
+        this.#paramSpace.control.setMin(2);
         this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
         
         this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;

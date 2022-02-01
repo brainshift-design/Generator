@@ -190,7 +190,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
                 val = Math.floor(val / grain) * grain;
 
-                slider.setValue(val, true, false, false, getCtrlKey(e));
+                slider.setValue(val, true, false, false, !getCtrlKey(e));
                 slider.prevValue = slider.value;
                 
                 setTimeout(() => slider.param.op.pushUpdate());
@@ -490,30 +490,35 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
     slider.update = function()
     {
-        let v  =  slider.value      / (slider.displayMax - slider.displayMin);
-        let cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * slider.clientWidth;
+        const sx = slider.offsetLeft;
 
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
+        const sw = slider.clientWidth;
+        const sh = slider.clientHeight;
+
+        let v    =  slider.value      / (slider.displayMax - slider.displayMin);
+        let cx   = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
+
+        slider.focus.style.left     = 0;
+        slider.focus.style.top      = 0;
+        slider.focus.style.width    = sw;
+        slider.focus.style.height   = sh;
 
 
         slider.bar.style.background = slider.valueColor;
 
-        slider.bar.style.top        = slider.clientHeight * slider.barTop;
-        slider.bar.style.height     = slider.clientHeight * (slider.barBottom - slider.barTop);
+        slider.bar.style.top        = sh * slider.barTop;
+        slider.bar.style.height     = sh * (slider.barBottom - slider.barTop);
 
 
         if (v >= 0)
         {
-            slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
-            slider.bar.style.width = Math.round(v * slider.clientWidth);
+            slider.bar.style.left  = sx + Math.round(cx);
+            slider.bar.style.width = Math.round(v * sw);
         }
         else
         {
-            slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
-            slider.bar.style.width = -v * slider.clientWidth;
+            slider.bar.style.left  = sx + cx + v * sw;
+            slider.bar.style.width = -v * sw;
         }
 
 
@@ -560,7 +565,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         slider.text.innerHTML += valueText + slider.suffix;
 
 
-        updateSliderRanges(slider);
+        updateSliderRanges(slider, sw, sh);
     };
 
 
@@ -597,6 +602,22 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
              || document.mozPointerLockElement === slider);
     }
     
+
+
+    slider.setMin = min =>
+    {
+        slider.min        = min;
+        slider.displayMin = min;
+    };
+
+
+
+    slider.setMax = max =>
+    {
+        slider.max        = max;
+        slider.displayMax = max;
+    };
+
 
 
     slider.update();

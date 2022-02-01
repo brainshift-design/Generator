@@ -23,7 +23,7 @@ class NumberSliderRange
 
 
 
-function updateSliderRanges(slider)
+function updateSliderRanges(slider, sliderWidth, sliderHeight)
 {
     if (slider.ranges.length == slider.rangeDivs.length) // update
     {
@@ -32,7 +32,9 @@ function updateSliderRanges(slider)
             updateSliderRangeDiv(
                 slider,
                 slider.ranges   [i],
-                slider.rangeDivs[i]);
+                slider.rangeDivs[i],
+                sliderWidth,
+                sliderHeight);
         }
     }
     else // recreate
@@ -47,24 +49,24 @@ function updateSliderRanges(slider)
             slider.rangeDivs.push(div);
             slider.appendChild(div);
         
-            updateSliderRangeDiv(slider, range, div);
+            updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight);
         }
     }
 };
 
 
 
-function updateSliderRangeDiv(slider, range, div)
+function updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight)
 {
     if (range.start == range.end)
         div.style.display = 'none';
     else
     {
         div.style.display    = 'block';
-        div.style.left       = slider.clientWidth * range.start;  
-        div.style.top        = range.top * slider.clientHeight;
-        div.style.width      = slider.clientWidth * (range.end - range.start);
-        div.style.height     = (range.bottom - range.top) * slider.clientHeight;
+        div.style.left       = sliderWidth * range.start;  
+        div.style.top        = range.top * sliderHeight;
+        div.style.width      = sliderWidth * (range.end - range.start);
+        div.style.height     = (range.bottom - range.top) * sliderHeight;
         div.style.background = range.background;
     }
 };

@@ -28,7 +28,7 @@ extends Operator
             // if (this.#min.value > this.#max.value)
             //     this.#min.value = this.#max.value;
 
-            this.#max.control.min = this.#min.value;
+            this.#max.control.setMin(this.#min.value);
             this.updateConnectedInputValueText();
         });
 
@@ -38,7 +38,7 @@ extends Operator
             // if (this.#max.value < this.#min.value)
             //     this.#max.value = this.#min.value;
 
-            this.#min.control.max = this.#max.value;
+            this.#min.control.setMax(this.#max.value);
             this.updateConnectedInputValueText();
         });
     }
