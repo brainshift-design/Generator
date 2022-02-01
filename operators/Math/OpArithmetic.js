@@ -177,6 +177,7 @@ extends Operator
 function onConnectInput(op)
 {
     op.addNewInput();
+    op.updateNode();
     graphView.updateNodeTransform(op);
 }
 
@@ -186,4 +187,5 @@ function onDisconnectInput(op, input)
 {
     removeFromArray(op.inputs, input);
     op.inputControls.removeChild(input.control);
+    op.updateNode();
 }
