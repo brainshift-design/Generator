@@ -107,9 +107,9 @@ function loadConnectionsAsync(data, nodes, setProgress)
         nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
-        graphView.updatePanAndZoom();
         graphView.updateWires();
-        
+        graphView.updatePanAndZoom();
+
         loadingOverlay.style.display = 'none';
     });
 }

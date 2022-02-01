@@ -408,41 +408,34 @@ graphView.updateNodeTransform = function(node)
 
 graphView.updateWireTransform = function(wire)
 {
-    wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
-    wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
+    const outRect = boundingRect(wire.connection.output.control);
+    const inRect  = boundingRect(wire.connection.input .control);
+    const yOffset = controlBar.offsetHeight;
+    
+    const cw      = graphView.clientWidth;
+    const ch      = graphView.clientHeight;
+
+    wire.setAttribute('width',  cw / graphView.zoom);
+    wire.setAttribute('height', ch / graphView.zoom);
 
     wire.setAttribute('viewBox',
-                 0
-        + ' ' + 20                     / graphView.zoom // 20 seems to be the plugin title bar
-        + ' ' + graphView.clientWidth  / graphView.zoom
-        + ' ' + graphView.clientHeight / graphView.zoom);
+                0
+        + ' ' + yOffset/2 / graphView.zoom // 20 seems to be the plugin title bar
+        + ' ' + cw        / graphView.zoom
+        + ' ' + ch        / graphView.zoom);
 
-    wire.update();
+    wire.update(outRect, inRect, yOffset);
 };
 
 
 
-graphView.addWire = wire =>
+graphView.addWire = (wire, updateTransform = true) =>
 {
     graphView.wires.push(wire);
     graphView.appendChild(wire);
-    graphView.updateWireTransform(wire);
-};
 
-
-
-graphView.addWireFromOutput = (wire, output) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);
-};
-
-
-
-graphView.addWireFromInput = (wire, input) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);  
+    if (updateTransform)
+        graphView.updateWireTransform(wire);
 };
 
 

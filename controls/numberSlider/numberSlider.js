@@ -69,6 +69,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     slider.showHex           = false;
     
     slider.enableChangeEvent = true;
+    slider.successOnFocusOut = false;
 
     slider.pointerEvents     = true;
     slider.readOnly          = false;

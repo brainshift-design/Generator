@@ -15,6 +15,7 @@ class Connection
 
 
         this.wire                      = createSvg('svg');
+        this.wire.connection           = this;
         this.wire.style.position       = 'absolute';
         this.wire.style.left           = 0;
         this.wire.style.top            = 0;
@@ -33,20 +34,18 @@ class Connection
 
         
 
-        this.wire.update = () =>
+        this.wire.update = (outRect, inRect, yOffset) =>
         {
-            let outRect = boundingRect(this.output.control);
-            let inRect  = boundingRect(this.input .control);
-
+            // the yOffset is to start wire coords just below the control bar,
+            // not at the top of the window
 
             let x1 = (outRect.left + outRect.width /2) / graphView.zoom;
             let y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
             let x2 = (inRect .left + inRect .width /2) / graphView.zoom;
             let y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
-            y1 -= controlBar.offsetHeight / graphView.zoom;
-            y2 -= controlBar.offsetHeight / graphView.zoom;
-
+            y1 -= yOffset / graphView.zoom;
+            y2 -= yOffset / graphView.zoom;
 
             this.wire.updateCurve(x1, y1, x2, y2);
             this.wire.updateStyle(this.wire.getColor());

@@ -57,7 +57,9 @@ extends Parameter
             decimals,   // decimals
             dragScale); // drag scale
 
+        this.control.successOnFocusOut = true;
 
+        
         this.div.appendChild(this.control);
 
        

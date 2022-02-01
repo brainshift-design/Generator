@@ -956,8 +956,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'>CTR</button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>LERP</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleWires(); this.blur();'>WIRES</button>
     
 </div>
@@ -7385,6 +7385,9 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('focusout', function()
     {
+        if (slider.successOnFocusOut)
+            slider.textbox.finish(true);
+            
         slider.parentNode.removeChild(slider.textbox);
         slider.clicked = false;
     });
@@ -7526,6 +7529,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     slider.showHex           = false;
     
     slider.enableChangeEvent = true;
+    slider.successOnFocusOut = false;
 
     slider.pointerEvents     = true;
     slider.readOnly          = false;
@@ -9515,10 +9519,9 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
     //graphView.setPointerCapture(pointerId);
 
     graphView.tempConn = new Connection(output, null);
-    graphView.addWireFromOutput(graphView.tempConn.wire, output);
-    //graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
-    graphView.tempConn.wire.scale        = graphView.zoom;
-    graphView.tempConn.wire.output       = output;
+    graphView.addWire(graphView.tempConn.wire, false);
+    graphView.tempConn.wire.scale  = graphView.zoom;
+    graphView.tempConn.wire.output = output;
     graphView.tempConn.wire.updateFromOutput(graphView.pStart.x, graphView.pStart.y);
 
     output.updateControl();
@@ -9532,10 +9535,9 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     //console.log(graphView.hasPointerCapture(pointerId));
 
     graphView.tempConn = new Connection(null, input);
-    graphView.addWireFromInput(graphView.tempConn.wire, input);
-    //graphView.tempConn.wire.style.zIndex = MAX_INT32-3;
-    graphView.tempConn.wire.scale        = graphView.zoom;
-    graphView.tempConn.wire.input        = input;
+    graphView.addWire(graphView.tempConn.wire, false);
+    graphView.tempConn.wire.scale = graphView.zoom;
+    graphView.tempConn.wire.input = input;
     graphView.tempConn.wire.updateFromInput(graphView.pStart.x, graphView.pStart.y);
 
     input.updateControl();
@@ -10556,41 +10558,34 @@ graphView.updateNodeTransform = function(node)
 
 graphView.updateWireTransform = function(wire)
 {
-    wire.setAttribute('width',  graphView.clientWidth  / graphView.zoom);
-    wire.setAttribute('height', graphView.clientHeight / graphView.zoom);
+    const outRect = boundingRect(wire.connection.output.control);
+    const inRect  = boundingRect(wire.connection.input .control);
+    const yOffset = controlBar.offsetHeight;
+    
+    const cw      = graphView.clientWidth;
+    const ch      = graphView.clientHeight;
+
+    wire.setAttribute('width',  cw / graphView.zoom);
+    wire.setAttribute('height', ch / graphView.zoom);
 
     wire.setAttribute('viewBox',
-                 0
-        + ' ' + 20                     / graphView.zoom // 20 seems to be the plugin title bar
-        + ' ' + graphView.clientWidth  / graphView.zoom
-        + ' ' + graphView.clientHeight / graphView.zoom);
+                0
+        + ' ' + yOffset/2 / graphView.zoom // 20 seems to be the plugin title bar
+        + ' ' + cw        / graphView.zoom
+        + ' ' + ch        / graphView.zoom);
 
-    wire.update();
+    wire.update(outRect, inRect, yOffset);
 };
 
 
 
-graphView.addWire = wire =>
+graphView.addWire = (wire, updateTransform = true) =>
 {
     graphView.wires.push(wire);
     graphView.appendChild(wire);
-    graphView.updateWireTransform(wire);
-};
 
-
-
-graphView.addWireFromOutput = (wire, output) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);
-};
-
-
-
-graphView.addWireFromInput = (wire, input) =>
-{
-    graphView.wires.push(wire);
-    graphView.appendChild(wire);  
+    if (updateTransform)
+        graphView.updateWireTransform(wire);
 };
 
 
@@ -10886,7 +10881,9 @@ extends Parameter
             decimals,   // decimals
             dragScale); // drag scale
 
+        this.control.successOnFocusOut = true;
 
+        
         this.div.appendChild(this.control);
 
        
@@ -12144,6 +12141,7 @@ class Connection
 
 
         this.wire                      = createSvg('svg');
+        this.wire.connection           = this;
         this.wire.style.position       = 'absolute';
         this.wire.style.left           = 0;
         this.wire.style.top            = 0;
@@ -12162,20 +12160,18 @@ class Connection
 
         
 
-        this.wire.update = () =>
+        this.wire.update = (outRect, inRect, yOffset) =>
         {
-            let outRect = boundingRect(this.output.control);
-            let inRect  = boundingRect(this.input .control);
-
+            // the yOffset is to start wire coords just below the control bar,
+            // not at the top of the window
 
             let x1 = (outRect.left + outRect.width /2) / graphView.zoom;
             let y1 = (outRect.top  + outRect.height/2) / graphView.zoom;
             let x2 = (inRect .left + inRect .width /2) / graphView.zoom;
             let y2 = (inRect .top  + inRect .height/2) / graphView.zoom;
 
-            y1 -= controlBar.offsetHeight / graphView.zoom;
-            y2 -= controlBar.offsetHeight / graphView.zoom;
-
+            y1 -= yOffset / graphView.zoom;
+            y2 -= yOffset / graphView.zoom;
 
             this.wire.updateCurve(x1, y1, x2, y2);
             this.wire.updateStyle(this.wire.getColor());
@@ -14348,7 +14344,7 @@ extends Operator
 
         for (const output of this.outputs)
             for (const input of output.connectedInputs)
-                input.connection.wire.update();
+                input.connection.wire.updateStyle(input.connection.wire.getColor());
 
                 
         super.updateNode();
@@ -18322,9 +18318,9 @@ function loadConnectionsAsync(data, nodes, setProgress)
         nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
-        graphView.updatePanAndZoom();
         graphView.updateWires();
-        
+        graphView.updatePanAndZoom();
+
         loadingOverlay.style.display = 'none';
     });
 }

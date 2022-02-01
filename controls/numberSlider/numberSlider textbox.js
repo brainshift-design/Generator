@@ -149,6 +149,9 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('focusout', function()
     {
+        if (slider.successOnFocusOut)
+            slider.textbox.finish(true);
+            
         slider.parentNode.removeChild(slider.textbox);
         slider.clicked = false;
     });
