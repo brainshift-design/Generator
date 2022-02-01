@@ -11,6 +11,7 @@ class Output
     wireColor;
 
     control;
+    hitbox;
     wireBall;
     
     
@@ -47,11 +48,13 @@ class Output
         this._dataType = dataType;
         
         this.control  = createDiv('output');
+        this.hitbox   = createDiv('outputHitbox');
         this.wireBall = createDiv('outputBall');
         
         this.control.output = this;
         
         
+        this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.1];
@@ -61,7 +64,7 @@ class Output
 
         
 
-        this.control.addEventListener('pointerenter', e => 
+        this.hitbox.addEventListener('pointerenter', e => 
         { 
             if (graphView.headerOutput)
             {
@@ -100,7 +103,7 @@ class Output
 
 
 
-        this.control.addEventListener('pointerleave', e => 
+        this.hitbox.addEventListener('pointerleave', e => 
         { 
             this.endConnection();
         });

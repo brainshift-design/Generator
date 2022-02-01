@@ -778,7 +778,7 @@ input[type=text]::selection
     /* position:       absolute; */
     top:            50%;
     transform:      translateY(-50%);
-    pointer-events: auto;
+    pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
@@ -795,6 +795,17 @@ input[type=text]::selection
     pointer-events: none;
     /* z-index:        10; */
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
+
+
+.inputHitbox
+{
+    position: relative;
+    left:    -3px;
+    top:     -3px;
+    width:    12px;
+    height:   12px;
+    pointer-events: auto;
 }
 
 
@@ -914,7 +925,7 @@ input[type=text]::selection
     top:            50%;
     transform:      translateY(-50%);
     right:          3px;
-    pointer-events: auto;
+    pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
 
@@ -925,11 +936,22 @@ input[type=text]::selection
     height:         6px;
     border-radius:  6px;
     margin:         0;
-    /* position:       absolute; */
+    position:       absolute;
     top:            0px;
     right:          0px;
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+}
+
+
+.outputHitbox
+{
+    position: relative;
+    left:    -3px;
+    top:     -3px;
+    width:    12px;
+    height:   12px;
+    pointer-events: auto;
 }
 
 
@@ -11864,6 +11886,7 @@ extends EventTarget
     wireColor;
 
     control;
+    hitbox;
     wireBall;
   
 
@@ -11918,21 +11941,23 @@ extends EventTarget
         this._dataType = dataType;
 
         this.control  = createDiv('input');
+        this.hitbox   = createDiv('inputHitbox');
         this.wireBall = createDiv('inputBall');
         
         this.control.input = this;
         
 
+        this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.2];
         this.wireColor = dataType2rgb(this.dataType, true);
 
         
-        this.control.addEventListener('pointerdown', e => e.preventDefault());
+        this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
 
 
-        this.control.addEventListener('pointerenter', e => 
+        this.hitbox.addEventListener('pointerenter', e => 
         {
             if (graphView.headerInput)
             {
@@ -11965,7 +11990,7 @@ extends EventTarget
         });
 
 
-        this.control.addEventListener('pointerleave', e => 
+        this.hitbox.addEventListener('pointerleave', e => 
         {
             this.endConnection();
         });
@@ -12032,6 +12057,8 @@ extends EventTarget
         this.control.style.boxShadow     = '0 0 0 1px ' + colorStyle;
         this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
 
+        this.hitbox.style.left = isConnected ? -2 : -3;
+        this.hitbox.style.top  = isConnected ? -2 : -3;
 
         this.wireBall.style.backgroundColor = 
             this.isConnected
@@ -12078,6 +12105,7 @@ class Output
     wireColor;
 
     control;
+    hitbox;
     wireBall;
     
     
@@ -12114,11 +12142,13 @@ class Output
         this._dataType = dataType;
         
         this.control  = createDiv('output');
+        this.hitbox   = createDiv('outputHitbox');
         this.wireBall = createDiv('outputBall');
         
         this.control.output = this;
         
         
+        this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.1];
@@ -12128,7 +12158,7 @@ class Output
 
         
 
-        this.control.addEventListener('pointerenter', e => 
+        this.hitbox.addEventListener('pointerenter', e => 
         { 
             if (graphView.headerOutput)
             {
@@ -12167,7 +12197,7 @@ class Output
 
 
 
-        this.control.addEventListener('pointerleave', e => 
+        this.hitbox.addEventListener('pointerleave', e => 
         { 
             this.endConnection();
         });
