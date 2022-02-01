@@ -256,7 +256,8 @@ extends Operator
 
         for (const output of this.outputs)
             for (const input of output.connectedInputs)
-                input.connection.wire.updateStyle(input.connection.wire.getColor());
+                if (input.connection)
+                    input.connection.wire.updateStyle(input.connection.wire.getColor());
 
                 
         super.updateNode();

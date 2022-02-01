@@ -37,7 +37,7 @@ extends Operator
 
         this.#paramGamma.control.max  = 10;
         this.#paramGamma.control.name = 'γ';
-        this.#paramGamma.control.update();
+        //this.#paramGamma.control.update();
 
 
         this.inputs[0].addEventListener('connect', () => 
