@@ -394,7 +394,7 @@ graphView.updateNodeTransforms = nodes =>
     }
 
 
-    graphView.updateWires(wires);
+    graphView.updateNodeWires(wires);
 };
 
 
