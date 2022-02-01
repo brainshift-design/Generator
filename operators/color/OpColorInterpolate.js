@@ -14,7 +14,7 @@ extends Operator
 
     constructor()
     {
-        super('colorinterpolate', 'lerp', 'color', 90);
+        super('colorinterpolate', 'lerp', 'color', 80);
 
         this._color = ['rgb', 0.5, 0.5, 0.5];
 
@@ -25,9 +25,9 @@ extends Operator
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramAmount = new NumberParam('amount', true, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  true, true, true, 1, 0.01, 3, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  true,  true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#paramAmount = new NumberParam('amount', false, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  true,  true, true, 1, 0.01, 3, 2));
       
         this.#paramSpace.control.setMin(2);
         this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);

@@ -459,8 +459,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
         if (slider.wrapValue)
         {
-            while (value < slider.min) value += slider.max - slider.min;
-            while (value > slider.max) value -= slider.max - slider.min;
+            while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
+            while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
         }
         else if (fullRange)
             value = Math.min(Math.max(slider.min, value), slider.max);

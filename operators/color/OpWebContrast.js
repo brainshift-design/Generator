@@ -10,7 +10,7 @@ extends Operator
 
     constructor()
     {
-        super('webcontrast', 'contrast', 'color', 90);
+        super('webcontrast', 'contrast', 'color', 80);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
