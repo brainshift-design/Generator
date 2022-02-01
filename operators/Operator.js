@@ -251,7 +251,7 @@ class Operator
     {
         this.invalidate();
         
-        getTerminalsAfterNode(this).forEach(n => n.update());
+        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
     }
 
 

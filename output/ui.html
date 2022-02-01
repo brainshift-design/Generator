@@ -7175,7 +7175,6 @@ function updateSliderRanges(slider, sliderWidth, sliderHeight)
         for (let i = 0; i < slider.ranges.length; i++)
         {
             updateSliderRangeDiv(
-                slider,
                 slider.ranges   [i],
                 slider.rangeDivs[i],
                 sliderWidth,
@@ -7194,14 +7193,14 @@ function updateSliderRanges(slider, sliderWidth, sliderHeight)
             slider.rangeDivs.push(div);
             slider.appendChild(div);
         
-            updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight);
+            updateSliderRangeDiv(range, div, sliderWidth, sliderHeight);
         }
     }
 };
 
 
 
-function updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight)
+function updateSliderRangeDiv(range, div, sliderWidth, sliderHeight)
 {
     if (range.start == range.end)
         div.style.display = 'none';
@@ -7652,10 +7651,10 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
                 val = Math.floor(val / grain) * grain;
 
-                slider.setValue(val, true, false, false, !getCtrlKey(e));
+                slider.setValue(val, true, false, false, getCtrlKey(e));
                 slider.prevValue = slider.value;
                 
-                setTimeout(() => slider.param.op.pushUpdate());
+                slider.param.op.pushUpdate();
             }
             else
             {
@@ -10944,7 +10943,7 @@ extends Parameter
     setDecimalsFrom(strValue)
     {
         this.setDecimals(getDecimalCount(strValue));
-        //setTimeout(() => this.op.pushUpdate());
+        //this.op.pushUpdate();
     }
 
 
@@ -10955,7 +10954,7 @@ extends Parameter
         this.control.editDec = dec;
         this.control.update();
 
-        setTimeout(() => this.op.pushUpdate());
+        this.op.pushUpdate();
     }
 
 
@@ -11558,7 +11557,7 @@ class Graph
             
         
         output.updateControl();
-        //setTimeout(() => input.op.pushUpdate());
+        input.op.pushUpdate();
 
 
         return true;
@@ -12295,16 +12294,18 @@ class Connection
         {
             const l = rgb2hclokl(color)[2];
             
-            const bright  = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            const opacity = Math.round(bright * 42).toString(16).padStart(2, '0');
+            const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
+            const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
+            const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
 
             this.wire.curve.style.filter = 
                 l > 0.6
-                ? 'drop-shadow(0px 0px 2px #000000' + opacity + ')'
+                ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
+                  + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire.curve.style.strokeWidth = (1.6 + 0.3 * bright) * this.wire.scale;
+            this.wire.curve.style.strokeWidth = (1.6 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
             this.wire      .style.zIndex      = 0;
         };
     }
@@ -12619,7 +12620,7 @@ class Operator
     {
         this.invalidate();
         
-        getTerminalsAfterNode(this).forEach(n => n.update());
+        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
     }
 
 
@@ -14424,7 +14425,7 @@ extends Operator
             this.updateSliderRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this.param1.control.min + f * (this.param1.control.max - this.param1.control.min)) / getColorSpaceFactor(this._color[0])[0],
+                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
@@ -14432,7 +14433,7 @@ extends Operator
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this.param2.control.min + f * (this.param2.control.max - this.param2.control.min)) / getColorSpaceFactor(this._color[0])[1],
+                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
             this.updateSliderRanges(this.param3.control, f =>
@@ -14440,7 +14441,7 @@ extends Operator
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this.param3.control.min + f * (this.param3.control.max - this.param3.control.min)) / getColorSpaceFactor(this._color[0])[2]]));
+                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / getColorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
@@ -14603,7 +14604,7 @@ extends Operator
 //         paramSpace.op._oldSpaceConnections = [];
 //     }
 
-//     //setTimeout(() => paramSpace.op.pushUpdate());
+//     //paramSpace.op.pushUpdate();
 // }
 
 
@@ -14767,13 +14768,13 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
     op.param1.control.wrapValue = c1wrap;
     op.param1.control.suffix    = c1suffix;
 
-    op.param1.control.setMin(c1min); 
-    op.param2.control.setMin(c2min); 
-    op.param3.control.setMin(c3min); 
+    op.param1.control.displayMin = c1min; 
+    op.param2.control.displayMin = c2min;
+    op.param3.control.displayMin = c3min;
     
-    op.param1.control.setMax(c1max); 
-    op.param2.control.setMax(c2max); 
-    op.param3.control.setMax(c3max); 
+    op.param1.control.displayMax = c1max; 
+    op.param2.control.displayMax = c2max; 
+    op.param3.control.displayMax = c3max; 
     
     op.param1.control.update();
     op.param2.control.update();
@@ -15837,7 +15838,9 @@ extends Operator
         this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
 
-        this.#paramGamma.control.max = 10;
+        this.#paramGamma.control.max  = 10;
+        this.#paramGamma.control.name = 'γ';
+        this.#paramGamma.control.update();
 
 
         this.inputs[0].addEventListener('connect', () => 

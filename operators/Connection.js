@@ -147,16 +147,18 @@ class Connection
         {
             const l = rgb2hclokl(color)[2];
             
-            const bright  = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            const opacity = Math.round(bright * 42).toString(16).padStart(2, '0');
+            const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
+            const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
+            const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
 
             this.wire.curve.style.filter = 
                 l > 0.6
-                ? 'drop-shadow(0px 0px 2px #000000' + opacity + ')'
+                ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
+                  + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire.curve.style.strokeWidth = (1.6 + 0.3 * bright) * this.wire.scale;
+            this.wire.curve.style.strokeWidth = (1.6 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
             this.wire      .style.zIndex      = 0;
         };
     }

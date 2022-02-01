@@ -98,7 +98,7 @@ extends Parameter
     setDecimalsFrom(strValue)
     {
         this.setDecimals(getDecimalCount(strValue));
-        //setTimeout(() => this.op.pushUpdate());
+        //this.op.pushUpdate();
     }
 
 
@@ -109,7 +109,7 @@ extends Parameter
         this.control.editDec = dec;
         this.control.update();
 
-        setTimeout(() => this.op.pushUpdate());
+        this.op.pushUpdate();
     }
 
 

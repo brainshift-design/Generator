@@ -30,7 +30,6 @@ function updateSliderRanges(slider, sliderWidth, sliderHeight)
         for (let i = 0; i < slider.ranges.length; i++)
         {
             updateSliderRangeDiv(
-                slider,
                 slider.ranges   [i],
                 slider.rangeDivs[i],
                 sliderWidth,
@@ -49,14 +48,14 @@ function updateSliderRanges(slider, sliderWidth, sliderHeight)
             slider.rangeDivs.push(div);
             slider.appendChild(div);
         
-            updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight);
+            updateSliderRangeDiv(range, div, sliderWidth, sliderHeight);
         }
     }
 };
 
 
 
-function updateSliderRangeDiv(slider, range, div, sliderWidth, sliderHeight)
+function updateSliderRangeDiv(range, div, sliderWidth, sliderHeight)
 {
     if (range.start == range.end)
         div.style.display = 'none';

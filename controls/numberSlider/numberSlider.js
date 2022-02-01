@@ -190,10 +190,10 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
                 let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
                 val = Math.floor(val / grain) * grain;
 
-                slider.setValue(val, true, false, false, !getCtrlKey(e));
+                slider.setValue(val, true, false, false, getCtrlKey(e));
                 slider.prevValue = slider.value;
                 
-                setTimeout(() => slider.param.op.pushUpdate());
+                slider.param.op.pushUpdate();
             }
             else
             {

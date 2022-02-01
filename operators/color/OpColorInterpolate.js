@@ -35,7 +35,9 @@ extends Operator
         this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
 
-        this.#paramGamma.control.max = 10;
+        this.#paramGamma.control.max  = 10;
+        this.#paramGamma.control.name = 'γ';
+        this.#paramGamma.control.update();
 
 
         this.inputs[0].addEventListener('connect', () => 

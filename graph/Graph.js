@@ -279,7 +279,7 @@ class Graph
             
         
         output.updateControl();
-        //setTimeout(() => input.op.pushUpdate());
+        input.op.pushUpdate();
 
 
         return true;
