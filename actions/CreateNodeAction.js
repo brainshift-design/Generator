@@ -22,11 +22,13 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
         const node = uiCreateNode(this.opType);
-        
+
         this.createdNodeId = node.id;
 
         node.pushUpdate();
+        //node.updateNode();
         graphView.updateNodeTransform(node);
+        setTimeout(() => graphView.updateScroll());
     }
 
 
@@ -46,6 +48,8 @@ extends Action
         //const node = graph.nodes.find(n => n.id == this.createdNodeId);
 
         node.pushUpdate();
+        //node.updateNode();
         graphView.updateNodeTransform(node);
+        setTimeout(() => graphView.updateScroll());
     }
 }

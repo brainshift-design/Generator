@@ -185,7 +185,7 @@ function switchToTextbox(op)
         
         op.inner.appendChild(op.hexbox);
 
-        graphView.updateNodeTransform(op);
+        //graphView.updateNodeTransform(op);
     }
 }
 

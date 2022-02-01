@@ -1,8 +1,8 @@
 class   OpInterpolate
 extends Operator
 {
-    #paramFactor;
     #paramValue;
+    #paramFactor;
 
 
 
@@ -20,6 +20,9 @@ extends Operator
       
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
+
+        this.#paramFactor.control.min = Number.MIN_SAFE_INTEGER;
+        this.#paramFactor.control.max = Number.MAX_SAFE_INTEGER;
     }
 
 

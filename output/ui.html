@@ -12765,8 +12765,9 @@ class Operator
        
         this.updateNodeState();
 
-
         updateNodeLabel(this);
+
+        graphView.updateNodeTransform(this);
     }
 
 
@@ -14119,8 +14120,8 @@ extends OpArithmetic
 class   OpInterpolate
 extends Operator
 {
-    #paramFactor;
     #paramValue;
+    #paramFactor;
 
 
 
@@ -14138,6 +14139,9 @@ extends Operator
       
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
+
+        this.#paramFactor.control.min = Number.MIN_SAFE_INTEGER;
+        this.#paramFactor.control.max = Number.MAX_SAFE_INTEGER;
     }
 
 
@@ -14900,7 +14904,7 @@ function switchToTextbox(op)
         
         op.inner.appendChild(op.hexbox);
 
-        graphView.updateNodeTransform(op);
+        //graphView.updateNodeTransform(op);
     }
 }
 
@@ -16627,11 +16631,13 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
         const node = uiCreateNode(this.opType);
-        
+
         this.createdNodeId = node.id;
 
         node.pushUpdate();
+        //node.updateNode();
         graphView.updateNodeTransform(node);
+        setTimeout(() => graphView.updateScroll());
     }
 
 
@@ -16651,7 +16657,9 @@ extends Action
         //const node = graph.nodes.find(n => n.id == this.createdNodeId);
 
         node.pushUpdate();
+        //node.updateNode();
         graphView.updateNodeTransform(node);
+        setTimeout(() => graphView.updateScroll());
     }
 }
 

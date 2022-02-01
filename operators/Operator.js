@@ -306,8 +306,9 @@ class Operator
        
         this.updateNodeState();
 
-
         updateNodeLabel(this);
+
+        graphView.updateNodeTransform(this);
     }
 
 
