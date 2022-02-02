@@ -1653,6 +1653,13 @@ function logVar(x)
 }
 
 
+
+function log(...params)
+{
+    setTimeout(console.log.bind(console, ...params));
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities

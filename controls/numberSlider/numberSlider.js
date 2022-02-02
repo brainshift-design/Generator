@@ -614,7 +614,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         slider.min        = min;
         slider.displayMin = min;
 
-        if (slider.value < min) slider.setValue(min, true, true, dispatchEvents);
+        if (slider.value < min) 
+            slider.setValue(min, true, true, dispatchEvents);
     };
 
 
@@ -624,7 +625,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         slider.max        = max;
         slider.displayMax = max;
 
-        if (max < slider.value) slider.setValue(max, true, true, dispatchEvents);
+        if (max < slider.value) 
+            slider.setValue(max, true, true, dispatchEvents);
     };
 
 

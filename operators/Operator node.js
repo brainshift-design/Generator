@@ -45,7 +45,7 @@ function createOperatorNode(node)
     node.inner.appendChild(node.paramBack);
     
 
-    createNodeHeader(node);    
+    createNodeHeader(node);
 }     
 
 
@@ -54,6 +54,9 @@ function createNodeHeader(node)
 {
     node.header = createDiv('nodeHeader');
     
+    node.header.connectionPadding = 8;
+
+
     createNodeLabel(node);
 
     node. inputControls = createDiv('inputControls');

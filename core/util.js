@@ -238,3 +238,10 @@ function logVar(x)
         Object.keys  (x)[0] + ' =', 
         Object.values(x)[0]);
 }
+
+
+
+function log(...params)
+{
+    setTimeout(console.log.bind(console, ...params));
+}

@@ -87,8 +87,9 @@ class Graph
             // case 'random': node = new OpRandom(); break;
             
             case 'color':            node = new OpColor();            break;
-            case 'webcontrast':      node = new OpWebContrast();      break;
             case 'colorinterpolate': node = new OpColorInterpolate(); break;
+            case 'webcontrast':      node = new OpWebContrast();      break;
+            case 'colorblind':       node = new OpColorblind();       break;
             
             case 'rectangle':        node = new OpRectangle();        break;
             // case 'row':    node = new OpRow();    break;

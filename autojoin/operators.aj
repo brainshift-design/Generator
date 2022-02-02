@@ -35,6 +35,7 @@
 ../operators/color/OpColor convert.js
 ../operators/color/OpWebContrast.js
 ../operators/color/OpColorInterpolate.js
+../operators/color/OpColorblind.js
 
 ../operators/geometry/OpRectangle.js
 //../operators/geometry/OpRow.js

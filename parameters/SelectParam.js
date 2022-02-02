@@ -81,6 +81,8 @@ extends Parameter
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+
+        super.update();
     }
 
 

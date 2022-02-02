@@ -106,7 +106,8 @@ extends EventTarget
     
     update(dispatchEvents)
     {
-        // overrides should check inputs for data here
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
     }    
 
 

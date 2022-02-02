@@ -15,8 +15,8 @@ extends Operator
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.#paramValue    = new NumberParam('value',    false, false, true, 0));
+        this.addParam(this.#paramStandard = new SelectParam('standard', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
         this.#paramStandard.control.barHeight = 0.2;
 
@@ -244,5 +244,20 @@ extends Operator
             + '-45deg, '
             + 'transparent 0 7px,'
             +  warningStyle + ' 7px 14px)';
+    }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'standard':
+                    this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
+                    break;
+            }
+        }
     }
 }

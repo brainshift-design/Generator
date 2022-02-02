@@ -26,7 +26,7 @@ var pasteOffset      = [ 0,   0];
 var pasteOffsetDelta = [40, 100];
 
 
-console.clear();
+setTimeout(() => console.clear());
 
 
 uiPostMessageToFigma({ 

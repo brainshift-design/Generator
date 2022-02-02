@@ -272,56 +272,17 @@ class Operator
 
     updateNode() 
     {
+        this.updateNodeBorder();
         this.updateControls();
         this.updateHeader();
 
-
-        for (const  input of this. inputs)  input.updateControl();
-        for (const output of this.outputs) output.updateControl();
-
-
-        const headerInputs = this.inputs.filter(i => !i.param);
-
-        const padding   = 8;
-        const inputSize = 9;
-        const gap       = 4;
-
-            
-        let height = padding;
-
-
-        for (let i = 0; i < headerInputs.length; i++)
-        {
-            if (i > 0) height += gap;
-            height += inputSize;
-        }
-
-        height += padding;
-
-
-        this.header.style.height = height;
-
-        this.paramBack.style.height = this.inner.offsetHeight - height;
-        this.paramBack.style.top    = height;
-
-       
-        this.updateNodeState();
-
-        updateNodeLabel(this);
 
         graphView.updateNodeTransform(this);
     }
 
 
 
-    updateControls()
-    {
-        this.params.forEach(p => p.control.update());
-    }
-
-
-
-    updateNodeState()
+    updateNodeBorder()
     {
         let boxShadow = '';
 
@@ -346,9 +307,76 @@ class Operator
 
 
 
+    updateControls()
+    {
+        this.params.forEach(p => p.control.update());
+    }
+
+
+
     updateHeader()
     {
         this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
+
+
+        const height = this.updateHeaderInputsAndOutputs();
+
+        this.header.style.height = height;
+
+        this.paramBack.style.height = this.inner.offsetHeight - height;
+        this.paramBack.style.top    = height;
+
+
+        updateNodeLabel(this);
+    }
+
+
+
+    updateHeaderInputsAndOutputs()
+    {
+        log(this.name + '.updateHeaderInputsAndOutputs()');
+
+        const headerInputs  = this.inputs .filter(i => !i.param);
+        const headerOutputs = this.outputs.filter(o => !o.param);
+
+        const connSize = 9;
+        const gap      = 4;
+
+            
+        const inputY      = [];
+        let   inputHeight = 0;
+        
+        for (let i = 0; i < headerInputs.length; i++)
+        {
+            if (i > 0) inputHeight += gap;
+            inputY.push(inputHeight);
+            inputHeight += connSize;
+        }
+        
+        
+        const outputY      = [];
+        let   outputHeight = 0;
+        
+        for (let i = 0; i < headerOutputs.length; i++)
+        {
+            if (i > 0) outputHeight += gap;
+            outputY.push(outputHeight);
+            outputHeight += connSize;
+        }
+
+
+        log(inputHeight);
+        log(outputHeight);
+
+             if (inputHeight  > outputHeight) { for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2; }
+        else if (outputHeight > inputHeight ) { for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2; }
+
+
+        for (let i = 0; i < headerInputs .length; i++) headerInputs [i].control.style.top =  inputY[i];
+        for (let i = 0; i < headerOutputs.length; i++) headerOutputs[i].control.style.top = outputY[i];
+
+
+        return Math.max(inputHeight, outputHeight) + this.header.connectionPadding*2;
     }
 
 

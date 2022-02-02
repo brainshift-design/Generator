@@ -154,7 +154,7 @@ input[type=text]::selection
     position: absolute;
     padding-left: 3px;
     padding-right: 30px;
-    background: url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1.5"/><circle cx="2.65005" cy="17.8918" r="2.25814" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2.25814" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
+    background: url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat: no-repeat;
 }
@@ -785,7 +785,7 @@ input[type=text]::selection
     float:          left;
     margin-right:   auto;
     padding-top:    13px;
-    /* box-shadow:     0 0 0 1px red inset; */
+    box-shadow:     0 0 0 1px red inset;
     pointer-events: none;
 }
 
@@ -801,8 +801,8 @@ input[type=text]::selection
     margin-left:    3px;
     margin-bottom:  6px;
     /* position:       absolute; */
-    top:            50%;
-    transform:      translateY(-50%);
+    /* top:            50%; */
+    /* transform:      translateY(-50%); */
     pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -932,7 +932,7 @@ input[type=text]::selection
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
-    /* box-shadow:     0 0 0 1px red inset; */
+    box-shadow:     0 0 0 1px green inset;
     pointer-events: none;
 }
 
@@ -946,9 +946,9 @@ input[type=text]::selection
     margin:         0;
     margin-left:    3px;
     /* margin-bottom:  6px; */
-    position: absolute;
-    top:            50%;
-    transform:      translateY(-50%);
+    /* position: absolute; */
+    /* top:            50%; */
+    /* transform:      translateY(-50%); */
     right:          3px;
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -961,9 +961,8 @@ input[type=text]::selection
     height:         6px;
     border-radius:  6px;
     margin:         0;
-    position:       absolute;
-    top:            0px;
-    right:          0px;
+    position:       relative;
+    top:            -12px;
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
@@ -1001,8 +1000,9 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction("interpolate"     )); this.blur();'>LERP</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color"           )); this.blur();'>COL</button>
-    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'>CTR</button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>LERP</button>
+    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'>CTR</button>
+    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind"      )); this.blur();'>BLND</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
@@ -2705,6 +2705,13 @@ function logVar(x)
     console.log(
         Object.keys  (x)[0] + ' =', 
         Object.values(x)[0]);
+}
+
+
+
+function log(...params)
+{
+    setTimeout(console.log.bind(console, ...params));
 }
 
 
@@ -5122,6 +5129,13 @@ function logVar(x)
     console.log(
         Object.keys  (x)[0] + ' =', 
         Object.values(x)[0]);
+}
+
+
+
+function log(...params)
+{
+    setTimeout(console.log.bind(console, ...params));
 }
 
 
@@ -8159,7 +8173,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         slider.min        = min;
         slider.displayMin = min;
 
-        if (slider.value < min) slider.setValue(min, true, true, dispatchEvents);
+        if (slider.value < min) 
+            slider.setValue(min, true, true, dispatchEvents);
     };
 
 
@@ -8169,7 +8184,8 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
         slider.max        = max;
         slider.displayMax = max;
 
-        if (max < slider.value) slider.setValue(max, true, true, dispatchEvents);
+        if (max < slider.value) 
+            slider.setValue(max, true, true, dispatchEvents);
     };
 
 
@@ -10254,7 +10270,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
         
     //updateGraphNodes();
     for (const node of selected)
-        node.updateNodeState();
+        node.updateNodeBorder();
 
 
     graphView._prevSelectedNodes = selected;
@@ -10961,7 +10977,8 @@ extends EventTarget
     
     update(dispatchEvents)
     {
-        // overrides should check inputs for data here
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
     }    
 
 
@@ -11141,6 +11158,8 @@ extends Parameter
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+
+        super.update();
     }
 
 
@@ -11356,6 +11375,8 @@ extends Parameter
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+
+        super.update();
     }
 
 
@@ -11535,8 +11556,9 @@ class Graph
             // case 'random': node = new OpRandom(); break;
             
             case 'color':            node = new OpColor();            break;
-            case 'webcontrast':      node = new OpWebContrast();      break;
             case 'colorinterpolate': node = new OpColorInterpolate(); break;
+            case 'webcontrast':      node = new OpWebContrast();      break;
+            case 'colorblind':       node = new OpColorblind();       break;
             
             case 'rectangle':        node = new OpRectangle();        break;
             // case 'row':    node = new OpRow();    break;
@@ -12820,56 +12842,17 @@ class Operator
 
     updateNode() 
     {
+        this.updateNodeBorder();
         this.updateControls();
         this.updateHeader();
 
-
-        for (const  input of this. inputs)  input.updateControl();
-        for (const output of this.outputs) output.updateControl();
-
-
-        const headerInputs = this.inputs.filter(i => !i.param);
-
-        const padding   = 8;
-        const inputSize = 9;
-        const gap       = 4;
-
-            
-        let height = padding;
-
-
-        for (let i = 0; i < headerInputs.length; i++)
-        {
-            if (i > 0) height += gap;
-            height += inputSize;
-        }
-
-        height += padding;
-
-
-        this.header.style.height = height;
-
-        this.paramBack.style.height = this.inner.offsetHeight - height;
-        this.paramBack.style.top    = height;
-
-       
-        this.updateNodeState();
-
-        updateNodeLabel(this);
 
         graphView.updateNodeTransform(this);
     }
 
 
 
-    updateControls()
-    {
-        this.params.forEach(p => p.control.update());
-    }
-
-
-
-    updateNodeState()
+    updateNodeBorder()
     {
         let boxShadow = '';
 
@@ -12894,9 +12877,76 @@ class Operator
 
 
 
+    updateControls()
+    {
+        this.params.forEach(p => p.control.update());
+    }
+
+
+
     updateHeader()
     {
         this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
+
+
+        const height = this.updateHeaderInputsAndOutputs();
+
+        this.header.style.height = height;
+
+        this.paramBack.style.height = this.inner.offsetHeight - height;
+        this.paramBack.style.top    = height;
+
+
+        updateNodeLabel(this);
+    }
+
+
+
+    updateHeaderInputsAndOutputs()
+    {
+        log(this.name + '.updateHeaderInputsAndOutputs()');
+
+        const headerInputs  = this.inputs .filter(i => !i.param);
+        const headerOutputs = this.outputs.filter(o => !o.param);
+
+        const connSize = 9;
+        const gap      = 4;
+
+            
+        const inputY      = [];
+        let   inputHeight = 0;
+        
+        for (let i = 0; i < headerInputs.length; i++)
+        {
+            if (i > 0) inputHeight += gap;
+            inputY.push(inputHeight);
+            inputHeight += connSize;
+        }
+        
+        
+        const outputY      = [];
+        let   outputHeight = 0;
+        
+        for (let i = 0; i < headerOutputs.length; i++)
+        {
+            if (i > 0) outputHeight += gap;
+            outputY.push(outputHeight);
+            outputHeight += connSize;
+        }
+
+
+        log(inputHeight);
+        log(outputHeight);
+
+             if (inputHeight  > outputHeight) { for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2; }
+        else if (outputHeight > inputHeight ) { for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2; }
+
+
+        for (let i = 0; i < headerInputs .length; i++) headerInputs [i].control.style.top =  inputY[i];
+        for (let i = 0; i < headerOutputs.length; i++) headerOutputs[i].control.style.top = outputY[i];
+
+
+        return Math.max(inputHeight, outputHeight) + this.header.connectionPadding*2;
     }
 
 
@@ -13230,7 +13280,7 @@ function createOperatorNode(node)
     node.inner.appendChild(node.paramBack);
     
 
-    createNodeHeader(node);    
+    createNodeHeader(node);
 }     
 
 
@@ -13239,6 +13289,9 @@ function createNodeHeader(node)
 {
     node.header = createDiv('nodeHeader');
     
+    node.header.connectionPadding = 8;
+
+
     createNodeLabel(node);
 
     node. inputControls = createDiv('inputControls');
@@ -15859,8 +15912,8 @@ extends Operator
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
 
-        this.addParam(this.#paramValue    = new NumberParam('value', false, false, true, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', true, true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.#paramValue    = new NumberParam('value',    false, false, true, 0));
+        this.addParam(this.#paramStandard = new SelectParam('standard', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
         this.#paramStandard.control.barHeight = 0.2;
 
@@ -16089,6 +16142,21 @@ extends Operator
             + 'transparent 0 7px,'
             +  warningStyle + ' 7px 14px)';
     }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'standard':
+                    this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
+                    break;
+            }
+        }
+    }
 }
 
 
@@ -16123,7 +16191,8 @@ extends Operator
         this.addParam(this.#paramAmount = new NumberParam('amount', false, true, true, 0, 0,    1, 2));
         this.addParam(this.#paramGamma  = new NumberParam('gamma',  true,  true, true, 1, 0.01, 3, 2));
       
-        this.#paramSpace.control.setMin(2);
+        this.#paramSpace.min        = 2;
+        this.#paramSpace.displayMin = 2;
         this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
         
         this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
@@ -16131,7 +16200,6 @@ extends Operator
 
         this.#paramGamma.control.max  = 10;
         this.#paramGamma.control.name = 'γ';
-        //this.#paramGamma.control.update();
 
 
         this.inputs[0].addEventListener('connect', () => 
@@ -16354,6 +16422,258 @@ extends Operator
                 case 'gamma':
                     this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
                     this.#paramGamma.setDecimalsFrom(_param[1]);
+                    break;
+            }
+        }
+    }
+}
+
+
+class   OpColorblind
+extends Operator
+{
+    #paramL;
+    #paramM;
+    #paramS;
+
+
+    #warningOverlay;
+
+
+    constructor()
+    {
+        super('colorblind', 'blind', 'color', 80);
+
+        this.addInput (new  Input(this.dataType));
+        this.addOutput(new Output(this.dataType));
+
+        this.addParam(this.#paramL = new SelectParam('L', true, true, ['L Blind', 'L Weak', 'L'], 2));
+        this.addParam(this.#paramM = new SelectParam('M', true, true, ['M Blind', 'M Weak', 'M'], 2));
+        this.addParam(this.#paramS = new SelectParam('S', true, true, ['S Blind', 'S Weak', 'S'], 2));
+      
+        this.header.connectionPadding = 14;
+        // this.#paramStandard.control.barHeight = 0.2;
+
+        // this.#paramValue.control.readOnly        = true;
+        // this.#paramValue.control.style.fontStyle = 'italic';
+
+        this.#warningOverlay = createDiv('colorWarningOverlay');
+        this.#warningOverlay.style.zIndex = 1;
+        this.header.appendChild(this.#warningOverlay);
+    }
+
+
+
+    update()
+    {
+        if (this.valid) return;
+
+
+        // if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
+        // if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
+
+
+        // this.updateParams(false);
+
+        
+        // if (   this.inputs[0].isConnected
+        //     && this.inputs[1].isConnected)
+        // {
+        //     this.#paramValue.control.valueText = '';
+
+
+        //     const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+        //     const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            
+        //     if (   isValidRgb(rgb0)
+        //         && isValidRgb(rgb1))
+        //     {
+        //         if (this.#paramStandard.value == 0)
+        //         {
+        //             const ratio = getContrastRatio2(
+        //                 dataColor2rgb(this.inputs[0].data.color),
+        //                 dataColor2rgb(this.inputs[1].data.color));
+
+        //             let rating = getContrastRating2(ratio);
+
+        //             if (rating != '')
+        //                 rating = '&nbsp;&nbsp;' + rating;
+
+        //             this.#paramValue.control.min    = 0;
+        //             this.#paramValue.control.max    = 21;
+        //             this.#paramValue.control.suffix = rating;
+        //             this.#paramValue.control.setValue(ratio);
+        //         }
+        //         else
+        //         {
+        //             const ratio = getContrastRatio3(
+        //                 dataColor2rgb(this.inputs[0].data.color),
+        //                 dataColor2rgb(this.inputs[1].data.color));
+                        
+        //             this.#paramValue.control.min    = 0;
+        //             this.#paramValue.control.max    = 108;
+        //             this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
+        //             this.#paramValue.control.setValue(Math.abs(ratio));
+        //         }
+
+
+        //         super.update();
+        //         return;
+        //     }
+            
+        // }
+
+
+        // this.#paramValue.control.valueText = '?';
+        // this.#paramValue.setValue(0, false, true, false);
+
+           
+        super.update()
+    }
+
+
+
+    updateNode()
+    {
+        // if (   this.inputs[0].isConnected
+        //     && this.inputs[1].isConnected)
+        // {
+        //     const colBack  = dataColor2rgb(this.inputs[1].data.color);
+
+        //     const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+        //     const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+
+        //     if (   !isValidRgb(rgb0)
+        //         || !isValidRgb(rgb1))
+        //     {
+        //         const colWarning = 
+        //               !isValidRgb(rgb0)
+        //             && maxRgbDistance(
+        //                 rgb2hclokl(invalid2validRgb(rgb0)), 
+        //                 rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
+        //             ? rgb_a(invalid2validRgb(rgb0), 0.25)
+        //             : (isDark(colBack)
+        //                ? [0, 0, 0, 0.12] 
+        //                : [1, 1, 1, 0.2]);
+
+        //         this.updateWarningOverlay(colorStyleRgba(colWarning));
+        //     }
+        //     else
+        //     {
+        //         this.#warningOverlay.style.display = 'none';
+        //     }
+        // }
+        // else
+        // {
+        //     let colWarning;
+
+        //     if (this.inputs[1].isConnected)
+        //     {
+        //         const colBack  = dataColor2rgb(this.inputs[1].data.color);
+        //         const darkText = rgb2hclokl(colBack)[2] > 0.71;
+        //         const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+    
+        //         colWarning = 
+        //             darkText 
+        //             ? [0, 0, 0, 0.1  * (1 + satBias)] 
+        //             : [1, 1, 1, 0.16 * (1 + satBias)];
+        //     }
+        //     else
+        //         colWarning = [0.5, 1, 0.5, 0.2];
+
+            
+        //     this.updateWarningOverlay(colorStyleRgba(colWarning));
+        // }
+
+
+        //this.#paramStandard.control.update();
+
+
+        super.updateNode();
+    }
+
+
+
+    updateHeader()
+    {
+        // const colBack = 
+        //     this.inputs[1].isConnected
+        //     ? dataColor2rgb(this.inputs[1].data.color)
+        //     : dataType2rgb(this._dataType);
+
+        // const darkText = rgb2hclokl(colBack)[2] > 0.71;
+        // const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+        
+        // const colText = 
+        //     darkText 
+        //     ? [0, 0, 0, 0.24 * (1 + satBias)] 
+        //     : [1, 1, 1, 0.4  * (1 + satBias)];
+
+
+        // for (const input of this.inputs.filter(i => !i.param))
+        // {
+        //     input.wireColor = colBack;
+        //     input.color     = colText;
+            
+        //     input.updateControl();
+        // }
+
+
+        // for (const output of this.outputs.filter(i => !i.param))
+        // {
+        //     output.wireColor = colBack;
+        //     output.color     = colText;
+
+        //     output.updateControl();
+        // }
+
+
+        // if (   this.inputs[0].isConnected 
+        //     && this.inputs[1].isConnected)
+        //     this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
+        // else if (this.inputs[1].isConnected)
+        //     this.label.style.color = colorStyleRgba(colText);
+        // else 
+        //     this.label.style.color = 'black';
+
+
+        // this.header.style.background = 
+        //     this.inputs[1].isConnected 
+        //     ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
+        //     : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
+    }
+
+
+
+    updateWarningOverlay(warningStyle)
+    {
+        this.#warningOverlay.style.display    = 'block';
+        this.#warningOverlay.style.height     = 38;
+        this.#warningOverlay.style.background =
+            'repeating-linear-gradient('
+            + '-45deg, '
+            + 'transparent 0 7px,'
+            +  warningStyle + ' 7px 14px)';
+    }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'L':
+                    this.#paramL.setValue(parseInt(_param[1]), true, true, false);
+                    break;
+
+                case 'M':
+                    this.#paramM.setValue(parseFloat(_param[1]), true, true, false);
+                    break;
+
+                case 'S':
+                    this.#paramS.setValue(parseFloat(_param[1]), true, true, false);
                     break;
             }
         }
@@ -17459,7 +17779,7 @@ extends Action
                 this.to[i].y);
 
         for (const node of movedNodes)
-            node.updateNodeState();
+            node.updateNodeBorder();
     }
 
 
@@ -17476,7 +17796,7 @@ extends Action
                 this.from[i].y);
 
         for (const node of movedNodes)
-            node.updateNodeState();
+            node.updateNodeBorder();
 
         graphView.selectByIds(this.prevSelectedIds);
     }
@@ -17823,7 +18143,7 @@ var pasteOffset      = [ 0,   0];
 var pasteOffsetDelta = [40, 100];
 
 
-console.clear();
+setTimeout(() => console.clear());
 
 
 uiPostMessageToFigma({ 
@@ -18469,10 +18789,9 @@ function uiEndLoadState(msg)
     productKey  = msg.productKey;
 
     uiGetPluginData('graph'); // load graph from current page
+    setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
-   
-    setInterval(autoSave, 5000); // auto save every 5 seconds
 }
 
 
