@@ -93,6 +93,9 @@ extends Operator
         if (this.valid) return;
         
 
+        this.updateParams(false);
+
+
         let maxDec = 0;
 
         for (const input of this.inputs)
