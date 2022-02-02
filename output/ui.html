@@ -149,6 +149,17 @@ input[type=text]::selection
 }
 
 
+#btnToggleWires
+{
+    position: absolute;
+    padding-left: 3px;
+    padding-right: 30px;
+    background: url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1.5"/><circle cx="2.65005" cy="17.8918" r="2.25814" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2.25814" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+
 #productKeyBack
 {
     display:          none;
@@ -993,9 +1004,9 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'>CTR</button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>LERP</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleWires(); this.blur();'>WIRES</button>
+    <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
 
     <button class='menuButton' id='btnZoom'                   onclick='graphView.zoom = 1; this.blur();'></button>
     
@@ -6807,6 +6818,9 @@ function uiEndResizeWindow()
 
     btnZoom.style.top  = 0;
     btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
+
+    btnToggleWires.style.top  = 0;
+    btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
 }
 
 
@@ -7946,11 +7960,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             slider.oldValue = slider.value;
 
             const dec = Math.pow(10, -slider.editDec);
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec);
-            //slider.prevValue = slider.value;
-            // TODO conform after a delay and/or another action, same with key changes 
-
-            //slider.param.op.pushUpdate();
+            const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
+            
+            slider.setValue(val);
         }
     });
 
@@ -10823,18 +10835,18 @@ graphView.unsoloNode = () =>
 
 
 
-graphView.toggleWires = () =>
+graphView.toggleShowWires = () =>
 {
     graphView.showWires = !graphView.showWires;
-    graphView.updateWires();
+    graphView.updateShowWires();
 };
 
 
 
-graphView.updateWires = () =>
+graphView.updateShowWires = () =>
 {
     btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
-    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : '#2c2c2c';
+    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 
     graph.nodes.forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
@@ -17583,7 +17595,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('set param value');
+        super('set ' + param.op.name + '.' + param.name + ' = ' + value);
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
@@ -17595,7 +17607,6 @@ extends Action
 
     do()
     {
-        console.log('SetParamValueAction()');
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
     }
@@ -18090,6 +18101,11 @@ productKeyClose.addEventListener('click', e =>
 {
     hideProductKeyDialog();
 });
+
+
+
+btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  graphView.updateShowWires(); });
+btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; graphView.updateShowWires(); });
 
 
 function uiCreateNode(opType, createdId = -1, updateUI = true)
@@ -18644,7 +18660,7 @@ function loadConnectionsAsync(data, nodes, setProgress)
         nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
-        graphView.updateWires();
+        graphView.updateShowWires();
         graphView.updatePanAndZoom();
         graphView.updateNodeTransforms(nodes);
         graphView.updateScroll();

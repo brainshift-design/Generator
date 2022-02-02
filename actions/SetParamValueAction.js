@@ -14,7 +14,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('set param value');
+        super('set ' + param.op.name + '.' + param.name + ' = ' + value);
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
@@ -26,7 +26,6 @@ extends Action
 
     do()
     {
-        console.log('SetParamValueAction()');
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
     }

@@ -415,11 +415,9 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             slider.oldValue = slider.value;
 
             const dec = Math.pow(10, -slider.editDec);
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec);
-            //slider.prevValue = slider.value;
-            // TODO conform after a delay and/or another action, same with key changes 
-
-            //slider.param.op.pushUpdate();
+            const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
+            
+            slider.setValue(val);
         }
     });
 

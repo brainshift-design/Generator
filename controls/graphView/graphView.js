@@ -550,18 +550,18 @@ graphView.unsoloNode = () =>
 
 
 
-graphView.toggleWires = () =>
+graphView.toggleShowWires = () =>
 {
     graphView.showWires = !graphView.showWires;
-    graphView.updateWires();
+    graphView.updateShowWires();
 };
 
 
 
-graphView.updateWires = () =>
+graphView.updateShowWires = () =>
 {
     btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
-    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : '#2c2c2c';
+    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 
     graph.nodes.forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));

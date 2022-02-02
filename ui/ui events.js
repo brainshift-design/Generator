@@ -15,3 +15,8 @@ productKeyClose.addEventListener('click', e =>
 {
     hideProductKeyDialog();
 });
+
+
+
+btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  graphView.updateShowWires(); });
+btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; graphView.updateShowWires(); });
