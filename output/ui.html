@@ -785,7 +785,7 @@ input[type=text]::selection
     float:          left;
     margin-right:   auto;
     padding-top:    13px;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     pointer-events: none;
 }
 
@@ -799,8 +799,8 @@ input[type=text]::selection
     border-radius:  3px;
     margin:         0;
     margin-left:    3px;
-    margin-bottom:  6px;
-    /* position:       absolute; */
+    /* margin-bottom:  6px; */
+    position:       absolute;
     /* top:            50%; */
     /* transform:      translateY(-50%); */
     pointer-events: none;
@@ -932,7 +932,7 @@ input[type=text]::selection
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
-    box-shadow:     0 0 0 1px green inset;
+    /* box-shadow:     0 0 0 1px green inset; */
     pointer-events: none;
 }
 
@@ -946,7 +946,7 @@ input[type=text]::selection
     margin:         0;
     margin-left:    3px;
     /* margin-bottom:  6px; */
-    /* position: absolute; */
+    position: absolute;
     /* top:            50%; */
     /* transform:      translateY(-50%); */
     right:          3px;
@@ -12904,11 +12904,10 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
-        log(this.name + '.updateHeaderInputsAndOutputs()');
-
         const headerInputs  = this.inputs .filter(i => !i.param);
         const headerOutputs = this.outputs.filter(o => !o.param);
 
+        const padding  = this.header.connectionPadding;
         const connSize = 9;
         const gap      = 4;
 
@@ -12919,7 +12918,7 @@ class Operator
         for (let i = 0; i < headerInputs.length; i++)
         {
             if (i > 0) inputHeight += gap;
-            inputY.push(inputHeight);
+            inputY.push(5 + padding + inputHeight);
             inputHeight += connSize;
         }
         
@@ -12930,16 +12929,13 @@ class Operator
         for (let i = 0; i < headerOutputs.length; i++)
         {
             if (i > 0) outputHeight += gap;
-            outputY.push(outputHeight);
+            outputY.push(2 + padding + outputHeight);
             outputHeight += connSize;
         }
 
 
-        log(inputHeight);
-        log(outputHeight);
-
-             if (inputHeight  > outputHeight) { for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2; }
-        else if (outputHeight > inputHeight ) { for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2; }
+             if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
+        else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
         for (let i = 0; i < headerInputs .length; i++) headerInputs [i].control.style.top =  inputY[i];

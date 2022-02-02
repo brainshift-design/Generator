@@ -5,7 +5,7 @@
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
-    box-shadow:     0 0 0 1px green inset;
+    /* box-shadow:     0 0 0 1px green inset; */
     pointer-events: none;
 }
 
@@ -19,7 +19,7 @@
     margin:         0;
     margin-left:    3px;
     /* margin-bottom:  6px; */
-    /* position: absolute; */
+    position: absolute;
     /* top:            50%; */
     /* transform:      translateY(-50%); */
     right:          3px;

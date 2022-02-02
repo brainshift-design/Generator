@@ -334,11 +334,10 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
-        log(this.name + '.updateHeaderInputsAndOutputs()');
-
         const headerInputs  = this.inputs .filter(i => !i.param);
         const headerOutputs = this.outputs.filter(o => !o.param);
 
+        const padding  = this.header.connectionPadding;
         const connSize = 9;
         const gap      = 4;
 
@@ -349,7 +348,7 @@ class Operator
         for (let i = 0; i < headerInputs.length; i++)
         {
             if (i > 0) inputHeight += gap;
-            inputY.push(inputHeight);
+            inputY.push(5 + padding + inputHeight);
             inputHeight += connSize;
         }
         
@@ -360,16 +359,13 @@ class Operator
         for (let i = 0; i < headerOutputs.length; i++)
         {
             if (i > 0) outputHeight += gap;
-            outputY.push(outputHeight);
+            outputY.push(2 + padding + outputHeight);
             outputHeight += connSize;
         }
 
 
-        log(inputHeight);
-        log(outputHeight);
-
-             if (inputHeight  > outputHeight) { for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2; }
-        else if (outputHeight > inputHeight ) { for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2; }
+             if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
+        else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
         for (let i = 0; i < headerInputs .length; i++) headerInputs [i].control.style.top =  inputY[i];

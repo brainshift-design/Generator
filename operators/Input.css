@@ -5,7 +5,7 @@
     float:          left;
     margin-right:   auto;
     padding-top:    13px;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     pointer-events: none;
 }
 
@@ -19,8 +19,8 @@
     border-radius:  3px;
     margin:         0;
     margin-left:    3px;
-    margin-bottom:  6px;
-    /* position:       absolute; */
+    /* margin-bottom:  6px; */
+    position:       absolute;
     /* top:            50%; */
     /* transform:      translateY(-50%); */
     pointer-events: none;
