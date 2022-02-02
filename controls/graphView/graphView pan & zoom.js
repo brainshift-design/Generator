@@ -29,9 +29,20 @@ Object.defineProperty(graphView, 'zoom',
     {
         if (graphView._zoom == zoom) return;
 
-        graphView.oldZoom = graphView.zoom;
-        graphView._zoom   = zoom;
+        // graphView.oldZoom = graphView._zoom;
+        // graphView._zoom   = zoom;
 
+        // graphView.updatePanAndZoom();
+
+        let pos = {
+            x: window.innerWidth /2,
+            y: window.innerHeight/2 };
+
+        pos.y -= controlBar.offsetHeight;
+
+        const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
+
+        graphView.setPanAndZoom(pan, zoom);
         graphView.updatePanAndZoom();
     }
 });
@@ -55,8 +66,8 @@ graphView.setPanAndZoom = (pan, zoom) =>
 
     graphView.oldZoom = graphView.zoom;
 
-    graphView._zoom   = zoom;
-    graphView._pan    = pan;
+    graphView._zoom = zoom;
+    graphView._pan  = pan;
 
     graphView.updatePanAndZoom();
 };
@@ -80,6 +91,8 @@ graphView.updatePanAndZoom = () =>
 
     graphView.updateNodeTransforms(graph.nodes);
     graphView.updateScroll();
+
+    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };
 
 
@@ -157,8 +170,6 @@ graphView.endZoomSelection = (pointerId, zoom) =>
 
         const diff = { w: (window.innerWidth - box.w) / 2,
                        h: (wndHeight         - box.h) / 2 };
-
-        //console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
 
         graphView.setPanAndZoom(
             { x: -(box.x - diff.w) * graphView.zoom,

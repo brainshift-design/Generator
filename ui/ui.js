@@ -4,6 +4,8 @@ function uiEndLoadState(msg)
     productKey  = msg.productKey;
 
     uiGetPluginData('graph'); // load graph from current page
+
+    uiEndResizeWindow();
    
     setInterval(autoSave, 5000); // auto save every 5 seconds
 }

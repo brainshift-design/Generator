@@ -27,6 +27,21 @@
 
 .menuButton:focus
 {
-    background:var(--activeObjectColor);
-    color:     white;
+    background: var(--activeObjectColor);
+    color:      white;
+}
+
+
+#btnCreateNumber
+{
+    padding-left:  15px;
+    padding-right: 35px;
+}
+
+
+#btnZoom
+{
+    position: absolute;
+    padding-left:  15px;
+    padding-right: 45px;
 }

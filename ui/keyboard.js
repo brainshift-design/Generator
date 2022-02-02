@@ -63,7 +63,7 @@ document.addEventListener('keydown', e =>
     }
 
     else if (e.code == 'Digit0'
-          && e.shiftKey)
+          && getCtrlKey(e))
     {
         graphView.zoom = 1;
         uiNotify('Zoom to 100%');

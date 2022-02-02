@@ -1,9 +1,9 @@
-function uiLoadState(state)
-{
-    uiResizeWindow(
-        window.innerWidth, 
-        state.windowHeight);
-}    
+// function uiLoadState(state)
+// {
+//     uiResizeWindow(
+//         window.innerWidth, 
+//         state.windowHeight);
+// }    
 
 
 
@@ -34,6 +34,9 @@ function uiGetPluginDataReturn(msg)
 function uiEndResizeWindow()
 {
     graphView.updatePanAndZoom();
+
+    btnZoom.style.top  = 0;
+    btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
 }
 
 

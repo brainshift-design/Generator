@@ -33,13 +33,6 @@
 }
 
 
-#btnCreateNumber
-{
-    padding-left:  15px;
-    padding-right: 35px;
-}
-
-
 #controlBar
 {
     display:          block;
@@ -136,10 +129,24 @@ input[type=text]::selection
 
 .menuButton:focus
 {
-    background:var(--activeObjectColor);
-    color:     white;
+    background: var(--activeObjectColor);
+    color:      white;
 }
 
+
+#btnCreateNumber
+{
+    padding-left:  15px;
+    padding-right: 35px;
+}
+
+
+#btnZoom
+{
+    position: absolute;
+    padding-left:  15px;
+    padding-right: 45px;
+}
 
 
 #productKeyBack
@@ -968,7 +975,8 @@ input[type=text]::selection
     
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
-    <!-- <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
+    <!-- &nbsp;
+    <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='const json = graph.toJson(); /*console.log(json);*/ uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
@@ -988,6 +996,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleWires(); this.blur();'>WIRES</button>
+
+    <button class='menuButton' id='btnZoom'                   onclick='graphView.zoom = 1; this.blur();'></button>
     
 </div>
     
@@ -6758,12 +6768,12 @@ function APCAcontrast(txtY, bgY)
 ////////////////////////////////////////////////////////////////////////////////
 
 
-function uiLoadState(state)
-{
-    uiResizeWindow(
-        window.innerWidth, 
-        state.windowHeight);
-}    
+// function uiLoadState(state)
+// {
+//     uiResizeWindow(
+//         window.innerWidth, 
+//         state.windowHeight);
+// }    
 
 
 
@@ -6794,6 +6804,9 @@ function uiGetPluginDataReturn(msg)
 function uiEndResizeWindow()
 {
     graphView.updatePanAndZoom();
+
+    btnZoom.style.top  = 0;
+    btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
 }
 
 
@@ -9745,9 +9758,20 @@ Object.defineProperty(graphView, 'zoom',
     {
         if (graphView._zoom == zoom) return;
 
-        graphView.oldZoom = graphView.zoom;
-        graphView._zoom   = zoom;
+        // graphView.oldZoom = graphView._zoom;
+        // graphView._zoom   = zoom;
 
+        // graphView.updatePanAndZoom();
+
+        let pos = {
+            x: window.innerWidth /2,
+            y: window.innerHeight/2 };
+
+        pos.y -= controlBar.offsetHeight;
+
+        const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
+
+        graphView.setPanAndZoom(pan, zoom);
         graphView.updatePanAndZoom();
     }
 });
@@ -9771,8 +9795,8 @@ graphView.setPanAndZoom = (pan, zoom) =>
 
     graphView.oldZoom = graphView.zoom;
 
-    graphView._zoom   = zoom;
-    graphView._pan    = pan;
+    graphView._zoom = zoom;
+    graphView._pan  = pan;
 
     graphView.updatePanAndZoom();
 };
@@ -9796,6 +9820,8 @@ graphView.updatePanAndZoom = () =>
 
     graphView.updateNodeTransforms(graph.nodes);
     graphView.updateScroll();
+
+    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };
 
 
@@ -9873,8 +9899,6 @@ graphView.endZoomSelection = (pointerId, zoom) =>
 
         const diff = { w: (window.innerWidth - box.w) / 2,
                        h: (wndHeight         - box.h) / 2 };
-
-        //console.log('box.x = ' + box.x + ', box.y = ' + box.y + ', box.w = ' + box.w + ', box.h = ' + box.h + ', diff.w = ' + diff.w + ', diff.h = ' + diff.h + ', wnd.width = ' + window.innerWidth + ', wnd.height = ' + wndHeight);
 
         graphView.setPanAndZoom(
             { x: -(box.x - diff.w) * graphView.zoom,
@@ -17862,7 +17886,7 @@ document.addEventListener('keydown', e =>
     }
 
     else if (e.code == 'Digit0'
-          && e.shiftKey)
+          && getCtrlKey(e))
     {
         graphView.zoom = 1;
         uiNotify('Zoom to 100%');
@@ -18429,6 +18453,8 @@ function uiEndLoadState(msg)
     productKey  = msg.productKey;
 
     uiGetPluginData('graph'); // load graph from current page
+
+    uiEndResizeWindow();
    
     setInterval(autoSave, 5000); // auto save every 5 seconds
 }
@@ -18524,10 +18550,20 @@ function loadGraph(json)
 
     const data = JSON.parse(json);
 
-    graphView.setPanAndZoom(
-        { x: parseFloat(data.panx), 
-          y: parseFloat(data.pany) },
-        parseFloat(data.zoom));
+
+    const pan = { 
+        x: parseFloat(data.panx), 
+        y: parseFloat(data.pany) };
+
+    const zoom = parseFloat(data.zoom);
+
+    if (isNaN(pan.x)) pan.x = 0;
+    if (isNaN(pan.y)) pan.y = 0;
+
+    if (isNaN(zoom))  zoom  = 1;
+
+    graphView.setPanAndZoom(pan, zoom);
+
 
     graphView.showWires = data.showWires == 'true';
 

@@ -23,10 +23,20 @@ function loadGraph(json)
 
     const data = JSON.parse(json);
 
-    graphView.setPanAndZoom(
-        { x: parseFloat(data.panx), 
-          y: parseFloat(data.pany) },
-        parseFloat(data.zoom));
+
+    const pan = { 
+        x: parseFloat(data.panx), 
+        y: parseFloat(data.pany) };
+
+    const zoom = parseFloat(data.zoom);
+
+    if (isNaN(pan.x)) pan.x = 0;
+    if (isNaN(pan.y)) pan.y = 0;
+
+    if (isNaN(zoom))  zoom  = 1;
+
+    graphView.setPanAndZoom(pan, zoom);
+
 
     graphView.showWires = data.showWires == 'true';
 
