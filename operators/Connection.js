@@ -158,7 +158,7 @@ class Connection
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire.curve.style.strokeWidth = (1.6 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
+            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
             this.wire      .style.zIndex      = 0;
         };
     }

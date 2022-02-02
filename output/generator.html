@@ -67,25 +67,27 @@ function getNumberString(num, dec, showHex = false)
 {
     if (showHex)
     {
-        let str = Math.round(Number(num)).toString(16);
+        const _num = Number(num);
+        let str = Math.round(Math.abs(_num)).toString(16);
 
-        if (str.length % 2 > 0)
-            str = '0' + str;
+        if (str.length % 2 > 0) str = '0' + str;
+        if (_num < 0)           str = '-' + str;
 
         return str;
     }
 
     
-    let _dec = Math.abs(dec);
-    let  str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
+    const _dec = Math.abs(dec);
+    let    str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
     
     let i = 0;
 
     // find decimal place
 
-    while (   i < str.length 
-        && str[i] !== '.' 
-        && str[i] !== ',')
+    while (i < str.length 
+        && str[i] == getUserDecimalSeparator())
+        //&& str[i] !== '.' 
+        //&& str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -99,8 +101,9 @@ function getNumberString(num, dec, showHex = false)
         while (i >= 0 && str[i] === '0')
             str = str.substring(0, i--);
         
-        if (   str[i] === '.' 
-            || str[i] === ',') // hack because JavaScript
+        // if (   str[i] === '.' 
+        //     || str[i] === ',') // hack because JavaScript
+        if (str[i] == getUserDecimalSeparator())
             str = str.substring(0, i--);
     }    
 

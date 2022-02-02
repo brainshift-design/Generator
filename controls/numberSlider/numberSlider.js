@@ -536,38 +536,40 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             && slider.showName)
             slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        let valueText;
-        
 
+        slider.text.innerHTML += slider.getValueText() + slider.suffix;
+
+
+        updateSliderRanges(slider, sw, sh);
+    };
+
+
+
+    slider.getValueText = function()
+    {
         if (   slider.options.length > 0
             && slider.dec == 0)
         {
             if (   slider.value <  0 
                 || slider.value >= slider.options.length)
-                valueText = '?';
+                return '?';
             else
-                valueText = slider.options[Math.round(slider.value)];
+                return slider.options[Math.round(slider.value)];
         }
         else if (slider.valueText != '')
         {
-            valueText = slider.valueText;
+            return slider.valueText;
         }
         else
         {
-            valueText = 
-                isNaN(slider.value)
-                ? '?'
-                : getNumberString(
-                      slider.value * slider.displayMultiplier, 
-                      slider.dec, 
-                      slider.showHex
-                  ).toUpperCase();
+            return isNaN(slider.value)
+                   ? '?'
+                   : getNumberString(
+                         slider.value * slider.displayMultiplier, 
+                         slider.dec, 
+                         slider.showHex
+                     ).toUpperCase();
         }
-
-        slider.text.innerHTML += valueText + slider.suffix;
-
-
-        updateSliderRanges(slider, sw, sh);
     };
 
 

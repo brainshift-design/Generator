@@ -1094,25 +1094,27 @@ function getNumberString(num, dec, showHex = false)
 {
     if (showHex)
     {
-        let str = Math.round(Number(num)).toString(16);
+        const _num = Number(num);
+        let str = Math.round(Math.abs(_num)).toString(16);
 
-        if (str.length % 2 > 0)
-            str = '0' + str;
+        if (str.length % 2 > 0) str = '0' + str;
+        if (_num < 0)           str = '-' + str;
 
         return str;
     }
 
     
-    let _dec = Math.abs(dec);
-    let  str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
+    const _dec = Math.abs(dec);
+    let    str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
     
     let i = 0;
 
     // find decimal place
 
-    while (   i < str.length 
-        && str[i] !== '.' 
-        && str[i] !== ',')
+    while (i < str.length 
+        && str[i] == getUserDecimalSeparator())
+        //&& str[i] !== '.' 
+        //&& str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -1126,8 +1128,9 @@ function getNumberString(num, dec, showHex = false)
         while (i >= 0 && str[i] === '0')
             str = str.substring(0, i--);
         
-        if (   str[i] === '.' 
-            || str[i] === ',') // hack because JavaScript
+        // if (   str[i] === '.' 
+        //     || str[i] === ',') // hack because JavaScript
+        if (str[i] == getUserDecimalSeparator())
             str = str.substring(0, i--);
     }    
 
@@ -3508,25 +3511,27 @@ function getNumberString(num, dec, showHex = false)
 {
     if (showHex)
     {
-        let str = Math.round(Number(num)).toString(16);
+        const _num = Number(num);
+        let str = Math.round(Math.abs(_num)).toString(16);
 
-        if (str.length % 2 > 0)
-            str = '0' + str;
+        if (str.length % 2 > 0) str = '0' + str;
+        if (_num < 0)           str = '-' + str;
 
         return str;
     }
 
     
-    let _dec = Math.abs(dec);
-    let  str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
+    const _dec = Math.abs(dec);
+    let    str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
     
     let i = 0;
 
     // find decimal place
 
-    while (   i < str.length 
-        && str[i] !== '.' 
-        && str[i] !== ',')
+    while (i < str.length 
+        && str[i] == getUserDecimalSeparator())
+        //&& str[i] !== '.' 
+        //&& str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -3540,8 +3545,9 @@ function getNumberString(num, dec, showHex = false)
         while (i >= 0 && str[i] === '0')
             str = str.substring(0, i--);
         
-        if (   str[i] === '.' 
-            || str[i] === ',') // hack because JavaScript
+        // if (   str[i] === '.' 
+        //     || str[i] === ',') // hack because JavaScript
+        if (str[i] == getUserDecimalSeparator())
             str = str.substring(0, i--);
     }    
 
@@ -8041,38 +8047,40 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
             && slider.showName)
             slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
         
-        let valueText;
-        
 
+        slider.text.innerHTML += slider.getValueText() + slider.suffix;
+
+
+        updateSliderRanges(slider, sw, sh);
+    };
+
+
+
+    slider.getValueText = function()
+    {
         if (   slider.options.length > 0
             && slider.dec == 0)
         {
             if (   slider.value <  0 
                 || slider.value >= slider.options.length)
-                valueText = '?';
+                return '?';
             else
-                valueText = slider.options[Math.round(slider.value)];
+                return slider.options[Math.round(slider.value)];
         }
         else if (slider.valueText != '')
         {
-            valueText = slider.valueText;
+            return slider.valueText;
         }
         else
         {
-            valueText = 
-                isNaN(slider.value)
-                ? '?'
-                : getNumberString(
-                      slider.value * slider.displayMultiplier, 
-                      slider.dec, 
-                      slider.showHex
-                  ).toUpperCase();
+            return isNaN(slider.value)
+                   ? '?'
+                   : getNumberString(
+                         slider.value * slider.displayMultiplier, 
+                         slider.dec, 
+                         slider.showHex
+                     ).toUpperCase();
         }
-
-        slider.text.innerHTML += valueText + slider.suffix;
-
-
-        updateSliderRanges(slider, sw, sh);
     };
 
 
@@ -12425,7 +12433,7 @@ class Connection
                 : 'none';
 
             this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire.curve.style.strokeWidth = (1.6 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
+            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
             this.wire      .style.zIndex      = 0;
         };
     }
