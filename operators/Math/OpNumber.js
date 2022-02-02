@@ -25,6 +25,9 @@ extends Operator
         if (this.valid) return;
 
             
+        //this.updateParams(false);
+
+
         if (this.inputs[0].isConnected)
         {
             this.#paramValue.control.dec = this.inputs[0].data.decimals;

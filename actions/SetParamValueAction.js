@@ -26,7 +26,7 @@ extends Action
 
     do()
     {
-        //console.log('SetParamValueAction()');
+        console.log('SetParamValueAction()');
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
     }

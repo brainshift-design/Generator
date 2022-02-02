@@ -77,6 +77,7 @@ class Graph
         switch (opType)
         {
             case 'number':           node = new OpNumber();           break;
+            case 'limits':           node = new OpLimits();           break;
             case 'add':              node = new OpAdd();              break;
             case 'subtract':         node = new OpSubtract();         break;
             case 'multiply':         node = new OpMultiply();         break;

@@ -967,6 +967,7 @@ input[type=text]::selection
     <button class='menuButton' id='btnSave'                   onclick='const json = graph.toJson(); /*console.log(json);*/ uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
+    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
     <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract"        )); this.blur();'>SUB</button>
     <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction("multiply"        )); this.blur();'>MUL</button>
@@ -7927,7 +7928,10 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
             const dec = Math.pow(10, -slider.editDec);
             slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec);
+            //slider.prevValue = slider.value;
             // TODO conform after a delay and/or another action, same with key changes 
+
+            //slider.param.op.pushUpdate();
         }
     });
 
@@ -8119,18 +8123,22 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     
 
 
-    slider.setMin = min =>
+    slider.setMin = (min, dispatchEvents = true) =>
     {
         slider.min        = min;
         slider.displayMin = min;
+
+        if (slider.value < min) slider.setValue(min, true, true, dispatchEvents);
     };
 
 
 
-    slider.setMax = max =>
+    slider.setMax = (max, dispatchEvents = true) =>
     {
         slider.max        = max;
         slider.displayMax = max;
+
+        if (max < slider.value) slider.setValue(max, true, true, dispatchEvents);
     };
 
 
@@ -11475,6 +11483,7 @@ class Graph
         switch (opType)
         {
             case 'number':           node = new OpNumber();           break;
+            case 'limits':           node = new OpLimits();           break;
             case 'add':              node = new OpAdd();              break;
             case 'subtract':         node = new OpSubtract();         break;
             case 'multiply':         node = new OpMultiply();         break;
@@ -12635,7 +12644,8 @@ class Operator
         if (graphView.overInput)
             return graphView.overInput;
 
-        if (graphView.tempConn.savedInput)
+        if (   graphView.tempConn.savedInput
+            && graphView.tempConn.savedInput.op == this)
             return graphView.tempConn.savedInput;
         
         else if (!graphView.tempConn.output.op.follows(this))
@@ -13312,8 +13322,8 @@ function createNodeHeader(node)
         else if (   graphView.tempConn
                  && toTheRightOfInputs)
         {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != node)
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.op.follows(node))
             {
                 const input = node.getAutoInput(graphView.tempConn.output.dataType);
                 if (!input) return;
@@ -13332,7 +13342,7 @@ function createNodeHeader(node)
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != node)
+                  && !node.follows(graphView.tempConn.input.op))
             {
                 const output = node.getAutoOutput(graphView.tempConn.input.dataType);
                 if (!output) return;
@@ -13727,6 +13737,9 @@ extends Operator
         if (this.valid) return;
 
             
+        //this.updateParams(false);
+
+
         if (this.inputs[0].isConnected)
         {
             this.#paramValue.control.dec = this.inputs[0].data.decimals;
@@ -13805,6 +13818,92 @@ extends Operator
 
 
         return json;
+    }
+
+
+
+    toString()
+    {
+        // let str = opType;
+
+        // if (this.inputs[0].isConnected)
+        //     str +=
+
+        // return str;
+    }
+}
+
+
+class   OpLimits
+extends Operator
+{
+    #paramMin;
+    #paramMax;
+
+
+
+    constructor()
+    {
+        super('limits', 'lim', 'number', 70);
+
+        this.addInput (new Input (this.dataType));
+        this.addOutput(new Output(this.dataType));
+
+        this.addParam(this.#paramMin = new NumberParam('min', true, true, true, 0));
+        this.addParam(this.#paramMax = new NumberParam('max', true, true, true));
+        
+        this.#paramMin.addEventListener('change', () => this.#paramMax.control.setMin(this.#paramMin.value, false));
+        this.#paramMax.addEventListener('change', () => this.#paramMin.control.setMax(this.#paramMax.value, false));
+    }
+
+
+
+    update()
+    {
+        if (this.valid) return;
+
+
+        this.updateParams(false);
+
+            
+        if (this.inputs[0].isConnected)
+        {
+            this.#paramMin.control.dec = this.inputs[0].data.decimals;
+            this.#paramMax.control.dec = this.inputs[0].data.decimals;
+            
+            this.outputs[0]._data = dataFromNumber(
+                Math.min(Math.max(
+                    this.#paramMin.value, 
+                    this.inputs[0].data.value), 
+                    this.#paramMax.value),
+                this.inputs[0].data.decimals);
+        }
+        else
+            this.outputs[0]._data = dataFromNumber(Number.Nan, 0);
+            
+                  
+        super.update()
+    }
+
+
+
+    loadParams(_node)
+    {
+        for (const _param of _node.params)
+        {
+            switch (_param[0])
+            {
+                case 'min':
+                    this.#paramMin.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramMin.setDecimalsFrom(_param[1]);
+                    break;
+
+                case 'max':
+                    this.#paramMax.setValue(parseFloat(_param[1]), true, true, false);
+                    this.#paramMax.setDecimalsFrom(_param[1]);
+                    break;
+            }
+        }
     }
 
 
@@ -14397,8 +14496,8 @@ extends Operator
     {
         if (this.valid) return;
 
-        
-        this.updateParams(false);
+
+        this.updateParams(true);
 
 
         if (this.inputs[0].isConnected) 
@@ -17466,7 +17565,7 @@ extends Action
 
     do()
     {
-        //console.log('SetParamValueAction()');
+        console.log('SetParamValueAction()');
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
     }

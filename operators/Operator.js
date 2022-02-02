@@ -138,7 +138,8 @@ class Operator
         if (graphView.overInput)
             return graphView.overInput;
 
-        if (graphView.tempConn.savedInput)
+        if (   graphView.tempConn.savedInput
+            && graphView.tempConn.savedInput.op == this)
             return graphView.tempConn.savedInput;
         
         else if (!graphView.tempConn.output.op.follows(this))

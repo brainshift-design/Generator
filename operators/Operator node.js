@@ -179,8 +179,8 @@ function createNodeHeader(node)
         else if (   graphView.tempConn
                  && toTheRightOfInputs)
         {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != node)
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.op.follows(node))
             {
                 const input = node.getAutoInput(graphView.tempConn.output.dataType);
                 if (!input) return;
@@ -199,7 +199,7 @@ function createNodeHeader(node)
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != node)
+                  && !node.follows(graphView.tempConn.input.op))
             {
                 const output = node.getAutoOutput(graphView.tempConn.input.dataType);
                 if (!output) return;

@@ -140,8 +140,8 @@ extends Operator
     {
         if (this.valid) return;
 
-        
-        this.updateParams(false);
+
+        this.updateParams(true);
 
 
         if (this.inputs[0].isConnected) 

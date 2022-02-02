@@ -416,7 +416,10 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
             const dec = Math.pow(10, -slider.editDec);
             slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec);
+            //slider.prevValue = slider.value;
             // TODO conform after a delay and/or another action, same with key changes 
+
+            //slider.param.op.pushUpdate();
         }
     });
 
@@ -608,18 +611,22 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     
 
 
-    slider.setMin = min =>
+    slider.setMin = (min, dispatchEvents = true) =>
     {
         slider.min        = min;
         slider.displayMin = min;
+
+        if (slider.value < min) slider.setValue(min, true, true, dispatchEvents);
     };
 
 
 
-    slider.setMax = max =>
+    slider.setMax = (max, dispatchEvents = true) =>
     {
         slider.max        = max;
         slider.displayMax = max;
+
+        if (max < slider.value) slider.setValue(max, true, true, dispatchEvents);
     };
 
 
