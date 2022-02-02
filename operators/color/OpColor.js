@@ -139,7 +139,6 @@ extends Operator
     update()
     {
         if (this.valid) return;
-        console.log('OpColor.update()');
 
         
         this.updateParams(false);

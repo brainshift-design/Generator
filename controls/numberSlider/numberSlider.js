@@ -452,7 +452,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = false)
     {
         const oldValue = slider.value;
 
