@@ -1,5 +1,5 @@
 class   OpNumber
-extends Operator
+extends OperatorBase
 {
     #paramValue;
 

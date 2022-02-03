@@ -9,7 +9,7 @@
 
 
 class   OpColor
-extends Operator
+extends OpColorBase
 {
     paramSpace;
     
@@ -18,12 +18,10 @@ extends Operator
     param3;
 
     #colorBack;
-    #warningOverlay;
+
 
     hexbox;
 
-    
-    _color;
     
     _oldSpace;
     _oldSpaceConnections = [];
@@ -35,9 +33,9 @@ extends Operator
 
     constructor()
     {
-        super('color', 'col', 'color', 80);
+        super('color', 'color', 'color', 80);
 
-        this._color    = ['rgb', 0.5, 0.5, 0.5];
+
         this._oldSpace =  'rgb';
 
 
@@ -80,13 +78,6 @@ extends Operator
 
         for (let i = 1; i < this.params.length; i++)
             this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].isConnected); });
-
-
-        this.#warningOverlay = createDiv('colorWarningOverlay');
-        this.inner.appendChild(this.#warningOverlay);
-
-
-        //this.paramSpace.setValue(0);
     }
 
 
@@ -195,6 +186,8 @@ extends Operator
 
     updateNode()
     {
+        //log(this.name + '.OpColor.updateNode()');
+
         const colBack      = dataColor2rgb(this._color);
         const darkText     = rgb2hclokl(colBack)[2] > 0.71;
         const satBias      = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
@@ -236,13 +229,7 @@ extends Operator
         this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
 
 
-        this.#warningOverlay.style.background =
-            isValidRgb(colBack)
-            ? 'transparent'
-            : 'repeating-linear-gradient('
-              + '-45deg, '
-              + 'transparent 0 7px,'
-              +  warningStyle + ' 7px 14px)';
+        //this.updateWarningOverlayStyle(colBack, warningStyle);
 
 
         this.inputs [0].wireColor    = colBack;
@@ -268,6 +255,10 @@ extends Operator
 
     updateHeader()
     {
+        //log(this.name + '.OpColor.updateHeader()');
+
+        super.updateHeader();
+        
         this.header.style.background = 'transparent';
     }
 

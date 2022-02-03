@@ -14,6 +14,7 @@
 ../operators/Output.js
 ../operators/Connection.js
 ../operators/Operator.js
+../operators/OperatorBase.js
 ../operators/Operator node.js
 ../operators/Operator label.js
 ../operators/Operator textbox.js
@@ -29,6 +30,7 @@
 ../operators/math/OpInterpolate.js
 //../operators/math/OpRandom.js
 
+../operators/color/OpColorBase.js
 ../operators/color/OpColor.js
 ../operators/color/OpColor spaces.js
 ../operators/color/OpColor hexbox.js

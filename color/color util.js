@@ -1,3 +1,11 @@
+const dataColor_NaN = [
+    'rgb',
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
+
+
 function allConesWork(cones)
 {
     return cones.l == 1 

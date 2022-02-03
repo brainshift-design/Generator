@@ -59,6 +59,7 @@ function createNodeHeader(node)
 
     createNodeLabel(node);
 
+    
     node. inputControls = createDiv('inputControls');
     node.outputControls = createDiv('outputControls');
 

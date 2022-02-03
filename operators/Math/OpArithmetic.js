@@ -1,5 +1,5 @@
 class   OpArithmetic
-extends Operator
+extends OperatorBase
 {
     #paramValue;
 

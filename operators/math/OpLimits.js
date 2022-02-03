@@ -1,5 +1,5 @@
 class   OpLimits
-extends Operator
+extends OperatorBase
 {
     #paramMin;
     #paramMax;

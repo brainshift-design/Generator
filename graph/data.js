@@ -59,3 +59,12 @@ function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, opType)
         //color: color
     };
 }
+
+
+
+function isDataColorNaN(color)
+{
+    return isNaN(color[1])
+        || isNaN(color[2])
+        || isNaN(color[3]);
+}

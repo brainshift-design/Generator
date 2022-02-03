@@ -101,7 +101,7 @@ class Operator
 
 
 
-    constructor(opType, shortType, dataType, defWidth = 100)
+    constructor(opType, shortType, dataType, defWidth = 80)
     {
         this.#opType           = opType;   // this is the operator type
         this._dataType         = dataType; // this is the op's main data type
@@ -276,10 +276,11 @@ class Operator
 
     updateNode() 
     {
-        this.updateNodeBorder();
-        //this.updateControls();
-        this.updateHeader();
+        //log(this.name + '.Operator.updateNode()');
 
+        this.updateNodeBorder();
+        this.updateHeader();
+        this.updateParamControls();
 
         graphView.updateNodeTransform(this);
     }
@@ -288,42 +289,24 @@ class Operator
 
     updateNodeBorder()
     {
-        let boxShadow = '';
-
-        // const selecting = 
-        //        !graphView.zoomSelecting
-        //     && !graphView.spaceDown;
-    
-        // if (selecting)
-        // {
-        //     boxShadow += 
-        //           '0px 5px ' 
-        //         + (node.selected ? 20 : 10)
-        //         + 'px ' 
-        //         + (node.selected ? '#0001' : '#00000008')
-        //         + ', ';
-        // } 
-    
-        boxShadow += '0 0 0 1px ' + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
-    
-        this.inner.style.boxShadow = boxShadow;
+        this.inner.style.boxShadow = 
+              '0 0 0 1px ' 
+            + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
     }
 
 
 
-    // updateControls()
-    // {
-    //     this.params.forEach(p => p.control.update());
-    // }
+    updateParamControls()
+    {
+        this.params.forEach(p => p.control.update());
+    }
 
 
 
     updateHeader()
     {
-        log(this.name + '.Operator.updateHeader()');
+        //log(this.name + '.Operator.updateHeader()');
         
-        this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
-
 
         const height = this.updateHeaderInputsAndOutputs();
 

@@ -27,7 +27,10 @@ function invalid2validRgb(rgb)
 
 function isValidRgb(rgb, lim = -Eps)
 {
-    return (rgb[0] >= 0 + lim && rgb[0] <= 1 - lim 
+    return (!isNaN(rgb[0])
+         && !isNaN(rgb[1])
+         && !isNaN(rgb[2])
+         && rgb[0] >= 0 + lim && rgb[0] <= 1 - lim 
          && rgb[1] >= 0 + lim && rgb[1] <= 1 - lim 
          && rgb[2] >= 0 + lim && rgb[2] <= 1 - lim);
 }

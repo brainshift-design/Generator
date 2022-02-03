@@ -1,5 +1,5 @@
 class   OpRectangle
-extends Operator
+extends OperatorBase
 {
     #paramX;
     #paramY;
