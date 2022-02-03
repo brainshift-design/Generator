@@ -12214,7 +12214,7 @@ extends EventTarget
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2))
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.8, 1) : this.color[3]))
             : 'transparent';
 
         //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
@@ -12414,7 +12414,7 @@ class Output
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12))
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.4, 1) : this.color[3] / 1.4))
             : 'transparent';
 
         this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
@@ -14555,7 +14555,7 @@ extends Operator
     {
         //log(this.name + '.OpColorBase.updateHeader()');
 
-        const [colBack, , colText, textStyle] = this.getHeaderColors();
+        const [colBack, , colText, ] = this.getHeaderColors();
 
 
         for (const input of this.inputs.filter(i => !i.param))
@@ -14590,6 +14590,7 @@ extends Operator
     updateHeaderLabel()
     {
         const [ , , , textStyle] = this.getHeaderColors();
+        
         this.label.style.color = textStyle;
     }
 
@@ -14606,8 +14607,8 @@ extends Operator
             this.canShowColor()
             ? (darkText 
                ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
-               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.14 ) * (1 + 2*satBias)])
-            : [0, 0, 0];
+               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias)])
+            : [0, 0, 0, 1];
         
         const textStyle = colorStyleRgba(colText);
 
@@ -14714,6 +14715,7 @@ extends OpColorBase
         super('color', 'color', 'color', 80);
 
 
+        this._color    = ['rgb', 0.5, 0.5, 0.5];
         this._oldSpace =  'rgb';
 
 

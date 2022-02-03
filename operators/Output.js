@@ -138,7 +138,7 @@ class Output
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12))
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.4, 1) : this.color[3] / 1.4))
             : 'transparent';
 
         this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';

@@ -40,7 +40,7 @@ extends Operator
     {
         //log(this.name + '.OpColorBase.updateHeader()');
 
-        const [colBack, , colText, textStyle] = this.getHeaderColors();
+        const [colBack, , colText, ] = this.getHeaderColors();
 
 
         for (const input of this.inputs.filter(i => !i.param))
@@ -75,6 +75,7 @@ extends Operator
     updateHeaderLabel()
     {
         const [ , , , textStyle] = this.getHeaderColors();
+        
         this.label.style.color = textStyle;
     }
 
@@ -91,8 +92,8 @@ extends Operator
             this.canShowColor()
             ? (darkText 
                ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
-               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.14 ) * (1 + 2*satBias)])
-            : [0, 0, 0];
+               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias)])
+            : [0, 0, 0, 1];
         
         const textStyle = colorStyleRgba(colText);
 

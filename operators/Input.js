@@ -167,7 +167,7 @@ extends EventTarget
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.4 : 0.2))
+            ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.8, 1) : this.color[3]))
             : 'transparent';
 
         //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));

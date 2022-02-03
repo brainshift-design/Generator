@@ -36,6 +36,7 @@ extends OpColorBase
         super('color', 'color', 'color', 80);
 
 
+        this._color    = ['rgb', 0.5, 0.5, 0.5];
         this._oldSpace =  'rgb';
 
 
