@@ -253,7 +253,7 @@ class Operator
     pushUpdate()
     {
         log(this.name + '.Operator.pushUpdate()');
-        
+
         this.invalidate();
         
         setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
@@ -606,10 +606,16 @@ class Operator
 
     loadParams(_node)
     {
-        // for (const _param of _node.params)
-        // {
-
-        // }
+        for (const _param of _node.params)
+        {
+            const index = this.params.findIndex(p => p.name == _param[0]);
+            
+            if (index >= 0) 
+            {
+                this.params[index].setValue(parseInt(_param[1]), true, true, false);
+                //this.params[index].setDecimalsFrom(_param[1]);
+            }
+        }
     }
 
 

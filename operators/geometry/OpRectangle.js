@@ -15,6 +15,7 @@ extends OperatorBase
     #oldHeight = Number.NaN;
 
 
+    
     constructor()
     {
         super('rectangle', 'rect', 'object');
@@ -159,42 +160,42 @@ extends OperatorBase
 
     loadParams(_node)
     {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'x':
-                    this.#paramX.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramX.setDecimalsFrom(_param[1]);
-                    break;
+        // for (const _param of _node.params)
+        // {
+        //     switch (_param[0])
+        //     {
+        //         case 'x':
+        //             this.#paramX.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramX.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'y':
-                    this.#paramY.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramY.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'y':
+        //             this.#paramY.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramY.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'width':
-                    this.#paramWidth.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramWidth.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'width':
+        //             this.#paramWidth.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramWidth.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'height':
-                    this.#paramHeight.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramHeight.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'height':
+        //             this.#paramHeight.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramHeight.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'angle':
-                    this.#paramAngle.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramAngle.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'angle':
+        //             this.#paramAngle.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramAngle.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'round':
-                    this.#paramRound.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramRound.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'round':
+        //             this.#paramRound.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramRound.setDecimalsFrom(_param[1]);
+        //             break;
 
-            }
-        }
+        //     }
+        // }
 
 
         if (_node.proportional)
@@ -208,5 +209,8 @@ extends OperatorBase
                 this.#oldHeight = parseFloat(_node.propHeight);
             }
         }
+
+
+        super.loadParams();
     }
 }

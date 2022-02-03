@@ -228,16 +228,16 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'standard':
-                    this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
-                    break;
-            }
-        }
-    }
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'standard':
+    //                 this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
+    //                 break;
+    //         }
+    //     }
+    // }
 }

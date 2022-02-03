@@ -69,17 +69,17 @@ extends Operator
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'factor':
-                    this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramFactor.setDecimalsFrom(_param[1]);
-                    break;
-            }
-        }
-    }
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'factor':
+    //                 this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramFactor.setDecimalsFrom(_param[1]);
+    //                 break;
+    //         }
+    //     }
+    // }
 }

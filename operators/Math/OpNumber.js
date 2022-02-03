@@ -57,22 +57,22 @@ extends OperatorBase
 
 
 
-    loadParams(_node)
-    {
-        if (_node.params)
-        {
-            for (const _param of _node.params)
-            {
-                if (_param[0] == 'value')
-                {
-                    this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramValue.setDecimalsFrom(_param[1]);
-                }
-            }
-        }
-        else if (_node.decimals)
-            this.#paramValue.setDecimals(parseInt(_node.decimals));
-    }
+    // loadParams(_node)
+    // {
+    //     if (_node.params)
+    //     {
+    //         for (const _param of _node.params)
+    //         {
+    //             if (_param[0] == 'value')
+    //             {
+    //                 this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramValue.setDecimalsFrom(_param[1]);
+    //             }
+    //         }
+    //     }
+    //     else if (_node.decimals)
+    //         this.#paramValue.setDecimals(parseInt(_node.decimals));
+    // }
 
 
 

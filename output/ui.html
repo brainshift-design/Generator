@@ -979,7 +979,7 @@ input[type=text]::selection
     &nbsp;
     <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnSave'                   onclick='const json = graph.toJson(); /*console.log(json);*/ uiSetPluginData("graph", json); this.blur();'>SAVE</button>
+    <button class='menuButton' id='btnSave'                   onclick='const json = graph.toJson(); log(json); uiSetPluginData("graph", json); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
@@ -10876,8 +10876,11 @@ graphView.updateShowWires = () =>
     btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
     btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 
-    //graph.nodes.forEach(n => n.updateNode());
-    graph.connections.forEach(c => show(c.wire, graphView.showWires));
+    graph.nodes.forEach(
+        n => n.updateNode());
+
+    graph.connections.forEach(
+        c => show(c.wire, graphView.showWires));
 };
 
 
@@ -11790,6 +11793,7 @@ class Graph
         const tab = '  ';
 
         let json = '{\n'
+            + tab + '"version": "0",\n'
             + tab + '"zoom": "'      + graphView.zoom  + '",\n'
             + tab + '"panx": "'      + graphView.pan.x + '",\n'
             + tab + '"pany": "'      + graphView.pan.y + '",\n'
@@ -12845,7 +12849,7 @@ class Operator
     pushUpdate()
     {
         log(this.name + '.Operator.pushUpdate()');
-        
+
         this.invalidate();
         
         setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
@@ -13198,10 +13202,16 @@ class Operator
 
     loadParams(_node)
     {
-        // for (const _param of _node.params)
-        // {
-
-        // }
+        for (const _param of _node.params)
+        {
+            const index = this.params.findIndex(p => p.name == _param[0]);
+            
+            if (index >= 0) 
+            {
+                this.params[index].setValue(parseInt(_param[1]), true, true, false);
+                //this.params[index].setDecimalsFrom(_param[1]);
+            }
+        }
     }
 
 
@@ -13903,22 +13913,22 @@ extends OperatorBase
 
 
 
-    loadParams(_node)
-    {
-        if (_node.params)
-        {
-            for (const _param of _node.params)
-            {
-                if (_param[0] == 'value')
-                {
-                    this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramValue.setDecimalsFrom(_param[1]);
-                }
-            }
-        }
-        else if (_node.decimals)
-            this.#paramValue.setDecimals(parseInt(_node.decimals));
-    }
+    // loadParams(_node)
+    // {
+    //     if (_node.params)
+    //     {
+    //         for (const _param of _node.params)
+    //         {
+    //             if (_param[0] == 'value')
+    //             {
+    //                 this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramValue.setDecimalsFrom(_param[1]);
+    //             }
+    //         }
+    //     }
+    //     else if (_node.decimals)
+    //         this.#paramValue.setDecimals(parseInt(_node.decimals));
+    // }
 
 
 
@@ -14009,24 +14019,24 @@ extends OperatorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'min':
-                    this.#paramMin.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramMin.setDecimalsFrom(_param[1]);
-                    break;
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'min':
+    //                 this.#paramMin.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramMin.setDecimalsFrom(_param[1]);
+    //                 break;
 
-                case 'max':
-                    this.#paramMax.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramMax.setDecimalsFrom(_param[1]);
-                    break;
-            }
-        }
-    }
+    //             case 'max':
+    //                 this.#paramMax.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramMax.setDecimalsFrom(_param[1]);
+    //                 break;
+    //         }
+    //     }
+    // }
 
 
 
@@ -14209,6 +14219,8 @@ extends OperatorBase
     {
         if (_node.showOnlySymbol)
             this._showOnlySymbol = _node.showOnlySymbol == 'true';
+
+        super.loadParams(_node);
     }
 }
 
@@ -14443,19 +14455,19 @@ extends Operator
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'factor':
-                    this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramFactor.setDecimalsFrom(_param[1]);
-                    break;
-            }
-        }
-    }
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'factor':
+    //                 this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramFactor.setDecimalsFrom(_param[1]);
+    //                 break;
+    //         }
+    //     }
+    // }
 }
 
 
@@ -14484,7 +14496,14 @@ extends Operator
     {
         super.updateNode();
 
+
         this.updateWarningOverlay();
+
+
+        // for (const output of this.outputs)
+        //     for (const input of output.connectedInputs)
+        //         if (input.connection)
+        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
     }
 
 
@@ -14499,6 +14518,16 @@ extends Operator
             darkText 
             ? [0, 0, 0, 0.24 * (1 + satBias)] 
             : [1, 1, 1, 0.4  * (1 + satBias)];
+
+
+        // this.inputs [0].wireColor    = colBack;
+        // this.outputs[0].wireColor    = colBack;
+           
+        // this.inputs [0].color        = colText;
+        // this.outputs[0].color        = colText;
+        
+        // this.paramSpace.input .color = colText;
+        // this.paramSpace.output.color = colText;
 
 
         for (const input of this.inputs.filter(i => !i.param))
@@ -14656,9 +14685,9 @@ extends OpColorBase
 
         
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2])));
+        this.addParam(this.param1     = new NumberParam('c1',    true, true, true, Math.round(this._color[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    true, true, true, Math.round(this._color[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
         this.paramSpace.control.barTop  = 0.8;
@@ -14823,20 +14852,20 @@ extends OpColorBase
         //this.updateWarningOverlayStyle(colBack, warningStyle);
 
 
-        this.inputs [0].wireColor    = colBack;
-        this.outputs[0].wireColor    = colBack;
+        // this.inputs [0].wireColor    = colBack;
+        // this.outputs[0].wireColor    = colBack;
            
-        this.inputs [0].color        = colText;
-        this.outputs[0].color        = colText;
+        // this.inputs [0].color        = colText;
+        // this.outputs[0].color        = colText;
         
-        this.paramSpace.input .color = colText;
-        this.paramSpace.output.color = colText;
+        // this.paramSpace.input .color = colText;
+        // this.paramSpace.output.color = colText;
 
 
-        for (const output of this.outputs)
-            for (const input of output.connectedInputs)
-                if (input.connection)
-                    input.connection.wire.updateStyle(input.connection.wire.getColor());
+        // for (const output of this.outputs)
+        //     for (const input of output.connectedInputs)
+        //         if (input.connection)
+        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
 
                 
         super.updateNode();
@@ -14987,7 +15016,7 @@ extends OpColorBase
             if (!this.paramIsConsideredDefault(param))
             {
                 if (!first) json += ',\n'; first = false;
-                json += pos + param.toJson(nTab, i > 0 ? 'param' + i : '');
+                json += pos + param.toJson(nTab, i > 0 ? 'c' + i : '');
             }
         }
 
@@ -14999,33 +15028,33 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'space':
-                    this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
-                    break;
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'space':
+    //                 this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
+    //                 break;
                     
-                case 'param1':
-                    this.param1.setValue(parseFloat(_param[1]), true, true, false);
-                    this.param1.setDecimalsFrom(_param[1]);
-                    break;
+    //             case 'param1':
+    //                 this.param1.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.param1.setDecimalsFrom(_param[1]);
+    //                 break;
 
-                case 'param2':
-                    this.param2.setValue(parseFloat(_param[1]), true, true, false);
-                    this.param2.setDecimalsFrom(_param[1]);
-                    break;
+    //             case 'param2':
+    //                 this.param2.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.param2.setDecimalsFrom(_param[1]);
+    //                 break;
 
-                case 'param3':
-                    this.param3.setValue(parseFloat(_param[1]), true, true, false);
-                    this.param3.setDecimalsFrom(_param[1]);
-                    break;
-            }
-        }
-    }
+    //             case 'param3':
+    //                 this.param3.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.param3.setDecimalsFrom(_param[1]);
+    //                 break;
+    //         }
+    //     }
+    // }
 }
 
 
@@ -16256,18 +16285,18 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'standard':
-                    this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
-                    break;
-            }
-        }
-    }
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'standard':
+    //                 this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
+    //                 break;
+    //         }
+    //     }
+    // }
 }
 
 
@@ -16434,28 +16463,28 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'space':
-                    this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
-                    break;
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'space':
+    //                 this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
+    //                 break;
 
-                case 'amount':
-                    this.#paramAmount.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramAmount.setDecimalsFrom(_param[1]);
-                    break;
+    //             case 'amount':
+    //                 this.#paramAmount.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramAmount.setDecimalsFrom(_param[1]);
+    //                 break;
 
-                case 'gamma':
-                    this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramGamma.setDecimalsFrom(_param[1]);
-                    break;
-            }
-        }
-    }
+    //             case 'gamma':
+    //                 this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramGamma.setDecimalsFrom(_param[1]);
+    //                 break;
+    //         }
+    //     }
+    // }
 }
 
 
@@ -16624,26 +16653,26 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'L':
-                    this.#paramL.setValue(parseInt(_param[1]), true, true, false);
-                    break;
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'L':
+    //                 this.#paramL.setValue(parseInt(_param[1]), true, true, false);
+    //                 break;
 
-                case 'M':
-                    this.#paramM.setValue(parseFloat(_param[1]), true, true, false);
-                    break;
+    //             case 'M':
+    //                 this.#paramM.setValue(parseFloat(_param[1]), true, true, false);
+    //                 break;
 
-                case 'S':
-                    this.#paramS.setValue(parseFloat(_param[1]), true, true, false);
-                    break;
-            }
-        }
-    }
+    //             case 'S':
+    //                 this.#paramS.setValue(parseFloat(_param[1]), true, true, false);
+    //                 break;
+    //         }
+    //     }
+    // }
 }
 
 
@@ -16664,6 +16693,7 @@ extends OperatorBase
     #oldHeight = Number.NaN;
 
 
+    
     constructor()
     {
         super('rectangle', 'rect', 'object');
@@ -16808,42 +16838,42 @@ extends OperatorBase
 
     loadParams(_node)
     {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'x':
-                    this.#paramX.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramX.setDecimalsFrom(_param[1]);
-                    break;
+        // for (const _param of _node.params)
+        // {
+        //     switch (_param[0])
+        //     {
+        //         case 'x':
+        //             this.#paramX.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramX.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'y':
-                    this.#paramY.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramY.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'y':
+        //             this.#paramY.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramY.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'width':
-                    this.#paramWidth.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramWidth.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'width':
+        //             this.#paramWidth.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramWidth.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'height':
-                    this.#paramHeight.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramHeight.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'height':
+        //             this.#paramHeight.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramHeight.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'angle':
-                    this.#paramAngle.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramAngle.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'angle':
+        //             this.#paramAngle.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramAngle.setDecimalsFrom(_param[1]);
+        //             break;
 
-                case 'round':
-                    this.#paramRound.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramRound.setDecimalsFrom(_param[1]);
-                    break;
+        //         case 'round':
+        //             this.#paramRound.setValue(parseFloat(_param[1]), true, true, false);
+        //             this.#paramRound.setDecimalsFrom(_param[1]);
+        //             break;
 
-            }
-        }
+        //     }
+        // }
 
 
         if (_node.proportional)
@@ -16857,6 +16887,9 @@ extends OperatorBase
                 this.#oldHeight = parseFloat(_node.propHeight);
             }
         }
+
+
+        super.loadParams();
     }
 }
 
@@ -18849,6 +18882,7 @@ function loadGraph(json)
     
 
     const data = JSON.parse(json);
+    log(json);
 
 
     const pan = { 

@@ -165,6 +165,8 @@ extends OperatorBase
     {
         if (_node.showOnlySymbol)
             this._showOnlySymbol = _node.showOnlySymbol == 'true';
+
+        super.loadParams(_node);
     }
 }
 

@@ -23,7 +23,14 @@ extends Operator
     {
         super.updateNode();
 
+
         this.updateWarningOverlay();
+
+
+        // for (const output of this.outputs)
+        //     for (const input of output.connectedInputs)
+        //         if (input.connection)
+        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
     }
 
 
@@ -38,6 +45,16 @@ extends Operator
             darkText 
             ? [0, 0, 0, 0.24 * (1 + satBias)] 
             : [1, 1, 1, 0.4  * (1 + satBias)];
+
+
+        // this.inputs [0].wireColor    = colBack;
+        // this.outputs[0].wireColor    = colBack;
+           
+        // this.inputs [0].color        = colText;
+        // this.outputs[0].color        = colText;
+        
+        // this.paramSpace.input .color = colText;
+        // this.paramSpace.output.color = colText;
 
 
         for (const input of this.inputs.filter(i => !i.param))

@@ -301,6 +301,7 @@ class Graph
         const tab = '  ';
 
         let json = '{\n'
+            + tab + '"version": "0",\n'
             + tab + '"zoom": "'      + graphView.zoom  + '",\n'
             + tab + '"panx": "'      + graphView.pan.x + '",\n'
             + tab + '"pany": "'      + graphView.pan.y + '",\n'

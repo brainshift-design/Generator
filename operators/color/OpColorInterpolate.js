@@ -161,26 +161,26 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'space':
-                    this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
-                    break;
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'space':
+    //                 this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
+    //                 break;
 
-                case 'amount':
-                    this.#paramAmount.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramAmount.setDecimalsFrom(_param[1]);
-                    break;
+    //             case 'amount':
+    //                 this.#paramAmount.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramAmount.setDecimalsFrom(_param[1]);
+    //                 break;
 
-                case 'gamma':
-                    this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
-                    this.#paramGamma.setDecimalsFrom(_param[1]);
-                    break;
-            }
-        }
-    }
+    //             case 'gamma':
+    //                 this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.#paramGamma.setDecimalsFrom(_param[1]);
+    //                 break;
+    //         }
+    //     }
+    // }
 }

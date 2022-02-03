@@ -64,9 +64,9 @@ extends OpColorBase
 
         
         this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.param1     = new NumberParam('c1', true, true, true, Math.round(this._color[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2', true, true, true, Math.round(this._color[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2])));
+        this.addParam(this.param1     = new NumberParam('c1',    true, true, true, Math.round(this._color[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    true, true, true, Math.round(this._color[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
         this.paramSpace.control.barTop  = 0.8;
@@ -231,20 +231,20 @@ extends OpColorBase
         //this.updateWarningOverlayStyle(colBack, warningStyle);
 
 
-        this.inputs [0].wireColor    = colBack;
-        this.outputs[0].wireColor    = colBack;
+        // this.inputs [0].wireColor    = colBack;
+        // this.outputs[0].wireColor    = colBack;
            
-        this.inputs [0].color        = colText;
-        this.outputs[0].color        = colText;
+        // this.inputs [0].color        = colText;
+        // this.outputs[0].color        = colText;
         
-        this.paramSpace.input .color = colText;
-        this.paramSpace.output.color = colText;
+        // this.paramSpace.input .color = colText;
+        // this.paramSpace.output.color = colText;
 
 
-        for (const output of this.outputs)
-            for (const input of output.connectedInputs)
-                if (input.connection)
-                    input.connection.wire.updateStyle(input.connection.wire.getColor());
+        // for (const output of this.outputs)
+        //     for (const input of output.connectedInputs)
+        //         if (input.connection)
+        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
 
                 
         super.updateNode();
@@ -395,7 +395,7 @@ extends OpColorBase
             if (!this.paramIsConsideredDefault(param))
             {
                 if (!first) json += ',\n'; first = false;
-                json += pos + param.toJson(nTab, i > 0 ? 'param' + i : '');
+                json += pos + param.toJson(nTab, i > 0 ? 'c' + i : '');
             }
         }
 
@@ -407,33 +407,33 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
-    {
-        for (const _param of _node.params)
-        {
-            switch (_param[0])
-            {
-                case 'space':
-                    this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
-                    break;
+    // loadParams(_node)
+    // {
+    //     for (const _param of _node.params)
+    //     {
+    //         switch (_param[0])
+    //         {
+    //             case 'space':
+    //                 this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
+    //                 break;
                     
-                case 'param1':
-                    this.param1.setValue(parseFloat(_param[1]), true, true, false);
-                    this.param1.setDecimalsFrom(_param[1]);
-                    break;
+    //             case 'param1':
+    //                 this.param1.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.param1.setDecimalsFrom(_param[1]);
+    //                 break;
 
-                case 'param2':
-                    this.param2.setValue(parseFloat(_param[1]), true, true, false);
-                    this.param2.setDecimalsFrom(_param[1]);
-                    break;
+    //             case 'param2':
+    //                 this.param2.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.param2.setDecimalsFrom(_param[1]);
+    //                 break;
 
-                case 'param3':
-                    this.param3.setValue(parseFloat(_param[1]), true, true, false);
-                    this.param3.setDecimalsFrom(_param[1]);
-                    break;
-            }
-        }
-    }
+    //             case 'param3':
+    //                 this.param3.setValue(parseFloat(_param[1]), true, true, false);
+    //                 this.param3.setDecimalsFrom(_param[1]);
+    //                 break;
+    //         }
+    //     }
+    // }
 }
 
 

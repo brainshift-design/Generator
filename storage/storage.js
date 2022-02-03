@@ -22,6 +22,7 @@ function loadGraph(json)
     
 
     const data = JSON.parse(json);
+    log(json);
 
 
     const pan = { 
