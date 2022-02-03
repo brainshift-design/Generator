@@ -264,6 +264,8 @@ class Operator
     update()
     {
         if (this.valid) return;
+        
+        //log(this.name + '.Operator.update()');
     
         this.updateParams(false);
         this.updateData();

@@ -238,9 +238,8 @@ extends OpColorBase
             ? [0, 0, 0, 0.12] 
             : [1, 1, 1, 0.2 ];
 
-        const warningStyle = colorStyleRgba(colWarning);
-
-        super.updateWarningOverlayStyle(colBack, warningStyle, 45);
+        this.warningStyle = colorStyleRgba(colWarning);
+        super.updateWarningOverlayStyle(colBack, 45);
     }
 
 

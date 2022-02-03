@@ -15,11 +15,9 @@ extends OpColorBase
         this.addInput(new Input(this.dataType));
 
 
-        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0));
+        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
         this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
-
-        this.#paramStandard.control.barHeight = 0.2;
 
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -29,6 +27,14 @@ extends OpColorBase
 
     updateData()
     {
+        //log(this.name + '.OpWebContrast.updateData()');
+
+        this._color = 
+            this.inputs[1].isConnected
+            ? this.inputs[1].data.color
+            : dataColor_NaN;
+
+
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
@@ -52,8 +58,12 @@ extends OpColorBase
                     if (rating != '')
                         rating = '&nbsp;&nbsp;' + rating;
 
-                    this.#paramValue.control.min    = 0;
-                    this.#paramValue.control.max    = 21;
+                    this.#paramValue.control.min        = 
+                    this.#paramValue.control.displayMin = 0;
+
+                    this.#paramValue.control.max        = 
+                    this.#paramValue.control.displayMax = 21;
+
                     this.#paramValue.control.suffix = rating;
                     this.#paramValue.control.setValue(ratio);
                 }
@@ -63,17 +73,32 @@ extends OpColorBase
                         dataColor2rgb(this.inputs[0].data.color),
                         dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#paramValue.control.min    = 0;
-                    this.#paramValue.control.max    = 108;
+                    this.#paramValue.control.min        = 
+                    this.#paramValue.control.displayMin = 0;
+
+                    this.#paramValue.control.max        = 
+                    this.#paramValue.control.displayMax = 108;
+
                     this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
                     this.#paramValue.control.setValue(Math.abs(ratio));
                 }
 
 
+                this.forceShowWarning = false;
+
                 super.updateData();
                 return;
             }
+
+            else if (!isValidRgb(rgb0)
+                  &&  isValidRgb(rgb1))
+            {
+                this.warningStyle = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
+                this.forceShowWarning = true;
+            }
             
+            else
+                this.forceShowWarning = false;
         }
 
 
@@ -81,7 +106,7 @@ extends OpColorBase
         this.#paramValue.setValue(0, false, true, false);
 
            
-        super.updateData()
+        super.updateData();
     }
 
 
@@ -112,19 +137,6 @@ extends OpColorBase
         }
 
         this.#paramValue.control.update();
-    }
-
-
-
-    updateData()
-    {
-        this._color = 
-            this.inputs[1].isConnected
-            ? this.inputs[1].data.color
-            : dataColor_NaN;
-
-
-        super.updateData()
     }
 
 

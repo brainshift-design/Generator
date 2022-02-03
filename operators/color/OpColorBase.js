@@ -4,6 +4,10 @@ extends Operator
     _color = dataColor_NaN;
 
     _warningOverlay;
+
+    
+    forceShowWarning = false;
+    warningStyle;
     
 
 
@@ -19,26 +23,25 @@ extends Operator
 
 
 
-    updateNode()
-    {
-        super.updateNode();
+    // updateNode()
+    // {
+    //     super.updateNode();
 
 
-        // for (const output of this.outputs)
-        //     for (const input of output.connectedInputs)
-        //         if (input.connection)
-        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
-    }
+    //     // for (const output of this.outputs)
+    //     //     for (const input of output.connectedInputs)
+    //     //         if (input.connection)
+    //     //             input.connection.wire.updateStyle(input.connection.wire.getColor());
+    // }
 
 
 
     updateHeader()
     {
-        log(this.name + '.OpColorBase.updateHeader()');
+        //log(this.name + '.OpColorBase.updateHeader()');
 
         const [colBack, , colText, textStyle] = this.getHeaderColors();
 
-        log('colText', colText);
 
         for (const input of this.inputs.filter(i => !i.param))
         {
@@ -103,25 +106,32 @@ extends Operator
 
 
     updateWarningOverlay() 
-    { 
+    {
+        //log(this.name + '.OpColorBase.updateWarningOverlay()');
+        
         if (this.canShowColor())
         {
             const colBack = dataColor2rgb(this._color);
             
-            if (!isValidRgb(colBack))
+            if (  !isValidRgb(colBack)
+                || this.forceShowWarning)
             {
-                const colWarning = 
-                    isDark(colBack) 
-                    ? [0, 0, 0, 0.12]  
-                    : [1, 1, 1, 0.2 ];
+                if (!this.forceShowWarning)
+                    this.warningStyle = colorStyleRgba(
+                        isDark(colBack) 
+                        ? [0, 0, 0, 0.12]  
+                        : [1, 1, 1, 0.2 ]);
 
-                this.updateWarningOverlayStyle(colBack, colorStyleRgba(colWarning));
+                this.updateWarningOverlayStyle(colBack);
             }
             else
                 this._warningOverlay.style.display = 'none';
         }
         else
-            this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
+        {
+            this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);
+            this.updateWarningOverlayStyle(color_NaN);
+        }
     }
 
 
@@ -133,17 +143,18 @@ extends Operator
 
 
 
-    updateWarningOverlayStyle(colBack, warningStyle, height = 38)
+    updateWarningOverlayStyle(colBack, height = 38)
     {
         this._warningOverlay.style.height = height;
 
         this._warningOverlay.style.background =
-            isValidRgb(colBack)
+                isValidRgb(colBack)
+            && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
               + '-45deg, '
               + 'transparent 0 7px,'
-              +  warningStyle + ' 7px 14px)';
+              +  this.warningStyle + ' 7px 14px)';
 
         this._warningOverlay.style.display = 'block';
     }

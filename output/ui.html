@@ -12935,6 +12935,8 @@ class Operator
     update()
     {
         if (this.valid) return;
+        
+        //log(this.name + '.Operator.update()');
     
         this.updateParams(false);
         this.updateData();
@@ -14517,6 +14519,10 @@ extends Operator
     _color = dataColor_NaN;
 
     _warningOverlay;
+
+    
+    forceShowWarning = false;
+    warningStyle;
     
 
 
@@ -14532,26 +14538,25 @@ extends Operator
 
 
 
-    updateNode()
-    {
-        super.updateNode();
+    // updateNode()
+    // {
+    //     super.updateNode();
 
 
-        // for (const output of this.outputs)
-        //     for (const input of output.connectedInputs)
-        //         if (input.connection)
-        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
-    }
+    //     // for (const output of this.outputs)
+    //     //     for (const input of output.connectedInputs)
+    //     //         if (input.connection)
+    //     //             input.connection.wire.updateStyle(input.connection.wire.getColor());
+    // }
 
 
 
     updateHeader()
     {
-        log(this.name + '.OpColorBase.updateHeader()');
+        //log(this.name + '.OpColorBase.updateHeader()');
 
         const [colBack, , colText, textStyle] = this.getHeaderColors();
 
-        log('colText', colText);
 
         for (const input of this.inputs.filter(i => !i.param))
         {
@@ -14616,25 +14621,32 @@ extends Operator
 
 
     updateWarningOverlay() 
-    { 
+    {
+        //log(this.name + '.OpColorBase.updateWarningOverlay()');
+        
         if (this.canShowColor())
         {
             const colBack = dataColor2rgb(this._color);
             
-            if (!isValidRgb(colBack))
+            if (  !isValidRgb(colBack)
+                || this.forceShowWarning)
             {
-                const colWarning = 
-                    isDark(colBack) 
-                    ? [0, 0, 0, 0.12]  
-                    : [1, 1, 1, 0.2 ];
+                if (!this.forceShowWarning)
+                    this.warningStyle = colorStyleRgba(
+                        isDark(colBack) 
+                        ? [0, 0, 0, 0.12]  
+                        : [1, 1, 1, 0.2 ]);
 
-                this.updateWarningOverlayStyle(colBack, colorStyleRgba(colWarning));
+                this.updateWarningOverlayStyle(colBack);
             }
             else
                 this._warningOverlay.style.display = 'none';
         }
         else
-            this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
+        {
+            this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);
+            this.updateWarningOverlayStyle(color_NaN);
+        }
     }
 
 
@@ -14646,17 +14658,18 @@ extends Operator
 
 
 
-    updateWarningOverlayStyle(colBack, warningStyle, height = 38)
+    updateWarningOverlayStyle(colBack, height = 38)
     {
         this._warningOverlay.style.height = height;
 
         this._warningOverlay.style.background =
-            isValidRgb(colBack)
+                isValidRgb(colBack)
+            && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
               + '-45deg, '
               + 'transparent 0 7px,'
-              +  warningStyle + ' 7px 14px)';
+              +  this.warningStyle + ' 7px 14px)';
 
         this._warningOverlay.style.display = 'block';
     }
@@ -14903,9 +14916,8 @@ extends OpColorBase
             ? [0, 0, 0, 0.12] 
             : [1, 1, 1, 0.2 ];
 
-        const warningStyle = colorStyleRgba(colWarning);
-
-        super.updateWarningOverlayStyle(colBack, warningStyle, 45);
+        this.warningStyle = colorStyleRgba(colWarning);
+        super.updateWarningOverlayStyle(colBack, 45);
     }
 
 
@@ -16072,11 +16084,9 @@ extends OpColorBase
         this.addInput(new Input(this.dataType));
 
 
-        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0));
+        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
         this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
-
-        this.#paramStandard.control.barHeight = 0.2;
 
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -16086,6 +16096,14 @@ extends OpColorBase
 
     updateData()
     {
+        //log(this.name + '.OpWebContrast.updateData()');
+
+        this._color = 
+            this.inputs[1].isConnected
+            ? this.inputs[1].data.color
+            : dataColor_NaN;
+
+
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
@@ -16109,8 +16127,12 @@ extends OpColorBase
                     if (rating != '')
                         rating = '&nbsp;&nbsp;' + rating;
 
-                    this.#paramValue.control.min    = 0;
-                    this.#paramValue.control.max    = 21;
+                    this.#paramValue.control.min        = 
+                    this.#paramValue.control.displayMin = 0;
+
+                    this.#paramValue.control.max        = 
+                    this.#paramValue.control.displayMax = 21;
+
                     this.#paramValue.control.suffix = rating;
                     this.#paramValue.control.setValue(ratio);
                 }
@@ -16120,17 +16142,32 @@ extends OpColorBase
                         dataColor2rgb(this.inputs[0].data.color),
                         dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#paramValue.control.min    = 0;
-                    this.#paramValue.control.max    = 108;
+                    this.#paramValue.control.min        = 
+                    this.#paramValue.control.displayMin = 0;
+
+                    this.#paramValue.control.max        = 
+                    this.#paramValue.control.displayMax = 108;
+
                     this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
                     this.#paramValue.control.setValue(Math.abs(ratio));
                 }
 
 
+                this.forceShowWarning = false;
+
                 super.updateData();
                 return;
             }
+
+            else if (!isValidRgb(rgb0)
+                  &&  isValidRgb(rgb1))
+            {
+                this.warningStyle = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
+                this.forceShowWarning = true;
+            }
             
+            else
+                this.forceShowWarning = false;
         }
 
 
@@ -16138,7 +16175,7 @@ extends OpColorBase
         this.#paramValue.setValue(0, false, true, false);
 
            
-        super.updateData()
+        super.updateData();
     }
 
 
@@ -16169,19 +16206,6 @@ extends OpColorBase
         }
 
         this.#paramValue.control.update();
-    }
-
-
-
-    updateData()
-    {
-        this._color = 
-            this.inputs[1].isConnected
-            ? this.inputs[1].data.color
-            : dataColor_NaN;
-
-
-        super.updateData()
     }
 
 
@@ -16369,7 +16393,7 @@ extends OpColorBase
 
     updateData()
     {
-        log(this.name + '.OpColorInterpolate.updateData()');
+        //log(this.name + '.OpColorInterpolate.updateData()');
 
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
