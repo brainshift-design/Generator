@@ -1,3 +1,8 @@
+const color_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
 const dataColor_NaN = [
     'rgb',
     Number.NaN,

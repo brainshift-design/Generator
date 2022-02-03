@@ -123,15 +123,15 @@ extends Operator
                 this._warningOverlay.style.display = 'none';
         }
         else
-            this.updateWarningOverlayStyle(colorStyleRgba([0.5, 1, 0.5, 0.2]));
+            this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
     }
 
 
 
     updateWarningOverlayStyle(colBack, warningStyle)
     {
-        //log(this.name + '.OpColorBase.updateWarningOverlayStyle()');
-        //log('colBack =', colBack);
+        // log(this.name + '.OpColorBase.updateWarningOverlayStyle()');
+        // log('colBack =', colBack);
 
         this._warningOverlay.style.display    = 'block';
         this._warningOverlay.style.height     = 38;

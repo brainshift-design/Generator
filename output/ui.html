@@ -6383,6 +6383,11 @@ function oklch2rgb_CB(l, c, h, colorSpace, cones)
 
 
 
+const color_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
 const dataColor_NaN = [
     'rgb',
     Number.NaN,
@@ -7763,9 +7768,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 val = Math.floor(val / grain) * grain;
 
                 slider.setValue(val, true, false, false, getCtrlKey(e));
+
+                const _val = Math.min(Math.max(slider.min, val), slider.max);
+
+                if (_val != slider.prevValue)
+                    slider.param.op.pushUpdate();
+                    
                 slider.prevValue = slider.value;
-                
-                slider.param.op.pushUpdate();
             }
             else
             {
@@ -14638,15 +14647,15 @@ extends Operator
                 this._warningOverlay.style.display = 'none';
         }
         else
-            this.updateWarningOverlayStyle(colorStyleRgba([0.5, 1, 0.5, 0.2]));
+            this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
     }
 
 
 
     updateWarningOverlayStyle(colBack, warningStyle)
     {
-        //log(this.name + '.OpColorBase.updateWarningOverlayStyle()');
-        //log('colBack =', colBack);
+        // log(this.name + '.OpColorBase.updateWarningOverlayStyle()');
+        // log('colBack =', colBack);
 
         this._warningOverlay.style.display    = 'block';
         this._warningOverlay.style.height     = 38;
@@ -16367,9 +16376,9 @@ extends OpColorBase
         this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1, 0.01, 3, 2));
       
         
-        this.#paramSpace.min        = 2;
-        this.#paramSpace.displayMin = 2;
-        this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
+        this.#paramSpace.control.min        = 2;
+        this.#paramSpace.control.displayMin = 2;
+        //this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
         
         this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
@@ -16428,7 +16437,7 @@ extends OpColorBase
 
         this.outputs[0]._data = dataFromDataColor(this._color);
 
-
+        
         super.updateData()
     }
 
@@ -16547,9 +16556,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramL = new SelectParam('L', true, true, ['L Blind', 'L Weak', 'L'], 2));
-        this.addParam(this.#paramM = new SelectParam('M', true, true, ['M Blind', 'M Weak', 'M'], 2));
-        this.addParam(this.#paramS = new SelectParam('S', true, true, ['S Blind', 'S Weak', 'S'], 2));
+        this.addParam(this.#paramL = new SelectParam('l', 'L', true, true, ['L Blind', 'L Weak', 'L'], 2));
+        this.addParam(this.#paramM = new SelectParam('m', 'M', true, true, ['M Blind', 'M Weak', 'M'], 2));
+        this.addParam(this.#paramS = new SelectParam('s', 'S', true, true, ['S Blind', 'S Weak', 'S'], 2));
       
 
         this.header.connectionPadding = 14;

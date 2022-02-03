@@ -16,9 +16,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramL = new SelectParam('L', true, true, ['L Blind', 'L Weak', 'L'], 2));
-        this.addParam(this.#paramM = new SelectParam('M', true, true, ['M Blind', 'M Weak', 'M'], 2));
-        this.addParam(this.#paramS = new SelectParam('S', true, true, ['S Blind', 'S Weak', 'S'], 2));
+        this.addParam(this.#paramL = new SelectParam('l', 'L', true, true, ['L Blind', 'L Weak', 'L'], 2));
+        this.addParam(this.#paramM = new SelectParam('m', 'M', true, true, ['M Blind', 'M Weak', 'M'], 2));
+        this.addParam(this.#paramS = new SelectParam('s', 'S', true, true, ['S Blind', 'S Weak', 'S'], 2));
       
 
         this.header.connectionPadding = 14;

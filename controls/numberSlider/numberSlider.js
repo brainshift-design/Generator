@@ -192,9 +192,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 val = Math.floor(val / grain) * grain;
 
                 slider.setValue(val, true, false, false, getCtrlKey(e));
+
+                const _val = Math.min(Math.max(slider.min, val), slider.max);
+
+                if (_val != slider.prevValue)
+                    slider.param.op.pushUpdate();
+                    
                 slider.prevValue = slider.value;
-                
-                slider.param.op.pushUpdate();
             }
             else
             {
