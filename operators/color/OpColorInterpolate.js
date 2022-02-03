@@ -80,7 +80,6 @@ extends OpColorBase
         else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
         else                                this._color = dataColor_NaN;
 
-log(this._color);
         this.outputs[0]._data = dataFromDataColor(this._color);
 
 

@@ -60,12 +60,19 @@ extends Operator
             : '#ead8eaee';
 
 
-        this.label.style.color = textStyle;
-
+        this.updateHeaderLabel();
         this.updateWarningOverlay();
 
 
         super.updateHeader();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        const [ , , , textStyle] = this.getHeaderColors();
+        this.label.style.color = textStyle;
     }
 
 
@@ -81,7 +88,7 @@ extends Operator
             this.canShowColor()
             ? (darkText 
                ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
-               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.2 ) * (1 + 2*satBias)])
+               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.14 ) * (1 + 2*satBias)])
             : [0, 0, 0];
         
         const textStyle = colorStyleRgba(colText);

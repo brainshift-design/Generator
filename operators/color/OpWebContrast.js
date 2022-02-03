@@ -116,6 +116,19 @@ extends OpColorBase
 
 
 
+    updateData()
+    {
+        this._color = 
+            this.inputs[1].isConnected
+            ? this.inputs[1].data.color
+            : dataColor_NaN;
+
+
+        super.updateData()
+    }
+
+
+
     // updateHeader()
     // {
     //     const colBack = 
@@ -170,52 +183,75 @@ extends OpColorBase
 
 
 
-    updateWarningOverlay()
+    canShowColor()
     {
-        if (   this.inputs[0].isConnected
+        return this.inputs[1].isConnected;
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        if (   this.inputs[0].isConnected 
             && this.inputs[1].isConnected)
-        {
-            const colBack  = dataColor2rgb(this.inputs[1].data.color);
-
-            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
-
-            if (   !isValidRgb(rgb0)
-                || !isValidRgb(rgb1))
-            {
-                const colWarning = 
-                      !isValidRgb(rgb0)
-                    && maxRgbDistance(
-                        rgb2hclokl(invalid2validRgb(rgb0)), 
-                        rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
-                    ? rgb_a(invalid2validRgb(rgb0), 0.25)
-                    : (isDark(colBack)
-                       ? [0, 0, 0, 0.12] 
-                       : [1, 1, 1, 0.2]);
-
-                this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
-            }
-            else
-            {
-                this._warningOverlay.style.display = 'none';
-            }
-        }
+            this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
         else if (this.inputs[1].isConnected)
         {
-            let colWarning;
-
-            const colBack  = dataColor2rgb(this.inputs[1].data.color);
-            const darkText = rgb2hclokl(colBack)[2] > 0.71;
-            const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-
-            colWarning = 
-                darkText 
-                ? [0, 0, 0, 0.1  * (1 + satBias)] 
-                : [1, 1, 1, 0.16 * (1 + satBias)];
-
-            this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
+            const [ , , colText, ] = this.getHeaderColors();
+            this.label.style.color = colorStyleRgba(colText);
         }
-        else
-            this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
+        else 
+            this.label.style.color = 'black';
     }
+
+
+
+    // updateWarningOverlay()
+    // {
+    //     if (   this.inputs[0].isConnected
+    //         && this.inputs[1].isConnected)
+    //     {
+    //         const colBack  = dataColor2rgb(this.inputs[1].data.color);
+
+    //         const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+
+    //         if (   !isValidRgb(rgb0)
+    //             || !isValidRgb(rgb1))
+    //         {
+    //             const colWarning = 
+    //                   !isValidRgb(rgb0)
+    //                 && maxRgbDistance(
+    //                     rgb2hclokl(invalid2validRgb(rgb0)), 
+    //                     rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
+    //                 ? rgb_a(invalid2validRgb(rgb0), 0.25)
+    //                 : (isDark(colBack)
+    //                    ? [0, 0, 0, 0.12] 
+    //                    : [1, 1, 1, 0.2]);
+
+    //             this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
+    //         }
+    //         else
+    //         {
+    //             this._warningOverlay.style.display = 'none';
+    //         }
+    //     }
+    //     else if (this.inputs[1].isConnected)
+    //     {
+    //         let colWarning;
+
+    //         const colBack  = dataColor2rgb(this.inputs[1].data.color);
+    //         const darkText = rgb2hclokl(colBack)[2] > 0.71;
+    //         const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+
+    //         colWarning = 
+    //             darkText 
+    //             ? [0, 0, 0, 0.1  * (1 + satBias)] 
+    //             : [1, 1, 1, 0.16 * (1 + satBias)];
+
+    //         this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
+    //     }
+    //     else
+    //         this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
+    // }
 }
