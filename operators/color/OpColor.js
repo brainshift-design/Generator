@@ -187,48 +187,19 @@ extends OpColorBase
     {
         //log(this.name + '.OpColor.updateNode()');
 
-        const colBack      = dataColor2rgb(this._color);
-        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
-        const satBias      = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-
-        const colText      = darkText 
-                             ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
-                             : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
         
-        const colWarning   = darkText 
-                             ? [0, 0, 0, 0.12] 
-                             : [1, 1, 1, 0.2 ];
-
-        const colSpaceVal  = darkText 
-                             ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
-                             : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
- 
-        const textStyle    = colorStyleRgba(colText);
-        const warningStyle = colorStyleRgba(colWarning);
-
-        
-        this.#colorBack.style.background = colorStyleRgb(colBack);
-        this.label     .style.color      = textStyle;
-
-        
-        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceVal);
-        this.paramSpace.control.textColor  = textStyle;
-        this.paramSpace.control.backColor  = 'transparent';
-        this.paramSpace.control.update();
-
+        this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
 
         if (this.hexbox != document.activeElement)
         {
+            const colBack = dataColor2rgb(this._color);
+
             this.hexbox.value = 
                 isValidRgb(colBack)
                 ? rgb2hex(colBack)
                 : '?';
         }
-        
-        this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
 
-
-        //this.updateWarningOverlayStyle(colBack, warningStyle);
 
 
         // this.inputs [0].wireColor    = colBack;
@@ -259,11 +230,44 @@ extends OpColorBase
         super.updateHeader();
         
         this.header.style.background = 'transparent';
+    
+    
+        const colBack      = dataColor2rgb(this._color);
+        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
+        const satBias      = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+
+        const colText      = darkText 
+                             ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
+                             : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
+        
+        const colWarning   = darkText 
+                             ? [0, 0, 0, 0.12] 
+                             : [1, 1, 1, 0.2 ];
+
+        const colSpaceVal  = darkText 
+                             ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
+                             : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
+ 
+        const textStyle    = colorStyleRgba(colText);
+        const warningStyle = colorStyleRgba(colWarning);
+
+        
+        this.#colorBack.style.background = colorStyleRgb(colBack);
+        this.label     .style.color      = textStyle;
+
+        
+        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceVal);
+        this.paramSpace.control.textColor  = textStyle;
+        this.paramSpace.control.backColor  = 'transparent';
+        this.paramSpace.control.update();
+
+
+        super.updateWarningOverlayStyle(colBack, warningStyle, 45);
     }
 
 
 
-    updateControls()
+    updateParamControls()
     {
         const colBack = dataColor2rgb(this._color);
 

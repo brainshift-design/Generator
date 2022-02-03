@@ -117,7 +117,7 @@ extends Operator
                     ? [0, 0, 0, 0.12]  
                     : [1, 1, 1, 0.2 ];
 
-                this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
+                this.updateWarningOverlayStyle(colBack, colorStyleRgba(colWarning));
             }
             else
                 this._warningOverlay.style.display = 'none';
@@ -128,13 +128,14 @@ extends Operator
 
 
 
-    updateWarningOverlayStyle(colBack, warningStyle)
+    updateWarningOverlayStyle(colBack, warningStyle, height = 38)
     {
         // log(this.name + '.OpColorBase.updateWarningOverlayStyle()');
         // log('colBack =', colBack);
 
-        this._warningOverlay.style.display    = 'block';
-        this._warningOverlay.style.height     = 38;
+        log(height);
+        this._warningOverlay.style.height = height;
+
         this._warningOverlay.style.background =
             isValidRgb(colBack)
             ? 'transparent'
@@ -142,5 +143,7 @@ extends Operator
               + '-45deg, '
               + 'transparent 0 7px,'
               +  warningStyle + ' 7px 14px)';
+
+        this._warningOverlay.style.display = 'block';
     }
 }
