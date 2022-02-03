@@ -160,27 +160,4 @@ extends OpColorBase
 
         super.updateHeader();
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'L':
-    //                 this.#paramL.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-
-    //             case 'M':
-    //                 this.#paramM.setValue(parseFloat(_param[1]), true, true, false);
-    //                 break;
-
-    //             case 'S':
-    //                 this.#paramS.setValue(parseFloat(_param[1]), true, true, false);
-    //                 break;
-    //         }
-    //     }
-    // }
 }

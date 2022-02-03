@@ -25,7 +25,7 @@ function createOperatorNode(node)
         if (e.altKey) 
             graphView.soloNode(node);
         
-        node.updateNode();
+        node.updateBorder();
     });
 
     
@@ -37,7 +37,7 @@ function createOperatorNode(node)
         if (!e.altKey) 
             graphView.unsoloNode();
 
-        node.updateNode();
+        node.updateBorder();
     });
 
     

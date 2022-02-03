@@ -10308,7 +10308,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
         
     //updateGraphNodes();
     for (const node of selected)
-        node.updateNodeBorder();
+        node.updateBorder();
 
 
     graphView._prevSelectedNodes = selected;
@@ -11022,9 +11022,16 @@ extends EventTarget
     
     update(dispatchEvents)
     {
+        this.updateInputAndOutput();
+    }    
+
+
+
+    updateInputAndOutput()
+    {
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
-    }    
+    }
 
 
 
@@ -12913,7 +12920,7 @@ class Operator
 
     pushUpdate()
     {
-        log(this.name + '.Operator.pushUpdate()');
+        //log(this.name + '.Operator.pushUpdate()');
 
         this.invalidate();
         
@@ -12951,7 +12958,7 @@ class Operator
     {
         //log(this.name + '.Operator.updateNode()');
 
-        this.updateNodeBorder();
+        this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
 
@@ -12960,7 +12967,7 @@ class Operator
 
 
 
-    updateNodeBorder()
+    updateBorder()
     {
         this.inner.style.boxShadow = 
               '0 0 0 1px ' 
@@ -13269,10 +13276,8 @@ class Operator
     {
         for (const _param of _node.params)
         {
-            log(_param);
             const index = this.params.findIndex(p => p.id == _param[0]);
             
-            log(index);
             if (index >= 0) 
             {
                 this.params[index].setValue(parseFloat(_param[1]), true, true, false);
@@ -13375,7 +13380,7 @@ function createOperatorNode(node)
         if (e.altKey) 
             graphView.soloNode(node);
         
-        node.updateNode();
+        node.updateBorder();
     });
 
     
@@ -13387,7 +13392,7 @@ function createOperatorNode(node)
         if (!e.altKey) 
             graphView.unsoloNode();
 
-        node.updateNode();
+        node.updateBorder();
     });
 
     
@@ -13987,25 +13992,6 @@ extends OperatorBase
 
 
 
-    // loadParams(_node)
-    // {
-    //     if (_node.params)
-    //     {
-    //         for (const _param of _node.params)
-    //         {
-    //             if (_param[0] == 'value')
-    //             {
-    //                 this.#paramValue.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramValue.setDecimalsFrom(_param[1]);
-    //             }
-    //         }
-    //     }
-    //     else if (_node.decimals)
-    //         this.#paramValue.setDecimals(parseInt(_node.decimals));
-    // }
-
-
-
     paramIsConsideredDefault(param)
     {
         return param.isDefault()
@@ -14090,27 +14076,6 @@ extends OperatorBase
                   
         super.updateData()
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'min':
-    //                 this.#paramMin.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramMin.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'max':
-    //                 this.#paramMax.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramMax.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
 
 
 
@@ -14459,7 +14424,7 @@ extends OpArithmetic
 
 
 class   OpInterpolate
-extends Operator
+extends OperatorBase
 {
     #paramValue;
     #paramFactor;
@@ -14475,8 +14440,8 @@ extends Operator
 
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue  = new NumberParam('value',  '',       false, false, false, 0));
-        this.addParam(this.#paramFactor = new NumberParam('factor', 'factor', false,  true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramValue  = new NumberParam('value',  '',  false, false, false, 0));
+        this.addParam(this.#paramFactor = new NumberParam('factor', '%', true,  true,  true, 0, 0, 1, 2));
       
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -14526,22 +14491,6 @@ extends Operator
 
         super.updateData()
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'factor':
-    //                 this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramFactor.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
 }
 
 
@@ -14581,40 +14530,13 @@ extends Operator
 
     updateHeader()
     {
-        const colBack  = dataColor2rgb(this._color);
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-        
-
-        const colText = darkText 
-            ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
-            : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
-        
-        const textStyle = colorStyleRgba(colText);
-
-
-        // const colText = 
-        //     darkText 
-        //     ? [0, 0, 0, 0.24 * (1 + satBias)] 
-        //     : [1, 1, 1, 0.4  * (1 + satBias)];
-
-
-        // this.inputs [0].wireColor    = colBack;
-        // this.outputs[0].wireColor    = colBack;
-           
-        // this.inputs [0].color        = colText;
-        // this.outputs[0].color        = colText;
-        
-        // this.paramSpace.input .color = colText;
-        // this.paramSpace.output.color = colText;
+        const [colBack, , colText, textStyle] = this.getHeaderColors();
 
 
         for (const input of this.inputs.filter(i => !i.param))
         {
             input.wireColor = colBack;
             input.color     = colText;
-            
-            //input.updateControl();
         }
 
 
@@ -14622,32 +14544,47 @@ extends Operator
         {
             output.wireColor = colBack;
             output.color     = colText;
-
-            //output.updateControl();
         }
 
 
         if (isValidRgb(colBack))
         {
             this.header.style.background = colorStyleRgb(colBack);
-
-            // this.inputs [0].color        = colText;
-            // this.inputs [1].color        = colText;
-            // this.outputs[0].color        = colText;
-            // this.outputs[0].wireColor    = colBack;
         }
         else 
         {
             this.header.style.background = '#ead8eaee';
         }
 
-        this.label .style.color      = textStyle;
 
+        this.label.style.color = textStyle;
 
         this.updateWarningOverlay();
 
 
         super.updateHeader();
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colBack  = dataColor2rgb(this._color);
+        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+
+        const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
+
+        const colText = darkText 
+            ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
+            : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.2 ) * (1 + 2*satBias)];
+        
+        const textStyle = colorStyleRgba(colText);
+
+        return [
+            colBack, 
+            darkText, 
+            colText,
+            textStyle ];
     }
 
 
@@ -14678,10 +14615,6 @@ extends Operator
 
     updateWarningOverlayStyle(colBack, warningStyle, height = 38)
     {
-        // log(this.name + '.OpColorBase.updateWarningOverlayStyle()');
-        // log('colBack =', colBack);
-
-        log(height);
         this._warningOverlay.style.height = height;
 
         this._warningOverlay.style.background =
@@ -14900,23 +14833,6 @@ extends OpColorBase
         }
 
 
-
-        // this.inputs [0].wireColor    = colBack;
-        // this.outputs[0].wireColor    = colBack;
-           
-        // this.inputs [0].color        = colText;
-        // this.outputs[0].color        = colText;
-        
-        // this.paramSpace.input .color = colText;
-        // this.paramSpace.output.color = colText;
-
-
-        // for (const output of this.outputs)
-        //     for (const input of output.connectedInputs)
-        //         if (input.connection)
-        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
-
-                
         super.updateNode();
     }
 
@@ -14928,38 +14844,33 @@ extends OpColorBase
 
         super.updateHeader();
         
+
         this.header.style.background = 'transparent';
     
     
-        const colBack      = dataColor2rgb(this._color);
-        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
-        const satBias      = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+        const [colBack, darkText, , textStyle] = this.getHeaderColors();
 
-        const colText      = darkText 
-                             ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
-                             : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
-        
-        const colWarning   = darkText 
-                             ? [0, 0, 0, 0.12] 
-                             : [1, 1, 1, 0.2 ];
 
-        const colSpaceVal  = darkText 
-                             ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
-                             : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
- 
-        const textStyle    = colorStyleRgba(colText);
-        const warningStyle = colorStyleRgba(colWarning);
+        const colSpaceBar = 
+            darkText 
+            ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
 
-        
+            
         this.#colorBack.style.background = colorStyleRgb(colBack);
-        this.label     .style.color      = textStyle;
-
-        
-        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceVal);
+                
+        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
         this.paramSpace.control.textColor  = textStyle;
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.update();
 
+
+        const colWarning = 
+            darkText 
+            ? [0, 0, 0, 0.12] 
+            : [1, 1, 1, 0.2 ];
+
+        const warningStyle = colorStyleRgba(colWarning);
 
         super.updateWarningOverlayStyle(colBack, warningStyle, 45);
     }
@@ -14968,7 +14879,11 @@ extends OpColorBase
 
     updateParamControls()
     {
-        const colBack = dataColor2rgb(this._color);
+        const [colBack, , colText, ] = this.getHeaderColors();
+
+        this.paramSpace.input .color = colText;
+        this.paramSpace.output.color = colText;
+        this.paramSpace.updateInputAndOutput();
 
         this.updateAllSliderRanges();
 
@@ -15107,36 +15022,6 @@ extends OpColorBase
 
         return json;
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'space':
-    //                 this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-                    
-    //             case 'param1':
-    //                 this.param1.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.param1.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'param2':
-    //                 this.param2.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.param2.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'param3':
-    //                 this.param3.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.param3.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
 }
 
 
@@ -16357,21 +16242,6 @@ extends OpColorBase
         else
             this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'standard':
-    //                 this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-    //         }
-    //     }
-    // }
 }
 
 
@@ -16395,9 +16265,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true,  true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '',  false, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1, 0.01, 3, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '%', true, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 2));
       
         
         this.#paramSpace.control.min        = 2;
@@ -16457,6 +16327,7 @@ extends OpColorBase
         else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
         else                                this._color = dataColor_NaN;
 
+        log(this._color);
 
         this.outputs[0]._data = dataFromDataColor(this._color);
 
@@ -16494,70 +16365,6 @@ extends OpColorBase
 
         return col;
     }
-
-
-
-    // updateHeader()
-    // {
-    //     log(this.name + '.OpColorInterpolate.updateHeader()');
-
-
-
-    //     super.updateHeader();
-    // }
-
-
-
-    // updateWarningOverlay()
-    // {
-    //     if (   this.inputs[0].isConnected
-    //         || this.inputs[1].isConnected)
-    //     {
-    //         const colBack = dataColor2rgb(this._color);
-
-    //         if (!isValidRgb(colBack))
-    //         {
-    //             const colWarning = 
-    //                 isDark(colBack) 
-    //                 ? [0, 0, 0, 0.12]  
-    //                 : [1, 1, 1, 0.2 ];
-
-    //             this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
-    //         }
-    //         else
-    //             this._warningOverlay.style.display = 'none';
-    //     }
-    //     else
-    //         this.updateWarningOverlayStyle(colorStyleRgba([0.5, 1, 0.5, 0.2]));
-
-
-    //     super.updateWarningOverlay();
-    // }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'space':
-    //                 this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-
-    //             case 'amount':
-    //                 this.#paramAmount.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramAmount.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'gamma':
-    //                 this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramGamma.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
 }
 
 
@@ -16723,29 +16530,6 @@ extends OpColorBase
 
         super.updateHeader();
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'L':
-    //                 this.#paramL.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-
-    //             case 'M':
-    //                 this.#paramM.setValue(parseFloat(_param[1]), true, true, false);
-    //                 break;
-
-    //             case 'S':
-    //                 this.#paramS.setValue(parseFloat(_param[1]), true, true, false);
-    //                 break;
-    //         }
-    //     }
-    // }
 }
 
 
@@ -16911,44 +16695,6 @@ extends OperatorBase
 
     loadParams(_node)
     {
-        // for (const _param of _node.params)
-        // {
-        //     switch (_param[0])
-        //     {
-        //         case 'x':
-        //             this.#paramX.setValue(parseFloat(_param[1]), true, true, false);
-        //             this.#paramX.setDecimalsFrom(_param[1]);
-        //             break;
-
-        //         case 'y':
-        //             this.#paramY.setValue(parseFloat(_param[1]), true, true, false);
-        //             this.#paramY.setDecimalsFrom(_param[1]);
-        //             break;
-
-        //         case 'width':
-        //             this.#paramWidth.setValue(parseFloat(_param[1]), true, true, false);
-        //             this.#paramWidth.setDecimalsFrom(_param[1]);
-        //             break;
-
-        //         case 'height':
-        //             this.#paramHeight.setValue(parseFloat(_param[1]), true, true, false);
-        //             this.#paramHeight.setDecimalsFrom(_param[1]);
-        //             break;
-
-        //         case 'angle':
-        //             this.#paramAngle.setValue(parseFloat(_param[1]), true, true, false);
-        //             this.#paramAngle.setDecimalsFrom(_param[1]);
-        //             break;
-
-        //         case 'round':
-        //             this.#paramRound.setValue(parseFloat(_param[1]), true, true, false);
-        //             this.#paramRound.setDecimalsFrom(_param[1]);
-        //             break;
-
-        //     }
-        // }
-
-
         if (_node.proportional)
         {
             this.#btnProportional.enabled = _node.proportional == 'true';
@@ -16962,7 +16708,7 @@ extends OperatorBase
         }
 
 
-        super.loadParams();
+        super.loadParams(_node);
     }
 }
 
@@ -17850,7 +17596,7 @@ extends Action
                 this.to[i].y);
 
         for (const node of movedNodes)
-            node.updateNodeBorder();
+            node.updateBorder();
     }
 
 
@@ -17867,7 +17613,7 @@ extends Action
                 this.from[i].y);
 
         for (const node of movedNodes)
-            node.updateNodeBorder();
+            node.updateBorder();
 
         graphView.selectByIds(this.prevSelectedIds);
     }

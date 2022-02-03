@@ -201,23 +201,6 @@ extends OpColorBase
         }
 
 
-
-        // this.inputs [0].wireColor    = colBack;
-        // this.outputs[0].wireColor    = colBack;
-           
-        // this.inputs [0].color        = colText;
-        // this.outputs[0].color        = colText;
-        
-        // this.paramSpace.input .color = colText;
-        // this.paramSpace.output.color = colText;
-
-
-        // for (const output of this.outputs)
-        //     for (const input of output.connectedInputs)
-        //         if (input.connection)
-        //             input.connection.wire.updateStyle(input.connection.wire.getColor());
-
-                
         super.updateNode();
     }
 
@@ -229,38 +212,33 @@ extends OpColorBase
 
         super.updateHeader();
         
+
         this.header.style.background = 'transparent';
     
     
-        const colBack      = dataColor2rgb(this._color);
-        const darkText     = rgb2hclokl(colBack)[2] > 0.71;
-        const satBias      = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
+        const [colBack, darkText, , textStyle] = this.getHeaderColors();
 
-        const colText      = darkText 
-                             ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
-                             : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
-        
-        const colWarning   = darkText 
-                             ? [0, 0, 0, 0.12] 
-                             : [1, 1, 1, 0.2 ];
 
-        const colSpaceVal  = darkText 
-                             ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
-                             : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
- 
-        const textStyle    = colorStyleRgba(colText);
-        const warningStyle = colorStyleRgba(colWarning);
+        const colSpaceBar = 
+            darkText 
+            ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
 
-        
+            
         this.#colorBack.style.background = colorStyleRgb(colBack);
-        this.label     .style.color      = textStyle;
-
-        
-        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceVal);
+                
+        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
         this.paramSpace.control.textColor  = textStyle;
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.update();
 
+
+        const colWarning = 
+            darkText 
+            ? [0, 0, 0, 0.12] 
+            : [1, 1, 1, 0.2 ];
+
+        const warningStyle = colorStyleRgba(colWarning);
 
         super.updateWarningOverlayStyle(colBack, warningStyle, 45);
     }
@@ -269,7 +247,11 @@ extends OpColorBase
 
     updateParamControls()
     {
-        const colBack = dataColor2rgb(this._color);
+        const [colBack, , colText, ] = this.getHeaderColors();
+
+        this.paramSpace.input .color = colText;
+        this.paramSpace.output.color = colText;
+        this.paramSpace.updateInputAndOutput();
 
         this.updateAllSliderRanges();
 
@@ -408,36 +390,6 @@ extends OpColorBase
 
         return json;
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'space':
-    //                 this.paramSpace.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-                    
-    //             case 'param1':
-    //                 this.param1.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.param1.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'param2':
-    //                 this.param2.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.param2.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'param3':
-    //                 this.param3.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.param3.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
 }
 
 

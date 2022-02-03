@@ -76,7 +76,7 @@ extends Action
                 this.to[i].y);
 
         for (const node of movedNodes)
-            node.updateNodeBorder();
+            node.updateBorder();
     }
 
 
@@ -93,7 +93,7 @@ extends Action
                 this.from[i].y);
 
         for (const node of movedNodes)
-            node.updateNodeBorder();
+            node.updateBorder();
 
         graphView.selectByIds(this.prevSelectedIds);
     }

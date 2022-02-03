@@ -110,9 +110,16 @@ extends EventTarget
     
     update(dispatchEvents)
     {
+        this.updateInputAndOutput();
+    }    
+
+
+
+    updateInputAndOutput()
+    {
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
-    }    
+    }
 
 
 

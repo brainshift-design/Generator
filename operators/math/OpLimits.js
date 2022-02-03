@@ -45,27 +45,6 @@ extends OperatorBase
 
 
 
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'min':
-    //                 this.#paramMin.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramMin.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'max':
-    //                 this.#paramMax.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramMax.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
-
-
-
     toString()
     {
         // let str = opType;

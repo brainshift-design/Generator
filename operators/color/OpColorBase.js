@@ -34,40 +34,13 @@ extends Operator
 
     updateHeader()
     {
-        const colBack  = dataColor2rgb(this._color);
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-        
-
-        const colText = darkText 
-            ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
-            : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
-        
-        const textStyle = colorStyleRgba(colText);
-
-
-        // const colText = 
-        //     darkText 
-        //     ? [0, 0, 0, 0.24 * (1 + satBias)] 
-        //     : [1, 1, 1, 0.4  * (1 + satBias)];
-
-
-        // this.inputs [0].wireColor    = colBack;
-        // this.outputs[0].wireColor    = colBack;
-           
-        // this.inputs [0].color        = colText;
-        // this.outputs[0].color        = colText;
-        
-        // this.paramSpace.input .color = colText;
-        // this.paramSpace.output.color = colText;
+        const [colBack, , colText, textStyle] = this.getHeaderColors();
 
 
         for (const input of this.inputs.filter(i => !i.param))
         {
             input.wireColor = colBack;
             input.color     = colText;
-            
-            //input.updateControl();
         }
 
 
@@ -75,32 +48,47 @@ extends Operator
         {
             output.wireColor = colBack;
             output.color     = colText;
-
-            //output.updateControl();
         }
 
 
         if (isValidRgb(colBack))
         {
             this.header.style.background = colorStyleRgb(colBack);
-
-            // this.inputs [0].color        = colText;
-            // this.inputs [1].color        = colText;
-            // this.outputs[0].color        = colText;
-            // this.outputs[0].wireColor    = colBack;
         }
         else 
         {
             this.header.style.background = '#ead8eaee';
         }
 
-        this.label .style.color      = textStyle;
 
+        this.label.style.color = textStyle;
 
         this.updateWarningOverlay();
 
 
         super.updateHeader();
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colBack  = dataColor2rgb(this._color);
+        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+
+        const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
+
+        const colText = darkText 
+            ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
+            : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.2 ) * (1 + 2*satBias)];
+        
+        const textStyle = colorStyleRgba(colText);
+
+        return [
+            colBack, 
+            darkText, 
+            colText,
+            textStyle ];
     }
 
 
@@ -131,10 +119,6 @@ extends Operator
 
     updateWarningOverlayStyle(colBack, warningStyle, height = 38)
     {
-        // log(this.name + '.OpColorBase.updateWarningOverlayStyle()');
-        // log('colBack =', colBack);
-
-        log(height);
         this._warningOverlay.style.height = height;
 
         this._warningOverlay.style.background =

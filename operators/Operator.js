@@ -252,7 +252,7 @@ class Operator
 
     pushUpdate()
     {
-        log(this.name + '.Operator.pushUpdate()');
+        //log(this.name + '.Operator.pushUpdate()');
 
         this.invalidate();
         
@@ -290,7 +290,7 @@ class Operator
     {
         //log(this.name + '.Operator.updateNode()');
 
-        this.updateNodeBorder();
+        this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
 
@@ -299,7 +299,7 @@ class Operator
 
 
 
-    updateNodeBorder()
+    updateBorder()
     {
         this.inner.style.boxShadow = 
               '0 0 0 1px ' 
@@ -608,10 +608,8 @@ class Operator
     {
         for (const _param of _node.params)
         {
-            log(_param);
             const index = this.params.findIndex(p => p.id == _param[0]);
             
-            log(index);
             if (index >= 0) 
             {
                 this.params[index].setValue(parseFloat(_param[1]), true, true, false);

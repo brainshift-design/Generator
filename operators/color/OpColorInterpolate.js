@@ -18,9 +18,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true,  true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '',  false, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1, 0.01, 3, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '%', true, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 2));
       
         
         this.#paramSpace.control.min        = 2;
@@ -80,6 +80,7 @@ extends OpColorBase
         else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
         else                                this._color = dataColor_NaN;
 
+        log(this._color);
 
         this.outputs[0]._data = dataFromDataColor(this._color);
 
@@ -117,68 +118,4 @@ extends OpColorBase
 
         return col;
     }
-
-
-
-    // updateHeader()
-    // {
-    //     log(this.name + '.OpColorInterpolate.updateHeader()');
-
-
-
-    //     super.updateHeader();
-    // }
-
-
-
-    // updateWarningOverlay()
-    // {
-    //     if (   this.inputs[0].isConnected
-    //         || this.inputs[1].isConnected)
-    //     {
-    //         const colBack = dataColor2rgb(this._color);
-
-    //         if (!isValidRgb(colBack))
-    //         {
-    //             const colWarning = 
-    //                 isDark(colBack) 
-    //                 ? [0, 0, 0, 0.12]  
-    //                 : [1, 1, 1, 0.2 ];
-
-    //             this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
-    //         }
-    //         else
-    //             this._warningOverlay.style.display = 'none';
-    //     }
-    //     else
-    //         this.updateWarningOverlayStyle(colorStyleRgba([0.5, 1, 0.5, 0.2]));
-
-
-    //     super.updateWarningOverlay();
-    // }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'space':
-    //                 this.#paramSpace.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-
-    //             case 'amount':
-    //                 this.#paramAmount.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramAmount.setDecimalsFrom(_param[1]);
-    //                 break;
-
-    //             case 'gamma':
-    //                 this.#paramGamma.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramGamma.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
 }

@@ -1,5 +1,5 @@
 class   OpInterpolate
-extends Operator
+extends OperatorBase
 {
     #paramValue;
     #paramFactor;
@@ -15,8 +15,8 @@ extends Operator
 
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue  = new NumberParam('value',  '',       false, false, false, 0));
-        this.addParam(this.#paramFactor = new NumberParam('factor', 'factor', false,  true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramValue  = new NumberParam('value',  '',  false, false, false, 0));
+        this.addParam(this.#paramFactor = new NumberParam('factor', '%', true,  true,  true, 0, 0, 1, 2));
       
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -66,20 +66,4 @@ extends Operator
 
         super.updateData()
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'factor':
-    //                 this.#paramFactor.setValue(parseFloat(_param[1]), true, true, false);
-    //                 this.#paramFactor.setDecimalsFrom(_param[1]);
-    //                 break;
-    //         }
-    //     }
-    // }
 }

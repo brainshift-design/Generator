@@ -218,19 +218,4 @@ extends OpColorBase
         else
             this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
     }
-
-
-
-    // loadParams(_node)
-    // {
-    //     for (const _param of _node.params)
-    //     {
-    //         switch (_param[0])
-    //         {
-    //             case 'standard':
-    //                 this.#paramStandard.setValue(parseInt(_param[1]), true, true, false);
-    //                 break;
-    //         }
-    //     }
-    // }
 }
