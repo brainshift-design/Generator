@@ -53,7 +53,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpColorInterpolate.updateData()');
+        log(this.name + '.OpColorInterpolate.updateData()');
 
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
@@ -80,8 +80,7 @@ extends OpColorBase
         else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
         else                                this._color = dataColor_NaN;
 
-        log(this._color);
-
+log(this._color);
         this.outputs[0]._data = dataFromDataColor(this._color);
 
 
@@ -117,5 +116,13 @@ extends OpColorBase
             col[0] = normalAngle(h0 + angleDiff(h0, h1) * f) / Tau;
 
         return col;
+    }
+
+
+
+    canShowColor()
+    {
+        return this.inputs[0].isConnected
+            || this.inputs[1].isConnected;
     }
 }

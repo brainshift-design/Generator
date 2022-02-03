@@ -16,7 +16,7 @@
 function saveGraph()
 {
     const json = graph.toJson(); 
-    log(json); 
+    //log(json); 
     uiSetPluginData("graph", json);
 }
 
@@ -29,9 +29,8 @@ function loadGraph(json)
 
     graph.clear();
     
-
     const data = JSON.parse(json);
-    log(json);
+    //log(json);
 
 
     const pan = { 

@@ -1,7 +1,7 @@
 class OpColorBase
 extends Operator
 {
-    _color = ['rgb', 0.5, 0.5, 0.5];
+    _color = dataColor_NaN;
 
     _warningOverlay;
     
@@ -34,8 +34,11 @@ extends Operator
 
     updateHeader()
     {
+        log(this.name + '.OpColorBase.updateHeader()');
+
         const [colBack, , colText, textStyle] = this.getHeaderColors();
 
+        log('colText', colText);
 
         for (const input of this.inputs.filter(i => !i.param))
         {
@@ -51,14 +54,10 @@ extends Operator
         }
 
 
-        if (isValidRgb(colBack))
-        {
-            this.header.style.background = colorStyleRgb(colBack);
-        }
-        else 
-        {
-            this.header.style.background = '#ead8eaee';
-        }
+        this.header.style.background = 
+            this.canShowColor()
+            ? colorStyleRgb(colBack)
+            : '#ead8eaee';
 
 
         this.label.style.color = textStyle;
@@ -78,9 +77,12 @@ extends Operator
 
         const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
 
-        const colText = darkText 
-            ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
-            : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.2 ) * (1 + 2*satBias)];
+        const colText = 
+            this.canShowColor()
+            ? (darkText 
+               ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
+               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.2 ) * (1 + 2*satBias)])
+            : [0, 0, 0];
         
         const textStyle = colorStyleRgba(colText);
 
@@ -95,10 +97,10 @@ extends Operator
 
     updateWarningOverlay() 
     { 
-        if (!isDataColorNaN(this._color))
+        if (this.canShowColor())
         {
             const colBack = dataColor2rgb(this._color);
-
+            
             if (!isValidRgb(colBack))
             {
                 const colWarning = 
@@ -113,6 +115,13 @@ extends Operator
         }
         else
             this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
+    }
+
+
+
+    canShowColor()
+    {
+        return !isDataColorNaN(this._color);
     }
 
 
