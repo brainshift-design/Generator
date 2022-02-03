@@ -74,7 +74,7 @@ function loadNodesAsync(data, setProgress)
                 Math.min(i + chunkSize, data.nodes.length), // exclusive
                 nodes);
 
-            setProgress(i / (data.nodes.length + data.connections.length));
+            setProgress(i / (data.nodes.length + (data.connections ? data.connections.length : 0)));
             return res;
         });
     }
@@ -94,20 +94,23 @@ function loadConnectionsAsync(data, nodes, setProgress)
     let promise = Promise.resolve([]);
 
 
-    const chunkSize = 10; // connections
-    for (let i = 0; i < data.connections.length; i += chunkSize)
+    if (data.connections)
     {
-        promise = promise.then(() => 
+        const chunkSize = 10; // connections
+        for (let i = 0; i < data.connections.length; i += chunkSize)
         {
-            const res = resolveLoadConnections(
-                data.connections, 
-                i, 
-                Math.min(i + chunkSize, data.connections.length), // exclusive
-                data);
+            promise = promise.then(() => 
+            {
+                const res = resolveLoadConnections(
+                    data.connections, 
+                    i, 
+                    Math.min(i + chunkSize, data.connections.length), // exclusive
+                    data);
 
-            setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
-            return res;
-        });
+                setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
+                return res;
+            });
+        }
     }
 
 

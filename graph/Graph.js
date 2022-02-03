@@ -322,6 +322,7 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
 {
     const tab = '  ';
 
+    
     let json = 
           (encloseBraces ? '{\n' : '')
           + tab + '"nodes":\n'
@@ -338,12 +339,25 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
 
     json += 
             '\n' + 
-          tab + '],\n'
-        + tab + '"connections":\n'
-        + tab + '[';
+          tab + ']';
+          
+          
+    json += this.connectionsToJson(nodes, connOutputMustBeInNodes);
 
-        
-    first = true;
+
+    json += (encloseBraces ? '\n}' :'');
+
+
+    return json;
+}
+
+
+
+function connectionsToJson(nodes, connOutputMustBeInNodes)
+{
+    const connections = [];
+
+
     for (let i = 0; i < nodes.length; i++)
     {
         let node = nodes[i];
@@ -355,15 +369,32 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
                    && connOutputMustBeInNodes)
                 continue;
 
-            if (!first) json += ','; first = false;
-            json += '\n' + node.inputs[j].connection.toJson(4);
+            connections.push(node.inputs[j].connection);
         }
     }
     
 
+    if (connections.length == 0)
+        return '';
+
+
+    const tab = '  ';
+
+    let json = 
+          ',\n'
+        + tab + '"connections":\n'
+        + tab + '[';
+
+    
+    for (let i = 0; i < connections.length; i++)
+    {
+        if (i > 0) json += ',';
+        json += '\n' + connections[i].toJson(4);
+    }
+
+
     json += '\n'
-        + tab + ']'
-        + (encloseBraces ? '\n}' :'');
+        + tab + ']';
 
 
     return json;
