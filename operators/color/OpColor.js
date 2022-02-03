@@ -69,6 +69,9 @@ extends OpColorBase
         this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
+        this.paramSpace.control.barTop  = 0.8;
+
+
         // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
         // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
 
@@ -127,13 +130,9 @@ extends OpColorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        this.updateParams(true);
-
+        log(this.name + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -179,7 +178,7 @@ extends OpColorBase
             param.valueIsValid = !isValidRgb(dataColor2rgb(this._color));
 
 
-        super.update()
+        super.updateData()
     }
 
 

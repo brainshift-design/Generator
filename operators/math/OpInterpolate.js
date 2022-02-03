@@ -8,7 +8,7 @@ extends Operator
 
     constructor()
     {
-        super('interpolate', 'intr', 'number', 70);
+        super('interpolate', 'inter', 'number', 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
@@ -27,18 +27,8 @@ extends Operator
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
-        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
-
-
-        this.updateParams(false);
-
-
         let result = Number.NaN;
         let maxDec = 0;
 
@@ -74,7 +64,7 @@ extends Operator
         this.#paramValue.control.update();
 
 
-        super.update()
+        super.updateData()
     }
 
 

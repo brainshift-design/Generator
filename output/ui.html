@@ -785,7 +785,7 @@ input[type=text]::selection
     float:          left;
     margin-right:   auto;
     padding-top:    13px;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     pointer-events: none;
 }
 
@@ -927,7 +927,7 @@ input[type=text]::selection
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
-    box-shadow:     0 0 0 1px green inset;
+    /* box-shadow:     0 0 0 1px green inset; */
     pointer-events: none;
 }
 
@@ -2985,9 +2985,8 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    slider.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    //slider.textbox.readOnly = !enable;
-    slider.readOnly         = !enable;
+    slider.style.fontStyle = enable ? 'normal' : 'italic'; 
+    slider.readOnly        = !enable;
 }
 
 
@@ -5415,9 +5414,8 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    slider.style.fontStyle  = enable ? 'normal' : 'italic'; 
-    //slider.textbox.readOnly = !enable;
-    slider.readOnly         = !enable;
+    slider.style.fontStyle = enable ? 'normal' : 'italic'; 
+    slider.readOnly        = !enable;
 }
 
 
@@ -11358,10 +11356,10 @@ extends Parameter
             false,
             0,
             options.length-1,
-            value);        // default
+            value);    // default
             
         this.control.options = [...options];
-        this.control.barTop  = 0.8;
+        //this.control.barTop  = 0.8;
 
         this.div.appendChild(this.control);
 
@@ -11385,7 +11383,6 @@ extends Parameter
 
     update(dispatchEvents)
     {
-        //console.log('    ' + this.name + '.update()');
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
@@ -11949,6 +11946,8 @@ function getTerminalsAfterNode(node)
 
 function updateTerminalsAfterNodes(nodes)
 {
+    log('updateTerminalsAfterNodes()');
+
     const terminals = [];
 
     for (const node of nodes)
@@ -12231,8 +12230,8 @@ class Output
     {
         this._data = value;
 
-        for (const input of this.connectedInputs)
-            input.update();
+        // for (const input of this.connectedInputs)
+        //     input.op.pushUpdate();
     }
 
 
@@ -12845,6 +12844,8 @@ class Operator
 
     pushUpdate()
     {
+        log(this.name + '.Operator.pushUpdate()');
+        
         this.invalidate();
         
         setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
@@ -12854,15 +12855,25 @@ class Operator
 
     update()
     {
-        //log(this.name + '.Operator.update()');
-
-        this.setParamOutputData();
-
-        if (graphView.canUpdateNodes)
-            this.updateNode();
+        if (this.valid) return;
+    
+        this.updateParams(false);
+        this.updateData();
 
         this.valid  = true;
         this.loaded = false;
+
+        if (graphView.canUpdateNodes)
+            this.updateNode();
+    }
+
+
+
+    updateData()
+    {
+        //log(this.name + '.Operator.updateData()');
+
+        this.setParamOutputData();
     }
 
 
@@ -13855,14 +13866,8 @@ extends OperatorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-            
-        //this.updateParams(false);
-
-
         if (this.inputs[0].isConnected)
         {
             this.#paramValue.control.dec = this.inputs[0].data.decimals;
@@ -13874,7 +13879,7 @@ extends OperatorBase
                   this.#paramValue.control.dec);
             
                   
-        super.update()
+        super.updateData()
     }
 
 
@@ -13981,14 +13986,8 @@ extends OperatorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        this.updateParams(false);
-
-            
         if (this.inputs[0].isConnected)
         {
             this.#paramMin.control.dec = this.inputs[0].data.decimals;
@@ -14005,7 +14004,7 @@ extends OperatorBase
             this.outputs[0]._data = dataFromNumber(Number.Nan, 0);
             
                   
-        super.update()
+        super.updateData()
     }
 
 
@@ -14126,34 +14125,21 @@ extends OperatorBase
 
 
 
-    getResult()
+    updateData()
     {
-        return Number.NaN;
-    }
-
-
-
-    update()
-    {
-        if (this.valid) return;
-        
-
-        this.updateParams(false);
-
-
         let maxDec = 0;
 
         for (const input of this.inputs)
         {
             if (input.isConnected)
             {
-                input.connectedOutput.op.update();
+                //input.connectedOutput.op.updateData();
 
                 // ^ this could have removed one or more inputs and connections
                 // in which case abort
                 if (!input.isConnected)
                 {
-                    super.update();
+                    super.updateData();
                     return;
                 }
 
@@ -14167,12 +14153,18 @@ extends OperatorBase
         this.outputs[0]._data = dataFromNumber(result);
 
         this.#paramValue.setValue(result, false, true, false);
-
         this.#paramValue.control.dec = maxDec;
-        this.#paramValue.control.update();
+        //this.#paramValue.control.update();
 
         
-        super.update()
+        super.updateData()
+    }
+
+
+
+    getResult()
+    {
+        return Number.NaN;
     }
 
 
@@ -14390,7 +14382,7 @@ extends Operator
 
     constructor()
     {
-        super('interpolate', 'intr', 'number', 70);
+        super('interpolate', 'inter', 'number', 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
@@ -14409,18 +14401,8 @@ extends Operator
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
-        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
-
-
-        this.updateParams(false);
-
-
         let result = Number.NaN;
         let maxDec = 0;
 
@@ -14456,7 +14438,7 @@ extends Operator
         this.#paramValue.control.update();
 
 
-        super.update()
+        super.updateData()
     }
 
 
@@ -14679,6 +14661,9 @@ extends OpColorBase
         this.addParam(this.param3     = new NumberParam('c3', true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
+        this.paramSpace.control.barTop  = 0.8;
+
+
         // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
         // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
 
@@ -14737,13 +14722,9 @@ extends OpColorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        this.updateParams(true);
-
+        log(this.name + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -14789,7 +14770,7 @@ extends OpColorBase
             param.valueIsValid = !isValidRgb(dataColor2rgb(this._color));
 
 
-        super.update()
+        super.updateData()
     }
 
 
@@ -16074,18 +16055,8 @@ extends OpColorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
-        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
-
-
-        this.updateParams(false);
-
-        
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
@@ -16127,7 +16098,7 @@ extends OpColorBase
                 }
 
 
-                super.update();
+                super.updateData();
                 return;
             }
             
@@ -16138,7 +16109,7 @@ extends OpColorBase
         this.#paramValue.setValue(0, false, true, false);
 
            
-        super.update()
+        super.updateData()
     }
 
 
@@ -16311,7 +16282,7 @@ extends OpColorBase
 
     constructor()
     {
-        super('colorinterpolate', 'intr', 'color', 80);
+        super('colorinterpolate', 'inter', 'color', 80);
 
         
         this.addInput(new Input(this.dataType));
@@ -16340,15 +16311,55 @@ extends OpColorBase
         {
             if (!this.inputs[1].isConnected) 
                 this.#paramSpace.setValue(
-                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]));
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]),
+                    true, true, false);
         });
 
         this.inputs[1].addEventListener('connect', () => 
         {
             if (!this.inputs[0].isConnected) 
                 this.#paramSpace.setValue(
-                    OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]));
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]),
+                    true, true, false);
         });
+    }
+
+
+
+    updateData()
+    {
+        log(this.name + '.OpColorInterpolate.updateData()');
+
+        if (   this.inputs[0].isConnected
+            && this.inputs[1].isConnected)
+        {
+            const space = OpColorSpaces[this.#paramSpace.value][0];
+            const f     = this.#paramAmount.value;
+            const gamma = this.#paramGamma .value;
+            
+            const col   = this.interpolate(
+                space,
+                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+                f,
+                gamma);
+
+            this._color = [
+                space, 
+                col[0], 
+                col[1], 
+                col[2] ];
+        }
+
+        else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
+        else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
+        else                                this._color = dataColor_NaN;
+
+
+        this.outputs[0]._data = dataFromDataColor(this._color);
+
+
+        super.updateData()
     }
 
 
@@ -16380,52 +16391,6 @@ extends OpColorBase
             col[0] = normalAngle(h0 + angleDiff(h0, h1) * f) / Tau;
 
         return col;
-    }
-
-
-
-    update()
-    {
-        if (this.valid) return;
-
-
-        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
-        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
-
-
-        this.updateParams(false);
-
-        
-        if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
-        {
-            const space = OpColorSpaces[this.#paramSpace.value][0];
-            const f     = this.#paramAmount.value;
-            const gamma = this.#paramGamma .value;
-            
-            const col   = this.interpolate(
-                space,
-                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
-                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
-                f,
-                gamma);
-
-            this._color = [
-                space, 
-                col[0], 
-                col[1], 
-                col[2] ];
-        }
-
-        else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
-        else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
-        else                                this._color = dataColor_NaN;
-
-
-        this.outputs[0]._data = dataFromDataColor(this._color);
-
-
-        super.update()
     }
 
 
@@ -16505,7 +16470,7 @@ extends OpColorBase
 
     constructor()
     {
-        super('colorblind', 'blind', 'color', 80);
+        super('colorblind', 'colorblind', 'color', 80);
 
 
         this.addInput (new  Input(this.dataType));
@@ -16522,17 +16487,8 @@ extends OpColorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
-
-
-        this.updateParams(false);
-
-        
         if (this.inputs[0].isConnected)
         {
             this._color = this.inputs[0].data.color;
@@ -16546,7 +16502,7 @@ extends OpColorBase
         this.outputs[0]._data = dataFromDataColor(this._color);
         
         
-        super.update()
+        super.updateData()
     }
 
 
@@ -16792,14 +16748,8 @@ extends OperatorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        this.updateParams(true);
-
-
         if (this.inputs[0].isConnected) 
         {
             const data = this.inputs[0].data;
@@ -16822,7 +16772,7 @@ extends OperatorBase
             this.#paramRound .value);
 
 
-        super.update()
+        super.updateData()
     }
 
 
@@ -17094,8 +17044,9 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
 
-            this.inputOp.pushUpdate();
             graphView.updateNodeTransform(this.inputOp);
+
+            this.inputOp.pushUpdate();
     }
 
 
@@ -17113,8 +17064,9 @@ extends Action
                 this.inputIndex);
         }
 
-        this.inputOp.pushUpdate();
         graphView.updateNodeTransform(this.inputOp);
+
+        this.inputOp.pushUpdate();
     }
 }
 
@@ -17146,10 +17098,11 @@ extends Action
 
         this.createdNodeId = node.id;
 
-        node.pushUpdate();
         //node.updateNode();
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScroll());
+
+        node.pushUpdate();
     }
 
 
@@ -17168,10 +17121,11 @@ extends Action
 
         //const node = graph.nodes.find(n => n.id == this.createdNodeId);
 
-        node.pushUpdate();
         //node.updateNode();
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScroll());
+
+        node.pushUpdate();
     }
 }
 
@@ -17365,8 +17319,8 @@ extends Action
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
-        this.inputOp.pushUpdate();
         graphView.updateNodeTransform(this.inputOp);
+        this.inputOp.pushUpdate();
     }
     
     
@@ -17379,8 +17333,8 @@ extends Action
             this.inputOp, 
             this.inputIndex);
 
-        this.inputOp.pushUpdate();
-        graphView.updateNodeTransform(this.inputOp);
+            graphView.updateNodeTransform(this.inputOp);
+            this.inputOp.pushUpdate();
     }
 }
 
@@ -17623,17 +17577,18 @@ extends Action
     {
         uiDisconnect(this.oldInputOp.inputs[this.oldInputIndex]);
 
-        this.oldInputOp.pushUpdate();
         graphView.updateNodeTransform(this.oldInputOp);
-
-
+        
+        
         uiConnect(
             this.outputOp.outputs[this.outputIndex], 
             this. inputOp. inputs[this. inputIndex],
             this.inputIndex);
-
-        this.inputOp.pushUpdate();
+            
         graphView.updateNodeTransform(this.inputOp);
+
+        this.oldInputOp.pushUpdate();
+        this.inputOp   .pushUpdate();
     }
 
 

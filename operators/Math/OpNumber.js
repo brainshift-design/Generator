@@ -20,14 +20,8 @@ extends OperatorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-            
-        //this.updateParams(false);
-
-
         if (this.inputs[0].isConnected)
         {
             this.#paramValue.control.dec = this.inputs[0].data.decimals;
@@ -39,7 +33,7 @@ extends OperatorBase
                   this.#paramValue.control.dec);
             
                   
-        super.update()
+        super.updateData()
     }
 
 

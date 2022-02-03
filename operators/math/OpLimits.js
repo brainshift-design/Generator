@@ -22,14 +22,8 @@ extends OperatorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        this.updateParams(false);
-
-            
         if (this.inputs[0].isConnected)
         {
             this.#paramMin.control.dec = this.inputs[0].data.decimals;
@@ -46,7 +40,7 @@ extends OperatorBase
             this.outputs[0]._data = dataFromNumber(Number.Nan, 0);
             
                   
-        super.update()
+        super.updateData()
     }
 
 

@@ -1,50 +1,48 @@
-class   OpSpread 
-extends Operator
-{
-    #count;
-    #radius;
+// class   OpSpread 
+// extends Operator
+// {
+//     #count;
+//     #radius;
 
-    seed = 0;
+//     seed = 0;
 
 
-    constructor()
-    {
-        super('spread', 'object');
+//     constructor()
+//     {
+//         super('spread', 'object');
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+//         this.addInput (new Input (this.dataType));
+//         this.addOutput(new Output(this.dataType));
         
-        this.addParam(this.#count  = new NumberParam('count',  true,   2, 1));
-        this.addParam(this.#radius = new NumberParam('radius', true, 100, 0.01));
-    }
+//         this.addParam(this.#count  = new NumberParam('count',  true,   2, 1));
+//         this.addParam(this.#radius = new NumberParam('radius', true, 100, 0.01));
+//     }
     
     
-    update()
-    {
-        if (this.valid) return;
-        super.update();
+//     updateData()
+//     {
+//         var input = this.inputs[0];
 
-        var input = this.inputs[0];
+//         if (   !input.isConnected
+//             || isEmptyObject(input.connectedOutput.data)) 
+//         {
+//             this.output._data = {};
+//             return;
+//         }
 
-        if (   !input.isConnected
-            || isEmptyObject(input.connectedOutput.data)) 
-        {
-            this.output._data = {};
-            return;
-        }
+//         this.output._data = 
+//         {
+//             nodeId: this.id,
+//             opType: this.opType,
 
-        this.output._data = 
-        {
-            nodeId: this.id,
-            opType: this.opType,
-
-            count:  this.#count .value,
-            radius: this.#radius.value,
+//             count:  this.#count .value,
+//             radius: this.#radius.value,
             
-            seed:   this.seed,
+//             seed:   this.seed,
 
-            inputs: [input.data]
-        };
+//             inputs: [input.data]
+//         };
 
-    }
-}
+//         super.updateData();
+//     }
+// }

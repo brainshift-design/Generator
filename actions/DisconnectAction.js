@@ -36,8 +36,8 @@ extends Action
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
-        this.inputOp.pushUpdate();
         graphView.updateNodeTransform(this.inputOp);
+        this.inputOp.pushUpdate();
     }
     
     
@@ -50,7 +50,7 @@ extends Action
             this.inputOp, 
             this.inputIndex);
 
-        this.inputOp.pushUpdate();
-        graphView.updateNodeTransform(this.inputOp);
+            graphView.updateNodeTransform(this.inputOp);
+            this.inputOp.pushUpdate();
     }
 }

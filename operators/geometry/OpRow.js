@@ -39,10 +39,8 @@ extends Operator
 //     }
 
 
-//     update()
+//     updateData()
 //     {
-//         if (this.valid) return;
-
 //         const input  = this.inputs[0];
 //         const output = this.output;
 
@@ -75,6 +73,6 @@ extends Operator
 //         }
 
         
-//         super.update();
+//         super.updateData();
 //     }
 // }

@@ -98,10 +98,8 @@ extends Operator
 //     }
 
 
-//     update()
+//     updateData()
 //     {
-//         if (this.valid) return;
-
 //         this.output._data = 
 //         {
 //             id:    this.id,
@@ -113,6 +111,6 @@ extends Operator
 //             seed:  this.#seed .value
 //         };
 
-//         super.update();
+//         super.updateData();
 //     }
 // }

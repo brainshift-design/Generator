@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super('colorblind', 'blind', 'color', 80);
+        super('colorblind', 'colorblind', 'color', 80);
 
 
         this.addInput (new  Input(this.dataType));
@@ -26,17 +26,8 @@ extends OpColorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
-
-
-        this.updateParams(false);
-
-        
         if (this.inputs[0].isConnected)
         {
             this._color = this.inputs[0].data.color;
@@ -50,7 +41,7 @@ extends OpColorBase
         this.outputs[0]._data = dataFromDataColor(this._color);
         
         
-        super.update()
+        super.updateData()
     }
 
 

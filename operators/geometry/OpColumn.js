@@ -39,7 +39,7 @@ extends Operator
 //     }
 
 
-//     update()
+//     updateData()
 //     {
 //         if (this.valid) return;
 
@@ -75,6 +75,6 @@ extends Operator
 //         }
 
         
-//         super.update();
+//         super.updateData();
 //     }
 // }

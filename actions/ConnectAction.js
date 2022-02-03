@@ -46,8 +46,9 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
 
-            this.inputOp.pushUpdate();
             graphView.updateNodeTransform(this.inputOp);
+
+            this.inputOp.pushUpdate();
     }
 
 
@@ -65,7 +66,8 @@ extends Action
                 this.inputIndex);
         }
 
-        this.inputOp.pushUpdate();
         graphView.updateNodeTransform(this.inputOp);
+
+        this.inputOp.pushUpdate();
     }
 }

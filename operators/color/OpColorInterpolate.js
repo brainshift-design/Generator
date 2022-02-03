@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super('colorinterpolate', 'intr', 'color', 80);
+        super('colorinterpolate', 'inter', 'color', 80);
 
         
         this.addInput(new Input(this.dataType));
@@ -38,15 +38,55 @@ extends OpColorBase
         {
             if (!this.inputs[1].isConnected) 
                 this.#paramSpace.setValue(
-                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]));
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]),
+                    true, true, false);
         });
 
         this.inputs[1].addEventListener('connect', () => 
         {
             if (!this.inputs[0].isConnected) 
                 this.#paramSpace.setValue(
-                    OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]));
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]),
+                    true, true, false);
         });
+    }
+
+
+
+    updateData()
+    {
+        log(this.name + '.OpColorInterpolate.updateData()');
+
+        if (   this.inputs[0].isConnected
+            && this.inputs[1].isConnected)
+        {
+            const space = OpColorSpaces[this.#paramSpace.value][0];
+            const f     = this.#paramAmount.value;
+            const gamma = this.#paramGamma .value;
+            
+            const col   = this.interpolate(
+                space,
+                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+                f,
+                gamma);
+
+            this._color = [
+                space, 
+                col[0], 
+                col[1], 
+                col[2] ];
+        }
+
+        else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
+        else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
+        else                                this._color = dataColor_NaN;
+
+
+        this.outputs[0]._data = dataFromDataColor(this._color);
+
+
+        super.updateData()
     }
 
 
@@ -78,52 +118,6 @@ extends OpColorBase
             col[0] = normalAngle(h0 + angleDiff(h0, h1) * f) / Tau;
 
         return col;
-    }
-
-
-
-    update()
-    {
-        if (this.valid) return;
-
-
-        if (this.inputs[0].isConnected) this.inputs[0].connectedOutput.op.update();
-        if (this.inputs[1].isConnected) this.inputs[1].connectedOutput.op.update();
-
-
-        this.updateParams(false);
-
-        
-        if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
-        {
-            const space = OpColorSpaces[this.#paramSpace.value][0];
-            const f     = this.#paramAmount.value;
-            const gamma = this.#paramGamma .value;
-            
-            const col   = this.interpolate(
-                space,
-                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
-                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
-                f,
-                gamma);
-
-            this._color = [
-                space, 
-                col[0], 
-                col[1], 
-                col[2] ];
-        }
-
-        else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
-        else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
-        else                                this._color = dataColor_NaN;
-
-
-        this.outputs[0]._data = dataFromDataColor(this._color);
-
-
-        super.update()
     }
 
 

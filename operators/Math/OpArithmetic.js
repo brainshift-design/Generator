@@ -81,34 +81,21 @@ extends OperatorBase
 
 
 
-    getResult()
+    updateData()
     {
-        return Number.NaN;
-    }
-
-
-
-    update()
-    {
-        if (this.valid) return;
-        
-
-        this.updateParams(false);
-
-
         let maxDec = 0;
 
         for (const input of this.inputs)
         {
             if (input.isConnected)
             {
-                input.connectedOutput.op.update();
+                //input.connectedOutput.op.updateData();
 
                 // ^ this could have removed one or more inputs and connections
                 // in which case abort
                 if (!input.isConnected)
                 {
-                    super.update();
+                    super.updateData();
                     return;
                 }
 
@@ -122,12 +109,18 @@ extends OperatorBase
         this.outputs[0]._data = dataFromNumber(result);
 
         this.#paramValue.setValue(result, false, true, false);
-
         this.#paramValue.control.dec = maxDec;
-        this.#paramValue.control.update();
+        //this.#paramValue.control.update();
 
         
-        super.update()
+        super.updateData()
+    }
+
+
+
+    getResult()
+    {
+        return Number.NaN;
     }
 
 

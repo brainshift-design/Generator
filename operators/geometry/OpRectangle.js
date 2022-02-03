@@ -99,14 +99,8 @@ extends OperatorBase
 
 
 
-    update()
+    updateData()
     {
-        if (this.valid) return;
-
-
-        this.updateParams(true);
-
-
         if (this.inputs[0].isConnected) 
         {
             const data = this.inputs[0].data;
@@ -129,7 +123,7 @@ extends OperatorBase
             this.#paramRound .value);
 
 
-        super.update()
+        super.updateData()
     }
 
 

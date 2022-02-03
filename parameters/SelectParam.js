@@ -50,10 +50,10 @@ extends Parameter
             false,
             0,
             options.length-1,
-            value);        // default
+            value);    // default
             
         this.control.options = [...options];
-        this.control.barTop  = 0.8;
+        //this.control.barTop  = 0.8;
 
         this.div.appendChild(this.control);
 
@@ -77,7 +77,6 @@ extends Parameter
 
     update(dispatchEvents)
     {
-        //console.log('    ' + this.name + '.update()');
         if (   this.input
             && this.input.isConnected)
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match

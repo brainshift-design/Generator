@@ -33,8 +33,8 @@ class Output
     {
         this._data = value;
 
-        for (const input of this.connectedInputs)
-            input.update();
+        // for (const input of this.connectedInputs)
+        //     input.op.pushUpdate();
     }
 
 

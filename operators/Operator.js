@@ -252,6 +252,8 @@ class Operator
 
     pushUpdate()
     {
+        log(this.name + '.Operator.pushUpdate()');
+        
         this.invalidate();
         
         setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
@@ -261,15 +263,25 @@ class Operator
 
     update()
     {
-        //log(this.name + '.Operator.update()');
-
-        this.setParamOutputData();
-
-        if (graphView.canUpdateNodes)
-            this.updateNode();
+        if (this.valid) return;
+    
+        this.updateParams(false);
+        this.updateData();
 
         this.valid  = true;
         this.loaded = false;
+
+        if (graphView.canUpdateNodes)
+            this.updateNode();
+    }
+
+
+
+    updateData()
+    {
+        //log(this.name + '.Operator.updateData()');
+
+        this.setParamOutputData();
     }
 
 

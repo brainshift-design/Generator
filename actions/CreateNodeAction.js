@@ -25,10 +25,11 @@ extends Action
 
         this.createdNodeId = node.id;
 
-        node.pushUpdate();
         //node.updateNode();
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScroll());
+
+        node.pushUpdate();
     }
 
 
@@ -47,9 +48,10 @@ extends Action
 
         //const node = graph.nodes.find(n => n.id == this.createdNodeId);
 
-        node.pushUpdate();
         //node.updateNode();
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScroll());
+
+        node.pushUpdate();
     }
 }
