@@ -7582,7 +7582,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(param, slider, width, height, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelStep = 1, acc = 0, suffix = '', log = false)
+function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelStep = 1, acc = 0, suffix = '', log = false)
 {
     slider.param             = param;
 
@@ -7605,6 +7605,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     slider.displayMax        = max;
     slider.displayMultiplier = 1;
                
+    slider.id                = id;
     slider.name              = name;
     slider.suffix            = suffix;
     slider.log               = log;
@@ -10890,6 +10891,9 @@ extends EventTarget
     #type;
     get type() { return this.#type; }
     
+    #id;
+    get id() { return this.#id; }
+
     #name;
     get name() { return this.#name; }
 
@@ -10915,12 +10919,13 @@ extends EventTarget
 
 
 
-    constructor(name, type)
+    constructor(id, name, type)
     {
         super();
 
-        this.#type = type;
+        this.#id   = id;
         this.#name = name;
+        this.#type = type;
 
         this._div = createDiv();
 
@@ -11033,14 +11038,14 @@ extends EventTarget
 
 
 
-    toJson(nTab = 0, name = '')
+    toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
 
-        if (name == '')
-            name = this.name;
+        if (id == '')
+            id = this.id;
 
-        return pos + '["' + name  + '", "' + this.value + '"]';
+        return pos + '["' + id  + '", "' + this.value + '"]';
     }
 }
 
@@ -11069,7 +11074,8 @@ extends Parameter
 
 
     
-    constructor(name, 
+    constructor(id,
+                name, 
                 showName,
                 hasInput,
                 hasOutput,
@@ -11079,7 +11085,7 @@ extends Parameter
                 decimals  = 0,
                 dragScale = 0.05)
     {
-        super(name, 'number');
+        super(id, name, 'number');
 
         this._control          = createDiv();
         
@@ -11096,6 +11102,7 @@ extends Parameter
             this.control,
             120,        // width
             20,         // height
+            this.id,
             this.name, 
             showName,
             min,
@@ -11199,14 +11206,14 @@ extends Parameter
 
 
 
-    toJson(nTab = 0, name = '')
+    toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
         
-        if (name == '')
-            name = this.name;
+        if (id == '')
+            id = this.id;
 
-        return pos + '["' + name  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
+        return pos + '["' + id  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
     }
 }
 
@@ -11332,13 +11339,14 @@ extends Parameter
 
 
     
-    constructor(name, 
+    constructor(id,
+                name, 
                 hasInput,
                 hasOutput,
                 options,
                 value = 0)
     {
-        super(name, 'number');
+        super(id, name, 'number');
 
         this._control       = createDiv();
         
@@ -11355,6 +11363,7 @@ extends Parameter
             this.control,
             120,       // width
             20,        // height
+            this.id,
             this.name, 
             false,
             0,
@@ -11981,7 +11990,7 @@ function getTerminalsAfterNode(node)
 
 function updateTerminalsAfterNodes(nodes)
 {
-    log('updateTerminalsAfterNodes()');
+    //log('updateTerminalsAfterNodes()');
 
     const terminals = [];
 
@@ -13150,23 +13159,6 @@ class Operator
 
 
 
-    toJsonBase(nTab)
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
-
-        let json =
-              pos + tab + '"type": "'        + this.opType            + '",\n'
-            + pos + tab + '"name": "'        + this.name              + '",\n'
-            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
-            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
-            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
-
-        return json;
-    }
-
-
-
     paramIsConsideredDefault(param)
     {
         return param.isDefault()
@@ -13205,6 +13197,23 @@ class Operator
 
 
 
+    toJsonBase(nTab)
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        let json =
+              pos + tab + '"type": "'        + this.opType            + '",\n'
+            + pos + tab + '"name": "'        + this.name              + '",\n'
+            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
+            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
+            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
+
+        return json;
+    }
+
+
+
     paramsToJson(nTab)
     {
         let pos = ' '.repeat(nTab);
@@ -13235,11 +13244,13 @@ class Operator
     {
         for (const _param of _node.params)
         {
-            const index = this.params.findIndex(p => p.name == _param[0]);
+            log(_param);
+            const index = this.params.findIndex(p => p.id == _param[0]);
             
+            log(index);
             if (index >= 0) 
             {
-                this.params[index].setValue(parseInt(_param[1]), true, true, false);
+                this.params[index].setValue(parseFloat(_param[1]), true, true, false);
                 //this.params[index].setDecimalsFrom(_param[1]);
             }
         }
@@ -13899,7 +13910,7 @@ extends OperatorBase
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
         this.#paramValue.allowEditDecimals = true;
         this.alwaysLoadParams = true;
@@ -14018,8 +14029,8 @@ extends OperatorBase
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramMin = new NumberParam('min', true, true, true, 0));
-        this.addParam(this.#paramMax = new NumberParam('max', true, true, true));
+        this.addParam(this.#paramMin = new NumberParam('min', 'min', true, true, true, 0));
+        this.addParam(this.#paramMax = new NumberParam('max', 'max', true, true, true));
         
         this.#paramMin.addEventListener('change', () => this.#paramMax.control.setMin(this.#paramMin.value, false));
         this.#paramMax.addEventListener('change', () => this.#paramMin.control.setMax(this.#paramMax.value, false));
@@ -14103,7 +14114,7 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
         
-        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -14432,8 +14443,8 @@ extends Operator
 
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue  = new NumberParam('value',  false, false, false, 0));
-        this.addParam(this.#paramFactor = new NumberParam('factor', false,  true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramValue  = new NumberParam('value',  '',       false, false, false, 0));
+        this.addParam(this.#paramFactor = new NumberParam('factor', 'factor', false,  true,  true, 0, 0, 1, 2));
       
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';
@@ -14715,10 +14726,10 @@ extends OpColorBase
         });
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.param1     = new NumberParam('c1',    true, true, true, Math.round(this._color[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    true, true, true, Math.round(this._color[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    true, true, true, Math.round(this._color[3] * rgbFactor[2])));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
         this.paramSpace.control.barTop  = 0.8;
@@ -14784,7 +14795,7 @@ extends OpColorBase
 
     updateData()
     {
-        log(this.name + '.OpColor.updateData()');
+        //log(this.name + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -16103,8 +16114,8 @@ extends OpColorBase
         this.addInput(new Input(this.dataType));
 
 
-        this.addParam(this.#paramValue    = new NumberParam('value',    false, false, true, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0));
+        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         this.#paramStandard.control.barHeight = 0.2;
@@ -16351,9 +16362,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  true,  true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramAmount = new NumberParam('amount', false, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  true,  true, true, 1, 0.01, 3, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true,  true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '',  false, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1, 0.01, 3, 2));
       
         
         this.#paramSpace.min        = 2;
@@ -16364,7 +16375,6 @@ extends OpColorBase
         this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
 
         this.#paramGamma.control.max  = 10;
-        this.#paramGamma.control.name = 'γ';
 
 
         this.inputs[0].addEventListener('connect', () => 
@@ -16388,7 +16398,7 @@ extends OpColorBase
 
     updateData()
     {
-        log(this.name + '.OpColorInterpolate.updateData()');
+        //log(this.name + '.OpColorInterpolate.updateData()');
 
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
@@ -16732,12 +16742,12 @@ extends OperatorBase
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramX      = new NumberParam('x',      true, true, true,   0));
-        this.addParam(this.#paramY      = new NumberParam('y',      true, true, true,   0));
-        this.addParam(this.#paramWidth  = new NumberParam('width',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramHeight = new NumberParam('height', true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle  = new NumberParam('angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.#paramRound  = new NumberParam('round',  true, true, true,   0,    0));
+        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
 
         
         this.#paramAngle.control.suffix = '°';
@@ -18775,11 +18785,11 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
         data.nodes[i].newName = nodes[i].name;
     }
     
-    // correct node names in connections
-    correctConnections(data);
-
-    
-    loadConnections(data, pasteOutsideConnections);
+    if (data.connections)
+    {
+        correctNodeNamesInConnections(data);
+        loadConnections(data, pasteOutsideConnections);
+    }
     
     
     graphView.selectedNodes = nodes;
@@ -18788,7 +18798,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
 
-function correctConnections(data)
+function correctNodeNamesInConnections(data)
 {
     for (let i = 0; i < data.connections.length; i++)
     {

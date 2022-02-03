@@ -18,7 +18,7 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
         
-        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';

@@ -316,11 +316,11 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
         data.nodes[i].newName = nodes[i].name;
     }
     
-    // correct node names in connections
-    correctConnections(data);
-
-    
-    loadConnections(data, pasteOutsideConnections);
+    if (data.connections)
+    {
+        correctNodeNamesInConnections(data);
+        loadConnections(data, pasteOutsideConnections);
+    }
     
     
     graphView.selectedNodes = nodes;
@@ -329,7 +329,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
 
-function correctConnections(data)
+function correctNodeNamesInConnections(data)
 {
     for (let i = 0; i < data.connections.length; i++)
     {

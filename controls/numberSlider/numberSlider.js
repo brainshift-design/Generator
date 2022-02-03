@@ -11,7 +11,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(param, slider, width, height, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelStep = 1, acc = 0, suffix = '', log = false)
+function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelStep = 1, acc = 0, suffix = '', log = false)
 {
     slider.param             = param;
 
@@ -34,6 +34,7 @@ function initNumberSlider(param, slider, width, height, name, showName, min, max
     slider.displayMax        = max;
     slider.displayMultiplier = 1;
                
+    slider.id                = id;
     slider.name              = name;
     slider.suffix            = suffix;
     slider.log               = log;

@@ -15,8 +15,8 @@ extends Operator
 
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue  = new NumberParam('value',  false, false, false, 0));
-        this.addParam(this.#paramFactor = new NumberParam('factor', false,  true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramValue  = new NumberParam('value',  '',       false, false, false, 0));
+        this.addParam(this.#paramFactor = new NumberParam('factor', 'factor', false,  true,  true, 0, 0, 1, 2));
       
         this.#paramValue.control.readOnly        = true;
         this.#paramValue.control.style.fontStyle = 'italic';

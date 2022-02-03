@@ -22,7 +22,8 @@ extends Parameter
 
 
     
-    constructor(name, 
+    constructor(id,
+                name, 
                 showName,
                 hasInput,
                 hasOutput,
@@ -32,7 +33,7 @@ extends Parameter
                 decimals  = 0,
                 dragScale = 0.05)
     {
-        super(name, 'number');
+        super(id, name, 'number');
 
         this._control          = createDiv();
         
@@ -49,6 +50,7 @@ extends Parameter
             this.control,
             120,        // width
             20,         // height
+            this.id,
             this.name, 
             showName,
             min,
@@ -152,13 +154,13 @@ extends Parameter
 
 
 
-    toJson(nTab = 0, name = '')
+    toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
         
-        if (name == '')
-            name = this.name;
+        if (id == '')
+            id = this.id;
 
-        return pos + '["' + name  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
+        return pos + '["' + id  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
     }
 }

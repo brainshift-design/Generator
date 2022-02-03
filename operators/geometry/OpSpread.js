@@ -14,8 +14,8 @@
 //         this.addInput (new Input (this.dataType));
 //         this.addOutput(new Output(this.dataType));
         
-//         this.addParam(this.#count  = new NumberParam('count',  true,   2, 1));
-//         this.addParam(this.#radius = new NumberParam('radius', true, 100, 0.01));
+//         this.addParam(this.#count  = new NumberParam('count',  'count',  true,   2, 1));
+//         this.addParam(this.#radius = new NumberParam('radius', 'radius', true, 100, 0.01));
 //     }
     
     

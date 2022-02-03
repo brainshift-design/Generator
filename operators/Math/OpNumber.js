@@ -12,7 +12,7 @@ extends OperatorBase
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue = new NumberParam('value', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
         this.#paramValue.allowEditDecimals = true;
         this.alwaysLoadParams = true;

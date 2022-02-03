@@ -4,6 +4,9 @@ extends EventTarget
     #type;
     get type() { return this.#type; }
     
+    #id;
+    get id() { return this.#id; }
+
     #name;
     get name() { return this.#name; }
 
@@ -29,12 +32,13 @@ extends EventTarget
 
 
 
-    constructor(name, type)
+    constructor(id, name, type)
     {
         super();
 
-        this.#type = type;
+        this.#id   = id;
         this.#name = name;
+        this.#type = type;
 
         this._div = createDiv();
 
@@ -147,13 +151,13 @@ extends EventTarget
 
 
 
-    toJson(nTab = 0, name = '')
+    toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
 
-        if (name == '')
-            name = this.name;
+        if (id == '')
+            id = this.id;
 
-        return pos + '["' + name  + '", "' + this.value + '"]';
+        return pos + '["' + id  + '", "' + this.value + '"]';
     }
 }

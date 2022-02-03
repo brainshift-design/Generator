@@ -18,9 +18,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  true,  true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramAmount = new NumberParam('amount', false, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  true,  true, true, 1, 0.01, 3, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true,  true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '',  false, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1, 0.01, 3, 2));
       
         
         this.#paramSpace.min        = 2;
@@ -31,7 +31,6 @@ extends OpColorBase
         this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
 
         this.#paramGamma.control.max  = 10;
-        this.#paramGamma.control.name = 'γ';
 
 
         this.inputs[0].addEventListener('connect', () => 
@@ -55,7 +54,7 @@ extends OpColorBase
 
     updateData()
     {
-        log(this.name + '.OpColorInterpolate.updateData()');
+        //log(this.name + '.OpColorInterpolate.updateData()');
 
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)

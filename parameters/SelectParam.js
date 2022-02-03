@@ -23,13 +23,14 @@ extends Parameter
 
 
     
-    constructor(name, 
+    constructor(id,
+                name, 
                 hasInput,
                 hasOutput,
                 options,
                 value = 0)
     {
-        super(name, 'number');
+        super(id, name, 'number');
 
         this._control       = createDiv();
         
@@ -46,6 +47,7 @@ extends Parameter
             this.control,
             120,       // width
             20,        // height
+            this.id,
             this.name, 
             false,
             0,

@@ -14,10 +14,10 @@ extends Operator
 
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#min   = new NumberParam('min',   true,  0));
-        this.addParam(this.#max   = new NumberParam('max',   true, 10));
-        this.addParam(this.#scale = new NumberParam('scale', true,  1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed',  true,  1, 1));
+        this.addParam(this.#min   = new NumberParam('min',   'min',   true,  0));
+        this.addParam(this.#max   = new NumberParam('max',   'max',   true, 10));
+        this.addParam(this.#scale = new NumberParam('scale', 'scale', true,  1, 1));
+        this.addParam(this.#seed  = new NumberParam('seed',  'seed',  true,  1, 1));
 
         this.#max.control.min = this.#min.value;
         this.#min.control.max = this.#max.value;

@@ -523,23 +523,6 @@ class Operator
 
 
 
-    toJsonBase(nTab)
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
-
-        let json =
-              pos + tab + '"type": "'        + this.opType            + '",\n'
-            + pos + tab + '"name": "'        + this.name              + '",\n'
-            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
-            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
-            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
-
-        return json;
-    }
-
-
-
     paramIsConsideredDefault(param)
     {
         return param.isDefault()
@@ -578,6 +561,23 @@ class Operator
 
 
 
+    toJsonBase(nTab)
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        let json =
+              pos + tab + '"type": "'        + this.opType            + '",\n'
+            + pos + tab + '"name": "'        + this.name              + '",\n'
+            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
+            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
+            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
+
+        return json;
+    }
+
+
+
     paramsToJson(nTab)
     {
         let pos = ' '.repeat(nTab);
@@ -608,11 +608,13 @@ class Operator
     {
         for (const _param of _node.params)
         {
-            const index = this.params.findIndex(p => p.name == _param[0]);
+            log(_param);
+            const index = this.params.findIndex(p => p.id == _param[0]);
             
+            log(index);
             if (index >= 0) 
             {
-                this.params[index].setValue(parseInt(_param[1]), true, true, false);
+                this.params[index].setValue(parseFloat(_param[1]), true, true, false);
                 //this.params[index].setDecimalsFrom(_param[1]);
             }
         }

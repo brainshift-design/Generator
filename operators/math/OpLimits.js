@@ -13,8 +13,8 @@ extends OperatorBase
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramMin = new NumberParam('min', true, true, true, 0));
-        this.addParam(this.#paramMax = new NumberParam('max', true, true, true));
+        this.addParam(this.#paramMin = new NumberParam('min', 'min', true, true, true, 0));
+        this.addParam(this.#paramMax = new NumberParam('max', 'max', true, true, true));
         
         this.#paramMin.addEventListener('change', () => this.#paramMax.control.setMin(this.#paramMin.value, false));
         this.#paramMax.addEventListener('change', () => this.#paramMin.control.setMax(this.#paramMax.value, false));
