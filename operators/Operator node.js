@@ -123,6 +123,13 @@ function createNodeHeader(node)
         graphView.putNodeOnTop(node);
 
 
+        for (const param of node.params)
+        {
+            if (param.control.textbox == document.activeElement)
+                param.control.textbox.finish(true);
+        }
+
+
         if (   e.button == 0
             && !graphView.overOutput
             && !graphView.overInput)

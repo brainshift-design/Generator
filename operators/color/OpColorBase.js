@@ -24,9 +24,6 @@ extends Operator
         super.updateNode();
 
 
-        this.updateWarningOverlay();
-
-
         // for (const output of this.outputs)
         //     for (const input of output.connectedInputs)
         //         if (input.connection)
@@ -97,6 +94,9 @@ extends Operator
             this.label .style.color      = 'black';
             this.header.style.background = '#ead8eaee';
         }
+
+
+        this.updateWarningOverlay();
 
 
         super.updateHeader();
