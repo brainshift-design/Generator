@@ -50,7 +50,7 @@ class Operator
 
 
 
-    valid = false; // this is the flag for regeneration
+    valid; // this is the flag for regeneration
 
 
 
@@ -108,7 +108,9 @@ class Operator
            
         this.shortTypeName     = shortType;
         this._name             = shortType; // this is a temp until the op becomes a graph node
-           
+     
+        this.valid             = false;
+
         this.defaultWidth      = defWidth;
         
         this.loaded            = false;
@@ -259,6 +261,8 @@ class Operator
 
     update()
     {
+        //log(this.name + '.Operator.update()');
+
         this.setParamOutputData();
 
         if (graphView.canUpdateNodes)
@@ -273,7 +277,7 @@ class Operator
     updateNode() 
     {
         this.updateNodeBorder();
-        this.updateControls();
+        //this.updateControls();
         this.updateHeader();
 
 
@@ -307,15 +311,17 @@ class Operator
 
 
 
-    updateControls()
-    {
-        this.params.forEach(p => p.control.update());
-    }
+    // updateControls()
+    // {
+    //     this.params.forEach(p => p.control.update());
+    // }
 
 
 
     updateHeader()
     {
+        log(this.name + '.Operator.updateHeader()');
+        
         this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
 
 
@@ -338,41 +344,29 @@ class Operator
         const headerOutputs = this.outputs.filter(o => !o.param);
 
         const padding  = this.header.connectionPadding;
-        const connSize = 9;
-        const gap      = 4;
-
             
-        const inputY      = [];
-        let   inputHeight = 0;
-        
-        for (let i = 0; i < headerInputs.length; i++)
-        {
-            if (i > 0) inputHeight += gap;
-            inputY.push(5 + padding + inputHeight);
-            inputHeight += connSize;
-        }
-        
-        
-        const outputY      = [];
-        let   outputHeight = 0;
-        
-        for (let i = 0; i < headerOutputs.length; i++)
-        {
-            if (i > 0) outputHeight += gap;
-            outputY.push(2 + padding + outputHeight);
-            outputHeight += connSize;
-        }
-
+        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 9, 4, 5);
+        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 9, 4, 2);
 
              if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
         else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < headerInputs .length; i++) headerInputs [i].control.style.top =  inputY[i];
-        for (let i = 0; i < headerOutputs.length; i++) headerOutputs[i].control.style.top = outputY[i];
+        for (let i = 0; i < headerInputs .length; i++) 
+        {
+            headerInputs[i].control.style.top = inputY[i];
+            headerInputs[i].updateControl();
+        }
+
+        for (let i = 0; i < headerOutputs.length; i++) 
+        {
+            headerOutputs[i].control.style.top = outputY[i];
+            headerOutputs[i].updateControl();
+        }
 
 
-        return Math.max(inputHeight, outputHeight) + this.header.connectionPadding*2;
+        return Math.max(inputHeight, outputHeight) 
+             + this.header.connectionPadding * 2;
     }
 
 
@@ -656,4 +650,21 @@ class Operator
 
         */
     }
+}
+
+
+
+function getHeaderConnY(conns, padding, connSize, gap, offset)
+{
+    const y      = [];
+    let   height = 0;
+    
+    for (let i = 0; i < conns.length; i++)
+    {
+        if (i > 0) height += gap;
+        y.push(offset + padding + height);
+        height += connSize;
+    }
+
+    return [y, height];
 }

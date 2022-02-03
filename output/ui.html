@@ -785,24 +785,20 @@ input[type=text]::selection
     float:          left;
     margin-right:   auto;
     padding-top:    13px;
-    /* box-shadow:     0 0 0 1px red inset; */
+    box-shadow:     0 0 0 1px red inset;
     pointer-events: none;
 }
 
 
 .input
 {
-    /* display:        inline-block; */
     width:          6px;
     height:         6px;
     background:     transparent;
     border-radius:  3px;
     margin:         0;
     margin-left:    3px;
-    /* margin-bottom:  6px; */
     position:       absolute;
-    /* top:            50%; */
-    /* transform:      translateY(-50%); */
     pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }
@@ -818,7 +814,6 @@ input[type=text]::selection
     top:            50%;
     left:           50%;
     pointer-events: none;
-    /* z-index:        10; */
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
 }
 
@@ -932,7 +927,7 @@ input[type=text]::selection
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
-    /* box-shadow:     0 0 0 1px green inset; */
+    box-shadow:     0 0 0 1px green inset;
     pointer-events: none;
 }
 
@@ -941,14 +936,10 @@ input[type=text]::selection
 {
     width:          6px;
     height:         6px;
-    /* background:     #00000008; */
     border-radius:  3px;
     margin:         0;
     margin-left:    3px;
-    /* margin-bottom:  6px; */
     position: absolute;
-    /* top:            50%; */
-    /* transform:      translateY(-50%); */
     right:          3px;
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -985,11 +976,11 @@ input[type=text]::selection
     
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
-    <!-- &nbsp;
+    &nbsp;
     <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='const json = graph.toJson(); /*console.log(json);*/ uiSetPluginData("graph", json); this.blur();'>SAVE</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
@@ -2700,11 +2691,9 @@ function strFromData(data)
 
 
 
-function logVar(x)
+function clearConsole()
 {
-    console.log(
-        Object.keys  (x)[0] + ' =', 
-        Object.values(x)[0]);
+    setTimeout(console.clear.bind(console));
 }
 
 
@@ -2712,6 +2701,13 @@ function logVar(x)
 function log(...params)
 {
     setTimeout(console.log.bind(console, ...params));
+}
+
+
+
+function logTrace()
+{
+    setTimeout(console.trace.bind(console));
 }
 
 
@@ -5124,11 +5120,9 @@ function strFromData(data)
 
 
 
-function logVar(x)
+function clearConsole()
 {
-    console.log(
-        Object.keys  (x)[0] + ' =', 
-        Object.values(x)[0]);
+    setTimeout(console.clear.bind(console));
 }
 
 
@@ -5136,6 +5130,13 @@ function logVar(x)
 function log(...params)
 {
     setTimeout(console.log.bind(console, ...params));
+}
+
+
+
+function logTrace()
+{
+    setTimeout(console.trace.bind(console));
 }
 
 
@@ -10864,7 +10865,7 @@ graphView.updateShowWires = () =>
     btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
     btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 
-    graph.nodes.forEach(n => n.updateNode());
+    //graph.nodes.forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
 };
 
@@ -12620,7 +12621,7 @@ class Operator
 
 
 
-    valid = false; // this is the flag for regeneration
+    valid; // this is the flag for regeneration
 
 
 
@@ -12678,7 +12679,9 @@ class Operator
            
         this.shortTypeName     = shortType;
         this._name             = shortType; // this is a temp until the op becomes a graph node
-           
+     
+        this.valid             = false;
+
         this.defaultWidth      = defWidth;
         
         this.loaded            = false;
@@ -12829,6 +12832,8 @@ class Operator
 
     update()
     {
+        //log(this.name + '.Operator.update()');
+
         this.setParamOutputData();
 
         if (graphView.canUpdateNodes)
@@ -12843,7 +12848,7 @@ class Operator
     updateNode() 
     {
         this.updateNodeBorder();
-        this.updateControls();
+        //this.updateControls();
         this.updateHeader();
 
 
@@ -12877,15 +12882,17 @@ class Operator
 
 
 
-    updateControls()
-    {
-        this.params.forEach(p => p.control.update());
-    }
+    // updateControls()
+    // {
+    //     this.params.forEach(p => p.control.update());
+    // }
 
 
 
     updateHeader()
     {
+        log(this.name + '.Operator.updateHeader()');
+        
         this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
 
 
@@ -12908,41 +12915,29 @@ class Operator
         const headerOutputs = this.outputs.filter(o => !o.param);
 
         const padding  = this.header.connectionPadding;
-        const connSize = 9;
-        const gap      = 4;
-
             
-        const inputY      = [];
-        let   inputHeight = 0;
-        
-        for (let i = 0; i < headerInputs.length; i++)
-        {
-            if (i > 0) inputHeight += gap;
-            inputY.push(5 + padding + inputHeight);
-            inputHeight += connSize;
-        }
-        
-        
-        const outputY      = [];
-        let   outputHeight = 0;
-        
-        for (let i = 0; i < headerOutputs.length; i++)
-        {
-            if (i > 0) outputHeight += gap;
-            outputY.push(2 + padding + outputHeight);
-            outputHeight += connSize;
-        }
-
+        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 9, 4, 5);
+        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 9, 4, 2);
 
              if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
         else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < headerInputs .length; i++) headerInputs [i].control.style.top =  inputY[i];
-        for (let i = 0; i < headerOutputs.length; i++) headerOutputs[i].control.style.top = outputY[i];
+        for (let i = 0; i < headerInputs .length; i++) 
+        {
+            headerInputs[i].control.style.top = inputY[i];
+            headerInputs[i].updateControl();
+        }
+
+        for (let i = 0; i < headerOutputs.length; i++) 
+        {
+            headerOutputs[i].control.style.top = outputY[i];
+            headerOutputs[i].updateControl();
+        }
 
 
-        return Math.max(inputHeight, outputHeight) + this.header.connectionPadding*2;
+        return Math.max(inputHeight, outputHeight) 
+             + this.header.connectionPadding * 2;
     }
 
 
@@ -13226,6 +13221,23 @@ class Operator
 
         */
     }
+}
+
+
+
+function getHeaderConnY(conns, padding, connSize, gap, offset)
+{
+    const y      = [];
+    let   height = 0;
+    
+    for (let i = 0; i < conns.length; i++)
+    {
+        if (i > 0) height += gap;
+        y.push(offset + padding + height);
+        height += connSize;
+    }
+
+    return [y, height];
 }
 
 
@@ -18139,7 +18151,7 @@ var pasteOffset      = [ 0,   0];
 var pasteOffsetDelta = [40, 100];
 
 
-setTimeout(() => console.clear());
+clearConsole();
 
 
 uiPostMessageToFigma({ 
@@ -18785,7 +18797,7 @@ function uiEndLoadState(msg)
     productKey  = msg.productKey;
 
     uiGetPluginData('graph'); // load graph from current page
-    setInterval(autoSave, 5000); // auto save every 5 seconds
+    //setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
 }
@@ -18972,7 +18984,7 @@ function loadConnectionsAsync(data, nodes, setProgress)
     {
         graphView.canUpdateNodes = true;
 
-        nodes.forEach(n => n.updateNode());
+        //nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
         graphView.updateShowWires();

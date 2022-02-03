@@ -114,7 +114,7 @@ function loadConnectionsAsync(data, nodes, setProgress)
     {
         graphView.canUpdateNodes = true;
 
-        nodes.forEach(n => n.updateNode());
+        //nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
         graphView.updateShowWires();

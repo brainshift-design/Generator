@@ -232,11 +232,9 @@ function strFromData(data)
 
 
 
-function logVar(x)
+function clearConsole()
 {
-    console.log(
-        Object.keys  (x)[0] + ' =', 
-        Object.values(x)[0]);
+    setTimeout(console.clear.bind(console));
 }
 
 
@@ -244,4 +242,11 @@ function logVar(x)
 function log(...params)
 {
     setTimeout(console.log.bind(console, ...params));
+}
+
+
+
+function logTrace()
+{
+    setTimeout(console.trace.bind(console));
 }
