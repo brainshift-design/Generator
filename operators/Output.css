@@ -16,7 +16,7 @@
     height:         6px;
     border-radius:  3px;
     margin:         0;
-    margin-left:    3px;
+    /* margin-left:    3px; */
     position: absolute;
     right:          3px;
     pointer-events: none;

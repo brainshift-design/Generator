@@ -5,6 +5,7 @@
     height:        auto;
     border-radius: 4px 4px 0 0;
     padding:       0;
+    /* overflow:      visible; */
 }
 
 
@@ -18,6 +19,7 @@
     border-radius: 4px 4px 0 0;
     padding:       0;
     box-shadow:    0 0 0 1px #0001;
+    overflow:      visible;
 }    
 
 
@@ -29,6 +31,7 @@
     position:      relative;
     border-radius: 4px 4px 0 0;
     z-index:       1;
+    /* overflow:      visible; */
 }
 
 

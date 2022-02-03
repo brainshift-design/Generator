@@ -25,7 +25,6 @@ extends OpColorBase
         
         this.#paramSpace.control.min        = 2;
         this.#paramSpace.control.displayMin = 2;
-        //this.#paramSpace.control.setValue(this.#paramSpace.control.value, false, false, false);
         
         this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
@@ -84,7 +83,7 @@ extends OpColorBase
 
         this.outputs[0]._data = dataFromDataColor(this._color);
 
-        
+
         super.updateData()
     }
 

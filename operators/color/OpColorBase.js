@@ -38,10 +38,18 @@ extends Operator
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
         const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
         
-        const colText = 
-            darkText 
-            ? [0, 0, 0, 0.24 * (1 + satBias)] 
-            : [1, 1, 1, 0.4  * (1 + satBias)];
+
+        const colText = darkText 
+            ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
+            : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
+        
+        const textStyle = colorStyleRgba(colText);
+
+
+        // const colText = 
+        //     darkText 
+        //     ? [0, 0, 0, 0.24 * (1 + satBias)] 
+        //     : [1, 1, 1, 0.4  * (1 + satBias)];
 
 
         // this.inputs [0].wireColor    = colBack;
@@ -72,28 +80,21 @@ extends Operator
         }
 
 
-        if (   this.inputs[0].isConnected 
-            || this.inputs[1].isConnected)
+        if (isValidRgb(colBack))
         {
-            const colText   = darkText 
-                              ? [0, 0, 0, (isValidRgb(colBack) ? 0.12 : 0.4 ) * (1 + satBias)] 
-                              : [1, 1, 1, (isValidRgb(colBack) ? 0.14 : 0.35) * (1 + satBias)];
-            
-            const textStyle = colorStyleRgba(colText);
-    
-            this.label .style.color      = textStyle;
             this.header.style.background = colorStyleRgb(colBack);
 
-            this.inputs [0].color        = colText;
-            this.inputs [1].color        = colText;
-            this.outputs[0].color        = colText;
-            this.outputs[0].wireColor    = colBack;
+            // this.inputs [0].color        = colText;
+            // this.inputs [1].color        = colText;
+            // this.outputs[0].color        = colText;
+            // this.outputs[0].wireColor    = colBack;
         }
         else 
         {
-            this.label .style.color      = 'black';
             this.header.style.background = '#ead8eaee';
         }
+
+        this.label .style.color      = textStyle;
 
 
         this.updateWarningOverlay();

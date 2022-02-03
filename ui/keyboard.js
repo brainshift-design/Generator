@@ -100,6 +100,10 @@ document.addEventListener('keydown', e =>
 
     else if (e.code == 'Tab')
         e.preventDefault();
+
+    else if (e.code == 'KeyS'
+        && getCtrlKey(e))
+        saveGraph();
 });
 
 

@@ -17,8 +17,9 @@
     background:     transparent;
     border-radius:  3px;
     margin:         0;
-    margin-left:    3px;
+    /* margin-left:    0px; */
     position:       absolute;
+    left:           3px;
     pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
 }

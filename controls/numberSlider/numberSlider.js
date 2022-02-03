@@ -498,55 +498,66 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.update = function()
     {
-        const sx = slider.offsetLeft;
-
         const sw = slider.clientWidth;
         const sh = slider.clientHeight;
 
-        let v    =  slider.value      / (slider.displayMax - slider.displayMin);
-        let cx   = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
+        const sx = slider.offsetLeft;
+        const cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
+        const v  =  slider.value      / (slider.displayMax - slider.displayMin);
 
-        slider.focus.style.left     = 0;
-        slider.focus.style.top      = 0;
-        slider.focus.style.width    = sw;
-        slider.focus.style.height   = sh;
-
-
-        slider.bar.style.background = slider.valueColor;
-
-        slider.bar.style.top        = sh * slider.barTop;
-        slider.bar.style.height     = sh * (slider.barBottom - slider.barTop);
+        slider.updateBar(sx, cx, v, sw, sh);
+        slider.updateColors();
+        slider.updateText();
+        slider.updateFocus(sw, sh);
+        updateSliderRanges(slider, sw, sh);
+    };
 
 
-        if (v >= 0)
-        {
-            slider.bar.style.left  = sx + Math.round(cx);
-            slider.bar.style.width = Math.round(v * sw);
-        }
-        else
-        {
-            slider.bar.style.left  = sx + cx + v * sw;
-            slider.bar.style.width = -v * sw;
-        }
+
+    slider.updateBar = function(sx, cx, v, sw, sh)
+    {
+        const x = 
+            v >= 0
+            ? sx + cx
+            : sx + cx + v * sw;
+
+        slider.bar.style.left  = Math.max(0, x);
+        slider.bar.style.width = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+
+        slider.bar.style.top    = sh * slider.barTop;
+        slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
+    };
 
 
-        slider    .style.background = slider.backColor;
-        slider.bar.style.background = slider.valueColor;
+
+    slider.updateColors = function()
+    {
+        slider     .style.background = slider.backColor;
+        slider.bar .style.background = slider.valueColor;
+        slider.text.style.color      = slider.textColor;
+    };
 
 
-        slider.text.style.color = slider.textColor;
 
+    slider.updateText = function()
+    {
         slider.text.innerHTML = '';
         
         if (   slider.name.length > 0
             && slider.showName)
             slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
-        
 
         slider.text.innerHTML += slider.getValueText() + slider.suffix;
+    };
 
 
-        updateSliderRanges(slider, sw, sh);
+
+    slider.updateFocus = function(sw, sh)
+    {
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = sw;
+        slider.focus.style.height = sh;
     };
 
 

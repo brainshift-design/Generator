@@ -13,6 +13,15 @@
 
 
 
+function saveGraph()
+{
+    const json = graph.toJson(); 
+    log(json); 
+    uiSetPluginData("graph", json);
+}
+
+
+
 function loadGraph(json)
 {
     graphView.canUpdateNodes = false;
