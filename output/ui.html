@@ -7998,12 +7998,15 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             e.stopPropagation();
 
-            slider.oldValue = slider.value;
+            if (!slider.readOnly)
+            {
+                slider.oldValue = slider.value;
 
-            const dec = Math.pow(10, -slider.editDec);
-            const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
-            
-            slider.setValue(val);
+                const dec = Math.pow(10, -slider.editDec);
+                const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
+                
+                slider.setValue(val);
+            }
         }
     });
 
@@ -13274,14 +13277,17 @@ class Operator
 
     loadParams(_node)
     {
-        for (const _param of _node.params)
+        if (_node.params)
         {
-            const index = this.params.findIndex(p => p.id == _param[0]);
-            
-            if (index >= 0) 
+            for (const _param of _node.params)
             {
-                this.params[index].setValue(parseFloat(_param[1]), true, true, false);
-                //this.params[index].setDecimalsFrom(_param[1]);
+                const index = this.params.findIndex(p => p.id == _param[0]);
+                
+                if (index >= 0) 
+                {
+                    this.params[index].setValue(parseFloat(_param[1]), true, true, false);
+                    //this.params[index].setDecimalsFrom(_param[1]);
+                }
             }
         }
     }
@@ -13988,6 +13994,17 @@ extends OperatorBase
         super.updateParams(dispatchEvents);
 
         this.outputs[0]._value = this.#paramValue.value;
+    }
+
+
+
+    loadParams(_node)
+    {
+        if (_node.decimals)
+            this.#paramValue.setDecimals(parseInt(_node.decimals));
+
+            
+        super.loadParams(_node);
     }
 
 

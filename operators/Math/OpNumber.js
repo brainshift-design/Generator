@@ -57,6 +57,17 @@ extends OperatorBase
 
 
 
+    loadParams(_node)
+    {
+        if (_node.decimals)
+            this.#paramValue.setDecimals(parseInt(_node.decimals));
+
+            
+        super.loadParams(_node);
+    }
+
+
+
     paramIsConsideredDefault(param)
     {
         return param.isDefault()

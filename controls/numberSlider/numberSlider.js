@@ -417,12 +417,15 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             e.stopPropagation();
 
-            slider.oldValue = slider.value;
+            if (!slider.readOnly)
+            {
+                slider.oldValue = slider.value;
 
-            const dec = Math.pow(10, -slider.editDec);
-            const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
-            
-            slider.setValue(val);
+                const dec = Math.pow(10, -slider.editDec);
+                const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
+                
+                slider.setValue(val);
+            }
         }
     });
 
