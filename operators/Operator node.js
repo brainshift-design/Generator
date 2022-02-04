@@ -246,8 +246,8 @@ function createNodeHeader(node)
                 actionManager.do(new SelectMoveNodesAction(
                     graphView.lastSelectedNodes.map(n => n.id), 
                     graphView.selectedNodes.map(n => n.id), 
-                    { x: node.div.slx,        y: node.div.sly       },
-                    { x: node.div.offsetLeft, y: node.div.offsetTop },
+                    point(node.div.slx,        node.div.sly      ),
+                    point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
             else

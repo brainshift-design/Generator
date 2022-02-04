@@ -139,16 +139,6 @@ function hide(element)              { element.style.visibility = 'hidden';  }
 
 
 
-function position(e)
-{
-    return {
-        x: e.clientX,
-        y: e.clientY
-    };
-}
-
-
-
 function copyArray(src, dst)
 {
     copyArrayAt(

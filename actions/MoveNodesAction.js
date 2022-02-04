@@ -32,8 +32,8 @@
 //         {
 //             const node = graph.nodeFromId(id);
 
-//             this.from.push({ x: node.div.slx,      y: node.div.sly      });
-//             this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
+//             this.from.push(point(node.div.slx,      node.div.sly     ));
+//             this.to  .push(point(node.div.slx + dx, node.div.sly + dy));
 //         }
 //     }
 

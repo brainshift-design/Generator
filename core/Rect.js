@@ -14,16 +14,16 @@ class Rect
     get m() { return this.y + this.h/2  }
     get b() { return this.y + this.h;   }
 
-    get tl() { return {x: this.l, y: this.t}; }
-    get tc() { return {x: this.c, y: this.t}; }
-    get tr() { return {x: this.r, y: this.t}; }
-    get ml() { return {x: this.l, y: this.m}; }
-    get mc() { return {x: this.c, y: this.m}; }
-    get cm() { return {x: this.c, y: this.m}; }
-    get mr() { return {x: this.r, y: this.m}; }
-    get bl() { return {x: this.l, y: this.b}; }
-    get bc() { return {x: this.c, y: this.b}; }
-    get br() { return {x: this.r, y: this.b}; }
+    get tl() { return point(this.l, this.t); }
+    get tc() { return point(this.c, this.t); }
+    get tr() { return point(this.r, this.t); }
+    get ml() { return point(this.l, this.m); }
+    get mc() { return point(this.c, this.m); }
+    get cm() { return point(this.c, this.m); }
+    get mr() { return point(this.r, this.m); }
+    get bl() { return point(this.l, this.b); }
+    get bc() { return point(this.c, this.b); }
+    get br() { return point(this.r, this.b); }
 
 
     get width()  { return this.w; }

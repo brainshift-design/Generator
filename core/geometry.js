@@ -1,3 +1,13 @@
+const point_NaN = point(Number.NaN, Number.NaN);
+
+
+
+function point(x, y) { return {x: x, y: y}; }
+
+function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
+
+
+
 function clipEdge(p, q, t0, t1)
 {
     if (p == 0 && q < 0)
@@ -50,8 +60,8 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     }
 
     return [
-        {x:x1, y:y1}, 
-        {x:x2, y:y2} ];
+        point(x1, y1), 
+        point(x2, y2) ];
 }
 
 
@@ -60,13 +70,13 @@ function intersectLines(p1, p2, q1, q2, segment)
 {
     if (   equalv(p1, p2) 
         || equalv(q1, q2)) 
-        return {x:NaN, y:NaN}; // undefined line
+        return point_NaN; // undefined line
 
     var v1 = subv(p2, p1);
     var v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
-        return {x:NaN, y:NaN}; // parallel lines
+        return point_NaN; // parallel lines
 
     var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
@@ -76,7 +86,7 @@ function intersectLines(p1, p2, q1, q2, segment)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
-    return {x:NaN, y:NaN};
+    return point_NaN;
 }
 
 

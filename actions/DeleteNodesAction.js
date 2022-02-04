@@ -41,9 +41,9 @@ extends Action
         {
             const node = graph.nodes.find(n => n.id == nodeId);
 
-            this.nodePos.push({
-                x: node.div.offsetLeft, 
-                y: node.div.offsetTop});
+            this.nodePos.push(point(
+                node.div.offsetLeft, 
+                node.div.offsetTop));
 
             for (const input of node.inputs.filter(i => i.isConnected))
                 this.addConnection(input.connection);

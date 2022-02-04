@@ -1,4 +1,4 @@
-graphView._pan = {x:0, y:0};
+graphView._pan = point(0, 0);
   
 Object.defineProperty(graphView, 'pan',
 {
@@ -34,9 +34,9 @@ Object.defineProperty(graphView, 'zoom',
 
         // graphView.updatePanAndZoom();
 
-        let pos = {
-            x: window.innerWidth /2,
-            y: window.innerHeight/2 };
+        let pos = point(
+            window.innerWidth /2,
+            window.innerHeight/2);
 
         pos.y -= controlBar.offsetHeight;
 
@@ -86,8 +86,8 @@ graphView.startPan = pointerId =>
 
 graphView.updatePanAndZoom = () =>
 {
-    if (graphView.tempConn)
-        graphView.tempConn.wire.scale = graphView.zoom;
+    // if (graphView.tempConn)
+    //     graphView.tempConn.wire.scale = graphView.zoom;
 
     graphView.updateNodeTransforms(graph.nodes);
     graphView.updateScroll();
@@ -172,8 +172,9 @@ graphView.endZoomSelection = (pointerId, zoom) =>
                        h: (wndHeight         - box.h) / 2 };
 
         graphView.setPanAndZoom(
-            { x: -(box.x - diff.w) * graphView.zoom,
-              y: -(box.y - diff.h) * graphView.zoom },
+            point(
+                -(box.x - diff.w) * graphView.zoom,
+                -(box.y - diff.h) * graphView.zoom),
             graphView.zoom * Math.min(
                 window.innerWidth / box.w,
                 wndHeight         / box.h));

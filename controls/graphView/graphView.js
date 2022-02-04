@@ -24,7 +24,7 @@ graphView.btn1down       = false; // this is to help deal with mouse wheels that
 
 graphView.panning        = false;
 
-graphView.pStart         = {x:0, y:0};
+graphView.pStart         = point(0, 0);
 
 
 scrollbarX.style.zIndex  = MAX_INT32-1;
@@ -34,8 +34,10 @@ scrollbarY.style.zIndex  = MAX_INT32-2;
 
 graphView.addEventListener('pointerdown', e =>
 {
-    graphView.pStart = { x: e.clientX, 
-                         y: e.clientY };
+    graphView.pStart = point(e.clientX, e.clientY);
+
+    const sx = e.clientX / graphView.zoom;
+    const sy = e.clientY / graphView.zoom;
 
     if (   e.button == 0                 
         && !graphView.panning
@@ -53,24 +55,14 @@ graphView.addEventListener('pointerdown', e =>
         {
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
-
-            graphView.tempConn.wire.updateFromOutput(
-                e.clientX, 
-                e.clientY, 
-                boundingRect(graphView.overOutput.control),
-                controlBar.offsetHeight);
+            graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
         }
         else if (graphView.overInput)
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
-                
-                graphView.tempConn.wire.updateFromOutput(
-                    e.clientX, 
-                    e.clientY, 
-                    boundingRect(graphView.overInput.connectedOutput.control),
-                    controlBar.offsetHeight);
+                graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
@@ -79,12 +71,7 @@ graphView.addEventListener('pointerdown', e =>
             {
                 graphView.overInput.connecting = true;
                 graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
-                
-                graphView.tempConn.wire.updateFromInput(
-                    e.clientX, 
-                    e.clientY,
-                    boundingRect(graphView.overInput.control),
-                    controlBar.offsetHeight);
+                graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
             }
         }
         else // selection
@@ -115,9 +102,7 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
-    graphView.p = { 
-        x: e.clientX, 
-        y: e.clientY };
+    graphView.p = point(e.clientX, e.clientY);
 
     if (graphView.panning)
     {
@@ -141,22 +126,10 @@ function graphView_onpointermove(e)
     
     else if (graphView.tempConn)
     {
-        if (graphView.tempConn.output)
-        { 
-            graphView.tempConn.wire.updateFromOutput(
-                e.clientX, 
-                e.clientY,
-                boundingRect(graphView.tempConn.output.control),
-                controlBar.offsetHeight);
-        }
-        else if (graphView.tempConn.input) 
-        {
-            graphView.tempConn.wire.updateFromInput(
-                e.clientX, 
-                e.clientY,
-                boundingRect(graphView.tempConn.input.control),
-                controlBar.offsetHeight);
-        };
+        graphView.updateNodeWire(
+            graphView.tempConn.wire, 
+            e.clientX, 
+            e.clientY);
     }
 }
 
@@ -183,7 +156,13 @@ graphView.addEventListener('pointerup', e =>
                 if (e.altKey) graphView.zoom /= 2;
                 else          graphView.zoom *= 2;
 
-                graphView.pan = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
+                graphView.pan = subv(
+                    graphView.pan, 
+                    mulvs(
+                        subv(
+                            point(e.clientX, e.clientY), 
+                            graphView.pan), 
+                        graphView.zoom / graphView.oldZoom - 1));
             }
         }
         
@@ -221,7 +200,7 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
-        let pos = position(e);
+        let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
@@ -237,10 +216,12 @@ graphView.addEventListener('wheel', e =>
 
         graphView.pan = 
             dWheelX != 0
-            ? { x:  e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
-                y: !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX }
-            : { x: !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
-                y:  e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY };
+            ? point(
+                 e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
+                !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX)
+            : point(
+                !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
+                 e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY);
 
         if (graphView.selecting)
         {
@@ -471,36 +452,62 @@ graphView.setNodeTransform = (node, nodeLeft, nodeTop, nodeRect) =>
 
 graphView.updateNodeWires = wires =>
 {
-    const outRect = [];            
-    const inRect  = [];
-    const cw      = graphView.clientWidth;
-    const ch      = graphView.clientHeight;
+    const pOut    = [];            
+    const pIn     = [];
     const yOffset = controlBar.offsetHeight;
 
     wires.forEach(w => 
     {
-        outRect.push(boundingRect(w.connection.output.control));
-        inRect .push(boundingRect(w.connection.input .control));
+        const ro = boundingRect(w.connection.output.control);
+        const ri = boundingRect(w.connection.input .control);
+
+        pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
+        pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
     });
 
     for (let i = 0; i < wires.length; i++)
-        graphView.updateWireTransform(wires[i], outRect[i], inRect[i], cw, ch, yOffset);        
+    {
+        wires[i].update(
+            pOut[i].x, 
+            pOut[i].y, 
+            pIn[i].x, 
+            pIn[i].y);        
+    }
 };
 
 
 
-graphView.updateWireTransform = function(wire, outRect, inRect, cw, ch, yOffset)
+graphView.updateNodeWire = (wire, x = 0, y = 0) =>
 {
-    wire.setAttribute('width',  cw / graphView.zoom);
-    wire.setAttribute('height', ch / graphView.zoom);
+    const yOffset = controlBar.offsetHeight;
 
-    wire.setAttribute('viewBox',
-                0
-        + ' ' + yOffset/2 / graphView.zoom // why is only half of yOffset taken???
-        + ' ' + cw        / graphView.zoom
-        + ' ' + ch        / graphView.zoom);
+    let pOut = point(0, 0),
+        pIn  = point(0, 0);
 
-    wire.update(outRect, inRect, yOffset);
+
+    if (wire.connection.output)
+    {
+        const ro = boundingRect(wire.connection.output.control);
+        pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
+    }
+    else
+        pOut = point(x, y);
+
+
+    if (wire.connection.input)
+    {
+        const ri = boundingRect(wire.connection.input .control);
+        pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
+    }
+    else
+        pIn = point(x, y);
+
+
+    wire.update(
+        pOut.x / graphView.zoom, 
+        pOut.y / graphView.zoom, 
+        pIn.x  / graphView.zoom, 
+        pIn.y  / graphView.zoom);        
 };
 
 
@@ -511,15 +518,7 @@ graphView.addWire = (wire, updateTransform = true) =>
     wireContainer.appendChild(wire);
 
     if (updateTransform)
-    {
-        const outRect = boundingRect(wire.connection.output.control);            
-        const inRect  = boundingRect(wire.connection.input .control);
-        const cw      = graphView.clientWidth;
-        const ch      = graphView.clientHeight;
-        const yOffset = controlBar.offsetHeight;
-
-        graphView.updateWireTransform(wire, outRect, inRect, cw, ch, yOffset);
-    }
+        graphView.updateNodeWire(wire);
 };
 
 

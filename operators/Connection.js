@@ -21,7 +21,7 @@ class Connection
         this.wire.style.top            = 0;
         this.wire.style.width          = '100%';
         this.wire.style.height         = '100vh';
-        this.wire.scale                = 1;
+        //this.wire.scale                = 1;
 
         this.wire.outputPos            = point_NaN;
         this.wire. inputPos            = point_NaN;
@@ -43,62 +43,33 @@ class Connection
 
         
 
-        this.wire.update = (outRect, inRect, yOffset) =>
+        this.wire.update = (x1, y1, x2, y2) =>
         {
+            const cw      = graphView.clientWidth;
+            const ch      = graphView.clientHeight;
+            const yOffset = controlBar.offsetHeight;
+        
             // the yOffset is to start wire coords just below the control bar,
             // not at the top of the window
 
-            let x1 = (outRect.x + outRect.width /2) / graphView.zoom;
-            let y1 = (outRect.y + outRect.height/2) / graphView.zoom;
-            let x2 = (inRect .x + inRect .width /2) / graphView.zoom;
-            let y2 = (inRect .y + inRect .height/2) / graphView.zoom;
-
-            y1 -= yOffset / graphView.zoom;
-            y2 -= yOffset / graphView.zoom;
-
-            this.wire.updateCurve(x1, y1, x2, y2);
+            this.wire.updateCurve  (x1, y1, x2, y2);
             this.wire.updateOutBall(x1, y1        );
             this.wire.updateInBall (        x2, y2);
 
             this.wire.updateStyle(this.wire.getColor());
 
-            show(this.wire.outBall);
-            show(this.wire.inBall);
-        };
+            this.wire.setAttribute('width',  cw);
+            this.wire.setAttribute('height', ch);
+        
+            this.wire.setAttribute('viewBox',
+                        0
+                + ' ' + yOffset/2 // why is only half of yOffset taken???
+                + ' ' + cw
+                + ' ' + ch);
 
 
-
-        this.wire.updateFromOutput = (x, y, outRect, yOffset) =>
-        {
-            let x1 = outRect.x + outRect.width /2;
-            let y1 = outRect.y + outRect.height/2;
-
-            y1 -= yOffset;
-            y  -= yOffset;
-
-            this.wire.updateCurve(x1, y1, x, y);
-            this.wire.updateOutBall(x1, y1      );
-
-            this.wire.updateStyle(this.wire.getColor());
-
-            hide(this.wire.inBall);
-        };
-
-
-
-        this.wire.updateFromInput = (x, y, inRect, yOffset) =>
-        {
-            let x2 = inRect.x + inRect.width /2;
-            let y2 = inRect.y + inRect.height/2;
-
-            y  -= yOffset;
-            y2 -= yOffset;
-
-            this.wire.updateCurve(x, y, x2, y2);
-            this.wire.updateInBall(      x2, y2);
-
-            this.wire.updateStyle(this.wire.getColor());
-            hide(this.wire.outBall);
+            show(this.wire.outBall, !graphView.tempConn || !graphView.tempConn.output);
+            show(this.wire.inBall,  !graphView.tempConn || !graphView.tempConn. input);
         };
 
 
@@ -117,21 +88,32 @@ class Connection
                 y2 = this.wire.inputPos.y;
             }
 
+
+
+            const tx  = 600;
+            const ty  = 300;
+            const ecc = 100;
+
             const _x0 = x1;
             const _x3 = x2;
 
-            const yf = (0.3 + Math.min(Math.abs(y2 - y1) / 300, 0.8));
+            const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
 
-            const df = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / 600, 0.65)), 0.5)
-                     * yf;
+            const df  = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / tx, 0.65)), 0.5)
+                      * yf;
 
             const dx = 
                   (_x3 - _x0) * df 
                 * (_x3 < _x0 ? -1 : 1);
 
-            const _x1 = Math.max(_x0 + 100 * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
-            const _x2 = Math.min(_x3 - 100 * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
+            const _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
+            const _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
 
+
+            // const _x1 = _x0 + (_x3 - _x0)/1.5;
+            // const _x2 = _x3 - (_x3 - _x0)/1.5;
+
+            
             this.wire.curve.setAttribute('d',
                    'M ' + _x0 + ',' + y1
                 + ' C ' + _x1 + ',' + y1
@@ -195,11 +177,11 @@ class Connection
             this.wire. inBall.style.fill      = colorStyleRgb(color);
             this.wire.outBall.style.fill      = colorStyleRgb(color);
 
-            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
-            this.wire. inBall.style.r         = 3   * this.wire.scale;
-            this.wire.outBall.style.r         = 3   * this.wire.scale;
+            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
+            this.wire. inBall.style.r         = 3 * graphView.zoom;
+            this.wire.outBall.style.r         = 3 * graphView.zoom;
 
-            this.wire      .style.zIndex      = 0;
+            this.wire.style.zIndex = 0;
         };
     }
 

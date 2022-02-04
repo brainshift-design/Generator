@@ -1294,13 +1294,6 @@ const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
-const point_NaN = {x: Number.NaN, y: Number.NaN};
-
-
-function point(x, y) { return {x: x, y: y}; }
-
-function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
-
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
@@ -1347,9 +1340,9 @@ function distance_(x1, y1, x2, y2)
 
 function vector(angle, dist)
 {
-    return { 
-        x: dist * Math.cos(angle), 
-        y: dist * Math.sin(angle) };
+    return point( 
+        dist * Math.cos(angle), 
+        dist * Math.sin(angle));
 }
 
 
@@ -1371,48 +1364,54 @@ function lengthv(v)
 
 function unitv(v)
 {
-    return { x: v.x == 0 ? 0 : v.x / lengthv(v),
-             y: v.y == 0 ? 0 : v.y / lengthv(v) };
+    return point(
+        v.x == 0 ? 0 : v.x / lengthv(v),
+        v.y == 0 ? 0 : v.y / lengthv(v));
 }
 
 
 
 function addv(v1, v2)
 {
-    return { x: v1.x + v2.x,
-             y: v1.y + v2.y };
+    return point(
+        v1.x + v2.x,
+        v1.y + v2.y);
 }	
 
 
 
 function subv(v1, v2)
 {
-    return { x: v1.x - v2.x,
-             y: v1.y - v2.y };
+    return point(
+        v1.x - v2.x,
+        v1.y - v2.y);
 }	
 
 
 
 function mulv(v1, v2)
 {
-    return { x: v1.x * v2.x,
-             y: v1.y * v2.y };
+    return point(
+        v1.x * v2.x,
+        v1.y * v2.y);
 }	
 
 
 
 function mulvs(v, s)
 {
-    return { x: v.x * s,
-             y: v.y * s };
+    return point(
+        v.x * s,
+        v.y * s);
 }	
 
 
 
 function divvs(v, s)
 {
-    return { x: v.x / s,
-             y: v.y / s };
+    return point(
+        v.x / s,
+        v.y / s);
 }	
 
 
@@ -1421,8 +1420,7 @@ function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis
 
-    return { x:  v.y, 
-             y: -v.x };
+    return point(v.y, -v.x);
 }
 
 
@@ -1513,8 +1511,8 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     }
 
     return [
-        {x:x1, y:y1}, 
-        {x:x2, y:y2} ];
+        point(x1, y1), 
+        point(x2, y2) ];
 }
 
 
@@ -1523,13 +1521,13 @@ function intersect(p1, p2, q1, q2, segment)
 {
     if (   equalv(p1, p2) 
         || equalv(q1, q2)) 
-        return {x:NaN, y:NaN}; // undefined line
+        return point_NaN; // undefined line
 
     let v1 = subv(p2, p1);
     let v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
-        return {x:NaN, y:NaN}; // parallel lines
+        return point_NaN; // parallel lines
 
     let t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     let t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
@@ -1539,7 +1537,7 @@ function intersect(p1, p2, q1, q2, segment)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
-    return {x:NaN, y:NaN};
+    return point_NaN;
 }
 
 
@@ -1593,7 +1591,7 @@ function mulv2m3(v, m)
     let v3 = [v.x, v.y, 1];
     let r  = mulv3m3(v3, m);
 
-    return {x: r[0], y: r[1]};
+    return point(r[0], r[1]);
 }
 
 
@@ -1889,6 +1887,16 @@ function angleDiff(a1, a2)
 }
 
 
+const point_NaN = point(Number.NaN, Number.NaN);
+
+
+
+function point(x, y) { return {x: x, y: y}; }
+
+function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
+
+
+
 function clipEdge(p, q, t0, t1)
 {
     if (p == 0 && q < 0)
@@ -1941,8 +1949,8 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     }
 
     return [
-        {x:x1, y:y1}, 
-        {x:x2, y:y2} ];
+        point(x1, y1), 
+        point(x2, y2) ];
 }
 
 
@@ -1951,13 +1959,13 @@ function intersectLines(p1, p2, q1, q2, segment)
 {
     if (   equalv(p1, p2) 
         || equalv(q1, q2)) 
-        return {x:NaN, y:NaN}; // undefined line
+        return point_NaN; // undefined line
 
     var v1 = subv(p2, p1);
     var v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
-        return {x:NaN, y:NaN}; // parallel lines
+        return point_NaN; // parallel lines
 
     var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
@@ -1967,7 +1975,7 @@ function intersectLines(p1, p2, q1, q2, segment)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
-    return {x:NaN, y:NaN};
+    return point_NaN;
 }
 
 
@@ -2321,16 +2329,16 @@ class Rect
     get m() { return this.y + this.h/2  }
     get b() { return this.y + this.h;   }
 
-    get tl() { return {x: this.l, y: this.t}; }
-    get tc() { return {x: this.c, y: this.t}; }
-    get tr() { return {x: this.r, y: this.t}; }
-    get ml() { return {x: this.l, y: this.m}; }
-    get mc() { return {x: this.c, y: this.m}; }
-    get cm() { return {x: this.c, y: this.m}; }
-    get mr() { return {x: this.r, y: this.m}; }
-    get bl() { return {x: this.l, y: this.b}; }
-    get bc() { return {x: this.c, y: this.b}; }
-    get br() { return {x: this.r, y: this.b}; }
+    get tl() { return point(this.l, this.t); }
+    get tc() { return point(this.c, this.t); }
+    get tr() { return point(this.r, this.t); }
+    get ml() { return point(this.l, this.m); }
+    get mc() { return point(this.c, this.m); }
+    get cm() { return point(this.c, this.m); }
+    get mr() { return point(this.r, this.m); }
+    get bl() { return point(this.l, this.b); }
+    get bc() { return point(this.c, this.b); }
+    get br() { return point(this.r, this.b); }
 
 
     get width()  { return this.w; }
@@ -2608,16 +2616,6 @@ function createSvg(element)
 
 function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
 function hide(element)              { element.style.visibility = 'hidden';  }
-
-
-
-function position(e)
-{
-    return {
-        x: e.clientX,
-        y: e.clientY
-    };
-}
 
 
 
@@ -3723,13 +3721,6 @@ const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
-const point_NaN = {x: Number.NaN, y: Number.NaN};
-
-
-function point(x, y) { return {x: x, y: y}; }
-
-function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
-
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
@@ -3776,9 +3767,9 @@ function distance_(x1, y1, x2, y2)
 
 function vector(angle, dist)
 {
-    return { 
-        x: dist * Math.cos(angle), 
-        y: dist * Math.sin(angle) };
+    return point( 
+        dist * Math.cos(angle), 
+        dist * Math.sin(angle));
 }
 
 
@@ -3800,48 +3791,54 @@ function lengthv(v)
 
 function unitv(v)
 {
-    return { x: v.x == 0 ? 0 : v.x / lengthv(v),
-             y: v.y == 0 ? 0 : v.y / lengthv(v) };
+    return point(
+        v.x == 0 ? 0 : v.x / lengthv(v),
+        v.y == 0 ? 0 : v.y / lengthv(v));
 }
 
 
 
 function addv(v1, v2)
 {
-    return { x: v1.x + v2.x,
-             y: v1.y + v2.y };
+    return point(
+        v1.x + v2.x,
+        v1.y + v2.y);
 }	
 
 
 
 function subv(v1, v2)
 {
-    return { x: v1.x - v2.x,
-             y: v1.y - v2.y };
+    return point(
+        v1.x - v2.x,
+        v1.y - v2.y);
 }	
 
 
 
 function mulv(v1, v2)
 {
-    return { x: v1.x * v2.x,
-             y: v1.y * v2.y };
+    return point(
+        v1.x * v2.x,
+        v1.y * v2.y);
 }	
 
 
 
 function mulvs(v, s)
 {
-    return { x: v.x * s,
-             y: v.y * s };
+    return point(
+        v.x * s,
+        v.y * s);
 }	
 
 
 
 function divvs(v, s)
 {
-    return { x: v.x / s,
-             y: v.y / s };
+    return point(
+        v.x / s,
+        v.y / s);
 }	
 
 
@@ -3850,8 +3847,7 @@ function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis
 
-    return { x:  v.y, 
-             y: -v.x };
+    return point(v.y, -v.x);
 }
 
 
@@ -3942,8 +3938,8 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     }
 
     return [
-        {x:x1, y:y1}, 
-        {x:x2, y:y2} ];
+        point(x1, y1), 
+        point(x2, y2) ];
 }
 
 
@@ -3952,13 +3948,13 @@ function intersect(p1, p2, q1, q2, segment)
 {
     if (   equalv(p1, p2) 
         || equalv(q1, q2)) 
-        return {x:NaN, y:NaN}; // undefined line
+        return point_NaN; // undefined line
 
     let v1 = subv(p2, p1);
     let v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
-        return {x:NaN, y:NaN}; // parallel lines
+        return point_NaN; // parallel lines
 
     let t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     let t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
@@ -3968,7 +3964,7 @@ function intersect(p1, p2, q1, q2, segment)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
-    return {x:NaN, y:NaN};
+    return point_NaN;
 }
 
 
@@ -4022,7 +4018,7 @@ function mulv2m3(v, m)
     let v3 = [v.x, v.y, 1];
     let r  = mulv3m3(v3, m);
 
-    return {x: r[0], y: r[1]};
+    return point(r[0], r[1]);
 }
 
 
@@ -4318,6 +4314,16 @@ function angleDiff(a1, a2)
 }
 
 
+const point_NaN = point(Number.NaN, Number.NaN);
+
+
+
+function point(x, y) { return {x: x, y: y}; }
+
+function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
+
+
+
 function clipEdge(p, q, t0, t1)
 {
     if (p == 0 && q < 0)
@@ -4370,8 +4376,8 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     }
 
     return [
-        {x:x1, y:y1}, 
-        {x:x2, y:y2} ];
+        point(x1, y1), 
+        point(x2, y2) ];
 }
 
 
@@ -4380,13 +4386,13 @@ function intersectLines(p1, p2, q1, q2, segment)
 {
     if (   equalv(p1, p2) 
         || equalv(q1, q2)) 
-        return {x:NaN, y:NaN}; // undefined line
+        return point_NaN; // undefined line
 
     var v1 = subv(p2, p1);
     var v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
-        return {x:NaN, y:NaN}; // parallel lines
+        return point_NaN; // parallel lines
 
     var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
@@ -4396,7 +4402,7 @@ function intersectLines(p1, p2, q1, q2, segment)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
-    return {x:NaN, y:NaN};
+    return point_NaN;
 }
 
 
@@ -4750,16 +4756,16 @@ class Rect
     get m() { return this.y + this.h/2  }
     get b() { return this.y + this.h;   }
 
-    get tl() { return {x: this.l, y: this.t}; }
-    get tc() { return {x: this.c, y: this.t}; }
-    get tr() { return {x: this.r, y: this.t}; }
-    get ml() { return {x: this.l, y: this.m}; }
-    get mc() { return {x: this.c, y: this.m}; }
-    get cm() { return {x: this.c, y: this.m}; }
-    get mr() { return {x: this.r, y: this.m}; }
-    get bl() { return {x: this.l, y: this.b}; }
-    get bc() { return {x: this.c, y: this.b}; }
-    get br() { return {x: this.r, y: this.b}; }
+    get tl() { return point(this.l, this.t); }
+    get tc() { return point(this.c, this.t); }
+    get tr() { return point(this.r, this.t); }
+    get ml() { return point(this.l, this.m); }
+    get mc() { return point(this.c, this.m); }
+    get cm() { return point(this.c, this.m); }
+    get mr() { return point(this.r, this.m); }
+    get bl() { return point(this.l, this.b); }
+    get bc() { return point(this.c, this.b); }
+    get br() { return point(this.r, this.b); }
 
 
     get width()  { return this.w; }
@@ -5037,16 +5043,6 @@ function createSvg(element)
 
 function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
 function hide(element)              { element.style.visibility = 'hidden';  }
-
-
-
-function position(e)
-{
-    return {
-        x: e.clientX,
-        y: e.clientY
-    };
-}
 
 
 
@@ -9700,14 +9696,14 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
 
     graphView.tempConn = new Connection(output, null);
     graphView.addWire(graphView.tempConn.wire, false);
-    graphView.tempConn.wire.scale  = graphView.zoom;
+
+    //graphView.tempConn.wire.scale  = graphView.zoom;
     graphView.tempConn.wire.output = output;
 
-    graphView.tempConn.wire.updateFromOutput(
+    graphView.updateNodeWire(
+        graphView.tempConn.wire,
         graphView.pStart.x, 
-        graphView.pStart.y,
-        boundingRect(output.control),
-        controlBar.offsetHeight);
+        graphView.pStart.y);
 
     output.updateControl();
 };
@@ -9717,18 +9713,17 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
 graphView.startConnectionFromInput = (pointerId, input) =>
 {
     //graphView.setPointerCapture(pointerId);
-    //console.log(graphView.hasPointerCapture(pointerId));
 
     graphView.tempConn = new Connection(null, input);
     graphView.addWire(graphView.tempConn.wire, false);
-    graphView.tempConn.wire.scale = graphView.zoom;
+    
+    //graphView.tempConn.wire.scale = graphView.zoom;
     graphView.tempConn.wire.input = input;
 
-    graphView.tempConn.wire.updateFromInput(
+    graphView.updateNodeWire(
+        graphView.tempConn.wire,
         graphView.pStart.x, 
-        graphView.pStart.y,
-        boundingRect(input.control),
-        controlBar.offsetHeight);
+        graphView.pStart.y);
 
     input.updateControl();
 };
@@ -9805,7 +9800,7 @@ graphView.endConnection = pointerId =>
 };
 
 
-graphView._pan = {x:0, y:0};
+graphView._pan = point(0, 0);
   
 Object.defineProperty(graphView, 'pan',
 {
@@ -9841,9 +9836,9 @@ Object.defineProperty(graphView, 'zoom',
 
         // graphView.updatePanAndZoom();
 
-        let pos = {
-            x: window.innerWidth /2,
-            y: window.innerHeight/2 };
+        let pos = point(
+            window.innerWidth /2,
+            window.innerHeight/2);
 
         pos.y -= controlBar.offsetHeight;
 
@@ -9893,8 +9888,8 @@ graphView.startPan = pointerId =>
 
 graphView.updatePanAndZoom = () =>
 {
-    if (graphView.tempConn)
-        graphView.tempConn.wire.scale = graphView.zoom;
+    // if (graphView.tempConn)
+    //     graphView.tempConn.wire.scale = graphView.zoom;
 
     graphView.updateNodeTransforms(graph.nodes);
     graphView.updateScroll();
@@ -9979,8 +9974,9 @@ graphView.endZoomSelection = (pointerId, zoom) =>
                        h: (wndHeight         - box.h) / 2 };
 
         graphView.setPanAndZoom(
-            { x: -(box.x - diff.w) * graphView.zoom,
-              y: -(box.y - diff.h) * graphView.zoom },
+            point(
+                -(box.x - diff.w) * graphView.zoom,
+                -(box.y - diff.h) * graphView.zoom),
             graphView.zoom * Math.min(
                 window.innerWidth / box.w,
                 wndHeight         / box.h));
@@ -10095,10 +10091,9 @@ scrollbarX.addEventListener('pointermove', e =>
         scrollbarX.style.left  = l;
         scrollbarX.style.width = r-l;
 
-        graphView.pan = {
-            x: graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
-            y: graphView.panStart.y 
-        };
+        graphView.pan = point(
+            graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+            graphView.panStart.y);
     }
 });
 
@@ -10193,10 +10188,9 @@ scrollbarY.addEventListener('pointermove', e =>
         scrollbarY.style.top    = t;
         scrollbarY.style.height = b-t;
 
-        graphView.pan = {
-            x: graphView.panStart.x, 
-            y: graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight
-        };
+        graphView.pan = point(
+            graphView.panStart.x, 
+            graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
     }
 });
 
@@ -10375,7 +10369,7 @@ graphView.btn1down       = false; // this is to help deal with mouse wheels that
 
 graphView.panning        = false;
 
-graphView.pStart         = {x:0, y:0};
+graphView.pStart         = point(0, 0);
 
 
 scrollbarX.style.zIndex  = MAX_INT32-1;
@@ -10385,8 +10379,10 @@ scrollbarY.style.zIndex  = MAX_INT32-2;
 
 graphView.addEventListener('pointerdown', e =>
 {
-    graphView.pStart = { x: e.clientX, 
-                         y: e.clientY };
+    graphView.pStart = point(e.clientX, e.clientY);
+
+    const sx = e.clientX / graphView.zoom;
+    const sy = e.clientY / graphView.zoom;
 
     if (   e.button == 0                 
         && !graphView.panning
@@ -10404,24 +10400,14 @@ graphView.addEventListener('pointerdown', e =>
         {
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
-
-            graphView.tempConn.wire.updateFromOutput(
-                e.clientX, 
-                e.clientY, 
-                boundingRect(graphView.overOutput.control),
-                controlBar.offsetHeight);
+            graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
         }
         else if (graphView.overInput)
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
-                
-                graphView.tempConn.wire.updateFromOutput(
-                    e.clientX, 
-                    e.clientY, 
-                    boundingRect(graphView.overInput.connectedOutput.control),
-                    controlBar.offsetHeight);
+                graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 
                 graphView.tempConn.savedInput = graphView.overInput;
                 hide(graphView.overInput.connection.wire);
@@ -10430,12 +10416,7 @@ graphView.addEventListener('pointerdown', e =>
             {
                 graphView.overInput.connecting = true;
                 graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
-                
-                graphView.tempConn.wire.updateFromInput(
-                    e.clientX, 
-                    e.clientY,
-                    boundingRect(graphView.overInput.control),
-                    controlBar.offsetHeight);
+                graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
             }
         }
         else // selection
@@ -10466,9 +10447,7 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
-    graphView.p = { 
-        x: e.clientX, 
-        y: e.clientY };
+    graphView.p = point(e.clientX, e.clientY);
 
     if (graphView.panning)
     {
@@ -10492,22 +10471,10 @@ function graphView_onpointermove(e)
     
     else if (graphView.tempConn)
     {
-        if (graphView.tempConn.output)
-        { 
-            graphView.tempConn.wire.updateFromOutput(
-                e.clientX, 
-                e.clientY,
-                boundingRect(graphView.tempConn.output.control),
-                controlBar.offsetHeight);
-        }
-        else if (graphView.tempConn.input) 
-        {
-            graphView.tempConn.wire.updateFromInput(
-                e.clientX, 
-                e.clientY,
-                boundingRect(graphView.tempConn.input.control),
-                controlBar.offsetHeight);
-        };
+        graphView.updateNodeWire(
+            graphView.tempConn.wire, 
+            e.clientX, 
+            e.clientY);
     }
 }
 
@@ -10534,7 +10501,13 @@ graphView.addEventListener('pointerup', e =>
                 if (e.altKey) graphView.zoom /= 2;
                 else          graphView.zoom *= 2;
 
-                graphView.pan = subv(graphView.pan, mulvs(subv(position(e), graphView.pan), graphView.zoom / graphView.oldZoom - 1));
+                graphView.pan = subv(
+                    graphView.pan, 
+                    mulvs(
+                        subv(
+                            point(e.clientX, e.clientY), 
+                            graphView.pan), 
+                        graphView.zoom / graphView.oldZoom - 1));
             }
         }
         
@@ -10572,7 +10545,7 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
-        let pos = position(e);
+        let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
@@ -10588,10 +10561,12 @@ graphView.addEventListener('wheel', e =>
 
         graphView.pan = 
             dWheelX != 0
-            ? { x:  e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
-                y: !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX }
-            : { x: !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
-                y:  e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY };
+            ? point(
+                 e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
+                !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX)
+            : point(
+                !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
+                 e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY);
 
         if (graphView.selecting)
         {
@@ -10822,36 +10797,62 @@ graphView.setNodeTransform = (node, nodeLeft, nodeTop, nodeRect) =>
 
 graphView.updateNodeWires = wires =>
 {
-    const outRect = [];            
-    const inRect  = [];
-    const cw      = graphView.clientWidth;
-    const ch      = graphView.clientHeight;
+    const pOut    = [];            
+    const pIn     = [];
     const yOffset = controlBar.offsetHeight;
 
     wires.forEach(w => 
     {
-        outRect.push(boundingRect(w.connection.output.control));
-        inRect .push(boundingRect(w.connection.input .control));
+        const ro = boundingRect(w.connection.output.control);
+        const ri = boundingRect(w.connection.input .control);
+
+        pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
+        pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
     });
 
     for (let i = 0; i < wires.length; i++)
-        graphView.updateWireTransform(wires[i], outRect[i], inRect[i], cw, ch, yOffset);        
+    {
+        wires[i].update(
+            pOut[i].x, 
+            pOut[i].y, 
+            pIn[i].x, 
+            pIn[i].y);        
+    }
 };
 
 
 
-graphView.updateWireTransform = function(wire, outRect, inRect, cw, ch, yOffset)
+graphView.updateNodeWire = (wire, x = 0, y = 0) =>
 {
-    wire.setAttribute('width',  cw / graphView.zoom);
-    wire.setAttribute('height', ch / graphView.zoom);
+    const yOffset = controlBar.offsetHeight;
 
-    wire.setAttribute('viewBox',
-                0
-        + ' ' + yOffset/2 / graphView.zoom // why is only half of yOffset taken???
-        + ' ' + cw        / graphView.zoom
-        + ' ' + ch        / graphView.zoom);
+    let pOut = point(0, 0),
+        pIn  = point(0, 0);
 
-    wire.update(outRect, inRect, yOffset);
+
+    if (wire.connection.output)
+    {
+        const ro = boundingRect(wire.connection.output.control);
+        pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
+    }
+    else
+        pOut = point(x, y);
+
+
+    if (wire.connection.input)
+    {
+        const ri = boundingRect(wire.connection.input .control);
+        pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
+    }
+    else
+        pIn = point(x, y);
+
+
+    wire.update(
+        pOut.x / graphView.zoom, 
+        pOut.y / graphView.zoom, 
+        pIn.x  / graphView.zoom, 
+        pIn.y  / graphView.zoom);        
 };
 
 
@@ -10862,15 +10863,7 @@ graphView.addWire = (wire, updateTransform = true) =>
     wireContainer.appendChild(wire);
 
     if (updateTransform)
-    {
-        const outRect = boundingRect(wire.connection.output.control);            
-        const inRect  = boundingRect(wire.connection.input .control);
-        const cw      = graphView.clientWidth;
-        const ch      = graphView.clientHeight;
-        const yOffset = controlBar.offsetHeight;
-
-        graphView.updateWireTransform(wire, outRect, inRect, cw, ch, yOffset);
-    }
+        graphView.updateNodeWire(wire);
 };
 
 
@@ -12527,7 +12520,7 @@ class Connection
         this.wire.style.top            = 0;
         this.wire.style.width          = '100%';
         this.wire.style.height         = '100vh';
-        this.wire.scale                = 1;
+        //this.wire.scale                = 1;
 
         this.wire.outputPos            = point_NaN;
         this.wire. inputPos            = point_NaN;
@@ -12549,62 +12542,33 @@ class Connection
 
         
 
-        this.wire.update = (outRect, inRect, yOffset) =>
+        this.wire.update = (x1, y1, x2, y2) =>
         {
+            const cw      = graphView.clientWidth;
+            const ch      = graphView.clientHeight;
+            const yOffset = controlBar.offsetHeight;
+        
             // the yOffset is to start wire coords just below the control bar,
             // not at the top of the window
 
-            let x1 = (outRect.x + outRect.width /2) / graphView.zoom;
-            let y1 = (outRect.y + outRect.height/2) / graphView.zoom;
-            let x2 = (inRect .x + inRect .width /2) / graphView.zoom;
-            let y2 = (inRect .y + inRect .height/2) / graphView.zoom;
-
-            y1 -= yOffset / graphView.zoom;
-            y2 -= yOffset / graphView.zoom;
-
-            this.wire.updateCurve(x1, y1, x2, y2);
+            this.wire.updateCurve  (x1, y1, x2, y2);
             this.wire.updateOutBall(x1, y1        );
             this.wire.updateInBall (        x2, y2);
 
             this.wire.updateStyle(this.wire.getColor());
 
-            show(this.wire.outBall);
-            show(this.wire.inBall);
-        };
+            this.wire.setAttribute('width',  cw);
+            this.wire.setAttribute('height', ch);
+        
+            this.wire.setAttribute('viewBox',
+                        0
+                + ' ' + yOffset/2 // why is only half of yOffset taken???
+                + ' ' + cw
+                + ' ' + ch);
 
 
-
-        this.wire.updateFromOutput = (x, y, outRect, yOffset) =>
-        {
-            let x1 = outRect.x + outRect.width /2;
-            let y1 = outRect.y + outRect.height/2;
-
-            y1 -= yOffset;
-            y  -= yOffset;
-
-            this.wire.updateCurve(x1, y1, x, y);
-            this.wire.updateOutBall(x1, y1      );
-
-            this.wire.updateStyle(this.wire.getColor());
-
-            hide(this.wire.inBall);
-        };
-
-
-
-        this.wire.updateFromInput = (x, y, inRect, yOffset) =>
-        {
-            let x2 = inRect.x + inRect.width /2;
-            let y2 = inRect.y + inRect.height/2;
-
-            y  -= yOffset;
-            y2 -= yOffset;
-
-            this.wire.updateCurve(x, y, x2, y2);
-            this.wire.updateInBall(      x2, y2);
-
-            this.wire.updateStyle(this.wire.getColor());
-            hide(this.wire.outBall);
+            show(this.wire.outBall, !graphView.tempConn || !graphView.tempConn.output);
+            show(this.wire.inBall,  !graphView.tempConn || !graphView.tempConn. input);
         };
 
 
@@ -12623,21 +12587,32 @@ class Connection
                 y2 = this.wire.inputPos.y;
             }
 
+
+
+            const tx  = 600;
+            const ty  = 300;
+            const ecc = 100;
+
             const _x0 = x1;
             const _x3 = x2;
 
-            const yf = (0.3 + Math.min(Math.abs(y2 - y1) / 300, 0.8));
+            const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
 
-            const df = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / 600, 0.65)), 0.5)
-                     * yf;
+            const df  = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / tx, 0.65)), 0.5)
+                      * yf;
 
             const dx = 
                   (_x3 - _x0) * df 
                 * (_x3 < _x0 ? -1 : 1);
 
-            const _x1 = Math.max(_x0 + 100 * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
-            const _x2 = Math.min(_x3 - 100 * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
+            const _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
+            const _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
 
+
+            // const _x1 = _x0 + (_x3 - _x0)/1.5;
+            // const _x2 = _x3 - (_x3 - _x0)/1.5;
+
+            
             this.wire.curve.setAttribute('d',
                    'M ' + _x0 + ',' + y1
                 + ' C ' + _x1 + ',' + y1
@@ -12701,11 +12676,11 @@ class Connection
             this.wire. inBall.style.fill      = colorStyleRgb(color);
             this.wire.outBall.style.fill      = colorStyleRgb(color);
 
-            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * this.wire.scale;
-            this.wire. inBall.style.r         = 3   * this.wire.scale;
-            this.wire.outBall.style.r         = 3   * this.wire.scale;
+            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
+            this.wire. inBall.style.r         = 3 * graphView.zoom;
+            this.wire.outBall.style.r         = 3 * graphView.zoom;
 
-            this.wire      .style.zIndex      = 0;
+            this.wire.style.zIndex = 0;
         };
     }
 
@@ -13705,8 +13680,8 @@ function createNodeHeader(node)
                 actionManager.do(new SelectMoveNodesAction(
                     graphView.lastSelectedNodes.map(n => n.id), 
                     graphView.selectedNodes.map(n => n.id), 
-                    { x: node.div.slx,        y: node.div.sly       },
-                    { x: node.div.offsetLeft, y: node.div.offsetTop },
+                    point(node.div.slx,        node.div.sly      ),
+                    point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
             else
@@ -15384,9 +15359,9 @@ function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale 
 
 function showRgbControlHex(op, show)
 {
-    op.c1.control.showHex = show;
-    op.c2.control.showHex = show;
-    op.c3.control.showHex = show;
+    op.param1.control.showHex = show;
+    op.param2.control.showHex = show;
+    op.param3.control.showHex = show;
 }
 
 
@@ -15395,24 +15370,24 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 {
     switchToSliders(op);
 
-    op.c1.setName(c1, false); 
-    op.c2.setName(c2, false); 
-    op.c3.setName(c3, false);
+    op.param1.setName(c1, false); 
+    op.param2.setName(c2, false); 
+    op.param3.setName(c3, false);
 
-    op.c1.control.wrapValue = c1wrap;
-    op.c1.control.suffix    = c1suffix;
+    op.param1.control.wrapValue = c1wrap;
+    op.param1.control.suffix    = c1suffix;
 
-    op.c1.control.displayMin = c1min; 
-    op.c2.control.displayMin = c2min;
-    op.c3.control.displayMin = c3min;
+    op.param1.control.displayMin = c1min; 
+    op.param2.control.displayMin = c2min;
+    op.param3.control.displayMin = c3min;
     
-    op.c1.control.displayMax = c1max; 
-    op.c2.control.displayMax = c2max; 
-    op.c3.control.displayMax = c3max; 
+    op.param1.control.displayMax = c1max; 
+    op.param2.control.displayMax = c2max; 
+    op.param3.control.displayMax = c3max; 
     
-    op.c1.updateControls();//control.update();
-    op.c2.updateControls();//control.update();
-    op.c3.updateControls();//control.update();
+    op.param1.updateControls();//control.update();
+    op.param2.updateControls();//control.update();
+    op.param3.updateControls();//control.update();
 }
 
 
@@ -15423,9 +15398,9 @@ function switchToTextbox(op)
     {
         removeOpColorParamWires(op);
 
-        op.inner.removeChild(op.c1.div);
-        op.inner.removeChild(op.c2.div);
-        op.inner.removeChild(op.c3.div);
+        op.inner.removeChild(op.param1.div);
+        op.inner.removeChild(op.param2.div);
+        op.inner.removeChild(op.param3.div);
         
         op.inner.appendChild(op.hexbox);
 
@@ -15454,9 +15429,9 @@ function switchToSliders(op)
     {
         op.inner.removeChild(op.hexbox);
 
-        op.inner.appendChild(op.c1.div);
-        op.inner.appendChild(op.c2.div);
-        op.inner.appendChild(op.c3.div);
+        op.inner.appendChild(op.param1.div);
+        op.inner.appendChild(op.param2.div);
+        op.inner.appendChild(op.param3.div);
 
         graphView.updateNodeTransform(op);
     }
@@ -17244,9 +17219,9 @@ extends Action
         {
             const node = graph.nodes.find(n => n.id == nodeId);
 
-            this.nodePos.push({
-                x: node.div.offsetLeft, 
-                y: node.div.offsetTop});
+            this.nodePos.push(point(
+                node.div.offsetLeft, 
+                node.div.offsetTop));
 
             for (const input of node.inputs.filter(i => i.isConnected))
                 this.addConnection(input.connection);
@@ -17481,8 +17456,8 @@ extends Action
 //         {
 //             const node = graph.nodeFromId(id);
 
-//             this.from.push({ x: node.div.slx,      y: node.div.sly      });
-//             this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
+//             this.from.push(point(node.div.slx,      node.div.sly     ));
+//             this.to  .push(point(node.div.slx + dx, node.div.sly + dy));
 //         }
 //     }
 
@@ -17549,7 +17524,7 @@ extends Action
         const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
 
         this.pastedNodeIds = nodes.map(n => n.id);
-        this.pastedNodePos = nodes.map(n => { return { x: n.div.offsetLeft, y: n.div.offsetTop }});
+        this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
 
         updateTerminalsAfterNodes(nodes);
 
@@ -17782,8 +17757,8 @@ extends Action
         {
             const node = graph.nodeFromId(id);
 
-            this.from.push({ x: node.div.slx,      y: node.div.sly      });
-            this.to  .push({ x: node.div.slx + dx, y: node.div.sly + dy });
+            this.from.push(point(node.div.slx,      node.div.sly     ));
+            this.to  .push(point(node.div.slx + dx, node.div.sly + dy));
         }
     }
 
@@ -18940,9 +18915,9 @@ function loadGraph(json)
     //log(json);
 
 
-    const pan = { 
-        x: parseFloat(data.panx), 
-        y: parseFloat(data.pany) };
+    const pan = point( 
+        parseFloat(data.panx), 
+        parseFloat(data.pany));
 
     const zoom = parseFloat(data.zoom);
 

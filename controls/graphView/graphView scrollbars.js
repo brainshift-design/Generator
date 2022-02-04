@@ -103,10 +103,9 @@ scrollbarX.addEventListener('pointermove', e =>
         scrollbarX.style.left  = l;
         scrollbarX.style.width = r-l;
 
-        graphView.pan = {
-            x: graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
-            y: graphView.panStart.y 
-        };
+        graphView.pan = point(
+            graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+            graphView.panStart.y);
     }
 });
 
@@ -201,9 +200,8 @@ scrollbarY.addEventListener('pointermove', e =>
         scrollbarY.style.top    = t;
         scrollbarY.style.height = b-t;
 
-        graphView.pan = {
-            x: graphView.panStart.x, 
-            y: graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight
-        };
+        graphView.pan = point(
+            graphView.panStart.x, 
+            graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
     }
 });

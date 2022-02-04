@@ -3,13 +3,6 @@ const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
-const point_NaN = {x: Number.NaN, y: Number.NaN};
-
-
-function point(x, y) { return {x: x, y: y}; }
-
-function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
-
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
@@ -56,9 +49,9 @@ function distance_(x1, y1, x2, y2)
 
 function vector(angle, dist)
 {
-    return { 
-        x: dist * Math.cos(angle), 
-        y: dist * Math.sin(angle) };
+    return point( 
+        dist * Math.cos(angle), 
+        dist * Math.sin(angle));
 }
 
 
@@ -80,48 +73,54 @@ function lengthv(v)
 
 function unitv(v)
 {
-    return { x: v.x == 0 ? 0 : v.x / lengthv(v),
-             y: v.y == 0 ? 0 : v.y / lengthv(v) };
+    return point(
+        v.x == 0 ? 0 : v.x / lengthv(v),
+        v.y == 0 ? 0 : v.y / lengthv(v));
 }
 
 
 
 function addv(v1, v2)
 {
-    return { x: v1.x + v2.x,
-             y: v1.y + v2.y };
+    return point(
+        v1.x + v2.x,
+        v1.y + v2.y);
 }	
 
 
 
 function subv(v1, v2)
 {
-    return { x: v1.x - v2.x,
-             y: v1.y - v2.y };
+    return point(
+        v1.x - v2.x,
+        v1.y - v2.y);
 }	
 
 
 
 function mulv(v1, v2)
 {
-    return { x: v1.x * v2.x,
-             y: v1.y * v2.y };
+    return point(
+        v1.x * v2.x,
+        v1.y * v2.y);
 }	
 
 
 
 function mulvs(v, s)
 {
-    return { x: v.x * s,
-             y: v.y * s };
+    return point(
+        v.x * s,
+        v.y * s);
 }	
 
 
 
 function divvs(v, s)
 {
-    return { x: v.x / s,
-             y: v.y / s };
+    return point(
+        v.x / s,
+        v.y / s);
 }	
 
 
@@ -130,8 +129,7 @@ function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis
 
-    return { x:  v.y, 
-             y: -v.x };
+    return point(v.y, -v.x);
 }
 
 
@@ -222,8 +220,8 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     }
 
     return [
-        {x:x1, y:y1}, 
-        {x:x2, y:y2} ];
+        point(x1, y1), 
+        point(x2, y2) ];
 }
 
 
@@ -232,13 +230,13 @@ function intersect(p1, p2, q1, q2, segment)
 {
     if (   equalv(p1, p2) 
         || equalv(q1, q2)) 
-        return {x:NaN, y:NaN}; // undefined line
+        return point_NaN; // undefined line
 
     let v1 = subv(p2, p1);
     let v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
-        return {x:NaN, y:NaN}; // parallel lines
+        return point_NaN; // parallel lines
 
     let t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
     let t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
@@ -248,7 +246,7 @@ function intersect(p1, p2, q1, q2, segment)
         || !segment)
         return addv(p1, mulvs(v1, t1));
         
-    return {x:NaN, y:NaN};
+    return point_NaN;
 }
 
 
@@ -302,7 +300,7 @@ function mulv2m3(v, m)
     let v3 = [v.x, v.y, 1];
     let r  = mulv3m3(v3, m);
 
-    return {x: r[0], y: r[1]};
+    return point(r[0], r[1]);
 }
 
 

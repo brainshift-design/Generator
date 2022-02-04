@@ -34,9 +34,9 @@ function loadGraph(json)
     //log(json);
 
 
-    const pan = { 
-        x: parseFloat(data.panx), 
-        y: parseFloat(data.pany) };
+    const pan = point( 
+        parseFloat(data.panx), 
+        parseFloat(data.pany));
 
     const zoom = parseFloat(data.zoom);
 
