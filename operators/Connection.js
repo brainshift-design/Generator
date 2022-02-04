@@ -3,8 +3,6 @@ class Connection
     output;
     input;
 
-    savedInput = null;
-
     wire;
 
 
@@ -66,9 +64,9 @@ class Connection
                 + ' ' + cw
                 + ' ' + ch);
 
-
-            show(this.wire.outBall, !graphView.tempConn || graphView.tempConn.output);
-            show(this.wire.inBall,  !graphView.tempConn || graphView.tempConn. input);
+            show(this.wire.curve,   this != graphView.savedConn);
+            show(this.wire.outBall, !graphView.tempConn  || graphView.tempConn.output);
+            show(this.wire.inBall,  !graphView.tempConn  || graphView.tempConn. input);
         };
 
 

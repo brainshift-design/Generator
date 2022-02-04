@@ -143,8 +143,23 @@ function createNodeHeader(node)
 
             if (!node.selected)
             {
-                if (e.shiftKey) node     .selected      = true;
-                else            graphView.selectedNodes = [node];
+                if (e.shiftKey) 
+                    node.selected = true;
+
+                else
+                {
+                    graphView.selectedNodes = [node];
+
+                    if (getCtrlKey(e))
+                    {
+                        graphView.selectedNodes.push(...getNodesAfterNode(node));
+
+                        // if (e.altKey)
+                        //     graphView.selectedNodes.push(...getNodesBeforeNode(node));
+                    }
+
+                    graphView.selectedNodes.forEach(n => n.selected = true);
+                }
 
                 node.selectedSet = true;
             }

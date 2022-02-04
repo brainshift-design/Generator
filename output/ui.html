@@ -1005,8 +1005,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color"           )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>INTR</button>
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'>CTR</button>
-    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind"      )); this.blur();'>BLND</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <!-- <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind"      )); this.blur();'>BLND</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
@@ -9736,8 +9736,10 @@ graphView.cancelConnection = pointerId =>
     const input  = graphView.tempConn.input;
 
     graphView.removeWire(graphView.tempConn.wire);    
-    graphView.tempConn = null;
-    
+
+    graphView.savedConn = null;
+    graphView.tempConn  = null;
+
     if (output) output.updateControl();
     if (input ) input .updateControl();
 
@@ -9751,9 +9753,13 @@ graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
-        let output     = graphView.tempConn.output;
-        let input      = graphView.overInput;
-        let savedInput = graphView.tempConn.savedInput;
+        let output = graphView.tempConn.output;
+        let input  = graphView.overInput;
+
+        let savedInput = 
+            graphView.savedConn
+            ? graphView.savedConn.input
+            : null;
         
         output.connecting = false;
         
@@ -10347,6 +10353,7 @@ graphView.headerInput    = null; // same as overInput, but when snapping from a 
 graphView.headerOutput   = null; // same as overOutput, but when snapping from a header
    
 graphView.tempConn       = null;
+graphView.savedConn      = null;
 
 graphView.showWires      = true;
 graphView._soloNode      = null;
@@ -10399,8 +10406,9 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 
-                graphView.tempConn.savedInput = graphView.overInput;
-                hide(graphView.overInput.connection.wire);
+                graphView.savedConn = graphView.overInput.connection;
+                graphView.updateNodeWire(graphView.savedConn.wire);
+                //hide(graphView.overInput.connection.wire);
             }
             else
             {
@@ -12022,55 +12030,61 @@ function activeNodeRight(node)
 
 
 
-// function lastNodeInTree(node) 
-// { 
-//     const right = lastNodeRight(node); 
-//     return !!right ? right : null;
-// }
+function getNodesBeforeNode(node)
+{
+    let before = [];
+
+    for (const input of node.inputs.filter(i => i.isConnected))
+    {
+        before.push(input.connectedOutput.op);
+        before.push(...getNodesBeforeNode(input.connectedOutput.op));
+    }
+
+    return before;
+}
 
 
 
-// function lastNodeRight(node)
-// {
-//     let right = null;
+function getNodesAfterNode(node)
+{
+    let after = [];
 
-//     if (!!node.output)
-//     {
-//         for (const input of node.output.connectedInputs)
-//         {
-//             const _right = lastNodeRight(input.op);
-//             if (_right && !!right) return node;
-//             right = _right;
-//         }
-//     }
+    for (const output of node.outputs)
+        for (const input of output.connectedInputs)
+        {
+            after.push(input.op);
+            after.push(...getNodesAfterNode(input.op));
+        }
 
-//     return !!right ? right : node;
-// }
+    return after;
+}
 
 
 
 function getTerminalsAfterNode(node)
 {
-    let right = [];
+    let after = [];
 
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
-            right.push(...getTerminalsAfterNode(input.op));
+            after.push(...getTerminalsAfterNode(input.op));
 
-    return right.length > 0 ? right : [node];
+    return after;
 }
 
 
 
-function updateTerminalsAfterNodes(nodes)
+function updateTerminalsAfterNodes(nodes, includeNodeInEmpty = true)
 {
-    //log('updateTerminalsAfterNodes()');
-
     const terminals = [];
 
     for (const node of nodes)
     {
         const tt = getTerminalsAfterNode(node);
+
+        if (   tt.length == 0 
+            && includeNodeInEmpty) 
+            tt.push(node);
 
         for (const t of tt)
         {
@@ -12277,8 +12291,8 @@ extends EventTarget
 
         this.wireBall.style.backgroundColor = 
             this.isConnected
-            ? (   graphView.tempConn
-               && graphView.tempConn.savedInput == this
+            ? (   graphView.savedConn
+               && graphView.savedConn.input == this
                && graphView.overInput != this
                ? 'transparent'
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
@@ -12482,8 +12496,6 @@ class Connection
     output;
     input;
 
-    savedInput = null;
-
     wire;
 
 
@@ -12545,9 +12557,9 @@ class Connection
                 + ' ' + cw
                 + ' ' + ch);
 
-
-            show(this.wire.outBall, !graphView.tempConn || graphView.tempConn.output);
-            show(this.wire.inBall,  !graphView.tempConn || graphView.tempConn. input);
+            show(this.wire.curve,   this != graphView.savedConn);
+            show(this.wire.outBall, !graphView.tempConn  || graphView.tempConn.output);
+            show(this.wire.inBall,  !graphView.tempConn  || graphView.tempConn. input);
         };
 
 
@@ -12880,9 +12892,10 @@ class Operator
         if (graphView.overInput)
             return graphView.overInput;
 
-        if (   graphView.tempConn.savedInput
-            && graphView.tempConn.savedInput.op == this)
-            return graphView.tempConn.savedInput;
+        if (   graphView.savedConn
+            && graphView.savedConn.input
+            && graphView.savedConn.input.op == this)
+            return graphView.savedConn.input;
         
         else if (!graphView.tempConn.output.op.follows(this))
         {
@@ -12996,7 +13009,12 @@ class Operator
 
         this.invalidate();
         
-        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
+        setTimeout(() => 
+        {
+            const terminals = getTerminalsAfterNode(this);
+            if (terminals.length == 0) terminals.push(this);
+            terminals.forEach(n => n.update());
+        });
     }
 
 
@@ -13574,8 +13592,23 @@ function createNodeHeader(node)
 
             if (!node.selected)
             {
-                if (e.shiftKey) node     .selected      = true;
-                else            graphView.selectedNodes = [node];
+                if (e.shiftKey) 
+                    node.selected = true;
+
+                else
+                {
+                    graphView.selectedNodes = [node];
+
+                    if (getCtrlKey(e))
+                    {
+                        graphView.selectedNodes.push(...getNodesAfterNode(node));
+
+                        // if (e.altKey)
+                        //     graphView.selectedNodes.push(...getNodesBeforeNode(node));
+                    }
+
+                    graphView.selectedNodes.forEach(n => n.selected = true);
+                }
 
                 node.selectedSet = true;
             }

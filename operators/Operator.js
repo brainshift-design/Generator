@@ -140,9 +140,10 @@ class Operator
         if (graphView.overInput)
             return graphView.overInput;
 
-        if (   graphView.tempConn.savedInput
-            && graphView.tempConn.savedInput.op == this)
-            return graphView.tempConn.savedInput;
+        if (   graphView.savedConn
+            && graphView.savedConn.input
+            && graphView.savedConn.input.op == this)
+            return graphView.savedConn.input;
         
         else if (!graphView.tempConn.output.op.follows(this))
         {
@@ -256,7 +257,12 @@ class Operator
 
         this.invalidate();
         
-        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
+        setTimeout(() => 
+        {
+            const terminals = getTerminalsAfterNode(this);
+            if (terminals.length == 0) terminals.push(this);
+            terminals.forEach(n => n.update());
+        });
     }
 
 

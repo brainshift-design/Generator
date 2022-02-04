@@ -12,6 +12,7 @@ graphView.headerInput    = null; // same as overInput, but when snapping from a 
 graphView.headerOutput   = null; // same as overOutput, but when snapping from a header
    
 graphView.tempConn       = null;
+graphView.savedConn      = null;
 
 graphView.showWires      = true;
 graphView._soloNode      = null;
@@ -64,8 +65,9 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 
-                graphView.tempConn.savedInput = graphView.overInput;
-                hide(graphView.overInput.connection.wire);
+                graphView.savedConn = graphView.overInput.connection;
+                graphView.updateNodeWire(graphView.savedConn.wire);
+                //hide(graphView.overInput.connection.wire);
             }
             else
             {

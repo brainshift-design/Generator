@@ -44,55 +44,61 @@ function activeNodeRight(node)
 
 
 
-// function lastNodeInTree(node) 
-// { 
-//     const right = lastNodeRight(node); 
-//     return !!right ? right : null;
-// }
+function getNodesBeforeNode(node)
+{
+    let before = [];
+
+    for (const input of node.inputs.filter(i => i.isConnected))
+    {
+        before.push(input.connectedOutput.op);
+        before.push(...getNodesBeforeNode(input.connectedOutput.op));
+    }
+
+    return before;
+}
 
 
 
-// function lastNodeRight(node)
-// {
-//     let right = null;
+function getNodesAfterNode(node)
+{
+    let after = [];
 
-//     if (!!node.output)
-//     {
-//         for (const input of node.output.connectedInputs)
-//         {
-//             const _right = lastNodeRight(input.op);
-//             if (_right && !!right) return node;
-//             right = _right;
-//         }
-//     }
+    for (const output of node.outputs)
+        for (const input of output.connectedInputs)
+        {
+            after.push(input.op);
+            after.push(...getNodesAfterNode(input.op));
+        }
 
-//     return !!right ? right : node;
-// }
+    return after;
+}
 
 
 
 function getTerminalsAfterNode(node)
 {
-    let right = [];
+    let after = [];
 
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
-            right.push(...getTerminalsAfterNode(input.op));
+            after.push(...getTerminalsAfterNode(input.op));
 
-    return right.length > 0 ? right : [node];
+    return after;
 }
 
 
 
-function updateTerminalsAfterNodes(nodes)
+function updateTerminalsAfterNodes(nodes, includeNodeInEmpty = true)
 {
-    //log('updateTerminalsAfterNodes()');
-
     const terminals = [];
 
     for (const node of nodes)
     {
         const tt = getTerminalsAfterNode(node);
+
+        if (   tt.length == 0 
+            && includeNodeInEmpty) 
+            tt.push(node);
 
         for (const t of tt)
         {
