@@ -310,13 +310,6 @@ class Operator
 
 
 
-    updateParamControls()
-    {
-        this.params.forEach(p => p.control.update());
-    }
-
-
-
     updateHeader()
     {
         //log(this.name + '.Operator.updateHeader()');
@@ -380,6 +373,13 @@ class Operator
     {
         for (const param of this.params)
             param.setOutputData();
+    }
+
+
+
+    updateParamControls()
+    {
+        this.params.forEach(p => p.updateControls());
     }
 
 

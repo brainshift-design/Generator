@@ -3,7 +3,7 @@ extends Parameter
 {
     defaultValue;
     
-    allowEditDecimals;
+    allowEditDecimals = false;
     
 
     get value()      { return this._control.value;    }
@@ -41,8 +41,6 @@ extends Parameter
         this.control.zIndex    = 0;
    
         this.defaultValue      = value;
-
-        this.allowEditDecimals = false;
 
 
         initNumberSlider(
@@ -125,11 +123,14 @@ extends Parameter
 
     update(dispatchEvents)
     {
+        super.update();
+
         if (   this.input
             && this.input.isConnected)
+        {
+            this.setDecimals(this.input.data.decimals);
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
-
-        super.update();
+        }
     }
 
 
@@ -137,7 +138,14 @@ extends Parameter
     setOutputData()
     {
         if (this.output)
-            this.output._data = dataFromNumber(this._control.value);
+        {
+            this.output._data = dataFromNumber(
+                this._control.value,
+                   this.input
+                && this.input.isConnected
+                ? this.input.data.decimals
+                : -1);
+        }
     }
 
 

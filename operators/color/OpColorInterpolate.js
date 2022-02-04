@@ -26,10 +26,12 @@ extends OpColorBase
         this.#paramSpace.control.min        = 2;
         this.#paramSpace.control.displayMin = 2;
         
-        this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
-        this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
-
-        this.#paramGamma.control.max  = 10;
+        this.#paramAmount.control.min       = Number.MIN_SAFE_INTEGER;
+        this.#paramAmount.control.max       = Number.MAX_SAFE_INTEGER;
+        this.#paramAmount.allowEditDecimals = true;
+        
+        this.#paramGamma.control.max        = 10;
+        this.#paramGamma.allowEditDecimals  = true;
 
 
         this.inputs[0].addEventListener('connect', () => 

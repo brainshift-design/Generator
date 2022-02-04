@@ -79,11 +79,11 @@ extends Parameter
 
     update(dispatchEvents)
     {
+        super.update();
+
         if (   this.input
             && this.input.isConnected)
-            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
-
-        super.update();
+            this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
     }
 
 
@@ -91,7 +91,7 @@ extends Parameter
     setOutputData()
     {
         if (this.output)
-            this.output._data = dataFromNumber(this._control.value);
+            this.output._data = dataFromNumber(this._control.value, 0);
     }
 
 

@@ -11062,13 +11062,17 @@ extends EventTarget
     
     update(dispatchEvents)
     {
-        this.updateInputAndOutput();
+        if (   this.input
+            && this.input.isConnected)
+            this.input.connectedOutput.op.update();
     }    
 
 
 
-    updateInputAndOutput()
+    updateControls()
     {
+        this.control.update();
+        
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
     }
@@ -11127,7 +11131,7 @@ extends Parameter
 {
     defaultValue;
     
-    allowEditDecimals;
+    allowEditDecimals = false;
     
 
     get value()      { return this._control.value;    }
@@ -11165,8 +11169,6 @@ extends Parameter
         this.control.zIndex    = 0;
    
         this.defaultValue      = value;
-
-        this.allowEditDecimals = false;
 
 
         initNumberSlider(
@@ -11249,11 +11251,14 @@ extends Parameter
 
     update(dispatchEvents)
     {
+        super.update();
+
         if (   this.input
             && this.input.isConnected)
+        {
+            this.setDecimals(this.input.data.decimals);
             this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
-
-        super.update();
+        }
     }
 
 
@@ -11261,7 +11266,14 @@ extends Parameter
     setOutputData()
     {
         if (this.output)
-            this.output._data = dataFromNumber(this._control.value);
+        {
+            this.output._data = dataFromNumber(
+                this._control.value,
+                   this.input
+                && this.input.isConnected
+                ? this.input.data.decimals
+                : -1);
+        }
     }
 
 
@@ -11467,11 +11479,11 @@ extends Parameter
 
     update(dispatchEvents)
     {
+        super.update();
+
         if (   this.input
             && this.input.isConnected)
-            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
-
-        super.update();
+            this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
     }
 
 
@@ -11479,7 +11491,7 @@ extends Parameter
     setOutputData()
     {
         if (this.output)
-            this.output._data = dataFromNumber(this._control.value);
+            this.output._data = dataFromNumber(this._control.value, 0);
     }
 
 
@@ -13018,13 +13030,6 @@ class Operator
 
 
 
-    updateParamControls()
-    {
-        this.params.forEach(p => p.control.update());
-    }
-
-
-
     updateHeader()
     {
         //log(this.name + '.Operator.updateHeader()');
@@ -13088,6 +13093,13 @@ class Operator
     {
         for (const param of this.params)
             param.setOutputData();
+    }
+
+
+
+    updateParamControls()
+    {
+        this.params.forEach(p => p.updateControls());
     }
 
 
@@ -14967,7 +14979,7 @@ extends OpColorBase
 
         this.paramSpace.input .color = colText;
         this.paramSpace.output.color = colText;
-        this.paramSpace.updateInputAndOutput();
+        this.paramSpace.updateControls();
 
         this.updateAllSliderRanges();
 
@@ -15050,7 +15062,7 @@ extends OpColorBase
 
             if (!open && !isValidRgb(rgb))
             {
-                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.2)', 0.8));
+                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.16)', 0.8));
                 open = true;
             }
             else if (open && isValidRgb(rgb)) 
@@ -15331,9 +15343,9 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
     op.param2.control.displayMax = c2max; 
     op.param3.control.displayMax = c3max; 
     
-    op.param1.control.update();
-    op.param2.control.update();
-    op.param3.control.update();
+    op.param1.updateControls();//control.update();
+    op.param2.updateControls();//control.update();
+    op.param3.updateControls();//control.update();
 }
 
 
@@ -16405,10 +16417,12 @@ extends OpColorBase
         this.#paramSpace.control.min        = 2;
         this.#paramSpace.control.displayMin = 2;
         
-        this.#paramAmount.control.min = Number.MIN_SAFE_INTEGER;
-        this.#paramAmount.control.max = Number.MAX_SAFE_INTEGER;
-
-        this.#paramGamma.control.max  = 10;
+        this.#paramAmount.control.min       = Number.MIN_SAFE_INTEGER;
+        this.#paramAmount.control.max       = Number.MAX_SAFE_INTEGER;
+        this.#paramAmount.allowEditDecimals = true;
+        
+        this.#paramGamma.control.max        = 10;
+        this.#paramGamma.allowEditDecimals  = true;
 
 
         this.inputs[0].addEventListener('connect', () => 

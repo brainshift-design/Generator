@@ -166,9 +166,9 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
     op.param2.control.displayMax = c2max; 
     op.param3.control.displayMax = c3max; 
     
-    op.param1.control.update();
-    op.param2.control.update();
-    op.param3.control.update();
+    op.param1.updateControls();//control.update();
+    op.param2.updateControls();//control.update();
+    op.param3.updateControls();//control.update();
 }
 
 

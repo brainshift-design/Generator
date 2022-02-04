@@ -251,7 +251,7 @@ extends OpColorBase
 
         this.paramSpace.input .color = colText;
         this.paramSpace.output.color = colText;
-        this.paramSpace.updateInputAndOutput();
+        this.paramSpace.updateControls();
 
         this.updateAllSliderRanges();
 
@@ -334,7 +334,7 @@ extends OpColorBase
 
             if (!open && !isValidRgb(rgb))
             {
-                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.2)', 0.8));
+                ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.16)', 0.8));
                 open = true;
             }
             else if (open && isValidRgb(rgb)) 
