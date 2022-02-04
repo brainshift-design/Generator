@@ -201,9 +201,9 @@ extends EventTarget
 
         this.wireBall.style.backgroundColor = 
             this.isConnected
-            ? (    graphView.tempConn
-               &&  graphView.tempConn.savedInput == this
-               && !graphView.overInput
+            ? (   graphView.tempConn
+               && graphView.tempConn.savedInput == this
+               && graphView.overInput != this
                ? 'transparent'
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
             : (   graphView.tempConn
