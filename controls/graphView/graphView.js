@@ -557,12 +557,20 @@ graphView.soloNode = node =>
             ? 1 
             : 0.12);
 
-    graph.connections.forEach(c => 
+    graph.connections.forEach(c =>
+    { 
         c.wire.style.opacity = 
                c.input  && graphView._soloNode == c.input .op
             || c.output && graphView._soloNode == c.output.op
             ? 1 
-            : 0.09);
+            : 0.09;
+
+        show(
+            c.wire, 
+               graphView.showWires
+            || c.input  && graphView._soloNode == c.input .op
+            || c.output && graphView._soloNode == c.output.op);
+    });
 };
 
 
@@ -571,8 +579,13 @@ graphView.unsoloNode = () =>
 {
     graphView._soloNode = null;
 
-    graph.nodes.forEach(n => n.div.style.opacity = 1);
-    graph.connections.forEach(c => c.wire.style.opacity = 1);
+    graph.nodes.forEach(n => n.div .style.opacity = 1);
+
+    graph.connections.forEach(c => 
+    {
+        c.wire.style.opacity = 1;
+        show(c.wire, graphView.showWires);
+    });
 };
 
 
@@ -590,9 +603,6 @@ graphView.updateShowWires = () =>
     btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
     btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 
-    graph.nodes.forEach(
-        n => n.updateNode());
-
-    graph.connections.forEach(
-        c => show(c.wire, graphView.showWires));
+    graph.nodes      .forEach(n => n.updateNode());
+    graph.connections.forEach(c => show(c.wire, graphView.showWires));
 };
