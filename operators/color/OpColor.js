@@ -133,7 +133,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpColor.updateData()');
+        log(this.name + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -154,15 +154,19 @@ extends OpColorBase
             if (  !this.#init
                 || this._oldSpace != toSpace)
             {
+                switchToSpace(this, toSpace);
+
                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
              
+                this.updateParams(false);
+
                 const color =
                     this.loaded 
                     ? this.getDataColorFromParams()
                     : this._color;
-                    
+
                 setDataColorToCurrentSpace(this, color);
 
                 this.#init = true;

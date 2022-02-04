@@ -8102,6 +8102,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         slider.updateColors();
         slider.updateText();
         slider.updateFocus(sw, sh);
+        
         updateSliderRanges(slider, sw, sh);
     };
 
@@ -11096,7 +11097,6 @@ extends EventTarget
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
-        //console.log('    ' + this.name + '.setValue(' + value + ', dispatch = ' + dispatchEvents + ')');
         if (dispatchEvents)
         {
             if (value != this.oldValue)
@@ -11503,8 +11503,8 @@ extends Parameter
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
-        if (this.output)
-            this.output._data = dataFromNumber(value);
+        // if (this.output)
+        //     this.output._data = dataFromNumber(value);
             
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
@@ -12990,8 +12990,7 @@ class Operator
         this.updateParams(false);
         this.updateData();
 
-        this.valid  = true;
-        this.loaded = false;
+        this.valid = true;
 
         if (graphView.canUpdateNodes)
             this.updateNode();
@@ -14861,7 +14860,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpColor.updateData()');
+        log(this.name + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -14882,15 +14881,19 @@ extends OpColorBase
             if (  !this.#init
                 || this._oldSpace != toSpace)
             {
+                switchToSpace(this, toSpace);
+
                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
              
+                this.updateParams(false);
+
                 const color =
                     this.loaded 
                     ? this.getDataColorFromParams()
                     : this._color;
-                    
+
                 setDataColorToCurrentSpace(this, color);
 
                 this.#init = true;
@@ -15619,8 +15622,6 @@ function setDataColorToCurrentSpace(op, color)
 
     op._color = convertDataColorToSpace(color, toSpace);
     //op._oldSpace = op._color[0];
-
-    switchToSpace(op, toSpace);
 
     op.setColorParams(op._color);//, false);
 }
@@ -16411,7 +16412,7 @@ extends OpColorBase
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.#paramAmount = new NumberParam('amount', '%', true, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 1));
       
         
         this.#paramSpace.control.min        = 2;

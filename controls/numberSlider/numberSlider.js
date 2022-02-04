@@ -512,6 +512,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         slider.updateColors();
         slider.updateText();
         slider.updateFocus(sw, sh);
+        
         updateSliderRanges(slider, sw, sh);
     };
 

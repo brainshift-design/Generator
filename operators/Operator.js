@@ -270,8 +270,7 @@ class Operator
         this.updateParams(false);
         this.updateData();
 
-        this.valid  = true;
-        this.loaded = false;
+        this.valid = true;
 
         if (graphView.canUpdateNodes)
             this.updateNode();

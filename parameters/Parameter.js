@@ -144,7 +144,6 @@ extends EventTarget
 
     setValue(value, confirm, updateControl = true, dispatchEvents = true) 
     {
-        //console.log('    ' + this.name + '.setValue(' + value + ', dispatch = ' + dispatchEvents + ')');
         if (dispatchEvents)
         {
             if (value != this.oldValue)

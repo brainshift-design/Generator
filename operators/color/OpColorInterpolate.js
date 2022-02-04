@@ -20,7 +20,7 @@ extends OpColorBase
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
         this.addParam(this.#paramAmount = new NumberParam('amount', '%', true, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 2));
+        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 1));
       
         
         this.#paramSpace.control.min        = 2;

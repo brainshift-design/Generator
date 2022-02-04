@@ -443,8 +443,6 @@ function setDataColorToCurrentSpace(op, color)
     op._color = convertDataColorToSpace(color, toSpace);
     //op._oldSpace = op._color[0];
 
-    switchToSpace(op, toSpace);
-
     op.setColorParams(op._color);//, false);
 }
 

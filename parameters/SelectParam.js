@@ -103,8 +103,8 @@ extends Parameter
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
-        if (this.output)
-            this.output._data = dataFromNumber(value);
+        // if (this.output)
+        //     this.output._data = dataFromNumber(value);
             
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
