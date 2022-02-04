@@ -371,14 +371,25 @@ graphView.putNodeOnTop = node =>
 
 graphView.putWiresOnTop = node =>
 {
+    // changing z-index doesn't work so easily with SVG,
+    // so reinsert the wires on top instead 🤷‍♂️
+
     let z = MAX_INT32;
 
     for (const input of node.inputs.filter(i => i.isConnected))
-        input.connection.wire.style.zIndex = z--;
+    {
+        wireContainer.removeChild(input.connection.wire);
+        wireContainer.appendChild(input.connection.wire);
+    }
         
     for (const output of node.outputs)
+    {
         for (const connInput of output.connectedInputs)
-            connInput.connection.wire.style.zIndex = z--;
+        {
+            wireContainer.removeChild(connInput.connection.wire);
+            wireContainer.appendChild(connInput.connection.wire);
+        }
+    }
 };
 
 
