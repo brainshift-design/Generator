@@ -29,11 +29,6 @@ Object.defineProperty(graphView, 'zoom',
     {
         if (graphView._zoom == zoom) return;
 
-        // graphView.oldZoom = graphView._zoom;
-        // graphView._zoom   = zoom;
-
-        // graphView.updatePanAndZoom();
-
         let pos = point(
             window.innerWidth /2,
             window.innerHeight/2);
@@ -86,9 +81,6 @@ graphView.startPan = pointerId =>
 
 graphView.updatePanAndZoom = () =>
 {
-    // if (graphView.tempConn)
-    //     graphView.tempConn.wire.scale = graphView.zoom;
-
     graphView.updateNodeTransforms(graph.nodes);
     graphView.updateScroll();
 

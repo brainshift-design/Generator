@@ -96,9 +96,6 @@ class Output
             }
             else
                 graphView.overOutput = this; 
-
-
-            //updateNodeLabel(this.op, 1);
         });
 
 
@@ -140,11 +137,6 @@ class Output
             graphView.showWires
             ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.4, 1) : this.color[3] / 1.4))
             : 'transparent';
-
-        // const colorStyle = 
-        //     graphView.showWires
-        //     ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12))
-        //     : 'transparent';
 
         this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
         this.control.style.backgroundColor = colorStyle;

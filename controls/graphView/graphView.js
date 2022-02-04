@@ -36,8 +36,8 @@ graphView.addEventListener('pointerdown', e =>
 {
     graphView.pStart = point(e.clientX, e.clientY);
 
-    const sx = e.clientX / graphView.zoom;
-    const sy = e.clientY / graphView.zoom;
+    const sx = e.clientX;// / graphView.zoom;
+    const sy = e.clientY;// / graphView.zoom;
 
     if (   e.button == 0                 
         && !graphView.panning
@@ -491,7 +491,7 @@ graphView.updateNodeWire = (wire, x = 0, y = 0) =>
         pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
     }
     else
-        pOut = point(x, y);
+        pOut = point(x, y - yOffset);
 
 
     if (wire.connection.input)
@@ -500,14 +500,14 @@ graphView.updateNodeWire = (wire, x = 0, y = 0) =>
         pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
     }
     else
-        pIn = point(x, y);
+        pIn = point(x, y - yOffset);
 
 
     wire.update(
-        pOut.x / graphView.zoom, 
-        pOut.y / graphView.zoom, 
-        pIn.x  / graphView.zoom, 
-        pIn.y  / graphView.zoom);        
+        pOut.x, 
+        pOut.y, 
+        pIn.x, 
+        pIn.y);        
 };
 
 

@@ -62,8 +62,6 @@ extends EventTarget
     get isConnected() { return this.connectedOutput != null; }
 
 
-    //onupdate     = new Event('update');
-
     onconnect    = new Event('connect');
     ondisconnect = new Event('disconnect');
 
@@ -147,13 +145,6 @@ extends EventTarget
 
 
 
-    // update()
-    // {
-    //     this.dispatchEvent(this.onupdate);
-    // }
-
-
-
     updateControl()
     {
         const mouseOver =
@@ -174,7 +165,6 @@ extends EventTarget
                 : this.color[3]))
             : 'transparent';
 
-        // const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
         const isConnected =
                this.isConnected

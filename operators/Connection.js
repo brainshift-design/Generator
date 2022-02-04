@@ -14,21 +14,20 @@ class Connection
         this.input  = input;
 
 
-        this.wire                      = createSvg('svg');
-        this.wire.connection           = this;
-        this.wire.style.position       = 'absolute';
-        this.wire.style.left           = 0;
-        this.wire.style.top            = 0;
-        this.wire.style.width          = '100%';
-        this.wire.style.height         = '100vh';
-        //this.wire.scale                = 1;
-
-        this.wire.outputPos            = point_NaN;
-        this.wire. inputPos            = point_NaN;
-
-        this.wire.curve                = createSvg('path');
-        this.wire.curve.style.fill     = 'none';
-        this.wire.curve.style.position = 'absolute';
+        this.wire                        = createSvg('svg');
+        this.wire.connection             = this;
+        this.wire.style.position         = 'absolute';
+        this.wire.style.left             = 0;
+        this.wire.style.top              = 0;
+        this.wire.style.width            = '100%';
+        this.wire.style.height           = '100vh';
+  
+        this.wire.outputPos              = point_NaN;
+        this.wire. inputPos              = point_NaN;
+  
+        this.wire.curve                  = createSvg('path');
+        this.wire.curve.style.fill       = 'none';
+        this.wire.curve.style.position   = 'absolute';
 
         this.wire.outBall                = createSvg('circle');
         this.wire.outBall.style.position = 'absolute';
@@ -68,8 +67,8 @@ class Connection
                 + ' ' + ch);
 
 
-            show(this.wire.outBall, !graphView.tempConn || !graphView.tempConn.output);
-            show(this.wire.inBall,  !graphView.tempConn || !graphView.tempConn. input);
+            show(this.wire.outBall, !graphView.tempConn || graphView.tempConn.output);
+            show(this.wire.inBall,  !graphView.tempConn || graphView.tempConn. input);
         };
 
 
@@ -88,14 +87,17 @@ class Connection
                 y2 = this.wire.inputPos.y;
             }
 
-
-
-            const tx  = 600;
-            const ty  = 300;
-            const ecc = 100;
-
+            
             const _x0 = x1;
+            const _y0 = y1;
+
             const _x3 = x2;
+            const _y3 = y2;
+
+
+            const tx  = 600 * graphView.zoom;
+            const ty  = 300 * graphView.zoom;
+            const ecc = 100 * graphView.zoom;
 
             const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
 
@@ -106,19 +108,34 @@ class Connection
                   (_x3 - _x0) * df 
                 * (_x3 < _x0 ? -1 : 1);
 
-            const _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
-            const _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
+
+            let _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
+            let _y1 = _y0;
+
+            let _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
+            let _y2 = _y3;
 
 
-            // const _x1 = _x0 + (_x3 - _x0)/1.5;
-            // const _x2 = _x3 - (_x3 - _x0)/1.5;
+            if (   graphView.tempConn 
+                && graphView.tempConn.output == graphView.overOutput)
+            {
+                _x1 += (_x0 - _x1) * 5/8;
+                _y1 += (_y0 - _y1) * 5/8;
+            }
+
+            if (   graphView.tempConn 
+                && graphView.tempConn.input == graphView.overInput)
+            {
+                _x2 += (_x3 - _x2) * 5/8;
+                _y2 += (_y3 - _y2) * 5/8;
+            }
 
             
             this.wire.curve.setAttribute('d',
-                   'M ' + _x0 + ',' + y1
-                + ' C ' + _x1 + ',' + y1
-                + ' '   + _x2 + ',' + y2
-                + ' '   + _x3 + ',' + y2);
+                   'M ' + _x0 + ',' + _y0
+                + ' C ' + _x1 + ',' + _y1
+                + ' '   + _x2 + ',' + _y2
+                + ' '   + _x3 + ',' + _y3);
         };
 
 

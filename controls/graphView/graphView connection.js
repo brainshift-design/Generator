@@ -5,7 +5,6 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
     graphView.tempConn = new Connection(output, null);
     graphView.addWire(graphView.tempConn.wire, false);
 
-    //graphView.tempConn.wire.scale  = graphView.zoom;
     graphView.tempConn.wire.output = output;
 
     graphView.updateNodeWire(
@@ -25,7 +24,6 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     graphView.tempConn = new Connection(null, input);
     graphView.addWire(graphView.tempConn.wire, false);
     
-    //graphView.tempConn.wire.scale = graphView.zoom;
     graphView.tempConn.wire.input = input;
 
     graphView.updateNodeWire(

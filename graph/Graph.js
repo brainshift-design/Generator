@@ -236,8 +236,6 @@ class Graph
             input.op.makeActive();
        
            
-        //output.op.updateConnectedInputValueText();
-
         output.updateControl();
 
 
