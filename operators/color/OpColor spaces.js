@@ -140,9 +140,9 @@ function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale 
 
 function showRgbControlHex(op, show)
 {
-    op.param1.control.showHex = show;
-    op.param2.control.showHex = show;
-    op.param3.control.showHex = show;
+    op.c1.control.showHex = show;
+    op.c2.control.showHex = show;
+    op.c3.control.showHex = show;
 }
 
 
@@ -151,24 +151,24 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
 {
     switchToSliders(op);
 
-    op.param1.setName(c1, false); 
-    op.param2.setName(c2, false); 
-    op.param3.setName(c3, false);
+    op.c1.setName(c1, false); 
+    op.c2.setName(c2, false); 
+    op.c3.setName(c3, false);
 
-    op.param1.control.wrapValue = c1wrap;
-    op.param1.control.suffix    = c1suffix;
+    op.c1.control.wrapValue = c1wrap;
+    op.c1.control.suffix    = c1suffix;
 
-    op.param1.control.displayMin = c1min; 
-    op.param2.control.displayMin = c2min;
-    op.param3.control.displayMin = c3min;
+    op.c1.control.displayMin = c1min; 
+    op.c2.control.displayMin = c2min;
+    op.c3.control.displayMin = c3min;
     
-    op.param1.control.displayMax = c1max; 
-    op.param2.control.displayMax = c2max; 
-    op.param3.control.displayMax = c3max; 
+    op.c1.control.displayMax = c1max; 
+    op.c2.control.displayMax = c2max; 
+    op.c3.control.displayMax = c3max; 
     
-    op.param1.updateControls();//control.update();
-    op.param2.updateControls();//control.update();
-    op.param3.updateControls();//control.update();
+    op.c1.updateControls();//control.update();
+    op.c2.updateControls();//control.update();
+    op.c3.updateControls();//control.update();
 }
 
 
@@ -179,9 +179,9 @@ function switchToTextbox(op)
     {
         removeOpColorParamWires(op);
 
-        op.inner.removeChild(op.param1.div);
-        op.inner.removeChild(op.param2.div);
-        op.inner.removeChild(op.param3.div);
+        op.inner.removeChild(op.c1.div);
+        op.inner.removeChild(op.c2.div);
+        op.inner.removeChild(op.c3.div);
         
         op.inner.appendChild(op.hexbox);
 
@@ -210,9 +210,9 @@ function switchToSliders(op)
     {
         op.inner.removeChild(op.hexbox);
 
-        op.inner.appendChild(op.param1.div);
-        op.inner.appendChild(op.param2.div);
-        op.inner.appendChild(op.param3.div);
+        op.inner.appendChild(op.c1.div);
+        op.inner.appendChild(op.c2.div);
+        op.inner.appendChild(op.c3.div);
 
         graphView.updateNodeTransform(op);
     }

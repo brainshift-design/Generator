@@ -13,9 +13,9 @@ extends OpColorBase
 {
     paramSpace;
     
-    param1;
-    param2;
-    param3;
+    c1;
+    c2;
+    c3;
 
     #colorBack;
 
@@ -65,9 +65,9 @@ extends OpColorBase
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.param1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));
+        this.addParam(this.c1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
+        this.addParam(this.c2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
+        this.addParam(this.c3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
         this.paramSpace.control.barTop  = 0.8;
@@ -90,9 +90,9 @@ extends OpColorBase
     {
         const col = getNormalColor_(
             getCurrentDataColorSpace(this),
-            this.param1.value,
-            this.param2.value,
-            this.param3.value);
+            this.c1.value,
+            this.c2.value,
+            this.c3.value);
     
         return [
             getCurrentDataColorSpace(this),
@@ -107,9 +107,9 @@ extends OpColorBase
     {
         const col = getDataColor(color);
 
-        this.param1.setValue(col[0], false, true, false);
-        this.param2.setValue(col[1], false, true, false);
-        this.param3.setValue(col[2], false, true, false);
+        this.c1.setValue(col[0], false, true, false);
+        this.c2.setValue(col[1], false, true, false);
+        this.c3.setValue(col[2], false, true, false);
     }
 
 
@@ -141,9 +141,9 @@ extends OpColorBase
                 this.inputs[0].data.color, 
                 getCurrentDataColorSpace(this));
 
-            if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
-            if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
-            if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
+            if (this.c1.input.isConnected) color[1] = getNormalValue(this.c1.input.data.value, color[0], 0);
+            if (this.c2.input.isConnected) color[2] = getNormalValue(this.c2.input.data.value, color[0], 1);
+            if (this.c3.input.isConnected) color[3] = getNormalValue(this.c3.input.data.value, color[0], 2);
 
             setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
         }
@@ -154,20 +154,31 @@ extends OpColorBase
             if (  !this.#init
                 || this._oldSpace != toSpace)
             {
-                switchToSpace(this, toSpace);
-
-                this.param1.allowEditDecimals = this.paramSpace.value > 1;
-                this.param2.allowEditDecimals = this.paramSpace.value > 1;
-                this.param3.allowEditDecimals = this.paramSpace.value > 1;
-             
-                this.updateParams(false);
+                this.c1.allowEditDecimals = this.paramSpace.value > 1;
+                this.c2.allowEditDecimals = this.paramSpace.value > 1;
+                this.c3.allowEditDecimals = this.paramSpace.value > 1;
 
                 const color =
                     this.loaded 
                     ? this.getDataColorFromParams()
                     : this._color;
 
+
+                switchToSpace(this, toSpace);
                 setDataColorToCurrentSpace(this, color);
+
+                
+                for (let i = 2; i < 5; i++)
+                {
+                    if (this.inputs[i].isConnected) 
+                    { 
+                        const param = this.inputs[i].param;
+
+                        param.update(); 
+                        this._color[i-1] = param.value; 
+                    }
+                }
+
 
                 this.#init = true;
             }
@@ -259,9 +270,9 @@ extends OpColorBase
 
         this.updateAllSliderRanges();
 
-        this.updateSlider(this.param1.control, isValidRgb(colBack));
-        this.updateSlider(this.param2.control, isValidRgb(colBack));
-        this.updateSlider(this.param3.control, isValidRgb(colBack));
+        this.updateSlider(this.c1.control, isValidRgb(colBack));
+        this.updateSlider(this.c2.control, isValidRgb(colBack));
+        this.updateSlider(this.c3.control, isValidRgb(colBack));
     }
 
 
@@ -284,9 +295,9 @@ extends OpColorBase
 
     resetAllControlRanges()
     {
-        resetSliderRanges(this.param1.control);
-        resetSliderRanges(this.param2.control);
-        resetSliderRanges(this.param3.control);
+        resetSliderRanges(this.c1.control);
+        resetSliderRanges(this.c2.control);
+        resetSliderRanges(this.c3.control);
     }
 
 
@@ -295,26 +306,26 @@ extends OpColorBase
     {
         if (this.paramSpace.value > 4) // warning ranges
         {
-            this.updateSliderRanges(this.param1.control, f =>
+            this.updateSliderRanges(this.c1.control, f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / getColorSpaceFactor(this._color[0])[0],
+                    (this.c1.control.displayMin + f * (this.c1.control.displayMax - this.c1.control.displayMin)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateSliderRanges(this.param2.control, f =>
+            this.updateSliderRanges(this.c2.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / getColorSpaceFactor(this._color[0])[1],
+                    (this.c2.control.displayMin + f * (this.c2.control.displayMax - this.c2.control.displayMin)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateSliderRanges(this.param3.control, f =>
+            this.updateSliderRanges(this.c3.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / getColorSpaceFactor(this._color[0])[2]]));
+                    (this.c3.control.displayMin + f * (this.c3.control.displayMax - this.c3.control.displayMin)) / getColorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
