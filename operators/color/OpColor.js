@@ -133,7 +133,7 @@ extends OpColorBase
 
     updateData()
     {
-        log(this.name + '.OpColor.updateData()');
+        //log(this.name + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -167,7 +167,7 @@ extends OpColorBase
                 switchToSpace(this, toSpace);
                 setDataColorToCurrentSpace(this, color);
 
-                
+
                 for (let i = 2; i < 5; i++)
                 {
                     if (this.inputs[i].isConnected) 
@@ -232,7 +232,7 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText, , textStyle] = this.getHeaderColors();
+        const [colBack, darkText,,,, textStyle] = this.getHeaderColors();
 
 
         const colSpaceBar = 
@@ -262,7 +262,7 @@ extends OpColorBase
 
     updateParamControls()
     {
-        const [colBack, , colText, ] = this.getHeaderColors();
+        const [colBack,,,, colText,] = this.getHeaderColors();
 
         this.paramSpace.input .color = colText;
         this.paramSpace.output.color = colText;

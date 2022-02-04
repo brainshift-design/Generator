@@ -858,7 +858,6 @@ input[type=text]::selection
     display:        block;
     width:          auto;
     height:         14;
-    color:          black;
     text-align:     center;
     position:       absolute;
     left:           50%;
@@ -12181,7 +12180,7 @@ extends EventTarget
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.2];
+        this.color     = [0, 0, 0, 0.12];
         this.wireColor = dataType2rgb(this.dataType, true);
 
         
@@ -12263,10 +12262,14 @@ extends EventTarget
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.8, 1) : this.color[3]))
+            ? colorStyleRgba(rgb_a(
+                this.color, 
+                mouseOver 
+                ? Math.min(this.color[3] * 1.8, 1) 
+                : this.color[3]))
             : 'transparent';
 
-        //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
+        // const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
         const isConnected =
                this.isConnected
@@ -12382,7 +12385,7 @@ class Output
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.1];
+        this.color     = [0, 0, 0, 0.12];
         this.wireColor = dataType2rgb(this._dataType, true);
         
         this.updateControl();
@@ -12465,6 +12468,11 @@ class Output
             graphView.showWires
             ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.4, 1) : this.color[3] / 1.4))
             : 'transparent';
+
+        // const colorStyle = 
+        //     graphView.showWires
+        //     ? colorStyleRgba(rgb_a(this.color, mouseOver ? 0.24 : 0.12))
+        //     : 'transparent';
 
         this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
         this.control.style.backgroundColor = colorStyle;
@@ -14603,20 +14611,20 @@ extends Operator
     {
         //log(this.name + '.OpColorBase.updateHeader()');
 
-        const [colBack, , colText, ] = this.getHeaderColors();
+        const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
 
 
         for (const input of this.inputs.filter(i => !i.param))
         {
             input.wireColor = colBack;
-            input.color     = colText;
+            input.color     = colInput;
         }
 
 
         for (const output of this.outputs.filter(i => !i.param))
         {
             output.wireColor = colBack;
-            output.color     = colText;
+            output.color     = colOutput;
         }
 
 
@@ -14637,7 +14645,7 @@ extends Operator
 
     updateHeaderLabel()
     {
-        const [ , , , textStyle] = this.getHeaderColors();
+        const [,,,,, textStyle] = this.getHeaderColors();
         
         this.label.style.color = textStyle;
     }
@@ -14657,12 +14665,17 @@ extends Operator
                ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
                : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias)])
             : [0, 0, 0, 1];
-        
+       
+        const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
+        const colOutput = this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
+
         const textStyle = colorStyleRgba(colText);
 
         return [
             colBack, 
-            darkText, 
+            darkText,
+            colInput,
+            colOutput, 
             colText,
             textStyle ];
     }
@@ -14860,7 +14873,7 @@ extends OpColorBase
 
     updateData()
     {
-        log(this.name + '.OpColor.updateData()');
+        //log(this.name + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -14894,7 +14907,7 @@ extends OpColorBase
                 switchToSpace(this, toSpace);
                 setDataColorToCurrentSpace(this, color);
 
-                
+
                 for (let i = 2; i < 5; i++)
                 {
                     if (this.inputs[i].isConnected) 
@@ -14959,7 +14972,7 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText, , textStyle] = this.getHeaderColors();
+        const [colBack, darkText,,,, textStyle] = this.getHeaderColors();
 
 
         const colSpaceBar = 
@@ -14989,7 +15002,7 @@ extends OpColorBase
 
     updateParamControls()
     {
-        const [colBack, , colText, ] = this.getHeaderColors();
+        const [colBack,,,, colText,] = this.getHeaderColors();
 
         this.paramSpace.input .color = colText;
         this.paramSpace.output.color = colText;
@@ -16341,7 +16354,7 @@ extends OpColorBase
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
         else if (this.inputs[1].isConnected)
         {
-            const [ , , colText, ] = this.getHeaderColors();
+            const [,,,, colText,] = this.getHeaderColors();
             this.label.style.color = colorStyleRgba(colText);
         }
         else 

@@ -209,7 +209,7 @@ extends OpColorBase
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
         else if (this.inputs[1].isConnected)
         {
-            const [ , , colText, ] = this.getHeaderColors();
+            const [,,,, colText,] = this.getHeaderColors();
             this.label.style.color = colorStyleRgba(colText);
         }
         else 

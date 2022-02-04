@@ -85,7 +85,7 @@ extends EventTarget
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.2];
+        this.color     = [0, 0, 0, 0.12];
         this.wireColor = dataType2rgb(this.dataType, true);
 
         
@@ -167,10 +167,14 @@ extends EventTarget
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.8, 1) : this.color[3]))
+            ? colorStyleRgba(rgb_a(
+                this.color, 
+                mouseOver 
+                ? Math.min(this.color[3] * 1.8, 1) 
+                : this.color[3]))
             : 'transparent';
 
-        //const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
+        // const colorStyle = colorStyleRgba(rgb_a(dataType2rgb(this.dataType, true), mouseOver ? 0.4 : 0.2));
 
         const isConnected =
                this.isConnected
