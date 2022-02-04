@@ -89,3 +89,51 @@
 {
     background-color: white;
 }
+
+
+
+.arithmeticSymbol
+{
+    font-family:    Inter;
+    font-size:      20px;
+    width:          auto;/*var(--arithmeticSymbolSize);*/
+    height:         auto;/*var(--arithmeticSymbolSize);*/
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+    /* pointer-events: none; */
+    /* box-shadow:     0 0 0 1px red inset; */
+}
+
+
+.colorWarningOverlay
+{
+    width:            100%;
+    height:           var(--colorBackSize);
+    z-index:          10;
+    position:         absolute;
+    top:              0;
+    pointer-events:   none;
+}
+
+
+.colorValueWarningOverlay
+{
+    width:            100%;
+    z-index:          1000;
+    position:         absolute;
+    top:              var(--colorBackSize);
+    pointer-events:   none;
+}
+
+
+.colorBack
+{
+    width:            100%;
+    height:           var(--colorBackSize);
+    z-index:          0;
+    position:         absolute;
+    top:              0;
+    pointer-events:   none;
+    border-radius:    4px 4px 0 0;
+}

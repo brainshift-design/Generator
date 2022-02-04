@@ -143,7 +143,7 @@ function createNodeHeader(node)
 
             if (!node.selected)
             {
-                if (e.shiftKey) node     .selected = true;
+                if (e.shiftKey) node     .selected      = true;
                 else            graphView.selectedNodes = [node];
 
                 node.selectedSet = true;

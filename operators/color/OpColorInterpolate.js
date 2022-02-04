@@ -34,7 +34,8 @@ extends OpColorBase
 
         this.inputs[0].addEventListener('connect', () => 
         {
-            if (!this.inputs[1].isConnected) 
+            if (   !this.inputs[1].isConnected
+                && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
                     OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]),
                     true, true, false);
@@ -42,7 +43,8 @@ extends OpColorBase
 
         this.inputs[1].addEventListener('connect', () => 
         {
-            if (!this.inputs[0].isConnected) 
+            if (   !this.inputs[0].isConnected
+                && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
                     OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]),
                     true, true, false);

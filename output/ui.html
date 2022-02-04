@@ -100,6 +100,78 @@ input[type=text]::selection
 
 
 
+#loadingOverlay
+{
+    position:   absolute;
+    top:        0;
+    left:       0;
+    width:      100%;
+    height:     100%;
+    background: #e5e5e5;
+    display:    none;
+}
+
+
+#loadingGraphic 
+{
+    font-family: Inter;
+    font-size:   26;
+    font-weight: 700;
+    color:       #333;
+    position:    absolute;
+    left:        50%;
+    top:         45%;
+    transform:   translateX(-50%)
+                 translateY(-50%);
+}
+
+
+#loadingEmpty
+{
+    font-size:   12;
+    color:       #666;
+    margin-right: 6px;
+    position:     relative;
+    top:          -4px;
+}
+
+
+#loadingFull
+{
+    font-size:   8;
+    color:       #666;
+    margin-left: 7px;
+    position:     relative;
+    top:          -6px;
+}
+
+
+#loadingBar
+{
+    position:      absolute;
+    left:          50%;
+    top:           50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         180px;
+    height:        5px;   
+    background:    white;
+    border-radius: 2.5px;
+    overflow:      hidden;
+}
+
+
+#loadingProgress
+{
+    position:      absolute;
+    left:          0;
+    top:           0;
+    width:         0;
+    height:        5px;   
+    background:    #333;
+}
+
+
 .menuButton
 {
     font-family:     Inter;
@@ -389,129 +461,18 @@ input[type=text]::selection
     background-repeat:no-repeat;
     background-position:center center;
     background-size: 100% 100%, auto; */
- }
-
-
-#loadingOverlay
-{
-    position:   absolute;
-    top:        0;
-    left:       0;
-    width:      100%;
-    height:     100%;
-    background: #e5e5e5;
-    display:    none;
 }
 
 
-#loadingGraphic 
+#wireContainer
 {
-    font-family: Inter;
-    font-size:   26;
-    font-weight: 700;
-    color:       #333;
-    position:    absolute;
-    left:        50%;
-    top:         45%;
-    transform:   translateX(-50%)
-                 translateY(-50%);
-}
-
-
-#loadingEmpty
-{
-    font-size:   12;
-    color:       #666;
-    margin-right: 6px;
-    position:     relative;
-    top:          -4px;
-}
-
-
-#loadingFull
-{
-    font-size:   8;
-    color:       #666;
-    margin-left: 7px;
-    position:     relative;
-    top:          -6px;
-}
-
-
-#loadingBar
-{
-    position:      absolute;
-    left:          50%;
-    top:           50%;
-    transform:     translateX(-50%)
-                   translateY(-50%);
-    width:         180px;
-    height:        5px;   
-    background:    white;
-    border-radius: 2.5px;
-    overflow:      hidden;
-}
-
-
-#loadingProgress
-{
-    position:      absolute;
-    left:          0;
-    top:           0;
-    width:         0;
-    height:        5px;   
-    background:    #333;
-}
-
-
-
-
-.arithmeticSymbol
-{
-    font-family:    Inter;
-    font-size:      20px;
-    width:          auto;/*var(--arithmeticSymbolSize);*/
-    height:         auto;/*var(--arithmeticSymbolSize);*/
     position:       absolute;
-    left:           50%;
-    transform:      translateX(-50%);
-    /* pointer-events: none; */
-    /* box-shadow:     0 0 0 1px red inset; */
+    width:          100%;
+    height:         calc(100% - 1px);
+    z-index:        0;
+    pointer-events: none;
+    /* box-shadow: 0 0 0 1px red inset; */
 }
-
-
-.colorWarningOverlay
-{
-    width:            100%;
-    height:           var(--colorBackSize);
-    z-index:          10;
-    position:         absolute;
-    top:              0;
-    pointer-events:   none;
-}
-
-
-.colorValueWarningOverlay
-{
-    width:            100%;
-    z-index:          1000;
-    position:         absolute;
-    top:              var(--colorBackSize);
-    pointer-events:   none;
-}
-
-
-.colorBack
-{
-    width:            100%;
-    height:           var(--colorBackSize);
-    z-index:          0;
-    position:         absolute;
-    top:              0;
-    pointer-events:   none;
-    border-radius:    4px 4px 0 0;
-}
-
 
 
 .toggleButton
@@ -925,6 +886,53 @@ input[type=text]::selection
 
 
 
+.arithmeticSymbol
+{
+    font-family:    Inter;
+    font-size:      20px;
+    width:          auto;/*var(--arithmeticSymbolSize);*/
+    height:         auto;/*var(--arithmeticSymbolSize);*/
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+    /* pointer-events: none; */
+    /* box-shadow:     0 0 0 1px red inset; */
+}
+
+
+.colorWarningOverlay
+{
+    width:            100%;
+    height:           var(--colorBackSize);
+    z-index:          10;
+    position:         absolute;
+    top:              0;
+    pointer-events:   none;
+}
+
+
+.colorValueWarningOverlay
+{
+    width:            100%;
+    z-index:          1000;
+    position:         absolute;
+    top:              var(--colorBackSize);
+    pointer-events:   none;
+}
+
+
+.colorBack
+{
+    width:            100%;
+    height:           var(--colorBackSize);
+    z-index:          0;
+    position:         absolute;
+    top:              0;
+    pointer-events:   none;
+    border-radius:    4px 4px 0 0;
+}
+
+
 .outputControls
 {
     width:          12px;
@@ -1011,6 +1019,7 @@ input[type=text]::selection
 <div id='selectBox'></div>
 
 <div id='graphView'>
+    <div id="wireContainer"></div>
     <div id='scrollbarX'></div>
     <div id='scrollbarY'></div>
 </div>
@@ -10341,6 +10350,8 @@ graphView.endSelection = pointerId =>
 
 
 graphView.wires          = [];
+
+graphView.loadingNodes   = false;
 graphView.canUpdateNodes = true;
 
 
@@ -10361,7 +10372,6 @@ graphView.selectionRect  = Rect.NaN;
 
 graphView.btn1down       = false; // this is to help deal with mouse wheels that send X values as
                                   // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
-
 
 graphView.panning        = false;
 
@@ -10703,7 +10713,23 @@ graphView.putNodeOnTop = node =>
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars
+    node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars;
+
+    graphView.putWiresOnTop(node);
+};
+
+
+
+graphView.putWiresOnTop = node =>
+{
+    let z = MAX_INT32;
+
+    for (const input of node.inputs.filter(i => i.isConnected))
+        input.connection.wire.style.zIndex = z--;
+        
+    for (const output of node.outputs)
+        for (const connInput of output.connectedInputs)
+            connInput.connection.wire.style.zIndex = z--;
 };
 
 
@@ -10822,7 +10848,7 @@ graphView.updateWireTransform = function(wire, outRect, inRect, cw, ch, yOffset)
 graphView.addWire = (wire, updateTransform = true) =>
 {
     graphView.wires.push(wire);
-    graphView.appendChild(wire);
+    wireContainer.appendChild(wire);
 
     if (updateTransform)
     {
@@ -10840,7 +10866,7 @@ graphView.addWire = (wire, updateTransform = true) =>
 
 graphView.removeWire = wire =>
 {
-    graphView.removeChild(wire);    
+    wireContainer.removeChild(wire);    
     removeFromArray(graphView.wires, wire);
 };
 
@@ -13506,7 +13532,7 @@ function createNodeHeader(node)
 
             if (!node.selected)
             {
-                if (e.shiftKey) node     .selected = true;
+                if (e.shiftKey) node     .selected      = true;
                 else            graphView.selectedNodes = [node];
 
                 node.selectedSet = true;
@@ -16376,7 +16402,8 @@ extends OpColorBase
 
         this.inputs[0].addEventListener('connect', () => 
         {
-            if (!this.inputs[1].isConnected) 
+            if (   !this.inputs[1].isConnected
+                && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
                     OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]),
                     true, true, false);
@@ -16384,7 +16411,8 @@ extends OpColorBase
 
         this.inputs[1].addEventListener('connect', () => 
         {
-            if (!this.inputs[0].isConnected) 
+            if (   !this.inputs[0].isConnected
+                && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
                     OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]),
                     true, true, false);
@@ -18644,6 +18672,9 @@ function uiCopyNodes(nodeIds)
 
 function uiPasteNodes(nodesJson, pasteOutsideConnections)
 {
+    graphView.loadingNodes = true;
+
+
     pasteOffset[0] += pasteOffsetDelta[0];
     pasteOffset[1] += pasteOffsetDelta[1];
 
@@ -18674,8 +18705,9 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
         loadConnections(data, pasteOutsideConnections);
     }
     
-    
     graphView.selectedNodes = nodes;
+    
+    graphView.loadingNodes = false;
     return nodes;
 }
 
@@ -18808,6 +18840,7 @@ function saveGraph()
 
 function loadGraph(json)
 {
+    graphView.loadingNodes   = true;
     graphView.canUpdateNodes = false;
 
 
@@ -18919,6 +18952,8 @@ function loadConnectionsAsync(data, nodes, setProgress)
         graphView.updateScroll();
 
         loadingOverlay.style.display = 'none';
+
+        graphView.loadingNodes = false;
     });
 }
 

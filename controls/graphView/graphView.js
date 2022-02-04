@@ -1,4 +1,6 @@
 graphView.wires          = [];
+
+graphView.loadingNodes   = false;
 graphView.canUpdateNodes = true;
 
 
@@ -19,7 +21,6 @@ graphView.selectionRect  = Rect.NaN;
 
 graphView.btn1down       = false; // this is to help deal with mouse wheels that send X values as
                                   // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
-
 
 graphView.panning        = false;
 
@@ -361,7 +362,23 @@ graphView.putNodeOnTop = node =>
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
         
-    node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars
+    node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars;
+
+    graphView.putWiresOnTop(node);
+};
+
+
+
+graphView.putWiresOnTop = node =>
+{
+    let z = MAX_INT32;
+
+    for (const input of node.inputs.filter(i => i.isConnected))
+        input.connection.wire.style.zIndex = z--;
+        
+    for (const output of node.outputs)
+        for (const connInput of output.connectedInputs)
+            connInput.connection.wire.style.zIndex = z--;
 };
 
 
@@ -480,7 +497,7 @@ graphView.updateWireTransform = function(wire, outRect, inRect, cw, ch, yOffset)
 graphView.addWire = (wire, updateTransform = true) =>
 {
     graphView.wires.push(wire);
-    graphView.appendChild(wire);
+    wireContainer.appendChild(wire);
 
     if (updateTransform)
     {
@@ -498,7 +515,7 @@ graphView.addWire = (wire, updateTransform = true) =>
 
 graphView.removeWire = wire =>
 {
-    graphView.removeChild(wire);    
+    wireContainer.removeChild(wire);    
     removeFromArray(graphView.wires, wire);
 };
 

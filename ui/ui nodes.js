@@ -292,6 +292,9 @@ function uiCopyNodes(nodeIds)
 
 function uiPasteNodes(nodesJson, pasteOutsideConnections)
 {
+    graphView.loadingNodes = true;
+
+
     pasteOffset[0] += pasteOffsetDelta[0];
     pasteOffset[1] += pasteOffsetDelta[1];
 
@@ -322,8 +325,9 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
         loadConnections(data, pasteOutsideConnections);
     }
     
-    
     graphView.selectedNodes = nodes;
+    
+    graphView.loadingNodes = false;
     return nodes;
 }
 

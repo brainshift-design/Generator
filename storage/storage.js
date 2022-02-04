@@ -24,6 +24,7 @@ function saveGraph()
 
 function loadGraph(json)
 {
+    graphView.loadingNodes   = true;
     graphView.canUpdateNodes = false;
 
 
@@ -135,6 +136,8 @@ function loadConnectionsAsync(data, nodes, setProgress)
         graphView.updateScroll();
 
         loadingOverlay.style.display = 'none';
+
+        graphView.loadingNodes = false;
     });
 }
 
