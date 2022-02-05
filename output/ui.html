@@ -12626,14 +12626,14 @@ class Connection
             let _y2 = _y3;
 
 
-            if (   graphView.tempConn 
+            if (   graphView.tempConn == this
                 && graphView.tempConn.output == graphView.overOutput)
             {
                 _x1 += (_x0 - _x1) * 5/8;
                 _y1 += (_y0 - _y1) * 5/8;
             }
 
-            if (   graphView.tempConn 
+            if (   graphView.tempConn == this
                 && graphView.tempConn.input == graphView.overInput)
             {
                 _x2 += (_x3 - _x2) * 5/8;
