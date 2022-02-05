@@ -32,13 +32,16 @@ scrollbarX.style.zIndex  = MAX_INT32-1;
 scrollbarY.style.zIndex  = MAX_INT32-2;
 
 
+graphView.touches        = [];
+
+
 
 graphView.addEventListener('pointerdown', e =>
 {
     graphView.pStart = point(e.clientX, e.clientY);
 
-    const sx = e.clientX;// / graphView.zoom;
-    const sy = e.clientY;// / graphView.zoom;
+    const sx = e.clientX;
+    const sy = e.clientY;
 
     if (   e.button == 0                 
         && !graphView.panning
@@ -236,6 +239,56 @@ graphView.addEventListener('wheel', e =>
 
     if (graphView.tempConn)
         graphView_onpointermove(e);
+});
+
+
+
+graphView.addEventListener('touchstart', e =>
+{
+    graphView.touches.push(e);
+    e.preventDefault();
+});
+
+
+
+graphView.addEventListener('touchmove', e =>
+{
+    for (let i = 0; i < graphView.touches.length; i++)
+        if (graphView.touches[i].pointerId == e.pointerId)
+        {
+            graphView.touches[i] = e;
+            break;
+        }
+
+    e.preventDefault();
+});
+
+
+
+graphView.addEventListener('touchend', e =>
+{
+    for (let i = 0; i < graphView.touches.length; i++)
+        if (graphView.touches[i].pointerId == e.pointerId)
+        {
+            graphView.touches.splice(i, 1);
+            break;
+        }
+
+    e.preventDefault();
+});
+
+
+
+graphView.addEventListener('touchcancel', e =>
+{
+    for (let i = 0; i < graphView.touches.length; i++)
+        if (graphView.touches[i].pointerId == e.pointerId)
+        {
+            graphView.touches.splice(i, 1);
+            break;
+        }
+
+    e.preventDefault();
 });
 
 

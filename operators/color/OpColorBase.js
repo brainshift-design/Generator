@@ -152,9 +152,12 @@ extends Operator
 
 
 
-    updateWarningOverlayStyle(colBack, height = 38)
+    updateWarningOverlayStyle(colBack, height = -1)
     {
-        this._warningOverlay.style.height = height;
+        this._warningOverlay.style.height = 
+            height < 0
+            ? this.header.offsetHeight
+            : height;
 
         this._warningOverlay.style.background =
                 isValidRgb(colBack)

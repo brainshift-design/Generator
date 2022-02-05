@@ -59,8 +59,6 @@ extends OpColorBase
             this.forceShowWarning = false;
         }
                 
-                
-
 
         this.outputs[0]._data = dataFromDataColor(this._color);
     }
