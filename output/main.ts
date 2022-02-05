@@ -325,6 +325,7 @@ function figGetPluginData(key)
 
 function figSetPluginData(key, value)
 {
+    figma.currentPage.setPluginData(key, ''); // remove possible existing values first
     figma.currentPage.setPluginData(key, value);
 }
 

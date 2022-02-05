@@ -149,7 +149,7 @@ function createNodeHeader(node)
                 node.selectedSet = true;
             }
             
-            
+
             if (getCtrlKey(e))
             {
                 graphView.selectedNodes = [
@@ -326,6 +326,8 @@ function createNodeHeader(node)
 
 function setNodePositions(nodes, dx, dy, updateTransform = true)
 {
+    log('setNodePositions()');
+
     for (const node of nodes)
     {
         node.div.style.left = node.div.slx + dx;
@@ -340,6 +342,8 @@ function setNodePositions(nodes, dx, dy, updateTransform = true)
 
 function setNodePosition(node, x, y, updateTransform = true)
 {
+    log('setNodePosition()');
+
     node.div.style.left = x;
     node.div.style.top  = y;
 
