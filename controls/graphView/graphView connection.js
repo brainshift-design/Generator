@@ -1,7 +1,5 @@
 graphView.startConnectionFromOutput = (pointerId, output) =>
 {
-    //graphView.setPointerCapture(pointerId);
-
     graphView.tempConn = new Connection(output, null);
     graphView.addWire(graphView.tempConn.wire, false);
 
@@ -19,8 +17,6 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
 
 graphView.startConnectionFromInput = (pointerId, input) =>
 {
-    //graphView.setPointerCapture(pointerId);
-
     graphView.tempConn = new Connection(null, input);
     graphView.addWire(graphView.tempConn.wire, false);
     
@@ -38,8 +34,6 @@ graphView.startConnectionFromInput = (pointerId, input) =>
 
 graphView.cancelConnection = pointerId =>
 {
-    //graphView.releasePointerCapture(pointerId);
-
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
 
@@ -53,6 +47,10 @@ graphView.cancelConnection = pointerId =>
 
     if (graphView.overInput ) graphView.overInput .updateControl();
     if (graphView.overOutput) graphView.overOutput.updateControl();
+
+
+    if (graphView.hasPointerCapture(pointerId))
+        graphView.releasePointerCapture(pointerId);
 };
 
 
@@ -113,3 +111,9 @@ graphView.endConnection = pointerId =>
         graphView.cancelConnection(pointerId);
     }
 };
+
+
+// assuming here elementsFromPoint() will always return graphViewCapture as [0], and then the element I need
+// graphViewCapture.addEventListener('pointerdown', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+// graphViewCapture.addEventListener('pointermove', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+// graphViewCapture.addEventListener('pointerup',   e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));

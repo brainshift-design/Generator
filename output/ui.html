@@ -48,6 +48,7 @@ body
     margin:           0;
     background-color: #f4f4f4;
     user-select:      none;
+    font-family:      Inter;
 }
 
 
@@ -456,11 +457,6 @@ input[type=text]::selection
 {
     z-index:  0;
     overflow: hidden;
-    /* box-shadow: 0 0 0 1px red inset;
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 10 10'> <path d='M0 0 L0 10 L10 10' fill='red' /></svg>");
-    background-repeat:no-repeat;
-    background-position:center center;
-    background-size: 100% 100%, auto; */
 }
 
 
@@ -472,6 +468,18 @@ input[type=text]::selection
     z-index:        0;
     pointer-events: none;
     /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#graphViewCapture
+{
+    position:   fixed;
+    left:       0;
+    top:        0;
+    width:      100%;
+    height:     calc(100% - 1px);
+    z-index:    1;
+    box-shadow: 0 0 0 1px green inset;
 }
 
 
@@ -989,11 +997,11 @@ input[type=text]::selection
     
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
-    <!-- &nbsp;
+    &nbsp;
     <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
@@ -1023,6 +1031,9 @@ input[type=text]::selection
     <div id='scrollbarX'></div>
     <div id='scrollbarY'></div>
 </div>
+
+<!-- <div id='graphViewCapture'></div> -->
+
 
 
 <div id='loadingOverlay'>
@@ -9657,8 +9668,6 @@ function initMenuSelect(select)
 
 graphView.startConnectionFromOutput = (pointerId, output) =>
 {
-    //graphView.setPointerCapture(pointerId);
-
     graphView.tempConn = new Connection(output, null);
     graphView.addWire(graphView.tempConn.wire, false);
 
@@ -9676,8 +9685,6 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
 
 graphView.startConnectionFromInput = (pointerId, input) =>
 {
-    //graphView.setPointerCapture(pointerId);
-
     graphView.tempConn = new Connection(null, input);
     graphView.addWire(graphView.tempConn.wire, false);
     
@@ -9695,8 +9702,6 @@ graphView.startConnectionFromInput = (pointerId, input) =>
 
 graphView.cancelConnection = pointerId =>
 {
-    //graphView.releasePointerCapture(pointerId);
-
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
 
@@ -9710,6 +9715,10 @@ graphView.cancelConnection = pointerId =>
 
     if (graphView.overInput ) graphView.overInput .updateControl();
     if (graphView.overOutput) graphView.overOutput.updateControl();
+
+
+    if (graphView.hasPointerCapture(pointerId))
+        graphView.releasePointerCapture(pointerId);
 };
 
 
@@ -9770,6 +9779,12 @@ graphView.endConnection = pointerId =>
         graphView.cancelConnection(pointerId);
     }
 };
+
+
+// assuming here elementsFromPoint() will always return graphViewCapture as [0], and then the element I need
+// graphViewCapture.addEventListener('pointerdown', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+// graphViewCapture.addEventListener('pointermove', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+// graphViewCapture.addEventListener('pointerup',   e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
 
 
 graphView._pan = point(0, 0);
@@ -10342,6 +10357,26 @@ scrollbarY.style.zIndex  = MAX_INT32-2;
 
 
 graphView.touches        = [];
+
+
+
+graphView.addEventListener('pointerenter', e => 
+{
+    if (graphView.hasPointerCapture(e.pointerId))
+    {
+        e.preventDefault();
+        graphView.releasePointerCapture(e.pointerId);
+    }
+});
+
+graphView.addEventListener('pointerleave', e => 
+{
+    if (graphView.tempConn)
+    {
+        e.preventDefault();
+        graphView.setPointerCapture(e.pointerId);
+    }
+});
 
 
 
@@ -12820,8 +12855,8 @@ class Operator
     
     _variableInputs = false;
 
-    alwaysLoadParams;
-    loaded;
+    alwaysLoadParams = false;
+    loaded           = false;
 
     labelOffsetFactor;
 
@@ -12902,9 +12937,6 @@ class Operator
 
         this.defaultWidth      = defWidth;
         
-        this.loaded            = false;
-        this.alwaysLoadParams  = false;
-
         this.labelOffsetFactor = 0;
 
         createOperatorNode(this);
@@ -14992,6 +15024,8 @@ extends OpColorBase
                     this.loaded 
                     ? this.getDataColorFromParams()
                     : this._color;
+
+                this.loaded = false;
 
 
                 switchToSpace(this, toSpace);
@@ -18067,10 +18101,9 @@ document.addEventListener('pointerup', function(e)
 var figMessages = [];
 
 
-
 //uiSaveLocal('state', null);
-// uiSaveLocal('windowWidth',  null);
-// uiSaveLocal('windowHeight', null);
+//uiSaveLocal('windowWidth',  null);
+//uiSaveLocal('windowHeight', null);
 //uiSaveLocal('productKey', null);
 
 
@@ -18087,11 +18120,11 @@ const generator = new Worker(
 //const buf = new SharedArrayBuffer(1024);
 
 
-var     copiedNodesJson  = '';
-var duplicatedNodesJson  = '';
+var     copiedNodesJson = '';
+var duplicatedNodesJson = '';
 
-var pasteOffset      = [ 0,   0];
-var pasteOffsetDelta = [40, 100];
+var pasteOffset         = [ 0,   0];
+var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
@@ -18747,8 +18780,8 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    setInterval(autoSave, 5000); // auto save every 5 seconds
     uiGetPluginData('graph'); // load graph from current page
+    //setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
 
@@ -18839,7 +18872,7 @@ function checkResize(x, y)
 function saveGraph()
 {
     const json = graph.toJson(); 
-    //log(json); 
+    log(json); 
     uiSetPluginData("graph", json);
 }
 
@@ -18854,7 +18887,7 @@ function loadGraph(json)
     graph.clear();
     
     const data = JSON.parse(json);
-    //log(json);
+    log(json);
 
 
     const pan = point( 

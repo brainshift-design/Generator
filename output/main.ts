@@ -237,10 +237,6 @@ function figLoadState(msg)
         if (productKey == null) productKey = '';
 
 
-        // load graph
-        
-
-
         // end load state
         figPostMessageToUi({
             cmd:        'uiEndLoadState',

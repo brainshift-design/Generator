@@ -154,7 +154,6 @@ function figLoadState(msg) {
             let productKey = yield figLoadLocal('productKey');
             if (productKey == null)
                 productKey = '';
-            // load graph
             // end load state
             figPostMessageToUi({
                 cmd: 'uiEndLoadState',

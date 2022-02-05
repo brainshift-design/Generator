@@ -36,6 +36,26 @@ graphView.touches        = [];
 
 
 
+graphView.addEventListener('pointerenter', e => 
+{
+    if (graphView.hasPointerCapture(e.pointerId))
+    {
+        e.preventDefault();
+        graphView.releasePointerCapture(e.pointerId);
+    }
+});
+
+graphView.addEventListener('pointerleave', e => 
+{
+    if (graphView.tempConn)
+    {
+        e.preventDefault();
+        graphView.setPointerCapture(e.pointerId);
+    }
+});
+
+
+
 graphView.addEventListener('pointerdown', e =>
 {
     graphView.pStart = point(e.clientX, e.clientY);

@@ -163,6 +163,8 @@ extends OpColorBase
                     ? this.getDataColorFromParams()
                     : this._color;
 
+                this.loaded = false;
+
 
                 switchToSpace(this, toSpace);
                 setDataColorToCurrentSpace(this, color);

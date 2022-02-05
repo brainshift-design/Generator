@@ -31,8 +31,8 @@ class Operator
     
     _variableInputs = false;
 
-    alwaysLoadParams;
-    loaded;
+    alwaysLoadParams = false;
+    loaded           = false;
 
     labelOffsetFactor;
 
@@ -113,9 +113,6 @@ class Operator
 
         this.defaultWidth      = defWidth;
         
-        this.loaded            = false;
-        this.alwaysLoadParams  = false;
-
         this.labelOffsetFactor = 0;
 
         createOperatorNode(this);
