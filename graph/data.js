@@ -25,7 +25,7 @@ function dataFromNumber(num, dec = -1)
 {
     return {
         type:    'number',
-        value:    num,
+        value:    floorTo(num, dec),
         decimals: dec
     };
 }

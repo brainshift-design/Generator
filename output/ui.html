@@ -1295,6 +1295,13 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 
+function floorTo(x, dec)
+{
+    const div = Math.round(Math.pow(10, dec));
+    return Math.floor((x + Number.EPSILON) * div) / div;    
+}
+
+
 function roundTo(x, dec)
 {
     const div = Math.round(Math.pow(10, dec));
@@ -3728,6 +3735,13 @@ const Tau = Math.PI * 2;
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
+
+
+function floorTo(x, dec)
+{
+    const div = Math.round(Math.pow(10, dec));
+    return Math.floor((x + Number.EPSILON) * div) / div;    
+}
 
 
 function roundTo(x, dec)
@@ -11488,7 +11502,7 @@ function dataFromNumber(num, dec = -1)
 {
     return {
         type:    'number',
-        value:    num,
+        value:    floorTo(num, dec),
         decimals: dec
     };
 }
@@ -14293,11 +14307,10 @@ extends OperatorBase
 
         const result = this.getResult();
 
-        this.outputs[0]._data = dataFromNumber(roundTo(result, maxDec), maxDec);
+        this.outputs[0]._data = dataFromNumber(result, maxDec);
 
         this.#paramValue.setValue(result, false, true, false);
         this.#paramValue.control.dec = maxDec;
-        //this.#paramValue.control.update();
 
         
         super.updateData()
