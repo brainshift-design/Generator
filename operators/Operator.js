@@ -290,7 +290,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.name + '.Operator.updateNode()');
+        log(this.name + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();

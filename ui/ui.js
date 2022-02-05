@@ -7,6 +7,8 @@ function uiEndLoadState(msg)
     uiGetPluginData('graph'); // load graph from current page
 
     uiEndResizeWindow();
+
+    window.focus();
 }
 
 

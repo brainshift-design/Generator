@@ -13056,7 +13056,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.name + '.Operator.updateNode()');
+        log(this.name + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -18781,6 +18781,8 @@ function uiEndLoadState(msg)
     uiGetPluginData('graph'); // load graph from current page
 
     uiEndResizeWindow();
+
+    window.focus();
 }
 
 
