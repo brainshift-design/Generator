@@ -1005,8 +1005,8 @@ input[type=text]::selection
     <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color"           )); this.blur();'>COL</button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>INTR</button>
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'>CTR</button>
-    <!-- <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind"      )); this.blur();'>BLND</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind"      )); this.blur();'>BLND</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
@@ -6242,21 +6242,9 @@ function rgbPow(col, p)
 
 
 
-// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
-// the simulation itself gives grayscale
-// on the site the simulation has color in it, so I decided to leave some color in as well,
-// but the amount is completely arbitrary, I just felt that this particular value matches
-// the description on that site without being unrealistically exaggerated
-const blueMono = 0.88;
-
-
-// achromatopsia
-const ACR = [0.212656, 0.715158, 0.072186];
-
-
-const lmsW = xyz2lms(lrgb2xyz([1, 1, 1], sRGB));
-const lmsB = xyz2lms(lrgb2xyz([0, 0, 1], sRGB));
-const lmsR = xyz2lms(lrgb2xyz([1, 0, 0], sRGB));
+const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
+const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
+const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
 
 const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
 const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
@@ -6271,127 +6259,78 @@ const bq1 = lmsW[0] / lmsW[2];
 const bq2 = lmsW[1] / lmsW[2];
 
 
+// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
+// the simulation itself gives grayscale
+// on the site the simulation has color in it, so I decided to leave some color in as well,
+// but the amount is completely arbitrary, I just felt that this particular value matches
+// the description on that site without being unrealistically exaggerated
+const blueMono = 0.88;
 
-function col2xyz(col, colorSpace, w = sRGB.W)
+
+function rgb2colorblind(rgb, l, m, s, cs = sRGB)
 {
-    if (colorSpace == 1) return lab2xyz(col, w);
-    else                 return luv2xyz(col, w);
-}
-
-
-
-function xyz2col(col, w = sRGB.W)
-{
-    switch (setColorSpace)
+    if (   l == 0
+        && m == 0
+        && s == 0)
     {
-        case 2: return xyz2lab(col, w);
-        case 1: return xyz2luv(col, w);
-    }
-}
-
-
-
-function lch2rgb_CB(l, c, h, colorSpace, cones)
-{
-    const col = lch2col([
-        l, 
-        c * l/100, 
-        h]);
-
-    const xyz = col2xyz(col, colorSpace);
-    
-
-    let rgb;
-
-    if (   cones.l == 0
-        && cones.m == 0
-        && cones.s == 0)
-    {
-        rgb = xyz2rgb(xyz, sRGB);
+        // achromatopsia is simulated by taking only the luminance
 
         const a = 
-              ACR[0] * rgb[0]
-            + ACR[1] * rgb[1]
-            + ACR[2] * rgb[2];
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
 
         rgb = [a, a, a];
     }
     else
     {
+        const xyz = rgb2xyz(rgb, cs);
         const lms = xyz2lms(xyz);
 
-        const lms_ =
-               cones.l == 0
-            && cones.m == 0
+        // const lms_ =
+        //        l == 0
+        //     && m == 0
 
-            ? [ lms[0] + blueMono * (bq1*lms[2] - lms[0]),
-                lms[1] + blueMono * (bq2*lms[2] - lms[1]),
-                lms[2] ]
+        //     ? [ lms[0] + blueMono * (bq1*lms[2] - lms[0]),
+        //         lms[1] + blueMono * (bq2*lms[2] - lms[1]),
+        //         lms[2] ]
              
-            : [ lms[0] + (1 - cones.l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
-                lms[1] + (1 - cones.m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
-                lms[2] + (1 - cones.s) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]) ];
-
-        let xyz_ = lms2xyz(lms_);
-            rgb  = xyz2rgb(xyz_, sRGB);
-    }
-    
-    return rgb;
-}    
-
-
-
-function oklch2rgb_CB(l, c, h, colorSpace, cones)
-{
-    let rgb;
-    
-    if (   cones.l == 0
-        && cones.m == 0
-        && cones.s == 0)
-    {
-        const lab = lch2col([
-            l, 
-            c,//okLabScale * l/100, 
-            h ]);
-    
-        rgb = oklab2rgb(lab, sRGB);
+        //     : [ lms[0] + (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
+        //         lms[1] + (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
+        //         lms[2] + (1 - s) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]) ];
 
         const a = 
-              ACR[0] * rgb[0]
-            + ACR[1] * rgb[1]
-            + ACR[2] * rgb[2];
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
 
-        rgb = [a, a, a];
-    }
-    else
-    {
-        const _rgb = lch2rgb_CB(l, c, h, colorSpace, cones);
+        const lm = Math.min(l + m, 1);
 
-        const xyz = rgb2xyz(_rgb, sRGB);
-        const lms = xyz2lms(xyz);
-
-        const lms_ =
-               cones.l == 0
-            && cones.m == 0
-
-            ? [ lms[0] + blueMono * (bq1*lms[2] - lms[0]),
-                lms[1] + blueMono * (bq2*lms[2] - lms[1]),
-                lms[2] ]
-             
-            : [ lms[0] + (1 - cones.l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
-                lms[1] + (1 - cones.m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
-                lms[2] + (1 - cones.s) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]) ];
+        const lms_ = [
+            lms[0] + lerp(
+                (blueMono * (bq1*lms[2] - lms[0]) - a),
+                (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
+                lm),
+            lms[1] + lerp(
+                (blueMono * (bq2*lms[2] - lms[1]) - a),
+                (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
+                lm),
+            lms[2] + lerp(
+                0,
+                lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]),
+                lm) ];
 
         let xyz_ = lms2xyz(lms_);
             rgb  = xyz2rgb(xyz_, sRGB);
+
+        rgb = rgbLerp(
+            [a, a, a], 
+            rgb, 
+            Math.min(s + lm, 1));
     }
     
-    return rgb;
-}    
-
-
-
-
+    return invalid2validRgb(rgb);
+}
 
 
 const color_NaN = [
@@ -16636,12 +16575,33 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramL = new SelectParam('l', 'L', true, true, ['L Blind', 'L Weak', 'L'], 2));
-        this.addParam(this.#paramM = new SelectParam('m', 'M', true, true, ['M Blind', 'M Weak', 'M'], 2));
-        this.addParam(this.#paramS = new SelectParam('s', 'S', true, true, ['S Blind', 'S Weak', 'S'], 2));
-      
+        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 1, 0, 1, 1));
+        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 1, 0, 1, 1));
+        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 1, 0, 1, 1));
+
+        
+        this.#paramL.addEventListener('change', () => this.setParamText(this.#paramL, 'L'));
+        this.#paramM.addEventListener('change', () => this.setParamText(this.#paramM, 'M'));
+        this.#paramS.addEventListener('change', () => this.setParamText(this.#paramS, 'S'));
+
+
+        this.setParamText(this.#paramL, 'L');
+        this.setParamText(this.#paramM, 'M');
+        this.setParamText(this.#paramS, 'S');
+
 
         this.header.connectionPadding = 14;
+    }
+
+
+
+    setParamText(param, cone)
+    {
+        const v = Math.round(param.value * 2);
+
+             if (v == 2) param.control.valueText = cone;
+        else if (v == 1) param.control.valueText = cone + ' Weak';
+        else             param.control.valueText = cone + ' Blind';
     }
 
 
@@ -16650,7 +16610,12 @@ extends OpColorBase
     {
         if (this.inputs[0].isConnected)
         {
-            this._color = this.inputs[0].data.color;
+            this._color = rgb2dataColor(
+                rgb2colorblind(
+                    dataColor2rgb(this.inputs[0].data.color),
+                    this.#paramL.value,
+                    this.#paramM.value,
+                    this.#paramS.value));
         }
         else 
         {
@@ -16662,123 +16627,6 @@ extends OpColorBase
         
         
         super.updateData()
-    }
-
-
-
-    updateNode()
-    {
-        // if (   this.inputs[0].isConnected
-        //     && this.inputs[1].isConnected)
-        // {
-        //     const colBack  = dataColor2rgb(this.inputs[1].data.color);
-
-        //     const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-        //     const rgb1 = dataColor2rgb(this.inputs[1].data.color);
-
-        //     if (   !isValidRgb(rgb0)
-        //         || !isValidRgb(rgb1))
-        //     {
-        //         const colWarning = 
-        //               !isValidRgb(rgb0)
-        //             && maxRgbDistance(
-        //                 rgb2hclokl(invalid2validRgb(rgb0)), 
-        //                 rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
-        //             ? rgb_a(invalid2validRgb(rgb0), 0.25)
-        //             : (isDark(colBack)
-        //                ? [0, 0, 0, 0.12] 
-        //                : [1, 1, 1, 0.2]);
-
-        //         this.updateWarningOverlay(colorStyleRgba(colWarning));
-        //     }
-        //     else
-        //     {
-        //         this._warningOverlay.style.display = 'none';
-        //     }
-        // }
-        // else
-        // {
-        //     let colWarning;
-
-        //     if (this.inputs[1].isConnected)
-        //     {
-        //         const colBack  = dataColor2rgb(this.inputs[1].data.color);
-        //         const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        //         const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-    
-        //         colWarning = 
-        //             darkText 
-        //             ? [0, 0, 0, 0.1  * (1 + satBias)] 
-        //             : [1, 1, 1, 0.16 * (1 + satBias)];
-        //     }
-        //     else
-        //         colWarning = [0.5, 1, 0.5, 0.2];
-
-            
-        //     this.updateWarningOverlay(colorStyleRgba(colWarning));
-        // }
-
-
-        //this.#paramStandard.control.update();
-
-
-        super.updateNode();
-    }
-
-
-
-    updateHeader()
-    {
-        //log(this.name + '.OpColorBlind.updateHeader()');
-
-        // const colBack = 
-        //     this.inputs[1].isConnected
-        //     ? dataColor2rgb(this.inputs[1].data.color)
-        //     : dataType2rgb(this._dataType);
-
-        // const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        // const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-        
-        // const colText = 
-        //     darkText 
-        //     ? [0, 0, 0, 0.24 * (1 + satBias)] 
-        //     : [1, 1, 1, 0.4  * (1 + satBias)];
-
-
-        // for (const input of this.inputs.filter(i => !i.param))
-        // {
-        //     input.wireColor = colBack;
-        //     input.color     = colText;
-            
-        //     input.updateControl();
-        // }
-
-
-        // for (const output of this.outputs.filter(i => !i.param))
-        // {
-        //     output.wireColor = colBack;
-        //     output.color     = colText;
-
-        //     output.updateControl();
-        // }
-
-
-        // if (   this.inputs[0].isConnected 
-        //     && this.inputs[1].isConnected)
-        //     this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
-        // else if (this.inputs[1].isConnected)
-        //     this.label.style.color = colorStyleRgba(colText);
-        // else 
-        //     this.label.style.color = 'black';
-
-
-        // this.header.style.background = 
-        //     this.inputs[1].isConnected 
-        //     ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
-        //     : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
-
-
-        super.updateHeader();
     }
 }
 

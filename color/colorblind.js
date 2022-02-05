@@ -1,18 +1,6 @@
-// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
-// the simulation itself gives grayscale
-// on the site the simulation has color in it, so I decided to leave some color in as well,
-// but the amount is completely arbitrary, I just felt that this particular value matches
-// the description on that site without being unrealistically exaggerated
-const blueMono = 0.88;
-
-
-// achromatopsia
-const ACR = [0.212656, 0.715158, 0.072186];
-
-
-const lmsW = xyz2lms(lrgb2xyz([1, 1, 1], sRGB));
-const lmsB = xyz2lms(lrgb2xyz([0, 0, 1], sRGB));
-const lmsR = xyz2lms(lrgb2xyz([1, 0, 0], sRGB));
+const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
+const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
+const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
 
 const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
 const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
@@ -27,123 +15,75 @@ const bq1 = lmsW[0] / lmsW[2];
 const bq2 = lmsW[1] / lmsW[2];
 
 
+// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
+// the simulation itself gives grayscale
+// on the site the simulation has color in it, so I decided to leave some color in as well,
+// but the amount is completely arbitrary, I just felt that this particular value matches
+// the description on that site without being unrealistically exaggerated
+const blueMono = 0.88;
 
-function col2xyz(col, colorSpace, w = sRGB.W)
+
+function rgb2colorblind(rgb, l, m, s, cs = sRGB)
 {
-    if (colorSpace == 1) return lab2xyz(col, w);
-    else                 return luv2xyz(col, w);
-}
-
-
-
-function xyz2col(col, w = sRGB.W)
-{
-    switch (setColorSpace)
+    if (   l == 0
+        && m == 0
+        && s == 0)
     {
-        case 2: return xyz2lab(col, w);
-        case 1: return xyz2luv(col, w);
-    }
-}
-
-
-
-function lch2rgb_CB(l, c, h, colorSpace, cones)
-{
-    const col = lch2col([
-        l, 
-        c * l/100, 
-        h]);
-
-    const xyz = col2xyz(col, colorSpace);
-    
-
-    let rgb;
-
-    if (   cones.l == 0
-        && cones.m == 0
-        && cones.s == 0)
-    {
-        rgb = xyz2rgb(xyz, sRGB);
+        // achromatopsia is simulated by taking only the luminance
 
         const a = 
-              ACR[0] * rgb[0]
-            + ACR[1] * rgb[1]
-            + ACR[2] * rgb[2];
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
 
         rgb = [a, a, a];
     }
     else
     {
+        const xyz = rgb2xyz(rgb, cs);
         const lms = xyz2lms(xyz);
 
-        const lms_ =
-               cones.l == 0
-            && cones.m == 0
+        // const lms_ =
+        //        l == 0
+        //     && m == 0
 
-            ? [ lms[0] + blueMono * (bq1*lms[2] - lms[0]),
-                lms[1] + blueMono * (bq2*lms[2] - lms[1]),
-                lms[2] ]
+        //     ? [ lms[0] + blueMono * (bq1*lms[2] - lms[0]),
+        //         lms[1] + blueMono * (bq2*lms[2] - lms[1]),
+        //         lms[2] ]
              
-            : [ lms[0] + (1 - cones.l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
-                lms[1] + (1 - cones.m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
-                lms[2] + (1 - cones.s) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]) ];
-
-        let xyz_ = lms2xyz(lms_);
-            rgb  = xyz2rgb(xyz_, sRGB);
-    }
-    
-    return rgb;
-}    
-
-
-
-function oklch2rgb_CB(l, c, h, colorSpace, cones)
-{
-    let rgb;
-    
-    if (   cones.l == 0
-        && cones.m == 0
-        && cones.s == 0)
-    {
-        const lab = lch2col([
-            l, 
-            c,//okLabScale * l/100, 
-            h ]);
-    
-        rgb = oklab2rgb(lab, sRGB);
+        //     : [ lms[0] + (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
+        //         lms[1] + (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
+        //         lms[2] + (1 - s) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]) ];
 
         const a = 
-              ACR[0] * rgb[0]
-            + ACR[1] * rgb[1]
-            + ACR[2] * rgb[2];
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
 
-        rgb = [a, a, a];
-    }
-    else
-    {
-        const _rgb = lch2rgb_CB(l, c, h, colorSpace, cones);
+        const lm = Math.min(l + m, 1);
 
-        const xyz = rgb2xyz(_rgb, sRGB);
-        const lms = xyz2lms(xyz);
-
-        const lms_ =
-               cones.l == 0
-            && cones.m == 0
-
-            ? [ lms[0] + blueMono * (bq1*lms[2] - lms[0]),
-                lms[1] + blueMono * (bq2*lms[2] - lms[1]),
-                lms[2] ]
-             
-            : [ lms[0] + (1 - cones.l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
-                lms[1] + (1 - cones.m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
-                lms[2] + (1 - cones.s) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]) ];
+        const lms_ = [
+            lms[0] + lerp(
+                (blueMono * (bq1*lms[2] - lms[0]) - a),
+                (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
+                lm),
+            lms[1] + lerp(
+                (blueMono * (bq2*lms[2] - lms[1]) - a),
+                (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
+                lm),
+            lms[2] + lerp(
+                0,
+                lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]),
+                lm) ];
 
         let xyz_ = lms2xyz(lms_);
             rgb  = xyz2rgb(xyz_, sRGB);
+
+        rgb = rgbLerp(
+            [a, a, a], 
+            rgb, 
+            Math.min(s + lm, 1));
     }
     
-    return rgb;
-}    
-
-
-
+    return invalid2validRgb(rgb);
+}
