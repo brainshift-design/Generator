@@ -24,6 +24,7 @@ extends OpColorBase
         this.#paramM.allowEditDecimals = true;
         this.#paramS.allowEditDecimals = true;
 
+
         this.header.connectionPadding = 14;
     }
 
@@ -44,14 +45,21 @@ extends OpColorBase
                     this.#paramL.value / 2,
                     this.#paramM.value / 2,
                     this.#paramS.value / 2));
+
+            if (!isValidRgb(rgb))
+                this.warningStyle = this.getDefaultWarningStyle(rgb);
+
+            this.forceShowWarning = 
+                   this.inputs[0].isConnected
+                && !isValidRgb(rgb);
         }
         else 
+        {
             this._color = dataColor_NaN;
-
-        
-        this.forceShowWarning = 
-                this.inputs[0].isConnected
-            && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+            this.forceShowWarning = false;
+        }
+                
+                
 
 
         this.outputs[0]._data = dataFromDataColor(this._color);
@@ -77,5 +85,12 @@ extends OpColorBase
              if (v == 2) param.control.valueText = cone;
         else if (v == 1) param.control.valueText = cone + ' Weak';
         else             param.control.valueText = cone + ' Blind';
+    }
+
+
+
+    canShowColor()
+    {
+        return this.inputs[0].isConnected;
     }
 }

@@ -907,6 +907,7 @@ input[type=text]::selection
     position:         absolute;
     top:              0;
     pointer-events:   none;
+    border-radius:    4px 4px 0 0;
 }
 
 
@@ -11512,8 +11513,8 @@ function dataFromNumber(num, dec = -1)
 function dataFromDataColor(color)
 {
     return {
-        type: 'color',
-        color: color
+        type:   'color',
+        color:   color
     };
 }
 
@@ -14626,19 +14627,6 @@ extends Operator
 
 
 
-    // updateNode()
-    // {
-    //     super.updateNode();
-
-
-    //     // for (const output of this.outputs)
-    //     //     for (const input of output.connectedInputs)
-    //     //         if (input.connection)
-    //     //             input.connection.wire.updateStyle(input.connection.wire.getColor());
-    // }
-
-
-
     updateHeader()
     {
         //log(this.name + '.OpColorBase.updateHeader()');
@@ -14716,31 +14704,47 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        //log(this.name + '.OpColorBase.updateWarningOverlay()');
+        log(this.name + '.updateWarningOverlay()');
         
+        log(this.name + '.canShowColor() =', this.canShowColor());
+
         if (this.canShowColor())
         {
-            const colBack = dataColor2rgb(this._color);
+            const rgb = dataColor2rgb(this._color);
             
-            if (  !isValidRgb(colBack)
+            if (  !isValidRgb(rgb)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = colorStyleRgba(
-                        isDark(colBack) 
-                        ? [0, 0, 0, 0.12]  
-                        : [1, 1, 1, 0.2 ]);
+                    this.warningStyle = this.getDefaultWarningStyle(rgb);
 
-                this.updateWarningOverlayStyle(colBack);
+                this.updateWarningOverlayStyle(rgb);
             }
             else
                 this._warningOverlay.style.display = 'none';
         }
         else
         {
-            this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);
+            this.resetWarningStyle();
             this.updateWarningOverlayStyle(color_NaN);
         }
+    }
+
+
+
+    getDefaultWarningStyle(colBack)
+    {
+        return colorStyleRgba(
+            isDark(colBack) 
+            ? [0, 0, 0, 0.12]  
+            : [1, 1, 1, 0.2 ]);
+    }
+
+
+
+    resetWarningStyle()
+    {
+        this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);        
     }
 
 
@@ -16278,11 +16282,14 @@ extends OpColorBase
                 this.forceShowWarning = false;
         }
 
+        else if (this.inputs[1].isConnected)
+            this.forceShowWarning = false;
+
 
         this.#paramValue.control.valueText = '?';
         this.#paramValue.setValue(0, false, true, false);
 
-           
+        
         super.updateData();
     }
 
@@ -16605,6 +16612,7 @@ extends OpColorBase
         this.#paramM.allowEditDecimals = true;
         this.#paramS.allowEditDecimals = true;
 
+
         this.header.connectionPadding = 14;
     }
 
@@ -16625,14 +16633,21 @@ extends OpColorBase
                     this.#paramL.value / 2,
                     this.#paramM.value / 2,
                     this.#paramS.value / 2));
+
+            if (!isValidRgb(rgb))
+                this.warningStyle = this.getDefaultWarningStyle(rgb);
+
+            this.forceShowWarning = 
+                   this.inputs[0].isConnected
+                && !isValidRgb(rgb);
         }
         else 
+        {
             this._color = dataColor_NaN;
-
-        
-        this.forceShowWarning = 
-                this.inputs[0].isConnected
-            && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+            this.forceShowWarning = false;
+        }
+                
+                
 
 
         this.outputs[0]._data = dataFromDataColor(this._color);
@@ -16658,6 +16673,13 @@ extends OpColorBase
              if (v == 2) param.control.valueText = cone;
         else if (v == 1) param.control.valueText = cone + ' Weak';
         else             param.control.valueText = cone + ' Blind';
+    }
+
+
+
+    canShowColor()
+    {
+        return this.inputs[0].isConnected;
     }
 }
 

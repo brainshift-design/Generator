@@ -23,19 +23,6 @@ extends Operator
 
 
 
-    // updateNode()
-    // {
-    //     super.updateNode();
-
-
-    //     // for (const output of this.outputs)
-    //     //     for (const input of output.connectedInputs)
-    //     //         if (input.connection)
-    //     //             input.connection.wire.updateStyle(input.connection.wire.getColor());
-    // }
-
-
-
     updateHeader()
     {
         //log(this.name + '.OpColorBase.updateHeader()');
@@ -113,31 +100,47 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        //log(this.name + '.OpColorBase.updateWarningOverlay()');
+        log(this.name + '.updateWarningOverlay()');
         
+        log(this.name + '.canShowColor() =', this.canShowColor());
+
         if (this.canShowColor())
         {
-            const colBack = dataColor2rgb(this._color);
+            const rgb = dataColor2rgb(this._color);
             
-            if (  !isValidRgb(colBack)
+            if (  !isValidRgb(rgb)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = colorStyleRgba(
-                        isDark(colBack) 
-                        ? [0, 0, 0, 0.12]  
-                        : [1, 1, 1, 0.2 ]);
+                    this.warningStyle = this.getDefaultWarningStyle(rgb);
 
-                this.updateWarningOverlayStyle(colBack);
+                this.updateWarningOverlayStyle(rgb);
             }
             else
                 this._warningOverlay.style.display = 'none';
         }
         else
         {
-            this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);
+            this.resetWarningStyle();
             this.updateWarningOverlayStyle(color_NaN);
         }
+    }
+
+
+
+    getDefaultWarningStyle(colBack)
+    {
+        return colorStyleRgba(
+            isDark(colBack) 
+            ? [0, 0, 0, 0.12]  
+            : [1, 1, 1, 0.2 ]);
+    }
+
+
+
+    resetWarningStyle()
+    {
+        this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);        
     }
 
 

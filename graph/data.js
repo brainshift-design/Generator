@@ -35,8 +35,8 @@ function dataFromNumber(num, dec = -1)
 function dataFromDataColor(color)
 {
     return {
-        type: 'color',
-        color: color
+        type:   'color',
+        color:   color
     };
 }
 

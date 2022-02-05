@@ -101,11 +101,14 @@ extends OpColorBase
                 this.forceShowWarning = false;
         }
 
+        else if (this.inputs[1].isConnected)
+            this.forceShowWarning = false;
+
 
         this.#paramValue.control.valueText = '?';
         this.#paramValue.setValue(0, false, true, false);
 
-           
+        
         super.updateData();
     }
 
