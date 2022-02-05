@@ -20,16 +20,6 @@ extends OpColorBase
         this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 1, 0, 1, 1));
         this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 1, 0, 1, 1));
 
-        
-        this.#paramL.addEventListener('change', () => this.setParamText(this.#paramL, 'L'));
-        this.#paramM.addEventListener('change', () => this.setParamText(this.#paramM, 'M'));
-        this.#paramS.addEventListener('change', () => this.setParamText(this.#paramS, 'S'));
-
-
-        this.setParamText(this.#paramL, 'L');
-        this.setParamText(this.#paramM, 'M');
-        this.setParamText(this.#paramS, 'S');
-
 
         this.header.connectionPadding = 14;
     }
@@ -72,5 +62,16 @@ extends OpColorBase
         
         
         super.updateData()
+    }
+
+
+
+    updateParams(dispatchEvents)
+    {
+        super.updateParams(dispatchEvents);
+
+        this.setParamText(this.#paramL, 'L');
+        this.setParamText(this.#paramM, 'M');
+        this.setParamText(this.#paramS, 'S');
     }
 }
