@@ -144,7 +144,7 @@ extends Parameter
                    this.input
                 && this.input.isConnected
                 ? this.input.data.decimals
-                : -1);
+                : this._control.dec);
         }
     }
 

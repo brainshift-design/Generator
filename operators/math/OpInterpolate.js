@@ -56,7 +56,7 @@ extends OperatorBase
         }
 
 
-        this.outputs[0]._data = dataFromNumber(result);
+        this.outputs[0]._data = dataFromNumber(result, maxDec);
 
         this.#paramValue.setValue(result, false, true, false);
 
