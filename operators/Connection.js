@@ -73,7 +73,7 @@ class Connection
                            || this.output.op == graphView._soloNode)) 
                 && this != graphView.savedConn);
 
-            show(this.wire.curve, graphView.showWires && this != graphView.savedConn);
+            show(this.wire.curve, (graphView.showWires || graphView._soloNode) && this != graphView.savedConn);
 
             // show(
             //     this.wire.curve, 
