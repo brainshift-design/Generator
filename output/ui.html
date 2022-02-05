@@ -16597,23 +16597,15 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 1, 0, 1, 1));
-        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 1, 0, 1, 1));
-        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 1, 0, 1, 1));
+        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0));
 
+        this.#paramL.allowEditDecimals = true;
+        this.#paramM.allowEditDecimals = true;
+        this.#paramS.allowEditDecimals = true;
 
         this.header.connectionPadding = 14;
-    }
-
-
-
-    setParamText(param, cone)
-    {
-        const v = Math.round(param.value * 2);
-
-             if (v == 2) param.control.valueText = cone;
-        else if (v == 1) param.control.valueText = cone + ' Weak';
-        else             param.control.valueText = cone + ' Blind';
     }
 
 
@@ -16630,9 +16622,9 @@ extends OpColorBase
             this._color = rgb2dataColor(
                 rgb2colorblind(
                     invalid2validRgb(rgb),
-                    this.#paramL.value,
-                    this.#paramM.value,
-                    this.#paramS.value));
+                    this.#paramL.value / 2,
+                    this.#paramM.value / 2,
+                    this.#paramS.value / 2));
         }
         else 
             this._color = dataColor_NaN;
@@ -16648,28 +16640,6 @@ extends OpColorBase
 
 
 
-    // updateWarningOverlay()
-    // {
-    //     this.forceShowWarning = 
-    //             this.inputs[0].isConnected
-    //         && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
-
-    //     super.updateWarningOverlay();
-    // }
-
-
-
-    // updateNode()
-    // {
-    //     this.forceShowWarning = 
-    //            this.inputs[0].isConnected
-    //         && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
-        
-    //     super.updateNode();
-    // }
-
-
-
     updateParams(dispatchEvents)
     {
         super.updateParams(dispatchEvents);
@@ -16677,6 +16647,17 @@ extends OpColorBase
         this.setParamText(this.#paramL, 'L');
         this.setParamText(this.#paramM, 'M');
         this.setParamText(this.#paramS, 'S');
+    }
+
+
+
+    setParamText(param, cone)
+    {
+        const v = Math.round(param.value);
+
+             if (v == 2) param.control.valueText = cone;
+        else if (v == 1) param.control.valueText = cone + ' Weak';
+        else             param.control.valueText = cone + ' Blind';
     }
 }
 
