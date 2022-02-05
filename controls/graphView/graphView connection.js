@@ -1,5 +1,7 @@
 graphView.startConnectionFromOutput = (pointerId, output) =>
 {
+    graphView.connPointerId = pointerId;
+
     graphView.tempConn = new Connection(output, null);
     graphView.addWire(graphView.tempConn.wire, false);
 
@@ -17,6 +19,8 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
 
 graphView.startConnectionFromInput = (pointerId, input) =>
 {
+    graphView.connPointerId = pointerId;
+
     graphView.tempConn = new Connection(null, input);
     graphView.addWire(graphView.tempConn.wire, false);
     
@@ -51,6 +55,8 @@ graphView.cancelConnection = pointerId =>
 
     if (graphView.hasPointerCapture(pointerId))
         graphView.releasePointerCapture(pointerId);
+
+    graphView.connPointerId = -1;
 };
 
 

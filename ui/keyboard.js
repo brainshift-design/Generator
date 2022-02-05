@@ -51,6 +51,13 @@ document.addEventListener('keydown', e =>
         graphView._selected = [];
     }
 
+    // escape
+    else if (e.key == 'Escape')
+    {
+        if (graphView.tempConn)
+            graphView.endConnection(graphView.connPointerId);
+    }
+
     //
     else if (e.code == 'Minus')
     {

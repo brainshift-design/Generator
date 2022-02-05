@@ -14,6 +14,8 @@ graphView.headerOutput   = null; // same as overOutput, but when snapping from a
 graphView.tempConn       = null;
 graphView.savedConn      = null;
 
+graphView.connPointerId  = -1;
+
 graphView.showWires      = true;
 graphView._soloNode      = null;
    

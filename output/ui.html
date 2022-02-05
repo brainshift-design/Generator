@@ -9668,6 +9668,8 @@ function initMenuSelect(select)
 
 graphView.startConnectionFromOutput = (pointerId, output) =>
 {
+    graphView.connPointerId = pointerId;
+
     graphView.tempConn = new Connection(output, null);
     graphView.addWire(graphView.tempConn.wire, false);
 
@@ -9685,6 +9687,8 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
 
 graphView.startConnectionFromInput = (pointerId, input) =>
 {
+    graphView.connPointerId = pointerId;
+
     graphView.tempConn = new Connection(null, input);
     graphView.addWire(graphView.tempConn.wire, false);
     
@@ -9719,6 +9723,8 @@ graphView.cancelConnection = pointerId =>
 
     if (graphView.hasPointerCapture(pointerId))
         graphView.releasePointerCapture(pointerId);
+
+    graphView.connPointerId = -1;
 };
 
 
@@ -10337,6 +10343,8 @@ graphView.headerOutput   = null; // same as overOutput, but when snapping from a
    
 graphView.tempConn       = null;
 graphView.savedConn      = null;
+
+graphView.connPointerId  = -1;
 
 graphView.showWires      = true;
 graphView._soloNode      = null;
@@ -18187,6 +18195,13 @@ document.addEventListener('keydown', e =>
         const nodeIds = graphView.selectedNodes.map(n => n.id);
         actionManager.do(new DeleteNodesAction(nodeIds, nodeIds));
         graphView._selected = [];
+    }
+
+    // escape
+    else if (e.key == 'Escape')
+    {
+        if (graphView.tempConn)
+            graphView.endConnection(graphView.connPointerId);
     }
 
     //
