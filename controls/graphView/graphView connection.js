@@ -75,7 +75,10 @@ graphView.endConnection = pointerId =>
             && input.dataType == output.dataType) // TO INPUT
         {
             if (input == savedInput) // reconnect old
-                show(input.connection.wire);
+            {
+                graphView.savedConn = null; // done here to redraw the saved wire correctly
+                graphView.updateNodeWire(input.connection.wire);
+            }
             else if (savedInput)
             {
                 if (  !input.op._variableInputs

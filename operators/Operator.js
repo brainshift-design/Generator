@@ -257,12 +257,7 @@ class Operator
 
         this.invalidate();
         
-        setTimeout(() => 
-        {
-            const terminals = getTerminalsAfterNode(this);
-            if (terminals.length == 0) terminals.push(this);
-            terminals.forEach(n => n.update());
-        });
+        setTimeout(() => { getTerminalsAfterNode(this).forEach(n => n.update()); });
     }
 
 

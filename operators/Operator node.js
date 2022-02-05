@@ -143,26 +143,26 @@ function createNodeHeader(node)
 
             if (!node.selected)
             {
-                if (e.shiftKey) 
-                    node.selected = true;
-
-                else
-                {
-                    graphView.selectedNodes = [node];
-
-                    if (getCtrlKey(e))
-                    {
-                        graphView.selectedNodes.push(...getNodesAfterNode(node));
-
-                        // if (e.altKey)
-                        //     graphView.selectedNodes.push(...getNodesBeforeNode(node));
-                    }
-
-                    graphView.selectedNodes.forEach(n => n.selected = true);
-                }
+                if (e.shiftKey) node     .selected      = true;
+                else            graphView.selectedNodes = [node];
 
                 node.selectedSet = true;
             }
+            // else if (getCtrlKey(e))
+            // {
+            //     graphView.selectedNodes = [
+            //         node, 
+            //         ...getNodesAfterNode(node)];
+
+            //     if (e.shiftKey)
+            //     {
+            //         graphView.selectedNodes = [
+            //             ...graphView.selectedNodes, 
+            //             ...getNodesBeforeNode(node)];
+            //     }
+
+            //     graphView.selectedNodes.forEach(n => n.selected = true);
+            // }
 
 
             node.div.sx = e.clientX;

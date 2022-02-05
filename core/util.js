@@ -137,6 +137,7 @@ function createSvg(element)
 function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
 function hide(element)              { element.style.visibility = 'hidden';  }
 
+function isVisible(element) { return element.style.visibility == 'visible'; }
 
 
 function copyArray(src, dst)

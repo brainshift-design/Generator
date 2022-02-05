@@ -83,7 +83,7 @@ function getTerminalsAfterNode(node)
         for (const input of output.connectedInputs)
             after.push(...getTerminalsAfterNode(input.op));
 
-    return after;
+    return after.length > 0 ? after : [node];;
 }
 
 
@@ -95,10 +95,6 @@ function updateTerminalsAfterNodes(nodes, includeNodeInEmpty = true)
     for (const node of nodes)
     {
         const tt = getTerminalsAfterNode(node);
-
-        if (   tt.length == 0 
-            && includeNodeInEmpty) 
-            tt.push(node);
 
         for (const t of tt)
         {
