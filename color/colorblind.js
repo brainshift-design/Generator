@@ -43,18 +43,6 @@ function rgb2colorblind(rgb, l, m, s, cs = sRGB)
         const xyz = rgb2xyz(rgb, cs);
         const lms = xyz2lms(xyz);
 
-        // const lms_ =
-        //        l == 0
-        //     && m == 0
-
-        //     ? [ lms[0] + blueMono * (bq1*lms[2] - lms[0]),
-        //         lms[1] + blueMono * (bq2*lms[2] - lms[1]),
-        //         lms[2] ]
-             
-        //     : [ lms[0] + (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
-        //         lms[1] + (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
-        //         lms[2] + (1 - s) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]) ];
-
         const a = 
               cs.Y[0] * rgb[0]
             + cs.Y[1] * rgb[1]
@@ -91,5 +79,6 @@ function rgb2colorblind(rgb, l, m, s, cs = sRGB)
             Math.min(s + lm, 1));
     }
     
-    return invalid2validRgb(rgb);
+
+    return rgb;
 }

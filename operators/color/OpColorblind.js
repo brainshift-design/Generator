@@ -51,12 +51,16 @@ extends OpColorBase
     {
         if (this.inputs[0].isConnected)
         {
+            const rgb = dataColor2rgb(this.inputs[0].data.color);
+
             this._color = rgb2dataColor(
                 rgb2colorblind(
-                    dataColor2rgb(this.inputs[0].data.color),
+                    invalid2validRgb(rgb),
                     this.#paramL.value,
                     this.#paramM.value,
                     this.#paramS.value));
+
+            this.forceShowWarning = !isValidRgb(rgb);
         }
         else 
         {
