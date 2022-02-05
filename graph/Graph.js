@@ -17,11 +17,11 @@ class Graph
 
 
 
-    getNewNodeName(name)
+    getNewNodeName(curName, name)
     {
         if (!this.nodes.find(n => n.name == name))
             return name;
-
+        
 
         let numLength = this.getNumLength(name);
 
@@ -41,14 +41,17 @@ class Graph
         {
             const len = name.length;
 
-            let newName = name + '2';
             let num     = 2;
+            let newName = name + num;
 
-            while (this.nodes.find(n => n.name == newName))
-                newName = name.substring(0, len) + (++num);
+            while (this.nodes.find(n => 
+                   n.name != curName 
+                && n.name == newName))
+                newName = name + (++num);
 
             return newName;
         }
+
         else
             return name;
     }
@@ -127,7 +130,7 @@ class Graph
         node.graph = this;
 
         if (createNewName)
-            node.setName(this.getNewNodeName(node.name)); // TODO: not checking return value here
+            node.setName(this.getNewNodeName(node.name, node.name));
         
         this.nodes.push(node);
         graphView.appendChild(node.div);

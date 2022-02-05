@@ -290,7 +290,7 @@ class Operator
 
     updateNode() 
     {
-        log(this.name + '.Operator.updateNode()');
+        //log(this.name + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -386,8 +386,8 @@ class Operator
 
     setName(newName)
     {
-        if (this.graph.nodes.find(node => node.id == newName))
-            return false; // graph already contains a node with this id
+        // if (this.graph.nodes.find(node => node.id == newName))
+        //     return false; // graph already contains a node with this id
 
         this._name = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;

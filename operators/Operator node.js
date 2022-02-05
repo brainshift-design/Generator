@@ -326,7 +326,7 @@ function createNodeHeader(node)
 
 function setNodePositions(nodes, dx, dy, updateTransform = true)
 {
-    log('setNodePositions()');
+    //log('setNodePositions()');
 
     for (const node of nodes)
     {
@@ -342,7 +342,7 @@ function setNodePositions(nodes, dx, dy, updateTransform = true)
 
 function setNodePosition(node, x, y, updateTransform = true)
 {
-    log('setNodePosition()');
+    //log('setNodePosition()');
 
     node.div.style.left = x;
     node.div.style.top  = y;

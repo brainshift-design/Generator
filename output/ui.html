@@ -10649,8 +10649,8 @@ graphView.getIntersectingNodes = node =>
 
 graphView.placeNewNode = (node) =>
 {
-    log('graphView.placeNewNode()');
-    
+    //log('graphView.placeNewNode()');
+
     node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
     node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
 
@@ -11604,11 +11604,11 @@ class Graph
 
 
 
-    getNewNodeName(name)
+    getNewNodeName(curName, name)
     {
         if (!this.nodes.find(n => n.name == name))
             return name;
-
+        
 
         let numLength = this.getNumLength(name);
 
@@ -11628,14 +11628,17 @@ class Graph
         {
             const len = name.length;
 
-            let newName = name + '2';
             let num     = 2;
+            let newName = name + num;
 
-            while (this.nodes.find(n => n.name == newName))
-                newName = name.substring(0, len) + (++num);
+            while (this.nodes.find(n => 
+                   n.name != curName 
+                && n.name == newName))
+                newName = name + (++num);
 
             return newName;
         }
+
         else
             return name;
     }
@@ -11714,7 +11717,7 @@ class Graph
         node.graph = this;
 
         if (createNewName)
-            node.setName(this.getNewNodeName(node.name)); // TODO: not checking return value here
+            node.setName(this.getNewNodeName(node.name, node.name));
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
@@ -13058,7 +13061,7 @@ class Operator
 
     updateNode() 
     {
-        log(this.name + '.Operator.updateNode()');
+        //log(this.name + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -13154,8 +13157,8 @@ class Operator
 
     setName(newName)
     {
-        if (this.graph.nodes.find(node => node.id == newName))
-            return false; // graph already contains a node with this id
+        // if (this.graph.nodes.find(node => node.id == newName))
+        //     return false; // graph already contains a node with this id
 
         this._name = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;
@@ -13786,7 +13789,7 @@ function createNodeHeader(node)
 
 function setNodePositions(nodes, dx, dy, updateTransform = true)
 {
-    log('setNodePositions()');
+    //log('setNodePositions()');
 
     for (const node of nodes)
     {
@@ -13802,7 +13805,7 @@ function setNodePositions(nodes, dx, dy, updateTransform = true)
 
 function setNodePosition(node, x, y, updateTransform = true)
 {
-    log('setNodePosition()');
+    //log('setNodePosition()');
 
     node.div.style.left = x;
     node.div.style.top  = y;
@@ -14012,7 +14015,11 @@ function initLabelTextbox(node)
         if (success) 
         {
             if (node.textbox.value != '')
-                actionManager.do(new RenameNodeAction(node.id, node.textbox.value));
+            {
+                const newName = graph.getNewNodeName(node.name, node.textbox.value);
+                setTimeout(() => node.setName(newName));
+                actionManager.do(new RenameNodeAction(node.id, newName));
+            }
         }
         else
             node.textbox.value = node.textbox.savedValue;
