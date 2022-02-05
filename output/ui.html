@@ -1295,6 +1295,13 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 
+function roundTo(x, dec)
+{
+    const div = Math.round(Math.pow(10, dec));
+    return Math.round((x + Number.EPSILON) * div) / div;    
+}
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 
@@ -3721,6 +3728,13 @@ const Tau = Math.PI * 2;
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
+
+
+function roundTo(x, dec)
+{
+    const div = Math.round(Math.pow(10, dec));
+    return Math.round((x + Number.EPSILON) * div) / div;    
+}
 
 
 function sqr (x) { return x*x;   };
@@ -14279,7 +14293,7 @@ extends OperatorBase
 
         const result = this.getResult();
 
-        this.outputs[0]._data = dataFromNumber(result, maxDec);
+        this.outputs[0]._data = dataFromNumber(roundTo(result, maxDec), maxDec);
 
         this.#paramValue.setValue(result, false, true, false);
         this.#paramValue.control.dec = maxDec;
@@ -16593,6 +16607,9 @@ extends OpColorBase
 
     updateData()
     {
+        super.updateData()
+
+
         if (this.inputs[0].isConnected)
         {
             const rgb = dataColor2rgb(this.inputs[0].data.color);
@@ -16603,20 +16620,40 @@ extends OpColorBase
                     this.#paramL.value,
                     this.#paramM.value,
                     this.#paramS.value));
-
-            this.forceShowWarning = !isValidRgb(rgb);
         }
         else 
-        {
             this._color = dataColor_NaN;
-        }
 
         
+        this.forceShowWarning = 
+                this.inputs[0].isConnected
+            && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+
+
         this.outputs[0]._data = dataFromDataColor(this._color);
-        
-        
-        super.updateData()
     }
+
+
+
+    // updateWarningOverlay()
+    // {
+    //     this.forceShowWarning = 
+    //             this.inputs[0].isConnected
+    //         && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+
+    //     super.updateWarningOverlay();
+    // }
+
+
+
+    // updateNode()
+    // {
+    //     this.forceShowWarning = 
+    //            this.inputs[0].isConnected
+    //         && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+        
+    //     super.updateNode();
+    // }
 
 
 

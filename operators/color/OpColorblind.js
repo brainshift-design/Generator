@@ -39,6 +39,9 @@ extends OpColorBase
 
     updateData()
     {
+        super.updateData()
+
+
         if (this.inputs[0].isConnected)
         {
             const rgb = dataColor2rgb(this.inputs[0].data.color);
@@ -49,20 +52,40 @@ extends OpColorBase
                     this.#paramL.value,
                     this.#paramM.value,
                     this.#paramS.value));
-
-            this.forceShowWarning = !isValidRgb(rgb);
         }
         else 
-        {
             this._color = dataColor_NaN;
-        }
 
         
+        this.forceShowWarning = 
+                this.inputs[0].isConnected
+            && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+
+
         this.outputs[0]._data = dataFromDataColor(this._color);
-        
-        
-        super.updateData()
     }
+
+
+
+    // updateWarningOverlay()
+    // {
+    //     this.forceShowWarning = 
+    //             this.inputs[0].isConnected
+    //         && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+
+    //     super.updateWarningOverlay();
+    // }
+
+
+
+    // updateNode()
+    // {
+    //     this.forceShowWarning = 
+    //            this.inputs[0].isConnected
+    //         && !isValidRgb(dataColor2rgb(this.inputs[0].data.color));
+        
+    //     super.updateNode();
+    // }
 
 
 

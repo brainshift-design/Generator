@@ -106,7 +106,7 @@ extends OperatorBase
 
         const result = this.getResult();
 
-        this.outputs[0]._data = dataFromNumber(result, maxDec);
+        this.outputs[0]._data = dataFromNumber(roundTo(result, maxDec), maxDec);
 
         this.#paramValue.setValue(result, false, true, false);
         this.#paramValue.control.dec = maxDec;
