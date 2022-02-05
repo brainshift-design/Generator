@@ -148,21 +148,23 @@ function createNodeHeader(node)
 
                 node.selectedSet = true;
             }
-            // else if (getCtrlKey(e))
-            // {
-            //     graphView.selectedNodes = [
-            //         node, 
-            //         ...getNodesAfterNode(node)];
+            
+            
+            if (getCtrlKey(e))
+            {
+                graphView.selectedNodes = [
+                    node, 
+                    ...getNodesAfterNode(node)];
 
-            //     if (e.shiftKey)
-            //     {
-            //         graphView.selectedNodes = [
-            //             ...graphView.selectedNodes, 
-            //             ...getNodesBeforeNode(node)];
-            //     }
+                if (e.shiftKey)
+                {
+                    graphView.selectedNodes = [
+                        ...graphView.selectedNodes, 
+                        ...getNodesBeforeNode(node)];
+                }
 
-            //     graphView.selectedNodes.forEach(n => n.selected = true);
-            // }
+                graphView.selectedNodes.forEach(n => n.selected = true);
+            }
 
 
             node.div.sx = e.clientX;

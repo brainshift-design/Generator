@@ -50,7 +50,9 @@ function getNodesBeforeNode(node)
 
     for (const input of node.inputs.filter(i => i.isConnected))
     {
-        before.push(input.connectedOutput.op);
+        if (!before.includes(input.connectedOutput.op)) // avoid including diamond tips twice
+            before.push(input.connectedOutput.op);
+    
         before.push(...getNodesBeforeNode(input.connectedOutput.op));
     }
 
@@ -66,7 +68,9 @@ function getNodesAfterNode(node)
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
         {
-            after.push(input.op);
+            if (!after.includes(input.op)) // avoid including diamond tips twice
+                after.push(input.op);
+
             after.push(...getNodesAfterNode(input.op));
         }
 

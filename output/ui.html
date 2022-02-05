@@ -10913,11 +10913,6 @@ graphView.soloNode = node =>
             : 0.09;
 
         graphView.updateNodeWire(c.wire);
-        // show(
-        //     c.wire, 
-        //        graphView.showWires
-        //     || c.input  && graphView._soloNode == c.input .op
-        //     || c.output && graphView._soloNode == c.output.op);
     });
 };
 
@@ -10933,7 +10928,6 @@ graphView.unsoloNode = () =>
     {
         c.wire.style.opacity = 1;
         graphView.updateNodeWire(c.wire);
-        //show(c.wire, graphView.showWires);
     });
 };
 
@@ -12042,7 +12036,9 @@ function getNodesBeforeNode(node)
 
     for (const input of node.inputs.filter(i => i.isConnected))
     {
-        before.push(input.connectedOutput.op);
+        if (!before.includes(input.connectedOutput.op)) // avoid including diamond tips twice
+            before.push(input.connectedOutput.op);
+    
         before.push(...getNodesBeforeNode(input.connectedOutput.op));
     }
 
@@ -12058,7 +12054,9 @@ function getNodesAfterNode(node)
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
         {
-            after.push(input.op);
+            if (!after.includes(input.op)) // avoid including diamond tips twice
+                after.push(input.op);
+
             after.push(...getNodesAfterNode(input.op));
         }
 
@@ -12568,15 +12566,11 @@ class Connection
                            || this.output.op == graphView._soloNode)) 
                 && this != graphView.savedConn);
 
-            show(this.wire.curve, (graphView.showWires || graphView._soloNode) && this != graphView.savedConn);
-
-            // show(
-            //     this.wire.curve, 
-            //     (   graphView.showWires
-            //      ||    graphView._soloNode
-            //            && (   this. input.op == graphView._soloNode
-            //                || this.output.op == graphView._soloNode)) 
-            //     && this != graphView.savedConn);
+            show(
+                this.wire.curve, 
+                   (   graphView.showWires 
+                    || graphView._soloNode) 
+                && this != graphView.savedConn);
 
             show(this.wire.outBall, !graphView.tempConn || graphView.tempConn.output);
             show(this.wire.inBall,  !graphView.tempConn || graphView.tempConn. input);
@@ -13612,21 +13606,23 @@ function createNodeHeader(node)
 
                 node.selectedSet = true;
             }
-            // else if (getCtrlKey(e))
-            // {
-            //     graphView.selectedNodes = [
-            //         node, 
-            //         ...getNodesAfterNode(node)];
+            
+            
+            if (getCtrlKey(e))
+            {
+                graphView.selectedNodes = [
+                    node, 
+                    ...getNodesAfterNode(node)];
 
-            //     if (e.shiftKey)
-            //     {
-            //         graphView.selectedNodes = [
-            //             ...graphView.selectedNodes, 
-            //             ...getNodesBeforeNode(node)];
-            //     }
+                if (e.shiftKey)
+                {
+                    graphView.selectedNodes = [
+                        ...graphView.selectedNodes, 
+                        ...getNodesBeforeNode(node)];
+                }
 
-            //     graphView.selectedNodes.forEach(n => n.selected = true);
-            // }
+                graphView.selectedNodes.forEach(n => n.selected = true);
+            }
 
 
             node.div.sx = e.clientX;
@@ -17467,77 +17463,6 @@ extends Action
 }
 
 
-// class MoveNodesAction
-// extends Action
-// {
-//     nodeIds;
-
-//     fromPos;
-//     toPos;
-
-//     from;
-//     to;
-
-
-
-//     constructor(nodeIds, fromPos, toPos)
-//     {
-//         super('move nodes');
-
-
-//         this.nodeIds = [...nodeIds];
-
-//         this.fromPos = fromPos;
-//         this.toPos   = toPos;
-
-//         const dx = this.toPos.x - this.fromPos.x;
-//         const dy = this.toPos.y - this.fromPos.y;
-
-
-//         this.from = [];
-//         this.to   = [];
-
-//         for (const id of this.nodeIds)
-//         {
-//             const node = graph.nodeFromId(id);
-
-//             this.from.push(point(node.div.slx,      node.div.sly     ));
-//             this.to  .push(point(node.div.slx + dx, node.div.sly + dy));
-//         }
-//     }
-
-
-
-//     do()
-//     {
-//         for (var i = 0; i < this.nodeIds.length; i++)
-//         {
-//             const node = graph.nodeFromId(this.nodeIds[i]);
-
-//             setNodePosition(
-//                 node.div.op,
-//                 this.to[i].x,
-//                 this.to[i].y);
-//         }
-//     }
-
-
-
-//     undo()
-//     {
-//         for (var i = 0; i < this.nodeIds.length; i++)
-//         {
-//             const node = graph.nodeFromId(this.nodeIds[i]);
-
-//             setNodePosition(
-//                 node.div.op,
-//                 this.from[i].x,
-//                 this.from[i].y);
-//         }
-//     }
-// }
-
-
 class PasteNodesAction
 extends Action
 {
@@ -17795,15 +17720,15 @@ extends Action
         const dy = this.toPos.y - this.fromPos.y;
 
 
-        this.from = [];
-        this.to   = [];
+        this.from = []; // these hold tuples
+        this.to   = []; // [id, pos]
 
         for (const id of this.getMovedIds())
         {
             const node = graph.nodeFromId(id);
 
-            this.from.push(point(node.div.slx,      node.div.sly     ));
-            this.to  .push(point(node.div.slx + dx, node.div.sly + dy));
+            this.from.push([id, point(node.div.slx,      node.div.sly     )]);
+            this.to  .push([id, point(node.div.slx + dx, node.div.sly + dy)]);
         }
     }
 
@@ -17829,10 +17754,10 @@ extends Action
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (var i = 0; i < movedNodes.length; i++)
-            setNodePosition(
-                movedNodes[i].div.op,
-                this.to[i].x,
-                this.to[i].y);
+        {
+            const p = this.to.find(t => t[0] == movedNodes[i].id);
+            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+        }
 
         for (const node of movedNodes)
             node.updateBorder();
@@ -17846,10 +17771,10 @@ extends Action
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (var i = 0; i < movedNodes.length; i++)
-            setNodePosition(
-                movedNodes[i].div.op,
-                this.from[i].x,
-                this.from[i].y);
+        {
+            const p = this.from.find(t => t[0] == movedNodes[i].id);
+            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+        }
 
         for (const node of movedNodes)
             node.updateBorder();

@@ -36,15 +36,15 @@ extends Action
         const dy = this.toPos.y - this.fromPos.y;
 
 
-        this.from = [];
-        this.to   = [];
+        this.from = []; // these hold tuples
+        this.to   = []; // [id, pos]
 
         for (const id of this.getMovedIds())
         {
             const node = graph.nodeFromId(id);
 
-            this.from.push(point(node.div.slx,      node.div.sly     ));
-            this.to  .push(point(node.div.slx + dx, node.div.sly + dy));
+            this.from.push([id, point(node.div.slx,      node.div.sly     )]);
+            this.to  .push([id, point(node.div.slx + dx, node.div.sly + dy)]);
         }
     }
 
@@ -70,10 +70,10 @@ extends Action
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (var i = 0; i < movedNodes.length; i++)
-            setNodePosition(
-                movedNodes[i].div.op,
-                this.to[i].x,
-                this.to[i].y);
+        {
+            const p = this.to.find(t => t[0] == movedNodes[i].id);
+            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+        }
 
         for (const node of movedNodes)
             node.updateBorder();
@@ -87,10 +87,10 @@ extends Action
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (var i = 0; i < movedNodes.length; i++)
-            setNodePosition(
-                movedNodes[i].div.op,
-                this.from[i].x,
-                this.from[i].y);
+        {
+            const p = this.from.find(t => t[0] == movedNodes[i].id);
+            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+        }
 
         for (const node of movedNodes)
             node.updateBorder();

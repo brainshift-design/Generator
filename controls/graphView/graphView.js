@@ -567,11 +567,6 @@ graphView.soloNode = node =>
             : 0.09;
 
         graphView.updateNodeWire(c.wire);
-        // show(
-        //     c.wire, 
-        //        graphView.showWires
-        //     || c.input  && graphView._soloNode == c.input .op
-        //     || c.output && graphView._soloNode == c.output.op);
     });
 };
 
@@ -587,7 +582,6 @@ graphView.unsoloNode = () =>
     {
         c.wire.style.opacity = 1;
         graphView.updateNodeWire(c.wire);
-        //show(c.wire, graphView.showWires);
     });
 };
 
