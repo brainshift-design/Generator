@@ -146,9 +146,9 @@ function figLoadState(msg) {
             let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
             let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
             if (wndWidth == null)
-                wndWidth = 400;
+                wndWidth = 800;
             if (wndHeight == null)
-                wndHeight = 300;
+                wndHeight = 600;
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             // load product key
             let productKey = yield figLoadLocal('productKey');

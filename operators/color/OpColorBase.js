@@ -100,10 +100,8 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        log(this.name + '.updateWarningOverlay()');
+        //log(this.name + '.updateWarningOverlay()');
         
-        log(this.name + '.canShowColor() =', this.canShowColor());
-
         if (this.canShowColor())
         {
             const rgb = dataColor2rgb(this._color);

@@ -14757,10 +14757,8 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        log(this.name + '.updateWarningOverlay()');
+        //log(this.name + '.updateWarningOverlay()');
         
-        log(this.name + '.canShowColor() =', this.canShowColor());
-
         if (this.canShowColor())
         {
             const rgb = dataColor2rgb(this._color);
@@ -18066,15 +18064,17 @@ document.addEventListener('pointerup', function(e)
 });
 
 
+var figMessages = [];
+
+
+
 //uiSaveLocal('state', null);
-//uiSaveLocal('windowWidth',  null);
-//uiSaveLocal('windowHeight', null);
+// uiSaveLocal('windowWidth',  null);
+// uiSaveLocal('windowHeight', null);
 //uiSaveLocal('productKey', null);
 
 
 var currentUser = '';
-
-var figMessages = [];
 
 
 const graph = new Graph();
@@ -18084,7 +18084,7 @@ const generator = new Worker(
         new Blob([generatorScript.textContent])));
 
 
-const buf = new SharedArrayBuffer(1024);
+//const buf = new SharedArrayBuffer(1024);
 
 
 var     copiedNodesJson  = '';
@@ -18785,8 +18785,6 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000)
 }
 
 
-const resizeEdgeWidth = 8;
-
 document.canResizeX    = false;
 document.canResizeY    = false;
    
@@ -18810,6 +18808,8 @@ function resizeWindow(width, height)
 
 function checkResize(x, y)
 {
+    const resizeEdgeWidth = 8;
+
     document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
     document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
 

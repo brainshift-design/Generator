@@ -1,5 +1,3 @@
-const resizeEdgeWidth = 8;
-
 document.canResizeX    = false;
 document.canResizeY    = false;
    
@@ -23,6 +21,8 @@ function resizeWindow(width, height)
 
 function checkResize(x, y)
 {
+    const resizeEdgeWidth = 8;
+
     document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
     document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
 

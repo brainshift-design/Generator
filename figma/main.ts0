@@ -33,8 +33,8 @@ function figLoadState(msg)
         let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
         let wndHeight = await figma.clientStorage.getAsync('windowHeight');
 
-        if (wndWidth  == null) wndWidth  = 400;
-        if (wndHeight == null) wndHeight = 300;
+        if (wndWidth  == null) wndWidth  = 800;
+        if (wndHeight == null) wndHeight = 600;
 
         figma.ui.resize(
             Math.max(0, wndWidth),
