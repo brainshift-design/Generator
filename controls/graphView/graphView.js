@@ -217,6 +217,9 @@ graphView.addEventListener('wheel', e =>
         return;
 
 
+    e.preventDefault();
+
+
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
 
@@ -229,10 +232,8 @@ graphView.addEventListener('wheel', e =>
     const dWheelY = e.deltaY / (isTouchpad ? 20 : 100);
 
 
-    if (getCtrlKey(e))
+    if (e.ctrlKey)
     {
-        e.preventDefault();
-
         let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 
@@ -248,8 +249,8 @@ graphView.addEventListener('wheel', e =>
         const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
 
         graphView.pan = point(
-                graphView.pan.x - dPanX,
-                graphView.pan.y - dPanY);
+            graphView.pan.x - dPanX,
+            graphView.pan.y - dPanY);
 
         if (graphView.selecting)
         {

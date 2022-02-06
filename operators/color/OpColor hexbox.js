@@ -87,13 +87,14 @@ function onHexboxInput(e)
 
 function onHexboxKeyDown(e)
 {
+    log(e);
     e.stopPropagation();
 
     
     const hexbox = e.target;
 
-    if (   getCtrlKey(e)
-        && e.code == 'KeyV'
+    if (   e.code == 'KeyV'
+        && getCtrlKey(e)
         && !hexbox.op.isConnected())
     {
         e.preventDefault();
@@ -120,6 +121,10 @@ function onHexboxKeyDown(e)
 
 function hexboxFinish(op, success)
 {
+    if (op.hexbox.value.trim() == '')
+        op.hexbox.value = op.hexbox.savedValue;
+
+
     var rgb = hex2rgb(op.hexbox.value);
 
     if (success) 
@@ -127,6 +132,7 @@ function hexboxFinish(op, success)
         setDataColorToCurrentSpace(op, rgb2dataColor(rgb));
         op.hexbox.op.pushUpdate();
     }
+
     
     op.hexbox.selectionEnd = op.hexbox.selectionStart;
     op.hexbox.editing = false;

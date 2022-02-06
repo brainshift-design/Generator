@@ -17,7 +17,7 @@ function initNumberSliderTextbox(slider)
 
 
 
-    slider.textbox.addEventListener('keydown', function(e)
+    slider.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -168,7 +168,7 @@ function initNumberSliderTextbox(slider)
             ? parseInt(value, 16)
             : parseFloat(value);
 
-        if (success) slider.setValue(Number(val));
+        if (success) slider.setValue(value.trim() != '' ? Number(val) : savedValue);
         else         slider.setValue(Number(savedValue));
 
         slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {

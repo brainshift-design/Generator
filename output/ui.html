@@ -7357,7 +7357,7 @@ function initNumberSliderTextbox(slider)
 
 
 
-    slider.textbox.addEventListener('keydown', function(e)
+    slider.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -7508,7 +7508,7 @@ function initNumberSliderTextbox(slider)
             ? parseInt(value, 16)
             : parseFloat(value);
 
-        if (success) slider.setValue(Number(val));
+        if (success) slider.setValue(value.trim() != '' ? Number(val) : savedValue);
         else         slider.setValue(Number(savedValue));
 
         slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
@@ -10634,6 +10634,9 @@ graphView.addEventListener('wheel', e =>
         return;
 
 
+    e.preventDefault();
+
+
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
 
@@ -10646,10 +10649,8 @@ graphView.addEventListener('wheel', e =>
     const dWheelY = e.deltaY / (isTouchpad ? 20 : 100);
 
 
-    if (getCtrlKey(e))
+    if (e.ctrlKey)
     {
-        e.preventDefault();
-
         let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 
@@ -10665,8 +10666,8 @@ graphView.addEventListener('wheel', e =>
         const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
 
         graphView.pan = point(
-                graphView.pan.x - dPanX,
-                graphView.pan.y - dPanY);
+            graphView.pan.x - dPanX,
+            graphView.pan.y - dPanY);
 
         if (graphView.selecting)
         {
@@ -16016,13 +16017,14 @@ function onHexboxInput(e)
 
 function onHexboxKeyDown(e)
 {
+    log(e);
     e.stopPropagation();
 
     
     const hexbox = e.target;
 
-    if (   getCtrlKey(e)
-        && e.code == 'KeyV'
+    if (   e.code == 'KeyV'
+        && getCtrlKey(e)
         && !hexbox.op.isConnected())
     {
         e.preventDefault();
@@ -16049,6 +16051,10 @@ function onHexboxKeyDown(e)
 
 function hexboxFinish(op, success)
 {
+    if (op.hexbox.value.trim() == '')
+        op.hexbox.value = op.hexbox.savedValue;
+
+
     var rgb = hex2rgb(op.hexbox.value);
 
     if (success) 
@@ -16056,6 +16062,7 @@ function hexboxFinish(op, success)
         setDataColorToCurrentSpace(op, rgb2dataColor(rgb));
         op.hexbox.op.pushUpdate();
     }
+
     
     op.hexbox.selectionEnd = op.hexbox.selectionStart;
     op.hexbox.editing = false;
