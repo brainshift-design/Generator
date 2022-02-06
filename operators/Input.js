@@ -87,7 +87,7 @@ extends EventTarget
         this.wireColor = dataType2rgb(this.dataType, true);
 
         
-        this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
+        //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
 
 
         this.hitbox.addEventListener('pointerenter', e => 

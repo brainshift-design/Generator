@@ -236,5 +236,7 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
 
 function autoSave()
 {
-    uiSetPluginData('graph', graph.toJson());
+    const json = graph.toJson();
+    //log(json);
+    uiSetPluginData('graph', json);
 }

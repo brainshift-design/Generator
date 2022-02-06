@@ -3,9 +3,9 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(output, null);
-    graphView.addWire(graphView.tempConn.wire, false);
-
     graphView.tempConn.wire.output = output;
+
+    graphView.addWire(graphView.tempConn.wire, false);
 
     graphView.updateNodeWire(
         graphView.tempConn.wire,
@@ -22,9 +22,9 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(null, input);
-    graphView.addWire(graphView.tempConn.wire, false);
-    
     graphView.tempConn.wire.input = input;
+    
+    graphView.addWire(graphView.tempConn.wire, false);
 
     graphView.updateNodeWire(
         graphView.tempConn.wire,

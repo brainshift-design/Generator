@@ -63,6 +63,8 @@ class Output
         this.updateControl();
 
         
+        //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
+
 
         this.hitbox.addEventListener('pointerenter', e => 
         { 

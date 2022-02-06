@@ -418,12 +418,20 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             && Math.abs(e.deltaY) < 100;
 
 
-        if (   isTouchpad 
-            && Math.abs(e.deltaY) > Math.abs(e.deltaX))
+        if (isTouchpad)
         {
             e.preventDefault();
             return;
         }
+
+
+        // if (   isTouchpad 
+        //     && Math.abs(e.deltaY) > Math.abs(e.deltaX))
+        // {
+        //     e.stopPropagation();
+        //     //e.preventDefault();
+        //     return;
+        // }
 
 
         const dWheelX = e.deltaX /  20;

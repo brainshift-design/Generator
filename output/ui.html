@@ -1,5 +1,7 @@
-<link href="https://fonts.googleapis.com/css2?Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 <style>
 
@@ -997,11 +999,11 @@ input[type=text]::selection
     
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
-    &nbsp;
+    <!-- &nbsp;
     <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
@@ -7980,12 +7982,20 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             && Math.abs(e.deltaY) < 100;
 
 
-        if (   isTouchpad 
-            && Math.abs(e.deltaY) > Math.abs(e.deltaX))
+        if (isTouchpad)
         {
             e.preventDefault();
             return;
         }
+
+
+        // if (   isTouchpad 
+        //     && Math.abs(e.deltaY) > Math.abs(e.deltaX))
+        // {
+        //     e.stopPropagation();
+        //     //e.preventDefault();
+        //     return;
+        // }
 
 
         const dWheelX = e.deltaX /  20;
@@ -9748,9 +9758,9 @@ graphView.startConnectionFromOutput = (pointerId, output) =>
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(output, null);
-    graphView.addWire(graphView.tempConn.wire, false);
-
     graphView.tempConn.wire.output = output;
+
+    graphView.addWire(graphView.tempConn.wire, false);
 
     graphView.updateNodeWire(
         graphView.tempConn.wire,
@@ -9767,9 +9777,9 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(null, input);
-    graphView.addWire(graphView.tempConn.wire, false);
-    
     graphView.tempConn.wire.input = input;
+    
+    graphView.addWire(graphView.tempConn.wire, false);
 
     graphView.updateNodeWire(
         graphView.tempConn.wire,
@@ -10447,11 +10457,9 @@ graphView.touches        = [];
 
 graphView.addEventListener('pointerenter', e => 
 {
-    if (graphView.hasPointerCapture(e.pointerId))
-    {
-        e.preventDefault();
+    if (    graphView.hasPointerCapture(e.pointerId)
+        && !graphView.tempConn)
         graphView.releasePointerCapture(e.pointerId);
-    }
 });
 
 
@@ -10459,10 +10467,7 @@ graphView.addEventListener('pointerenter', e =>
 graphView.addEventListener('pointerleave', e => 
 {
     if (graphView.tempConn)
-    {
-        e.preventDefault();
         graphView.setPointerCapture(e.pointerId);
-    }
 });
 
 
@@ -10643,6 +10648,8 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
+        e.preventDefault();
+
         let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 
@@ -12333,7 +12340,7 @@ extends EventTarget
         this.wireColor = dataType2rgb(this.dataType, true);
 
         
-        this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
+        //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
 
 
         this.hitbox.addEventListener('pointerenter', e => 
@@ -12532,6 +12539,8 @@ class Output
         this.updateControl();
 
         
+        //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
+
 
         this.hitbox.addEventListener('pointerenter', e => 
         { 
@@ -15018,7 +15027,7 @@ extends OpColorBase
         });
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1]), 2));
         this.addParam(this.param1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));
@@ -18259,6 +18268,7 @@ document.addEventListener('keydown', e =>
     {
         pasteOffset = [0, 0];
         actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), e.shiftKey));
+        return false;
     }
 
     // select all
@@ -18384,7 +18394,7 @@ document.addEventListener('keyup', e =>
         graphView.zoomSelecting = false;
         setCursor(panCursor);
     }
-});
+},false);
 
 
 // --> from Figma
@@ -18884,8 +18894,8 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    //uiGetPluginData('graph'); // load graph from current page
-    //setInterval(autoSave, 5000); // auto save every 5 seconds
+    uiGetPluginData('graph'); // load graph from current page
+    setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
 
@@ -18929,6 +18939,15 @@ document.resizingX     = false;
 document.resizingY     = false;
 
 document.startRect = new Rect();
+
+
+
+window.addEventListener('keydown', function (e) 
+{
+    if (   e.code == 'KeyD'
+        && getCtrlKey(e))
+        e.preventDefault();
+});
 
 
 
@@ -19196,7 +19215,9 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
 
 function autoSave()
 {
-    uiSetPluginData('graph', graph.toJson());
+    const json = graph.toJson();
+    //log(json);
+    uiSetPluginData('graph', json);
 }
 
 

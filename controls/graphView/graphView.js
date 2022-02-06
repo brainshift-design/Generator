@@ -40,11 +40,9 @@ graphView.touches        = [];
 
 graphView.addEventListener('pointerenter', e => 
 {
-    if (graphView.hasPointerCapture(e.pointerId))
-    {
-        e.preventDefault();
+    if (    graphView.hasPointerCapture(e.pointerId)
+        && !graphView.tempConn)
         graphView.releasePointerCapture(e.pointerId);
-    }
 });
 
 
@@ -52,10 +50,7 @@ graphView.addEventListener('pointerenter', e =>
 graphView.addEventListener('pointerleave', e => 
 {
     if (graphView.tempConn)
-    {
-        e.preventDefault();
         graphView.setPointerCapture(e.pointerId);
-    }
 });
 
 
@@ -236,6 +231,8 @@ graphView.addEventListener('wheel', e =>
 
     if (getCtrlKey(e))
     {
+        e.preventDefault();
+
         let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 

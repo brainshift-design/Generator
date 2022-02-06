@@ -64,7 +64,7 @@ extends OpColorBase
         });
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1]), 2));
         this.addParam(this.param1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));

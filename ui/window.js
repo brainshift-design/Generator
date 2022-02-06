@@ -8,6 +8,15 @@ document.startRect = new Rect();
 
 
 
+window.addEventListener('keydown', function (e) 
+{
+    if (   e.code == 'KeyD'
+        && getCtrlKey(e))
+        e.preventDefault();
+});
+
+
+
 function resizeWindow(width, height)
 {
     uiPostMessageToFigma({ 

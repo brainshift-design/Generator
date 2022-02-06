@@ -24,6 +24,7 @@ document.addEventListener('keydown', e =>
     {
         pasteOffset = [0, 0];
         actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), e.shiftKey));
+        return false;
     }
 
     // select all
@@ -149,4 +150,4 @@ document.addEventListener('keyup', e =>
         graphView.zoomSelecting = false;
         setCursor(panCursor);
     }
-});
+},false);
