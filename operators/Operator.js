@@ -267,11 +267,8 @@ class Operator
         
         //log(this.name + '.Operator.update()');
     
-        log('0001');
         this.updateParams(false);
-        log('0002');
         this.updateData();
-        log('0003');
 
         this.valid = true;
 

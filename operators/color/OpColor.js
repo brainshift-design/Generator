@@ -72,6 +72,11 @@ extends OpColorBase
         
         this.paramSpace.control.barTop  = 0.8;
 
+        this.paramSpace.control.wheelScale = 1;
+        this.param1    .control.wheelScale = 1;
+        this.param2    .control.wheelScale = 1;
+        this.param3    .control.wheelScale = 1;
+
 
         // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
         // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
@@ -134,11 +139,9 @@ extends OpColorBase
     updateData()
     {
         //log(this.name + '.OpColor.updateData()');
-        log('01');
 
         if (this.inputs[0].isConnected) 
         {
-            log('02');
             const color = convertDataColorToSpace(
                 this.inputs[0].data.color, 
                 getCurrentDataColorSpace(this));
@@ -151,31 +154,25 @@ extends OpColorBase
         }
         else
         {
-            log('1');
             const toSpace = OpColorSpaces[this.paramSpace.value][0];
 
-            log('2');
             if (  !this.#init
                 || this._oldSpace != toSpace)
             {
                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
-                log('3');
 
                 const color =
                     this.loaded 
                     ? this.getDataColorFromParams()
                     : this._color;
-                    log('4');
 
                 this.loaded = false;
 
 
                 switchToSpace(this, toSpace);
-                log('5');
                 setDataColorToCurrentSpace(this, color);
-                log('6');
 
 
                 for (let i = 2; i < 5; i++)
@@ -189,28 +186,22 @@ extends OpColorBase
                     }
                 }
 
-                log('7');
 
                 this.#init = true;
             }
-            log('8');
 
             this._color    = this.getDataColorFromParams();
             this._oldSpace = toSpace;
         }
 
     
-        log('9');
         this.outputs[0]._data = dataFromDataColor(this._color);
 
-        log('10');
         for (const param of this.params.filter(p => p.dataType == 'number'))
             param.valueIsValid = !isValidRgb(dataColor2rgb(this._color));
 
-            log('11');
 
         super.updateData()
-        log('12');
     }
 
 

@@ -11,7 +11,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelStep = 1, acc = 0, suffix = '', log = false)
+function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
 {
     slider.param             = param;
 
@@ -40,7 +40,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.log               = log;
 
     slider.dragScale         = dragScale;
-    slider.wheelStep         = wheelStep;
+    slider.wheelScale        = wheelScale;
         
     slider.backColor         = 'transparent';//'#fffe';
     slider.valueColor        = '#7772';
@@ -417,16 +417,17 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                Math.abs(e.deltaX) < 100
             && Math.abs(e.deltaY) < 100;
 
-        if (isTouchpad && e.deltaY != 0)
+
+        if (   isTouchpad 
+            && Math.abs(e.deltaY) > Math.abs(e.deltaX))
         {
-            e.stopPropagation();
+            e.preventDefault();
             return;
         }
 
 
         const dWheelX = e.deltaX /  20;
         const dWheelY = e.deltaY / 100;
-
 
 
         if (   !getCtrlKey(e)
@@ -442,8 +443,8 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
                 const val =
                     isTouchpad
-                    ? slider.value -  dWheelX               * slider.wheelStep * dec
-                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelStep * dec;
+                    ? slider.value -  dWheelX               * slider.wheelScale * dec
+                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
                 
                 slider.setValue(val);
             }
@@ -452,6 +453,56 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
 
+    // graphView.addEventListener('touchstart', e =>
+    // {
+    //     graphView.touches.push(e);
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchmove', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches[i] = e;
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchend', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchcancel', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
     slider.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
@@ -485,6 +536,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = false)
     {
         const oldValue = slider.value;
+
+
+        const dec = Math.pow(10, Math.abs(slider.dec));
+        value = Math.round(value * dec) / dec;
 
 
         if (slider.wrapValue)
@@ -546,8 +601,8 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             ? sx + cx
             : sx + cx + v * sw;
 
-        slider.bar.style.left  = Math.max(0, x);
-        slider.bar.style.width = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+        slider.bar.style.left   = Math.max(0, x);
+        slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
 
         slider.bar.style.top    = sh * slider.barTop;
         slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
