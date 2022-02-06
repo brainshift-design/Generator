@@ -45,6 +45,7 @@ function updateSliderRanges(slider, sliderWidth, sliderHeight)
             const range = slider.ranges[i];
 
             const div = createDiv('numberSliderRange');
+            div.style.zIndex = 0;
             slider.rangeDivs.push(div);
             slider.appendChild(div);
         
