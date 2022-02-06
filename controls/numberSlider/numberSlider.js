@@ -412,6 +412,23 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         if (!slider.pointerEvents)
             return;
 
+
+        const isTouchpad = 
+               Math.abs(e.deltaX) < 100
+            && Math.abs(e.deltaY) < 100;
+
+        if (isTouchpad && e.deltaY != 0)
+        {
+            e.stopPropagation();
+            return;
+        }
+
+
+        const dWheelX = e.deltaX /  20;
+        const dWheelY = e.deltaY / 100;
+
+
+
         if (   !getCtrlKey(e)
             && !slider.buttonDown1)
         {
@@ -422,7 +439,11 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.oldValue = slider.value;
 
                 const dec = Math.pow(10, -slider.editDec);
-                const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
+
+                const val =
+                    isTouchpad
+                    ? slider.value -  dWheelX               * slider.wheelStep * dec
+                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelStep * dec;
                 
                 slider.setValue(val);
             }

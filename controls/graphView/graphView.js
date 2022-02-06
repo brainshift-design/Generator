@@ -47,6 +47,8 @@ graphView.addEventListener('pointerenter', e =>
     }
 });
 
+
+
 graphView.addEventListener('pointerleave', e => 
 {
     if (graphView.tempConn)
@@ -116,6 +118,7 @@ graphView.addEventListener('pointerdown', e =>
     else if (e.button == 1)
     {
         graphView.btn1down = true;
+        setCursor(panCursor);
         graphView.startPan(e.pointerId);
     }
 });
@@ -221,15 +224,22 @@ graphView.addEventListener('wheel', e =>
 
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
-    const dWheelX = e.deltaX / 120;
-    const dWheelY = e.deltaY / 120;
+
+    const isTouchpad = 
+           Math.abs(e.deltaX) < 100
+        && Math.abs(e.deltaY) < 100;
+
+
+    const dWheelX = e.deltaX / (isTouchpad ? 20 : 100);
+    const dWheelY = e.deltaY / (isTouchpad ? 20 : 100);
+
 
     if (getCtrlKey(e))
     {
         let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
+        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
@@ -240,14 +250,9 @@ graphView.addEventListener('wheel', e =>
         const dPanX = dWheelX * 20 / Math.pow(graphView.zoom, 0.1);
         const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
 
-        graphView.pan = 
-            dWheelX != 0
-            ? point(
-                 e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
-                !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX)
-            : point(
-                !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
-                 e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY);
+        graphView.pan = point(
+                graphView.pan.x - dPanX,
+                graphView.pan.y - dPanY);
 
         if (graphView.selecting)
         {

@@ -7973,6 +7973,23 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         if (!slider.pointerEvents)
             return;
 
+
+        const isTouchpad = 
+               Math.abs(e.deltaX) < 100
+            && Math.abs(e.deltaY) < 100;
+
+        if (isTouchpad && e.deltaY != 0)
+        {
+            e.stopPropagation();
+            return;
+        }
+
+
+        const dWheelX = e.deltaX /  20;
+        const dWheelY = e.deltaY / 100;
+
+
+
         if (   !getCtrlKey(e)
             && !slider.buttonDown1)
         {
@@ -7983,7 +8000,11 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.oldValue = slider.value;
 
                 const dec = Math.pow(10, -slider.editDec);
-                const val = slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep * dec;
+
+                const val =
+                    isTouchpad
+                    ? slider.value -  dWheelX               * slider.wheelStep * dec
+                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelStep * dec;
                 
                 slider.setValue(val);
             }
@@ -10377,6 +10398,8 @@ graphView.addEventListener('pointerenter', e =>
     }
 });
 
+
+
 graphView.addEventListener('pointerleave', e => 
 {
     if (graphView.tempConn)
@@ -10446,6 +10469,7 @@ graphView.addEventListener('pointerdown', e =>
     else if (e.button == 1)
     {
         graphView.btn1down = true;
+        setCursor(panCursor);
         graphView.startPan(e.pointerId);
     }
 });
@@ -10551,15 +10575,22 @@ graphView.addEventListener('wheel', e =>
 
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
-    const dWheelX = e.deltaX / 120;
-    const dWheelY = e.deltaY / 120;
+
+    const isTouchpad = 
+           Math.abs(e.deltaX) < 100
+        && Math.abs(e.deltaY) < 100;
+
+
+    const dWheelX = e.deltaX / (isTouchpad ? 20 : 100);
+    const dWheelY = e.deltaY / (isTouchpad ? 20 : 100);
+
 
     if (getCtrlKey(e))
     {
         let pos = point(e.clientX, e.clientY);
         pos.y -= controlBar.offsetHeight;
 
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / 10));
+        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
@@ -10570,14 +10601,9 @@ graphView.addEventListener('wheel', e =>
         const dPanX = dWheelX * 20 / Math.pow(graphView.zoom, 0.1);
         const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
 
-        graphView.pan = 
-            dWheelX != 0
-            ? point(
-                 e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanX,
-                !e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanX)
-            : point(
-                !e.shiftKey ? graphView.pan.x : graphView.pan.x - dPanY,
-                 e.shiftKey ? graphView.pan.y : graphView.pan.y - dPanY);
+        graphView.pan = point(
+                graphView.pan.x - dPanX,
+                graphView.pan.y - dPanY);
 
         if (graphView.selecting)
         {
@@ -13084,9 +13110,11 @@ class Operator
     {
         //log(this.name + '.Operator.pushUpdate()');
 
-        this.invalidate();
-        
-        setTimeout(() => { getTerminalsAfterNode(this).forEach(n => n.update()); });
+        setTimeout(() => 
+        { 
+            this.invalidate();
+            getTerminalsAfterNode(this).forEach(n => n.update()); 
+        });
     }
 
 
@@ -13097,8 +13125,11 @@ class Operator
         
         //log(this.name + '.Operator.update()');
     
+        log('0001');
         this.updateParams(false);
+        log('0002');
         this.updateData();
+        log('0003');
 
         this.valid = true;
 
@@ -15004,9 +15035,11 @@ extends OpColorBase
     updateData()
     {
         //log(this.name + '.OpColor.updateData()');
+        log('01');
 
         if (this.inputs[0].isConnected) 
         {
+            log('02');
             const color = convertDataColorToSpace(
                 this.inputs[0].data.color, 
                 getCurrentDataColorSpace(this));
@@ -15019,25 +15052,31 @@ extends OpColorBase
         }
         else
         {
+            log('1');
             const toSpace = OpColorSpaces[this.paramSpace.value][0];
 
+            log('2');
             if (  !this.#init
                 || this._oldSpace != toSpace)
             {
                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
+                log('3');
 
                 const color =
                     this.loaded 
                     ? this.getDataColorFromParams()
                     : this._color;
+                    log('4');
 
                 this.loaded = false;
 
 
                 switchToSpace(this, toSpace);
+                log('5');
                 setDataColorToCurrentSpace(this, color);
+                log('6');
 
 
                 for (let i = 2; i < 5; i++)
@@ -15051,22 +15090,28 @@ extends OpColorBase
                     }
                 }
 
+                log('7');
 
                 this.#init = true;
             }
+            log('8');
 
             this._color    = this.getDataColorFromParams();
             this._oldSpace = toSpace;
         }
 
     
+        log('9');
         this.outputs[0]._data = dataFromDataColor(this._color);
 
+        log('10');
         for (const param of this.params.filter(p => p.dataType == 'number'))
             param.valueIsValid = !isValidRgb(dataColor2rgb(this._color));
 
+            log('11');
 
         super.updateData()
+        log('12');
     }
 
 
@@ -18795,7 +18840,7 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    uiGetPluginData('graph'); // load graph from current page
+    //uiGetPluginData('graph'); // load graph from current page
     //setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
@@ -18887,7 +18932,7 @@ function checkResize(x, y)
 function saveGraph()
 {
     const json = graph.toJson(); 
-    log(json); 
+    //log(json); 
     uiSetPluginData("graph", json);
 }
 
@@ -18902,7 +18947,7 @@ function loadGraph(json)
     graph.clear();
     
     const data = JSON.parse(json);
-    log(json);
+    //log(json);
 
 
     const pan = point( 
