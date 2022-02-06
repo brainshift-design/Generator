@@ -44,8 +44,9 @@ document.addEventListener('keydown', e =>
         setLastKeyDown = false;
     }
 
-    // delete
-    else if (e.key == 'Delete')
+    // delete / backspace
+    else if (   e.key == 'Delete'
+             || e.key == 'Backspace')
     {
         const nodeIds = graphView.selectedNodes.map(n => n.id);
         actionManager.do(new DeleteNodesAction(nodeIds, nodeIds));

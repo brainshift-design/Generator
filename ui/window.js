@@ -8,10 +8,10 @@ document.startRect = new Rect();
 
 
 
-window.addEventListener('keydown', function (e) 
+window.addEventListener('keydown', e => 
 {
-    if (   e.code == 'KeyD'
-        && getCtrlKey(e))
+    // if (   e.code == 'KeyD'
+    //     && getCtrlKey(e))
         e.preventDefault();
 });
 
