@@ -1158,9 +1158,9 @@ function getNumberString(num, dec, showHex = false)
     // find decimal place
 
     while (i < str.length 
-        && str[i] == getUserDecimalSeparator())
-        //&& str[i] !== '.' 
-        //&& str[i] !== ',')
+        //&& str[i] == getUserDecimalSeparator())
+        && str[i] !== '.' 
+        && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -1174,9 +1174,9 @@ function getNumberString(num, dec, showHex = false)
         while (i >= 0 && str[i] === '0')
             str = str.substring(0, i--);
         
-        // if (   str[i] === '.' 
-        //     || str[i] === ',') // hack because JavaScript
-        if (str[i] == getUserDecimalSeparator())
+         if (   str[i] === '.' 
+             || str[i] === ',') // hack because JavaScript
+        //if (str[i] == getUserDecimalSeparator())
             str = str.substring(0, i--);
     }    
 
@@ -2558,11 +2558,14 @@ function forwardEvent(event, element)
 
 function getDecimalCount(strValue)
 {
-    const decIndex = strValue.indexOf(getUserDecimalSeparator());
+    const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
+    const commaIndex = strValue.indexOf(',');//getUserDecimalSeparator());
 
-    return decIndex >= 0
-         ? strValue.length-1 - decIndex
-         : 0;
+    return dotIndex >= 0
+         ? strValue.length-1 - dotIndex
+         : (commaIndex >= 0
+            ? strValue.length-1 - commaIndex
+            : 0);
 }
 
 
@@ -3600,9 +3603,9 @@ function getNumberString(num, dec, showHex = false)
     // find decimal place
 
     while (i < str.length 
-        && str[i] == getUserDecimalSeparator())
-        //&& str[i] !== '.' 
-        //&& str[i] !== ',')
+        //&& str[i] == getUserDecimalSeparator())
+        && str[i] !== '.' 
+        && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -3616,9 +3619,9 @@ function getNumberString(num, dec, showHex = false)
         while (i >= 0 && str[i] === '0')
             str = str.substring(0, i--);
         
-        // if (   str[i] === '.' 
-        //     || str[i] === ',') // hack because JavaScript
-        if (str[i] == getUserDecimalSeparator())
+         if (   str[i] === '.' 
+             || str[i] === ',') // hack because JavaScript
+        //if (str[i] == getUserDecimalSeparator())
             str = str.substring(0, i--);
     }    
 
@@ -5000,11 +5003,14 @@ function forwardEvent(event, element)
 
 function getDecimalCount(strValue)
 {
-    const decIndex = strValue.indexOf(getUserDecimalSeparator());
+    const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
+    const commaIndex = strValue.indexOf(',');//getUserDecimalSeparator());
 
-    return decIndex >= 0
-         ? strValue.length-1 - decIndex
-         : 0;
+    return dotIndex >= 0
+         ? strValue.length-1 - dotIndex
+         : (commaIndex >= 0
+            ? strValue.length-1 - commaIndex
+            : 0);
 }
 
 
@@ -7368,12 +7374,12 @@ function initNumberSliderTextbox(slider)
             e.preventDefault();
             document.execCommand("copy");
         }
+
         else if (e.code == 'KeyV'
               && getCtrlKey(e)
               && !slider.readOnly)
         {
-            e.preventDefault();
-            document.execCommand("paste");
+            // by doing nothing here I let the OS do its thing
         }
         
         else if (   (   e.code == 'Enter'
@@ -7438,7 +7444,8 @@ function initNumberSliderTextbox(slider)
                    && (   !slider.showHex 
                        || !isHexDigitChar(e.key))
                    && (   slider.showHex
-                       || e.key != getUserDecimalSeparator())
+                       ||    e.key != '.'
+                          && e.key != ',') //getUserDecimalSeparator())
                    && !(   (   e.code == 'Minus'
                             || e.code == 'NumpadSubtract')
                         && slider.min < 0)
@@ -16017,7 +16024,6 @@ function onHexboxInput(e)
 
 function onHexboxKeyDown(e)
 {
-    log(e);
     e.stopPropagation();
 
     
@@ -16027,11 +16033,11 @@ function onHexboxKeyDown(e)
         && getCtrlKey(e)
         && !hexbox.op.isConnected())
     {
-        e.preventDefault();
-        document.execCommand('paste');
+        // by doing nothing here I let the OS do its thing
     }
 
-    else if ((   e.code == 'Enter'
+    else 
+    if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
            && !hexbox.op.isConnected())
         hexboxFinish(hexbox.op, true);

@@ -73,9 +73,9 @@ function getNumberString(num, dec, showHex = false)
     // find decimal place
 
     while (i < str.length 
-        && str[i] == getUserDecimalSeparator())
-        //&& str[i] !== '.' 
-        //&& str[i] !== ',')
+        //&& str[i] == getUserDecimalSeparator())
+        && str[i] !== '.' 
+        && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -89,9 +89,9 @@ function getNumberString(num, dec, showHex = false)
         while (i >= 0 && str[i] === '0')
             str = str.substring(0, i--);
         
-        // if (   str[i] === '.' 
-        //     || str[i] === ',') // hack because JavaScript
-        if (str[i] == getUserDecimalSeparator())
+         if (   str[i] === '.' 
+             || str[i] === ',') // hack because JavaScript
+        //if (str[i] == getUserDecimalSeparator())
             str = str.substring(0, i--);
     }    
 

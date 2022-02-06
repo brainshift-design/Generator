@@ -50,11 +50,14 @@ function forwardEvent(event, element)
 
 function getDecimalCount(strValue)
 {
-    const decIndex = strValue.indexOf(getUserDecimalSeparator());
+    const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
+    const commaIndex = strValue.indexOf(',');//getUserDecimalSeparator());
 
-    return decIndex >= 0
-         ? strValue.length-1 - decIndex
-         : 0;
+    return dotIndex >= 0
+         ? strValue.length-1 - dotIndex
+         : (commaIndex >= 0
+            ? strValue.length-1 - commaIndex
+            : 0);
 }
 
 

@@ -85,9 +85,9 @@ function getNumberString(num, dec, showHex = false)
     // find decimal place
 
     while (i < str.length 
-        && str[i] == getUserDecimalSeparator())
-        //&& str[i] !== '.' 
-        //&& str[i] !== ',')
+        //&& str[i] == getUserDecimalSeparator())
+        && str[i] !== '.' 
+        && str[i] !== ',')
         i++;
 
     if (i >= str.length) // if no decimal place
@@ -101,9 +101,9 @@ function getNumberString(num, dec, showHex = false)
         while (i >= 0 && str[i] === '0')
             str = str.substring(0, i--);
         
-        // if (   str[i] === '.' 
-        //     || str[i] === ',') // hack because JavaScript
-        if (str[i] == getUserDecimalSeparator())
+         if (   str[i] === '.' 
+             || str[i] === ',') // hack because JavaScript
+        //if (str[i] == getUserDecimalSeparator())
             str = str.substring(0, i--);
     }    
 
@@ -1485,11 +1485,14 @@ function forwardEvent(event, element)
 
 function getDecimalCount(strValue)
 {
-    const decIndex = strValue.indexOf(getUserDecimalSeparator());
+    const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
+    const commaIndex = strValue.indexOf(',');//getUserDecimalSeparator());
 
-    return decIndex >= 0
-         ? strValue.length-1 - decIndex
-         : 0;
+    return dotIndex >= 0
+         ? strValue.length-1 - dotIndex
+         : (commaIndex >= 0
+            ? strValue.length-1 - commaIndex
+            : 0);
 }
 
 

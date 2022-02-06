@@ -28,12 +28,12 @@ function initNumberSliderTextbox(slider)
             e.preventDefault();
             document.execCommand("copy");
         }
+
         else if (e.code == 'KeyV'
               && getCtrlKey(e)
               && !slider.readOnly)
         {
-            e.preventDefault();
-            document.execCommand("paste");
+            // by doing nothing here I let the OS do its thing
         }
         
         else if (   (   e.code == 'Enter'
@@ -98,7 +98,8 @@ function initNumberSliderTextbox(slider)
                    && (   !slider.showHex 
                        || !isHexDigitChar(e.key))
                    && (   slider.showHex
-                       || e.key != getUserDecimalSeparator())
+                       ||    e.key != '.'
+                          && e.key != ',') //getUserDecimalSeparator())
                    && !(   (   e.code == 'Minus'
                             || e.code == 'NumpadSubtract')
                         && slider.min < 0)
