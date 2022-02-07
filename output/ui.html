@@ -7725,13 +7725,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             slider.buttonDown0_ = true;
             slider.moved        = false;
             slider.clientX      = e.clientX;
-            slider.prevClientX  = e.clientX;
             slider.movedX       = 0;
 
 
             if (!slider.readOnly)
             {
                 slider.oldValue   = slider.value;
+                slider.startValue = slider.value;
                 slider.prevValue  = slider.value;
                 slider.sx         = e.clientX;
 
@@ -7784,26 +7784,41 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             if (slider.isPointerLocked())
             {
-                //slider.movedX += slider.clientX - slider.prevClientX;
                 slider.movedX  += e.movementX;
                 
-                const dx       = slider.movedX;//e.clientX - slider.sx - slider.movedX;             
+                const dx       = slider.movedX;
                 const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
                 const grain    = Math.pow(10, -slider.editDec);
 
-                let val = slider.oldValue + dx * drag * slider.dragScale * adaptive;
-                val = Math.floor(val / grain) * grain;
+                const val = slider.startValue + dx * drag * slider.dragScale * adaptive;
 
-                slider.setValue(val, true, false, false, getCtrlKey(e));
 
-                const _val = Math.min(Math.max(slider.min, val), slider.max);
+                // reset slider movement at the limits for better UX
+                const min = getCtrlKey(e) ? slider.min : slider.displayMin;
+                const max = getCtrlKey(e) ? slider.max : slider.displayMax;
 
-                if (_val != slider.prevValue)
+                slider.setValue(
+                    Math.round(val / grain) * grain, 
+                    true, 
+                    false, 
+                    false,
+                    getCtrlKey(e));
+
+
+                if (   val <= min
+                    || val >= max)
+                {
+                    slider.movedX     = 0;
+                    slider.startValue = slider.value;
+                    slider.sx         = e.clientX;
+                } 
+
+
+                if (slider.value != slider.prevValue)
                     slider.param.op.pushUpdate();
-                    
-                slider.prevValue   = slider.value;
-                slider.prevClientX = slider.clientX;
+                                    
+                slider.prevValue = slider.value;
             }
             else
             {
@@ -8154,7 +8169,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const dec = Math.pow(10, Math.abs(slider.dec));
         value = Math.round(value * dec) / dec;
 
-
         if (slider.wrapValue)
         {
             while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
@@ -8165,7 +8179,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         else
             value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
         
-
         if (   value != oldValue
             || forceChange)
         {
@@ -8294,11 +8307,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             || slider.webkitRequestPointerLock;
 
         slider.requestPointerLock();
-
-        //slider.setPointerCapture(pointerId);
-
-        //slider.movedX = 0;
-        //slider.sx     = 0;
     };
 
 
@@ -8311,7 +8319,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             || document.webkitExitPointerLock;
 
         document.exitPointerLock();
-        // slider.releasePointerCapture(pointerId);
     };
 
 
@@ -8349,17 +8356,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.update();
 }
-
-
-
-// function onSliderClickTimer(slider, pointerId)
-// {
-//     if (!document.menuHadFocus)
-//     {
-//         slider.moved = true;
-//         slider.lockPointer(pointerId);
-//     }
-// }
 
 
 function initColorSliderTextbox(slider)
