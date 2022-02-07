@@ -40,14 +40,15 @@ extends OpColorBase
             const rgb = dataColor2rgb(this.inputs[0].data.color);
 
             this._color = rgb2dataColor(
-                rgb2colorblind(
-                    invalid2validRgb(rgb),
-                    this.#paramL.value / 2,
-                    this.#paramM.value / 2,
-                    this.#paramS.value / 2));
+                invalid2validRgb( // need the double validation here
+                    rgb2colorblind(
+                        invalid2validRgb(rgb),
+                        this.#paramL.value / 2,
+                        this.#paramM.value / 2,
+                        this.#paramS.value / 2)));
 
             if (!isValidRgb(rgb))
-                this.warningStyle = this.getDefaultWarningStyle(rgb);
+                this.warningStyle = this.getDefaultWarningStyle(invalid2validRgb(rgb));
 
             this.forceShowWarning = 
                    this.inputs[0].isConnected

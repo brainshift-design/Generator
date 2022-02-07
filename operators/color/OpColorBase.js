@@ -105,7 +105,7 @@ extends Operator
         if (this.canShowColor())
         {
             const rgb = dataColor2rgb(this._color);
-            
+
             if (  !isValidRgb(rgb)
                 || this.forceShowWarning)
             {
@@ -158,7 +158,7 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-                isValidRgb(colBack)
+               isValidRgb(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('

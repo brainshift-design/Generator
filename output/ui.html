@@ -14954,7 +14954,7 @@ extends Operator
         if (this.canShowColor())
         {
             const rgb = dataColor2rgb(this._color);
-            
+
             if (  !isValidRgb(rgb)
                 || this.forceShowWarning)
             {
@@ -15007,7 +15007,7 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-                isValidRgb(colBack)
+               isValidRgb(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
@@ -16886,14 +16886,15 @@ extends OpColorBase
             const rgb = dataColor2rgb(this.inputs[0].data.color);
 
             this._color = rgb2dataColor(
-                rgb2colorblind(
-                    invalid2validRgb(rgb),
-                    this.#paramL.value / 2,
-                    this.#paramM.value / 2,
-                    this.#paramS.value / 2));
+                invalid2validRgb( // need the double validation here
+                    rgb2colorblind(
+                        invalid2validRgb(rgb),
+                        this.#paramL.value / 2,
+                        this.#paramM.value / 2,
+                        this.#paramS.value / 2)));
 
             if (!isValidRgb(rgb))
-                this.warningStyle = this.getDefaultWarningStyle(rgb);
+                this.warningStyle = this.getDefaultWarningStyle(invalid2validRgb(rgb));
 
             this.forceShowWarning = 
                    this.inputs[0].isConnected
