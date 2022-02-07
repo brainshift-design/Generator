@@ -58,7 +58,7 @@ class Output
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.12];
-        this.wireColor = dataType2rgb(this._dataType, true);
+        this.wireColor = dataType2rgb(this.dataType, true);
         
         this.updateControl();
 

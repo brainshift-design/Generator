@@ -30,16 +30,18 @@ extends Operator
         const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
 
 
+        const noColor = [0.7, 0.7, 0.7];
+
         for (const input of this.inputs.filter(i => !i.param))
         {
-            input.wireColor = colBack;
+            input.wireColor = this.canShowColor() ? colBack : noColor;
             input.color     = colInput;
         }
 
 
         for (const output of this.outputs.filter(i => !i.param))
         {
-            output.wireColor = colBack;
+            output.wireColor = this.canShowColor() ? colBack : noColor;
             output.color     = colOutput;
         }
 
