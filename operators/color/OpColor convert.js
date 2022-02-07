@@ -177,7 +177,7 @@ function convert2lab(fromColor)
         case 'hsv':    lab = rgb2lab(hsv2rgb   (col)); break;
         case 'hsl':    lab = rgb2lab(hsl2rgb   (col)); break;
         case 'hclokl': lab = rgb2lab(hclokl2rgb(col)); break;
-        case 'hcllab': lab = pol2opp           (col);  break;
+        case 'hcllab': lab =         hcllab2lab(col);  break;
         case 'hclluv': lab = rgb2lab(hclluv2rgb(col)); break;
         case 'oklab':  lab = rgb2lab(oklab2rgb (col)); break;
         case 'lab':    lab =                    col;   break;
@@ -207,7 +207,7 @@ function convert2luv(fromColor)
         case 'hsl':    luv = rgb2luv(hsl2rgb   (col)); break;
         case 'hclokl': luv = rgb2luv(hclokl2rgb(col)); break;
         case 'hcllab': luv = rgb2luv(hcllab2rgb(col)); break;
-        case 'hclluv': luv = pol2opp           (col);  break;
+        case 'hclluv': luv =         hclluv2luv(col);  break;
         case 'oklab':  luv = rgb2luv(oklab2rgb (col)); break;
         case 'lab':    luv = rgb2luv(lab2rgb   (col)); break;
         case 'luv':    luv =                    col;   break;
@@ -267,7 +267,7 @@ function convert2hcllab(fromColor)
         case 'hcllab': hcl =                       col;   break;
         case 'hclluv': hcl = rgb2hcllab(hclluv2rgb(col)); break;
         case 'oklab':  hcl = rgb2hcllab(oklab2rgb (col)); break;
-        case 'lab':    hcl = opp2pol              (col);  break;
+        case 'lab':    hcl = lab2hcllab(           col ); break;
         case 'luv':    hcl = rgb2hcllab(luv2rgb   (col)); break;
     }
 
@@ -289,7 +289,7 @@ function convert2hclluv(fromColor)
     switch (fromColor[0])
     {
         case 'rgbhex':
-        case 'rgb':    hcl = rgb2hclluv(           col );  break;
+        case 'rgb':    hcl = rgb2hclluv(           col ); break;
         case 'hsv':    hcl = rgb2hclluv(hsv2rgb   (col)); break;
         case 'hsl':    hcl = rgb2hclluv(hsl2rgb   (col)); break;
         case 'hcllab': hcl = rgb2hclluv(hcllab2rgb(col)); break;
@@ -297,7 +297,7 @@ function convert2hclluv(fromColor)
         case 'hclokl': hcl = rgb2hclluv(hclokl2rgb(col)); break;
         case 'oklab':  hcl = rgb2hclluv(oklab2rgb (col)); break;
         case 'lab':    hcl = rgb2hclluv(lab2rgb   (col)); break;
-        case 'luv':    hcl = opp2pol              (col);  break;
+        case 'luv':    hcl = luv2hclluv(           col ); break;
     }
 
     return [
