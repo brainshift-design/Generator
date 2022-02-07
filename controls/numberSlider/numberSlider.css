@@ -6,6 +6,7 @@
     overflow:         hidden;
     background-color: white;
     text-align:       center;
+    touch-action:     none;
 }    
 
 

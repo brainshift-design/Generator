@@ -42,7 +42,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.dragScale         = dragScale;
     slider.wheelScale        = wheelScale;
         
-    slider.backColor         = 'transparent';//'#fffe';
+    slider.backColor         = 'transparent';
     slider.valueColor        = '#7772';
     slider.textColor         = '#000';
            
@@ -131,7 +131,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             slider.buttonDown0  = true;
             slider.buttonDown0_ = true;
             slider.moved        = false;
-            slider.clientX      = 0;
+            slider.clientX      = e.clientX;
+            slider.prevClientX  = e.clientX;
+            slider.movedX       = 0;
 
 
             if (!slider.readOnly)
@@ -140,7 +142,15 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.prevValue  = slider.value;
                 slider.sx         = e.clientX;
 
-                slider.clickTimer = setTimeout(function() { onSliderClickTimer(slider); }, 500);
+                slider.clickTimer = setTimeout(() => 
+                {
+                    if (!document.menuHadFocus)
+                    {
+                        slider.moved = true;
+                        slider.lockPointer(e.pointerId);
+                    }
+                }, 
+                500);
             }
 
 
@@ -160,7 +170,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.addEventListener('pointermove', e =>
     {
-        console.log(e);
         if (!slider.pointerEvents)
             return;
         
@@ -182,14 +191,15 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             if (slider.isPointerLocked())
             {
-                slider.movedX += e.movementX;
+                //slider.movedX += slider.clientX - slider.prevClientX;
+                slider.movedX  += e.movementX;
                 
-                const dx       = e.clientX - slider.sx - slider.movedX;             
+                const dx       = slider.movedX;//e.clientX - slider.sx - slider.movedX;             
                 const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
                 const grain    = Math.pow(10, -slider.editDec);
 
-                let val = slider.oldValue - dx * drag * slider.dragScale * adaptive;
+                let val = slider.oldValue + dx * drag * slider.dragScale * adaptive;
                 val = Math.floor(val / grain) * grain;
 
                 slider.setValue(val, true, false, false, getCtrlKey(e));
@@ -199,14 +209,15 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 if (_val != slider.prevValue)
                     slider.param.op.pushUpdate();
                     
-                slider.prevValue = slider.value;
+                slider.prevValue   = slider.value;
+                slider.prevClientX = slider.clientX;
             }
             else
             {
                 if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
                 {
                     slider.moved = true;
-                    slider.lockPointer();
+                    slider.lockPointer(e.pointerId);
 
                     slider.dispatchEvent(slider.onstartchange);
                 }
@@ -680,36 +691,43 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
 
-    slider.lockPointer = function()
+    slider.lockPointer = function(pointerId)
     {
-        slider.requestPointerLock =    
-               slider.requestPointerLock 
-            || slider.mozRequestPointerLock;
-
-        slider.requestPointerLock();
         clearTimeout(slider.clickTimer);
 
-        slider.movedX = 0;
-        slider.sx     = 0;
+        slider.requestPointerLock =    
+               slider.      requestPointerLock 
+            || slider.   mozRequestPointerLock
+            || slider.webkitRequestPointerLock;
+
+        slider.requestPointerLock();
+
+        //slider.setPointerCapture(pointerId);
+
+        //slider.movedX = 0;
+        //slider.sx     = 0;
     };
 
 
 
-    slider.unlockPointer = function()
+    slider.unlockPointer = function(pointerId)
     {
         document.exitPointerLock =    
-               document.exitPointerLock    
-            || document.mozExitPointerLock;
+               document.      exitPointerLock    
+            || document.   mozExitPointerLock
+            || document.webkitExitPointerLock;
 
         document.exitPointerLock();
+        // slider.releasePointerCapture(pointerId);
     };
 
 
 
     slider.isPointerLocked = function()
     {
-        return (document.pointerLockElement    === slider 
-             || document.mozPointerLockElement === slider);
+        return (document.      pointerLockElement === slider 
+             || document.   mozPointerLockElement === slider
+             || document.webkitPointerLockElement === slider);
     }
     
 
@@ -741,11 +759,11 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
 
-function onSliderClickTimer(slider)
-{
-    if (!document.menuHadFocus)
-    {
-        slider.moved = true;
-        slider.lockPointer();
-    }
-}
+// function onSliderClickTimer(slider, pointerId)
+// {
+//     if (!document.menuHadFocus)
+//     {
+//         slider.moved = true;
+//         slider.lockPointer(pointerId);
+//     }
+// }
