@@ -311,7 +311,6 @@ class Operator
     {
         //log(this.name + '.Operator.updateHeader()');
         
-
         const height = this.updateHeaderInputsAndOutputs();
 
         this.header.style.height = height;

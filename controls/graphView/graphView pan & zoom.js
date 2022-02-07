@@ -81,8 +81,14 @@ graphView.startPan = pointerId =>
 
 graphView.updatePanAndZoom = () =>
 {
+    const x       = graphView.clientLeft;
+    const w       = graphView.clientWidth;
+    const h       = graphView.clientHeight;
+    const bounds  = graphView.getAllNodeBounds();
+    const yOffset = controlBar.offsetHeight;
+
     graphView.updateNodeTransforms(graph.nodes);
-    graphView.updateScroll();
+    graphView.updateScroll(x, w, h, bounds, yOffset);
 
     btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };

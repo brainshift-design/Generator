@@ -39,19 +39,23 @@ extends OpColorBase
         
         if (this.inputs[0].isConnected)
         {
-            const rgb = dataColor2rgb(this.inputs[0].data.color);
+            const rgb      = dataColor2rgb(this.inputs[0].data.color);
+            const validRgb = invalid2validRgb(rgb);
+            
+            const cb = rgb2colorblind(
+                validRgb,
+                this.#paramL.value / 2,
+                this.#paramM.value / 2,
+                this.#paramS.value / 2);
 
-            this._color = rgb2dataColor(
-                invalid2validRgb( // need the double validation here
-                    rgb2colorblind(
-                        invalid2validRgb(rgb),
-                        this.#paramL.value / 2,
-                        this.#paramM.value / 2,
-                        this.#paramS.value / 2)));
+            const validCb = invalid2validRgb(cb);
+
+            this._color = rgb2dataColor(validCb);
+
 
             if (!isValidRgb(rgb))
             {
-                this.warningStyle = this.getDefaultWarningStyle(invalid2validRgb(rgb));
+                this.warningStyle = this.getDefaultWarningStyle(validRgb);
                 valid             = false;
             }
 
@@ -93,8 +97,8 @@ extends OpColorBase
         const v = Math.round(param.value);
 
              if (v == 2) param.control.valueText = cone;
-        else if (v == 1) param.control.valueText = cone + ' Weak';
-        else             param.control.valueText = cone + ' Blind';
+        else if (v == 1) param.control.valueText = cone + ' weak';
+        else             param.control.valueText = cone + ' blind';
     }
 
 

@@ -44,8 +44,8 @@ function lab2xyz(lab, W = sRGB.W)
           a = lab[1], 
           b = lab[2];
 
-    const e = cube(6/29);
-    const k = cube(29/3);
+    const e = cube(6/29) / 100;
+    const k = cube(29/3) / 100;
 
     const yw = (l + 0.16)/1.16;
     const xw = a/5 + yw;
@@ -58,6 +58,6 @@ function lab2xyz(lab, W = sRGB.W)
     x *= W[0];
     y *= W[1];
     z *= W[2];
-
+ 
     return [x, y, z];
 }

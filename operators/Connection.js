@@ -64,25 +64,15 @@ class Connection
                 + ' ' + cw
                 + ' ' + ch);
 
+            const isSolo = 
+                   graphView._soloNode
+                && (   this. input.op == graphView._soloNode
+                    || this.output.op == graphView._soloNode);
             
-            show(
-                this.wire, 
-                (   graphView.showWires
-                 ||    graphView._soloNode
-                       && (   this. input.op == graphView._soloNode
-                           || this.output.op == graphView._soloNode)) 
-                && this != graphView.savedConn);
-
-            show(
-                this.wire.curve, 
-                   (   graphView.showWires 
-                    ||    graphView._soloNode
-                    && (   this. input.op == graphView._soloNode
-                        || this.output.op == graphView._soloNode)) 
-             && this != graphView.savedConn);
-
+            show(this.wire,         (graphView.showWires || isSolo) && this != graphView.savedConn);
+            show(this.wire.curve,   (graphView.showWires || isSolo) && this != graphView.savedConn);
             show(this.wire.outBall, !graphView.tempConn || graphView.tempConn.output);
-            show(this.wire.inBall,  !graphView.tempConn || graphView.tempConn. input);
+            show(this.wire. inBall, !graphView.tempConn || graphView.tempConn. input);
         };
 
 

@@ -137,7 +137,7 @@ class Graph
         node.div.style.zIndex = graph.nodes.length-1;
 
         graphView.putNodeOnTop(node);
-        graphView.updateScroll();
+        graphView.updateScrollWithBounds();
 
         if (updateLabel)
             setTimeout(() => node.updateNode());
@@ -181,7 +181,7 @@ class Graph
             graphView.removeChild(node.div);
         }
 
-        graphView.updateScroll();
+        graphView.updateScrollWithBounds();
     }
 
 

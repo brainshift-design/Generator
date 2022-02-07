@@ -130,10 +130,12 @@ function loadConnectionsAsync(data, nodes, setProgress)
         //nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
+        //graph.nodes.forEach(n => n.updateNode());
+        
         graphView.updateShowWires();
         graphView.updatePanAndZoom();
-        graphView.updateNodeTransforms(nodes);
-        graphView.updateScroll();
+        //graphView.updateNodeTransforms(nodes);
+        //graphView.updateScrollWithBounds();
 
         loadingOverlay.style.display = 'none';
 

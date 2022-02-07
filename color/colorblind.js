@@ -52,27 +52,19 @@ function rgb2colorblind(rgb, l, m, s, cs = sRGB)
 
 
         const lms_ = [
-            lms[0] + lerp(
-                blueMono * (bq1*lms[2] - lms[0]),
-                (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]),
-                lm),
-            lms[1] + lerp(
-                blueMono * (bq2*lms[2] - lms[1]),
-                (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]),
-                lm),
-            lms[2] + lerp(
-                0,
-                lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]),
-                lm) ];
+            lms[0] + lerp(blueMono * (bq1*lms[2] - lms[0]), (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]), lm),
+            lms[1] + lerp(blueMono * (bq2*lms[2] - lms[1]), (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]), lm),
+            lms[2] + lerp(0,                     lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]), lm) ];
 
-                
         const xyz_ = lms2xyz(lms_);
               rgb  = xyz2rgb(xyz_, cs);
+
 
         let bm_ = rgb2lab(rgb, cs);
         bm_[0] = lerp(a, bm_[0], lm);
         rgb = lab2rgb(bm_, cs);
 
+        
         rgb = rgbLerp(
             [a, a, a], 
             rgb, 

@@ -131,7 +131,8 @@ function graphView_onpointermove(e)
     graphView.p = point(e.clientX, e.clientY);
 
 
-    if (graphView.panning)
+    if (   graphView.panning
+        && graphView.hasPointerCapture(e.pointerId))
     {
         setTimeout(() =>
         {
@@ -482,9 +483,6 @@ graphView.updateNodeTransforms = nodes =>
     const nodeTop  = nodes.map(n => n.div.offsetTop);
     const nodeRect = nodes.map(n => graphView.getNodeOffsetRect(n.div));
     
-    for (let i = 0; i < nodes.length; i++)
-        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
-
 
     const wires = [];
 
@@ -502,6 +500,10 @@ graphView.updateNodeTransforms = nodes =>
                     && !wires.includes(connInput.connection.wire))
                     wires.push(connInput.connection.wire);
     }
+
+
+    for (let i = 0; i < nodes.length; i++)
+        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
 
 
     graphView.updateNodeWires(wires);
@@ -555,7 +557,11 @@ graphView.updateNodeWires = wires =>
 {
     const pOut    = [];            
     const pIn     = [];
+    
+    const cw      = graphView.clientWidth;
+    const ch      = graphView.clientHeight;
     const yOffset = controlBar.offsetHeight;
+
 
     wires.forEach(w => 
     {
@@ -566,13 +572,46 @@ graphView.updateNodeWires = wires =>
         pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
     });
 
+    
     for (let i = 0; i < wires.length; i++)
     {
-        wires[i].update(
-            pOut[i].x, 
-            pOut[i].y, 
-            pIn[i].x, 
-            pIn[i].y);        
+        const wire = wires[i];
+
+        // the yOffset is to start wire coords just below the control bar,
+        // not at the top of the window
+
+        wire.updateCurve  (pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
+        wire.updateOutBall(pOut[i].x, pOut[i].y                    );
+        wire.updateInBall (                      pIn[i].x, pIn[i].y);
+
+        wire.updateStyle(wire.getColor());
+
+        wire.setAttribute('width',  cw);
+        wire.setAttribute('height', ch);
+    
+        wire.setAttribute('viewBox',
+                    0
+            + ' ' + yOffset/2 // why is only half of yOffset taken???
+            + ' ' + cw
+            + ' ' + ch);
+    }
+
+
+    for (let i = 0; i < wires.length; i++)
+    {
+        const conn   = wires[i].connection;
+        const input  = conn.input;
+        const output = conn.output;
+
+            const isSolo = 
+                   graphView._soloNode
+                && (    input.op == graphView._soloNode
+                    || output.op == graphView._soloNode);
+
+        show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
+        show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
     }
 };
 
@@ -665,9 +704,9 @@ graphView.soloNode = node =>
             || c.output && graphView._soloNode == c.output.op
             ? 1 
             : 0.09;
-
-        graphView.updateNodeWire(c.wire);
     });
+
+    graphView.updateNodeWires(graph.connections.map(c => c.wire));
 };
 
 
@@ -678,11 +717,8 @@ graphView.unsoloNode = () =>
 
     graph.nodes.forEach(n => n.div .style.opacity = 1);
 
-    graph.connections.forEach(c => 
-    {
-        c.wire.style.opacity = 1;
-        graphView.updateNodeWire(c.wire);
-    });
+    graph.connections.forEach(c => c.wire.style.opacity = 1);
+    graphView.updateNodeWires(graph.connections.map(c => c.wire));
 };
 
 
@@ -690,16 +726,23 @@ graphView.unsoloNode = () =>
 graphView.toggleShowWires = () =>
 {
     graphView.showWires = !graphView.showWires;
+
+    graphView.updateShowWiresButton();
     graphView.updateShowWires();
+};
+
+
+
+graphView.updateShowWiresButton = () =>
+{
+    btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
+    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 };
 
 
 
 graphView.updateShowWires = () =>
 {
-    btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
-    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
-
     graph.nodes      .forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
 };

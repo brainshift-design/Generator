@@ -3,12 +3,24 @@ scrollbarY.moving = false;
 
 
 
-graphView.updateScroll = () =>
+graphView.updateScrollWithBounds = () =>
 {
     const bounds = graphView.getAllNodeBounds();
 
-    graphView.updateScrollX(bounds);
-    graphView.updateScrollY(bounds);
+    graphView.updateScroll(
+        graphView.clientLeft,
+        graphView.clientWidth,
+        graphView.clientHeight,
+        bounds,
+        controlBar.offsetHeight);
+};
+
+
+
+graphView.updateScroll = (x, w, h, bounds, yOffset) =>
+{
+    graphView.updateScrollX(   w, h, bounds);
+    graphView.updateScrollY(x, w, h, bounds, yOffset);
 
     scrollbarX.style.zIndex = MAX_INT32-1;
     scrollbarY.style.zIndex = MAX_INT32-2;
@@ -20,25 +32,25 @@ graphView.updateScroll = () =>
 
 
 
-graphView.updateScrollX = bounds =>
+graphView.updateScrollX = (w, h, bounds) =>
 {
     if (bounds.l < 0)
     {
-        const width = sqr(graphView.clientWidth) / (graphView.clientWidth - bounds.l) - (smallScrollGap + largeScrollGap);
+        const width = sqr(w) / (w - bounds.l) - (smallScrollGap + largeScrollGap);
 
         scrollbarX.style.display = 'inline-block';
         scrollbarX.style.width   =  width;
-        scrollbarX.style.left    =  graphView.clientWidth - largeScrollGap - width;
-        scrollbarX.style.top     =  graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.left    =  w - largeScrollGap - width;
+        scrollbarX.style.top     =  h - smallScrollGap - 6;
     }
-    else if (bounds.r >= graphView.clientWidth)
+    else if (bounds.r >= w)
     {
-        const width = sqr(graphView.clientWidth) / bounds.r - (smallScrollGap + largeScrollGap);
+        const width = sqr(w) / bounds.r - (smallScrollGap + largeScrollGap);
 
         scrollbarX.style.display = 'inline-block';
         scrollbarX.style.width   =  width;
         scrollbarX.style.left    =  smallScrollGap;
-        scrollbarX.style.top     =  graphView.clientHeight - smallScrollGap - 6;
+        scrollbarX.style.top     =  h - smallScrollGap - 6;
     }
     else
         scrollbarX.style.display = 'none';
@@ -115,25 +127,25 @@ scrollbarX.addEventListener('pointermove', e =>
 
 
 
-graphView.updateScrollY = bounds =>
+graphView.updateScrollY = (x, w, h, bounds, yOffset) =>
 {
     if (bounds.t < controlBar.offsetHeight)
     {
-        const ot     = bounds.t - controlBar.offsetHeight;
-        const height = sqr(graphView.clientHeight) / (graphView.clientHeight - ot) - (smallScrollGap + largeScrollGap);
+        const ot     = bounds.t - yOffset;
+        const height = sqr(h) / (h - ot) - (smallScrollGap + largeScrollGap);
 
         scrollbarY.style.height  = height;
-        scrollbarY.style.left    = graphView.clientLeft + graphView.clientWidth - smallScrollGap - 6;
-        scrollbarY.style.top     = graphView.clientHeight - largeScrollGap - height;
+        scrollbarY.style.left    = x + w - smallScrollGap - 6;
+        scrollbarY.style.top     = h - largeScrollGap - height;
         scrollbarY.style.display = 'inline-block';
     }
-    else if (bounds.b >= controlBar.offsetHeight + graphView.clientHeight)
+    else if (bounds.b >= yOffset + h)
     {
-        const ob     = bounds.b - controlBar.offsetHeight;
-        const height = sqr(graphView.clientHeight) / ob - (smallScrollGap + largeScrollGap);
+        const ob     = bounds.b - h;
+        const height = sqr(h) / ob - (smallScrollGap + largeScrollGap);
 
         scrollbarY.style.height  = height;
-        scrollbarY.style.left    = graphView.clientLeft + graphView.clientWidth - smallScrollGap - 6;
+        scrollbarY.style.left    = x + w - smallScrollGap - 6;
         scrollbarY.style.top     = smallScrollGap;
         scrollbarY.style.display = 'inline-block';
     }

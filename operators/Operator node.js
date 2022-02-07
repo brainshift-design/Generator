@@ -22,7 +22,8 @@ function createOperatorNode(node)
         node.div.over      = true;
         graphView.overNode = node;
         
-        if (e.altKey) 
+        if (   e.altKey
+            && graphView._soloNode != node) 
             graphView.soloNode(node);
         
         node.updateBorder();
@@ -195,6 +196,12 @@ function createNodeHeader(node)
         
         if (node.div.dragging)
         {
+            const x       = graphView.clientLeft;
+            const w       = graphView.clientWidth;
+            const h       = graphView.clientHeight;
+            const bounds  = graphView.getAllNodeBounds();
+            const yOffset = controlBar.offsetHeight;
+        
             setNodePositions(
                 graphView.selectedNodes,
                 (e.clientX - node.div.sx) / graphView.zoom,
@@ -202,7 +209,7 @@ function createNodeHeader(node)
             
             node.div.moved = true;
 
-            graphView.updateScroll();
+            graphView.updateScroll(x, w, h, bounds, yOffset);
         }
         else if (   graphView.tempConn
                  && toTheRightOfInputs)
