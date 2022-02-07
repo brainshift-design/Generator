@@ -44,8 +44,8 @@ extends OpColorBase
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
-            if (   isValidRgb(rgb0)
-                && isValidRgb(rgb1))
+            if (   isValidRgb(rgb0) && this.inputs[0].data.isValid
+                && isValidRgb(rgb1) && this.inputs[1].data.isValid)
             {
                 if (this.#paramStandard.value == 0)
                 {
@@ -90,19 +90,32 @@ extends OpColorBase
                 return;
             }
 
-            else if (!isValidRgb(rgb0)
-                  &&  isValidRgb(rgb1))
+            else if ((!isValidRgb(rgb0) || !this.inputs[0].data.isValid)
+                   &&  isValidRgb(rgb1) &&  this.inputs[1].data.isValid)
             {
-                this.warningStyle = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
+                this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
                 this.forceShowWarning = true;
             }
             
+            else if (  isValidRgb(rgb0) &&  this.inputs[0].data.isValid
+                  && (!isValidRgb(rgb1) || !this.inputs[1].data.isValid))
+            {
+                this.warningStyle     = this.getDefaultWarningStyle(rgb1);
+                this.forceShowWarning = true;
+            }
+
             else
                 this.forceShowWarning = false;
         }
 
         else if (this.inputs[1].isConnected)
-            this.forceShowWarning = false;
+        {
+            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+            
+            this.forceShowWarning = 
+                   !isValidRgb(rgb1) 
+                || !this.inputs[1].data.isValid;
+        }
 
 
         this.#paramValue.control.valueText = '?';

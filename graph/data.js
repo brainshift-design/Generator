@@ -36,7 +36,8 @@ function dataFromDataColor(color)
 {
     return {
         type:   'color',
-        color:   color
+        color:   color,
+        isValid: isValidRgb(dataColor2rgb(color))
     };
 }
 
