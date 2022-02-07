@@ -252,11 +252,9 @@ class Operator
     {
         //log(this.name + '.Operator.pushUpdate()');
 
-        setTimeout(() => 
-        { 
-            this.invalidate();
-            getTerminalsAfterNode(this).forEach(n => n.update()); 
-        });
+        this.invalidate();
+
+        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
     }
 
 

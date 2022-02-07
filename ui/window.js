@@ -8,12 +8,11 @@ document.startRect = new Rect();
 
 
 
-window.addEventListener('keydown', e => 
-{
-    // if (   e.code == 'KeyD'
-    //     && getCtrlKey(e))
-        e.preventDefault();
-});
+window.addEventListener('keydown',       e => e.preventDefault());
+
+window.addEventListener('gesturestart',  e => e.preventDefault());
+window.addEventListener('gesturechange', e => e.preventDefault());
+window.addEventListener('gestureend',    e => e.preventDefault());
 
 
 

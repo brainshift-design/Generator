@@ -160,6 +160,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.addEventListener('pointermove', e =>
     {
+        console.log(e);
         if (!slider.pointerEvents)
             return;
         
@@ -183,7 +184,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.movedX += e.movementX;
                 
-                const dx       = slider.sx - slider.movedX;             
+                const dx       = e.clientX - slider.sx - slider.movedX;             
                 const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
                 const grain    = Math.pow(10, -slider.editDec);

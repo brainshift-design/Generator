@@ -1,3 +1,10 @@
+function position(e)
+{
+    return point(e.clientX, e.clientY);
+}
+
+
+
 function getStyleValue(obj, style)
 {
     return window.getComputedStyle(obj, null).getPropertyValue(style);

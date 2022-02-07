@@ -51,6 +51,13 @@ body
     background-color: #f4f4f4;
     user-select:      none;
     font-family:      Inter;
+
+    -webkit-touch-callout: none; 
+      -webkit-user-select: none; 
+       -khtml-user-select: none; 
+         -moz-user-select: none; 
+          -ms-user-select: none; 
+              user-select: none; 
 }
 
 
@@ -2979,6 +2986,13 @@ function strToUTF8Arr(str)
 }
 
 
+function position(e)
+{
+    return point(e.clientX, e.clientY);
+}
+
+
+
 function getStyleValue(obj, style)
 {
     return window.getComputedStyle(obj, null).getPropertyValue(style);
@@ -5424,6 +5438,13 @@ function strToUTF8Arr(str)
 }
 
 
+function position(e)
+{
+    return point(e.clientX, e.clientY);
+}
+
+
+
 function getStyleValue(obj, style)
 {
     return window.getComputedStyle(obj, null).getPropertyValue(style);
@@ -7731,6 +7752,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.addEventListener('pointermove', e =>
     {
+        console.log(e);
         if (!slider.pointerEvents)
             return;
         
@@ -7754,7 +7776,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.movedX += e.movementX;
                 
-                const dx       = slider.sx - slider.movedX;             
+                const dx       = e.clientX - slider.sx - slider.movedX;             
                 const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                 const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
                 const grain    = Math.pow(10, -slider.editDec);
@@ -10451,7 +10473,9 @@ graphView.btn1down       = false; // this is to help deal with mouse wheels that
 
 graphView.panning        = false;
 
+graphView.pViewport;
 graphView.pStart         = point(0, 0);
+graphView.zoomStart;
 
 
 scrollbarX.style.zIndex  = MAX_INT32-1;
@@ -10551,6 +10575,7 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 function graphView_onpointermove(e)
 {
     graphView.p = point(e.clientX, e.clientY);
+
 
     if (graphView.panning)
     {
@@ -10688,6 +10713,23 @@ graphView.addEventListener('wheel', e =>
 
     if (graphView.tempConn)
         graphView_onpointermove(e);
+});
+
+
+
+graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
+
+graphView.addEventListener('gesturechange', e => 
+{
+    const p = point(
+        graphView.p.x,
+        graphView.p.y - controlBar.offsetHeight);
+
+    const zoom = graphView.zoomStart * e.scale;
+    const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));
+
+    graphView.setPanAndZoom(pan, zoom);
+    graphView.updatePanAndZoom();
 });
 
 
@@ -13183,11 +13225,9 @@ class Operator
     {
         //log(this.name + '.Operator.pushUpdate()');
 
-        setTimeout(() => 
-        { 
-            this.invalidate();
-            getTerminalsAfterNode(this).forEach(n => n.update()); 
-        });
+        this.invalidate();
+
+        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
     }
 
 
@@ -18956,12 +18996,11 @@ document.startRect = new Rect();
 
 
 
-window.addEventListener('keydown', e => 
-{
-    // if (   e.code == 'KeyD'
-    //     && getCtrlKey(e))
-        e.preventDefault();
-});
+window.addEventListener('keydown',       e => e.preventDefault());
+
+window.addEventListener('gesturestart',  e => e.preventDefault());
+window.addEventListener('gesturechange', e => e.preventDefault());
+window.addEventListener('gestureend',    e => e.preventDefault());
 
 
 

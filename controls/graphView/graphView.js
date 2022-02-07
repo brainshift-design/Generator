@@ -27,7 +27,9 @@ graphView.btn1down       = false; // this is to help deal with mouse wheels that
 
 graphView.panning        = false;
 
+graphView.pViewport;
 graphView.pStart         = point(0, 0);
+graphView.zoomStart;
 
 
 scrollbarX.style.zIndex  = MAX_INT32-1;
@@ -127,6 +129,7 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 function graphView_onpointermove(e)
 {
     graphView.p = point(e.clientX, e.clientY);
+
 
     if (graphView.panning)
     {
@@ -264,6 +267,23 @@ graphView.addEventListener('wheel', e =>
 
     if (graphView.tempConn)
         graphView_onpointermove(e);
+});
+
+
+
+graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
+
+graphView.addEventListener('gesturechange', e => 
+{
+    const p = point(
+        graphView.p.x,
+        graphView.p.y - controlBar.offsetHeight);
+
+    const zoom = graphView.zoomStart * e.scale;
+    const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));
+
+    graphView.setPanAndZoom(pan, zoom);
+    graphView.updatePanAndZoom();
 });
 
 
