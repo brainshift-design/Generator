@@ -116,11 +116,7 @@ class Graph
         for (const node of nodes)
             this.addNode(node, placeNode, createNewName, false);
         
-        setTimeout(() =>
-        {
-            for (const node of nodes)
-                updateNodeLabel(node);
-        });
+        setTimeout(() => nodes.forEach(n => n.updateNode()));
     }
 
 
@@ -144,7 +140,7 @@ class Graph
         graphView.updateScroll();
 
         if (updateLabel)
-            setTimeout(() => updateNodeLabel(node));
+            setTimeout(() => node.updateNode());
     }
     
 
