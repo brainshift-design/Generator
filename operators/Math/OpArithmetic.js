@@ -139,8 +139,8 @@ extends OperatorBase
         {
             this._symbol.style.fontSize = 12;
             this._symbol.style.left     = 'calc(50% + 1px)';
-            this._symbol.style.top      = this.header.offsetHeight/2 - 3;
-            this.label  .style.top      = 'calc(50% - 3px)';
+            this._symbol.style.top      = this.header.offsetHeight/2 - 15;
+            this.label  .style.top      = 'calc(50% + 3px)';
         }
        
         
