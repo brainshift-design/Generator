@@ -128,7 +128,6 @@ extends Parameter
         if (   this.input
             && this.input.isConnected)
         {
-            //this.control.dec = curDec;
             this.setDecimals(this.input.data.decimals);
 
             this.setValue(
