@@ -16720,7 +16720,7 @@ extends OpColorBase
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 21;
 
-                    this.#paramValue.control.displayDec = 2;
+                    this.#paramValue.control.setDecimals(2);
 
                     this.#paramValue.control.suffix = rating;
                     this.#paramValue.control.setValue(ratio);
@@ -16737,7 +16737,7 @@ extends OpColorBase
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 108;
 
-                    this.#paramValue.control.displayDec = 0;
+                    this.#paramValue.control.setDecimals(0);
 
                     this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
                     this.#paramValue.control.setValue(Math.abs(ratio));
@@ -16817,60 +16817,6 @@ extends OpColorBase
 
 
 
-    // updateHeader()
-    // {
-    //     const colBack = 
-    //         this.inputs[1].isConnected
-    //         ? dataColor2rgb(this.inputs[1].data.color)
-    //         : dataType2rgb(this._dataType);
-
-    //     const darkText = rgb2hclokl(colBack)[2] > 0.71;
-    //     const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-        
-    //     const colText = 
-    //         darkText 
-    //         ? [0, 0, 0, 0.24 * (1 + satBias)] 
-    //         : [1, 1, 1, 0.4  * (1 + satBias)];
-
-
-    //     for (const input of this.inputs.filter(i => !i.param))
-    //     {
-    //         input.wireColor = colBack;
-    //         input.color     = colText;
-            
-    //         input.updateControl();
-    //     }
-
-
-    //     for (const output of this.outputs.filter(i => !i.param))
-    //     {
-    //         output.wireColor = colBack;
-    //         output.color     = colText;
-
-    //         output.updateControl();
-    //     }
-
-
-    //     if (   this.inputs[0].isConnected 
-    //         && this.inputs[1].isConnected)
-    //         this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
-    //     else if (this.inputs[1].isConnected)
-    //         this.label.style.color = colorStyleRgba(colText);
-    //     else 
-    //         this.label.style.color = 'black';
-
-
-    //     this.header.style.background = 
-    //         this.inputs[1].isConnected 
-    //         ? colorStyleRgb(dataColor2rgb(this.inputs[1].data.color))
-    //         : '#ead8eaee';//colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
-
-
-    //     super.updateHeader();
-    // }
-
-
-
     canShowColor()
     {
         return this.inputs[1].isConnected;
@@ -16891,57 +16837,6 @@ extends OpColorBase
         else 
             this.label.style.color = 'black';
     }
-
-
-
-    // updateWarningOverlay()
-    // {
-    //     if (   this.inputs[0].isConnected
-    //         && this.inputs[1].isConnected)
-    //     {
-    //         const colBack  = dataColor2rgb(this.inputs[1].data.color);
-
-    //         const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
-
-    //         if (   !isValidRgb(rgb0)
-    //             || !isValidRgb(rgb1))
-    //         {
-    //             const colWarning = 
-    //                   !isValidRgb(rgb0)
-    //                 && maxRgbDistance(
-    //                     rgb2hclokl(invalid2validRgb(rgb0)), 
-    //                     rgb2hclokl(invalid2validRgb(rgb1))) > 0.15
-    //                 ? rgb_a(invalid2validRgb(rgb0), 0.25)
-    //                 : (isDark(colBack)
-    //                    ? [0, 0, 0, 0.12] 
-    //                    : [1, 1, 1, 0.2]);
-
-    //             this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
-    //         }
-    //         else
-    //         {
-    //             this._warningOverlay.style.display = 'none';
-    //         }
-    //     }
-    //     else if (this.inputs[1].isConnected)
-    //     {
-    //         let colWarning;
-
-    //         const colBack  = dataColor2rgb(this.inputs[1].data.color);
-    //         const darkText = rgb2hclokl(colBack)[2] > 0.71;
-    //         const satBias  = Math.min(Math.max(0, ((rgb2hsv(invalid2validRgb(colBack))[1] - 0.7) / 0.3), 1));
-
-    //         colWarning = 
-    //             darkText 
-    //             ? [0, 0, 0, 0.1  * (1 + satBias)] 
-    //             : [1, 1, 1, 0.16 * (1 + satBias)];
-
-    //         this.updateWarningOverlayStyle(colorStyleRgba(colWarning));
-    //     }
-    //     else
-    //         this.updateWarningOverlayStyle(color_NaN, colorStyleRgba([0.5, 1, 0.5, 0.2]));
-    // }
 }
 
 
