@@ -105,9 +105,7 @@ extends Parameter
 
     setDecimals(dec)
     {
-        this.control.dec     = dec;
-        this.control.editDec = dec;
-
+        this.control.setDecimals(dec);
         this.control.update();
         this.op.pushUpdate();
     }
@@ -149,7 +147,7 @@ extends Parameter
                    this.input
                 && this.input.isConnected
                 ? this.input.data.decimals
-                : this._control.dec);
+                : this._control.cec);
         }
     }
 

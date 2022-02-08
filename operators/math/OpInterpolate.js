@@ -2,7 +2,7 @@ class   OpInterpolate
 extends OperatorBase
 {
     #paramValue;
-    #paramFactor;
+    #paramAmount;
 
 
 
@@ -15,13 +15,16 @@ extends OperatorBase
 
         this.addOutput(new Output(this.dataType));
 
-        this.addParam(this.#paramValue  = new NumberParam('value',  '',  false, false, false, 0));
-        this.addParam(this.#paramFactor = new NumberParam('factor', '%', true,  true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramValue  = new NumberParam('value',  '', false, false, false, 0));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '', true,  true,  true, 0, 0, 1, 2));
 
         enableSliderText(this.#paramValue.control, false);
-
-        this.#paramFactor.control.min = Number.MIN_SAFE_INTEGER;
-        this.#paramFactor.control.max = Number.MAX_SAFE_INTEGER;
+        
+        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
+        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
+        this.#paramAmount.control.suffix     = '%';
+        this.#paramAmount.control.valueScale = 100;
+        this.#paramAmount.control.displayDec = 0;
     }
 
 
@@ -37,7 +40,7 @@ extends OperatorBase
             const a = this.inputs[0].data.value; 
             const b = this.inputs[1].data.value; 
 
-            result = a + (b - a) * this.#paramFactor.value;
+            result = a + (b - a) * this.#paramAmount.value;
 
             maxDec = Math.max(
                 this.inputs[0].data.decimals,
@@ -57,7 +60,7 @@ extends OperatorBase
 
         this.outputs[0]._data = dataFromNumber(result, maxDec);
 
-        this.#paramValue.control.dec = maxDec;
+        this.#paramValue.control.setDecimals(maxDec);
         this.#paramValue.setValue(result, false, true, false);
 
         this.#paramValue.control.update();

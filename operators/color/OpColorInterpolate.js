@@ -19,19 +19,22 @@ extends OpColorBase
 
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '%', true, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true, true, true, 0, 0,    1, 2));
         this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 1));
       
         
-        this.#paramSpace.control.min        = 2;
-        this.#paramSpace.control.displayMin = 2;
+        this.#paramSpace.control.min         = 2;
+        this.#paramSpace.control.displayMin  = 2;
         
-        this.#paramAmount.control.min       = Number.MIN_SAFE_INTEGER;
-        this.#paramAmount.control.max       = Number.MAX_SAFE_INTEGER;
-        this.#paramAmount.allowEditDecimals = true;
+        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
+        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
+        this.#paramAmount.allowEditDecimals  = true;
+        this.#paramAmount.control.suffix     = '%'
+        this.#paramAmount.control.valueScale = 100;
+        this.#paramAmount.control.displayDec = 0;
         
-        this.#paramGamma.control.max        = 10;
-        this.#paramGamma.allowEditDecimals  = true;
+        this.#paramGamma.control.max         = 10;
+        this.#paramGamma.allowEditDecimals   = true;
 
 
         this.inputs[0].addEventListener('connect', () => 
@@ -66,7 +69,7 @@ extends OpColorBase
             const f     = this.#paramAmount.value;
             const gamma = this.#paramGamma .value;
             
-            const col   = this.interpolate(
+            const col = this.interpolate(
                 space,
                 dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
                 dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),

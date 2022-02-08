@@ -162,7 +162,7 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
                 // TODO: if (log) do log scaling
                 let val = slider.oldValue - dx*slider.dragScale*adaptive;
                 
-                const grain = Math.pow(10, -slider.editDec);
+                const grain = Math.pow(10, -slider.dec);
                 val = Math.floor(val / grain) * grain;
                 
                 slider.setValue(val, true, false);

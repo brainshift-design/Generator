@@ -135,7 +135,7 @@ function initColorSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value = numToString(slider.value, slider.editDec);
+        slider.textbox.value = numToString(slider.value, slider.dec);
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);

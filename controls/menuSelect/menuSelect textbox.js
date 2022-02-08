@@ -130,7 +130,7 @@ function initMenuSelectTextbox(select)
     
         select.textbox.style.textAlign = 'center';
     
-        select.textbox.value = numToString(select.value, select.editDec);
+        select.textbox.value = numToString(select.value, select.dec);
         select.textbox.savedValue = select.textbox.value;
         
         select.parentNode.appendChild(select.textbox);

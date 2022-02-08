@@ -26,13 +26,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.min               = min;
     slider.max               = max;
     slider.value             = def;
-    slider.dec               = dec;
-    slider.editDec           = dec;
     slider.acc               = acc;
+
+    slider.dec               =
+    slider.displayDec        = dec;
     
     slider.displayMin        = min;
     slider.displayMax        = max;
-    slider.displayMultiplier = 1;
+    slider.valueScale        = 1;
                
     slider.id                = id;
     slider.name              = name;
@@ -195,10 +196,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 
                 const dx       = slider.movedX;
                 const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                const drag     = slider.dragScale * Math.pow(10, -slider.editDec);
-                const grain    = Math.pow(10, -slider.editDec);
+                const grain    = Math.pow(10, -slider.dec);
+                const drag     = grain * sqr(slider.dragScale);
 
-                const val = slider.startValue + dx * drag * slider.dragScale * adaptive;
+                const val = slider.startValue + dx * drag * adaptive;
 
 
                 // reset slider movement at the limits for better UX
@@ -474,7 +475,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.oldValue = slider.value;
 
-                const dec = Math.pow(10, -slider.editDec);
+                const dec = Math.pow(10, -slider.dec);
 
                 const val =
                     isTouchpad
@@ -680,7 +681,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.getValueText = function()
     {
         if (   slider.options.length > 0
-            && slider.dec == 0)
+            && slider.displayDec == 0)
         {
             if (   slider.value <  0 
                 || slider.value >= slider.options.length)
@@ -697,8 +698,8 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             return isNaN(slider.value)
                    ? '?'
                    : getNumberString(
-                         slider.value * slider.displayMultiplier, 
-                         slider.dec, 
+                         slider.value * slider.valueScale, 
+                         slider.displayDec, 
                          slider.showHex
                      ).toUpperCase();
         }
@@ -759,6 +760,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
         if (max < slider.value) 
             slider.setValue(max, true, true, dispatchEvents);
+    };
+
+
+
+    slider.setDecimals = dec =>
+    {
+        slider.dec        =
+        slider.displayDec = dec;
     };
 
 

@@ -164,13 +164,18 @@ function initNumberSliderTextbox(slider)
         const value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
 
-        let val = 
-            slider.showHex
-            ? parseInt(value, 16)
-            : parseFloat(value);
+        if (   slider.suffix != ''
+            && value.length > 0
+            && value.substring(slider.suffix.length) == slider.suffix)
+            value = value.substring(0, value.length-1); // trim the suffix
 
-        if (success) slider.setValue(value.trim() != '' ? Number(val) : savedValue);
-        else         slider.setValue(Number(savedValue));
+        let val      = slider.showHex ? parseInt(value,      16) : parseFloat(value);
+        let savedVal = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
+
+        val /= slider.valueScale;
+        
+        if (success) slider.setValue(value.trim() != '' ? val : savedVal);
+        else         slider.setValue(savedVal);
 
         slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
             'success':  success,
@@ -209,7 +214,11 @@ function initNumberSliderTextbox(slider)
         slider.textbox.value =
             isNaN(slider.value)
             ? '?'
-            : getNumberString(slider.value, slider.dec, slider.showHex).toUpperCase();
+            : getNumberString(
+                  slider.value * slider.valueScale, 
+                  slider.displayDec, 
+                  slider.showHex
+              ).toUpperCase();
             
         slider.textbox.savedValue = slider.textbox.value;
         

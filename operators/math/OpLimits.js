@@ -26,8 +26,8 @@ extends OperatorBase
     {
         if (this.inputs[0].isConnected)
         {
-            this.#paramMin.control.dec = this.inputs[0].data.decimals;
-            this.#paramMax.control.dec = this.inputs[0].data.decimals;
+            this.#paramMin.control.setDecimals(this.inputs[0].data.decimals);
+            this.#paramMax.control.setDecimals(this.inputs[0].data.decimals);
             
             this.outputs[0]._data = dataFromNumber(
                 Math.min(Math.max(
