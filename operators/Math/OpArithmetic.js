@@ -53,7 +53,7 @@ extends OperatorBase
         this.header.appendChild(this._symbol);
 
         this._showOnlySymbol = true;
-        this.textbox.addEventListener('focus', () => { this._showOnlySymbol = false; });
+        this.textbox.addEventListener('focus', () => { this._showOnlySymbol = false; this.updateNode(); });
     }
     
     
