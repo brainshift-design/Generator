@@ -19,6 +19,10 @@ extends Operator
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 1;
         this.inner.appendChild(this._warningOverlay);
+
+
+        this.div.addEventListener('pointerenter', () => this.updateHeader());
+        this.div.addEventListener('pointerleave', () => this.updateHeader());
     }
 
 
@@ -84,8 +88,8 @@ extends Operator
         const colText = 
             this.canShowColor()
             ? (darkText 
-               ? [0, 0, 0, (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
-               : [1, 1, 1, (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias)])
+               ? [0, 0, 0, (this.div.over ? 6   : 1) * (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
+               : [1, 1, 1, (this.div.over ? 3.5 : 1) * (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias)])
             : [0, 0, 0, 1];
        
         const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];

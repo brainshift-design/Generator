@@ -254,13 +254,13 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText,,,, textStyle] = this.getHeaderColors();
+        const [colBack, darkText,,, colText, textStyle] = this.getHeaderColors();
 
 
         const colSpaceBar = 
             darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? 0.06 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? 0.1  : 0.24];
+            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05  : 0.24];
 
             
         this.#colorBack.style.background = colorStyleRgb(colBack);
@@ -268,8 +268,11 @@ extends OpColorBase
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
         this.paramSpace.control.textColor  = textStyle;
         this.paramSpace.control.backColor  = 'transparent';
-        this.paramSpace.control.update();
+        //this.paramSpace.control.update();
 
+        this.paramSpace.input .color = colText;
+        this.paramSpace.output.color = colText;
+        this.paramSpace.updateControls();
 
         const colWarning = 
             darkText 
@@ -285,10 +288,6 @@ extends OpColorBase
     updateParamControls()
     {
         const [colBack,,,, colText,] = this.getHeaderColors();
-
-        this.paramSpace.input .color = colText;
-        this.paramSpace.output.color = colText;
-        this.paramSpace.updateControls();
 
         this.updateAllSliderRanges();
 
