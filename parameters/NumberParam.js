@@ -107,8 +107,8 @@ extends Parameter
     {
         this.control.dec     = dec;
         this.control.editDec = dec;
-        this.control.update();
 
+        this.control.update();
         this.op.pushUpdate();
     }
 
@@ -128,8 +128,14 @@ extends Parameter
         if (   this.input
             && this.input.isConnected)
         {
+            //this.control.dec = curDec;
             this.setDecimals(this.input.data.decimals);
-            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+
+            this.setValue(
+                this.input.data.value, 
+                false, 
+                true, 
+                dispatchEvents);
         }
     }
 

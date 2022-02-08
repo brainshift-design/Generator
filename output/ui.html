@@ -68,15 +68,6 @@ div
 }
 
 
-#graphView
-{
-    display:  block;
-    overflow: hidden;
-    height:   calc(100% - 40px);
-    position: relative;
-}
-
-
 input[type=text]
 {
     font-size:     11;
@@ -467,7 +458,10 @@ input[type=text]::selection
 #graphView
 {
     z-index:  0;
+    display:  block;
     overflow: hidden;
+    height:   calc(100% - 40px);
+    position: relative;
 }
 
 
@@ -8191,6 +8185,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const dec = Math.pow(10, Math.abs(slider.dec));
         value = Math.round(value * dec) / dec;
 
+        
         if (slider.wrapValue)
         {
             while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
@@ -8201,6 +8196,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         else
             value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
         
+
         if (   value != oldValue
             || forceChange)
         {
@@ -11533,8 +11529,8 @@ extends Parameter
     {
         this.control.dec     = dec;
         this.control.editDec = dec;
-        this.control.update();
 
+        this.control.update();
         this.op.pushUpdate();
     }
 
@@ -11554,8 +11550,14 @@ extends Parameter
         if (   this.input
             && this.input.isConnected)
         {
+            //this.control.dec = curDec;
             this.setDecimals(this.input.data.decimals);
-            this.setValue(this.input.data.value, false, true, dispatchEvents); // assuming the data types match
+
+            this.setValue(
+                this.input.data.value, 
+                false, 
+                true, 
+                dispatchEvents);
         }
     }
 
@@ -14387,8 +14389,8 @@ extends OperatorBase
         }
         
         this.outputs[0]._data = dataFromNumber(
-                  this.#paramValue.value, 
-                  this.#paramValue.control.dec);
+            this.#paramValue.value, 
+            this.#paramValue.control.dec);
             
                   
         super.updateData()
@@ -14635,8 +14637,8 @@ extends OperatorBase
 
         this.outputs[0]._data = dataFromNumber(result, maxDec);
 
-        this.#paramValue.setValue(result, false, true, false);
         this.#paramValue.control.dec = maxDec;
+        this.#paramValue.setValue(result, false, true, false);
 
         
         super.updateData()
@@ -16585,6 +16587,8 @@ extends OpColorBase
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 21;
 
+                    this.#paramValue.control.dec        = 2;
+
                     this.#paramValue.control.suffix = rating;
                     this.#paramValue.control.setValue(ratio);
                 }
@@ -16599,6 +16603,8 @@ extends OpColorBase
 
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 108;
+
+                    this.#paramValue.control.dec        = 0;
 
                     this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
                     this.#paramValue.control.setValue(Math.abs(ratio));
@@ -18148,18 +18154,14 @@ extends Action
 
     do()
     {
-        // if (   this.param.allowEditDecimals
-        //     && this.param.setDecimals)
-            this.param.setDecimals(this.newDecimals);
+        this.param.setDecimals(this.newDecimals);
     }
 
 
 
     undo()
     {
-        // if (   this.param.allowEditDecimals
-        //     && this.param.setDecimals)
-            this.param.setDecimals(this.oldDecimals);
+        this.param.setDecimals(this.oldDecimals);
     }
 }
 

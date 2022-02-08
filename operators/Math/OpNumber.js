@@ -29,8 +29,8 @@ extends OperatorBase
         }
         
         this.outputs[0]._data = dataFromNumber(
-                  this.#paramValue.value, 
-                  this.#paramValue.control.dec);
+            this.#paramValue.value, 
+            this.#paramValue.control.dec);
             
                   
         super.updateData()

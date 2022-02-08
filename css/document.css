@@ -21,15 +21,6 @@ div
 }
 
 
-#graphView
-{
-    display:  block;
-    overflow: hidden;
-    height:   calc(100% - 40px);
-    position: relative;
-}
-
-
 input[type=text]
 {
     font-size:     11;

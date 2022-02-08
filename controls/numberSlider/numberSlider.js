@@ -576,6 +576,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const dec = Math.pow(10, Math.abs(slider.dec));
         value = Math.round(value * dec) / dec;
 
+        
         if (slider.wrapValue)
         {
             while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
@@ -586,6 +587,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         else
             value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
         
+
         if (   value != oldValue
             || forceChange)
         {

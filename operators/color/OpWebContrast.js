@@ -64,6 +64,8 @@ extends OpColorBase
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 21;
 
+                    this.#paramValue.control.dec        = 2;
+
                     this.#paramValue.control.suffix = rating;
                     this.#paramValue.control.setValue(ratio);
                 }
@@ -78,6 +80,8 @@ extends OpColorBase
 
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 108;
+
+                    this.#paramValue.control.dec        = 0;
 
                     this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
                     this.#paramValue.control.setValue(Math.abs(ratio));

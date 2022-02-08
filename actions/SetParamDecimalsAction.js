@@ -27,17 +27,13 @@ extends Action
 
     do()
     {
-        // if (   this.param.allowEditDecimals
-        //     && this.param.setDecimals)
-            this.param.setDecimals(this.newDecimals);
+        this.param.setDecimals(this.newDecimals);
     }
 
 
 
     undo()
     {
-        // if (   this.param.allowEditDecimals
-        //     && this.param.setDecimals)
-            this.param.setDecimals(this.oldDecimals);
+        this.param.setDecimals(this.oldDecimals);
     }
 }
