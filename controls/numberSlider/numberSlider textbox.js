@@ -96,28 +96,36 @@ function initNumberSliderTextbox(slider)
         {
             e.preventDefault();
 
+            let text = slider.textbox.value;
+
+            if (   text.length >= slider.suffix.length
+                && text.substring(text.length - slider.suffix.length) == slider.suffix)
+                text = text.substring(0, text.length - slider.suffix.length);
+
+
             if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
                 slider.textbox.selectionStart =  slider.textbox.selectionEnd;
 
-            const pos    = slider.textbox.selectionStart;
+            const pos = Math.min(
+                slider.textbox.selectionStart,
+                text.length);
 
-            const text   = slider.textbox.value;
             const revPos = text.length - pos;
 
-            const val    = parseFloat(text);
+            const val  = parseFloat(text);
+            const sign = e.key == 'ArrowUp' ? 1 : -1;
 
             let decIndex = text.indexOf('.');
             if (decIndex < 0) decIndex = text.indexOf(',');
             
-            if (   pos > 0
-                && (   text[0] != '-')
-                    || pos > 1)
+            if (   text[0] != '-'
+                || pos > 0)
             {
                 if (decIndex < 0) // integer
                 {
                     const dec = Math.pow(10, revPos);
 
-                    slider.setValue(val + (e.key == 'ArrowUp' ? 1 : -1) * dec);
+                    slider.setValue((val + sign * dec) / slider.valueScale);
                     slider.updateTextbox();
                 }
                 else // floating point
@@ -130,12 +138,12 @@ function initNumberSliderTextbox(slider)
                         : 1 / Math.pow(10,  _edit    );
 
                     slider.setDecimals(text.length-1 - decIndex);
-                    slider.setValue(val + (e.key == 'ArrowUp' ? 1 : -1) * dec);
+                    slider.setValue((val + sign * dec) / slider.valueScale);
                     slider.updateTextbox();
                 }
 
                 slider.textbox.selectionStart =
-                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
+                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos - slider.suffix.length;
             }
         }
         else 
@@ -167,13 +175,6 @@ function initNumberSliderTextbox(slider)
                 e.preventDefault();            
         }
     });
-
-
-
-    // slider.textbox.addEventListener('input', function()
-    // {
-    //     slider.setValue(Number(slider.textbox.value));
-    // });
 
 
 
@@ -210,11 +211,6 @@ function initNumberSliderTextbox(slider)
     {
         let   value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
-
-        // if (   slider.suffix != ''
-        //     && value.length > 0
-        //     && value.substring(slider.suffix.length) == slider.suffix)
-        //     value = value.substring(0, value.length-1); // trim the suffix
 
         let val      = slider.showHex ? parseInt(value,      16) : parseFloat(value);
         let savedVal = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);

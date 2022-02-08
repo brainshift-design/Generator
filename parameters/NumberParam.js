@@ -78,9 +78,11 @@ extends Parameter
             if (   e.detail.success
                 && this.allowEditDecimals)
             {
+                const _dec = Math.log10(this.control.valueScale);
+
                 actionManager.do(new SetParamDecimalsAction(this,
-                    getDecimalCount(e.detail.value), 
-                    getDecimalCount(e.detail.oldValue)), true);
+                    getDecimalCount(e.detail.value   ) + _dec, 
+                    getDecimalCount(e.detail.oldValue) + _dec), true);
             }
         });
     }
@@ -98,7 +100,6 @@ extends Parameter
     setDecimalsFrom(strValue)
     {
         this.setDecimals(getDecimalCount(strValue));
-        //this.op.pushUpdate();
     }
 
 
