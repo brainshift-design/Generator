@@ -517,8 +517,6 @@ graphView.updateNodeTransform = node =>
     const nodeTop  = node.div.offsetTop;
     const nodeRect = graphView.getNodeOffsetRect(node.div);
     
-    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
-    
 
     const wires = [];
 
@@ -532,6 +530,8 @@ graphView.updateNodeTransform = node =>
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
+
+    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
 
     graphView.updateNodeWires(wires);
 };

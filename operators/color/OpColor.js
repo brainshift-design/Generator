@@ -268,7 +268,6 @@ extends OpColorBase
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
         this.paramSpace.control.textColor  = textStyle;
         this.paramSpace.control.backColor  = 'transparent';
-        //this.paramSpace.control.update();
 
         this.paramSpace.input .color = colText;
         this.paramSpace.output.color = colText;
