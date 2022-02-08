@@ -193,17 +193,17 @@ function initNumberSliderTextbox(slider)
                 slider == document.activeElement
             && !slider.clicked;
     
-        slider.textbox.style.position = 'absolute';
-    
-        slider.textbox.style.left      = '50%';
-        slider.textbox.style.transform = 'translate(-50%)';
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-        slider.textbox.style.outline   = 'none';
-        slider.textbox.style.textAlign = 'center';
-        slider.textbox.style.fontStyle = slider.readOnly ? 'italic' : 'normal';
+        slider.textbox.style.position   = 'absolute';
+        slider.textbox.style.left       = '50%';
+        slider.textbox.style.transform  = 'translate(-50%)';
+        slider.textbox.style.top        = slider.offsetTop    + 1;
+        slider.textbox.style.width      = slider.offsetWidth  - 2;
+        slider.textbox.style.height     = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow  = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        slider.textbox.style.outline    = 'none';
+        slider.textbox.style.textAlign  = 'center';
+
+        enableSliderText(slider.textbox, !slider.readOnly);
 
     
         slider.textbox.value =

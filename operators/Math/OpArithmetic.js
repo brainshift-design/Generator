@@ -20,8 +20,7 @@ extends OperatorBase
         
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
-        this.#paramValue.control.readOnly        = true;
-        this.#paramValue.control.style.fontStyle = 'italic';
+        enableSliderText(this.#paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');

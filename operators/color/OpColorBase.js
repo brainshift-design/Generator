@@ -72,7 +72,11 @@ extends Operator
 
     getHeaderColors()
     {
-        const colBack  = dataColor2rgb(this._color);
+        const colBack = 
+            dataColorIsNaN(this._color)
+            ? color_NaN
+            : dataColor2rgb(this._color);
+
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
 
         const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));

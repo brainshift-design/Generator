@@ -17,9 +17,8 @@ extends OperatorBase
 
         this.addParam(this.#paramValue  = new NumberParam('value',  '',  false, false, false, 0));
         this.addParam(this.#paramFactor = new NumberParam('factor', '%', true,  true,  true, 0, 0, 1, 2));
-      
-        this.#paramValue.control.readOnly        = true;
-        this.#paramValue.control.style.fontStyle = 'italic';
+
+        enableSliderText(this.#paramValue.control, false);
 
         this.#paramFactor.control.min = Number.MIN_SAFE_INTEGER;
         this.#paramFactor.control.max = Number.MAX_SAFE_INTEGER;

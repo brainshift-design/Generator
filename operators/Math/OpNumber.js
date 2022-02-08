@@ -40,8 +40,7 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#paramValue.control.readOnly        =  this.inputs[0].isConnected;
-        this.#paramValue.control.style.fontStyle = !this.inputs[0].isConnected ? 'normal' : 'italic';
+        enableSliderText(this.#paramValue.control, !this.inputs[0].isConnected);
         
         super.updateNode();
     }

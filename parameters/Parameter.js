@@ -72,21 +72,8 @@ extends EventTarget
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-
-        this.input.addEventListener('connect', () =>
-        {
-            this.control.style.fontStyle  = 'italic';
-            this.control.style.fontWeight = 'bold';
-            this.control.readOnly         = true;
-        });
-    
-        
-        this.input.addEventListener('disconnect', () =>
-        {
-            this.control.style.fontStyle  = 'normal';
-            this.control.style.fontWeight = 'normal';
-            this.control.readOnly         = false;
-        });
+        this.input.addEventListener('connect',    () => enableSliderText(this.control, false));
+        this.input.addEventListener('disconnect', () => enableSliderText(this.control, true ));
     }
 
 

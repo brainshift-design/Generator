@@ -3039,8 +3039,9 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    slider.style.fontStyle = enable ? 'normal' : 'italic'; 
-    slider.readOnly        = !enable;
+    slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
+    slider.style.fontWeight =  enable ? 'normal' : 'bold'; 
+    slider.readOnly         = !enable;
 }
 
 
@@ -5491,8 +5492,9 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    slider.style.fontStyle = enable ? 'normal' : 'italic'; 
-    slider.readOnly        = !enable;
+    slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
+    slider.style.fontWeight =  enable ? 'normal' : 'bold'; 
+    slider.readOnly         = !enable;
 }
 
 
@@ -6424,6 +6426,15 @@ const dataColor_NaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN ];
+
+
+
+function dataColorIsNaN(c)
+{
+    return isNaN(c[1])
+        || isNaN(c[2])
+        || isNaN(c[3]);
+}
 
 
 
@@ -7577,17 +7588,17 @@ function initNumberSliderTextbox(slider)
                 slider == document.activeElement
             && !slider.clicked;
     
-        slider.textbox.style.position = 'absolute';
-    
-        slider.textbox.style.left      = '50%';
-        slider.textbox.style.transform = 'translate(-50%)';
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-        slider.textbox.style.outline   = 'none';
-        slider.textbox.style.textAlign = 'center';
-        slider.textbox.style.fontStyle = slider.readOnly ? 'italic' : 'normal';
+        slider.textbox.style.position   = 'absolute';
+        slider.textbox.style.left       = '50%';
+        slider.textbox.style.transform  = 'translate(-50%)';
+        slider.textbox.style.top        = slider.offsetTop    + 1;
+        slider.textbox.style.width      = slider.offsetWidth  - 2;
+        slider.textbox.style.height     = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow  = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        slider.textbox.style.outline    = 'none';
+        slider.textbox.style.textAlign  = 'center';
+
+        enableSliderText(slider.textbox, !slider.readOnly);
 
     
         slider.textbox.value =
@@ -11319,21 +11330,8 @@ extends EventTarget
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-
-        this.input.addEventListener('connect', () =>
-        {
-            this.control.style.fontStyle  = 'italic';
-            this.control.style.fontWeight = 'bold';
-            this.control.readOnly         = true;
-        });
-    
-        
-        this.input.addEventListener('disconnect', () =>
-        {
-            this.control.style.fontStyle  = 'normal';
-            this.control.style.fontWeight = 'normal';
-            this.control.readOnly         = false;
-        });
+        this.input.addEventListener('connect',    () => enableSliderText(this.control, false));
+        this.input.addEventListener('disconnect', () => enableSliderText(this.control, true ));
     }
 
 
@@ -14498,8 +14496,7 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#paramValue.control.readOnly        =  this.inputs[0].isConnected;
-        this.#paramValue.control.style.fontStyle = !this.inputs[0].isConnected ? 'normal' : 'italic';
+        enableSliderText(this.#paramValue.control, !this.inputs[0].isConnected);
         
         super.updateNode();
     }
@@ -14647,8 +14644,7 @@ extends OperatorBase
         
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
-        this.#paramValue.control.readOnly        = true;
-        this.#paramValue.control.style.fontStyle = 'italic';
+        enableSliderText(this.#paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -14975,9 +14971,8 @@ extends OperatorBase
 
         this.addParam(this.#paramValue  = new NumberParam('value',  '',  false, false, false, 0));
         this.addParam(this.#paramFactor = new NumberParam('factor', '%', true,  true,  true, 0, 0, 1, 2));
-      
-        this.#paramValue.control.readOnly        = true;
-        this.#paramValue.control.style.fontStyle = 'italic';
+
+        enableSliderText(this.#paramValue.control, false);
 
         this.#paramFactor.control.min = Number.MIN_SAFE_INTEGER;
         this.#paramFactor.control.max = Number.MAX_SAFE_INTEGER;
@@ -15101,7 +15096,11 @@ extends Operator
 
     getHeaderColors()
     {
-        const colBack  = dataColor2rgb(this._color);
+        const colBack = 
+            dataColorIsNaN(this._color)
+            ? color_NaN
+            : dataColor2rgb(this._color);
+
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
 
         const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
@@ -15257,18 +15256,26 @@ extends OpColorBase
             this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
             
             for (let i = 1; i < this.params.length; i++)
+            {
                 enableSliderText(this.params[i].control, false);
+                //slider.readOnly = true;
+            }
         });
     
         this.inputs[0].addEventListener('disconnect', () =>
         {
             for (let i = 1; i < this.params.length; i++)
+            {
                 if (!this.params[i].input.isConnected) 
+                {
                     enableSliderText(this.params[i].control, true);
+                    //slider.readOnly = false;
+                }
+            }
         });
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1]), 2));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1]), 0));
         this.addParam(this.param1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));
@@ -15346,15 +15353,22 @@ extends OpColorBase
 
         if (this.inputs[0].isConnected) 
         {
-            const color = convertDataColorToSpace(
-                this.inputs[0].data.color, 
-                getCurrentDataColorSpace(this));
+            if (dataColorIsNaN(this.inputs[0].data.color))
+            {
+                this._color = dataColor_NaN;
+            }
+            else
+            {
+                const color = convertDataColorToSpace(
+                    this.inputs[0].data.color, 
+                    getCurrentDataColorSpace(this));
 
-            if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
-            if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
-            if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
+                if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
+                if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
+                if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-            setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
+                setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
+            }
         }
         else
         {
@@ -15415,7 +15429,7 @@ extends OpColorBase
         //log(this.name + '.OpColor.updateNode()');
 
         
-        this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
+        enableSliderText(this.hexbox, !this.isConnected());
 
         if (this.hexbox != document.activeElement)
         {
@@ -15497,7 +15511,7 @@ extends OpColorBase
             ? '?' 
             : '';
 
-        slider.textbox.style.fontStyle = this.inputs[0].isConnected ? 'italic' : 'normal';
+        enableSliderText(slider.textbox, !this.inputs[0].isConnected);
 
         slider.update();
     }
@@ -16640,8 +16654,7 @@ extends OpColorBase
         this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
-        this.#paramValue.control.readOnly        = true;
-        this.#paramValue.control.style.fontStyle = 'italic';
+        enableSliderText(this.#paramValue.control, false);
     }
 
 

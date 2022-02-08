@@ -19,8 +19,7 @@ extends OpColorBase
         this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
-        this.#paramValue.control.readOnly        = true;
-        this.#paramValue.control.style.fontStyle = 'italic';
+        enableSliderText(this.#paramValue.control, false);
     }
 
 

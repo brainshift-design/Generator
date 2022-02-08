@@ -53,18 +53,26 @@ extends OpColorBase
             this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
             
             for (let i = 1; i < this.params.length; i++)
+            {
                 enableSliderText(this.params[i].control, false);
+                //slider.readOnly = true;
+            }
         });
     
         this.inputs[0].addEventListener('disconnect', () =>
         {
             for (let i = 1; i < this.params.length; i++)
+            {
                 if (!this.params[i].input.isConnected) 
+                {
                     enableSliderText(this.params[i].control, true);
+                    //slider.readOnly = false;
+                }
+            }
         });
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1]), 2));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1]), 0));
         this.addParam(this.param1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));
@@ -142,15 +150,22 @@ extends OpColorBase
 
         if (this.inputs[0].isConnected) 
         {
-            const color = convertDataColorToSpace(
-                this.inputs[0].data.color, 
-                getCurrentDataColorSpace(this));
+            if (dataColorIsNaN(this.inputs[0].data.color))
+            {
+                this._color = dataColor_NaN;
+            }
+            else
+            {
+                const color = convertDataColorToSpace(
+                    this.inputs[0].data.color, 
+                    getCurrentDataColorSpace(this));
 
-            if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
-            if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
-            if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
+                if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
+                if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
+                if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-            setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
+                setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
+            }
         }
         else
         {
@@ -211,7 +226,7 @@ extends OpColorBase
         //log(this.name + '.OpColor.updateNode()');
 
         
-        this.hexbox.style.fontStyle = this.isConnected() ? 'italic' : 'normal';
+        enableSliderText(this.hexbox, !this.isConnected());
 
         if (this.hexbox != document.activeElement)
         {
@@ -293,7 +308,7 @@ extends OpColorBase
             ? '?' 
             : '';
 
-        slider.textbox.style.fontStyle = this.inputs[0].isConnected ? 'italic' : 'normal';
+        enableSliderText(slider.textbox, !this.inputs[0].isConnected);
 
         slider.update();
     }
