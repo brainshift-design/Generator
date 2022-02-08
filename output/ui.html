@@ -7491,11 +7491,48 @@ function initNumberSliderTextbox(slider)
               || e.key == 'ArrowDown')
         {
             e.preventDefault();
-            setTimeout(() => slider.textbox.style.cursor = 'none');
-            const dec = Math.pow(10, Math.abs(slider.dec));
-            slider.setValue(slider.value + (e.key == 'ArrowUp' ? 1 : -1) * 1/dec);
-            slider.updateTextbox();
-            slider.textbox.select();
+
+            if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
+                slider.textbox.selectionStart =  slider.textbox.selectionEnd;
+
+            const pos    = slider.textbox.selectionStart;
+
+            const text   = slider.textbox.value;
+            const revPos = text.length - pos;
+
+            const val    = parseFloat(text);
+
+            let decIndex = text.indexOf('.');
+            if (decIndex < 0) decIndex = text.indexOf(',');
+            
+            if (   pos > 0
+                && (   text[0] != '-')
+                    || pos > 1)
+            {
+                if (decIndex < 0) // integer
+                {
+                    const dec = Math.pow(10, revPos);
+
+                    slider.setValue(val + (e.key == 'ArrowUp' ? 1 : -1) * dec);
+                    slider.updateTextbox();
+                }
+                else // floating point
+                {
+                    const _edit = pos - decIndex - 1;
+
+                    const  dec  = 
+                        _edit < 0
+                        ?     Math.pow(10, -_edit - 1)
+                        : 1 / Math.pow(10,  _edit    );
+
+                    slider.setDecimals(text.length-1 - decIndex);
+                    slider.setValue(val + (e.key == 'ArrowUp' ? 1 : -1) * dec);
+                    slider.updateTextbox();
+                }
+
+                slider.textbox.selectionStart =
+                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
+            }
         }
         else 
         {
@@ -7505,7 +7542,7 @@ function initNumberSliderTextbox(slider)
                        || !isHexDigitChar(e.key))
                    && (   slider.showHex
                        ||    e.key != '.'
-                          && e.key != ',') //getUserDecimalSeparator())
+                          && e.key != ',')
                    && !(   (   e.code == 'Minus'
                             || e.code == 'NumpadSubtract')
                         && slider.min < 0)
