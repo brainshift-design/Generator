@@ -89,16 +89,29 @@ document.addEventListener('keydown', e =>
         }
     }
 
-    else if (e.key == 'Control'
-          && graphView.spaceDown)
+    else if (e.key == 'Shift')
     {
-        graphView.zoomSelecting = true;
-
-        if (e.altKey) setCursor(zoomOutCursor);
-        else          setCursor(zoomInCursor);
+        if (graphView._soloNode)
+            graphView.unsoloNode();
     }
 
-    else if (e.key == 'Alt')
+    else if (e.key == 'Control')
+    {
+        if (graphView._soloNode)
+            graphView.unsoloNode();
+
+        if (graphView.spaceDown)
+        {
+            graphView.zoomSelecting = true;
+
+            if (e.altKey) setCursor(zoomOutCursor);
+            else          setCursor(zoomInCursor);
+        }
+    }
+
+    else if (    e.key == 'Alt'
+             && !e.shiftKey
+             && !getCtrlKey(e))
     {
         if (   graphView.spaceDown
             && getCtrlKey(e))

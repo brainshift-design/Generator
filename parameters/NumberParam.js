@@ -35,12 +35,12 @@ extends Parameter
     {
         super(id, name, 'number');
 
-        this._control          = createDiv();
+        this._control       = createDiv();
         
-        this.control.param     = this;
-        this.control.zIndex    = 0;
+        this.control.param  = this;
+        this.control.zIndex = 0;
    
-        this.defaultValue      = value;
+        this.defaultValue   = value;
 
 
         initNumberSlider(

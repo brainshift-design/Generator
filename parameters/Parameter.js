@@ -75,15 +75,17 @@ extends EventTarget
 
         this.input.addEventListener('connect', () =>
         {
-            this.control.style.fontStyle = 'italic';
-            this.control.readOnly        = true;
+            this.control.style.fontStyle  = 'italic';
+            this.control.style.fontWeight = 'bold';
+            this.control.readOnly         = true;
         });
     
         
         this.input.addEventListener('disconnect', () =>
         {
-            this.control.style.fontStyle = 'normal';
-            this.control.readOnly        = false;
+            this.control.style.fontStyle  = 'normal';
+            this.control.style.fontWeight = 'normal';
+            this.control.readOnly         = false;
         });
     }
 

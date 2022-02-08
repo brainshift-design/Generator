@@ -131,7 +131,7 @@ function createNodeHeader(node)
         }
 
 
-        if (   e.button == 0
+        if (    e.button == 0
             && !graphView.overOutput
             && !graphView.overInput)
         {
@@ -151,21 +151,35 @@ function createNodeHeader(node)
             }
             
 
-            if (getCtrlKey(e))
+            if (   getCtrlKey(e)
+                && e.shiftKey
+                && e.altKey)
             {
-                graphView.selectedNodes = [
-                    node, 
-                    ...getNodesAfterNode(node)];
+                let   nodes  = [node];
+                const ignore = [node];
 
-                if (e.shiftKey)
-                {
-                    graphView.selectedNodes = [
-                        ...graphView.selectedNodes, 
-                        ...getNodesBeforeNode(node)];
-                }
+                nodes = [...nodes, ...getAllNodesBeforeNode(node, ignore)];
+                //nodes = [...nodes, ...getAllNodesAfterNode (node, ignore)];
 
-                graphView.selectedNodes.forEach(n => n.selected = true);
+                graphView.selectedNodes = nodes;
             }
+            else if (e.shiftKey
+                  && e.altKey)
+            {
+                let nodes = [node];
+
+                nodes = [...nodes, ...getNodesBeforeNode(node)];
+                nodes = [...nodes, ...getNodesAfterNode (node)];
+
+                graphView.selectedNodes = nodes;
+            }
+            else if (getCtrlKey(e)
+                  && e.shiftKey)
+                graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
+
+            else if (getCtrlKey(e)
+                  && e.altKey)
+                graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
 
 
             node.div.sx = e.clientX;
@@ -264,6 +278,9 @@ function createNodeHeader(node)
     {
         if (   e.button == 0
             && node.div.dragging)
+            // && !getCtrlKey(e)
+            // && !e.shiftKey
+            // && !e.altKey)
         {
             if (node.div.moved)
             {
