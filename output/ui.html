@@ -549,8 +549,8 @@ input[type=text]::selection
 {
     font-family:          Inter;
     font-size:            11;
-    pointer-events:       none;
     font-variant-numeric: tabular-nums;
+    pointer-events:       none;
     letter-spacing:       -0.35px;
     position:             absolute;
     left:                 50%;
@@ -570,12 +570,13 @@ input[type=text]::selection
 
 .numberSliderTextbox
 {
-    font-family:    Inter;
-    font-size:      11;
-    position:       absolute;
-    left:           50%;
-    transform:      translateX(-50%);
-    white-space:    nowrap;
+    font-family:          Inter;
+    font-size:            11;
+    font-variant-numeric: tabular-nums;
+    position:             absolute;
+    left:                 50%;
+    transform:            translateX(-50%);
+    white-space:          nowrap;
 }
 
 
@@ -7407,7 +7408,7 @@ function initNumberSliderTextbox(slider)
     slider.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        slider.textbox.style.cursor = 'text';
+        slider.textbox.style.cursor = 'default';
     });
 
 
@@ -7486,6 +7487,16 @@ function initNumberSliderTextbox(slider)
             // }
         }
 
+        else if (e.key == 'ArrowUp'
+              || e.key == 'ArrowDown')
+        {
+            e.preventDefault();
+            setTimeout(() => slider.textbox.style.cursor = 'none');
+            const dec = Math.pow(10, Math.abs(slider.dec));
+            slider.setValue(slider.value + (e.key == 'ArrowUp' ? 1 : -1) * 1/dec);
+            slider.updateTextbox();
+            slider.textbox.select();
+        }
         else 
         {
             if (      e.key.length == 1
@@ -7556,13 +7567,13 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.finish = function(success, focusSlider = true)
     {
-        const value      = slider.textbox.value;
+        let   value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
 
-        if (   slider.suffix != ''
-            && value.length > 0
-            && value.substring(slider.suffix.length) == slider.suffix)
-            value = value.substring(0, value.length-1); // trim the suffix
+        // if (   slider.suffix != ''
+        //     && value.length > 0
+        //     && value.substring(slider.suffix.length) == slider.suffix)
+        //     value = value.substring(0, value.length-1); // trim the suffix
 
         let val      = slider.showHex ? parseInt(value,      16) : parseFloat(value);
         let savedVal = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
@@ -7593,37 +7604,44 @@ function initNumberSliderTextbox(slider)
                 slider == document.activeElement
             && !slider.clicked;
     
-        slider.textbox.style.position   = 'absolute';
-        slider.textbox.style.left       = '50%';
-        slider.textbox.style.transform  = 'translate(-50%)';
-        slider.textbox.style.top        = slider.offsetTop    + 1;
-        slider.textbox.style.width      = slider.offsetWidth  - 2;
-        slider.textbox.style.height     = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow  = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-        slider.textbox.style.outline    = 'none';
-        slider.textbox.style.textAlign  = 'center';
+        slider.textbox.style.position  = 'absolute';
+        slider.textbox.style.left      = '50%';
+        slider.textbox.style.transform = 'translate(-50%)';
+        slider.textbox.style.top       = slider.offsetTop    + 1;
+        slider.textbox.style.width     = slider.offsetWidth  - 2;
+        slider.textbox.style.height    = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        slider.textbox.style.outline   = 'none';
+        slider.textbox.style.textAlign = 'center';
 
         enableSliderText(slider.textbox, !slider.readOnly);
 
-    
-        slider.textbox.value =
-            isNaN(slider.value)
-            ? '?'
-            : getNumberString(
-                  slider.value * slider.valueScale, 
-                  slider.displayDec, 
-                  slider.showHex
-              ).toUpperCase();
-            
-        slider.textbox.savedValue = slider.textbox.value;
+        slider.updateTextbox();
         
         slider.parentNode.appendChild(slider.textbox);
         
         slider.textbox.focus();
         slider.textbox.select();
 
-        slider.textbox.style.cursor = 'text';
+        slider.textbox.style.cursor = 'default';
     }
+
+
+
+    slider.updateTextbox = function()
+    {
+        slider.textbox.value =
+            (isNaN(slider.value)
+             ? '?'
+             : getNumberString(
+                   slider.value * slider.valueScale, 
+                   slider.displayDec, 
+                   slider.showHex
+               ).toUpperCase())
+            + slider.suffix;
+            
+        slider.textbox.savedValue = slider.textbox.value;
+    };
 }
 
 
@@ -8003,7 +8021,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.style.cursor = 
                        slider.readOnly 
                     || containsChild(slider, slider.textbox) 
-                    ? (slider.readOnly ? 'default' : 'text')
+                    ? 'default' //(slider.readOnly ? 'default' : 'auto')
                     : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
@@ -14385,7 +14403,7 @@ function initLabelTextbox(node)
 
 
     node.textbox.addEventListener('pointerdown', e => e.stopPropagation());
-    node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'text');
+    node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'default');
 
 
 
@@ -15128,11 +15146,14 @@ extends Operator
 
         const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
 
+        const ba = Math.min((this.div.over ? 6   : 1) * (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias), 0.5);
+        const wa = Math.min((this.div.over ? 3.5 : 1) * (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias), 0.5);
+
         const colText = 
             this.canShowColor()
             ? (darkText 
-               ? [0, 0, 0, (this.div.over ? 6   : 1) * (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
-               : [1, 1, 1, (this.div.over ? 3.5 : 1) * (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias)])
+               ? [0, 0, 0, ba] 
+               : [1, 1, 1, wa])
             : [0, 0, 0, 1];
        
         const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
@@ -15276,7 +15297,7 @@ extends OpColorBase
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
+            this.hexbox.style.cursor = 'default';//this.isConnected ? 'default' : 'text';
             
             for (let i = 1; i < this.params.length; i++)
             {
@@ -16211,7 +16232,7 @@ function initHexbox(op)
     op.hexbox.style.width      = '100%';
     op.hexbox.style.height     = 26;
     op.hexbox.style.background = 'transparent';
-    op.hexbox.style.cursor     = 'text';
+    op.hexbox.style.cursor     = 'default';
     
     op.hexbox.op      = op;
     op.hexbox.editing = false;
@@ -16260,7 +16281,7 @@ function onHexboxPointerUp(e)
 function onHexboxFocus(e)
 {
     const hexbox = e.target;
-    hexbox.style.cursor = 'text';
+    hexbox.style.cursor = 'default';
 }
 
 
@@ -16269,7 +16290,7 @@ function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
     hexboxFinish(hexbox.op, true);
-    hexbox.style.cursor = hexbox.op.isConnected() ? 'default' : 'text';
+    hexbox.style.cursor = 'default';//hexbox.op.isConnected() ? 'default' : 'text';
 }
 
 
@@ -18724,7 +18745,7 @@ function setAutoCursor()
           || graphView.panning)
         setCursor(panCursor);
     else
-        setCursor('auto');
+        setCursor('default'); // 'auto');
 };
 
 

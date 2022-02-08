@@ -6,7 +6,7 @@ function initHexbox(op)
     op.hexbox.style.width      = '100%';
     op.hexbox.style.height     = 26;
     op.hexbox.style.background = 'transparent';
-    op.hexbox.style.cursor     = 'text';
+    op.hexbox.style.cursor     = 'default';
     
     op.hexbox.op      = op;
     op.hexbox.editing = false;
@@ -55,7 +55,7 @@ function onHexboxPointerUp(e)
 function onHexboxFocus(e)
 {
     const hexbox = e.target;
-    hexbox.style.cursor = 'text';
+    hexbox.style.cursor = 'default';
 }
 
 
@@ -64,7 +64,7 @@ function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
     hexboxFinish(hexbox.op, true);
-    hexbox.style.cursor = hexbox.op.isConnected() ? 'default' : 'text';
+    hexbox.style.cursor = 'default';//hexbox.op.isConnected() ? 'default' : 'text';
 }
 
 

@@ -50,7 +50,7 @@ extends OpColorBase
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this.hexbox.style.cursor = this.isConnected ? 'default' : 'text';
+            this.hexbox.style.cursor = 'default';//this.isConnected ? 'default' : 'text';
             
             for (let i = 1; i < this.params.length; i++)
             {

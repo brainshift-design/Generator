@@ -73,7 +73,7 @@ function initLabelTextbox(node)
 
 
     node.textbox.addEventListener('pointerdown', e => e.stopPropagation());
-    node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'text');
+    node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'default');
 
 
 

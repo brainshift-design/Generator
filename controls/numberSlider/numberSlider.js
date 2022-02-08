@@ -374,7 +374,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.style.cursor = 
                        slider.readOnly 
                     || containsChild(slider, slider.textbox) 
-                    ? (slider.readOnly ? 'default' : 'text')
+                    ? 'default' //(slider.readOnly ? 'default' : 'auto')
                     : 'ew-resize';
             
             slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';

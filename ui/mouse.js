@@ -14,5 +14,5 @@ function setAutoCursor()
           || graphView.panning)
         setCursor(panCursor);
     else
-        setCursor('auto');
+        setCursor('default'); // 'auto');
 };

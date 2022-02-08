@@ -85,11 +85,14 @@ extends Operator
 
         const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
 
+        const ba = Math.min((this.div.over ? 6   : 1) * (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias), 0.5);
+        const wa = Math.min((this.div.over ? 3.5 : 1) * (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias), 0.5);
+
         const colText = 
             this.canShowColor()
             ? (darkText 
-               ? [0, 0, 0, (this.div.over ? 6   : 1) * (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias)] 
-               : [1, 1, 1, (this.div.over ? 3.5 : 1) * (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias)])
+               ? [0, 0, 0, ba] 
+               : [1, 1, 1, wa])
             : [0, 0, 0, 1];
        
         const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];

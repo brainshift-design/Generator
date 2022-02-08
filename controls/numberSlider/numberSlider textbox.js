@@ -12,7 +12,7 @@ function initNumberSliderTextbox(slider)
     slider.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        slider.textbox.style.cursor = 'text';
+        slider.textbox.style.cursor = 'default';
     });
 
 
@@ -91,6 +91,16 @@ function initNumberSliderTextbox(slider)
             // }
         }
 
+        else if (e.key == 'ArrowUp'
+              || e.key == 'ArrowDown')
+        {
+            e.preventDefault();
+            setTimeout(() => slider.textbox.style.cursor = 'none');
+            const dec = Math.pow(10, Math.abs(slider.dec));
+            slider.setValue(slider.value + (e.key == 'ArrowUp' ? 1 : -1) * 1/dec);
+            slider.updateTextbox();
+            slider.textbox.select();
+        }
         else 
         {
             if (      e.key.length == 1
@@ -161,13 +171,13 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.finish = function(success, focusSlider = true)
     {
-        const value      = slider.textbox.value;
+        let   value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
 
-        if (   slider.suffix != ''
-            && value.length > 0
-            && value.substring(slider.suffix.length) == slider.suffix)
-            value = value.substring(0, value.length-1); // trim the suffix
+        // if (   slider.suffix != ''
+        //     && value.length > 0
+        //     && value.substring(slider.suffix.length) == slider.suffix)
+        //     value = value.substring(0, value.length-1); // trim the suffix
 
         let val      = slider.showHex ? parseInt(value,      16) : parseFloat(value);
         let savedVal = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
@@ -198,35 +208,42 @@ function initNumberSliderTextbox(slider)
                 slider == document.activeElement
             && !slider.clicked;
     
-        slider.textbox.style.position   = 'absolute';
-        slider.textbox.style.left       = '50%';
-        slider.textbox.style.transform  = 'translate(-50%)';
-        slider.textbox.style.top        = slider.offsetTop    + 1;
-        slider.textbox.style.width      = slider.offsetWidth  - 2;
-        slider.textbox.style.height     = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow  = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-        slider.textbox.style.outline    = 'none';
-        slider.textbox.style.textAlign  = 'center';
+        slider.textbox.style.position  = 'absolute';
+        slider.textbox.style.left      = '50%';
+        slider.textbox.style.transform = 'translate(-50%)';
+        slider.textbox.style.top       = slider.offsetTop    + 1;
+        slider.textbox.style.width     = slider.offsetWidth  - 2;
+        slider.textbox.style.height    = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        slider.textbox.style.outline   = 'none';
+        slider.textbox.style.textAlign = 'center';
 
         enableSliderText(slider.textbox, !slider.readOnly);
 
-    
-        slider.textbox.value =
-            isNaN(slider.value)
-            ? '?'
-            : getNumberString(
-                  slider.value * slider.valueScale, 
-                  slider.displayDec, 
-                  slider.showHex
-              ).toUpperCase();
-            
-        slider.textbox.savedValue = slider.textbox.value;
+        slider.updateTextbox();
         
         slider.parentNode.appendChild(slider.textbox);
         
         slider.textbox.focus();
         slider.textbox.select();
 
-        slider.textbox.style.cursor = 'text';
+        slider.textbox.style.cursor = 'default';
     }
+
+
+
+    slider.updateTextbox = function()
+    {
+        slider.textbox.value =
+            (isNaN(slider.value)
+             ? '?'
+             : getNumberString(
+                   slider.value * slider.valueScale, 
+                   slider.displayDec, 
+                   slider.showHex
+               ).toUpperCase())
+            + slider.suffix;
+            
+        slider.textbox.savedValue = slider.textbox.value;
+    };
 }
