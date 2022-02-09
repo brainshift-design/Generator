@@ -16,6 +16,8 @@ class Action
     onBeforeUndo;
     onAfterUndo;
 
+    
+    _linkWithNext = false;
 
 
     constructor(name)

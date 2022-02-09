@@ -14,6 +14,8 @@ extends OperatorBase
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
 
+        this._showOnlySymbol  = true;
+
 
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
@@ -26,9 +28,9 @@ extends OperatorBase
         this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
         this._symbol.clicked0  = false;
-
+        
         this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-        this._symbol.addEventListener('pointerleave',   () => this._symbol.style.opacity = 1);
+        this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
 
         this._symbol.addEventListener('pointerdown', e => 
         { 
@@ -37,11 +39,11 @@ extends OperatorBase
                 if (this._symbol.clicked0)
                 {
                     this._symbol.clicked0      = false;
-                    this._showOnlySymbol       = true;
-                    this._symbol.style.opacity = 1
-                    this.updateNode();
+                    this._symbol.style.opacity = 1;
+
+                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
                 }
-                else
+                else if (!this._showOnlySymbol)
                 {
                     this._symbol.clicked0 = true;
                     setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
@@ -51,8 +53,8 @@ extends OperatorBase
 
         this.header.appendChild(this._symbol);
 
-        this._showOnlySymbol = true;
-        this.textbox.addEventListener('focus', () => { this._showOnlySymbol = false; this.updateNode(); });
+        
+        this.textbox.addEventListener('focus', () => actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), false, true));
     }
     
     

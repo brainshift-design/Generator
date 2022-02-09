@@ -7,7 +7,7 @@ class ActionManager
    
     
     
-    do(action, linkWithPrevious = false)
+    do(action, linkWithPrevious = false, linkWithNext = false)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
@@ -15,18 +15,24 @@ class ActionManager
 
         this.actions.push(action);
 
-        action.id      = this.nextActionId++;
-        action.manager = this;
+        action.id            = this.nextActionId++;
+        action.manager       = this;
+        action._linkWithNext = linkWithNext;
 
-        if (   linkWithPrevious
-            && this.actions.length > 1)
+        if (this.actions.length > 1)
         {
-            linkActions(
-                beforeLastOf(this.actions),
-                lastOf(this.actions));
+            const before = beforeLastOf(this.actions);
+            const last   = lastOf      (this.actions);
+
+            if (   linkWithPrevious
+                || before._linkWithNext)
+            {
+                linkActions(before, last);
+                before._linkWithNext = false;
+            }
         }
 
-        //console.log("DO " + action.name);
+        console.log("DO " + action.name);
         action.do();
     }
 
@@ -42,7 +48,7 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            //console.log("UNDO " + last.name);
+            console.log("UNDO " + last.name);
             last.undo();
 
             if (   this.actions.length == 0
@@ -63,7 +69,7 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            //console.log("REDO " + last.name);
+            console.log("REDO " + last.name);
             last.redo();
         
             if (   this.redoActions.length == 0

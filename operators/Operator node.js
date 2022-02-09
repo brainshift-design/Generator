@@ -280,9 +280,6 @@ function createNodeHeader(node)
     {
         if (   e.button == 0
             && node.div.dragging)
-            // && !getCtrlKey(e)
-            // && !e.shiftKey
-            // && !e.altKey)
         {
             if (node.div.moved)
             {
@@ -293,20 +290,12 @@ function createNodeHeader(node)
                     point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
-            else
+            else if (!node.selected)
             {
                 actionManager.do(new SelectNodesAction(
                     graphView.selectedNodes    .map(n => n.id), 
                     graphView.lastSelectedNodes.map(n => n.id)));
             }
-
-
-            // if (   !node.div.selectedSet
-            //     && !node.div.moved)
-            // {
-            //     if (e.shiftKey) node.selected           = true;
-            //     else            graphView.selectedNodes = [node];
-            // }
 
 
             node.div.dragging = false;
@@ -338,6 +327,8 @@ function createNodeHeader(node)
 
     node.header.addEventListener('dblclick', e =>
     {
+        e.preventDefault();
+
         var bounds = boundingRect(node.label);
 
         if (   e.clientX >= bounds.left && e.clientX < bounds.right

@@ -14128,9 +14128,6 @@ function createNodeHeader(node)
     {
         if (   e.button == 0
             && node.div.dragging)
-            // && !getCtrlKey(e)
-            // && !e.shiftKey
-            // && !e.altKey)
         {
             if (node.div.moved)
             {
@@ -14141,20 +14138,12 @@ function createNodeHeader(node)
                     point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
-            else
+            else if (!node.selected)
             {
                 actionManager.do(new SelectNodesAction(
                     graphView.selectedNodes    .map(n => n.id), 
                     graphView.lastSelectedNodes.map(n => n.id)));
             }
-
-
-            // if (   !node.div.selectedSet
-            //     && !node.div.moved)
-            // {
-            //     if (e.shiftKey) node.selected           = true;
-            //     else            graphView.selectedNodes = [node];
-            // }
 
 
             node.div.dragging = false;
@@ -14186,6 +14175,8 @@ function createNodeHeader(node)
 
     node.header.addEventListener('dblclick', e =>
     {
+        e.preventDefault();
+
         var bounds = boundingRect(node.label);
 
         if (   e.clientX >= bounds.left && e.clientX < bounds.right
@@ -14661,6 +14652,8 @@ extends OperatorBase
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
 
+        this._showOnlySymbol  = true;
+
 
         this.addNewInput();
         this.addOutput(new Output(this.dataType));
@@ -14673,9 +14666,9 @@ extends OperatorBase
         this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
         this._symbol.clicked0  = false;
-
+        
         this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-        this._symbol.addEventListener('pointerleave',   () => this._symbol.style.opacity = 1);
+        this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
 
         this._symbol.addEventListener('pointerdown', e => 
         { 
@@ -14684,11 +14677,11 @@ extends OperatorBase
                 if (this._symbol.clicked0)
                 {
                     this._symbol.clicked0      = false;
-                    this._showOnlySymbol       = true;
-                    this._symbol.style.opacity = 1
-                    this.updateNode();
+                    this._symbol.style.opacity = 1;
+
+                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
                 }
-                else
+                else if (!this._showOnlySymbol)
                 {
                     this._symbol.clicked0 = true;
                     setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
@@ -14698,8 +14691,8 @@ extends OperatorBase
 
         this.header.appendChild(this._symbol);
 
-        this._showOnlySymbol = true;
-        this.textbox.addEventListener('focus', () => { this._showOnlySymbol = false; this.updateNode(); });
+        
+        this.textbox.addEventListener('focus', () => actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), false, true));
     }
     
     
@@ -17299,6 +17292,8 @@ class Action
     onBeforeUndo;
     onAfterUndo;
 
+    
+    _linkWithNext = false;
 
 
     constructor(name)
@@ -17345,7 +17340,7 @@ class ActionManager
    
     
     
-    do(action, linkWithPrevious = false)
+    do(action, linkWithPrevious = false, linkWithNext = false)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
@@ -17353,18 +17348,24 @@ class ActionManager
 
         this.actions.push(action);
 
-        action.id      = this.nextActionId++;
-        action.manager = this;
+        action.id            = this.nextActionId++;
+        action.manager       = this;
+        action._linkWithNext = linkWithNext;
 
-        if (   linkWithPrevious
-            && this.actions.length > 1)
+        if (this.actions.length > 1)
         {
-            linkActions(
-                beforeLastOf(this.actions),
-                lastOf(this.actions));
+            const before = beforeLastOf(this.actions);
+            const last   = lastOf      (this.actions);
+
+            if (   linkWithPrevious
+                || before._linkWithNext)
+            {
+                linkActions(before, last);
+                before._linkWithNext = false;
+            }
         }
 
-        //console.log("DO " + action.name);
+        console.log("DO " + action.name);
         action.do();
     }
 
@@ -17380,7 +17381,7 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            //console.log("UNDO " + last.name);
+            console.log("UNDO " + last.name);
             last.undo();
 
             if (   this.actions.length == 0
@@ -17401,7 +17402,7 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            //console.log("REDO " + last.name);
+            console.log("REDO " + last.name);
             last.redo();
         
             if (   this.redoActions.length == 0
@@ -18267,6 +18268,42 @@ extends Action
         this.param.setValue(this.newValue);
         this.param.op.pushUpdate();
     }
+}
+
+
+class ToggleArithmeticSymbolAction
+extends Action
+{
+    nodeId;
+    get node() { return graph.nodes.find(n => n.id == this.nodeId) } 
+
+    showOnlySymbol;
+
+
+
+    constructor(nodeId, showOnlySymbol)
+    {
+        super('show only symbol = ' + (showOnlySymbol ? 'true' : 'false'));
+
+        this.nodeId         = nodeId;
+        this.showOnlySymbol = showOnlySymbol;
+    }
+
+
+
+    do()
+    {
+        this.node._showOnlySymbol = this.showOnlySymbol;
+        this.node.updateNode();
+    }
+
+
+
+    undo()
+    {
+        this.node._showOnlySymbol = !this.showOnlySymbol;
+        this.node.updateNode();
+    }    
 }
 
 
