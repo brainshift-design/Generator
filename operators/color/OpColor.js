@@ -86,6 +86,10 @@ extends OpColorBase
         this.param3    .control.wheelScale = 1;
 
 
+        this.paramSpace.control.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
+        this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
+
+
         // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
         // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
 
