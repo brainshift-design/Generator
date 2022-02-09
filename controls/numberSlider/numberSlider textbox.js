@@ -137,7 +137,7 @@ function initNumberSliderTextbox(slider)
                         ?     Math.pow(10, -_edit - 1)
                         : 1 / Math.pow(10,  _edit    );
 
-                    slider.setDecimals(text.length-1 - decIndex);
+                    slider.displayDec = text.length-1 - decIndex;
                     slider.setValue((val + sign * dec) / slider.valueScale);
                     slider.updateTextbox();
                 }

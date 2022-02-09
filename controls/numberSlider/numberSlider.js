@@ -377,7 +377,18 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                     ? 'default' //(slider.readOnly ? 'default' : 'auto')
                     : 'ew-resize';
             
-            slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            if (slider.param)
+            {
+                slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
+                
+                if (param.op.params.indexOf(param) < param.op.params.length-1)
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
+            }
+            else
+            {
+                slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset ';
+            }
+
             slider.focus.style.visibility = 'visible';
             slider.focus.style.opacity    = '100%';
     
@@ -764,10 +775,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
 
-    slider.setDecimals = dec =>
+    slider.setDecimals = (dec, dspDec) =>
     {
-        slider.dec        =
-        slider.displayDec = dec;
+        slider.dec        = dec;
+        slider.displayDec = dspDec;
     };
 
 

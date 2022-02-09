@@ -66,9 +66,6 @@ extends Parameter
         this.initInput (hasInput,  'number');
         this.initOutput(hasOutput, 'number');
 
-        // if (this.input)
-        //     this.input.addEventListener('connect', () => this.op.pushUpdate());
-
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
@@ -82,7 +79,10 @@ extends Parameter
 
                 actionManager.do(new SetParamDecimalsAction(this,
                     getDecimalCount(e.detail.value   ) + _dec, 
-                    getDecimalCount(e.detail.oldValue) + _dec), true);
+                    getDecimalCount(e.detail.oldValue) + _dec,
+                    getDecimalCount(e.detail.value   ), 
+                    getDecimalCount(e.detail.oldValue)
+                ), true);
             }
         });
     }
@@ -104,9 +104,9 @@ extends Parameter
 
 
 
-    setDecimals(dec)
+    setDecimals(dec, displayDec)
     {
-        this.control.setDecimals(dec);
+        this.control.setDecimals(dec, displayDec);
         this.control.update();
         this.op.pushUpdate();
     }

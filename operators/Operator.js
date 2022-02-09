@@ -300,9 +300,9 @@ class Operator
 
     updateBorder()
     {
-        this.inner.style.boxShadow = 
-              '0 0 0 1px ' 
-            + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
+        // this.inner.style.boxShadow = 
+        //       '0 0 0 1px ' 
+        //     + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
     }
 
 
