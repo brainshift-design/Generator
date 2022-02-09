@@ -7576,10 +7576,13 @@ function initNumberSliderTextbox(slider)
         let   value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
 
-        let val      = slider.showHex ? parseInt(value,      16) : parseFloat(value);
-        let savedVal = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
+        value = value.replace(slider.suffix, '');
+        
+        let   val        = slider.showHex ? parseInt(value,      16) : parseFloat(value);
+        let   savedVal   = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
 
         val /= slider.valueScale;
+
         
         if (success) slider.setValue(value.trim() != '' ? val : savedVal);
         else         slider.setValue(savedVal);
@@ -8248,7 +8251,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
         
 
-        if (   value != oldValue
+        if (   Math.abs(value - oldValue) > Number.EPSILON
             || forceChange)
         {
             slider.value = value;
@@ -8423,7 +8426,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
 
-    slider.setDecimals = (dec, dspDec) =>
+    slider.setDecimals = (dec, dspDec = dec) =>
     {
         slider.dec        = dec;
         slider.displayDec = dspDec;
@@ -8572,7 +8575,7 @@ function initColorSliderTextbox(slider)
     
         slider.textbox.style.textAlign = 'center';
     
-        slider.textbox.value = numToString(slider.value, slider.dec);
+        slider.textbox.value      = numToString(slider.value, slider.dec);
         slider.textbox.savedValue = slider.textbox.value;
         
         slider.parentNode.appendChild(slider.textbox);
@@ -11547,11 +11550,14 @@ extends Parameter
             {
                 const _dec = Math.log10(this.control.valueScale);
 
+                const dec    = getDecimalCount(e.detail.value);
+                const oldDec = getDecimalCount(e.detail.oldValue);
+
                 actionManager.do(new SetParamDecimalsAction(this,
-                    getDecimalCount(e.detail.value   ) + _dec, 
-                    getDecimalCount(e.detail.oldValue) + _dec,
-                    getDecimalCount(e.detail.value   ), 
-                    getDecimalCount(e.detail.oldValue)
+                    dec    + _dec, 
+                    oldDec + _dec,
+                    dec, 
+                    oldDec
                 ), true);
             }
         });
@@ -11614,11 +11620,11 @@ extends Parameter
         if (this.output)
         {
             this.output._data = dataFromNumber(
-                this._control.value,
+                this.control.value,
                    this.input
                 && this.input.isConnected
                 ? this.input.data.decimals
-                : this._control.cec);
+                : this.control.dec);
         }
     }
 
@@ -12777,7 +12783,9 @@ class Output
 
     get data() 
     {
-        this.op.update();
+        if (this.param) this.param.setOutputData();
+        if (this.op   ) this.op.update();
+
         return this._data;
     }
     
@@ -14530,6 +14538,7 @@ extends OperatorBase
     {
         if (this.inputs[0].isConnected)
         {
+            log(this.inputs[0].data);
             this.#paramValue.control.setDecimals(this.inputs[0].data.decimals);
             this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
         }

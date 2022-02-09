@@ -77,11 +77,14 @@ extends Parameter
             {
                 const _dec = Math.log10(this.control.valueScale);
 
+                const dec    = getDecimalCount(e.detail.value);
+                const oldDec = getDecimalCount(e.detail.oldValue);
+
                 actionManager.do(new SetParamDecimalsAction(this,
-                    getDecimalCount(e.detail.value   ) + _dec, 
-                    getDecimalCount(e.detail.oldValue) + _dec,
-                    getDecimalCount(e.detail.value   ), 
-                    getDecimalCount(e.detail.oldValue)
+                    dec    + _dec, 
+                    oldDec + _dec,
+                    dec, 
+                    oldDec
                 ), true);
             }
         });
@@ -144,11 +147,11 @@ extends Parameter
         if (this.output)
         {
             this.output._data = dataFromNumber(
-                this._control.value,
+                this.control.value,
                    this.input
                 && this.input.isConnected
                 ? this.input.data.decimals
-                : this._control.cec);
+                : this.control.dec);
         }
     }
 

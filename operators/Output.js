@@ -25,7 +25,9 @@ class Output
 
     get data() 
     {
-        this.op.update();
+        if (this.param) this.param.setOutputData();
+        if (this.op   ) this.op.update();
+
         return this._data;
     }
     

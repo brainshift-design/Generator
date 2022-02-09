@@ -600,7 +600,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
         
 
-        if (   value != oldValue
+        if (   Math.abs(value - oldValue) > Number.EPSILON
             || forceChange)
         {
             slider.value = value;
@@ -775,7 +775,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
 
-    slider.setDecimals = (dec, dspDec) =>
+    slider.setDecimals = (dec, dspDec = dec) =>
     {
         slider.dec        = dec;
         slider.displayDec = dspDec;

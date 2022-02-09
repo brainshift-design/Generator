@@ -212,10 +212,13 @@ function initNumberSliderTextbox(slider)
         let   value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
 
-        let val      = slider.showHex ? parseInt(value,      16) : parseFloat(value);
-        let savedVal = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
+        value = value.replace(slider.suffix, '');
+        
+        let   val        = slider.showHex ? parseInt(value,      16) : parseFloat(value);
+        let   savedVal   = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
 
         val /= slider.valueScale;
+
         
         if (success) slider.setValue(value.trim() != '' ? val : savedVal);
         else         slider.setValue(savedVal);
