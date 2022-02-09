@@ -154,10 +154,13 @@ class Operator
                     if (!input.isConnected)
                         return input;
                 }
-            }
 
-            return null;
+                // at this point no empty inputs were found, so connect to the first one
+                return inputs[0];
+            }
         }
+
+        return null;
     }
 
 
