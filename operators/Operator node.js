@@ -22,8 +22,10 @@ function createOperatorNode(node)
         node.div.over      = true;
         graphView.overNode = node;
         
-        if (   e.altKey
-            && graphView._soloNode != node) 
+        if (    e.altKey
+            && !getCtrlKey(e)
+            && !e.shiftKey
+            &&  graphView._soloNode != node) 
             graphView.soloNode(node);
         
         node.updateBorder();
@@ -35,7 +37,9 @@ function createOperatorNode(node)
         node.div.over      = false;
         graphView.overNode = null;
         
-        if (!e.altKey) 
+        if (  !e.altKey
+            || getCtrlKey(e)
+            || e.shiftKey)
             graphView.unsoloNode();
 
         node.updateBorder();
