@@ -44,47 +44,50 @@ function activeNodeRight(node)
 
 
 
-function getAllNodesBeforeNode(node, ignore)
+function getAllNodesFromNode(node, ignore)
 {
-    const before = [];
+    const nodes = [node];
+
+
+    if (!ignore.includes(node)) 
+        ignore.push(node);
 
 
     for (const input of node.inputs.filter(i => i.isConnected))
     {
         const op = input.connectedOutput.op;
+        if (ignore.includes(op)) continue;
+
+        nodes.push(...getAllNodesFromNode(op, ignore));
+    }
 
 
-        if (!before.includes(op)) before.push(op);
-        if (!ignore.includes(op)) ignore.push(op);
-   
-
-        const _before = getAllNodesBeforeNode(op, ignore);
-
-        for (const b of _before)
-            if (!before.includes(b)) 
-                before.push(b);
-
-
-        for (const output of op.outputs)
+    for (const output of node.outputs)
+    {
+        for (const _input of output.connectedInputs)
         {
-            for (const _input of output.connectedInputs)
-            {
-                if (_input == input)
-                    continue;
+            const op = _input.op;
+            if (ignore.includes(op)) continue;
 
-                const _after = getAllNodesAfterNode(op, ignore);
-
-                for (const a in _after) 
-                    if (!before.includes(a))
-                        before.push(a);
-            }
+            nodes.push(...getAllNodesFromNode(op, ignore));
         }
     }
 
 
-    return before;
+    return nodes;
 }
 
+
+
+function getNodesAcrossNode(node)
+{
+    let nodes = [];
+
+    nodes = [...nodes, ...getNodesBeforeNode(node)];
+    nodes = [...nodes, ...getNodesAfterNode (node)];
+
+    return nodes;
+}
 
 
 function getNodesBeforeNode(node)
@@ -100,46 +103,6 @@ function getNodesBeforeNode(node)
     }
 
     return before;
-}
-
-
-
-function getAllNodesAfterNode(node, ignore)
-{
-    const after = [];
-
-
-    for (const output of node.outputs)
-    {
-        for (const input of output.connectedInputs)
-        {
-            if (!after .includes(input.op)) after .push(input.op);
-            if (!ignore.includes(input.op)) ignore.push(input.op);
-
-
-            const _after = getAllNodesAfterNode(input.op, ignore);
-
-            for (const a of _after)
-                if (!after.includes(a)) 
-                    after.push(a);
-
-
-            for (const _input of input.op.inputs.filter(i => i.isConnected))
-            {
-                if (_input.connectedOutput == output)
-                    continue;
-
-                const _before = getAllNodesBeforeNode(input.op, ignore);
-
-                for (const b in _before) 
-                    if (!after.includes(b)) 
-                        after.push(b);
-            }
-        }
-    }
-
-
-    return after;
 }
 
 

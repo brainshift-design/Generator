@@ -139,49 +139,47 @@ function createNodeHeader(node)
 
             node.div.selectedSet        = false;
             node.div.moved              = false;
-            node.div.shiftOnPointerDown = e.shiftKey;
 
+            node.div.shiftOnPointerDown = 
+                    e.shiftKey
+                && !getCtrlKey(e)
+                && !e.altKey;
 
-            if (!node.selected)
-            {
-                if (e.shiftKey) node     .selected      = true;
-                else            graphView.selectedNodes = [node];
-
-                node.selectedSet = true;
-            }
-            
 
             if (   getCtrlKey(e)
                 && e.shiftKey
                 && e.altKey)
             {
-                let   nodes  = [node];
-                const ignore = [node];
-
-                nodes = [...nodes, ...getAllNodesBeforeNode(node, ignore)];
-                //nodes = [...nodes, ...getAllNodesAfterNode (node, ignore)];
+                const ignore = [];
+                const nodes  = getAllNodesFromNode(node, ignore);
 
                 graphView.selectedNodes = nodes;
             }
             else if (e.shiftKey
                   && e.altKey)
             {
-                let nodes = [node];
-
-                nodes = [...nodes, ...getNodesBeforeNode(node)];
-                nodes = [...nodes, ...getNodesAfterNode (node)];
-
-                graphView.selectedNodes = nodes;
+                if (isMac) graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
+                else       graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
             }
             else if (getCtrlKey(e)
                   && e.shiftKey)
-                graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
-
+            {
+                if (isMac) graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
+                else       graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
+            }
             else if (getCtrlKey(e)
                   && e.altKey)
                 graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
 
+            else if (!node.selected)
+            {
+                if (e.shiftKey) node     .selected      = true;
+                else            graphView.selectedNodes = [node];
 
+                node.selectedSet = true;
+            }
+
+            
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
 
@@ -299,12 +297,12 @@ function createNodeHeader(node)
             }
 
 
-            if (   !node.div.selectedSet
-                && !node.div.moved)
-            {
-                if (e.shiftKey) node.selected           = true;
-                else            graphView.selectedNodes = [node];
-            }
+            // if (   !node.div.selectedSet
+            //     && !node.div.moved)
+            // {
+            //     if (e.shiftKey) node.selected           = true;
+            //     else            graphView.selectedNodes = [node];
+            // }
 
 
             node.div.dragging = false;

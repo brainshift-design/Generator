@@ -12382,47 +12382,50 @@ function activeNodeRight(node)
 
 
 
-function getAllNodesBeforeNode(node, ignore)
+function getAllNodesFromNode(node, ignore)
 {
-    const before = [];
+    const nodes = [node];
+
+
+    if (!ignore.includes(node)) 
+        ignore.push(node);
 
 
     for (const input of node.inputs.filter(i => i.isConnected))
     {
         const op = input.connectedOutput.op;
+        if (ignore.includes(op)) continue;
+
+        nodes.push(...getAllNodesFromNode(op, ignore));
+    }
 
 
-        if (!before.includes(op)) before.push(op);
-        if (!ignore.includes(op)) ignore.push(op);
-   
-
-        const _before = getAllNodesBeforeNode(op, ignore);
-
-        for (const b of _before)
-            if (!before.includes(b)) 
-                before.push(b);
-
-
-        for (const output of op.outputs)
+    for (const output of node.outputs)
+    {
+        for (const _input of output.connectedInputs)
         {
-            for (const _input of output.connectedInputs)
-            {
-                if (_input == input)
-                    continue;
+            const op = _input.op;
+            if (ignore.includes(op)) continue;
 
-                const _after = getAllNodesAfterNode(op, ignore);
-
-                for (const a in _after) 
-                    if (!before.includes(a))
-                        before.push(a);
-            }
+            nodes.push(...getAllNodesFromNode(op, ignore));
         }
     }
 
 
-    return before;
+    return nodes;
 }
 
+
+
+function getNodesAcrossNode(node)
+{
+    let nodes = [];
+
+    nodes = [...nodes, ...getNodesBeforeNode(node)];
+    nodes = [...nodes, ...getNodesAfterNode (node)];
+
+    return nodes;
+}
 
 
 function getNodesBeforeNode(node)
@@ -12438,46 +12441,6 @@ function getNodesBeforeNode(node)
     }
 
     return before;
-}
-
-
-
-function getAllNodesAfterNode(node, ignore)
-{
-    const after = [];
-
-
-    for (const output of node.outputs)
-    {
-        for (const input of output.connectedInputs)
-        {
-            if (!after .includes(input.op)) after .push(input.op);
-            if (!ignore.includes(input.op)) ignore.push(input.op);
-
-
-            const _after = getAllNodesAfterNode(input.op, ignore);
-
-            for (const a of _after)
-                if (!after.includes(a)) 
-                    after.push(a);
-
-
-            for (const _input of input.op.inputs.filter(i => i.isConnected))
-            {
-                if (_input.connectedOutput == output)
-                    continue;
-
-                const _before = getAllNodesBeforeNode(input.op, ignore);
-
-                for (const b in _before) 
-                    if (!after.includes(b)) 
-                        after.push(b);
-            }
-        }
-    }
-
-
-    return after;
 }
 
 
@@ -14024,49 +13987,47 @@ function createNodeHeader(node)
 
             node.div.selectedSet        = false;
             node.div.moved              = false;
-            node.div.shiftOnPointerDown = e.shiftKey;
 
+            node.div.shiftOnPointerDown = 
+                    e.shiftKey
+                && !getCtrlKey(e)
+                && !e.altKey;
 
-            if (!node.selected)
-            {
-                if (e.shiftKey) node     .selected      = true;
-                else            graphView.selectedNodes = [node];
-
-                node.selectedSet = true;
-            }
-            
 
             if (   getCtrlKey(e)
                 && e.shiftKey
                 && e.altKey)
             {
-                let   nodes  = [node];
-                const ignore = [node];
-
-                nodes = [...nodes, ...getAllNodesBeforeNode(node, ignore)];
-                //nodes = [...nodes, ...getAllNodesAfterNode (node, ignore)];
+                const ignore = [];
+                const nodes  = getAllNodesFromNode(node, ignore);
 
                 graphView.selectedNodes = nodes;
             }
             else if (e.shiftKey
                   && e.altKey)
             {
-                let nodes = [node];
-
-                nodes = [...nodes, ...getNodesBeforeNode(node)];
-                nodes = [...nodes, ...getNodesAfterNode (node)];
-
-                graphView.selectedNodes = nodes;
+                if (isMac) graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
+                else       graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
             }
             else if (getCtrlKey(e)
                   && e.shiftKey)
-                graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
-
+            {
+                if (isMac) graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
+                else       graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
+            }
             else if (getCtrlKey(e)
                   && e.altKey)
                 graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
 
+            else if (!node.selected)
+            {
+                if (e.shiftKey) node     .selected      = true;
+                else            graphView.selectedNodes = [node];
 
+                node.selectedSet = true;
+            }
+
+            
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
 
@@ -14184,12 +14145,12 @@ function createNodeHeader(node)
             }
 
 
-            if (   !node.div.selectedSet
-                && !node.div.moved)
-            {
-                if (e.shiftKey) node.selected           = true;
-                else            graphView.selectedNodes = [node];
-            }
+            // if (   !node.div.selectedSet
+            //     && !node.div.moved)
+            // {
+            //     if (e.shiftKey) node.selected           = true;
+            //     else            graphView.selectedNodes = [node];
+            // }
 
 
             node.div.dragging = false;
@@ -14538,7 +14499,6 @@ extends OperatorBase
     {
         if (this.inputs[0].isConnected)
         {
-            log(this.inputs[0].data);
             this.#paramValue.control.setDecimals(this.inputs[0].data.decimals);
             this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
         }
@@ -16722,7 +16682,7 @@ extends OpColorBase
 
 
         this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2.1', 'WCAG 3'], 1));
       
 
         enableSliderText(this.#paramValue.control, false);

@@ -24,7 +24,6 @@ extends OperatorBase
     {
         if (this.inputs[0].isConnected)
         {
-            log(this.inputs[0].data);
             this.#paramValue.control.setDecimals(this.inputs[0].data.decimals);
             this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
         }
