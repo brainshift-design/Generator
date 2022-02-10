@@ -32,8 +32,8 @@ class ActionManager
             }
         }
 
-        console.log("DO " + action.name);
         action.do();
+        //console.log("DO " + action.name);
     }
 
 
@@ -48,8 +48,8 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            console.log("UNDO " + last.name);
             last.undo();
+            //console.log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -69,8 +69,8 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            console.log("REDO " + last.name);
             last.redo();
+            //console.log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))

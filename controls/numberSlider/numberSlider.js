@@ -585,23 +585,28 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const oldValue = slider.value;
 
 
-        const dec = Math.pow(10, Math.abs(slider.dec));
-        value = Math.round(value * dec) / dec;
+        if (isNaN(value))
+            forceChange = true;
 
-        
-        if (slider.wrapValue)
-        {
-            while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
-            while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
-        }
-        else if (fullRange)
-            value = Math.min(Math.max(slider.min, value), slider.max);
         else
-            value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
-        
+        {
+            const dec = Math.pow(10, Math.abs(slider.dec));
+            value = Math.round(value * dec) / dec;
 
-        if (   Math.abs(value - oldValue) > Number.EPSILON
-            || forceChange)
+            if (slider.wrapValue)
+            {
+                while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
+                while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
+            }
+            else if (fullRange)
+                value = Math.min(Math.max(slider.min, value), slider.max);
+            else
+                value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
+        }
+
+
+        if (   forceChange
+            || Math.abs(value - oldValue) > Number.EPSILON)
         {
             slider.value = value;
 

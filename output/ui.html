@@ -8236,23 +8236,28 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const oldValue = slider.value;
 
 
-        const dec = Math.pow(10, Math.abs(slider.dec));
-        value = Math.round(value * dec) / dec;
+        if (isNaN(value))
+            forceChange = true;
 
-        
-        if (slider.wrapValue)
-        {
-            while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
-            while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
-        }
-        else if (fullRange)
-            value = Math.min(Math.max(slider.min, value), slider.max);
         else
-            value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
-        
+        {
+            const dec = Math.pow(10, Math.abs(slider.dec));
+            value = Math.round(value * dec) / dec;
 
-        if (   Math.abs(value - oldValue) > Number.EPSILON
-            || forceChange)
+            if (slider.wrapValue)
+            {
+                while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
+                while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
+            }
+            else if (fullRange)
+                value = Math.min(Math.max(slider.min, value), slider.max);
+            else
+                value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
+        }
+
+
+        if (   forceChange
+            || Math.abs(value - oldValue) > Number.EPSILON)
         {
             slider.value = value;
 
@@ -15072,9 +15077,15 @@ extends Operator
 
     updateHeader()
     {
-        //log(this.name + '.OpColorBase.updateHeader()');
+        log(this.name + '.OpColorBase.updateHeader()');
+
 
         const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
+
+        this.header.style.background = 
+            this.canShowColor()
+            ? colorStyleRgb(colBack)
+            : '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];
@@ -15091,12 +15102,6 @@ extends Operator
             output.wireColor = this.canShowColor() ? colBack : noColor;
             output.color     = colOutput;
         }
-
-
-        this.header.style.background = 
-            this.canShowColor()
-            ? colorStyleRgb(colBack)
-            : '#ead8eaee';
 
 
         this.updateHeaderLabel();
@@ -15124,7 +15129,9 @@ extends Operator
             ? color_NaN
             : dataColor2rgb(this._color);
 
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+        const darkText = 
+               !this.canShowColor()
+            || rgb2hclokl(colBack)[2] > 0.71;
 
         const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
 
@@ -15487,24 +15494,13 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText,,, colText, textStyle] = this.getHeaderColors();
+        const [colBack, darkText,,,,] = this.getHeaderColors();
 
+        this.#colorBack.style.background = 
+            this.canShowColor()
+            ? colorStyleRgb(colBack)
+            : '#ead8eaee';
 
-        const colSpaceBar = 
-            darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05  : 0.24];
-
-            
-        this.#colorBack.style.background = colorStyleRgb(colBack);
-                
-        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColor  = textStyle;
-        this.paramSpace.control.backColor  = 'transparent';
-
-        this.paramSpace.input .color = colText;
-        this.paramSpace.output.color = colText;
-        this.paramSpace.updateControls();
 
         const colWarning = 
             darkText 
@@ -15512,14 +15508,28 @@ extends OpColorBase
             : [1, 1, 1, 0.2 ];
 
         this.warningStyle = colorStyleRgba(colWarning);
-        super.updateWarningOverlayStyle(colBack, 45);
+        this.updateWarningOverlay();
+        this.updateWarningOverlayStyle(colBack, 45);
     }
 
 
 
     updateParamControls()
     {
-        const [colBack,,,, colText,] = this.getHeaderColors();
+        const [colBack, darkText, colInput, colOutput, textStyle] = this.getHeaderColors();
+
+        const colSpaceBar = 
+            darkText 
+            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05 : 0.24];
+            
+        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
+        this.paramSpace.control.textColor  = textStyle;
+        this.paramSpace.control.backColor  = 'transparent';
+
+        this.paramSpace.input .color = colInput;
+        this.paramSpace.output.color = colOutput;
+        this.paramSpace.updateControls();
 
         this.updateAllSliderRanges();
 
@@ -15532,14 +15542,21 @@ extends OpColorBase
 
     updateSlider(slider, isValid)
     {
-        slider.valueText = 
-               this.inputs[0].isConnected 
-            && this.inputs[0].data.color[0] != this._color[0]
-            && !isValid 
-            ? '?' 
-            : '';
+        // slider.valueText = 
+        //        this.inputs[0].isConnected 
+        //     // && this.inputs[0].data.color[0] != this._color[0]
+        //     && !isValid 
+        //     ? '?' 
+        //     : '';
 
-        enableSliderText(slider.textbox, !this.inputs[0].isConnected);
+        if (    this.inputs[0].isConnected
+            && !isValid)
+            slider.setValue(Number.NaN, true, false, false);
+
+        enableSliderText(
+            slider.textbox, 
+               !this.inputs[0].isConnected 
+            && isValid);
 
         slider.update();
     }
@@ -17365,8 +17382,8 @@ class ActionManager
             }
         }
 
-        console.log("DO " + action.name);
         action.do();
+        //console.log("DO " + action.name);
     }
 
 
@@ -17381,8 +17398,8 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            console.log("UNDO " + last.name);
             last.undo();
+            //console.log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -17402,8 +17419,8 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            console.log("REDO " + last.name);
             last.redo();
+            //console.log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))

@@ -258,24 +258,13 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText,,, colText, textStyle] = this.getHeaderColors();
+        const [colBack, darkText,,,,] = this.getHeaderColors();
 
+        this.#colorBack.style.background = 
+            this.canShowColor()
+            ? colorStyleRgb(colBack)
+            : '#ead8eaee';
 
-        const colSpaceBar = 
-            darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05  : 0.24];
-
-            
-        this.#colorBack.style.background = colorStyleRgb(colBack);
-                
-        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColor  = textStyle;
-        this.paramSpace.control.backColor  = 'transparent';
-
-        this.paramSpace.input .color = colText;
-        this.paramSpace.output.color = colText;
-        this.paramSpace.updateControls();
 
         const colWarning = 
             darkText 
@@ -283,14 +272,28 @@ extends OpColorBase
             : [1, 1, 1, 0.2 ];
 
         this.warningStyle = colorStyleRgba(colWarning);
-        super.updateWarningOverlayStyle(colBack, 45);
+        this.updateWarningOverlay();
+        this.updateWarningOverlayStyle(colBack, 45);
     }
 
 
 
     updateParamControls()
     {
-        const [colBack,,,, colText,] = this.getHeaderColors();
+        const [colBack, darkText, colInput, colOutput, textStyle] = this.getHeaderColors();
+
+        const colSpaceBar = 
+            darkText 
+            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05 : 0.24];
+            
+        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
+        this.paramSpace.control.textColor  = textStyle;
+        this.paramSpace.control.backColor  = 'transparent';
+
+        this.paramSpace.input .color = colInput;
+        this.paramSpace.output.color = colOutput;
+        this.paramSpace.updateControls();
 
         this.updateAllSliderRanges();
 
@@ -303,14 +306,21 @@ extends OpColorBase
 
     updateSlider(slider, isValid)
     {
-        slider.valueText = 
-               this.inputs[0].isConnected 
-            && this.inputs[0].data.color[0] != this._color[0]
-            && !isValid 
-            ? '?' 
-            : '';
+        // slider.valueText = 
+        //        this.inputs[0].isConnected 
+        //     // && this.inputs[0].data.color[0] != this._color[0]
+        //     && !isValid 
+        //     ? '?' 
+        //     : '';
 
-        enableSliderText(slider.textbox, !this.inputs[0].isConnected);
+        if (    this.inputs[0].isConnected
+            && !isValid)
+            slider.setValue(Number.NaN, true, false, false);
+
+        enableSliderText(
+            slider.textbox, 
+               !this.inputs[0].isConnected 
+            && isValid);
 
         slider.update();
     }

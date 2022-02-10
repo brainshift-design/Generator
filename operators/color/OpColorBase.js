@@ -29,9 +29,15 @@ extends Operator
 
     updateHeader()
     {
-        //log(this.name + '.OpColorBase.updateHeader()');
+        log(this.name + '.OpColorBase.updateHeader()');
+
 
         const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
+
+        this.header.style.background = 
+            this.canShowColor()
+            ? colorStyleRgb(colBack)
+            : '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];
@@ -48,12 +54,6 @@ extends Operator
             output.wireColor = this.canShowColor() ? colBack : noColor;
             output.color     = colOutput;
         }
-
-
-        this.header.style.background = 
-            this.canShowColor()
-            ? colorStyleRgb(colBack)
-            : '#ead8eaee';
 
 
         this.updateHeaderLabel();
@@ -81,7 +81,9 @@ extends Operator
             ? color_NaN
             : dataColor2rgb(this._color);
 
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+        const darkText = 
+               !this.canShowColor()
+            || rgb2hclokl(colBack)[2] > 0.71;
 
         const satBias  = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
 
