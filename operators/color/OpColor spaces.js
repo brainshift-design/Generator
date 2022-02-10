@@ -238,6 +238,8 @@ function getNormalValue(value, space, chan)
 {
     switch (space)
     {
+        case 'hex':
+        case 'rgbhex':
         case 'rgb':    return getNormalValueRgb_(value, chan);
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
@@ -315,6 +317,8 @@ function getNormalColor_(space, c1, c2, c3)
 {
     switch (space)
     {
+        case 'hex':
+        case 'rgbhex':
         case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
@@ -373,6 +377,8 @@ function getDataColor(color)
 {
     switch (color[0])
     {
+        case 'hex':
+        case 'rgbhex':
         case 'rgb':    return getDataColorRgb(color[1], color[2], color[3]);
         case 'hsv':   
         case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
@@ -451,20 +457,12 @@ function setDataColorToCurrentSpace(op, color)
 
 
 
-function getCurrentDataColorSpace(op)
-{
-    var index = op.paramSpace.value;
-    if (index < 2) index = 2;
-
-    return colorSpace(index);
-}
-
-
-
 function getColorSpaceFactor(space)
 {
     switch (space)
     {
+        case 'hex':
+        case 'rgbhex':
         case 'rgb':    return rgbFactor;
         case 'hsv':   
         case 'hsl':    return hs_Factor;
@@ -483,6 +481,8 @@ function getColorSpaceScale(space)
 {
     switch (space)
     {
+        case 'hex':
+        case 'rgbhex':
         case 'rgb':    return rgbScale;
         case 'hsv':   
         case 'hsl':    return hs_Scale;

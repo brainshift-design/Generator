@@ -64,6 +64,8 @@ extends OpColorBase
                 if (!this.params[i].input.isConnected) 
                     enableSliderText(this.params[i].control, true);
             }
+
+            this.updateNode();
         });
 
         
@@ -101,13 +103,13 @@ extends OpColorBase
     getDataColorFromParams()
     {
         const col = getNormalColor_(
-            getCurrentDataColorSpace(this),
+            colorSpace(this.paramSpace.value),
             this.param1.value,
             this.param2.value,
             this.param3.value);
     
         return [
-            getCurrentDataColorSpace(this),
+            colorSpace(this.paramSpace.value),
             col[0],
             col[1],
             col[2] ];
@@ -150,7 +152,8 @@ extends OpColorBase
         if (this.inputs[0].isConnected) 
         {
             if (   dataColorIsNaN(this.inputs[0].data.color)
-                && !this.loading)
+                && !this.loading
+                && !dataColorIsNaN(this._color))
             {
                 this._colorBeforeNaN = this._color;
                 this._color          = dataColor_NaN;
@@ -159,7 +162,7 @@ extends OpColorBase
             {
                 const color = convertDataColorToSpace(
                     this.inputs[0].data.color, 
-                    getCurrentDataColorSpace(this));
+                    colorSpace(this.paramSpace.value));
 
                 if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
                 if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
@@ -170,16 +173,17 @@ extends OpColorBase
         }
         else
         {
+            log(this._colorBeforeNaN);
             if (!dataColorIsNaN(this._colorBeforeNaN))
             {
                 this._color          = this._colorBeforeNaN;
                 this._colorBeforeNaN = dataColor_NaN;
 
-                const toSpace = this._color[0];
+                const toSpace = colorSpace(this.paramSpace.value);
 
                 switchToSpace(this, toSpace);
+                log(this._color);
                 setDataColorToCurrentSpace(this, this._color);
-                // setDataColorToSpace(this, this._color, toSpace);
 
                 this._oldSpace = toSpace;
             }
