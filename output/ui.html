@@ -13231,7 +13231,7 @@ class Operator
     _variableInputs = false;
 
     alwaysLoadParams = false;
-    loaded           = false;
+    loading          = false;
 
     labelOffsetFactor;
 
@@ -13474,6 +13474,8 @@ class Operator
 
         if (graphView.canUpdateNodes)
             this.updateNode();
+
+        this.loading = false;
     }
 
 
@@ -15420,7 +15422,7 @@ extends OpColorBase
         if (this.inputs[0].isConnected) 
         {
             if (   dataColorIsNaN(this.inputs[0].data.color)
-                && !this.loaded)
+                && !this.loading)
             {
                 this._colorBeforeNaN = this._color;
                 this._color          = dataColor_NaN;
@@ -15447,7 +15449,9 @@ extends OpColorBase
 
                 const toSpace = this._color[0];
 
-                setDataColorToSpace(this, this._color, toSpace);
+                switchToSpace(this, toSpace);
+                setDataColorToCurrentSpace(this, this._color);
+                // setDataColorToSpace(this, this._color, toSpace);
 
                 this._oldSpace = toSpace;
             }
@@ -15464,11 +15468,9 @@ extends OpColorBase
                     this.param3.allowEditDecimals = this.paramSpace.value > 1;
 
                     const color =
-                        this.loaded 
+                        this.loading 
                         ? this.getDataColorFromParams()
                         : this._color;
-
-                    this.loaded = false;
 
 
                     switchToSpace(this, toSpace);
@@ -15493,7 +15495,6 @@ extends OpColorBase
                 this._color = this.getDataColorFromParams();
                 this._oldSpace = toSpace;
             }
-
         }
 
     
@@ -19273,7 +19274,7 @@ function uiEndLoadState(msg)
     productKey  = msg.productKey;
 
     uiGetPluginData('graph');    // load graph from current page
-    setInterval(autoSave, 5000); // auto save every 5 seconds
+    //setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
 
@@ -19372,7 +19373,7 @@ function checkResize(x, y)
 function saveGraph()
 {
     const json = graph.toJson(); 
-    //log(json); 
+    log(json); 
     uiSetPluginData("graph", json);
 }
 
@@ -19547,6 +19548,7 @@ function loadNodes(data)
 function loadNode(_node)
 {
     const node = graph.createNode(_node.type);
+    node.loading = true;
 
     node.name = _node.name;
 
@@ -19562,8 +19564,6 @@ function loadNode(_node)
         parseFloat(_node.x), 
         parseFloat(_node.y),
         false);
-
-    node.loaded = true;
 
     return node;
 }

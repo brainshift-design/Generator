@@ -32,7 +32,7 @@ class Operator
     _variableInputs = false;
 
     alwaysLoadParams = false;
-    loaded           = false;
+    loading          = false;
 
     labelOffsetFactor;
 
@@ -275,6 +275,8 @@ class Operator
 
         if (graphView.canUpdateNodes)
             this.updateNode();
+
+        this.loading = false;
     }
 
 

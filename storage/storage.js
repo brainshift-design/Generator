@@ -16,7 +16,7 @@
 function saveGraph()
 {
     const json = graph.toJson(); 
-    //log(json); 
+    log(json); 
     uiSetPluginData("graph", json);
 }
 
@@ -191,6 +191,7 @@ function loadNodes(data)
 function loadNode(_node)
 {
     const node = graph.createNode(_node.type);
+    node.loading = true;
 
     node.name = _node.name;
 
@@ -206,8 +207,6 @@ function loadNode(_node)
         parseFloat(_node.x), 
         parseFloat(_node.y),
         false);
-
-    node.loaded = true;
 
     return node;
 }

@@ -150,7 +150,7 @@ extends OpColorBase
         if (this.inputs[0].isConnected) 
         {
             if (   dataColorIsNaN(this.inputs[0].data.color)
-                && !this.loaded)
+                && !this.loading)
             {
                 this._colorBeforeNaN = this._color;
                 this._color          = dataColor_NaN;
@@ -177,7 +177,9 @@ extends OpColorBase
 
                 const toSpace = this._color[0];
 
-                setDataColorToSpace(this, this._color, toSpace);
+                switchToSpace(this, toSpace);
+                setDataColorToCurrentSpace(this, this._color);
+                // setDataColorToSpace(this, this._color, toSpace);
 
                 this._oldSpace = toSpace;
             }
@@ -194,11 +196,9 @@ extends OpColorBase
                     this.param3.allowEditDecimals = this.paramSpace.value > 1;
 
                     const color =
-                        this.loaded 
+                        this.loading 
                         ? this.getDataColorFromParams()
                         : this._color;
-
-                    this.loaded = false;
 
 
                     switchToSpace(this, toSpace);
@@ -223,7 +223,6 @@ extends OpColorBase
                 this._color = this.getDataColorFromParams();
                 this._oldSpace = toSpace;
             }
-
         }
 
     
