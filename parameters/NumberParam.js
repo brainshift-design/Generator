@@ -59,7 +59,6 @@ extends Parameter
 
         this.control.successOnFocusOut = true;
 
-
         this.div.appendChild(this.control);
 
        

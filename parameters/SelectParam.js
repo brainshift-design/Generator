@@ -53,9 +53,9 @@ extends Parameter
             0,
             options.length-1,
             value);    // default
-            
+
         this.control.options = [...options];
-        //this.control.barTop  = 0.8;
+        this.control.successOnFocusOut = true;
 
         this.div.appendChild(this.control);
 

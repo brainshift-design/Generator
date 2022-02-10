@@ -544,6 +544,7 @@ input[type=text]::selection
     left:                 50%;
     transform:            translateX(-50%);
     white-space:          nowrap;
+    background-color:     transparent;
 }
 
 
@@ -7617,6 +7618,8 @@ function initNumberSliderTextbox(slider)
 
         slider.textbox.blur();
 
+        slider.text.style.display = 'block';
+
         if (   slider.inFocus
             && focusSlider)
             slider.focus();
@@ -7626,6 +7629,8 @@ function initNumberSliderTextbox(slider)
 
     slider.showTextbox = function()
     {
+        slider.text.style.display = 'none';
+
         slider.inFocus = 
                 slider == document.activeElement
             && !slider.clicked;
@@ -11571,7 +11576,6 @@ extends Parameter
 
         this.control.successOnFocusOut = true;
 
-
         this.div.appendChild(this.control);
 
        
@@ -11844,9 +11848,9 @@ extends Parameter
             0,
             options.length-1,
             value);    // default
-            
+
         this.control.options = [...options];
-        //this.control.barTop  = 0.8;
+        this.control.successOnFocusOut = true;
 
         this.div.appendChild(this.control);
 
@@ -16789,7 +16793,7 @@ extends OpColorBase
 
 
         this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2.1', 'WCAG 3'], 1));
+        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         enableSliderText(this.#paramValue.control, false);

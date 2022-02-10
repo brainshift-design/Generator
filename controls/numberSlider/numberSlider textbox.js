@@ -244,6 +244,8 @@ function initNumberSliderTextbox(slider)
 
         slider.textbox.blur();
 
+        slider.text.style.display = 'block';
+
         if (   slider.inFocus
             && focusSlider)
             slider.focus();
@@ -253,6 +255,8 @@ function initNumberSliderTextbox(slider)
 
     slider.showTextbox = function()
     {
+        slider.text.style.display = 'none';
+
         slider.inFocus = 
                 slider == document.activeElement
             && !slider.clicked;

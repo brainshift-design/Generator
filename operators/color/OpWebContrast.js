@@ -16,7 +16,7 @@ extends OpColorBase
 
 
         this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2.1', 'WCAG 3'], 1));
+        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         enableSliderText(this.#paramValue.control, false);
