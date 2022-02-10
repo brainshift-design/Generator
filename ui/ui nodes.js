@@ -283,7 +283,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    //console.log(copiedJson);
+    //log(copiedJson);
 
     return copiedJson;
 }

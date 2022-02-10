@@ -5,13 +5,16 @@ const OpColorSpaces =
     ['rgb',    'RGB'    ], 
     ['hsv',    'HSV'    ], 
     ['hsl',    'HSL'    ], 
-    ['hclokl', 'HCL OKL'],
-    ['hcllab', 'HCL Lab'],
-    ['hclluv', 'HCL Luv'],
-    ['oklab',  'OKLab'  ],
+    ['hclokl', 'HCL/ok'],
+    ['hcllab', 'HCL/ab'],
+    ['hclluv', 'HCL/uv'],
+    ['oklab',  'okLab'  ],
     ['lab',    'Lab'    ],
     ['luv',    'Luv'    ]
 ];
+
+function colorSpace(index) { return OpColorSpaces[index][0]; }
+
 
 
 const rgbFactor   = [255, 255, 255];
@@ -438,7 +441,7 @@ function setDataColorToSpace(op, color, toSpace)
 
 function setDataColorToCurrentSpace(op, color)
 {
-    const toSpace = OpColorSpaces[op.paramSpace.value][0];
+    const toSpace = colorSpace(op.paramSpace.value);
 
     op._color = convertDataColorToSpace(color, toSpace);
     //op._oldSpace = op._color[0];
@@ -453,7 +456,7 @@ function getCurrentDataColorSpace(op)
     var index = op.paramSpace.value;
     if (index < 2) index = 2;
 
-    return OpColorSpaces[index][0];
+    return colorSpace(index);
 }
 
 

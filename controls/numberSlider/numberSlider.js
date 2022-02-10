@@ -648,16 +648,24 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.updateBar = function(sx, cx, v, sw, sh)
     {
-        const x = 
-            v >= 0
-            ? sx + cx
-            : sx + cx + v * sw;
+        if (isNaN(slider.value))
+            slider.bar.style.display = 'none';
 
-        slider.bar.style.left   = Math.max(0, x);
-        slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+        else
+        {
+            slider.bar.style.display = 'block';
 
-        slider.bar.style.top    = sh * slider.barTop;
-        slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
+            const x = 
+                v >= 0
+                ? sx + cx
+                : sx + cx + v * sw;
+
+            slider.bar.style.left   = Math.max(0, x);
+            slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+
+            slider.bar.style.top    = sh * slider.barTop;
+            slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
+        }
     };
 
 

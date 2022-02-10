@@ -65,7 +65,7 @@ extends OpColorBase
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
-            const space = OpColorSpaces[this.#paramSpace.value][0];
+            const space = colorSpace(this.#paramSpace.value);
             const f     = this.#paramAmount.value;
             const gamma = this.#paramGamma .value;
             

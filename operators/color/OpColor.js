@@ -25,7 +25,10 @@ extends OpColorBase
     
     _oldSpace;
     _oldSpaceConnections = [];
-    
+
+
+    _colorBeforeNaN = dataColor_NaN;
+
 
     #init = false;
     
@@ -120,13 +123,13 @@ extends OpColorBase
     
     
     
-    setColorParams(color)
+    setColorParams(color, fireChangeEvent = false)
     {
         const col = getDataColor(color);
 
-        this.param1.setValue(col[0], false, true, false);
-        this.param2.setValue(col[1], false, true, false);
-        this.param3.setValue(col[2], false, true, false);
+        this.param1.setValue(col[0], fireChangeEvent);
+        this.param2.setValue(col[1], fireChangeEvent);
+        this.param3.setValue(col[2], fireChangeEvent);
     }
 
 
@@ -156,7 +159,8 @@ extends OpColorBase
         {
             if (dataColorIsNaN(this.inputs[0].data.color))
             {
-                this._color = dataColor_NaN;
+                this._colorBeforeNaN = this._color;
+                this._color          = dataColor_NaN;
             }
             else
             {
@@ -168,49 +172,65 @@ extends OpColorBase
                 if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
                 if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-                setDataColorToSpace(this, color, OpColorSpaces[this.paramSpace.value][0]);
+                setDataColorToSpace(this, color, colorSpace(this.paramSpace.value));
             }
         }
         else
         {
-            const toSpace = OpColorSpaces[this.paramSpace.value][0];
-
-            if (  !this.#init
-                || this._oldSpace != toSpace)
+            if (!dataColorIsNaN(this._colorBeforeNaN))
             {
-                this.param1.allowEditDecimals = this.paramSpace.value > 1;
-                this.param2.allowEditDecimals = this.paramSpace.value > 1;
-                this.param3.allowEditDecimals = this.paramSpace.value > 1;
+                this._color          = this._colorBeforeNaN;
+                this._colorBeforeNaN = dataColor_NaN;
 
-                const color =
-                    this.loaded 
-                    ? this.getDataColorFromParams()
-                    : this._color;
+                const toSpace = this._color[0];
 
-                this.loaded = false;
+                setDataColorToSpace(this, this._color, toSpace);
 
+                this._oldSpace = toSpace;
+            }
+            else
+            {
+                const toSpace = colorSpace(this.paramSpace.value);
 
-                switchToSpace(this, toSpace);
-                setDataColorToCurrentSpace(this, color);
-
-
-                for (let i = 2; i < 5; i++)
+                if (   !this.#init
+                    ||  this._oldSpace != toSpace
+                    || !dataColorIsNaN(this._colorBeforeNaN))
                 {
-                    if (this.inputs[i].isConnected) 
-                    { 
-                        const param = this.inputs[i].param;
+                    this.param1.allowEditDecimals = this.paramSpace.value > 1;
+                    this.param2.allowEditDecimals = this.paramSpace.value > 1;
+                    this.param3.allowEditDecimals = this.paramSpace.value > 1;
 
-                        param.update(); 
-                        this._color[i-1] = param.value; 
+                    const color =
+                        this.loaded 
+                        ? this.getDataColorFromParams()
+                        : this._color;
+
+                    this.loaded = false;
+
+
+                    switchToSpace(this, toSpace);
+                    setDataColorToCurrentSpace(this, color);
+
+
+                    for (let i = 2; i < 5; i++)
+                    {
+                        if (this.inputs[i].isConnected) 
+                        { 
+                            const param = this.inputs[i].param;
+
+                            param.update(); 
+                            this._color[i-1] = param.value; 
+                        }
                     }
+
+
+                    this.#init = true;
                 }
 
-
-                this.#init = true;
+                this._color = this.getDataColorFromParams();
+                this._oldSpace = toSpace;
             }
 
-            this._color    = this.getDataColorFromParams();
-            this._oldSpace = toSpace;
         }
 
     
@@ -258,7 +278,7 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText,,,,] = this.getHeaderColors();
+        const [colBack, darkText, colInput, colOutput,, textStyle] = this.getHeaderColors();
 
         this.#colorBack.style.background = 
             this.canShowColor()
@@ -266,12 +286,26 @@ extends OpColorBase
             : '#ead8eaee';
 
 
+        const colSpaceBar = 
+            darkText 
+            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05 : 0.24];
+
+        this.paramSpace.control.backColor  = 'transparent';
+        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
+        this.paramSpace.control.textColor  = textStyle;
+        this.paramSpace.input .color       = colInput;
+        this.paramSpace.output.color       = colOutput;
+        this.paramSpace.updateControls();
+
         const colWarning = 
             darkText 
             ? [0, 0, 0, 0.12] 
             : [1, 1, 1, 0.2 ];
 
         this.warningStyle = colorStyleRgba(colWarning);
+
+
         this.updateWarningOverlay();
         this.updateWarningOverlayStyle(colBack, 45);
     }
@@ -280,20 +314,7 @@ extends OpColorBase
 
     updateParamControls()
     {
-        const [colBack, darkText, colInput, colOutput, textStyle] = this.getHeaderColors();
-
-        const colSpaceBar = 
-            darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05 : 0.24];
-            
-        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColor  = textStyle;
-        this.paramSpace.control.backColor  = 'transparent';
-
-        this.paramSpace.input .color = colInput;
-        this.paramSpace.output.color = colOutput;
-        this.paramSpace.updateControls();
+        const [colBack,,,,] = this.getHeaderColors();
 
         this.updateAllSliderRanges();
 
@@ -413,6 +434,21 @@ extends OpColorBase
             && (  !this.paramSpace.input.isConnected
                 || this.paramSpace.value == 0);
     }
+
+
+
+    // toJsonBase(nTab = 0) 
+    // {
+    //     let   pos = ' '.repeat(nTab);
+    //     const tab = '  ';
+
+    //     let json = super.toJsonBase(nTab);
+
+    //     if (!dataColorIsNaN(this._colorBeforeNaN))
+    //         json += ',\n' + pos + tab + '"colorBeforeNaN": "' + JSON.stringify(this._colorBeforeNaN) + '"';
+
+    //     return json;
+    // }
 
 
 
