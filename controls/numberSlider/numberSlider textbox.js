@@ -123,7 +123,10 @@ function initNumberSliderTextbox(slider)
             {
                 if (decIndex < 0) // integer
                 {
-                    const dec = Math.pow(10, revPos);
+                    let dec = Math.pow(10, revPos);
+
+                    if (e.shiftKey) 
+                        dec *= 10;
 
                     slider.setValue((val + sign * dec) / slider.valueScale);
                     slider.updateTextbox();
@@ -132,10 +135,13 @@ function initNumberSliderTextbox(slider)
                 {
                     const _edit = pos - decIndex - 1;
 
-                    const  dec  = 
+                    let  dec  = 
                         _edit < 0
                         ?     Math.pow(10, -_edit - 1)
                         : 1 / Math.pow(10,  _edit    );
+
+                    if (e.shiftKey) 
+                        dec *= 10;
 
                     slider.displayDec = text.length-1 - decIndex;
                     slider.setValue((val + sign * dec) / slider.valueScale);
@@ -150,6 +156,7 @@ function initNumberSliderTextbox(slider)
         {
             if (      e.key.length == 1
                    && !isDigitChar(e.key)
+                   && e.key != '?'
                    && (   !slider.showHex 
                        || !isHexDigitChar(e.key))
                    && (   slider.showHex
@@ -162,13 +169,17 @@ function initNumberSliderTextbox(slider)
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
+
             let curVal = slider.textbox.value;
 
-            curVal = 
-                  curVal.substring(0,                           slider.textbox.selectionStart) 
-                + curVal.substring(slider.textbox.selectionEnd, curVal.length);
+            curVal =
+                curVal == '?'
+                ? ''
+                :   curVal.substring(0,                           slider.textbox.selectionStart) 
+                  + curVal.substring(slider.textbox.selectionEnd, curVal.length);
 
-            let nextVal = parseFloat(curVal + e.key);
+                  
+            const nextVal = parseFloat(curVal + e.key);
 
             if (   nextVal < slider.min - 0.001
                 || nextVal > slider.max)
@@ -214,12 +225,14 @@ function initNumberSliderTextbox(slider)
 
         value = value.replace(slider.suffix, '');
         
-        let   val        = slider.showHex ? parseInt(value,      16) : parseFloat(value);
-        let   savedVal   = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
-
-        val /= slider.valueScale;
-
         
+        let   val        = value     .indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let   savedVal   = savedValue.indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+
+        if (!isNaN(val))
+            val /= slider.valueScale;
+
+       
         if (success) slider.setValue(value.trim() != '' ? val : savedVal);
         else         slider.setValue(savedVal);
 

@@ -53,13 +53,8 @@ extends OpColorBase
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this.hexbox.style.cursor = 'default';//this.isConnected ? 'default' : 'text';
-            
             for (let i = 1; i < this.params.length; i++)
-            {
                 enableSliderText(this.params[i].control, false);
-                //slider.readOnly = true;
-            }
         });
     
         this.inputs[0].addEventListener('disconnect', () =>
@@ -67,10 +62,7 @@ extends OpColorBase
             for (let i = 1; i < this.params.length; i++)
             {
                 if (!this.params[i].input.isConnected) 
-                {
                     enableSliderText(this.params[i].control, true);
-                    //slider.readOnly = false;
-                }
             }
         });
 
@@ -157,7 +149,8 @@ extends OpColorBase
 
         if (this.inputs[0].isConnected) 
         {
-            if (dataColorIsNaN(this.inputs[0].data.color))
+            if (   dataColorIsNaN(this.inputs[0].data.color)
+                && !this.loaded)
             {
                 this._colorBeforeNaN = this._color;
                 this._color          = dataColor_NaN;
@@ -340,8 +333,8 @@ extends OpColorBase
 
         enableSliderText(
             slider.textbox, 
-               !this.inputs[0].isConnected 
-            && isValid);
+               !this.inputs[0].isConnected);
+            // && isValid);
 
         slider.update();
     }
@@ -437,18 +430,18 @@ extends OpColorBase
 
 
 
-    // toJsonBase(nTab = 0) 
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = '  ';
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
 
-    //     let json = super.toJsonBase(nTab);
+        let json = super.toJsonBase(nTab);
 
-    //     if (!dataColorIsNaN(this._colorBeforeNaN))
-    //         json += ',\n' + pos + tab + '"colorBeforeNaN": "' + JSON.stringify(this._colorBeforeNaN) + '"';
+        if (!dataColorIsNaN(this._colorBeforeNaN))
+            json += ',\n' + pos + tab + '"colorBeforeNaN":\n' + dataColorToJson(this._colorBeforeNaN, 4);
 
-    //     return json;
-    // }
+        return json;
+    }
 
 
 
@@ -474,6 +467,19 @@ extends OpColorBase
             json += '\n';
 
         return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        if (_node.colorBeforeNaN)
+        {
+            log(_node.colorBeforeNaN)
+            this._colorBeforeNaN = _node.colorBeforeNaN;
+        }
+
+        super.loadParams(_node);
     }
 }
 

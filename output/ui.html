@@ -972,11 +972,11 @@ input[type=text]::selection
     
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
-    <!-- &nbsp;
+    &nbsp;
     <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
@@ -3008,7 +3008,7 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    //slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
+    slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
     slider.style.fontWeight =  enable ? 'normal' : 'bold'; 
     slider.readOnly         = !enable;
 }
@@ -5461,7 +5461,7 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    //slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
+    slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
     slider.style.fontWeight =  enable ? 'normal' : 'bold'; 
     slider.readOnly         = !enable;
 }
@@ -7496,7 +7496,10 @@ function initNumberSliderTextbox(slider)
             {
                 if (decIndex < 0) // integer
                 {
-                    const dec = Math.pow(10, revPos);
+                    let dec = Math.pow(10, revPos);
+
+                    if (e.shiftKey) 
+                        dec *= 10;
 
                     slider.setValue((val + sign * dec) / slider.valueScale);
                     slider.updateTextbox();
@@ -7505,10 +7508,13 @@ function initNumberSliderTextbox(slider)
                 {
                     const _edit = pos - decIndex - 1;
 
-                    const  dec  = 
+                    let  dec  = 
                         _edit < 0
                         ?     Math.pow(10, -_edit - 1)
                         : 1 / Math.pow(10,  _edit    );
+
+                    if (e.shiftKey) 
+                        dec *= 10;
 
                     slider.displayDec = text.length-1 - decIndex;
                     slider.setValue((val + sign * dec) / slider.valueScale);
@@ -7523,6 +7529,7 @@ function initNumberSliderTextbox(slider)
         {
             if (      e.key.length == 1
                    && !isDigitChar(e.key)
+                   && e.key != '?'
                    && (   !slider.showHex 
                        || !isHexDigitChar(e.key))
                    && (   slider.showHex
@@ -7535,13 +7542,17 @@ function initNumberSliderTextbox(slider)
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
+
             let curVal = slider.textbox.value;
 
-            curVal = 
-                  curVal.substring(0,                           slider.textbox.selectionStart) 
-                + curVal.substring(slider.textbox.selectionEnd, curVal.length);
+            curVal =
+                curVal == '?'
+                ? ''
+                :   curVal.substring(0,                           slider.textbox.selectionStart) 
+                  + curVal.substring(slider.textbox.selectionEnd, curVal.length);
 
-            let nextVal = parseFloat(curVal + e.key);
+                  
+            const nextVal = parseFloat(curVal + e.key);
 
             if (   nextVal < slider.min - 0.001
                 || nextVal > slider.max)
@@ -7587,12 +7598,14 @@ function initNumberSliderTextbox(slider)
 
         value = value.replace(slider.suffix, '');
         
-        let   val        = slider.showHex ? parseInt(value,      16) : parseFloat(value);
-        let   savedVal   = slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue);
-
-        val /= slider.valueScale;
-
         
+        let   val        = value     .indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let   savedVal   = savedValue.indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+
+        if (!isNaN(val))
+            val /= slider.valueScale;
+
+       
         if (success) slider.setValue(value.trim() != '' ? val : savedVal);
         else         slider.setValue(savedVal);
 
@@ -7854,39 +7867,42 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.movedX  += e.movementX;
                 
-                const dx       = slider.movedX;
-                const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                const grain    = Math.pow(10, -slider.dec);
-                const drag     = grain * sqr(slider.dragScale);
-
-                const val = slider.startValue + dx * drag * adaptive;
-
-
-                // reset slider movement at the limits for better UX
-                const min = getCtrlKey(e) ? slider.min : slider.displayMin;
-                const max = getCtrlKey(e) ? slider.max : slider.displayMax;
-
-                slider.setValue(
-                    Math.round(val / grain) * grain, 
-                    true, 
-                    false, 
-                    false,
-                    getCtrlKey(e));
-
-
-                if (   val <= min
-                    || val >= max)
+                if (!isNaN(slider.value))
                 {
-                    slider.movedX     = 0;
-                    slider.startValue = slider.value;
-                    slider.sx         = e.clientX;
-                } 
+                    const dx       = slider.movedX;
+                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                    const grain    = Math.pow(10, -slider.dec);
+                    const drag     = grain * sqr(slider.dragScale);
+
+                    const val = slider.startValue + dx * drag * adaptive;
 
 
-                if (slider.value != slider.prevValue)
-                    slider.param.op.pushUpdate();
-                                    
-                slider.prevValue = slider.value;
+                    // reset slider movement at the limits for better UX
+                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
+                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+
+                    slider.setValue(
+                        Math.round(val / grain) * grain, 
+                        true, 
+                        false, 
+                        false,
+                        getCtrlKey(e));
+
+
+                    if (   val <= min
+                        || val >= max)
+                    {
+                        slider.movedX     = 0;
+                        slider.startValue = slider.value;
+                        slider.sx         = e.clientX;
+                    } 
+
+
+                    if (slider.value != slider.prevValue)
+                        slider.param.op.pushUpdate();
+                                        
+                    slider.prevValue = slider.value;
+                }
             }
             else
             {
@@ -8266,6 +8282,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
         if (   forceChange
+            || isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
             slider.value = value;
@@ -15306,13 +15323,8 @@ extends OpColorBase
 
         this.inputs[0].addEventListener('connect', () =>
         {
-            this.hexbox.style.cursor = 'default';//this.isConnected ? 'default' : 'text';
-            
             for (let i = 1; i < this.params.length; i++)
-            {
                 enableSliderText(this.params[i].control, false);
-                //slider.readOnly = true;
-            }
         });
     
         this.inputs[0].addEventListener('disconnect', () =>
@@ -15320,10 +15332,7 @@ extends OpColorBase
             for (let i = 1; i < this.params.length; i++)
             {
                 if (!this.params[i].input.isConnected) 
-                {
                     enableSliderText(this.params[i].control, true);
-                    //slider.readOnly = false;
-                }
             }
         });
 
@@ -15410,7 +15419,8 @@ extends OpColorBase
 
         if (this.inputs[0].isConnected) 
         {
-            if (dataColorIsNaN(this.inputs[0].data.color))
+            if (   dataColorIsNaN(this.inputs[0].data.color)
+                && !this.loaded)
             {
                 this._colorBeforeNaN = this._color;
                 this._color          = dataColor_NaN;
@@ -15593,8 +15603,8 @@ extends OpColorBase
 
         enableSliderText(
             slider.textbox, 
-               !this.inputs[0].isConnected 
-            && isValid);
+               !this.inputs[0].isConnected);
+            // && isValid);
 
         slider.update();
     }
@@ -15690,18 +15700,18 @@ extends OpColorBase
 
 
 
-    // toJsonBase(nTab = 0) 
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = '  ';
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
 
-    //     let json = super.toJsonBase(nTab);
+        let json = super.toJsonBase(nTab);
 
-    //     if (!dataColorIsNaN(this._colorBeforeNaN))
-    //         json += ',\n' + pos + tab + '"colorBeforeNaN": "' + JSON.stringify(this._colorBeforeNaN) + '"';
+        if (!dataColorIsNaN(this._colorBeforeNaN))
+            json += ',\n' + pos + tab + '"colorBeforeNaN":\n' + dataColorToJson(this._colorBeforeNaN, 4);
 
-    //     return json;
-    // }
+        return json;
+    }
 
 
 
@@ -15727,6 +15737,19 @@ extends OpColorBase
             json += '\n';
 
         return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        if (_node.colorBeforeNaN)
+        {
+            log(_node.colorBeforeNaN)
+            this._colorBeforeNaN = _node.colorBeforeNaN;
+        }
+
+        super.loadParams(_node);
     }
 }
 
@@ -16384,8 +16407,7 @@ function onHexboxKeyDown(e)
         // by doing nothing here I let the OS do its thing
     }
 
-    else 
-    if ((   e.code == 'Enter'
+    else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
            && !hexbox.op.isConnected())
         hexboxFinish(hexbox.op, true);
@@ -19462,15 +19484,10 @@ function loadConnectionsAsync(data, nodes, setProgress)
     {
         graphView.canUpdateNodes = true;
 
-        //nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
-        //graph.nodes.forEach(n => n.updateNode());
-        
         graphView.updateShowWires();
         graphView.updatePanAndZoom();
-        //graphView.updateNodeTransforms(nodes);
-        //graphView.updateScrollWithBounds();
 
         loadingOverlay.style.display = 'none';
 
@@ -19577,6 +19594,26 @@ function autoSave()
     //log(json);
     uiSetPluginData('graph', json);
 }
+
+
+
+function dataColorToJson(color, nTab)
+{
+    let   pos = ' '.repeat(nTab);
+    const tab = '  ';
+
+    let json =
+          pos + tab + '[\n'
+        + pos + tab + tab + '"' + color[0] + '",\n'
+        + pos + tab + tab + color[1] + ',\n'
+        + pos + tab + tab + color[2] + ',\n'
+        + pos + tab + tab + color[3] + '\n'
+        + pos + tab + ']';
+
+    return json;
+}
+
+
 
 
 const licenseKeys     = createCryptoKeys();

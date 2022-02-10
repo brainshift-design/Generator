@@ -128,15 +128,10 @@ function loadConnectionsAsync(data, nodes, setProgress)
     {
         graphView.canUpdateNodes = true;
 
-        //nodes.forEach(n => n.updateNode());
         updateTerminalsAfterNodes(nodes);
 
-        //graph.nodes.forEach(n => n.updateNode());
-        
         graphView.updateShowWires();
         graphView.updatePanAndZoom();
-        //graphView.updateNodeTransforms(nodes);
-        //graphView.updateScrollWithBounds();
 
         loadingOverlay.style.display = 'none';
 
@@ -243,3 +238,22 @@ function autoSave()
     //log(json);
     uiSetPluginData('graph', json);
 }
+
+
+
+function dataColorToJson(color, nTab)
+{
+    let   pos = ' '.repeat(nTab);
+    const tab = '  ';
+
+    let json =
+          pos + tab + '[\n'
+        + pos + tab + tab + '"' + color[0] + '",\n'
+        + pos + tab + tab + color[1] + ',\n'
+        + pos + tab + tab + color[2] + ',\n'
+        + pos + tab + tab + color[3] + '\n'
+        + pos + tab + ']';
+
+    return json;
+}
+

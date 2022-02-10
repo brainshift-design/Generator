@@ -99,8 +99,7 @@ function onHexboxKeyDown(e)
         // by doing nothing here I let the OS do its thing
     }
 
-    else 
-    if ((   e.code == 'Enter'
+    else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
            && !hexbox.op.isConnected())
         hexboxFinish(hexbox.op, true);

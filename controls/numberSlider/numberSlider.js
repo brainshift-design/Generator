@@ -194,39 +194,42 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.movedX  += e.movementX;
                 
-                const dx       = slider.movedX;
-                const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                const grain    = Math.pow(10, -slider.dec);
-                const drag     = grain * sqr(slider.dragScale);
-
-                const val = slider.startValue + dx * drag * adaptive;
-
-
-                // reset slider movement at the limits for better UX
-                const min = getCtrlKey(e) ? slider.min : slider.displayMin;
-                const max = getCtrlKey(e) ? slider.max : slider.displayMax;
-
-                slider.setValue(
-                    Math.round(val / grain) * grain, 
-                    true, 
-                    false, 
-                    false,
-                    getCtrlKey(e));
-
-
-                if (   val <= min
-                    || val >= max)
+                if (!isNaN(slider.value))
                 {
-                    slider.movedX     = 0;
-                    slider.startValue = slider.value;
-                    slider.sx         = e.clientX;
-                } 
+                    const dx       = slider.movedX;
+                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                    const grain    = Math.pow(10, -slider.dec);
+                    const drag     = grain * sqr(slider.dragScale);
+
+                    const val = slider.startValue + dx * drag * adaptive;
 
 
-                if (slider.value != slider.prevValue)
-                    slider.param.op.pushUpdate();
-                                    
-                slider.prevValue = slider.value;
+                    // reset slider movement at the limits for better UX
+                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
+                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+
+                    slider.setValue(
+                        Math.round(val / grain) * grain, 
+                        true, 
+                        false, 
+                        false,
+                        getCtrlKey(e));
+
+
+                    if (   val <= min
+                        || val >= max)
+                    {
+                        slider.movedX     = 0;
+                        slider.startValue = slider.value;
+                        slider.sx         = e.clientX;
+                    } 
+
+
+                    if (slider.value != slider.prevValue)
+                        slider.param.op.pushUpdate();
+                                        
+                    slider.prevValue = slider.value;
+                }
             }
             else
             {
@@ -606,6 +609,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
         if (   forceChange
+            || isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
             slider.value = value;
