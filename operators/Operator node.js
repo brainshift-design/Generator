@@ -141,8 +141,8 @@ function createNodeHeader(node)
         {
             e.stopPropagation();
 
-            node.div.selectedSet        = false;
-            node.div.moved              = false;
+            node.div.selectedSet = false;
+            node.div.moved       = false;
 
             node.div.shiftOnPointerDown = 
                     e.shiftKey
@@ -153,12 +153,8 @@ function createNodeHeader(node)
             if (   getCtrlKey(e)
                 && e.shiftKey
                 && e.altKey)
-            {
-                const ignore = [];
-                const nodes  = getAllNodesFromNode(node, ignore);
+                graphView.selectedNodes = [node, ...getAllNodesFromNode(node)];
 
-                graphView.selectedNodes = nodes;
-            }
             else if (e.shiftKey
                   && e.altKey)
             {
@@ -230,29 +226,42 @@ function createNodeHeader(node)
         else if (   graphView.tempConn
                  && toTheRightOfInputs)
         {
-            if (    graphView.tempConn.output
-                && !graphView.tempConn.output.op.follows(node))
+            const tempConn = graphView.tempConn;
+
+            if (    tempConn.output
+                && !tempConn.output.op.follows(node))
             {
-                const input = node.getAutoInput(graphView.tempConn.output.dataType);
-                if (!input) return;
+                if (   node._variableInputs
+                    && tempConn.savedInput)
+                {
+                    const rect = boundingRect(node.div);
 
-                graphView.overInput   = input;
-                graphView.headerInput = input;
-                    
-                input.mouseOver = true;
-                input.updateControl();
+                    const index = (y - rect.y) / graphView.zoom;
+                    log(index);
+                }
+                else
+                {
+                    const input = node.getAutoInput(tempConn.output.dataType);
+                    if (!input) return;
+
+                    graphView.overInput   = input;
+                    graphView.headerInput = input;
+                        
+                    input.mouseOver = true;
+                    input.updateControl();
 
 
-                const rect = boundingRect(input.control);
+                    const rect = boundingRect(input.control);
 
-                graphView.tempConn.wire.inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    tempConn.wire.inputPos = point(
+                        rect.x + rect.w/2,
+                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                }
             }
-            else if (graphView.tempConn.input
-                  && !node.follows(graphView.tempConn.input.op))
+            else if (tempConn.input
+                  && !node.follows(tempConn.input.op))
             {
-                const output = node.getAutoOutput(graphView.tempConn.input.dataType);
+                const output = node.getAutoOutput(tempConn.input.dataType);
                 if (!output) return;
 
                 graphView.overOutput   = output;
@@ -264,12 +273,12 @@ function createNodeHeader(node)
 
                 const rect = boundingRect(output.control);
 
-                graphView.tempConn.wire.outputPos = point(
+                tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
 
 
-                graphView.tempConn.input.updateControl();
+                tempConn.input.updateControl();
             }
         }
     });

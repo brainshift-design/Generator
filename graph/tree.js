@@ -44,7 +44,7 @@ function activeNodeRight(node)
 
 
 
-function getAllNodesFromNode(node, ignore)
+function getAllNodesFromNode(node, ignore = [])
 {
     const nodes = [node];
 

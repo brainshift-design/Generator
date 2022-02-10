@@ -57,7 +57,20 @@ document.addEventListener('keydown', e =>
     else if (e.key == 'Escape')
     {
         if (graphView.tempConn)
-            graphView.endConnection(graphView.connPointerId);
+        {
+            if (graphView.savedConn)
+            {
+                const savedConn = graphView.savedConn;
+
+                setTimeout(() => 
+                {
+                    graphView.updateNodeWire(savedConn.wire);
+                    savedConn.input.updateControl();
+                });
+            }
+
+            graphView.cancelConnection(graphView.connPointerId);
+        }
     }
 
     //
