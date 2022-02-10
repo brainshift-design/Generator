@@ -16,7 +16,7 @@
 function saveGraph()
 {
     const json = graph.toJson(); 
-    log(json); 
+    //log(json); 
     uiSetPluginData("graph", json);
 }
 

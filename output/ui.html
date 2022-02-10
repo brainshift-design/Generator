@@ -973,11 +973,11 @@ input[type=text]::selection
     
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
-    &nbsp;
+    <!-- &nbsp;
     <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
     <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
@@ -10006,17 +10006,10 @@ graphView.endConnection = pointerId =>
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 graphView.updateNodeWire(input.connection.wire);
             }
+
             else if (savedInput)
-            {
-                if (  !input.op._variableInputs
-                    || input != lastOf(input.op.inputs)) // disconnect old, connect new
                     actionManager.do(new ReconnectAction(output, savedInput, input));
-                else
-                {
-                    show(savedInput.connection.wire); // show old wire
-                    savedInput.updateControl();
-                }
-            }
+
             else if (!savedInput) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }
@@ -15449,7 +15442,6 @@ extends OpColorBase
         }
         else
         {
-            log(this._colorBeforeNaN);
             if (!dataColorIsNaN(this._colorBeforeNaN))
             {
                 this._color          = this._colorBeforeNaN;
@@ -15458,7 +15450,6 @@ extends OpColorBase
                 const toSpace = colorSpace(this.paramSpace.value);
 
                 switchToSpace(this, toSpace);
-                log(this._color);
                 setDataColorToCurrentSpace(this, this._color);
 
                 this._oldSpace = toSpace;
@@ -15753,10 +15744,7 @@ extends OpColorBase
     loadParams(_node)
     {
         if (_node.colorBeforeNaN)
-        {
-            log(_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
-        }
 
         super.loadParams(_node);
     }
@@ -19292,7 +19280,7 @@ function uiEndLoadState(msg)
     productKey  = msg.productKey;
 
     uiGetPluginData('graph');    // load graph from current page
-    //setInterval(autoSave, 5000); // auto save every 5 seconds
+    setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
 
@@ -19391,7 +19379,7 @@ function checkResize(x, y)
 function saveGraph()
 {
     const json = graph.toJson(); 
-    log(json); 
+    //log(json); 
     uiSetPluginData("graph", json);
 }
 

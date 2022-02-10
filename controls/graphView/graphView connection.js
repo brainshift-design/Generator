@@ -83,17 +83,10 @@ graphView.endConnection = pointerId =>
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 graphView.updateNodeWire(input.connection.wire);
             }
+
             else if (savedInput)
-            {
-                if (  !input.op._variableInputs
-                    || input != lastOf(input.op.inputs)) // disconnect old, connect new
                     actionManager.do(new ReconnectAction(output, savedInput, input));
-                else
-                {
-                    show(savedInput.connection.wire); // show old wire
-                    savedInput.updateControl();
-                }
-            }
+
             else if (!savedInput) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }

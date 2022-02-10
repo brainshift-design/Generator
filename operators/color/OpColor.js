@@ -173,7 +173,6 @@ extends OpColorBase
         }
         else
         {
-            log(this._colorBeforeNaN);
             if (!dataColorIsNaN(this._colorBeforeNaN))
             {
                 this._color          = this._colorBeforeNaN;
@@ -182,7 +181,6 @@ extends OpColorBase
                 const toSpace = colorSpace(this.paramSpace.value);
 
                 switchToSpace(this, toSpace);
-                log(this._color);
                 setDataColorToCurrentSpace(this, this._color);
 
                 this._oldSpace = toSpace;
@@ -477,10 +475,7 @@ extends OpColorBase
     loadParams(_node)
     {
         if (_node.colorBeforeNaN)
-        {
-            log(_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
-        }
 
         super.loadParams(_node);
     }
