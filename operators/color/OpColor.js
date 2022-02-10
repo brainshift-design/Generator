@@ -222,7 +222,7 @@ extends OpColorBase
                     this.#init = true;
                 }
 
-                this._color = this.getDataColorFromParams();
+                this._color    = this.getDataColorFromParams();
                 this._oldSpace = toSpace;
             }
         }
@@ -230,8 +230,12 @@ extends OpColorBase
     
         this.outputs[0]._data = dataFromDataColor(this._color);
 
-        for (const param of this.params.filter(p => p.dataType == 'number'))
-            param.valueIsValid = !isValidRgb(dataColor2rgb(this._color));
+        // for (const param of this.params.filter(p => p.dataType == 'number'))
+        // {
+        //     param.valueIsValid = 
+        //             colorSpaceIndex(this._color[0]) > 2 
+        //         || !isValidRgb(dataColor2rgb(this._color));
+        // }
 
 
         super.updateData()
@@ -312,9 +316,13 @@ extends OpColorBase
 
         this.updateAllSliderRanges();
 
-        this.updateSlider(this.param1.control, isValidRgb(colBack));
-        this.updateSlider(this.param2.control, isValidRgb(colBack));
-        this.updateSlider(this.param3.control, isValidRgb(colBack));
+        const isValid = 
+               colorSpaceIndex(this._color[0]) > 4
+            || isValidRgb(colBack);
+
+        this.updateSlider(this.param1.control, isValid);
+        this.updateSlider(this.param2.control, isValid);
+        this.updateSlider(this.param3.control, isValid);
     }
 
 

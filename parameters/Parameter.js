@@ -14,7 +14,7 @@ extends EventTarget
     get op()   { return this._op; }
 
 
-    valueIsValid = true;
+    //valueIsValid = true;
 
     
     // _operator; get operator() { return this._operator; }

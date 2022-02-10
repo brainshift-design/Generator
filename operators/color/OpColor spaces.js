@@ -15,6 +15,8 @@ const OpColorSpaces =
 
 function colorSpace(index) { return OpColorSpaces[index][0]; }
 
+function colorSpaceIndex(space) { return OpColorSpaces.findIndex(s => s[0] == space); }
+
 
 
 const rgbFactor   = [255, 255, 255];
@@ -440,7 +442,7 @@ function setDataColorToSpace(op, color, toSpace)
 
     switchToSpace(op, toSpace);
 
-    op.setColorParams(op._color);//, false);
+    op.setColorParams(op._color);
 }
 
 
@@ -452,7 +454,7 @@ function setDataColorToCurrentSpace(op, color)
     op._color = convertDataColorToSpace(color, toSpace);
     //op._oldSpace = op._color[0];
 
-    op.setColorParams(op._color);//, false);
+    op.setColorParams(op._color);
 }
 
 
