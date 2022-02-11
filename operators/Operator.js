@@ -1,3 +1,8 @@
+const connectionSize = 9;
+const connectionGap  = 2;
+
+
+
 class Operator
 {
     #opType;
@@ -336,8 +341,8 @@ class Operator
 
         const padding  = this.header.connectionPadding;
             
-        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 9, 4, 5);
-        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 9, 4, 2);
+        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 5);
+        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 2);
 
              if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
         else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
@@ -658,16 +663,16 @@ class Operator
 
 
 
-function getHeaderConnY(conns, padding, connSize, gap, offset)
+function getHeaderConnY(conns, padding, offset)
 {
     const y      = [];
     let   height = 0;
     
     for (let i = 0; i < conns.length; i++)
     {
-        if (i > 0) height += gap;
+        if (i > 0) height += connectionGap;
         y.push(offset + padding + height);
-        height += connSize;
+        height += connectionSize;
     }
 
     return [y, height];

@@ -69,10 +69,19 @@ class Connection
                 && (   this. input.op == graphView._soloNode
                     || this.output.op == graphView._soloNode);
             
-            show(this.wire,         (graphView.showWires || isSolo) && this != graphView.savedConn);
-            show(this.wire.curve,   (graphView.showWires || isSolo) && this != graphView.savedConn);
-            show(this.wire.outBall, !graphView.tempConn || graphView.tempConn.output);
-            show(this.wire. inBall, !graphView.tempConn || graphView.tempConn. input);
+            const showWire = 
+                   graphView.showWires 
+                || isSolo;
+
+            const isReordering =   
+                   isNaN(newReorderIndex)
+                || isNaN(oldReorderIndex);
+
+
+            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.curve,   showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
+            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
         };
 
 

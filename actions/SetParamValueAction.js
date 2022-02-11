@@ -4,7 +4,7 @@ extends Action
     nodeId;
     paramIndex;
 
-    get param() { return graph.nodes.find(n => n.id == this.nodeId).params[this.paramIndex]; } 
+    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
     oldValue;

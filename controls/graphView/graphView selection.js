@@ -35,7 +35,7 @@ graphView.selectByIds = (nodeIds) =>
 
     for (const id of nodeIds)
     {
-        const node = graph.nodes.find(n => n.id == id);
+        const node = nodeFromId(id);
         graphView._selectedNodes.push(node);
         node.setSelected(true);
     }

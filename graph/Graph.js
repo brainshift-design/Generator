@@ -85,6 +85,7 @@ class Graph
             case 'subtract':         node = new OpSubtract();         break;
             case 'multiply':         node = new OpMultiply();         break;
             case 'divide':           node = new OpDivide();           break;
+            case 'modulo':           node = new OpModulo();           break;
             case 'exponent':         node = new OpExponent();         break;
             case 'interpolate':      node = new OpInterpolate();      break;
             // case 'random': node = new OpRandom(); break;
@@ -395,4 +396,11 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
     return json;
+}
+
+
+
+function nodeFromId(id)
+{
+    return graph.nodes.find(n => n.id == id);
 }

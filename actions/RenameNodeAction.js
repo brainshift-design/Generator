@@ -2,7 +2,7 @@ class RenameNodeAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodes.find(n => n.id == this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     oldName;
     newName;

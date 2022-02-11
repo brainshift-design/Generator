@@ -26,6 +26,7 @@
 ../operators/math/OpSubtract.js
 ../operators/math/OpMultiply.js
 ../operators/math/OpDivide.js
+../operators/math/OpModulo.js
 ../operators/math/OpExponent.js
 ../operators/math/OpInterpolate.js
 //../operators/math/OpRandom.js

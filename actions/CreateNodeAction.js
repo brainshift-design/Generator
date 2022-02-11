@@ -47,9 +47,6 @@ extends Action
     {
         const node = uiCreateNode(this.opType, this.createdNodeId);
 
-        //const node = graph.nodes.find(n => n.id == this.createdNodeId);
-
-        //node.updateNode();
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
 

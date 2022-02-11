@@ -1,3 +1,9 @@
+var  newReorderIndex = Number.NaN;
+var prevReorderIndex = Number.NaN;
+var  oldReorderIndex = Number.NaN;
+
+
+
 function createOperatorNode(node)
 {
     node.div                    = createDiv('node');
@@ -205,7 +211,10 @@ function createNodeHeader(node)
     {
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
-        
+        const  tempConn = graphView. tempConn;
+        const savedConn = graphView.savedConn;
+
+
         if (node.div.dragging)
         {
             const x       = graphView.clientLeft;
@@ -223,21 +232,46 @@ function createNodeHeader(node)
 
             graphView.updateScroll(x, w, h, bounds, yOffset);
         }
-        else if (   graphView.tempConn
+        else if (   tempConn
                  && toTheRightOfInputs)
         {
-            const tempConn = graphView.tempConn;
-
             if (    tempConn.output
                 && !tempConn.output.op.follows(node))
             {
                 if (   node._variableInputs
-                    && tempConn.savedInput)
+                    && savedConn)
                 {
-                    const rect = boundingRect(node.div);
+                    const rect    = boundingRect(node.div);
+                    const padding = node.header.connectionPadding;
 
-                    const index = (y - rect.y) / graphView.zoom;
-                    log(index);
+                    const index = Math.min(Math.round(
+                          ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
+                        / (connectionSize + connectionGap)),
+                        node.inputs.length-2);
+                    
+                    if (index != prevReorderIndex)
+                    {
+                        newReorderIndex = index;
+
+                        moveIn(
+                            node.inputs, 
+                            node.inputs.indexOf(savedConn.input),
+                            newReorderIndex);
+
+                        node.updateNode();
+                         
+                        prevReorderIndex = newReorderIndex;
+                    }
+
+                    graphView.overInput   = savedConn.input;
+                    graphView.headerInput = savedConn.input;
+
+
+                    const inputRect = boundingRect(savedConn.input.control);
+
+                    tempConn.wire.inputPos = point(
+                        inputRect.x + inputRect.w/2,
+                        inputRect.y + inputRect.h/2 - controlBar.offsetHeight);
                 }
                 else
                 {
@@ -251,11 +285,11 @@ function createNodeHeader(node)
                     input.updateControl();
 
 
-                    const rect = boundingRect(input.control);
+                    const inputRect = boundingRect(input.control);
 
                     tempConn.wire.inputPos = point(
-                        rect.x + rect.w/2,
-                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                        inputRect.x + inputRect.w/2,
+                        inputRect.y + inputRect.h/2 - controlBar.offsetHeight);
                 }
             }
             else if (tempConn.input

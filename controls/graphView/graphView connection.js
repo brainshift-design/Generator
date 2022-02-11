@@ -57,6 +57,10 @@ graphView.cancelConnection = pointerId =>
         graphView.releasePointerCapture(pointerId);
 
     graphView.connPointerId = -1;
+
+     newReorderIndex = Number.NaN;
+    prevReorderIndex = Number.NaN;
+     oldReorderIndex = Number.NaN;
 };
 
 
@@ -78,14 +82,18 @@ graphView.endConnection = pointerId =>
         if (   input
             && input.dataType == output.dataType) // TO INPUT
         {
-            if (input == savedInput) // reconnect old
+            if (   !isNaN(newReorderIndex)
+                && !isNaN(oldReorderIndex))
+                actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
+
+            else if (input == savedInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 graphView.updateNodeWire(input.connection.wire);
             }
 
             else if (savedInput)
-                    actionManager.do(new ReconnectAction(output, savedInput, input));
+                actionManager.do(new ReconnectAction(output, savedInput, input));
 
             else if (!savedInput) // connect new
                 actionManager.do(new ConnectAction(output, input));

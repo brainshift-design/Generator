@@ -27,7 +27,7 @@ function initLabelTextbox(node)
         else if (e.code == 'Enter'
               || e.code == 'NumpadEnter')
         {
-            if (!graph.nodes.find(n => n.id == node.textbox.value))
+            if (!nodeFromId(node.textbox.value))
                 node.textbox.finish(true);
         }
 

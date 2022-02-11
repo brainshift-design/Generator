@@ -3,19 +3,19 @@ extends Action
 {
     outputOpId;
     outputIndex;
-    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
+    get outputOp() { return nodeFromId(this.outputOpId); }
 
     oldOutputOpId;
     oldOutputIndex;
-    get oldOutputOp() { return graph.nodes.find(n => n.id == this.oldOutputOpId); }
+    get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
 
     inputOpId;
     inputIndex;
-    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
+    get inputOp() { return nodeFromId(this.inputOpId); }
 
     oldInputOpId;
     oldInputIndex;
-    get oldInputOp() { return graph.nodes.find(n => n.id == this.oldInputOpId); }
+    get oldInputOp() { return nodeFromId(this.oldInputOpId); }
     
 
 

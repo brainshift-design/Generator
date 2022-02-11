@@ -158,10 +158,9 @@ div
     border:          none;
     position:        relative;
     padding:         0;
-    padding-top:     1px;
-    padding-bottom: -1px;
     margin-right:   -4px;
     color:          #d5d5d5;
+    overflow:       hidden;
 }
 
 
@@ -169,6 +168,7 @@ div
 {
     background: black;
     color:      white;
+    box-shadow: 0 0 0 1px red inset;
 }
 
 
@@ -188,7 +188,7 @@ div
 
 #btnZoom
 {
-    position: absolute;
+    position:      absolute;
     padding-left:  15px;
     padding-right: 45px;
 }
@@ -196,12 +196,46 @@ div
 
 #btnToggleWires
 {
-    position: absolute;
-    padding-left: 3px;
-    padding-right: 30px;
-    background: url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
+    position:            absolute;
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
     background-position: 50% 50%;
-    background-repeat: no-repeat;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateWebContrast
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+
+#btnCreateWebContrast:hover
+{
+    background-color:    black;
+}
+
+
+#btnCreateColorBlind
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+
+#btnCreateColorBlind:hover
+{
+    background-color:    black;
 }
 
 
@@ -981,19 +1015,20 @@ input[type=text]::selection
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'>NUM</button>
-    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'>LIM</button>
-    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'>ADD</button>
-    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract"        )); this.blur();'>SUB</button>
-    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction("multiply"        )); this.blur();'>MUL</button>
-    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction("divide"          )); this.blur();'>DIV</button>
-    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction("exponent"        )); this.blur();'>EXP</button>
-    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction("interpolate"     )); this.blur();'>INTP</button>
+    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
+    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
+    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'><span style='font-size: 22px;'>+</span></button>
+    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract"        )); this.blur();'><span style='font-size: 22px;'>−</span></button>
+    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction("multiply"        )); this.blur();'><span style='font-size: 22px;'>×</span></button>
+    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction("divide"          )); this.blur();'><span style='font-size: 22px;'>÷</span></button>
+    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction("modulo"          )); this.blur();'><span style='font-size: 15px;'>%</span></button>
+    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction("exponent"        )); this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
+    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction("interpolate"     )); this.blur();'>INTR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color"           )); this.blur();'>COL</button>
-    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>INTP</button>
-    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'>CNTR</button>
-    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind"      )); this.blur();'>BLND</button>
+    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color"           )); this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
+    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate")); this.blur();'>INTR</button>
+    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast"     )); this.blur();'></button>
+    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind"      )); this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
@@ -9997,6 +10032,10 @@ graphView.cancelConnection = pointerId =>
         graphView.releasePointerCapture(pointerId);
 
     graphView.connPointerId = -1;
+
+     newReorderIndex = Number.NaN;
+    prevReorderIndex = Number.NaN;
+     oldReorderIndex = Number.NaN;
 };
 
 
@@ -10018,14 +10057,18 @@ graphView.endConnection = pointerId =>
         if (   input
             && input.dataType == output.dataType) // TO INPUT
         {
-            if (input == savedInput) // reconnect old
+            if (   !isNaN(newReorderIndex)
+                && !isNaN(oldReorderIndex))
+                actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
+
+            else if (input == savedInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 graphView.updateNodeWire(input.connection.wire);
             }
 
             else if (savedInput)
-                    actionManager.do(new ReconnectAction(output, savedInput, input));
+                actionManager.do(new ReconnectAction(output, savedInput, input));
 
             else if (!savedInput) // connect new
                 actionManager.do(new ConnectAction(output, input));
@@ -10500,7 +10543,7 @@ graphView.selectByIds = (nodeIds) =>
 
     for (const id of nodeIds)
     {
-        const node = graph.nodes.find(n => n.id == id);
+        const node = nodeFromId(id);
         graphView._selectedNodes.push(node);
         node.setSelected(true);
     }
@@ -10699,6 +10742,10 @@ graphView.addEventListener('pointerdown', e =>
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
+                 newReorderIndex =
+                prevReorderIndex =
+                 oldReorderIndex = graphView.overNode.inputs.indexOf(graphView.overInput);
+
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 
@@ -12078,6 +12125,7 @@ class Graph
             case 'subtract':         node = new OpSubtract();         break;
             case 'multiply':         node = new OpMultiply();         break;
             case 'divide':           node = new OpDivide();           break;
+            case 'modulo':           node = new OpModulo();           break;
             case 'exponent':         node = new OpExponent();         break;
             case 'interpolate':      node = new OpInterpolate();      break;
             // case 'random': node = new OpRandom(); break;
@@ -12388,6 +12436,13 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
     return json;
+}
+
+
+
+function nodeFromId(id)
+{
+    return graph.nodes.find(n => n.id == id);
 }
 
 
@@ -13019,10 +13074,19 @@ class Connection
                 && (   this. input.op == graphView._soloNode
                     || this.output.op == graphView._soloNode);
             
-            show(this.wire,         (graphView.showWires || isSolo) && this != graphView.savedConn);
-            show(this.wire.curve,   (graphView.showWires || isSolo) && this != graphView.savedConn);
-            show(this.wire.outBall, !graphView.tempConn || graphView.tempConn.output);
-            show(this.wire. inBall, !graphView.tempConn || graphView.tempConn. input);
+            const showWire = 
+                   graphView.showWires 
+                || isSolo;
+
+            const isReordering =   
+                   isNaN(newReorderIndex)
+                || isNaN(oldReorderIndex);
+
+
+            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.curve,   showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
+            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
         };
 
 
@@ -13211,6 +13275,11 @@ function getConnectionForArrayWithNames(conn)
         inputOpName:  conn.input .op.name,
         inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
 }
+
+
+const connectionSize = 9;
+const connectionGap  = 2;
+
 
 
 class Operator
@@ -13551,8 +13620,8 @@ class Operator
 
         const padding  = this.header.connectionPadding;
             
-        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 9, 4, 5);
-        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 9, 4, 2);
+        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 5);
+        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 2);
 
              if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
         else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
@@ -13873,16 +13942,16 @@ class Operator
 
 
 
-function getHeaderConnY(conns, padding, connSize, gap, offset)
+function getHeaderConnY(conns, padding, offset)
 {
     const y      = [];
     let   height = 0;
     
     for (let i = 0; i < conns.length; i++)
     {
-        if (i > 0) height += gap;
+        if (i > 0) height += connectionGap;
         y.push(offset + padding + height);
-        height += connSize;
+        height += connectionSize;
     }
 
     return [y, height];
@@ -13901,6 +13970,12 @@ extends Operator
         super.updateHeader();
     }
 }
+
+
+var  newReorderIndex = Number.NaN;
+var prevReorderIndex = Number.NaN;
+var  oldReorderIndex = Number.NaN;
+
 
 
 function createOperatorNode(node)
@@ -14110,7 +14185,10 @@ function createNodeHeader(node)
     {
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
-        
+        const  tempConn = graphView. tempConn;
+        const savedConn = graphView.savedConn;
+
+
         if (node.div.dragging)
         {
             const x       = graphView.clientLeft;
@@ -14128,21 +14206,46 @@ function createNodeHeader(node)
 
             graphView.updateScroll(x, w, h, bounds, yOffset);
         }
-        else if (   graphView.tempConn
+        else if (   tempConn
                  && toTheRightOfInputs)
         {
-            const tempConn = graphView.tempConn;
-
             if (    tempConn.output
                 && !tempConn.output.op.follows(node))
             {
                 if (   node._variableInputs
-                    && tempConn.savedInput)
+                    && savedConn)
                 {
-                    const rect = boundingRect(node.div);
+                    const rect    = boundingRect(node.div);
+                    const padding = node.header.connectionPadding;
 
-                    const index = (y - rect.y) / graphView.zoom;
-                    log(index);
+                    const index = Math.min(Math.round(
+                          ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
+                        / (connectionSize + connectionGap)),
+                        node.inputs.length-2);
+                    
+                    if (index != prevReorderIndex)
+                    {
+                        newReorderIndex = index;
+
+                        moveIn(
+                            node.inputs, 
+                            node.inputs.indexOf(savedConn.input),
+                            newReorderIndex);
+
+                        node.updateNode();
+                         
+                        prevReorderIndex = newReorderIndex;
+                    }
+
+                    graphView.overInput   = savedConn.input;
+                    graphView.headerInput = savedConn.input;
+
+
+                    const inputRect = boundingRect(savedConn.input.control);
+
+                    tempConn.wire.inputPos = point(
+                        inputRect.x + inputRect.w/2,
+                        inputRect.y + inputRect.h/2 - controlBar.offsetHeight);
                 }
                 else
                 {
@@ -14156,11 +14259,11 @@ function createNodeHeader(node)
                     input.updateControl();
 
 
-                    const rect = boundingRect(input.control);
+                    const inputRect = boundingRect(input.control);
 
                     tempConn.wire.inputPos = point(
-                        rect.x + rect.w/2,
-                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                        inputRect.x + inputRect.w/2,
+                        inputRect.y + inputRect.h/2 - controlBar.offsetHeight);
                 }
             }
             else if (tempConn.input
@@ -14403,7 +14506,7 @@ function initLabelTextbox(node)
         else if (e.code == 'Enter'
               || e.code == 'NumpadEnter')
         {
-            if (!graph.nodes.find(n => n.id == node.textbox.value))
+            if (!nodeFromId(node.textbox.value))
                 node.textbox.finish(true);
         }
 
@@ -14987,6 +15090,35 @@ extends OpArithmetic
             const div = this.inputs[i].data.value;
             if (div == 0) return Number.NaN;
             result /= div;
+        }
+
+        return result;
+    }
+}
+
+
+class   OpModulo
+extends OpArithmetic
+{
+    constructor()
+    {
+        super('modulo', 'mod', '%');
+    }
+    
+    
+    
+    getResult()
+    {
+        if (this.inputs.length-1 == 0)
+            return 0;
+
+        let result = this.inputs[0].data.value;
+
+        for (let i = 1; i < this.inputs.length-1; i++)
+        {
+            const div = this.inputs[i].data.value;
+            if (div == 0) return Number.NaN;
+            result %= div;
         }
 
         return result;
@@ -17559,15 +17691,15 @@ extends Action
 {
     outputOpId;
     outputIndex;
-    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
+    get outputOp() { return nodeFromId(this.outputOpId); }
 
     oldOutputOpId;
     oldOutputIndex;
-    get oldOutputOp() { return graph.nodes.find(n => n.id == this.oldOutputOpId); }
+    get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
 
     inputOpId;
     inputIndex;
-    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
+    get inputOp() { return nodeFromId(this.inputOpId); }
 
 
     constructor(output, input)
@@ -17678,9 +17810,6 @@ extends Action
     {
         const node = uiCreateNode(this.opType, this.createdNodeId);
 
-        //const node = graph.nodes.find(n => n.id == this.createdNodeId);
-
-        //node.updateNode();
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
 
@@ -17730,7 +17859,7 @@ extends Action
     {
         for (const nodeId of this.nodeIds)
         {
-            const node = graph.nodes.find(n => n.id == nodeId);
+            const node = nodeFromId(nodeId);
 
             this.nodePos.push(point(
                 node.div.offsetLeft, 
@@ -17747,7 +17876,7 @@ extends Action
 
         for (const nodeId of this.nodeIds)
         {
-            const node = graph.nodes.find(n => n.id == nodeId);
+            const node = nodeFromId(nodeId);
 
             for (const input of node.inputs.filter(i => i.isConnected))
                 uiDisconnect(input);
@@ -17805,7 +17934,7 @@ extends Action
         // connections going into variable inputs must be treated separately
         for (let i = connections.length-1; i >= 0; i--)
         {
-            if (graph.nodes.find(n => n.id == connections[i].inputOpId)._variableInputs)
+            if (nodeFromId(connections[i].inputOpId)._variableInputs)
             {
                 varConnections.push(connections[i]);
                 removeAt(connections, i);
@@ -17831,8 +17960,8 @@ extends Action
     {
         for (const conn of connections)
         {
-            const outputOp = graph.nodes.find(n => n.id == conn.outputOpId);
-            const inputOp  = graph.nodes.find(n => n.id == conn. inputOpId);
+            const outputOp = nodeFromId(conn.outputOpId);
+            const inputOp  = nodeFromId(conn. inputOpId);
 
             uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
         }
@@ -17845,11 +17974,11 @@ extends Action
 {
     outputOpId;
     outputIndex;
-    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
+    get outputOp() { return nodeFromId(this.outputOpId); }
 
     inputOpId;
     inputIndex;
-    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
+    get inputOp() { return nodeFromId(this.inputOpId); }
 
 
 
@@ -18013,19 +18142,19 @@ extends Action
 {
     outputOpId;
     outputIndex;
-    get outputOp() { return graph.nodes.find(n => n.id == this.outputOpId); }
+    get outputOp() { return nodeFromId(this.outputOpId); }
 
     oldOutputOpId;
     oldOutputIndex;
-    get oldOutputOp() { return graph.nodes.find(n => n.id == this.oldOutputOpId); }
+    get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
 
     inputOpId;
     inputIndex;
-    get inputOp() { return graph.nodes.find(n => n.id == this.inputOpId); }
+    get inputOp() { return nodeFromId(this.inputOpId); }
 
     oldInputOpId;
     oldInputIndex;
-    get oldInputOp() { return graph.nodes.find(n => n.id == this.oldInputOpId); }
+    get oldInputOp() { return nodeFromId(this.oldInputOpId); }
     
 
 
@@ -18115,7 +18244,7 @@ class RenameNodeAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodes.find(n => n.id == this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     oldName;
     newName;
@@ -18150,6 +18279,67 @@ extends Action
     redo()
     {
         this.node.setName(this.newName);
+    }
+}
+
+
+class ReorderInputAction
+extends Action
+{
+    nodeId;
+
+    oldIndex;
+    newIndex;
+ 
+
+
+    constructor(nodeId, oldIndex, newIndex)
+    {
+        super(
+              'reorder ' + nodeFromId(nodeId).name 
+            + '.inputs[' + oldIndex + ']'
+            + ' to [' + newIndex + ']');
+
+        this.nodeId   = nodeId;
+        this.oldIndex = oldIndex;
+        this.newIndex = newIndex;
+    }
+
+
+
+    do()
+    {
+        // .. already done
+
+        nodeFromId(this.nodeId).pushUpdate();
+    }
+
+
+
+    undo()
+    {
+        const node = nodeFromId(this.nodeId);
+
+        moveIn(
+            node.inputs,
+            this.newIndex,
+            this.oldIndex);
+
+        node.pushUpdate();
+    }
+
+
+
+    redo()
+    {
+        const node = nodeFromId(this.nodeId);
+
+        moveIn(
+            node.inputs,
+            this.oldIndex,
+            this.newIndex);
+
+        node.pushUpdate();
     }
 }
 
@@ -18313,7 +18503,7 @@ extends Action
     nodeId;
     paramIndex;
 
-    get param() { return graph.nodes.find(n => n.id == this.nodeId).params[this.paramIndex]; } 
+    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
     newDecimals;
@@ -18364,7 +18554,7 @@ extends Action
     nodeId;
     paramIndex;
 
-    get param() { return graph.nodes.find(n => n.id == this.nodeId).params[this.paramIndex]; } 
+    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
     oldValue;
@@ -18412,7 +18602,7 @@ class ToggleArithmeticSymbolAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodes.find(n => n.id == this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     showOnlySymbol;
 

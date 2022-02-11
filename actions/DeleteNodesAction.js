@@ -39,7 +39,7 @@ extends Action
     {
         for (const nodeId of this.nodeIds)
         {
-            const node = graph.nodes.find(n => n.id == nodeId);
+            const node = nodeFromId(nodeId);
 
             this.nodePos.push(point(
                 node.div.offsetLeft, 
@@ -56,7 +56,7 @@ extends Action
 
         for (const nodeId of this.nodeIds)
         {
-            const node = graph.nodes.find(n => n.id == nodeId);
+            const node = nodeFromId(nodeId);
 
             for (const input of node.inputs.filter(i => i.isConnected))
                 uiDisconnect(input);
@@ -114,7 +114,7 @@ extends Action
         // connections going into variable inputs must be treated separately
         for (let i = connections.length-1; i >= 0; i--)
         {
-            if (graph.nodes.find(n => n.id == connections[i].inputOpId)._variableInputs)
+            if (nodeFromId(connections[i].inputOpId)._variableInputs)
             {
                 varConnections.push(connections[i]);
                 removeAt(connections, i);
@@ -140,8 +140,8 @@ extends Action
     {
         for (const conn of connections)
         {
-            const outputOp = graph.nodes.find(n => n.id == conn.outputOpId);
-            const inputOp  = graph.nodes.find(n => n.id == conn. inputOpId);
+            const outputOp = nodeFromId(conn.outputOpId);
+            const inputOp  = nodeFromId(conn. inputOpId);
 
             uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
         }

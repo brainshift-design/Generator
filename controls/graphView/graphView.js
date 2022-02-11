@@ -86,6 +86,10 @@ graphView.addEventListener('pointerdown', e =>
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
+                 newReorderIndex =
+                prevReorderIndex =
+                 oldReorderIndex = graphView.overNode.inputs.indexOf(graphView.overInput);
+
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 
