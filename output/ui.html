@@ -40,7 +40,7 @@
 
 #controlBar
 {
-    display:          block;
+    display:          flex;
     height:           40px;
     background-color: #2c2c2c;
     /* vertical-align:   middle; */
@@ -147,20 +147,22 @@ div
 
 .menuButton
 {
-    font-family:     Inter;
-    font-size:       11px;
-    width:           40px;
-    height:          40px;
-    background:      #2c2c2c;
-    border-radius:   0;
-    min-width:       0;
-    min-height:      0;
-    border:          none;
-    position:        relative;
-    padding:         0;
-    margin-right:   -4px;
-    color:          #d5d5d5;
-    overflow:       hidden;
+    font-family:   Inter;
+    font-size:     11px;
+    width:         40px;
+    height:        40px;
+    background:    #2c2c2c;
+    border-radius: 0;
+    min-width:     0;
+    min-height:    0;
+    border:        none;
+    position:      relative;
+    padding:       0;
+    padding-right: 2px;
+    margin-right:  -4px;
+    color:         #d5d5d5;
+    overflow:      hidden;
+    /* box-shadow:    0 0 0 1px red inset; */
 }
 
 
@@ -168,7 +170,6 @@ div
 {
     background: black;
     color:      white;
-    box-shadow: 0 0 0 1px red inset;
 }
 
 
@@ -1017,10 +1018,10 @@ input[type=text]::selection
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
     <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
-    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'><span style='font-size: 22px;'>+</span></button>
-    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract"        )); this.blur();'><span style='font-size: 22px;'>−</span></button>
-    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction("multiply"        )); this.blur();'><span style='font-size: 22px;'>×</span></button>
-    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction("divide"          )); this.blur();'><span style='font-size: 22px;'>÷</span></button>
+    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
+    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract"        )); this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
+    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction("multiply"        )); this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
+    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction("divide"          )); this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
     <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction("modulo"          )); this.blur();'><span style='font-size: 15px;'>%</span></button>
     <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction("exponent"        )); this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
     <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction("interpolate"     )); this.blur();'>INTR</button>
