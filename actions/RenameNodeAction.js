@@ -21,7 +21,7 @@ extends Action
 
     do()
     {
-        this.oldName = this.node.idName;
+        this.oldName = this.node.name;
         this.node.setName(this.newName);
     }
 

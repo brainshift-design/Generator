@@ -18,9 +18,9 @@ extends Action
 
 
         super('disconnect ' 
-            + output.op.idName + '.outputs[' + outputIndex + ']'
+            + output.op.id + '.outputs[' + outputIndex + ']'
             + ' -> '
-            + input.op.idName + '.inputs[' + inputIndex + ']');
+            + input.op.id + '.inputs[' + inputIndex + ']');
 
 
         this.outputOpId  = output.op.id;

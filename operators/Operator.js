@@ -11,19 +11,16 @@ class Operator
     _dataType;
     get dataType() { return this._dataType; }
 
-    _idName;
-    get idName() { return this._idName; }
-    set idName(name)
-    {
-        this._idName = name;
-        this.label.innerHTML = name;
-    }
+    _id;
+    get id() { return this._id; }
+    set id(id) { this._id = id; }
+
+    _name;
+    get name() { return this._name; }
+    set name(name) { this.setName(name); }
 
     shortTypeName;
     defaultWidth;
-
-    static nextId = 0;
-    id = Operator.nextId++;
 
 
     graph = null;
@@ -112,8 +109,8 @@ class Operator
         this._dataType         = dataType; // this is the op's main data type
            
         this.shortTypeName     = shortType;
-        this._idName             = shortType; // this is a temp until the op becomes a graph node
-     
+        this._id               = shortType;
+
         this.valid             = false;
 
         this.defaultWidth      = defWidth;
@@ -121,6 +118,8 @@ class Operator
         this.labelOffsetFactor = 0;
 
         createOperatorNode(this);
+
+        this.setName(shortType);
     }    
 
 
@@ -258,7 +257,7 @@ class Operator
 
     pushUpdate()
     {
-        //log(this.idName + '.Operator.pushUpdate()');
+        //log(this.id + '.Operator.pushUpdate()');
 
         this.invalidate();
 
@@ -271,7 +270,7 @@ class Operator
     {
         if (this.valid) return;
         
-        //log(this.idName + '.Operator.update()');
+        //log(this.id + '.Operator.update()');
     
         this.updateParams(false);
         this.updateData();
@@ -288,7 +287,7 @@ class Operator
 
     updateData()
     {
-        //log(this.idName + '.Operator.updateData()');
+        //log(this.id + '.Operator.updateData()');
 
         this.setParamOutputData();
     }
@@ -297,7 +296,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.idName + '.Operator.updateNode()');
+        //log(this.id + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -319,7 +318,7 @@ class Operator
 
     updateHeader()
     {
-        //log(this.idName + '.Operator.updateHeader()');
+        //log(this.id + '.Operator.updateHeader()');
         
         const height = this.updateHeaderInputsAndOutputs();
 
@@ -392,8 +391,9 @@ class Operator
 
     setName(newName)
     {
-        this._idName = newName;
-        this.label.innerHTML = /*this.id + ': ' +*/newName;
+        this._name = newName;
+        this.label.innerHTML = this._name;
+        //this.label.innerHTML = this.id;
 
         return true;
     }
@@ -573,7 +573,8 @@ class Operator
 
         let json =
               pos + tab + '"type": "'        + this.opType            + '",\n'
-            + pos + tab + '"idName": "'      + this.idName            + '",\n'
+            + pos + tab + '"id": "'          + this.id                + '",\n'
+            + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
             + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
             + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';

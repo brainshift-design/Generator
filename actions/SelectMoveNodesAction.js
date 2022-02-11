@@ -41,7 +41,7 @@ extends Action
 
         for (const id of this.getMovedIds())
         {
-            const node = graph.nodeFromId(id);
+            const node = nodeFromId(id);
 
             this.from.push([id, point(node.div.slx,      node.div.sly     )]);
             this.to  .push([id, point(node.div.slx + dx, node.div.sly + dy)]);

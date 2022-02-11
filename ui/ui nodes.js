@@ -1,6 +1,6 @@
 function uiCreateNode(opType, createdId = -1, updateUI = true)
 {
-    let node = graph.createNode(opType, createdId);
+    let node = createNode(opType, createdId);
     
     graph.addNode(node);
     
@@ -101,7 +101,7 @@ function uiDeleteNodeObjects(nodeIds)
 
 function uiSetNodeId(nodeId, newId)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
 
     node.id = newId;
 
@@ -206,7 +206,7 @@ function uiMakeActive(nodeIds)
 {
     for (const nodeId of nodeIds)
     {
-        const node = graph.nodeFromId(nodeId);
+        const node = nodeFromId(nodeId);
         node.makeActive();
     }
 }
@@ -215,7 +215,7 @@ function uiMakeActive(nodeIds)
 
 function uiShowParamValue(nodeId, paramName, value)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
             
     if (!!node) // this is for deleted nodes which still exist 
     {           // in genGraph but no longer in graph
@@ -316,7 +316,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     for (let i = 0; i < nodes.length; i++)
     {
         graph.addNode(nodes[i], false);
-        data.nodes[i].newName = nodes[i].idName;
+        data.nodes[i].newId = nodes[i].id;
     }
     
     if (data.connections)
@@ -339,11 +339,11 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputOpIndex = data.nodes.findIndex(n => n.idName == _conn.outputOp);
-        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newName;
+        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
+        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
 
-        const  inputOpIndex = data.nodes.findIndex(n => n.idName == _conn. inputOp);
-        data.connections[i]. inputOp = data.nodes[ inputOpIndex].newName;
+        const  inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
+        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
     }
 }
 

@@ -147,7 +147,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.idName + '.OpColor.updateData()');
+        //log(this.id + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -245,7 +245,7 @@ extends OpColorBase
 
     updateNode()
     {
-        //log(this.idName + '.OpColor.updateNode()');
+        //log(this.id + '.OpColor.updateNode()');
 
         
         enableElementText(this.hexbox, !this.isConnected());
@@ -268,7 +268,7 @@ extends OpColorBase
 
     updateHeader()
     {
-        //log(this.idName + '.OpColor.updateHeader()');
+        //log(this.id + '.OpColor.updateHeader()');
 
         super.updateHeader();
         
@@ -522,8 +522,8 @@ extends OpColorBase
 //     {
 //         for (const conn of paramSpace.op._oldSpaceConnections)
 //         {
-//             const outputOp = nodeFromIdName(conn.outputOpName);
-//             const  inputOp = nodeFromIdName(conn. inputOpName);
+//             const outputOp = nodeFromId(conn.outputOpName);
+//             const  inputOp = nodeFromId(conn. inputOpName);
 
 //             if (outputOp && inputOp)
 //             {

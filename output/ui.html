@@ -12071,43 +12071,41 @@ class Graph
 
 
 
-    getNewNodeName(curName, idName)
+    getNewNodeId(curId, id)
     {
-        if (!this.nodes.find(n => n.idName == idName))
-            return idName;
+        if (!this.nodes.find(n => n.id == id))
+            return id;
         
 
-        let numLength = this.getNumLength(idName);
+        let numLength = this.getNumLength(id);
 
         if (numLength > 0)
         {
-            const len = idName.length - numLength;
-            let   num = parseInt(idName.substring(len));
+            const len = id.length - numLength;
+            let   num = parseInt(id.substring(len));
 
-            let newName = '';
-            while (newName == '' || this.nodes.find(n => n.idName == newName))
-                newName = idName.substring(0, len) + (++num);
+            let newId = '';
+            while (newId == '' || this.nodes.find(n => n.id == newId))
+                newId = id.substring(0, len) + (++num);
 
-            return newName;
+            return newId;
         }
 
         else if (numLength == 0)
         {
-            const len = idName.length;
-
-            let num     = 2;
-            let newName = idName + num;
+            let num   = 2;
+            let newId = id + num;
 
             while (this.nodes.find(n => 
-                   n.idName != curName 
-                && n.idName == newName))
-                newName = idName + (++num);
+                   n.id != curId 
+                && n.id == newId))
+                newId = id + (++num);
 
-            return newName;
+            return newId;
         }
 
         else
-            return idName;
+            return id;
     }
     
     
@@ -12127,61 +12125,21 @@ class Graph
     
     
 
-    createNode(opType, createdNodeId = -1)
-    {
-        let node;
-
-        switch (opType)
-        {
-            case 'number':           node = new OpNumber();           break;
-            case 'limits':           node = new OpLimits();           break;
-            case 'add':              node = new OpAdd();              break;
-            case 'subtract':         node = new OpSubtract();         break;
-            case 'multiply':         node = new OpMultiply();         break;
-            case 'divide':           node = new OpDivide();           break;
-            case 'modulo':           node = new OpModulo();           break;
-            case 'exponent':         node = new OpExponent();         break;
-            case 'interpolate':      node = new OpInterpolate();      break;
-            // case 'random': node = new OpRandom(); break;
-            
-            case 'color':            node = new OpColor();            break;
-            case 'colorinterpolate': node = new OpColorInterpolate(); break;
-            case 'webcontrast':      node = new OpWebContrast();      break;
-            case 'colorblind':       node = new OpColorblind();       break;
-            
-            case 'rectangle':        node = new OpRectangle();        break;
-            // case 'row':    node = new OpRow();    break;
-            // case 'column': node = new OpColumn(); break;
-            //case 'spread': node = new OpSpread(); break;
-        }
-        
-        if (createdNodeId > -1)
-        {
-            Operator.nextId--;
-            node.id = createdNodeId;
-        }
-        
-        return node;
-    }
-
-
-
-    addNodes(nodes, placeNode = true, createNewName = true)
+    addNodes(nodes, placeNode = true)
     {
         for (const node of nodes)
-            this.addNode(node, placeNode, createNewName, false);
+            this.addNode(node, placeNode);
         
         setTimeout(() => nodes.forEach(n => n.updateNode()));
     }
 
 
 
-    addNode(node, placeNode = true, createNewName = true, updateLabel = true)
+    addNode(node, placeNode = true, updateLabel = true)
     {
         node.graph = this;
 
-        if (createNewName)
-            node.setName(this.getNewNodeName(node.idName, node.idName));
+        node._id = this.getNewNodeId(node.id, node.id);
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
@@ -12300,7 +12258,7 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.idName + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
         if (activeNodeInTree(input.op))
@@ -12337,13 +12295,6 @@ class Graph
 
 
         return true;
-    }
-
-
-
-    nodeFromId(id)
-    {
-        return this.nodes.find(n => n.id == id);
     }
 
 
@@ -12454,16 +12405,42 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function nodeFromId(id)
+function createNode(opType)//, createdNodeId = -1)
 {
-    return graph.nodes.find(n => n.id == id);
+    let node;
+
+    switch (opType)
+    {
+        case 'number':           node = new OpNumber();           break;
+        case 'limits':           node = new OpLimits();           break;
+        case 'add':              node = new OpAdd();              break;
+        case 'subtract':         node = new OpSubtract();         break;
+        case 'multiply':         node = new OpMultiply();         break;
+        case 'divide':           node = new OpDivide();           break;
+        case 'modulo':           node = new OpModulo();           break;
+        case 'exponent':         node = new OpExponent();         break;
+        case 'interpolate':      node = new OpInterpolate();      break;
+        // case 'random': node = new OpRandom(); break;
+        
+        case 'color':            node = new OpColor();            break;
+        case 'colorinterpolate': node = new OpColorInterpolate(); break;
+        case 'webcontrast':      node = new OpWebContrast();      break;
+        case 'colorblind':       node = new OpColorblind();       break;
+        
+        case 'rectangle':        node = new OpRectangle();        break;
+        // case 'row':    node = new OpRow();    break;
+        // case 'column': node = new OpColumn(); break;
+        //case 'spread': node = new OpSpread(); break;
+    }
+    
+    return node;
 }
 
 
 
-function nodeFromIdName(name)
+function nodeFromId(id)
 {
-    return graph.nodes.find(n => n.idName == name);
+    return graph.nodes.find(n => n.id == id);
 }
 
 
@@ -13250,10 +13227,10 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.idName + '"'
+            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.id + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.indexOf(this.output) + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.idName + '"'
+            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.id + '"'
             + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.indexOf(this.input) + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
@@ -13265,10 +13242,10 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputOp    = nodeFromIdName(_conn.outputOp);
+        const outputOp    = nodeFromId(_conn.outputOp);
         const outputIndex = parseInt(_conn.outputIndex);
 
-        const inputOp     = nodeFromIdName(_conn.inputOp);
+        const inputOp     = nodeFromId(_conn.inputOp);
         const inputIndex  = parseInt(_conn.inputIndex);
 
         uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
@@ -13291,9 +13268,9 @@ function getConnectionForArrayWithIds(conn)
 function getConnectionForArrayWithNames(conn)
 {
     return {
-        outputOpName: conn.output.op.idName,
+        outputOpName: conn.output.op.id,
         outputIndex:  conn.output.op.outputs.indexOf(conn.output),
-        inputOpName:  conn.input .op.idName,
+        inputOpName:  conn.input .op.id,
         inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
 }
 
@@ -13311,19 +13288,16 @@ class Operator
     _dataType;
     get dataType() { return this._dataType; }
 
-    _idName;
-    get idName() { return this._idName; }
-    set idName(name)
-    {
-        this._idName = name;
-        this.label.innerHTML = name;
-    }
+    _id;
+    get id() { return this._id; }
+    set id(id) { this._id = id; }
+
+    _name;
+    get name() { return this._name; }
+    set name(name) { this.setName(name); }
 
     shortTypeName;
     defaultWidth;
-
-    static nextId = 0;
-    id = Operator.nextId++;
 
 
     graph = null;
@@ -13412,8 +13386,8 @@ class Operator
         this._dataType         = dataType; // this is the op's main data type
            
         this.shortTypeName     = shortType;
-        this._idName             = shortType; // this is a temp until the op becomes a graph node
-     
+        this._id               = shortType;
+
         this.valid             = false;
 
         this.defaultWidth      = defWidth;
@@ -13421,6 +13395,8 @@ class Operator
         this.labelOffsetFactor = 0;
 
         createOperatorNode(this);
+
+        this.setName(shortType);
     }    
 
 
@@ -13558,7 +13534,7 @@ class Operator
 
     pushUpdate()
     {
-        //log(this.idName + '.Operator.pushUpdate()');
+        //log(this.id + '.Operator.pushUpdate()');
 
         this.invalidate();
 
@@ -13571,7 +13547,7 @@ class Operator
     {
         if (this.valid) return;
         
-        //log(this.idName + '.Operator.update()');
+        //log(this.id + '.Operator.update()');
     
         this.updateParams(false);
         this.updateData();
@@ -13588,7 +13564,7 @@ class Operator
 
     updateData()
     {
-        //log(this.idName + '.Operator.updateData()');
+        //log(this.id + '.Operator.updateData()');
 
         this.setParamOutputData();
     }
@@ -13597,7 +13573,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.idName + '.Operator.updateNode()');
+        //log(this.id + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -13619,7 +13595,7 @@ class Operator
 
     updateHeader()
     {
-        //log(this.idName + '.Operator.updateHeader()');
+        //log(this.id + '.Operator.updateHeader()');
         
         const height = this.updateHeaderInputsAndOutputs();
 
@@ -13692,8 +13668,9 @@ class Operator
 
     setName(newName)
     {
-        this._idName = newName;
-        this.label.innerHTML = /*this.id + ': ' +*/newName;
+        this._name = newName;
+        this.label.innerHTML = this._name;
+        //this.label.innerHTML = this.id;
 
         return true;
     }
@@ -13873,7 +13850,8 @@ class Operator
 
         let json =
               pos + tab + '"type": "'        + this.opType            + '",\n'
-            + pos + tab + '"idName": "'      + this.idName            + '",\n'
+            + pos + tab + '"id": "'          + this.id                + '",\n'
+            + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
             + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
             + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
@@ -13984,7 +13962,7 @@ extends Operator
 {
     updateHeader()
     {
-        //log(this.idName + '.OperatorBase.updateHeader()');
+        //log(this.id + '.OperatorBase.updateHeader()');
 
         this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
 
@@ -14608,9 +14586,9 @@ function initLabelTextbox(node)
         {
             if (node.textbox.value != '')
             {
-                const newName = node.textbox.value; //graph.getNewNodeName(node.name, node.textbox.value);
+                const newName = node.textbox.value;
                 setTimeout(() => node.setName(newName));
-                actionManager.do(new RenameNodeAction(node.id, newName));
+                actionManager.do(new RenameNodeAction(node.name, newName));
             }
         }
         else
@@ -15291,7 +15269,7 @@ extends Operator
 
     updateHeader()
     {
-        //log(this.idName + '.OpColorBase.updateHeader()');
+        //log(this.id + '.OpColorBase.updateHeader()');
 
 
         const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
@@ -15377,7 +15355,7 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        //log(this.idName + '.updateWarningOverlay()');
+        //log(this.id + '.updateWarningOverlay()');
         
         if (this.canShowColor())
         {
@@ -15597,7 +15575,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.idName + '.OpColor.updateData()');
+        //log(this.id + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -15695,7 +15673,7 @@ extends OpColorBase
 
     updateNode()
     {
-        //log(this.idName + '.OpColor.updateNode()');
+        //log(this.id + '.OpColor.updateNode()');
 
         
         enableElementText(this.hexbox, !this.isConnected());
@@ -15718,7 +15696,7 @@ extends OpColorBase
 
     updateHeader()
     {
-        //log(this.idName + '.OpColor.updateHeader()');
+        //log(this.id + '.OpColor.updateHeader()');
 
         super.updateHeader();
         
@@ -15972,8 +15950,8 @@ extends OpColorBase
 //     {
 //         for (const conn of paramSpace.op._oldSpaceConnections)
 //         {
-//             const outputOp = nodeFromIdName(conn.outputOpName);
-//             const  inputOp = nodeFromIdName(conn. inputOpName);
+//             const outputOp = nodeFromId(conn.outputOpName);
+//             const  inputOp = nodeFromId(conn. inputOpName);
 
 //             if (outputOp && inputOp)
 //             {
@@ -16991,7 +16969,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.idName + '.OpValidColor.updateData()');
+        //log(this.id + '.OpValidColor.updateData()');
 
         // if (   this.inputs[0].isConnected
         //     && this.inputs[1].isConnected)
@@ -17061,7 +17039,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.idName + '.OpWebContrast.updateData()');
+        //log(this.id + '.OpWebContrast.updateData()');
 
         this._color = 
             this.inputs[1].isConnected
@@ -17280,7 +17258,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.idName + '.OpColorInterpolate.updateData()');
+        //log(this.id + '.OpColorInterpolate.updateData()');
 
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
@@ -17813,9 +17791,9 @@ extends Action
 
 
         super('connect ' 
-            + output.op.idName + '.outputs[' + outIndex + ']'
+            + output.op.id + '.outputs[' + outIndex + ']'
             + ' -> '
-            + input.op.idName + '.inputs[' + inIndex + ']');
+            + input.op.id + '.inputs[' + inIndex + ']');
 
 
         this.outputOpId     = output.op.id;
@@ -18092,9 +18070,9 @@ extends Action
 
 
         super('disconnect ' 
-            + output.op.idName + '.outputs[' + outputIndex + ']'
+            + output.op.id + '.outputs[' + outputIndex + ']'
             + ' -> '
-            + input.op.idName + '.inputs[' + inputIndex + ']');
+            + input.op.id + '.inputs[' + inputIndex + ']');
 
 
         this.outputOpId  = output.op.id;
@@ -18159,8 +18137,6 @@ extends Action
     {
         uiDeleteNodes(this.pastedNodeIds);
         
-        Operator.nextId -= this.pastedNodeIds.length;
-
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
     }
@@ -18211,8 +18187,6 @@ extends Action
     {
         uiDeleteNodes(this.pastedNodeIds);
         
-        Operator.nextId -= this.pastedNodeIds.length;
-
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
 
@@ -18271,11 +18245,11 @@ extends Action
 
         super(
              'reconnect '
-            + output.op.idName + '.outputs[' + outIndex + ']'
+            + output.op.id + '.outputs[' + outIndex + ']'
             + ' ( <- '
-            + oldInput.op.idName + '.inputs[' + oldInIndex + '])'
+            + oldInput.op.id + '.inputs[' + oldInIndex + '])'
             + ' -> '
-            + input.op.idName + '.inputs[' + inIndex + ']');
+            + input.op.id + '.inputs[' + inIndex + ']');
 
 
         this.outputOpId    = output.op.id;
@@ -18366,7 +18340,7 @@ extends Action
 
     do()
     {
-        this.oldName = this.node.idName;
+        this.oldName = this.node.name;
         this.node.setName(this.newName);
     }
 
@@ -18399,7 +18373,7 @@ extends Action
     constructor(nodeId, oldIndex, newIndex)
     {
         super(
-              'reorder ' + nodeFromId(nodeId).idName 
+              'reorder ' + nodeFromId(nodeId).id 
             + '.inputs[' + oldIndex + ']'
             + ' to [' + newIndex + ']');
 
@@ -18490,7 +18464,7 @@ extends Action
 
         for (const id of this.getMovedIds())
         {
-            const node = graph.nodeFromId(id);
+            const node = nodeFromId(id);
 
             this.from.push([id, point(node.div.slx,      node.div.sly     )]);
             this.to  .push([id, point(node.div.slx + dx, node.div.sly + dy)]);
@@ -18667,7 +18641,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.op.idName + '.' + param.name + ' = ' + value);
+        super('set ' + param.op.id + '.' + param.name + ' = ' + value);
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
@@ -19258,7 +19232,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
 
 function uiCreateNode(opType, createdId = -1, updateUI = true)
 {
-    let node = graph.createNode(opType, createdId);
+    let node = createNode(opType, createdId);
     
     graph.addNode(node);
     
@@ -19359,7 +19333,7 @@ function uiDeleteNodeObjects(nodeIds)
 
 function uiSetNodeId(nodeId, newId)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
 
     node.id = newId;
 
@@ -19464,7 +19438,7 @@ function uiMakeActive(nodeIds)
 {
     for (const nodeId of nodeIds)
     {
-        const node = graph.nodeFromId(nodeId);
+        const node = nodeFromId(nodeId);
         node.makeActive();
     }
 }
@@ -19473,7 +19447,7 @@ function uiMakeActive(nodeIds)
 
 function uiShowParamValue(nodeId, paramName, value)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
             
     if (!!node) // this is for deleted nodes which still exist 
     {           // in genGraph but no longer in graph
@@ -19574,7 +19548,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     for (let i = 0; i < nodes.length; i++)
     {
         graph.addNode(nodes[i], false);
-        data.nodes[i].newName = nodes[i].idName;
+        data.nodes[i].newId = nodes[i].id;
     }
     
     if (data.connections)
@@ -19597,11 +19571,11 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputOpIndex = data.nodes.findIndex(n => n.idName == _conn.outputOp);
-        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newName;
+        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
+        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
 
-        const  inputOpIndex = data.nodes.findIndex(n => n.idName == _conn. inputOp);
-        data.connections[i]. inputOp = data.nodes[ inputOpIndex].newName;
+        const  inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
+        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
     }
 }
 
@@ -19871,8 +19845,8 @@ function resolveLoadConnections(_connections, first, last, data)
             {
                 const _conn = _connections[i];
 
-                if (   data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
-                    && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
+                if (   data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
+                    && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
                     || loadOutsideConnections)
                     Connection.parseJson(_conn);
             }
@@ -19897,10 +19871,11 @@ function loadNodes(data)
 
 function loadNode(_node)
 {
-    const node = graph.createNode(_node.type);
+    const node = createNode(_node.type);
     node.loading = true;
 
-    node.idName = _node.idName;
+    node.id   = _node.id;
+    node.name = _node.name;
 
     if (_node.labelOffset)
         node.labelOffsetFactor = parseFloat(_node.labelOffset);
@@ -19926,8 +19901,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
-               && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
+        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 

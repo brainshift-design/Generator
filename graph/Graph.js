@@ -17,43 +17,41 @@ class Graph
 
 
 
-    getNewNodeName(curName, idName)
+    getNewNodeId(curId, id)
     {
-        if (!this.nodes.find(n => n.idName == idName))
-            return idName;
+        if (!this.nodes.find(n => n.id == id))
+            return id;
         
 
-        let numLength = this.getNumLength(idName);
+        let numLength = this.getNumLength(id);
 
         if (numLength > 0)
         {
-            const len = idName.length - numLength;
-            let   num = parseInt(idName.substring(len));
+            const len = id.length - numLength;
+            let   num = parseInt(id.substring(len));
 
-            let newName = '';
-            while (newName == '' || this.nodes.find(n => n.idName == newName))
-                newName = idName.substring(0, len) + (++num);
+            let newId = '';
+            while (newId == '' || this.nodes.find(n => n.id == newId))
+                newId = id.substring(0, len) + (++num);
 
-            return newName;
+            return newId;
         }
 
         else if (numLength == 0)
         {
-            const len = idName.length;
-
-            let num     = 2;
-            let newName = idName + num;
+            let num   = 2;
+            let newId = id + num;
 
             while (this.nodes.find(n => 
-                   n.idName != curName 
-                && n.idName == newName))
-                newName = idName + (++num);
+                   n.id != curId 
+                && n.id == newId))
+                newId = id + (++num);
 
-            return newName;
+            return newId;
         }
 
         else
-            return idName;
+            return id;
     }
     
     
@@ -73,61 +71,21 @@ class Graph
     
     
 
-    createNode(opType, createdNodeId = -1)
-    {
-        let node;
-
-        switch (opType)
-        {
-            case 'number':           node = new OpNumber();           break;
-            case 'limits':           node = new OpLimits();           break;
-            case 'add':              node = new OpAdd();              break;
-            case 'subtract':         node = new OpSubtract();         break;
-            case 'multiply':         node = new OpMultiply();         break;
-            case 'divide':           node = new OpDivide();           break;
-            case 'modulo':           node = new OpModulo();           break;
-            case 'exponent':         node = new OpExponent();         break;
-            case 'interpolate':      node = new OpInterpolate();      break;
-            // case 'random': node = new OpRandom(); break;
-            
-            case 'color':            node = new OpColor();            break;
-            case 'colorinterpolate': node = new OpColorInterpolate(); break;
-            case 'webcontrast':      node = new OpWebContrast();      break;
-            case 'colorblind':       node = new OpColorblind();       break;
-            
-            case 'rectangle':        node = new OpRectangle();        break;
-            // case 'row':    node = new OpRow();    break;
-            // case 'column': node = new OpColumn(); break;
-            //case 'spread': node = new OpSpread(); break;
-        }
-        
-        if (createdNodeId > -1)
-        {
-            Operator.nextId--;
-            node.id = createdNodeId;
-        }
-        
-        return node;
-    }
-
-
-
-    addNodes(nodes, placeNode = true, createNewName = true)
+    addNodes(nodes, placeNode = true)
     {
         for (const node of nodes)
-            this.addNode(node, placeNode, createNewName, false);
+            this.addNode(node, placeNode);
         
         setTimeout(() => nodes.forEach(n => n.updateNode()));
     }
 
 
 
-    addNode(node, placeNode = true, createNewName = true, updateLabel = true)
+    addNode(node, placeNode = true, updateLabel = true)
     {
         node.graph = this;
 
-        if (createNewName)
-            node.setName(this.getNewNodeName(node.idName, node.idName));
+        node._id = this.getNewNodeId(node.id, node.id);
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
@@ -246,7 +204,7 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.idName + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
         if (activeNodeInTree(input.op))
@@ -283,13 +241,6 @@ class Graph
 
 
         return true;
-    }
-
-
-
-    nodeFromId(id)
-    {
-        return this.nodes.find(n => n.id == id);
     }
 
 
@@ -400,14 +351,40 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function nodeFromId(id)
+function createNode(opType)//, createdNodeId = -1)
 {
-    return graph.nodes.find(n => n.id == id);
+    let node;
+
+    switch (opType)
+    {
+        case 'number':           node = new OpNumber();           break;
+        case 'limits':           node = new OpLimits();           break;
+        case 'add':              node = new OpAdd();              break;
+        case 'subtract':         node = new OpSubtract();         break;
+        case 'multiply':         node = new OpMultiply();         break;
+        case 'divide':           node = new OpDivide();           break;
+        case 'modulo':           node = new OpModulo();           break;
+        case 'exponent':         node = new OpExponent();         break;
+        case 'interpolate':      node = new OpInterpolate();      break;
+        // case 'random': node = new OpRandom(); break;
+        
+        case 'color':            node = new OpColor();            break;
+        case 'colorinterpolate': node = new OpColorInterpolate(); break;
+        case 'webcontrast':      node = new OpWebContrast();      break;
+        case 'colorblind':       node = new OpColorblind();       break;
+        
+        case 'rectangle':        node = new OpRectangle();        break;
+        // case 'row':    node = new OpRow();    break;
+        // case 'column': node = new OpColumn(); break;
+        //case 'spread': node = new OpSpread(); break;
+    }
+    
+    return node;
 }
 
 
 
-function nodeFromIdName(name)
+function nodeFromId(id)
 {
-    return graph.nodes.find(n => n.idName == name);
+    return graph.nodes.find(n => n.id == id);
 }

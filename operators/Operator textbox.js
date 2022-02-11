@@ -108,9 +108,9 @@ function initLabelTextbox(node)
         {
             if (node.textbox.value != '')
             {
-                const newName = node.textbox.value; //graph.getNewNodeName(node.name, node.textbox.value);
+                const newName = node.textbox.value;
                 setTimeout(() => node.setName(newName));
-                actionManager.do(new RenameNodeAction(node.id, newName));
+                actionManager.do(new RenameNodeAction(node.name, newName));
             }
         }
         else

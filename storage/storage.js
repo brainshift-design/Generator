@@ -168,8 +168,8 @@ function resolveLoadConnections(_connections, first, last, data)
             {
                 const _conn = _connections[i];
 
-                if (   data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
-                    && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
+                if (   data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
+                    && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
                     || loadOutsideConnections)
                     Connection.parseJson(_conn);
             }
@@ -194,10 +194,11 @@ function loadNodes(data)
 
 function loadNode(_node)
 {
-    const node = graph.createNode(_node.type);
+    const node = createNode(_node.type);
     node.loading = true;
 
-    node.idName = _node.idName;
+    node.id   = _node.id;
+    node.name = _node.name;
 
     if (_node.labelOffset)
         node.labelOffsetFactor = parseFloat(_node.labelOffset);
@@ -223,8 +224,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
-               && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
+        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 

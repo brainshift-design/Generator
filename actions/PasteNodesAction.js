@@ -42,8 +42,6 @@ extends Action
     {
         uiDeleteNodes(this.pastedNodeIds);
         
-        Operator.nextId -= this.pastedNodeIds.length;
-
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
 

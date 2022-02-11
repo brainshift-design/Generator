@@ -29,11 +29,11 @@ extends Action
 
         super(
              'reconnect '
-            + output.op.idName + '.outputs[' + outIndex + ']'
+            + output.op.id + '.outputs[' + outIndex + ']'
             + ' ( <- '
-            + oldInput.op.idName + '.inputs[' + oldInIndex + '])'
+            + oldInput.op.id + '.inputs[' + oldInIndex + '])'
             + ' -> '
-            + input.op.idName + '.inputs[' + inIndex + ']');
+            + input.op.id + '.inputs[' + inIndex + ']');
 
 
         this.outputOpId    = output.op.id;
