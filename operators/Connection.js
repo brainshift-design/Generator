@@ -224,10 +224,10 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.name + '"'
+            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.idName + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.indexOf(this.output) + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.name + '"'
+            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.idName + '"'
             + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.indexOf(this.input) + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
@@ -239,10 +239,10 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputOp    = graph.nodes.find(n => n.name == _conn.outputOp);
+        const outputOp    = nodeFromIdName(_conn.outputOp);
         const outputIndex = parseInt(_conn.outputIndex);
 
-        const inputOp     = graph.nodes.find(n => n.name == _conn.inputOp);
+        const inputOp     = nodeFromIdName(_conn.inputOp);
         const inputIndex  = parseInt(_conn.inputIndex);
 
         uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
@@ -265,8 +265,8 @@ function getConnectionForArrayWithIds(conn)
 function getConnectionForArrayWithNames(conn)
 {
     return {
-        outputOpName: conn.output.op.name,
+        outputOpName: conn.output.op.idName,
         outputIndex:  conn.output.op.outputs.indexOf(conn.output),
-        inputOpName:  conn.input .op.name,
+        inputOpName:  conn.input .op.idName,
         inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
 }

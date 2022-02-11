@@ -60,7 +60,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpColorInterpolate.updateData()');
+        //log(this.idName + '.OpColorInterpolate.updateData()');
 
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)

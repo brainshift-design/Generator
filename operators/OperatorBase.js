@@ -3,7 +3,7 @@ extends Operator
 {
     updateHeader()
     {
-        //log(this.name + '.OperatorBase.updateHeader()');
+        //log(this.idName + '.OperatorBase.updateHeader()');
 
         this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
 

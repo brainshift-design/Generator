@@ -26,7 +26,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpWebContrast.updateData()');
+        //log(this.idName + '.OpWebContrast.updateData()');
 
         this._color = 
             this.inputs[1].isConnected

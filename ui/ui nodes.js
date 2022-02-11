@@ -316,7 +316,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     for (let i = 0; i < nodes.length; i++)
     {
         graph.addNode(nodes[i], false);
-        data.nodes[i].newName = nodes[i].name;
+        data.nodes[i].newName = nodes[i].idName;
     }
     
     if (data.connections)
@@ -339,10 +339,10 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputOpIndex = data.nodes.findIndex(n => n.name == _conn.outputOp);
+        let outputOpIndex = data.nodes.findIndex(n => n.idName == _conn.outputOp);
         if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newName;
 
-        const  inputOpIndex = data.nodes.findIndex(n => n.name == _conn. inputOp);
+        const  inputOpIndex = data.nodes.findIndex(n => n.idName == _conn. inputOp);
         data.connections[i]. inputOp = data.nodes[ inputOpIndex].newName;
     }
 }

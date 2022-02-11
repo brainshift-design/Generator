@@ -22,9 +22,9 @@ extends Action
 
 
         super('connect ' 
-            + output.op.name + '.outputs[' + outIndex + ']'
+            + output.op.idName + '.outputs[' + outIndex + ']'
             + ' -> '
-            + input.op.name + '.inputs[' + inIndex + ']');
+            + input.op.idName + '.inputs[' + inIndex + ']');
 
 
         this.outputOpId     = output.op.id;

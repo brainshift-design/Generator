@@ -17,59 +17,59 @@ class Graph
 
 
 
-    // getNewNodeName(curName, name)
-    // {
-    //     if (!this.nodes.find(n => n.name == name))
-    //         return name;
+    getNewNodeName(curName, idName)
+    {
+        if (!this.nodes.find(n => n.idName == idName))
+            return idName;
         
 
-    //     let numLength = this.getNumLength(name);
+        let numLength = this.getNumLength(idName);
 
-    //     if (numLength > 0)
-    //     {
-    //         const len = name.length - numLength;
-    //         let   num = parseInt(name.substring(len));
+        if (numLength > 0)
+        {
+            const len = idName.length - numLength;
+            let   num = parseInt(idName.substring(len));
 
-    //         let newName = '';
-    //         while (newName == '' || this.nodes.find(n => n.name == newName))
-    //             newName = name.substring(0, len) + (++num);
+            let newName = '';
+            while (newName == '' || this.nodes.find(n => n.idName == newName))
+                newName = idName.substring(0, len) + (++num);
 
-    //         return newName;
-    //     }
+            return newName;
+        }
 
-    //     else if (numLength == 0)
-    //     {
-    //         const len = name.length;
+        else if (numLength == 0)
+        {
+            const len = idName.length;
 
-    //         let num     = 2;
-    //         let newName = name + num;
+            let num     = 2;
+            let newName = idName + num;
 
-    //         while (this.nodes.find(n => 
-    //                n.name != curName 
-    //             && n.name == newName))
-    //             newName = name + (++num);
+            while (this.nodes.find(n => 
+                   n.idName != curName 
+                && n.idName == newName))
+                newName = idName + (++num);
 
-    //         return newName;
-    //     }
+            return newName;
+        }
 
-    //     else
-    //         return name;
-    // }
+        else
+            return idName;
+    }
     
     
     
-    // getNumLength(name)
-    // {
-    //     let numLength = 0;
+    getNumLength(name)
+    {
+        let numLength = 0;
 
-    //     for (let i = name.length - 1; i >= 0; i--)
-    //     {
-    //         if (isDigitChar(name[i])) numLength++;
-    //         else break;
-    //     }
+        for (let i = name.length - 1; i >= 0; i--)
+        {
+            if (isDigitChar(name[i])) numLength++;
+            else break;
+        }
 
-    //     return numLength;
-    // }
+        return numLength;
+    }
     
     
 
@@ -127,7 +127,7 @@ class Graph
         node.graph = this;
 
         if (createNewName)
-            node.setName(node.name);//this.getNewNodeName(node.name, node.name));
+            node.setName(this.getNewNodeName(node.idName, node.idName));
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
@@ -246,7 +246,7 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.idName + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
         if (activeNodeInTree(input.op))
@@ -403,4 +403,11 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 function nodeFromId(id)
 {
     return graph.nodes.find(n => n.id == id);
+}
+
+
+
+function nodeFromIdName(name)
+{
+    return graph.nodes.find(n => n.idName == name);
 }

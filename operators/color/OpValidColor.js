@@ -38,7 +38,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpValidColor.updateData()');
+        //log(this.idName + '.OpValidColor.updateData()');
 
         // if (   this.inputs[0].isConnected
         //     && this.inputs[1].isConnected)

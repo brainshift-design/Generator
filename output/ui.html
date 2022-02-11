@@ -7886,7 +7886,20 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             }
 
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
+            const objCol = colorStyleRgb(rgbActiveObject);
+
+            if (   !slider.param
+                || !slider.param.op.selected)
+                slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
+
+            else
+            {
+                slider.focus.style.boxShadow = '0  1px 0 0 ' + objCol + ' inset';
+                    
+                if (param.op.params.indexOf(param) < param.op.params.length-1)
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
+            }
+
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
@@ -12058,59 +12071,59 @@ class Graph
 
 
 
-    // getNewNodeName(curName, name)
-    // {
-    //     if (!this.nodes.find(n => n.name == name))
-    //         return name;
+    getNewNodeName(curName, idName)
+    {
+        if (!this.nodes.find(n => n.idName == idName))
+            return idName;
         
 
-    //     let numLength = this.getNumLength(name);
+        let numLength = this.getNumLength(idName);
 
-    //     if (numLength > 0)
-    //     {
-    //         const len = name.length - numLength;
-    //         let   num = parseInt(name.substring(len));
+        if (numLength > 0)
+        {
+            const len = idName.length - numLength;
+            let   num = parseInt(idName.substring(len));
 
-    //         let newName = '';
-    //         while (newName == '' || this.nodes.find(n => n.name == newName))
-    //             newName = name.substring(0, len) + (++num);
+            let newName = '';
+            while (newName == '' || this.nodes.find(n => n.idName == newName))
+                newName = idName.substring(0, len) + (++num);
 
-    //         return newName;
-    //     }
+            return newName;
+        }
 
-    //     else if (numLength == 0)
-    //     {
-    //         const len = name.length;
+        else if (numLength == 0)
+        {
+            const len = idName.length;
 
-    //         let num     = 2;
-    //         let newName = name + num;
+            let num     = 2;
+            let newName = idName + num;
 
-    //         while (this.nodes.find(n => 
-    //                n.name != curName 
-    //             && n.name == newName))
-    //             newName = name + (++num);
+            while (this.nodes.find(n => 
+                   n.idName != curName 
+                && n.idName == newName))
+                newName = idName + (++num);
 
-    //         return newName;
-    //     }
+            return newName;
+        }
 
-    //     else
-    //         return name;
-    // }
+        else
+            return idName;
+    }
     
     
     
-    // getNumLength(name)
-    // {
-    //     let numLength = 0;
+    getNumLength(name)
+    {
+        let numLength = 0;
 
-    //     for (let i = name.length - 1; i >= 0; i--)
-    //     {
-    //         if (isDigitChar(name[i])) numLength++;
-    //         else break;
-    //     }
+        for (let i = name.length - 1; i >= 0; i--)
+        {
+            if (isDigitChar(name[i])) numLength++;
+            else break;
+        }
 
-    //     return numLength;
-    // }
+        return numLength;
+    }
     
     
 
@@ -12168,7 +12181,7 @@ class Graph
         node.graph = this;
 
         if (createNewName)
-            node.setName(node.name);//this.getNewNodeName(node.name, node.name));
+            node.setName(this.getNewNodeName(node.idName, node.idName));
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
@@ -12287,7 +12300,7 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.name + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.idName + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
         if (activeNodeInTree(input.op))
@@ -12447,6 +12460,13 @@ function nodeFromId(id)
 }
 
 
+
+function nodeFromIdName(name)
+{
+    return graph.nodes.find(n => n.idName == name);
+}
+
+
 function activeNodeInTree(node) 
 { 
     const left  = activeNodeLeft(node);  if (!!left ) return left;
@@ -12582,7 +12602,7 @@ function getTerminalsAfterNode(node)
         for (const input of output.connectedInputs)
             after.push(...getTerminalsAfterNode(input.op));
 
-    return after.length > 0 ? after : [node];;
+    return after.length > 0 ? after : [node];
 }
 
 
@@ -13230,10 +13250,10 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.name + '"'
+            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.idName + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.indexOf(this.output) + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.name + '"'
+            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.idName + '"'
             + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.indexOf(this.input) + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
@@ -13245,10 +13265,10 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputOp    = graph.nodes.find(n => n.name == _conn.outputOp);
+        const outputOp    = nodeFromIdName(_conn.outputOp);
         const outputIndex = parseInt(_conn.outputIndex);
 
-        const inputOp     = graph.nodes.find(n => n.name == _conn.inputOp);
+        const inputOp     = nodeFromIdName(_conn.inputOp);
         const inputIndex  = parseInt(_conn.inputIndex);
 
         uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
@@ -13271,9 +13291,9 @@ function getConnectionForArrayWithIds(conn)
 function getConnectionForArrayWithNames(conn)
 {
     return {
-        outputOpName: conn.output.op.name,
+        outputOpName: conn.output.op.idName,
         outputIndex:  conn.output.op.outputs.indexOf(conn.output),
-        inputOpName:  conn.input .op.name,
+        inputOpName:  conn.input .op.idName,
         inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
 }
 
@@ -13291,11 +13311,11 @@ class Operator
     _dataType;
     get dataType() { return this._dataType; }
 
-    _name;
-    get name() { return this._name; }
-    set name(name)
+    _idName;
+    get idName() { return this._idName; }
+    set idName(name)
     {
-        this._name = name;
+        this._idName = name;
         this.label.innerHTML = name;
     }
 
@@ -13392,7 +13412,7 @@ class Operator
         this._dataType         = dataType; // this is the op's main data type
            
         this.shortTypeName     = shortType;
-        this._name             = shortType; // this is a temp until the op becomes a graph node
+        this._idName             = shortType; // this is a temp until the op becomes a graph node
      
         this.valid             = false;
 
@@ -13538,7 +13558,7 @@ class Operator
 
     pushUpdate()
     {
-        //log(this.name + '.Operator.pushUpdate()');
+        //log(this.idName + '.Operator.pushUpdate()');
 
         this.invalidate();
 
@@ -13551,7 +13571,7 @@ class Operator
     {
         if (this.valid) return;
         
-        //log(this.name + '.Operator.update()');
+        //log(this.idName + '.Operator.update()');
     
         this.updateParams(false);
         this.updateData();
@@ -13568,7 +13588,7 @@ class Operator
 
     updateData()
     {
-        //log(this.name + '.Operator.updateData()');
+        //log(this.idName + '.Operator.updateData()');
 
         this.setParamOutputData();
     }
@@ -13577,7 +13597,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.name + '.Operator.updateNode()');
+        //log(this.idName + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -13599,7 +13619,7 @@ class Operator
 
     updateHeader()
     {
-        //log(this.name + '.Operator.updateHeader()');
+        //log(this.idName + '.Operator.updateHeader()');
         
         const height = this.updateHeaderInputsAndOutputs();
 
@@ -13672,7 +13692,7 @@ class Operator
 
     setName(newName)
     {
-        this._name = newName;
+        this._idName = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;
 
         return true;
@@ -13853,7 +13873,7 @@ class Operator
 
         let json =
               pos + tab + '"type": "'        + this.opType            + '",\n'
-            + pos + tab + '"name": "'        + this.name              + '",\n'
+            + pos + tab + '"idName": "'      + this.idName            + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
             + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
             + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
@@ -13964,7 +13984,7 @@ extends Operator
 {
     updateHeader()
     {
-        //log(this.name + '.OperatorBase.updateHeader()');
+        //log(this.idName + '.OperatorBase.updateHeader()');
 
         this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
 
@@ -14588,9 +14608,9 @@ function initLabelTextbox(node)
         {
             if (node.textbox.value != '')
             {
-                // const newName = graph.getNewNodeName(node.name, node.textbox.value);
-                // setTimeout(() => node.setName(newName));
-                actionManager.do(new RenameNodeAction(node.id, node.textbox.value));//newName));
+                const newName = node.textbox.value; //graph.getNewNodeName(node.name, node.textbox.value);
+                setTimeout(() => node.setName(newName));
+                actionManager.do(new RenameNodeAction(node.id, newName));
             }
         }
         else
@@ -15271,7 +15291,7 @@ extends Operator
 
     updateHeader()
     {
-        //log(this.name + '.OpColorBase.updateHeader()');
+        //log(this.idName + '.OpColorBase.updateHeader()');
 
 
         const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
@@ -15357,7 +15377,7 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        //log(this.name + '.updateWarningOverlay()');
+        //log(this.idName + '.updateWarningOverlay()');
         
         if (this.canShowColor())
         {
@@ -15577,7 +15597,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpColor.updateData()');
+        //log(this.idName + '.OpColor.updateData()');
 
         if (this.inputs[0].isConnected) 
         {
@@ -15675,7 +15695,7 @@ extends OpColorBase
 
     updateNode()
     {
-        //log(this.name + '.OpColor.updateNode()');
+        //log(this.idName + '.OpColor.updateNode()');
 
         
         enableElementText(this.hexbox, !this.isConnected());
@@ -15698,7 +15718,7 @@ extends OpColorBase
 
     updateHeader()
     {
-        //log(this.name + '.OpColor.updateHeader()');
+        //log(this.idName + '.OpColor.updateHeader()');
 
         super.updateHeader();
         
@@ -15952,8 +15972,8 @@ extends OpColorBase
 //     {
 //         for (const conn of paramSpace.op._oldSpaceConnections)
 //         {
-//             const outputOp = graph.nodes.find(n => n.name == conn.outputOpName);
-//             const  inputOp = graph.nodes.find(n => n.name == conn. inputOpName);
+//             const outputOp = nodeFromIdName(conn.outputOpName);
+//             const  inputOp = nodeFromIdName(conn. inputOpName);
 
 //             if (outputOp && inputOp)
 //             {
@@ -16971,7 +16991,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpValidColor.updateData()');
+        //log(this.idName + '.OpValidColor.updateData()');
 
         // if (   this.inputs[0].isConnected
         //     && this.inputs[1].isConnected)
@@ -17041,7 +17061,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpWebContrast.updateData()');
+        //log(this.idName + '.OpWebContrast.updateData()');
 
         this._color = 
             this.inputs[1].isConnected
@@ -17260,7 +17280,7 @@ extends OpColorBase
 
     updateData()
     {
-        //log(this.name + '.OpColorInterpolate.updateData()');
+        //log(this.idName + '.OpColorInterpolate.updateData()');
 
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
@@ -17793,9 +17813,9 @@ extends Action
 
 
         super('connect ' 
-            + output.op.name + '.outputs[' + outIndex + ']'
+            + output.op.idName + '.outputs[' + outIndex + ']'
             + ' -> '
-            + input.op.name + '.inputs[' + inIndex + ']');
+            + input.op.idName + '.inputs[' + inIndex + ']');
 
 
         this.outputOpId     = output.op.id;
@@ -18072,9 +18092,9 @@ extends Action
 
 
         super('disconnect ' 
-            + output.op.name + '.outputs[' + outputIndex + ']'
+            + output.op.idName + '.outputs[' + outputIndex + ']'
             + ' -> '
-            + input.op.name + '.inputs[' + inputIndex + ']');
+            + input.op.idName + '.inputs[' + inputIndex + ']');
 
 
         this.outputOpId  = output.op.id;
@@ -18251,11 +18271,11 @@ extends Action
 
         super(
              'reconnect '
-            + output.op.name + '.outputs[' + outIndex + ']'
+            + output.op.idName + '.outputs[' + outIndex + ']'
             + ' ( <- '
-            + oldInput.op.name + '.inputs[' + oldInIndex + '])'
+            + oldInput.op.idName + '.inputs[' + oldInIndex + '])'
             + ' -> '
-            + input.op.name + '.inputs[' + inIndex + ']');
+            + input.op.idName + '.inputs[' + inIndex + ']');
 
 
         this.outputOpId    = output.op.id;
@@ -18346,7 +18366,7 @@ extends Action
 
     do()
     {
-        this.oldName = this.node.name;
+        this.oldName = this.node.idName;
         this.node.setName(this.newName);
     }
 
@@ -18379,7 +18399,7 @@ extends Action
     constructor(nodeId, oldIndex, newIndex)
     {
         super(
-              'reorder ' + nodeFromId(nodeId).name 
+              'reorder ' + nodeFromId(nodeId).idName 
             + '.inputs[' + oldIndex + ']'
             + ' to [' + newIndex + ']');
 
@@ -18647,7 +18667,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.op.name + '.' + param.name + ' = ' + value);
+        super('set ' + param.op.idName + '.' + param.name + ' = ' + value);
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
@@ -19554,7 +19574,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     for (let i = 0; i < nodes.length; i++)
     {
         graph.addNode(nodes[i], false);
-        data.nodes[i].newName = nodes[i].name;
+        data.nodes[i].newName = nodes[i].idName;
     }
     
     if (data.connections)
@@ -19577,10 +19597,10 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputOpIndex = data.nodes.findIndex(n => n.name == _conn.outputOp);
+        let outputOpIndex = data.nodes.findIndex(n => n.idName == _conn.outputOp);
         if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newName;
 
-        const  inputOpIndex = data.nodes.findIndex(n => n.name == _conn. inputOp);
+        const  inputOpIndex = data.nodes.findIndex(n => n.idName == _conn. inputOp);
         data.connections[i]. inputOp = data.nodes[ inputOpIndex].newName;
     }
 }
@@ -19851,8 +19871,8 @@ function resolveLoadConnections(_connections, first, last, data)
             {
                 const _conn = _connections[i];
 
-                if (   data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn.outputOp)
-                    && data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn. inputOp)
+                if (   data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
+                    && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
                     || loadOutsideConnections)
                     Connection.parseJson(_conn);
             }
@@ -19880,7 +19900,7 @@ function loadNode(_node)
     const node = graph.createNode(_node.type);
     node.loading = true;
 
-    node.name = _node.name;
+    node.idName = _node.idName;
 
     if (_node.labelOffset)
         node.labelOffsetFactor = parseFloat(_node.labelOffset);
@@ -19906,8 +19926,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn.outputOp)
-               && data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn. inputOp)
+        if (      data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
+               && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 

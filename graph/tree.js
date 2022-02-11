@@ -133,7 +133,7 @@ function getTerminalsAfterNode(node)
         for (const input of output.connectedInputs)
             after.push(...getTerminalsAfterNode(input.op));
 
-    return after.length > 0 ? after : [node];;
+    return after.length > 0 ? after : [node];
 }
 
 

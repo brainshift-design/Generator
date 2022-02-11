@@ -168,8 +168,8 @@ function resolveLoadConnections(_connections, first, last, data)
             {
                 const _conn = _connections[i];
 
-                if (   data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn.outputOp)
-                    && data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn. inputOp)
+                if (   data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
+                    && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
                     || loadOutsideConnections)
                     Connection.parseJson(_conn);
             }
@@ -197,7 +197,7 @@ function loadNode(_node)
     const node = graph.createNode(_node.type);
     node.loading = true;
 
-    node.name = _node.name;
+    node.idName = _node.idName;
 
     if (_node.labelOffset)
         node.labelOffsetFactor = parseFloat(_node.labelOffset);
@@ -223,8 +223,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn.outputOp)
-               && data.nodes.find(n => (n.newName ? n.newName : n.name) == _conn. inputOp)
+        if (      data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn.outputOp)
+               && data.nodes.find(n => (n.newName ? n.newName : n.idName) == _conn. inputOp)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 

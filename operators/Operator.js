@@ -11,11 +11,11 @@ class Operator
     _dataType;
     get dataType() { return this._dataType; }
 
-    _name;
-    get name() { return this._name; }
-    set name(name)
+    _idName;
+    get idName() { return this._idName; }
+    set idName(name)
     {
-        this._name = name;
+        this._idName = name;
         this.label.innerHTML = name;
     }
 
@@ -112,7 +112,7 @@ class Operator
         this._dataType         = dataType; // this is the op's main data type
            
         this.shortTypeName     = shortType;
-        this._name             = shortType; // this is a temp until the op becomes a graph node
+        this._idName             = shortType; // this is a temp until the op becomes a graph node
      
         this.valid             = false;
 
@@ -258,7 +258,7 @@ class Operator
 
     pushUpdate()
     {
-        //log(this.name + '.Operator.pushUpdate()');
+        //log(this.idName + '.Operator.pushUpdate()');
 
         this.invalidate();
 
@@ -271,7 +271,7 @@ class Operator
     {
         if (this.valid) return;
         
-        //log(this.name + '.Operator.update()');
+        //log(this.idName + '.Operator.update()');
     
         this.updateParams(false);
         this.updateData();
@@ -288,7 +288,7 @@ class Operator
 
     updateData()
     {
-        //log(this.name + '.Operator.updateData()');
+        //log(this.idName + '.Operator.updateData()');
 
         this.setParamOutputData();
     }
@@ -297,7 +297,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.name + '.Operator.updateNode()');
+        //log(this.idName + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -319,7 +319,7 @@ class Operator
 
     updateHeader()
     {
-        //log(this.name + '.Operator.updateHeader()');
+        //log(this.idName + '.Operator.updateHeader()');
         
         const height = this.updateHeaderInputsAndOutputs();
 
@@ -392,7 +392,7 @@ class Operator
 
     setName(newName)
     {
-        this._name = newName;
+        this._idName = newName;
         this.label.innerHTML = /*this.id + ': ' +*/newName;
 
         return true;
@@ -573,7 +573,7 @@ class Operator
 
         let json =
               pos + tab + '"type": "'        + this.opType            + '",\n'
-            + pos + tab + '"name": "'        + this.name              + '",\n'
+            + pos + tab + '"idName": "'      + this.idName            + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
             + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
             + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';

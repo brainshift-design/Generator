@@ -155,7 +155,20 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             }
 
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
+            const objCol = colorStyleRgb(rgbActiveObject);
+
+            if (   !slider.param
+                || !slider.param.op.selected)
+                slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
+
+            else
+            {
+                slider.focus.style.boxShadow = '0  1px 0 0 ' + objCol + ' inset';
+                    
+                if (param.op.params.indexOf(param) < param.op.params.length-1)
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
+            }
+
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
