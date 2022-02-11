@@ -54,7 +54,14 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
-    slider.style.fontWeight =  enable ? 'normal' : 'bold'; 
-    slider.readOnly         = !enable;
+    enableElementText(slider, enable);
+    slider.readOnly = !enable;
+}
+
+
+
+function enableElementText(elem, enable)
+{
+    elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
+    elem.style.fontWeight = enable ? 'normal' : 'bold';
 }

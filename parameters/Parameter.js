@@ -48,6 +48,8 @@ extends EventTarget
 
         this.input  = null;
         this.output = null;
+
+        enableElementText(this.div, true);
     }
 
 

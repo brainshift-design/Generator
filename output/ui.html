@@ -1,3 +1,6 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
 
@@ -3009,9 +3012,16 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
-    slider.style.fontWeight =  enable ? 'normal' : 'bold'; 
-    slider.readOnly         = !enable;
+    enableElementText(slider, enable);
+    slider.readOnly = !enable;
+}
+
+
+
+function enableElementText(elem, enable)
+{
+    elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
+    elem.style.fontWeight = enable ? 'normal' : 'bold';
 }
 
 
@@ -5462,9 +5472,16 @@ function createTextbox(className = '')
 
 function enableSliderText(slider, enable)
 {
-    slider.style.fontStyle  =  enable ? 'normal' : 'italic'; 
-    slider.style.fontWeight =  enable ? 'normal' : 'bold'; 
-    slider.readOnly         = !enable;
+    enableElementText(slider, enable);
+    slider.readOnly = !enable;
+}
+
+
+
+function enableElementText(elem, enable)
+{
+    elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
+    elem.style.fontWeight = enable ? 'normal' : 'bold';
 }
 
 
@@ -11394,6 +11411,8 @@ extends EventTarget
 
         this.input  = null;
         this.output = null;
+
+        enableElementText(this.div, true);
     }
 
 
@@ -14557,7 +14576,7 @@ extends OperatorBase
 
     updateNode()
     {
-        enableSliderText(this.#paramValue.control, !this.inputs[0].isConnected);
+        enableElementText(this.#paramValue.control, !this.inputs[0].isConnected);
         
         super.updateNode();
     }
@@ -15526,7 +15545,7 @@ extends OpColorBase
         //log(this.name + '.OpColor.updateNode()');
 
         
-        enableSliderText(this.hexbox, !this.isConnected());
+        enableElementText(this.hexbox, !this.isConnected());
 
         if (this.hexbox != document.activeElement)
         {
@@ -15564,8 +15583,8 @@ extends OpColorBase
 
         const colSpaceBar = 
             darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05 : 0.24];
+            ? [0, 0, 0, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
@@ -15618,10 +15637,7 @@ extends OpColorBase
             && !isValid)
             slider.setValue(Number.NaN, true, false, false);
 
-        enableSliderText(
-            slider.textbox, 
-               !this.inputs[0].isConnected);
-            // && isValid);
+        enableElementText(slider.textbox, !this.inputs[0].isConnected);
 
         slider.update();
     }
@@ -16420,7 +16436,7 @@ function onHexboxKeyDown(e)
         && getCtrlKey(e)
         && !hexbox.op.isConnected())
     {
-        // by doing nothing here I let the OS do its thing
+        // do nothing and let the OS do its thing
     }
 
     else if ((   e.code == 'Enter'
@@ -19312,7 +19328,6 @@ function uiEndLoadState(msg)
     productKey  = msg.productKey;
 
     uiGetPluginData('graph');    // load graph from current page
-    setInterval(autoSave, 5000); // auto save every 5 seconds
 
     uiEndResizeWindow();
 
@@ -19531,6 +19546,10 @@ function loadConnectionsAsync(data, nodes, setProgress)
         loadingOverlay.style.display = 'none';
 
         graphView.loadingNodes = false;
+
+
+        // now that the graph is loaded, the auto save can start
+        setInterval(autoSave, 1000);
     });
 }
 
@@ -19650,8 +19669,6 @@ function dataColorToJson(color, nTab)
 
     return json;
 }
-
-
 
 
 const licenseKeys     = createCryptoKeys();

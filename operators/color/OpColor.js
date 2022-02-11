@@ -248,7 +248,7 @@ extends OpColorBase
         //log(this.name + '.OpColor.updateNode()');
 
         
-        enableSliderText(this.hexbox, !this.isConnected());
+        enableElementText(this.hexbox, !this.isConnected());
 
         if (this.hexbox != document.activeElement)
         {
@@ -286,8 +286,8 @@ extends OpColorBase
 
         const colSpaceBar = 
             darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.div.over ? 3 : 1) * 0.05 : 0.24];
+            ? [0, 0, 0, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
@@ -340,10 +340,7 @@ extends OpColorBase
             && !isValid)
             slider.setValue(Number.NaN, true, false, false);
 
-        enableSliderText(
-            slider.textbox, 
-               !this.inputs[0].isConnected);
-            // && isValid);
+        enableElementText(slider.textbox, !this.inputs[0].isConnected);
 
         slider.update();
     }

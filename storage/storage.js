@@ -136,6 +136,10 @@ function loadConnectionsAsync(data, nodes, setProgress)
         loadingOverlay.style.display = 'none';
 
         graphView.loadingNodes = false;
+
+
+        // now that the graph is loaded, the auto save can start
+        setInterval(autoSave, 1000);
     });
 }
 
@@ -255,4 +259,3 @@ function dataColorToJson(color, nTab)
 
     return json;
 }
-

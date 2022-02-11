@@ -96,7 +96,7 @@ function onHexboxKeyDown(e)
         && getCtrlKey(e)
         && !hexbox.op.isConnected())
     {
-        // by doing nothing here I let the OS do its thing
+        // do nothing and let the OS do its thing
     }
 
     else if ((   e.code == 'Enter'

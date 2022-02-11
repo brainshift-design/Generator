@@ -40,7 +40,7 @@ extends OperatorBase
 
     updateNode()
     {
-        enableSliderText(this.#paramValue.control, !this.inputs[0].isConnected);
+        enableElementText(this.#paramValue.control, !this.inputs[0].isConnected);
         
         super.updateNode();
     }
