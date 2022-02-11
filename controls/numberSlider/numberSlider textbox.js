@@ -271,7 +271,15 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.outline   = 'none';
         slider.textbox.style.textAlign = 'center';
 
-        enableSliderText(slider.textbox, !slider.readOnly);
+        const isConnected =    
+               slider.param != null
+            && slider.param.input
+            && slider.param.input.isConnected;
+
+        enableElementText(
+            slider.textbox, 
+               !slider.readOnly
+            && !isConnected);
 
         slider.updateTextbox();
         
