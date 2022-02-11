@@ -1017,7 +1017,7 @@ input[type=text]::selection
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number"          )); this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
-    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction("limits"          )); this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
+    <button class='menuButton' id='btnCreateMinMax'           onclick='actionManager.do(new CreateNodeAction("minmax"          )); this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
     <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add"             )); this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
     <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract"        )); this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
     <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction("multiply"        )); this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
@@ -12412,7 +12412,7 @@ function createNode(opType)//, createdNodeId = -1)
     switch (opType)
     {
         case 'number':           node = new OpNumber();           break;
-        case 'limits':           node = new OpLimits();           break;
+        case 'minmax':           node = new OpMinMax();           break;
         case 'add':              node = new OpAdd();              break;
         case 'subtract':         node = new OpSubtract();         break;
         case 'multiply':         node = new OpMultiply();         break;
@@ -14745,7 +14745,7 @@ extends OperatorBase
 }
 
 
-class   OpLimits
+class   OpMinMax
 extends OperatorBase
 {
     #paramMin;
@@ -14755,7 +14755,7 @@ extends OperatorBase
 
     constructor()
     {
-        super('limits', 'lim', 'number', 70);
+        super('minmax', 'minmax', 'number', 70);
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
@@ -19594,7 +19594,7 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    uiGetPluginData('graph');    // load graph from current page
+    uiGetPluginData('graph'); // load graph from current page
 
     uiEndResizeWindow();
 

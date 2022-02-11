@@ -3,7 +3,7 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-    uiGetPluginData('graph');    // load graph from current page
+    uiGetPluginData('graph'); // load graph from current page
 
     uiEndResizeWindow();
 

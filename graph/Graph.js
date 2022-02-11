@@ -358,7 +358,7 @@ function createNode(opType)//, createdNodeId = -1)
     switch (opType)
     {
         case 'number':           node = new OpNumber();           break;
-        case 'limits':           node = new OpLimits();           break;
+        case 'minmax':           node = new OpMinMax();           break;
         case 'add':              node = new OpAdd();              break;
         case 'subtract':         node = new OpSubtract();         break;
         case 'multiply':         node = new OpMultiply();         break;

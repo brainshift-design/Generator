@@ -1,4 +1,4 @@
-class   OpLimits
+class   OpMinMax
 extends OperatorBase
 {
     #paramMin;
@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super('limits', 'lim', 'number', 70);
+        super('minmax', 'minmax', 'number', 70);
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
