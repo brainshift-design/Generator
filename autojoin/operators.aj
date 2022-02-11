@@ -36,6 +36,7 @@
 ../operators/color/OpColor spaces.js
 ../operators/color/OpColor hexbox.js
 ../operators/color/OpColor convert.js
+../operators/color/OpValidColor.js
 ../operators/color/OpWebContrast.js
 ../operators/color/OpColorInterpolate.js
 ../operators/color/OpColorblind.js

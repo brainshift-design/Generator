@@ -17,59 +17,59 @@ class Graph
 
 
 
-    getNewNodeName(curName, name)
-    {
-        if (!this.nodes.find(n => n.name == name))
-            return name;
+    // getNewNodeName(curName, name)
+    // {
+    //     if (!this.nodes.find(n => n.name == name))
+    //         return name;
         
 
-        let numLength = this.getNumLength(name);
+    //     let numLength = this.getNumLength(name);
 
-        if (numLength > 0)
-        {
-            const len = name.length - numLength;
-            let   num = parseInt(name.substring(len));
+    //     if (numLength > 0)
+    //     {
+    //         const len = name.length - numLength;
+    //         let   num = parseInt(name.substring(len));
 
-            let newName = '';
-            while (newName == '' || this.nodes.find(n => n.name == newName))
-                newName = name.substring(0, len) + (++num);
+    //         let newName = '';
+    //         while (newName == '' || this.nodes.find(n => n.name == newName))
+    //             newName = name.substring(0, len) + (++num);
 
-            return newName;
-        }
+    //         return newName;
+    //     }
 
-        else if (numLength == 0)
-        {
-            const len = name.length;
+    //     else if (numLength == 0)
+    //     {
+    //         const len = name.length;
 
-            let num     = 2;
-            let newName = name + num;
+    //         let num     = 2;
+    //         let newName = name + num;
 
-            while (this.nodes.find(n => 
-                   n.name != curName 
-                && n.name == newName))
-                newName = name + (++num);
+    //         while (this.nodes.find(n => 
+    //                n.name != curName 
+    //             && n.name == newName))
+    //             newName = name + (++num);
 
-            return newName;
-        }
+    //         return newName;
+    //     }
 
-        else
-            return name;
-    }
+    //     else
+    //         return name;
+    // }
     
     
     
-    getNumLength(name)
-    {
-        let numLength = 0;
+    // getNumLength(name)
+    // {
+    //     let numLength = 0;
 
-        for (let i = name.length - 1; i >= 0; i--)
-        {
-            if (isDigitChar(name[i])) numLength++;
-            else break;
-        }
+    //     for (let i = name.length - 1; i >= 0; i--)
+    //     {
+    //         if (isDigitChar(name[i])) numLength++;
+    //         else break;
+    //     }
 
-        return numLength;
-    }
+    //     return numLength;
+    // }
     
     
 
@@ -127,7 +127,7 @@ class Graph
         node.graph = this;
 
         if (createNewName)
-            node.setName(this.getNewNodeName(node.name, node.name));
+            node.setName(node.name);//this.getNewNodeName(node.name, node.name));
         
         this.nodes.push(node);
         graphView.appendChild(node.div);

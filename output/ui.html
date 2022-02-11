@@ -12058,59 +12058,59 @@ class Graph
 
 
 
-    getNewNodeName(curName, name)
-    {
-        if (!this.nodes.find(n => n.name == name))
-            return name;
+    // getNewNodeName(curName, name)
+    // {
+    //     if (!this.nodes.find(n => n.name == name))
+    //         return name;
         
 
-        let numLength = this.getNumLength(name);
+    //     let numLength = this.getNumLength(name);
 
-        if (numLength > 0)
-        {
-            const len = name.length - numLength;
-            let   num = parseInt(name.substring(len));
+    //     if (numLength > 0)
+    //     {
+    //         const len = name.length - numLength;
+    //         let   num = parseInt(name.substring(len));
 
-            let newName = '';
-            while (newName == '' || this.nodes.find(n => n.name == newName))
-                newName = name.substring(0, len) + (++num);
+    //         let newName = '';
+    //         while (newName == '' || this.nodes.find(n => n.name == newName))
+    //             newName = name.substring(0, len) + (++num);
 
-            return newName;
-        }
+    //         return newName;
+    //     }
 
-        else if (numLength == 0)
-        {
-            const len = name.length;
+    //     else if (numLength == 0)
+    //     {
+    //         const len = name.length;
 
-            let num     = 2;
-            let newName = name + num;
+    //         let num     = 2;
+    //         let newName = name + num;
 
-            while (this.nodes.find(n => 
-                   n.name != curName 
-                && n.name == newName))
-                newName = name + (++num);
+    //         while (this.nodes.find(n => 
+    //                n.name != curName 
+    //             && n.name == newName))
+    //             newName = name + (++num);
 
-            return newName;
-        }
+    //         return newName;
+    //     }
 
-        else
-            return name;
-    }
+    //     else
+    //         return name;
+    // }
     
     
     
-    getNumLength(name)
-    {
-        let numLength = 0;
+    // getNumLength(name)
+    // {
+    //     let numLength = 0;
 
-        for (let i = name.length - 1; i >= 0; i--)
-        {
-            if (isDigitChar(name[i])) numLength++;
-            else break;
-        }
+    //     for (let i = name.length - 1; i >= 0; i--)
+    //     {
+    //         if (isDigitChar(name[i])) numLength++;
+    //         else break;
+    //     }
 
-        return numLength;
-    }
+    //     return numLength;
+    // }
     
     
 
@@ -12168,7 +12168,7 @@ class Graph
         node.graph = this;
 
         if (createNewName)
-            node.setName(this.getNewNodeName(node.name, node.name));
+            node.setName(node.name);//this.getNewNodeName(node.name, node.name));
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
@@ -14588,9 +14588,9 @@ function initLabelTextbox(node)
         {
             if (node.textbox.value != '')
             {
-                const newName = graph.getNewNodeName(node.name, node.textbox.value);
-                setTimeout(() => node.setName(newName));
-                actionManager.do(new RenameNodeAction(node.id, newName));
+                // const newName = graph.getNewNodeName(node.name, node.textbox.value);
+                // setTimeout(() => node.setName(newName));
+                actionManager.do(new RenameNodeAction(node.id, node.textbox.value));//newName));
             }
         }
         else
@@ -16928,6 +16928,88 @@ function convert2hclluv(fromColor)
         hcl[0],
         hcl[1],
         hcl[2] ];
+}
+
+
+class   OpValidColor
+extends OpColorBase
+{
+    #paramSpace;
+    #textbox;
+
+
+
+    constructor()
+    {
+        super('validcolor', 'valid', 'color', 80);
+
+        
+        this.addInput (new Input (this.dataType));
+        this.addOutput(new Output(this.dataType));
+
+
+        this.addParam(this.#paramSpace = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
+      
+        this.#textbox = createTextbox('txtOrder');
+        this.inner.appendChild(this.#textbox);
+
+        this.#paramSpace.control.min         = 2;
+        this.#paramSpace.control.displayMin  = 2;
+        
+
+        this.inputs[0].addEventListener('connect', () => 
+        {
+            if (   !this.inputs[1].isConnected
+                && !graphView.loadingNodes) 
+                this.#paramSpace.setValue(
+                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]),
+                    true, true, false);
+        });
+    }
+
+
+
+    updateData()
+    {
+        //log(this.name + '.OpValidColor.updateData()');
+
+        // if (   this.inputs[0].isConnected
+        //     && this.inputs[1].isConnected)
+        // {
+        //     const space = colorSpace(this.#paramSpace.value);
+        //     const f     = this.#paramAmount.value;
+        //     const gamma = this.#paramGamma .value;
+            
+        //     const col = this.interpolate(
+        //         space,
+        //         dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+        //         dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+        //         f,
+        //         gamma);
+
+        //     this._color = [
+        //         space, 
+        //         col[0], 
+        //         col[1], 
+        //         col[2] ];
+        // }
+
+        // else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
+        // else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
+        // else                                this._color = dataColor_NaN;
+
+        // this.outputs[0]._data = dataFromDataColor(this._color);
+
+
+        super.updateData()
+    }
+
+
+
+    canShowColor()
+    {
+        return this.inputs[0].isConnected;
+    }
 }
 
 
