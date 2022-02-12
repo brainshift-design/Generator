@@ -3,6 +3,9 @@ var tooltipTimer,
     tooltipOutTimer, 
     tooltipLeaveTimer;
 
+var curTooltipSource = null;
+var curTooltip       = null;
+
     
 
 function createTooltip(source, tooltip, bottomArrow = false)
@@ -21,7 +24,7 @@ function createTooltip(source, tooltip, bottomArrow = false)
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
             }, 
-            1000);
+            curTooltip ? 0 : 1000);
         }
     });
     
@@ -30,7 +33,13 @@ function createTooltip(source, tooltip, bottomArrow = false)
     source.addEventListener('pointerleave', () =>
     {
         clearTimeout(tooltipTimer);
-        tooltipOutTimer = setTimeout(() => hideTooltip(tooltip), 400);
+        curTooltipSource = null;
+
+        tooltipOutTimer = setTimeout(() => 
+        {
+            hideTooltip(tooltip);
+        }, 
+        400);
     });
 
 
@@ -56,8 +65,12 @@ function createTooltip(source, tooltip, bottomArrow = false)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
-    tooltip.style.display      = 'block';
-    tooltip.style.opacity      = '100%';
+    if (curTooltip)
+        hideTooltip(curTooltip);
+
+
+    tooltip     .style.display = 'block';
+    tooltip     .style.opacity = '100%';
 
     tooltipArrow.style.display = 'block';
     tooltipArrow.style.opacity = '100%';
@@ -95,20 +108,24 @@ function showTooltip(source, tooltip, bottomArrow)
         tooltipArrow.style.borderColor = 'transparent transparent #040404 transparent';
         tooltipArrow.style.top         = ttRect.y - tooltipArrow.offsetHeight;
     }
+
+
+    curTooltip = tooltip;
 }
 
 
 
 function hideTooltip(tooltip)
 {
-    tooltip.style.display      = 'none';
-    tooltip.style.opacity      = '0%';
+    tooltip     .style.display = 'none';
+    tooltip     .style.opacity = '0%';
 
     tooltipArrow.style.display = 'none';
     tooltipArrow.style.opacity = '0%';
 
     clearTimeout(tooltipTimer);
+    clearTimeout(tooltipOutTimer);
 
     tooltipTimer               = null;
-    shownTooltip               = null;
+    curTooltip                 = null;
 }
