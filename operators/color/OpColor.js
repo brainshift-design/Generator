@@ -230,13 +230,6 @@ extends OpColorBase
     
         this.outputs[0]._data = dataFromDataColor(this._color);
 
-        // for (const param of this.params.filter(p => p.dataType == 'number'))
-        // {
-        //     param.valueIsValid = 
-        //             colorSpaceIndex(this._color[0]) > 2 
-        //         || !isValidRgb(dataColor2rgb(this._color));
-        // }
-
 
         super.updateData()
     }
@@ -317,7 +310,7 @@ extends OpColorBase
         this.updateAllSliderRanges();
 
         const isValid = 
-               colorSpaceIndex(this._color[0]) > 4
+               colorSpaceIndex(this._color[0]) > 3
             || isValidRgb(colBack);
 
         this.updateSlider(this.param1.control, isValid);

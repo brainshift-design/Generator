@@ -89,16 +89,16 @@
 <div id='ttInterpolationSpace' class='tooltip'>
 
     <div>
-        Determines the path of interpolation.
+        The color space determines<br/>the path of interpolation.
     </div>
     <div style="margin-top: 14px;">
-        RGB is interpolated on a line, spaces with a Hue component &mdash; on a circle.
+        Through RGB it goes in a straight line,<br/>through spaces with Hue &mdash; in a circle.
     </div>
 
-    <div style="position: absolute; left:  43px; top: 90px;">RGB</div>
-    <div style="position: absolute; left: 148px; top: 90px;">Hxx</div>
+    <div style="position: absolute; left:  47px; top: 110px;">RGB</div>
+    <div style="position: absolute; left: 152px; top: 110px;">HCL</div>
 
-    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 14px;">
+    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 13px; margin-left: 4px;">
         <circle cx="43.945" cy="43.6699" r="42.9129" transform="rotate(164.053 43.945 43.6699)" stroke="white"/>
         <circle cx="148.459" cy="43.6699" r="42.9129" transform="rotate(164.053 148.459 43.6699)" stroke="white"/>
         <path d="M177.161 53.8683C175.042 59.8328 171.117 64.9889 165.932 68.6199C160.747 72.2509 154.56 74.1764 148.23 74.1287C141.9 74.081 135.743 72.0626 130.613 68.3539C125.484 64.6453 121.637 59.4307 119.607 53.4349" stroke="white" stroke-width="0.8" stroke-dasharray="2 2"/>
@@ -112,7 +112,47 @@
 </div>
 
 
-<div id='ttInterpolationGamma' class='tooltip'>
+<!-- <div id='ttInterpolationGamma' class='tooltip'>
     <div style="text-align: center;">Gamma correction</div>              
     <div style="margin-top: 14px;">How linearly the lightness is interpolated.</div>
+</div> -->
+
+
+<div id='ttWcag3' class='tooltip'>
+
+    <div style='text-align: center;'>APCA visual contrast</div>
+    
+    <div class='wcagDescription' style='left:  52px;'>visible</div>
+    <div class='wcagDescription' style='left:  84px;'>minimum</div>
+    <div class='wcagDescription' style='left: 117px;'>large</div>
+    <div class='wcagDescription' style='left: 148px;'>other</div>
+    <div class='wcagDescription' style='left: 179px;'>body</div>
+    <div class='wcagDescription' style='left: 211px;'>all</div>
+
+    <svg width="222" height="21" viewBox="0 0 222 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 19px; top: 74px">
+        <rect x="0.854492" y="10.7924" width="31.5139" height="9.45416" fill="#FF0040" fill-opacity="0.5"/>
+        <rect x="32.3684" y="10.7924" width="31.5139" height="9.45416" fill="#FF7048" fill-opacity="0.5"/>
+        <rect x="63.8822" y="10.7924" width="31.5139" height="9.45416" fill="#FFB92F" fill-opacity="0.5"/>
+        <rect x="95.3961" y="10.7924" width="31.5139" height="9.45416" fill="#FFFF36" fill-opacity="0.5"/>
+        <rect x="126.91" y="10.7924" width="31.5139" height="9.45416" fill="#4FFE15" fill-opacity="0.5"/>
+        <rect width="31.5139" height="9.45416" transform="matrix(1 0 0 -1 158.424 20.2466)" fill="#7070FF" fill-opacity="0.7"/>
+        <rect width="31.5139" height="9.45416" transform="matrix(1 0 0 -1 189.938 20.2466)" fill="white" fill-opacity="0.4"/>
+        <line x1="32.8684" x2="32.8684" y2="20.2466" stroke="white"/>
+        <line x1="64.3822" x2="64.3822" y2="20.2466" stroke="white"/>
+        <line x1="95.8961" x2="95.8961" y2="20.2466" stroke="white"/>
+        <line x1="127.41" x2="127.41" y2="20.2466" stroke="white"/>
+        <line x1="158.924" x2="158.924" y2="20.2466" stroke="white"/>
+        <line x1="190.438" x2="190.438" y2="20.2466" stroke="white"/>
+    </svg>
+
+    <div class='wcagValue' style='left:  20px;'>  0</div>
+    <div class='wcagValue' style='left:  52px;'> 15</div>
+    <div class='wcagValue' style='left:  84px;'> 30</div>
+    <div class='wcagValue' style='left: 114px;'> 45</div>
+    <div class='wcagValue' style='left: 147px;'> 60</div>
+    <div class='wcagValue' style='left: 179px;'> 75</div>
+    <div class='wcagValue' style='left: 210px;'> 90</div>
+    <div class='wcagValue' style='left: 239px;'>105</div>
+
+    <div id='wcagInfo'><a href='https://www.myndex.com/APCA/#font-size-and-weight' target='_blank'>More details</a></div>
 </div>

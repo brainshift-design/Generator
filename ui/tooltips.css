@@ -7,6 +7,46 @@
 
 #ttInterpolationSpace
 {
-    width:  192px;
-    height: 162px;
+    width:  200px;
+    height: 178px;
+}
+
+
+#ttWcag3
+{
+    width:  240px;
+    height: 140px;
+}
+
+
+.wcagDescription
+{
+    text-align:       left;
+    position:         absolute;
+    top:              58px;
+    transform:        rotateZ(-45deg);
+    transform-origin: bottom left;
+}
+
+
+.wcagValue
+{
+    position:  absolute;
+    top:       100px;
+    transform: translateX(-50%);
+}
+
+
+#wcagInfo
+{
+    position:  absolute;
+    left:      50%;
+    top:       124px;
+    transform: translateX(-50%);
+}
+
+
+#wcagInfo a
+{
+    color: #6eb8e9
 }

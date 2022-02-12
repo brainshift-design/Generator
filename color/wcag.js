@@ -38,8 +38,8 @@ function getContrastRatio3(textColor, backColor)
 
 
 
-// I copied the code below from https://stackoverflow.com/questions/66567403/how-do-you-find-the-color-contrast-using-apca-advanced-perpetual-contrast-algor.
-// It's almost verbatim, I only reformatted it a tiny bit to better fit my code style.
+// I copied the code below from https://github.com/Myndex/SAPC-APCA/blob/master/WEBTOOLS/APCA/JS/DEV.0.1.2.G_SAPCsRGB.js
+// It's almost verbatim, I only refactored it a bit to better fit my code style.
 
 
 
@@ -72,9 +72,9 @@ function getContrastRatio3(textColor, backColor)
 
 const mainTRC     = 2.4; // 2.4 exponent emulates actual monitor perception
        
-const sRco        = 0.2126729, 
-      sGco        = 0.7151522, 
-      sBco        = 0.0721750; // sRGB coefficients
+// const sRco        = 0.2126729, 
+//       sGco        = 0.7151522, 
+//       sBco        = 0.0721750; // sRGB coefficients
    
 const normBG      = 0.56, 
       normTXT     = 0.57,

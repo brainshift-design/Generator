@@ -1,3 +1,10 @@
+var tooltipTimer, 
+    tooltipInTimer,
+    tooltipOutTimer, 
+    tooltipLeaveTimer;
+
+    
+
 function createTooltip(source, tooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
@@ -21,6 +28,22 @@ function createTooltip(source, tooltip, bottomArrow = false)
   
     
     source.addEventListener('pointerleave', () =>
+    {
+        clearTimeout(tooltipTimer);
+        tooltipOutTimer = setTimeout(() => hideTooltip(tooltip), 400);
+    });
+
+
+
+    tooltip.addEventListener('pointerenter', () =>
+    {
+        clearTimeout(tooltipOutTimer);
+        tooltipOutTimer = null;
+    });
+    
+  
+    
+    tooltip.addEventListener('pointerleave', () =>
     {
         hideTooltip(tooltip);
     });

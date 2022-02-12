@@ -113,6 +113,12 @@ function onHexboxKeyDown(e)
          ||     hexbox.op.isConnected()
             && !isArrowKey(e.code))
         e.preventDefault();
+
+    // else if (e.key == 'ArrowUp'
+    //       || e.key == 'ArrowDown')
+    // {
+
+    // }
 }
 
 

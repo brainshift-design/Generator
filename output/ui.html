@@ -431,7 +431,7 @@ div
     top:              44px;
     font-family:      Inter;
     font-size:        11px;
-    pointer-events:   none;
+    /* pointer-events:   none; */
 }
 
 
@@ -457,8 +457,48 @@ div
 
 #ttInterpolationSpace
 {
-    width:  192px;
-    height: 162px;
+    width:  200px;
+    height: 178px;
+}
+
+
+#ttWcag3
+{
+    width:  240px;
+    height: 140px;
+}
+
+
+.wcagDescription
+{
+    text-align:       left;
+    position:         absolute;
+    top:              58px;
+    transform:        rotateZ(-45deg);
+    transform-origin: bottom left;
+}
+
+
+.wcagValue
+{
+    position:  absolute;
+    top:       100px;
+    transform: translateX(-50%);
+}
+
+
+#wcagInfo
+{
+    position:  absolute;
+    left:      50%;
+    top:       124px;
+    transform: translateX(-50%);
+}
+
+
+#wcagInfo a
+{
+    color: #6eb8e9
 }
 
 
@@ -1224,16 +1264,16 @@ div
 <div id='ttInterpolationSpace' class='tooltip'>
 
     <div>
-        Determines the path of interpolation.
+        The color space determines<br/>the path of interpolation.
     </div>
     <div style="margin-top: 14px;">
-        RGB is interpolated on a line, spaces with a Hue component &mdash; on a circle.
+        Through RGB it goes in a straight line,<br/>through spaces with Hue &mdash; in a circle.
     </div>
 
-    <div style="position: absolute; left:  43px; top: 90px;">RGB</div>
-    <div style="position: absolute; left: 148px; top: 90px;">Hxx</div>
+    <div style="position: absolute; left:  47px; top: 110px;">RGB</div>
+    <div style="position: absolute; left: 152px; top: 110px;">HCL</div>
 
-    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 14px;">
+    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 13px; margin-left: 4px;">
         <circle cx="43.945" cy="43.6699" r="42.9129" transform="rotate(164.053 43.945 43.6699)" stroke="white"/>
         <circle cx="148.459" cy="43.6699" r="42.9129" transform="rotate(164.053 148.459 43.6699)" stroke="white"/>
         <path d="M177.161 53.8683C175.042 59.8328 171.117 64.9889 165.932 68.6199C160.747 72.2509 154.56 74.1764 148.23 74.1287C141.9 74.081 135.743 72.0626 130.613 68.3539C125.484 64.6453 121.637 59.4307 119.607 53.4349" stroke="white" stroke-width="0.8" stroke-dasharray="2 2"/>
@@ -1247,9 +1287,49 @@ div
 </div>
 
 
-<div id='ttInterpolationGamma' class='tooltip'>
+<!-- <div id='ttInterpolationGamma' class='tooltip'>
     <div style="text-align: center;">Gamma correction</div>              
     <div style="margin-top: 14px;">How linearly the lightness is interpolated.</div>
+</div> -->
+
+
+<div id='ttWcag3' class='tooltip'>
+
+    <div style='text-align: center;'>APCA visual contrast</div>
+    
+    <div class='wcagDescription' style='left:  52px;'>visible</div>
+    <div class='wcagDescription' style='left:  84px;'>minimum</div>
+    <div class='wcagDescription' style='left: 117px;'>large</div>
+    <div class='wcagDescription' style='left: 148px;'>other</div>
+    <div class='wcagDescription' style='left: 179px;'>body</div>
+    <div class='wcagDescription' style='left: 211px;'>all</div>
+
+    <svg width="222" height="21" viewBox="0 0 222 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 19px; top: 74px">
+        <rect x="0.854492" y="10.7924" width="31.5139" height="9.45416" fill="#FF0040" fill-opacity="0.5"/>
+        <rect x="32.3684" y="10.7924" width="31.5139" height="9.45416" fill="#FF7048" fill-opacity="0.5"/>
+        <rect x="63.8822" y="10.7924" width="31.5139" height="9.45416" fill="#FFB92F" fill-opacity="0.5"/>
+        <rect x="95.3961" y="10.7924" width="31.5139" height="9.45416" fill="#FFFF36" fill-opacity="0.5"/>
+        <rect x="126.91" y="10.7924" width="31.5139" height="9.45416" fill="#4FFE15" fill-opacity="0.5"/>
+        <rect width="31.5139" height="9.45416" transform="matrix(1 0 0 -1 158.424 20.2466)" fill="#7070FF" fill-opacity="0.7"/>
+        <rect width="31.5139" height="9.45416" transform="matrix(1 0 0 -1 189.938 20.2466)" fill="white" fill-opacity="0.4"/>
+        <line x1="32.8684" x2="32.8684" y2="20.2466" stroke="white"/>
+        <line x1="64.3822" x2="64.3822" y2="20.2466" stroke="white"/>
+        <line x1="95.8961" x2="95.8961" y2="20.2466" stroke="white"/>
+        <line x1="127.41" x2="127.41" y2="20.2466" stroke="white"/>
+        <line x1="158.924" x2="158.924" y2="20.2466" stroke="white"/>
+        <line x1="190.438" x2="190.438" y2="20.2466" stroke="white"/>
+    </svg>
+
+    <div class='wcagValue' style='left:  20px;'>  0</div>
+    <div class='wcagValue' style='left:  52px;'> 15</div>
+    <div class='wcagValue' style='left:  84px;'> 30</div>
+    <div class='wcagValue' style='left: 114px;'> 45</div>
+    <div class='wcagValue' style='left: 147px;'> 60</div>
+    <div class='wcagValue' style='left: 179px;'> 75</div>
+    <div class='wcagValue' style='left: 210px;'> 90</div>
+    <div class='wcagValue' style='left: 239px;'>105</div>
+
+    <div id='wcagInfo'><a href='https://www.myndex.com/APCA/#font-size-and-weight' target='_blank'>More details</a></div>
 </div>
 
 
@@ -6848,8 +6928,8 @@ function getContrastRatio3(textColor, backColor)
 
 
 
-// I copied the code below from https://stackoverflow.com/questions/66567403/how-do-you-find-the-color-contrast-using-apca-advanced-perpetual-contrast-algor.
-// It's almost verbatim, I only reformatted it a tiny bit to better fit my code style.
+// I copied the code below from https://github.com/Myndex/SAPC-APCA/blob/master/WEBTOOLS/APCA/JS/DEV.0.1.2.G_SAPCsRGB.js
+// It's almost verbatim, I only refactored it a bit to better fit my code style.
 
 
 
@@ -6882,9 +6962,9 @@ function getContrastRatio3(textColor, backColor)
 
 const mainTRC     = 2.4; // 2.4 exponent emulates actual monitor perception
        
-const sRco        = 0.2126729, 
-      sGco        = 0.7151522, 
-      sBco        = 0.0721750; // sRGB coefficients
+// const sRco        = 0.2126729, 
+//       sGco        = 0.7151522, 
+//       sBco        = 0.0721750; // sRGB coefficients
    
 const normBG      = 0.56, 
       normTXT     = 0.57,
@@ -15880,13 +15960,6 @@ extends OpColorBase
     
         this.outputs[0]._data = dataFromDataColor(this._color);
 
-        // for (const param of this.params.filter(p => p.dataType == 'number'))
-        // {
-        //     param.valueIsValid = 
-        //             colorSpaceIndex(this._color[0]) > 2 
-        //         || !isValidRgb(dataColor2rgb(this._color));
-        // }
-
 
         super.updateData()
     }
@@ -15967,7 +16040,7 @@ extends OpColorBase
         this.updateAllSliderRanges();
 
         const isValid = 
-               colorSpaceIndex(this._color[0]) > 4
+               colorSpaceIndex(this._color[0]) > 3
             || isValidRgb(colBack);
 
         this.updateSlider(this.param1.control, isValid);
@@ -16806,6 +16879,12 @@ function onHexboxKeyDown(e)
          ||     hexbox.op.isConnected()
             && !isArrowKey(e.code))
         e.preventDefault();
+
+    // else if (e.key == 'ArrowUp'
+    //       || e.key == 'ArrowDown')
+    // {
+
+    // }
 }
 
 
@@ -17236,8 +17315,8 @@ extends OpColorBase
 class   OpWebContrast
 extends OpColorBase
 {
-    #paramStandard;
     #paramValue;
+    #paramStandard;
 
 
 
@@ -17255,6 +17334,8 @@ extends OpColorBase
       
 
         enableSliderText(this.#paramValue.control, false);
+
+        createTooltip(this.#paramValue.control, ttWcag3);
     }
 
 
@@ -17315,7 +17396,7 @@ extends OpColorBase
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 108;
 
-                    this.#paramValue.control.setDecimals(0);
+                    this.#paramValue.control.setDecimals(1);
 
                     this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
                     this.#paramValue.control.setValue(Math.abs(ratio));
@@ -19419,6 +19500,13 @@ function setAutoCursor()
 };
 
 
+var tooltipTimer, 
+    tooltipInTimer,
+    tooltipOutTimer, 
+    tooltipLeaveTimer;
+
+    
+
 function createTooltip(source, tooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
@@ -19442,6 +19530,22 @@ function createTooltip(source, tooltip, bottomArrow = false)
   
     
     source.addEventListener('pointerleave', () =>
+    {
+        clearTimeout(tooltipTimer);
+        tooltipOutTimer = setTimeout(() => hideTooltip(tooltip), 400);
+    });
+
+
+
+    tooltip.addEventListener('pointerenter', () =>
+    {
+        clearTimeout(tooltipOutTimer);
+        tooltipOutTimer = null;
+    });
+    
+  
+    
+    tooltip.addEventListener('pointerleave', () =>
     {
         hideTooltip(tooltip);
     });
@@ -19912,13 +20016,6 @@ function updateGraphNodes()
     for (const node of graphView.lastSelectedNodes)  node.updateNode();
 }
 
-
-var tooltipTimer, 
-    tooltipInTimer,
-    tooltipOutTimer, 
-    tooltipLeaveTimer;
-
-    
 
 function uiEndLoadState(msg)
 {

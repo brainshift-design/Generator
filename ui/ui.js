@@ -1,10 +1,3 @@
-var tooltipTimer, 
-    tooltipInTimer,
-    tooltipOutTimer, 
-    tooltipLeaveTimer;
-
-    
-
 function uiEndLoadState(msg)
 {
     currentUser = msg.currentUser;

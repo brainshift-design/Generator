@@ -1,8 +1,8 @@
 class   OpWebContrast
 extends OpColorBase
 {
-    #paramStandard;
     #paramValue;
+    #paramStandard;
 
 
 
@@ -20,6 +20,8 @@ extends OpColorBase
       
 
         enableSliderText(this.#paramValue.control, false);
+
+        createTooltip(this.#paramValue.control, ttWcag3);
     }
 
 
@@ -80,7 +82,7 @@ extends OpColorBase
                     this.#paramValue.control.max        = 
                     this.#paramValue.control.displayMax = 108;
 
-                    this.#paramValue.control.setDecimals(0);
+                    this.#paramValue.control.setDecimals(1);
 
                     this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -8px; left: 1px;">c</span>';
                     this.#paramValue.control.setValue(Math.abs(ratio));
