@@ -1,16 +1,16 @@
 const OpColorSpaces = 
 [
-    ['hex',    'Hex'    ],
-    ['rgbhex', '<span class=\'hash\'>#</span>RGB'],
-    ['rgb',    'RGB'    ], 
-    ['hsv',    'HSV'    ], 
-    ['hsl',    'HSL'    ], 
+    ['hex',    'Hex'   ],
+    //['rgbhex', '<span class=\'hash\'>#</span>RGB'],
+    ['rgb',    'RGB'   ], 
+    ['hsv',    'HSV'   ], 
+    ['hsl',    'HSL'   ], 
     ['hclokl', 'HCL/ok'],
     ['hcllab', 'HCL/ab'],
-    ['hclluv', 'HCL/uv'],
-    ['oklab',  'okLab'  ],
-    ['lab',    'Lab'    ],
-    ['luv',    'Luv'    ]
+    ['hclluv', 'HCL/uv']/*,
+    ['oklab',  'okLab' ],
+    ['lab',    'Lab'   ],
+    ['luv',    'Luv'   ]*/
 ];
 
 function colorSpace(index) { return OpColorSpaces[index][0]; }

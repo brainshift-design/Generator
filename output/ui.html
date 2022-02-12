@@ -48,26 +48,64 @@
 }
 
 
-body
-{
-    margin:           0;
-    background-color: #f4f4f4;
-    user-select:      none;
-    font-family:      Inter;
 
-    -webkit-touch-callout: none; 
-      -webkit-user-select: none; 
-       -khtml-user-select: none; 
-         -moz-user-select: none; 
-          -ms-user-select: none; 
-              user-select: none; 
+#btnCreateNumber
+{
+    padding-left:  15px;
+    padding-right: 35px;
 }
 
 
-div
+#btnZoom
 {
-    margin:  0;
-    padding: 0;
+    position:      absolute;
+    padding-left:  15px;
+    padding-right: 45px;
+}
+
+
+#btnToggleWires
+{
+    position:            absolute;
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateWebContrast
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+
+#btnCreateWebContrast:hover
+{
+    background-color:    black;
+}
+
+
+#btnCreateColorBlind
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+
+#btnCreateColorBlind:hover
+{
+    background-color:    black;
 }
 
 
@@ -177,66 +215,6 @@ div
 {
     background: var(--activeObjectColor);
     color:      white;
-}
-
-
-#btnCreateNumber
-{
-    padding-left:  15px;
-    padding-right: 35px;
-}
-
-
-#btnZoom
-{
-    position:      absolute;
-    padding-left:  15px;
-    padding-right: 45px;
-}
-
-
-#btnToggleWires
-{
-    position:            absolute;
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnCreateWebContrast
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-
-#btnCreateWebContrast:hover
-{
-    background-color:    black;
-}
-
-
-#btnCreateColorBlind
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-
-#btnCreateColorBlind:hover
-{
-    background-color:    black;
 }
 
 
@@ -410,6 +388,79 @@ input[type=text]::selection
 {
     background-color: #b9e2fe;
     color:            black;
+}
+
+
+body
+{
+    margin:           0;
+    background-color: #f4f4f4;
+    user-select:      none;
+    font-family:      Inter;
+
+    -webkit-touch-callout: none; 
+      -webkit-user-select: none; 
+       -khtml-user-select: none; 
+         -moz-user-select: none; 
+          -ms-user-select: none; 
+              user-select: none; 
+}
+
+
+div
+{
+    margin:  0;
+    padding: 0;
+}
+
+
+.tooltip
+{
+    display:          none;
+    opacity:          0;
+    width:            auto;
+    height:           15px;
+    background-color: #040404;
+    color:            #eee;
+    border-radius:    2px;
+    padding:          5px 10px 5px 10px;
+    position:         absolute;
+    z-index:          10000;
+    bottom:           125%;
+    left:             13px;
+    top:              44px;
+    font-family:      Inter;
+    font-size:        11px;
+    pointer-events:   none;
+}
+
+
+#tooltipArrow
+{
+    content:      '';
+    position:     absolute;
+    margin-left:  -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #040404 transparent;
+    display:      none;
+    opacity:      0%;
+}
+
+
+#ttCreateColorblind
+{
+    width:          200px; 
+    height:         304px;
+    padding-bottom: 10px;
+}
+
+
+#ttCreateColorInterpolate
+{
+    width:          200px;
+    height:         160px;
+    padding-bottom: 10px;
 }
 
 
@@ -1082,6 +1133,115 @@ input[type=text]::selection
     </div>
 
 </div>
+
+
+<span id='tooltipArrow'></span>
+
+
+<div id='ttCreateNumber'           class='tooltip'>Number</div>
+<div id='ttCreateMinMax'           class='tooltip'>Limits</div>
+<div id='ttCreateAdd'              class='tooltip'>Add</div>
+<div id='ttCreateSubtract'         class='tooltip'>Subtract</div>
+<div id='ttCreateMultiply'         class='tooltip'>Multiply</div>
+<div id='ttCreateDivide'           class='tooltip'>Divide</div>
+<div id='ttCreateModulo'           class='tooltip'>Remainder</div>
+<div id='ttCreateExponent'         class='tooltip'>Power</div>
+<div id='ttCreateInterpolate'      class='tooltip'>Interpolate</div>
+
+
+<div id='ttCreateColor'            class='tooltip'>Color</div>
+
+
+<div id='ttCreateColorInterpolate' class='tooltip'>
+
+    <div style="text-align: center;">Interpolate color</div>
+
+    <div style="margin-top: 14px;">Choose the appropriate color space<br/>to determine the path of interpolation.</div>
+
+    <div style="position: absolute; left:  47px; top: 100px;">RGB</div>
+    <div style="position: absolute; left: 138px; top: 100px;">HSV/HCL</div>
+
+    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 14px; position: relative; left: 4px;">
+        <circle cx="43.945" cy="43.6699" r="42.9129" transform="rotate(164.053 43.945 43.6699)" stroke="white"/>
+        <circle cx="148.459" cy="43.6699" r="42.9129" transform="rotate(164.053 148.459 43.6699)" stroke="white"/>
+        <path d="M177.161 53.8683C175.042 59.8328 171.117 64.9889 165.932 68.6199C160.747 72.2509 154.56 74.1764 148.23 74.1287C141.9 74.081 135.743 72.0626 130.613 68.3539C125.484 64.6453 121.637 59.4307 119.607 53.4349" stroke="white" stroke-width="0.8" stroke-dasharray="2 2"/>
+        <circle cx="16.6584" cy="54.5167" r="2.79505" transform="rotate(164.053 16.1584 54.5167)" fill="white"/>
+        <circle cx="71.0077" cy="54.5167" r="2.79505" transform="rotate(164.053 71.5077 54.4231)" fill="white"/>
+        <circle cx="121.173" cy="54.5167" r="2.79505" transform="rotate(164.053 120.673 54.5167)" fill="white"/>
+        <circle cx="175.522" cy="54.5167" r="2.79505" transform="rotate(164.053 176.022 54.4231)" fill="white"/>
+        <line x1="72.3693" y1="54.0053" x2="15.8716" y2="54.0053" stroke="white" stroke-dasharray="2 2"/>
+    </svg>
+                
+</div>
+
+
+<div id='ttCreateWebContrast' class='tooltip'>Web contrast</div>
+
+
+<div id='ttCreateColorblind' class='tooltip'>
+
+    <div style="text-align: center;">Colorblind</div>
+    
+    <div style='margin-top: 14px; margin-bottom: 10px;'>
+        Three receptor cone types in our eyes<br/>
+        see <i>three calibers of light</i>&ThinSpace;:<br/><br/>
+        <p style='margin-top: 4px; margin-bottom: 20px;'><b>S</b>mall, <b>M</b>edium and <b>L</b>arge.</p>
+    </div>
+
+    <svg width="189" height="97" viewBox="0 0 189 97" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: relative; left: 5px">
+        <path d="M64.3525 17.3547C63.1278 17.3547 62.0721 1.13879 60.8053 1.13879C59.5384 1.13879 58.4827 17.3547 57.258 17.3547" stroke="white"/>
+        <path d="M84.3644 10.4618C83.8577 8.49826 82.9076 1.13879 82.0886 1.13879C80.8217 1.13879 79.766 17.3547 78.5414 17.3547" stroke="white"/>
+        <path d="M78.5414 17.3547C77.3167 17.3547 76.261 1.13879 74.9942 1.13879C73.7273 1.13879 72.6716 17.3547 71.4469 17.3547" stroke="white"/>
+        <path d="M71.4469 17.3547C70.2223 17.3547 69.1666 1.13879 67.8997 1.13879C66.6328 1.13879 65.5771 17.3547 64.3525 17.3547" stroke="white"/>
+        <path d="M35.9747 17.3547C34.75 17.3547 33.6943 1.13879 32.4274 1.13879C31.1606 1.13879 30.1049 17.3547 28.8802 17.3547" stroke="white"/>
+        <path d="M57.258 17.3547C56.0334 17.3547 54.9776 1.13879 53.7108 1.13879C52.4439 1.13879 51.3882 17.3547 50.1635 17.3547" stroke="white"/>
+        <path d="M50.1636 17.3547C48.9389 17.3547 47.8832 1.13879 46.6163 1.13879C45.3495 1.13879 44.2938 17.3547 43.0691 17.3547" stroke="white"/>
+        <path d="M43.0691 17.3547C41.8445 17.3547 40.7887 1.13879 39.5219 1.13879C38.255 1.13879 37.1993 17.3547 35.9746 17.3547" stroke="white"/>
+        <path d="M7.59684 17.3547C6.3722 17.3547 5.31647 1.13879 4.04961 1.13879C2.78274 1.13879 1.72702 17.3547 0.50238 17.3547" stroke="white"/>
+        <path d="M28.8802 17.3547C27.6556 17.3547 26.5998 1.13879 25.333 1.13879C24.0661 1.13879 23.0104 17.3547 21.7857 17.3547" stroke="white"/>
+        <path d="M21.7857 17.3547C20.5611 17.3547 19.5054 1.13879 18.2385 1.13879C16.9716 1.13879 15.9159 17.3547 14.6913 17.3547" stroke="white"/>
+        <path d="M14.6913 17.3547C13.4666 17.3547 12.4109 1.13879 11.144 1.13879C9.87716 1.13879 8.82144 17.3547 7.5968 17.3547" stroke="white"/>
+        <path d="M26.1023 49.8573C21.6833 49.8573 17.8738 28.2361 13.3023 28.2361C8.73093 28.2361 4.92142 49.8573 0.50238 49.8573" stroke="white" stroke-width="1.5"/>
+        <path d="M97.2868 40.4082C95.3801 36.1644 93.2103 28.2361 90.1022 28.2361C85.5307 28.2361 81.7212 49.8573 77.3022 49.8573" stroke="white" stroke-width="1.5"/>
+        <path d="M77.3021 49.8573C72.8831 49.8573 69.0736 28.2361 64.5022 28.2361C59.9308 28.2361 56.1212 49.8573 51.7022 49.8573" stroke="white" stroke-width="1.5"/>
+        <path d="M51.7022 49.8573C47.2832 49.8573 43.4737 28.2361 38.9023 28.2361C34.3308 28.2361 30.5213 49.8573 26.1023 49.8573" stroke="white" stroke-width="1.5"/>
+        <path d="M130.23 95.5318C119.033 95.5318 109.381 65.8027 97.7978 65.8027C86.215 65.8027 76.5627 95.5318 65.366 95.5318" stroke="white" stroke-width="2"/>
+        <path d="M65.366 95.5318C54.1693 95.5318 44.517 65.8027 32.9342 65.8027C21.3514 65.8027 11.6991 95.5318 0.50238 95.5318" stroke="white" stroke-width="2"/>
+        <circle cx="133.608" cy="79.9916" r="15.8916" stroke="white" stroke-width="2"/>
+        <circle cx="133.608" cy="79.9916" r="15.8916" stroke="white" stroke-width="2"/>
+        <circle cx="133.608" cy="79.9916" r="15.8916" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0467" r="14.3697" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0467" r="14.3697" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0467" r="14.3697" stroke="white" stroke-width="2"/>
+        <circle cx="105.364" cy="39.0467" r="7.78361" stroke="white" stroke-width="2"/>
+        <circle cx="105.364" cy="39.0467" r="7.78361" stroke="white" stroke-width="2"/>
+        <circle cx="105.364" cy="39.0467" r="7.78361" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0468" r="8.38539" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0468" r="8.38539" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0468" r="8.38539" stroke="white" stroke-width="2"/>
+        <circle cx="87.3593" cy="9.85939" r="2.37831" stroke="white" stroke-width="2"/>
+        <circle cx="87.3593" cy="9.85939" r="2.37831" stroke="white" stroke-width="2"/>
+        <circle cx="87.3593" cy="9.85939" r="2.37831" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0467" r="2.37831" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0467" r="2.37831" stroke="white" stroke-width="2"/>
+        <circle cx="173.156" cy="39.0467" r="2.37831" stroke="white" stroke-width="2"/>
+    </svg>
+                                                                      
+    <div style='margin-top: 20px; margin-bottom: -5px;'>
+        If one or more are defective or absent,<br/>
+        we call that <i>color blindness</i>.
+    </div>
+       
+    <div style='margin-top: 16;'>
+        Set the condition of each cone type<br/>
+        to simulate all types of color vision deficiency.
+    </div>
+
+</div>
+
+
+<div id='ttToggleWires'            class='tooltip'>Show&thinsp;/&thinsp;hide wires</div>
+
 
 
 <script id='generatorScript' type='javascript/worker'>
@@ -14765,7 +14925,7 @@ extends OperatorBase
 
     constructor()
     {
-        super('minmax', 'minmax', 'number', 70);
+        super('minmax', 'limits', 'number', 70);
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
@@ -15162,7 +15322,7 @@ extends OpArithmetic
         this._symbol.style.fontSize   = this._showOnlySymbol ? 11 : 8;
         this._symbol.style.fontWeight = 'bold';
         this._symbol.style.left       = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-        this._symbol.style.top        = parseFloat(this._symbol.style.top) + 4;
+        this._symbol.style.top        = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 4.5);
     }
 }
 
@@ -15199,7 +15359,7 @@ extends OpArithmetic
         this._symbol.innerHTML =
             this._showOnlySymbol
             ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
-            : '<span style="position: relative; top: -1.5px; font-size: 8px;">x</span><span style="position: relative; left: -0.5px; top: -5.15px; font-size: 3.75px; font-weight: bold;">y</span>';
+            : '<span style="position: relative; top: -2.5px; font-size: 9px;">x</span><span style="position: relative; left: -0.5px; top: -7.5px; font-size: 3.75px; font-weight: bold;">y</span>';
 
         this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
         this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
@@ -15828,7 +15988,7 @@ extends OpColorBase
 
     updateAllSliderRanges()
     {
-        if (this.paramSpace.value > 4) // warning ranges
+        if (this.paramSpace.value > 3) // warning ranges
         {
             this.updateSliderRanges(this.param1.control, f =>
                 dataColor2rgb([
@@ -16013,17 +16173,17 @@ extends OpColorBase
 
 const OpColorSpaces = 
 [
-    ['hex',    'Hex'    ],
-    ['rgbhex', '<span class=\'hash\'>#</span>RGB'],
-    ['rgb',    'RGB'    ], 
-    ['hsv',    'HSV'    ], 
-    ['hsl',    'HSL'    ], 
+    ['hex',    'Hex'   ],
+    //['rgbhex', '<span class=\'hash\'>#</span>RGB'],
+    ['rgb',    'RGB'   ], 
+    ['hsv',    'HSV'   ], 
+    ['hsl',    'HSL'   ], 
     ['hclokl', 'HCL/ok'],
     ['hcllab', 'HCL/ab'],
-    ['hclluv', 'HCL/uv'],
-    ['oklab',  'okLab'  ],
-    ['lab',    'Lab'    ],
-    ['luv',    'Luv'    ]
+    ['hclluv', 'HCL/uv']/*,
+    ['oklab',  'okLab' ],
+    ['lab',    'Lab'   ],
+    ['luv',    'Luv'   ]*/
 ];
 
 function colorSpace(index) { return OpColorSpaces[index][0]; }
@@ -17377,9 +17537,9 @@ extends OpColorBase
 class   OpColorblind
 extends OpColorBase
 {
-    #paramL;
-    #paramM;
     #paramS;
+    #paramM;
+    #paramL;
 
 
 
@@ -17392,13 +17552,13 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0));
-        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
         this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0));
 
-        this.#paramL.allowEditDecimals = true;
-        this.#paramM.allowEditDecimals = true;
         this.#paramS.allowEditDecimals = true;
+        this.#paramM.allowEditDecimals = true;
+        this.#paramL.allowEditDecimals = true;
 
 
         this.header.connectionPadding = 14;
@@ -17461,9 +17621,9 @@ extends OpColorBase
     {
         super.updateParams(dispatchEvents);
 
-        this.setParamText(this.#paramL, 'L');
-        this.setParamText(this.#paramM, 'M');
         this.setParamText(this.#paramS, 'S');
+        this.setParamText(this.#paramM, 'M');
+        this.setParamText(this.#paramL, 'L');
     }
 
 
@@ -19248,6 +19408,117 @@ function setAutoCursor()
 };
 
 
+function createTooltip(source, tooltip, bottomArrow = false)
+{
+    source.addEventListener('pointerenter', () =>
+    {
+        clearTimeout(tooltipInTimer);
+        clearTimeout(tooltipLeaveTimer);
+    
+        if (!tooltipTimer)
+        {
+            tooltipTimer = setTimeout(function()
+            {
+                showTooltip(source, tooltip, bottomArrow);
+
+                clearTimeout(tooltipTimer);
+                tooltipTimer = null;
+            }, 
+            1000);
+        }
+    });
+    
+  
+    
+    source.addEventListener('pointerleave', () =>
+    {
+        hideTooltip(tooltip);
+    });
+
+
+    hideTooltip(tooltip);
+}
+
+
+
+function showTooltip(source, tooltip, bottomArrow)
+{
+    tooltip.style.display      = 'block';
+    tooltip.style.opacity      = '100%';
+
+    tooltipArrow.style.display = 'block';
+    tooltipArrow.style.opacity = '100%';
+
+    let srcRect = source.getBoundingClientRect();
+
+    srcRect.y -= 5;
+
+
+    const margin = 10;
+ 
+    tooltip.style.left = Math.min(Math.max(
+        margin, 
+        srcRect.x + srcRect.width/2 - tooltip.offsetWidth/2), 
+        graphView.offsetWidth - tooltip.offsetWidth - margin);
+
+    tooltipArrow.style.left = srcRect.x + srcRect.width/2;// - tooltipArrow.offsetWidth/2;
+
+    
+    if (bottomArrow)
+    {
+        const ttRect = tooltip.getBoundingClientRect();
+
+        tooltip.style.top = srcRect.y - tooltipArrow.offsetHeight - ttRect.height;
+
+        tooltipArrow.style.borderColor = '#040404 transparent transparent transparent';
+        tooltipArrow.style.top         = srcRect.y - tooltipArrow.offsetHeight;
+    }
+    else
+    {
+        tooltip.style.top = srcRect.y + srcRect.height + tooltipArrow.offsetHeight;
+
+        const ttRect = tooltip.getBoundingClientRect();
+
+        tooltipArrow.style.borderColor = 'transparent transparent #040404 transparent';
+        tooltipArrow.style.top         = ttRect.y - tooltipArrow.offsetHeight;
+    }
+}
+
+
+
+function hideTooltip(tooltip)
+{
+    tooltip.style.display      = 'none';
+    tooltip.style.opacity      = '0%';
+
+    tooltipArrow.style.display = 'none';
+    tooltipArrow.style.opacity = '0%';
+
+    clearTimeout(tooltipTimer);
+
+    tooltipTimer               = null;
+    shownTooltip               = null;
+}
+
+
+createTooltip(btnCreateNumber,           ttCreateNumber);
+createTooltip(btnCreateMinMax,           ttCreateMinMax);
+createTooltip(btnCreateAdd,              ttCreateAdd);
+createTooltip(btnCreateSubtract,         ttCreateSubtract);
+createTooltip(btnCreateMultiply,         ttCreateMultiply);
+createTooltip(btnCreateDivide,           ttCreateDivide);
+createTooltip(btnCreateModulo,           ttCreateModulo);
+createTooltip(btnCreateExponent,         ttCreateExponent);
+createTooltip(btnCreateInterpolate,      ttCreateInterpolate);
+
+createTooltip(btnCreateColor,            ttCreateColor);
+createTooltip(btnCreateColorInterpolate, ttCreateColorInterpolate);
+createTooltip(btnCreateWebContrast,      ttCreateWebContrast);
+createTooltip(btnCreateColorblind,       ttCreateColorblind);
+
+createTooltip(btnToggleWires,            ttToggleWires);
+
+
 // menuSelect.addEventListener('change', async function(e) 
 // {
 //     switch (e.detail.selectedValue)
@@ -19630,6 +19901,13 @@ function updateGraphNodes()
     for (const node of graphView.lastSelectedNodes)  node.updateNode();
 }
 
+
+var tooltipTimer, 
+    tooltipInTimer,
+    tooltipOutTimer, 
+    tooltipLeaveTimer;
+
+    
 
 function uiEndLoadState(msg)
 {

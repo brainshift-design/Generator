@@ -358,7 +358,7 @@ extends OpColorBase
 
     updateAllSliderRanges()
     {
-        if (this.paramSpace.value > 4) // warning ranges
+        if (this.paramSpace.value > 3) // warning ranges
         {
             this.updateSliderRanges(this.param1.control, f =>
                 dataColor2rgb([

@@ -1,0 +1,32 @@
+.tooltip
+{
+    display:          none;
+    opacity:          0;
+    width:            auto;
+    height:           15px;
+    background-color: #040404;
+    color:            #eee;
+    border-radius:    2px;
+    padding:          5px 10px 5px 10px;
+    position:         absolute;
+    z-index:          10000;
+    bottom:           125%;
+    left:             13px;
+    top:              44px;
+    font-family:      Inter;
+    font-size:        11px;
+    pointer-events:   none;
+}
+
+
+#tooltipArrow
+{
+    content:      '';
+    position:     absolute;
+    margin-left:  -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #040404 transparent;
+    display:      none;
+    opacity:      0%;
+}

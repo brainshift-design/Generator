@@ -1,4 +1,4 @@
-../controls/button/*.js
+../controls/toggleButton/*.js
 ../controls/numberSlider/*.js
 ../controls/colorSlider/*.js
 ../controls/select/*.js

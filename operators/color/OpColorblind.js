@@ -1,9 +1,9 @@
 class   OpColorblind
 extends OpColorBase
 {
-    #paramL;
-    #paramM;
     #paramS;
+    #paramM;
+    #paramL;
 
 
 
@@ -16,13 +16,13 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0));
-        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
         this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0));
 
-        this.#paramL.allowEditDecimals = true;
-        this.#paramM.allowEditDecimals = true;
         this.#paramS.allowEditDecimals = true;
+        this.#paramM.allowEditDecimals = true;
+        this.#paramL.allowEditDecimals = true;
 
 
         this.header.connectionPadding = 14;
@@ -85,9 +85,9 @@ extends OpColorBase
     {
         super.updateParams(dispatchEvents);
 
-        this.setParamText(this.#paramL, 'L');
-        this.setParamText(this.#paramM, 'M');
         this.setParamText(this.#paramS, 'S');
+        this.setParamText(this.#paramM, 'M');
+        this.setParamText(this.#paramL, 'L');
     }
 
 

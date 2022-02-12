@@ -39,6 +39,6 @@ extends OpArithmetic
         this._symbol.style.fontSize   = this._showOnlySymbol ? 11 : 8;
         this._symbol.style.fontWeight = 'bold';
         this._symbol.style.left       = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-        this._symbol.style.top        = parseFloat(this._symbol.style.top) + 4;
+        this._symbol.style.top        = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 4.5);
     }
 }
