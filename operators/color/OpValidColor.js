@@ -29,7 +29,7 @@ extends OpColorBase
             if (   !this.inputs[1].isConnected
                 && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
-                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]),
+                    colorSpaceIndex(this.inputs[0].data.color[0]),
                     true, true, false);
         });
     }

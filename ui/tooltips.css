@@ -1,14 +1,19 @@
 #ttCreateColorblind
 {
     width:          200px; 
-    height:         304px;
-    padding-bottom: 10px;
+    height:         308px;
 }
 
 
-#ttCreateColorInterpolate
+#ttInterpolationSpace
 {
     width:          200px;
-    height:         160px;
-    padding-bottom: 10px;
+    height:         150px;
+}
+
+
+#ttInterpolationGamma
+{
+    width:          130px;
+    height:          60px;
 }

@@ -36,12 +36,26 @@ function removeMenuItemProductKey()
 
 
 
-function uiNotify(text, prefix = 'Generator: ', delay = 4000)
+function uiError(text, delay = 4000)
+{
+    uiPostMessageToFigma({ 
+        cmd:   'figNotify',
+        text:   text,
+        prefix: 'Generator error: ',
+        delay:  delay,
+        error:  true
+    });        
+}
+
+
+
+function uiNotify(text, prefix = 'Generator: ', delay = 4000, error = false)
 {
     uiPostMessageToFigma({ 
         cmd:   'figNotify',
         text:   text,
         prefix: prefix,
-        delay:  delay
+        delay:  delay,
+        error:  error
     });        
 }

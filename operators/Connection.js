@@ -245,7 +245,16 @@ class Connection
         const inputOp     = nodeFromId(_conn.inputOp);
         const inputIndex  = parseInt(_conn.inputIndex);
 
-        uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
+        if (   !outputOp || outputOp.outputs.length-1 < outputIndex
+            || !inputOp  || inputOp .inputs .length-1 < inputIndex)
+        {
+            uiError(
+                'Cannot connect ' 
+                + _conn.outputOp + '.outputs[' + outputIndex + '] to ' 
+                + _conn.inputOp  + '.inputs[' + _conn.inputIndex + ']');
+        }
+        else
+            uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
     }
 }
 

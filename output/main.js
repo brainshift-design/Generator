@@ -81,7 +81,7 @@ function figUpdateObjects(objects) {
                             && cur.getPluginData('nodeId') == obj.nodeId)
                             figUpdateRect(obj);
                         else
-                            figNotify('Error: Object ID mismatch');
+                            figNotify('Error: Object ID mismatch', 400, true);
                     }
                     break;
                 }
@@ -189,7 +189,7 @@ figma.ui.onmessage = msg => {
             figUpdateObjects(msg.objects);
             break;
         case 'figNotify':
-            figNotify(msg.text, msg.prefix, msg.delay);
+            figNotify(msg.text, msg.prefix, msg.delay, msg.error);
             break;
     }
     figPostMessageToUi({ cmd: 'uiEndFigMessage' });
@@ -235,8 +235,11 @@ function figResizeWindow(width, height) {
     figma.clientStorage.setAsync('windowHeight', height);
     figPostMessageToUi({ cmd: 'uiEndResizeWindow' });
 }
-function figNotify(text, prefix = 'Generator ', delay = 400) {
-    figma.notify(prefix + text, { timeout: delay });
+function figNotify(text, prefix = 'Generator ', delay = 400, error = false) {
+    figma.notify(prefix + text, {
+        timeout: delay,
+        error: error
+    });
 }
 function objTypeString(type) {
     switch (type) {

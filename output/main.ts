@@ -126,7 +126,7 @@ function figUpdateObjects(objects)
                         figUpdateRect(obj);
 
                     else
-                        figNotify('Error: Object ID mismatch');
+                        figNotify('Error: Object ID mismatch', 400, true);
                 }
 
                 break;
@@ -253,14 +253,14 @@ figma.ui.onmessage = msg =>
 {
     switch (msg.cmd)
     {
-        case 'figLoadState':         figLoadState        (msg);                             break;
-        case 'figResizeWindow':      figResizeWindow     (msg.width, msg.height);           break; 
-        case 'figSaveLocal':         figSaveLocal        (msg.key, msg.value);              break;
-        case 'figGetPluginData':     figGetPluginData    (msg.key);                         break;
-        case 'figSetPluginData':     figSetPluginData    (msg.key, msg.value);              break;
-        case 'figDeleteNodeObjects': figDeleteNodeObjects(msg.nodeIds);                     break; 
-        case 'figUpdateObjects':     figUpdateObjects    (msg.objects);                     break;
-        case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay); break;
+        case 'figLoadState':         figLoadState        (msg);                                        break;
+        case 'figResizeWindow':      figResizeWindow     (msg.width, msg.height);                      break; 
+        case 'figSaveLocal':         figSaveLocal        (msg.key, msg.value);                         break;
+        case 'figGetPluginData':     figGetPluginData    (msg.key);                                    break;
+        case 'figSetPluginData':     figSetPluginData    (msg.key, msg.value);                         break;
+        case 'figDeleteNodeObjects': figDeleteNodeObjects(msg.nodeIds);                                break; 
+        case 'figUpdateObjects':     figUpdateObjects    (msg.objects);                                break;
+        case 'figNotify':            figNotify           (msg.text, msg.prefix, msg.delay, msg.error); break;
     }
 
     figPostMessageToUi({cmd: 'uiEndFigMessage'});
@@ -343,9 +343,14 @@ function figResizeWindow(width, height)
 
 
 
-function figNotify(text, prefix = 'Generator ', delay = 400)
+function figNotify(text, prefix = 'Generator ', delay = 400, error = false)
 {
-    figma.notify(prefix + text, { timeout: delay });
+    figma.notify(
+        prefix + text, 
+        {
+            timeout: delay,
+            error:   error
+        });
 }
 
 

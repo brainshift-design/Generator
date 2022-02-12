@@ -3,7 +3,6 @@ extends OpColorBase
 {
     #paramSpace;
     #paramAmount;
-    #paramGamma;
 
 
 
@@ -18,13 +17,13 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1]), 1));
         this.addParam(this.#paramAmount = new NumberParam('amount', '',  true, true, true, 0, 0,    1, 2));
-        this.addParam(this.#paramGamma  = new NumberParam('gamma',  'γ', true, true, true, 1, 0.01, 3, 1));
       
         
-        this.#paramSpace.control.min         = 2;
-        this.#paramSpace.control.displayMin  = 2;
+        this.#paramSpace.control.min         = 1;
+        this.#paramSpace.control.displayMin  = 1;
+        this.#paramSpace.control.update();
         
         this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
@@ -33,16 +32,13 @@ extends OpColorBase
         this.#paramAmount.control.valueScale = 100;
         this.#paramAmount.control.displayDec = 0;
         
-        this.#paramGamma.control.max         = 10;
-        this.#paramGamma.allowEditDecimals   = true;
-
 
         this.inputs[0].addEventListener('connect', () => 
         {
             if (   !this.inputs[1].isConnected
                 && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
-                    OpColorSpaces.findIndex(s => s[0] == this.inputs[0].data.color[0]),
+                    colorSpaceIndex(this.inputs[0].data.color[0]),
                     true, true, false);
         });
 
@@ -51,9 +47,15 @@ extends OpColorBase
             if (   !this.inputs[0].isConnected
                 && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
-                    OpColorSpaces.findIndex(s => s[0] == this.inputs[1].data.color[0]),
+                    colorSpaceIndex(this.inputs[1].data.color[0]),
                     true, true, false);
         });
+
+
+        this.#paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
+
+
+        createTooltip(this.#paramSpace.control, ttInterpolationSpace);
     }
 
 
@@ -67,14 +69,12 @@ extends OpColorBase
         {
             const space = colorSpace(this.#paramSpace.value);
             const f     = this.#paramAmount.value;
-            const gamma = this.#paramGamma .value;
             
             const col = this.interpolate(
                 space,
                 dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
                 dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
-                f,
-                gamma);
+                f);
 
             this._color = [
                 space, 
@@ -95,33 +95,24 @@ extends OpColorBase
 
 
 
-    interpolate(space, col0, col1, f, gamma)
+    interpolate(space, col0, col1, f)
     {
-        const iSpace = OpColorSpaces.findIndex(s => s[0] == space);
+        const iSpace = colorSpaceIndex(space);
 
-        const hasHue = 
-               iSpace >= 3
-            && iSpace <= 7;
-
-        
-        let h0, h1;
-
-        if (hasHue)
+        if (iSpace <= 1) // hex, rgb
         {
-            h0 = col0[0] * Tau;
-            h1 = col1[0] * Tau;
+            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
         }
-
-        col0 = rgbPow(col0, gamma);
-        col1 = rgbPow(col1, gamma);
-
-        let col = rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-        col = rgbPow(col, 1/gamma);
-
-        if (hasHue)
-            col[0] = normalAngle(h0 + angleDiff(h0, h1) * f) / Tau;
-
-        return col;
+        else // hsv, hsl, hcl
+        {
+            const h0 = col0[0] * Tau;
+            const h1 = col1[0] * Tau;
+            
+            return [
+                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                lerp(col0[1], col1[1], f),
+                lerp(col0[2], col1[2], f) ];
+        }
     }
 
 
