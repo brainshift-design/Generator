@@ -71,13 +71,15 @@ extends Parameter
 
         this.control.addEventListener('finishedit', e =>
         { 
+            const dec    = getDecimalCount(e.detail.value);
+            const oldDec = getDecimalCount(e.detail.oldValue);
+
             if (   e.detail.success
+                && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
+                    || dec >= oldDec)
                 && this.allowEditDecimals)
             {
                 const _dec = Math.log10(this.control.valueScale);
-
-                const dec    = getDecimalCount(e.detail.value);
-                const oldDec = getDecimalCount(e.detail.oldValue);
 
                 actionManager.do(new SetParamDecimalsAction(this,
                     dec    + _dec, 
