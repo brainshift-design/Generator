@@ -253,8 +253,8 @@ graphView.addEventListener('wheel', e =>
     }
     else
     {
-        const dPanX = dWheelX * 20 / Math.pow(graphView.zoom, 0.1);
-        const dPanY = dWheelY * 20 / Math.pow(graphView.zoom, 0.1);
+        const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(graphView.zoom, 0.1);
+        const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(graphView.zoom, 0.1);
 
         graphView.pan = point(
             graphView.pan.x - dPanX,
