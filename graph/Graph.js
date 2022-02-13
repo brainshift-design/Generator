@@ -351,7 +351,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function createNode(opType)//, createdNodeId = -1)
+function createNode(opType, creatingButton = null)//, createdNodeId = -1)
 {
     let node;
 
@@ -379,6 +379,8 @@ function createNode(opType)//, createdNodeId = -1)
         //case 'spread': node = new OpSpread(); break;
     }
     
+    node._creatingButton = creatingButton;
+
     return node;
 }
 

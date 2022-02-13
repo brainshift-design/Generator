@@ -404,42 +404,70 @@ graphView.getIntersectingNodes = node =>
 
 
 
-graphView.placeNewNode = (node) =>
+graphView.placeNewNode = function(node)
 {
     //log('graphView.placeNewNode()');
 
-    node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
-    node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
+    const nodeRect = boundingRect(node.div);
 
-
-    const dx = 30;
-    const dy = 20;
-
-
-    let maxLength = 100; // stack overflow safeguard
-    
-    let intersecting;
-    while (   maxLength-- > 0
-           && (intersecting = graphView.getIntersectingNodes(node)).length > 0)
+    if (node._creatingButton)
     {
-        let bounds = Rect.NaN;
-        
-        for (const n of intersecting)
-            bounds = expandRect(bounds, graphView.getNodeBounds(n));
-
-        const right = intersecting.reduce((a, b) => 
-            graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
-
-        if (   right.opType == node.opType
-            && node.opType != 'color'
-            && node.opType != 'webcontrast') node.div.style.top  = bounds.b + dy;
-        else                                 node.div.style.left = bounds.r + dx;
+        node.div.style.left = (node._creatingButton.offsetLeft + node._creatingButton.offsetWidth/2 - graphView.pan.x) / graphView.zoom - nodeRect.width/2;
+        node.div.style.top  = (20 - graphView.pan.y) / graphView.zoom;
     }
+    else
+    {
+        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                          ) / graphView.zoom - nodeRect.width/2;
+        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - controlBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+    }
+
+
+    // const nodeRect = boundingRect(node.div);
+
+    // const defx = (graphView.offsetWidth /2 - graphView.pan.x) / graphView.zoom - nodeRect.width /2,
+    //       defy = (graphView.offsetHeight/2 - graphView.pan.y - controlBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+
+    // node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
+    // node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
+
+
+    // const dx = 30,
+    //       dy = 20;
+
+    // let   ox = defx,
+    //       oy = defy;
+
+        
+    // let maxIter = 100; // stack overflow safeguard
+    
+    // let intersecting;
+    // while (   maxIter-- > 0
+    //        && (intersecting = graphView.getIntersectingNodes(node)).length > 0)
+    // {
+    //     let bounds = Rect.NaN;
+        
+    //     for (const n of intersecting)
+    //         bounds = expandRect(bounds, graphView.getNodeBounds(n));
+
+    //     const right = intersecting.reduce((a, b) => 
+    //         graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
+
+    //     if (   right.opType == node.opType
+    //         && node.opType != 'color'
+    //         && node.opType != 'webcontrast') ox = bounds.b + dy;
+    //     else                                 oy = bounds.r + dx;
+    // }
+
+    
+    // const margin = 100;
+
+    // node.div.style.left = (ox > margin && ox < window.clientWidth  - margin) ? ox : defx;
+    // node.div.style.top  = (oy > margin && oy < window.clientHeight - margin) ? oy : defy;
 };
 
 
 
-graphView.putNodeOnTop = node =>
+graphView.putNodeOnTop = function(node)
 {
     const topIndices = 
           1 
@@ -456,7 +484,7 @@ graphView.putNodeOnTop = node =>
 
 
 
-graphView.putWiresOnTop = node =>
+graphView.putWiresOnTop = function(node)
 {
     // changing z-index doesn't work so easily with SVG,
     // so reinsert the wires on top instead 🤷‍♂️
@@ -481,7 +509,7 @@ graphView.putWiresOnTop = node =>
 
 
 
-graphView.updateNodeTransforms = nodes =>
+graphView.updateNodeTransforms = function(nodes)
 {
     const nodeLeft = nodes.map(n => n.div.offsetLeft);
     const nodeTop  = nodes.map(n => n.div.offsetTop);
@@ -515,7 +543,7 @@ graphView.updateNodeTransforms = nodes =>
 
 
 
-graphView.updateNodeTransform = node =>
+graphView.updateNodeTransform = function(node)
 {
     const nodeLeft = node.div.offsetLeft;
     const nodeTop  = node.div.offsetTop;
@@ -542,7 +570,7 @@ graphView.updateNodeTransform = node =>
 
 
 
-graphView.setNodeTransform = (node, nodeLeft, nodeTop, nodeRect) =>
+graphView.setNodeTransform = function(node, nodeLeft, nodeTop, nodeRect)
 {
     node.div.style.transform =
           'translate(' 
@@ -557,7 +585,7 @@ graphView.setNodeTransform = (node, nodeLeft, nodeTop, nodeRect) =>
 
 
 
-graphView.updateNodeWires = wires =>
+graphView.updateNodeWires = function(wires)
 {
     const pOut    = [];            
     const pIn     = [];
@@ -621,7 +649,7 @@ graphView.updateNodeWires = wires =>
 
 
 
-graphView.updateNodeWire = (wire, x = 0, y = 0) =>
+graphView.updateNodeWire = function(wire, x = 0, y = 0)
 {
     const yOffset = controlBar.offsetHeight;
 
@@ -656,7 +684,7 @@ graphView.updateNodeWire = (wire, x = 0, y = 0) =>
 
 
 
-graphView.addWire = (wire, updateTransform = true) =>
+graphView.addWire = function(wire, updateTransform = true)
 {
     graphView.wires.push(wire);
     wireContainer.appendChild(wire);
@@ -667,7 +695,7 @@ graphView.addWire = (wire, updateTransform = true) =>
 
 
 
-graphView.removeWire = wire =>
+graphView.removeWire = function(wire)
 {
     wireContainer.removeChild(wire);    
     removeFromArray(graphView.wires, wire);
@@ -675,7 +703,7 @@ graphView.removeWire = wire =>
 
 
 
-graphView.getNodeOffsetRect = node =>
+graphView.getNodeOffsetRect = function(node)
 {
     const ox   = -graphView.pan.x / graphView.zoom;
     const oy   = -graphView.pan.y / graphView.zoom;
@@ -691,7 +719,7 @@ graphView.getNodeOffsetRect = node =>
 
 
 
-graphView.soloNode = node =>
+graphView.soloNode = function(node)
 {
     graphView._soloNode = node;
 
@@ -715,7 +743,7 @@ graphView.soloNode = node =>
 
 
 
-graphView.unsoloNode = () =>
+graphView.unsoloNode = function()
 {
     graphView._soloNode = null;
 
@@ -727,7 +755,7 @@ graphView.unsoloNode = () =>
 
 
 
-graphView.toggleShowWires = () =>
+graphView.toggleShowWires = function()
 {
     graphView.showWires = !graphView.showWires;
 
@@ -737,7 +765,7 @@ graphView.toggleShowWires = () =>
 
 
 
-graphView.updateShowWiresButton = () =>
+graphView.updateShowWiresButton = function()
 {
     btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
     btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
@@ -745,7 +773,7 @@ graphView.updateShowWiresButton = () =>
 
 
 
-graphView.updateShowWires = () =>
+graphView.updateShowWires = function()
 {
     graph.nodes      .forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));

@@ -19,7 +19,6 @@ function createTooltipSrc(source, getTooltip, bottomArrow = false)
         {
             tooltipTimer = setTimeout(() =>
             {
-                log(getTooltip());
                 showTooltip(source, getTooltip(), bottomArrow);
 
                 clearTimeout(tooltipTimer);

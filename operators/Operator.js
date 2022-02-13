@@ -31,12 +31,15 @@ class Operator
     params  = [];
     
     
-    _variableInputs = false;
+    _variableInputs  = false;
 
     alwaysLoadParams = false;
     loading          = false;
 
     labelOffsetFactor;
+
+
+    _creatingButton  = null; // this is used to place the node under its creating button
 
     
     // node UI
