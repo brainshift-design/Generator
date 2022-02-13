@@ -465,7 +465,7 @@ div
 #ttWcag2
 {
     width:  240px;
-    height: 160px;
+    height: 146px;
 }
 
 
@@ -474,7 +474,7 @@ div
 {
     text-align:       left;
     position:         absolute;
-    top:              78px;
+    top:              70px;
     transform:        rotateZ(-45deg);
     transform-origin: bottom left;
 }
@@ -483,7 +483,7 @@ div
 .wcag2value
 {
     position:  absolute;
-    top:       117px;
+    top:       109px;
     transform: translateX(-50%);
 }
 
@@ -492,7 +492,7 @@ div
 {
     position:  absolute;
     left:      50%;
-    top:       144px;
+    top:       130px;
     transform: translateX(-50%);
 }
 
@@ -514,7 +514,7 @@ div
 {
     text-align:       left;
     position:         absolute;
-    top:              58px;
+    top:              62px;
     transform:        rotateZ(-45deg);
     transform-origin: bottom left;
 }
@@ -523,7 +523,7 @@ div
 .wcag3value
 {
     position:  absolute;
-    top:       97px;
+    top:       101px;
     transform: translateX(-50%);
 }
 
@@ -1342,7 +1342,7 @@ div
     <div class='wcag2description' style='left: 71px;'>min. reduced </div>
     <div class='wcag2description' style='left: 93px;'>min. assisted</div>
 
-    <svg width="221" height="21" viewBox="0 0 221 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 20px; top: 94px">
+    <svg width="221" height="21" viewBox="0 0 221 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 20px; top: 86px">
         <path d="M220.452 20.2466H70.0214V10.7924H220.452V20.2466Z" fill="white" fill-opacity="0.4"/>
         <path d="M30.0214 0V20.2466" stroke="white"/>
         <path d="M45.0214 0V20.2466" stroke="white"/>
@@ -1366,14 +1366,14 @@ div
 
     <div style='text-align: center;'>APCA visual contrast</div>
     
-    <div class='wcag3description' style='left:  52px;'>visible</div>
+    <div class='wcag3description' style='left:  52px;'>discernible</div>
     <div class='wcag3description' style='left:  84px;'>minimum</div>
-    <div class='wcag3description' style='left: 117px;'>large</div>
-    <div class='wcag3description' style='left: 148px;'>other</div>
-    <div class='wcag3description' style='left: 179px;'>body</div>
-    <div class='wcag3description' style='left: 211px;'>all</div>
+    <div class='wcag3description' style='left: 117px;'>large text</div>
+    <div class='wcag3description' style='left: 148px;'>other text</div>
+    <div class='wcag3description' style='left: 179px;'>body text</div>
+    <div class='wcag3description' style='left: 211px;'>all text</div>
 
-    <svg width="222" height="21" viewBox="0 0 222 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 19px; top: 74px">
+    <svg width="222" height="21" viewBox="0 0 222 21" fill="none" xmlns="http://www.w3.org/2000/svg" style="position: absolute; left: 19px; top: 78px">
         <rect x="0.854492" y="10.7924" width="31.5139" height="9.45416" fill="#FF0040" fill-opacity="0.5"/>
         <rect x="32.3684" y="10.7924" width="31.5139" height="9.45416" fill="#FF7048" fill-opacity="0.5"/>
         <rect x="63.8822" y="10.7924" width="31.5139" height="9.45416" fill="#FFB92F" fill-opacity="0.5"/>
@@ -17354,9 +17354,6 @@ extends OpColorBase
         if (   this.inputs[0].isConnected
             && this.inputs[1].isConnected)
         {
-            this.#paramValue.control.valueText = '';
-
-
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
@@ -17395,7 +17392,7 @@ extends OpColorBase
                     this.#paramValue.control.displayMin = 0;
 
                     this.#paramValue.control.max        = 
-                    this.#paramValue.control.displayMax = 108;
+                    this.#paramValue.control.displayMax = 105;
 
                     this.#paramValue.control.setDecimals(1);
 
@@ -17438,8 +17435,8 @@ extends OpColorBase
         }
 
 
-        this.#paramValue.control.valueText = '?';
-        this.#paramValue.setValue(0, false, true, false);
+        //this.#paramValue.control.valueText = '?';
+        this.#paramValue.setValue(Number.NaN, false, true, false);
 
         
         super.updateData();
@@ -17467,13 +17464,13 @@ extends OpColorBase
 
         else
             this.#paramValue.control.ranges = [
-                new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0,  64, 0.2 )', 0.8),
-                new NumberSliderRange(15/108,  30/108, 'rgba(255, 112,   0, 0.2 )', 0.8),
-                new NumberSliderRange(30/108,  45/108, 'rgba(255, 185,   0, 0.2 )', 0.8),
-                new NumberSliderRange(45/108,  60/108, 'rgba(255, 255,   0, 0.2 )', 0.8),
-                new NumberSliderRange(60/108,  75/108, 'rgba(64,  255,  64, 0.2 )', 0.8),
-                new NumberSliderRange(75/108,  90/108, 'rgba(0,     0, 255, 0.07)', 0.8),
-                new NumberSliderRange(90/108, 108/108, 'transparent') ];
+                new NumberSliderRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
+                new NumberSliderRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
+                new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
+                new NumberSliderRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2 )', 0.8),
+                new NumberSliderRange(60/105,  75/105, 'rgba(64,  255,  64, 0.2 )', 0.8),
+                new NumberSliderRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
+                new NumberSliderRange(90/105, 105/105, 'transparent') ];
 
         this.#paramValue.control.update();
     }

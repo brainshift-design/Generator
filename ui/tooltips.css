@@ -15,7 +15,7 @@
 #ttWcag2
 {
     width:  240px;
-    height: 160px;
+    height: 146px;
 }
 
 
@@ -24,7 +24,7 @@
 {
     text-align:       left;
     position:         absolute;
-    top:              78px;
+    top:              70px;
     transform:        rotateZ(-45deg);
     transform-origin: bottom left;
 }
@@ -33,7 +33,7 @@
 .wcag2value
 {
     position:  absolute;
-    top:       117px;
+    top:       109px;
     transform: translateX(-50%);
 }
 
@@ -42,7 +42,7 @@
 {
     position:  absolute;
     left:      50%;
-    top:       144px;
+    top:       130px;
     transform: translateX(-50%);
 }
 
@@ -64,7 +64,7 @@
 {
     text-align:       left;
     position:         absolute;
-    top:              58px;
+    top:              62px;
     transform:        rotateZ(-45deg);
     transform-origin: bottom left;
 }
@@ -73,7 +73,7 @@
 .wcag3value
 {
     position:  absolute;
-    top:       97px;
+    top:       101px;
     transform: translateX(-50%);
 }
 
