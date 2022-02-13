@@ -8,7 +8,7 @@ var curTooltip       = null;
 
     
 
-function createTooltip(source, tooltip, bottomArrow = false)
+function createTooltipSrc(source, getTooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
     {
@@ -17,9 +17,10 @@ function createTooltip(source, tooltip, bottomArrow = false)
     
         if (!tooltipTimer)
         {
-            tooltipTimer = setTimeout(function()
+            tooltipTimer = setTimeout(() =>
             {
-                showTooltip(source, tooltip, bottomArrow);
+                log(getTooltip());
+                showTooltip(source, getTooltip(), bottomArrow);
 
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
@@ -27,8 +28,7 @@ function createTooltip(source, tooltip, bottomArrow = false)
             curTooltip ? 0 : 1000);
         }
     });
-    
-  
+      
     
     source.addEventListener('pointerleave', () =>
     {
@@ -37,20 +37,22 @@ function createTooltip(source, tooltip, bottomArrow = false)
 
         tooltipOutTimer = setTimeout(() => 
         {
-            hideTooltip(tooltip);
+            hideTooltip(getTooltip());
         }, 
         400);
     });
+}
 
 
 
+function createTooltip(tooltip)
+{
     tooltip.addEventListener('pointerenter', () =>
     {
         clearTimeout(tooltipOutTimer);
         tooltipOutTimer = null;
     });
     
-  
     
     tooltip.addEventListener('pointerleave', () =>
     {

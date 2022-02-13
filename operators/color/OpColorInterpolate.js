@@ -55,7 +55,8 @@ extends OpColorBase
         this.#paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
 
 
-        createTooltip(this.#paramSpace.control, ttInterpolationSpace);
+        createTooltip(ttInterpolationSpace);
+        createTooltipSrc(this.#paramSpace.control, () => ttInterpolationSpace);
     }
 
 

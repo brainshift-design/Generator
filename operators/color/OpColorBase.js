@@ -87,8 +87,8 @@ extends Operator
 
         const satBias = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
 
-        const ba = Math.min((this.header.over ? 6   : 1) * (isValidRgb(colBack) ? 0.06 : 0.22) * (1 + 0*satBias), 0.5);
-        const wa = Math.min((this.header.over ? 3.5 : 1) * (isValidRgb(colBack) ? 0.06 : 0.14) * (1 + 2*satBias), 0.5);
+        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.22) * (1 + 0*satBias), 0.5);
+        const wa = Math.min((this.header.over ?  8 : 1) * (isValidRgb(colBack) ? 0.03 : 0.14) * (1 + 2*satBias), 0.5);
 
         const colText = 
             this.canShowColor()

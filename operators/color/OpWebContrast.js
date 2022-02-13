@@ -21,7 +21,22 @@ extends OpColorBase
 
         enableSliderText(this.#paramValue.control, false);
 
-        createTooltip(this.#paramValue.control, ttWcag3);
+
+        createTooltip(ttWcag2);
+        createTooltip(ttWcag3);
+
+        createTooltipSrc(
+            this.#paramValue.control, 
+            () => this.#paramStandard.value == 1 ? ttWcag3 : ttWcag2);
+    }
+
+
+
+    getShowTooltip()
+    {
+        return this.#paramStandard.value == 1
+               ? ttWcag3
+               : ttWcag2;
     }
 
 
@@ -144,9 +159,13 @@ extends OpColorBase
     setRanges()
     {
         if (this.#paramStandard.value == 0)
-            this.#paramValue.control.ranges = [];
+            this.#paramValue.control.ranges = [
+                new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.1)', 0.8),
+                new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.2)', 0.8),
+                new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  255, 64, 0.2)', 0.8),
+                new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
+
         else
-        {
             this.#paramValue.control.ranges = [
                 new NumberSliderRange( 0/108,  15/108, 'rgba(255,   0,  64, 0.2 )', 0.8),
                 new NumberSliderRange(15/108,  30/108, 'rgba(255, 112,   0, 0.2 )', 0.8),
@@ -154,8 +173,7 @@ extends OpColorBase
                 new NumberSliderRange(45/108,  60/108, 'rgba(255, 255,   0, 0.2 )', 0.8),
                 new NumberSliderRange(60/108,  75/108, 'rgba(64,  255,  64, 0.2 )', 0.8),
                 new NumberSliderRange(75/108,  90/108, 'rgba(0,     0, 255, 0.07)', 0.8),
-                new NumberSliderRange(90/108, 108/108, 'transparent')];
-        }
+                new NumberSliderRange(90/108, 108/108, 'transparent') ];
 
         this.#paramValue.control.update();
     }
