@@ -302,8 +302,8 @@ function initNumberSliderTextbox(slider)
                    slider.value * slider.valueScale, 
                    slider.displayDec, 
                    slider.showHex
-               ).toUpperCase())
-            + slider.suffix;
+               ).toUpperCase());
+            //+ slider.suffix;
             
         slider.textbox.savedValue = slider.textbox.value;
     };
