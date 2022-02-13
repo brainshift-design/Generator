@@ -1,6 +1,6 @@
-function uiCreateNode(opType, createdId = -1, updateUI = true)
+function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
 {
-    let node = createNode(opType, createdId);
+    let node = createNode(opType, creatingButton, createdId);
     
     graph.addNode(node);
     

@@ -409,10 +409,12 @@ graphView.placeNewNode = function(node)
     //log('graphView.placeNewNode()');
 
     const nodeRect = boundingRect(node.div);
+    
+    const btn = node._creatingButton;
 
-    if (node._creatingButton)
+    if (btn)
     {
-        node.div.style.left = (node._creatingButton.offsetLeft + node._creatingButton.offsetWidth/2 - graphView.pan.x) / graphView.zoom - nodeRect.width/2;
+        node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - graphView.pan.x) / graphView.zoom - nodeRect.width/2;
         node.div.style.top  = (20 - graphView.pan.y) / graphView.zoom;
     }
     else

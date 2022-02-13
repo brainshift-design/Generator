@@ -6,13 +6,16 @@ extends Action
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
+    creatingButton;
+    
 
 
-    constructor(opType)
+    constructor(opType, creatingButton)
     {
         super('create node \'' + opType + '\'');
         
-        this.opType = opType;
+        this.opType         = opType;
+        this.creatingButton = creatingButton;
     }
 
 
@@ -21,7 +24,7 @@ extends Action
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
-        const node = uiCreateNode(this.opType);
+        const node = uiCreateNode(this.opType, this.creatingButton);
 
         this.createdNodeId = node.id;
 
@@ -45,7 +48,7 @@ extends Action
 
     redo()
     {
-        const node = uiCreateNode(this.opType, this.createdNodeId);
+        const node = uiCreateNode(this.opType, this.creatingButton, this.createdNodeId);
 
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());

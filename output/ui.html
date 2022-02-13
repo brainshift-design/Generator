@@ -11287,10 +11287,12 @@ graphView.placeNewNode = function(node)
     //log('graphView.placeNewNode()');
 
     const nodeRect = boundingRect(node.div);
+    
+    const btn = node._creatingButton;
 
-    if (node._creatingButton)
+    if (btn)
     {
-        node.div.style.left = (node._creatingButton.offsetLeft + node._creatingButton.offsetWidth/2 - graphView.pan.x) / graphView.zoom - nodeRect.width/2;
+        node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - graphView.pan.x) / graphView.zoom - nodeRect.width/2;
         node.div.style.top  = (20 - graphView.pan.y) / graphView.zoom;
     }
     else
@@ -18147,13 +18149,16 @@ extends Action
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
+    creatingButton;
+    
 
 
-    constructor(opType)
+    constructor(opType, creatingButton)
     {
         super('create node \'' + opType + '\'');
         
-        this.opType = opType;
+        this.opType         = opType;
+        this.creatingButton = creatingButton;
     }
 
 
@@ -18162,7 +18167,7 @@ extends Action
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
-        const node = uiCreateNode(this.opType);
+        const node = uiCreateNode(this.opType, this.creatingButton);
 
         this.createdNodeId = node.id;
 
@@ -18186,7 +18191,7 @@ extends Action
 
     redo()
     {
-        const node = uiCreateNode(this.opType, this.createdNodeId);
+        const node = uiCreateNode(this.opType, this.creatingButton, this.createdNodeId);
 
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
@@ -19708,9 +19713,9 @@ btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver
 btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; graphView.updateShowWiresButton(); });
 
 
-function uiCreateNode(opType, createdId = -1, updateUI = true)
+function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
 {
-    let node = createNode(opType, createdId);
+    let node = createNode(opType, creatingButton, createdId);
     
     graph.addNode(node);
     
