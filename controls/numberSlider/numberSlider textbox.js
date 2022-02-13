@@ -91,8 +91,9 @@ function initNumberSliderTextbox(slider)
             // }
         }
 
-        else if (e.key == 'ArrowUp'
-              || e.key == 'ArrowDown')
+        else if ((   e.key == 'ArrowUp'
+                  || e.key == 'ArrowDown')
+              && !slider.readOnly)
         {
             e.preventDefault();
 
