@@ -113,7 +113,7 @@ function initLabelTextbox(node)
             {
                 const newName = node.textbox.value;
                 setTimeout(() => node.setName(newName));
-                actionManager.do(new RenameNodeAction(node.name, newName));
+                actionManager.do(new RenameNodeAction(node.id, newName));
             }
         }
         else
