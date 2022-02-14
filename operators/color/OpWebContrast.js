@@ -16,7 +16,7 @@ extends OpColorBase
 
 
         this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.#paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         enableSliderText(this.#paramValue.control, false);
@@ -28,6 +28,9 @@ extends OpColorBase
         createTooltipSrc(
             this.#paramValue.control, 
             () => this.#paramStandard.value == 1 ? ttWcag3 : ttWcag2);
+
+
+            this.header.connectionPadding = 12.5;
     }
 
 
@@ -45,6 +48,7 @@ extends OpColorBase
     {
         //log(this.id + '.OpWebContrast.updateData()');
 
+        
         this._color = 
             this.inputs[1].isConnected
             ? this.inputs[1].data.color

@@ -24,7 +24,8 @@ extends Parameter
 
     
     constructor(id,
-                name, 
+                name,
+                showName,
                 hasInput,
                 hasOutput,
                 options,
@@ -49,7 +50,7 @@ extends Parameter
             20,        // height
             this.id,
             this.name, 
-            false,
+            showName,
             0,
             options.length-1,
             value);    // default

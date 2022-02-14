@@ -488,11 +488,11 @@ function getColorSpaceScale(space)
         case 'rgb':    return rgbScale;
         case 'hsv':   
         case 'hsl':    return hs_Scale;
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return hclScale;
-        case 'oklab': 
-        case 'lab': 
-        case 'luv':    return oppScale;
+        case 'hclokl': return hcloklScale;
+        case 'hcllab': return hcllabScale;
+        case 'hclluv': return hclluvScale;
+        case 'oklab':  return oklabScale;
+        case 'lab':    return labScale;
+        case 'luv':    return luvScale;
     }    
 }

@@ -25,7 +25,7 @@ extends OpColorBase
         this.#paramL.allowEditDecimals = true;
 
 
-        this.header.connectionPadding = 14;
+        this.header.connectionPadding = 18;
     }
 
 

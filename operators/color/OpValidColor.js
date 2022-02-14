@@ -1,9 +1,13 @@
 class   OpValidColor
 extends OpColorBase
 {
-    #paramSpace;
-    #order;
-    #paramMargin;
+    paramSpace;
+
+    paramRule1;
+    paramMargin1;
+
+    paramRule2;
+    paramMargin2;
 
 
 
@@ -11,30 +15,31 @@ extends OpColorBase
     {
         super('validcolor', 'valid', 'color', 80);
 
-        
+
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
-      
-        this.#order = createTextbox('txtOrder');
-        this.inner.appendChild(this.#order);
-
-        this.addParam(this.#paramMargin = new NumberParam('margin', 'margin', true, true, true, 0, 0, 1, 1));
-
-
-        this.#paramSpace.control.min         = 4;
-        this.#paramSpace.control.displayMin  = 4;
-        this.#paramSpace.control.update();
+        this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
+        this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 1, 0, 10, 1));
+        this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 1, 0, 10, 1));
 
 
-        this.inputs[0].addEventListener('connect', () => 
+        this.paramSpace.control.min        = 4;
+        this.paramSpace.control.displayMin = 4;
+        this.paramSpace.control.update();
+
+
+        this.header.connectionPadding = 18;
+
+
+        this.inputs[0].addEventListener('connect', () =>
         {
-            if (   !this.inputs[1].isConnected
-                && !graphView.loadingNodes) 
-                this.#paramSpace.setValue(
-                    colorSpaceIndex(this.inputs[0].data.color[0]),
+            if (!graphView.loadingNodes)
+                this.paramSpace.setValue(
+                    Math.max(4, colorSpaceIndex(this.inputs[0].data.color[0])),
                     true, true, false);
         });
     }
@@ -45,31 +50,50 @@ extends OpColorBase
     {
         //log(this.id + '.OpValidColor.updateData()');
 
+
+        // if (   this.paramRule1.value == 0
+        //     && this.paramRule2.value == 0)
+        //     this.paramRule2.setValue(2, false, true, false);
+
+        // else if (this.paramRule1.value == 1
+        //       && this.paramRule2.value == 1)
+        //     this.paramRule2.setValue(2, false, true, false);
+
+        // else if (this.paramRule1.value == 2
+        //       && this.paramRule2.value == 2)
+        //     this.paramRule2.setValue(1, false, true, false);
+
+
+        // this.updateRuleMargin(this.paramRule1, this.paramMargin1);
+        // this.updateRuleMargin(this.paramRule2, this.paramMargin2);
+
+
         if (this.inputs[0].isConnected)
         {
-        //     const space = colorSpace(this.#paramSpace.value);
-        //     const f     = this.#paramAmount.value;
-        //     const gamma = this.#paramGamma .value;
-            
-        //     const col = this.interpolate(
-        //         space,
-        //         dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
-        //         dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
-        //         f,
-        //         gamma);
+            const color = convertDataColorToSpace(
+                this.inputs[0].data.color,
+                colorSpace(this.paramSpace.value));
 
-        //     this._color = [
-        //         space, 
-        //         col[0], 
-        //         col[1], 
-        //         col[2] ];
+
+            this._color = color;
+
+                 if (this.paramRule1.value == 0) this.adjustChannel(color, 0, this.paramMargin1.value);
+            else if (this.paramRule1.value == 1) this.adjustChannel(color, 1, this.paramMargin1.value);
+            else if (this.paramRule1.value == 2) this.adjustChannel(color, 2, this.paramMargin1.value);
+
+            if (!isValidRgb(dataColor2rgb(this._color)))
+            {
+                     if (this.paramRule2.value == 0) this.adjustChannel(color, 0, this.paramMargin2.value);
+                else if (this.paramRule2.value == 1) this.adjustChannel(color, 1, this.paramMargin2.value);
+                else if (this.paramRule2.value == 2) this.adjustChannel(color, 2, this.paramMargin2.value);
+            }
         }
 
-        // else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
-        // else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
-        // else                                this._color = dataColor_NaN;
+        else
+            this._color = dataColor_NaN;
 
-        // this.outputs[0]._data = dataFromDataColor(this._color);
+
+        this.outputs[0]._data = dataFromDataColor(this._color);
 
 
         super.updateData()
@@ -77,7 +101,72 @@ extends OpColorBase
 
 
 
+    adjustChannel(color, iChan, margin)
+    {
+        const d = 0.001;
+
+        let _c  = color[iChan+1],
+             c_ = color[iChan+1];
+
+        let _valid  = isValidRgb(dataColor2rgb(color));
+        let  valid_ = isValidRgb(dataColor2rgb(color));
+
+
+        const factor = getColorSpaceFactor(color[0]);
+        const scale  = getColorSpaceScale (color[0]);
+
+        margin /= factor[iChan];
+
+        let stackOverflowProtect = 1/d;
+
+        while (   !_valid 
+               && ! valid_
+               && stackOverflowProtect-- > 0
+               && margin > 0)
+        {
+            _c  += d;
+             c_ -= d;
+
+             color[iChan+1] = _c;  _valid  = isValidRgb(dataColor2rgb(color));
+             color[iChan+1] =  c_;  valid_ = isValidRgb(dataColor2rgb(color));
+
+             margin -= d;//1/factor[iChan];
+        }
+
+
+        if (_valid) 
+        { 
+            color[iChan+1] = _c;
+            this._color = color;
+        }
+        else if (valid_) 
+        { 
+            color[iChan+1] = c_;
+            this._color = color;
+        }
+    }
+
+
+
+    // updateRuleMargin(rule, margin)
+    // {
+    //          if (rule.value == 0) margin.control.name = 'max H';
+    //     else if (rule.value == 1) margin.control.name = 'max C';
+    //     else if (rule.value == 2) margin.control.name = 'max L';
+
+    //     margin.control.update();
+    // }
+
+
+
     canShowColor()
+    {
+        return this.inputs[0].isConnected;
+    }
+
+
+
+    isConnected()
     {
         return this.inputs[0].isConnected;
     }

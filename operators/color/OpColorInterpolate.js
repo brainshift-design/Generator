@@ -17,8 +17,8 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true,  true, true, 0, 0,    1, 2));
       
         
         this.#paramSpace.control.min         = 1;
@@ -34,6 +34,9 @@ extends OpColorBase
         this.#paramAmount.control.setSuffix('%', true);
         
 
+        this.header.connectionPadding = 12.5;
+
+
         this.inputs[0].addEventListener('connect', () => 
         {
             if (   !this.inputs[1].isConnected
@@ -43,7 +46,7 @@ extends OpColorBase
                     true, true, false);
         });
 
-        
+
         this.inputs[1].addEventListener('connect', () => 
         {
             if (   !this.inputs[0].isConnected

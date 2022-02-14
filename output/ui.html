@@ -362,24 +362,18 @@ input[type=text]
 {
     font-size:     11;
     font-family:   Inter;
-    height:        28px;
-    padding-top:   1;
+    padding-top:   1px; 
+    height:        20px;
+    line-height:   14px;
     border:        none;
     border-radius: 0.5px;
     cursor:        default;
-    /* box-shadow:    0px 1px 0px 0px rgba(0, 0, 0, 0.1); */
-}
-
-
-input[type=text]:hover
-{
-    /* box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1); */
 }
 
 
 input[type=text]:focus
 {
-    box-shadow: 0 0 0 2px var(--activeObjectColor);
+    box-shadow: 0 0 0 1px var(--activeObjectColor) inset;
     outline:    none;
 }
 
@@ -1089,8 +1083,6 @@ div
 {
     text-align:  center;
     width:       100%;
-    height:      26px;
-    line-height: 20px;
     background:  transparent;
     cursor:      default;
 }
@@ -1105,8 +1097,6 @@ div
 {
     text-align:  center;
     width:       100%;
-    height:      26px;
-    line-height: 20px;
     background:  transparent;
     cursor:      default;
 }
@@ -12189,7 +12179,8 @@ extends Parameter
 
     
     constructor(id,
-                name, 
+                name,
+                showName,
                 hasInput,
                 hasOutput,
                 options,
@@ -12214,7 +12205,7 @@ extends Parameter
             20,        // height
             this.id,
             this.name, 
-            false,
+            showName,
             0,
             options.length-1,
             value);    // default
@@ -15858,10 +15849,10 @@ extends OpColorBase
         });
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', true, true, OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '',      true, true, true, Math.round(this._color[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '',      true, true, true, Math.round(this._color[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '',      true, true, true, Math.round(this._color[3] * rgbFactor[2])));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true, true, OpColorSpaces.map(s => s[1]), 0));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true, true, Math.round(this._color[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true, true, Math.round(this._color[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
         this.paramSpace.control.barTop  = 0.8;
@@ -16813,12 +16804,12 @@ function getColorSpaceScale(space)
         case 'rgb':    return rgbScale;
         case 'hsv':   
         case 'hsl':    return hs_Scale;
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return hclScale;
-        case 'oklab': 
-        case 'lab': 
-        case 'luv':    return oppScale;
+        case 'hclokl': return hcloklScale;
+        case 'hcllab': return hcllabScale;
+        case 'hclluv': return hclluvScale;
+        case 'oklab':  return oklabScale;
+        case 'lab':    return labScale;
+        case 'luv':    return luvScale;
     }    
 }
 
@@ -17291,9 +17282,13 @@ function convert2hclluv(fromColor)
 class   OpValidColor
 extends OpColorBase
 {
-    #paramSpace;
-    #order;
-    #paramMargin;
+    paramSpace;
+
+    paramRule1;
+    paramMargin1;
+
+    paramRule2;
+    paramMargin2;
 
 
 
@@ -17301,30 +17296,31 @@ extends OpColorBase
     {
         super('validcolor', 'valid', 'color', 80);
 
-        
+
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
-      
-        this.#order = createTextbox('txtOrder');
-        this.inner.appendChild(this.#order);
-
-        this.addParam(this.#paramMargin = new NumberParam('margin', 'margin', true, true, true, 0, 0, 1, 1));
-
-
-        this.#paramSpace.control.min         = 4;
-        this.#paramSpace.control.displayMin  = 4;
-        this.#paramSpace.control.update();
+        this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
+        this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 1, 0, 10, 1));
+        this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 1, 0, 10, 1));
 
 
-        this.inputs[0].addEventListener('connect', () => 
+        this.paramSpace.control.min        = 4;
+        this.paramSpace.control.displayMin = 4;
+        this.paramSpace.control.update();
+
+
+        this.header.connectionPadding = 18;
+
+
+        this.inputs[0].addEventListener('connect', () =>
         {
-            if (   !this.inputs[1].isConnected
-                && !graphView.loadingNodes) 
-                this.#paramSpace.setValue(
-                    colorSpaceIndex(this.inputs[0].data.color[0]),
+            if (!graphView.loadingNodes)
+                this.paramSpace.setValue(
+                    Math.max(4, colorSpaceIndex(this.inputs[0].data.color[0])),
                     true, true, false);
         });
     }
@@ -17335,31 +17331,50 @@ extends OpColorBase
     {
         //log(this.id + '.OpValidColor.updateData()');
 
+
+        // if (   this.paramRule1.value == 0
+        //     && this.paramRule2.value == 0)
+        //     this.paramRule2.setValue(2, false, true, false);
+
+        // else if (this.paramRule1.value == 1
+        //       && this.paramRule2.value == 1)
+        //     this.paramRule2.setValue(2, false, true, false);
+
+        // else if (this.paramRule1.value == 2
+        //       && this.paramRule2.value == 2)
+        //     this.paramRule2.setValue(1, false, true, false);
+
+
+        // this.updateRuleMargin(this.paramRule1, this.paramMargin1);
+        // this.updateRuleMargin(this.paramRule2, this.paramMargin2);
+
+
         if (this.inputs[0].isConnected)
         {
-        //     const space = colorSpace(this.#paramSpace.value);
-        //     const f     = this.#paramAmount.value;
-        //     const gamma = this.#paramGamma .value;
-            
-        //     const col = this.interpolate(
-        //         space,
-        //         dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
-        //         dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
-        //         f,
-        //         gamma);
+            const color = convertDataColorToSpace(
+                this.inputs[0].data.color,
+                colorSpace(this.paramSpace.value));
 
-        //     this._color = [
-        //         space, 
-        //         col[0], 
-        //         col[1], 
-        //         col[2] ];
+
+            this._color = color;
+
+                 if (this.paramRule1.value == 0) this.adjustChannel(color, 0, this.paramMargin1.value);
+            else if (this.paramRule1.value == 1) this.adjustChannel(color, 1, this.paramMargin1.value);
+            else if (this.paramRule1.value == 2) this.adjustChannel(color, 2, this.paramMargin1.value);
+
+            if (!isValidRgb(dataColor2rgb(this._color)))
+            {
+                     if (this.paramRule2.value == 0) this.adjustChannel(color, 0, this.paramMargin2.value);
+                else if (this.paramRule2.value == 1) this.adjustChannel(color, 1, this.paramMargin2.value);
+                else if (this.paramRule2.value == 2) this.adjustChannel(color, 2, this.paramMargin2.value);
+            }
         }
 
-        // else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
-        // else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
-        // else                                this._color = dataColor_NaN;
+        else
+            this._color = dataColor_NaN;
 
-        // this.outputs[0]._data = dataFromDataColor(this._color);
+
+        this.outputs[0]._data = dataFromDataColor(this._color);
 
 
         super.updateData()
@@ -17367,7 +17382,72 @@ extends OpColorBase
 
 
 
+    adjustChannel(color, iChan, margin)
+    {
+        const d = 0.001;
+
+        let _c  = color[iChan+1],
+             c_ = color[iChan+1];
+
+        let _valid  = isValidRgb(dataColor2rgb(color));
+        let  valid_ = isValidRgb(dataColor2rgb(color));
+
+
+        const factor = getColorSpaceFactor(color[0]);
+        const scale  = getColorSpaceScale (color[0]);
+
+        margin /= factor[iChan];
+
+        let stackOverflowProtect = 1/d;
+
+        while (   !_valid 
+               && ! valid_
+               && stackOverflowProtect-- > 0
+               && margin > 0)
+        {
+            _c  += d;
+             c_ -= d;
+
+             color[iChan+1] = _c;  _valid  = isValidRgb(dataColor2rgb(color));
+             color[iChan+1] =  c_;  valid_ = isValidRgb(dataColor2rgb(color));
+
+             margin -= d;//1/factor[iChan];
+        }
+
+
+        if (_valid) 
+        { 
+            color[iChan+1] = _c;
+            this._color = color;
+        }
+        else if (valid_) 
+        { 
+            color[iChan+1] = c_;
+            this._color = color;
+        }
+    }
+
+
+
+    // updateRuleMargin(rule, margin)
+    // {
+    //          if (rule.value == 0) margin.control.name = 'max H';
+    //     else if (rule.value == 1) margin.control.name = 'max C';
+    //     else if (rule.value == 2) margin.control.name = 'max L';
+
+    //     margin.control.update();
+    // }
+
+
+
     canShowColor()
+    {
+        return this.inputs[0].isConnected;
+    }
+
+
+
+    isConnected()
     {
         return this.inputs[0].isConnected;
     }
@@ -17392,7 +17472,7 @@ extends OpColorBase
 
 
         this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
-        this.addParam(this.#paramStandard = new SelectParam('standard', '', true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.#paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         enableSliderText(this.#paramValue.control, false);
@@ -17404,6 +17484,9 @@ extends OpColorBase
         createTooltipSrc(
             this.#paramValue.control, 
             () => this.#paramStandard.value == 1 ? ttWcag3 : ttWcag2);
+
+
+            this.header.connectionPadding = 12.5;
     }
 
 
@@ -17421,6 +17504,7 @@ extends OpColorBase
     {
         //log(this.id + '.OpWebContrast.updateData()');
 
+        
         this._color = 
             this.inputs[1].isConnected
             ? this.inputs[1].data.color
@@ -17593,8 +17677,8 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true, true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true,  true, true, 0, 0,    1, 2));
       
         
         this.#paramSpace.control.min         = 1;
@@ -17610,6 +17694,9 @@ extends OpColorBase
         this.#paramAmount.control.setSuffix('%', true);
         
 
+        this.header.connectionPadding = 12.5;
+
+
         this.inputs[0].addEventListener('connect', () => 
         {
             if (   !this.inputs[1].isConnected
@@ -17619,7 +17706,7 @@ extends OpColorBase
                     true, true, false);
         });
 
-        
+
         this.inputs[1].addEventListener('connect', () => 
         {
             if (   !this.inputs[0].isConnected
@@ -17731,7 +17818,7 @@ extends OpColorBase
         this.#paramL.allowEditDecimals = true;
 
 
-        this.header.connectionPadding = 14;
+        this.header.connectionPadding = 18;
     }
 
 
