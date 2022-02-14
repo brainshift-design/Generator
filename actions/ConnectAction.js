@@ -5,7 +5,7 @@ extends Action
     outputIndex;
     get outputOp() { return nodeFromId(this.outputOpId); }
 
-    oldOutputOpId;
+    oldOutputOpId = '';
     oldOutputIndex;
     get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
 
@@ -14,12 +14,16 @@ extends Action
     get inputOp() { return nodeFromId(this.inputOpId); }
 
 
+
     constructor(output, input)
     {
-        const    outIndex = output.op.outputs.indexOf(output);
-        const oldOutIndex = input.isConnected ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) : -1; 
-        const     inIndex = input.op.inputs.indexOf(input); 
+        const outIndex = output.op.outputs.indexOf(output);
+        const  inIndex = input.op.inputs.indexOf(input); 
 
+        const oldOutIndex = 
+            input.isConnected 
+            ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) 
+            : -1; 
 
         super('connect ' 
             + output.op.id + '.out[' + outIndex + ']'
@@ -30,7 +34,7 @@ extends Action
         this.outputOpId     = output.op.id;
         this.outputIndex    = outIndex;
 
-        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : -1;
+        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex = oldOutIndex;
 
         this.inputOpId      = input.op.id;
@@ -57,7 +61,7 @@ extends Action
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
-        if (this.oldOutputOpId > -1)
+        if (this.oldOutputOpId != '')
         {
             uiVariableConnect(
                 this.oldOutputOp, 

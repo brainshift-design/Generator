@@ -5,7 +5,7 @@ extends Action
     outputIndex;
     get outputOp() { return nodeFromId(this.outputOpId); }
 
-    oldOutputOpId;
+    oldOutputOpId = '';
     oldOutputIndex;
     get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
 
@@ -13,7 +13,7 @@ extends Action
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
 
-    oldInputOpId;
+    oldInputOpId = '';
     oldInputIndex;
     get oldInputOp() { return nodeFromId(this.oldInputOpId); }
     
@@ -39,7 +39,7 @@ extends Action
         this.outputOpId    = output.op.id;
         this.outputIndex   = outIndex;
         
-        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : -1;
+        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex = oldOutIndex;
 
         this.oldInputOpId  = oldInput.op.id;
@@ -86,7 +86,7 @@ extends Action
         graphView.updateNodeTransform(this.oldInputOp);
     
 
-        if (this.oldOutputOpId > -1)
+        if (this.oldOutputOpId != '')
         {
             uiVariableConnect(
                 this.oldOutputOp, 

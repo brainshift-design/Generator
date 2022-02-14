@@ -1181,8 +1181,8 @@ div
     <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction("interpolate",      btnCreateInterpolate));      this.blur();'>INTR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color",            btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
-    <button class='menuButton' id='btnCreateValidColor'       onclick='actionManager.do(new CreateNodeAction("validcolor",       btnCreateValidColor));       this.blur();'>VLD</span></button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate", btnCreateColorInterpolate)); this.blur();'>INTR</button>
+    <button class='menuButton' id='btnCreateValidColor'       onclick='actionManager.do(new CreateNodeAction("validcolor",       btnCreateValidColor));       this.blur();'>VLD</span></button>
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast",      btnCreateWebContrast));      this.blur();'></button>
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind",       btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -18234,7 +18234,7 @@ extends Action
     outputIndex;
     get outputOp() { return nodeFromId(this.outputOpId); }
 
-    oldOutputOpId;
+    oldOutputOpId = '';
     oldOutputIndex;
     get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
 
@@ -18243,12 +18243,16 @@ extends Action
     get inputOp() { return nodeFromId(this.inputOpId); }
 
 
+
     constructor(output, input)
     {
-        const    outIndex = output.op.outputs.indexOf(output);
-        const oldOutIndex = input.isConnected ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) : -1; 
-        const     inIndex = input.op.inputs.indexOf(input); 
+        const outIndex = output.op.outputs.indexOf(output);
+        const  inIndex = input.op.inputs.indexOf(input); 
 
+        const oldOutIndex = 
+            input.isConnected 
+            ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) 
+            : -1; 
 
         super('connect ' 
             + output.op.id + '.out[' + outIndex + ']'
@@ -18259,7 +18263,7 @@ extends Action
         this.outputOpId     = output.op.id;
         this.outputIndex    = outIndex;
 
-        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : -1;
+        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex = oldOutIndex;
 
         this.inputOpId      = input.op.id;
@@ -18286,7 +18290,7 @@ extends Action
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
-        if (this.oldOutputOpId > -1)
+        if (this.oldOutputOpId != '')
         {
             uiVariableConnect(
                 this.oldOutputOp, 
@@ -18684,7 +18688,7 @@ extends Action
     outputIndex;
     get outputOp() { return nodeFromId(this.outputOpId); }
 
-    oldOutputOpId;
+    oldOutputOpId = '';
     oldOutputIndex;
     get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
 
@@ -18692,7 +18696,7 @@ extends Action
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
 
-    oldInputOpId;
+    oldInputOpId = '';
     oldInputIndex;
     get oldInputOp() { return nodeFromId(this.oldInputOpId); }
     
@@ -18718,7 +18722,7 @@ extends Action
         this.outputOpId    = output.op.id;
         this.outputIndex   = outIndex;
         
-        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : -1;
+        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex = oldOutIndex;
 
         this.oldInputOpId  = oldInput.op.id;
@@ -18765,7 +18769,7 @@ extends Action
         graphView.updateNodeTransform(this.oldInputOp);
     
 
-        if (this.oldOutputOpId > -1)
+        if (this.oldOutputOpId != '')
         {
             uiVariableConnect(
                 this.oldOutputOp, 
