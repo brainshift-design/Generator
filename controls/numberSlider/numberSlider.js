@@ -514,7 +514,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                     ? slider.value -  dWheelX               * slider.wheelScale * dec
                     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
                 
-                slider.setValue(val);
+                slider.setValue(val, true, true, false, false);
             }
         }
     });

@@ -8486,7 +8486,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                     ? slider.value -  dWheelX               * slider.wheelScale * dec
                     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
                 
-                slider.setValue(val);
+                slider.setValue(val, true, true, false, false);
             }
         }
     });
@@ -17303,14 +17303,18 @@ extends OpColorBase
 
         this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
         this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 1, 0, 10, 1));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 4, 0, 10, 1));
         this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 1, 0, 10, 1));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 4, 0, 10, 1));
 
 
         this.paramSpace.control.min        = 4;
         this.paramSpace.control.displayMin = 4;
         this.paramSpace.control.update();
+
+
+        this.paramMargin1.control.max = 100;
+        this.paramMargin2.control.max = 100;
 
 
         this.header.connectionPadding = 18;
