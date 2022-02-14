@@ -179,6 +179,11 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             e.preventDefault();
             slider.buttonDown1 = true;
         }
+        else if (e.button == 2)
+        {
+            e.preventDefault();
+            slider.buttonDown2 = true;
+        }
     });
 
 
@@ -307,6 +312,8 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.addEventListener('losecapture', function()
     {
         slider.buttonDown0 = false;
+        slider.buttonDown1 = false;
+        slider.buttonDown2 = false;
         slider.mouseOver   = false;
         slider.update();
     });
@@ -349,8 +356,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             slider.showTextbox();
         }
 
-        else if (slider.buttonDown1)
-            slider.buttonDown1 = false;
+             if (e.button == 0) slider.buttonDown0 = false;
+        else if (e.button == 1) slider.buttonDown1 = false;
+        else if (e.button == 2) slider.buttonDown2 = false;
 
         slider.buttonDown0_ = false;
     });    
@@ -370,11 +378,11 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             if (slider.value != slider.oldValue)
                 slider.dispatchEvent(slider.onconfirm);
         }
-        else if (   e.button == 1
-            && slider.buttonDown1)
-        {
-            slider.buttonDown1 = false;            
-        }
+        // else if (   e.button == 1
+        //     && slider.buttonDown1)
+        // {
+        //     slider.buttonDown1 = false;            
+        // }
     });
 
 
