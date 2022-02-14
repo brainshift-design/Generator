@@ -54,7 +54,10 @@ extends OperatorBase
         this.header.appendChild(this._symbol);
 
         
-        this.textbox.addEventListener('focus', () => actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), false, true));
+        this.textbox.addEventListener('finishedit', e => 
+        {
+            actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+        });
     }
     
     

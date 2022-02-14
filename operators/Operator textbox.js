@@ -27,8 +27,7 @@ function initLabelTextbox(node)
         else if (e.code == 'Enter'
               || e.code == 'NumpadEnter')
         {
-            if (!nodeFromId(node.textbox.value))
-                node.textbox.finish(true);
+            node.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
@@ -92,7 +91,7 @@ function initLabelTextbox(node)
     node.textbox.addEventListener('focusout', function()
     {
         if (node.textbox.value != '')
-            node.setName(node.textbox.value); // this is good UX
+            node.textbox.finish(true);
 
         node.label.style.display = 'block';
 
@@ -104,9 +103,13 @@ function initLabelTextbox(node)
 
     node.textbox.finish = function(success)
     {
+        const enteredValue = node.textbox.value;
+        const   savedValue = node.textbox.savedValue;
+
         if (success) 
         {
-            if (node.textbox.value != '')
+            if (   enteredValue != ''
+                && enteredValue != savedValue)
             {
                 const newName = node.textbox.value;
                 setTimeout(() => node.setName(newName));
@@ -115,6 +118,13 @@ function initLabelTextbox(node)
         }
         else
             node.textbox.value = node.textbox.savedValue;
+
+
+        node.textbox.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    enteredValue,
+            'oldValue': savedValue }}));
+    
 
         node.textbox.blur();
         

@@ -10,6 +10,8 @@ function initNumberSliderTextbox(slider)
         e.stopPropagation();
     });
 
+
+    
     slider.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();

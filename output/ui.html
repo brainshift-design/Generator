@@ -7638,6 +7638,8 @@ function initNumberSliderTextbox(slider)
         e.stopPropagation();
     });
 
+
+    
     slider.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
@@ -8437,7 +8439,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             if (!slider.readOnly)
             {
-                if (document.activeElement
+                if (   document.activeElement
                     && document.activeElement.tagName.toLowerCase() == 'input'
                     && document.activeElement.slider)
                     document.activeElement.slider.textbox.finish(true, false);
@@ -14771,8 +14773,7 @@ function initLabelTextbox(node)
         else if (e.code == 'Enter'
               || e.code == 'NumpadEnter')
         {
-            if (!nodeFromId(node.textbox.value))
-                node.textbox.finish(true);
+            node.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
@@ -14836,7 +14837,7 @@ function initLabelTextbox(node)
     node.textbox.addEventListener('focusout', function()
     {
         if (node.textbox.value != '')
-            node.setName(node.textbox.value); // this is good UX
+            node.textbox.finish(true);
 
         node.label.style.display = 'block';
 
@@ -14848,9 +14849,13 @@ function initLabelTextbox(node)
 
     node.textbox.finish = function(success)
     {
+        const enteredValue = node.textbox.value;
+        const   savedValue = node.textbox.savedValue;
+
         if (success) 
         {
-            if (node.textbox.value != '')
+            if (   enteredValue != ''
+                && enteredValue != savedValue)
             {
                 const newName = node.textbox.value;
                 setTimeout(() => node.setName(newName));
@@ -14859,6 +14864,13 @@ function initLabelTextbox(node)
         }
         else
             node.textbox.value = node.textbox.savedValue;
+
+
+        node.textbox.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+            'success':  success,
+            'value':    enteredValue,
+            'oldValue': savedValue }}));
+    
 
         node.textbox.blur();
         
@@ -15143,7 +15155,10 @@ extends OperatorBase
         this.header.appendChild(this._symbol);
 
         
-        this.textbox.addEventListener('focus', () => actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), false, true));
+        this.textbox.addEventListener('finishedit', e => 
+        {
+            actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+        });
     }
     
     

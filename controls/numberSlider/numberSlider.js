@@ -492,7 +492,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             if (!slider.readOnly)
             {
-                if (document.activeElement
+                if (   document.activeElement
                     && document.activeElement.tagName.toLowerCase() == 'input'
                     && document.activeElement.slider)
                     document.activeElement.slider.textbox.finish(true, false);
