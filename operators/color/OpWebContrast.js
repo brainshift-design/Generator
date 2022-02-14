@@ -78,9 +78,8 @@ extends OpColorBase
                     this.#paramValue.control.displayMax = 21;
 
                     this.#paramValue.control.setDecimals(2);
-
                     this.#paramValue.control.setSuffix(rating);
-                    this.#paramValue.control.setValue(ratio);
+                    this.#paramValue.control.setValue(ratio, false, false, false);
                 }
                 else
                 {
@@ -95,9 +94,8 @@ extends OpColorBase
                     this.#paramValue.control.displayMax = 105;
 
                     this.#paramValue.control.setDecimals(1);
-
                     this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-                    this.#paramValue.control.setValue(Math.abs(ratio));
+                    this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
                 }
 
 

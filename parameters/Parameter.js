@@ -90,6 +90,7 @@ extends EventTarget
         this.output.control.style.position  = 'absolute';
         this.output.control.style.top       = '50%';
         this.output.control.style.transform = 'translateY(-50%)';
+        
         this.div.appendChild(this.output.control);
     }
 

@@ -14,7 +14,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.op.id + '.' + param.name + ' = ' + value);
+        super('set ' + param.op.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);

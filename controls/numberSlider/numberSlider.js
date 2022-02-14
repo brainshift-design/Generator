@@ -646,6 +646,36 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         slider.suffix                = suffix;
         slider.valueCanContainSuffix = valueCanContainSuffix;
     };
+    
+
+
+    slider.setMin = (min, dispatchEvents = true) =>
+    {
+        slider.min        = min;
+        slider.displayMin = min;
+
+        if (slider.value < min) 
+            slider.setValue(min, true, true, dispatchEvents);
+    };
+
+
+
+    slider.setMax = (max, dispatchEvents = true) =>
+    {
+        slider.max        = max;
+        slider.displayMax = max;
+
+        if (max < slider.value) 
+            slider.setValue(max, true, true, dispatchEvents);
+    };
+
+
+
+    slider.setDecimals = (dec, dspDec = dec) =>
+    {
+        slider.dec        = dec;
+        slider.displayDec = dspDec;
+    };
 
 
 
@@ -785,36 +815,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
              || document.   mozPointerLockElement === slider
              || document.webkitPointerLockElement === slider);
     }
-    
-
-
-    slider.setMin = (min, dispatchEvents = true) =>
-    {
-        slider.min        = min;
-        slider.displayMin = min;
-
-        if (slider.value < min) 
-            slider.setValue(min, true, true, dispatchEvents);
-    };
-
-
-
-    slider.setMax = (max, dispatchEvents = true) =>
-    {
-        slider.max        = max;
-        slider.displayMax = max;
-
-        if (max < slider.value) 
-            slider.setValue(max, true, true, dispatchEvents);
-    };
-
-
-
-    slider.setDecimals = (dec, dspDec = dec) =>
-    {
-        slider.dec        = dec;
-        slider.displayDec = dspDec;
-    };
 
 
 

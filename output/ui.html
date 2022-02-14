@@ -8593,6 +8593,36 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         slider.suffix                = suffix;
         slider.valueCanContainSuffix = valueCanContainSuffix;
     };
+    
+
+
+    slider.setMin = (min, dispatchEvents = true) =>
+    {
+        slider.min        = min;
+        slider.displayMin = min;
+
+        if (slider.value < min) 
+            slider.setValue(min, true, true, dispatchEvents);
+    };
+
+
+
+    slider.setMax = (max, dispatchEvents = true) =>
+    {
+        slider.max        = max;
+        slider.displayMax = max;
+
+        if (max < slider.value) 
+            slider.setValue(max, true, true, dispatchEvents);
+    };
+
+
+
+    slider.setDecimals = (dec, dspDec = dec) =>
+    {
+        slider.dec        = dec;
+        slider.displayDec = dspDec;
+    };
 
 
 
@@ -8732,36 +8762,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
              || document.   mozPointerLockElement === slider
              || document.webkitPointerLockElement === slider);
     }
-    
-
-
-    slider.setMin = (min, dispatchEvents = true) =>
-    {
-        slider.min        = min;
-        slider.displayMin = min;
-
-        if (slider.value < min) 
-            slider.setValue(min, true, true, dispatchEvents);
-    };
-
-
-
-    slider.setMax = (max, dispatchEvents = true) =>
-    {
-        slider.max        = max;
-        slider.displayMax = max;
-
-        if (max < slider.value) 
-            slider.setValue(max, true, true, dispatchEvents);
-    };
-
-
-
-    slider.setDecimals = (dec, dspDec = dec) =>
-    {
-        slider.dec        = dec;
-        slider.displayDec = dspDec;
-    };
 
 
 
@@ -11765,6 +11765,7 @@ extends EventTarget
         this.output.control.style.position  = 'absolute';
         this.output.control.style.top       = '50%';
         this.output.control.style.transform = 'translateY(-50%)';
+        
         this.div.appendChild(this.output.control);
     }
 
@@ -17406,9 +17407,8 @@ extends OpColorBase
                     this.#paramValue.control.displayMax = 21;
 
                     this.#paramValue.control.setDecimals(2);
-
                     this.#paramValue.control.setSuffix(rating);
-                    this.#paramValue.control.setValue(ratio);
+                    this.#paramValue.control.setValue(ratio, false, false, false);
                 }
                 else
                 {
@@ -17423,9 +17423,8 @@ extends OpColorBase
                     this.#paramValue.control.displayMax = 105;
 
                     this.#paramValue.control.setDecimals(1);
-
                     this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-                    this.#paramValue.control.setValue(Math.abs(ratio));
+                    this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
                 }
 
 
@@ -18041,8 +18040,7 @@ class ActionManager
             }
         }
 
-        action.do();
-        //console.log("DO " + action.name);
+        action.do(); //log("DO " + action.name);
     }
 
 
@@ -18057,8 +18055,7 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            last.undo();
-            //console.log("UNDO " + last.name);
+            last.undo(); //log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -18078,8 +18075,7 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            last.redo();
-            //console.log("REDO " + last.name);
+            last.redo(); //log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))
@@ -18970,7 +18966,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.op.id + '.' + param.name + ' = ' + value);
+        super('set ' + param.op.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.op.id;
         this.paramIndex = param.op.params.indexOf(param);
