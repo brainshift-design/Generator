@@ -28,9 +28,10 @@ extends OpColorBase
         this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
         this.#paramAmount.allowEditDecimals  = true;
-        this.#paramAmount.control.suffix     = '%'
         this.#paramAmount.control.valueScale = 100;
         this.#paramAmount.control.displayDec = 0;
+
+        this.#paramAmount.control.setSuffix('%', true);
         
 
         this.inputs[0].addEventListener('connect', () => 
@@ -42,6 +43,7 @@ extends OpColorBase
                     true, true, false);
         });
 
+        
         this.inputs[1].addEventListener('connect', () => 
         {
             if (   !this.inputs[0].isConnected

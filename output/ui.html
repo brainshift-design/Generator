@@ -7727,7 +7727,8 @@ function initNumberSliderTextbox(slider)
 
             let text = slider.textbox.value;
 
-            if (   text.length >= slider.suffix.length
+            if (   slider.valueCanContainSuffix   
+                && text.length >= slider.suffix.length
                 && text.substring(text.length - slider.suffix.length) == slider.suffix)
                 text = text.substring(0, text.length - slider.suffix.length);
 
@@ -7786,6 +7787,8 @@ function initNumberSliderTextbox(slider)
             if (      e.key.length == 1
                    && !isDigitChar(e.key)
                    && e.key != '?'
+                   && (   !slider.valueCanContainSuffix
+                       || !slider.suffix.includes(e.key))
                    && (   !slider.showHex 
                        || !isHexDigitChar(e.key))
                    && (   slider.showHex
@@ -7804,7 +7807,7 @@ function initNumberSliderTextbox(slider)
             curVal =
                 curVal == '?'
                 ? ''
-                :   curVal.substring(0,                           slider.textbox.selectionStart) 
+                :   curVal.substring(0, slider.textbox.selectionStart) 
                   + curVal.substring(slider.textbox.selectionEnd, curVal.length);
 
                   
@@ -7924,6 +7927,7 @@ function initNumberSliderTextbox(slider)
 
     slider.updateTextbox = function()
     {
+        log(slider.valueCanContainSuffix);
         slider.textbox.value =
             (isNaN(slider.value)
              ? '?'
@@ -7931,8 +7935,8 @@ function initNumberSliderTextbox(slider)
                    slider.value * slider.valueScale, 
                    slider.displayDec, 
                    slider.showHex
-               ).toUpperCase());
-            //+ slider.suffix;
+               ).toUpperCase())
+            + (slider.valueCanContainSuffix ? slider.suffix : '');
             
         slider.textbox.savedValue = slider.textbox.value;
     };
@@ -7954,54 +7958,55 @@ function initNumberSliderChildren(slider)
 
 function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
 {
-    slider.param             = param;
-
-    slider.className         = 'numberSlider';
-
-    slider.width             = width;
-    slider.height            = height;
-        
-    slider.style.width       = width;
-    slider.style.height      = height;
-        
-    slider.min               = min;
-    slider.max               = max;
-    slider.value             = def;
-    slider.acc               = acc;
-
-    slider.dec               =
-    slider.displayDec        = dec;
+    slider.param                 = param;
     
-    slider.displayMin        = min;
-    slider.displayMax        = max;
-    slider.valueScale        = 1;
+    slider.className             = 'numberSlider';
+    
+    slider.width                 = width;
+    slider.height                = height;
+            
+    slider.style.width           = width;
+    slider.style.height          = height;
+            
+    slider.min                   = min;
+    slider.max                   = max;
+    slider.value                 = def;
+    slider.acc                   = acc;
+    
+    slider.dec                   =
+    slider.displayDec            = dec;
+        
+    slider.displayMin            = min;
+    slider.displayMax            = max;
+    slider.valueScale            = 1;
                
-    slider.id                = id;
-    slider.name              = name;
-    slider.suffix            = suffix;
-    slider.log               = log;
-
-    slider.dragScale         = dragScale;
-    slider.wheelScale        = wheelScale;
-        
-    slider.backColor         = 'transparent';
-    slider.valueColor        = '#7772';
-    slider.textColor         = '#000';
-           
-    slider.fontSize          = 11;
-        
-    slider.style.display     = 'inline';
-        
-    slider.mouseOver         = false;
-    slider.buttonDown0       = false;
-    slider.buttonDown1       = false;
-        
-    slider.clickSize         = 4;
-    slider.moved             = false;
+    slider.id                    = id;
+    slider.name                  = name;
+    slider.suffix                = suffix;
+    slider.valueCanContainSuffix = false;
+    slider.log                   = log;
     
-    slider.tabIndex          = 0;
-    slider.inFocus           = false;
-    slider.clicked           = false;
+    slider.dragScale             = dragScale;
+    slider.wheelScale            = wheelScale;
+            
+    slider.backColor             = 'transparent';
+    slider.valueColor            = '#7772';
+    slider.textColor             = '#000';
+               
+    slider.fontSize              = 11;
+            
+    slider.style.display         = 'inline';
+            
+    slider.mouseOver             = false;
+    slider.buttonDown0           = false;
+    slider.buttonDown1           = false;
+            
+    slider.clickSize             = 4;
+    slider.moved                 = false;
+        
+    slider.tabIndex              = 0;
+    slider.inFocus               = false;
+    slider.clicked               = false;
 
     slider.oldValue;
 
@@ -8582,6 +8587,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         }
     };
 
+
+
+
+    slider.setSuffix = function(suffix, valueCanContainSuffix = false)
+    {
+        slider.suffix                = suffix;
+        slider.valueCanContainSuffix = valueCanContainSuffix;
+    };
 
 
 
@@ -15480,9 +15493,10 @@ extends OperatorBase
         
         this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
-        this.#paramAmount.control.suffix     = '%';
         this.#paramAmount.control.valueScale = 100;
         this.#paramAmount.control.displayDec = 0;
+        
+        this.#paramAmount.control.setSuffix('%', true);
     }
 
 
@@ -16416,7 +16430,7 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
     op.param3.setName(c3, false);
 
     op.param1.control.wrapValue = c1wrap;
-    op.param1.control.suffix    = c1suffix;
+    op.param1.control.setSuffix(c1suffix, c1suffix != '');
 
     op.param1.control.displayMin = c1min; 
     op.param2.control.displayMin = c2min;
@@ -17382,7 +17396,7 @@ extends OpColorBase
 
                     this.#paramValue.control.setDecimals(2);
 
-                    this.#paramValue.control.suffix = rating;
+                    this.#paramValue.control.setSuffix(rating);
                     this.#paramValue.control.setValue(ratio);
                 }
                 else
@@ -17399,7 +17413,7 @@ extends OpColorBase
 
                     this.#paramValue.control.setDecimals(1);
 
-                    this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>';
+                    this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
                     this.#paramValue.control.setValue(Math.abs(ratio));
                 }
 
@@ -17533,9 +17547,10 @@ extends OpColorBase
         this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
         this.#paramAmount.allowEditDecimals  = true;
-        this.#paramAmount.control.suffix     = '%'
         this.#paramAmount.control.valueScale = 100;
         this.#paramAmount.control.displayDec = 0;
+
+        this.#paramAmount.control.setSuffix('%', true);
         
 
         this.inputs[0].addEventListener('connect', () => 
@@ -17547,6 +17562,7 @@ extends OpColorBase
                     true, true, false);
         });
 
+        
         this.inputs[1].addEventListener('connect', () => 
         {
             if (   !this.inputs[0].isConnected
@@ -17774,9 +17790,9 @@ extends OperatorBase
         this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
         this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-
         
-        this.#paramAngle.control.suffix = '°';
+        this.#paramAngle.control.setSuffix('°', true);
+
         
         this.updateRound();
 

@@ -13,54 +13,55 @@ function initNumberSliderChildren(slider)
 
 function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
 {
-    slider.param             = param;
-
-    slider.className         = 'numberSlider';
-
-    slider.width             = width;
-    slider.height            = height;
-        
-    slider.style.width       = width;
-    slider.style.height      = height;
-        
-    slider.min               = min;
-    slider.max               = max;
-    slider.value             = def;
-    slider.acc               = acc;
-
-    slider.dec               =
-    slider.displayDec        = dec;
+    slider.param                 = param;
     
-    slider.displayMin        = min;
-    slider.displayMax        = max;
-    slider.valueScale        = 1;
+    slider.className             = 'numberSlider';
+    
+    slider.width                 = width;
+    slider.height                = height;
+            
+    slider.style.width           = width;
+    slider.style.height          = height;
+            
+    slider.min                   = min;
+    slider.max                   = max;
+    slider.value                 = def;
+    slider.acc                   = acc;
+    
+    slider.dec                   =
+    slider.displayDec            = dec;
+        
+    slider.displayMin            = min;
+    slider.displayMax            = max;
+    slider.valueScale            = 1;
                
-    slider.id                = id;
-    slider.name              = name;
-    slider.suffix            = suffix;
-    slider.log               = log;
-
-    slider.dragScale         = dragScale;
-    slider.wheelScale        = wheelScale;
-        
-    slider.backColor         = 'transparent';
-    slider.valueColor        = '#7772';
-    slider.textColor         = '#000';
-           
-    slider.fontSize          = 11;
-        
-    slider.style.display     = 'inline';
-        
-    slider.mouseOver         = false;
-    slider.buttonDown0       = false;
-    slider.buttonDown1       = false;
-        
-    slider.clickSize         = 4;
-    slider.moved             = false;
+    slider.id                    = id;
+    slider.name                  = name;
+    slider.suffix                = suffix;
+    slider.valueCanContainSuffix = false;
+    slider.log                   = log;
     
-    slider.tabIndex          = 0;
-    slider.inFocus           = false;
-    slider.clicked           = false;
+    slider.dragScale             = dragScale;
+    slider.wheelScale            = wheelScale;
+            
+    slider.backColor             = 'transparent';
+    slider.valueColor            = '#7772';
+    slider.textColor             = '#000';
+               
+    slider.fontSize              = 11;
+            
+    slider.style.display         = 'inline';
+            
+    slider.mouseOver             = false;
+    slider.buttonDown0           = false;
+    slider.buttonDown1           = false;
+            
+    slider.clickSize             = 4;
+    slider.moved                 = false;
+        
+    slider.tabIndex              = 0;
+    slider.inFocus               = false;
+    slider.clicked               = false;
 
     slider.oldValue;
 
@@ -641,6 +642,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         }
     };
 
+
+
+
+    slider.setSuffix = function(suffix, valueCanContainSuffix = false)
+    {
+        slider.suffix                = suffix;
+        slider.valueCanContainSuffix = valueCanContainSuffix;
+    };
 
 
 

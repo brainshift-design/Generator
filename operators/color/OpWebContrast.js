@@ -79,7 +79,7 @@ extends OpColorBase
 
                     this.#paramValue.control.setDecimals(2);
 
-                    this.#paramValue.control.suffix = rating;
+                    this.#paramValue.control.setSuffix(rating);
                     this.#paramValue.control.setValue(ratio);
                 }
                 else
@@ -96,7 +96,7 @@ extends OpColorBase
 
                     this.#paramValue.control.setDecimals(1);
 
-                    this.#paramValue.control.suffix = '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>';
+                    this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
                     this.#paramValue.control.setValue(Math.abs(ratio));
                 }
 

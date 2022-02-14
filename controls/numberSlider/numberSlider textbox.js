@@ -99,7 +99,8 @@ function initNumberSliderTextbox(slider)
 
             let text = slider.textbox.value;
 
-            if (   text.length >= slider.suffix.length
+            if (   slider.valueCanContainSuffix   
+                && text.length >= slider.suffix.length
                 && text.substring(text.length - slider.suffix.length) == slider.suffix)
                 text = text.substring(0, text.length - slider.suffix.length);
 
@@ -158,6 +159,8 @@ function initNumberSliderTextbox(slider)
             if (      e.key.length == 1
                    && !isDigitChar(e.key)
                    && e.key != '?'
+                   && (   !slider.valueCanContainSuffix
+                       || !slider.suffix.includes(e.key))
                    && (   !slider.showHex 
                        || !isHexDigitChar(e.key))
                    && (   slider.showHex
@@ -176,7 +179,7 @@ function initNumberSliderTextbox(slider)
             curVal =
                 curVal == '?'
                 ? ''
-                :   curVal.substring(0,                           slider.textbox.selectionStart) 
+                :   curVal.substring(0, slider.textbox.selectionStart) 
                   + curVal.substring(slider.textbox.selectionEnd, curVal.length);
 
                   
@@ -296,6 +299,7 @@ function initNumberSliderTextbox(slider)
 
     slider.updateTextbox = function()
     {
+        log(slider.valueCanContainSuffix);
         slider.textbox.value =
             (isNaN(slider.value)
              ? '?'
@@ -303,8 +307,8 @@ function initNumberSliderTextbox(slider)
                    slider.value * slider.valueScale, 
                    slider.displayDec, 
                    slider.showHex
-               ).toUpperCase());
-            //+ slider.suffix;
+               ).toUpperCase())
+            + (slider.valueCanContainSuffix ? slider.suffix : '');
             
         slider.textbox.savedValue = slider.textbox.value;
     };

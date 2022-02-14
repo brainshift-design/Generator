@@ -161,7 +161,7 @@ function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2m
     op.param3.setName(c3, false);
 
     op.param1.control.wrapValue = c1wrap;
-    op.param1.control.suffix    = c1suffix;
+    op.param1.control.setSuffix(c1suffix, c1suffix != '');
 
     op.param1.control.displayMin = c1min; 
     op.param2.control.displayMin = c2min;

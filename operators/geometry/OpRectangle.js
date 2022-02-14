@@ -29,9 +29,9 @@ extends OperatorBase
         this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
         this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-
         
-        this.#paramAngle.control.suffix = '°';
+        this.#paramAngle.control.setSuffix('°', true);
+
         
         this.updateRound();
 

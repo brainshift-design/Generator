@@ -22,9 +22,10 @@ extends OperatorBase
         
         this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
         this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
-        this.#paramAmount.control.suffix     = '%';
         this.#paramAmount.control.valueScale = 100;
         this.#paramAmount.control.displayDec = 0;
+        
+        this.#paramAmount.control.setSuffix('%', true);
     }
 
 
