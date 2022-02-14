@@ -369,6 +369,7 @@ function createNode(opType, creatingButton = null)//, createdNodeId = -1)
         // case 'random': node = new OpRandom(); break;
         
         case 'color':            node = new OpColor();            break;
+        case 'validcolor':       node = new OpValidColor();       break;
         case 'colorinterpolate': node = new OpColorInterpolate(); break;
         case 'webcontrast':      node = new OpWebContrast();      break;
         case 'colorblind':       node = new OpColorblind();       break;

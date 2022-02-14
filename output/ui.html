@@ -1085,6 +1085,40 @@ div
 }
 
 
+.hexbox
+{
+    text-align:  center;
+    width:       100%;
+    height:      26px;
+    line-height: 20px;
+    background:  transparent;
+    cursor:      default;
+}
+
+.hexbox:hover
+{
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1) inset;
+}
+
+
+.txtOrder
+{
+    text-align:  center;
+    width:       100%;
+    height:      26px;
+    line-height: 20px;
+    background:  transparent;
+    cursor:      default;
+}
+
+
+.txtOrder:hover
+{
+    box-shadow: 0  1px 0 0 rgba(0, 0, 0, 0.1) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.1) inset;
+}
+
+
 .outputControls
 {
     width:          12px;
@@ -1157,6 +1191,7 @@ div
     <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction("interpolate",      btnCreateInterpolate));      this.blur();'>INTR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color",            btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
+    <button class='menuButton' id='btnCreateValidColor'       onclick='actionManager.do(new CreateNodeAction("validcolor",       btnCreateValidColor));       this.blur();'>VLD</span></button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate", btnCreateColorInterpolate)); this.blur();'>INTR</button>
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast",      btnCreateWebContrast));      this.blur();'></button>
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind",       btnCreateColorblind));       this.blur();'></button>
@@ -12686,6 +12721,7 @@ function createNode(opType, creatingButton = null)//, createdNodeId = -1)
         // case 'random': node = new OpRandom(); break;
         
         case 'color':            node = new OpColor();            break;
+        case 'validcolor':       node = new OpValidColor();       break;
         case 'colorinterpolate': node = new OpColorInterpolate(); break;
         case 'webcontrast':      node = new OpWebContrast();      break;
         case 'colorblind':       node = new OpColorblind();       break;
@@ -16789,13 +16825,7 @@ function getColorSpaceScale(space)
 
 function initHexbox(op)
 {
-    op.hexbox = createTextbox();
-       
-    op.hexbox.style.textAlign  = 'center';
-    op.hexbox.style.width      = '100%';
-    op.hexbox.style.height     = 26;
-    op.hexbox.style.background = 'transparent';
-    op.hexbox.style.cursor     = 'default';
+    op.hexbox = createTextbox('hexbox');
     
     op.hexbox.op      = op;
     op.hexbox.editing = false;
@@ -17262,7 +17292,8 @@ class   OpValidColor
 extends OpColorBase
 {
     #paramSpace;
-    #textbox;
+    #order;
+    #paramMargin;
 
 
 
@@ -17277,12 +17308,16 @@ extends OpColorBase
 
         this.addParam(this.#paramSpace = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
       
-        this.#textbox = createTextbox('txtOrder');
-        this.inner.appendChild(this.#textbox);
+        this.#order = createTextbox('txtOrder');
+        this.inner.appendChild(this.#order);
 
-        this.#paramSpace.control.min         = 2;
-        this.#paramSpace.control.displayMin  = 2;
-        
+        this.addParam(this.#paramMargin = new NumberParam('margin', 'margin', true, true, true, 0, 0, 1, 1));
+
+
+        this.#paramSpace.control.min         = 4;
+        this.#paramSpace.control.displayMin  = 4;
+        this.#paramSpace.control.update();
+
 
         this.inputs[0].addEventListener('connect', () => 
         {
@@ -17300,9 +17335,8 @@ extends OpColorBase
     {
         //log(this.id + '.OpValidColor.updateData()');
 
-        // if (   this.inputs[0].isConnected
-        //     && this.inputs[1].isConnected)
-        // {
+        if (this.inputs[0].isConnected)
+        {
         //     const space = colorSpace(this.#paramSpace.value);
         //     const f     = this.#paramAmount.value;
         //     const gamma = this.#paramGamma .value;
@@ -17319,7 +17353,7 @@ extends OpColorBase
         //         col[0], 
         //         col[1], 
         //         col[2] ];
-        // }
+        }
 
         // else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
         // else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;

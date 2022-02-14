@@ -1,12 +1,6 @@
 function initHexbox(op)
 {
-    op.hexbox = createTextbox();
-       
-    op.hexbox.style.textAlign  = 'center';
-    op.hexbox.style.width      = '100%';
-    op.hexbox.style.height     = 26;
-    op.hexbox.style.background = 'transparent';
-    op.hexbox.style.cursor     = 'default';
+    op.hexbox = createTextbox('hexbox');
     
     op.hexbox.op      = op;
     op.hexbox.editing = false;

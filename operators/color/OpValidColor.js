@@ -2,7 +2,8 @@ class   OpValidColor
 extends OpColorBase
 {
     #paramSpace;
-    #textbox;
+    #order;
+    #paramMargin;
 
 
 
@@ -17,12 +18,16 @@ extends OpColorBase
 
         this.addParam(this.#paramSpace = new SelectParam('space',  '',  true, true, OpColorSpaces.map(s => s[1])));
       
-        this.#textbox = createTextbox('txtOrder');
-        this.inner.appendChild(this.#textbox);
+        this.#order = createTextbox('txtOrder');
+        this.inner.appendChild(this.#order);
 
-        this.#paramSpace.control.min         = 2;
-        this.#paramSpace.control.displayMin  = 2;
-        
+        this.addParam(this.#paramMargin = new NumberParam('margin', 'margin', true, true, true, 0, 0, 1, 1));
+
+
+        this.#paramSpace.control.min         = 4;
+        this.#paramSpace.control.displayMin  = 4;
+        this.#paramSpace.control.update();
+
 
         this.inputs[0].addEventListener('connect', () => 
         {
@@ -40,9 +45,8 @@ extends OpColorBase
     {
         //log(this.id + '.OpValidColor.updateData()');
 
-        // if (   this.inputs[0].isConnected
-        //     && this.inputs[1].isConnected)
-        // {
+        if (this.inputs[0].isConnected)
+        {
         //     const space = colorSpace(this.#paramSpace.value);
         //     const f     = this.#paramAmount.value;
         //     const gamma = this.#paramGamma .value;
@@ -59,7 +63,7 @@ extends OpColorBase
         //         col[0], 
         //         col[1], 
         //         col[2] ];
-        // }
+        }
 
         // else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
         // else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
