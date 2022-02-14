@@ -481,15 +481,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         }
 
 
-        // if (   isTouchpad 
-        //     && Math.abs(e.deltaY) > Math.abs(e.deltaX))
-        // {
-        //     e.stopPropagation();
-        //     //e.preventDefault();
-        //     return;
-        // }
-
-
         const dWheelX = e.deltaX /  20;
         const dWheelY = e.deltaY / 100;
 
@@ -501,6 +492,11 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             if (!slider.readOnly)
             {
+                if (document.activeElement
+                    && document.activeElement.tagName.toLowerCase() == 'input'
+                    && document.activeElement.slider)
+                    document.activeElement.slider.textbox.finish(true, false);
+
                 slider.oldValue = slider.value;
 
                 const dec = Math.pow(10, -slider.dec);

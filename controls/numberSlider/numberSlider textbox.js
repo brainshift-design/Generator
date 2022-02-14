@@ -1,6 +1,7 @@
 function initNumberSliderTextbox(slider)
 {
     slider.textbox = createTextbox('numberSliderTextbox');
+    slider.textbox.slider = slider;
     
 
 
@@ -299,7 +300,6 @@ function initNumberSliderTextbox(slider)
 
     slider.updateTextbox = function()
     {
-        log(slider.valueCanContainSuffix);
         slider.textbox.value =
             (isNaN(slider.value)
              ? '?'
