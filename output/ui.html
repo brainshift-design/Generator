@@ -17349,8 +17349,8 @@ extends OpColorBase
         //     this.paramRule2.setValue(1, false, true, false);
 
 
-        // this.updateRuleMargin(this.paramRule1, this.paramMargin1);
-        // this.updateRuleMargin(this.paramRule2, this.paramMargin2);
+        this.updateRuleMargin(this.paramRule1, this.paramMargin1);
+        this.updateRuleMargin(this.paramRule2, this.paramMargin2);
 
 
         if (this.inputs[0].isConnected)
@@ -17433,14 +17433,21 @@ extends OpColorBase
 
 
 
-    // updateRuleMargin(rule, margin)
-    // {
-    //          if (rule.value == 0) margin.control.name = 'max H';
-    //     else if (rule.value == 1) margin.control.name = 'max C';
-    //     else if (rule.value == 2) margin.control.name = 'max L';
+    updateRuleMargin(rule, margin)
+    {
+        if (rule.value == 0) 
+        {
+            margin.control.max        = 360;
+            margin.control.displayMax = 60;
+        }
+        else 
+        {
+            margin.control.max        = 100;
+            margin.control.displayMax = 10;
+        }
 
-    //     margin.control.update();
-    // }
+        margin.control.update();
+    }
 
 
 
