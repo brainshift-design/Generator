@@ -21,10 +21,15 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const    outIndex =   output.op.outputs.indexOf(output);
-        const oldOutIndex = input.isConnected ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) : -1; 
-        const  oldInIndex = oldInput.op. inputs.indexOf(oldInput); 
-        const     inIndex =    input.op. inputs.indexOf(input); 
+        const outIndex = output.op.outputs.indexOf(output);
+        const  inIndex =  input.op. inputs.indexOf(input); 
+
+        const oldOutIndex = 
+            input.isConnected 
+            ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) 
+            : -1; 
+
+        const oldInIndex = oldInput.op.inputs.indexOf(oldInput); 
         
 
         super(
@@ -36,17 +41,17 @@ extends Action
             + input.op.id + '.inputs[' + inIndex + ']');
 
 
-        this.outputOpId    = output.op.id;
-        this.outputIndex   = outIndex;
+        this.outputOpId     = output.op.id;
+        this.outputIndex    = outIndex;
         
         this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex = oldOutIndex;
 
-        this.oldInputOpId  = oldInput.op.id;
-        this.oldInputIndex = oldInIndex;
+        this.oldInputOpId   = oldInput.op.id;
+        this.oldInputIndex  = oldInIndex;
 
-        this.inputOpId     = input.op.id;
-        this.inputIndex    = inIndex;
+        this.inputOpId      = input.op.id;
+        this.inputIndex     = inIndex;
     }
 
 
@@ -63,6 +68,7 @@ extends Action
             this. inputOp. inputs[this. inputIndex],
             this.inputIndex);
             
+
         graphView.updateNodeTransform(this.inputOp);
 
         this.oldInputOp.pushUpdate();
@@ -82,8 +88,8 @@ extends Action
             this.oldInputOp, 
             this.oldInputIndex);
 
-        this.oldInputOp.pushUpdate();
         graphView.updateNodeTransform(this.oldInputOp);
+        this.oldInputOp.pushUpdate();
     
 
         if (this.oldOutputOpId != '')
@@ -94,8 +100,8 @@ extends Action
                 this.inputOp, 
                 this.inputIndex);
 
-            this.inputOp.pushUpdate();
             graphView.updateNodeTransform(this.inputOp);
+            this.inputOp.pushUpdate();
         }
     }
 }
