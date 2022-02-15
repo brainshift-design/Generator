@@ -82,8 +82,6 @@ graphView.endConnection = pointerId =>
         if (   input
             && input.dataType == output.dataType) // TO INPUT
         {
-            log(oldReorderIndex);
-            log(newReorderIndex);
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex))
                 actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
