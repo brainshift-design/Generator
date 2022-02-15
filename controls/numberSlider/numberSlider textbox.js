@@ -11,7 +11,7 @@ function initNumberSliderTextbox(slider)
     });
 
 
-    
+
     slider.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();

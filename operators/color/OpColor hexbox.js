@@ -110,7 +110,8 @@ function onHexboxKeyDown(e)
             && e.key != 'ArrowRight'
             && e.key != 'Delete'
             && e.key != 'Backspace'
-            && hexbox.value.length >= 6)
+            && hexbox.value.length >= 6
+            && hexbox.selectionStart == hexbox.selectionEnd)
         e.preventDefault();
 
     // else if (e.key == 'ArrowUp'
