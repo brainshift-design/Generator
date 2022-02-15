@@ -22,9 +22,9 @@ extends OpColorBase
 
         this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
         this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 4, 0, 10, 1));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 4, 0, 20, 1));
         this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 4, 0, 10, 1));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 4, 0, 20, 1));
 
 
         this.paramSpace.control.min        = 4;
@@ -162,7 +162,7 @@ extends OpColorBase
         else 
         {
             margin.control.max        = 100;
-            margin.control.displayMax = 10;
+            margin.control.displayMax = 20;
         }
 
         margin.control.update();

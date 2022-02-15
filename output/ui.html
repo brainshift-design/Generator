@@ -69,6 +69,14 @@
     position:            absolute;
     padding-left:        3px;
     padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="%23d5d5d5" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="%23d5d5d5"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnToggleWires:hover
+{
     background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
@@ -79,11 +87,18 @@
 {
     padding-left:        3px;
     padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="%23d5d5d5" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="%23d5d5d5"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
 }
 
+
+#btnCreateWebContrast:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
 
 
 #btnCreateWebContrast:hover
@@ -96,6 +111,14 @@
 {
     padding-left:        3px;
     padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateColorBlind:hover
+{
     background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
@@ -11685,16 +11708,8 @@ graphView.toggleShowWires = function()
 {
     graphView.showWires = !graphView.showWires;
 
-    graphView.updateShowWiresButton();
+    updateToggleShowWiresButton();
     graphView.updateShowWires();
-};
-
-
-
-graphView.updateShowWiresButton = function()
-{
-    btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
-    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 };
 
 
@@ -17304,9 +17319,9 @@ extends OpColorBase
 
         this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
         this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 4, 0, 10, 1));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 4, 0, 20, 1));
         this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 4, 0, 10, 1));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 4, 0, 20, 1));
 
 
         this.paramSpace.control.min        = 4;
@@ -17444,7 +17459,7 @@ extends OpColorBase
         else 
         {
             margin.control.max        = 100;
-            margin.control.displayMax = 10;
+            margin.control.displayMax = 20;
         }
 
         margin.control.update();
@@ -17806,9 +17821,9 @@ extends OpColorBase
 class   OpColorblind
 extends OpColorBase
 {
-    #paramS;
-    #paramM;
     #paramL;
+    #paramM;
+    #paramS;
 
 
 
@@ -17821,13 +17836,13 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0));
-        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
         this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0));
 
-        this.#paramS.allowEditDecimals = true;
-        this.#paramM.allowEditDecimals = true;
         this.#paramL.allowEditDecimals = true;
+        this.#paramM.allowEditDecimals = true;
+        this.#paramS.allowEditDecimals = true;
 
 
         this.header.connectionPadding = 18;
@@ -17890,9 +17905,9 @@ extends OpColorBase
     {
         super.updateParams(dispatchEvents);
 
-        this.setParamText(this.#paramS, 'S');
-        this.setParamText(this.#paramM, 'M');
         this.setParamText(this.#paramL, 'L');
+        this.setParamText(this.#paramM, 'M');
+        this.setParamText(this.#paramS, 'S');
     }
 
 
@@ -19186,6 +19201,26 @@ extends Action
 }
 
 
+function updateToggleShowWiresButton()
+{
+    const color = 
+           graphView.showWires 
+        || btnToggleWires.mouseOver 
+        ? 'white' 
+        : '%23d5d5d5';
+
+    btnToggleWires.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="'+color+'" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="'+color+'"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="'+color+'"/></svg>\')';
+    btnToggleWires.style.backgroundPosition = '50% 50%';
+    btnToggleWires.style.backgroundRepeat   = 'no-repeat';
+    btnToggleWires.style.backgroundColor    = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
+}
+
+
+
+btnToggleWires.addEventListener('pointerover',  () => updateToggleShowWiresButton());
+btnToggleWires.addEventListener('pointerleave', () => updateToggleShowWiresButton());
+
+
 const panCursor = 
       'url(data:image/svg+xml;base64,'
     + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3Ln'
@@ -19882,8 +19917,8 @@ productKeyClose.addEventListener('click', e =>
 
 
 
-btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  graphView.updateShowWiresButton(); });
-btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; graphView.updateShowWiresButton(); });
+btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  updateToggleShowWiresButton(); });
+btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; updateToggleShowWiresButton(); });
 
 
 function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
@@ -20396,9 +20431,9 @@ function loadGraph(json)
 
 
     graphView.showWires = data.showWires == 'true';
-    graphView.updateShowWiresButton();
+    updateToggleShowWiresButton();
 
-
+    
     loadNodesAsync(data, setLoadingProgress);
 }
 

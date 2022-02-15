@@ -49,9 +49,9 @@ function loadGraph(json)
 
 
     graphView.showWires = data.showWires == 'true';
-    graphView.updateShowWiresButton();
+    updateToggleShowWiresButton();
 
-
+    
     loadNodesAsync(data, setLoadingProgress);
 }
 

@@ -761,16 +761,8 @@ graphView.toggleShowWires = function()
 {
     graphView.showWires = !graphView.showWires;
 
-    graphView.updateShowWiresButton();
+    updateToggleShowWiresButton();
     graphView.updateShowWires();
-};
-
-
-
-graphView.updateShowWiresButton = function()
-{
-    btnToggleWires.style.color           = graphView.showWires ? 'white'   : '#d5d5d5';
-    btnToggleWires.style.backgroundColor = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 };
 
 

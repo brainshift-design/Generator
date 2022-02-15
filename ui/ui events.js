@@ -18,5 +18,5 @@ productKeyClose.addEventListener('click', e =>
 
 
 
-btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  graphView.updateShowWiresButton(); });
-btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; graphView.updateShowWiresButton(); });
+btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  updateToggleShowWiresButton(); });
+btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; updateToggleShowWiresButton(); });
