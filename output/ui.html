@@ -10348,6 +10348,8 @@ graphView.endConnection = pointerId =>
         if (   input
             && input.dataType == output.dataType) // TO INPUT
         {
+            log(oldReorderIndex);
+            log(newReorderIndex);
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex))
                 actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
@@ -12975,6 +12977,9 @@ extends EventTarget
     get isConnected() { return this.connectedOutput != null; }
 
 
+    isNew      = false; // this indicates that the input is the empty "new" input of a variable node
+
+
     onconnect    = new Event('connect');
     ondisconnect = new Event('disconnect');
 
@@ -14558,7 +14563,9 @@ function createNodeHeader(node)
                     graphView.overInput   = savedConn.input;
                     graphView.headerInput = savedConn.input;
 
+                    graphView.overInput.updateControl();
 
+                    
                     const inputRect = boundingRect(savedConn.input.control);
 
                     tempConn.wire.inputPos = point(
@@ -15217,8 +15224,9 @@ extends OperatorBase
     addNewInput()
     {
         const input = new Input(this.dataType);
+        input.isNew = true;
 
-        input.addEventListener('connect',    () => onConnectInput(this));
+        input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
         input.addEventListener('disconnect', () => onDisconnectInput(this, input));
 
         this.addInput(input);
@@ -20311,7 +20319,7 @@ function removeMenuItemProductKey()
 
 
 
-function uiError(text, delay = 4000)
+function uiError(text, delay = 6000)
 {
     uiPostMessageToFigma({ 
         cmd:   'figNotify',

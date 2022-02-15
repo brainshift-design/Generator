@@ -62,6 +62,9 @@ extends EventTarget
     get isConnected() { return this.connectedOutput != null; }
 
 
+    isNew      = false; // this indicates that the input is the empty "new" input of a variable node
+
+
     onconnect    = new Event('connect');
     ondisconnect = new Event('disconnect');
 

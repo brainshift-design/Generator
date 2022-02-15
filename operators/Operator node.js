@@ -266,7 +266,9 @@ function createNodeHeader(node)
                     graphView.overInput   = savedConn.input;
                     graphView.headerInput = savedConn.input;
 
+                    graphView.overInput.updateControl();
 
+                    
                     const inputRect = boundingRect(savedConn.input.control);
 
                     tempConn.wire.inputPos = point(

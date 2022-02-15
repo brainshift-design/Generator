@@ -29,7 +29,7 @@ function removeMenuItemProductKey()
 
 
 
-function uiError(text, delay = 4000)
+function uiError(text, delay = 6000)
 {
     uiPostMessageToFigma({ 
         cmd:   'figNotify',
