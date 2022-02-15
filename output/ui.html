@@ -6652,14 +6652,14 @@ function invalid2validRgb(rgb)
 
 
 
-function isValidRgb(rgb, lim = -Eps)
+function isValidRgb(rgb, lim = Number.EPSILON)
 {
     return (!isNaN(rgb[0])
          && !isNaN(rgb[1])
          && !isNaN(rgb[2])
-         && rgb[0] >= 0 + lim && rgb[0] <= 1 - lim 
-         && rgb[1] >= 0 + lim && rgb[1] <= 1 - lim 
-         && rgb[2] >= 0 + lim && rgb[2] <= 1 - lim);
+         && rgb[0] > -lim && rgb[0] < 1 + lim 
+         && rgb[1] > -lim && rgb[1] < 1 + lim 
+         && rgb[2] > -lim && rgb[2] < 1 + lim);
 }
 
 
@@ -10264,687 +10264,6 @@ function initMenuSelect(select)
 
 
 
-graphView.startConnectionFromOutput = (pointerId, output) =>
-{
-    graphView.connPointerId = pointerId;
-
-    graphView.tempConn = new Connection(output, null);
-    graphView.tempConn.wire.output = output;
-
-    graphView.addWire(graphView.tempConn.wire, false);
-
-    graphView.updateNodeWire(
-        graphView.tempConn.wire,
-        graphView.pStart.x, 
-        graphView.pStart.y);
-
-    output.updateControl();
-};
-
-
-
-graphView.startConnectionFromInput = (pointerId, input) =>
-{
-    graphView.connPointerId = pointerId;
-
-    graphView.tempConn = new Connection(null, input);
-    graphView.tempConn.wire.input = input;
-    
-    graphView.addWire(graphView.tempConn.wire, false);
-
-    graphView.updateNodeWire(
-        graphView.tempConn.wire,
-        graphView.pStart.x, 
-        graphView.pStart.y);
-
-    input.updateControl();
-};
-
-
-
-graphView.cancelConnection = pointerId =>
-{
-    const output = graphView.tempConn.output;
-    const input  = graphView.tempConn.input;
-
-    graphView.removeWire(graphView.tempConn.wire);    
-
-    graphView.savedConn = null;
-    graphView.tempConn  = null;
-
-    if (output) output.updateControl();
-    if (input ) input .updateControl();
-
-    if (graphView.overInput ) graphView.overInput .updateControl();
-    if (graphView.overOutput) graphView.overOutput.updateControl();
-
-
-    if (graphView.hasPointerCapture(pointerId))
-        graphView.releasePointerCapture(pointerId);
-
-    graphView.connPointerId = -1;
-
-     newReorderIndex = Number.NaN;
-    prevReorderIndex = Number.NaN;
-     oldReorderIndex = Number.NaN;
-};
-
-
-
-graphView.endConnection = pointerId =>
-{
-    if (graphView.tempConn.output) // FROM OUTPUT
-    {
-        let output = graphView.tempConn.output;
-        let input  = graphView.overInput;
-
-        let savedInput = 
-            graphView.savedConn
-            ? graphView.savedConn.input
-            : null;
-        
-        output.connecting = false;
-        
-        if (   input
-            && input.dataType == output.dataType) // TO INPUT
-        {
-            if (   !isNaN(newReorderIndex)
-                && !isNaN(oldReorderIndex))
-                actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
-
-            else if (input == savedInput) // reconnect old
-            {
-                graphView.savedConn = null; // done here to redraw the saved wire correctly
-                graphView.updateNodeWire(input.connection.wire);
-            }
-
-            else if (savedInput)
-                actionManager.do(new ReconnectAction(output, savedInput, input));
-
-            else if (!savedInput) // connect new
-                actionManager.do(new ConnectAction(output, input));
-        }
-        else if (savedInput) // disconnect old
-            actionManager.do(new DisconnectAction(output, savedInput));
-        
-        graphView.cancelConnection(pointerId);
-    }
-    
-    else if (graphView.tempConn.input) // FROM INPUT
-    {
-        let input  = graphView.tempConn.input;
-        let output = graphView.overOutput;
-
-        input.connecting = false;
-        
-        if (   output
-            && output.dataType == input.dataType) // TO OUTPUT
-            actionManager.do(new ConnectAction(output, input));
-
-        graphView.cancelConnection(pointerId);
-    }
-};
-
-
-// assuming here elementsFromPoint() will always return graphViewCapture as [0], and then the element I need
-// graphViewCapture.addEventListener('pointerdown', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
-// graphViewCapture.addEventListener('pointermove', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
-// graphViewCapture.addEventListener('pointerup',   e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
-
-
-graphView._pan = point(0, 0);
-  
-Object.defineProperty(graphView, 'pan',
-{
-    get: () => graphView._pan,
-    set: pan =>
-    {
-        if (graphView._pan == pan) return;
-        graphView._pan = pan;
-        graphView.updatePanAndZoom();
-    }
-});
-
-
-
-graphView.panning = false;
-graphView.panStart;
-
-graphView.spaceDown = false;
-
-
-graphView._zoom   = 1;
-graphView.oldZoom = 1;
-
-Object.defineProperty(graphView, 'zoom',
-{
-    get: () => graphView._zoom,
-    set: zoom =>
-    {
-        if (graphView._zoom == zoom) return;
-
-        let pos = point(
-            window.innerWidth /2,
-            window.innerHeight/2);
-
-        pos.y -= controlBar.offsetHeight;
-
-        const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
-
-        graphView.setPanAndZoom(pan, zoom);
-        graphView.updatePanAndZoom();
-    }
-});
-
-
-
-graphView.zooming   = false;
-graphView.zoomStart = 1;
-
-graphView.zoomSelecting = false;
-
-
-
-graphView.setPanAndZoom = (pan, zoom) =>
-{
-    if (      graphView._pan  == pan
-           && graphView._zoom == zoom
-        || zoom < 0.02
-        || zoom > 50) 
-        return;
-
-    graphView.oldZoom = graphView.zoom;
-
-    graphView._zoom = zoom;
-    graphView._pan  = pan;
-
-    graphView.updatePanAndZoom();
-};
-
-
-
-graphView.startPan = pointerId =>
-{
-    graphView.panning  = true;
-    graphView.panStart = graphView.pan;
-    graphView.setPointerCapture(pointerId);
-    setCursor(panCursor);
-};
-
-
-
-graphView.updatePanAndZoom = () =>
-{
-    const x       = graphView.clientLeft;
-    const w       = graphView.clientWidth;
-    const h       = graphView.clientHeight;
-    const bounds  = graphView.getAllNodeBounds();
-    const yOffset = controlBar.offsetHeight;
-
-    graphView.updateNodeTransforms(graph.nodes);
-    graphView.updateScroll(x, w, h, bounds, yOffset);
-
-    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
-};
-
-
-
-graphView.endPan = (pointerId, changeCursor) =>
-{
-    graphView.panning = false;
-    graphView.releasePointerCapture(pointerId);
-
-    if (changeCursor)
-        setAutoCursor();
-};
-
-
-
-graphView.startZoomSelection = (pointerId, x, y) =>
-{
-    graphView.setPointerCapture(pointerId);
-
-    graphView.zoomSelecting = true;
-    graphView.selectionRect = new Rect(x, y, 0, 0);
-    
-    selectBox.style.visibility = 'visible';
-    graphView.updateZoomSelectBox();
-};
-
-
-
-graphView.updateZoomSelection = (x, y) =>
-{
-    if (!graphView.zoomSelecting) return;
-
-    graphView.selectionRect.w = x - graphView.selectionRect.x;
-    graphView.selectionRect.h = y - graphView.selectionRect.y;
-
-    graphView.updateZoomSelectBox();
-};
-
-
-
-graphView.updateZoomSelectBox = () =>
-{
-    const selection = graphView.selectionRect;
-
-    selectBox.style.left   = selection.x + Math.min(selection.w, 0);
-    selectBox.style.top    = selection.y + Math.min(selection.h, 0);
-    selectBox.style.width  = Math.abs(selection.w);
-    selectBox.style.height = Math.abs(selection.h);
-
-    selectBox.style.zIndex = MAX_INT32-3;
-};
-
-
-
-graphView.endZoomSelection = (pointerId, zoom) =>
-{
-    graphView.releasePointerCapture(pointerId);
-
-    graphView.zoomSelecting    = false;
-    selectBox.style.visibility = 'hidden';
-
-    const selection = graphView.selectionRect;
-
-    if (zoom)
-    {
-        // graphView.oldZoom = graphView.zoom;
-        
-        let box = {
-            x: selection.x,
-            y: selection.y - controlBar.offsetHeight,
-            w: selection.w,
-            h: selection.h };
-            
-        const wndHeight = graphView.offsetHeight; 
-
-        const diff = { w: (window.innerWidth - box.w) / 2,
-                       h: (wndHeight         - box.h) / 2 };
-
-        graphView.setPanAndZoom(
-            point(
-                -(box.x - diff.w) * graphView.zoom,
-                -(box.y - diff.h) * graphView.zoom),
-            graphView.zoom * Math.min(
-                window.innerWidth / box.w,
-                wndHeight         / box.h));
-    }
-
-    graphView.selectionRect = Rect.NaN;
-};
-
-
-scrollbarX.moving = false;
-scrollbarY.moving = false;
-
-
-
-graphView.updateScrollWithBounds = () =>
-{
-    const bounds = graphView.getAllNodeBounds();
-
-    graphView.updateScroll(
-        graphView.clientLeft,
-        graphView.clientWidth,
-        graphView.clientHeight,
-        bounds,
-        controlBar.offsetHeight);
-};
-
-
-
-graphView.updateScroll = (x, w, h, bounds, yOffset) =>
-{
-    graphView.updateScrollX(   w, h, bounds);
-    graphView.updateScrollY(x, w, h, bounds, yOffset);
-
-    scrollbarX.style.zIndex = MAX_INT32-1;
-    scrollbarY.style.zIndex = MAX_INT32-2;
-};
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-
-graphView.updateScrollX = (w, h, bounds) =>
-{
-    if (bounds.l < 0)
-    {
-        const width = sqr(w) / (w - bounds.l) - (smallScrollGap + largeScrollGap);
-
-        scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  width;
-        scrollbarX.style.left    =  w - largeScrollGap - width;
-        scrollbarX.style.top     =  h - smallScrollGap - 6;
-    }
-    else if (bounds.r >= w)
-    {
-        const width = sqr(w) / bounds.r - (smallScrollGap + largeScrollGap);
-
-        scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  width;
-        scrollbarX.style.left    =  smallScrollGap;
-        scrollbarX.style.top     =  h - smallScrollGap - 6;
-    }
-    else
-        scrollbarX.style.display = 'none';
-};
-
-
-
-scrollbarX.addEventListener('pointerdown', e =>
-{
-    if (e.button == 0)
-    {
-        scrollbarX.moving = true;
-        scrollbarX.xStart = scrollbarX.offsetLeft;
-        scrollbarX.wStart = scrollbarX.offsetWidth;
-        scrollbarX.pStart = e.clientX;
-        scrollbarX.setPointerCapture(e.pointerId);
-
-        graphView.panStart = graphView.pan;
-
-        for (const node of graph.nodes)
-            node.div.slx = node.div.offsetLeft;
-    }
-});
-
-
-
-scrollbarX.addEventListener('pointerup', e =>
-{
-    if (   e.button == 0
-        && scrollbarX.moving)
-    {
-        scrollbarX.moving = false;
-        scrollbarX.releasePointerCapture(e.pointerId);
-
-        var bounds = Rect.NaN;
-
-        for (const node of graph.nodes)
-            bounds = expandRect(bounds, boundingRect(node.div));
-
-        if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
-            scrollbarX.style.display = 'none';
-    }
-});
-
-
-
-scrollbarX.addEventListener('pointermove', e =>
-{
-    if (scrollbarX.moving)
-    {
-        var x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
-
-        var l = x;
-        var r = l + scrollbarX.wStart;
-
-        l = Math.max(smallScrollGap, l);
-        r = Math.min(r, graphView.clientWidth - largeScrollGap);
-
-        l = Math.max(smallScrollGap, Math.min(l, r - smallScrollGap));
-        r = Math.max(l + smallScrollGap, r);
-
-        scrollbarX.style.left  = l;
-        scrollbarX.style.width = r-l;
-
-        graphView.pan = point(
-            graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
-            graphView.panStart.y);
-    }
-});
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-
-graphView.updateScrollY = (x, w, h, bounds, yOffset) =>
-{
-    if (bounds.t < controlBar.offsetHeight)
-    {
-        const ot     = bounds.t - yOffset;
-        const height = sqr(h) / (h - ot) - (smallScrollGap + largeScrollGap);
-
-        scrollbarY.style.height  = height;
-        scrollbarY.style.left    = x + w - smallScrollGap - 6;
-        scrollbarY.style.top     = h - largeScrollGap - height;
-        scrollbarY.style.display = 'inline-block';
-    }
-    else if (bounds.b >= yOffset + h)
-    {
-        const ob     = bounds.b - h;
-        const height = sqr(h) / ob - (smallScrollGap + largeScrollGap);
-
-        scrollbarY.style.height  = height;
-        scrollbarY.style.left    = x + w - smallScrollGap - 6;
-        scrollbarY.style.top     = smallScrollGap;
-        scrollbarY.style.display = 'inline-block';
-    }
-    else
-        scrollbarY.style.display = 'none';
-};
-
-
-
-scrollbarY.addEventListener('pointerdown', e =>
-{
-    if (e.button == 0)
-    {
-        scrollbarY.moving = true;
-        scrollbarY.yStart = scrollbarY.offsetTop;
-        scrollbarY.hStart = scrollbarY.offsetHeight;
-        scrollbarY.pStart = e.clientY;
-        scrollbarY.setPointerCapture(e.pointerId);
-
-        for (const node of graph.nodes)
-            node.div.sly = node.div.offsetTop;
-
-        graphView.panStart = graphView.pan;
-    }
-});
-
-
-
-scrollbarY.addEventListener('pointerup', e =>
-{
-    if (   e.button == 0
-        && scrollbarY.moving)
-    {
-        scrollbarY.moving = false;
-        scrollbarY.releasePointerCapture(e.pointerId);
-
-        var bounds = Rect.NaN;
-
-        for (const node of graph.nodes)
-            bounds = expandRect(bounds, boundingRect(node.div));
-
-        if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
-            scrollbarY.style.display = 'none';
-    }
-});
-
-
-
-scrollbarY.addEventListener('pointermove', e =>
-{
-    if (scrollbarY.moving)
-    {
-        var y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
-
-        var t = y;
-        var b = t + scrollbarY.hStart;
-
-        t = Math.max(smallScrollGap, t);
-        b = Math.min(b, graphView.clientHeight - largeScrollGap);
-
-        t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
-        b = Math.max(t + smallScrollGap, b);
-
-        scrollbarY.style.top    = t;
-        scrollbarY.style.height = b-t;
-
-        graphView.pan = point(
-            graphView.panStart.x, 
-            graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
-    }
-});
-
-
-graphView._selectedNodes     = [];
-graphView._prevSelectedNodes = [];
-graphView.lastSelectedNodes  = [];
-
-
-Object.defineProperty(graphView, 'selectedNodes',
-{
-    get: () => graphView._selectedNodes,
-    set: selectedNodes =>
-    {
-        graphView.deselectAll();
-
-        graphView._selectedNodes = [...selectedNodes];
-    
-        for (const node of graphView._selectedNodes)
-            node.setSelected(true);
-    }
-});
-
-
-
-graphView.deselectAll = () =>
-{
-    for (const node of graphView._selectedNodes)            
-        node.setSelected(false);
-
-    graphView._selectedNodes = [];
-};
-
-
-
-graphView.selectByIds = (nodeIds) =>
-{
-    graphView.deselectAll();
-
-    for (const id of nodeIds)
-    {
-        const node = nodeFromId(id);
-        graphView._selectedNodes.push(node);
-        node.setSelected(true);
-    }
-};
-
-
-
-graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
-{
-    graphView.setPointerCapture(pointerId);
-
-    graphView.selecting = true;
-
-    graphView.selectionRect = new Rect(x, y, 0, 0);
-    graphView._prevSelectedNodes = [];
-   
-    selectBox.style.visibility = 'visible';
-
-    graphView.updateSelectBox(shiftKey, ctrlKey);
-};
-
-
-
-graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
-{
-    if (!graphView.selecting) return;
-
-    graphView.selectionRect.w = x - graphView.selectionRect.x;
-    graphView.selectionRect.h = y - graphView.selectionRect.y;
-
-    graphView.updateSelectBox(shiftKey, ctrlKey);
-};
-
-
-
-graphView.updateSelectBox = (shiftKey, ctrlKey) =>
-{
-    const wndRect = new Rect(
-        1,
-        controlBar.offsetHeight + 1,
-        graphView.offsetWidth  - 2,
-        graphView.offsetHeight - 5);
-
-    
-    let selection = validateRect(graphView.selectionRect);
-    
-    selection = clipRect(selection, wndRect);
-
-
-    selectBox.style.left   = selection.x;
-    selectBox.style.top    = selection.y;
-    selectBox.style.width  = selection.width;
-    selectBox.style.height = selection.height;
-
-
-    const selected = [];
-
-    for (const node of graph.nodes)
-    {
-        if (rectsIntersect(
-                boundingRect(node.div), 
-                selection))
-            selected.push(node);
-    }
-
-
-    if (ctrlKey)
-        graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
-    else if (shiftKey)
-        graphView.selectedNodes = graphView.lastSelectedNodes
-                             .filter(node => !selected.includes(node))
-                             .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
-    else
-        graphView.selectedNodes = selected;
-    
-        
-    selectBox.style.zIndex = MAX_INT32-3;
-        
-        
-    //updateGraphNodes();
-    for (const node of selected)
-        node.updateBorder();
-
-
-    graphView._prevSelectedNodes = selected;
-};
-
-
-
-graphView.endSelection = pointerId =>
-{
-    if (   graphView.selectedNodes    .length > 0
-        || graphView.lastSelectedNodes.length > 0)
-    {
-        actionManager.do(new SelectNodesAction(
-            graphView.selectedNodes    .map(n => n.id), 
-            graphView.lastSelectedNodes.map(n => n.id)));
-    }
-
-
-    graphView.releasePointerCapture(pointerId);
-
-    graphView.selecting     = false;
-    graphView.selectionRect = Rect.NaN;
-    graphView._prevSelectedNodes = [];
-
-    selectBox.style.visibility = 'hidden';
-};
-
-
 graphView.wires          = [];
 
 graphView.loadingNodes   = false;
@@ -10971,6 +10290,9 @@ graphView.selectionRect  = Rect.NaN;
 
 graphView.btn1down       = false; // this is to help deal with mouse wheels that send X values as
                                   // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
+
+graphView.pan            = point(0, 0);
+graphView.zoom           = 1;
 
 graphView.panning        = false;
 
@@ -11196,7 +10518,6 @@ graphView.addEventListener('wheel', e =>
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
-        graphView.updatePanAndZoom();
     }
     else
     {
@@ -11235,7 +10556,6 @@ graphView.addEventListener('gesturechange', e =>
     const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));
 
     graphView.setPanAndZoom(pan, zoom);
-    graphView.updatePanAndZoom();
 });
 
 
@@ -11290,7 +10610,7 @@ graphView.addEventListener('touchcancel', e =>
 
 
 
-graphView.getAllNodeBounds = () =>
+graphView.getAllNodeBounds = function()
 {
     let bounds = Rect.NaN;
 
@@ -11719,6 +11039,688 @@ graphView.updateShowWires = function()
     graph.nodes      .forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
 };
+
+
+graphView._pan = point(0, 0);
+  
+Object.defineProperty(graphView, 'pan',
+{
+    get: () => graphView._pan,
+    set: pan =>
+    {
+        if (graphView._pan == pan) return;
+        graphView._pan = pan;
+        graphView.updatePanAndZoom();
+    }
+});
+
+
+
+graphView.panning = false;
+graphView.panStart;
+
+graphView.spaceDown = false;
+
+
+graphView._zoom   = 1;
+graphView.oldZoom = 1;
+
+Object.defineProperty(graphView, 'zoom',
+{
+    get: () => graphView._zoom,
+    set: zoom =>
+    {
+        if (graphView._zoom == zoom) return;
+
+        let pos = point(
+            window.innerWidth /2,
+            window.innerHeight/2);
+
+        pos.y -= controlBar.offsetHeight;
+
+        const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
+
+        graphView.setPanAndZoom(pan, zoom);
+    }
+});
+
+
+
+graphView.zooming   = false;
+graphView.zoomStart = 1;
+
+graphView.zoomSelecting = false;
+
+
+
+graphView.setPanAndZoom = (pan, zoom) =>
+{
+    if ((   pan  != graphView._pan
+         || zoom != graphView._zoom)
+        && zoom >=  0.02
+        && zoom <= 50   ) 
+    {
+        graphView.oldZoom = graphView.zoom;
+
+        graphView._zoom = zoom;
+        graphView._pan  = pan;
+    }
+
+    graphView.updatePanAndZoom();
+};
+
+
+
+graphView.updatePanAndZoom = () =>
+{
+    graphView.updateNodeTransforms(graph.nodes);
+    
+    const x       = graphView.clientLeft;
+    const w       = graphView.clientWidth;
+    const h       = graphView.clientHeight;
+    const yOffset = controlBar.offsetHeight;
+    const bounds  = graphView.getAllNodeBounds();
+    
+    graphView.updateNodeTransforms(graph.nodes); // this has to be done twice because getAllNodeBounds() forces a reflow
+    graphView.updateScroll(x, w, h, bounds, yOffset);
+
+    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
+};
+
+
+
+graphView.startPan = pointerId =>
+{
+    graphView.panning  = true;
+    graphView.panStart = graphView.pan;
+    graphView.setPointerCapture(pointerId);
+    setCursor(panCursor);
+};
+
+
+
+graphView.endPan = (pointerId, changeCursor) =>
+{
+    graphView.panning = false;
+    graphView.releasePointerCapture(pointerId);
+
+    if (changeCursor)
+        setAutoCursor();
+};
+
+
+
+graphView.startZoomSelection = (pointerId, x, y) =>
+{
+    graphView.setPointerCapture(pointerId);
+
+    graphView.zoomSelecting = true;
+    graphView.selectionRect = new Rect(x, y, 0, 0);
+    
+    selectBox.style.visibility = 'visible';
+    graphView.updateZoomSelectBox();
+};
+
+
+
+graphView.updateZoomSelection = (x, y) =>
+{
+    if (!graphView.zoomSelecting) return;
+
+    graphView.selectionRect.w = x - graphView.selectionRect.x;
+    graphView.selectionRect.h = y - graphView.selectionRect.y;
+
+    graphView.updateZoomSelectBox();
+};
+
+
+
+graphView.updateZoomSelectBox = () =>
+{
+    const selection = graphView.selectionRect;
+
+    selectBox.style.left   = selection.x + Math.min(selection.w, 0);
+    selectBox.style.top    = selection.y + Math.min(selection.h, 0);
+    selectBox.style.width  = Math.abs(selection.w);
+    selectBox.style.height = Math.abs(selection.h);
+
+    selectBox.style.zIndex = MAX_INT32-3;
+};
+
+
+
+graphView.endZoomSelection = (pointerId, zoom) =>
+{
+    graphView.releasePointerCapture(pointerId);
+
+    graphView.zoomSelecting    = false;
+    selectBox.style.visibility = 'hidden';
+
+    const selection = graphView.selectionRect;
+
+    if (zoom)
+    {
+        // graphView.oldZoom = graphView.zoom;
+        
+        let box = {
+            x: selection.x,
+            y: selection.y - controlBar.offsetHeight,
+            w: selection.w,
+            h: selection.h };
+            
+        const wndHeight = graphView.offsetHeight; 
+
+        const diff = { w: (window.innerWidth - box.w) / 2,
+                       h: (wndHeight         - box.h) / 2 };
+
+        graphView.setPanAndZoom(
+            point(
+                -(box.x - diff.w) * graphView.zoom,
+                -(box.y - diff.h) * graphView.zoom),
+            graphView.zoom * Math.min(
+                window.innerWidth / box.w,
+                wndHeight         / box.h));
+    }
+
+    graphView.selectionRect = Rect.NaN;
+};
+
+
+graphView._selectedNodes     = [];
+graphView._prevSelectedNodes = [];
+graphView.lastSelectedNodes  = [];
+
+
+Object.defineProperty(graphView, 'selectedNodes',
+{
+    get: () => graphView._selectedNodes,
+    set: selectedNodes =>
+    {
+        graphView.deselectAll();
+
+        graphView._selectedNodes = [...selectedNodes];
+    
+        for (const node of graphView._selectedNodes)
+            node.setSelected(true);
+    }
+});
+
+
+
+graphView.deselectAll = () =>
+{
+    for (const node of graphView._selectedNodes)            
+        node.setSelected(false);
+
+    graphView._selectedNodes = [];
+};
+
+
+
+graphView.selectByIds = (nodeIds) =>
+{
+    graphView.deselectAll();
+
+    for (const id of nodeIds)
+    {
+        const node = nodeFromId(id);
+        graphView._selectedNodes.push(node);
+        node.setSelected(true);
+    }
+};
+
+
+
+graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
+{
+    graphView.setPointerCapture(pointerId);
+
+    graphView.selecting = true;
+
+    graphView.selectionRect = new Rect(x, y, 0, 0);
+    graphView._prevSelectedNodes = [];
+   
+    selectBox.style.visibility = 'visible';
+
+    graphView.updateSelectBox(shiftKey, ctrlKey);
+};
+
+
+
+graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
+{
+    if (!graphView.selecting) return;
+
+    graphView.selectionRect.w = x - graphView.selectionRect.x;
+    graphView.selectionRect.h = y - graphView.selectionRect.y;
+
+    graphView.updateSelectBox(shiftKey, ctrlKey);
+};
+
+
+
+graphView.updateSelectBox = (shiftKey, ctrlKey) =>
+{
+    const wndRect = new Rect(
+        1,
+        controlBar.offsetHeight + 1,
+        graphView.offsetWidth  - 2,
+        graphView.offsetHeight - 5);
+
+    
+    let selection = validateRect(graphView.selectionRect);
+    
+    selection = clipRect(selection, wndRect);
+
+
+    selectBox.style.left   = selection.x;
+    selectBox.style.top    = selection.y;
+    selectBox.style.width  = selection.width;
+    selectBox.style.height = selection.height;
+
+
+    const selected = [];
+
+    for (const node of graph.nodes)
+    {
+        if (rectsIntersect(
+                boundingRect(node.div), 
+                selection))
+            selected.push(node);
+    }
+
+
+    if (ctrlKey)
+        graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
+    else if (shiftKey)
+        graphView.selectedNodes = graphView.lastSelectedNodes
+                             .filter(node => !selected.includes(node))
+                             .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
+    else
+        graphView.selectedNodes = selected;
+    
+        
+    selectBox.style.zIndex = MAX_INT32-3;
+        
+        
+    //updateGraphNodes();
+    for (const node of selected)
+        node.updateBorder();
+
+
+    graphView._prevSelectedNodes = selected;
+};
+
+
+
+graphView.endSelection = pointerId =>
+{
+    if (   graphView.selectedNodes    .length > 0
+        || graphView.lastSelectedNodes.length > 0)
+    {
+        actionManager.do(new SelectNodesAction(
+            graphView.selectedNodes    .map(n => n.id), 
+            graphView.lastSelectedNodes.map(n => n.id)));
+    }
+
+
+    graphView.releasePointerCapture(pointerId);
+
+    graphView.selecting     = false;
+    graphView.selectionRect = Rect.NaN;
+    graphView._prevSelectedNodes = [];
+
+    selectBox.style.visibility = 'hidden';
+};
+
+
+graphView.startConnectionFromOutput = (pointerId, output) =>
+{
+    graphView.connPointerId = pointerId;
+
+    graphView.tempConn = new Connection(output, null);
+    graphView.tempConn.wire.output = output;
+
+    graphView.addWire(graphView.tempConn.wire, false);
+
+    graphView.updateNodeWire(
+        graphView.tempConn.wire,
+        graphView.pStart.x, 
+        graphView.pStart.y);
+
+    output.updateControl();
+};
+
+
+
+graphView.startConnectionFromInput = (pointerId, input) =>
+{
+    graphView.connPointerId = pointerId;
+
+    graphView.tempConn = new Connection(null, input);
+    graphView.tempConn.wire.input = input;
+    
+    graphView.addWire(graphView.tempConn.wire, false);
+
+    graphView.updateNodeWire(
+        graphView.tempConn.wire,
+        graphView.pStart.x, 
+        graphView.pStart.y);
+
+    input.updateControl();
+};
+
+
+
+graphView.cancelConnection = pointerId =>
+{
+    const output = graphView.tempConn.output;
+    const input  = graphView.tempConn.input;
+
+    graphView.removeWire(graphView.tempConn.wire);    
+
+    graphView.savedConn = null;
+    graphView.tempConn  = null;
+
+    if (output) output.updateControl();
+    if (input ) input .updateControl();
+
+    if (graphView.overInput ) graphView.overInput .updateControl();
+    if (graphView.overOutput) graphView.overOutput.updateControl();
+
+
+    if (graphView.hasPointerCapture(pointerId))
+        graphView.releasePointerCapture(pointerId);
+
+    graphView.connPointerId = -1;
+
+     newReorderIndex = Number.NaN;
+    prevReorderIndex = Number.NaN;
+     oldReorderIndex = Number.NaN;
+};
+
+
+
+graphView.endConnection = pointerId =>
+{
+    if (graphView.tempConn.output) // FROM OUTPUT
+    {
+        let output = graphView.tempConn.output;
+        let input  = graphView.overInput;
+
+        let savedInput = 
+            graphView.savedConn
+            ? graphView.savedConn.input
+            : null;
+        
+        output.connecting = false;
+        
+        if (   input
+            && input.dataType == output.dataType) // TO INPUT
+        {
+            if (   !isNaN(newReorderIndex)
+                && !isNaN(oldReorderIndex))
+                actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
+
+            else if (input == savedInput) // reconnect old
+            {
+                graphView.savedConn = null; // done here to redraw the saved wire correctly
+                graphView.updateNodeWire(input.connection.wire);
+            }
+
+            else if (savedInput)
+                actionManager.do(new ReconnectAction(output, savedInput, input));
+
+            else if (!savedInput) // connect new
+                actionManager.do(new ConnectAction(output, input));
+        }
+        else if (savedInput) // disconnect old
+            actionManager.do(new DisconnectAction(output, savedInput));
+        
+        graphView.cancelConnection(pointerId);
+    }
+    
+    else if (graphView.tempConn.input) // FROM INPUT
+    {
+        let input  = graphView.tempConn.input;
+        let output = graphView.overOutput;
+
+        input.connecting = false;
+        
+        if (   output
+            && output.dataType == input.dataType) // TO OUTPUT
+            actionManager.do(new ConnectAction(output, input));
+
+        graphView.cancelConnection(pointerId);
+    }
+};
+
+
+// assuming here elementsFromPoint() will always return graphViewCapture as [0], and then the element I need
+// graphViewCapture.addEventListener('pointerdown', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+// graphViewCapture.addEventListener('pointermove', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+// graphViewCapture.addEventListener('pointerup',   e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+
+
+scrollbarX.moving = false;
+scrollbarY.moving = false;
+
+
+
+graphView.updateScrollWithBounds = () =>
+{
+    const bounds = graphView.getAllNodeBounds();
+
+    graphView.updateScroll(
+        graphView.clientLeft,
+        graphView.clientWidth,
+        graphView.clientHeight,
+        bounds,
+        controlBar.offsetHeight);
+};
+
+
+
+graphView.updateScroll = (x, w, h, bounds, yOffset) =>
+{
+    graphView.updateScrollX(   w, h, bounds);
+    graphView.updateScrollY(x, w, h, bounds, yOffset);
+
+    scrollbarX.style.zIndex = MAX_INT32-1;
+    scrollbarY.style.zIndex = MAX_INT32-2;
+};
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+graphView.updateScrollX = (w, h, bounds) =>
+{
+    if (bounds.l < 0)
+    {
+        const width = sqr(w) / (w - bounds.l) - (smallScrollGap + largeScrollGap);
+
+        scrollbarX.style.display = 'inline-block';
+        scrollbarX.style.width   =  width;
+        scrollbarX.style.left    =  w - largeScrollGap - width;
+        scrollbarX.style.top     =  h - smallScrollGap - 6;
+    }
+    else if (bounds.r >= w)
+    {
+        const width = sqr(w) / bounds.r - (smallScrollGap + largeScrollGap);
+
+        scrollbarX.style.display = 'inline-block';
+        scrollbarX.style.width   =  width;
+        scrollbarX.style.left    =  smallScrollGap;
+        scrollbarX.style.top     =  h - smallScrollGap - 6;
+    }
+    else
+        scrollbarX.style.display = 'none';
+};
+
+
+
+scrollbarX.addEventListener('pointerdown', e =>
+{
+    if (e.button == 0)
+    {
+        scrollbarX.moving = true;
+        scrollbarX.xStart = scrollbarX.offsetLeft;
+        scrollbarX.wStart = scrollbarX.offsetWidth;
+        scrollbarX.pStart = e.clientX;
+        scrollbarX.setPointerCapture(e.pointerId);
+
+        graphView.panStart = graphView.pan;
+
+        for (const node of graph.nodes)
+            node.div.slx = node.div.offsetLeft;
+    }
+});
+
+
+
+scrollbarX.addEventListener('pointerup', e =>
+{
+    if (   e.button == 0
+        && scrollbarX.moving)
+    {
+        scrollbarX.moving = false;
+        scrollbarX.releasePointerCapture(e.pointerId);
+
+        var bounds = Rect.NaN;
+
+        for (const node of graph.nodes)
+            bounds = expandRect(bounds, boundingRect(node.div));
+
+        if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
+            scrollbarX.style.display = 'none';
+    }
+});
+
+
+
+scrollbarX.addEventListener('pointermove', e =>
+{
+    if (scrollbarX.moving)
+    {
+        var x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
+
+        var l = x;
+        var r = l + scrollbarX.wStart;
+
+        l = Math.max(smallScrollGap, l);
+        r = Math.min(r, graphView.clientWidth - largeScrollGap);
+
+        l = Math.max(smallScrollGap, Math.min(l, r - smallScrollGap));
+        r = Math.max(l + smallScrollGap, r);
+
+        scrollbarX.style.left  = l;
+        scrollbarX.style.width = r-l;
+
+        graphView.pan = point(
+            graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
+            graphView.panStart.y);
+    }
+});
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+graphView.updateScrollY = (x, w, h, bounds, yOffset) =>
+{
+    if (bounds.t < controlBar.offsetHeight)
+    {
+        const ot     = bounds.t - yOffset;
+        const height = sqr(h) / (h - ot) - (smallScrollGap + largeScrollGap);
+
+        scrollbarY.style.height  = height;
+        scrollbarY.style.left    = x + w - smallScrollGap - 6;
+        scrollbarY.style.top     = h - largeScrollGap - height;
+        scrollbarY.style.display = 'inline-block';
+    }
+    else if (bounds.b >= yOffset + h)
+    {
+        const ob     = bounds.b - h;
+        const height = sqr(h) / ob - (smallScrollGap + largeScrollGap);
+
+        scrollbarY.style.height  = height;
+        scrollbarY.style.left    = x + w - smallScrollGap - 6;
+        scrollbarY.style.top     = smallScrollGap;
+        scrollbarY.style.display = 'inline-block';
+    }
+    else
+        scrollbarY.style.display = 'none';
+};
+
+
+
+scrollbarY.addEventListener('pointerdown', e =>
+{
+    if (e.button == 0)
+    {
+        scrollbarY.moving = true;
+        scrollbarY.yStart = scrollbarY.offsetTop;
+        scrollbarY.hStart = scrollbarY.offsetHeight;
+        scrollbarY.pStart = e.clientY;
+        scrollbarY.setPointerCapture(e.pointerId);
+
+        for (const node of graph.nodes)
+            node.div.sly = node.div.offsetTop;
+
+        graphView.panStart = graphView.pan;
+    }
+});
+
+
+
+scrollbarY.addEventListener('pointerup', e =>
+{
+    if (   e.button == 0
+        && scrollbarY.moving)
+    {
+        scrollbarY.moving = false;
+        scrollbarY.releasePointerCapture(e.pointerId);
+
+        var bounds = Rect.NaN;
+
+        for (const node of graph.nodes)
+            bounds = expandRect(bounds, boundingRect(node.div));
+
+        if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
+            scrollbarY.style.display = 'none';
+    }
+});
+
+
+
+scrollbarY.addEventListener('pointermove', e =>
+{
+    if (scrollbarY.moving)
+    {
+        var y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
+
+        var t = y;
+        var b = t + scrollbarY.hStart;
+
+        t = Math.max(smallScrollGap, t);
+        b = Math.min(b, graphView.clientHeight - largeScrollGap);
+
+        t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
+        b = Math.max(t + smallScrollGap, b);
+
+        scrollbarY.style.top    = t;
+        scrollbarY.style.height = b-t;
+
+        graphView.pan = point(
+            graphView.panStart.x, 
+            graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
+    }
+});
 
 
 class Parameter
@@ -12891,7 +12893,7 @@ function getTerminalsAfterNode(node)
 
 
 
-function updateTerminalsAfterNodes(nodes, includeNodeInEmpty = true)
+function updateTerminalsAfterNodes(nodes)
 {
     const terminals = [];
 
@@ -15698,10 +15700,8 @@ extends Operator
                !this.canShowColor()
             || rgb2hclokl(colBack)[2] > 0.71;
 
-        const satBias = Math.min(Math.max(0, ((rgb2hclokl(invalid2validRgb(colBack))[1] - 0.8) / 0.2), 1));
-
-        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.22) * (1 + 0*satBias), 0.5);
-        const wa = Math.min((this.header.over ?  8 : 1) * (isValidRgb(colBack) ? 0.03 : 0.14) * (1 + 2*satBias), 0.5);
+        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.22), 0.5);
+        const wa = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()
@@ -17325,9 +17325,9 @@ extends OpColorBase
 
         this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
         this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 4, 0, 20, 1));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 10, 0, 20));
         this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 4, 0, 20, 1));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 10, 0, 20));
 
 
         this.paramSpace.control.min        = 4;
@@ -20418,6 +20418,17 @@ function loadGraph(json)
 
     graph.clear();
     
+
+    if (  !json
+        || json == '')
+    {
+        // set defaults
+        //graphView.setPanAndZoom(point(0, 0), 1);
+        finishLoading();
+        return;
+    }
+
+
     const data = JSON.parse(json);
     //log(json);
 
@@ -20426,20 +20437,20 @@ function loadGraph(json)
         parseFloat(data.panx), 
         parseFloat(data.pany));
 
-    const zoom = parseFloat(data.zoom);
-
     if (isNaN(pan.x)) pan.x = 0;
     if (isNaN(pan.y)) pan.y = 0;
 
-    if (isNaN(zoom))  zoom  = 1;
+    
+    const zoom = parseFloat(data.zoom);
+    if (isNaN(zoom)) zoom  = 1;
+
 
     graphView.setPanAndZoom(pan, zoom);
 
 
     graphView.showWires = data.showWires == 'true';
-    updateToggleShowWiresButton();
 
-    
+
     loadNodesAsync(data, setLoadingProgress);
 }
 
@@ -20514,21 +20525,27 @@ function loadConnectionsAsync(data, nodes, setProgress)
 
     promise.then(() => 
     {
-        graphView.canUpdateNodes = true;
-
         updateTerminalsAfterNodes(nodes);
-
-        graphView.updateShowWires();
-        graphView.updatePanAndZoom();
-
-        loadingOverlay.style.display = 'none';
-
-        graphView.loadingNodes = false;
-
-
-        // now that the graph is loaded, the auto save can start
-        setInterval(autoSave, 1000);
+        finishLoading();
     });
+}
+
+
+
+function finishLoading()
+{
+    loadingOverlay.style.display = 'none';
+    
+    graphView.loadingNodes   = false;
+    graphView.canUpdateNodes = true;
+   
+    
+    updateToggleShowWiresButton();
+    graphView.updateShowWires();
+
+    
+    // now that the graph is loaded, the auto save can start
+    setInterval(autoSave, 1000);
 }
 
 

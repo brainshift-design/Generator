@@ -25,6 +25,9 @@ graphView.selectionRect  = Rect.NaN;
 graphView.btn1down       = false; // this is to help deal with mouse wheels that send X values as
                                   // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
+graphView.pan            = point(0, 0);
+graphView.zoom           = 1;
+
 graphView.panning        = false;
 
 graphView.pViewport;
@@ -249,7 +252,6 @@ graphView.addEventListener('wheel', e =>
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
-        graphView.updatePanAndZoom();
     }
     else
     {
@@ -288,7 +290,6 @@ graphView.addEventListener('gesturechange', e =>
     const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));
 
     graphView.setPanAndZoom(pan, zoom);
-    graphView.updatePanAndZoom();
 });
 
 
@@ -343,7 +344,7 @@ graphView.addEventListener('touchcancel', e =>
 
 
 
-graphView.getAllNodeBounds = () =>
+graphView.getAllNodeBounds = function()
 {
     let bounds = Rect.NaN;
 

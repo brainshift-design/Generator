@@ -38,7 +38,6 @@ Object.defineProperty(graphView, 'zoom',
         const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
-        graphView.updatePanAndZoom();
     }
 });
 
@@ -53,18 +52,36 @@ graphView.zoomSelecting = false;
 
 graphView.setPanAndZoom = (pan, zoom) =>
 {
-    if (      graphView._pan  == pan
-           && graphView._zoom == zoom
-        || zoom < 0.02
-        || zoom > 50) 
-        return;
+    if ((   pan  != graphView._pan
+         || zoom != graphView._zoom)
+        && zoom >=  0.02
+        && zoom <= 50   ) 
+    {
+        graphView.oldZoom = graphView.zoom;
 
-    graphView.oldZoom = graphView.zoom;
-
-    graphView._zoom = zoom;
-    graphView._pan  = pan;
+        graphView._zoom = zoom;
+        graphView._pan  = pan;
+    }
 
     graphView.updatePanAndZoom();
+};
+
+
+
+graphView.updatePanAndZoom = () =>
+{
+    graphView.updateNodeTransforms(graph.nodes);
+    
+    const x       = graphView.clientLeft;
+    const w       = graphView.clientWidth;
+    const h       = graphView.clientHeight;
+    const yOffset = controlBar.offsetHeight;
+    const bounds  = graphView.getAllNodeBounds();
+    
+    graphView.updateNodeTransforms(graph.nodes); // this has to be done twice because getAllNodeBounds() forces a reflow
+    graphView.updateScroll(x, w, h, bounds, yOffset);
+
+    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };
 
 
@@ -75,22 +92,6 @@ graphView.startPan = pointerId =>
     graphView.panStart = graphView.pan;
     graphView.setPointerCapture(pointerId);
     setCursor(panCursor);
-};
-
-
-
-graphView.updatePanAndZoom = () =>
-{
-    const x       = graphView.clientLeft;
-    const w       = graphView.clientWidth;
-    const h       = graphView.clientHeight;
-    const bounds  = graphView.getAllNodeBounds();
-    const yOffset = controlBar.offsetHeight;
-
-    graphView.updateNodeTransforms(graph.nodes);
-    graphView.updateScroll(x, w, h, bounds, yOffset);
-
-    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };
 
 

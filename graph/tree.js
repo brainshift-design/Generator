@@ -138,7 +138,7 @@ function getTerminalsAfterNode(node)
 
 
 
-function updateTerminalsAfterNodes(nodes, includeNodeInEmpty = true)
+function updateTerminalsAfterNodes(nodes)
 {
     const terminals = [];
 

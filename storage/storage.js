@@ -30,6 +30,17 @@ function loadGraph(json)
 
     graph.clear();
     
+
+    if (  !json
+        || json == '')
+    {
+        // set defaults
+        //graphView.setPanAndZoom(point(0, 0), 1);
+        finishLoading();
+        return;
+    }
+
+
     const data = JSON.parse(json);
     //log(json);
 
@@ -38,20 +49,20 @@ function loadGraph(json)
         parseFloat(data.panx), 
         parseFloat(data.pany));
 
-    const zoom = parseFloat(data.zoom);
-
     if (isNaN(pan.x)) pan.x = 0;
     if (isNaN(pan.y)) pan.y = 0;
 
-    if (isNaN(zoom))  zoom  = 1;
+    
+    const zoom = parseFloat(data.zoom);
+    if (isNaN(zoom)) zoom  = 1;
+
 
     graphView.setPanAndZoom(pan, zoom);
 
 
     graphView.showWires = data.showWires == 'true';
-    updateToggleShowWiresButton();
 
-    
+
     loadNodesAsync(data, setLoadingProgress);
 }
 
@@ -126,21 +137,27 @@ function loadConnectionsAsync(data, nodes, setProgress)
 
     promise.then(() => 
     {
-        graphView.canUpdateNodes = true;
-
         updateTerminalsAfterNodes(nodes);
-
-        graphView.updateShowWires();
-        graphView.updatePanAndZoom();
-
-        loadingOverlay.style.display = 'none';
-
-        graphView.loadingNodes = false;
-
-
-        // now that the graph is loaded, the auto save can start
-        setInterval(autoSave, 1000);
+        finishLoading();
     });
+}
+
+
+
+function finishLoading()
+{
+    loadingOverlay.style.display = 'none';
+    
+    graphView.loadingNodes   = false;
+    graphView.canUpdateNodes = true;
+   
+    
+    updateToggleShowWiresButton();
+    graphView.updateShowWires();
+
+    
+    // now that the graph is loaded, the auto save can start
+    setInterval(autoSave, 1000);
 }
 
 
