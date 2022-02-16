@@ -7835,6 +7835,8 @@ function initNumberSliderTextbox(slider)
         }
         else 
         {
+            let curVal = slider.textbox.value;
+
             if (      e.key.length == 1
                    && !isDigitChar(e.key)
                    && e.key != '?'
@@ -7845,15 +7847,14 @@ function initNumberSliderTextbox(slider)
                    && (   slider.showHex
                        ||    e.key != '.'
                           && e.key != ',')
-                   && !(   (   e.code == 'Minus'
-                            || e.code == 'NumpadSubtract')
+                   && !(   ((      e.code == 'Minus'
+                                || e.code == 'NumpadSubtract')
+                             && !curVal.includes('-'))
                         && slider.min < 0)
                 ||     slider.readOnly
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
-
-            let curVal = slider.textbox.value;
 
             curVal =
                 curVal == '?'
@@ -7916,9 +7917,18 @@ function initNumberSliderTextbox(slider)
             val /= slider.valueScale;
 
        
-        if (success) slider.setValue(value.trim() != '' ? val : savedVal);
-        else         slider.setValue(savedVal);
+        if (success) 
+        {
+            slider.setValue(
+                   value.trim() != '' 
+                && value.trim() != '-'
+                ? val 
+                : savedVal);
+        }
+        else
+            slider.setValue(savedVal);
 
+            
         slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
             'success':  success,
             'value':    value,
