@@ -3,6 +3,7 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
+    //setInterval(autoSave, 1000);
     uiGetPluginData('graph'); // load graph from current page
 
     uiEndResizeWindow();

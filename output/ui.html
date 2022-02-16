@@ -1132,6 +1132,21 @@ div
 }
 
 
+.dragHandle
+{
+    display:             block;
+    width:               5px;
+    height:              11px;
+    background-color:    red;
+    box-shadow:          0 0 0 1 red inset;
+    position:            absolute;
+    left:                13px;
+    background:          url('data:image/svg+xml;utf8,<svg width="5" height="11" viewBox="0 0 5 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.10684" cy="2.10684" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="8.5" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="14.8932" r="2.10684" fill="black" fill-opacity="0.4"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
 .outputControls
 {
     width:          12px;
@@ -1205,7 +1220,7 @@ div
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color",            btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate", btnCreateColorInterpolate)); this.blur();'>INTR</button>
-    <button class='menuButton' id='btnCreateValidColor'       onclick='actionManager.do(new CreateNodeAction("validcolor",       btnCreateValidColor));       this.blur();'>VLD</span></button>
+    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction("validatecolor",    btnCreateValidateColor));    this.blur();'>VLD</span></button>
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast",      btnCreateWebContrast));      this.blur();'></button>
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind",       btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1265,25 +1280,21 @@ div
 <span id='tooltipArrow'></span>
 
 
-<div id='ttCreateNumber'           class='tooltip'>Number</div>
-<div id='ttCreateMinMax'           class='tooltip'>Limits</div>
-<div id='ttCreateAdd'              class='tooltip'>Add</div>
-<div id='ttCreateSubtract'         class='tooltip'>Subtract</div>
-<div id='ttCreateMultiply'         class='tooltip'>Multiply</div>
-<div id='ttCreateDivide'           class='tooltip'>Divide</div>
-<div id='ttCreateModulo'           class='tooltip'>Remainder</div>
-<div id='ttCreateExponent'         class='tooltip'>Power</div>
-<div id='ttCreateInterpolate'      class='tooltip'>Interpolate</div>
+<div id='ttCreateNumber'      class='tooltip'>Number</div>
+<div id='ttCreateMinMax'      class='tooltip'>Limits</div>
+<div id='ttCreateAdd'         class='tooltip'>Add</div>
+<div id='ttCreateSubtract'    class='tooltip'>Subtract</div>
+<div id='ttCreateMultiply'    class='tooltip'>Multiply</div>
+<div id='ttCreateDivide'      class='tooltip'>Divide</div>
+<div id='ttCreateModulo'      class='tooltip'>Remainder</div>
+<div id='ttCreateExponent'    class='tooltip'>Power</div>
+<div id='ttCreateInterpolate' class='tooltip'>Interpolate</div>
 
 
 <div id='ttCreateColor' class='tooltip'>Color</div>
-
-
 <div id='ttCreateColorInterpolate' class='tooltip'>Interpolate color</div>
-
-
+<div id='ttCreateValidateColor' class='tooltip'>Validate color</div>
 <div id='ttCreateWebContrast' class='tooltip'>Web contrast</div>
-
 
 <div id='ttCreateColorblind' class='tooltip'>
 
@@ -11749,12 +11760,8 @@ extends EventTarget
     get op()   { return this._op; }
 
 
-    //valueIsValid = true;
-
-    
-    // _operator; get operator() { return this._operator; }
-    _control;  get control()  { return this._control;  }
-    _div;      get div()      { return this._div;      }
+    _control; get control() { return this._control; }
+    _div;     get div()     { return this._div;     }
 
 
     input;
@@ -12739,7 +12746,7 @@ function createNode(opType, creatingButton = null)//, createdNodeId = -1)
         // case 'random': node = new OpRandom(); break;
         
         case 'color':            node = new OpColor();            break;
-        case 'validcolor':       node = new OpValidColor();       break;
+        case 'validatecolor':    node = new OpValidateColor();    break;
         case 'colorinterpolate': node = new OpColorInterpolate(); break;
         case 'webcontrast':      node = new OpWebContrast();      break;
         case 'colorblind':       node = new OpColorblind();       break;
@@ -13649,7 +13656,7 @@ class Operator
 
     _creatingButton  = null; // this is used to place the node under its creating button
 
-    
+
     // node UI
 
     div;
@@ -13662,6 +13669,8 @@ class Operator
     outputControls;
 
 
+    dragParam;
+    
 
     valid; // this is the flag for regeneration
 
@@ -13822,6 +13831,7 @@ class Operator
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
         
+''
         this.inner.appendChild(param.div);
     }
  
@@ -14324,9 +14334,8 @@ function createOperatorNode(node)
     node.div.shiftOnPointerDown = false;
     node.div.moved              = false;
        
-    node.inner                  = createDiv('nodeInner');
 
-
+    node.inner = createDiv('nodeInner');
     node.div.appendChild(node.inner);
 
 
@@ -14362,6 +14371,29 @@ function createOperatorNode(node)
     node.paramBack = createDiv('nodeParamBack');
     node.inner.appendChild(node.paramBack);
     
+
+    node.dragParam = createDiv('dragHandle');
+    node.dragParam.innerHTML = '&nbsp;';
+    node.div.appendChild(node.dragParam);
+
+
+    node.div.addEventListener('pointermove', e =>
+    {
+        const rect = boundingRect(node.div);
+    
+        let y = 
+            + (e.clientY - rect.y) / graphView.zoom 
+            - node.header.offsetHeight;
+
+        const paramHeight = 20;
+
+        y = Math.floor(y / paramHeight) * paramHeight;
+
+        log(y);
+        
+        node.dragParam.style.top = node.header.offsetHeight + y + paramHeight/2 - 5.5;
+    });
+
 
     createNodeHeader(node);
 }     
@@ -17296,54 +17328,38 @@ function convert2hclluv(fromColor)
 }
 
 
-class   OpValidColor
+class   OpValidateColor
 extends OpColorBase
 {
-    paramSpace;
+    paramOrder;
 
-    paramRule1;
     paramMargin1;
-
-    paramRule2;
     paramMargin2;
+    paramMargin3;
 
 
 
     constructor()
     {
-        super('validcolor', 'valid', 'color', 80);
+        super('validatecolor', 'validate', 'color', 80);
 
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
-        this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 10, 0, 20));
-        this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 10, 0, 20));
-
-
-        this.paramSpace.control.min        = 4;
-        this.paramSpace.control.displayMin = 4;
-        this.paramSpace.control.update();
+        this.addParam(this.paramOrder   = new SelectParam('order',   '',  false, true, true, ['H, C, L', 'H, L, C', 'C, H, L', 'C, L, H', 'L, H, C', 'L, C, H'], 3));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'C', true,  true, true, 10, 0, 20));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'L', true,  true, true, 10, 0, 20));
+        this.addParam(this.paramMargin3 = new NumberParam('margin3', 'H', true,  true, true, 10, 0, 60));
 
 
         this.paramMargin1.control.max = 100;
         this.paramMargin2.control.max = 100;
+        this.paramMargin3.control.max = 360;
 
 
         this.header.connectionPadding = 18;
-
-
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            if (!graphView.loadingNodes)
-                this.paramSpace.setValue(
-                    Math.max(4, colorSpaceIndex(this.inputs[0].data.color[0])),
-                    true, true, false);
-        });
     }
 
 
@@ -17366,29 +17382,26 @@ extends OpColorBase
         //     this.paramRule2.setValue(1, false, true, false);
 
 
-        this.updateRuleMargin(this.paramRule1, this.paramMargin1);
-        this.updateRuleMargin(this.paramRule2, this.paramMargin2);
+        this.updateMargins();
 
 
         if (this.inputs[0].isConnected)
         {
-            const color = convertDataColorToSpace(
-                this.inputs[0].data.color,
-                colorSpace(this.paramSpace.value));
+            const color = this.inputs[0].data.color;
 
 
             this._color = color;
 
-                 if (this.paramRule1.value == 0) this.adjustChannel(color, 0, this.paramMargin1.value);
-            else if (this.paramRule1.value == 1) this.adjustChannel(color, 1, this.paramMargin1.value);
-            else if (this.paramRule1.value == 2) this.adjustChannel(color, 2, this.paramMargin1.value);
+            //      if (this.paramRule1.value == 0) this.adjustChannel(color, 0, this.paramMax1.value);
+            // else if (this.paramRule1.value == 1) this.adjustChannel(color, 1, this.paramMax1.value);
+            // else if (this.paramRule1.value == 2) this.adjustChannel(color, 2, this.paramMax1.value);
 
-            if (!isValidRgb(dataColor2rgb(this._color)))
-            {
-                     if (this.paramRule2.value == 0) this.adjustChannel(color, 0, this.paramMargin2.value);
-                else if (this.paramRule2.value == 1) this.adjustChannel(color, 1, this.paramMargin2.value);
-                else if (this.paramRule2.value == 2) this.adjustChannel(color, 2, this.paramMargin2.value);
-            }
+            // if (!isValidRgb(dataColor2rgb(this._color)))
+            // {
+            //          if (this.paramRule2.value == 0) this.adjustChannel(color, 0, this.paramMax2.value);
+            //     else if (this.paramRule2.value == 1) this.adjustChannel(color, 1, this.paramMax2.value);
+            //     else if (this.paramRule2.value == 2) this.adjustChannel(color, 2, this.paramMax2.value);
+            // }
         }
 
         else
@@ -17450,9 +17463,38 @@ extends OpColorBase
 
 
 
-    updateRuleMargin(rule, margin)
+    updateMargins()
     {
-        if (rule.value == 0) 
+        switch (this.paramOrder.value)
+        {
+            case 0: // HCL
+            case 1: // HLC
+                this.updateMargin(true,  this.paramMargin1);
+                this.updateMargin(false, this.paramMargin2);
+                this.updateMargin(false, this.paramMargin3);
+                break;
+
+            case 2: // CHL
+            case 4: // LHC
+                this.updateMargin(false, this.paramMargin1);
+                this.updateMargin(true,  this.paramMargin2);
+                this.updateMargin(false, this.paramMargin3);
+                break;
+            
+            case 3: // CLH
+            case 5: // LCH
+                this.updateMargin(false, this.paramMargin1);
+                this.updateMargin(false, this.paramMargin2);
+                this.updateMargin(true,  this.paramMargin3);
+                break;
+        }
+    }
+
+
+
+    updateMargin(isHue, margin)
+    {
+        if (isHue) 
         {
             margin.control.max        = 360;
             margin.control.displayMax = 60;
@@ -19855,51 +19897,23 @@ function hideTooltip(tooltip)
 }
 
 
-createTooltip(ttCreateNumber);
-createTooltipSrc(btnCreateNumber, () => ttCreateNumber);
+createTooltip(ttCreateNumber);           createTooltipSrc(btnCreateNumber,           () => ttCreateNumber);
+createTooltip(ttCreateMinMax);           createTooltipSrc(btnCreateMinMax,           () => ttCreateMinMax);
+createTooltip(ttCreateAdd);              createTooltipSrc(btnCreateAdd,              () => ttCreateAdd);
+createTooltip(ttCreateSubtract);         createTooltipSrc(btnCreateSubtract,         () => ttCreateSubtract);
+createTooltip(ttCreateMultiply);         createTooltipSrc(btnCreateMultiply,         () => ttCreateMultiply);
+createTooltip(ttCreateDivide);           createTooltipSrc(btnCreateDivide,           () => ttCreateDivide);
+createTooltip(ttCreateModulo);           createTooltipSrc(btnCreateModulo,           () => ttCreateModulo);
+createTooltip(ttCreateExponent);         createTooltipSrc(btnCreateExponent,         () => ttCreateExponent);
+createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate,      () => ttCreateInterpolate);
 
-createTooltip(ttCreateMinMax);
-createTooltipSrc(btnCreateMinMax, () => ttCreateMinMax);
+createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            () => ttCreateColor);
+createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, () => ttCreateColorInterpolate);
+createTooltip(ttCreateValidateColor);    createTooltipSrc(btnCreateValidateColor,    () => ttCreateValidateColor);
+createTooltip(ttCreateWebContrast);      createTooltipSrc(btnCreateWebContrast,      () => ttCreateWebContrast);
+createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 
-createTooltip(ttCreateAdd);
-createTooltipSrc(btnCreateAdd, () => ttCreateAdd);
-
-createTooltip(ttCreateSubtract);
-createTooltipSrc(btnCreateSubtract, () => ttCreateSubtract);
-
-createTooltip(ttCreateMultiply);
-createTooltipSrc(btnCreateMultiply, () => ttCreateMultiply);
-
-createTooltip(ttCreateDivide);
-createTooltipSrc(btnCreateDivide, () => ttCreateDivide);
-
-createTooltip(ttCreateModulo);
-createTooltipSrc(btnCreateModulo, () => ttCreateModulo);
-
-createTooltip(ttCreateExponent);
-createTooltipSrc(btnCreateExponent, () => ttCreateExponent);
-
-createTooltip(ttCreateInterpolate);
-createTooltipSrc(btnCreateInterpolate, () => ttCreateInterpolate);
-
-
-
-createTooltip(ttCreateColor);
-createTooltipSrc(btnCreateColor, () => ttCreateColor);
-
-createTooltip(ttCreateColorInterpolate);
-createTooltipSrc(btnCreateColorInterpolate, () => ttCreateColorInterpolate);
-
-createTooltip(ttCreateWebContrast);
-createTooltipSrc(btnCreateWebContrast, () => ttCreateWebContrast);
-
-createTooltip(ttCreateColorblind);
-createTooltipSrc(btnCreateColorblind, () => ttCreateColorblind);
-
-
-
-createTooltip(ttToggleWires);
-createTooltipSrc(btnToggleWires, () => ttToggleWires);
+createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);
 
 
 // menuSelect.addEventListener('change', async function(e) 
@@ -20290,6 +20304,7 @@ function uiEndLoadState(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
+    //setInterval(autoSave, 1000);
     uiGetPluginData('graph'); // load graph from current page
 
     uiEndResizeWindow();

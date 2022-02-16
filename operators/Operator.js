@@ -41,7 +41,7 @@ class Operator
 
     _creatingButton  = null; // this is used to place the node under its creating button
 
-    
+
     // node UI
 
     div;
@@ -54,6 +54,8 @@ class Operator
     outputControls;
 
 
+    dragParam;
+    
 
     valid; // this is the flag for regeneration
 
@@ -214,6 +216,7 @@ class Operator
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
         
+''
         this.inner.appendChild(param.div);
     }
  

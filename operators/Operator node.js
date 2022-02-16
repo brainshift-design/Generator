@@ -17,9 +17,8 @@ function createOperatorNode(node)
     node.div.shiftOnPointerDown = false;
     node.div.moved              = false;
        
-    node.inner                  = createDiv('nodeInner');
 
-
+    node.inner = createDiv('nodeInner');
     node.div.appendChild(node.inner);
 
 
@@ -55,6 +54,29 @@ function createOperatorNode(node)
     node.paramBack = createDiv('nodeParamBack');
     node.inner.appendChild(node.paramBack);
     
+
+    node.dragParam = createDiv('dragHandle');
+    node.dragParam.innerHTML = '&nbsp;';
+    node.div.appendChild(node.dragParam);
+
+
+    node.div.addEventListener('pointermove', e =>
+    {
+        const rect = boundingRect(node.div);
+    
+        let y = 
+            + (e.clientY - rect.y) / graphView.zoom 
+            - node.header.offsetHeight;
+
+        const paramHeight = 20;
+
+        y = Math.floor(y / paramHeight) * paramHeight;
+
+        log(y);
+        
+        node.dragParam.style.top = node.header.offsetHeight + y + paramHeight/2 - 5.5;
+    });
+
 
     createNodeHeader(node);
 }     

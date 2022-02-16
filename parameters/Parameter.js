@@ -14,12 +14,8 @@ extends EventTarget
     get op()   { return this._op; }
 
 
-    //valueIsValid = true;
-
-    
-    // _operator; get operator() { return this._operator; }
-    _control;  get control()  { return this._control;  }
-    _div;      get div()      { return this._div;      }
+    _control; get control() { return this._control; }
+    _div;     get div()     { return this._div;     }
 
 
     input;

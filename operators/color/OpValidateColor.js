@@ -1,51 +1,35 @@
-class   OpValidColor
+class   OpValidateColor
 extends OpColorBase
 {
-    paramSpace;
+    paramOrder;
 
-    paramRule1;
     paramMargin1;
-
-    paramRule2;
     paramMargin2;
+    paramMargin3;
 
 
 
     constructor()
     {
-        super('validcolor', 'valid', 'color', 80);
+        super('validatecolor', 'validate', 'color', 80);
 
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.paramSpace   = new SelectParam('space',   '',    false, true, true, OpColorSpaces.map(s => s[1]), 4));
-        this.addParam(this.paramRule1   = new SelectParam('rule1',   '1:',  true,  true, true, ['H', 'C', 'L'], 1));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'max', true,  true, true, 10, 0, 20));
-        this.addParam(this.paramRule2   = new SelectParam('rule2',   '2:',  true,  true, true, ['H', 'C', 'L'], 2));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'max', true,  true, true, 10, 0, 20));
-
-
-        this.paramSpace.control.min        = 4;
-        this.paramSpace.control.displayMin = 4;
-        this.paramSpace.control.update();
+        this.addParam(this.paramOrder   = new SelectParam('order',   '',  false, true, true, ['H, C, L', 'H, L, C', 'C, H, L', 'C, L, H', 'L, H, C', 'L, C, H'], 3));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'C', true,  true, true, 10, 0, 20));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'L', true,  true, true, 10, 0, 20));
+        this.addParam(this.paramMargin3 = new NumberParam('margin3', 'H', true,  true, true, 10, 0, 60));
 
 
         this.paramMargin1.control.max = 100;
         this.paramMargin2.control.max = 100;
+        this.paramMargin3.control.max = 360;
 
 
         this.header.connectionPadding = 18;
-
-
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            if (!graphView.loadingNodes)
-                this.paramSpace.setValue(
-                    Math.max(4, colorSpaceIndex(this.inputs[0].data.color[0])),
-                    true, true, false);
-        });
     }
 
 
@@ -68,29 +52,26 @@ extends OpColorBase
         //     this.paramRule2.setValue(1, false, true, false);
 
 
-        this.updateRuleMargin(this.paramRule1, this.paramMargin1);
-        this.updateRuleMargin(this.paramRule2, this.paramMargin2);
+        this.updateMargins();
 
 
         if (this.inputs[0].isConnected)
         {
-            const color = convertDataColorToSpace(
-                this.inputs[0].data.color,
-                colorSpace(this.paramSpace.value));
+            const color = this.inputs[0].data.color;
 
 
             this._color = color;
 
-                 if (this.paramRule1.value == 0) this.adjustChannel(color, 0, this.paramMargin1.value);
-            else if (this.paramRule1.value == 1) this.adjustChannel(color, 1, this.paramMargin1.value);
-            else if (this.paramRule1.value == 2) this.adjustChannel(color, 2, this.paramMargin1.value);
+            //      if (this.paramRule1.value == 0) this.adjustChannel(color, 0, this.paramMax1.value);
+            // else if (this.paramRule1.value == 1) this.adjustChannel(color, 1, this.paramMax1.value);
+            // else if (this.paramRule1.value == 2) this.adjustChannel(color, 2, this.paramMax1.value);
 
-            if (!isValidRgb(dataColor2rgb(this._color)))
-            {
-                     if (this.paramRule2.value == 0) this.adjustChannel(color, 0, this.paramMargin2.value);
-                else if (this.paramRule2.value == 1) this.adjustChannel(color, 1, this.paramMargin2.value);
-                else if (this.paramRule2.value == 2) this.adjustChannel(color, 2, this.paramMargin2.value);
-            }
+            // if (!isValidRgb(dataColor2rgb(this._color)))
+            // {
+            //          if (this.paramRule2.value == 0) this.adjustChannel(color, 0, this.paramMax2.value);
+            //     else if (this.paramRule2.value == 1) this.adjustChannel(color, 1, this.paramMax2.value);
+            //     else if (this.paramRule2.value == 2) this.adjustChannel(color, 2, this.paramMax2.value);
+            // }
         }
 
         else
@@ -152,9 +133,38 @@ extends OpColorBase
 
 
 
-    updateRuleMargin(rule, margin)
+    updateMargins()
     {
-        if (rule.value == 0) 
+        switch (this.paramOrder.value)
+        {
+            case 0: // HCL
+            case 1: // HLC
+                this.updateMargin(true,  this.paramMargin1);
+                this.updateMargin(false, this.paramMargin2);
+                this.updateMargin(false, this.paramMargin3);
+                break;
+
+            case 2: // CHL
+            case 4: // LHC
+                this.updateMargin(false, this.paramMargin1);
+                this.updateMargin(true,  this.paramMargin2);
+                this.updateMargin(false, this.paramMargin3);
+                break;
+            
+            case 3: // CLH
+            case 5: // LCH
+                this.updateMargin(false, this.paramMargin1);
+                this.updateMargin(false, this.paramMargin2);
+                this.updateMargin(true,  this.paramMargin3);
+                break;
+        }
+    }
+
+
+
+    updateMargin(isHue, margin)
+    {
+        if (isHue) 
         {
             margin.control.max        = 360;
             margin.control.displayMax = 60;

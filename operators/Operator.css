@@ -168,3 +168,18 @@
     box-shadow: 0  1px 0 0 rgba(0, 0, 0, 0.1) inset,
                 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset;
 }
+
+
+.dragHandle
+{
+    display:             block;
+    width:               5px;
+    height:              11px;
+    background-color:    red;
+    box-shadow:          0 0 0 1 red inset;
+    position:            absolute;
+    left:                13px;
+    background:          url('data:image/svg+xml;utf8,<svg width="5" height="11" viewBox="0 0 5 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.10684" cy="2.10684" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="8.5" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="14.8932" r="2.10684" fill="black" fill-opacity="0.4"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
