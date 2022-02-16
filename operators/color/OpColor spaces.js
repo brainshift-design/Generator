@@ -435,26 +435,10 @@ function getDataColorHcl(c1, c2, c3)
 
 
 
-function setDataColorToSpace(op, color, toSpace)
-{
-    const _color = convertDataColorToSpace(color, toSpace);
-    op._oldSpace = _color[0];
-
-    switchToSpace(op, toSpace);
-
-    op.setColorParams(_color);
-    op._color = op.getDataColorFromParams();
-}
-
-
-
 function setDataColorToCurrentSpace(op, color)
 {
     const toSpace = colorSpace(op.paramSpace.value);
-
     op._color = convertDataColorToSpace(color, toSpace);
-    //op._oldSpace = op._color[0];
-
     op.setColorParams(op._color);
 }
 

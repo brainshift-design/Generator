@@ -160,15 +160,15 @@ extends OpColorBase
             }
             else
             {
-                const color = convertDataColorToSpace(
-                    this.inputs[0].data.color, 
-                    colorSpace(this.paramSpace.value));
-
+                const toSpace = colorSpace(this.paramSpace.value);
+                const color   = convertDataColorToSpace(this.inputs[0].data.color, toSpace);
+                
                 if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
                 if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
                 if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-                setDataColorToSpace(this, color, colorSpace(this.paramSpace.value));
+                switchToSpace(this, toSpace);
+                setDataColorToCurrentSpace(this, color);
             }
         }
         else
