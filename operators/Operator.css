@@ -175,11 +175,26 @@
     display:             block;
     width:               5px;
     height:              11px;
-    background-color:    red;
-    box-shadow:          0 0 0 1 red inset;
     position:            absolute;
     left:                13px;
     background:          url('data:image/svg+xml;utf8,<svg width="5" height="11" viewBox="0 0 5 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.10684" cy="2.10684" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="8.5" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="14.8932" r="2.10684" fill="black" fill-opacity="0.4"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+.findColorCorrection
+{
+    display:             block;
+    width:               10px;
+    height:              10px;
+    position:            absolute;
+    left:                50%;
+    top:                 50%;
+    transform:           translateX(-50%)
+                         translateY(-50%);
+    /* box-shadow:          0 0 0 1 red inset; */
+    background:          url('data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.10345 5.05172C8.10345 7.01329 6.51329 8.60345 4.55172 8.60345C2.59016 8.60345 1 7.01329 1 5.05172C1 3.09016 2.59016 1.5 4.55172 1.5C6.51329 1.5 8.10345 3.09016 8.10345 5.05172ZM7.39723 8.60458C6.61787 9.22958 5.62846 9.60345 4.55172 9.60345C2.03788 9.60345 0 7.56557 0 5.05172C0 2.53788 2.03788 0.5 4.55172 0.5C7.06557 0.5 9.10345 2.53788 9.10345 5.05172C9.10345 6.12858 8.72949 7.1181 8.10436 7.8975L11.3535 11.1467L10.6464 11.8538L7.39723 8.60458Z" fill="black" fill-opacity="0.8"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
 }

@@ -81,7 +81,7 @@ function figUpdateObjects(objects) {
                             && cur.getPluginData('nodeId') == obj.nodeId)
                             figUpdateRect(obj);
                         else
-                            figNotify('Error: Object ID mismatch', 400, true);
+                            figNotify('Error: Object ID mismatch', '', 400, true);
                     }
                     break;
                 }

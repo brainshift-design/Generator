@@ -126,6 +126,17 @@ function isDark(color, threshold = 0.71)
 
 
 
+function rgbDistance(col1, col2)
+{
+    const d0 = col2[0] - col1[0];
+    const d1 = col2[1] - col1[1];
+    const d2 = col2[2] - col1[2];
+
+    return Math.sqrt(d0*d0 + d1*d1 + d2*d2);
+}
+
+
+
 function maxRgbDistance(col1, col2)
 {
     return Math.max(Math.max(Math.max(

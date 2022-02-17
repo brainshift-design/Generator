@@ -126,7 +126,7 @@ function figUpdateObjects(objects)
                         figUpdateRect(obj);
 
                     else
-                        figNotify('Error: Object ID mismatch', 400, true);
+                        figNotify('Error: Object ID mismatch', '', 400, true);
                 }
 
                 break;
