@@ -18,18 +18,16 @@ extends OpColorBase
 
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true,  true, true, 0, 0,    1, 2));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
       
         
         this.#paramSpace.control.min         = 1;
         this.#paramSpace.control.displayMin  = 1;
         this.#paramSpace.control.update();
         
-        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
-        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
+        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
+        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
         this.#paramAmount.allowEditDecimals  = true;
-        this.#paramAmount.control.valueScale = 100;
-        this.#paramAmount.control.displayDec = 0;
 
         this.#paramAmount.control.setSuffix('%', true);
         
@@ -74,7 +72,7 @@ extends OpColorBase
             && this.inputs[1].isConnected)
         {
             const space = colorSpace(this.#paramSpace.value);
-            const f     = this.#paramAmount.value;
+            const f     = this.#paramAmount.value / 100;
             
             const col = this.interpolate(
                 space,

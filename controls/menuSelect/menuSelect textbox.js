@@ -9,13 +9,13 @@ function initMenuSelectTextbox(select)
             && getCtrlKey(e))
         {
             e.preventDefault();
-            document.execCommand("copy");
+            document.execCommand('copy');
         }
         else if (e.code == 'KeyV'
               && getCtrlKey(e))
         {
             e.preventDefault();
-            document.execCommand("paste");
+            document.execCommand('paste');
         }
         
         else if (e.code == 'Enter'

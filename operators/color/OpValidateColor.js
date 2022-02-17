@@ -30,6 +30,13 @@ extends OpColorBase
 
 
         this.header.connectionPadding = 18;
+
+
+        this.inputs[0].addEventListener('connect', () =>
+        {
+            for (let i = 1; i < this.params.length; i++)
+                enableSliderText(this.params[i].control, false);
+        });
     }
 
 
@@ -77,46 +84,86 @@ extends OpColorBase
 
     adjustChannel(color, iChan, margin)
     {
-        const d = 0.001;
-
-        let _c  = color[iChan+1],
-             c_ = color[iChan+1];
-
-        let _valid  = isValidRgb(dataColor2rgb(color));
-        let  valid_ = isValidRgb(dataColor2rgb(color));
-
-
         const factor = getColorSpaceFactor(color[0]);
 
         margin /= factor[iChan];
 
+
+        const savedColor = [...color];
+        const savedValue = color[iChan+1];
+
+        const d = 0.001;
+
+
+        let _c      = savedValue,
+             c_     = savedValue;
+
+        let _valid  = isValidRgb(dataColor2rgb(color));
+        let  valid_ = _valid;
+
+
         let stackOverflowProtect = 1/d;
 
-        while (   !_valid 
+
+        while (   !_valid
                && ! valid_
-               && stackOverflowProtect-- > 0
-               && margin > 0)
+               && stackOverflowProtect-- > 0)
         {
-            _c  += d;
-             c_ -= d;
+            _c -= d;
+            _valid = this.checkColor(_c, iChan, savedColor);
 
-             color[iChan+1] = _c;  _valid  = isValidRgb(dataColor2rgb(color));
-             color[iChan+1] =  c_;  valid_ = isValidRgb(dataColor2rgb(color));
-
-             margin -= d;
+            c_ += d;
+            valid_ = this.checkColor(c_, iChan, savedColor);
         }
+
+
+        stackOverflowProtect = 1/d;
+        color = [...savedColor];
 
 
         if (_valid) 
         { 
+            _valid = isValidRgb(dataColor2rgb(color));
+            _c     = savedValue;
+
+            while (   !_valid
+                   && stackOverflowProtect-- > 0
+                   && margin > 0)
+            {
+                _c -= d; 
+                _valid = this.checkColor(_c, iChan, savedColor);
+                margin -= d;
+            }
+
             color[iChan+1] = _c;
-            this._color = color;
+            this._color    = color;
         }
-        else if (valid_) 
+        else if (valid_)
         { 
+            valid_ = isValidRgb(dataColor2rgb(color));
+            c_     = savedValue;
+
+            while (   !valid_
+                   && stackOverflowProtect-- > 0
+                   && margin > 0)
+            {
+                c_ += d; 
+                valid_ = this.checkColor(c_, iChan, savedColor);
+                margin -= d;
+            }
+
             color[iChan+1] = c_;
-            this._color = color;
+            this._color    = color;
         }
+    }
+
+
+
+    checkColor(c, iChan, savedColor)
+    {
+        let color = [...savedColor];
+        color[iChan+1] = c; 
+        return isValidRgb(dataColor2rgb(color));
     }
 
 

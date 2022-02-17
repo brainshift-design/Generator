@@ -29,7 +29,7 @@ function initNumberSliderTextbox(slider)
             && getCtrlKey(e))
         {
             e.preventDefault();
-            document.execCommand("copy");
+            document.execCommand('copy');
         }
 
         else if (e.code == 'KeyV'

@@ -16,13 +16,12 @@ extends OperatorBase
         this.addOutput(new Output(this.dataType));
 
         this.addParam(this.#paramValue  = new NumberParam('value',  '', false, false, false, 0));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '', true,  true,  true, 0, 0, 1, 2));
+        this.addParam(this.#paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
 
         enableSliderText(this.#paramValue.control, false);
         
-        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER;
-        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER;
-        this.#paramAmount.control.valueScale = 100;
+        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
+        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
         this.#paramAmount.control.displayDec = 0;
         
         this.#paramAmount.control.setSuffix('%', true);
@@ -41,7 +40,7 @@ extends OperatorBase
             const a = this.inputs[0].data.value; 
             const b = this.inputs[1].data.value; 
 
-            result = a + (b - a) * this.#paramAmount.value;
+            result = a + (b - a) * this.#paramAmount.value / 100;
 
             maxDec = Math.max(
                 this.inputs[0].data.decimals,

@@ -90,7 +90,7 @@ function onHexboxKeyDown(e)
         && getCtrlKey(e))
     {
         e.preventDefault();
-        document.execCommand("copy");
+        document.execCommand('copy');
     }
 
     else if (   e.code == 'KeyV'
