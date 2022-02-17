@@ -18,7 +18,7 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.paramOrder   = new SelectParam('order',   '',  false, true, true, ['H, C, L', 'H, L, C', 'C, H, L', 'C, L, H', 'L, H, C', 'L, C, H'], 3));
+        this.addParam(this.paramOrder   = new SelectParam('order',   '',  false, true, true, ['H, C, L', 'H, L, C', 'C, H, L', 'C, L, H', 'L, H, C', 'L, C, H'], 2));
         this.addParam(this.paramMargin1 = new NumberParam('margin1', 'C', true,  true, true, 10, 0, 20));
         this.addParam(this.paramMargin2 = new NumberParam('margin2', 'L', true,  true, true, 10, 0, 20));
         this.addParam(this.paramMargin3 = new NumberParam('margin3', 'H', true,  true, true, 10, 0, 60));
@@ -39,39 +39,28 @@ extends OpColorBase
         //log(this.id + '.OpValidColor.updateData()');
 
 
-        // if (   this.paramRule1.value == 0
-        //     && this.paramRule2.value == 0)
-        //     this.paramRule2.setValue(2, false, true, false);
-
-        // else if (this.paramRule1.value == 1
-        //       && this.paramRule2.value == 1)
-        //     this.paramRule2.setValue(2, false, true, false);
-
-        // else if (this.paramRule1.value == 2
-        //       && this.paramRule2.value == 2)
-        //     this.paramRule2.setValue(1, false, true, false);
-
-
         this.updateMargins();
 
 
         if (this.inputs[0].isConnected)
         {
-            const color = this.inputs[0].data.color;
-
+            const color = [...this.inputs[0].data.color];
 
             this._color = color;
 
-            //      if (this.paramRule1.value == 0) this.adjustChannel(color, 0, this.paramMax1.value);
-            // else if (this.paramRule1.value == 1) this.adjustChannel(color, 1, this.paramMax1.value);
-            // else if (this.paramRule1.value == 2) this.adjustChannel(color, 2, this.paramMax1.value);
+            
+            let i0, i1, i2;
+            
+                 if (this.paramOrder.value == 0) { i0 = 0; i1 = 1; i2 = 2; }
+            else if (this.paramOrder.value == 1) { i0 = 0; i1 = 2; i2 = 1; }
+            else if (this.paramOrder.value == 2) { i0 = 1; i1 = 0; i2 = 2; }
+            else if (this.paramOrder.value == 4) { i0 = 2; i1 = 0; i2 = 1; }
+            else if (this.paramOrder.value == 5) { i0 = 2; i1 = 1; i2 = 0; }
+            else                                 { i0 = 1; i1 = 2; i2 = 0; } // C, L, H by default
 
-            // if (!isValidRgb(dataColor2rgb(this._color)))
-            // {
-            //          if (this.paramRule2.value == 0) this.adjustChannel(color, 0, this.paramMax2.value);
-            //     else if (this.paramRule2.value == 1) this.adjustChannel(color, 1, this.paramMax2.value);
-            //     else if (this.paramRule2.value == 2) this.adjustChannel(color, 2, this.paramMax2.value);
-            // }
+                                                         this.adjustChannel(this._color, i0, this.paramMargin1.value);
+            if (!isValidRgb(dataColor2rgb(this._color))) this.adjustChannel(this._color, i1, this.paramMargin2.value);
+            if (!isValidRgb(dataColor2rgb(this._color))) this.adjustChannel(this._color, i2, this.paramMargin3.value);
         }
 
         else
@@ -98,7 +87,6 @@ extends OpColorBase
 
 
         const factor = getColorSpaceFactor(color[0]);
-        const scale  = getColorSpaceScale (color[0]);
 
         margin /= factor[iChan];
 
@@ -115,7 +103,7 @@ extends OpColorBase
              color[iChan+1] = _c;  _valid  = isValidRgb(dataColor2rgb(color));
              color[iChan+1] =  c_;  valid_ = isValidRgb(dataColor2rgb(color));
 
-             margin -= d;//1/factor[iChan];
+             margin -= d;
         }
 
 
@@ -135,29 +123,52 @@ extends OpColorBase
 
     updateMargins()
     {
+        let u1, u2, u3;
+        let n1, n2, n3;
+
         switch (this.paramOrder.value)
         {
             case 0: // HCL
+                u1 = true ; n1 = 'H'; 
+                u2 = false; n2 = 'C'; 
+                u3 = false; n3 = 'L'; 
+                break;
+
             case 1: // HLC
-                this.updateMargin(true,  this.paramMargin1);
-                this.updateMargin(false, this.paramMargin2);
-                this.updateMargin(false, this.paramMargin3);
+                u1 = true;  n1 = 'H'; 
+                u2 = false; n2 = 'L'; 
+                u3 = false; n3 = 'C'; 
                 break;
 
             case 2: // CHL
-            case 4: // LHC
-                this.updateMargin(false, this.paramMargin1);
-                this.updateMargin(true,  this.paramMargin2);
-                this.updateMargin(false, this.paramMargin3);
+                u1 = false; n1 = 'C'; 
+                u2 = true;  n2 = 'H'; 
+                u3 = false; n3 = 'L'; 
                 break;
-            
+
             case 3: // CLH
+                u1 = false; n1 = 'C';
+                u2 = false; n2 = 'L';
+                u3 = true;  n3 = 'H';
+                break;
+
+            case 4: // LHC    
+                u1 = false; n1 = 'L';
+                u2 = true;  n2 = 'H';
+                u3 = false; n3 = 'C';
+                break;
+                
             case 5: // LCH
-                this.updateMargin(false, this.paramMargin1);
-                this.updateMargin(false, this.paramMargin2);
-                this.updateMargin(true,  this.paramMargin3);
+                u1 = false; n1 = 'L';
+                u2 = false; n2 = 'C';
+                u3 = true;  n3 = 'H';
                 break;
         }
+
+
+        this.updateMargin(u1, this.paramMargin1); this.paramMargin1.control.name = n1; 
+        this.updateMargin(u2, this.paramMargin2); this.paramMargin2.control.name = n2; 
+        this.updateMargin(u3, this.paramMargin3); this.paramMargin3.control.name = n3; 
     }
 
 

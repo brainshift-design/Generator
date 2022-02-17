@@ -55,27 +55,26 @@ function createOperatorNode(node)
     node.inner.appendChild(node.paramBack);
     
 
-    node.dragParam = createDiv('dragHandle');
-    node.dragParam.innerHTML = '&nbsp;';
-    node.div.appendChild(node.dragParam);
+    // node.dragParam = createDiv('dragHandle');
+    // node.div.appendChild(node.dragParam);
 
 
-    node.div.addEventListener('pointermove', e =>
-    {
-        const rect = boundingRect(node.div);
+    // node.div.addEventListener('pointermove', e =>
+    // {
+    //     const rect = boundingRect(node.div);
     
-        let y = 
-            + (e.clientY - rect.y) / graphView.zoom 
-            - node.header.offsetHeight;
+    //     let y = 
+    //         + (e.clientY - rect.y) / graphView.zoom 
+    //         - node.header.offsetHeight;
 
-        const paramHeight = 20;
+    //     const paramHeight = 20;
 
-        y = Math.floor(y / paramHeight) * paramHeight;
+    //     y = Math.floor(y / paramHeight) * paramHeight;
 
-        log(y);
+    //     log(y);
         
-        node.dragParam.style.top = node.header.offsetHeight + y + paramHeight/2 - 5.5;
-    });
+    //     node.dragParam.style.top = node.header.offsetHeight + y + paramHeight/2 - 5.5;
+    // });
 
 
     createNodeHeader(node);
