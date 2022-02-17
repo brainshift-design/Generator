@@ -17347,10 +17347,10 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.paramOrder   = new SelectParam('order',   '',  false, true, true, ['H, C, L', 'H, L, C', 'C, H, L', 'C, L, H', 'L, H, C', 'L, C, H'], 2));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'C', true,  true, true, 10, 0, 20));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'L', true,  true, true, 10, 0, 20));
-        this.addParam(this.paramMargin3 = new NumberParam('margin3', 'H', true,  true, true, 10, 0, 60));
+        this.addParam(this.paramOrder   = new SelectParam('order',   '',  false, true, true, ['H,&thinsp;C,&thinsp;L', 'H,&thinsp;L,&thinsp;C', 'C,&thinsp;H,&thinsp;L', 'C,&thinsp;L,&thinsp;H', 'L,&thinsp;H,&thinsp;C', 'L,&thinsp;C,&thinsp;H'], 2));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'C', true,  true, true, 0));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'L', true,  true, true, 0));
+        this.addParam(this.paramMargin3 = new NumberParam('margin3', 'H', true,  true, true, 0));
 
 
         this.paramMargin1.control.max = 100;
@@ -17504,18 +17504,8 @@ extends OpColorBase
 
     updateMargin(isHue, margin)
     {
-        if (isHue) 
-        {
-            margin.control.max        = 360;
-            margin.control.displayMax = 60;
-        }
-        else 
-        {
-            margin.control.max        = 100;
-            margin.control.displayMax = 20;
-        }
-
-        margin.control.update();
+        margin.control.setMin(0, false);
+        margin.control.setMax(isHue ? 180 : 100, false);
     }
 
 
