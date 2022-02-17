@@ -18,10 +18,10 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.paramOrder   = new SelectParam('order',   '',  false, true, true, ['H,&thinsp;C,&thinsp;L', 'H,&thinsp;L,&thinsp;C', 'C,&thinsp;H,&thinsp;L', 'C,&thinsp;L,&thinsp;H', 'L,&thinsp;H,&thinsp;C', 'L,&thinsp;C,&thinsp;H'], 2));
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', 'C', true,  true, true, 0));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', 'L', true,  true, true, 0));
-        this.addParam(this.paramMargin3 = new NumberParam('margin3', 'H', true,  true, true, 0));
+        this.addParam(this.paramOrder   = new SelectParam('order',   '', false, true, true, ['H,&thinsp;C,&thinsp;L', 'H,&thinsp;L,&thinsp;C', 'C,&thinsp;H,&thinsp;L', 'C,&thinsp;L,&thinsp;H', 'L,&thinsp;H,&thinsp;C', 'L,&thinsp;C,&thinsp;H'], 2));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', '', true,  true, true, 0));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', '', true,  true, true, 0));
+        this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true,  true, true, 0));
 
 
         this.paramMargin1.control.max = 100;

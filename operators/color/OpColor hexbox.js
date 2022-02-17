@@ -86,7 +86,14 @@ function onHexboxKeyDown(e)
     
     const hexbox = e.target;
 
-    if (   e.code == 'KeyV'
+    if (   e.code == 'KeyC'
+        && getCtrlKey(e))
+    {
+        e.preventDefault();
+        document.execCommand("copy");
+    }
+
+    else if (   e.code == 'KeyV'
         && getCtrlKey(e)
         && !hexbox.op.isConnected())
     {
