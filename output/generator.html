@@ -4563,6 +4563,26 @@ function genFindCorrection(nodeId, inputColor)
           closest2,
           closest3 ] = findCorrection(nodeId, inputColor, refRgb);
 
+
+    if (closest1 == 0)
+    {
+        switch (closestOrder)
+        {
+            case 0: closestOrder = 3; break;
+            case 1: closestOrder = 5; break;
+            case 2: closestOrder = 1; break;
+            case 3: closestOrder = 4; break;
+            case 4: closestOrder = 0; break;
+            case 5: closestOrder = 2; break;
+        }
+
+        const temp = closest1;
+        closest1 = closest2;
+        closest2 = closest3;
+        closest3 = temp;
+    }
+
+
     genPostMessageToUi(
     {
         msg:         'uiEndFindCorrection',
