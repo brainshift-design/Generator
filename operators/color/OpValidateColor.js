@@ -66,8 +66,9 @@ extends OpColorBase
             { 
                 this.btnFind.button0 = false;
 
-                this.btnFind.style.display = 'none';
-                this.findBar.style.display = 'block';
+                this.btnFind     .style.display = 'none';
+                this.findBar     .style.display = 'block';
+                this.findProgress.style.width = 0;
                 
                 validateIsFinding = true;
 
@@ -150,6 +151,13 @@ extends OpColorBase
 
 
 
+    updateLupe()
+    {
+
+    }
+
+
+
     updateHeaderLabel()
     {
         super.updateHeaderLabel();
@@ -208,11 +216,10 @@ function uiEndFindCorrectionProgress(nodeId, success, closestOrder, closest1, cl
 
     if (success)
     {
-        node.param1.setValue(closest1, true, true, false);
-        node.param2.setValue(closest2, true, true, false);
-        node.param3.setValue(closest3, true, true, false);
         node.paramOrder.setValue(closestOrder, true, true, false);
-        //node.updateMargins();
+        node.param1    .setValue(closest1,     true, true, false);
+        node.param2    .setValue(closest2,     true, true, false);
+        node.param3    .setValue(closest3,     true, true, false);
     }
 
     validateIsFinding = false;
