@@ -2215,6 +2215,7 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
+        case 'genFindCorrection':   genFindCorrection(e.data.nodeId, e.data.inputColor, e.data.max1, e.data.max2, e.data.max3);  break;
         // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -2424,6 +2425,2205 @@ function genPostMessageToUi(msg)
 //     // }
 // }
 
+
+
+// Observer = 2°
+
+const D65 = [0.95047, 1, 1.08883]; 
+
+function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
+{
+    return {    
+        R:         R,
+        G:         G,
+        B:         B,
+
+        Y:         Y,
+
+        W:         W,
+
+        lin2xyz:   rgbMatrix(R, G, B, W),
+        xyz2lin:   inverse(rgbMatrix(R, G, B, W)),
+
+        gamma:     gamma,
+        degamma:   degamma,
+        regamma:   regamma,
+        
+        luminance: luminance
+    };
+}
+
+
+function rgbMatrix(R, G, B, W)
+{
+    const C0 = colorVector(R);
+    const C1 = colorVector(G);
+    const C2 = colorVector(B);
+
+    const M = [ [ C0[0], C1[0], C2[0] ], 
+                [ C0[1], C1[1], C2[1] ], 
+                [ C0[2], C1[2], C2[2] ] ];
+
+    const S = mulv3m3(W, inverse(M));
+
+    return [ [ S[0]*C0[0], S[1]*C1[0], S[2]*C2[0] ],
+             [ S[0]*C0[1], S[1]*C1[1], S[2]*C2[1] ],
+             [ S[0]*C0[2], S[1]*C1[2], S[2]*C2[2] ] ];
+}
+
+
+function colorVector(c)
+{
+    const x = c[0],
+          y = c[1];
+
+    return [x/y, 1, (1-x-y)/y];
+}
+
+
+
+const sRGB = createColorSpace
+(
+    [0.64, 0.33], // R
+    [0.3,  0.6 ], // G
+    [0.15, 0.06], // B
+
+    [0.212656,
+     0.715158,
+     0.072186], // Y
+
+    D65,        // W
+
+    2.4,        // gamma
+
+
+
+    function(v) // degamma
+    {
+        return v > 0.04045
+               ? Math.pow((v + 0.055) / 1.055, this.gamma)
+               : v / 12.92;
+    },
+    
+
+
+    function(v) // regamma
+    {
+        return v > 0.0031308
+               ? 1.055 * Math.pow(v, 1/this.gamma) - 0.055
+               : v * 12.92;
+    },
+    
+
+    
+    function(rgb) // luminance
+    {
+        return  this.Y[0] * this.degamma(rgb[0]) 
+              + this.Y[1] * this.degamma(rgb[1]) 
+              + this.Y[2] * this.degamma(rgb[2]);
+    }
+);
+
+
+
+function rgb2hsv_(r, g, b)
+{
+    let h, s, v;
+
+    let min = Math.min(Math.min(r, g), b),
+        max = Math.max(Math.max(r, g), b);
+
+    let delta = max - min;
+
+    v = max;
+    s = max == 0 ? 0 : delta / max;
+	
+    if      (max == r) h = 1/6 * (g - b) / delta + 1;   // between yellow and magenta
+    else if (max == g) h = 1/6 * (b - r) / delta + 1/3; // between cyan and yellow
+    else if (max == b) h = 1/6 * (r - g) / delta + 2/3; // between between magenta and cyan
+
+	if (h > 1) h -= 1;
+	//if (h < 0) h += 1;
+
+    return [h, s, v];
+}
+
+
+
+function rgb2hsv(rgb)
+{
+    return rgb2hsv_(rgb[0], rgb[1], rgb[2]);
+}
+
+
+
+function hsv2rgb_(h, s, v)
+{
+    while (h < 0) h += 1;
+    while (h > 1) h -= 1;
+
+    if (s == 0)
+        return [v, v, v]; // achromatic
+
+    h *= 6 - 0.0000001;
+
+    let i = Math.floor(h);
+    let f = h - i;
+	
+    let p = v * (1 - s);
+    let q = v * (1 - s * f);
+    let t = v * (1 - s * (1 - f));
+
+    switch (i)
+    {
+        case 0:  return [v, t, p];
+        case 1:  return [q, v, p];
+        case 2:  return [p, v, t];
+        case 3:  return [p, q, v];
+        case 4:  return [t, p, v];
+        default: return [v, p, q];
+    }
+}
+
+
+
+function hsv2rgb(hsv)
+{
+	return hsv2rgb_(hsv[0], hsv[1], hsv[2]);
+}
+
+
+function rgb2hsl_(r, g, b)
+{
+    let h, s, l;
+
+    let min = Math.min(Math.min(r, g), b),
+        max = Math.max(Math.max(r, g), b);
+
+    let delta = max - min;
+
+    l = (max + min) / 2;
+
+         if (max == min) h = 0;
+    else if (max == r  ) h = 1/6 * (g - b) / delta + 1;
+    else if (max == g  ) h = 1/6 * (b - r) / delta + 1/3;
+    else if (max == b  ) h = 1/6 * (r - g) / delta + 2/3;
+
+         if (max == min) s = 0;
+    else if (l <= 0.5)   s = delta / (2 * l);
+    else if (l >  0.5)   s = delta / (2 - 2 * l);
+
+    return [h, s, l];
+}
+
+
+
+function rgb2hsl(rgb)
+{
+    return rgb2hsl_(rgb[0], rgb[1], rgb[2]);
+}
+
+
+
+function hsl2rgb_(h, s, l)
+{
+    let q =
+        l < 0.5
+        ? l * (1 + s)
+        : l + s - l * s;
+
+    let p = 2 * l - q;
+
+    let tr = h + 1/3;
+    let tg = h;
+    let tb = h - 1/3;
+
+    if (tr < 0) tr += 1; if (tr > 1) tr -= 1;
+    if (tg < 0) tg += 1; if (tg > 1) tg -= 1;
+    if (tb < 0) tb += 1; if (tb > 1) tb -= 1;
+
+    let r, g, b;
+
+    let qp6 = (q - p) * 6; 
+
+         if (tr <  1/6)				r = p + qp6 * tr;
+    else if (tr >= 1/6 && tr < 0.5)	r = q;
+    else if (tr >= 0.5 && tr < 2/3)	r = p + qp6 * (2/3 - tr);
+    else							r = p;
+	
+         if (tg <  1/6)				g = p + qp6 * tg;
+    else if (tg >= 1/6 && tg < 0.5)	g = q;
+    else if (tg >= 0.5 && tg < 2/3) g = p + qp6 * (2/3 - tg);
+    else							g = p;
+
+         if (tb <  1/6)				b = p + qp6 * tb;
+    else if (tb >= 1/6 && tb < 0.5) b = q;
+    else if (tb >= 0.5 && tb < 2/3) b = p + qp6 * (2/3 - tb);
+    else							b = p;
+
+    return [r, g, b];
+}
+
+
+
+function hsl2rgb(hsl)
+{
+    return hsl2rgb_(hsl[0], hsl[1], hsl[2]);
+}
+
+
+function xyz2lms(xyz)
+{
+    return mulv3m3(xyz, CAT);//HPE);
+}
+
+
+
+function lms2xyz(lms)
+{
+    return mulv3m3(lms, invCAT);//invHPE);
+}
+
+
+
+function rgb2xyz(rgb, cs = sRGB)
+{ 
+    return rgb2xyz_(rgb[0], rgb[1], rgb[2], cs);
+}    
+
+
+
+function rgb2xyz_(r, g, b, cs = sRGB)
+{ 
+    let rgb = [
+        cs.degamma(r),
+        cs.degamma(g),
+        cs.degamma(b) ];
+
+    return lrgb2xyz(rgb, cs);
+}    
+
+
+
+function lrgb2xyz(rgb, cs = sRGB)
+{
+    return mulv3m3(rgb, cs.lin2xyz);
+}        
+
+
+
+function xyz2rgb(xyz, cs = sRGB)
+{
+    let rgb = xyz2lrgb(xyz, cs);
+
+    return [
+        cs.regamma(rgb[0]),
+        cs.regamma(rgb[1]),
+        cs.regamma(rgb[2]) ];
+}
+
+
+
+function xyz2lrgb(xyz, cs = sRGB)
+{
+    return mulv3m3(xyz, cs.xyz2lin);
+}
+
+
+
+
+
+
+function rgb2luv(rgb, cs = sRGB)
+{
+    return xyz2luv(rgb2xyz(rgb, cs), cs.W);
+}
+
+
+
+function luv2rgb(luv, cs = sRGB)
+{
+    return xyz2rgb(luv2xyz(luv, cs.W), cs);
+}
+
+
+
+function xyz2luv(xyz, W = sRGB.W)
+{
+    const x = xyz[0], 
+          y = xyz[1], 
+          z = xyz[2];
+
+    const e = cube(6/29);
+    const k = cube(29/3);
+
+    const yw = y / W[1];
+
+    let l = 
+        yw > e
+        ? 116 * Math.cbrt(yw) - 16
+        : k * yw;
+
+    const u_ = 4*x / (x + 15*y + 3*z);
+    const v_ = 9*y / (x + 15*y + 3*z);
+    
+    const uw = 4*W[0] / (W[0] + 15*W[1] + 3*W[2]);
+    const vw = 9*W[1] / (W[0] + 15*W[1] + 3*W[2]);
+    
+    const u = 13*l * (u_ - uw);
+    const v = 13*l * (v_ - vw);
+
+    return [
+        l / 100, 
+        u / 100, 
+        v / 100];
+}
+
+
+
+function luv2xyz(luv, W = sRGB.W)
+{
+    let l = luv[0] * 100, 
+        u = luv[1] * 100, 
+        v = luv[2] * 100;
+
+    const e = cube(6/29);    
+    const k = cube(29/3);
+
+    const uw = 4*W[0] / (W[0] + 15*W[1] + 3*W[2]);
+    const vw = 9*W[1] / (W[0] + 15*W[1] + 3*W[2]);
+    
+    const y = 
+        l > e*k
+        ? cube((l + 16) / 116)
+        : l / k;
+    
+    const a = (52*l / nozero(u + 13*l*uw) - 1) / 3;
+    const b = -5 * y;
+    const c = -1/3;
+    const d =  y * (39*l / nozero(v + 13*l*vw) - 5);
+
+    const x = (d - b) / nozero(a - c);
+
+    const z = x*a + b;
+
+    return [x, y, z];
+}
+
+
+function rgb2lab(rgb, cs = sRGB)
+{
+    return xyz2lab(rgb2xyz(rgb, cs), cs.W);
+}
+
+
+
+function lab2rgb(lab, cs = sRGB)
+{
+    return xyz2rgb(lab2xyz(lab, cs.W), cs);
+}
+
+
+
+function xyz2lab(xyz, W = sRGB.W)
+{
+    const x = xyz[0], 
+          y = xyz[1], 
+          z = xyz[2];
+
+    const e = cube(6/29);
+    const k = cube(29/3);
+
+    let xw = x / W[0];
+    let yw = y / W[1];
+    let zw = z / W[2];
+
+    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16)/1.16;
+    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16)/1.16;
+    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16)/1.16;
+
+    const l = (1.16 * yw) - 0.16;
+    const a = 5 * (xw - yw);
+    const b = 2 * (yw - zw);
+
+    return [l, a, b];
+}
+
+
+
+function lab2xyz(lab, W = sRGB.W)
+{
+    const l = lab[0], 
+          a = lab[1], 
+          b = lab[2];
+
+    const e = cube(6/29) / 100;
+    const k = cube(29/3) / 100;
+
+    const yw = (l + 0.16)/1.16;
+    const xw = a/5 + yw;
+    const zw = yw - b/2;
+
+    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16)/k;
+    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16)/k;
+    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16)/k;
+
+    x *= W[0];
+    y *= W[1];
+    z *= W[2];
+ 
+    return [x, y, z];
+}
+
+
+const okLabScale = 5.8209716167;
+
+
+
+function rgb2oklab(rgb, cs = sRGB)
+{
+    return rgb2oklab_(rgb[0], rgb[1], rgb[2], cs);
+}
+
+
+
+function rgb2oklab_(r, g, b, cs = sRGB) 
+{
+    return oklms2oklab(rgb2oklms_(r, g, b, cs));
+}
+
+
+
+function rgb2oklms_(r, g, b, cs = sRGB) 
+{
+    r = cs.degamma(r);
+    g = cs.degamma(g);
+    b = cs.degamma(b);
+
+    return [
+        0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b,
+	    0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b,
+	    0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b ];
+}        
+
+
+
+function oklms2oklab(lms) 
+{
+    const l = Math.cbrt(lms[0]);
+    const m = Math.cbrt(lms[1]);
+    const s = Math.cbrt(lms[2]);
+
+    const l_ = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s;
+    const a_ = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s;
+    const b_ = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
+
+    return [
+        l_,
+        a_, 
+        b_ ];
+}        
+
+
+
+function oklab2rgb(lab, cs = sRGB)
+{
+    return oklms2rgb(oklab2oklms(lab), cs);
+}
+
+
+
+function oklab2rgb_(l, a, b, cs = sRGB) 
+{
+    return oklab2rgb([l, a, b], cs);
+}
+
+
+
+function oklab2oklms(lab)
+{
+    return oklab2oklms_(lab[0], lab[1], lab[2]);
+}
+
+
+
+function oklab2oklms_(l_, a_, b_) 
+{
+    return [
+        l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
+        l_ - 0.1055613458 * a_ - 0.0638541728 * b_,
+        l_ - 0.0894841775 * a_ - 1.2914855480 * b_ ];
+}
+
+
+
+function oklms2rgb(lms, cs = sRGB) 
+{
+    const l = cube(lms[0]);
+    const m = cube(lms[1]);
+    const s = cube(lms[2]);
+
+	const r =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+	const g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+	const b = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+
+    return [
+        cs.regamma(r),
+        cs.regamma(g),
+        cs.regamma(b) ];
+}
+
+
+function opp2pol(opp) // opponent to polar
+{
+    // either lab or luv, 
+    // the polar transformation is the same
+
+    const l = opp[0], 
+          a = opp[1], 
+          b = opp[2];
+
+    const h = Math.atan2(b, a);
+    const c = Math.sqrt(a*a + b*b);
+
+    return [h, c, l];
+}
+
+
+
+function pol2opp(pol) // polar to opponent
+{
+    // either lab or luv, 
+    // the polar transformation is the same
+
+    const h = pol[0], 
+          c = pol[1], 
+          l = pol[2];
+
+    const a = c * Math.cos(h);
+    const b = c * Math.sin(h);
+
+    return [l, a, b];
+}
+
+
+function hclokl2rgb(hcl, cs = sRGB)
+{
+    hcl[0] *= Tau;
+    hcl[1] *= hcl[2]; 
+    return oklab2rgb(pol2opp(hcl), cs);
+}    
+
+
+
+function hclokl2rgb_(h, c, l, cs = sRGB)
+{
+    return hclokl2rgb_([h, c, l], cs);
+}    
+    
+    
+    
+function rgb2hclokl(rgb, cs = sRGB)
+{
+    const hcl = opp2pol(rgb2oklab(rgb, cs));
+    hcl[0] /= Tau;
+    hcl[1] /= hcl[2];
+    return hcl;
+}
+
+
+
+function rgb2hclokl_(r, g, b, cs = sRGB)
+{
+    return rgb2hclokl([r, g, b], cs);
+}
+
+
+
+function hcllab2lab(hcl)
+{
+    hcl[0] *= Tau;
+    hcl[1] *= hcl[2];
+    return pol2opp(hcl);
+}
+
+
+
+function hcllab2rgb(hcl, cs = sRGB)
+{
+    return lab2rgb(hcllab2lab(hcl), cs);
+}
+
+
+
+function lab2hcllab(lab)
+{
+    let hcl = opp2pol(lab);
+    hcl[0] /= Tau;
+    hcl[1] /= hcl[2];
+    return hcl;
+}
+
+
+
+function rgb2hcllab(rgb, cs = sRGB)
+{
+    return lab2hcllab(rgb2lab(rgb, cs));
+}
+
+
+
+function hclluv2luv(hcl)
+{
+    hcl[0] *= Tau;
+    hcl[1] *= hcl[2];
+    return pol2opp(hcl);
+}
+
+
+
+function hclluv2rgb(hcl, cs = sRGB)
+{
+    return luv2rgb(hclluv2luv(hcl), cs);
+}
+
+
+
+function luv2hclluv(luv)
+{
+    let hcl = opp2pol(luv);
+    hcl[0] /= Tau;
+    hcl[1] /= hcl[2];
+    return hcl;
+}
+
+
+
+function rgb2hclluv(rgb, cs = sRGB)
+{
+    return luv2hclluv(rgb2luv(rgb, cs));
+}
+
+
+// Hunt-Pointer-Estevez
+// const HPE = [[ 0.4002, 0.7076, -0.0808],
+//              [-0.2263, 1.1653,  0.0457],
+//              [ 0,      0,       0.9182]];
+
+// const invHPE = inverse(HPE);
+
+
+// CIECAM02
+const CAT = [[ 0.7328, 0.4296, -0.1624],
+             [-0.7036, 1.6975,  0.0061],
+             [ 0.0030, 0.0136,  0.9834]];
+
+const invCAT = inverse(CAT);
+
+
+
+function invalid2validRgb(rgb)
+{
+    return [
+        Math.min(Math.max(0, rgb[0]), 1),
+        Math.min(Math.max(0, rgb[1]), 1),
+        Math.min(Math.max(0, rgb[2]), 1) ];
+}
+
+
+
+function isValidRgb(rgb, lim = Number.EPSILON)
+{
+    return (!isNaN(rgb[0])
+         && !isNaN(rgb[1])
+         && !isNaN(rgb[2])
+         && rgb[0] > -lim && rgb[0] < 1 + lim 
+         && rgb[1] > -lim && rgb[1] < 1 + lim 
+         && rgb[2] > -lim && rgb[2] < 1 + lim);
+}
+
+
+
+function rgbLerp(rgb1, rgb2, t)
+{
+    return [ lerp(rgb1[0], rgb2[0], t),
+             lerp(rgb1[1], rgb2[1], t),
+             lerp(rgb1[2], rgb2[2], t) ];
+}
+
+
+
+function rgbAdd(rgb1, rgb2)
+{
+    return [ rgb1[0] + rgb2[0],
+             rgb1[1] + rgb2[1],
+             rgb1[2] + rgb2[2] ];
+}
+
+
+
+function rgbSub(rgb1, rgb2)
+{
+    return [ rgb1[0] - rgb2[0],
+             rgb1[1] - rgb2[1],
+             rgb1[2] - rgb2[2] ];
+}
+
+
+
+function rgbMuls(rgb, s)
+{
+    return [ rgb[0] * s,
+             rgb[1] * s,
+             rgb[2] * s ];
+}
+
+
+
+function rgbAvg(rgb1, rgb2)
+{
+    return [ (rgb1[0] + rgb2[0]) / 2,
+             (rgb1[1] + rgb2[1]) / 2,
+             (rgb1[2] + rgb2[2]) / 2 ];
+}
+
+
+
+function rgbMax(rgb1, rgb2)
+{
+    return [ Math.max(rgb1[0], rgb2[0]),
+             Math.max(rgb1[1], rgb2[1]),
+             Math.max(rgb1[2], rgb2[2]) ];
+}
+
+
+
+function rgbPow(col, p)
+{
+    return [
+        Math.pow(col[0], p), 
+        Math.pow(col[1], p), 
+        Math.pow(col[2], p) ]
+}
+
+
+
+const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
+const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
+const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
+
+const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
+const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
+
+const mq1 = (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]) / (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]);
+const mq2 = (lmsW[0]*lmsB[1] - lmsB[0]*lmsW[1]) / (lmsW[0]*lmsB[2] - lmsB[0]*lmsW[2]);
+
+const sq1 = (lmsW[1]*lmsR[2] - lmsR[1]*lmsW[2]) / (lmsW[1]*lmsR[0] - lmsR[1]*lmsW[0]);
+const sq2 = (lmsW[0]*lmsR[2] - lmsR[0]*lmsW[2]) / (lmsW[0]*lmsR[1] - lmsR[0]*lmsW[1]);
+
+const bq1 = lmsW[0] / lmsW[2];
+const bq2 = lmsW[1] / lmsW[2];
+
+
+// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
+// the simulation itself gives grayscale
+// on the site the simulation has color in it, so I decided to leave some color in as well,
+// but the amount is completely arbitrary, I just felt that this particular value matches
+// the description on that site without being unrealistically exaggerated
+const blueMono = 0.88;
+
+
+function rgb2colorblind(rgb, l, m, s, cs = sRGB)
+{
+    if (   l == 0
+        && m == 0
+        && s == 0)
+    {
+        // achromatopsia is simulated by taking only the luminance
+
+        const a = 
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
+
+        rgb = [a, a, a];
+    }
+    else
+    {
+        const xyz = rgb2xyz(rgb, cs);
+        const lms = xyz2lms(xyz);
+
+        const a = 
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
+
+        const lm = Math.min(l + m, 1);
+
+
+        const lms_ = [
+            lms[0] + lerp(blueMono * (bq1*lms[2] - lms[0]), (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]), lm),
+            lms[1] + lerp(blueMono * (bq2*lms[2] - lms[1]), (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]), lm),
+            lms[2] + lerp(0,                     lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]), lm) ];
+
+        const xyz_ = lms2xyz(lms_);
+              rgb  = xyz2rgb(xyz_, cs);
+
+
+        let bm_ = rgb2lab(rgb, cs);
+        bm_[0] = lerp(a, bm_[0], lm);
+        rgb = lab2rgb(bm_, cs);
+
+        
+        rgb = rgbLerp(
+            [a, a, a], 
+            rgb, 
+            Math.min(s + lm, 1));
+    }
+    
+
+    return rgb;
+}
+
+
+const color_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
+const dataColor_NaN = [
+    'rgb',
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
+
+
+function colorIsNaN(c)
+{
+    return isNaN(c[0])
+        || isNaN(c[1])
+        || isNaN(c[2]);
+}
+
+
+
+function dataColorIsNaN(c)
+{
+    return isNaN(c[1])
+        || isNaN(c[2])
+        || isNaN(c[3]);
+}
+
+
+
+function allConesWork(cones)
+{
+    return cones.l == 1 
+        && cones.m == 1 
+        && cones.s == 1;
+}
+
+
+
+function rgbToString(rgb)
+{
+    return '{' + Math.round(rgb[0] * 255) + ', '
+               + Math.round(rgb[1] * 255) + ', '
+               + Math.round(rgb[2] * 255) + '}';
+}
+
+
+
+function colorStyle_(r, g, b, a)
+{
+    if (a != undefined)
+    {
+        return 'rgba('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ', '
+            + a + ')';
+    }
+    else
+    {
+        return 'rgb('
+            + Math.round(r * 0xff) + ', '
+            + Math.round(g * 0xff) + ', '
+            + Math.round(b * 0xff) + ')';
+    }
+}
+
+
+
+function colorStyleRgb_(r, g, b)
+{
+    return colorStyle_(r, g, b, 1);
+}
+
+
+
+function colorStyleRgb(rgb)
+{
+    return colorStyle_(rgb[0], rgb[1], rgb[2], 1);
+}
+
+
+
+function colorStyleRgba_(r, g, b, a)
+{
+    return colorStyle_(r, g, b, a);
+}
+
+
+
+function colorStyleRgba(rgba)
+{
+    return colorStyle_(rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
+
+
+function colorStyleRgb_a(rgb, a)
+{
+    return colorStyle_(rgb[0], rgb[1], rgb[2], a);
+}
+
+
+
+function toRgba(rgb_)
+{
+    return rgb_.length == 3
+         ? [...rgb_, 1]
+         : rgb_;
+}
+
+
+
+function rgb_a(rgb, a)
+{
+    return [rgb[0], rgb[1], rgb[2], a];
+}
+
+
+
+function isDark(color, threshold = 0.71)
+{
+    return rgb2hclokl(color)[2] > threshold;
+}
+
+
+
+function rgbDistance(col1, col2)
+{
+    const d0 = col2[0] - col1[0];
+    const d1 = col2[1] - col1[1];
+    const d2 = col2[2] - col1[2];
+
+    return Math.sqrt(d0*d0 + d1*d1 + d2*d2);
+}
+
+
+
+function maxRgbDistance(col1, col2)
+{
+    return Math.max(Math.max(Math.max(
+        Math.abs(col2[0] - col1[0]),
+        Math.abs(col2[1] - col1[1])),
+        Math.abs(col2[2] - col1[2])));
+}
+
+
+function rgb2hex(rgb)
+{
+    let hex =
+          Math.round(rgb[0] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[1] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[2] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+
+    return hex;
+}
+
+
+
+function hex2rgb(hex)
+{
+    if (hex[0] == '#')
+        hex = hex.substring(1);
+
+        
+    let rgb = [];
+
+    if (hex.length >= 6)
+    {
+        rgb[0] = parseInt(hex.slice(0, 2), 16); 
+        rgb[1] = parseInt(hex.slice(2, 4), 16); 
+        rgb[2] = parseInt(hex.slice(4, 6), 16); 
+    }
+    else if (hex.length >= 3)
+    {
+        rgb[0] = parseInt(hex[0], 16) * 0x11; 
+        rgb[1] = parseInt(hex[1], 16) * 0x11; 
+        rgb[2] = parseInt(hex[2], 16) * 0x11; 
+    }
+    else if (hex.length == 2)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[0] = v; 
+        rgb[1] = v; 
+        rgb[2] = v; 
+    }
+    else if (hex.length == 1)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgb[0] = v * 0x11; 
+        rgb[1] = v * 0x11; 
+        rgb[2] = v * 0x11; 
+    }
+    else if (hex.length == 0)
+    {
+        rgb[0] = 0; 
+        rgb[1] = 0; 
+        rgb[2] = 0;         
+    }
+
+    rgb[0] /= 0xff;
+    rgb[1] /= 0xff;
+    rgb[2] /= 0xff;
+
+    return rgb;
+}
+
+
+function getContrastRatio2(textColor, backColor)
+{
+    if (!isValidRgb(textColor))
+        return Number.NaN;
+
+    const txtY = sRGB.luminance(textColor);
+    const  bgY = sRGB.luminance(backColor);
+
+    return (
+        bgY > txtY
+        ? ( bgY + 0.05) / (txtY + 0.05)
+        : (txtY + 0.05) / ( bgY + 0.05));
+}
+
+
+
+function getContrastRating2(ratio)
+{
+         if (ratio >= 7  ) return 'AAA';
+    else if (ratio >= 4.5) return 'AA';
+    else if (ratio >= 3  ) return 'AA<sub>L</sub>'
+    else                   return '';
+}
+
+
+
+function getContrastRatio3(textColor, backColor)
+{
+    if (!isValidRgb(textColor))
+        return Number.NaN;
+
+    return APCAcontrast(
+        sRGBtoY(textColor),
+        sRGBtoY(backColor));
+}
+
+
+
+// I copied the code below from https://github.com/Myndex/SAPC-APCA/blob/master/WEBTOOLS/APCA/JS/DEV.0.1.2.G_SAPCsRGB.js
+// and refactored it to fit my code style.
+
+const mainTRC     = 2.4; // 2.4 exponent emulates actual monitor perception
+       
+const sRco        = 0.2126729, 
+      sGco        = 0.7151522, 
+      sBco        = 0.0721750; // sRGB coefficients
+   
+const normBG      = 0.56, 
+      normTXT     = 0.57,
+      revTXT      = 0.62,
+      revBG       = 0.65; // G-4g constants for use with 2.4 exponent
+   
+const blkThrs     = 0.022,
+      blkClmp     = 1.414, 
+      scaleBoW    = 1.14,
+      scaleWoB    = 1.14,
+      loBoWthresh = 
+      loWoBthresh = 0.035991,
+      loBoWfactor = 
+      loWoBfactor = 27.7847239587675,
+      loBoWoffset = 
+      loWoBoffset = 0.027,
+      loClip      = 0.001,
+      deltaYmin   = 0.0005;
+
+
+
+function sRGBtoY(rgb) 
+{
+    // NOTE this is not the actual sRGB luminance as it
+    // ignores the straight section. Using actual sRGB
+    // luminance gives a slightly different contrast score.
+
+    return sRco * Math.pow(rgb[0], mainTRC) 
+         + sGco * Math.pow(rgb[1], mainTRC)
+         + sBco * Math.pow(rgb[2], mainTRC);
+}
+
+
+
+function APCAcontrast(txtY, bgY)
+{
+    let SAPC           = 0; // For raw SAPC values
+    let outputContrast = 0; // For weighted final values
+
+    txtY = 
+        txtY > blkThrs 
+        ? txtY 
+        : txtY + Math.pow(blkThrs - txtY, blkClmp);
+        
+    bgY = 
+        bgY > blkThrs 
+        ? bgY 
+        : bgY + Math.pow(blkThrs - bgY, blkClmp);
+
+    if (Math.abs(bgY - txtY) < deltaYmin)  
+        return 0; 
+
+
+    if (bgY > txtY) 
+    {  
+        SAPC = (Math.pow(bgY, normBG) - Math.pow(txtY, normTXT)) * scaleBoW;
+
+        outputContrast = 
+            SAPC < loClip 
+            ? 0 
+            : SAPC < loBoWthresh
+              ? SAPC - SAPC * loBoWfactor * loBoWoffset 
+              : SAPC - loBoWoffset;
+    } 
+    else 
+    {  
+        SAPC = (Math.pow(bgY, revBG) - Math.pow(txtY, revTXT)) * scaleWoB;
+
+        outputContrast = 
+            SAPC > -loClip 
+            ? 0 
+            : SAPC > -loWoBthresh 
+              ? SAPC - SAPC * loWoBfactor * loWoBoffset 
+              : SAPC + loWoBoffset;
+    }
+
+
+    return outputContrast * 100;
+}
+
+
+const OpColorSpaces = 
+[
+    ['hex',    'Hex'   ],
+    //['rgbhex', '<span class=\'hash\'>#</span>RGB'],
+    ['rgb',    'RGB'   ], 
+    ['hsv',    'HSV'   ], 
+    ['hsl',    'HSL'   ], 
+    ['hclokl', 'HCL/ok'],
+    ['hcllab', 'HCL/ab'],
+    ['hclluv', 'HCL/uv']/*,
+    ['oklab',  'okLab' ],
+    ['lab',    'Lab'   ],
+    ['luv',    'Luv'   ]*/
+];
+
+function colorSpace(index) { return OpColorSpaces[index][0]; }
+
+function colorSpaceIndex(space) { return OpColorSpaces.findIndex(s => s[0] == space); }
+
+
+
+const rgbFactor   = [255, 255, 255];
+const hs_Factor   = [360, 100, 100];
+const hclFactor   = [360, 100, 100];
+const oppFactor   = [100, 100, 100];
+
+const rgbScale    = [255, 255, 255];
+const hs_Scale    = [360, 100, 100];
+const hcloklScale = [360,  51, 100];
+const hcllabScale = [360, 400, 100];
+const hclluvScale = [360, 330, 100];
+const oklabScale  = [100,  30,  30];
+const labScale    = [100, 100, 100];
+const luvScale    = [100, 150, 150];
+
+
+
+function switchToSpace(op, space)
+{
+    switch (space)
+    {
+        case 'hex':    switchToHex   (op); break;
+        case 'rgbhex': switchToRgbHex(op); break;
+        case 'rgb':    switchToRgb   (op); break;
+        case 'hsv':    switchToHsv   (op); break;
+        case 'hsl':    switchToHsl   (op); break;
+        case 'hclokl': switchToHclOkl(op); break;
+        case 'hcllab': switchToHclLab(op); break;
+        case 'hclluv': switchToHclLuv(op); break;
+        case 'oklab':  switchToOklab (op); break;
+        case 'lab':    switchToLab   (op); break;
+        case 'luv':    switchToLuv   (op); break;
+    }
+
+    op.resetAllControlRanges();
+}
+
+
+
+function switchToHex   (op) { switchToTextbox       (op);           }
+function switchToRgbHex(op) { switchToRgbHexControls(op);           }
+function switchToRgb   (op) { switchToRgbControls   (op);           }
+function switchToHsv   (op) { switchToHs_Controls   (op, 'V');      }
+function switchToHsl   (op) { switchToHs_Controls   (op, 'L');      }
+function switchToHclOkl(op) { switchToHclOklControls(op);           }
+function switchToHclLab(op) { switchToHclLabControls(op);           }
+function switchToHclLuv(op) { switchToHclLuvControls(op);           }
+function switchToOklab (op) { switchToOklabControls (op, 'a', 'b'); }
+function switchToLab   (op) { switchToLabControls   (op, 'a', 'b'); }
+function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
+   
+
+
+function switchToRgbHexControls(op)
+{
+    switchToControls(op, 
+        '<span class=\'hash\'>#</span>R', 0, rgbScale[0], '', false, 
+        '<span class=\'hash\'>#</span>G', 0, rgbScale[1], 
+        '<span class=\'hash\'>#</span>B', 0, rgbScale[2]);  
+
+    showRgbControlHex(op, true);
+}
+
+
+
+function switchToRgbControls(op)
+{
+    switchToControls(op, 
+        'R', 0, rgbScale[0], '', false, 
+        'G', 0, rgbScale[1], 
+        'B', 0, rgbScale[2]);  
+
+    showRgbControlHex(op, false);    
+}
+
+
+
+function switchToHs_Controls(op, v_or_l) 
+{ 
+    switchToControls(op, 
+        'H',    0, hs_Scale[0], '°', true,  
+        'S',    0, hs_Scale[1], 
+        v_or_l, 0, hs_Scale[2]);  
+
+    showRgbControlHex(op, false); 
+}
+
+
+
+function switchToHclControls(op, scale) 
+{ 
+    switchToControls(op, 
+        'H', 0, scale[0], '°', true,  
+        'C', 0, scale[1], 
+        'L', 0, scale[2]);  
+
+    showRgbControlHex(op, false); 
+}
+
+
+
+function switchToHclOklControls(op) { switchToHclControls(op, hcloklScale); }
+function switchToHclLabControls(op) { switchToHclControls(op, hcllabScale); }
+function switchToHclLuvControls(op) { switchToHclControls(op, hclluvScale); }
+
+
+
+function switchToOppControls(op, c2, c3, scale)
+{ 
+    switchToControls(op, 
+        'L', 0,        scale[0], '', false,  
+        c2, -scale[1], scale[1], 
+        c3, -scale[2], scale[2]);  
+
+    showRgbControlHex(op, false); 
+}
+
+
+
+function switchToOklabControls(op) { switchToOppControls(op, 'a', 'b', oklabScale); }
+function switchToLabControls  (op) { switchToOppControls(op, 'a', 'b', labScale  ); }
+function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale  ); }
+
+
+
+function showRgbControlHex(op, show)
+{
+    op.param1.control.showHex = show;
+    op.param2.control.showHex = show;
+    op.param3.control.showHex = show;
+}
+
+
+
+function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
+{
+    switchToSliders(op);
+
+    op.param1.setName(c1, false); 
+    op.param2.setName(c2, false); 
+    op.param3.setName(c3, false);
+
+    op.param1.control.wrapValue = c1wrap;
+    op.param1.control.setSuffix(c1suffix, c1suffix != '');
+
+    op.param1.control.setMin(c1min, false); 
+    op.param2.control.setMin(c2min, false);
+    op.param3.control.setMin(c3min, false);
+    
+    op.param1.control.setMax(c1max, false); 
+    op.param2.control.setMax(c2max, false); 
+    op.param3.control.setMax(c3max, false); 
+    
+    op.param1.updateControls();
+    op.param2.updateControls();
+    op.param3.updateControls();
+}
+
+
+
+function switchToTextbox(op)
+{
+    if (!op.inner.contains(op.hexbox))
+    {
+        removeOpColorParamWires(op);
+
+        op.inner.removeChild(op.param1.div);
+        op.inner.removeChild(op.param2.div);
+        op.inner.removeChild(op.param3.div);
+        
+        op.inner.appendChild(op.hexbox);
+
+        //graphView.updateNodeTransform(op);
+    }
+}
+
+
+
+function removeOpColorParamWires(op)
+{
+    for (let i = op.inputs.length-1; i >= 2; i--)
+        if (op.inputs[i].isConnected)
+            uiDisconnect(op.inputs[i]);
+
+    for (let i = op.outputs.length-1; i >= 2; i--)
+        for (const input of op.outputs[i].connectedInputs)
+            uiDisconnect(input);
+}
+
+
+
+function switchToSliders(op)
+{
+    if (op.inner.contains(op.hexbox))
+    {
+        op.inner.removeChild(op.hexbox);
+
+        op.inner.appendChild(op.param1.div);
+        op.inner.appendChild(op.param2.div);
+        op.inner.appendChild(op.param3.div);
+
+        graphView.updateNodeTransform(op);
+    }
+}
+
+
+
+function rgb2dataColor(rgb)
+{
+    return [
+       'rgb',
+        rgb[0],
+        rgb[1],
+        rgb[2] ];
+}
+
+
+
+function getNormalValue(value, space, chan)
+{
+    switch (space)
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    return getNormalValueRgb_(value, chan);
+        case 'hsv':   
+        case 'hsl':    return getNormalValueHs_ (value, chan);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getNormalValueHcl (value, chan);
+        case 'oklab':  
+        case 'lab':    
+        case 'luv':    return getNormalValuesOpp(value, chan);
+    }
+}
+
+
+
+function getNormalValueRgb_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / rgbFactor[0];
+        case 1: return value / rgbFactor[1]; 
+        case 2: return value / rgbFactor[2];
+    }
+}
+
+
+
+function getNormalValueHs_(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / hs_Factor[0];
+        case 1: return value / hs_Factor[1]; 
+        case 2: return value / hs_Factor[2];
+    }
+}
+
+
+
+function getNormalValueOpp(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / oppFactor[0];
+        case 1: return value / oppFactor[1]; 
+        case 2: return value / oppFactor[2];
+    }
+}
+
+
+
+function getNormalValueHcl(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / hclFactor[0];
+        case 1: return value / hclFactor[1]; 
+        case 2: return value / hclFactor[2];
+    }
+}
+
+
+
+function getNormalColor(color)
+{
+    return getNormalColor_(
+        color[0], 
+        color[1], 
+        color[2], 
+        color[3])
+}
+
+
+
+function getNormalColor_(space, c1, c2, c3)
+{
+    switch (space)
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
+        case 'hsv':   
+        case 'hsl':    return getNormalColorHs_(c1, c2, c3);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getNormalColorHcl(c1, c2, c3);
+        case 'oklab': 
+        case 'lab': 
+        case 'luv':    return getNormalColorOpp(c1, c2, c3);
+    }
+}
+
+
+
+function getNormalColorRgb_(c1, c2, c3)
+{
+    return [
+        c1 / rgbFactor[0], 
+        c2 / rgbFactor[1], 
+        c3 / rgbFactor[2]];
+}
+
+
+
+function getNormalColorHs_(c1, c2, c3)
+{
+    return [
+        c1 / hs_Factor[0], 
+        c2 / hs_Factor[1], 
+        c3 / hs_Factor[2]];
+}
+
+
+
+function getNormalColorOpp(c1, c2, c3)
+{
+    return [
+        c1 / oppFactor[0], 
+        c2 / oppFactor[1], 
+        c3 / oppFactor[2]];
+}
+
+
+
+function getNormalColorHcl(c1, c2, c3)
+{
+    return [
+        c1 / hclFactor[0], 
+        c2 / hclFactor[1], 
+        c3 / hclFactor[2]];
+}
+
+
+
+function getDataColor(color)
+{
+    switch (color[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    return getDataColorRgb(color[1], color[2], color[3]);
+        case 'hsv':   
+        case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return getDataColorHcl(color[1], color[2], color[3]);
+        case 'oklab': 
+        case 'lab': 
+        case 'luv':    return getDataColorOpp(color[1], color[2], color[3]);
+    }
+}
+
+
+
+function getDataColorRgb(c1, c2, c3)
+{
+    return [
+        c1 * rgbFactor[0], 
+        c2 * rgbFactor[1], 
+        c3 * rgbFactor[2] ];
+}
+
+
+
+function getDataColorHs_(c1, c2, c3)
+{
+    return [
+        c1 * hs_Factor[0], 
+        c2 * hs_Factor[1], 
+        c3 * hs_Factor[2] ];
+}
+
+
+
+function getDataColorOpp(c1, c2, c3)
+{
+    return [
+        c1 * oppFactor[0], 
+        c2 * oppFactor[1], 
+        c3 * oppFactor[2] ];
+}
+
+
+
+function getDataColorHcl(c1, c2, c3)
+{
+    return [
+        c1 * hclFactor[0], 
+        c2 * hclFactor[1], 
+        c3 * hclFactor[2] ];
+}
+
+
+
+function setDataColorToCurrentSpace(op, color)
+{
+    const toSpace = colorSpace(op.paramSpace.value);
+    op._color = convertDataColorToSpace(color, toSpace);
+    op.setColorParams(op._color);
+}
+
+
+
+function getColorSpaceFactor(space)
+{
+    switch (space)
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    return rgbFactor;
+        case 'hsv':   
+        case 'hsl':    return hs_Factor;
+        case 'hclokl': 
+        case 'hcllab': 
+        case 'hclluv': return hclFactor;
+        case 'oklab': 
+        case 'lab': 
+        case 'luv':    return oppFactor;
+    }    
+}
+
+
+
+function getColorSpaceScale(space)
+{
+    switch (space)
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    return rgbScale;
+        case 'hsv':   
+        case 'hsl':    return hs_Scale;
+        case 'hclokl': return hcloklScale;
+        case 'hcllab': return hcllabScale;
+        case 'hclluv': return hclluvScale;
+        case 'oklab':  return oklabScale;
+        case 'lab':    return labScale;
+        case 'luv':    return luvScale;
+    }    
+}
+
+
+function dataColor2array(color)
+{
+    return [
+        color[1], 
+        color[2], 
+        color[3]];
+}
+
+
+
+function dataColor2rgb(color)
+{
+    const col = dataColor2array(color);
+
+    switch (color[0])
+    {
+        case 'hex':
+        case 'rgbhex': 
+        case 'rgb':    return            col;
+        case 'hsv':    return hsv2rgb   (col);
+        case 'hsl':    return hsl2rgb   (col);
+        case 'hclokl': return hclokl2rgb(col);
+        case 'hcllab': return hcllab2rgb(col);
+        case 'hclluv': return hclluv2rgb(col);
+        case 'oklab':  return oklab2rgb (col);
+        case 'lab':    return lab2rgb   (col);
+        case 'luv':    return luv2rgb   (col);
+    }
+}
+
+
+
+function convertDataColorToSpace(color, toSpace)
+{
+    switch (toSpace)
+    {
+        case 'hex':    
+        case 'rgbhex': { let hex = convert2rgb(color); hex[0] = toSpace; return hex; }
+        case 'rgb':    return convert2rgb   (color);
+        case 'hsv':    return convert2hsv   (color);
+        case 'hsl':    return convert2hsl   (color);
+        case 'hclokl': return convert2hclokl(color);
+        case 'hcllab': return convert2hcllab(color);
+        case 'hclluv': return convert2hclluv(color);
+        case 'oklab':  return convert2oklab (color);
+        case 'lab':    return convert2lab   (color);
+        case 'luv':    return convert2luv   (color);
+    }
+}
+
+
+
+function convert2rgb(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let rgb;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    rgb =            col;  break;
+        case 'hsv':    rgb = hsv2rgb   (col); break;
+        case 'hsl':    rgb = hsl2rgb   (col); break;
+        case 'hclokl': rgb = hclokl2rgb(col); break;
+        case 'hcllab': rgb = hcllab2rgb(col); break;
+        case 'hclluv': rgb = hclluv2rgb(col); break;
+        case 'oklab':  rgb = oklab2rgb (col); break;
+        case 'lab':    rgb = lab2rgb   (col); break;
+        case 'luv':    rgb = luv2rgb   (col); break;
+    }
+
+    return rgb2dataColor(rgb);
+}
+
+
+
+function convert2hsv(fromColor)
+{
+    const col = dataColor2array(fromColor);
+    
+    let hsv;
+    
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    hsv = rgb2hsv(           col ); break;
+        case 'hsv':    hsv =                    col;   break;
+        case 'hsl':    hsv = rgb2hsv(hsl2rgb   (col)); break;
+        case 'hclokl': hsv = rgb2hsv(hclokl2rgb(col)); break;
+        case 'hcllab': hsv = rgb2hsv(hcllab2rgb(col)); break;
+        case 'hclluv': hsv = rgb2hsv(hclluv2rgb(col)); break;
+        case 'oklab':  hsv = rgb2hsv(oklab2rgb (col)); break;
+        case 'lab':    hsv = rgb2hsv(lab2rgb   (col)); break;
+        case 'luv':    hsv = rgb2hsv(luv2rgb   (col)); break;
+    }
+    
+    if (isNaN(hsv[0]))
+        hsv[0] = 5/6;
+    
+    return [
+       'hsv',
+        hsv[0],
+        hsv[1],
+        hsv[2] ];
+}
+
+
+
+function convert2hsl(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let hsl;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    hsl = rgb2hsl(           col ); break;
+        case 'hsv':    hsl = rgb2hsl(hsv2rgb   (col)); break;
+        case 'hsl':    hsl =                    col;   break;
+        case 'hclokl': hsl = rgb2hsl(hclokl2rgb(col)); break;
+        case 'hcllab': hsl = rgb2hsl(hcllab2rgb(col)); break;
+        case 'hclluv': hsl = rgb2hsl(hclluv2rgb(col)); break;
+        case 'oklab':  hsl = rgb2hsl(oklab2rgb (col)); break;
+        case 'lab':    hsl = rgb2hsl(lab2rgb   (col)); break;
+        case 'luv':    hsl = rgb2hsl(luv2rgb   (col)); break;
+    }
+
+    return [
+       'hsl',
+        hsl[0],
+        hsl[1],
+        hsl[2] ];
+}
+
+
+
+function convert2oklab(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let lab;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    lab = rgb2oklab(           col ); break;
+        case 'hsv':    lab = rgb2oklab(hsv2rgb   (col)); break;
+        case 'hsl':    lab = rgb2oklab(hsl2rgb   (col)); break;
+        case 'hclokl': lab = rgb2oklab(hclokl2rgb(col)); break;
+        case 'hcllab': lab = rgb2oklab(hcllab2rgb(col)); break;
+        case 'hclluv': lab = rgb2oklab(hclluv2rgb(col)); break;
+        case 'oklab':  lab =                      col;   break;
+        case 'lab':    lab = rgb2oklab(lab2rgb   (col)); break;
+        case 'luv':    lab = rgb2oklab(luv2rgb   (col)); break;
+    }
+
+    return [
+       'oklab',
+        lab[0],
+        lab[1],
+        lab[2] ];
+}
+
+
+
+function convert2lab(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let lab;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    lab = rgb2lab(           col ); break;
+        case 'hsv':    lab = rgb2lab(hsv2rgb   (col)); break;
+        case 'hsl':    lab = rgb2lab(hsl2rgb   (col)); break;
+        case 'hclokl': lab = rgb2lab(hclokl2rgb(col)); break;
+        case 'hcllab': lab =         hcllab2lab(col);  break;
+        case 'hclluv': lab = rgb2lab(hclluv2rgb(col)); break;
+        case 'oklab':  lab = rgb2lab(oklab2rgb (col)); break;
+        case 'lab':    lab =                    col;   break;
+        case 'luv':    lab = rgb2lab(luv2rgb   (col)); break;
+    }
+
+    return [
+       'lab',
+        lab[0],
+        lab[1],
+        lab[2] ];
+}
+
+
+
+function convert2luv(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let luv;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    luv = rgb2luv(           col ); break;
+        case 'hsv':    luv = rgb2luv(hsv2rgb   (col)); break;
+        case 'hsl':    luv = rgb2luv(hsl2rgb   (col)); break;
+        case 'hclokl': luv = rgb2luv(hclokl2rgb(col)); break;
+        case 'hcllab': luv = rgb2luv(hcllab2rgb(col)); break;
+        case 'hclluv': luv =         hclluv2luv(col);  break;
+        case 'oklab':  luv = rgb2luv(oklab2rgb (col)); break;
+        case 'lab':    luv = rgb2luv(lab2rgb   (col)); break;
+        case 'luv':    luv =                    col;   break;
+    }
+
+    return [
+       'luv',
+        luv[0],
+        luv[1],
+        luv[2] ];
+}
+
+
+
+function convert2hclokl(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let hcl;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    hcl = rgb2hclokl(           col);  break;
+        case 'hsv':    hcl = rgb2hclokl(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclokl(hsl2rgb   (col)); break;
+        case 'hclokl': hcl =                       col;   break;
+        case 'hcllab': hcl = rgb2hclokl(hcllab2rgb(col)); break;
+        case 'hclluv': hcl = rgb2hclokl(hclluv2rgb(col)); break;
+        case 'oklab':  hcl = rgb2hclokl(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hclokl(lab2rgb   (col)); break;
+        case 'luv':    hcl = rgb2hclokl(luv2rgb   (col)); break;
+    }
+
+    return [
+       'hclokl',
+        hcl[0],
+        hcl[1],
+        hcl[2] ];
+}
+
+
+
+function convert2hcllab(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let hcl;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    hcl = rgb2hcllab(           col) ; break;
+        case 'hsv':    hcl = rgb2hcllab(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hcllab(hsl2rgb   (col)); break;
+        case 'hclokl': hcl = rgb2hcllab(hclokl2rgb(col)); break;
+        case 'hcllab': hcl =                       col;   break;
+        case 'hclluv': hcl = rgb2hcllab(hclluv2rgb(col)); break;
+        case 'oklab':  hcl = rgb2hcllab(oklab2rgb (col)); break;
+        case 'lab':    hcl = lab2hcllab(           col ); break;
+        case 'luv':    hcl = rgb2hcllab(luv2rgb   (col)); break;
+    }
+
+    return [
+       'hcllab',
+        hcl[0],
+        hcl[1],
+        hcl[2] ];
+}
+
+
+
+function convert2hclluv(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let hcl;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgbhex':
+        case 'rgb':    hcl = rgb2hclluv(           col ); break;
+        case 'hsv':    hcl = rgb2hclluv(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclluv(hsl2rgb   (col)); break;
+        case 'hcllab': hcl = rgb2hclluv(hcllab2rgb(col)); break;
+        case 'hclluv': hcl =                       col;   break;
+        case 'hclokl': hcl = rgb2hclluv(hclokl2rgb(col)); break;
+        case 'oklab':  hcl = rgb2hclluv(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hclluv(lab2rgb   (col)); break;
+        case 'luv':    hcl = luv2hclluv(           col ); break;
+    }
+
+    return [
+       'hclluv',
+        hcl[0],
+        hcl[1],
+        hcl[2] ];
+}
+
+
+function adjustColor(color, order, margin1, margin2, margin3)
+{
+    let i0, i1, i2;
+    
+         if (order == 0) { i0 = 0; i1 = 1; i2 = 2; } // HCL
+    else if (order == 1) { i0 = 0; i1 = 2; i2 = 1; } // HLC
+    else if (order == 2) { i0 = 1; i1 = 0; i2 = 2; } // CHL
+    else if (order == 3) { i0 = 1; i1 = 2; i2 = 0; } // CLH
+    else if (order == 4) { i0 = 2; i1 = 0; i2 = 1; } // LHC
+    else if (order == 5) { i0 = 2; i1 = 1; i2 = 0; } // LCH
+
+                                           color = this.adjustChannel(color, i0, margin1);
+    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i1, margin2);
+    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i2, margin3);
+
+    return color;
+}
+
+
+
+function adjustChannel(color, iChan, margin)
+{
+    const factor = getColorSpaceFactor(color[0]);
+
+    margin /= factor[iChan];
+
+
+    const savedColor = [...color];
+    const savedValue = color[iChan+1];
+
+    const d = 0.001;
+
+
+    let _c  = savedValue,
+         c_ = savedValue;
+
+    let _valid  = isValidRgb(dataColor2rgb(color));
+    let  valid_ = _valid;
+
+
+    let stackOverflowProtect = 1/d;
+
+
+    while (   !_valid
+           && ! valid_
+           && stackOverflowProtect-- > 0)
+    {
+        _c -= d;
+        _valid = this.checkColor(_c, iChan, savedColor);
+
+        c_ += d;
+        valid_ = this.checkColor(c_, iChan, savedColor);
+    }
+
+
+    stackOverflowProtect = 1/d;
+    color = [...savedColor];
+
+
+    if (_valid) 
+    { 
+        _valid = isValidRgb(dataColor2rgb(color));
+        _c     = savedValue;
+
+        while (   !_valid
+               && stackOverflowProtect-- > 0
+               && margin > 0)
+        {
+            _c -= d; 
+            _valid = this.checkColor(_c, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = _c;
+    }
+    else if (valid_)
+    { 
+        valid_ = isValidRgb(dataColor2rgb(color));
+        c_     = savedValue;
+
+        while (   !valid_
+               && stackOverflowProtect-- > 0
+               && margin > 0)
+        {
+            c_ += d; 
+            valid_ = this.checkColor(c_, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = c_;
+    }
+
+
+    return color;
+}
+
+
+
+function checkColor(c, iChan, savedColor)
+{
+    let color = [...savedColor];
+    color[iChan+1] = c; 
+    return isValidRgb(dataColor2rgb(color));
+}
+
+
+
+function getValidateMax(order)
+{
+    switch (order)
+    {
+        case 0: return [180, 100, 100]; // HCL
+        case 1: return [180, 100, 100]; // HLC
+        case 2: return [100, 180, 100]; // CHL
+        case 3: return [100, 100, 180]; // CLH
+        case 4: return [100, 180, 100]; // LHC
+        case 5: return [100, 100, 180]; // LCH
+    }
+
+    // should never get here
+    return [0, 0, 0];
+}
+
+
+function genFindCorrection(nodeId, inputColor)//, max1, max2, max3)
+{
+    const color = inputColor
+    const hcl   = rgb2hclokl(invalid2validRgb(dataColor2array(convert2rgb(color))));//dataColor2array(color);//dataColor2rgb(color);
+    
+
+    let closestHcl   = null;
+
+    let closestOrder = -1,
+        closest1     = -1,
+        closest2     = -1,
+        closest3     = -1;
+        
+    let step1        = 10,
+        step2        = 10,
+        step3        = 10;
+
+    let progress     = 0,
+        total        = 6 * step1 * step2 * step3;
+
+
+    for (let order = 0; order < 6; order++)
+    {
+        const [max1, max2, max3] = getValidateMax(order);
+
+        for (let m1 = 0; m1 < max1; m1 += max1/step1)
+        {
+            for (let m2 = 0; m2 < max2; m2 += max2/step2)
+            {
+                for (let m3 = 0; m3 < max3; m3 += max3/step3)
+                {
+                    const _color = adjustColor(color, order, m1, m2, m3);
+                    const _hcl   = dataColor2array(_color);//rgb2hclokl(dataColor2rgb(_color));
+
+                    if (   isValidRgb(dataColor2array(convert2rgb(_color)))
+                        && (  !closestHcl
+                            || rgbDistance(hcl, _hcl) < rgbDistance(hcl, closestHcl)))
+                    {
+                        closestHcl   = _hcl;
+                        
+                        closestOrder = order;
+                        closest1     = m1;
+                        closest2     = m2;
+                        closest3     = m3;
+                    }
+
+                    progress++;
+                }
+            }
+
+            genPostMessageToUi(
+            {
+                msg:      'uiUpdateFindCorrection',
+                nodeId:   nodeId,
+                progress: progress / total
+            });
+        }
+    }
+
+
+    genPostMessageToUi(
+    {
+        msg:         'uiEndFindCorrection',
+        nodeId:       nodeId,
+        success:      closestHcl != null,
+        closestOrder: closestOrder,
+        closest1:     closest1,
+        closest2:     closest2,
+        closest3:     closest3
+    });
+}
 
 
 function getObjectBounds(objects)

@@ -27,11 +27,13 @@ generator.onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
-        case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
-        case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
-        case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
+        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(e.data.nodeId, e.data.progress); break;
+        case 'uiEndFindCorrection':    uiEndFindCorrectionProgress   (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
+        // case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
+        // case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        // case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
+        // case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
+        // case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
     }
 };
 
