@@ -1,12 +1,13 @@
 function genFindCorrection(nodeId, inputColor)
 {
-    const refRgb = invalid2validRgb(dataColor2array(convert2rgb(inputColor)));
+    //const refRgb = invalid2validRgb(dataColor2array(convert2rgb(inputColor)));
+    const refOklab = dataColor2array(convert2oklab(inputColor));
 
-    let [ closestRgb,
+    let [ closestOklab, //closestRgb,
           closestOrder,
           closest1,
           closest2,
-          closest3 ] = findCorrection(nodeId, inputColor, refRgb);
+          closest3 ] = findCorrection(nodeId, inputColor, refOklab); //refRgb);
 
 
     if (closest1 == 0)
@@ -32,7 +33,7 @@ function genFindCorrection(nodeId, inputColor)
     {
         msg:         'uiEndFindCorrection',
         nodeId:       nodeId,
-        success:      closestRgb != null,
+        success:      closestOklab != null, //closestRgb != null,
         closestOrder: closestOrder,
         closest1:     closest1,
         closest2:     closest2,
@@ -42,10 +43,10 @@ function genFindCorrection(nodeId, inputColor)
 
 
 
-function findCorrection(nodeId, color, refRgb)
+function findCorrection(nodeId, color, refOklab) //refRgb)
 {
     let closestColor = [...color],
-        closestRgb   = null,
+        closestOklab = null, //closestRgb   = null,
         closestOrder = -1,
         closest1     = -1,
         closest2     = -1,
@@ -80,19 +81,19 @@ function findCorrection(nodeId, color, refRgb)
                 end3 = lerp(max3, closest3, 1-d);
 
           [ closestColor,
-            closestRgb,
+            closestOklab, //closestRgb,
             closestOrder,
             closest1,
             closest2,
             closest3,
             progress ] = findCorrectionInOrder(
                 nodeId,
-                refRgb,
+                refOklab, //refRgb,
                 order, 
                 start1, start2, start3, 
                 end1,   end2,   end3,
                 [...closestColor],
-                closestRgb, 
+                closestOklab, //closestRgb, 
                 closestOrder,
                 closest1, 
                 closest2, 
@@ -108,7 +109,7 @@ function findCorrection(nodeId, color, refRgb)
 
 
     return [
-        closestRgb,
+        closestOklab, //closestRgb,
         closestOrder,
         closest1,
         closest2,
@@ -118,12 +119,12 @@ function findCorrection(nodeId, color, refRgb)
 
 
 function findCorrectionInOrder(nodeId,
-                               refRgb,
+                               refOklab, //refRgb,
                                order, 
                                start1, start2, start3, 
                                end1,   end2,   end3,
                                closestColor,
-                               closestRgb, 
+                               closestOklab, //closestRgb, 
                                closestOrder,
                                closest1, 
                                closest2, 
@@ -142,14 +143,17 @@ function findCorrectionInOrder(nodeId,
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps)
             {
                 const _color = adjustColor(color, order, m1, m2, m3);
-                const _rgb   = dataColor2array(convert2rgb(_color));
+                const _oklab = dataColor2array(convert2oklab(_color));
+                const _rgb   = oklab2rgb(_oklab);
 
                 if (   isValidRgb(_rgb)
-                    && (  !closestRgb
-                        || rgbDistance(refRgb, _rgb) < rgbDistance(refRgb, closestRgb)))
+                    && (  !closestOklab //!closestRgb
+                        || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
+                        //|| rgbDistance(refRgb, _rgb) < rgbDistance(refRgb, closestRgb)))
                 {
                     closestColor = _color;
-                    closestRgb   = _rgb;
+                    //closestRgb   = _rgb;
+                    closestOklab = _oklab;
                     closestOrder = order;
                     closest1     = m1;
                     closest2     = m2;
@@ -171,7 +175,7 @@ function findCorrectionInOrder(nodeId,
 
     return [
         closestColor,
-        closestRgb,
+        closestOklab, //closestRgb,
         closestOrder,
         closest1,
         closest2,

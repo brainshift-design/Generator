@@ -236,11 +236,18 @@ function getValidateComponentNames(order)
 {
     switch (order)
     {
-        case 0: return ['H', 'C', 'L'];
-        case 1: return ['H', 'L', 'C'];
-        case 2: return ['C', 'H', 'L'];
-        case 3: return ['C', 'L', 'H'];
-        case 4: return ['L', 'H', 'C'];
-        case 5: return ['L', 'C', 'H'];
+        case 0: return [addValidateSymbol('H'), addValidateSymbol('C'), addValidateSymbol('L')];
+        case 1: return [addValidateSymbol('H'), addValidateSymbol('L'), addValidateSymbol('C')];
+        case 2: return [addValidateSymbol('C'), addValidateSymbol('H'), addValidateSymbol('L')];
+        case 3: return [addValidateSymbol('C'), addValidateSymbol('L'), addValidateSymbol('H')];
+        case 4: return [addValidateSymbol('L'), addValidateSymbol('H'), addValidateSymbol('C')];
+        case 5: return [addValidateSymbol('L'), addValidateSymbol('C'), addValidateSymbol('H')];
     }
+}
+
+
+
+function addValidateSymbol(name)
+{
+    return '<span class="asterisk">±&thinsp;</span>' + name;
 }
