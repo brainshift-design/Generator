@@ -55,10 +55,6 @@ function createOperatorNode(node)
     node.inner.appendChild(node.paramBack);
     
 
-    // node.dragParam = createDiv('dragHandle');
-    // node.div.appendChild(node.dragParam);
-
-
     // node.div.addEventListener('pointermove', e =>
     // {
     //     const rect = boundingRect(node.div);

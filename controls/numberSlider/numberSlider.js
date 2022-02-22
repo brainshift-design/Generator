@@ -65,26 +65,26 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.oldValue;
 
-    slider.wrapValue         = false;
-
-    slider.showName          = showName;
-    slider.showHex           = false;
+    slider.wrapValue             = false;
     
-    slider.enableChangeEvent = true;
-    slider.successOnFocusOut = false;
-
-    slider.pointerEvents     = true;
-    slider.readOnly          = false;
-
-    slider.valueText         = '';
-
-    slider.barTop            = 0;
-    slider.barBottom         = 1;
-
-    slider.ranges            = [];
-    slider.rangeDivs         = [];
-
-    slider.options           = []; // if dec == 0, show named choices instead of a value
+    slider.showName              = showName;
+    slider.showHex               = false;
+        
+    slider.enableChangeEvent     = true;
+    slider.successOnFocusOut     = false;
+    
+    slider.pointerEvents         = true;
+    slider.readOnly              = false;
+    
+    slider.valueText             = '';
+    
+    slider.barTop                = 0;
+    slider.barBottom             = 1;
+    
+    slider.ranges                = [];
+    slider.rangeDivs             = [];
+    
+    slider.options               = []; // if dec == 0, show named choices instead of a value
 
 
     
@@ -164,7 +164,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             else
             {
-                slider.focus.style.boxShadow = '0  1px 0 0 ' + objCol + ' inset';
+                slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
                     
                 if (param.op.params.indexOf(param) < param.op.params.length-1)
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';

@@ -1,13 +1,12 @@
 function genFindCorrection(nodeId, inputColor)
 {
-    //const refRgb = invalid2validRgb(dataColor2array(convert2rgb(inputColor)));
     const refOklab = dataColor2array(convert2oklab(inputColor));
 
-    let [ closestOklab, //closestRgb,
+    let [ closestOklab,
           closestOrder,
           closest1,
           closest2,
-          closest3 ] = findCorrection(nodeId, inputColor, refOklab); //refRgb);
+          closest3 ] = findCorrection(nodeId, inputColor, refOklab); 
 
 
     if (closest1 == 0)
@@ -33,7 +32,7 @@ function genFindCorrection(nodeId, inputColor)
     {
         msg:         'uiEndFindCorrection',
         nodeId:       nodeId,
-        success:      closestOklab != null, //closestRgb != null,
+        success:      closestOklab != null,
         closestOrder: closestOrder,
         closest1:     closest1,
         closest2:     closest2,
@@ -43,10 +42,10 @@ function genFindCorrection(nodeId, inputColor)
 
 
 
-function findCorrection(nodeId, color, refOklab) //refRgb)
+function findCorrection(nodeId, color, refOklab) 
 {
     let closestColor = [...color],
-        closestOklab = null, //closestRgb   = null,
+        closestOklab = null, 
         closestOrder = -1,
         closest1     = -1,
         closest2     = -1,
@@ -81,19 +80,19 @@ function findCorrection(nodeId, color, refOklab) //refRgb)
                 end3 = lerp(max3, closest3, 1-d);
 
           [ closestColor,
-            closestOklab, //closestRgb,
+            closestOklab,
             closestOrder,
             closest1,
             closest2,
             closest3,
             progress ] = findCorrectionInOrder(
                 nodeId,
-                refOklab, //refRgb,
+                refOklab,
                 order, 
                 start1, start2, start3, 
                 end1,   end2,   end3,
                 [...closestColor],
-                closestOklab, //closestRgb, 
+                closestOklab, 
                 closestOrder,
                 closest1, 
                 closest2, 

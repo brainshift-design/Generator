@@ -33,10 +33,17 @@ extends OpColorBase
         this.addParam(this.param3     = new NumberParam('margin3', '', true,  true, true, 0));
 
 
-        this.param1.control.max = 100;
-        this.param2.control.max = 100;
-        this.param3.control.max = 360;
+        this.param1.control.max       = 100;
+        this.param2.control.max       = 100;
+        this.param3.control.max       = 360;
 
+        this.param1.showParamLock     = true;
+        this.param2.showParamLock     = true;
+        this.param3.showParamLock     = true;
+
+        this.param1.control.text.style.left = 36;
+        this.param2.control.text.style.left = 36;
+        this.param3.control.text.style.left = 36;
 
         this.header.connectionPadding = 18;
 
@@ -48,6 +55,7 @@ extends OpColorBase
         this.btnFind.addEventListener('pointerenter', () => { this.btnFind.over = true;  this.updateHeaderLabel(); });
         this.btnFind.addEventListener('pointerleave', () => { this.btnFind.over = false; this.updateHeaderLabel(); });
 
+
         this.btnFind.addEventListener('pointerdown', e => 
         { 
             if (e.button == 0) 
@@ -57,6 +65,7 @@ extends OpColorBase
             }
         });
 
+        
         this.header.addEventListener('pointerup', e => 
         { 
             if (   e.button == 0
@@ -113,9 +122,9 @@ extends OpColorBase
             this._color = [...adjustColor(
                 [...this.inputs[0].data.color],
                 this.paramOrder.value, 
-                this.param1    .value,
-                this.param2    .value,
-                this.param3    .value)];
+                this.param1.value,
+                this.param2.value,
+                this.param3.value)];
         }
         else
             this._color = dataColor_NaN;
@@ -145,15 +154,8 @@ extends OpColorBase
 
     updateMargin(max, margin)
     {
-        margin.control.setMin(0, false);
+        margin.control.setMin(0,   false);
         margin.control.setMax(max, false);
-    }
-
-
-
-    updateLupe()
-    {
-
     }
 
 

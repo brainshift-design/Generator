@@ -91,7 +91,6 @@
 }
 
 
-
 .arithmeticSymbol
 {
     font-family:    Inter;
@@ -148,6 +147,7 @@
     cursor:      default;
 }
 
+
 .hexbox:hover
 {
     box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1) inset;
@@ -170,16 +170,17 @@
 }
 
 
-.dragHandle
+.paramLock
 {
-    display:             block;
-    width:               5px;
+    width:               11px;
     height:              11px;
     position:            absolute;
-    left:                13px;
-    background:          url('data:image/svg+xml;utf8,<svg width="5" height="11" viewBox="0 0 5 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.10684" cy="2.10684" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="8.5" r="2.10684" fill="black" fill-opacity="0.4"/><circle cx="2.10684" cy="14.8932" r="2.10684" fill="black" fill-opacity="0.4"/></svg>');
+    right:               9px;
+    top:                 4px;
+    background:          url('data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4V5H6.5C6.77614 5 7 5.22386 7 5.5V10.5C7 10.7761 6.77614 11 6.5 11H0.5C0.223858 11 0 10.7761 0 10.5V5.5C0 5.22386 0.223858 5 0.5 5H5V2.5C5 1.11929 6.11929 0 7.5 0C8.88071 0 10 1.11929 10 2.5V4H9V2.5C9 1.67157 8.32843 1 7.5 1C6.67157 1 6 1.67157 6 2.5V4Z" fill="black" fill-opacity="0.1"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
+    display:             none;
 }
 
 
@@ -198,7 +199,6 @@
     background-position: 50% 50%;
     background-repeat:   no-repeat;
 }
-
 
 
 .findBar
@@ -228,10 +228,9 @@
 }
 
 
-
 .asterisk
 {
-    font-size: 11px;
+    font-size: 12px;
     position:  relative;
     top:       -1px;
 }

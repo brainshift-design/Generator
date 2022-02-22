@@ -27,6 +27,9 @@ extends EventTarget
     onconfirm      = new Event('confirm');
 
 
+    showParamLock = false;
+    paramLock;
+
 
     constructor(id, name, type)
     {
@@ -44,6 +47,9 @@ extends EventTarget
 
         this.input  = null;
         this.output = null;
+
+        this.paramLock = createDiv('paramLock');
+        this._div.appendChild(this.paramLock);
 
         enableElementText(this.div, true);
     }
@@ -101,6 +107,11 @@ extends EventTarget
         if (   this.input
             && this.input.isConnected)
             this.input.connectedOutput.op.update();
+
+        if (this.showParamLock)
+            this.paramLock.style.display = 'block';
+        else
+            this.paramLock.style.display = 'none';
     }    
 
 

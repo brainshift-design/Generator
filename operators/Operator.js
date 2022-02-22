@@ -42,6 +42,9 @@ class Operator
     _creatingButton  = null; // this is used to place the node under its creating button
 
 
+    
+
+
     // node UI
 
     div;
@@ -54,8 +57,7 @@ class Operator
     outputControls;
 
 
-    dragParam;
-    
+   
 
     valid; // this is the flag for regeneration
 
