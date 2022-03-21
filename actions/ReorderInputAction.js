@@ -27,6 +27,8 @@ extends Action
         // .. already done
 
         nodeFromId(this.nodeId).pushUpdate();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -39,8 +41,10 @@ extends Action
             node.inputs,
             this.newIndex,
             this.oldIndex);
-
+            
         node.pushUpdate();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -53,6 +57,8 @@ extends Action
             node.inputs,
             this.oldIndex,
             this.newIndex);
+
+        uiSaveNodesAndConns([this.nodeId]);
 
         node.pushUpdate();
     }

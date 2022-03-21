@@ -19,6 +19,8 @@ extends Action
     do()
     {
         this.pastedNodeIds = uiPasteNodes(this.copiedJson).map(n => n.id);
+
+        uiSaveNodesAndConns(nodes.map(n => n.id));
     }
 
 
@@ -29,5 +31,7 @@ extends Action
         
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
+
+        uiRemoveSavedNodesAndConns(this.pastedNodeIds);
     }
 }

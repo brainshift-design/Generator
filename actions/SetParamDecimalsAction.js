@@ -36,6 +36,8 @@ extends Action
         this.param.setDecimals(
             this.newDecimals, 
             this.newDisplayDecimals);
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -45,5 +47,7 @@ extends Action
         this.param.setDecimals(
             this.oldDecimals, 
             this.oldDisplayDecimals);
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 }

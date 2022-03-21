@@ -58,6 +58,10 @@ function updateNodeLabel(node, f = node.labelOffsetFactor)
     const s3         = s2 + df;
 
 
+    //node.label.innerHTML = node._name;
+    node.label.innerHTML = node.id;
+
+
     if (rect.width > rw)
     {
         node.label.style.left = margin - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom;

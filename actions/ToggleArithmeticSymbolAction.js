@@ -22,6 +22,8 @@ extends Action
     {
         this.node._showOnlySymbol = this.showOnlySymbol;
         this.node.updateNode();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -30,5 +32,7 @@ extends Action
     {
         this.node._showOnlySymbol = !this.showOnlySymbol;
         this.node.updateNode();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }    
 }

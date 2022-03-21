@@ -3132,7 +3132,7 @@ function invalid2validRgb(rgb)
 
 
 
-function isValidRgb(rgb, lim = Number.EPSILON)
+function isValidRgb(rgb, lim = 0.00000001)
 {
     return (!isNaN(rgb[0])
          && !isNaN(rgb[1])

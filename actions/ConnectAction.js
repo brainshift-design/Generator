@@ -45,18 +45,10 @@ extends Action
     
     do()
     {
-        //const conn = 
         uiConnect(
             this.outputOp.outputs[this.outputIndex], 
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
-
-        // uiSaveConnection(
-        //     this.outputOp.id,
-        //     this.outputIndex, 
-        //     this.inputOp.id,
-        //     this.inputIndex,
-        //     conn.toJson());
             
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
@@ -67,13 +59,6 @@ extends Action
     undo()
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
-
-        // uiRemoveSavedConnection(
-        //     this.outputOp.id,
-        //     this.outputIndex, 
-        //     this.inputOp.id,
-        //     this.inputIndex);
-
 
         if (this.oldOutputOpId != '')
         {

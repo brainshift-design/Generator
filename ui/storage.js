@@ -185,8 +185,6 @@ function loadNodesAsync(nodes, connections, setProgress)
     promise.then(_nodes => 
     {
         graph.addNodes(_nodes, false, false);
-        //uiSaveNodes(_nodes.map(n => n.id));
-
         loadConnectionsAsync(nodes, connections, _nodes, setProgress);    
     });
 }

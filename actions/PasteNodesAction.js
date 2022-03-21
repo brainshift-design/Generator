@@ -34,6 +34,8 @@ extends Action
         updateTerminalsAfterNodes(nodes);
 
         graphView.updateNodeTransforms(nodes);
+
+        uiSaveNodesAndConns(nodes.map(n => n.id));
     }
 
 
@@ -46,6 +48,8 @@ extends Action
         pasteOffset[1] -= pasteOffsetDelta[1];
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+
+        uiRemoveSavedNodesAndConns(this.pastedNodeIds);
     }
 
 
@@ -65,5 +69,7 @@ extends Action
         }
 
         updateTerminalsAfterNodes(nodes);
+
+        uiSaveNodesAndConns(nodes.map(n => n.id));
     }
 }

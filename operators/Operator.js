@@ -400,9 +400,9 @@ class Operator
     setName(newName)
     {
         this._name = newName;
-        this.label.innerHTML = this._name;
-        //this.label.innerHTML = this.id;
-
+        // this.label.innerHTML = this._name;
+        // //this.label.innerHTML = this.id;
+        
         return true;
     }
 

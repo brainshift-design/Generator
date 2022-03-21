@@ -87,6 +87,8 @@ extends Action
 
     undeleteNodes()
     {
+        //log('this.nodes', this.nodes);
+
         graph.addNodes(this.nodes);
         graphView.selected = this.nodes;
         graphView.putNodeOnTop(lastOf(this.nodes));
@@ -101,6 +103,9 @@ extends Action
 
         for (let i = 0; i < this.nodes.length; i++)
             this.nodes[i].id = this.nodeIds[i];
+
+
+        uiSaveNodesAndConns(this.nodeIds);
     }
 
 

@@ -4642,7 +4642,7 @@ function invalid2validRgb(rgb)
 
 
 
-function isValidRgb(rgb, lim = Number.EPSILON)
+function isValidRgb(rgb, lim = 0.00000001)
 {
     return (!isNaN(rgb[0])
          && !isNaN(rgb[1])
@@ -9066,7 +9066,7 @@ function invalid2validRgb(rgb)
 
 
 
-function isValidRgb(rgb, lim = Number.EPSILON)
+function isValidRgb(rgb, lim = 0.00000001)
 {
     return (!isNaN(rgb[0])
          && !isNaN(rgb[1])
@@ -16453,9 +16453,9 @@ class Operator
     setName(newName)
     {
         this._name = newName;
-        this.label.innerHTML = this._name;
-        //this.label.innerHTML = this.id;
-
+        // this.label.innerHTML = this._name;
+        // //this.label.innerHTML = this.id;
+        
         return true;
     }
 
@@ -17246,6 +17246,10 @@ function updateNodeLabel(node, f = node.labelOffsetFactor)
     const s0         = s1 - df;
     const s2         = s1 + sf;
     const s3         = s2 + df;
+
+
+    //node.label.innerHTML = node._name;
+    node.label.innerHTML = node.id;
 
 
     if (rect.width > rw)
@@ -21051,18 +21055,10 @@ extends Action
     
     do()
     {
-        //const conn = 
         uiConnect(
             this.outputOp.outputs[this.outputIndex], 
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
-
-        // uiSaveConnection(
-        //     this.outputOp.id,
-        //     this.outputIndex, 
-        //     this.inputOp.id,
-        //     this.inputIndex,
-        //     conn.toJson());
             
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
@@ -21073,13 +21069,6 @@ extends Action
     undo()
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
-
-        // uiRemoveSavedConnection(
-        //     this.outputOp.id,
-        //     this.outputIndex, 
-        //     this.inputOp.id,
-        //     this.inputIndex);
-
 
         if (this.oldOutputOpId != '')
         {
@@ -21124,7 +21113,6 @@ extends Action
 
         const node = uiCreateNode(this.opType, this.creatingButton);
         this.createdNodeId = node.id;
-        //uiSaveNodes([node.id]);
         
         node.pushUpdate();
 
@@ -21137,7 +21125,6 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
-        //uiRemoveSavedNodes([this.createdNodeId]);
 
         graphView.selectByIds(this.prevSelectedIds);
     }
@@ -21147,7 +21134,6 @@ extends Action
     redo()
     {
         const node = uiCreateNode(this.opType, this.creatingButton, this.createdNodeId);
-        //uiSaveNodes([node.id]);
 
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
@@ -21246,6 +21232,8 @@ extends Action
 
     undeleteNodes()
     {
+        //log('this.nodes', this.nodes);
+
         graph.addNodes(this.nodes);
         graphView.selected = this.nodes;
         graphView.putNodeOnTop(lastOf(this.nodes));
@@ -21260,6 +21248,9 @@ extends Action
 
         for (let i = 0; i < this.nodes.length; i++)
             this.nodes[i].id = this.nodeIds[i];
+
+
+        uiSaveNodesAndConns(this.nodeIds);
     }
 
 
@@ -21387,6 +21378,8 @@ extends Action
     do()
     {
         this.pastedNodeIds = uiPasteNodes(this.copiedJson).map(n => n.id);
+
+        uiSaveNodesAndConns(nodes.map(n => n.id));
     }
 
 
@@ -21397,6 +21390,8 @@ extends Action
         
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
+
+        uiRemoveSavedNodesAndConns(this.pastedNodeIds);
     }
 }
 
@@ -21437,6 +21432,8 @@ extends Action
         updateTerminalsAfterNodes(nodes);
 
         graphView.updateNodeTransforms(nodes);
+
+        uiSaveNodesAndConns(nodes.map(n => n.id));
     }
 
 
@@ -21449,6 +21446,8 @@ extends Action
         pasteOffset[1] -= pasteOffsetDelta[1];
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+
+        uiRemoveSavedNodesAndConns(this.pastedNodeIds);
     }
 
 
@@ -21468,6 +21467,8 @@ extends Action
         }
 
         updateTerminalsAfterNodes(nodes);
+
+        uiSaveNodesAndConns(nodes.map(n => n.id));
     }
 }
 
@@ -21606,6 +21607,8 @@ extends Action
     {
         this.oldName = this.node.name;
         this.node.setName(this.newName);
+
+        uiSaveNodesAndConns([nodeId]);
     }
 
 
@@ -21613,6 +21616,8 @@ extends Action
     undo()
     {
         this.node.setName(this.oldName);
+
+        uiSaveNodesAndConns([nodeId]);
     }
 
 
@@ -21620,6 +21625,8 @@ extends Action
     redo()
     {
         this.node.setName(this.newName);
+        
+        uiSaveNodesAndConns([nodeId]);
     }
 }
 
@@ -21653,6 +21660,8 @@ extends Action
         // .. already done
 
         nodeFromId(this.nodeId).pushUpdate();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -21665,8 +21674,10 @@ extends Action
             node.inputs,
             this.newIndex,
             this.oldIndex);
-
+            
         node.pushUpdate();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -21679,6 +21690,8 @@ extends Action
             node.inputs,
             this.oldIndex,
             this.newIndex);
+
+        uiSaveNodesAndConns([this.nodeId]);
 
         node.pushUpdate();
     }
@@ -21764,6 +21777,8 @@ extends Action
 
         for (const node of movedNodes)
             node.updateBorder();
+
+        uiSaveNodesAndConns(movedIds);
     }
 
 
@@ -21781,8 +21796,10 @@ extends Action
 
         for (const node of movedNodes)
             node.updateBorder();
-
+            
         graphView.selectByIds(this.prevSelectedIds);
+
+        uiSaveNodesAndConns(movedIds);
     }
 
 
@@ -21876,6 +21893,8 @@ extends Action
         this.param.setDecimals(
             this.newDecimals, 
             this.newDisplayDecimals);
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -21885,6 +21904,8 @@ extends Action
         this.param.setDecimals(
             this.oldDecimals, 
             this.oldDisplayDecimals);
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 }
 
@@ -21919,6 +21940,8 @@ extends Action
     {
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -21927,6 +21950,8 @@ extends Action
     {
         this.param.setValue(this.oldValue, false, true);
         this.param.op.pushUpdate();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -21935,6 +21960,8 @@ extends Action
     {
         this.param.setValue(this.newValue);
         this.param.op.pushUpdate();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 }
 
@@ -21963,6 +21990,8 @@ extends Action
     {
         this.node._showOnlySymbol = this.showOnlySymbol;
         this.node.updateNode();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }
 
 
@@ -21971,6 +22000,8 @@ extends Action
     {
         this.node._showOnlySymbol = !this.showOnlySymbol;
         this.node.updateNode();
+
+        uiSaveNodesAndConns([this.nodeId]);
     }    
 }
 
@@ -22691,8 +22722,6 @@ function loadNodesAsync(nodes, connections, setProgress)
     promise.then(_nodes => 
     {
         graph.addNodes(_nodes, false, false);
-        //uiSaveNodes(_nodes.map(n => n.id));
-
         loadConnectionsAsync(nodes, connections, _nodes, setProgress);    
     });
 }
@@ -23048,7 +23077,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     
     graph.addNode(node);
     
-    uiSaveNodes([node.id]);
+    uiSaveNodesAndConns([node.id]);
 
 
     // if (graphView.selectedNodes.length > 0)
@@ -23095,7 +23124,7 @@ function uiDeleteNodes(nodeIds, actionId)
 {
     graph.deleteNodes(nodeIds);
     
-    uiRemoveSavedNodes(nodeIds);
+    uiRemoveSavedNodesAndConns(nodeIds);
 
 
     // uiPostMessageToGenerator({
@@ -23293,6 +23322,87 @@ function uiShowParamValue(nodeId, paramName, value)
 
 
 
+function uiCopyNodes(nodeIds)
+{
+    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const copiedJson = nodesToJson(nodes, true, false);
+
+    //log(copiedJson);
+
+    return copiedJson;
+}
+
+
+
+function uiPasteNodes(nodesJson, pasteOutsideConnections)
+{
+    graphView.loadingNodes = true;
+
+
+    pasteOffset[0] += pasteOffsetDelta[0];
+    pasteOffset[1] += pasteOffsetDelta[1];
+
+
+    const data  = JSON.parse(nodesJson);
+
+
+    // offset new nodes (must be done before loading)
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
+        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
+    }
+
+    
+    const nodes = loadNodes(data);
+
+    // get the new names of the nodes after they've been added
+    for (let i = 0; i < nodes.length; i++)
+    {
+        graph.addNode(nodes[i], false);
+        data.nodes[i].newId = nodes[i].id;
+    }
+    
+    if (data.connections)
+    {
+        correctNodeNamesInConnections(data);
+        loadConnections(data, pasteOutsideConnections);
+    }
+    
+    graphView.selectedNodes = nodes;
+    
+
+    graphView.loadingNodes = false;
+    return nodes;
+}
+
+
+
+function correctNodeNamesInConnections(data)
+{
+    for (let i = 0; i < data.connections.length; i++)
+    {
+        const _conn = data.connections[i];
+
+        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
+        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
+
+        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
+        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
+    }
+}
+
+
+
+function updateGraphNodes()
+{
+    for (const node of graphView.selectedNodes)      node.updateNode();
+    for (const node of graphView._prevSelectedNodes) node.updateNode();
+    for (const node of graphView.lastSelectedNodes)  node.updateNode();
+}
+
+
+
 function uiUpdateNodes(nodeIds)
 {
     if (graph.mutex)
@@ -23345,87 +23455,7 @@ function uiUpdateObjects(objects)
 
 
 
-function uiCopyNodes(nodeIds)
-{
-    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
-    const copiedJson = nodesToJson(nodes, true, false);
-
-    //log(copiedJson);
-
-    return copiedJson;
-}
-
-
-
-function uiPasteNodes(nodesJson, pasteOutsideConnections)
-{
-    graphView.loadingNodes = true;
-
-
-    pasteOffset[0] += pasteOffsetDelta[0];
-    pasteOffset[1] += pasteOffsetDelta[1];
-
-
-    const data  = JSON.parse(nodesJson);
-
-
-    // offset new nodes (must be done before loading)
-    for (let i = 0; i < data.nodes.length; i++)
-    {
-        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
-        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
-    }
-
-    
-    const nodes = loadNodes(data);
-
-    // get the new names of the nodes after they've been added
-    for (let i = 0; i < nodes.length; i++)
-    {
-        graph.addNode(nodes[i], false);
-        data.nodes[i].newId = nodes[i].id;
-    }
-    
-    if (data.connections)
-    {
-        correctNodeNamesInConnections(data);
-        loadConnections(data, pasteOutsideConnections);
-    }
-    
-    graphView.selectedNodes = nodes;
-    
-    graphView.loadingNodes = false;
-    return nodes;
-}
-
-
-
-function correctNodeNamesInConnections(data)
-{
-    for (let i = 0; i < data.connections.length; i++)
-    {
-        const _conn = data.connections[i];
-
-        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
-        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
-
-        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
-        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
-    }
-}
-
-
-
-function updateGraphNodes()
-{
-    for (const node of graphView.selectedNodes)      node.updateNode();
-    for (const node of graphView._prevSelectedNodes) node.updateNode();
-    for (const node of graphView.lastSelectedNodes)  node.updateNode();
-}
-
-
-
-function uiSaveNodes(nodeIds)
+function uiSaveNodesAndConns(nodeIds)
 {
     const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
     const nodeJson = [];
@@ -23434,7 +23464,7 @@ function uiSaveNodes(nodeIds)
         nodeJson.push(node.toJson());
 
     uiPostMessageToFigma({
-        cmd:     'figSaveNodes',
+        cmd:     'figSaveNodesAndConns',
         nodeIds:  nodeIds,
         nodeJson: nodeJson
     });
@@ -23442,10 +23472,10 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiRemoveSavedNodes(nodeIds)
+function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiPostMessageToFigma({
-        cmd:    'figRemoveSavedNodes',
+        cmd:    'figRemoveSavedNodesAndConns',
         nodeIds: nodeIds
     });
 }

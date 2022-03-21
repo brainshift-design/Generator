@@ -4,7 +4,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     
     graph.addNode(node);
     
-    uiSaveNodes([node.id]);
+    uiSaveNodesAndConns([node.id]);
 
 
     // if (graphView.selectedNodes.length > 0)
@@ -51,7 +51,7 @@ function uiDeleteNodes(nodeIds, actionId)
 {
     graph.deleteNodes(nodeIds);
     
-    uiRemoveSavedNodes(nodeIds);
+    uiRemoveSavedNodesAndConns(nodeIds);
 
 
     // uiPostMessageToGenerator({
@@ -249,6 +249,87 @@ function uiShowParamValue(nodeId, paramName, value)
 
 
 
+function uiCopyNodes(nodeIds)
+{
+    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const copiedJson = nodesToJson(nodes, true, false);
+
+    //log(copiedJson);
+
+    return copiedJson;
+}
+
+
+
+function uiPasteNodes(nodesJson, pasteOutsideConnections)
+{
+    graphView.loadingNodes = true;
+
+
+    pasteOffset[0] += pasteOffsetDelta[0];
+    pasteOffset[1] += pasteOffsetDelta[1];
+
+
+    const data  = JSON.parse(nodesJson);
+
+
+    // offset new nodes (must be done before loading)
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
+        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
+    }
+
+    
+    const nodes = loadNodes(data);
+
+    // get the new names of the nodes after they've been added
+    for (let i = 0; i < nodes.length; i++)
+    {
+        graph.addNode(nodes[i], false);
+        data.nodes[i].newId = nodes[i].id;
+    }
+    
+    if (data.connections)
+    {
+        correctNodeNamesInConnections(data);
+        loadConnections(data, pasteOutsideConnections);
+    }
+    
+    graphView.selectedNodes = nodes;
+    
+
+    graphView.loadingNodes = false;
+    return nodes;
+}
+
+
+
+function correctNodeNamesInConnections(data)
+{
+    for (let i = 0; i < data.connections.length; i++)
+    {
+        const _conn = data.connections[i];
+
+        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
+        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
+
+        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
+        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
+    }
+}
+
+
+
+function updateGraphNodes()
+{
+    for (const node of graphView.selectedNodes)      node.updateNode();
+    for (const node of graphView._prevSelectedNodes) node.updateNode();
+    for (const node of graphView.lastSelectedNodes)  node.updateNode();
+}
+
+
+
 function uiUpdateNodes(nodeIds)
 {
     if (graph.mutex)
@@ -301,87 +382,7 @@ function uiUpdateObjects(objects)
 
 
 
-function uiCopyNodes(nodeIds)
-{
-    const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
-    const copiedJson = nodesToJson(nodes, true, false);
-
-    //log(copiedJson);
-
-    return copiedJson;
-}
-
-
-
-function uiPasteNodes(nodesJson, pasteOutsideConnections)
-{
-    graphView.loadingNodes = true;
-
-
-    pasteOffset[0] += pasteOffsetDelta[0];
-    pasteOffset[1] += pasteOffsetDelta[1];
-
-
-    const data  = JSON.parse(nodesJson);
-
-
-    // offset new nodes (must be done before loading)
-    for (let i = 0; i < data.nodes.length; i++)
-    {
-        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
-        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
-    }
-
-    
-    const nodes = loadNodes(data);
-
-    // get the new names of the nodes after they've been added
-    for (let i = 0; i < nodes.length; i++)
-    {
-        graph.addNode(nodes[i], false);
-        data.nodes[i].newId = nodes[i].id;
-    }
-    
-    if (data.connections)
-    {
-        correctNodeNamesInConnections(data);
-        loadConnections(data, pasteOutsideConnections);
-    }
-    
-    graphView.selectedNodes = nodes;
-    
-    graphView.loadingNodes = false;
-    return nodes;
-}
-
-
-
-function correctNodeNamesInConnections(data)
-{
-    for (let i = 0; i < data.connections.length; i++)
-    {
-        const _conn = data.connections[i];
-
-        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
-        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
-
-        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
-        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
-    }
-}
-
-
-
-function updateGraphNodes()
-{
-    for (const node of graphView.selectedNodes)      node.updateNode();
-    for (const node of graphView._prevSelectedNodes) node.updateNode();
-    for (const node of graphView.lastSelectedNodes)  node.updateNode();
-}
-
-
-
-function uiSaveNodes(nodeIds)
+function uiSaveNodesAndConns(nodeIds)
 {
     const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
     const nodeJson = [];
@@ -390,7 +391,7 @@ function uiSaveNodes(nodeIds)
         nodeJson.push(node.toJson());
 
     uiPostMessageToFigma({
-        cmd:     'figSaveNodes',
+        cmd:     'figSaveNodesAndConns',
         nodeIds:  nodeIds,
         nodeJson: nodeJson
     });
@@ -398,10 +399,10 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiRemoveSavedNodes(nodeIds)
+function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiPostMessageToFigma({
-        cmd:    'figRemoveSavedNodes',
+        cmd:    'figRemoveSavedNodesAndConns',
         nodeIds: nodeIds
     });
 }
