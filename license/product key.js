@@ -55,7 +55,7 @@ productKeyInput.addEventListener('input', () =>
         if (validateProductKey(currentUser.id, val))
         {
             productKey = val;        
-            uiSaveLocal('productKey', productKey);
+            uiSetLocalData('productKey', productKey);
             
             productKeyInput.blur();
             setGoodProductKeyInput();

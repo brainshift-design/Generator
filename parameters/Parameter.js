@@ -25,7 +25,10 @@ extends EventTarget
     onbeforechange = new Event('beforechange');
     onchange       = new Event('change');
     onconfirm      = new Event('confirm');
+    onchangelock   = new Event('changelock');
 
+
+    isLocked = false;
 
     showParamLock = false;
     paramLock;
@@ -49,9 +52,16 @@ extends EventTarget
         this.output = null;
 
         this.paramLock = createDiv('paramLock');
+        this.paramLock.param = this;
+        this.paramLock.addEventListener('pointerenter', paramLock_onpointerenter);
+        this.paramLock.addEventListener('pointerleave', paramLock_onpointerleave);
+        this.paramLock.addEventListener('pointerdown',  paramLock_onpointerdown );
+        this.paramLock.addEventListener('pointerup',    paramLock_onpointerup   );
         this._div.appendChild(this.paramLock);
 
         enableElementText(this.div, true);
+
+        this.updateLock();
     }
 
 
@@ -130,6 +140,27 @@ extends EventTarget
 
 
 
+    updateLock()
+    {
+        let opacity = this.isLocked ? 0.5 : 0.1;
+        
+             if (this.paramLock.down0) opacity += 0.3;
+        else if (this.paramLock.over ) opacity += 0.15;
+        
+        this.paramLock.style.background = 
+            this.isLocked
+            ? 'url(\'data:image/svg+xml;utf8,<svg width="5" height="7" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 2.5V4H2.5V2.5C2.5 1.67157 3.17157 1 4 1C4.82843 1 5.5 1.67157 5.5 2.5ZM1.5 4V2.5C1.5 1.11929 2.61929 0 4 0C5.38071 0 6.5 1.11929 6.5 2.5V4H7C7.27614 4 7.5 4.22386 7.5 4.5V9.5C7.5 9.77614 7.27614 10 7 10H1C0.723858 10 0.5 9.77614 0.5 9.5V4.5C0.5 4.22386 0.723858 4 1 4H1.5Z" fill="black" fill-opacity="'+opacity+'"/></svg>\')'
+            : 'url(\'data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4V5H6.5C6.77614 5 7 5.22386 7 5.5V10.5C7 10.7761 6.77614 11 6.5 11H0.5C0.223858 11 0 10.7761 0 10.5V5.5C0 5.22386 0.223858 5 0.5 5H5V2.5C5 1.11929 6.11929 0 7.5 0C8.88071 0 10 1.11929 10 2.5V4H9V2.5C9 1.67157 8.32843 1 7.5 1C6.67157 1 6 1.67157 6 2.5V4Z" fill="black" fill-opacity="'+opacity+'"/></svg>\')';
+
+        this.paramLock.style.backgroundPosition = '50% 50%';
+        this.paramLock.style.backgroundRepeat   = 'no-repeat';
+
+        this.paramLock.style.left = this.isLocked ? 11   : 12;
+        this.paramLock.style.top  = this.isLocked ?  4.5 :  4;
+    }
+
+
+
     preSetValue(value, confirm, dispatchEvents = true) 
     {
         if (dispatchEvents)
@@ -168,5 +199,57 @@ extends EventTarget
             id = this.id;
 
         return pos + '["' + id  + '", "' + this.value + '"]';
+    }
+}
+
+
+
+function paramLock_onpointerenter(e)
+{
+    const paramLock = e.target;
+
+    paramLock.over = true;
+    paramLock.param.updateLock();
+}
+
+
+
+function paramLock_onpointerleave(e)
+{
+    const paramLock = e.target;
+
+    paramLock.over = false;
+    paramLock.param.updateLock();
+}
+
+
+
+function paramLock_onpointerdown(e)
+{
+    const paramLock = e.target;
+
+    // e.preventDefault();
+    e.stopPropagation();
+
+    if (e.button == 0)
+    {
+        paramLock.down0 = true;
+        paramLock.param.updateLock();
+    }
+}
+
+
+
+function paramLock_onpointerup(e)
+{
+    const paramLock = e.target;
+
+    if (e.button == 0)
+    {
+        paramLock.down0 = false;
+        paramLock.param.isLocked = !paramLock.param.isLocked;
+        paramLock.param.updateLock();
+
+        paramLock.param.dispatchEvent(paramLock.param.onchangelock);
     }
 }

@@ -3,9 +3,9 @@ function adjustColor(color, order, margin1, margin2, margin3)
     let i0, i1, i2;
     
          if (order == 0) { i0 = 0; i1 = 1; i2 = 2; } // HCL
-    else if (order == 1) { i0 = 0; i1 = 2; i2 = 1; } // HLC
-    else if (order == 2) { i0 = 1; i1 = 0; i2 = 2; } // CHL
-    else if (order == 3) { i0 = 1; i1 = 2; i2 = 0; } // CLH
+    else if (order == 1) { i0 = 1; i1 = 0; i2 = 2; } // CHL
+    else if (order == 2) { i0 = 1; i1 = 2; i2 = 0; } // CLH
+    else if (order == 3) { i0 = 0; i1 = 2; i2 = 1; } // HLC
     else if (order == 4) { i0 = 2; i1 = 0; i2 = 1; } // LHC
     else if (order == 5) { i0 = 2; i1 = 1; i2 = 0; } // LCH
  

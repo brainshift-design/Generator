@@ -24,19 +24,19 @@ document.addEventListener('pointermove', function(e)
     if (   document.resizingX
         && document.resizingY)
     {
-        resizeWindow(
+        uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             document.startRect.h + e.clientY - document.startRect.y);
     }
     else if (document.resizingX)
     {
-        resizeWindow(
+        uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             window.innerHeight);
     }
     else if (document.resizingY)
     {
-        resizeWindow(
+        uiResizeWindow(
             window.innerWidth,
             document.startRect.h + e.clientY - document.startRect.y);
     }

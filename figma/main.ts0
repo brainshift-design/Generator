@@ -19,17 +19,17 @@ figma.on('close',           figOnPluginClose);
 figma.showUI(__html__);
 
 
-function figLoadState(msg)
+function figStartGenerator()
 {
     (async function()
     {
-        // load state
-        let state = await figma.clientStorage.getAsync('state');
-        if (state == null) state = {};
-        // ...
+
+        // load product key
+        let productKey = await figLoadLocal('productKey');
+        if (productKey == null) productKey = '';
 
 
-        // resize window
+        // size window
         let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
         let wndHeight = await figma.clientStorage.getAsync('windowHeight');
 
@@ -40,14 +40,10 @@ function figLoadState(msg)
             Math.max(0, wndWidth),
             Math.max(0, wndHeight));
 
-        // load product key
-        let productKey = await figLoadLocal('productKey');
-        if (productKey == null) productKey = '';
 
-
-        // end load state
+        //
         figPostMessageToUi({
-            cmd:        'uiEndLoadState',
+            cmd:        'uiEndStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });
     })();

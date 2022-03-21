@@ -1,3 +1,45 @@
+function uiGetLocalData(key, value)
+{
+    uiPostMessageToFigma({ 
+        cmd: 'figGetLocalData', 
+        key:  key
+    });
+}
+
+
+
+function uiSetLocalData(key, value)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetLocalData',
+        key:   key,
+        value: value
+    });
+}
+
+
+
+function uiGetPageData(key)
+{
+    uiPostMessageToFigma({ 
+        cmd: 'figGetPageData', 
+        key:  key
+    });
+}
+
+
+
+function uiSetPageData(key, value)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetPageData', 
+        key:   key,
+        value: value
+    });
+}
+
+
+
 // function saveToLocalFile(filename, str) 
 // {
 //     const link = document.createElement('a');
@@ -13,27 +55,33 @@
 
 
 
-function uiLoadNodes(nodesJson, connsJson)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+   
+
+
+function uiGetLocalDataReturn(msg)
 {
-    graph.clear();
+    switch (msg.key)
+    {
+        case 'graphView':
+            uiLoadGraphView(msg.value);
+            break;
+    }
+}
 
-    const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
-    const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
 
-    console.log('nodes', nodes);
-    console.log('conns', conns);
-
-    loadNodesAsync(nodes, conns, setLoadingProgress);
+function uiGetPageDataReturn(msg)
+{
+    // switch (msg.key)
+    // {
+    //     case '':
+    //         break;
+    // }
 }
 
 
 
-// function saveGraph()
-// {
-//     const json = graph.toJson(); 
-//     //log(json); 
-//     uiSetPageData("graph", json);
-// }
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -73,13 +121,31 @@ function uiLoadGraphView(json)
 
 
     graphView.showWires = data.showWires == 'true';
-
-
-    // loadNodesAsync(
-    //     data.nodes, 
-    //     data.connections, 
-    //     setLoadingProgress);
 }
+
+
+
+function uiLoadNodesAndConns(nodesJson, connsJson)
+{
+    graph.clear();
+
+    const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
+    const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
+
+    //console.log('nodes', nodes);
+    //console.log('conns', conns);
+
+    loadNodesAsync(nodes, conns, setLoadingProgress);
+}
+
+
+
+// function saveGraph()
+// {
+//     const json = graph.toJson(); 
+//     //log(json); 
+//     uiSetPageData("graph", json);
+// }
 
 
 

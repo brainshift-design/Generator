@@ -22,7 +22,6 @@
     [../autojoin/core.aj]
     [../autojoin/color.aj]
 
-    ../core/storage.js
     ../core/crypto.js
     ../core/base32.js
     
@@ -31,7 +30,6 @@
 
     ../actions/*.js
     ../ui/*.js
-    ../storage/*.js
     ../license/*.js
 
 ../html/ui_3.html

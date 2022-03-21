@@ -1137,11 +1137,6 @@ div
     width:               11px;
     height:              11px;
     position:            absolute;
-    right:               9px;
-    top:                 4px;
-    background:          url('data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4V5H6.5C6.77614 5 7 5.22386 7 5.5V10.5C7 10.7761 6.77614 11 6.5 11H0.5C0.223858 11 0 10.7761 0 10.5V5.5C0 5.22386 0.223858 5 0.5 5H5V2.5C5 1.11929 6.11929 0 7.5 0C8.88071 0 10 1.11929 10 2.5V4H9V2.5C9 1.67157 8.32843 1 7.5 1C6.67157 1 6 1.67157 6 2.5V4Z" fill="black" fill-opacity="0.1"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
     display:             none;
 }
 
@@ -1192,9 +1187,9 @@ div
 
 .asterisk
 {
-    font-size: 12px;
+    font-size: 8px;
     position:  relative;
-    top:       -1px;
+    top:       -2px;
 }
 
 
@@ -1255,7 +1250,7 @@ div
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
     <!-- &nbsp;
-    <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPluginData("graph"); this.blur();'>LOAD</button>
+    <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPageData("graph"); this.blur();'>LOAD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
@@ -3730,7 +3725,7 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'genFindCorrection':   genFindCorrection(e.data.nodeId, e.data.inputColor, e.data.max1, e.data.max2, e.data.max3);  break;
+        case 'genFindCorrection':   genFindCorrection(e.data.nodeId, e.data.inputColor, e.data.param1, e.data.param2, e.data.param3, e.data.locked1, e.data.locked2, e.data.locked3);  break;
         // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -4949,6 +4944,15 @@ function maxRgbDistance(col1, col2)
 }
 
 
+
+function rgbEqual(rgb1, rgb2)
+{
+    return rgb1[0] == rgb2[0]
+        && rgb1[1] == rgb2[1]
+        && rgb1[2] == rgb2[2];        
+}
+
+
 function rgb2hex(rgb)
 {
     let hex =
@@ -5949,9 +5953,9 @@ function adjustColor(color, order, margin1, margin2, margin3)
     let i0, i1, i2;
     
          if (order == 0) { i0 = 0; i1 = 1; i2 = 2; } // HCL
-    else if (order == 1) { i0 = 0; i1 = 2; i2 = 1; } // HLC
-    else if (order == 2) { i0 = 1; i1 = 0; i2 = 2; } // CHL
-    else if (order == 3) { i0 = 1; i1 = 2; i2 = 0; } // CLH
+    else if (order == 1) { i0 = 1; i1 = 0; i2 = 2; } // CHL
+    else if (order == 2) { i0 = 1; i1 = 2; i2 = 0; } // CLH
+    else if (order == 3) { i0 = 0; i1 = 2; i2 = 1; } // HLC
     else if (order == 4) { i0 = 2; i1 = 0; i2 = 1; } // LHC
     else if (order == 5) { i0 = 2; i1 = 1; i2 = 0; } // LCH
  
@@ -6068,7 +6072,7 @@ function getValidateMax(order)
 }
 
 
-function genFindCorrection(nodeId, inputColor)
+function genFindCorrection(nodeId, inputColor, param1, param2, param3, locked1, locked2, locked3)
 {
     const refOklab = dataColor2array(convert2oklab(inputColor));
 
@@ -6076,19 +6080,19 @@ function genFindCorrection(nodeId, inputColor)
           closestOrder,
           closest1,
           closest2,
-          closest3 ] = findCorrection(nodeId, inputColor, refOklab); 
+          closest3 ] = findCorrection(nodeId, inputColor, refOklab, param1, param2, param3, locked1, locked2, locked3); 
 
 
     if (closest1 == 0)
     {
         switch (closestOrder)
         {
-            case 0: closestOrder = 3; break;
-            case 1: closestOrder = 5; break;
-            case 2: closestOrder = 1; break;
-            case 3: closestOrder = 4; break;
+            case 0: closestOrder = 2; break;
+            case 1: closestOrder = 3; break;
+            case 2: closestOrder = 4; break;
+            case 3: closestOrder = 5; break;
             case 4: closestOrder = 0; break;
-            case 5: closestOrder = 2; break;
+            case 5: closestOrder = 1; break;
         }
 
         const temp = closest1;
@@ -6112,7 +6116,7 @@ function genFindCorrection(nodeId, inputColor)
 
 
 
-function findCorrection(nodeId, color, refOklab) 
+function findCorrection(nodeId, color, refOklab, param1, param2, param3, locked1, locked2, locked3) 
 {
     let closestColor = [...color],
         closestOklab = null, 
@@ -6149,6 +6153,14 @@ function findCorrection(nodeId, color, refOklab)
                 end2 = lerp(max2, closest2, 1-d),
                 end3 = lerp(max3, closest3, 1-d);
 
+            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+0.001; }
+            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+0.001; }
+            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+0.001; }
+
+            // console.log('start1', start1);
+            // console.log('start2', start2);
+            // console.log('start3', start3);
+
           [ closestColor,
             closestOklab,
             closestOrder,
@@ -6167,7 +6179,9 @@ function findCorrection(nodeId, color, refOklab)
                 closest1, 
                 closest2, 
                 closest3, 
-                nSteps,
+                locked1 ? 1 : nSteps,
+                locked2 ? 1 : nSteps,
+                locked3 ? 1 : nSteps,
                 progress,
                 total);
         }
@@ -6177,8 +6191,25 @@ function findCorrection(nodeId, color, refOklab)
     }
 
 
+    // reduce closest to necessary minimums
+
+    const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
+
+    let c1 = closest1;
+    let c2 = closest2;
+    let c3 = closest3;
+
+    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
+    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
+    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
+
+    closest1 = c1;
+    closest2 = c2;
+    closest3 = c3;
+
+
     return [
-        closestOklab, //closestRgb,
+        closestOklab,
         closestOrder,
         closest1,
         closest2,
@@ -6188,40 +6219,38 @@ function findCorrection(nodeId, color, refOklab)
 
 
 function findCorrectionInOrder(nodeId,
-                               refOklab, //refRgb,
+                               refOklab,
                                order, 
                                start1, start2, start3, 
                                end1,   end2,   end3,
                                closestColor,
-                               closestOklab, //closestRgb, 
+                               closestOklab,
                                closestOrder,
                                closest1, 
                                closest2, 
                                closest3,
-                               nSteps,
+                               nSteps1,
+                               nSteps2,
+                               nSteps3,
                                progress,
                                total)
 {
     const color = [...closestColor];
 
 
-    for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps)
+    for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps)
+        for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps)
+            for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                const _color = adjustColor(color, order, m1, m2, m3);
-                const _oklab = dataColor2array(convert2oklab(_color));
-                const _rgb   = oklab2rgb(_oklab);
+                const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
                 if (   isValidRgb(_rgb)
-                    && (  !closestOklab //!closestRgb
+                    && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
-                        //|| rgbDistance(refRgb, _rgb) < rgbDistance(refRgb, closestRgb)))
                 {
                     closestColor = _color;
-                    //closestRgb   = _rgb;
                     closestOklab = _oklab;
                     closestOrder = order;
                     closest1     = m1;
@@ -6244,12 +6273,23 @@ function findCorrectionInOrder(nodeId,
 
     return [
         closestColor,
-        closestOklab, //closestRgb,
+        closestOklab,
         closestOrder,
         closest1,
         closest2,
         closest3,
         progress ];
+}
+
+
+
+function getCorrectedColor(color, order, m1, m2, m3)
+{
+    const _color = adjustColor(color, order, m1, m2, m3);
+    const _oklab = dataColor2array(convert2oklab(_color));
+    const _rgb   = oklab2rgb(_oklab);
+
+    return [_color, _oklab, _rgb];
 }
 
 
@@ -9328,6 +9368,15 @@ function maxRgbDistance(col1, col2)
 }
 
 
+
+function rgbEqual(rgb1, rgb2)
+{
+    return rgb1[0] == rgb2[0]
+        && rgb1[1] == rgb2[1]
+        && rgb1[2] == rgb2[2];        
+}
+
+
 function rgb2hex(rgb)
 {
     let hex =
@@ -9516,84 +9565,6 @@ function APCAcontrast(txtY, bgY)
 
     return outputContrast * 100;
 }
-
-
-// function uiLoadState(state)
-// {
-//     uiResizeWindow(
-//         window.innerWidth, 
-//         state.windowHeight);
-// }    
-
-
-
-function uiGetPluginData(key)
-{
-    uiPostMessageToFigma({ 
-        cmd: 'figGetPluginData', 
-        key:  key
-    });
-}
-
-
-
-function uiGetPluginDataReturn(msg)
-{
-    // choose here which data is being returned
-
-    switch (msg.key)
-    {
-        case 'graph':
-            loadGraph(msg.value);
-            break;
-    }
-}
-
-
-
-function uiEndResizeWindow()
-{
-    graphView.updatePanAndZoom();
-
-    btnZoom.style.top  = 0;
-    btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
-
-    btnToggleWires.style.top  = 0;
-    btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
-}
-
-
-
-function uiSetPluginData(key, value)
-{
-    uiPostMessageToFigma({ 
-        cmd:  'figSetPluginData', 
-        key:   key,
-        value: value
-    });
-}
-
-
-
-function uiSaveLocal(key, value)
-{
-    uiPostMessageToFigma({ 
-        cmd:  'figSaveLocal', 
-        key:   key,
-        value: value
-    });
-}
-
-
-
-// function uiSaveState()
-// {
-//     uiPostMessageToFigma({ 
-//         cmd:  'figSaveState', 
-//         key:   key,
-//         value: value
-//     });
-// }
 
 
 const cryptoModulusSize     = 64; // to keep the keys short
@@ -13423,6 +13394,8 @@ graphView.toggleShowWires = function()
 {
     graphView.showWires = !graphView.showWires;
 
+    uiSaveGraphView();
+
     updateToggleShowWiresButton();
     graphView.updateShowWires();
 };
@@ -13436,6 +13409,20 @@ graphView.updateShowWires = function()
 };
 
 
+
+graphView.toJson = function()
+{
+    const tab = '  ';
+
+    return '{\n'
+        + tab + '"zoom": "'      + graphView.zoom  + '",\n'
+        + tab + '"panx": "'      + graphView.pan.x + '",\n'
+        + tab + '"pany": "'      + graphView.pan.y + '",\n'
+        + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '"\n'
+        + '\n}';
+};
+
+
 graphView._pan = point(0, 0);
   
 Object.defineProperty(graphView, 'pan',
@@ -13444,7 +13431,10 @@ Object.defineProperty(graphView, 'pan',
     set: pan =>
     {
         if (graphView._pan == pan) return;
+
         graphView._pan = pan;
+        
+        uiSaveGraphView();
         graphView.updatePanAndZoom();
     }
 });
@@ -13499,9 +13489,10 @@ graphView.setPanAndZoom = (pan, zoom) =>
 
         graphView._zoom = zoom;
         graphView._pan  = pan;
-    }
 
-    graphView.updatePanAndZoom();
+        uiSaveGraphView();
+        graphView.updatePanAndZoom();
+    }
 };
 
 
@@ -14145,7 +14136,10 @@ extends EventTarget
     onbeforechange = new Event('beforechange');
     onchange       = new Event('change');
     onconfirm      = new Event('confirm');
+    onchangelock   = new Event('changelock');
 
+
+    isLocked = false;
 
     showParamLock = false;
     paramLock;
@@ -14169,9 +14163,16 @@ extends EventTarget
         this.output = null;
 
         this.paramLock = createDiv('paramLock');
+        this.paramLock.param = this;
+        this.paramLock.addEventListener('pointerenter', paramLock_onpointerenter);
+        this.paramLock.addEventListener('pointerleave', paramLock_onpointerleave);
+        this.paramLock.addEventListener('pointerdown',  paramLock_onpointerdown );
+        this.paramLock.addEventListener('pointerup',    paramLock_onpointerup   );
         this._div.appendChild(this.paramLock);
 
         enableElementText(this.div, true);
+
+        this.updateLock();
     }
 
 
@@ -14250,6 +14251,27 @@ extends EventTarget
 
 
 
+    updateLock()
+    {
+        let opacity = this.isLocked ? 0.5 : 0.1;
+        
+             if (this.paramLock.down0) opacity += 0.3;
+        else if (this.paramLock.over ) opacity += 0.15;
+        
+        this.paramLock.style.background = 
+            this.isLocked
+            ? 'url(\'data:image/svg+xml;utf8,<svg width="5" height="7" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 2.5V4H2.5V2.5C2.5 1.67157 3.17157 1 4 1C4.82843 1 5.5 1.67157 5.5 2.5ZM1.5 4V2.5C1.5 1.11929 2.61929 0 4 0C5.38071 0 6.5 1.11929 6.5 2.5V4H7C7.27614 4 7.5 4.22386 7.5 4.5V9.5C7.5 9.77614 7.27614 10 7 10H1C0.723858 10 0.5 9.77614 0.5 9.5V4.5C0.5 4.22386 0.723858 4 1 4H1.5Z" fill="black" fill-opacity="'+opacity+'"/></svg>\')'
+            : 'url(\'data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 4V5H6.5C6.77614 5 7 5.22386 7 5.5V10.5C7 10.7761 6.77614 11 6.5 11H0.5C0.223858 11 0 10.7761 0 10.5V5.5C0 5.22386 0.223858 5 0.5 5H5V2.5C5 1.11929 6.11929 0 7.5 0C8.88071 0 10 1.11929 10 2.5V4H9V2.5C9 1.67157 8.32843 1 7.5 1C6.67157 1 6 1.67157 6 2.5V4Z" fill="black" fill-opacity="'+opacity+'"/></svg>\')';
+
+        this.paramLock.style.backgroundPosition = '50% 50%';
+        this.paramLock.style.backgroundRepeat   = 'no-repeat';
+
+        this.paramLock.style.left = this.isLocked ? 11   : 12;
+        this.paramLock.style.top  = this.isLocked ?  4.5 :  4;
+    }
+
+
+
     preSetValue(value, confirm, dispatchEvents = true) 
     {
         if (dispatchEvents)
@@ -14288,6 +14310,58 @@ extends EventTarget
             id = this.id;
 
         return pos + '["' + id  + '", "' + this.value + '"]';
+    }
+}
+
+
+
+function paramLock_onpointerenter(e)
+{
+    const paramLock = e.target;
+
+    paramLock.over = true;
+    paramLock.param.updateLock();
+}
+
+
+
+function paramLock_onpointerleave(e)
+{
+    const paramLock = e.target;
+
+    paramLock.over = false;
+    paramLock.param.updateLock();
+}
+
+
+
+function paramLock_onpointerdown(e)
+{
+    const paramLock = e.target;
+
+    // e.preventDefault();
+    e.stopPropagation();
+
+    if (e.button == 0)
+    {
+        paramLock.down0 = true;
+        paramLock.param.updateLock();
+    }
+}
+
+
+
+function paramLock_onpointerup(e)
+{
+    const paramLock = e.target;
+
+    if (e.button == 0)
+    {
+        paramLock.down0 = false;
+        paramLock.param.isLocked = !paramLock.param.isLocked;
+        paramLock.param.updateLock();
+
+        paramLock.param.dispatchEvent(paramLock.param.onchangelock);
     }
 }
 
@@ -14911,7 +14985,7 @@ class Graph
     {
         //console.log('graph.connect()');
         if (input.connectedOutput == output)
-            return false;
+            return null;
             
 
         if (input.connectedOutput)
@@ -14959,7 +15033,7 @@ class Graph
         output.updateControl();
 
 
-        return true;
+        return conn;
     }
 
 
@@ -15003,27 +15077,6 @@ class Graph
 
 
         return true;
-    }
-
-
-
-    toJson()
-    {
-        const tab = '  ';
-
-        let json = '{\n'
-            + tab + '"version": "0",\n'
-            + tab + '"zoom": "'      + graphView.zoom  + '",\n'
-            + tab + '"panx": "'      + graphView.pan.x + '",\n'
-            + tab + '"pany": "'      + graphView.pan.y + '",\n'
-            + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '",\n';
-
-        json += nodesToJson(this.nodes, false);
-
-        json += '\n}';
-
-
-        return json;
     }
 }
 
@@ -19721,9 +19774,9 @@ function adjustColor(color, order, margin1, margin2, margin3)
     let i0, i1, i2;
     
          if (order == 0) { i0 = 0; i1 = 1; i2 = 2; } // HCL
-    else if (order == 1) { i0 = 0; i1 = 2; i2 = 1; } // HLC
-    else if (order == 2) { i0 = 1; i1 = 0; i2 = 2; } // CHL
-    else if (order == 3) { i0 = 1; i1 = 2; i2 = 0; } // CLH
+    else if (order == 1) { i0 = 1; i1 = 0; i2 = 2; } // CHL
+    else if (order == 2) { i0 = 1; i1 = 2; i2 = 0; } // CLH
+    else if (order == 3) { i0 = 0; i1 = 2; i2 = 1; } // HLC
     else if (order == 4) { i0 = 2; i1 = 0; i2 = 1; } // LHC
     else if (order == 5) { i0 = 2; i1 = 1; i2 = 0; } // LCH
  
@@ -19844,6 +19897,24 @@ var validateIsFinding = false;
 
 
 
+class OpValidateColor_Correction
+{
+    name; // 'H', 'C', or 'L'
+    max;
+    value;
+    locked;
+
+    constructor(name, max, value = 0, locked = false)
+    {
+        this.name   = name;
+        this.max    = max;
+        this.value  = value;
+        this.locked = locked;
+    }
+}
+
+
+
 class   OpValidateColor
 extends OpColorBase
 {
@@ -19860,6 +19931,10 @@ extends OpColorBase
     findProgress;
 
 
+    corrections = [];
+
+
+
     constructor()
     {
         super('validatecolor', 'validate', 'color', 80);
@@ -19869,23 +19944,69 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.paramOrder = new SelectParam('order',   '', false, true, true, ['H,&thinsp;C,&thinsp;L', 'H,&thinsp;L,&thinsp;C', 'C,&thinsp;H,&thinsp;L', 'C,&thinsp;L,&thinsp;H', 'L,&thinsp;H,&thinsp;C', 'L,&thinsp;C,&thinsp;H'], 2));
-        this.addParam(this.param1     = new NumberParam('margin1', '', true,  true, true, 0));
-        this.addParam(this.param2     = new NumberParam('margin2', '', true,  true, true, 0));
-        this.addParam(this.param3     = new NumberParam('margin3', '', true,  true, true, 0));
+        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
+            'H,&thinsp;C,&thinsp;L', 
+            'C,&thinsp;H,&thinsp;L', 
+            'C,&thinsp;L,&thinsp;H', 
+            'H,&thinsp;L,&thinsp;C', 
+            'L,&thinsp;H,&thinsp;C', 
+            'L,&thinsp;C,&thinsp;H' 
+        ], 2));
+
+        this.paramOrder.addEventListener('change', () => this.updateCorrections());
 
 
-        this.param1.control.max       = 100;
-        this.param2.control.max       = 100;
-        this.param3.control.max       = 360;
+        this.addParam(this.param1 = new NumberParam('margin1', '', true, true, true, 0));
+        this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
+        this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
 
-        this.param1.showParamLock     = true;
-        this.param2.showParamLock     = true;
-        this.param3.showParamLock     = true;
+        this.param1.showParamLock = true;
+        this.param2.showParamLock = true;
+        this.param3.showParamLock = true;
 
-        this.param1.control.text.style.left = 36;
-        this.param2.control.text.style.left = 36;
-        this.param3.control.text.style.left = 36;
+
+        this.param1.addEventListener('change', () => 
+        {
+            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i1].value = this.param1.value;
+        });
+
+        this.param1.addEventListener('changelock', () => 
+        {
+            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i1].locked = this.param1.isLocked;
+        });
+
+
+        this.param2.addEventListener('change', () => 
+        {
+            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i2].value = this.param2.value;
+        });
+
+        this.param2.addEventListener('changelock', () => 
+        {
+            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i2].locked = this.param2.isLocked;
+        });
+
+
+        this.param3.addEventListener('change', () => 
+        {
+            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i3].value = this.param3.value;
+        });
+
+        this.param3.addEventListener('changelock', () => 
+        {
+            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i3].locked = this.param3.isLocked;
+        });
+
+
+        this.initCorrections();
+        this.updateCorrections();
+
 
         this.header.connectionPadding = 18;
 
@@ -19919,7 +20040,7 @@ extends OpColorBase
 
                 this.btnFind     .style.display = 'none';
                 this.findBar     .style.display = 'block';
-                this.findProgress.style.width = 0;
+                this.findProgress.style.width   = 0;
                 
                 validateIsFinding = true;
 
@@ -19928,9 +20049,12 @@ extends OpColorBase
                     msg:       'genFindCorrection',
                     nodeId:     this.id,
                     inputColor: this.inputs[0].data.color,
-                    max1:       this.param1.control.max,
-                    max2:       this.param2.control.max,
-                    max3:       this.param3.control.max
+                    param1:     this.param1.value,
+                    param2:     this.param2.value,
+                    param3:     this.param3.value,
+                    locked1:    this.param1.isLocked,
+                    locked2:    this.param2.isLocked,
+                    locked3:    this.param3.isLocked
                 });
             }
         });
@@ -19952,12 +20076,29 @@ extends OpColorBase
 
 
 
+    initCorrections()
+    {
+        this.corrections.push(new OpValidateColor_Correction('H', 180));
+        this.corrections.push(new OpValidateColor_Correction('C', 100));
+        this.corrections.push(new OpValidateColor_Correction('L', 100));
+    }
+
+
+
+    updateCorrections()
+    {
+        const [i1, i2, i3] = getComponentOrder(this.paramOrder.value);
+
+        this.updateMargin(this.param1, this.corrections[i1]);
+        this.updateMargin(this.param2, this.corrections[i2]);
+        this.updateMargin(this.param3, this.corrections[i3]);
+    }
+
+
+
     updateData()
     {
         //log(this.id + '.OpValidColor.updateData()');
-
-        this.updateMargins();
-
 
         if (this.inputs[0].isConnected)
         {
@@ -19980,24 +20121,18 @@ extends OpColorBase
 
 
 
-    updateMargins()
+    updateMargin(margin, correction)
     {
-        const order = this.paramOrder.value;
+        margin.setName(correction.name, false);
+        margin.control.name = addValidateSymbol(correction.name);
 
-        const [n1, n2, n3] = getValidateComponentNames(order);
-        const [m1, m2, m3] = getValidateMax(order);
+        margin.control.setMin(0,              false);
+        margin.control.setMax(correction.max, false);
 
-        this.updateMargin(m1, this.param1); this.param1.control.name = n1; 
-        this.updateMargin(m2, this.param2); this.param2.control.name = n2; 
-        this.updateMargin(m3, this.param3); this.param3.control.name = n3; 
-    }
+        margin.isLocked = correction.locked;
+        margin.updateLock();
 
-
-
-    updateMargin(max, margin)
-    {
-        margin.control.setMin(0,   false);
-        margin.control.setMax(max, false);
+        margin.setValue(correction.value, true, true, false);
     }
 
 
@@ -20054,16 +20189,21 @@ function uiUpdateFindCorrectionProgress(nodeId, progress)
 
 
 
-function uiEndFindCorrectionProgress(nodeId, success, closestOrder, closest1, closest2, closest3)
+function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
 {
     const node = nodeFromId(nodeId);
 
     if (success)
     {
         node.paramOrder.setValue(closestOrder, true, true, false);
-        node.param1    .setValue(closest1,     true, true, false);
-        node.param2    .setValue(closest2,     true, true, false);
-        node.param3    .setValue(closest3,     true, true, false);
+
+        const [i1, i2, i3] = getComponentOrder(closestOrder);
+
+        node.corrections[i1].value = closest1;
+        node.corrections[i2].value = closest2;
+        node.corrections[i3].value = closest3;
+
+        node.updateCorrections();
     }
 
     validateIsFinding = false;
@@ -20076,16 +20216,16 @@ function uiEndFindCorrectionProgress(nodeId, success, closestOrder, closest1, cl
 
 
 
-function getValidateComponentNames(order)
+function getComponentOrder(order)
 {
     switch (order)
     {
-        case 0: return [addValidateSymbol('H'), addValidateSymbol('C'), addValidateSymbol('L')];
-        case 1: return [addValidateSymbol('H'), addValidateSymbol('L'), addValidateSymbol('C')];
-        case 2: return [addValidateSymbol('C'), addValidateSymbol('H'), addValidateSymbol('L')];
-        case 3: return [addValidateSymbol('C'), addValidateSymbol('L'), addValidateSymbol('H')];
-        case 4: return [addValidateSymbol('L'), addValidateSymbol('H'), addValidateSymbol('C')];
-        case 5: return [addValidateSymbol('L'), addValidateSymbol('C'), addValidateSymbol('H')];
+        case 0: return [0, 1, 2];
+        case 1: return [1, 0, 2];
+        case 2: return [1, 2, 0];
+        case 3: return [0, 2, 1];
+        case 4: return [2, 0, 1];
+        case 5: return [2, 1, 0];
     }
 }
 
@@ -20911,13 +21051,21 @@ extends Action
     
     do()
     {
+        //const conn = 
         uiConnect(
             this.outputOp.outputs[this.outputIndex], 
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
 
-            graphView.updateNodeTransform(this.inputOp);
-            this.inputOp.pushUpdate();
+        // uiSaveConnection(
+        //     this.outputOp.id,
+        //     this.outputIndex, 
+        //     this.inputOp.id,
+        //     this.inputIndex,
+        //     conn.toJson());
+            
+        graphView.updateNodeTransform(this.inputOp);
+        this.inputOp.pushUpdate();
     }
 
 
@@ -20925,6 +21073,13 @@ extends Action
     undo()
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+
+        // uiRemoveSavedConnection(
+        //     this.outputOp.id,
+        //     this.outputIndex, 
+        //     this.inputOp.id,
+        //     this.inputIndex);
+
 
         if (this.oldOutputOpId != '')
         {
@@ -20968,10 +21123,8 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
         const node = uiCreateNode(this.opType, this.creatingButton);
-
         this.createdNodeId = node.id;
-
-        //node.updateNode();
+        //uiSaveNodes([node.id]);
         
         node.pushUpdate();
 
@@ -20984,6 +21137,8 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
+        //uiRemoveSavedNodes([this.createdNodeId]);
+
         graphView.selectByIds(this.prevSelectedIds);
     }
 
@@ -20992,6 +21147,7 @@ extends Action
     redo()
     {
         const node = uiCreateNode(this.opType, this.creatingButton, this.createdNodeId);
+        //uiSaveNodes([node.id]);
 
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
@@ -21966,19 +22122,19 @@ document.addEventListener('pointermove', function(e)
     if (   document.resizingX
         && document.resizingY)
     {
-        resizeWindow(
+        uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             document.startRect.h + e.clientY - document.startRect.y);
     }
     else if (document.resizingX)
     {
-        resizeWindow(
+        uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             window.innerHeight);
     }
     else if (document.resizingY)
     {
-        resizeWindow(
+        uiResizeWindow(
             window.innerWidth,
             document.startRect.h + e.clientY - document.startRect.y);
     }
@@ -22008,13 +22164,15 @@ document.addEventListener('pointerup', function(e)
 var figMessages = [];
 
 
-//uiSaveLocal('state', null);
-//uiSaveLocal('windowWidth',  null);
-//uiSaveLocal('windowHeight', null);
-//uiSaveLocal('productKey', null);
+
+//uiSetLocalData('windowWidth',  null);
+//uiSetLocalData('windowHeight', null);
+//uiSetLocalData('productKey', null);
+
 
 
 var currentUser = '';
+
 
 
 const graph = new Graph();
@@ -22024,8 +22182,6 @@ const generator = new Worker(
         new Blob([generatorScript.textContent])));
 
 
-//const buf = new SharedArrayBuffer(1024);
-
 
 var     copiedNodesJson = '';
 var duplicatedNodesJson = '';
@@ -22034,13 +22190,25 @@ var pasteOffset         = [ 0,   0];
 var pasteOffsetDelta    = [40, 100];
 
 
+
 clearConsole();
 
 
-uiPostMessageToFigma({ 
-    cmd:    'figLoadState',
-    onLoad: 'figLoadState'
-});
+
+uiPostMessageToFigma({cmd: 'figStartGenerator'});
+
+function uiEndStartGenerator(msg)
+{
+    currentUser = msg.currentUser;
+    productKey  = msg.productKey;
+
+    uiGetLocalData('graphView');
+    uiPostMessageToFigma({cmd: 'figLoadNodesAndConns'});        
+
+    uiEndResizeWindow();
+
+    window.focus();
+}
 
 
 document.addEventListener('keydown', e =>
@@ -22180,10 +22348,6 @@ document.addEventListener('keydown', e =>
 
     else if (e.code == 'Tab')
         e.preventDefault();
-
-    else if (e.code == 'KeyS'
-        && getCtrlKey(e))
-        saveGraph();
 });
 
 
@@ -22234,12 +22398,17 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg); break;
-        case 'uiEndLoadState':        uiEndLoadState(msg);               break;
-        case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
-        case 'uiEndResizeWindow':     uiEndResizeWindow();               break;
-
-        case 'uiEndFigMessage':       uiPostNextMessageToFigma();        break;
+        case 'uiEndStartGenerator':  uiEndStartGenerator(msg);                          break;
+        case 'uiLoadNodesAndConns':  uiLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
+        
+        case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                         break;
+        case 'uiGetPageDataReturn':  uiGetPageDataReturn(msg);                          break;
+        
+        case 'uiEndResizeWindow':    uiEndResizeWindow();                               break;
+        
+        case 'uiForwardToGen':       uiPostMessageToGenerator(msg.msg);                 break;
+        
+        case 'uiEndFigMessage':     uiPostNextMessageToFigma();                         break;
     }    
 }    
   
@@ -22255,7 +22424,7 @@ generator.onmessage = function(e)
     switch (e.data.msg)
     {
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(e.data.nodeId, e.data.progress); break;
-        case 'uiEndFindCorrection':    uiEndFindCorrectionProgress   (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
+        case 'uiEndFindCorrection':    uiEndFindCorrection           (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
         // case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
         // case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         // case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
@@ -22315,7 +22484,6 @@ function uiPostMessageToGenerator(msg)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
 function setCursor(cursor, asyncForce = true)
 {
     document.body.style.cursor = cursor;
@@ -22334,6 +22502,367 @@ function setAutoCursor()
     else
         setCursor('default'); // 'auto');
 };
+
+
+function uiGetLocalData(key, value)
+{
+    uiPostMessageToFigma({ 
+        cmd: 'figGetLocalData', 
+        key:  key
+    });
+}
+
+
+
+function uiSetLocalData(key, value)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetLocalData',
+        key:   key,
+        value: value
+    });
+}
+
+
+
+function uiGetPageData(key)
+{
+    uiPostMessageToFigma({ 
+        cmd: 'figGetPageData', 
+        key:  key
+    });
+}
+
+
+
+function uiSetPageData(key, value)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetPageData', 
+        key:   key,
+        value: value
+    });
+}
+
+
+
+// function saveToLocalFile(filename, str) 
+// {
+//     const link = document.createElement('a');
+//     link.style.display = 'none';
+    
+//     link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
+//     link.setAttribute('download', filename);
+    
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+// }
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+   
+
+
+function uiGetLocalDataReturn(msg)
+{
+    switch (msg.key)
+    {
+        case 'graphView':
+            uiLoadGraphView(msg.value);
+            break;
+    }
+}
+
+
+function uiGetPageDataReturn(msg)
+{
+    // switch (msg.key)
+    // {
+    //     case '':
+    //         break;
+    // }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function uiLoadGraphView(json)
+{
+    graphView.loadingNodes   = true;
+    graphView.canUpdateNodes = false;
+    
+
+    // if (  !json
+    //     || json == '')
+    // {
+    //     // set defaults
+    //     //graphView.setPanAndZoom(point(0, 0), 1);
+    //     finishLoading();
+    //     return;
+    // }
+
+
+    const data = JSON.parse(json);
+    //log(json);
+
+
+    const pan = point( 
+        parseFloat(data.panx), 
+        parseFloat(data.pany));
+
+    if (isNaN(pan.x)) pan.x = 0;
+    if (isNaN(pan.y)) pan.y = 0;
+
+    
+    const zoom = parseFloat(data.zoom);
+    if (isNaN(zoom)) zoom  = 1;
+
+
+    graphView.setPanAndZoom(pan, zoom);
+
+
+    graphView.showWires = data.showWires == 'true';
+}
+
+
+
+function uiLoadNodesAndConns(nodesJson, connsJson)
+{
+    graph.clear();
+
+    const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
+    const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
+
+    //console.log('nodes', nodes);
+    //console.log('conns', conns);
+
+    loadNodesAsync(nodes, conns, setLoadingProgress);
+}
+
+
+
+// function saveGraph()
+// {
+//     const json = graph.toJson(); 
+//     //log(json); 
+//     uiSetPageData("graph", json);
+// }
+
+
+
+function setLoadingProgress(progress)
+{
+    loadingProgress.style.width = (progress * 100) + '%';
+}
+
+
+
+function loadNodesAsync(nodes, connections, setProgress)
+{
+    loadingProgress.style.width   = 0;
+    loadingOverlay .style.display = 'block';
+
+
+    let promise = Promise.resolve([]);
+
+
+    const chunkSize = 10; // nodes
+    for (let i = 0; i < nodes.length; i += chunkSize)
+    {
+        promise = promise.then(_nodes => 
+        {
+            const res = resolveLoadNodes(
+                nodes, 
+                i, 
+                Math.min(i + chunkSize, nodes.length), // exclusive
+                _nodes);
+
+            setProgress(i / (nodes.length + (connections ? connections.length : 0)));
+            return res;
+        });
+    }
+
+
+    promise.then(_nodes => 
+    {
+        graph.addNodes(_nodes, false, false);
+        //uiSaveNodes(_nodes.map(n => n.id));
+
+        loadConnectionsAsync(nodes, connections, _nodes, setProgress);    
+    });
+}
+
+
+
+function loadConnectionsAsync(nodes, connections, _nodes, setProgress)
+{
+    let promise = Promise.resolve([]);
+
+
+    if (connections)
+    {
+        const chunkSize = 10; // connections
+        for (let i = 0; i < connections.length; i += chunkSize)
+        {
+            promise = promise.then(() => 
+            {
+                const res = resolveLoadConnections(
+                    nodes,
+                    connections, 
+                    i, 
+                    Math.min(i + chunkSize, connections.length)); // exclusive
+
+                setProgress((nodes.length + i) / nozero(nodes.length + connections.length * 19/20)); // the proportion is arbitrary
+                return res;
+            });
+        }
+    }
+
+
+    promise.then(() => 
+    {
+        updateTerminalsAfterNodes(_nodes);
+        finishLoading();
+    });
+}
+
+
+
+function finishLoading()
+{
+    loadingOverlay.style.display = 'none';
+    
+    graphView.loadingNodes   = false;
+    graphView.canUpdateNodes = true;
+   
+    
+    updateToggleShowWiresButton();
+    graphView.updateShowWires();
+
+    
+    // now that the graph is loaded, the auto save can start
+    //setInterval(autoSave, 1000);
+}
+
+
+
+function resolveLoadNodes(_nodes, first, last, nodes)
+{
+    return new Promise(resolve => 
+        requestAnimationFrame(() => 
+        {
+            for (let i = first; i < last; i++)
+                nodes.push(loadNode(_nodes[i]));
+
+            resolve(nodes);
+        }));
+}
+
+
+
+function resolveLoadConnections(nodes, _connections, first, last)
+{
+    return new Promise(resolve => 
+        requestAnimationFrame(() => 
+        {
+            for (let i = first; i < last; i++)
+            {
+                const _conn = _connections[i];
+
+                if (   nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
+                    && nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp))
+                    Connection.parseJson(_conn);
+            }
+
+            resolve();
+        }));
+}
+
+
+
+function loadNodes(data)
+{
+    const nodes = [];
+    
+    for (let i = 0; i < data.nodes.length; i++)
+        nodes.push(loadNode(data.nodes[i]));
+
+    return nodes;
+}
+
+
+
+function loadNode(_node)
+{
+    const node = createNode(_node.type);
+    node.loading = true;
+
+    node.id   = _node.id;
+    node.name = _node.name;
+
+    if (_node.labelOffset)
+        node.labelOffsetFactor = parseFloat(_node.labelOffset);
+
+    if (  _node.params
+        || node.alwaysLoadParams)
+        node.loadParams(_node);
+
+    setNodePosition(
+        node, 
+        parseFloat(_node.x), 
+        parseFloat(_node.y),
+        false);
+
+    return node;
+}
+
+
+
+function loadConnections(data, loadOutsideConnections, setProgress = null)
+{
+    for (let i = 0; i < data.connections.length; i++)
+    {
+        const _conn = data.connections[i];
+        
+        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
+            || loadOutsideConnections)
+            Connection.parseJson(_conn);
+
+        if (setProgress)
+            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
+    }
+}
+
+
+
+function uiSaveGraphView()
+{
+    uiSetLocalData('graphView', graphView.toJson());
+}
+
+
+
+function dataColorToJson(color, nTab)
+{
+    let   pos = ' '.repeat(nTab);
+    const tab = '  ';
+
+    let json =
+          pos + tab + '[\n'
+        + pos + tab + tab + '"'+color[0] +'",\n'
+        + pos + tab + tab +     color[1] + ',\n'
+        + pos + tab + tab +     color[2] + ',\n'
+        + pos + tab + tab +     color[3] + '\n'
+        + pos + tab + ']';
+
+    return json;
+}
 
 
 var tooltipTimer, 
@@ -22519,6 +23048,9 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     
     graph.addNode(node);
     
+    uiSaveNodes([node.id]);
+
+
     // if (graphView.selectedNodes.length > 0)
     // {
     //     const selNode = graph.nodes.find(n => n.selected);
@@ -22551,6 +23083,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     //     nodeId:   node.id,
     //     nodeName: node.name
     // });
+    
 
 
     return node;
@@ -22562,6 +23095,9 @@ function uiDeleteNodes(nodeIds, actionId)
 {
     graph.deleteNodes(nodeIds);
     
+    uiRemoveSavedNodes(nodeIds);
+
+
     // uiPostMessageToGenerator({
     //     msg:     'genDeleteNodes',
     //     nodeIds:  nodeIds,
@@ -22632,6 +23168,7 @@ function uiSetNodeId(nodeId, newId)
 function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
 {
     //console.log('uiVariableConnect()');
+    
     if (inputOp._variableInputs)
     {
         const input = lastOf(inputOp.inputs);
@@ -22653,7 +23190,14 @@ function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
 
 function uiConnect(output, input, inputIndex = -1)
 {
-    graph.connect(output, input, inputIndex);
+    const conn = graph.connect(output, input, inputIndex);
+
+    uiSaveConnection(
+        output.op.id,
+        output.op.outputs.indexOf(output), 
+        input.op.id,
+        input.op.inputs.indexOf(input),
+        conn.toJson());
 
     // uiPostMessageToGenerator({
     //     msg:     'genConnect', 
@@ -22664,12 +23208,20 @@ function uiConnect(output, input, inputIndex = -1)
     //         index:  input.op.inputs.indexOf(input)
     //     }]
     // });
+
+    return conn;
 }
 
 
 
 function uiDisconnect(input)
 {
+    uiRemoveSavedConnection(
+        input.connectedOutput.op.id,
+        input.connectedOutput.op.outputs.indexOf(input.connectedOutput), 
+        input.op.id,
+        input.op.inputs.indexOf(input));
+
     graph.disconnect(input);
 
     // uiPostMessageToGenerator({
@@ -22857,7 +23409,7 @@ function correctNodeNamesInConnections(data)
         let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
         if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
 
-        const  inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
+        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
         data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
     }
 }
@@ -22872,47 +23424,80 @@ function updateGraphNodes()
 }
 
 
-function uiEndLoadState(msg)
+
+function uiSaveNodes(nodeIds)
 {
-    currentUser = msg.currentUser;
-    productKey  = msg.productKey;
+    const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const nodeJson = [];
 
-    //setInterval(autoSave, 1000);
-    uiGetPluginData('graph'); // load graph from current page
+    for (const node of nodes)
+        nodeJson.push(node.toJson());
 
-    uiEndResizeWindow();
-
-    window.focus();
+    uiPostMessageToFigma({
+        cmd:     'figSaveNodes',
+        nodeIds:  nodeIds,
+        nodeJson: nodeJson
+    });
 }
 
 
 
-function checkAddMenuItemProductKey(menuSelectItems)
+function uiRemoveSavedNodes(nodeIds)
 {
-    if (!validateProductKey(currentUser.id, productKey))
-        menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
+    uiPostMessageToFigma({
+        cmd:    'figRemoveSavedNodes',
+        nodeIds: nodeIds
+    });
 }
 
 
 
-function removeMenuItemProductKey()
+function uiSaveConnection(outputOpId, outputIndex, inputOpId, inputIndex, connJson)
 {
-    let index = menuSelect.items.findIndex(item => item.value == 'productKey');
-    removeAt(menuSelect.items, index);
-    menuSelect.updateItems();
+    uiPostMessageToFigma({
+        cmd: 'figSaveConnection',
+        name: outputOpId  + ' ' 
+            + outputIndex + ' ' 
+            + inputOpId   + ' ' 
+            + inputIndex,
+        json: connJson
+    });
 }
+
+
+
+function uiRemoveSavedConnection(outputOpId, outputIndex, inputOpId, inputIndex)
+{
+    uiPostMessageToFigma({
+        cmd: 'figRemoveSavedConnection',
+        name: outputOpId  + ' ' 
+            + outputIndex + ' ' 
+            + inputOpId   + ' ' 
+            + inputIndex
+    });
+}
+
+
+// function checkAddMenuItemProductKey(menuSelectItems)
+// {
+//     if (!validateProductKey(currentUser.id, productKey))
+//         menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
+// }
+
+
+
+// function removeMenuItemProductKey()
+// {
+//     let index = menuSelect.items.findIndex(item => item.value == 'productKey');
+//     removeAt(menuSelect.items, index);
+//     menuSelect.updateItems();
+// }
 
 
 
 function uiError(text, delay = 6000)
 {
-    uiPostMessageToFigma({ 
-        cmd:   'figNotify',
-        text:   text,
-        prefix: 'Generator error: ',
-        delay:  delay,
-        error:  true
-    });        
+    uiNotify(text, 'Generator error: ', delay, true);
 }
 
 
@@ -22929,13 +23514,13 @@ function uiNotify(text, prefix = 'Generator: ', delay = 4000, error = false)
 }
 
 
-document.canResizeX    = false;
-document.canResizeY    = false;
+document.canResizeX = false;
+document.canResizeY = false;
    
-document.resizingX     = false;
-document.resizingY     = false;
+document.resizingX  = false;
+document.resizingY  = false;
 
-document.startRect = new Rect();
+document.startRect  = new Rect();
 
 
 
@@ -22944,17 +23529,6 @@ window.addEventListener('keydown',       e => e.preventDefault());
 window.addEventListener('gesturestart',  e => e.preventDefault());
 window.addEventListener('gesturechange', e => e.preventDefault());
 window.addEventListener('gestureend',    e => e.preventDefault());
-
-
-
-function resizeWindow(width, height)
-{
-    uiPostMessageToFigma({ 
-        cmd:   'figResizeWindow', 
-        width:  width,
-        height: height
-    });
-}
 
 
 
@@ -22973,284 +23547,27 @@ function checkResize(x, y)
 }
 
 
-// function saveToLocalFile(filename, str) 
-// {
-//     const link = document.createElement('a');
-//     link.style.display = 'none';
-    
-//     link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
-//     link.setAttribute('download', filename);
-    
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-// }
 
-
-
-function saveGraph()
+function uiResizeWindow(width, height)
 {
-    const json = graph.toJson(); 
-    //log(json); 
-    uiSetPluginData("graph", json);
-}
-
-
-
-function loadGraph(json)
-{
-    graphView.loadingNodes   = true;
-    graphView.canUpdateNodes = false;
-
-
-    graph.clear();
-    
-
-    if (  !json
-        || json == '')
-    {
-        // set defaults
-        //graphView.setPanAndZoom(point(0, 0), 1);
-        finishLoading();
-        return;
-    }
-
-
-    const data = JSON.parse(json);
-    //log(json);
-
-
-    const pan = point( 
-        parseFloat(data.panx), 
-        parseFloat(data.pany));
-
-    if (isNaN(pan.x)) pan.x = 0;
-    if (isNaN(pan.y)) pan.y = 0;
-
-    
-    const zoom = parseFloat(data.zoom);
-    if (isNaN(zoom)) zoom  = 1;
-
-
-    graphView.setPanAndZoom(pan, zoom);
-
-
-    graphView.showWires = data.showWires == 'true';
-
-
-    loadNodesAsync(data, setLoadingProgress);
-}
-
-
-
-function setLoadingProgress(progress)
-{
-    loadingProgress.style.width = (progress * 100) + '%';
-}
-
-
-
-function loadNodesAsync(data, setProgress)
-{
-    loadingProgress.style.width   = 0;
-    loadingOverlay .style.display = 'block';
-
-
-    let promise = Promise.resolve([]);
-
-
-    const chunkSize = 10; // nodes
-    for (let i = 0; i < data.nodes.length; i += chunkSize)
-    {
-        promise = promise.then(nodes => 
-        {
-            const res = resolveLoadNodes(
-                data.nodes, 
-                i, 
-                Math.min(i + chunkSize, data.nodes.length), // exclusive
-                nodes);
-
-            setProgress(i / (data.nodes.length + (data.connections ? data.connections.length : 0)));
-            return res;
-        });
-    }
-
-
-    promise.then(nodes => 
-    {
-        graph.addNodes(nodes, false, false);
-        loadConnectionsAsync(data, nodes, setProgress);    
+    uiPostMessageToFigma({ 
+        cmd:   'figResizeWindow', 
+        width:  width,
+        height: height
     });
 }
 
 
 
-function loadConnectionsAsync(data, nodes, setProgress)
+function uiEndResizeWindow()
 {
-    let promise = Promise.resolve([]);
+    graphView.updatePanAndZoom();
 
+    btnZoom.style.top  = 0;
+    btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
 
-    if (data.connections)
-    {
-        const chunkSize = 10; // connections
-        for (let i = 0; i < data.connections.length; i += chunkSize)
-        {
-            promise = promise.then(() => 
-            {
-                const res = resolveLoadConnections(
-                    data.connections, 
-                    i, 
-                    Math.min(i + chunkSize, data.connections.length), // exclusive
-                    data);
-
-                setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
-                return res;
-            });
-        }
-    }
-
-
-    promise.then(() => 
-    {
-        updateTerminalsAfterNodes(nodes);
-        finishLoading();
-    });
-}
-
-
-
-function finishLoading()
-{
-    loadingOverlay.style.display = 'none';
-    
-    graphView.loadingNodes   = false;
-    graphView.canUpdateNodes = true;
-   
-    
-    updateToggleShowWiresButton();
-    graphView.updateShowWires();
-
-    
-    // now that the graph is loaded, the auto save can start
-    setInterval(autoSave, 1000);
-}
-
-
-
-function resolveLoadNodes(_nodes, first, last, nodes)
-{
-    return new Promise(resolve => 
-        requestAnimationFrame(() => 
-        {
-            for (let i = first; i < last; i++)
-                nodes.push(loadNode(_nodes[i]));
-
-            resolve(nodes);
-        }));
-}
-
-
-
-function resolveLoadConnections(_connections, first, last, data)
-{
-    return new Promise(resolve => 
-        requestAnimationFrame(() => 
-        {
-            for (let i = first; i < last; i++)
-            {
-                const _conn = _connections[i];
-
-                if (   data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-                    && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
-                    || loadOutsideConnections)
-                    Connection.parseJson(_conn);
-            }
-
-            resolve();
-        }));
-}
-
-
-
-function loadNodes(data)
-{
-    const nodes = [];
-    
-    for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(loadNode(data.nodes[i]));
-
-    return nodes;
-}
-
-
-
-function loadNode(_node)
-{
-    const node = createNode(_node.type);
-    node.loading = true;
-
-    node.id   = _node.id;
-    node.name = _node.name;
-
-    if (_node.labelOffset)
-        node.labelOffsetFactor = parseFloat(_node.labelOffset);
-
-    if (  _node.params
-        || node.alwaysLoadParams)
-        node.loadParams(_node);
-
-    setNodePosition(
-        node, 
-        parseFloat(_node.x), 
-        parseFloat(_node.y),
-        false);
-
-    return node;
-}
-
-
-
-function loadConnections(data, loadOutsideConnections, setProgress = null)
-{
-    for (let i = 0; i < data.connections.length; i++)
-    {
-        const _conn = data.connections[i];
-        
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
-            || loadOutsideConnections)
-            Connection.parseJson(_conn);
-
-        if (setProgress)
-            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
-    }
-}
-
-
-
-function autoSave()
-{
-    const json = graph.toJson();
-    //log(json);
-    uiSetPluginData('graph', json);
-}
-
-
-
-function dataColorToJson(color, nTab)
-{
-    let   pos = ' '.repeat(nTab);
-    const tab = '  ';
-
-    let json =
-          pos + tab + '[\n'
-        + pos + tab + tab + '"' + color[0] + '",\n'
-        + pos + tab + tab + color[1] + ',\n'
-        + pos + tab + tab + color[2] + ',\n'
-        + pos + tab + tab + color[3] + '\n'
-        + pos + tab + ']';
-
-    return json;
+    btnToggleWires.style.top  = 0;
+    btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
 }
 
 
@@ -23387,7 +23704,7 @@ productKeyInput.addEventListener('input', () =>
         if (validateProductKey(currentUser.id, val))
         {
             productKey = val;        
-            uiSaveLocal('productKey', productKey);
+            uiSetLocalData('productKey', productKey);
             
             productKeyInput.blur();
             setGoodProductKeyInput();

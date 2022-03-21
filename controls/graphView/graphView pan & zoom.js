@@ -6,7 +6,10 @@ Object.defineProperty(graphView, 'pan',
     set: pan =>
     {
         if (graphView._pan == pan) return;
+
         graphView._pan = pan;
+        
+        uiSaveGraphView();
         graphView.updatePanAndZoom();
     }
 });
@@ -61,9 +64,10 @@ graphView.setPanAndZoom = (pan, zoom) =>
 
         graphView._zoom = zoom;
         graphView._pan  = pan;
-    }
 
-    graphView.updatePanAndZoom();
+        uiSaveGraphView();
+        graphView.updatePanAndZoom();
+    }
 };
 
 

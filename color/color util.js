@@ -144,3 +144,12 @@ function maxRgbDistance(col1, col2)
         Math.abs(col2[1] - col1[1])),
         Math.abs(col2[2] - col1[2])));
 }
+
+
+
+function rgbEqual(rgb1, rgb2)
+{
+    return rgb1[0] == rgb2[0]
+        && rgb1[1] == rgb2[1]
+        && rgb1[2] == rgb2[2];        
+}

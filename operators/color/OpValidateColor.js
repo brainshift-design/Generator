@@ -2,6 +2,24 @@ var validateIsFinding = false;
 
 
 
+class OpValidateColor_Correction
+{
+    name; // 'H', 'C', or 'L'
+    max;
+    value;
+    locked;
+
+    constructor(name, max, value = 0, locked = false)
+    {
+        this.name   = name;
+        this.max    = max;
+        this.value  = value;
+        this.locked = locked;
+    }
+}
+
+
+
 class   OpValidateColor
 extends OpColorBase
 {
@@ -18,6 +36,10 @@ extends OpColorBase
     findProgress;
 
 
+    corrections = [];
+
+
+
     constructor()
     {
         super('validatecolor', 'validate', 'color', 80);
@@ -27,23 +49,69 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.paramOrder = new SelectParam('order',   '', false, true, true, ['H,&thinsp;C,&thinsp;L', 'H,&thinsp;L,&thinsp;C', 'C,&thinsp;H,&thinsp;L', 'C,&thinsp;L,&thinsp;H', 'L,&thinsp;H,&thinsp;C', 'L,&thinsp;C,&thinsp;H'], 2));
-        this.addParam(this.param1     = new NumberParam('margin1', '', true,  true, true, 0));
-        this.addParam(this.param2     = new NumberParam('margin2', '', true,  true, true, 0));
-        this.addParam(this.param3     = new NumberParam('margin3', '', true,  true, true, 0));
+        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
+            'H,&thinsp;C,&thinsp;L', 
+            'C,&thinsp;H,&thinsp;L', 
+            'C,&thinsp;L,&thinsp;H', 
+            'H,&thinsp;L,&thinsp;C', 
+            'L,&thinsp;H,&thinsp;C', 
+            'L,&thinsp;C,&thinsp;H' 
+        ], 2));
+
+        this.paramOrder.addEventListener('change', () => this.updateCorrections());
 
 
-        this.param1.control.max       = 100;
-        this.param2.control.max       = 100;
-        this.param3.control.max       = 360;
+        this.addParam(this.param1 = new NumberParam('margin1', '', true, true, true, 0));
+        this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
+        this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
 
-        this.param1.showParamLock     = true;
-        this.param2.showParamLock     = true;
-        this.param3.showParamLock     = true;
+        this.param1.showParamLock = true;
+        this.param2.showParamLock = true;
+        this.param3.showParamLock = true;
 
-        this.param1.control.text.style.left = 36;
-        this.param2.control.text.style.left = 36;
-        this.param3.control.text.style.left = 36;
+
+        this.param1.addEventListener('change', () => 
+        {
+            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i1].value = this.param1.value;
+        });
+
+        this.param1.addEventListener('changelock', () => 
+        {
+            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i1].locked = this.param1.isLocked;
+        });
+
+
+        this.param2.addEventListener('change', () => 
+        {
+            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i2].value = this.param2.value;
+        });
+
+        this.param2.addEventListener('changelock', () => 
+        {
+            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i2].locked = this.param2.isLocked;
+        });
+
+
+        this.param3.addEventListener('change', () => 
+        {
+            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i3].value = this.param3.value;
+        });
+
+        this.param3.addEventListener('changelock', () => 
+        {
+            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            this.corrections[i3].locked = this.param3.isLocked;
+        });
+
+
+        this.initCorrections();
+        this.updateCorrections();
+
 
         this.header.connectionPadding = 18;
 
@@ -77,7 +145,7 @@ extends OpColorBase
 
                 this.btnFind     .style.display = 'none';
                 this.findBar     .style.display = 'block';
-                this.findProgress.style.width = 0;
+                this.findProgress.style.width   = 0;
                 
                 validateIsFinding = true;
 
@@ -86,9 +154,12 @@ extends OpColorBase
                     msg:       'genFindCorrection',
                     nodeId:     this.id,
                     inputColor: this.inputs[0].data.color,
-                    max1:       this.param1.control.max,
-                    max2:       this.param2.control.max,
-                    max3:       this.param3.control.max
+                    param1:     this.param1.value,
+                    param2:     this.param2.value,
+                    param3:     this.param3.value,
+                    locked1:    this.param1.isLocked,
+                    locked2:    this.param2.isLocked,
+                    locked3:    this.param3.isLocked
                 });
             }
         });
@@ -110,12 +181,29 @@ extends OpColorBase
 
 
 
+    initCorrections()
+    {
+        this.corrections.push(new OpValidateColor_Correction('H', 180));
+        this.corrections.push(new OpValidateColor_Correction('C', 100));
+        this.corrections.push(new OpValidateColor_Correction('L', 100));
+    }
+
+
+
+    updateCorrections()
+    {
+        const [i1, i2, i3] = getComponentOrder(this.paramOrder.value);
+
+        this.updateMargin(this.param1, this.corrections[i1]);
+        this.updateMargin(this.param2, this.corrections[i2]);
+        this.updateMargin(this.param3, this.corrections[i3]);
+    }
+
+
+
     updateData()
     {
         //log(this.id + '.OpValidColor.updateData()');
-
-        this.updateMargins();
-
 
         if (this.inputs[0].isConnected)
         {
@@ -138,24 +226,18 @@ extends OpColorBase
 
 
 
-    updateMargins()
+    updateMargin(margin, correction)
     {
-        const order = this.paramOrder.value;
+        margin.setName(correction.name, false);
+        margin.control.name = addValidateSymbol(correction.name);
 
-        const [n1, n2, n3] = getValidateComponentNames(order);
-        const [m1, m2, m3] = getValidateMax(order);
+        margin.control.setMin(0,              false);
+        margin.control.setMax(correction.max, false);
 
-        this.updateMargin(m1, this.param1); this.param1.control.name = n1; 
-        this.updateMargin(m2, this.param2); this.param2.control.name = n2; 
-        this.updateMargin(m3, this.param3); this.param3.control.name = n3; 
-    }
+        margin.isLocked = correction.locked;
+        margin.updateLock();
 
-
-
-    updateMargin(max, margin)
-    {
-        margin.control.setMin(0,   false);
-        margin.control.setMax(max, false);
+        margin.setValue(correction.value, true, true, false);
     }
 
 
@@ -212,16 +294,21 @@ function uiUpdateFindCorrectionProgress(nodeId, progress)
 
 
 
-function uiEndFindCorrectionProgress(nodeId, success, closestOrder, closest1, closest2, closest3)
+function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
 {
     const node = nodeFromId(nodeId);
 
     if (success)
     {
         node.paramOrder.setValue(closestOrder, true, true, false);
-        node.param1    .setValue(closest1,     true, true, false);
-        node.param2    .setValue(closest2,     true, true, false);
-        node.param3    .setValue(closest3,     true, true, false);
+
+        const [i1, i2, i3] = getComponentOrder(closestOrder);
+
+        node.corrections[i1].value = closest1;
+        node.corrections[i2].value = closest2;
+        node.corrections[i3].value = closest3;
+
+        node.updateCorrections();
     }
 
     validateIsFinding = false;
@@ -234,16 +321,16 @@ function uiEndFindCorrectionProgress(nodeId, success, closestOrder, closest1, cl
 
 
 
-function getValidateComponentNames(order)
+function getComponentOrder(order)
 {
     switch (order)
     {
-        case 0: return [addValidateSymbol('H'), addValidateSymbol('C'), addValidateSymbol('L')];
-        case 1: return [addValidateSymbol('H'), addValidateSymbol('L'), addValidateSymbol('C')];
-        case 2: return [addValidateSymbol('C'), addValidateSymbol('H'), addValidateSymbol('L')];
-        case 3: return [addValidateSymbol('C'), addValidateSymbol('L'), addValidateSymbol('H')];
-        case 4: return [addValidateSymbol('L'), addValidateSymbol('H'), addValidateSymbol('C')];
-        case 5: return [addValidateSymbol('L'), addValidateSymbol('C'), addValidateSymbol('H')];
+        case 0: return [0, 1, 2];
+        case 1: return [1, 0, 2];
+        case 2: return [1, 2, 0];
+        case 3: return [0, 2, 1];
+        case 4: return [2, 0, 1];
+        case 5: return [2, 1, 0];
     }
 }
 

@@ -762,6 +762,8 @@ graphView.toggleShowWires = function()
 {
     graphView.showWires = !graphView.showWires;
 
+    uiSaveGraphView();
+
     updateToggleShowWiresButton();
     graphView.updateShowWires();
 };
@@ -772,4 +774,18 @@ graphView.updateShowWires = function()
 {
     graph.nodes      .forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
+};
+
+
+
+graphView.toJson = function()
+{
+    const tab = '  ';
+
+    return '{\n'
+        + tab + '"zoom": "'      + graphView.zoom  + '",\n'
+        + tab + '"panx": "'      + graphView.pan.x + '",\n'
+        + tab + '"pany": "'      + graphView.pan.y + '",\n'
+        + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '"\n'
+        + '\n}';
 };

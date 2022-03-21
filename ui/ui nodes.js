@@ -4,6 +4,9 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     
     graph.addNode(node);
     
+    uiSaveNodes([node.id]);
+
+
     // if (graphView.selectedNodes.length > 0)
     // {
     //     const selNode = graph.nodes.find(n => n.selected);
@@ -36,6 +39,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     //     nodeId:   node.id,
     //     nodeName: node.name
     // });
+    
 
 
     return node;
@@ -47,6 +51,9 @@ function uiDeleteNodes(nodeIds, actionId)
 {
     graph.deleteNodes(nodeIds);
     
+    uiRemoveSavedNodes(nodeIds);
+
+
     // uiPostMessageToGenerator({
     //     msg:     'genDeleteNodes',
     //     nodeIds:  nodeIds,
@@ -117,6 +124,7 @@ function uiSetNodeId(nodeId, newId)
 function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
 {
     //console.log('uiVariableConnect()');
+    
     if (inputOp._variableInputs)
     {
         const input = lastOf(inputOp.inputs);
@@ -138,7 +146,14 @@ function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
 
 function uiConnect(output, input, inputIndex = -1)
 {
-    graph.connect(output, input, inputIndex);
+    const conn = graph.connect(output, input, inputIndex);
+
+    uiSaveConnection(
+        output.op.id,
+        output.op.outputs.indexOf(output), 
+        input.op.id,
+        input.op.inputs.indexOf(input),
+        conn.toJson());
 
     // uiPostMessageToGenerator({
     //     msg:     'genConnect', 
@@ -149,12 +164,20 @@ function uiConnect(output, input, inputIndex = -1)
     //         index:  input.op.inputs.indexOf(input)
     //     }]
     // });
+
+    return conn;
 }
 
 
 
 function uiDisconnect(input)
 {
+    uiRemoveSavedConnection(
+        input.connectedOutput.op.id,
+        input.connectedOutput.op.outputs.indexOf(input.connectedOutput), 
+        input.op.id,
+        input.op.inputs.indexOf(input));
+
     graph.disconnect(input);
 
     // uiPostMessageToGenerator({
@@ -342,7 +365,7 @@ function correctNodeNamesInConnections(data)
         let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
         if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
 
-        const  inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
+        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
         data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
     }
 }
@@ -354,4 +377,58 @@ function updateGraphNodes()
     for (const node of graphView.selectedNodes)      node.updateNode();
     for (const node of graphView._prevSelectedNodes) node.updateNode();
     for (const node of graphView.lastSelectedNodes)  node.updateNode();
+}
+
+
+
+function uiSaveNodes(nodeIds)
+{
+    const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const nodeJson = [];
+
+    for (const node of nodes)
+        nodeJson.push(node.toJson());
+
+    uiPostMessageToFigma({
+        cmd:     'figSaveNodes',
+        nodeIds:  nodeIds,
+        nodeJson: nodeJson
+    });
+}
+
+
+
+function uiRemoveSavedNodes(nodeIds)
+{
+    uiPostMessageToFigma({
+        cmd:    'figRemoveSavedNodes',
+        nodeIds: nodeIds
+    });
+}
+
+
+
+function uiSaveConnection(outputOpId, outputIndex, inputOpId, inputIndex, connJson)
+{
+    uiPostMessageToFigma({
+        cmd: 'figSaveConnection',
+        name: outputOpId  + ' ' 
+            + outputIndex + ' ' 
+            + inputOpId   + ' ' 
+            + inputIndex,
+        json: connJson
+    });
+}
+
+
+
+function uiRemoveSavedConnection(outputOpId, outputIndex, inputOpId, inputIndex)
+{
+    uiPostMessageToFigma({
+        cmd: 'figRemoveSavedConnection',
+        name: outputOpId  + ' ' 
+            + outputIndex + ' ' 
+            + inputOpId   + ' ' 
+            + inputIndex
+    });
 }

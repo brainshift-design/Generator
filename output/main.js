@@ -134,15 +134,14 @@ var maxNodeId = Number.MIN_SAFE_INTEGER;
 figma.on('selectionchange', figOnSelectionChange);
 figma.on('close', figOnPluginClose);
 figma.showUI(__html__);
-function figLoadState(msg) {
+function figStartGenerator() {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
-            // load state
-            let state = yield figma.clientStorage.getAsync('state');
-            if (state == null)
-                state = {};
-            // ...
-            // resize window
+            // load product key
+            let productKey = yield figLoadLocal('productKey');
+            if (productKey == null)
+                productKey = '';
+            // size window
             let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
             let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
             if (wndWidth == null)
@@ -150,13 +149,9 @@ function figLoadState(msg) {
             if (wndHeight == null)
                 wndHeight = 600;
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
-            // load product key
-            let productKey = yield figLoadLocal('productKey');
-            if (productKey == null)
-                productKey = '';
-            // end load state
+            //
             figPostMessageToUi({
-                cmd: 'uiEndLoadState',
+                cmd: 'uiEndStartGenerator',
                 currentUser: figma.currentUser,
                 productKey: productKey
             });
@@ -167,29 +162,47 @@ function figLoadState(msg) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 figma.ui.onmessage = msg => {
     switch (msg.cmd) {
-        case 'figLoadState':
-            figLoadState(msg);
+        case 'figStartGenerator':
+            figStartGenerator();
             break;
         case 'figResizeWindow':
             figResizeWindow(msg.width, msg.height);
             break;
-        case 'figSaveLocal':
-            figSaveLocal(msg.key, msg.value);
+        case 'figNotify':
+            figNotify(msg.text, msg.prefix, msg.delay, msg.error);
             break;
-        case 'figGetPluginData':
-            figGetPluginData(msg.key);
+        case 'figGetLocalData':
+            figGetLocalData(msg.key);
             break;
-        case 'figSetPluginData':
-            figSetPluginData(msg.key, msg.value);
+        case 'figSetLocalData':
+            figSetLocalData(msg.key, msg.value);
+            break;
+        case 'figGetPageData':
+            figGetPageData(msg.key);
+            break;
+        case 'figSetPageData':
+            figSetPageData(msg.key, msg.value);
+            break;
+        case 'figLoadNodesAndConns':
+            figLoadNodesAndConns();
+            break;
+        case 'figSaveNodesAndConns':
+            figSaveNodesAndConns(msg.nodeIds, msg.nodeJson);
+            break;
+        case 'figRemoveSavedNodesAndConns':
+            figRemoveSavedNodesAndConns(msg.nodeIds);
+            break;
+        case 'figSaveConnection':
+            figSaveConnection(msg.name, msg.json);
+            break;
+        case 'figRemoveSavedConnection':
+            figRemoveSavedConnection(msg.name);
             break;
         case 'figDeleteNodeObjects':
             figDeleteNodeObjects(msg.nodeIds);
             break;
         case 'figUpdateObjects':
             figUpdateObjects(msg.objects);
-            break;
-        case 'figNotify':
-            figNotify(msg.text, msg.prefix, msg.delay, msg.error);
             break;
     }
     figPostMessageToUi({ cmd: 'uiEndFigMessage' });
@@ -200,7 +213,7 @@ function figPostMessageToUi(msg) {
     figma.ui.postMessage(msg);
 }
 // to Generator -->
-function figPostToGenerator(msg) {
+function figPostMessageToGenerator(msg) {
     figPostMessageToUi({
         cmd: 'uiForwardToGen',
         msg: msg
@@ -212,21 +225,65 @@ function figLoadLocal(key) {
         return yield figma.clientStorage.getAsync(key);
     });
 }
-function figSaveLocal(key, value) {
+function figGetLocalData(key) {
+    figma.clientStorage.getAsync(key).then(data => {
+        //console.log('getAsync', data);
+        figPostMessageToUi({
+            cmd: 'uiGetLocalDataReturn',
+            key: key,
+            value: data
+        });
+    });
+}
+function figSetLocalData(key, value) {
     figma.clientStorage.setAsync(key, value);
 }
-function figGetPluginData(key) {
+function figGetPageData(key) {
     const data = figma.currentPage.getPluginData(key);
     figPostMessageToUi({
-        cmd: 'uiGetPluginDataReturn',
+        cmd: 'uiGetPageDataReturn',
         key: key,
         value: data
     });
 }
-function figSetPluginData(key, value) {
+function figSetPageData(key, value) {
     figma.currentPage.setPluginData(key, ''); // remove possible existing values first
     figma.currentPage.setPluginData(key, value);
 }
+function figLoadNodesAndConns() {
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+    const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+    const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
+    const nodesJson = JSON.stringify(nodes);
+    const connsJson = JSON.stringify(conns);
+    figPostMessageToUi({
+        cmd: 'uiLoadNodesAndConns',
+        nodesJson: nodesJson,
+        connsJson: connsJson
+    });
+}
+function figSaveNodesAndConns(nodeIds, nodeJson) {
+    for (let i = 0; i < nodeIds.length; i++) {
+        // console.log('key', nodeName(nodeIds[i]));
+        // console.log('value', nodeJson[i]);
+        figSetPageData(nodeName(nodeIds[i]), nodeJson[i]);
+    }
+}
+function figRemoveSavedNodesAndConns(nodeIds) {
+    for (let i = 0; i < nodeIds.length; i++)
+        figSetPageData(nodeName(nodeIds[i]), '');
+}
+function figSaveConnection(name, json) {
+    // console.log('key', connName(name));
+    // console.log('connection', json);
+    figSetPageData(connName(name), json);
+}
+function figRemoveSavedConnection(name) {
+    figSetPageData(connName(name), '');
+}
+function nodeName(nodeId) { return 'GN ' + nodeId; }
+function connName(name) { return 'GC ' + name; }
 function figResizeWindow(width, height) {
     width = Math.floor(Math.max(0, width));
     height = Math.floor(Math.max(0, height));

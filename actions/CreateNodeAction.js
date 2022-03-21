@@ -25,10 +25,8 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
         const node = uiCreateNode(this.opType, this.creatingButton);
-
         this.createdNodeId = node.id;
-
-        //node.updateNode();
+        //uiSaveNodes([node.id]);
         
         node.pushUpdate();
 
@@ -41,6 +39,8 @@ extends Action
     undo()
     {
         uiDeleteNodes([this.createdNodeId]);
+        //uiRemoveSavedNodes([this.createdNodeId]);
+
         graphView.selectByIds(this.prevSelectedIds);
     }
 
@@ -49,6 +49,7 @@ extends Action
     redo()
     {
         const node = uiCreateNode(this.opType, this.creatingButton, this.createdNodeId);
+        //uiSaveNodes([node.id]);
 
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());

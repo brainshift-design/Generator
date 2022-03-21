@@ -149,7 +149,7 @@ class Graph
     {
         //console.log('graph.connect()');
         if (input.connectedOutput == output)
-            return false;
+            return null;
             
 
         if (input.connectedOutput)
@@ -197,7 +197,7 @@ class Graph
         output.updateControl();
 
 
-        return true;
+        return conn;
     }
 
 
@@ -241,27 +241,6 @@ class Graph
 
 
         return true;
-    }
-
-
-
-    toJson()
-    {
-        const tab = '  ';
-
-        let json = '{\n'
-            + tab + '"version": "0",\n'
-            + tab + '"zoom": "'      + graphView.zoom  + '",\n'
-            + tab + '"panx": "'      + graphView.pan.x + '",\n'
-            + tab + '"pany": "'      + graphView.pan.y + '",\n'
-            + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '",\n';
-
-        json += nodesToJson(this.nodes, false);
-
-        json += '\n}';
-
-
-        return json;
     }
 }
 

@@ -7,12 +7,17 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg); break;
-        case 'uiEndLoadState':        uiEndLoadState(msg);               break;
-        case 'uiGetPluginDataReturn': uiGetPluginDataReturn(msg);        break;
-        case 'uiEndResizeWindow':     uiEndResizeWindow();               break;
-
-        case 'uiEndFigMessage':       uiPostNextMessageToFigma();        break;
+        case 'uiEndStartGenerator':  uiEndStartGenerator(msg);                          break;
+        case 'uiLoadNodesAndConns':  uiLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
+        
+        case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                         break;
+        case 'uiGetPageDataReturn':  uiGetPageDataReturn(msg);                          break;
+        
+        case 'uiEndResizeWindow':    uiEndResizeWindow();                               break;
+        
+        case 'uiForwardToGen':       uiPostMessageToGenerator(msg.msg);                 break;
+        
+        case 'uiEndFigMessage':     uiPostNextMessageToFigma();                         break;
     }    
 }    
   
@@ -28,7 +33,7 @@ generator.onmessage = function(e)
     switch (e.data.msg)
     {
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(e.data.nodeId, e.data.progress); break;
-        case 'uiEndFindCorrection':    uiEndFindCorrectionProgress   (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
+        case 'uiEndFindCorrection':    uiEndFindCorrection           (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
         // case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
         // case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         // case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;

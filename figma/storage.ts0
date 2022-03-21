@@ -5,19 +5,34 @@ async function figLoadLocal(key)
 
 
 
-function figSaveLocal(key, value)
+function figGetLocalData(key)
+{
+    figma.clientStorage.getAsync(key).then(data =>
+    {
+        //console.log('getAsync', data);
+        figPostMessageToUi({
+            cmd:  'uiGetLocalDataReturn',
+            key:   key,
+            value: data
+        });
+    });
+}
+
+
+
+function figSetLocalData(key, value)
 {
     figma.clientStorage.setAsync(key, value); 
 }
 
 
 
-function figGetPluginData(key)
+function figGetPageData(key)
 {
     const data = figma.currentPage.getPluginData(key);
 
     figPostMessageToUi({
-        cmd:  'uiGetPluginDataReturn',
+        cmd:  'uiGetPageDataReturn',
         key:   key,
         value: data
     });
@@ -25,8 +40,77 @@ function figGetPluginData(key)
 
 
 
-function figSetPluginData(key, value)
+function figSetPageData(key, value)
 {
     figma.currentPage.setPluginData(key, ''); // remove possible existing values first
     figma.currentPage.setPluginData(key, value);
 }
+
+
+
+function figLoadNodesAndConns()
+{
+    const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
+    const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+
+    const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+    const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
+
+    const nodesJson = JSON.stringify(nodes);
+    const connsJson = JSON.stringify(conns);
+
+    figPostMessageToUi({
+        cmd:      'uiLoadNodesAndConns',
+        nodesJson: nodesJson,
+        connsJson: connsJson
+    });
+}
+
+
+
+function figSaveNodesAndConns(nodeIds, nodeJson)
+{
+    for (let i = 0; i < nodeIds.length; i++)
+    {
+        // console.log('key', nodeName(nodeIds[i]));
+        // console.log('value', nodeJson[i]);
+        
+        figSetPageData(
+            nodeName(nodeIds[i]),
+            nodeJson[i]
+        );        
+    }
+}
+
+
+
+function figRemoveSavedNodesAndConns(nodeIds)
+{
+    for (let i = 0; i < nodeIds.length; i++)
+        figSetPageData(nodeName(nodeIds[i]), '');        
+}
+
+
+
+function figSaveConnection(name, json)
+{
+    // console.log('key', connName(name));
+    // console.log('connection', json);
+    
+    figSetPageData(
+        connName(name),
+        json
+    );        
+}
+
+
+
+function figRemoveSavedConnection(name)
+{
+    figSetPageData(connName(name), '');        
+}
+
+
+
+function nodeName(nodeId) { return 'GN ' + nodeId; }
+function connName(name)   { return 'GC ' + name;   }
