@@ -43,6 +43,26 @@
 }
 
 
+
+#btnCreateValidateColor
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="-1 -1 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76142 8.76142 11 6 11C3.23858 11 1 8.76142 1 6C1 3.23858 3.23858 1 6 1C8.76142 1 11 3.23858 11 6ZM9.87442 10.5815C8.82908 11.4664 7.47685 12 6 12C2.68629 12 0 9.31371 0 6C0 2.68629 2.68629 0 6 0C9.31371 0 12 2.68629 12 6C12 7.47685 11.4664 8.82908 10.5815 9.87442L14.8536 14.1464L14.1464 14.8536L9.87442 10.5815Z" fill="%23d5d5d5"/><path d="M9.02508 3.51931L5.90903 9.24621L4.835 9.24245L2.98183 6.52305L4.12746 6.52706L5.3396 8.27797L5.4112 8.27822L7.87944 3.5153L9.02508 3.51931Z" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateValidateColor:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="-1 -1 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 6C11 8.76142 8.76142 11 6 11C3.23858 11 1 8.76142 1 6C1 3.23858 3.23858 1 6 1C8.76142 1 11 3.23858 11 6ZM9.87442 10.5815C8.82908 11.4664 7.47685 12 6 12C2.68629 12 0 9.31371 0 6C0 2.68629 2.68629 0 6 0C9.31371 0 12 2.68629 12 6C12 7.47685 11.4664 8.82908 10.5815 9.87442L14.8536 14.1464L14.1464 14.8536L9.87442 10.5815Z" fill="white"/><path d="M9.02508 3.51931L5.90903 9.24621L4.835 9.24245L2.98183 6.52305L4.12746 6.52706L5.3396 8.27797L5.4112 8.27822L7.87944 3.5153L9.02508 3.51931Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-color:    black;
+}
+
+
 #btnCreateWebContrast
 {
     padding-left:        3px;
@@ -58,11 +78,6 @@
     background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
-}
-
-
-#btnCreateWebContrast:hover
-{
     background-color:    black;
 }
 
@@ -71,7 +86,7 @@
 {
     padding-left:        3px;
     padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="%23d5d5d5"/></svg>');
+    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="%23d5d5d5"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
 }
@@ -79,14 +94,8 @@
 
 #btnCreateColorBlind:hover
 {
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
+    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
-}
-
-
-
-#btnCreateColorBlind:hover
-{
     background-color:    black;
 }

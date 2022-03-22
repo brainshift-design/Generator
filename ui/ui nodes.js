@@ -399,6 +399,15 @@ function uiSaveNodesAndConns(nodeIds)
 
 
 
+function uiRemoveAllSavedNodesAndConns()
+{
+    uiPostMessageToFigma({
+        cmd: 'figRemoveAllSavedNodesAndConns'
+    });
+}
+
+
+
 function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiPostMessageToFigma({

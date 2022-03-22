@@ -92,6 +92,17 @@ function figRemoveSavedNodesAndConns(nodeIds)
 
 
 
+function figRemoveAllSavedNodesAndConns()
+{
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+
+    for (const key of nodeKeys) figSetPageData(key, '');
+    for (const key of connKeys) figSetPageData(key, '');
+}
+
+
+
 function figSaveConnection(name, json)
 {
     // console.log('key', connName(name));

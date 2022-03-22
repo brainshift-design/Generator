@@ -192,6 +192,9 @@ figma.ui.onmessage = msg => {
         case 'figRemoveSavedNodesAndConns':
             figRemoveSavedNodesAndConns(msg.nodeIds);
             break;
+        case 'figRemoveAllSavedNodesAndConns':
+            figRemoveAllSavedNodesAndConns();
+            break;
         case 'figSaveConnection':
             figSaveConnection(msg.name, msg.json);
             break;
@@ -273,6 +276,14 @@ function figSaveNodesAndConns(nodeIds, nodeJson) {
 function figRemoveSavedNodesAndConns(nodeIds) {
     for (let i = 0; i < nodeIds.length; i++)
         figSetPageData(nodeName(nodeIds[i]), '');
+}
+function figRemoveAllSavedNodesAndConns() {
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+    for (const key of nodeKeys)
+        figSetPageData(key, '');
+    for (const key of connKeys)
+        figSetPageData(key, '');
 }
 function figSaveConnection(name, json) {
     // console.log('key', connName(name));

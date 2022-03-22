@@ -249,26 +249,27 @@ figma.ui.onmessage = msg =>
 {
     switch (msg.cmd)
     {
-        case 'figStartGenerator':           figStartGenerator          ();                                           break;
-   
-        case 'figResizeWindow':             figResizeWindow            (msg.width, msg.height);                      break; 
-        case 'figNotify':                   figNotify                  (msg.text, msg.prefix, msg.delay, msg.error); break;
-                   
-        case 'figGetLocalData':             figGetLocalData            (msg.key);                                    break;
-        case 'figSetLocalData':             figSetLocalData            (msg.key, msg.value);                         break;
-           
-        case 'figGetPageData':              figGetPageData             (msg.key);                                    break;
-        case 'figSetPageData':              figSetPageData             (msg.key, msg.value);                         break;
-        
-        case 'figLoadNodesAndConns':        figLoadNodesAndConns       ();                                           break;
-        case 'figSaveNodesAndConns':        figSaveNodesAndConns       (msg.nodeIds, msg.nodeJson);                  break;        
-        case 'figRemoveSavedNodesAndConns': figRemoveSavedNodesAndConns(msg.nodeIds);                                break;
+        case 'figStartGenerator':              figStartGenerator             ();                                           break;
+         
+        case 'figResizeWindow':                figResizeWindow               (msg.width, msg.height);                      break; 
+        case 'figNotify':                      figNotify                     (msg.text, msg.prefix, msg.delay, msg.error); break;
+                         
+        case 'figGetLocalData':                figGetLocalData               (msg.key);                                    break;
+        case 'figSetLocalData':                figSetLocalData               (msg.key, msg.value);                         break;
+                 
+        case 'figGetPageData':                 figGetPageData                (msg.key);                                    break;
+        case 'figSetPageData':                 figSetPageData                (msg.key, msg.value);                         break;
+              
+        case 'figLoadNodesAndConns':           figLoadNodesAndConns          ();                                           break;
+        case 'figSaveNodesAndConns':           figSaveNodesAndConns          (msg.nodeIds, msg.nodeJson);                  break;        
+        case 'figRemoveSavedNodesAndConns':    figRemoveSavedNodesAndConns   (msg.nodeIds);                                break;
+        case 'figRemoveAllSavedNodesAndConns': figRemoveAllSavedNodesAndConns();                                           break;
 
-        case 'figSaveConnection':           figSaveConnection          (msg.name, msg.json);                         break;
-        case 'figRemoveSavedConnection':    figRemoveSavedConnection   (msg.name);                                   break;
+        case 'figSaveConnection':              figSaveConnection             (msg.name, msg.json);                         break;
+        case 'figRemoveSavedConnection':       figRemoveSavedConnection      (msg.name);                                   break;
            
-        case 'figDeleteNodeObjects':        figDeleteNodeObjects       (msg.nodeIds);                                break; 
-        case 'figUpdateObjects':            figUpdateObjects           (msg.objects);                                break;
+        case 'figDeleteNodeObjects':           figDeleteNodeObjects          (msg.nodeIds);                                break; 
+        case 'figUpdateObjects':               figUpdateObjects              (msg.objects);                                break;
     }
 
     figPostMessageToUi({cmd: 'uiEndFigMessage'});
@@ -390,6 +391,17 @@ function figRemoveSavedNodesAndConns(nodeIds)
 {
     for (let i = 0; i < nodeIds.length; i++)
         figSetPageData(nodeName(nodeIds[i]), '');        
+}
+
+
+
+function figRemoveAllSavedNodesAndConns()
+{
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+
+    for (const key of nodeKeys) figSetPageData(key, '');
+    for (const key of connKeys) figSetPageData(key, '');
 }
 
 

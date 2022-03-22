@@ -15,8 +15,8 @@ extends OpColorBase
         this.addInput(new Input(this.dataType));
 
 
-        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
         this.addParam(this.#paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
       
 
         enableSliderText(this.#paramValue.control, false);
@@ -137,7 +137,6 @@ extends OpColorBase
         }
 
 
-        //this.#paramValue.control.valueText = '?';
         this.#paramValue.setValue(Number.NaN, false, true, false);
 
         

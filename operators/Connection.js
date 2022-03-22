@@ -245,11 +245,24 @@ class Connection
         const inputOp     = nodeFromId(_conn.inputOp);
         const inputIndex  = parseInt(_conn.inputIndex);
 
-        if (   !outputOp || outputOp.outputs.length-1 < outputIndex
-            || !inputOp  || inputOp .inputs .length-1 < inputIndex)
+
+        // log('---------------------------------------');
+
+        // log('outputOp',                outputOp);
+        // log('outputIndex',             outputIndex);
+        // log('outputOp.outputs.length', outputOp.outputs.length);
+        
+        // log('inputOp',               inputOp);
+        // log('inputIndex',            inputIndex);
+        // log('inputOp.inputs.length', inputOp.inputs.length);
+
+
+
+        if (   !outputOp || outputIndex >= outputOp.outputs.length
+            || !inputOp  ||  inputIndex >= inputOp .inputs .length)
         {
             uiError(
-                'Cannot connect ' 
+                  'Cannot connect ' 
                 + _conn.outputOp + '.outputs[' + outputIndex + '] to ' 
                 + _conn.inputOp  + '.inputs[' + _conn.inputIndex + ']');
         }

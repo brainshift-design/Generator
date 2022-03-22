@@ -127,7 +127,7 @@ extends Action
         }
 
         
-        varConnections.sort((c1, c2) => 
+        varConnections.sort((c1, c2) =>
         {
             if (c1.inputOpId  != c2.inputOpId ) return c1.inputOpId  - c2.inputOpId;
             if (c1.inputIndex != c2.inputIndex) return c1.inputIndex - c2.inputIndex;

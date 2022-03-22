@@ -188,10 +188,10 @@ class Graph
         this.connections.push(conn);
 
         
-        output.op.makePassive();
+        // output.op.makePassive();
 
-        if (!activeNodeInTree(input.op))
-            input.op.makeActive();
+        // if (!activeNodeInTree(input.op))
+        //     input.op.makeActive();
        
            
         output.updateControl();
@@ -207,8 +207,8 @@ class Graph
         //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.op.inputs.indexOf(input) + '])');
         // first remove the current output
 
-        if (activeNodeInTree(input.op))
-            uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
+        // if (activeNodeInTree(input.op))
+        //     uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
 
 
         // then disconnect
@@ -232,8 +232,8 @@ class Graph
             input.param.valueText = '';
 
 
-        if (!activeNodeInTree(output.op))
-             output.op.makeActive();
+        // if (!activeNodeInTree(output.op))
+        //      output.op.makeActive();
             
         
         output.updateControl();

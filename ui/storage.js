@@ -135,7 +135,7 @@ function uiLoadNodesAndConns(nodesJson, connsJson)
     //console.log('nodes', nodes);
     //console.log('conns', conns);
 
-    loadNodesAsync(nodes, conns, setLoadingProgress);
+    loadNodesAndConnsAsync(nodes, conns, setLoadingProgress);
 }
 
 
@@ -156,7 +156,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAsync(nodes, connections, setProgress)
+function loadNodesAndConnsAsync(nodes, connections, setProgress)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';
@@ -194,10 +194,18 @@ function loadNodesAsync(nodes, connections, setProgress)
 function loadConnectionsAsync(nodes, connections, _nodes, setProgress)
 {
     let promise = Promise.resolve([]);
-
-
+    
     if (connections)
     {
+        // variable inputs need connections to be sorted by input index
+        connections.sort((c1, c2) => 
+        {
+            if (c1.inputOp.id != c2.inputOp.id) return c1.inputOp.id - c2.inputOp.id;
+            if (c1.inputIndex != c2.inputIndex) return c1.inputIndex - c2.inputIndex;
+            return 0;
+        });
+
+
         const chunkSize = 10; // connections
         for (let i = 0; i < connections.length; i += chunkSize)
         {
