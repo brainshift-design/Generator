@@ -49,6 +49,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
+        this.alwaysLoadParams = true;
+
+
         this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
             'H,&thinsp;C,&thinsp;L', 
             'C,&thinsp;H,&thinsp;L', 
@@ -72,40 +75,46 @@ extends OpColorBase
 
         this.param1.addEventListener('change', () => 
         {
-            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i1].value = this.param1.value;
+            uiSaveNodesAndConns([this.id]);
         });
 
         this.param1.addEventListener('changelock', () => 
         {
-            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i1].locked = this.param1.isLocked;
+            uiSaveNodesAndConns([this.id]);
         });
 
 
         this.param2.addEventListener('change', () => 
         {
-            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i2].value = this.param2.value;
+            uiSaveNodesAndConns([this.id]);
         });
 
         this.param2.addEventListener('changelock', () => 
         {
-            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i2].locked = this.param2.isLocked;
+            uiSaveNodesAndConns([this.id]);
         });
 
 
         this.param3.addEventListener('change', () => 
         {
-            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i3].value = this.param3.value;
+            uiSaveNodesAndConns([this.id]);
         });
 
         this.param3.addEventListener('changelock', () => 
         {
-            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i3].locked = this.param3.isLocked;
+            uiSaveNodesAndConns([this.id]);
         });
 
 
@@ -192,7 +201,7 @@ extends OpColorBase
 
     updateCorrections()
     {
-        const [i1, i2, i3] = getComponentOrder(this.paramOrder.value);
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
 
         this.updateMargin(this.param1, this.corrections[i1]);
         this.updateMargin(this.param2, this.corrections[i2]);
@@ -281,6 +290,36 @@ extends OpColorBase
     {
         return this.inputs[0].isConnected;
     }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
+
+        return super.toJsonBase(nTab)
+            + ',\n' + pos + tab + '"locked1": "' + boolString(this.corrections[i1].locked) + '"'
+            + ',\n' + pos + tab + '"locked2": "' + boolString(this.corrections[i2].locked) + '"'
+            + ',\n' + pos + tab + '"locked3": "' + boolString(this.corrections[i3].locked) + '"';
+    }
+
+
+
+    loadParams(_node)
+    {
+        super.loadParams(_node);
+
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
+
+        if (_node.locked1) this.corrections[i1].locked = isTrue(_node.locked1);
+        if (_node.locked2) this.corrections[i2].locked = isTrue(_node.locked2);
+        if (_node.locked3) this.corrections[i3].locked = isTrue(_node.locked3);
+
+        this.updateCorrections();
+    }
 }
 
 
@@ -302,7 +341,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
     {
         node.paramOrder.setValue(closestOrder, true, true, false);
 
-        const [i1, i2, i3] = getComponentOrder(closestOrder);
+        const [i1, i2, i3] = getCorrectionOrder(closestOrder);
 
         node.corrections[i1].value = closest1;
         node.corrections[i2].value = closest2;
@@ -321,7 +360,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
 
 
 
-function getComponentOrder(order)
+function getCorrectionOrder(order)
 {
     switch (order)
     {

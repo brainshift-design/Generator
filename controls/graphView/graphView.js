@@ -786,6 +786,6 @@ graphView.toJson = function()
         + tab + '"zoom": "'      + graphView.zoom  + '",\n'
         + tab + '"panx": "'      + graphView.pan.x + '",\n'
         + tab + '"pany": "'      + graphView.pan.y + '",\n'
-        + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '"\n'
+        + tab + '"showWires": "' + boolString(graphView.showWires) + '"\n'
         + '\n}';
 };

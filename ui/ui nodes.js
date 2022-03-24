@@ -388,7 +388,10 @@ function uiSaveNodesAndConns(nodeIds)
     const nodeJson = [];
 
     for (const node of nodes)
+    {
         nodeJson.push(node.toJson());
+        //log(node.toJson());
+    }
 
     uiPostMessageToFigma({
         cmd:     'figSaveNodesAndConns',

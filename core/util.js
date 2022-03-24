@@ -244,3 +244,17 @@ function logTrace()
 {
     setTimeout(console.trace.bind(console));
 }
+
+
+
+function boolString(bool)
+{
+    return bool ? 'true' : 'false';
+}
+
+
+
+function isTrue(strBool)
+{
+    return strBool == 'true';
+}

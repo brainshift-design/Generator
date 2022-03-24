@@ -144,7 +144,7 @@ extends OperatorBase
         const tab = '  ';
 
         let json = super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + (this.#btnProportional.enabled ? 'true' : 'false') + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
 
         if (this.#btnProportional.enabled)
         {
@@ -162,7 +162,7 @@ extends OperatorBase
     {
         if (_node.proportional)
         {
-            this.#btnProportional.enabled = _node.proportional == 'true';
+            this.#btnProportional.enabled = isTrue(_node.proportional);
             this.#btnProportional.updateBackground(false);
 
             if (this.#btnProportional.enabled)

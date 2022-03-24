@@ -3239,6 +3239,19 @@ function logTrace()
 
 
 
+function boolString(bool)
+{
+    return bool ? 'true' : 'false';
+}
+
+
+
+function isTrue(strBool)
+{
+    return strBool == 'true';
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -5997,18 +6010,18 @@ function convert2hclluv(fromColor)
 
 function adjustColor(color, order, margin1, margin2, margin3)
 {
-    let i0, i1, i2;
+    let i1, i2, i3;
     
-         if (order == 0) { i0 = 0; i1 = 1; i2 = 2; } // HCL
-    else if (order == 1) { i0 = 1; i1 = 0; i2 = 2; } // CHL
-    else if (order == 2) { i0 = 1; i1 = 2; i2 = 0; } // CLH
-    else if (order == 3) { i0 = 0; i1 = 2; i2 = 1; } // HLC
-    else if (order == 4) { i0 = 2; i1 = 0; i2 = 1; } // LHC
-    else if (order == 5) { i0 = 2; i1 = 1; i2 = 0; } // LCH
+         if (order == 0) { i1 = 0; i2 = 1; i3 = 2; } // HCL
+    else if (order == 1) { i1 = 1; i2 = 0; i3 = 2; } // CHL
+    else if (order == 2) { i1 = 1; i2 = 2; i3 = 0; } // CLH
+    else if (order == 3) { i1 = 0; i2 = 2; i3 = 1; } // HLC
+    else if (order == 4) { i1 = 2; i2 = 0; i3 = 1; } // LHC
+    else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
-                                           color = this.adjustChannel(color, i0, margin1);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i1, margin2);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i2, margin3);
+                                           color = this.adjustChannel(color, i1, margin1);
+    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i2, margin2);
+    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i3, margin3);
 
     return color;
 }
@@ -6042,11 +6055,8 @@ function adjustChannel(color, iChan, margin)
            && ! valid_
            && stackOverflowProtect-- > 0)
     {
-        _c -= d;
-        _valid = this.checkColor(_c, iChan, savedColor);
-
-        c_ += d;
-        valid_ = this.checkColor(c_, iChan, savedColor);
+        _c -= d;  _valid = this.checkColor(_c, iChan, savedColor);
+        c_ += d;  valid_ = this.checkColor(c_, iChan, savedColor);
     }
 
 
@@ -6060,8 +6070,8 @@ function adjustChannel(color, iChan, margin)
         _c     = savedValue;
 
         while (   !_valid
-               && stackOverflowProtect-- > 0
-               && margin > 0)
+               && margin > 0
+               && stackOverflowProtect-- > 0)
         {
             _c -= d; 
             _valid = this.checkColor(_c, iChan, savedColor);
@@ -6076,8 +6086,8 @@ function adjustChannel(color, iChan, margin)
         c_     = savedValue;
 
         while (   !valid_
-               && stackOverflowProtect-- > 0
-               && margin > 0)
+               && margin > 0
+               && stackOverflowProtect-- > 0)
         {
             c_ += d; 
             valid_ = this.checkColor(c_, iChan, savedColor);
@@ -6107,9 +6117,9 @@ function getValidateMax(order)
     switch (order)
     {
         case 0: return [180, 100, 100]; // HCL
-        case 1: return [180, 100, 100]; // HLC
-        case 2: return [100, 180, 100]; // CHL
-        case 3: return [100, 100, 180]; // CLH
+        case 1: return [100, 180, 100]; // CHL
+        case 2: return [100, 100, 180]; // CLH
+        case 3: return [180, 100, 100]; // HLC
         case 4: return [100, 180, 100]; // LHC
         case 5: return [100, 100, 180]; // LCH
     }
@@ -8054,6 +8064,19 @@ function logTrace()
     setTimeout(console.trace.bind(console));
 }
 
+
+
+function boolString(bool)
+{
+    return bool ? 'true' : 'false';
+}
+
+
+
+function isTrue(strBool)
+{
+    return strBool == 'true';
+}
 
 
 "use strict";
@@ -13465,7 +13488,7 @@ graphView.toJson = function()
         + tab + '"zoom": "'      + graphView.zoom  + '",\n'
         + tab + '"panx": "'      + graphView.pan.x + '",\n'
         + tab + '"pany": "'      + graphView.pan.y + '",\n'
-        + tab + '"showWires": "' + (graphView.showWires ? 'true' : 'false') + '"\n'
+        + tab + '"showWires": "' + boolString(graphView.showWires) + '"\n'
         + '\n}';
 };
 
@@ -17860,7 +17883,7 @@ extends OperatorBase
         const tab = '  ';
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
+             + ',\n' + pos + tab + '"showOnlySymbol": "' + boolString(this._showOnlySymbol) + '"';
     }
 
 
@@ -17868,7 +17891,7 @@ extends OperatorBase
     loadParams(_node)
     {
         if (_node.showOnlySymbol)
-            this._showOnlySymbol = _node.showOnlySymbol == 'true';
+            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
 
         super.loadParams(_node);
     }
@@ -19835,18 +19858,18 @@ function convert2hclluv(fromColor)
 
 function adjustColor(color, order, margin1, margin2, margin3)
 {
-    let i0, i1, i2;
+    let i1, i2, i3;
     
-         if (order == 0) { i0 = 0; i1 = 1; i2 = 2; } // HCL
-    else if (order == 1) { i0 = 1; i1 = 0; i2 = 2; } // CHL
-    else if (order == 2) { i0 = 1; i1 = 2; i2 = 0; } // CLH
-    else if (order == 3) { i0 = 0; i1 = 2; i2 = 1; } // HLC
-    else if (order == 4) { i0 = 2; i1 = 0; i2 = 1; } // LHC
-    else if (order == 5) { i0 = 2; i1 = 1; i2 = 0; } // LCH
+         if (order == 0) { i1 = 0; i2 = 1; i3 = 2; } // HCL
+    else if (order == 1) { i1 = 1; i2 = 0; i3 = 2; } // CHL
+    else if (order == 2) { i1 = 1; i2 = 2; i3 = 0; } // CLH
+    else if (order == 3) { i1 = 0; i2 = 2; i3 = 1; } // HLC
+    else if (order == 4) { i1 = 2; i2 = 0; i3 = 1; } // LHC
+    else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
-                                           color = this.adjustChannel(color, i0, margin1);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i1, margin2);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i2, margin3);
+                                           color = this.adjustChannel(color, i1, margin1);
+    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i2, margin2);
+    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i3, margin3);
 
     return color;
 }
@@ -19880,11 +19903,8 @@ function adjustChannel(color, iChan, margin)
            && ! valid_
            && stackOverflowProtect-- > 0)
     {
-        _c -= d;
-        _valid = this.checkColor(_c, iChan, savedColor);
-
-        c_ += d;
-        valid_ = this.checkColor(c_, iChan, savedColor);
+        _c -= d;  _valid = this.checkColor(_c, iChan, savedColor);
+        c_ += d;  valid_ = this.checkColor(c_, iChan, savedColor);
     }
 
 
@@ -19898,8 +19918,8 @@ function adjustChannel(color, iChan, margin)
         _c     = savedValue;
 
         while (   !_valid
-               && stackOverflowProtect-- > 0
-               && margin > 0)
+               && margin > 0
+               && stackOverflowProtect-- > 0)
         {
             _c -= d; 
             _valid = this.checkColor(_c, iChan, savedColor);
@@ -19914,8 +19934,8 @@ function adjustChannel(color, iChan, margin)
         c_     = savedValue;
 
         while (   !valid_
-               && stackOverflowProtect-- > 0
-               && margin > 0)
+               && margin > 0
+               && stackOverflowProtect-- > 0)
         {
             c_ += d; 
             valid_ = this.checkColor(c_, iChan, savedColor);
@@ -19945,9 +19965,9 @@ function getValidateMax(order)
     switch (order)
     {
         case 0: return [180, 100, 100]; // HCL
-        case 1: return [180, 100, 100]; // HLC
-        case 2: return [100, 180, 100]; // CHL
-        case 3: return [100, 100, 180]; // CLH
+        case 1: return [100, 180, 100]; // CHL
+        case 2: return [100, 100, 180]; // CLH
+        case 3: return [180, 100, 100]; // HLC
         case 4: return [100, 180, 100]; // LHC
         case 5: return [100, 100, 180]; // LCH
     }
@@ -20008,6 +20028,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
+        this.alwaysLoadParams = true;
+
+
         this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
             'H,&thinsp;C,&thinsp;L', 
             'C,&thinsp;H,&thinsp;L', 
@@ -20031,40 +20054,46 @@ extends OpColorBase
 
         this.param1.addEventListener('change', () => 
         {
-            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i1].value = this.param1.value;
+            uiSaveNodesAndConns([this.id]);
         });
 
         this.param1.addEventListener('changelock', () => 
         {
-            const [i1,,] = getComponentOrder(this.paramOrder.value);
+            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i1].locked = this.param1.isLocked;
+            uiSaveNodesAndConns([this.id]);
         });
 
 
         this.param2.addEventListener('change', () => 
         {
-            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i2].value = this.param2.value;
+            uiSaveNodesAndConns([this.id]);
         });
 
         this.param2.addEventListener('changelock', () => 
         {
-            const [, i2,] = getComponentOrder(this.paramOrder.value);
+            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i2].locked = this.param2.isLocked;
+            uiSaveNodesAndConns([this.id]);
         });
 
 
         this.param3.addEventListener('change', () => 
         {
-            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i3].value = this.param3.value;
+            uiSaveNodesAndConns([this.id]);
         });
 
         this.param3.addEventListener('changelock', () => 
         {
-            const [,, i3] = getComponentOrder(this.paramOrder.value);
+            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i3].locked = this.param3.isLocked;
+            uiSaveNodesAndConns([this.id]);
         });
 
 
@@ -20151,7 +20180,7 @@ extends OpColorBase
 
     updateCorrections()
     {
-        const [i1, i2, i3] = getComponentOrder(this.paramOrder.value);
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
 
         this.updateMargin(this.param1, this.corrections[i1]);
         this.updateMargin(this.param2, this.corrections[i2]);
@@ -20240,6 +20269,36 @@ extends OpColorBase
     {
         return this.inputs[0].isConnected;
     }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
+
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
+
+        return super.toJsonBase(nTab)
+            + ',\n' + pos + tab + '"locked1": "' + boolString(this.corrections[i1].locked) + '"'
+            + ',\n' + pos + tab + '"locked2": "' + boolString(this.corrections[i2].locked) + '"'
+            + ',\n' + pos + tab + '"locked3": "' + boolString(this.corrections[i3].locked) + '"';
+    }
+
+
+
+    loadParams(_node)
+    {
+        super.loadParams(_node);
+
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
+
+        if (_node.locked1) this.corrections[i1].locked = isTrue(_node.locked1);
+        if (_node.locked2) this.corrections[i2].locked = isTrue(_node.locked2);
+        if (_node.locked3) this.corrections[i3].locked = isTrue(_node.locked3);
+
+        this.updateCorrections();
+    }
 }
 
 
@@ -20261,7 +20320,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
     {
         node.paramOrder.setValue(closestOrder, true, true, false);
 
-        const [i1, i2, i3] = getComponentOrder(closestOrder);
+        const [i1, i2, i3] = getCorrectionOrder(closestOrder);
 
         node.corrections[i1].value = closest1;
         node.corrections[i2].value = closest2;
@@ -20280,7 +20339,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
 
 
 
-function getComponentOrder(order)
+function getCorrectionOrder(order)
 {
     switch (order)
     {
@@ -20893,7 +20952,7 @@ extends OperatorBase
         const tab = '  ';
 
         let json = super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + (this.#btnProportional.enabled ? 'true' : 'false') + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
 
         if (this.#btnProportional.enabled)
         {
@@ -20911,7 +20970,7 @@ extends OperatorBase
     {
         if (_node.proportional)
         {
-            this.#btnProportional.enabled = _node.proportional == 'true';
+            this.#btnProportional.enabled = isTrue(_node.proportional);
             this.#btnProportional.updateBackground(false);
 
             if (this.#btnProportional.enabled)
@@ -22037,7 +22096,7 @@ extends Action
 
     constructor(nodeId, showOnlySymbol)
     {
-        super('show only symbol = ' + (showOnlySymbol ? 'true' : 'false'));
+        super('show only symbol = ' + boolString(showOnlySymbol));
 
         this.nodeId         = nodeId;
         this.showOnlySymbol = showOnlySymbol;
@@ -22717,7 +22776,7 @@ function uiLoadGraphView(json)
     graphView.setPanAndZoom(pan, zoom);
 
 
-    graphView.showWires = data.showWires == 'true';
+    graphView.showWires = isTrue(data.showWires);
 }
 
 
@@ -23529,7 +23588,10 @@ function uiSaveNodesAndConns(nodeIds)
     const nodeJson = [];
 
     for (const node of nodes)
+    {
         nodeJson.push(node.toJson());
+        //log(node.toJson());
+    }
 
     uiPostMessageToFigma({
         cmd:     'figSaveNodesAndConns',

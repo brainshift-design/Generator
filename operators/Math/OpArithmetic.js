@@ -160,7 +160,7 @@ extends OperatorBase
         const tab = '  ';
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"showOnlySymbol": "' + (this._showOnlySymbol ? 'true' : 'false') + '"';
+             + ',\n' + pos + tab + '"showOnlySymbol": "' + boolString(this._showOnlySymbol) + '"';
     }
 
 
@@ -168,7 +168,7 @@ extends OperatorBase
     loadParams(_node)
     {
         if (_node.showOnlySymbol)
-            this._showOnlySymbol = _node.showOnlySymbol == 'true';
+            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
 
         super.loadParams(_node);
     }

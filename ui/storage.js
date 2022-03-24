@@ -120,7 +120,7 @@ function uiLoadGraphView(json)
     graphView.setPanAndZoom(pan, zoom);
 
 
-    graphView.showWires = data.showWires == 'true';
+    graphView.showWires = isTrue(data.showWires);
 }
 
 
