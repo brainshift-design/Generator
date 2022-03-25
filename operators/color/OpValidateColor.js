@@ -83,8 +83,8 @@ extends OpColorBase
         this.param1.addEventListener('changelock', () => 
         {
             const [i1,,] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i1].locked = this.param1.isLocked;
-            uiSaveNodesAndConns([this.id]);
+            this.corrections[i1].locked = this.param1.locked;
+            actionManager.do(new SetParamLockAction(this.params[1+i1], this.param1.locked));
         });
 
 
@@ -98,8 +98,8 @@ extends OpColorBase
         this.param2.addEventListener('changelock', () => 
         {
             const [, i2,] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i2].locked = this.param2.isLocked;
-            uiSaveNodesAndConns([this.id]);
+            this.corrections[i2].locked = this.param2.locked;
+            actionManager.do(new SetParamLockAction(this.params[1+i2], this.param2.locked));
         });
 
 
@@ -113,8 +113,8 @@ extends OpColorBase
         this.param3.addEventListener('changelock', () => 
         {
             const [,, i3] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i3].locked = this.param3.isLocked;
-            uiSaveNodesAndConns([this.id]);
+            this.corrections[i3].locked = this.param3.locked;
+            actionManager.do(new SetParamLockAction(this.params[1+i3], this.param3.locked));
         });
 
 
@@ -166,9 +166,9 @@ extends OpColorBase
                     param1:     this.param1.value,
                     param2:     this.param2.value,
                     param3:     this.param3.value,
-                    locked1:    this.param1.isLocked,
-                    locked2:    this.param2.isLocked,
-                    locked3:    this.param3.isLocked
+                    locked1:    this.param1.locked,
+                    locked2:    this.param2.locked,
+                    locked3:    this.param3.locked
                 });
             }
         });
@@ -243,9 +243,10 @@ extends OpColorBase
         margin.control.setMin(0,              false);
         margin.control.setMax(correction.max, false);
 
-        margin.isLocked = correction.locked;
+        margin.locked = correction.locked;
         margin.updateLock();
 
+        margin.control.setDecimals(Math.min(getDecimalCount(getNumberString(correction.value, -1))));
         margin.setValue(correction.value, true, true, false);
     }
 
@@ -356,6 +357,8 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
     node.btnFind.style.display = 'block';
 
     node.pushUpdate();
+
+    uiSaveNodesAndConns([nodeId]);
 }
 
 
@@ -377,5 +380,5 @@ function getCorrectionOrder(order)
 
 function addValidateSymbol(name)
 {
-    return '<span class="asterisk">±&thinsp;</span>' + name;
+    return /*'<span class="asterisk">±&thinsp;</span>' + */name;
 }

@@ -28,7 +28,7 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
-    isLocked = false;
+    locked = false;
 
     showParamLock = false;
     paramLock;
@@ -140,23 +140,31 @@ extends EventTarget
 
 
 
+    setLocked(locked)
+    {
+        this.locked = locked;
+        this.updateLock();
+    }
+
+
+
     updateLock()
     {
-        let opacity = this.isLocked ? 0.5 : 0.1;
+        let opacity = this.locked ? 0.5 : 0.1;
         
              if (this.paramLock.down0) opacity += 0.3;
         else if (this.paramLock.over ) opacity += 0.15;
         
         this.paramLock.style.background = 
-            this.isLocked
+            this.locked
             ? 'url(\'data:image/svg+xml;utf8,<svg width="5" height="7" viewBox="0 0 5 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.57143 1.75V2.8H1.42857V1.75C1.42857 1.1701 1.90826 0.7 2.5 0.7C3.09174 0.7 3.57143 1.1701 3.57143 1.75ZM0.714286 2.8V1.75C0.714286 0.783503 1.51378 0 2.5 0C3.48622 0 4.28571 0.783503 4.28571 1.75V2.8H4.64286C4.8401 2.8 5 2.9567 5 3.15V6.65C5 6.8433 4.8401 7 4.64286 7H0.357143C0.159899 7 0 6.8433 0 6.65V3.15C0 2.9567 0.159899 2.8 0.357143 2.8H0.714286Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')'
             : 'url(\'data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.30997 3.10005V3.80005H4.66913C4.86749 3.80005 5.02829 3.95675 5.02829 4.15005V7.65005C5.02829 7.84332 4.86749 8.00005 4.66913 8.00005H0.359164C0.160803 8.00005 0 7.84332 0 7.65005V4.15005C0 3.95675 0.160803 3.80005 0.359164 3.80005H3.59164V2.05005C3.59164 1.08355 4.39566 0.300049 5.38746 0.300049C6.37926 0.300049 7.18328 1.08355 7.18328 2.05005V3.10005H6.46495V2.05005C6.46495 1.47015 5.98254 1.00005 5.38746 1.00005C4.79237 1.00005 4.30997 1.47015 4.30997 2.05005V3.10005Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')';
 
         this.paramLock.style.backgroundPosition = '50% 50%';
         this.paramLock.style.backgroundRepeat   = 'no-repeat';
 
-        this.paramLock.style.left = this.isLocked ? 11 : 12;
-        this.paramLock.style.top  = this.isLocked ?  4 :  3;
+        this.paramLock.style.left = this.locked ? 11 : 12;
+        this.paramLock.style.top  = this.locked ?  4 :  3;
     }
 
 
@@ -247,7 +255,7 @@ function paramLock_onpointerup(e)
     if (e.button == 0)
     {
         paramLock.down0 = false;
-        paramLock.param.isLocked = !paramLock.param.isLocked;
+        paramLock.param.locked = !paramLock.param.locked;
         paramLock.param.updateLock();
 
         paramLock.param.dispatchEvent(paramLock.param.onchangelock);

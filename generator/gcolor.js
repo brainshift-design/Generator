@@ -9,7 +9,48 @@ function genFindCorrection(nodeId, inputColor, param1, param2, param3, locked1, 
           closest3 ] = findCorrection(nodeId, inputColor, refOklab, param1, param2, param3, locked1, locked2, locked3); 
 
 
-    if (closest1 == 0)
+    closest1 = Math.max(0, closest1);
+    closest2 = Math.max(0, closest2);
+    closest3 = Math.max(0, closest3);
+
+    
+    if (   closest1 <  Eps
+        && closest2 <  Eps
+        && closest3 >= Eps)
+    {
+        switch (closestOrder)
+        {
+            case 0: closestOrder = 4; break;
+            case 1: closestOrder = 5; break;
+            case 2: closestOrder = 0; break;
+            case 3: closestOrder = 1; break;
+            case 4: closestOrder = 2; break;
+            case 5: closestOrder = 3; break;
+        }
+
+        const temp = closest2;
+        closest1 = closest3;
+        closest2 = closest1;
+        closest3 = temp;
+    }
+    else if (closest1 >= Eps
+          && closest2 <  Eps)
+    {
+        switch (closestOrder)
+        {
+            case 0: closestOrder = 3; break;
+            case 1: closestOrder = 2; break;
+            case 2: closestOrder = 1; break;
+            case 3: closestOrder = 0; break;
+            case 4: closestOrder = 5; break;
+            case 5: closestOrder = 4; break;
+        }
+
+        const temp = closest2;
+        closest2 = closest3;
+        closest3 = temp;
+    }
+    else if (closest1 < Eps)
     {
         switch (closestOrder)
         {
@@ -71,13 +112,13 @@ function findCorrection(nodeId, color, refOklab, param1, param2, param3, locked1
 
             const [max1, max2, max3] = getValidateMax(order);
 
-            let start1 = lerp(0, closest1, 1-d),
-                start2 = lerp(0, closest2, 1-d),
-                start3 = lerp(0, closest3, 1-d);
+            let start1 = lerp(0,    closest1, 1-d),
+                start2 = lerp(0,    closest2, 1-d),
+                start3 = lerp(0,    closest3, 1-d);
 
-            let end1 = lerp(max1, closest1, 1-d),
-                end2 = lerp(max2, closest2, 1-d),
-                end3 = lerp(max3, closest3, 1-d);
+            let end1   = lerp(max1, closest1, 1-d),
+                end2   = lerp(max2, closest2, 1-d),
+                end3   = lerp(max3, closest3, 1-d);
 
             if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+0.001; }
             if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+0.001; }
@@ -86,6 +127,9 @@ function findCorrection(nodeId, color, refOklab, param1, param2, param3, locked1
             // console.log('start1', start1);
             // console.log('start2', start2);
             // console.log('start3', start3);
+            // console.log('end1', end1);
+            // console.log('end2', end2);
+            // console.log('end3', end3);
 
           [ closestColor,
             closestOklab,
