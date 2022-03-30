@@ -9,7 +9,12 @@ function genFindCorrection(nodeId,
           closestOrder,
           closest1,
           closest2,
-          closest3 ] = findCorrection(nodeId, inputColor, refOklab, param1, param2, param3, locked1, locked2, locked3); 
+          closest3 ] = findCorrection(
+                           nodeId, 
+                           inputColor, 
+                           refOklab, 
+                           param1,  param2,  param3, 
+                           locked1, locked2, locked3); 
 
 
     closest1 = Math.max(0, closest1);
@@ -171,6 +176,11 @@ function findCorrection(nodeId,
     let c2 = closest2;
     let c3 = closest3;
 
+    console.log('closest1', closest1);
+    console.log('closest2', closest2);
+    console.log('closest3', closest3);
+    console.log('');
+
     while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
     while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
     while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
@@ -179,6 +189,10 @@ function findCorrection(nodeId,
     closest2 = c2;
     closest3 = c3;
 
+    console.log('closest1', closest1);
+    console.log('closest2', closest2);
+    console.log('closest3', closest3);
+    console.log('');
 
     return [
         closestOklab,
@@ -209,22 +223,26 @@ function findCorrectionInOrder(nodeId,
 {
     const color = [...closestColor];
 
+    // console.log('order', order);
+    // console.log('-------------------')
 
-    console.log('start1',   start1);
-    console.log('end1',     end1);
-    console.log('closest1', closest1);
-    console.log('nSteps1',  nSteps1);
+    // console.log('start1',   start1);
+    // console.log('end1',     end1);
+    // console.log('closest1', closest1);
+    // console.log('nSteps1',  nSteps1);
 
-    console.log('start2',   start2);
-    console.log('end2',     end2);
-    console.log('closest2', closest2);
-    console.log('nSteps2',  nSteps2);
+    // console.log('start2',   start2);
+    // console.log('end2',     end2);
+    // console.log('closest2', closest2);
+    // console.log('nSteps2',  nSteps2);
 
-    console.log('start3',   start3);
-    console.log('end3',     end3);
-    console.log('closest3', closest3);
-    console.log('nSteps3',  nSteps3);
+    // console.log('start3',   start3);
+    // console.log('end3',     end3);
+    // console.log('closest3', closest3);
+    // console.log('nSteps3',  nSteps3);
 
+    // console.log('-------------------')
+    // console.log('')
     
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {

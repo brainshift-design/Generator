@@ -75,6 +75,22 @@ extends Parameter
 
 
 
+    setDecimalsFrom(strValue)
+    {
+        this.setDecimals(getDecimalCount(strValue));
+    }
+
+
+
+    setDecimals(dec, displayDec)
+    {
+        this.control.setDecimals(dec, displayDec);
+        this.control.update();
+        this.op.pushUpdate();
+    }
+
+
+
     isDefault()
     {
         return this.value == this.defaultValue;

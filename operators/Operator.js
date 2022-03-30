@@ -628,8 +628,8 @@ class Operator
                 
                 if (index >= 0) 
                 {
+                    this.params[index].setDecimalsFrom(_param[1]);
                     this.params[index].setValue(parseFloat(_param[1]), true, true, false);
-                    //this.params[index].setDecimalsFrom(_param[1]);
                 }
             }
         }
