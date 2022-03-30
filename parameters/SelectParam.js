@@ -53,7 +53,10 @@ extends Parameter
             showName,
             0,
             options.length-1,
-            value);    // default
+            value,     // default
+            0,         // decimals
+            0.02);
+
 
         this.control.options           = [...options];
         this.control.successOnFocusOut = true;

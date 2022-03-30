@@ -320,6 +320,8 @@ extends OpColorBase
         if (_node.locked3) this.corrections[i3].locked = isTrue(_node.locked3);
 
         this.updateCorrections();
+
+        super.loadParams(_node); // must be done again after the locks have been set
     }
 }
 

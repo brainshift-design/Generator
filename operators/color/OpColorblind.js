@@ -16,9 +16,9 @@ extends OpColorBase
         this.addOutput(new Output(this.dataType));
 
 
-        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0));
-        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0));
-        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0));
+        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
         this.#paramL.allowEditDecimals = true;
         this.#paramM.allowEditDecimals = true;

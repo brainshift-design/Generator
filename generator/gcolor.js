@@ -1,4 +1,7 @@
-function genFindCorrection(nodeId, inputColor, param1, param2, param3, locked1, locked2, locked3)
+function genFindCorrection(nodeId, 
+                           inputColor, 
+                           param1,  param2,  param3, 
+                           locked1, locked2, locked3)
 {
     const refOklab = dataColor2array(convert2oklab(inputColor));
 
@@ -83,7 +86,11 @@ function genFindCorrection(nodeId, inputColor, param1, param2, param3, locked1, 
 
 
 
-function findCorrection(nodeId, color, refOklab, param1, param2, param3, locked1, locked2, locked3) 
+function findCorrection(nodeId, 
+                        color, 
+                        refOklab, 
+                        param1,  param2,  param3, 
+                        locked1, locked2, locked3) 
 {
     let closestColor = [...color],
         closestOklab = null, 
@@ -120,16 +127,11 @@ function findCorrection(nodeId, color, refOklab, param1, param2, param3, locked1
                 end2   = lerp(max2, closest2, 1-d),
                 end3   = lerp(max3, closest3, 1-d);
 
-            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+0.001; }
-            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+0.001; }
-            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+0.001; }
-
-            // console.log('start1', start1);
-            // console.log('start2', start2);
-            // console.log('start3', start3);
-            // console.log('end1', end1);
-            // console.log('end2', end2);
-            // console.log('end3', end3);
+                
+            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
+            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
+            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
+            
 
           [ closestColor,
             closestOklab,
@@ -208,6 +210,22 @@ function findCorrectionInOrder(nodeId,
     const color = [...closestColor];
 
 
+    console.log('start1',   start1);
+    console.log('end1',     end1);
+    console.log('closest1', closest1);
+    console.log('nSteps1',  nSteps1);
+
+    console.log('start2',   start2);
+    console.log('end2',     end2);
+    console.log('closest2', closest2);
+    console.log('nSteps2',  nSteps2);
+
+    console.log('start3',   start3);
+    console.log('end3',     end3);
+    console.log('closest3', closest3);
+    console.log('nSteps3',  nSteps3);
+
+    
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
