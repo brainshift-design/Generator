@@ -149,7 +149,7 @@ function maxRgbDistance(col1, col2)
 
 function rgbEqual(rgb1, rgb2)
 {
-    return rgb1[0] == rgb2[0]
-        && rgb1[1] == rgb2[1]
-        && rgb1[2] == rgb2[2];        
+    return Math.abs(rgb1[0] - rgb2[0]) < Eps
+        && Math.abs(rgb1[1] - rgb2[1]) < Eps
+        && Math.abs(rgb1[2] - rgb2[2]) < Eps;        
 }

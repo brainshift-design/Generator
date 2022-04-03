@@ -18,7 +18,15 @@ onmessage = function(e)
 {
     switch (e.data.msg)
     {
-        case 'genFindCorrection':   genFindCorrection(e.data.nodeId, e.data.inputColor, e.data.param1, e.data.param2, e.data.param3, e.data.locked1, e.data.locked2, e.data.locked3);  break;
+        case 'genFindCorrection':   
+            genFindCorrection(
+                e.data.nodeId, 
+                e.data.inputColor, 
+                e.data.param1,  e.data.param2,  e.data.param3,
+                e.data.locked1, e.data.locked2, e.data.locked3);  
+        
+            break;
+        
         // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             

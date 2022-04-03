@@ -68,6 +68,10 @@ extends OpColorBase
         this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
 
+        this.param1.allowEditDecimals = true;
+        this.param2.allowEditDecimals = true;
+        this.param3.allowEditDecimals = true;
+
         this.param1.showParamLock = true;
         this.param2.showParamLock = true;
         this.param3.showParamLock = true;
@@ -246,8 +250,11 @@ extends OpColorBase
         margin.locked = correction.locked;
         margin.updateLock();
 
-        margin.control.setDecimals(Math.min(getDecimalCount(getNumberString(correction.value, -1))));
-        margin.setValue(correction.value, true, true, false);
+        if (!margin.locked)
+        {
+            margin.control.setDecimals(Math.min(getDecimalCount(getNumberString(correction.value, -1))));
+            margin.setValue(correction.value, true, true, false);
+        }
     }
 
 
