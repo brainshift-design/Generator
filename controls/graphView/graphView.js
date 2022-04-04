@@ -92,7 +92,7 @@ graphView.addEventListener('pointerdown', e =>
                 oldReorderIndex = graphView.overNode.inputs.indexOf(graphView.overInput);
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
-                //graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
+                graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 
                 graphView.savedConn = graphView.overInput.connection;
                 graphView.updateNodeWire(graphView.savedConn.wire);

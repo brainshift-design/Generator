@@ -1,4 +1,4 @@
-graphView.startConnectionFromOutput = (pointerId, output, show = true) =>
+graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true) =>
 {
     graphView.connPointerId = pointerId;
 
@@ -7,7 +7,7 @@ graphView.startConnectionFromOutput = (pointerId, output, show = true) =>
 
     graphView.addWire(graphView.tempConn.wire, false);
 
-    if (show)
+    if (updateTempWire)
     {
         graphView.updateNodeWire(
             graphView.tempConn.wire,
