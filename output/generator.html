@@ -3153,7 +3153,7 @@ function invalid2validRgb(rgb)
 
 
 
-function isValidRgb(rgb, lim = Eps)
+function isRgbValid(rgb, lim = Eps)
 {
     return (!isNaN(rgb[0])
          && !isNaN(rgb[1])
@@ -3529,7 +3529,7 @@ function hex2rgb(hex)
 
 function getContrastRatio2(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (!isRgbValid(textColor))
         return Number.NaN;
 
     const txtY = sRGB.luminance(textColor);
@@ -3555,7 +3555,7 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (!isRgbValid(textColor))
         return Number.NaN;
 
     return APCAcontrast(
@@ -4459,7 +4459,7 @@ function convert2hclluv(fromColor)
 }
 
 
-function adjustColor(color, order, margin1, margin2, margin3)
+function validateColor(color, order, margin1, margin2, margin3)
 {
     let i1, i2, i3;
     
@@ -4470,16 +4470,16 @@ function adjustColor(color, order, margin1, margin2, margin3)
     else if (order == 4) { i1 = 2; i2 = 0; i3 = 1; } // LHC
     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
-                                           color = this.adjustChannel(color, i1, margin1);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i2, margin2);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i3, margin3);
+                                           color = validateChannel(color, i1, margin1);
+    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i2, margin2);
+    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i3, margin3);
 
     return color;
 }
 
 
 
-function adjustChannel(color, iChan, margin)
+function validateChannel(color, iChan, margin)
 {
     const factor = getColorSpaceFactor(color[0]);
 
@@ -4495,7 +4495,7 @@ function adjustChannel(color, iChan, margin)
     let _c  = savedValue,
          c_ = savedValue;
 
-    let _valid  = isValidRgb(dataColor2rgb(color));
+    let _valid  = isRgbValid(dataColor2rgb(color));
     let  valid_ = _valid;
 
 
@@ -4506,8 +4506,8 @@ function adjustChannel(color, iChan, margin)
            && ! valid_
            && stackOverflowProtect-- > 0)
     {
-        _c -= d;  _valid = this.checkColor(_c, iChan, savedColor);
-        c_ += d;  valid_ = this.checkColor(c_, iChan, savedColor);
+        _c -= d;  _valid = isColorValid(_c, iChan, savedColor);
+        c_ += d;  valid_ = isColorValid(c_, iChan, savedColor);
     }
 
 
@@ -4517,7 +4517,7 @@ function adjustChannel(color, iChan, margin)
 
     if (_valid) 
     { 
-        _valid = isValidRgb(dataColor2rgb(color));
+        _valid = isRgbValid(dataColor2rgb(color));
         _c     = savedValue;
 
         while (   !_valid
@@ -4525,7 +4525,7 @@ function adjustChannel(color, iChan, margin)
                && stackOverflowProtect-- > 0)
         {
             _c -= d; 
-            _valid = this.checkColor(_c, iChan, savedColor);
+            _valid = isColorValid(_c, iChan, savedColor);
             margin -= d;
         }
 
@@ -4533,7 +4533,7 @@ function adjustChannel(color, iChan, margin)
     }
     else if (valid_)
     { 
-        valid_ = isValidRgb(dataColor2rgb(color));
+        valid_ = isRgbValid(dataColor2rgb(color));
         c_     = savedValue;
 
         while (   !valid_
@@ -4541,7 +4541,7 @@ function adjustChannel(color, iChan, margin)
                && stackOverflowProtect-- > 0)
         {
             c_ += d; 
-            valid_ = this.checkColor(c_, iChan, savedColor);
+            valid_ = isColorValid(c_, iChan, savedColor);
             margin -= d;
         }
 
@@ -4554,11 +4554,11 @@ function adjustChannel(color, iChan, margin)
 
 
 
-function checkColor(c, iChan, savedColor)
+function isColorValid(c, iChan, savedColor)
 {
     let color = [...savedColor];
     color[iChan+1] = c; 
-    return isValidRgb(dataColor2rgb(color));
+    return isRgbValid(dataColor2rgb(color));
 }
 
 
@@ -4599,12 +4599,12 @@ function genFindCorrection(nodeId,
                      param1,  param2,  param3, 
                      locked1, locked2, locked3); 
 
-  [ closestOrder,
-    closest1, closest2, closest3,
-    locked1,  locked2,  locked3 ] = reorderCorrection(
-                                        closestOrder,
-                                        closest1, closest2, closest3,
-                                        locked1,  locked2,  locked3);
+//   [ closestOrder,
+//     closest1, closest2, closest3,
+//     locked1,  locked2,  locked3 ] = reorderCorrection(
+//                                         closestOrder,
+//                                         closest1, closest2, closest3,
+//                                         locked1,  locked2,  locked3);
 
     genPostMessageToUi(
     {
@@ -4651,14 +4651,10 @@ function findCorrection(nodeId,
 
             const [max1, max2, max3] = getValidateMax(order);
 
-            let start1 = lerp(0,    closest1, 1-d),
-                start2 = lerp(0,    closest2, 1-d),
-                start3 = lerp(0,    closest3, 1-d);
-
-            let end1   = lerp(max1, closest1, 1-d),
-                end2   = lerp(max2, closest2, 1-d),
-                end3   = lerp(max3, closest3, 1-d);
-
+            let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
+                start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
+                start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
+               
                 
             if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
             if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
@@ -4675,13 +4671,13 @@ function findCorrection(nodeId,
                 nodeId,
                 refOklab,
                 order, 
-                locked1, locked2, locked3,
-                start1,  start2,  start3, 
-                end1,    end2,    end3,
+                locked1,  locked2,  locked3,
+                closest1, closest2, closest3,
+                start1,   start2,   start3, 
+                end1,     end2,     end3,
                 [...closestColor],
                 closestOklab, 
                 closestOrder,
-                closest1, closest2, closest3,
                 progress,
                 total);
         }
@@ -4704,9 +4700,9 @@ function findCorrection(nodeId,
     // console.log('closest3', closest3);
     // console.log('');
 
-    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-2, closest2, closest3)[2], closestRgb)) c1--;
-    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-2, closest3)[2], closestRgb)) c2--;
-    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-2)[2], closestRgb)) c3--;
+    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
+    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
+    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
 
     closest1 = Math.max(0, c1);
     closest2 = Math.max(0, c2);
@@ -4731,13 +4727,13 @@ function findCorrection(nodeId,
 function findCorrectionInOrder(nodeId,
                                refOklab,
                                order, 
-                               locked1, locked2, locked3,
-                               start1,  start2,  start3, 
-                               end1,    end2,    end3,
+                               locked1,  locked2,  locked3,
+                               closest1, closest2, closest3,
+                               start1,   start2,   start3, 
+                               end1,     end2,     end3,
                                closestColor,
                                closestOklab,
                                closestOrder,
-                               closest1, closest2, closest3,
                                progress,
                                total)
 {
@@ -4775,7 +4771,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   isValidRgb(_rgb)
+                if (   isRgbValid(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -4785,6 +4781,12 @@ function findCorrectionInOrder(nodeId,
                     closest1     = m1;
                     closest2     = m2;
                     closest3     = m3;
+
+                    console.log('order', order);
+                    console.log('closest1', closest1);
+                    console.log('closest2', closest2);
+                    console.log('closest3', closest3);
+                    console.log('');
                 }
 
                 progress++;
@@ -4814,7 +4816,7 @@ function findCorrectionInOrder(nodeId,
 
 function getCorrectedColor(color, order, m1, m2, m3)
 {
-    const _color = adjustColor(color, order, m1, m2, m3);
+    const _color = validateColor(color, order, m1, m2, m3);
     const _oklab = dataColor2array(convert2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 
@@ -4827,9 +4829,13 @@ function reorderCorrection(closestOrder,
                            closest1, closest2, closest3,
                            locked1,  locked2,  locked3)
 {
-    if (   closest1 <  Eps
-        && closest2 <  Eps
-        && closest3 >= Eps)
+    let c1 = { closest: closest1, locked: locked1 };
+    let c2 = { closest: closest2, locked: locked2 };
+    let c3 = { closest: closest3, locked: locked3 };
+
+    if (   c1.closest <  Eps
+        && c2.closest <  Eps
+        && c3.closest >= Eps)
     {
         switch (closestOrder)
         {
@@ -4841,18 +4847,13 @@ function reorderCorrection(closestOrder,
             case 5: closestOrder = 3; break;
         }
 
-        const tmpClosest = closest2;
-        closest1 = closest3;
-        closest2 = closest1;
-        closest3 = tmpClosest;
-
-        const tmpLocked = locked2;
-        locked1 = locked3;
-        locked2 = locked1;
-        locked3 = tmpLocked;
+        const tmp = c2;
+        c1 = c3;
+        c2 = c1;
+        c3 = tmp;
     }
-    else if (closest1 >= Eps
-          && closest2 <  Eps)
+    else if (c1.closest >= Eps
+          && c2.closest <  Eps)
     {
         switch (closestOrder)
         {
@@ -4864,15 +4865,11 @@ function reorderCorrection(closestOrder,
             case 5: closestOrder = 4; break;
         }
 
-        const tmpClosest = closest2;
-        closest2 = closest3;
-        closest3 = tmpClosest;
-
-        const tmpLocked = locked2;
-        locked2 = locked3;
-        locked3 = tmpLocked;
+        const tmp = c2;
+        c2 = c3;
+        c3 = tmp;
     }
-    else if (closest1 < Eps)
+    else if (c1.closest < Eps)
     {
         switch (closestOrder)
         {
@@ -4884,22 +4881,17 @@ function reorderCorrection(closestOrder,
             case 5: closestOrder = 1; break;
         }
 
-        const tmpClosest = closest1;
-        closest1 = closest2;
-        closest2 = closest3;
-        closest3 = tmpClosest;
-
-        const tmpLocked = locked1;
-        locked1 = locked2;
-        locked2 = locked3;
-        locked3 = tmpLocked;
+        const tmp = c1;
+        c1 = c2;
+        c2 = c3;
+        c3 = tmp;
     }
 
 
     return [
         closestOrder,
-        closest1, closest2, closest3,
-        locked1,  locked2,  locked3 ];
+        c1.closest, c2.closest, c3.closest,
+        c1.locked,  c2.locked,  c3.locked ];
 }
 
 

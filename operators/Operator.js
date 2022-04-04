@@ -521,13 +521,13 @@ class Operator
 
     follows(node)
     {
+        if (this == node)
+            return true;
+            
         for (const input of this.inputs)
         {
-            if (input.op == node)
-                return true;
-                
-            else if (input.isConnected
-                  && input.connectedOutput.op.follows(node))
+            if (   input.isConnected
+                && input.connectedOutput.op.follows(node))
                 return true;
         }
 
@@ -561,7 +561,7 @@ class Operator
                 + pos + tab + '"params":\n'
                 + pos + tab + '[\n';
 
-            json += this.paramsToJson(nTab);
+            json += this.paramsToJson(nTab + 2);
 
             json += 
                 pos + tab + ']';

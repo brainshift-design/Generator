@@ -17,12 +17,12 @@ function genFindCorrection(nodeId,
                      param1,  param2,  param3, 
                      locked1, locked2, locked3); 
 
-  [ closestOrder,
-    closest1, closest2, closest3,
-    locked1,  locked2,  locked3 ] = reorderCorrection(
-                                        closestOrder,
-                                        closest1, closest2, closest3,
-                                        locked1,  locked2,  locked3);
+//   [ closestOrder,
+//     closest1, closest2, closest3,
+//     locked1,  locked2,  locked3 ] = reorderCorrection(
+//                                         closestOrder,
+//                                         closest1, closest2, closest3,
+//                                         locked1,  locked2,  locked3);
 
     genPostMessageToUi(
     {
@@ -69,14 +69,10 @@ function findCorrection(nodeId,
 
             const [max1, max2, max3] = getValidateMax(order);
 
-            let start1 = lerp(0,    closest1, 1-d),
-                start2 = lerp(0,    closest2, 1-d),
-                start3 = lerp(0,    closest3, 1-d);
-
-            let end1   = lerp(max1, closest1, 1-d),
-                end2   = lerp(max2, closest2, 1-d),
-                end3   = lerp(max3, closest3, 1-d);
-
+            let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
+                start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
+                start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
+               
                 
             if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
             if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
@@ -93,13 +89,13 @@ function findCorrection(nodeId,
                 nodeId,
                 refOklab,
                 order, 
-                locked1, locked2, locked3,
-                start1,  start2,  start3, 
-                end1,    end2,    end3,
+                locked1,  locked2,  locked3,
+                closest1, closest2, closest3,
+                start1,   start2,   start3, 
+                end1,     end2,     end3,
                 [...closestColor],
                 closestOklab, 
                 closestOrder,
-                closest1, closest2, closest3,
                 progress,
                 total);
         }
@@ -122,9 +118,9 @@ function findCorrection(nodeId,
     // console.log('closest3', closest3);
     // console.log('');
 
-    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-2, closest2, closest3)[2], closestRgb)) c1--;
-    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-2, closest3)[2], closestRgb)) c2--;
-    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-2)[2], closestRgb)) c3--;
+    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
+    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
+    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
 
     closest1 = Math.max(0, c1);
     closest2 = Math.max(0, c2);
@@ -149,13 +145,13 @@ function findCorrection(nodeId,
 function findCorrectionInOrder(nodeId,
                                refOklab,
                                order, 
-                               locked1, locked2, locked3,
-                               start1,  start2,  start3, 
-                               end1,    end2,    end3,
+                               locked1,  locked2,  locked3,
+                               closest1, closest2, closest3,
+                               start1,   start2,   start3, 
+                               end1,     end2,     end3,
                                closestColor,
                                closestOklab,
                                closestOrder,
-                               closest1, closest2, closest3,
                                progress,
                                total)
 {
@@ -193,7 +189,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   isValidRgb(_rgb)
+                if (   isRgbValid(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -203,6 +199,12 @@ function findCorrectionInOrder(nodeId,
                     closest1     = m1;
                     closest2     = m2;
                     closest3     = m3;
+
+                    console.log('order', order);
+                    console.log('closest1', closest1);
+                    console.log('closest2', closest2);
+                    console.log('closest3', closest3);
+                    console.log('');
                 }
 
                 progress++;
@@ -232,7 +234,7 @@ function findCorrectionInOrder(nodeId,
 
 function getCorrectedColor(color, order, m1, m2, m3)
 {
-    const _color = adjustColor(color, order, m1, m2, m3);
+    const _color = validateColor(color, order, m1, m2, m3);
     const _oklab = dataColor2array(convert2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 
@@ -245,9 +247,13 @@ function reorderCorrection(closestOrder,
                            closest1, closest2, closest3,
                            locked1,  locked2,  locked3)
 {
-    if (   closest1 <  Eps
-        && closest2 <  Eps
-        && closest3 >= Eps)
+    let c1 = { closest: closest1, locked: locked1 };
+    let c2 = { closest: closest2, locked: locked2 };
+    let c3 = { closest: closest3, locked: locked3 };
+
+    if (   c1.closest <  Eps
+        && c2.closest <  Eps
+        && c3.closest >= Eps)
     {
         switch (closestOrder)
         {
@@ -259,18 +265,13 @@ function reorderCorrection(closestOrder,
             case 5: closestOrder = 3; break;
         }
 
-        const tmpClosest = closest2;
-        closest1 = closest3;
-        closest2 = closest1;
-        closest3 = tmpClosest;
-
-        const tmpLocked = locked2;
-        locked1 = locked3;
-        locked2 = locked1;
-        locked3 = tmpLocked;
+        const tmp = c2;
+        c1 = c3;
+        c2 = c1;
+        c3 = tmp;
     }
-    else if (closest1 >= Eps
-          && closest2 <  Eps)
+    else if (c1.closest >= Eps
+          && c2.closest <  Eps)
     {
         switch (closestOrder)
         {
@@ -282,15 +283,11 @@ function reorderCorrection(closestOrder,
             case 5: closestOrder = 4; break;
         }
 
-        const tmpClosest = closest2;
-        closest2 = closest3;
-        closest3 = tmpClosest;
-
-        const tmpLocked = locked2;
-        locked2 = locked3;
-        locked3 = tmpLocked;
+        const tmp = c2;
+        c2 = c3;
+        c3 = tmp;
     }
-    else if (closest1 < Eps)
+    else if (c1.closest < Eps)
     {
         switch (closestOrder)
         {
@@ -302,20 +299,15 @@ function reorderCorrection(closestOrder,
             case 5: closestOrder = 1; break;
         }
 
-        const tmpClosest = closest1;
-        closest1 = closest2;
-        closest2 = closest3;
-        closest3 = tmpClosest;
-
-        const tmpLocked = locked1;
-        locked1 = locked2;
-        locked2 = locked3;
-        locked3 = tmpLocked;
+        const tmp = c1;
+        c1 = c2;
+        c2 = c3;
+        c3 = tmp;
     }
 
 
     return [
         closestOrder,
-        closest1, closest2, closest3,
-        locked1,  locked2,  locked3 ];
+        c1.closest, c2.closest, c3.closest,
+        c1.locked,  c2.locked,  c3.locked ];
 }

@@ -264,6 +264,7 @@ figma.ui.onmessage = msg =>
         case 'figSaveNodesAndConns':           figSaveNodesAndConns          (msg.nodeIds, msg.nodeJson);                  break;        
         case 'figRemoveSavedNodesAndConns':    figRemoveSavedNodesAndConns   (msg.nodeIds);                                break;
         case 'figRemoveAllSavedNodesAndConns': figRemoveAllSavedNodesAndConns();                                           break;
+        case 'figLogAllSavedNodesAndConns':    figLogAllSavedNodesAndConns();                                           break;
 
         case 'figSaveConnection':              figSaveConnection             (msg.name, msg.json);                         break;
         case 'figRemoveSavedConnection':       figRemoveSavedConnection      (msg.name);                                   break;
@@ -330,15 +331,20 @@ function figSetLocalData(key, value)
 
 
 
-function figGetPageData(key)
+function figGetPageData(key, postToUi = true)
 {
     const data = figma.currentPage.getPluginData(key);
 
-    figPostMessageToUi({
-        cmd:  'uiGetPageDataReturn',
-        key:   key,
-        value: data
-    });
+    if (postToUi)
+    {
+        figPostMessageToUi({
+            cmd:  'uiGetPageDataReturn',
+            key:   key,
+            value: data
+        });
+    }
+    
+    return data;
 }
 
 
@@ -402,6 +408,17 @@ function figRemoveAllSavedNodesAndConns()
 
     for (const key of nodeKeys) figSetPageData(key, '');
     for (const key of connKeys) figSetPageData(key, '');
+}
+
+
+
+function figLogAllSavedNodesAndConns()
+{
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+
+    for (const key of nodeKeys) console.log(key, figGetPageData(key, false));
+    for (const key of connKeys) console.log(key, figGetPageData(key, false));
 }
 
 

@@ -248,7 +248,7 @@ extends OpColorBase
             const colBack = dataColor2rgb(this._color);
 
             this.hexbox.value = 
-                isValidRgb(colBack)
+                isRgbValid(colBack)
                 ? rgb2hex(colBack)
                 : '?';
         }
@@ -279,8 +279,8 @@ extends OpColorBase
 
         const colSpaceBar = 
             darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
+            ? [0, 0, 0, isRgbValid(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isRgbValid(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
@@ -311,7 +311,7 @@ extends OpColorBase
 
         const isValid = 
                colorSpaceIndex(this._color[0]) > 3
-            || isValidRgb(colBack);
+            || isRgbValid(colBack);
 
         this.updateSlider(this.param1.control, isValid);
         this.updateSlider(this.param2.control, isValid);
@@ -394,12 +394,12 @@ extends OpColorBase
         {
             const rgb = getRgb(f);
 
-            if (!open && !isValidRgb(rgb))
+            if (!open && !isRgbValid(rgb))
             {
                 ranges.push(new NumberSliderRange(f, f, 'rgba(255, 0, 0, 0.16)', 0.8));
                 open = true;
             }
-            else if (open && isValidRgb(rgb)) 
+            else if (open && isRgbValid(rgb)) 
             {
                 ranges[ranges.length-1].end = f;
                 open = false;

@@ -1,4 +1,4 @@
-function adjustColor(color, order, margin1, margin2, margin3)
+function validateColor(color, order, margin1, margin2, margin3)
 {
     let i1, i2, i3;
     
@@ -9,16 +9,16 @@ function adjustColor(color, order, margin1, margin2, margin3)
     else if (order == 4) { i1 = 2; i2 = 0; i3 = 1; } // LHC
     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
-                                           color = this.adjustChannel(color, i1, margin1);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i2, margin2);
-    if (!isValidRgb(dataColor2rgb(color))) color = this.adjustChannel(color, i3, margin3);
+                                           color = validateChannel(color, i1, margin1);
+    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i2, margin2);
+    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i3, margin3);
 
     return color;
 }
 
 
 
-function adjustChannel(color, iChan, margin)
+function validateChannel(color, iChan, margin)
 {
     const factor = getColorSpaceFactor(color[0]);
 
@@ -34,7 +34,7 @@ function adjustChannel(color, iChan, margin)
     let _c  = savedValue,
          c_ = savedValue;
 
-    let _valid  = isValidRgb(dataColor2rgb(color));
+    let _valid  = isRgbValid(dataColor2rgb(color));
     let  valid_ = _valid;
 
 
@@ -45,8 +45,8 @@ function adjustChannel(color, iChan, margin)
            && ! valid_
            && stackOverflowProtect-- > 0)
     {
-        _c -= d;  _valid = this.checkColor(_c, iChan, savedColor);
-        c_ += d;  valid_ = this.checkColor(c_, iChan, savedColor);
+        _c -= d;  _valid = isColorValid(_c, iChan, savedColor);
+        c_ += d;  valid_ = isColorValid(c_, iChan, savedColor);
     }
 
 
@@ -56,7 +56,7 @@ function adjustChannel(color, iChan, margin)
 
     if (_valid) 
     { 
-        _valid = isValidRgb(dataColor2rgb(color));
+        _valid = isRgbValid(dataColor2rgb(color));
         _c     = savedValue;
 
         while (   !_valid
@@ -64,7 +64,7 @@ function adjustChannel(color, iChan, margin)
                && stackOverflowProtect-- > 0)
         {
             _c -= d; 
-            _valid = this.checkColor(_c, iChan, savedColor);
+            _valid = isColorValid(_c, iChan, savedColor);
             margin -= d;
         }
 
@@ -72,7 +72,7 @@ function adjustChannel(color, iChan, margin)
     }
     else if (valid_)
     { 
-        valid_ = isValidRgb(dataColor2rgb(color));
+        valid_ = isRgbValid(dataColor2rgb(color));
         c_     = savedValue;
 
         while (   !valid_
@@ -80,7 +80,7 @@ function adjustChannel(color, iChan, margin)
                && stackOverflowProtect-- > 0)
         {
             c_ += d; 
-            valid_ = this.checkColor(c_, iChan, savedColor);
+            valid_ = isColorValid(c_, iChan, savedColor);
             margin -= d;
         }
 
@@ -93,11 +93,11 @@ function adjustChannel(color, iChan, margin)
 
 
 
-function checkColor(c, iChan, savedColor)
+function isColorValid(c, iChan, savedColor)
 {
     let color = [...savedColor];
     color[iChan+1] = c; 
-    return isValidRgb(dataColor2rgb(color));
+    return isRgbValid(dataColor2rgb(color));
 }
 
 

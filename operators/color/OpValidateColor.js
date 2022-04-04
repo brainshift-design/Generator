@@ -220,7 +220,7 @@ extends OpColorBase
 
         if (this.inputs[0].isConnected)
         {
-            this._color = [...adjustColor(
+            this._color = [...validateColor(
                 [...this.inputs[0].data.color],
                 this.paramOrder.value, 
                 this.param1.value,

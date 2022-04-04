@@ -57,7 +57,7 @@ extends OpColorBase
             this._color = rgb2dataColor(validCb);
 
 
-            if (!isValidRgb(rgb))
+            if (!isRgbValid(rgb))
             {
                 this.warningStyle = this.getDefaultWarningStyle(validRgb);
                 valid             = false;
@@ -65,7 +65,7 @@ extends OpColorBase
 
             this.forceShowWarning = 
                    this.inputs[0].isConnected
-                && !isValidRgb(rgb);        
+                && !isRgbValid(rgb);        
         }
         else 
         {

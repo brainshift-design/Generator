@@ -295,7 +295,11 @@ function createNodeHeader(node)
                 else
                 {
                     const input = node.getAutoInput(tempConn.output.dataType);
-                    if (!input) return;
+
+                    if ( !input
+                        ||    input.isConnected
+                           && input.connectedOutput.op == tempConn.output.op) 
+                        return;
 
                     graphView.overInput   = input;
                     graphView.headerInput = input;

@@ -106,7 +106,9 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && graphView.tempConn.output.dataType == this.dataType)
+                && graphView.tempConn.output.dataType == this.dataType
+                && (  !this.isConnected
+                    || this.connectedOutput != graphView.tempConn.output))
             {
                 const rect = boundingRect(this.control);
                 const loop = graphView.tempConn.output.op.follows(this.op);

@@ -402,6 +402,16 @@ function uiSaveNodesAndConns(nodeIds)
 
 
 
+function uiRemoveSavedNodesAndConns(nodeIds)
+{
+    uiPostMessageToFigma({
+        cmd:    'figRemoveSavedNodesAndConns',
+        nodeIds: nodeIds
+    });
+}
+
+
+
 function uiRemoveAllSavedNodesAndConns()
 {
     uiPostMessageToFigma({
@@ -411,11 +421,10 @@ function uiRemoveAllSavedNodesAndConns()
 
 
 
-function uiRemoveSavedNodesAndConns(nodeIds)
+function uiLogAllSavedNodesAndConns()
 {
     uiPostMessageToFigma({
-        cmd:    'figRemoveSavedNodesAndConns',
-        nodeIds: nodeIds
+        cmd: 'figLogAllSavedNodesAndConns'
     });
 }
 

@@ -61,8 +61,8 @@ extends OpColorBase
             const rgb0 = dataColor2rgb(this.inputs[0].data.color);
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
-            if (   isValidRgb(rgb0) && this.inputs[0].data.isValid
-                && isValidRgb(rgb1) && this.inputs[1].data.isValid)
+            if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
+                && isRgbValid(rgb1) && this.inputs[1].data.isValid)
             {
                 if (this.#paramStandard.value == 0)
                 {
@@ -109,15 +109,15 @@ extends OpColorBase
                 return;
             }
 
-            else if ((!isValidRgb(rgb0) || !this.inputs[0].data.isValid)
-                   &&  isValidRgb(rgb1) &&  this.inputs[1].data.isValid)
+            else if ((!isRgbValid(rgb0) || !this.inputs[0].data.isValid)
+                   &&  isRgbValid(rgb1) &&  this.inputs[1].data.isValid)
             {
                 this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
                 this.forceShowWarning = true;
             }
             
-            else if (  isValidRgb(rgb0) &&  this.inputs[0].data.isValid
-                  && (!isValidRgb(rgb1) || !this.inputs[1].data.isValid))
+            else if (  isRgbValid(rgb0) &&  this.inputs[0].data.isValid
+                  && (!isRgbValid(rgb1) || !this.inputs[1].data.isValid))
             {
                 this.warningStyle     = this.getDefaultWarningStyle(rgb1);
                 this.forceShowWarning = true;
@@ -132,7 +132,7 @@ extends OpColorBase
             const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
             this.forceShowWarning = 
-                   !isValidRgb(rgb1) 
+                   !isRgbValid(rgb1) 
                 || !this.inputs[1].data.isValid;
         }
 

@@ -85,8 +85,8 @@ extends Operator
                !this.canShowColor()
             || rgb2hclokl(colBack)[2] > 0.71;
 
-        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.22), 0.5);
-        const wa = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.14), 0.5);
+        const ba = Math.min((this.header.over ? 14 : 1) * (isRgbValid(colBack) ? 0.03 : 0.22), 0.5);
+        const wa = Math.min((this.header.over ? 14 : 1) * (isRgbValid(colBack) ? 0.03 : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()
@@ -119,7 +119,7 @@ extends Operator
         {
             const rgb = dataColor2rgb(this._color);
 
-            if (   !isValidRgb(rgb)
+            if (   !isRgbValid(rgb)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
@@ -171,7 +171,7 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-               isValidRgb(colBack)
+               isRgbValid(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('

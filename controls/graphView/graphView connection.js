@@ -80,7 +80,9 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.dataType == output.dataType) // TO INPUT
+            && input.dataType == output.dataType
+            && (  !input.isConnected
+                || input.connectedOutput != graphView.tempConn.output)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex))
