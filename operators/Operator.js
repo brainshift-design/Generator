@@ -556,15 +556,15 @@ class Operator
 
         if (this.params.filter(p => !this.paramIsConsideredDefault(p)).length > 0)
         {
-            json +=
-                ',\n'
-                + pos + tab + '"params":\n'
-                + pos + tab + '[\n';
+            // json +=
+            //     ',\n'
+            //     + pos + tab + '"params":\n'
+            //     + pos + tab + '[\n';
 
-            json += this.paramsToJson(nTab + 2);
+            json += this.paramsToJson(nTab);
 
-            json += 
-                pos + tab + ']';
+            // json += 
+            //     pos + tab + ']';
         }
 
         json += '\n' + pos + '}';
@@ -592,12 +592,16 @@ class Operator
 
 
 
-    paramsToJson(nTab)
+    paramsToJson(nTab = 0)
     {
-        let pos = ' '.repeat(nTab);
+        let   pos = ' '.repeat(nTab);
+        const tab = '  ';
 
-        let json = '';
-
+        let json =
+             ',\n'
+            + pos + tab + '"params":\n'
+            + pos + tab + '[\n';
+            
         let first = true;
         for (const param of this.params)
         {
@@ -606,12 +610,14 @@ class Operator
                     || !param.input.isConnected))
             {
                 if (!first) json += ',\n'; first = false;
-                json += pos + param.toJson(nTab);
+                json += pos + tab + tab + param.toJson(nTab);
             }
         }
 
         if (!first)
             json += '\n';
+
+        json += pos + tab + ']';
 
         return json;
     }

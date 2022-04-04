@@ -165,12 +165,19 @@ extends OperatorBase
 
 
 
+    paramsToJson(nTab = 0)
+    {
+        return '';
+    }
+
+
+
     loadParams(_node)
     {
         if (_node.showOnlySymbol)
             this._showOnlySymbol = isTrue(_node.showOnlySymbol);
 
-        super.loadParams(_node);
+        //super.loadParams(_node);
     }
 }
 
