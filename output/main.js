@@ -41,6 +41,7 @@ function figUpdateRect(obj) {
     rect.cornerRadius = obj.round;
 }
 function figUpdateObjects(objects) {
+    console.log(objects);
     // prepare the buffers
     let nodeId = -1;
     let prevId = -1;

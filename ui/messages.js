@@ -34,11 +34,11 @@ generator.onmessage = function(e)
     {
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(e.data.nodeId, e.data.progress); break;
         case 'uiEndFindCorrection':    uiEndFindCorrection           (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
-        // case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
-        // case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        // case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
-        // case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
-        // case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
+        // case 'uiMakeActive':        uiMakeActive    (e.data.nodeIds);                            break;
+        // case 'uiShowParamValue':    uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        // case 'uiUpdateNodes':       uiUpdateNodes   (e.data.nodeIds);                            break;
+        // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
+        case 'uiUpdateObjects':        uiUpdateObjects(e.data.objects);                            break;
     }
 };
 
@@ -88,6 +88,15 @@ function uiPostMessageToGenerator(msg)
     generator.postMessage(msg);
 }
 
+
+
+function uiPostGeneratorRequest(request)
+{
+    uiPostMessageToGenerator({
+        msg:    'genGenerateRequest',
+        request: request
+    })
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

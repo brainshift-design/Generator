@@ -63,6 +63,7 @@ function figUpdateRect(obj)
 
 function figUpdateObjects(objects)
 {
+    console.log(objects);
     // prepare the buffers
 
     let nodeId = -1;

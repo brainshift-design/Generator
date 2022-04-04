@@ -27,6 +27,7 @@ extends Action
         const node = uiCreateNode(this.opType, this.creatingButton);
         this.createdNodeId = node.id;
         
+        node.makeActive();
         node.pushUpdate();
 
         graphView.updateNodeTransform(node);

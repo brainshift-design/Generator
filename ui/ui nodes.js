@@ -372,7 +372,7 @@ function uiUpdateGraph()
 
 function uiUpdateObjects(objects)
 {
-    uiUpdateGraph();
+    //uiUpdateGraph();
     
     uiPostMessageToFigma({ 
         cmd:    'figUpdateObjects',

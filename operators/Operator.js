@@ -285,6 +285,9 @@ class Operator
 
         this.valid = true;
 
+        if (this.active)
+            uiPostGeneratorRequest(this.makeGenRequest());
+
         if (graphView.canUpdateNodes)
             this.updateNode();
 
@@ -298,6 +301,42 @@ class Operator
         //log(this.id + '.Operator.updateData()');
 
         this.setParamOutputData();
+    }
+
+
+
+    makeGenRequest() 
+    { 
+        // create the generation string here
+
+        /*
+
+            A generation string is only to calculate graph results.
+
+            [ ] = optional
+            ... = list
+
+            The general format is
+
+                opType [params...] [inputs...]
+
+
+            #               # of following values
+            N               number value
+            C               color value
+
+
+            OpNumber        number [N]
+
+            OpArithmetic    add [onlySymbol] # N...
+
+            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
+
+            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
+
+        */
+
+        return '';
     }
 
 
@@ -464,12 +503,16 @@ class Operator
         this._active = true;
         uiSetActive(this, true);
 
+        this.updateHeader();
+
         //this.header.style.backgroundColor = this.activeColor;
         //this.header.style.boxShadow       = 'none';
         //this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
         
         // if (this.dataType == 'object')
         //     uiGenerateObjects([this.id]);
+
+        this.pushUpdate();
     }
         
     
@@ -639,40 +682,6 @@ class Operator
                 }
             }
         }
-    }
-
-
-
-    toString() 
-    { 
-        // create the definition string here
-
-        /*
-
-            A definition string is only to calculate graph results.
-
-            [ ] = optional
-            ... = list
-
-            The general format is
-
-                opType [params...] [inputs...]
-
-
-            #               # of following values
-            N               number value
-            C               color value
-
-
-            OpNumber        number [N]
-
-            OpArithmetic    add [onlySymbol] # N...
-
-            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
-
-            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
-
-        */
     }
 }
 

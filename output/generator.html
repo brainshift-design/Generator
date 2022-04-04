@@ -2237,6 +2237,7 @@ onmessage = function(e)
         
             break;
         
+        case 'genGenerateRequest': genGenerateRequest(e.data.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -2262,6 +2263,39 @@ function genPostMessageToUi(msg)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genGenerateRequest(request)
+{
+    const objects = [];
+    const stackOverflowProtect = 100;
+
+    for (let i = 0, so = 0; i < request.length; so < stackOverflowProtect)
+    {
+        if (request[i] == 'rectangle' && request.length > i+7) { objects.push(genGenerateRectangle(request, i)); i += 7; }
+        else so++;
+    }
+
+    genPostMessageToUi({ 
+        msg:    'uiUpdateObjects',
+        objects: objects
+    });
+}
+
+
+
+function genGenerateRectangle(request, i)
+{
+    return [
+        OBJ_RECT,
+        request[i+1],
+        request[i+2],
+        request[i+3],
+        request[i+4],
+        request[i+5],
+        request[i+6]];
+}
 
 
 

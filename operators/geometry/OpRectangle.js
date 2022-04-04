@@ -129,9 +129,24 @@ extends OperatorBase
 
 
 
+    makeGenRequest()
+    {
+        return [
+            this.opType,
+            this.#paramX     .value,
+            this.#paramY     .value,
+            this.#paramWidth .value,
+            this.#paramHeight.value,
+            this.#paramAngle .value,
+            this.#paramRound .value ];
+    }
+
+
+
     updateNode()
     {
-        this.#btnProportional.style.top = 79;
+        this.#btnProportional.style.left = 45;
+        this.#btnProportional.style.top  = 79;
 
         super.updateNode();
     }

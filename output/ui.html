@@ -1317,8 +1317,8 @@ div
     <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast",      btnCreateWebContrast));      this.blur();'></button>
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind",       btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle"       )); this.blur();'>RECT</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle",        btnCreateRectangle));        this.blur();'>RECT</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
 
     <button class='menuButton' id='btnZoom'                   onclick='graphView.zoom = 1; this.blur();'></button>
@@ -3794,6 +3794,7 @@ onmessage = function(e)
         
             break;
         
+        case 'genGenerateRequest': genGenerateRequest(e.data.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -3819,6 +3820,39 @@ function genPostMessageToUi(msg)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genGenerateRequest(request)
+{
+    const objects = [];
+    const stackOverflowProtect = 100;
+
+    for (let i = 0, so = 0; i < request.length; so < stackOverflowProtect)
+    {
+        if (request[i] == 'rectangle' && request.length > i+7) { objects.push(genGenerateRectangle(request, i)); i += 7; }
+        else so++;
+    }
+
+    genPostMessageToUi({ 
+        msg:    'uiUpdateObjects',
+        objects: objects
+    });
+}
+
+
+
+function genGenerateRectangle(request, i)
+{
+    return [
+        OBJ_RECT,
+        request[i+1],
+        request[i+2],
+        request[i+3],
+        request[i+4],
+        request[i+5],
+        request[i+6]];
+}
 
 
 
@@ -16570,6 +16604,9 @@ class Operator
 
         this.valid = true;
 
+        if (this.active)
+            uiPostGeneratorRequest(this.makeGenRequest());
+
         if (graphView.canUpdateNodes)
             this.updateNode();
 
@@ -16583,6 +16620,42 @@ class Operator
         //log(this.id + '.Operator.updateData()');
 
         this.setParamOutputData();
+    }
+
+
+
+    makeGenRequest() 
+    { 
+        // create the generation string here
+
+        /*
+
+            A generation string is only to calculate graph results.
+
+            [ ] = optional
+            ... = list
+
+            The general format is
+
+                opType [params...] [inputs...]
+
+
+            #               # of following values
+            N               number value
+            C               color value
+
+
+            OpNumber        number [N]
+
+            OpArithmetic    add [onlySymbol] # N...
+
+            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
+
+            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
+
+        */
+
+        return '';
     }
 
 
@@ -16749,12 +16822,16 @@ class Operator
         this._active = true;
         uiSetActive(this, true);
 
+        this.updateHeader();
+
         //this.header.style.backgroundColor = this.activeColor;
         //this.header.style.boxShadow       = 'none';
         //this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
         
         // if (this.dataType == 'object')
         //     uiGenerateObjects([this.id]);
+
+        this.pushUpdate();
     }
         
     
@@ -16924,40 +17001,6 @@ class Operator
                 }
             }
         }
-    }
-
-
-
-    toString() 
-    { 
-        // create the definition string here
-
-        /*
-
-            A definition string is only to calculate graph results.
-
-            [ ] = optional
-            ... = list
-
-            The general format is
-
-                opType [params...] [inputs...]
-
-
-            #               # of following values
-            N               number value
-            C               color value
-
-
-            OpNumber        number [N]
-
-            OpArithmetic    add [onlySymbol] # N...
-
-            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
-
-            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
-
-        */
     }
 }
 
@@ -21125,9 +21168,24 @@ extends OperatorBase
 
 
 
+    makeGenRequest()
+    {
+        return [
+            this.opType,
+            this.#paramX     .value,
+            this.#paramY     .value,
+            this.#paramWidth .value,
+            this.#paramHeight.value,
+            this.#paramAngle .value,
+            this.#paramRound .value ];
+    }
+
+
+
     updateNode()
     {
-        this.#btnProportional.style.top = 79;
+        this.#btnProportional.style.left = 45;
+        this.#btnProportional.style.top  = 79;
 
         super.updateNode();
     }
@@ -21420,6 +21478,7 @@ extends Action
         const node = uiCreateNode(this.opType, this.creatingButton);
         this.createdNodeId = node.id;
         
+        node.makeActive();
         node.pushUpdate();
 
         graphView.updateNodeTransform(node);
@@ -22874,11 +22933,11 @@ generator.onmessage = function(e)
     {
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(e.data.nodeId, e.data.progress); break;
         case 'uiEndFindCorrection':    uiEndFindCorrection           (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
-        // case 'uiMakeActive':      uiMakeActive    (e.data.nodeIds);                            break;
-        // case 'uiShowParamValue':  uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        // case 'uiUpdateNodes':     uiUpdateNodes   (e.data.nodeIds);                            break;
-        // case 'uiUpdateGraph':     uiUpdateGraph   ();                                          break;
-        // case 'uiUpdateObjects':   uiUpdateObjects (e.data.objects);                            break;
+        // case 'uiMakeActive':        uiMakeActive    (e.data.nodeIds);                            break;
+        // case 'uiShowParamValue':    uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
+        // case 'uiUpdateNodes':       uiUpdateNodes   (e.data.nodeIds);                            break;
+        // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
+        case 'uiUpdateObjects':        uiUpdateObjects(e.data.objects);                            break;
     }
 };
 
@@ -22928,6 +22987,15 @@ function uiPostMessageToGenerator(msg)
     generator.postMessage(msg);
 }
 
+
+
+function uiPostGeneratorRequest(request)
+{
+    uiPostMessageToGenerator({
+        msg:    'genGenerateRequest',
+        request: request
+    })
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23871,7 +23939,7 @@ function uiUpdateGraph()
 
 function uiUpdateObjects(objects)
 {
-    uiUpdateGraph();
+    //uiUpdateGraph();
     
     uiPostMessageToFigma({ 
         cmd:    'figUpdateObjects',
