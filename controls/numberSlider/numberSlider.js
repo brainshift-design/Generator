@@ -264,12 +264,18 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         else if (graphView.tempConn
               && slider.param)
         {
+            let savedInput = 
+                graphView.savedConn
+                ? graphView.savedConn.input
+                : null;
+
             if (    graphView.tempConn.output
                 &&  slider.param.input
                 &&  graphView.tempConn.output.dataType == slider.param.input.dataType
                 && !graphView.tempConn.output.op.follows(slider.param.op)
                 && (  !slider.param.input.isConnected // not already connected to this input
-                    || slider.param.input.connectedOutput != graphView.tempConn.output))
+                    || slider.param.input.connectedOutput != graphView.tempConn.output
+                    || slider.param.input == savedInput))
             {
                 graphView.overInput = slider.param.input;
                     

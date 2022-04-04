@@ -80,9 +80,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.dataType == output.dataType
-            && (  !input.isConnected
-                || input.connectedOutput != graphView.tempConn.output)) // TO INPUT
+            && input.dataType == output.dataType) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex))
@@ -97,7 +95,9 @@ graphView.endConnection = pointerId =>
             else if (savedInput)
                 actionManager.do(new ReconnectAction(output, savedInput, input));
 
-            else if (!savedInput) // connect new
+            else if (   !savedInput
+                     && (  !input.isConnected
+                         || input.connectedOutput != graphView.tempConn.output)) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }
         else if (savedInput) // disconnect old

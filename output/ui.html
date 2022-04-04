@@ -10798,12 +10798,18 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         else if (graphView.tempConn
               && slider.param)
         {
+            let savedInput = 
+                graphView.savedConn
+                ? graphView.savedConn.input
+                : null;
+
             if (    graphView.tempConn.output
                 &&  slider.param.input
                 &&  graphView.tempConn.output.dataType == slider.param.input.dataType
                 && !graphView.tempConn.output.op.follows(slider.param.op)
                 && (  !slider.param.input.isConnected // not already connected to this input
-                    || slider.param.input.connectedOutput != graphView.tempConn.output))
+                    || slider.param.input.connectedOutput != graphView.tempConn.output
+                    || slider.param.input == savedInput))
             {
                 graphView.overInput = slider.param.input;
                     
@@ -14017,9 +14023,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.dataType == output.dataType
-            && (  !input.isConnected
-                || input.connectedOutput != graphView.tempConn.output)) // TO INPUT
+            && input.dataType == output.dataType) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex))
@@ -14034,7 +14038,9 @@ graphView.endConnection = pointerId =>
             else if (savedInput)
                 actionManager.do(new ReconnectAction(output, savedInput, input));
 
-            else if (!savedInput) // connect new
+            else if (   !savedInput
+                     && (  !input.isConnected
+                         || input.connectedOutput != graphView.tempConn.output)) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }
         else if (savedInput) // disconnect old
@@ -15678,11 +15684,17 @@ extends EventTarget
             this.mouseOver = true;
             this.updateControl();
 
+            let savedInput = 
+                graphView.savedConn
+                ? graphView.savedConn.input
+                : null;
+
             if (   graphView.tempConn
                 && graphView.tempConn.output
                 && graphView.tempConn.output.dataType == this.dataType
                 && (  !this.isConnected
-                    || this.connectedOutput != graphView.tempConn.output))
+                    || this.connectedOutput != graphView.tempConn.output
+                    || this == savedInput))
             {
                 const rect = boundingRect(this.control);
                 const loop = graphView.tempConn.output.op.follows(this.op);
@@ -22580,11 +22592,11 @@ var figMessages = [];
 
 
 
-//uiSetLocalData('windowWidth',  null);
-//uiSetLocalData('windowHeight', null);
-//uiSetLocalData('productKey', null);
+//uiSetLocalData('windowWidth',  '');
+//uiSetLocalData('windowHeight', '');
+//uiSetLocalData('productKey',   '');
 
-uiLogAllSavedNodesAndConns();
+//uiLogAllSavedNodesAndConns();
 //uiRemoveAllSavedNodesAndConns();
 
 

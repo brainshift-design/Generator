@@ -104,11 +104,17 @@ extends EventTarget
             this.mouseOver = true;
             this.updateControl();
 
+            let savedInput = 
+                graphView.savedConn
+                ? graphView.savedConn.input
+                : null;
+
             if (   graphView.tempConn
                 && graphView.tempConn.output
                 && graphView.tempConn.output.dataType == this.dataType
                 && (  !this.isConnected
-                    || this.connectedOutput != graphView.tempConn.output))
+                    || this.connectedOutput != graphView.tempConn.output
+                    || this == savedInput))
             {
                 const rect = boundingRect(this.control);
                 const loop = graphView.tempConn.output.op.follows(this.op);

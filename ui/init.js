@@ -2,11 +2,11 @@ var figMessages = [];
 
 
 
-//uiSetLocalData('windowWidth',  null);
-//uiSetLocalData('windowHeight', null);
-//uiSetLocalData('productKey', null);
+//uiSetLocalData('windowWidth',  '');
+//uiSetLocalData('windowHeight', '');
+//uiSetLocalData('productKey',   '');
 
-uiLogAllSavedNodesAndConns();
+//uiLogAllSavedNodesAndConns();
 //uiRemoveAllSavedNodesAndConns();
 
 
