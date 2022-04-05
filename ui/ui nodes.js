@@ -1,4 +1,8 @@
-function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
+graphView.activeNodes = [];
+
+
+
+function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
 {
     let node = createNode(opType, creatingButton, createdId);
     
@@ -19,7 +23,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     // }
     
 
-    if (updateUI)
+    if (updateUi)
     {
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
@@ -192,46 +196,58 @@ function uiDisconnect(input)
 
 
 
-function uiSetParam(param, value)
+function uiMakeNodeActive(node)
 {
-    // uiPostMessageToGenerator({
-    //     msg:   'genSetParam', 
-    //     nodeId: param.op.id, 
-    //     param:  param.name,
-    //     value:  value
-    // });
+    uiMakeNodeLeftPassive (node);
+    uiMakeNodeRightPassive(node);        
+
+    node._active = true;
+    
+    // if (node.dataType == 'object')
+    //     uiGenerateObjects([node.id]);
+    
+    node.updateNode();
+    node.pushUpdate();
 }
+    
 
 
-
-function uiInvalidate(node)
+function uiMakeNodeLeftPassive(node)
 {
-    // uiPostMessageToGenerator({
-    //     msg:   'genInvalidate', 
-    //     nodeId: node.id
-    // });
-}
-
-
-
-function uiSetActive(node, active)
-{
-    // uiPostMessageToGenerator({
-    //     msg:   'genSetActive', 
-    //     nodeId: node.id,
-    //     active: active
-    // });
-}
-
-
-
-function uiMakeActive(nodeIds)
-{
-    for (const nodeId of nodeIds)
+    for (const input of node.inputs)
     {
-        const node = nodeFromId(nodeId);
-        node.makeActive();
+        if (input.isConnected)
+        {
+            uiMakeNodePassive(input.connectedOutput.op);
+            uiMakeNodeLeftPassive(input.connectedOutput.op);            
+        }
     }
+}
+
+
+
+function uiMakeNodeRightPassive(node)
+{
+    for (const output of node.outputs)
+    {
+        for (const connInput of output.connectedInputs)
+        {
+            uiMakeNodePassive(connInput.op);
+            uiMakeNodeRightPassive(connInput.op);
+        }
+    }
+}
+
+
+
+function uiMakeNodePassive(node)
+{
+    if (node.active)
+        uiDeleteNodeObjects([node.id]);
+    
+    node._active = false;
+
+    node.updateNode();
 }
 
 

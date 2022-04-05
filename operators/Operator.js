@@ -394,7 +394,7 @@ class Operator
         else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < headerInputs .length; i++) 
+        for (let i = 0; i < headerInputs.length; i++) 
         {
             headerInputs[i].control.style.top = inputY[i];
             headerInputs[i].updateControl();
@@ -493,73 +493,6 @@ class Operator
             : 'none';
     }
     
-
-
-    makeActive() // only true
-    {
-        this.makeLeftPassive();
-        this.makeRightPassive();        
-
-        this._active = true;
-        uiSetActive(this, true);
-
-        this.updateHeader();
-
-        //this.header.style.backgroundColor = this.activeColor;
-        //this.header.style.boxShadow       = 'none';
-        //this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
-        
-        // if (this.dataType == 'object')
-        //     uiGenerateObjects([this.id]);
-
-        this.pushUpdate();
-    }
-        
-    
-
-    makeLeftPassive()
-    {
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-            {
-                input.connectedOutput.op.makePassive();
-                input.connectedOutput.op.makeLeftPassive();            
-            }
-        }
-    }
-    
-
-
-    makeRightPassive()
-    {
-        for (const output of this.outputs)
-        {
-            for (const connInput of output.connectedInputs)
-            {
-                connInput.op.makePassive();
-                connInput.op.makeRightPassive();            
-            }
-        }
-    }
-    
-
-
-    makePassive()
-    {
-        if (this.active)
-        {
-            // this.header.style.backgroundColor = this.passiveColor;
-            // this.header.style.boxShadow       = '0 0 0 1px #0001 inset';
-            // this.label .style.color           = 'black';
-
-            uiDeleteNodeObjects([this.id]);
-        }
-
-        this._active = false;
-        uiSetActive(this, false);
-    }
-
 
 
     follows(node)

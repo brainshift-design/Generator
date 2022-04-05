@@ -27,10 +27,11 @@ extends Action
         const node = uiCreateNode(this.opType, this.creatingButton);
         this.createdNodeId = node.id;
         
-        node.makeActive();
+        uiMakeNodeActive(node);
         node.pushUpdate();
 
         graphView.updateNodeTransform(node);
+
         setTimeout(() => graphView.updateScrollWithBounds());
     }
 

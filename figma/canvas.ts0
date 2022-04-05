@@ -103,10 +103,24 @@ function figUpdateObjects(objects)
 
 function figCreateObject(obj)
 {
+    let genObj;
+    
     switch (obj.type)
     {
-        case OBJ_RECT: figCreateRect(obj); break;
+        case OBJ_RECT: genObj = figCreateRect(obj); break;
     }
+
+
+    genObj.name = obj.nodeId.toString() + ':' + obj.id.toString();
+
+    //genObj.setPluginData('id',     obj.id    .toString());
+    genObj.setPluginData('type',   obj.type  .toString());
+    genObj.setPluginData('nodeId', obj.nodeId.toString());
+    //genObj.setPluginData('name',   rect.name);
+    
+
+    genObjects[obj.id] = genObj;
+    figma.currentPage.appendChild(genObj);
 }
 
 
@@ -123,6 +137,8 @@ function figCreateFrame()
     //frame.resize(
     //    (nCols*rectSize + (nCols-1)*hgap),
     //    (nRows*rectSize + (nRows-1)*hgap));
+
+    return frame;
 }
 
 
@@ -133,27 +149,19 @@ function figCreateRect(obj)
 
     const rect = figma.createRectangle();
 
-    rect.name = obj.nodeId.toString() + ':' + obj.id.toString();
-
-    // rect.setPluginData('id',     obj.id    .toString());
-    // rect.setPluginData('nodeId', obj.nodeId.toString());
-    rect.setPluginData('type',   obj.type  .toString());
-    // rect.setPluginData('name',   rect.name);
-    
     rect.x = obj.x;
     rect.y = obj.y;
     
     rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
-
+    
     rect.resize(
         Math.max(0.01, obj.width), 
         Math.max(0.01, obj.height));
-
+        
     rect.rotation     = obj.angle;
     rect.cornerRadius = obj.round;
 
-    genObjects[obj.id] = rect;
-    figma.currentPage.appendChild(rect);
+    return rect;
 }
 
 

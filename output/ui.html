@@ -15204,7 +15204,7 @@ class Graph
                 const input = node.inputs[i];
                 if (!input.isConnected) continue;
 
-                input.connectedOutput.op.makeActive();
+                uiMakeNodeActive(input.connectedOutput.op);
                 this.disconnect(input, true);
             }
             
@@ -15217,8 +15217,8 @@ class Graph
                     this.disconnect(connInput, true);
     
                     // if (!activeNodeInTree(connInput.op))
-                    //     lastNodesInTreeFrom(connInput.op).forEach(n => n.makeActive());
-                    //     connInput.op.lastNodeInTree.makeActive();
+                    //     lastNodesInTreeFrom(connInput.op).forEach(n => uiMakeNodeActive(n));
+                    //     uiMakeNodeActive(connInput.op.lastNodeInTree);
                 }
             }
             
@@ -15280,7 +15280,7 @@ class Graph
         // output.op.makePassive();
 
         // if (!activeNodeInTree(input.op))
-        //     input.op.makeActive();
+        //     uiMakeNodeActive(input.op);
        
            
         output.updateControl();
@@ -15322,7 +15322,7 @@ class Graph
 
 
         // if (!activeNodeInTree(output.op))
-        //      output.op.makeActive();
+        //      uiMakeNodeActive(output.op);
             
         
         output.updateControl();
@@ -16721,7 +16721,7 @@ class Operator
         else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < headerInputs .length; i++) 
+        for (let i = 0; i < headerInputs.length; i++) 
         {
             headerInputs[i].control.style.top = inputY[i];
             headerInputs[i].updateControl();
@@ -16820,73 +16820,6 @@ class Operator
             : 'none';
     }
     
-
-
-    makeActive() // only true
-    {
-        this.makeLeftPassive();
-        this.makeRightPassive();        
-
-        this._active = true;
-        uiSetActive(this, true);
-
-        this.updateHeader();
-
-        //this.header.style.backgroundColor = this.activeColor;
-        //this.header.style.boxShadow       = 'none';
-        //this.label .style.color           = this.dataType == 'object' ? 'white' : 'black';
-        
-        // if (this.dataType == 'object')
-        //     uiGenerateObjects([this.id]);
-
-        this.pushUpdate();
-    }
-        
-    
-
-    makeLeftPassive()
-    {
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-            {
-                input.connectedOutput.op.makePassive();
-                input.connectedOutput.op.makeLeftPassive();            
-            }
-        }
-    }
-    
-
-
-    makeRightPassive()
-    {
-        for (const output of this.outputs)
-        {
-            for (const connInput of output.connectedInputs)
-            {
-                connInput.op.makePassive();
-                connInput.op.makeRightPassive();            
-            }
-        }
-    }
-    
-
-
-    makePassive()
-    {
-        if (this.active)
-        {
-            // this.header.style.backgroundColor = this.passiveColor;
-            // this.header.style.boxShadow       = '0 0 0 1px #0001 inset';
-            // this.label .style.color           = 'black';
-
-            uiDeleteNodeObjects([this.id]);
-        }
-
-        this._active = false;
-        uiSetActive(this, false);
-    }
-
 
 
     follows(node)
@@ -17462,7 +17395,7 @@ function createNodeHeader(node)
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
         else
-            node.makeActive();
+            uiMakeNodeActive(node);
     });
 }
 
@@ -21573,10 +21506,11 @@ extends Action
         const node = uiCreateNode(this.opType, this.creatingButton);
         this.createdNodeId = node.id;
         
-        node.makeActive();
+        uiMakeNodeActive(node);
         node.pushUpdate();
 
         graphView.updateNodeTransform(node);
+
         setTimeout(() => graphView.updateScrollWithBounds());
     }
 
@@ -23661,7 +23595,11 @@ btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver
 btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; updateToggleShowWiresButton(); });
 
 
-function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
+graphView.activeNodes = [];
+
+
+
+function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
 {
     let node = createNode(opType, creatingButton, createdId);
     
@@ -23682,7 +23620,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUI = true)
     // }
     
 
-    if (updateUI)
+    if (updateUi)
     {
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
@@ -23855,46 +23793,58 @@ function uiDisconnect(input)
 
 
 
-function uiSetParam(param, value)
+function uiMakeNodeActive(node)
 {
-    // uiPostMessageToGenerator({
-    //     msg:   'genSetParam', 
-    //     nodeId: param.op.id, 
-    //     param:  param.name,
-    //     value:  value
-    // });
+    uiMakeNodeLeftPassive (node);
+    uiMakeNodeRightPassive(node);        
+
+    node._active = true;
+    
+    // if (node.dataType == 'object')
+    //     uiGenerateObjects([node.id]);
+    
+    node.updateNode();
+    node.pushUpdate();
 }
+    
 
 
-
-function uiInvalidate(node)
+function uiMakeNodeLeftPassive(node)
 {
-    // uiPostMessageToGenerator({
-    //     msg:   'genInvalidate', 
-    //     nodeId: node.id
-    // });
-}
-
-
-
-function uiSetActive(node, active)
-{
-    // uiPostMessageToGenerator({
-    //     msg:   'genSetActive', 
-    //     nodeId: node.id,
-    //     active: active
-    // });
-}
-
-
-
-function uiMakeActive(nodeIds)
-{
-    for (const nodeId of nodeIds)
+    for (const input of node.inputs)
     {
-        const node = nodeFromId(nodeId);
-        node.makeActive();
+        if (input.isConnected)
+        {
+            uiMakeNodePassive(input.connectedOutput.op);
+            uiMakeNodeLeftPassive(input.connectedOutput.op);            
+        }
     }
+}
+
+
+
+function uiMakeNodeRightPassive(node)
+{
+    for (const output of node.outputs)
+    {
+        for (const connInput of output.connectedInputs)
+        {
+            uiMakeNodePassive(connInput.op);
+            uiMakeNodeRightPassive(connInput.op);
+        }
+    }
+}
+
+
+
+function uiMakeNodePassive(node)
+{
+    if (node.active)
+        uiDeleteNodeObjects([node.id]);
+    
+    node._active = false;
+
+    node.updateNode();
 }
 
 

@@ -115,7 +115,7 @@ class Graph
                 const input = node.inputs[i];
                 if (!input.isConnected) continue;
 
-                input.connectedOutput.op.makeActive();
+                uiMakeNodeActive(input.connectedOutput.op);
                 this.disconnect(input, true);
             }
             
@@ -128,8 +128,8 @@ class Graph
                     this.disconnect(connInput, true);
     
                     // if (!activeNodeInTree(connInput.op))
-                    //     lastNodesInTreeFrom(connInput.op).forEach(n => n.makeActive());
-                    //     connInput.op.lastNodeInTree.makeActive();
+                    //     lastNodesInTreeFrom(connInput.op).forEach(n => uiMakeNodeActive(n));
+                    //     uiMakeNodeActive(connInput.op.lastNodeInTree);
                 }
             }
             
@@ -191,7 +191,7 @@ class Graph
         // output.op.makePassive();
 
         // if (!activeNodeInTree(input.op))
-        //     input.op.makeActive();
+        //     uiMakeNodeActive(input.op);
        
            
         output.updateControl();
@@ -233,7 +233,7 @@ class Graph
 
 
         // if (!activeNodeInTree(output.op))
-        //      output.op.makeActive();
+        //      uiMakeNodeActive(output.op);
             
         
         output.updateControl();

@@ -401,7 +401,7 @@ function createNodeHeader(node)
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
         else
-            node.makeActive();
+            uiMakeNodeActive(node);
     });
 }
 
