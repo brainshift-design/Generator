@@ -1,3 +1,116 @@
+const MAX_OBJECTS = 0x10000;
+const genObjects  = new Array(MAX_OBJECTS);
+
+
+const OBJ_RECT = 1;
+
+
+
+function figUpdateObjects(objects)
+{
+    // // prepare the buffers
+
+    // let nodeId = -1;
+    // let prevId = -1;
+    // let count  =  0;
+
+
+    // here the ID acts as the index into the object table
+
+    for (const obj of objects)
+    {
+        const genObj = genObjects[obj.id];
+
+        if (  !genObj 
+            || genObj.removed) // no existing object, create new object
+        {
+            figCreateObject(obj);
+        }
+        else if (genObj.getPluginData('type') == obj.type.toString()) // update existing object
+        {
+            figUpdateObject(obj);
+        }
+        else // delete existing object, create new object
+        {
+            genObj.remove();
+            figCreateObject(obj);
+        }
+
+    //     count++;
+
+    //     if (obj.nodeId != nodeId)
+    //     {
+    //         nodeId = obj.nodeId;
+
+    //         if (prevId > -1)
+    //         {
+    //             if (  !objNodes[prevId]
+    //                 || objNodes[prevId].length != count)
+    //             {
+    //                 figDeleteNodeObjects([prevId]);
+    //                 objNodes[prevId] = new Array(count).fill(null);
+    //             }
+
+    //             count = 0;
+    //         }
+
+    //         prevId = nodeId;
+    //     }
+    // }
+
+
+    // if (   count > 0
+    //     && (  !objNodes[nodeId]
+    //         || objNodes[nodeId].length != count))
+    // {
+    //     figDeleteNodeObjects([nodeId]);
+    //     objNodes[nodeId] = new Array(count).fill(null);
+    }
+
+
+    // // fill the buffers
+
+    // for (const obj of objects)
+    // {
+    //     switch (obj.type)
+    //     {
+    //         case OBJ_RECT:
+    //         {
+    //             if (!objNodes[obj.nodeId][obj.id])
+    //             {
+    //                 figCreateRect(obj);
+    //             }
+    //             else 
+    //             {
+    //                 const cur = objNodes[obj.nodeId][obj.id];
+
+    //                 if (   cur.type == objTypeString(obj.type)
+    //                     && cur.getPluginData('id')     == obj.id
+    //                     && cur.getPluginData('nodeId') == obj.nodeId)
+    //                     figUpdateRect(obj);
+
+    //                 else
+    //                     figNotify('Error: Object ID mismatch', '', 400, true);
+    //             }
+
+    //             break;
+    //         }
+    //     }
+    // }
+}
+
+
+
+function figCreateObject(obj)
+{
+    switch (obj.type)
+    {
+        case OBJ_RECT: figCreateRect(obj); break;
+    }
+}
+
+
+
 function figCreateFrame()
 {
     let frame = figma.createFrame();
@@ -16,15 +129,18 @@ function figCreateFrame()
 
 function figCreateRect(obj)
 {
+    console.log(obj);
+
     const rect = figma.createRectangle();
 
     rect.name = obj.nodeId.toString() + ':' + obj.id.toString();
 
-    rect.setPluginData('id',     obj.id    .toString());
-    rect.setPluginData('nodeId', obj.nodeId.toString());
-    rect.setPluginData('name',   rect.name);
+    // rect.setPluginData('id',     obj.id    .toString());
+    // rect.setPluginData('nodeId', obj.nodeId.toString());
+    rect.setPluginData('type',   obj.type  .toString());
+    // rect.setPluginData('name',   rect.name);
     
-    rect.x = obj.x
+    rect.x = obj.x;
     rect.y = obj.y;
     
     rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
@@ -33,17 +149,32 @@ function figCreateRect(obj)
         Math.max(0.01, obj.width), 
         Math.max(0.01, obj.height));
 
+    rect.rotation     = obj.angle;
     rect.cornerRadius = obj.round;
 
-    objNodes[obj.nodeId][obj.id] = rect;
+    genObjects[obj.id] = rect;
     figma.currentPage.appendChild(rect);
+}
+
+
+
+function figUpdateObject(obj)
+{
+    switch (obj.type)
+    {
+        case OBJ_RECT:
+        {
+            figUpdateRect(obj);
+            break;
+        }
+    }
 }
 
 
 
 function figUpdateRect(obj)
 {
-    const rect = objNodes[obj.nodeId][obj.id];
+    const rect = genObjects[obj.id];
 
     rect.x = obj.x;
     rect.y = obj.y;
@@ -56,99 +187,23 @@ function figUpdateRect(obj)
             Math.max(0.01, obj.height));
     }
 
+    rect.rotation     = obj.angle;
     rect.cornerRadius = obj.round;
-}
-
-
-
-function figUpdateObjects(objects)
-{
-    console.log(objects);
-    // prepare the buffers
-
-    let nodeId = -1;
-    let prevId = -1;
-    let count  =  0;
-
-    
-    for (const obj of objects)
-    {
-        count++;
-
-        if (obj.nodeId != nodeId)
-        {
-            nodeId = obj.nodeId;
-
-            if (prevId > -1)
-            {
-                if (  !objNodes[prevId]
-                    || objNodes[prevId].length != count)
-                {
-                    figDeleteNodeObjects([prevId]);
-                    objNodes[prevId] = new Array(count).fill(null);
-                }
-
-                count = 0;
-            }
-
-            prevId = nodeId;
-        }
-    }
-
-
-    if (   count > 0
-        && (  !objNodes[nodeId]
-            || objNodes[nodeId].length != count))
-    {
-        figDeleteNodeObjects([nodeId]);
-        objNodes[nodeId] = new Array(count).fill(null);
-    }
-
-
-    // fill the buffers
-
-    for (const obj of objects)
-    {
-        switch (obj.type)
-        {
-            case OBJ_RECT:
-            {
-                if (!objNodes[obj.nodeId][obj.id])
-                {
-                    figCreateRect(obj);
-                }
-                else 
-                {
-                    const cur = objNodes[obj.nodeId][obj.id];
-
-                    if (   cur.type == objTypeString(obj.type)
-                        && cur.getPluginData('id')     == obj.id
-                        && cur.getPluginData('nodeId') == obj.nodeId)
-                        figUpdateRect(obj);
-
-                    else
-                        figNotify('Error: Object ID mismatch', '', 400, true);
-                }
-
-                break;
-            }
-        }
-    }
 }
 
 
 
 function figDeleteNodeObjects(nodeIds)
 {
-    for (const nodeId of nodeIds)
-    {
-        if (!objNodes[nodeId]) continue;
+    // for (const nodeId of nodeIds)
+    // {
+    //     if (!objNodes[nodeId]) continue;
         
-        for (const obj of objNodes[nodeId])
-            obj.remove();
+    //     for (const obj of objNodes[nodeId])
+    //         obj.remove();
 
-        objNodes[nodeId] = null;
-    }
+    //     objNodes[nodeId] = null;
+    // }
 }
 
 
@@ -169,18 +224,18 @@ function figOnSelectionChange()
         only one plugin runs at a time right now, so maybe it's not an issue.  */
 
 
-    for (let i = 0; i < objNodes.length; i++)
-    {
-        if (!objNodes[i]) continue;
+    // for (let i = 0; i < objNodes.length; i++)
+    // {
+    //     if (!objNodes[i]) continue;
         
-        for (let j = 0; j < objNodes[i].length; j++)
-        {
-            if (!objNodes[i][j]) continue;
+    //     for (let j = 0; j < objNodes[i].length; j++)
+    //     {
+    //         if (!objNodes[i][j]) continue;
 
-            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
-            if (!exists) objNodes[i][j] = null;
-        }
-    }
+    //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+    //         if (!exists) objNodes[i][j] = null;
+    //     }
+    // }
 }
 
 
@@ -191,20 +246,12 @@ function figOnPluginClose()
 }
 
 
-const OBJ_RECT    = 1;
+//const MAX_NODES   = 0x10000;
 
-const MAX_OBJECTS = 0x10000;
-const MAX_NODES   = 0x10000;
+//const objNodes    = new Array(MAX_NODES).fill(null);
 
-const objNodes    = new Array(MAX_NODES).fill(null);
-
-var   minNodeId   = Number.MAX_SAFE_INTEGER;
-var   maxNodeId   = Number.MIN_SAFE_INTEGER;
-
-
-// const objects  = new Array(MAX_OBJECTS);
-// var   maxObjId = -1;
-
+//var   minNodeId   = Number.MAX_SAFE_INTEGER;
+//var   maxNodeId   = Number.MIN_SAFE_INTEGER;
 
 figma.on('selectionchange', figOnSelectionChange);
 figma.on('close',           figOnPluginClose);

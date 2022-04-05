@@ -68,10 +68,6 @@ extends OpColorBase
         this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
 
-        this.param1.allowEditDecimals = true;
-        this.param2.allowEditDecimals = true;
-        this.param3.allowEditDecimals = true;
-
         this.param1.showParamLock = true;
         this.param2.showParamLock = true;
         this.param3.showParamLock = true;

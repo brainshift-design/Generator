@@ -3,6 +3,9 @@
 */
 
 
+var nextGenObjectId = 0;
+
+
 const OBJ_RECT = 1;
 
 
@@ -61,9 +64,11 @@ function genGenerateRequest(request)
     const objects = [];
     const stackOverflowProtect = 100;
 
-    for (let i = 0, so = 0; i < request.length; so < stackOverflowProtect)
+    nextGenObjectId = 0;
+
+    for (let i = 0, so = 0; i < request.length && so < stackOverflowProtect; )
     {
-        if (request[i] == 'rectangle' && request.length > i+7) { objects.push(genGenerateRectangle(request, i)); i += 7; }
+        if (request[i] == 'rectangle' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
         else so++;
     }
 
@@ -77,14 +82,16 @@ function genGenerateRequest(request)
 
 function genGenerateRectangle(request, i)
 {
-    return [
-        OBJ_RECT,
-        request[i+1],
-        request[i+2],
-        request[i+3],
-        request[i+4],
-        request[i+5],
-        request[i+6]];
+    return {
+        type:   OBJ_RECT,
+        id:     nextGenObjectId++,
+        nodeId: request[i+1],
+        x:      request[i+2],
+        y:      request[i+3],
+        width:  request[i+4],
+        height: request[i+5],
+        angle:  request[i+6],
+        round:  request[i+7] };
 }
 
 

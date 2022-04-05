@@ -3,7 +3,7 @@ extends Parameter
 {
     defaultValue;
     
-    allowEditDecimals = false;
+    allowEditDecimals = true;
     
 
     get value()      { return this._control.value;    }

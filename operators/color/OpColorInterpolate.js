@@ -27,7 +27,6 @@ extends OpColorBase
         
         this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
         this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
-        this.#paramAmount.allowEditDecimals  = true;
 
         this.#paramAmount.control.setSuffix('%', true);
         

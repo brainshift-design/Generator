@@ -30,6 +30,7 @@ extends OperatorBase
         this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
         
+
         this.#paramAngle.control.setSuffix('°', true);
 
         
@@ -133,6 +134,7 @@ extends OperatorBase
     {
         return [
             this.opType,
+            this.id,
             this.#paramX     .value,
             this.#paramY     .value,
             this.#paramWidth .value,

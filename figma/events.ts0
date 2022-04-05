@@ -7,18 +7,18 @@ function figOnSelectionChange()
         only one plugin runs at a time right now, so maybe it's not an issue.  */
 
 
-    for (let i = 0; i < objNodes.length; i++)
-    {
-        if (!objNodes[i]) continue;
+    // for (let i = 0; i < objNodes.length; i++)
+    // {
+    //     if (!objNodes[i]) continue;
         
-        for (let j = 0; j < objNodes[i].length; j++)
-        {
-            if (!objNodes[i][j]) continue;
+    //     for (let j = 0; j < objNodes[i].length; j++)
+    //     {
+    //         if (!objNodes[i][j]) continue;
 
-            const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
-            if (!exists) objNodes[i][j] = null;
-        }
-    }
+    //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+    //         if (!exists) objNodes[i][j] = null;
+    //     }
+    // }
 }
 
 

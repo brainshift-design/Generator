@@ -14,7 +14,6 @@ extends OperatorBase
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
-        this.#paramValue.allowEditDecimals = true;
         this.alwaysLoadParams = true;
     }
 

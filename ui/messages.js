@@ -64,7 +64,8 @@ function uiPostNextMessageToFigma()
     {
         let msg = figMessages.shift();
 
-        if (msg.cmd == 'figResizeWindow')
+        if (   msg.cmd == 'figResizeWindow'
+            || msg.cmd == 'figUpdateObjects')
         {
             // move along the queue since only the last message is important
             while (figMessages.length > 0
@@ -95,7 +96,7 @@ function uiPostGeneratorRequest(request)
     uiPostMessageToGenerator({
         msg:    'genGenerateRequest',
         request: request
-    })
+    });
 }
 
 

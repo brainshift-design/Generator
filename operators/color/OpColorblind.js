@@ -24,10 +24,6 @@ extends OpColorBase
         this.#paramM.addEventListener('change', () => this.#paramM.control.dragScale = getDecimalCount(getNumberString(this.#paramM.value, this.#paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
         this.#paramS.addEventListener('change', () => this.#paramS.control.dragScale = getDecimalCount(getNumberString(this.#paramS.value, this.#paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
 
-        this.#paramL.allowEditDecimals = true;
-        this.#paramM.allowEditDecimals = true;
-        this.#paramS.allowEditDecimals = true;
-
 
         this.header.connectionPadding = 18;
     }

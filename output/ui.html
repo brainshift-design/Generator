@@ -3770,6 +3770,9 @@ function normalizeSeed(x)
 */
 
 
+var nextGenObjectId = 0;
+
+
 const OBJ_RECT = 1;
 
 
@@ -3828,9 +3831,11 @@ function genGenerateRequest(request)
     const objects = [];
     const stackOverflowProtect = 100;
 
-    for (let i = 0, so = 0; i < request.length; so < stackOverflowProtect)
+    nextGenObjectId = 0;
+
+    for (let i = 0, so = 0; i < request.length && so < stackOverflowProtect; )
     {
-        if (request[i] == 'rectangle' && request.length > i+7) { objects.push(genGenerateRectangle(request, i)); i += 7; }
+        if (request[i] == 'rectangle' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
         else so++;
     }
 
@@ -3844,14 +3849,16 @@ function genGenerateRequest(request)
 
 function genGenerateRectangle(request, i)
 {
-    return [
-        OBJ_RECT,
-        request[i+1],
-        request[i+2],
-        request[i+3],
-        request[i+4],
-        request[i+5],
-        request[i+6]];
+    return {
+        type:   OBJ_RECT,
+        id:     nextGenObjectId++,
+        nodeId: request[i+1],
+        x:      request[i+2],
+        y:      request[i+3],
+        width:  request[i+4],
+        height: request[i+5],
+        angle:  request[i+6],
+        round:  request[i+7] };
 }
 
 
@@ -14597,7 +14604,7 @@ extends Parameter
 {
     defaultValue;
     
-    allowEditDecimals = false;
+    allowEditDecimals = true;
     
 
     get value()      { return this._control.value;    }
@@ -17754,7 +17761,6 @@ extends OperatorBase
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
-        this.#paramValue.allowEditDecimals = true;
         this.alwaysLoadParams = true;
     }
 
@@ -20262,10 +20268,6 @@ extends OpColorBase
         this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
 
-        this.param1.allowEditDecimals = true;
-        this.param2.allowEditDecimals = true;
-        this.param3.allowEditDecimals = true;
-
         this.param1.showParamLock = true;
         this.param2.showParamLock = true;
         this.param3.showParamLock = true;
@@ -20819,7 +20821,6 @@ extends OpColorBase
         
         this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
         this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
-        this.#paramAmount.allowEditDecimals  = true;
 
         this.#paramAmount.control.setSuffix('%', true);
         
@@ -20947,10 +20948,6 @@ extends OpColorBase
         this.#paramM.addEventListener('change', () => this.#paramM.control.dragScale = getDecimalCount(getNumberString(this.#paramM.value, this.#paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
         this.#paramS.addEventListener('change', () => this.#paramS.control.dragScale = getDecimalCount(getNumberString(this.#paramS.value, this.#paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
 
-        this.#paramL.allowEditDecimals = true;
-        this.#paramM.allowEditDecimals = true;
-        this.#paramS.allowEditDecimals = true;
-
 
         this.header.connectionPadding = 18;
     }
@@ -21069,6 +21066,7 @@ extends OperatorBase
         this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
         
+
         this.#paramAngle.control.setSuffix('°', true);
 
         
@@ -21172,6 +21170,7 @@ extends OperatorBase
     {
         return [
             this.opType,
+            this.id,
             this.#paramX     .value,
             this.#paramY     .value,
             this.#paramWidth .value,
@@ -22675,7 +22674,7 @@ var figMessages = [];
 //uiSetLocalData('windowHeight', '');
 //uiSetLocalData('productKey',   '');
 
-uiLogAllSavedNodesAndConns();
+//uiLogAllSavedNodesAndConns();
 //uiRemoveAllSavedNodesAndConns();
 
 
@@ -22963,7 +22962,8 @@ function uiPostNextMessageToFigma()
     {
         let msg = figMessages.shift();
 
-        if (msg.cmd == 'figResizeWindow')
+        if (   msg.cmd == 'figResizeWindow'
+            || msg.cmd == 'figUpdateObjects')
         {
             // move along the queue since only the last message is important
             while (figMessages.length > 0
@@ -22994,7 +22994,7 @@ function uiPostGeneratorRequest(request)
     uiPostMessageToGenerator({
         msg:    'genGenerateRequest',
         request: request
-    })
+    });
 }
 
 
