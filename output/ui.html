@@ -1318,6 +1318,7 @@ div
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind",       btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle",        btnCreateRectangle));        this.blur();'>RECT</button>
+    <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
 
@@ -15442,7 +15443,7 @@ function createNode(opType, creatingButton = null)//, createdNodeId = -1)
         case 'colorblind':       node = new OpColorblind();       break;
         
         case 'rectangle':        node = new OpRectangle();        break;
-        // case 'row':    node = new OpRow();    break;
+        case 'row':              node = new OpRow();              break;
         // case 'column': node = new OpColumn(); break;
         //case 'spread': node = new OpSpread(); break;
     }
@@ -16701,7 +16702,7 @@ class Operator
         this.paramBack.style.top    = height;
 
 
-        updateNodeLabel(this);
+        updateNodeLabelOffset(this);
     }
 
 
@@ -17036,9 +17037,24 @@ extends Operator
     {
         //log(this.id + '.OperatorBase.updateHeader()');
 
-        this.header.style.backgroundColor = colorStyleRgb_a(dataType2rgb(this._dataType, false), 0.95);
-
         super.updateHeader();
+
+        const colBack   = dataType2rgb(this._dataType, this.active);
+        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
+        
+        const colText   = darkText ? [0, 0, 0]      : [1, 1, 1];
+        const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3];
+        const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
+
+
+        this.header.style.backgroundColor = colorStyleRgb_a(colBack, 0.95);
+        this.label .style.color           = colorStyleRgb(colText);
+
+        this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
+
+
+        for (const input  of this.inputs .filter(i => !i.param)) input .color = colInput;
+        for (const output of this.outputs.filter(i => !i.param)) output.color = colOutput;
     }
 }
 
@@ -17505,12 +17521,12 @@ function createNodeLabel(node)
         const x          = e.clientX - wrect.x;
 
         if (x >= wrect.width - viewMargin)
-            updateNodeLabel(node, 1);
+            updateNodeLabelOffset(node, 1);
         else if (x >= viewMargin
               && x < wrect.width - viewMargin)
-            updateNodeLabel(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+            updateNodeLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
         else
-            updateNodeLabel(node);
+            updateNodeLabelOffset(node);
     });
 
 
@@ -17519,7 +17535,7 @@ function createNodeLabel(node)
 
 
 
-function updateNodeLabel(node, f = node.labelOffsetFactor)
+function updateNodeLabelOffset(node, f = node.labelOffsetFactor)
 {
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
@@ -21229,6 +21245,86 @@ extends OperatorBase
         super.loadParams(_node);
     }
 }
+
+
+class   OpRow
+extends OperatorBase
+{
+    #count;
+    #gap;
+
+
+    constructor()
+    {
+        super('row', 'row', 'object');
+
+        this.addInput (new Input (this.dataType));
+        this.addOutput(new Output(this.dataType));
+        
+        this.addParam(this.#count = new NumberParam('count', 'count', true, true, true,  7, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, true, true, 10, 0));
+    }
+}
+
+
+
+
+// class   OpRow
+// extends Operator
+// {
+//     #count;
+//     #gap;
+
+
+//     constructor()
+//     {
+//         super('row', 'object');
+
+//         this.addInput (new Input (this.dataType));
+//         this.addOutput(new Output(this.dataType));
+        
+//         this.addParam(this.#count = new NumberParam('count', 'count',  4, 1));
+//         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   10, 0));
+//     }
+
+
+//     updateData()
+//     {
+//         const input  = this.inputs[0];
+//         const output = this.output;
+
+//         if (!input.isConnected)
+//         {
+//             output._data = {};
+//             return;
+//         }
+
+    
+//         const objects = input.data;
+//         const bounds = getObjectBounds(objects);
+
+
+//         output._data = [];
+    
+//         for (var i = 0, x = 0; i < this.#count.value; i++)
+//         {
+//             for (var j = 0; j < objects.length; j++)
+//             {
+//                 const obj = shallowCopy(objects[j]);
+//                 obj.itemId = 'row_' + i + '_' + j;
+   
+//                 obj.x += x;
+                
+//                 output._data.push(obj);
+//             }
+            
+//             x += bounds.w + this.#gap.value;
+//         }
+
+        
+//         super.updateData();
+//     }
+// }
 
 
 class Action

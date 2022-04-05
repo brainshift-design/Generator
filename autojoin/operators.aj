@@ -43,6 +43,6 @@
 ../operators/color/OpColorblind.js
 
 ../operators/geometry/OpRectangle.js
-//../operators/geometry/OpRow.js
+../operators/geometry/OpRow.js
 //../operators/geometry/OpColumn.js
 //../operators/geometry/UOpSpread.js

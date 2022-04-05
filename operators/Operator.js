@@ -375,7 +375,7 @@ class Operator
         this.paramBack.style.top    = height;
 
 
-        updateNodeLabel(this);
+        updateNodeLabelOffset(this);
     }
 
 

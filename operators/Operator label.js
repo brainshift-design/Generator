@@ -23,12 +23,12 @@ function createNodeLabel(node)
         const x          = e.clientX - wrect.x;
 
         if (x >= wrect.width - viewMargin)
-            updateNodeLabel(node, 1);
+            updateNodeLabelOffset(node, 1);
         else if (x >= viewMargin
               && x < wrect.width - viewMargin)
-            updateNodeLabel(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+            updateNodeLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
         else
-            updateNodeLabel(node);
+            updateNodeLabelOffset(node);
     });
 
 
@@ -37,7 +37,7 @@ function createNodeLabel(node)
 
 
 
-function updateNodeLabel(node, f = node.labelOffsetFactor)
+function updateNodeLabelOffset(node, f = node.labelOffsetFactor)
 {
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 

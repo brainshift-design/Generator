@@ -1,5 +1,5 @@
 class   OpRow
-extends Operator
+extends OperatorBase
 {
     #count;
     #gap;
@@ -7,13 +7,13 @@ extends Operator
 
     constructor()
     {
-        super('row', 'object');
+        super('row', 'row', 'object');
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
         
-        this.addParam(this.#count = new NumberParam('count', 'count', true,  7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, 10, 0));
+        this.addParam(this.#count = new NumberParam('count', 'count', true, true, true,  7, 1));
+        this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, true, true, 10, 0));
     }
 }
 

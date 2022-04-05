@@ -354,7 +354,7 @@ function createNode(opType, creatingButton = null)//, createdNodeId = -1)
         case 'colorblind':       node = new OpColorblind();       break;
         
         case 'rectangle':        node = new OpRectangle();        break;
-        // case 'row':    node = new OpRow();    break;
+        case 'row':              node = new OpRow();              break;
         // case 'column': node = new OpColumn(); break;
         //case 'spread': node = new OpSpread(); break;
     }
