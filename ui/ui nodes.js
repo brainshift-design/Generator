@@ -203,6 +203,14 @@ function uiMakeNodeActive(node)
 
     node._active = true;
     
+    if (!graphView.activeNodes.includes(node))
+        graphView.activeNodes.push(node);
+
+    uiPostMessageToFigma({ 
+        cmd:   'figSaveActiveNode', 
+        nodeId: node.id
+    });
+        
     // if (node.dataType == 'object')
     //     uiGenerateObjects([node.id]);
     
@@ -242,10 +250,17 @@ function uiMakeNodeRightPassive(node)
 
 function uiMakeNodePassive(node)
 {
-    if (node.active)
-        uiDeleteNodeObjects([node.id]);
+    //if (node.active)
+    //    uiDeleteNodeObjects([node.id]);
     
     node._active = false;
+
+    removeFromArray(graphView.activeNodes, node);
+
+    uiPostMessageToFigma({
+        cmd:   'figRemoveSavedActiveNode', 
+        nodeId: node.id
+    });
 
     node.updateNode();
 }

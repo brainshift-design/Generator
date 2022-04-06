@@ -122,6 +122,22 @@ extends OperatorBase
 
 
 
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        const colBack  = dataType2rgb(this._dataType, this.active);
+        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+        
+        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
+
+        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
+    }
+
+
+
     getResult()
     {
         return Number.NaN;

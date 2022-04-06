@@ -6,7 +6,7 @@ var figMessages = [];
 //uiSetLocalData('windowHeight', '');
 //uiSetLocalData('productKey',   '');
 
-//uiLogAllSavedNodesAndConns();
+uiLogAllSavedNodesAndConns();
 //uiRemoveAllSavedNodesAndConns();
 
 

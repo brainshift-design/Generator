@@ -16,8 +16,8 @@ extends Operator
 
 
         this.header.style.backgroundColor = colorStyleRgb_a(colBack, 0.95);
-        this.label .style.color           = colorStyleRgb(colText);
 
+        this.label .style.color           = colorStyleRgb(colText);
         this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
 
 

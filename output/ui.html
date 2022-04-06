@@ -16981,8 +16981,8 @@ extends Operator
 
 
         this.header.style.backgroundColor = colorStyleRgb_a(colBack, 0.95);
-        this.label .style.color           = colorStyleRgb(colText);
 
+        this.label .style.color           = colorStyleRgb(colText);
         this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
 
 
@@ -17998,6 +17998,22 @@ extends OperatorBase
 
         
         super.updateData()
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        const colBack  = dataType2rgb(this._dataType, this.active);
+        const darkText = rgb2hclokl(colBack)[2] > 0.71;
+        
+        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
+
+        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
     }
 
 
@@ -22704,7 +22720,7 @@ var figMessages = [];
 //uiSetLocalData('windowHeight', '');
 //uiSetLocalData('productKey',   '');
 
-//uiLogAllSavedNodesAndConns();
+uiLogAllSavedNodesAndConns();
 //uiRemoveAllSavedNodesAndConns();
 
 
@@ -23800,6 +23816,14 @@ function uiMakeNodeActive(node)
 
     node._active = true;
     
+    if (!graphView.activeNodes.includes(node))
+        graphView.activeNodes.push(node);
+
+    uiPostMessageToFigma({ 
+        cmd:   'figSaveActiveNode', 
+        nodeId: node.id
+    });
+        
     // if (node.dataType == 'object')
     //     uiGenerateObjects([node.id]);
     
@@ -23839,10 +23863,17 @@ function uiMakeNodeRightPassive(node)
 
 function uiMakeNodePassive(node)
 {
-    if (node.active)
-        uiDeleteNodeObjects([node.id]);
+    //if (node.active)
+    //    uiDeleteNodeObjects([node.id]);
     
     node._active = false;
+
+    removeFromArray(graphView.activeNodes, node);
+
+    uiPostMessageToFigma({
+        cmd:   'figRemoveSavedActiveNode', 
+        nodeId: node.id
+    });
 
     node.updateNode();
 }

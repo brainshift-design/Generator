@@ -249,6 +249,12 @@ figma.ui.onmessage = msg => {
         case 'figRemoveSavedConnection':
             figRemoveSavedConnection(msg.name);
             break;
+        case 'figSaveActiveNode':
+            figSaveActiveNode(msg.nodeId);
+            break;
+        case 'figRemoveSavedActiveNode':
+            figRemoveSavedActiveNode(msg.nodeId);
+            break;
         case 'figDeleteNodeObjects':
             figDeleteNodeObjects(msg.nodeIds);
             break;
@@ -271,6 +277,9 @@ function figPostMessageToGenerator(msg) {
     });
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+const nodeTag = 'GN';
+const activeTag = 'GA';
+const connTag = 'GC';
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);
@@ -305,8 +314,8 @@ function figSetPageData(key, value) {
     figma.currentPage.setPluginData(key, value);
 }
 function figLoadNodesAndConns() {
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == nodeTag + ' ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
     const nodesJson = JSON.stringify(nodes);
@@ -329,17 +338,23 @@ function figRemoveSavedNodesAndConns(nodeIds) {
         figSetPageData(nodeName(nodeIds[i]), '');
 }
 function figRemoveAllSavedNodesAndConns() {
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == nodeTag + ' ');
+    const activeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == activeTag + ' ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
     for (const key of nodeKeys)
+        figSetPageData(key, '');
+    for (const key of activeKeys)
         figSetPageData(key, '');
     for (const key of connKeys)
         figSetPageData(key, '');
 }
 function figLogAllSavedNodesAndConns() {
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GN ');
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == 'GC ');
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == nodeTag + ' ');
+    const activeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == activeTag + ' ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
     for (const key of nodeKeys)
+        console.log(key, figGetPageData(key, false));
+    for (const key of activeKeys)
         console.log(key, figGetPageData(key, false));
     for (const key of connKeys)
         console.log(key, figGetPageData(key, false));
@@ -352,8 +367,15 @@ function figSaveConnection(name, json) {
 function figRemoveSavedConnection(name) {
     figSetPageData(connName(name), '');
 }
-function nodeName(nodeId) { return 'GN ' + nodeId; }
-function connName(name) { return 'GC ' + name; }
+function figSaveActiveNode(nodeId) {
+    figSetPageData(activeName(nodeId), nodeId);
+}
+function figRemoveSavedActiveNode(nodeId) {
+    figSetPageData(activeName(nodeId), '');
+}
+function nodeName(nodeId) { return nodeTag + ' ' + nodeId; }
+function activeName(nodeId) { return activeTag + ' ' + nodeId; }
+function connName(name) { return connTag + ' ' + name; }
 function figResizeWindow(width, height) {
     width = Math.floor(Math.max(0, width));
     height = Math.floor(Math.max(0, height));
