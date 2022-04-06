@@ -220,7 +220,7 @@ function uiMakeNodeActive(node)
     
 
 
-function uiMakeNodeLeftPassive(node)
+function uiMakeNodeLeftPassive(node, fromNode = null)
 {
     for (const input of node.inputs)
     {
@@ -228,21 +228,45 @@ function uiMakeNodeLeftPassive(node)
         {
             //console.log(input.connectedOutput);
             uiMakeNodePassive(input.connectedOutput.op);
-            uiMakeNodeLeftPassive(input.connectedOutput.op);            
+            uiMakeNodeLeftPassive(input.connectedOutput.op, node);            
+        }
+    }
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (input.op != fromNode)
+            {
+                //console.log(input.connectedOutput);
+                uiMakeNodePassive(input.op);
+                uiMakeNodeRightPassive(input.op, node);
+            }
         }
     }
 }
 
 
 
-function uiMakeNodeRightPassive(node)
+function uiMakeNodeRightPassive(node, fromNode = null)
 {
     for (const output of node.outputs)
     {
         for (const connInput of output.connectedInputs)
         {
             uiMakeNodePassive(connInput.op);
-            uiMakeNodeRightPassive(connInput.op);
+            uiMakeNodeRightPassive(connInput.op, node);
+        }
+    }
+
+    for (const input of node.inputs)
+    {
+        if (   input.isConnected
+            && input.connectedOutput.op != fromNode)
+        {
+            //console.log(input.connectedOutput);
+            uiMakeNodePassive(input.connectedOutput.op);
+            uiMakeNodeLeftPassive(input.connectedOutput.op, node);            
         }
     }
 }
