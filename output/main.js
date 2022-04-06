@@ -314,16 +314,20 @@ function figSetPageData(key, value) {
     figma.currentPage.setPluginData(key, value);
 }
 function figLoadNodesAndConns() {
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == nodeTag + ' ');
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length + 1) == nodeTag + ' ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length + 1) == connTag + ' ');
+    const activeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, activeTag.length + 1) == activeTag + ' ');
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
+    const active = activeKeys.map(k => figma.currentPage.getPluginData(k));
     const nodesJson = JSON.stringify(nodes);
     const connsJson = JSON.stringify(conns);
+    const activeJson = JSON.stringify(active);
     figPostMessageToUi({
         cmd: 'uiLoadNodesAndConns',
         nodesJson: nodesJson,
-        connsJson: connsJson
+        connsJson: connsJson,
+        activeJson: activeJson
     });
 }
 function figSaveNodesAndConns(nodeIds, nodeJson) {
@@ -353,11 +357,11 @@ function figLogAllSavedNodesAndConns() {
     const activeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == activeTag + ' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
     for (const key of nodeKeys)
-        console.log(key, figGetPageData(key, false));
+        console.log(key + '\n', figGetPageData(key, false));
     for (const key of activeKeys)
-        console.log(key, figGetPageData(key, false));
+        console.log(key + '\n', figGetPageData(key, false));
     for (const key of connKeys)
-        console.log(key, figGetPageData(key, false));
+        console.log(key + '\n', figGetPageData(key, false));
 }
 function figSaveConnection(name, json) {
     // console.log('key', connName(name));

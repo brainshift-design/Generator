@@ -7,18 +7,18 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiEndStartGenerator':  uiEndStartGenerator(msg);                          break;
-        case 'uiLoadNodesAndConns':  uiLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
+        case 'uiEndStartGenerator':  uiEndStartGenerator(msg);                                          break;
+        case 'uiLoadNodesAndConns':  uiLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
         
-        case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                         break;
-        case 'uiGetPageDataReturn':  uiGetPageDataReturn(msg);                          break;
-        
-        case 'uiEndResizeWindow':    uiEndResizeWindow();                               break;
-        
-        case 'uiForwardToGen':       uiPostMessageToGenerator(msg.msg);                 break;
-        
-        case 'uiEndFigMessage':     uiPostNextMessageToFigma();                         break;
-    }    
+        case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                                         break;
+        case 'uiGetPageDataReturn':  uiGetPageDataReturn(msg);                                          break;
+              
+        case 'uiEndResizeWindow':    uiEndResizeWindow();                                               break;
+              
+        case 'uiForwardToGen':       uiPostMessageToGenerator(msg.msg);                                 break;
+              
+        case 'uiEndFigMessage':      uiPostNextMessageToFigma();                                        break;
+    }
 }    
   
 ///////////////////////////////////////////////////////////////////////////////////////////////////

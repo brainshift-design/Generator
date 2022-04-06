@@ -125,17 +125,19 @@ function uiLoadGraphView(json)
 
 
 
-function uiLoadNodesAndConns(nodesJson, connsJson)
+function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
     graph.clear();
 
-    const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
-    const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
+    const nodes  = JSON.parse( nodesJson).map(n => JSON.parse(n));
+    const conns  = JSON.parse( connsJson).map(c => JSON.parse(c));
+    const active = JSON.parse(activeJson);
 
     //console.log('nodes', nodes);
     //console.log('conns', conns);
+    //console.log('active', active);
 
-    loadNodesAndConnsAsync(nodes, conns, setLoadingProgress);
+    loadNodesAndConnsAsync(nodes, conns, active, setLoadingProgress);
 }
 
 
@@ -156,7 +158,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAndConnsAsync(nodes, connections, setProgress)
+function loadNodesAndConnsAsync(nodes, connections, activeNodeIds, setProgress)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';
@@ -185,13 +187,13 @@ function loadNodesAndConnsAsync(nodes, connections, setProgress)
     promise.then(_nodes => 
     {
         graph.addNodes(_nodes, false, false);
-        loadConnectionsAsync(nodes, connections, _nodes, setProgress);    
+        loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProgress);    
     });
 }
 
 
 
-function loadConnectionsAsync(nodes, connections, _nodes, setProgress)
+function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProgress)
 {
     let promise = Promise.resolve([]);
     
@@ -228,6 +230,11 @@ function loadConnectionsAsync(nodes, connections, _nodes, setProgress)
     {
         updateTerminalsAfterNodes(_nodes);
         finishLoading();
+
+        const nodes = activeNodeIds.map(i => graph.nodes.find(n => n.id == i));
+
+        for (const node of nodes)
+            uiMakeNodeActive(node);
     });
 }
 
