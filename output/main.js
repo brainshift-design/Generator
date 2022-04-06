@@ -108,7 +108,7 @@ function figCreateFrame() {
     return frame;
 }
 function figCreateRect(obj) {
-    console.log(obj);
+    //console.log(obj);
     const rect = figma.createRectangle();
     rect.x = obj.x;
     rect.y = obj.y;

@@ -145,7 +145,7 @@ function figCreateFrame()
 
 function figCreateRect(obj)
 {
-    console.log(obj);
+    //console.log(obj);
 
     const rect = figma.createRectangle();
 

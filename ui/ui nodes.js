@@ -226,6 +226,7 @@ function uiMakeNodeLeftPassive(node)
     {
         if (input.isConnected)
         {
+            //console.log(input.connectedOutput);
             uiMakeNodePassive(input.connectedOutput.op);
             uiMakeNodeLeftPassive(input.connectedOutput.op);            
         }
@@ -252,15 +253,18 @@ function uiMakeNodePassive(node)
 {
     //if (node.active)
     //    uiDeleteNodeObjects([node.id]);
-    
+
+    if (node.active)
+    {
+        removeFromArray(graphView.activeNodes, node);
+
+        uiPostMessageToFigma({
+            cmd:   'figRemoveSavedActiveNode', 
+            nodeId: node.id
+        });
+    }
+
     node._active = false;
-
-    removeFromArray(graphView.activeNodes, node);
-
-    uiPostMessageToFigma({
-        cmd:   'figRemoveSavedActiveNode', 
-        nodeId: node.id
-    });
 
     node.updateNode();
 }

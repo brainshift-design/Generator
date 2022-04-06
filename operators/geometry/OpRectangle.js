@@ -11,8 +11,8 @@ extends OperatorBase
 
     #btnProportional;
 
-    #oldWidth  = Number.NaN;
-    #oldHeight = Number.NaN;
+    #refWidth  = Number.NaN;
+    #refHeight = Number.NaN;
 
 
     
@@ -59,8 +59,8 @@ extends OperatorBase
         {
             if (this.#btnProportional.enabled)
             {
-                this.#oldWidth  = this.#paramWidth .value;
-                this.#oldHeight = this.#paramHeight.value;
+                this.#refWidth  = this.#paramWidth .value;
+                this.#refHeight = this.#paramHeight.value;
             }
         });
 
@@ -68,14 +68,14 @@ extends OperatorBase
         this.#paramWidth.addEventListener('change', () =>
         {
             if (this.#btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.value * this.#oldHeight / this.#oldWidth, false, true, false);
+                this.#paramHeight.setValue(this.#paramWidth.value * this.#refHeight / this.#refWidth, false, true, false);
         });
 
 
         this.#paramHeight.addEventListener('change', () =>
         {
             if (this.#btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.value * this.#oldWidth / this.#oldHeight, false, true, false);
+                this.#paramWidth.setValue(this.#paramHeight.value * this.#refWidth / this.#refHeight, false, true, false);
         });
     }
     
@@ -166,8 +166,8 @@ extends OperatorBase
         if (this.#btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"refWidth": "'    + this.#oldWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "'   + this.#oldHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
         }
 
         return json;
@@ -177,19 +177,18 @@ extends OperatorBase
 
     loadParams(_node)
     {
-        if (_node.proportional)
-        {
+        super.loadParams(_node);
+
+        // if (_node.proportional)
+        // {
             this.#btnProportional.enabled = isTrue(_node.proportional);
             this.#btnProportional.updateBackground(false);
 
             if (this.#btnProportional.enabled)
             {
-                this.#oldWidth  = parseFloat(_node.propWidth);
-                this.#oldHeight = parseFloat(_node.propHeight);
+                this.#refWidth  = parseFloat(_node.refWidth);
+                this.#refHeight = parseFloat(_node.refHeight);
             }
-        }
-
-
-        super.loadParams(_node);
+        //}
     }
 }
