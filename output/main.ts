@@ -416,8 +416,15 @@ function figGetPageData(key, postToUi = true)
 
 function figSetPageData(key, value)
 {
-    figma.currentPage.setPluginData(key, ''); // remove possible existing values first
+    figClearPageData(key); // remove possible existing values first
     figma.currentPage.setPluginData(key, value);
+}
+
+
+
+function figClearPageData(key)
+{
+    figma.currentPage.setPluginData(key, ''); 
 }
 
 
@@ -465,7 +472,7 @@ function figSaveNodesAndConns(nodeIds, nodeJson)
 function figRemoveSavedNodesAndConns(nodeIds)
 {
     for (let i = 0; i < nodeIds.length; i++)
-        figSetPageData(nodeName(nodeIds[i]), '');        
+        figClearPageData(nodeName(nodeIds[i]));        
 }
 
 
@@ -476,9 +483,9 @@ function figRemoveAllSavedNodesAndConns()
     const activeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == activeTag + ' ');
     const   connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag   + ' ');
 
-    for (const key of   nodeKeys) figSetPageData(key, '');
-    for (const key of activeKeys) figSetPageData(key, '');
-    for (const key of   connKeys) figSetPageData(key, '');
+    for (const key of   nodeKeys) figClearPageData(key);
+    for (const key of activeKeys) figClearPageData(key);
+    for (const key of   connKeys) figClearPageData(key);
 }
 
 
@@ -501,17 +508,14 @@ function figSaveConnection(name, json)
     // console.log('key', connName(name));
     // console.log('connection', json);
     
-    figSetPageData(
-        connName(name),
-        json
-    );        
+    figSetPageData(connName(name), json);        
 }
 
 
 
 function figRemoveSavedConnection(name)
 {
-    figSetPageData(connName(name), '');        
+    figClearPageData(connName(name));        
 }
 
 
@@ -525,7 +529,7 @@ function figSaveActiveNode(nodeId)
 
 function figRemoveSavedActiveNode(nodeId)
 {
-    figSetPageData(activeName(nodeId), '');        
+    figClearPageData(activeName(nodeId));        
 }
 
 

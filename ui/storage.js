@@ -19,6 +19,17 @@ function uiSetLocalData(key, value)
 
 
 
+function uiClearLocalData(key)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetLocalData',
+        key:   key,
+        value: ''
+    });
+}
+
+
+
 function uiGetPageData(key)
 {
     uiPostMessageToFigma({ 
@@ -35,6 +46,17 @@ function uiSetPageData(key, value)
         cmd:  'figSetPageData', 
         key:   key,
         value: value
+    });
+}
+
+
+
+function uiClearPageData(key)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetPageData', 
+        key:   key,
+        value: ''
     });
 }
 

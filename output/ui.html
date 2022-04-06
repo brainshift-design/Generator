@@ -17395,7 +17395,7 @@ function createNodeHeader(node)
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
         else
-            uiMakeNodeActive(node);
+            actionManager.do(new MakeNodeActiveAction(node.id));
     });
 }
 
@@ -21366,7 +21366,8 @@ class ActionManager
             }
         }
 
-        action.do(); //log("DO " + action.name);
+        action.do(); 
+        log("DO " + action.name);
     }
 
 
@@ -21381,7 +21382,8 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            last.undo(); //log("UNDO " + last.name);
+            last.undo(); 
+            log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -21401,7 +21403,8 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            last.redo(); //log("REDO " + last.name);
+            last.redo(); 
+            log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))
@@ -21856,6 +21859,42 @@ extends Action
         this.param.op.pushUpdate();
 
         uiSaveNodesAndConns([this.nodeId]);
+    }
+}
+
+
+class MakeNodeActiveAction
+extends Action
+{
+    activeId;
+    oldActiveId;
+
+
+
+    constructor(activeId)
+    {
+        const oldActiveId = getActiveNodeInTreeFrom(graph.nodes.find(n => n.id == activeId)).id;
+
+        super(
+             'make ' + activeId + ' active, '
+            + oldActiveId + ' active before');
+
+        this.activeId    = activeId;
+        this.oldActiveId = oldActiveId;
+    }
+
+
+
+    do()
+    {
+        uiMakeNodeActive(graph.nodes.find(n => n.id == this.activeId));
+    }
+
+
+
+    undo()
+    {
+        uiMakeNodeActive(graph.nodes.find(n => n.id == this.oldActiveId));
     }
 }
 
@@ -22715,10 +22754,11 @@ var figMessages = [];
 
 
 
-//uiSetLocalData('windowWidth',  '');
-//uiSetLocalData('windowHeight', '');
-//uiSetLocalData('productKey',   '');
+//uiClearLocalData('windowWidth');
+//uiClearLocalData('windowHeight');
+//uiClearLocalData('productKey');
 
+//uiClearPageData('GA rect');
 uiLogAllSavedNodesAndConns();
 //uiRemoveAllSavedNodesAndConns();
 
@@ -23087,6 +23127,17 @@ function uiSetLocalData(key, value)
 
 
 
+function uiClearLocalData(key)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetLocalData',
+        key:   key,
+        value: ''
+    });
+}
+
+
+
 function uiGetPageData(key)
 {
     uiPostMessageToFigma({ 
@@ -23103,6 +23154,17 @@ function uiSetPageData(key, value)
         cmd:  'figSetPageData', 
         key:   key,
         value: value
+    });
+}
+
+
+
+function uiClearPageData(key)
+{
+    uiPostMessageToFigma({ 
+        cmd:  'figSetPageData', 
+        key:   key,
+        value: ''
     });
 }
 
@@ -23886,6 +23948,40 @@ function uiMakeNodePassive(node)
     node._active = false;
 
     node.updateNode();
+}
+
+
+
+function getActiveNodeInTreeFrom(node, fromNode = null)
+{
+    if (node.active) return node;
+
+
+    for (const input of node.inputs)
+    {
+        if (   input.isConnected
+            && input.connectedOutput.op != fromNode)
+        {
+            const leftActive = getActiveNodeInTreeFrom(input.connectedOutput.op, node);
+            if (leftActive) return leftActive;
+        }
+    }
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (input.op != fromNode)
+            {
+                const rightActive = getActiveNodeInTreeFrom(input.op, node);
+                if (rightActive) return rightActive;
+            }
+        }
+    }
+
+
+    return null;
 }
 
 

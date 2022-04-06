@@ -310,8 +310,11 @@ function figGetPageData(key, postToUi = true) {
     return data;
 }
 function figSetPageData(key, value) {
-    figma.currentPage.setPluginData(key, ''); // remove possible existing values first
+    figClearPageData(key); // remove possible existing values first
     figma.currentPage.setPluginData(key, value);
+}
+function figClearPageData(key) {
+    figma.currentPage.setPluginData(key, '');
 }
 function figLoadNodesAndConns() {
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length + 1) == nodeTag + ' ');
@@ -339,18 +342,18 @@ function figSaveNodesAndConns(nodeIds, nodeJson) {
 }
 function figRemoveSavedNodesAndConns(nodeIds) {
     for (let i = 0; i < nodeIds.length; i++)
-        figSetPageData(nodeName(nodeIds[i]), '');
+        figClearPageData(nodeName(nodeIds[i]));
 }
 function figRemoveAllSavedNodesAndConns() {
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == nodeTag + ' ');
     const activeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == activeTag + ' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
     for (const key of nodeKeys)
-        figSetPageData(key, '');
+        figClearPageData(key);
     for (const key of activeKeys)
-        figSetPageData(key, '');
+        figClearPageData(key);
     for (const key of connKeys)
-        figSetPageData(key, '');
+        figClearPageData(key);
 }
 function figLogAllSavedNodesAndConns() {
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == nodeTag + ' ');
@@ -369,13 +372,13 @@ function figSaveConnection(name, json) {
     figSetPageData(connName(name), json);
 }
 function figRemoveSavedConnection(name) {
-    figSetPageData(connName(name), '');
+    figClearPageData(connName(name));
 }
 function figSaveActiveNode(nodeId) {
     figSetPageData(activeName(nodeId), nodeId);
 }
 function figRemoveSavedActiveNode(nodeId) {
-    figSetPageData(activeName(nodeId), '');
+    figClearPageData(activeName(nodeId));
 }
 function nodeName(nodeId) { return nodeTag + ' ' + nodeId; }
 function activeName(nodeId) { return activeTag + ' ' + nodeId; }

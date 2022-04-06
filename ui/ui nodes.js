@@ -271,6 +271,40 @@ function uiMakeNodePassive(node)
 
 
 
+function getActiveNodeInTreeFrom(node, fromNode = null)
+{
+    if (node.active) return node;
+
+
+    for (const input of node.inputs)
+    {
+        if (   input.isConnected
+            && input.connectedOutput.op != fromNode)
+        {
+            const leftActive = getActiveNodeInTreeFrom(input.connectedOutput.op, node);
+            if (leftActive) return leftActive;
+        }
+    }
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (input.op != fromNode)
+            {
+                const rightActive = getActiveNodeInTreeFrom(input.op, node);
+                if (rightActive) return rightActive;
+            }
+        }
+    }
+
+
+    return null;
+}
+
+
+
 function uiShowParamValue(nodeId, paramName, value)
 {
     const node = nodeFromId(nodeId);
