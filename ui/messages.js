@@ -38,7 +38,7 @@ generator.onmessage = function(e)
         // case 'uiShowParamValue':    uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         // case 'uiUpdateNodes':       uiUpdateNodes   (e.data.nodeIds);                            break;
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
-        case 'uiUpdateObjects':        uiUpdateObjects(e.data.objects);                            break;
+        case 'uiUpdateCanvasObjects':  uiUpdateCanvasObjects         (e.data.objects);                 break;
     }
 };
 
@@ -65,7 +65,7 @@ function uiPostNextMessageToFigma()
         let msg = figMessages.shift();
 
         if (   msg.cmd == 'figResizeWindow'
-            || msg.cmd == 'figUpdateObjects')
+            || msg.cmd == 'figUpdateCanvasObjects')
         {
             // move along the queue since only the last message is important
             while (figMessages.length > 0

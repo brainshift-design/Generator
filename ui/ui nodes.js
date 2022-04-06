@@ -64,7 +64,7 @@ function uiDeleteNodes(nodeIds, actionId)
     //     actionId: actionId
     // });
     
-    uiDeleteNodeObjects(nodeIds);
+    uiDeleteCanvasObjects(nodeIds);
 }
 
 
@@ -95,10 +95,10 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiDeleteNodeObjects(nodeIds)
+function uiDeleteCanvasObjects(nodeIds)
 {
     uiPostMessageToFigma({ 
-        cmd:    'figDeleteNodeObjects',
+        cmd:    'figDeleteCanvasObjects',
         nodeIds: nodeIds
     });
 
@@ -276,7 +276,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 function uiMakeNodePassive(node)
 {
     //if (node.active)
-    //    uiDeleteNodeObjects([node.id]);
+    //    uiDeleteCanvasObjects([node.id]);
 
     if (node.active)
     {
@@ -463,12 +463,12 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateObjects(objects)
+function uiUpdateCanvasObjects(objects)
 {
     //uiUpdateGraph();
     
     uiPostMessageToFigma({ 
-        cmd:    'figUpdateObjects',
+        cmd:    'figUpdateCanvasObjects',
         objects: objects
     });    
 }

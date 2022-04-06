@@ -73,7 +73,7 @@ function genGenerateRequest(request)
     }
 
     genPostMessageToUi({ 
-        msg:    'uiUpdateObjects',
+        msg:    'uiUpdateCanvasObjects',
         objects: objects
     });
 }
@@ -267,7 +267,7 @@ function genGenerateRectangle(request, i)
 //         }    
 
 //         genPostMessageToUi({ 
-//             msg:    'uiUpdateObjects',
+//             msg:    'uiUpdateCanvasObjects',
 //             objects: objects
 //         });
 //     }

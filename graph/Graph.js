@@ -208,7 +208,7 @@ class Graph
         // first remove the current output
 
         // if (activeNodeInTree(input.op))
-        //     uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
+        //     uiDeleteCanvasObjects([activeNodeInTree(input.op).id]);
 
 
         // then disconnect

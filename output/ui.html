@@ -3841,7 +3841,7 @@ function genGenerateRequest(request)
     }
 
     genPostMessageToUi({ 
-        msg:    'uiUpdateObjects',
+        msg:    'uiUpdateCanvasObjects',
         objects: objects
     });
 }
@@ -4035,7 +4035,7 @@ function genGenerateRectangle(request, i)
 //         }    
 
 //         genPostMessageToUi({ 
-//             msg:    'uiUpdateObjects',
+//             msg:    'uiUpdateCanvasObjects',
 //             objects: objects
 //         });
 //     }
@@ -15297,7 +15297,7 @@ class Graph
         // first remove the current output
 
         // if (activeNodeInTree(input.op))
-        //     uiDeleteNodeObjects([activeNodeInTree(input.op).id]);
+        //     uiDeleteCanvasObjects([activeNodeInTree(input.op).id]);
 
 
         // then disconnect
@@ -23021,7 +23021,7 @@ generator.onmessage = function(e)
         // case 'uiShowParamValue':    uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         // case 'uiUpdateNodes':       uiUpdateNodes   (e.data.nodeIds);                            break;
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
-        case 'uiUpdateObjects':        uiUpdateObjects(e.data.objects);                            break;
+        case 'uiUpdateCanvasObjects':  uiUpdateCanvasObjects         (e.data.objects);                 break;
     }
 };
 
@@ -23048,7 +23048,7 @@ function uiPostNextMessageToFigma()
         let msg = figMessages.shift();
 
         if (   msg.cmd == 'figResizeWindow'
-            || msg.cmd == 'figUpdateObjects')
+            || msg.cmd == 'figUpdateCanvasObjects')
         {
             // move along the queue since only the last message is important
             while (figMessages.length > 0
@@ -23745,7 +23745,7 @@ function uiDeleteNodes(nodeIds, actionId)
     //     actionId: actionId
     // });
     
-    uiDeleteNodeObjects(nodeIds);
+    uiDeleteCanvasObjects(nodeIds);
 }
 
 
@@ -23776,10 +23776,10 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiDeleteNodeObjects(nodeIds)
+function uiDeleteCanvasObjects(nodeIds)
 {
     uiPostMessageToFigma({ 
-        cmd:    'figDeleteNodeObjects',
+        cmd:    'figDeleteCanvasObjects',
         nodeIds: nodeIds
     });
 
@@ -23957,7 +23957,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 function uiMakeNodePassive(node)
 {
     //if (node.active)
-    //    uiDeleteNodeObjects([node.id]);
+    //    uiDeleteCanvasObjects([node.id]);
 
     if (node.active)
     {
@@ -24144,12 +24144,12 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateObjects(objects)
+function uiUpdateCanvasObjects(objects)
 {
     //uiUpdateGraph();
     
     uiPostMessageToFigma({ 
-        cmd:    'figUpdateObjects',
+        cmd:    'figUpdateCanvasObjects',
         objects: objects
     });    
 }

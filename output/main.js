@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const MAX_OBJECTS = 0x10000;
 const genObjects = new Array(MAX_OBJECTS);
 const OBJ_RECT = 1;
-function figUpdateObjects(objects) {
+function figUpdateCanvasObjects(objects) {
     // // prepare the buffers
     // let nodeId = -1;
     // let prevId = -1;
@@ -41,7 +41,7 @@ function figUpdateObjects(objects) {
         //             if (  !objNodes[prevId]
         //                 || objNodes[prevId].length != count)
         //             {
-        //                 figDeleteNodeObjects([prevId]);
+        //                 figDeleteCanvasObjects([prevId]);
         //                 objNodes[prevId] = new Array(count).fill(null);
         //             }
         //             count = 0;
@@ -53,7 +53,7 @@ function figUpdateObjects(objects) {
         //     && (  !objNodes[nodeId]
         //         || objNodes[nodeId].length != count))
         // {
-        //     figDeleteNodeObjects([nodeId]);
+        //     figDeleteCanvasObjects([nodeId]);
         //     objNodes[nodeId] = new Array(count).fill(null);
     }
     // // fill the buffers
@@ -90,7 +90,7 @@ function figCreateObject(obj) {
             break;
     }
     genObj.name = obj.nodeId.toString() + ':' + obj.id.toString();
-    //genObj.setPluginData('id',     obj.id    .toString());
+    genObj.setPluginData('id', obj.id.toString());
     genObj.setPluginData('type', obj.type.toString());
     genObj.setPluginData('nodeId', obj.nodeId.toString());
     //genObj.setPluginData('name',   rect.name);
@@ -138,14 +138,10 @@ function figUpdateRect(obj) {
     rect.rotation = obj.angle;
     rect.cornerRadius = obj.round;
 }
-function figDeleteNodeObjects(nodeIds) {
-    // for (const nodeId of nodeIds)
-    // {
-    //     if (!objNodes[nodeId]) continue;
-    //     for (const obj of objNodes[nodeId])
-    //         obj.remove();
-    //     objNodes[nodeId] = null;
-    // }
+function figDeleteCanvasObjects(nodeIds) {
+    const objects = figma.currentPage.findAll(o => nodeIds.includes(o.getPluginData('nodeId')));
+    for (const obj of objects)
+        obj.remove();
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
@@ -255,11 +251,11 @@ figma.ui.onmessage = msg => {
         case 'figRemoveSavedActiveNode':
             figRemoveSavedActiveNode(msg.nodeId);
             break;
-        case 'figDeleteNodeObjects':
-            figDeleteNodeObjects(msg.nodeIds);
+        case 'figDeleteCanvasObjects':
+            figDeleteCanvasObjects(msg.nodeIds);
             break;
-        case 'figUpdateObjects':
-            figUpdateObjects(msg.objects);
+        case 'figUpdateCanvasObjects':
+            figUpdateCanvasObjects(msg.objects);
             break;
     }
     figPostMessageToUi({ cmd: 'uiEndFigMessage' });

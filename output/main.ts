@@ -6,7 +6,7 @@ const OBJ_RECT = 1;
 
 
 
-function figUpdateObjects(objects)
+function figUpdateCanvasObjects(objects)
 {
     // // prepare the buffers
 
@@ -47,7 +47,7 @@ function figUpdateObjects(objects)
     //             if (  !objNodes[prevId]
     //                 || objNodes[prevId].length != count)
     //             {
-    //                 figDeleteNodeObjects([prevId]);
+    //                 figDeleteCanvasObjects([prevId]);
     //                 objNodes[prevId] = new Array(count).fill(null);
     //             }
 
@@ -63,7 +63,7 @@ function figUpdateObjects(objects)
     //     && (  !objNodes[nodeId]
     //         || objNodes[nodeId].length != count))
     // {
-    //     figDeleteNodeObjects([nodeId]);
+    //     figDeleteCanvasObjects([nodeId]);
     //     objNodes[nodeId] = new Array(count).fill(null);
     }
 
@@ -113,7 +113,7 @@ function figCreateObject(obj)
 
     genObj.name = obj.nodeId.toString() + ':' + obj.id.toString();
 
-    //genObj.setPluginData('id',     obj.id    .toString());
+    genObj.setPluginData('id',     obj.id    .toString());
     genObj.setPluginData('type',   obj.type  .toString());
     genObj.setPluginData('nodeId', obj.nodeId.toString());
     //genObj.setPluginData('name',   rect.name);
@@ -201,17 +201,10 @@ function figUpdateRect(obj)
 
 
 
-function figDeleteNodeObjects(nodeIds)
+function figDeleteCanvasObjects(nodeIds)
 {
-    // for (const nodeId of nodeIds)
-    // {
-    //     if (!objNodes[nodeId]) continue;
-        
-    //     for (const obj of objNodes[nodeId])
-    //         obj.remove();
-
-    //     objNodes[nodeId] = null;
-    // }
+    const objects = figma.currentPage.findAll(o => nodeIds.includes(o.getPluginData('nodeId')));
+    for (const obj of objects) obj.remove();
 }
 
 
@@ -328,8 +321,8 @@ figma.ui.onmessage = msg =>
         case 'figSaveActiveNode':              figSaveActiveNode             (msg.nodeId);                                 break;
         case 'figRemoveSavedActiveNode':       figRemoveSavedActiveNode      (msg.nodeId);                                 break;
 
-        case 'figDeleteNodeObjects':           figDeleteNodeObjects          (msg.nodeIds);                                break; 
-        case 'figUpdateObjects':               figUpdateObjects              (msg.objects);                                break;
+        case 'figDeleteCanvasObjects':         figDeleteCanvasObjects        (msg.nodeIds);                                break; 
+        case 'figUpdateCanvasObjects':         figUpdateCanvasObjects        (msg.objects);                                break;
     }
 
     figPostMessageToUi({cmd: 'uiEndFigMessage'});
