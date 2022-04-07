@@ -26,13 +26,12 @@ extends Action
 
         const node = uiCreateNode(this.opType, this.creatingButton);
         this.createdNodeId = node.id;
-        
-        uiMakeNodeActive(node);
-        //node.pushUpdate();
 
         graphView.updateNodeTransform(node);
-
         setTimeout(() => graphView.updateScrollWithBounds());
+        
+        uiMakeNodeActive(node);
+        node.pushUpdate();
     }
 
 
@@ -53,6 +52,7 @@ extends Action
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
 
+        uiMakeNodeActive(node);
         node.pushUpdate();
     }
 }

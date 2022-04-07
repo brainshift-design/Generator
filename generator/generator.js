@@ -209,7 +209,7 @@ function genGenerateRectangle(request, i)
 
 // function updateNodeGraph(_node)
 // {
-//     const node = genGraph.nodes.find(n => n.id == _node.id);
+//     const node = nodeFromId(_node.id);
 
 //     let activeId = activeNodeInTree(node).id;
 
@@ -226,7 +226,7 @@ function genGenerateRectangle(request, i)
 
 // function genInvalidate(nodeId)
 // {
-//     const node = genGraph.nodes.find(n => n.id == nodeId);
+//     const node = nodeFromId(nodeId);
 //     node.valid = false;
 // }
 

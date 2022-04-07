@@ -253,7 +253,7 @@ function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProg
         updateTerminalsAfterNodes(_nodes);
         finishLoading();
 
-        const activeNodes = activeNodeIds.map(i => graph.nodes.find(n => n.id == i));
+        const activeNodes = activeNodeIds.map(id => nodeFromId(id));
 
         for (const node of activeNodes)
             uiMakeNodeActive(node);

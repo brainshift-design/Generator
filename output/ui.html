@@ -3977,7 +3977,7 @@ function genGenerateRectangle(request, i)
 
 // function updateNodeGraph(_node)
 // {
-//     const node = genGraph.nodes.find(n => n.id == _node.id);
+//     const node = nodeFromId(_node.id);
 
 //     let activeId = activeNodeInTree(node).id;
 
@@ -3994,7 +3994,7 @@ function genGenerateRectangle(request, i)
 
 // function genInvalidate(nodeId)
 // {
-//     const node = genGraph.nodes.find(n => n.id == nodeId);
+//     const node = nodeFromId(nodeId);
 //     node.valid = false;
 // }
 
@@ -21424,14 +21424,17 @@ extends Action
     outputOpId;
     outputIndex;
     get outputOp() { return nodeFromId(this.outputOpId); }
-
+    
     oldOutputOpId = '';
     oldOutputIndex;
     get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
-
+    
     inputOpId;
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
+    
+    oldOutputActiveOp; // the active node in the output node's tree
+    oldInputActiveOp;  // the active node in the input node's tree
 
 
 
@@ -21451,14 +21454,17 @@ extends Action
             + input.op.id + '.in[' + inIndex + ']');
 
 
-        this.outputOpId     = output.op.id;
-        this.outputIndex    = outIndex;
+        this.outputOpId        = output.op.id;
+        this.outputIndex       = outIndex;
+   
+        this.oldOutputOpId     = input.isConnected ? input.connectedOutput.op.id : '';
+        this.oldOutputIndex    = oldOutIndex;
+   
+        this.inputOpId         = input.op.id;
+        this.inputIndex        = inIndex;
 
-        this.oldOutputOpId  = input.isConnected ? input.connectedOutput.op.id : '';
-        this.oldOutputIndex = oldOutIndex;
-
-        this.inputOpId      = input.op.id;
-        this.inputIndex     = inIndex;
+        this.oldOutputActiveOp = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId));
+        this.oldInputActiveOp  = getActiveNodeInTreeFrom(nodeFromId(this. inputOpId));
     }
 
 
@@ -21470,8 +21476,11 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
             
+        uiMakeNodeActive(this.oldInputActiveOp);
+
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
+
     }
 
 
@@ -21491,6 +21500,11 @@ extends Action
 
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
+
+        uiMakeNodeActive(this.oldInputActiveOp);
+
+        if (this.oldOutputActiveOp)
+            uiMakeNodeActive(this.oldOutputActiveOp);
     }
 }
 
@@ -21523,13 +21537,12 @@ extends Action
 
         const node = uiCreateNode(this.opType, this.creatingButton);
         this.createdNodeId = node.id;
-        
-        uiMakeNodeActive(node);
-        //node.pushUpdate();
 
         graphView.updateNodeTransform(node);
-
         setTimeout(() => graphView.updateScrollWithBounds());
+        
+        uiMakeNodeActive(node);
+        node.pushUpdate();
     }
 
 
@@ -21550,6 +21563,7 @@ extends Action
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
 
+        uiMakeNodeActive(node);
         node.pushUpdate();
     }
 }
@@ -21873,7 +21887,7 @@ extends Action
 
     constructor(activeId)
     {
-        const oldActiveId = getActiveNodeInTreeFrom(graph.nodes.find(n => n.id == activeId)).id;
+        const oldActiveId = getActiveNodeInTreeFrom(nodeFromId(activeId)).id;
 
         super(
              'make ' + activeId + ' active, '
@@ -21887,14 +21901,14 @@ extends Action
 
     do()
     {
-        uiMakeNodeActive(graph.nodes.find(n => n.id == this.activeId));
+        uiMakeNodeActive(nodeFromId(this.activeId));
     }
 
 
 
     undo()
     {
-        uiMakeNodeActive(graph.nodes.find(n => n.id == this.oldActiveId));
+        uiMakeNodeActive(nodeFromId(this.oldActiveId));
     }
 }
 
@@ -22759,8 +22773,8 @@ var figMessages = [];
 //uiClearLocalData('productKey');
 
 //uiClearPageData('GA rect');
-uiLogAllSavedNodesAndConns();
 //uiRemoveAllSavedNodesAndConns();
+uiLogAllSavedNodesAndConns();
 
 
 var currentUser = '';
@@ -23361,7 +23375,7 @@ function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProg
         updateTerminalsAfterNodes(_nodes);
         finishLoading();
 
-        const activeNodes = activeNodeIds.map(i => graph.nodes.find(n => n.id == i));
+        const activeNodes = activeNodeIds.map(id => nodeFromId(id));
 
         for (const node of activeNodes)
             uiMakeNodeActive(node);
@@ -23718,15 +23732,6 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
     }
 
 
-    // uiPostMessageToGenerator({
-    //     msg:     'genCreateNode',
-    //     opType:   opType,
-    //     nodeId:   node.id,
-    //     nodeName: node.name
-    // });
-    
-
-
     return node;
 }
 
@@ -23737,14 +23742,6 @@ function uiDeleteNodes(nodeIds, actionId)
     graph.deleteNodes(nodeIds);
     
     uiRemoveSavedNodesAndConns(nodeIds);
-
-
-    // uiPostMessageToGenerator({
-    //     msg:     'genDeleteNodes',
-    //     nodeIds:  nodeIds,
-    //     actionId: actionId
-    // });
-    
     uiDeleteCanvasObjects(nodeIds);
 }
 
@@ -23782,11 +23779,6 @@ function uiDeleteCanvasObjects(nodeIds)
         cmd:    'figDeleteCanvasObjects',
         nodeIds: nodeIds
     });
-
-    // uiPostMessageToGenerator({
-    //     cmd:    'genDeleteNodeObjects',
-    //     nodeIds: nodeIds
-    // });
 }
 
 
@@ -23796,12 +23788,6 @@ function uiSetNodeId(nodeId, newId)
     const node = nodeFromId(nodeId);
 
     node.id = newId;
-
-    // uiPostMessageToGenerator({
-    //     msg:   'genSetNodeId', 
-    //     nodeId: nodeId,
-    //     newId:  newId
-    // });
 }
 
 
@@ -23839,16 +23825,6 @@ function uiConnect(output, input, inputIndex = -1)
         input.op.id,
         input.op.inputs.indexOf(input),
         conn.toJson());
-
-    // uiPostMessageToGenerator({
-    //     msg:     'genConnect', 
-    //     outputId: output.op.id, 
-    //     inputs:  
-    //     [{
-    //         nodeId: input.op.id, 
-    //         index:  input.op.inputs.indexOf(input)
-    //     }]
-    // });
 
     return conn;
 }
@@ -23976,17 +23952,17 @@ function uiMakeNodePassive(node)
 
 
 
-function getActiveNodeInTreeFrom(node, fromNode = null)
+function getActiveNodeInTreeFrom(node, alreadyChecked = [])
 {
     if (node.active) return node;
 
 
     for (const input of node.inputs)
     {
-        if (   input.isConnected
-            && input.connectedOutput.op != fromNode)
+        if (    input.isConnected
+            && !alreadyChecked.includes(input.connectedOutput.op))
         {
-            const leftActive = getActiveNodeInTreeFrom(input.connectedOutput.op, node);
+            const leftActive = getActiveNodeInTreeFrom(input.connectedOutput.op, [...alreadyChecked, node]);
             if (leftActive) return leftActive;
         }
     }
@@ -23996,9 +23972,9 @@ function getActiveNodeInTreeFrom(node, fromNode = null)
     {
         for (const input of output.connectedInputs)
         {
-            if (input.op != fromNode)
+            if (!alreadyChecked.includes(input.op))
             {
-                const rightActive = getActiveNodeInTreeFrom(input.op, node);
+                const rightActive = getActiveNodeInTreeFrom(input.op, [...alreadyChecked, node]);
                 if (rightActive) return rightActive;
             }
         }

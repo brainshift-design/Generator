@@ -8,7 +8,7 @@ extends Action
 
     constructor(activeId)
     {
-        const oldActiveId = getActiveNodeInTreeFrom(graph.nodes.find(n => n.id == activeId)).id;
+        const oldActiveId = getActiveNodeInTreeFrom(nodeFromId(activeId)).id;
 
         super(
              'make ' + activeId + ' active, '
@@ -22,13 +22,13 @@ extends Action
 
     do()
     {
-        uiMakeNodeActive(graph.nodes.find(n => n.id == this.activeId));
+        uiMakeNodeActive(nodeFromId(this.activeId));
     }
 
 
 
     undo()
     {
-        uiMakeNodeActive(graph.nodes.find(n => n.id == this.oldActiveId));
+        uiMakeNodeActive(nodeFromId(this.oldActiveId));
     }
 }

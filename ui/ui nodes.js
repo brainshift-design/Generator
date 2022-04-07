@@ -37,15 +37,6 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
     }
 
 
-    // uiPostMessageToGenerator({
-    //     msg:     'genCreateNode',
-    //     opType:   opType,
-    //     nodeId:   node.id,
-    //     nodeName: node.name
-    // });
-    
-
-
     return node;
 }
 
@@ -56,14 +47,6 @@ function uiDeleteNodes(nodeIds, actionId)
     graph.deleteNodes(nodeIds);
     
     uiRemoveSavedNodesAndConns(nodeIds);
-
-
-    // uiPostMessageToGenerator({
-    //     msg:     'genDeleteNodes',
-    //     nodeIds:  nodeIds,
-    //     actionId: actionId
-    // });
-    
     uiDeleteCanvasObjects(nodeIds);
 }
 
@@ -101,11 +84,6 @@ function uiDeleteCanvasObjects(nodeIds)
         cmd:    'figDeleteCanvasObjects',
         nodeIds: nodeIds
     });
-
-    // uiPostMessageToGenerator({
-    //     cmd:    'genDeleteNodeObjects',
-    //     nodeIds: nodeIds
-    // });
 }
 
 
@@ -115,12 +93,6 @@ function uiSetNodeId(nodeId, newId)
     const node = nodeFromId(nodeId);
 
     node.id = newId;
-
-    // uiPostMessageToGenerator({
-    //     msg:   'genSetNodeId', 
-    //     nodeId: nodeId,
-    //     newId:  newId
-    // });
 }
 
 
@@ -158,16 +130,6 @@ function uiConnect(output, input, inputIndex = -1)
         input.op.id,
         input.op.inputs.indexOf(input),
         conn.toJson());
-
-    // uiPostMessageToGenerator({
-    //     msg:     'genConnect', 
-    //     outputId: output.op.id, 
-    //     inputs:  
-    //     [{
-    //         nodeId: input.op.id, 
-    //         index:  input.op.inputs.indexOf(input)
-    //     }]
-    // });
 
     return conn;
 }
@@ -295,17 +257,17 @@ function uiMakeNodePassive(node)
 
 
 
-function getActiveNodeInTreeFrom(node, fromNode = null)
+function getActiveNodeInTreeFrom(node, alreadyChecked = [])
 {
     if (node.active) return node;
 
 
     for (const input of node.inputs)
     {
-        if (   input.isConnected
-            && input.connectedOutput.op != fromNode)
+        if (    input.isConnected
+            && !alreadyChecked.includes(input.connectedOutput.op))
         {
-            const leftActive = getActiveNodeInTreeFrom(input.connectedOutput.op, node);
+            const leftActive = getActiveNodeInTreeFrom(input.connectedOutput.op, [...alreadyChecked, node]);
             if (leftActive) return leftActive;
         }
     }
@@ -315,9 +277,9 @@ function getActiveNodeInTreeFrom(node, fromNode = null)
     {
         for (const input of output.connectedInputs)
         {
-            if (input.op != fromNode)
+            if (!alreadyChecked.includes(input.op))
             {
-                const rightActive = getActiveNodeInTreeFrom(input.op, node);
+                const rightActive = getActiveNodeInTreeFrom(input.op, [...alreadyChecked, node]);
                 if (rightActive) return rightActive;
             }
         }
