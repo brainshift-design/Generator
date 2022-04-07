@@ -13,8 +13,8 @@ extends Action
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
     
-    oldOutputActiveOp; // the active node in the output node's tree
-    oldInputActiveOp;  // the active node in the input node's tree
+    oldOutputActiveOpId; // the active node in the output node's tree
+    oldInputActiveOpId;  // the active node in the input node's tree
 
 
 
@@ -34,17 +34,17 @@ extends Action
             + input.op.id + '.in[' + inIndex + ']');
 
 
-        this.outputOpId        = output.op.id;
-        this.outputIndex       = outIndex;
+        this.outputOpId          = output.op.id;
+        this.outputIndex         = outIndex;
    
-        this.oldOutputOpId     = input.isConnected ? input.connectedOutput.op.id : '';
-        this.oldOutputIndex    = oldOutIndex;
+        this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
+        this.oldOutputIndex      = oldOutIndex;
    
-        this.inputOpId         = input.op.id;
-        this.inputIndex        = inIndex;
+        this.inputOpId           = input.op.id;
+        this.inputIndex          = inIndex;
 
-        this.oldOutputActiveOp = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId));
-        this.oldInputActiveOp  = getActiveNodeInTreeFrom(nodeFromId(this. inputOpId));
+        this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
+        this.oldInputActiveOpId  = getActiveNodeInTreeFrom(nodeFromId(this. inputOpId)).id;
     }
 
 
@@ -56,7 +56,7 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
             
-        uiMakeNodeActive(this.oldInputActiveOp);
+        uiMakeNodeActive(nodeFromId(this.oldInputActiveOpId));
 
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
@@ -81,7 +81,7 @@ extends Action
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
 
-        uiMakeNodeActive(this.oldInputActiveOp);
+        uiMakeNodeActive(nodeFromId(this.oldInputActiveOp));
 
         if (this.oldOutputActiveOp)
             uiMakeNodeActive(this.oldOutputActiveOp);

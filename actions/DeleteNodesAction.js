@@ -1,21 +1,33 @@
 class DeleteNodesAction
 extends Action
 {
-    prevSelectedIds = [];
-    nodeIds         = [];
-    nodes           = [];
-    nodePos         = [];
-    connections     = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
+    nodeIds          = [];
+    prevSelectedIds  = [];
+    
+    nodes            = [];
+    nodePos          = [];
+
+    connections      = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
+
+    oldActiveNodeIds = [];
 
 
 
-    constructor(nodeIds, prevSelectedIds)
+    constructor(nodeIds)
     {
         super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
-        this.nodes           = graph.nodes.filter(n => nodeIds.includes(n.id));
-        this.prevSelectedIds = [...prevSelectedIds];
+        this.nodes           = nodeIds.map(id => nodeFromId(id));
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
+
+        for (const nodeId of nodeIds)
+        {
+            const activeId = getActiveNodeInTreeFrom(nodeFromId(nodeId)).id;
+
+            if (!this.oldActiveNodeIds.includes(activeId))
+                this.oldActiveNodeIds.push(activeId);
+        }
     }
 
 
@@ -68,6 +80,9 @@ extends Action
 
 
         uiDeleteNodes(this.nodeIds, this.id);
+
+        for (const nodeId of this.nodeIds)
+            uiClearPageData(activeTag + ' ' + nodeId)
     }
 
 
@@ -103,6 +118,10 @@ extends Action
 
         for (let i = 0; i < this.nodes.length; i++)
             this.nodes[i].id = this.nodeIds[i];
+
+        
+        for (const activeId of this.oldActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(activeId));
 
 
         uiSaveNodesAndConns(this.nodeIds);

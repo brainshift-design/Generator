@@ -1,3 +1,9 @@
+const nodeTag   = 'GN';
+const activeTag = 'GA';
+const connTag   = 'GC';
+
+
+
 const MAX_OBJECTS = 0x10000;
 const genObjects  = new Array(MAX_OBJECTS);
 
@@ -352,12 +358,6 @@ function figPostMessageToGenerator(msg)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-const nodeTag   = 'GN';
-const activeTag = 'GA';
-const connTag   = 'GC';
-
 
 
 async function figLoadLocal(key)

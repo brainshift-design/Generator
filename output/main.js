@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const nodeTag = 'GN';
+const activeTag = 'GA';
+const connTag = 'GC';
 const MAX_OBJECTS = 0x10000;
 const genObjects = new Array(MAX_OBJECTS);
 const OBJ_RECT = 1;
@@ -273,9 +276,6 @@ function figPostMessageToGenerator(msg) {
     });
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-const nodeTag = 'GN';
-const activeTag = 'GA';
-const connTag = 'GC';
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);

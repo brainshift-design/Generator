@@ -3605,6 +3605,12 @@ function writeTextToClipboard(str)
 // }
 
 
+const nodeTag   = 'GN';
+const activeTag = 'GA';
+const connTag   = 'GC';
+
+
+
 const INTER_STEP   = 0,
       INTER_LINEAR = 1,
       INTER_COSINE = 2,
@@ -8574,6 +8580,12 @@ function writeTextToClipboard(str)
 //         });
 //     }
 // }
+
+
+const nodeTag   = 'GN';
+const activeTag = 'GA';
+const connTag   = 'GC';
+
 
 
 // Observer = 2°
@@ -21433,8 +21445,8 @@ extends Action
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
     
-    oldOutputActiveOp; // the active node in the output node's tree
-    oldInputActiveOp;  // the active node in the input node's tree
+    oldOutputActiveOpId; // the active node in the output node's tree
+    oldInputActiveOpId;  // the active node in the input node's tree
 
 
 
@@ -21454,17 +21466,17 @@ extends Action
             + input.op.id + '.in[' + inIndex + ']');
 
 
-        this.outputOpId        = output.op.id;
-        this.outputIndex       = outIndex;
+        this.outputOpId          = output.op.id;
+        this.outputIndex         = outIndex;
    
-        this.oldOutputOpId     = input.isConnected ? input.connectedOutput.op.id : '';
-        this.oldOutputIndex    = oldOutIndex;
+        this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
+        this.oldOutputIndex      = oldOutIndex;
    
-        this.inputOpId         = input.op.id;
-        this.inputIndex        = inIndex;
+        this.inputOpId           = input.op.id;
+        this.inputIndex          = inIndex;
 
-        this.oldOutputActiveOp = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId));
-        this.oldInputActiveOp  = getActiveNodeInTreeFrom(nodeFromId(this. inputOpId));
+        this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
+        this.oldInputActiveOpId  = getActiveNodeInTreeFrom(nodeFromId(this. inputOpId)).id;
     }
 
 
@@ -21476,7 +21488,7 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
             
-        uiMakeNodeActive(this.oldInputActiveOp);
+        uiMakeNodeActive(nodeFromId(this.oldInputActiveOpId));
 
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
@@ -21501,7 +21513,7 @@ extends Action
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
 
-        uiMakeNodeActive(this.oldInputActiveOp);
+        uiMakeNodeActive(nodeFromId(this.oldInputActiveOp));
 
         if (this.oldOutputActiveOp)
             uiMakeNodeActive(this.oldOutputActiveOp);
@@ -21572,21 +21584,33 @@ extends Action
 class DeleteNodesAction
 extends Action
 {
-    prevSelectedIds = [];
-    nodeIds         = [];
-    nodes           = [];
-    nodePos         = [];
-    connections     = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
+    nodeIds          = [];
+    prevSelectedIds  = [];
+    
+    nodes            = [];
+    nodePos          = [];
+
+    connections      = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
+
+    oldActiveNodeIds = [];
 
 
 
-    constructor(nodeIds, prevSelectedIds)
+    constructor(nodeIds)
     {
         super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
-        this.nodes           = graph.nodes.filter(n => nodeIds.includes(n.id));
-        this.prevSelectedIds = [...prevSelectedIds];
+        this.nodes           = nodeIds.map(id => nodeFromId(id));
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
+
+        for (const nodeId of nodeIds)
+        {
+            const activeId = getActiveNodeInTreeFrom(nodeFromId(nodeId)).id;
+
+            if (!this.oldActiveNodeIds.includes(activeId))
+                this.oldActiveNodeIds.push(activeId);
+        }
     }
 
 
@@ -21639,6 +21663,9 @@ extends Action
 
 
         uiDeleteNodes(this.nodeIds, this.id);
+
+        for (const nodeId of this.nodeIds)
+            uiClearPageData(activeTag + ' ' + nodeId)
     }
 
 
@@ -21674,6 +21701,10 @@ extends Action
 
         for (let i = 0; i < this.nodes.length; i++)
             this.nodes[i].id = this.nodeIds[i];
+
+        
+        for (const activeId of this.oldActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(activeId));
 
 
         uiSaveNodesAndConns(this.nodeIds);
@@ -22868,7 +22899,7 @@ document.addEventListener('keydown', e =>
              || e.key == 'Backspace')
     {
         const nodeIds = graphView.selectedNodes.map(n => n.id);
-        actionManager.do(new DeleteNodesAction(nodeIds, nodeIds));
+        actionManager.do(new DeleteNodesAction(nodeIds));
         graphView._selected = [];
     }
 

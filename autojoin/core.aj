@@ -10,3 +10,4 @@
 ../core/base64.js
 ../core/web.js
 ../core/clipboard.js
+../core/tags.js

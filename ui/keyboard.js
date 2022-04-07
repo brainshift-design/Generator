@@ -49,7 +49,7 @@ document.addEventListener('keydown', e =>
              || e.key == 'Backspace')
     {
         const nodeIds = graphView.selectedNodes.map(n => n.id);
-        actionManager.do(new DeleteNodesAction(nodeIds, nodeIds));
+        actionManager.do(new DeleteNodesAction(nodeIds));
         graphView._selected = [];
     }
 
