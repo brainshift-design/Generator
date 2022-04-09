@@ -81,9 +81,9 @@ extends Action
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
 
-        uiMakeNodeActive(nodeFromId(this.oldInputActiveOp));
+        uiMakeNodeActive(nodeFromId(this.oldInputActiveOpId));
 
-        if (this.oldOutputActiveOp)
-            uiMakeNodeActive(this.oldOutputActiveOp);
+        if (this.oldOutputActiveOpId != this.outInputActiveOpId)
+            uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
     }
 }

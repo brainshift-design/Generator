@@ -18,8 +18,8 @@ extends Action
     {
         super(
             'select move ' + newSelectedIds.length 
-          + ' node' + (newSelectedIds.length == 1 ? '' : 's') + ', '
-          + prevSelectedIds.length + ' selected before');
+          + ' node' + (newSelectedIds.length == 1 ? '' : 's'));// + ', '
+          //+ prevSelectedIds.length + ' selected before');
 
 
         this.prevSelectedIds = [...prevSelectedIds];
