@@ -1,13 +1,13 @@
 /*
-    At least one node in a tree must be active. It doesn't have to be a terminal, 
-    but there can be no other active nodes downstream.   
-    
+    At least one node in a tree must be active. It doesn't have to be a terminal,
+    but there can be no other active nodes downstream.
+
     In diamonds exactly one node can be active.
 
 
-    
+
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
-    
+
 √       █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -19,8 +19,8 @@
     Connecting
 
 
-        █████████─ ─ →█████████
-                   ↓        
+√       █████████─ ─ →█████████
+                   ↓
         [̅_̅_̅_̅_̅_̅_̅_]─────█████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -29,7 +29,7 @@
         [̅_̅_̅_̅_̅_̅_̅_]──┘
                    └ →█████████
 
-                  ↓        
+                  ↓
 
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
@@ -37,48 +37,48 @@
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-        [̅_̅_̅_̅_̅_̅_̅_]──┐ 
+        [̅_̅_̅_̅_̅_̅_̅_]──┐
                    └─→█████████
-        █████████─ ┘           
+        █████████─ ┘
 
-                  ↓        
+                  ↓
 
-        [̅_̅_̅_̅_̅_̅_̅_]──┐ 
+        [̅_̅_̅_̅_̅_̅_̅_]──┐
                    ╞══█████████
-        [̅_̅_̅_̅_̅_̅_̅_]──┘           
+        [̅_̅_̅_̅_̅_̅_̅_]──┘
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-        █████████──┐ 
+        █████████──┐
                    └─→[̅_̅_̅_̅_̅_̅_̅_]
-        █████████─ ┘           
+        █████████─ ┘
 
-                  ↓        
+                  ↓
 
-        █████████──┐ 
+        █████████──┐
                    ╞══[̅_̅_̅_̅_̅_̅_̅_]
-        [̅_̅_̅_̅_̅_̅_̅_]──┘           
+        [̅_̅_̅_̅_̅_̅_̅_]──┘
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
                    ┌──█████████─ ┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡              → █████████
                    └──█████████
-  
-                          ↓        
-                   
+
+                          ↓
+
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └──█████████
                    └──█████████
-                   
+
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └─→█████████
                    └──█████████─ ┘
-  
-                          ↓        
-                   
+
+                          ↓
+
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══█████████
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
@@ -88,22 +88,22 @@
                    ┌──█████████──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └─→[̅_̅_̅_̅_̅_̅_̅_]
                    └──█████████─ ┘
-  
-                          ↓        
-                   
+
+                          ↓
+
                    ┌──█████████──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-    
+
 
     Activating
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         █████████─────[̅_̅_̅_̲̅√̅_̅_̅_]
-                   ↓        
+                   ↓
         [̅_̅_̅_̅_̅_̅_̅_]─────█████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -186,13 +186,13 @@
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         [̅_̅_̅_̅_̅_̅_̅_]──╳──█████████
-                   ↓        
+                   ↓
         █████████     █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         █████████──╳──[̅_̅_̅_̅_̅_̅_̅_]
-                   ↓        
+                   ↓
         █████████     █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -217,39 +217,39 @@
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-        [̅_̅_̅_̅_̅_̅_̅_]──┐ 
+        [̅_̅_̅_̅_̅_̅_̅_]──┐
                    ╞══█████████
-        [̅_̅_̅_̅_̅_̅_̅_]──╳           
+        [̅_̅_̅_̅_̅_̅_̅_]──╳
 
-                  ↓        
+                  ↓
 
-        [̅_̅_̅_̅_̅_̅_̅_]──┐ 
+        [̅_̅_̅_̅_̅_̅_̅_]──┐
                    └──█████████
-        █████████              
+        █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-        █████████──┐ 
+        █████████──┐
                    ╞══[̅_̅_̅_̅_̅_̅_̅_]
-        [̅_̅_̅_̅_̅_̅_̅_]──╳           
+        [̅_̅_̅_̅_̅_̅_̅_]──╳
 
-                  ↓        
+                  ↓
 
-        █████████──┐ 
+        █████████──┐
                    └──[̅_̅_̅_̅_̅_̅_̅_]
-        █████████              
+        █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-        [̅_̅_̅_̅_̅_̅_̅_]──┐ 
+        [̅_̅_̅_̅_̅_̅_̅_]──┐
                    ╞══[̅_̅_̅_̅_̅_̅_̅_]
-        █████████──╳           
+        █████████──╳
 
-                  ↓        
+                  ↓
 
-        [̅_̅_̅_̅_̅_̅_̅_]──┐ 
+        [̅_̅_̅_̅_̅_̅_̅_]──┐
                    └──█████████
-        █████████              
+        █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
@@ -260,7 +260,7 @@
 
                          ╲ ╱
         [̅_̅_̅_̅_̅_̅_̅_]─────████╳████
-                   ↓     ╱ ╲  
+                   ↓     ╱ ╲
         █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -280,15 +280,15 @@
 
                          ╲ ╱
         █████████─────[̅_̅_̅_╳̅_̅_̅_]
-                   ↓     ╱ ╲     
+                   ↓     ╱ ╲
         █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
                          ╲ ╱
         [̅_̅_̅_̅_̅_̅_̅_]─────████╳████─────[̅_̅_̅_̅_̅_̅_̅_]
-                         ╱ ╲     
-        █████████         ↓         █████████ 
+                         ╱ ╲
+        █████████         ↓         █████████
 
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -297,23 +297,23 @@
                    ╞══████╳████
         [̅_̅_̅_̅_̅_̅_̅_]──┘     ╱ ╲
 
-                  ↓        
+                  ↓
 
-        █████████    
-                      
-        █████████              
+        █████████
+
+        █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-           ╲ ╱     ┌──[̅_̅_̅_̅_̅_̅_̅_] 
-        ████╳████══╡           
+           ╲ ╱     ┌──[̅_̅_̅_̅_̅_̅_̅_]
+        ████╳████══╡
            ╱ ╲     └──[̅_̅_̅_̅_̅_̅_̅_]
 
-                  ↓        
+                  ↓
 
-                      █████████    
-                                    
-                      █████████              
+                      █████████
+
+                      █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
@@ -321,35 +321,35 @@
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══████╳████
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘     ╱ ╲
 
-                          ↓        
+                          ↓
 
-                   ┌──█████████    
-        [̅_̅_̅_̅_̅_̅_̅_̅]══╡                
-                   └──█████████              
+                   ┌──█████████
+        [̅_̅_̅_̅_̅_̅_̅_̅]══╡
+                   └──█████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
-           ╲ ╱     ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐     
+           ╲ ╱     ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         ████╳████══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
-           ╱ ╲     └──[̅_̅_̅_̅_̅_̅_̅_]──┘     
+           ╱ ╲     └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
-                          ↓        
+                          ↓
 
-                      █████████──┐         
-                                 ╞══[̅_̅_̅_̅_̅_̅_̅_]     
-                      [̅_̅_̅_̅_̅_̅_̅_]──┘                   
+                      █████████──┐
+                                 ╞══[̅_̅_̅_̅_̅_̅_̅_]
+                      [̅_̅_̅_̅_̅_̅_̅_]──┘
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
                          ╲ ╱
-                   ┌──████╳████──┐     
+                   ┌──████╳████──┐
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
-                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘     
+                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
-                          ↓        
+                          ↓
 
-                         
+
         [̅_̅_̅_̅_̅_̅_̅_̅]──┐             ┌──█████████
-                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘      
+                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 */
@@ -363,9 +363,9 @@ graphView.activeNodes = [];
 function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
 {
     let node = createNode(opType, creatingButton, createdId);
-    
+
     graph.addNode(node);
-    
+
     uiSaveNodesAndConns([node.id]);
 
 
@@ -379,7 +379,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
     //         && inputs.length > 0)
     //         uiConnect(selNode.output, inputs[0]);
     // }
-    
+
 
     if (updateUi)
     {
@@ -387,7 +387,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
         graphView.selectedNodes     = [node];
 
         //node.pushUpdate();
-        
+
         //graphView.putNodeOnTop(node);
         //graphView.updateNodeTransform(node);
 
@@ -403,7 +403,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
 function uiDeleteNodes(nodeIds, actionId)
 {
     graph.deleteNodes(nodeIds);
-    
+
     uiRemoveSavedNodesAndConns(nodeIds);
     uiDeleteCanvasObjects(nodeIds);
 }
@@ -416,17 +416,17 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 //     graphView.selectedNodes = nodes;
-    
+
 //     graphView.putNodeOnTop(lastOf(nodes));
 
 //     for (let i = 0; i < nodes.length; i++)
 //     {
 //         setNodePosition(
-//             nodes[i], 
-//             nodePos[i].x, 
+//             nodes[i],
+//             nodePos[i].x,
 //             nodePos[i].y);
 //     }
-        
+
 
 //     // uiPostMessageToGenerator({
 //     //     msg:       'genUndeleteNodes',
@@ -438,7 +438,7 @@ function uiDeleteNodes(nodeIds, actionId)
 
 function uiDeleteCanvasObjects(nodeIds)
 {
-    uiPostMessageToFigma({ 
+    uiPostMessageToFigma({
         cmd:    'figDeleteCanvasObjects',
         nodeIds: nodeIds
     });
@@ -458,7 +458,7 @@ function uiSetNodeId(nodeId, newId)
 function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
 {
     //console.log('uiVariableConnect()');
-    
+
     if (inputOp._variableInputs)
     {
         const input = lastOf(inputOp.inputs);
@@ -484,7 +484,7 @@ function uiConnect(output, input, inputIndex = -1)
 
     uiSaveConnection(
         output.op.id,
-        output.op.outputs.indexOf(output), 
+        output.op.outputs.indexOf(output),
         input.op.id,
         input.op.inputs.indexOf(input),
         conn.toJson());
@@ -498,7 +498,7 @@ function uiDisconnect(input)
 {
     uiRemoveSavedConnection(
         input.connectedOutput.op.id,
-        input.connectedOutput.op.outputs.indexOf(input.connectedOutput), 
+        input.connectedOutput.op.outputs.indexOf(input.connectedOutput),
         input.op.id,
         input.op.inputs.indexOf(input));
 
@@ -508,7 +508,7 @@ function uiDisconnect(input)
     //     msg: 'genDisconnect',
     //     input:
     //     {
-    //         nodeId: input.op.id, 
+    //         nodeId: input.op.id,
     //         index:  input.op.inputs.indexOf(input)
     //     }
     // });
@@ -519,25 +519,25 @@ function uiDisconnect(input)
 function uiMakeNodeActive(node)
 {
     uiMakeNodeLeftPassive (node);
-    uiMakeNodeRightPassive(node);        
+    uiMakeNodeRightPassive(node);
 
     node._active = true;
-    
+
     if (!graphView.activeNodes.includes(node))
         graphView.activeNodes.push(node);
 
-    uiPostMessageToFigma({ 
-        cmd:   'figSaveActiveNode', 
+    uiPostMessageToFigma({
+        cmd:   'figSaveActiveNode',
         nodeId: node.id
     });
-        
+
     // if (node.dataType == 'object')
     //     uiGenerateObjects([node.id]);
-    
+
     node.updateNode();
     node.pushUpdate();
 }
-    
+
 
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
@@ -548,22 +548,22 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
         {
             //console.log(input.connectedOutput);
             uiMakeNodePassive(input.connectedOutput.op);
-            uiMakeNodeLeftPassive(input.connectedOutput.op, node);            
+            uiMakeNodeLeftPassive(input.connectedOutput.op, node);
         }
     }
 
-    for (const output of node.outputs)
-    {
-        for (const input of output.connectedInputs)
-        {
-            if (input.op != fromNode)
-            {
-                //console.log(input.connectedOutput);
-                uiMakeNodePassive(input.op);
-                uiMakeNodeRightPassive(input.op, node);
-            }
-        }
-    }
+    // for (const output of node.outputs)
+    // {
+    //     for (const input of output.connectedInputs)
+    //     {
+    //         if (input.op != fromNode)
+    //         {
+    //             //console.log(input.connectedOutput);
+    //             uiMakeNodePassive(input.op);
+    //             uiMakeNodeRightPassive(input.op, node);
+    //         }
+    //     }
+    // }
 }
 
 
@@ -586,7 +586,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
         {
             //console.log(input.connectedOutput);
             uiMakeNodePassive(input.connectedOutput.op);
-            uiMakeNodeLeftPassive(input.connectedOutput.op, node);            
+            uiMakeNodeLeftPassive(input.connectedOutput.op, node);
         }
     }
 }
@@ -603,7 +603,7 @@ function uiMakeNodePassive(node)
         removeFromArray(graphView.activeNodes, node);
 
         uiPostMessageToFigma({
-            cmd:   'figRemoveSavedActiveNode', 
+            cmd:   'figRemoveSavedActiveNode',
             nodeId: node.id
         });
     }
@@ -652,8 +652,8 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
 function uiShowParamValue(nodeId, paramName, value)
 {
     const node = nodeFromId(nodeId);
-            
-    if (!!node) // this is for deleted nodes which still exist 
+
+    if (!!node) // this is for deleted nodes which still exist
     {           // in genGraph but no longer in graph
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
@@ -693,7 +693,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
         data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
     }
 
-    
+
     const nodes = loadNodes(data);
 
     // get the new names of the nodes after they've been added
@@ -702,15 +702,15 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
         graph.addNode(nodes[i], false);
         data.nodes[i].newId = nodes[i].id;
     }
-    
+
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
         loadConnections(data, pasteOutsideConnections);
     }
-    
+
     graphView.selectedNodes = nodes;
-    
+
 
     graphView.loadingNodes = false;
     return nodes;
@@ -752,7 +752,7 @@ function uiUpdateNodes(nodeIds)
 
         return;
     }
-    
+
 
     graph.mutex = true;
 
@@ -774,7 +774,7 @@ function uiUpdateGraph()
     {
         let deferNodes = Array.from(graph.deferNodeIds).filter(
             (value, index, self) => self.indexOf(value) === index);
-            
+
         graph.deferNodeIds = [];
 
         uiUpdateNodes(deferNodes);
@@ -786,11 +786,11 @@ function uiUpdateGraph()
 function uiUpdateCanvasObjects(objects)
 {
     //uiUpdateGraph();
-    
-    uiPostMessageToFigma({ 
+
+    uiPostMessageToFigma({
         cmd:    'figUpdateCanvasObjects',
         objects: objects
-    });    
+    });
 }
 
 
@@ -847,9 +847,9 @@ function uiSaveConnection(outputOpId, outputIndex, inputOpId, inputIndex, connJs
 {
     uiPostMessageToFigma({
         cmd: 'figSaveConnection',
-        name: outputOpId  + ' ' 
-            + outputIndex + ' ' 
-            + inputOpId   + ' ' 
+        name: outputOpId  + ' '
+            + outputIndex + ' '
+            + inputOpId   + ' '
             + inputIndex,
         json: connJson
     });
@@ -861,9 +861,9 @@ function uiRemoveSavedConnection(outputOpId, outputIndex, inputOpId, inputIndex)
 {
     uiPostMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: outputOpId  + ' ' 
-            + outputIndex + ' ' 
-            + inputOpId   + ' ' 
+        name: outputOpId  + ' '
+            + outputIndex + ' '
+            + inputOpId   + ' '
             + inputIndex
     });
 }
