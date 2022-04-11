@@ -21445,8 +21445,8 @@ extends Action
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
     
-    oldOutputActiveOpId; // the active node in the output node's tree
-    oldInputActiveOpId;  // the active node in the input node's tree
+    oldOutputActiveOpId;      // the active node in the output node's tree
+    oldInputActiveOpIds = []; // the active nodes in the input node's tree
 
 
 
@@ -21476,7 +21476,7 @@ extends Action
         this.inputIndex          = inIndex;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
-        this.oldInputActiveOpId  = getActiveNodeInTreeFrom(nodeFromId(this. inputOpId)).id;
+        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this. inputOpId)).map(n => n.id)];
     }
 
 
@@ -21488,11 +21488,11 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
             
-        uiMakeNodeActive(nodeFromId(this.oldInputActiveOpId));
+        for (const id of this.oldInputActiveOpIds)
+            uiMakeNodeActive(nodeFromId(id));
 
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
-
     }
 
 
@@ -21513,9 +21513,10 @@ extends Action
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
 
-        uiMakeNodeActive(nodeFromId(this.oldInputActiveOpId));
+        for (const id of this.oldInputActiveIds)
+            uiMakeNodeActive(nodeFromId(id));
 
-        if (this.oldOutputActiveOpId != this.outInputActiveOpId)
+        if (!this.oldInputActiveIds.includes(this.oldOutputActiveOpId))
             uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
     }
 }
@@ -21606,10 +21607,13 @@ extends Action
 
         for (const nodeId of nodeIds)
         {
-            const activeId = getActiveNodeInTreeFrom(nodeFromId(nodeId)).id;
+            const activeIds = getActiveNodesInTreeFrom(nodeFromId(nodeId)).map(n => n.id);
 
-            if (!this.oldActiveNodeIds.includes(activeId))
-                this.oldActiveNodeIds.push(activeId);
+            for (const activeId of activeIds)
+            {
+                if (!this.oldActiveNodeIds.includes(activeId))
+                    this.oldActiveNodeIds.push(activeId);
+            }
         }
     }
 
@@ -21912,20 +21916,19 @@ class MakeNodeActiveAction
 extends Action
 {
     activeId;
-    oldActiveId;
+
+    oldActiveIds = [];
 
 
 
     constructor(activeId)
     {
-        const oldActiveId = getActiveNodeInTreeFrom(nodeFromId(activeId)).id;
-
         super(
              'make ' + activeId + ' active');//, '
             //+ oldActiveId + ' active before');
 
-        this.activeId    = activeId;
-        this.oldActiveId = oldActiveId;
+        this.activeId     = activeId;
+        this.oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)];
     }
 
 
@@ -21939,7 +21942,11 @@ extends Action
 
     undo()
     {
-        uiMakeNodeActive(nodeFromId(this.oldActiveId));
+        for (const id of this.oldActiveIds)
+        {
+            console.log(id);
+            uiMakeNodeActive(nodeFromId(id));
+        }
     }
 }
 
@@ -22373,8 +22380,8 @@ extends Action
     {
         super(
               'select ' + selectedIds.length 
-            + ' node' + (selectedIds.length == 1 ? '' : 's') + ', '
-            + prevSelectedIds.length + ' selected before');
+            + ' node' + (selectedIds.length == 1 ? '' : 's'));// + ', '
+            //+ prevSelectedIds.length + ' selected before');
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];
@@ -23779,7 +23786,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
                    └─→[̅_̅_̅_̅_̅_̅_̅_]
         █████████─ ┘
 
-                  ↓
+√                 ↓
 
         █████████──┐
                    ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -23791,7 +23798,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         [̅_̅_̅_̅_̅_̅_̅_]══╡              → █████████
                    └──█████████
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └──█████████
@@ -23803,7 +23810,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └─→█████████
                    └──█████████─ ┘
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══█████████
@@ -23815,7 +23822,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └─→[̅_̅_̅_̅_̅_̅_̅_]
                    └──█████████─ ┘
 
-                          ↓
+√                         ↓
 
                    ┌──█████████──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -23829,13 +23836,13 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         █████████─────[̅_̅_̅_̲̅√̅_̅_̅_]
-                   ↓
+√                  ↓
         [̅_̅_̅_̅_̅_̅_̅_]─────█████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         [̅_̅_̅_̲̅√̅_̅_̅_]─────█████████
-                   ↓
+√                  ↓
         █████████─────[̅_̅_̅_̅_̅_̅_̅_]
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -23843,7 +23850,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
                    ┌──[̅_̅_̅_̲̅√̅_̅_̅_]
         █████████══╡
                    └──[̅_̅_̅_̅_̅_̅_̅_]
-                  ↓
+√                 ↓
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
                    └──[̅_̅_̅_̅_̅_̅_̅_]
@@ -23863,7 +23870,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
                    ┌──█████████
         [̅_̅_̅_̲̅√̅_̅_̅_]══╡
                    └──█████████
-                  ↓
+√                 ↓
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]
         █████████══╡
                    └──[̅_̅_̅_̅_̅_̅_̅_]
@@ -24371,6 +24378,54 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
 
 
     return null;
+}
+
+
+
+function getActiveNodesInTreeFrom(node, alreadyChecked = [])
+{
+    const activeNodes = [];
+
+
+    if (node.active) 
+        activeNodes.push(node);
+
+
+    for (const input of node.inputs)
+    {
+        if (    input.isConnected
+            && !alreadyChecked.includes(input.connectedOutput.op))
+        {
+            const leftActive = getActiveNodesInTreeFrom(input.connectedOutput.op, [...alreadyChecked, node]);
+            
+            // if (leftActive.length > 0) 
+            // {
+                activeNodes.push(...leftActive);
+            //    break;
+            // }
+        }
+    }
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.op))
+            {
+                const rightActive = getActiveNodesInTreeFrom(input.op, [...alreadyChecked, node]);
+                
+                // if (rightActive.length > 0) 
+                // {
+                    activeNodes.push(...rightActive);
+                //    break;
+                // }
+            }
+        }
+    }
+
+
+    return activeNodes;
 }
 
 

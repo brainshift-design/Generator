@@ -2,20 +2,19 @@ class MakeNodeActiveAction
 extends Action
 {
     activeId;
-    oldActiveId;
+
+    oldActiveIds = [];
 
 
 
     constructor(activeId)
     {
-        const oldActiveId = getActiveNodeInTreeFrom(nodeFromId(activeId)).id;
-
         super(
              'make ' + activeId + ' active');//, '
             //+ oldActiveId + ' active before');
 
-        this.activeId    = activeId;
-        this.oldActiveId = oldActiveId;
+        this.activeId     = activeId;
+        this.oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)];
     }
 
 
@@ -29,6 +28,10 @@ extends Action
 
     undo()
     {
-        uiMakeNodeActive(nodeFromId(this.oldActiveId));
+        for (const id of this.oldActiveIds)
+        {
+            console.log(id);
+            uiMakeNodeActive(nodeFromId(id));
+        }
     }
 }

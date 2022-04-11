@@ -10,8 +10,8 @@ extends Action
     {
         super(
               'select ' + selectedIds.length 
-            + ' node' + (selectedIds.length == 1 ? '' : 's') + ', '
-            + prevSelectedIds.length + ' selected before');
+            + ' node' + (selectedIds.length == 1 ? '' : 's'));// + ', '
+            //+ prevSelectedIds.length + ' selected before');
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];

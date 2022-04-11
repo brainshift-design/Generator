@@ -13,8 +13,8 @@ extends Action
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
     
-    oldOutputActiveOpId; // the active node in the output node's tree
-    oldInputActiveOpId;  // the active node in the input node's tree
+    oldOutputActiveOpId;      // the active node in the output node's tree
+    oldInputActiveOpIds = []; // the active nodes in the input node's tree
 
 
 
@@ -44,7 +44,7 @@ extends Action
         this.inputIndex          = inIndex;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
-        this.oldInputActiveOpId  = getActiveNodeInTreeFrom(nodeFromId(this. inputOpId)).id;
+        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this. inputOpId)).map(n => n.id)];
     }
 
 
@@ -56,11 +56,11 @@ extends Action
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
             
-        uiMakeNodeActive(nodeFromId(this.oldInputActiveOpId));
+        for (const id of this.oldInputActiveOpIds)
+            uiMakeNodeActive(nodeFromId(id));
 
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
-
     }
 
 
@@ -81,9 +81,10 @@ extends Action
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
 
-        uiMakeNodeActive(nodeFromId(this.oldInputActiveOpId));
+        for (const id of this.oldInputActiveIds)
+            uiMakeNodeActive(nodeFromId(id));
 
-        if (this.oldOutputActiveOpId != this.outInputActiveOpId)
+        if (!this.oldInputActiveIds.includes(this.oldOutputActiveOpId))
             uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
     }
 }

@@ -23,10 +23,13 @@ extends Action
 
         for (const nodeId of nodeIds)
         {
-            const activeId = getActiveNodeInTreeFrom(nodeFromId(nodeId)).id;
+            const activeIds = getActiveNodesInTreeFrom(nodeFromId(nodeId)).map(n => n.id);
 
-            if (!this.oldActiveNodeIds.includes(activeId))
-                this.oldActiveNodeIds.push(activeId);
+            for (const activeId of activeIds)
+            {
+                if (!this.oldActiveNodeIds.includes(activeId))
+                    this.oldActiveNodeIds.push(activeId);
+            }
         }
     }
 

@@ -53,7 +53,7 @@
                    └─→[̅_̅_̅_̅_̅_̅_̅_]
         █████████─ ┘
 
-                  ↓
+√                 ↓
 
         █████████──┐
                    ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -65,7 +65,7 @@
         [̅_̅_̅_̅_̅_̅_̅_]══╡              → █████████
                    └──█████████
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └──█████████
@@ -77,7 +77,7 @@
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └─→█████████
                    └──█████████─ ┘
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══█████████
@@ -89,7 +89,7 @@
         [̅_̅_̅_̅_̅_̅_̅_]══╡             └─→[̅_̅_̅_̅_̅_̅_̅_]
                    └──█████████─ ┘
 
-                          ↓
+√                         ↓
 
                    ┌──█████████──┐
         [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -103,13 +103,13 @@
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         █████████─────[̅_̅_̅_̲̅√̅_̅_̅_]
-                   ↓
+√                  ↓
         [̅_̅_̅_̅_̅_̅_̅_]─────█████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         [̅_̅_̅_̲̅√̅_̅_̅_]─────█████████
-                   ↓
+√                  ↓
         █████████─────[̅_̅_̅_̅_̅_̅_̅_]
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -117,7 +117,7 @@
                    ┌──[̅_̅_̅_̲̅√̅_̅_̅_]
         █████████══╡
                    └──[̅_̅_̅_̅_̅_̅_̅_]
-                  ↓
+√                 ↓
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
                    └──[̅_̅_̅_̅_̅_̅_̅_]
@@ -137,7 +137,7 @@
                    ┌──█████████
         [̅_̅_̅_̲̅√̅_̅_̅_]══╡
                    └──█████████
-                  ↓
+√                 ↓
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]
         █████████══╡
                    └──[̅_̅_̅_̅_̅_̅_̅_]
@@ -645,6 +645,54 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
 
 
     return null;
+}
+
+
+
+function getActiveNodesInTreeFrom(node, alreadyChecked = [])
+{
+    const activeNodes = [];
+
+
+    if (node.active) 
+        activeNodes.push(node);
+
+
+    for (const input of node.inputs)
+    {
+        if (    input.isConnected
+            && !alreadyChecked.includes(input.connectedOutput.op))
+        {
+            const leftActive = getActiveNodesInTreeFrom(input.connectedOutput.op, [...alreadyChecked, node]);
+            
+            // if (leftActive.length > 0) 
+            // {
+                activeNodes.push(...leftActive);
+            //    break;
+            // }
+        }
+    }
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.op))
+            {
+                const rightActive = getActiveNodesInTreeFrom(input.op, [...alreadyChecked, node]);
+                
+                // if (rightActive.length > 0) 
+                // {
+                    activeNodes.push(...rightActive);
+                //    break;
+                // }
+            }
+        }
+    }
+
+
+    return activeNodes;
 }
 
 
