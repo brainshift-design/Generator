@@ -9,7 +9,8 @@ extends Action
 
     connections      = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
 
-    oldActiveNodeIds = [];
+    newActiveOpIds   = [];
+    oldActiveOpIds   = [];
 
 
 
@@ -27,8 +28,8 @@ extends Action
 
             for (const activeId of activeIds)
             {
-                if (!this.oldActiveNodeIds.includes(activeId))
-                    this.oldActiveNodeIds.push(activeId);
+                if (!this.oldActiveOpIds.includes(activeId))
+                    this.oldActiveOpIds.push(activeId);
             }
         }
     }
@@ -73,14 +74,24 @@ extends Action
         {
             const node = nodeFromId(nodeId);
 
-            for (const input of node.inputs.filter(i => i.isConnected))
-                uiDisconnect(input);
+
+            const nodeInputs = [...node.inputs.filter(i => i.isConnected)];
+
+            for (const input of nodeInputs)
+                this.disconnect(input);
+
 
             for (const output of node.outputs)
-                for (const input of output.connectedInputs)
-                    uiDisconnect(input);
+            {
+                const connectedInputs = [...output.connectedInputs];
+
+                for (const input of connectedInputs)
+                    this.disconnect(input);
+            }
         }
 
+
+        console.log(this.newActiveOpIds);
 
         uiDeleteNodes(this.nodeIds, this.id);
 
@@ -99,6 +110,18 @@ extends Action
         this.connections = [];
 
         graphView.selectByIds(this.prevSelectedIds);
+
+        for (const id of this.newActiveOpIds)
+            uiMakeNodePassive(nodeFromId(id));
+        
+        this.newActiveOpIds = [];
+
+        
+        let oldActiveOpIds = [...this.oldActiveOpIds];
+        oldActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+
+        for (const id of oldActiveOpIds)
+            uiMakeNodeActive(nodeFromId(id));
     }
 
 
@@ -123,7 +146,7 @@ extends Action
             this.nodes[i].id = this.nodeIds[i];
 
         
-        for (const activeId of this.oldActiveNodeIds)
+        for (const activeId of this.oldActiveOpIds)
             uiMakeNodeActive(nodeFromId(activeId));
 
 
@@ -171,6 +194,39 @@ extends Action
             const inputOp  = nodeFromId(conn. inputOpId);
 
             uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
+        }
+    }
+
+
+
+    disconnect(input)
+    {
+        const output = input.connectedOutput;
+        
+        uiDisconnect(input);
+
+
+        if (!getActiveNodeInTreeFrom(input.op))
+        {
+            uiMakeNodeActive(input.op);
+
+            if (!this.newActiveOpIds.includes(input.op.id))
+                this.newActiveOpIds.push(input.op.id);
+
+            input.op.pushUpdate();
+            //graphView.updateNodeTransform(input.op);
+        }
+
+
+        if (!getActiveNodeInBranchFrom(output.op))
+        {
+            uiMakeNodeActive(output.op);
+
+            if (!this.newActiveOpIds.includes(output.op.id))
+                this.newActiveOpIds.push(output.op.id);
+
+            output.op.pushUpdate();
+            //graphView.updateNodeTransform(output.op);
         }
     }
 }

@@ -9,7 +9,7 @@ extends Action
     inputIndex;
     get inputOp() { return nodeFromId(this.inputOpId); }
 
-    newActiveOpIds    = [];
+    newActiveOpIds = [];
     oldActiveOpIds = [];
 
 

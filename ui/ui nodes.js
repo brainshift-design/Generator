@@ -266,34 +266,34 @@
 
                          ╲ ╱
         [̅_̅_̅_̅_̅_̅_̅_]─────████╳████
-                   ↓     ╱ ╲
+√                  ↓     ╱ ╲
         █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
            ╲ ╱
         [̅_̅_̅_╳̅_̅_̅_]─────█████████
-           ╱ ╲     ↓
+√          ╱ ╲     ↓
                       █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
            ╲ ╱
         ████╳████─────[̅_̅_̅_̅_̅_̅_̅_]
-           ╱ ╲     ↓
+√          ╱ ╲     ↓
                       █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
                          ╲ ╱
         █████████─────[̅_̅_̅_╳̅_̅_̅_]
-                   ↓     ╱ ╲
+√                  ↓     ╱ ╲
         █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
                          ╲ ╱
         [̅_̅_̅_̅_̅_̅_̅_]─────████╳████─────[̅_̅_̅_̅_̅_̅_̅_]
-                         ╱ ╲
+√                        ╱ ╲
         █████████         ↓         █████████
 
 
@@ -303,7 +303,7 @@
                    ╞══████╳████
         [̅_̅_̅_̅_̅_̅_̅_]──┘     ╱ ╲
 
-                  ↓
+√                 ↓
 
         █████████
 
@@ -315,7 +315,7 @@
         ████╳████══╡
            ╱ ╲     └──[̅_̅_̅_̅_̅_̅_̅_]
 
-                  ↓
+√                 ↓
 
                       █████████
 
@@ -327,7 +327,7 @@
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══████╳████
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘     ╱ ╲
 
-                          ↓
+√                         ↓
 
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡
@@ -341,7 +341,7 @@
                    │
                    └──[̅_̅_̅_̅_̅_̅_̅_]
 
-                          ↓
+√                         ↓
 
                       █████████──┐
                                  ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -651,6 +651,34 @@ function uiMakeNodeRightPassive(node, fromNode = null)
             uiMakeNodeLeftPassive(input.connectedOutput.op, node);
         }
     }
+}
+
+
+
+function getActiveNodeInBranchFrom(node)
+{
+    if (node.active) return node;
+
+
+    const nodeInputs = [...node.inputs.filter(i => i.isConnected)];
+
+    if (nodeInputs.length == 1)
+    {
+        const leftActive = getActiveNodeInBranchFrom(nodeInputs[0].connectedOutput.op);
+        if (leftActive) return leftActive;
+    }
+
+
+    const nodeOutputs = [...node.outputs.filter(o => o.connectedInputs.length == 1)];
+
+    if (nodeOutputs.length == 1)
+    {
+        const rightActive = getActiveNodeInBranchFrom(nodeOutputs[0].connectedInputs[0]);
+        if (rightActive) return rightActive;
+    }
+
+
+    return null;
 }
 
 
