@@ -44,7 +44,7 @@ extends Action
         this.inputIndex          = inIndex;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
-        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this. inputOpId)).map(n => n.id)];
+        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
     }
 
 
@@ -55,8 +55,12 @@ extends Action
             this.outputOp.outputs[this.outputIndex], 
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
-            
-        for (const id of this.oldInputActiveOpIds)
+
+        // uiMakeNodesActive(this.oldInputActiveOpIds.map(id => nodeFromId(id)));
+        let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
+        oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+
+        for (const id of oldInputActiveOpIds)
             uiMakeNodeActive(nodeFromId(id));
 
         graphView.updateNodeTransform(this.inputOp);
@@ -81,10 +85,10 @@ extends Action
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
 
-        for (const id of this.oldInputActiveIds)
+        for (const id of this.oldInputActiveOpIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        if (!this.oldInputActiveIds.includes(this.oldOutputActiveOpId))
+        if (!this.oldInputActiveOpIds.includes(this.oldOutputActiveOpId))
             uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
     }
 }

@@ -9,12 +9,14 @@ extends Action
 
     constructor(activeId)
     {
+        const oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)]; 
+
         super(
-             'make ' + activeId + ' active');//, '
-            //+ oldActiveId + ' active before');
+             'make ' + activeId + ' active, '
+            + oldActiveIds.length + ' active before');
 
         this.activeId     = activeId;
-        this.oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)];
+        this.oldActiveIds = [...oldActiveIds];
     }
 
 
@@ -28,10 +30,10 @@ extends Action
 
     undo()
     {
+        if (!this.oldActiveIds.includes(this.activeId));
+            uiMakeNodePassive(nodeFromId(this.activeId));
+
         for (const id of this.oldActiveIds)
-        {
-            console.log(id);
             uiMakeNodeActive(nodeFromId(id));
-        }
     }
 }

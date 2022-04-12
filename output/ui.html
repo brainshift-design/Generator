@@ -21476,7 +21476,7 @@ extends Action
         this.inputIndex          = inIndex;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
-        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this. inputOpId)).map(n => n.id)];
+        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
     }
 
 
@@ -21487,8 +21487,12 @@ extends Action
             this.outputOp.outputs[this.outputIndex], 
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
-            
-        for (const id of this.oldInputActiveOpIds)
+
+        // uiMakeNodesActive(this.oldInputActiveOpIds.map(id => nodeFromId(id)));
+        let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
+        oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+
+        for (const id of oldInputActiveOpIds)
             uiMakeNodeActive(nodeFromId(id));
 
         graphView.updateNodeTransform(this.inputOp);
@@ -21513,10 +21517,10 @@ extends Action
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
 
-        for (const id of this.oldInputActiveIds)
+        for (const id of this.oldInputActiveOpIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        if (!this.oldInputActiveIds.includes(this.oldOutputActiveOpId))
+        if (!this.oldInputActiveOpIds.includes(this.oldOutputActiveOpId))
             uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
     }
 }
@@ -21923,12 +21927,14 @@ extends Action
 
     constructor(activeId)
     {
+        const oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)]; 
+
         super(
-             'make ' + activeId + ' active');//, '
-            //+ oldActiveId + ' active before');
+             'make ' + activeId + ' active, '
+            + oldActiveIds.length + ' active before');
 
         this.activeId     = activeId;
-        this.oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)];
+        this.oldActiveIds = [...oldActiveIds];
     }
 
 
@@ -21942,11 +21948,11 @@ extends Action
 
     undo()
     {
+        if (!this.oldActiveIds.includes(this.activeId));
+            uiMakeNodePassive(nodeFromId(this.activeId));
+
         for (const id of this.oldActiveIds)
-        {
-            console.log(id);
             uiMakeNodeActive(nodeFromId(id));
-        }
     }
 }
 
@@ -23860,7 +23866,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
                    └──[̅_̅_̅_̲̅√̅_̅_̅_]
-                  ↓
+√                 ↓
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
                    └──█████████
@@ -23881,7 +23887,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         █████████══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
-                          ↓
+√                         ↓
 
                    ┌──█████████──┐
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -23893,7 +23899,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̲̅√̅_̅_̅_]──┘
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -23905,7 +23911,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̲̅√̅_̅_̅_]
                    └──█████████──┘
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══█████████
@@ -24273,6 +24279,59 @@ function uiMakeNodeActive(node)
 
 
 
+// function uiMakeNodesActive(nodes)
+// {
+//     for (const node of nodes)
+//     {
+//         uiMakeNodePassive(node);
+//         uiMakeNodeLeftPassive (node);
+//         uiMakeNodeRightPassive(node);
+//     }
+    
+//     for (const node of nodes)
+//     {
+//         node._active = true;
+
+//         if (!graphView.activeNodes.includes(node))
+//             graphView.activeNodes.push(node);
+
+//         uiPostMessageToFigma({
+//             cmd:   'figSaveActiveNode',
+//             nodeId: node.id
+//         });
+    
+//         // if (node.dataType == 'object')
+//         //     uiGenerateObjects([node.id]);
+
+//         node.updateNode();
+//         node.pushUpdate();
+//     }
+// }
+
+
+
+function uiMakeNodePassive(node)
+{
+    //if (node.active)
+    //    uiDeleteCanvasObjects([node.id]);
+
+    if (node.active)
+    {
+        removeFromArray(graphView.activeNodes, node);
+
+        uiPostMessageToFigma({
+            cmd:   'figRemoveSavedActiveNode',
+            nodeId: node.id
+        });
+    }
+
+    node._active = false;
+
+    node.updateNode();
+}
+
+
+
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
     for (const input of node.inputs)
@@ -24322,28 +24381,6 @@ function uiMakeNodeRightPassive(node, fromNode = null)
             uiMakeNodeLeftPassive(input.connectedOutput.op, node);
         }
     }
-}
-
-
-
-function uiMakeNodePassive(node)
-{
-    //if (node.active)
-    //    uiDeleteCanvasObjects([node.id]);
-
-    if (node.active)
-    {
-        removeFromArray(graphView.activeNodes, node);
-
-        uiPostMessageToFigma({
-            cmd:   'figRemoveSavedActiveNode',
-            nodeId: node.id
-        });
-    }
-
-    node._active = false;
-
-    node.updateNode();
 }
 
 

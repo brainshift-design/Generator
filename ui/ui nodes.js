@@ -127,7 +127,7 @@
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
                    └──[̅_̅_̅_̲̅√̅_̅_̅_]
-                  ↓
+√                 ↓
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
                    └──█████████
@@ -148,7 +148,7 @@
         █████████══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
-                          ↓
+√                         ↓
 
                    ┌──█████████──┐
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -160,7 +160,7 @@
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̲̅√̅_̅_̅_]──┘
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̅_̅_̅_̅_]
@@ -172,7 +172,7 @@
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══[̅_̅_̅_̲̅√̅_̅_̅_]
                    └──█████████──┘
 
-                          ↓
+√                         ↓
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐
         [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══█████████
@@ -540,6 +540,59 @@ function uiMakeNodeActive(node)
 
 
 
+// function uiMakeNodesActive(nodes)
+// {
+//     for (const node of nodes)
+//     {
+//         uiMakeNodePassive(node);
+//         uiMakeNodeLeftPassive (node);
+//         uiMakeNodeRightPassive(node);
+//     }
+    
+//     for (const node of nodes)
+//     {
+//         node._active = true;
+
+//         if (!graphView.activeNodes.includes(node))
+//             graphView.activeNodes.push(node);
+
+//         uiPostMessageToFigma({
+//             cmd:   'figSaveActiveNode',
+//             nodeId: node.id
+//         });
+    
+//         // if (node.dataType == 'object')
+//         //     uiGenerateObjects([node.id]);
+
+//         node.updateNode();
+//         node.pushUpdate();
+//     }
+// }
+
+
+
+function uiMakeNodePassive(node)
+{
+    //if (node.active)
+    //    uiDeleteCanvasObjects([node.id]);
+
+    if (node.active)
+    {
+        removeFromArray(graphView.activeNodes, node);
+
+        uiPostMessageToFigma({
+            cmd:   'figRemoveSavedActiveNode',
+            nodeId: node.id
+        });
+    }
+
+    node._active = false;
+
+    node.updateNode();
+}
+
+
+
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
     for (const input of node.inputs)
@@ -589,28 +642,6 @@ function uiMakeNodeRightPassive(node, fromNode = null)
             uiMakeNodeLeftPassive(input.connectedOutput.op, node);
         }
     }
-}
-
-
-
-function uiMakeNodePassive(node)
-{
-    //if (node.active)
-    //    uiDeleteCanvasObjects([node.id]);
-
-    if (node.active)
-    {
-        removeFromArray(graphView.activeNodes, node);
-
-        uiPostMessageToFigma({
-            cmd:   'figRemoveSavedActiveNode',
-            nodeId: node.id
-        });
-    }
-
-    node._active = false;
-
-    node.updateNode();
 }
 
 
