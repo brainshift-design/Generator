@@ -7,7 +7,7 @@ var figMessages = [];
 //uiClearLocalData('productKey');
 
 //uiClearPageData('GA rect');
-uiRemoveAllSavedNodesAndConns();
+//uiRemoveAllSavedNodesAndConns();
 uiLogAllSavedNodesAndConns();
 
 

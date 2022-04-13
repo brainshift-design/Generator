@@ -324,13 +324,13 @@
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
                    ┌──[̅_̅_̅_̅_̅_̅_̅_]──┐     ╲ ╱
-        [̅_̅_̅_̅_̅_̅_̅_̅]══╡             ╞══████╳████
+        [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══████╳████
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘     ╱ ╲
 
 √                         ↓
 
                    ┌──█████████
-        [̅_̅_̅_̅_̅_̅_̅_̅]══╡
+        [̅_̅_̅_̅_̅_̅_̅_]══╡
                    └──█████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -352,12 +352,12 @@
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
                          ╲ ╱
                    ┌──████╳████──┐
-        [̅_̅_̅_̅_̅_̅_̅_̅]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
+        [̅_̅_̅_̅_̅_̅_̅_]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
-                          ↓
+√                         ↓
 
-        [̅_̅_̅_̅_̅_̅_̅_̅]──┐             ┌──█████████
+        █████████──┐             ┌──[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -655,25 +655,33 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 
 
 
-function getActiveNodeInBranchFrom(node)
+function getActiveNodeInBranchFrom(node, alreadyChecked = [])
 {
     if (node.active) return node;
 
 
     const nodeInputs = [...node.inputs.filter(i => i.isConnected)];
 
-    if (nodeInputs.length == 1)
+    if (    nodeInputs.length == 1
+        && !alreadyChecked.includes(nodeInputs[0].connectedOutput.op))
     {
-        const leftActive = getActiveNodeInBranchFrom(nodeInputs[0].connectedOutput.op);
+        const leftActive = getActiveNodeInBranchFrom(
+            nodeInputs[0].connectedOutput.op, 
+            [...alreadyChecked, node]);
+
         if (leftActive) return leftActive;
     }
 
 
     const nodeOutputs = [...node.outputs.filter(o => o.connectedInputs.length == 1)];
 
-    if (nodeOutputs.length == 1)
+    if (    nodeOutputs.length == 1
+        && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].op))
     {
-        const rightActive = getActiveNodeInBranchFrom(nodeOutputs[0].connectedInputs[0]);
+        const rightActive = getActiveNodeInBranchFrom(
+            nodeOutputs[0].connectedInputs[0].op, 
+            [...alreadyChecked, node]);
+
         if (rightActive) return rightActive;
     }
 
@@ -693,7 +701,10 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
         if (    input.isConnected
             && !alreadyChecked.includes(input.connectedOutput.op))
         {
-            const leftActive = getActiveNodeInTreeFrom(input.connectedOutput.op, [...alreadyChecked, node]);
+            const leftActive = getActiveNodeInTreeFrom(
+                input.connectedOutput.op, 
+                [...alreadyChecked, node]);
+
             if (leftActive) return leftActive;
         }
     }
@@ -705,7 +716,10 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.op))
             {
-                const rightActive = getActiveNodeInTreeFrom(input.op, [...alreadyChecked, node]);
+                const rightActive = getActiveNodeInTreeFrom(
+                    input.op, 
+                    [...alreadyChecked, node]);
+
                 if (rightActive) return rightActive;
             }
         }
