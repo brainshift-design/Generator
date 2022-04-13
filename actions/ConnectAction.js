@@ -16,6 +16,8 @@ extends Action
     oldOutputActiveOpId;      // the active node in the output node's tree
     oldInputActiveOpIds = []; // the active nodes in the input node's tree
 
+    newActiveOpIds = [];
+
 
 
     constructor(output, input)
@@ -51,17 +53,30 @@ extends Action
     
     do()
     {
+        this.newActiveOpIds = [];
+
+        if (    this.oldOutputOp
+            && !getActiveNodeInTreeFrom(this.oldOutputOp))
+        {
+            uiMakeNodeActive(this.oldOutputOp);
+            this.newActiveOpIds.push(this.oldOutputOpId);
+            this.oldOutputOp.pushUpdate();
+            //graphView.updateNodeTransform(oldPrevOutputActiveOp);
+        }
+
+
         uiConnect(
             this.outputOp.outputs[this.outputIndex], 
             this.inputOp. inputs [this. inputIndex],
             this.inputIndex);
 
-        // uiMakeNodesActive(this.oldInputActiveOpIds.map(id => nodeFromId(id)));
+
         let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
         oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveOpIds)
             uiMakeNodeActive(nodeFromId(id));
+
 
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
@@ -72,6 +87,7 @@ extends Action
     undo()
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+
 
         if (this.oldOutputOpId != '')
         {
@@ -84,6 +100,10 @@ extends Action
 
         graphView.updateNodeTransform(this.inputOp);
         this.inputOp.pushUpdate();
+
+
+        for (const id of this.newActiveOpIds)
+            uiMakeNodePassive(nodeFromId(id));
 
         for (const id of this.oldInputActiveOpIds)
             uiMakeNodeActive(nodeFromId(id));

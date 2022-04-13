@@ -511,6 +511,8 @@ function uiDisconnect(input)
         input.op.id,
         input.op.inputs.indexOf(input));
 
+    const inputOp = input.op;
+
     graph.disconnect(input);
 
     // uiPostMessageToGenerator({
@@ -696,18 +698,8 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
     if (node.active) return node;
 
 
-    for (const input of node.inputs)
-    {
-        if (    input.isConnected
-            && !alreadyChecked.includes(input.connectedOutput.op))
-        {
-            const leftActive = getActiveNodeInTreeFrom(
-                input.connectedOutput.op, 
-                [...alreadyChecked, node]);
-
-            if (leftActive) return leftActive;
-        }
-    }
+    const leftActive = getActiveNodeLeftInTreeFrom(node, [...alreadyChecked]);
+    if (leftActive) return leftActive;
 
 
     for (const output of node.outputs)
@@ -722,6 +714,30 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
 
                 if (rightActive) return rightActive;
             }
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodeLeftInTreeFrom(node, alreadyChecked = [])
+{
+    if (node.active) return node;
+
+
+    for (const input of node.inputs)
+    {
+        if (    input.isConnected
+            && !alreadyChecked.includes(input.connectedOutput.op))
+        {
+            const leftActive = getActiveNodeInTreeFrom(
+                input.connectedOutput.op, 
+                [...alreadyChecked, node]);
+
+            if (leftActive) return leftActive;
         }
     }
 

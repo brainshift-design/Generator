@@ -206,26 +206,30 @@ extends Action
         uiDisconnect(input);
 
 
-        if (!getActiveNodeInTreeFrom(input.op))
+        const outputOp = output.op;
+        const  inputOp =  input.op;
+
+
+        if (getActiveNodesInTreeFrom(inputOp))
         {
-            uiMakeNodeActive(input.op);
+            uiMakeNodeActive(inputOp);
 
-            if (!this.newActiveOpIds.includes(input.op.id))
-                this.newActiveOpIds.push(input.op.id);
+            if (!this.newActiveOpIds.includes(inputOp.id))
+                this.newActiveOpIds.push(inputOp.id);
 
-            input.op.pushUpdate();
+            inputOp.pushUpdate();
             //graphView.updateNodeTransform(input.op);
         }
 
 
-        if (!getActiveNodeInBranchFrom(output.op))
+        if (!getActiveNodeInTreeFrom(outputOp))
         {
-            uiMakeNodeActive(output.op);
+            uiMakeNodeActive(outputOp);
 
-            if (!this.newActiveOpIds.includes(output.op.id))
-                this.newActiveOpIds.push(output.op.id);
+            if (!this.newActiveOpIds.includes(outputOp.id))
+                this.newActiveOpIds.push(outputOp.id);
 
-            output.op.pushUpdate();
+            outputOp.pushUpdate();
             //graphView.updateNodeTransform(output.op);
         }
     }
