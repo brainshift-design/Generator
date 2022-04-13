@@ -29,6 +29,22 @@ extends Action
         nodeFromId(this.nodeId).pushUpdate();
 
         uiSaveNodesAndConns([this.nodeId]);
+
+
+        uiRemoveSavedConnectionsToNode(this.nodeId);
+
+
+        const node = nodeFromId(this.nodeId);
+
+        for (const input of node.inputs.filter(i => i.isConnected))
+        {
+            const output = input.connectedOutput;
+
+            uiSaveConnection(
+                output.op.id, output.op.outputs.indexOf(output),
+                 input.op.id,  input.op. inputs.indexOf( input),
+                input.connection.toJson());
+        }
     }
 
 

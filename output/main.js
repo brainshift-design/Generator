@@ -248,6 +248,9 @@ figma.ui.onmessage = msg => {
         case 'figRemoveSavedConnection':
             figRemoveSavedConnection(msg.name);
             break;
+        case 'figRemoveSavedConnectionsToNode':
+            figRemoveSavedConnectionsToNode(msg.nodeId);
+            break;
         case 'figSaveActiveNode':
             figSaveActiveNode(msg.nodeId);
             break;
@@ -369,6 +372,15 @@ function figSaveConnection(name, json) {
 }
 function figRemoveSavedConnection(name) {
     figClearPageData(connName(name));
+}
+function figRemoveSavedConnectionsToNode(nodeId) {
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
+    for (const key of connKeys) {
+        const parts = key.split(' ');
+        console.log(parts);
+        if (parts[3] == nodeId)
+            figClearPageData(key);
+    }
 }
 function figSaveActiveNode(nodeId) {
     figSetPageData(activeName(nodeId), nodeId);

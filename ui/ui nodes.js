@@ -1013,3 +1013,13 @@ function uiRemoveSavedConnection(outputOpId, outputIndex, inputOpId, inputIndex)
             + inputIndex
     });
 }
+
+
+
+function uiRemoveSavedConnectionsToNode(inputOpId)
+{
+    uiPostMessageToFigma({
+        cmd:   'figRemoveSavedConnectionsToNode',
+        nodeId: inputOpId
+    });
+}

@@ -5,31 +5,32 @@ figma.ui.onmessage = msg =>
 {
     switch (msg.cmd)
     {
-        case 'figStartGenerator':              figStartGenerator             ();                                           break;
-         
-        case 'figResizeWindow':                figResizeWindow               (msg.width, msg.height);                      break; 
-        case 'figNotify':                      figNotify                     (msg.text, msg.prefix, msg.delay, msg.error); break;
-                         
-        case 'figGetLocalData':                figGetLocalData               (msg.key);                                    break;
-        case 'figSetLocalData':                figSetLocalData               (msg.key, msg.value);                         break;
-                 
-        case 'figGetPageData':                 figGetPageData                (msg.key);                                    break;
-        case 'figSetPageData':                 figSetPageData                (msg.key, msg.value);                         break;
-              
-        case 'figLoadNodesAndConns':           figLoadNodesAndConns          ();                                           break;
-        case 'figSaveNodesAndConns':           figSaveNodesAndConns          (msg.nodeIds, msg.nodeJson);                  break;        
-        case 'figRemoveSavedNodesAndConns':    figRemoveSavedNodesAndConns   (msg.nodeIds);                                break;
-        case 'figRemoveAllSavedNodesAndConns': figRemoveAllSavedNodesAndConns();                                           break;
-        case 'figLogAllSavedNodesAndConns':    figLogAllSavedNodesAndConns   ();                                           break;
-
-        case 'figSaveConnection':              figSaveConnection             (msg.name, msg.json);                         break;
-        case 'figRemoveSavedConnection':       figRemoveSavedConnection      (msg.name);                                   break;
+        case 'figStartGenerator':               figStartGenerator              ();                                           break;
            
-        case 'figSaveActiveNode':              figSaveActiveNode             (msg.nodeId);                                 break;
-        case 'figRemoveSavedActiveNode':       figRemoveSavedActiveNode      (msg.nodeId);                                 break;
-
-        case 'figDeleteCanvasObjects':         figDeleteCanvasObjects        (msg.nodeIds);                                break; 
-        case 'figUpdateCanvasObjects':         figUpdateCanvasObjects        (msg.objects);                                break;
+        case 'figResizeWindow':                 figResizeWindow                (msg.width, msg.height);                      break; 
+        case 'figNotify':                       figNotify                      (msg.text, msg.prefix, msg.delay, msg.error); break;
+                           
+        case 'figGetLocalData':                 figGetLocalData                (msg.key);                                    break;
+        case 'figSetLocalData':                 figSetLocalData                (msg.key, msg.value);                         break;
+                   
+        case 'figGetPageData':                  figGetPageData                 (msg.key);                                    break;
+        case 'figSetPageData':                  figSetPageData                 (msg.key, msg.value);                         break;
+                
+        case 'figLoadNodesAndConns':            figLoadNodesAndConns           ();                                           break;
+        case 'figSaveNodesAndConns':            figSaveNodesAndConns           (msg.nodeIds, msg.nodeJson);                  break;        
+        case 'figRemoveSavedNodesAndConns':     figRemoveSavedNodesAndConns    (msg.nodeIds);                                break;
+        case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;
+        case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    ();                                           break;
+  
+        case 'figSaveConnection':               figSaveConnection              (msg.name, msg.json);                         break;
+        case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
+        case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                   break;
+           
+        case 'figSaveActiveNode':               figSaveActiveNode              (msg.nodeId);                                 break;
+        case 'figRemoveSavedActiveNode':        figRemoveSavedActiveNode       (msg.nodeId);                                 break;
+  
+        case 'figDeleteCanvasObjects':          figDeleteCanvasObjects         (msg.nodeIds);                                break; 
+        case 'figUpdateCanvasObjects':          figUpdateCanvasObjects         (msg.objects);                                break;
     }
 
     figPostMessageToUi({cmd: 'uiEndFigMessage'});
