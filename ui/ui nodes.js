@@ -511,9 +511,31 @@ function uiDisconnect(input)
         input.op.id,
         input.op.inputs.indexOf(input));
 
-    const inputOp = input.op;
 
     graph.disconnect(input);
+
+    
+    const inputOp = input.op;
+
+    if (inputOp._variableInputs)
+    {
+        uiRemoveSavedConnectionsToNode(inputOp.id);
+
+        for (const _input of inputOp.inputs.filter(i => i.isConnected))
+        {
+            console.log(_input.connectedOutput.op.id);
+            console.log(_input.connectedOutput.op.outputs.indexOf(_input.connectedOutput));
+            console.log(inputOp.id);
+            console.log(inputOp.inputs.indexOf(_input));
+            uiSaveConnection(
+                _input.connectedOutput.op.id,
+                _input.connectedOutput.op.outputs.indexOf(_input.connectedOutput),
+                inputOp.id,
+                inputOp.inputs.indexOf(_input),
+                _input.connection.toJson());
+        }
+    }
+
 
     // uiPostMessageToGenerator({
     //     msg: 'genDisconnect',
