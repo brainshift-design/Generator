@@ -20,7 +20,7 @@ extends Action
     {
         this.pastedNodeIds = uiPasteNodes(this.copiedJson).map(n => n.id);
 
-        uiSaveNodesAndConns(nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
     }
 
 

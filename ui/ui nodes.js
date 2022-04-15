@@ -375,7 +375,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
 
     graph.addNode(node);
 
-    uiSaveNodesAndConns([node.id]);
+    uiSaveNodes([node.id]);
 
 
     // if (graphView.selectedNodes.length > 0)
@@ -941,7 +941,7 @@ function uiUpdateCanvasObjects(objects)
 
 
 
-function uiSaveNodesAndConns(nodeIds)
+function uiSaveNodes(nodeIds)
 {
     const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
     const nodeJson = [];
@@ -953,7 +953,7 @@ function uiSaveNodesAndConns(nodeIds)
     }
 
     uiPostMessageToFigma({
-        cmd:     'figSaveNodesAndConns',
+        cmd:     'figSaveNodes',
         nodeIds:  nodeIds,
         nodeJson: nodeJson
     });

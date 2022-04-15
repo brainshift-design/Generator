@@ -20254,7 +20254,7 @@ extends OpColorBase
         {
             const [i1,,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i1].value = this.param1.value;
-            uiSaveNodesAndConns([this.id]);
+            uiSaveNodes([this.id]);
         });
 
         this.param1.addEventListener('changelock', () => 
@@ -20269,7 +20269,7 @@ extends OpColorBase
         {
             const [, i2,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i2].value = this.param2.value;
-            uiSaveNodesAndConns([this.id]);
+            uiSaveNodes([this.id]);
         });
 
         this.param2.addEventListener('changelock', () => 
@@ -20284,7 +20284,7 @@ extends OpColorBase
         {
             const [,, i3] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i3].value = this.param3.value;
-            uiSaveNodesAndConns([this.id]);
+            uiSaveNodes([this.id]);
         });
 
         this.param3.addEventListener('changelock', () => 
@@ -20540,7 +20540,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
 
     node.pushUpdate();
 
-    uiSaveNodesAndConns([nodeId]);
+    uiSaveNodes([nodeId]);
 }
 
 
@@ -21772,7 +21772,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(activeId));
 
 
-        uiSaveNodesAndConns(this.nodeIds);
+        uiSaveNodes(this.nodeIds);
     }
 
 
@@ -21985,7 +21985,7 @@ extends Action
     {
         this.pastedNodeIds = uiPasteNodes(this.copiedJson).map(n => n.id);
 
-        uiSaveNodesAndConns(nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
     }
 
 
@@ -22032,7 +22032,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22042,7 +22042,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22052,7 +22052,7 @@ extends Action
         this.param.setValue(this.newValue);
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -22135,7 +22135,7 @@ extends Action
 
         graphView.updateNodeTransforms(nodes);
 
-        uiSaveNodesAndConns(nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
     }
 
 
@@ -22170,7 +22170,7 @@ extends Action
 
         updateTerminalsAfterNodes(nodes);
 
-        uiSaveNodesAndConns(nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
     }
 }
 
@@ -22346,7 +22346,7 @@ extends Action
         this.oldName = this.node.name;
         this.node.setName(this.newName);
 
-        uiSaveNodesAndConns([nodeId]);
+        uiSaveNodes([nodeId]);
     }
 
 
@@ -22355,7 +22355,7 @@ extends Action
     {
         this.node.setName(this.oldName);
 
-        uiSaveNodesAndConns([nodeId]);
+        uiSaveNodes([nodeId]);
     }
 
 
@@ -22364,7 +22364,7 @@ extends Action
     {
         this.node.setName(this.newName);
         
-        uiSaveNodesAndConns([nodeId]);
+        uiSaveNodes([nodeId]);
     }
 }
 
@@ -22399,7 +22399,7 @@ extends Action
 
         nodeFromId(this.nodeId).pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
 
         uiRemoveSavedConnectionsToNode(this.nodeId);
@@ -22431,7 +22431,7 @@ extends Action
             
         node.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22445,7 +22445,7 @@ extends Action
             this.oldIndex,
             this.newIndex);
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         node.pushUpdate();
     }
@@ -22532,7 +22532,7 @@ extends Action
         for (const node of movedNodes)
             node.updateBorder();
 
-        uiSaveNodesAndConns(movedIds);
+        uiSaveNodes(movedIds);
     }
 
 
@@ -22553,7 +22553,7 @@ extends Action
             
         graphView.selectByIds(this.prevSelectedIds);
 
-        uiSaveNodesAndConns(movedIds);
+        uiSaveNodes(movedIds);
     }
 
 
@@ -22648,7 +22648,7 @@ extends Action
             this.newDecimals, 
             this.newDisplayDecimals);
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22659,7 +22659,7 @@ extends Action
             this.oldDecimals, 
             this.oldDisplayDecimals);
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -22694,7 +22694,7 @@ extends Action
         //this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22704,7 +22704,7 @@ extends Action
         this.param.setLocked(!this.locked);
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22714,7 +22714,7 @@ extends Action
         this.param.setLocked(this.locked);
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -22750,7 +22750,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22760,7 +22760,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22770,7 +22770,7 @@ extends Action
         this.param.setValue(this.newValue);
         this.param.op.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -22800,7 +22800,7 @@ extends Action
         this.node._showOnlySymbol = this.showOnlySymbol;
         this.node.updateNode();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -22810,7 +22810,7 @@ extends Action
         this.node._showOnlySymbol = !this.showOnlySymbol;
         this.node.updateNode();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }    
 }
 
@@ -24307,7 +24307,7 @@ function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
 
     graph.addNode(node);
 
-    uiSaveNodesAndConns([node.id]);
+    uiSaveNodes([node.id]);
 
 
     // if (graphView.selectedNodes.length > 0)
@@ -24873,7 +24873,7 @@ function uiUpdateCanvasObjects(objects)
 
 
 
-function uiSaveNodesAndConns(nodeIds)
+function uiSaveNodes(nodeIds)
 {
     const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
     const nodeJson = [];
@@ -24885,7 +24885,7 @@ function uiSaveNodesAndConns(nodeIds)
     }
 
     uiPostMessageToFigma({
-        cmd:     'figSaveNodesAndConns',
+        cmd:     'figSaveNodes',
         nodeIds:  nodeIds,
         nodeJson: nodeJson
     });

@@ -78,7 +78,7 @@ extends Action
         for (const node of movedNodes)
             node.updateBorder();
 
-        uiSaveNodesAndConns(movedIds);
+        uiSaveNodes(movedIds);
     }
 
 
@@ -99,7 +99,7 @@ extends Action
             
         graphView.selectByIds(this.prevSelectedIds);
 
-        uiSaveNodesAndConns(movedIds);
+        uiSaveNodes(movedIds);
     }
 
 

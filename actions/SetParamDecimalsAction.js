@@ -37,7 +37,7 @@ extends Action
             this.newDecimals, 
             this.newDisplayDecimals);
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -48,6 +48,6 @@ extends Action
             this.oldDecimals, 
             this.oldDisplayDecimals);
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }

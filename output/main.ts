@@ -316,7 +316,7 @@ figma.ui.onmessage = msg =>
         case 'figSetPageData':                  figSetPageData                 (msg.key, msg.value);                         break;
                 
         case 'figLoadNodesAndConns':            figLoadNodesAndConns           ();                                           break;
-        case 'figSaveNodesAndConns':            figSaveNodesAndConns           (msg.nodeIds, msg.nodeJson);                  break;        
+        case 'figSaveNodes':                    figSaveNodes                   (msg.nodeIds, msg.nodeJson);                  break;        
         case 'figRemoveSavedNodesAndConns':     figRemoveSavedNodesAndConns    (msg.nodeIds);                                break;
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;
         case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    ();                                           break;
@@ -447,7 +447,7 @@ function figLoadNodesAndConns()
 
 
 
-function figSaveNodesAndConns(nodeIds, nodeJson)
+function figSaveNodes(nodeIds, nodeJson)
 {
     for (let i = 0; i < nodeIds.length; i++)
     {

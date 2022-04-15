@@ -164,7 +164,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(activeId));
 
 
-        uiSaveNodesAndConns(this.nodeIds);
+        uiSaveNodes(this.nodeIds);
     }
 
 

@@ -28,7 +28,7 @@ extends Action
 
         nodeFromId(this.nodeId).pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
 
         uiRemoveSavedConnectionsToNode(this.nodeId);
@@ -60,7 +60,7 @@ extends Action
             
         node.pushUpdate();
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -74,7 +74,7 @@ extends Action
             this.oldIndex,
             this.newIndex);
 
-        uiSaveNodesAndConns([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         node.pushUpdate();
     }

@@ -84,7 +84,7 @@ function figLoadNodesAndConns()
 
 
 
-function figSaveNodesAndConns(nodeIds, nodeJson)
+function figSaveNodes(nodeIds, nodeJson)
 {
     for (let i = 0; i < nodeIds.length; i++)
     {

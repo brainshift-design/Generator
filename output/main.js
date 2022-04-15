@@ -230,8 +230,8 @@ figma.ui.onmessage = msg => {
         case 'figLoadNodesAndConns':
             figLoadNodesAndConns();
             break;
-        case 'figSaveNodesAndConns':
-            figSaveNodesAndConns(msg.nodeIds, msg.nodeJson);
+        case 'figSaveNodes':
+            figSaveNodes(msg.nodeIds, msg.nodeJson);
             break;
         case 'figRemoveSavedNodesAndConns':
             figRemoveSavedNodesAndConns(msg.nodeIds);
@@ -332,7 +332,7 @@ function figLoadNodesAndConns() {
         activeJson: activeJson
     });
 }
-function figSaveNodesAndConns(nodeIds, nodeJson) {
+function figSaveNodes(nodeIds, nodeJson) {
     for (let i = 0; i < nodeIds.length; i++) {
         // console.log('key', nodeName(nodeIds[i]));
         // console.log('value', nodeJson[i]);

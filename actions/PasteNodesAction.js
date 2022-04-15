@@ -35,7 +35,7 @@ extends Action
 
         graphView.updateNodeTransforms(nodes);
 
-        uiSaveNodesAndConns(nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
     }
 
 
@@ -70,6 +70,6 @@ extends Action
 
         updateTerminalsAfterNodes(nodes);
 
-        uiSaveNodesAndConns(nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
     }
 }

@@ -24,7 +24,7 @@ extends Action
         this.oldName = this.node.name;
         this.node.setName(this.newName);
 
-        uiSaveNodesAndConns([nodeId]);
+        uiSaveNodes([nodeId]);
     }
 
 
@@ -33,7 +33,7 @@ extends Action
     {
         this.node.setName(this.oldName);
 
-        uiSaveNodesAndConns([nodeId]);
+        uiSaveNodes([nodeId]);
     }
 
 
@@ -42,6 +42,6 @@ extends Action
     {
         this.node.setName(this.newName);
         
-        uiSaveNodesAndConns([nodeId]);
+        uiSaveNodes([nodeId]);
     }
 }

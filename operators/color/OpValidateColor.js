@@ -77,7 +77,7 @@ extends OpColorBase
         {
             const [i1,,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i1].value = this.param1.value;
-            uiSaveNodesAndConns([this.id]);
+            uiSaveNodes([this.id]);
         });
 
         this.param1.addEventListener('changelock', () => 
@@ -92,7 +92,7 @@ extends OpColorBase
         {
             const [, i2,] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i2].value = this.param2.value;
-            uiSaveNodesAndConns([this.id]);
+            uiSaveNodes([this.id]);
         });
 
         this.param2.addEventListener('changelock', () => 
@@ -107,7 +107,7 @@ extends OpColorBase
         {
             const [,, i3] = getCorrectionOrder(this.paramOrder.value);
             this.corrections[i3].value = this.param3.value;
-            uiSaveNodesAndConns([this.id]);
+            uiSaveNodes([this.id]);
         });
 
         this.param3.addEventListener('changelock', () => 
@@ -363,7 +363,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
 
     node.pushUpdate();
 
-    uiSaveNodesAndConns([nodeId]);
+    uiSaveNodes([nodeId]);
 }
 
 
