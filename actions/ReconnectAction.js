@@ -71,6 +71,12 @@ extends Action
         graphView.updateNodeTransform(this.oldInputOp);
         
 
+        uiConnect(
+            this.outputOp.outputs[this.outputIndex], 
+            this. inputOp. inputs[this. inputIndex],
+            this.inputIndex);
+            
+
         this.newActiveOpIds = [];
 
         if (!getActiveNodeInTreeFrom(this.oldOutputOp))
@@ -81,12 +87,6 @@ extends Action
             //graphView.updateNodeTransform(oldPrevOutputActiveOp);
         }
 
-
-        uiConnect(
-            this.outputOp.outputs[this.outputIndex], 
-            this. inputOp. inputs[this. inputIndex],
-            this.inputIndex);
-            
 
         let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
         oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);

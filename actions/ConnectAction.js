@@ -53,6 +53,12 @@ extends Action
     
     do()
     {
+        uiConnect(
+            this.outputOp.outputs[this.outputIndex], 
+            this.inputOp. inputs [this. inputIndex],
+            this.inputIndex);
+
+
         this.newActiveOpIds = [];
 
         if (    this.oldOutputOp
@@ -63,12 +69,6 @@ extends Action
             this.oldOutputOp.pushUpdate();
             //graphView.updateNodeTransform(oldPrevOutputActiveOp);
         }
-
-
-        uiConnect(
-            this.outputOp.outputs[this.outputIndex], 
-            this.inputOp. inputs [this. inputIndex],
-            this.inputIndex);
 
 
         let oldInputActiveOpIds = [...this.oldInputActiveOpIds];

@@ -521,7 +521,6 @@ function figRemoveSavedConnectionsToNode(nodeId)
     for (const key of connKeys)
     {
         const parts = key.split(' ');
-        console.log(parts);
 
         if (parts[3] == nodeId)
             figClearPageData(key);        

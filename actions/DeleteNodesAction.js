@@ -105,8 +105,6 @@ extends Action
         }
 
 
-        console.log(this.newActiveOpIds);
-
         uiDeleteNodes(this.nodeIds, this.id);
 
         for (const nodeId of this.nodeIds)

@@ -21485,6 +21485,12 @@ extends Action
     
     do()
     {
+        uiConnect(
+            this.outputOp.outputs[this.outputIndex], 
+            this.inputOp. inputs [this. inputIndex],
+            this.inputIndex);
+
+
         this.newActiveOpIds = [];
 
         if (    this.oldOutputOp
@@ -21495,12 +21501,6 @@ extends Action
             this.oldOutputOp.pushUpdate();
             //graphView.updateNodeTransform(oldPrevOutputActiveOp);
         }
-
-
-        uiConnect(
-            this.outputOp.outputs[this.outputIndex], 
-            this.inputOp. inputs [this. inputIndex],
-            this.inputIndex);
 
 
         let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
@@ -21712,8 +21712,6 @@ extends Action
             }
         }
 
-
-        console.log(this.newActiveOpIds);
 
         uiDeleteNodes(this.nodeIds, this.id);
 
@@ -22248,6 +22246,12 @@ extends Action
         graphView.updateNodeTransform(this.oldInputOp);
         
 
+        uiConnect(
+            this.outputOp.outputs[this.outputIndex], 
+            this. inputOp. inputs[this. inputIndex],
+            this.inputIndex);
+            
+
         this.newActiveOpIds = [];
 
         if (!getActiveNodeInTreeFrom(this.oldOutputOp))
@@ -22258,12 +22262,6 @@ extends Action
             //graphView.updateNodeTransform(oldPrevOutputActiveOp);
         }
 
-
-        uiConnect(
-            this.outputOp.outputs[this.outputIndex], 
-            this. inputOp. inputs[this. inputIndex],
-            this.inputIndex);
-            
 
         let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
         oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
@@ -24455,10 +24453,6 @@ function uiDisconnect(input)
 
         for (const _input of inputOp.inputs.filter(i => i.isConnected))
         {
-            console.log(_input.connectedOutput.op.id);
-            console.log(_input.connectedOutput.op.outputs.indexOf(_input.connectedOutput));
-            console.log(inputOp.id);
-            console.log(inputOp.inputs.indexOf(_input));
             uiSaveConnection(
                 _input.connectedOutput.op.id,
                 _input.connectedOutput.op.outputs.indexOf(_input.connectedOutput),

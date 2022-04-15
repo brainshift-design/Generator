@@ -377,7 +377,6 @@ function figRemoveSavedConnectionsToNode(nodeId) {
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
     for (const key of connKeys) {
         const parts = key.split(' ');
-        console.log(parts);
         if (parts[3] == nodeId)
             figClearPageData(key);
     }
