@@ -21685,13 +21685,27 @@ extends Action
 
             const nodeInputs = [...node.inputs.filter(i => i.isConnected)];
 
-            for (const input of nodeInputs)
-                this.disconnect(input);
+            for (let i = nodeInputs.length-1; i >= 0; i--)
+                this.disconnect(nodeInputs[i]);
 
 
             for (const output of node.outputs)
             {
-                const connectedInputs = [...output.connectedInputs];
+                let connectedInputs = [...output.connectedInputs];
+
+                // connected inputs need to be sorted by input index
+                connectedInputs.sort((i1, i2) => 
+                {
+                    const op1 = i1.op;
+                    const op2 = i2.op;
+                        
+                    const index1 = op1.inputs.indexOf(i1);
+                    const index2 = op2.inputs.indexOf(i2);
+                    
+                    if (op1.id != op2.id) return op1.id - op2.id;
+                    if (index1 != index2) return index1 - index2;
+                    return 0;
+                });
 
                 for (const input of connectedInputs)
                     this.disconnect(input);
@@ -22997,7 +23011,7 @@ var figMessages = [];
 
 //uiClearPageData('GA rect');
 //uiRemoveAllSavedNodesAndConns();
-//uiLogAllSavedNodesAndConns();
+uiLogAllSavedNodesAndConns();
 
 
 var currentUser = '';
