@@ -382,6 +382,9 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
+        // console.log('this.inputs',  this.inputs);
+        // console.log('this.outputs', this.outputs);
+
         const headerInputs  = this.inputs .filter(i => !i.param);
         const headerOutputs = this.outputs.filter(o => !o.param);
 

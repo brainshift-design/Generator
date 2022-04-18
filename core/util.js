@@ -137,10 +137,37 @@ function createSvg(element)
 
 
 
-function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
-function hide(element)              { element.style.visibility = 'hidden';  }
+function show(element, show = true) 
+{
+    const showStyle = 'block';
+    const hideStyle = 'none';
 
-function isVisible(element) { return element.style.visibility == 'visible'; }
+    if (  !show
+        && element.style.display != hideStyle)
+        element.oldDisplay = element.style.display;
+
+    element.style.display = 
+        show 
+        ? (   element.style.oldDisplay 
+           && element.style.oldDisplay != hideStyle
+           ? element.style.oldDsplay
+           : showStyle)
+        : hideStyle; 
+}
+
+
+function hide(element)              
+{ 
+    show(element, false); 
+}
+
+
+
+function isVisible(element)
+{ 
+    return element.style.visibility == 'visible'; 
+}
+
 
 
 function copyArray(src, dst)
@@ -235,7 +262,7 @@ function clearConsole()
 
 function log(...params)
 {
-    setTimeout(console.log.bind(console, ...params));
+    setTimeout(console.log.bind(console, ...params)); // doesn't show log source, which makes logs cleaner
 }
 
 

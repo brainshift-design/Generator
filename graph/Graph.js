@@ -166,7 +166,7 @@ class Graph
             input = lastOf(input.op.inputs);
             
             // move new input back to correct index
-            moveIn(input.op.inputs, input.op.inputs.length-1, inputIndex);
+            moveInArray(input.op.inputs, input.op.inputs.length-1, inputIndex);
 
             input.op.inputControls.insertBefore(
                 lastOf(input.op.inputControls.childNodes), 

@@ -93,9 +93,11 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
+                //hide(graphView.tempConn.wire);
                 
                 graphView.savedConn = graphView.overInput.connection;
-                graphView.updateNodeWire(graphView.savedConn.wire);
+                hide(graphView.savedConn.wire);
+                //graphView.updateNodeWire(graphView.savedConn.wire);
             }
             else
             {

@@ -145,7 +145,7 @@ function lastOf(array)
 
 
 
-function moveIn(array, from, to) 
+function moveInArray(array, from, to) 
 {
     const item = array[from];
     array.splice(from, 1);

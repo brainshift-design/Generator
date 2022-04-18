@@ -270,7 +270,7 @@ function createNodeHeader(node)
                     {
                         newReorderIndex = index;
 
-                        moveIn(
+                        moveInArray(
                             node.inputs, 
                             node.inputs.indexOf(savedConn.input),
                             newReorderIndex);
@@ -296,9 +296,9 @@ function createNodeHeader(node)
                 {
                     const input = node.getAutoInput(tempConn.output.dataType);
 
-                    if ( !input
-                        ||    input.isConnected
-                           && input.connectedOutput.op == tempConn.output.op) 
+                    if (  !input)
+                        // ||    input.isConnected
+                        //    && input.connectedOutput.op == tempConn.output.op) 
                         return;
 
                     graphView.overInput   = input;

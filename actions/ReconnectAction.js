@@ -107,7 +107,10 @@ extends Action
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
+        // if (this.oldOutputOpId != '')
+        //     uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
+            
         uiVariableConnect(
             this.outputOp, 
             this.outputIndex, 

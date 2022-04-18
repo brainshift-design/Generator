@@ -53,7 +53,7 @@ extends Action
     {
         const node = nodeFromId(this.nodeId);
 
-        moveIn(
+        moveInArray(
             node.inputs,
             this.newIndex,
             this.oldIndex);
@@ -69,7 +69,7 @@ extends Action
     {
         const node = nodeFromId(this.nodeId);
 
-        moveIn(
+        moveInArray(
             node.inputs,
             this.oldIndex,
             this.newIndex);

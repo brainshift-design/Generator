@@ -114,7 +114,7 @@ extends OperatorBase
         this.outputs[0]._data = dataFromNumber(result, maxDec);
 
         this.#paramValue.control.setDecimals(maxDec);
-        this.#paramValue.setValue(result, false, true, false);
+        this.#paramValue.setValue(result, false, true, false) ;
 
         
         super.updateData()

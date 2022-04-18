@@ -1715,7 +1715,7 @@ function lastOf(array)
 
 
 
-function moveIn(array, from, to) 
+function moveInArray(array, from, to) 
 {
     const item = array[from];
     array.splice(from, 1);
@@ -3130,10 +3130,37 @@ function createSvg(element)
 
 
 
-function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
-function hide(element)              { element.style.visibility = 'hidden';  }
+function show(element, show = true) 
+{
+    const showStyle = 'block';
+    const hideStyle = 'none';
 
-function isVisible(element) { return element.style.visibility == 'visible'; }
+    if (  !show
+        && element.style.display != hideStyle)
+        element.oldDisplay = element.style.display;
+
+    element.style.display = 
+        show 
+        ? (   element.style.oldDisplay 
+           && element.style.oldDisplay != hideStyle
+           ? element.style.oldDsplay
+           : showStyle)
+        : hideStyle; 
+}
+
+
+function hide(element)              
+{ 
+    show(element, false); 
+}
+
+
+
+function isVisible(element)
+{ 
+    return element.style.visibility == 'visible'; 
+}
+
 
 
 function copyArray(src, dst)
@@ -3228,7 +3255,7 @@ function clearConsole()
 
 function log(...params)
 {
-    setTimeout(console.log.bind(console, ...params));
+    setTimeout(console.log.bind(console, ...params)); // doesn't show log source, which makes logs cleaner
 }
 
 
@@ -6692,7 +6719,7 @@ function lastOf(array)
 
 
 
-function moveIn(array, from, to) 
+function moveInArray(array, from, to) 
 {
     const item = array[from];
     array.splice(from, 1);
@@ -8107,10 +8134,37 @@ function createSvg(element)
 
 
 
-function show(element, show = true) { element.style.visibility = show ? 'visible' : 'hidden'; }
-function hide(element)              { element.style.visibility = 'hidden';  }
+function show(element, show = true) 
+{
+    const showStyle = 'block';
+    const hideStyle = 'none';
 
-function isVisible(element) { return element.style.visibility == 'visible'; }
+    if (  !show
+        && element.style.display != hideStyle)
+        element.oldDisplay = element.style.display;
+
+    element.style.display = 
+        show 
+        ? (   element.style.oldDisplay 
+           && element.style.oldDisplay != hideStyle
+           ? element.style.oldDsplay
+           : showStyle)
+        : hideStyle; 
+}
+
+
+function hide(element)              
+{ 
+    show(element, false); 
+}
+
+
+
+function isVisible(element)
+{ 
+    return element.style.visibility == 'visible'; 
+}
+
 
 
 function copyArray(src, dst)
@@ -8205,7 +8259,7 @@ function clearConsole()
 
 function log(...params)
 {
-    setTimeout(console.log.bind(console, ...params));
+    setTimeout(console.log.bind(console, ...params)); // doesn't show log source, which makes logs cleaner
 }
 
 
@@ -12960,9 +13014,11 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
+                //hide(graphView.tempConn.wire);
                 
                 graphView.savedConn = graphView.overInput.connection;
-                graphView.updateNodeWire(graphView.savedConn.wire);
+                hide(graphView.savedConn.wire);
+                //graphView.updateNodeWire(graphView.savedConn.wire);
             }
             else
             {
@@ -15267,7 +15323,7 @@ class Graph
             input = lastOf(input.op.inputs);
             
             // move new input back to correct index
-            moveIn(input.op.inputs, input.op.inputs.length-1, inputIndex);
+            moveInArray(input.op.inputs, input.op.inputs.length-1, inputIndex);
 
             input.op.inputControls.insertBefore(
                 lastOf(input.op.inputControls.childNodes), 
@@ -16721,6 +16777,9 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
+        // console.log('this.inputs',  this.inputs);
+        // console.log('this.outputs', this.outputs);
+
         const headerInputs  = this.inputs .filter(i => !i.param);
         const headerOutputs = this.outputs.filter(o => !o.param);
 
@@ -17276,7 +17335,7 @@ function createNodeHeader(node)
                     {
                         newReorderIndex = index;
 
-                        moveIn(
+                        moveInArray(
                             node.inputs, 
                             node.inputs.indexOf(savedConn.input),
                             newReorderIndex);
@@ -17302,9 +17361,9 @@ function createNodeHeader(node)
                 {
                     const input = node.getAutoInput(tempConn.output.dataType);
 
-                    if ( !input
-                        ||    input.isConnected
-                           && input.connectedOutput.op == tempConn.output.op) 
+                    if (  !input)
+                        // ||    input.isConnected
+                        //    && input.connectedOutput.op == tempConn.output.op) 
                         return;
 
                     graphView.overInput   = input;
@@ -18006,7 +18065,7 @@ extends OperatorBase
         this.outputs[0]._data = dataFromNumber(result, maxDec);
 
         this.#paramValue.control.setDecimals(maxDec);
-        this.#paramValue.setValue(result, false, true, false);
+        this.#paramValue.setValue(result, false, true, false) ;
 
         
         super.updateData()
@@ -22282,7 +22341,10 @@ extends Action
     {
         uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
+        // if (this.oldOutputOpId != '')
+        //     uiDisconnect(this.inputOp.inputs[this.inputIndex]);
 
+            
         uiVariableConnect(
             this.outputOp, 
             this.outputIndex, 
@@ -22422,7 +22484,7 @@ extends Action
     {
         const node = nodeFromId(this.nodeId);
 
-        moveIn(
+        moveInArray(
             node.inputs,
             this.newIndex,
             this.oldIndex);
@@ -22438,7 +22500,7 @@ extends Action
     {
         const node = nodeFromId(this.nodeId);
 
-        moveIn(
+        moveInArray(
             node.inputs,
             this.oldIndex,
             this.newIndex);
