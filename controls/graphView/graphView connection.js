@@ -86,7 +86,8 @@ graphView.endConnection = pointerId =>
             && input.dataType == output.dataType) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
-                && !isNaN(oldReorderIndex))
+                && !isNaN(oldReorderIndex)
+                &&  newReorderIndex >= 0)
                 actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
 
             else if (input == savedInput) // reconnect old
@@ -96,8 +97,10 @@ graphView.endConnection = pointerId =>
             }
 
             else if (savedInput)
-                actionManager.do(new ReconnectAction(output, savedInput, input));
-
+            {
+                if (savedInput.connectedOutput != output)
+                    actionManager.do(new ReconnectAction(output, savedInput, input));
+            }
             else if (   !savedInput
                      && (  !input.isConnected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
