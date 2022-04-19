@@ -12,7 +12,7 @@ extends Action
     {
         super(
               'reorder ' + nodeFromId(nodeId).id 
-            + '.inputs[' + oldIndex + ']'
+            + '.in[' + oldIndex + ']'
             + ' to [' + newIndex + ']');
 
         this.nodeId   = nodeId;

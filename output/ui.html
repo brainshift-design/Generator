@@ -3207,12 +3207,19 @@ function arraysEqual(arr1, arr2)
 
 
 
-function removeFromArray(array, obj)
+function removeFromArray(array, item)
 {
-    var index = array.indexOf(obj);
+    var index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
+}
+
+
+
+function isLastInArray(array, item)
+{
+    return array.indexOf(item) == array.length-1;
 }
 
 
@@ -8211,12 +8218,19 @@ function arraysEqual(arr1, arr2)
 
 
 
-function removeFromArray(array, obj)
+function removeFromArray(array, item)
 {
-    var index = array.indexOf(obj);
+    var index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
+}
+
+
+
+function isLastInArray(array, item)
+{
+    return array.indexOf(item) == array.length-1;
 }
 
 
@@ -16362,8 +16376,8 @@ class Connection
         {
             uiError(
                   'Cannot connect ' 
-                + _conn.outputOp + '.outputs[' + outputIndex + '] to ' 
-                + _conn.inputOp  + '.inputs[' + _conn.inputIndex + ']');
+                + _conn.outputOp + '.out[' + outputIndex + '] to ' 
+                + _conn.inputOp  + '.in[' + _conn.inputIndex + ']');
         }
         else
             uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
@@ -17361,7 +17375,7 @@ function createNodeHeader(node)
                 {
                     const input = node.getAutoInput(tempConn.output.dataType);
 
-                    if (  !input)
+                    if ( !input)
                         // ||    input.isConnected
                         //    && input.connectedOutput.op == tempConn.output.op) 
                         return;
@@ -21938,9 +21952,9 @@ extends Action
 
 
         super('disconnect ' 
-            + output.op.id + '.outputs[' + outputIndex + ']'
+            + output.op.id + '.out[' + outputIndex + ']'
             + ' -> '
-            + input.op.id + '.inputs[' + inputIndex + ']');
+            + input.op.id + '.in[' + inputIndex + ']');
 
 
         this.outputOpId  = output.op.id;
@@ -22273,11 +22287,11 @@ extends Action
 
         super(
              'reconnect '
-            + output.op.id + '.outputs[' + outIndex + ']'
+            + output.op.id + '.out[' + outIndex + ']'
             + ' ( <- '
-            + oldInput.op.id + '.inputs[' + oldInIndex + '])'
+            + oldInput.op.id + '.in[' + oldInIndex + '])'
             + ' -> '
-            + input.op.id + '.inputs[' + inIndex + ']');
+            + input.op.id + '.in[' + inIndex + ']');
 
 
         this.outputOpId          = output.op.id;
@@ -22443,7 +22457,7 @@ extends Action
     {
         super(
               'reorder ' + nodeFromId(nodeId).id 
-            + '.inputs[' + oldIndex + ']'
+            + '.in[' + oldIndex + ']'
             + ' to [' + newIndex + ']');
 
         this.nodeId   = nodeId;
@@ -23192,12 +23206,12 @@ document.addEventListener('keydown', e =>
     //
     else if (e.code == 'Minus')
     {
-        graphView.zoom /= 2;
+        graphView.zoom /= Math.pow(2, 1/4);
     }
 
     else if (e.code == 'Equal')
     {
-        graphView.zoom *= 2;
+        graphView.zoom *= Math.pow(2, 1/4);
     }
 
     else if (e.code == 'Digit0'

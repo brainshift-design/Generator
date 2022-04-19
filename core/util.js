@@ -214,12 +214,19 @@ function arraysEqual(arr1, arr2)
 
 
 
-function removeFromArray(array, obj)
+function removeFromArray(array, item)
 {
-    var index = array.indexOf(obj);
+    var index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
+}
+
+
+
+function isLastInArray(array, item)
+{
+    return array.indexOf(item) == array.length-1;
 }
 
 

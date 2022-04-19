@@ -76,12 +76,12 @@ document.addEventListener('keydown', e =>
     //
     else if (e.code == 'Minus')
     {
-        graphView.zoom /= 2;
+        graphView.zoom /= Math.pow(2, 1/4);
     }
 
     else if (e.code == 'Equal')
     {
-        graphView.zoom *= 2;
+        graphView.zoom *= Math.pow(2, 1/4);
     }
 
     else if (e.code == 'Digit0'
