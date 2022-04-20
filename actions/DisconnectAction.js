@@ -16,21 +16,17 @@ extends Action
 
     constructor(output, input)
     {
-        const outputIndex = output.op.outputs.indexOf(output);
-        const  inputIndex = input .op. inputs.indexOf( input); 
-
-
         super('disconnect ' 
-            + output.op.id + '.out[' + outputIndex + ']'
+            + output.op.id + '.out[' + output.index + ']'
             + ' -> '
-            + input.op.id + '.in[' + inputIndex + ']');
+            + input.op.id + '.in[' + input.index + ']');
 
 
         this.outputOpId  = output.op.id;
-        this.outputIndex = outputIndex;
+        this.outputIndex = output.index;
 
         this.inputOpId   = input.op.id;
-        this.inputIndex  = inputIndex;
+        this.inputIndex  = input.index;
 
 
         this.oldActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];

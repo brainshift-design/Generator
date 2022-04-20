@@ -7,6 +7,9 @@ class Output
     _param = null; get param() { return this._param; }
     
     
+    get index() { return this.op.outputs.indexOf(this); }
+
+
     color;
     wireColor;
 

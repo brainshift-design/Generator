@@ -55,7 +55,7 @@ function initNumberSliderTextbox(slider)
             if (slider.param)
             {
                 const params = slider.param.op.params;
-                let   index  = params.indexOf(slider.param);
+                let   index  = slider.param.index;
 
                 slider.textbox.finish(true, false);
 

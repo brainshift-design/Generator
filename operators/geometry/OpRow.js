@@ -15,6 +15,13 @@ extends OperatorBase
         this.addParam(this.#count = new NumberParam('count', 'count', true, true, true,  7, 1));
         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, true, true, 10, 0));
     }
+
+
+
+    generateRequest()
+    {
+
+    }
 }
 
 

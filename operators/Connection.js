@@ -225,10 +225,10 @@ class Connection
         let json = 
               pos + '{'
             +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.id + '"'
-            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.indexOf(this.output) + '"'
+            + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.id + '"'
-            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.indexOf(this.input) + '"'
+            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.index + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
 
@@ -277,9 +277,9 @@ function getConnectionForArrayWithIds(conn)
 {
     return {
         outputOpId:  conn.output.op.id,
-        outputIndex: conn.output.op.outputs.indexOf(conn.output),
+        outputIndex: conn.output.index,
         inputOpId:   conn.input .op.id,
-        inputIndex:  conn.input .op. inputs.indexOf(conn. input)};
+        inputIndex:  conn.input .index };
 }
 
 
@@ -288,7 +288,7 @@ function getConnectionForArrayWithNames(conn)
 {
     return {
         outputOpName: conn.output.op.id,
-        outputIndex:  conn.output.op.outputs.indexOf(conn.output),
+        outputIndex:  conn.output.index,
         inputOpName:  conn.input .op.id,
-        inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
+        inputIndex:   conn.input .index };
 }

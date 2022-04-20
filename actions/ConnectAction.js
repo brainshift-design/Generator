@@ -22,28 +22,25 @@ extends Action
 
     constructor(output, input)
     {
-        const outIndex = output.op.outputs.indexOf(output);
-        const  inIndex = input.op.inputs.indexOf(input); 
-
         const oldOutIndex = 
             input.isConnected 
-            ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) 
+            ? input.connectedOutput.index
             : -1; 
 
         super('connect ' 
-            + output.op.id + '.out[' + outIndex + ']'
+            + output.op.id + '.out[' + output.index + ']'
             + ' -> '
-            + input.op.id + '.in[' + inIndex + ']');
+            + input.op.id + '.in[' + input.index + ']');
 
 
         this.outputOpId          = output.op.id;
-        this.outputIndex         = outIndex;
+        this.outputIndex         = output.index;
    
         this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex      = oldOutIndex;
    
         this.inputOpId           = input.op.id;
-        this.inputIndex          = inIndex;
+        this.inputIndex          = input.index;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
         this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];

@@ -166,7 +166,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
                     
-                if (param.op.params.indexOf(param) < param.op.params.length-1)
+                if (param.index < param.op.params.length-1)
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
             }
 
@@ -414,7 +414,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
                 
-                if (param.op.params.indexOf(param) < param.op.params.length-1)
+                if (!isLastInArray(param.op.params, param))
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
             }
             else

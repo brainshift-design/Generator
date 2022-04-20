@@ -90,13 +90,15 @@ graphView.addEventListener('pointerdown', e =>
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
-                oldReorderIndex = graphView.overNode.inputs.indexOf(graphView.overInput);
+                oldReorderIndex = graphView.overInput.index;
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 //hide(graphView.tempConn.wire);
                 
-                graphView.savedConn = graphView.overInput.connection;
+                graphView.savedConn       = graphView.overInput.connection;
+                graphView.savedInputIndex = graphView.overInput.index;
+
                 hide(graphView.savedConn.wire);
                 //graphView.updateNodeWire(graphView.savedConn.wire);
             }

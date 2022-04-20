@@ -1,3 +1,14 @@
+/*
+    Each operator has a generateRequest() method, which creates a string that
+    is added to the complete recursive generation request. 
+    
+    The generator then does the calculation and sends back two kinds of messages:
+    node value updates and Figma page updates.
+
+*/
+
+
+
 const connectionSize = 9;
 const connectionGap  = 2;
 
@@ -286,7 +297,7 @@ class Operator
         this.valid = true;
 
         if (this.active)
-            uiPostGeneratorRequest(this.makeGenRequest());
+            uiPostGeneratorRequest(this.generateRequest());
 
         if (graphView.canUpdateNodes)
             this.updateNode();
@@ -305,7 +316,7 @@ class Operator
 
 
 
-    makeGenRequest() 
+    generateRequest() 
     { 
         // create the generation string here
 

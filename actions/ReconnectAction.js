@@ -26,37 +26,32 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const outIndex = output.op.outputs.indexOf(output);
-        const  inIndex =  input.op. inputs.indexOf(input); 
-
         const oldOutIndex = 
             input.isConnected 
-            ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) 
+            ? input.connectedOutput.index
             : -1; 
 
-        const oldInIndex = oldInput.op.inputs.indexOf(oldInput); 
-        
 
         super(
              'reconnect '
-            + output.op.id + '.out[' + outIndex + ']'
+            + output.op.id + '.out[' + output.index + ']'
             + ' ( <- '
-            + oldInput.op.id + '.in[' + oldInIndex + '])'
+            + oldInput.op.id + '.in[' + oldInput.index + '])'
             + ' -> '
-            + input.op.id + '.in[' + inIndex + ']');
+            + input.op.id + '.in[' + input.index + ']');
 
 
         this.outputOpId          = output.op.id;
-        this.outputIndex         = outIndex;
+        this.outputIndex         = output.index;
              
         this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex      = oldOutIndex;
      
         this.oldInputOpId        = oldInput.op.id;
-        this.oldInputIndex       = oldInIndex;
+        this.oldInputIndex       = oldInput.index;
      
         this.inputOpId           = input.op.id;
-        this.inputIndex          = inIndex;
+        this.inputIndex          = input.index;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
         this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];

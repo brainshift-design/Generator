@@ -204,7 +204,7 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.index + '])');
         // first remove the current output
 
         // if (activeNodeInTree(input.op))

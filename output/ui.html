@@ -10382,7 +10382,7 @@ function initNumberSliderTextbox(slider)
             if (slider.param)
             {
                 const params = slider.param.op.params;
-                let   index  = params.indexOf(slider.param);
+                let   index  = slider.param.index;
 
                 slider.textbox.finish(true, false);
 
@@ -10822,7 +10822,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
                     
-                if (param.op.params.indexOf(param) < param.op.params.length-1)
+                if (param.index < param.op.params.length-1)
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
             }
 
@@ -11070,7 +11070,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
                 
-                if (param.op.params.indexOf(param) < param.op.params.length-1)
+                if (!isLastInArray(param.op.params, param))
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
             }
             else
@@ -13025,13 +13025,15 @@ graphView.addEventListener('pointerdown', e =>
         {
             if (graphView.overInput.connectedOutput) // pretend to disconnect
             {
-                oldReorderIndex = graphView.overNode.inputs.indexOf(graphView.overInput);
+                oldReorderIndex = graphView.overInput.index;
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
                 //hide(graphView.tempConn.wire);
                 
-                graphView.savedConn = graphView.overInput.connection;
+                graphView.savedConn       = graphView.overInput.connection;
+                graphView.savedInputIndex = graphView.overInput.index;
+
                 hide(graphView.savedConn.wire);
                 //graphView.updateNodeWire(graphView.savedConn.wire);
             }
@@ -14443,6 +14445,9 @@ extends EventTarget
     _div;     get div()     { return this._div;     }
 
 
+    get index() { return this.op.params.indexOf(this); }
+
+
     input;
     output;
 
@@ -15381,7 +15386,7 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.op.inputs.indexOf(input) + '])');
+        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.index + '])');
         // first remove the current output
 
         // if (activeNodeInTree(input.op))
@@ -15727,6 +15732,9 @@ extends EventTarget
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
 
+
+    get index() { return this.op.inputs.indexOf(this); }
+
     
     color;
     wireColor;
@@ -15952,6 +15960,9 @@ class Output
     _param = null; get param() { return this._param; }
     
     
+    get index() { return this.op.outputs.indexOf(this); }
+
+
     color;
     wireColor;
 
@@ -16344,10 +16355,10 @@ class Connection
         let json = 
               pos + '{'
             +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.id + '"'
-            + ',\n' + pos + tab + '"outputIndex": "' + this.output.op.outputs.indexOf(this.output) + '"'
+            + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.id + '"'
-            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.op.inputs.indexOf(this.input) + '"'
+            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.index + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
 
@@ -16396,9 +16407,9 @@ function getConnectionForArrayWithIds(conn)
 {
     return {
         outputOpId:  conn.output.op.id,
-        outputIndex: conn.output.op.outputs.indexOf(conn.output),
+        outputIndex: conn.output.index,
         inputOpId:   conn.input .op.id,
-        inputIndex:  conn.input .op. inputs.indexOf(conn. input)};
+        inputIndex:  conn.input .index };
 }
 
 
@@ -16407,10 +16418,21 @@ function getConnectionForArrayWithNames(conn)
 {
     return {
         outputOpName: conn.output.op.id,
-        outputIndex:  conn.output.op.outputs.indexOf(conn.output),
+        outputIndex:  conn.output.index,
         inputOpName:  conn.input .op.id,
-        inputIndex:   conn.input .op. inputs.indexOf(conn. input)};
+        inputIndex:   conn.input .index };
 }
+
+
+/*
+    Each operator has a generateRequest() method, which creates a string that
+    is added to the complete recursive generation request. 
+    
+    The generator then does the calculation and sends back two kinds of messages:
+    node value updates and Figma page updates.
+
+*/
+
 
 
 const connectionSize = 9;
@@ -16701,7 +16723,7 @@ class Operator
         this.valid = true;
 
         if (this.active)
-            uiPostGeneratorRequest(this.makeGenRequest());
+            uiPostGeneratorRequest(this.generateRequest());
 
         if (graphView.canUpdateNodes)
             this.updateNode();
@@ -16720,7 +16742,7 @@ class Operator
 
 
 
-    makeGenRequest() 
+    generateRequest() 
     { 
         // create the generation string here
 
@@ -21222,7 +21244,7 @@ extends OperatorBase
 
 
 
-    makeGenRequest()
+    generateRequest()
     {
         return [
             this.opType,
@@ -21302,6 +21324,13 @@ extends OperatorBase
         
         this.addParam(this.#count = new NumberParam('count', 'count', true, true, true,  7, 1));
         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, true, true, 10, 0));
+    }
+
+
+
+    generateRequest()
+    {
+
     }
 }
 
@@ -21533,28 +21562,25 @@ extends Action
 
     constructor(output, input)
     {
-        const outIndex = output.op.outputs.indexOf(output);
-        const  inIndex = input.op.inputs.indexOf(input); 
-
         const oldOutIndex = 
             input.isConnected 
-            ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) 
+            ? input.connectedOutput.index
             : -1; 
 
         super('connect ' 
-            + output.op.id + '.out[' + outIndex + ']'
+            + output.op.id + '.out[' + output.index + ']'
             + ' -> '
-            + input.op.id + '.in[' + inIndex + ']');
+            + input.op.id + '.in[' + input.index + ']');
 
 
         this.outputOpId          = output.op.id;
-        this.outputIndex         = outIndex;
+        this.outputIndex         = output.index;
    
         this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex      = oldOutIndex;
    
         this.inputOpId           = input.op.id;
-        this.inputIndex          = inIndex;
+        this.inputIndex          = input.index;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
         this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
@@ -21725,14 +21751,11 @@ extends Action
 
     addConnection(conn)
     {
-        const outputIndex = conn.output.op.outputs.indexOf(conn.output);
-        const  inputIndex = conn.input .op. inputs.indexOf(conn. input);
-
         if (!this.connections.find(c => 
                    c.outputOpId  == conn.output.op.id
-                && c.outputIndex == outputIndex
-                && c.inputOpId   == conn.input.op.id
-                && c.inputIndex  == inputIndex))
+                && c.outputIndex == conn.output.index
+                && c. inputOpId  == conn. input.op.id
+                && c. inputIndex == conn. input.index))
             this.connections.push(getConnectionForArrayWithIds(conn));
     }
 
@@ -21953,21 +21976,17 @@ extends Action
 
     constructor(output, input)
     {
-        const outputIndex = output.op.outputs.indexOf(output);
-        const  inputIndex = input .op. inputs.indexOf( input); 
-
-
         super('disconnect ' 
-            + output.op.id + '.out[' + outputIndex + ']'
+            + output.op.id + '.out[' + output.index + ']'
             + ' -> '
-            + input.op.id + '.in[' + inputIndex + ']');
+            + input.op.id + '.in[' + input.index + ']');
 
 
         this.outputOpId  = output.op.id;
-        this.outputIndex = outputIndex;
+        this.outputIndex = output.index;
 
         this.inputOpId   = input.op.id;
-        this.inputIndex  = inputIndex;
+        this.inputIndex  = input.index;
 
 
         this.oldActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
@@ -22097,7 +22116,7 @@ extends Action
         super('set ' + param.op.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.op.id;
-        this.paramIndex = param.op.params.indexOf(param);
+        this.paramIndex = param.index;
 
         this.newValue   = value;
     }
@@ -22280,37 +22299,32 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const outIndex = output.op.outputs.indexOf(output);
-        const  inIndex =  input.op. inputs.indexOf(input); 
-
         const oldOutIndex = 
             input.isConnected 
-            ? input.connectedOutput.op.outputs.indexOf(input.connectedOutput) 
+            ? input.connectedOutput.index
             : -1; 
 
-        const oldInIndex = oldInput.op.inputs.indexOf(oldInput); 
-        
 
         super(
              'reconnect '
-            + output.op.id + '.out[' + outIndex + ']'
+            + output.op.id + '.out[' + output.index + ']'
             + ' ( <- '
-            + oldInput.op.id + '.in[' + oldInIndex + '])'
+            + oldInput.op.id + '.in[' + oldInput.index + '])'
             + ' -> '
-            + input.op.id + '.in[' + inIndex + ']');
+            + input.op.id + '.in[' + input.index + ']');
 
 
         this.outputOpId          = output.op.id;
-        this.outputIndex         = outIndex;
+        this.outputIndex         = output.index;
              
         this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
         this.oldOutputIndex      = oldOutIndex;
      
         this.oldInputOpId        = oldInput.op.id;
-        this.oldInputIndex       = oldInIndex;
+        this.oldInputIndex       = oldInput.index;
      
         this.inputOpId           = input.op.id;
-        this.inputIndex          = inIndex;
+        this.inputIndex          = input.index;
 
         this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
         this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
@@ -22492,8 +22506,8 @@ extends Action
             const output = input.connectedOutput;
 
             uiSaveConnection(
-                output.op.id, output.op.outputs.indexOf(output),
-                 input.op.id,  input.op. inputs.indexOf( input),
+                output.op.id, output.index,
+                 input.op.id,  input.index,
                 input.connection.toJson());
         }
     }
@@ -22711,7 +22725,7 @@ extends Action
         super('set param settings');
 
         this.nodeId             = param.op.id;
-        this.paramIndex         = param.op.params.indexOf(param);
+        this.paramIndex         = param.index;
        
         this.newDecimals        = dec;
         this.oldDecimals        = oldDec;
@@ -22762,7 +22776,7 @@ extends Action
         super('set ' + param.op.id + '.' + param.id + '.locked = ' + boolString(locked));
 
         this.nodeId     = param.op.id;
-        this.paramIndex = param.op.params.indexOf(param);
+        this.paramIndex = param.index;
 
         this.locked  = locked;
     }
@@ -22818,7 +22832,7 @@ extends Action
         super('set ' + param.op.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.op.id;
-        this.paramIndex = param.op.params.indexOf(param);
+        this.paramIndex = param.index;
 
         this.newValue   = value;
     }
@@ -23091,7 +23105,7 @@ var figMessages = [];
 
 //uiClearPageData('GA rect');
 //uiRemoveAllSavedNodesAndConns();
-uiLogAllSavedNodesAndConns();
+//uiLogAllSavedNodesAndConns();
 
 
 var currentUser = '';
@@ -24505,9 +24519,9 @@ function uiConnect(output, input, inputIndex = -1)
 
     uiSaveConnection(
         output.op.id,
-        output.op.outputs.indexOf(output),
+        output.index,
         input.op.id,
-        input.op.inputs.indexOf(input),
+        input.index,
         conn.toJson());
 
     return conn;
@@ -24519,9 +24533,9 @@ function uiDisconnect(input)
 {
     uiRemoveSavedConnection(
         input.connectedOutput.op.id,
-        input.connectedOutput.op.outputs.indexOf(input.connectedOutput),
+        input.connectedOutput.index,
         input.op.id,
-        input.op.inputs.indexOf(input));
+        input.index);
 
 
     graph.disconnect(input);
@@ -24537,9 +24551,9 @@ function uiDisconnect(input)
         {
             uiSaveConnection(
                 _input.connectedOutput.op.id,
-                _input.connectedOutput.op.outputs.indexOf(_input.connectedOutput),
+                _input.connectedOutput.index,
                 inputOp.id,
-                inputOp.inputs.indexOf(_input),
+                _input.index,
                 _input.connection.toJson());
         }
     }
@@ -24550,7 +24564,7 @@ function uiDisconnect(input)
     //     input:
     //     {
     //         nodeId: input.op.id,
-    //         index:  input.op.inputs.indexOf(input)
+    //         index:  input.index
     //     }
     // });
 }

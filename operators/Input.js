@@ -16,6 +16,9 @@ extends EventTarget
     _op    = null; get op   () { return this._op;    }
     _param = null; get param() { return this._param; }
 
+
+    get index() { return this.op.inputs.indexOf(this); }
+
     
     color;
     wireColor;

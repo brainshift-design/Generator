@@ -41,8 +41,8 @@ extends Action
             const output = input.connectedOutput;
 
             uiSaveConnection(
-                output.op.id, output.op.outputs.indexOf(output),
-                 input.op.id,  input.op. inputs.indexOf( input),
+                output.op.id, output.index,
+                 input.op.id,  input.index,
                 input.connection.toJson());
         }
     }

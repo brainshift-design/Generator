@@ -493,9 +493,9 @@ function uiConnect(output, input, inputIndex = -1)
 
     uiSaveConnection(
         output.op.id,
-        output.op.outputs.indexOf(output),
+        output.index,
         input.op.id,
-        input.op.inputs.indexOf(input),
+        input.index,
         conn.toJson());
 
     return conn;
@@ -507,9 +507,9 @@ function uiDisconnect(input)
 {
     uiRemoveSavedConnection(
         input.connectedOutput.op.id,
-        input.connectedOutput.op.outputs.indexOf(input.connectedOutput),
+        input.connectedOutput.index,
         input.op.id,
-        input.op.inputs.indexOf(input));
+        input.index);
 
 
     graph.disconnect(input);
@@ -525,9 +525,9 @@ function uiDisconnect(input)
         {
             uiSaveConnection(
                 _input.connectedOutput.op.id,
-                _input.connectedOutput.op.outputs.indexOf(_input.connectedOutput),
+                _input.connectedOutput.index,
                 inputOp.id,
-                inputOp.inputs.indexOf(_input),
+                _input.index,
                 _input.connection.toJson());
         }
     }
@@ -538,7 +538,7 @@ function uiDisconnect(input)
     //     input:
     //     {
     //         nodeId: input.op.id,
-    //         index:  input.op.inputs.indexOf(input)
+    //         index:  input.index
     //     }
     // });
 }

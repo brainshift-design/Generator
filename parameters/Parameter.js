@@ -18,6 +18,9 @@ extends EventTarget
     _div;     get div()     { return this._div;     }
 
 
+    get index() { return this.op.params.indexOf(this); }
+
+
     input;
     output;
 

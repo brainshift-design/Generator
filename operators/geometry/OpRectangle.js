@@ -130,7 +130,7 @@ extends OperatorBase
 
 
 
-    makeGenRequest()
+    generateRequest()
     {
         return [
             this.opType,

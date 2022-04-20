@@ -16,7 +16,7 @@ extends Action
         super('set ' + param.op.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.op.id;
-        this.paramIndex = param.op.params.indexOf(param);
+        this.paramIndex = param.index;
 
         this.newValue   = value;
     }

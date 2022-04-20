@@ -38,14 +38,11 @@ extends Action
 
     addConnection(conn)
     {
-        const outputIndex = conn.output.op.outputs.indexOf(conn.output);
-        const  inputIndex = conn.input .op. inputs.indexOf(conn. input);
-
         if (!this.connections.find(c => 
                    c.outputOpId  == conn.output.op.id
-                && c.outputIndex == outputIndex
-                && c.inputOpId   == conn.input.op.id
-                && c.inputIndex  == inputIndex))
+                && c.outputIndex == conn.output.index
+                && c. inputOpId  == conn. input.op.id
+                && c. inputIndex == conn. input.index))
             this.connections.push(getConnectionForArrayWithIds(conn));
     }
 

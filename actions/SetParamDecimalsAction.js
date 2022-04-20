@@ -20,7 +20,7 @@ extends Action
         super('set param settings');
 
         this.nodeId             = param.op.id;
-        this.paramIndex         = param.op.params.indexOf(param);
+        this.paramIndex         = param.index;
        
         this.newDecimals        = dec;
         this.oldDecimals        = oldDec;
