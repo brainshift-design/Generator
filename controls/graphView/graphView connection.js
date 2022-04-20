@@ -87,7 +87,9 @@ graphView.endConnection = pointerId =>
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
-                &&  newReorderIndex >= 0)
+                &&  newReorderIndex >= 0
+                &&  input.op._variableInputs
+                && !isLastInArray(input.op.inputs, input))
                 actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
 
             else if (input == savedInput) // reconnect old

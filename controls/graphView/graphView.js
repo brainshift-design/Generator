@@ -1,45 +1,46 @@
-graphView.wires          = [];
+graphView.wires           = [];
+ 
+graphView.loadingNodes    = false;
+graphView.canUpdateNodes  = true;
 
-graphView.loadingNodes   = false;
-graphView.canUpdateNodes = true;
 
+graphView.overNode        = null;
+graphView.overInput       = null;
+graphView.overOutput      = null;
+    
+graphView.headerInput     = null; // same as overInput, but when snapping from a header
+graphView.headerOutput    = null; // same as overOutput, but when snapping from a header
+    
+graphView.tempConn        = null;
+graphView.savedConn       = null;
+graphView.savedInputIndex = -1;
 
-graphView.overNode       = null;
-graphView.overInput      = null;
-graphView.overOutput     = null;
+graphView.connPointerId   = -1;
+
+graphView.showWires       = true;
+graphView._soloNode       = null;
    
-graphView.headerInput    = null; // same as overInput, but when snapping from a header
-graphView.headerOutput   = null; // same as overOutput, but when snapping from a header
-   
-graphView.tempConn       = null;
-graphView.savedConn      = null;
+graphView.selecting       = false;
+graphView.selectionRect   = Rect.NaN;
 
-graphView.connPointerId  = -1;
+graphView.btn1down        = false; // this is to help deal with mouse wheels that send X values as
+                                   // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
-graphView.showWires      = true;
-graphView._soloNode      = null;
-   
-graphView.selecting      = false;
-graphView.selectionRect  = Rect.NaN;
-
-graphView.btn1down       = false; // this is to help deal with mouse wheels that send X values as
-                                  // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
-
-graphView.pan            = point(0, 0);
-graphView.zoom           = 1;
-
-graphView.panning        = false;
-
-graphView.pViewport;
-graphView.pStart         = point(0, 0);
+graphView.pan             = point(0, 0);
+graphView.zoom            = 1;
+ 
+graphView.panning         = false;
+ 
+graphView.pViewport; 
+graphView.pStart          = point(0, 0);
 graphView.zoomStart;
 
 
-scrollbarX.style.zIndex  = MAX_INT32-1;
-scrollbarY.style.zIndex  = MAX_INT32-2;
+scrollbarX.style.zIndex   = MAX_INT32-1;
+scrollbarY.style.zIndex   = MAX_INT32-2;
 
 
-graphView.touches        = [];
+graphView.touches         = [];
 
 
 
