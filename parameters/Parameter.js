@@ -10,15 +10,15 @@ extends EventTarget
     #name;
     get name() { return this.#name; }
 
-    _op;
-    get op()   { return this._op; }
+    _node;
+    get node() { return this._node; }
 
 
     _control; get control() { return this._control; }
     _div;     get div()     { return this._div;     }
 
 
-    get index() { return this.op.params.indexOf(this); }
+    get index() { return this.node.params.indexOf(this); }
 
 
     input;
@@ -118,8 +118,8 @@ extends EventTarget
     update(dispatchEvents)
     {
         if (   this.input
-            && this.input.isConnected)
-            this.input.connectedOutput.op.update();
+            && this.input.connected)
+            this.input.connectedOutput.node.update();
 
         if (this.showParamLock)
             this.paramLock.style.display = 'block';

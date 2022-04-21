@@ -224,8 +224,8 @@ function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProg
         // variable inputs need connections to be sorted by input index
         connections.sort((c1, c2) => 
         {
-            if (c1.inputOp.id != c2.inputOp.id) return c1.inputOp.id - c2.inputOp.id;
-            if (c1.inputIndex != c2.inputIndex) return c1.inputIndex - c2.inputIndex;
+            if (c1.inputNode.id != c2.inputNode.id) return c1.inputNode.id - c2.inputNode.id;
+            if (c1.inputIndex   != c2.inputIndex  ) return c1.inputIndex   - c2.inputIndex;
             return 0;
         });
 

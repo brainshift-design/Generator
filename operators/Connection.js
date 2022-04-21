@@ -66,8 +66,8 @@ class Connection
 
             const isSolo = 
                    graphView._soloNode
-                && (   this. input.op == graphView._soloNode
-                    || this.output.op == graphView._soloNode);
+                && (   this. input.node == graphView._soloNode
+                    || this.output.node == graphView._soloNode);
             
             const showWire = 
                    graphView.showWires 
@@ -224,10 +224,10 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.id + '"'
+            +  '\n' + pos + tab + '"outputOp": "'    + this.output.node.id + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.id + '"'
+            + ',\n' + pos + tab + '"inputOp": "'     + this.input.node.id + '"'
             + ',\n' + pos + tab + '"inputIndex": "'  + this.input.index + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
@@ -239,35 +239,35 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputOp    = nodeFromId(_conn.outputOp);
+        const outputNode  = nodeFromId(_conn.outputNode);
         const outputIndex = parseInt(_conn.outputIndex);
 
-        const inputOp     = nodeFromId(_conn.inputOp);
+        const inputNode   = nodeFromId(_conn.inputNode);
         const inputIndex  = parseInt(_conn.inputIndex);
 
 
         // log('---------------------------------------');
 
-        // log('outputOp',                outputOp);
-        // log('outputIndex',             outputIndex);
-        // log('outputOp.outputs.length', outputOp.outputs.length);
+        // log('outputNode',                outputNode);
+        // log('outputIndex',               outputIndex);
+        // log('outputNode.outputs.length', outputNode.outputs.length);
         
-        // log('inputOp',               inputOp);
-        // log('inputIndex',            inputIndex);
-        // log('inputOp.inputs.length', inputOp.inputs.length);
+        // log('inputOp',                 inputOp);
+        // log('inputIndex',              inputIndex);
+        // log('inputNode.inputs.length', inputNode.inputs.length);
 
 
 
-        if (   !outputOp || outputIndex >= outputOp.outputs.length
-            || !inputOp  ||  inputIndex >= inputOp .inputs .length)
+        if (   !outputNode || outputIndex >= outputNode.outputs.length
+            || !inputNode  ||  inputIndex >= inputNode .inputs .length)
         {
             uiError(
                   'Cannot connect ' 
-                + _conn.outputOp + '.out[' + outputIndex + '] to ' 
-                + _conn.inputOp  + '.in[' + _conn.inputIndex + ']');
+                + _conn.outputNode + '.out[' + outputIndex + '] to ' 
+                + _conn.inputNode  + '.in[' + _conn.inputIndex + ']');
         }
         else
-            uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
+            uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex);
     }
 }
 
@@ -276,9 +276,9 @@ class Connection
 function getConnectionForArrayWithIds(conn)
 {
     return {
-        outputOpId:  conn.output.op.id,
+        outputNodeId:conn.output.node.id,
         outputIndex: conn.output.index,
-        inputOpId:   conn.input .op.id,
+        inputNodeId: conn.input .node.id,
         inputIndex:  conn.input .index };
 }
 
@@ -287,8 +287,8 @@ function getConnectionForArrayWithIds(conn)
 function getConnectionForArrayWithNames(conn)
 {
     return {
-        outputOpName: conn.output.op.id,
+        outputNodeName: conn.output.node.id,
         outputIndex:  conn.output.index,
-        inputOpName:  conn.input .op.id,
+        inputNodeName:  conn.input .node.id,
         inputIndex:   conn.input .index };
 }

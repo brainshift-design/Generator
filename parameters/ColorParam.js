@@ -66,14 +66,14 @@ extends Parameter
 
         this.control.addEventListener('change', e =>
         {
-            this.op.valid = false;
+            this.node.valid = false;
             uiSetParam(this, this.value);
         });
 
 
         this.control.addEventListener('confirm', e =>
         {
-            this.op.valid = false;
+            this.node.valid = false;
             //actionManager.do(new SetParamValueAction(this, this.value));
         });
     }

@@ -13,9 +13,9 @@ extends Action
 
     constructor(param, locked)
     {
-        super('set ' + param.op.id + '.' + param.id + '.locked = ' + boolString(locked));
+        super('set ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
 
-        this.nodeId     = param.op.id;
+        this.nodeId     = param.node.id;
         this.paramIndex = param.index;
 
         this.locked  = locked;
@@ -26,7 +26,7 @@ extends Action
     do()
     {
         //this.oldValue = this.param.oldValue;
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -36,7 +36,7 @@ extends Action
     undo()
     {
         this.param.setLocked(!this.locked);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -46,7 +46,7 @@ extends Action
     redo()
     {
         this.param.setLocked(this.locked);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }

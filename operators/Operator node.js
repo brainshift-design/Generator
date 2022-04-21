@@ -7,7 +7,7 @@ var  oldReorderIndex = Number.NaN;
 function createOperatorNode(node)
 {
     node.div                    = createDiv('node');
-    node.div.op                 = node;
+    node.div.node               = node;
        
     node.div.style.width        = node.defaultWidth + 'px';
            
@@ -103,7 +103,7 @@ function createNodeHeader(node)
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != node)
+                && graphView.tempConn.output.node != node)
             {
                 const input = graphView.headerInput;
                 
@@ -119,7 +119,7 @@ function createNodeHeader(node)
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != node)
+                  && graphView.tempConn.input.node != node)
             {
                 const output = graphView.headerOutput;
                 
@@ -253,7 +253,7 @@ function createNodeHeader(node)
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.op.follows(node))
+                && !tempConn.output.node.follows(node))
             {
                 if (   node._variableInputs
                     && savedConn)
@@ -297,8 +297,8 @@ function createNodeHeader(node)
                     const input = node.getAutoInput(tempConn.output.dataType);
 
                     if ( !input)
-                        // ||    input.isConnected
-                        //    && input.connectedOutput.op == tempConn.output.op) 
+                        // ||    input.connected
+                        //    && input.connectedOutput.node == tempConn.output.node) 
                         return;
 
                     graphView.overInput   = input;
@@ -316,7 +316,7 @@ function createNodeHeader(node)
                 }
             }
             else if (tempConn.input
-                  && !node.follows(tempConn.input.op))
+                  && !node.follows(tempConn.input.node))
             {
                 const output = node.getAutoOutput(tempConn.input.dataType);
                 if (!output) return;
@@ -370,14 +370,14 @@ function createNodeHeader(node)
         else if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.op.follows(node)
+                && !graphView.tempConn.output.node.follows(node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
-                  && !node.follows(graphView.tempConn.input.op)
+                  && !node.follows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);

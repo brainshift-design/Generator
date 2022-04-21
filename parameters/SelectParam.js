@@ -86,7 +86,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        this.op.pushUpdate();
+        this.node.pushUpdate();
     }
 
 
@@ -103,7 +103,7 @@ extends Parameter
         super.update();
 
         if (   this.input
-            && this.input.isConnected)
+            && this.input.connected)
             this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
     }
 

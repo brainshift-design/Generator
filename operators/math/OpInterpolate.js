@@ -29,43 +29,43 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        let result = Number.NaN;
-        let maxDec = 0;
+    // updateData()
+    // {
+    //     let result = Number.NaN;
+    //     let maxDec = 0;
 
-        if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
-        {
-            const a = this.inputs[0].data.value; 
-            const b = this.inputs[1].data.value; 
+    //     if (   this.inputs[0].connected
+    //         && this.inputs[1].connected)
+    //     {
+    //         const a = this.inputs[0].data.value; 
+    //         const b = this.inputs[1].data.value; 
 
-            result = a + (b - a) * this.#paramAmount.value / 100;
+    //         result = a + (b - a) * this.#paramAmount.value / 100;
 
-            maxDec = Math.max(
-                this.inputs[0].data.decimals,
-                this.inputs[1].data.decimals);
-        }
-        else if (this.inputs[0].isConnected)
-        {
-            result = this.inputs[0].data.value;
-            maxDec = this.inputs[0].data.decimals;
-        }
-        else if (this.inputs[1].isConnected)
-        {
-            result = this.inputs[1].data.value;
-            maxDec = this.inputs[1].data.decimals;
-        }
-
-
-        this.outputs[0]._data = dataFromNumber(result, maxDec);
-
-        this.#paramValue.control.setDecimals(maxDec);
-        this.#paramValue.setValue(result, false, true, false);
-
-        this.#paramValue.control.update();
+    //         maxDec = Math.max(
+    //             this.inputs[0].data.decimals,
+    //             this.inputs[1].data.decimals);
+    //     }
+    //     else if (this.inputs[0].connected)
+    //     {
+    //         result = this.inputs[0].data.value;
+    //         maxDec = this.inputs[0].data.decimals;
+    //     }
+    //     else if (this.inputs[1].connected)
+    //     {
+    //         result = this.inputs[1].data.value;
+    //         maxDec = this.inputs[1].data.decimals;
+    //     }
 
 
-        super.updateData()
-    }
+    //     this.outputs[0]._data = dataFromNumber(result, maxDec);
+
+    //     this.#paramValue.control.setDecimals(maxDec);
+    //     this.#paramValue.setValue(result, false, true, false);
+
+    //     this.#paramValue.control.update();
+
+
+    //     super.updateData()
+    // }
 }

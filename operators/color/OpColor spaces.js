@@ -35,160 +35,160 @@ const luvScale    = [100, 150, 150];
 
 
 
-function switchToSpace(op, space)
+function switchToSpace(node, space)
 {
     switch (space)
     {
-        case 'hex':    switchToHex   (op); break;
-        case 'rgbhex': switchToRgbHex(op); break;
-        case 'rgb':    switchToRgb   (op); break;
-        case 'hsv':    switchToHsv   (op); break;
-        case 'hsl':    switchToHsl   (op); break;
-        case 'hclokl': switchToHclOkl(op); break;
-        case 'hcllab': switchToHclLab(op); break;
-        case 'hclluv': switchToHclLuv(op); break;
-        case 'oklab':  switchToOklab (op); break;
-        case 'lab':    switchToLab   (op); break;
-        case 'luv':    switchToLuv   (op); break;
+        case 'hex':    switchToHex   (node); break;
+        case 'rgbhex': switchToRgbHex(node); break;
+        case 'rgb':    switchToRgb   (node); break;
+        case 'hsv':    switchToHsv   (node); break;
+        case 'hsl':    switchToHsl   (node); break;
+        case 'hclokl': switchToHclOkl(node); break;
+        case 'hcllab': switchToHclLab(node); break;
+        case 'hclluv': switchToHclLuv(node); break;
+        case 'oklab':  switchToOklab (node); break;
+        case 'lab':    switchToLab   (node); break;
+        case 'luv':    switchToLuv   (node); break;
     }
 
-    op.resetAllControlRanges();
+    node.resetAllControlRanges();
 }
 
 
 
-function switchToHex   (op) { switchToTextbox       (op);           }
-function switchToRgbHex(op) { switchToRgbHexControls(op);           }
-function switchToRgb   (op) { switchToRgbControls   (op);           }
-function switchToHsv   (op) { switchToHs_Controls   (op, 'V');      }
-function switchToHsl   (op) { switchToHs_Controls   (op, 'L');      }
-function switchToHclOkl(op) { switchToHclOklControls(op);           }
-function switchToHclLab(op) { switchToHclLabControls(op);           }
-function switchToHclLuv(op) { switchToHclLuvControls(op);           }
-function switchToOklab (op) { switchToOklabControls (op, 'a', 'b'); }
-function switchToLab   (op) { switchToLabControls   (op, 'a', 'b'); }
-function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
+function switchToHex   (node) { switchToTextbox       (node);           }
+function switchToRgbHex(node) { switchToRgbHexControls(node);           }
+function switchToRgb   (node) { switchToRgbControls   (node);           }
+function switchToHsv   (node) { switchToHs_Controls   (node, 'V');      }
+function switchToHsl   (node) { switchToHs_Controls   (node, 'L');      }
+function switchToHclOkl(node) { switchToHclOklControls(node);           }
+function switchToHclLab(node) { switchToHclLabControls(node);           }
+function switchToHclLuv(node) { switchToHclLuvControls(node);           }
+function switchToOklab (node) { switchToOklabControls (node, 'a', 'b'); }
+function switchToLab   (node) { switchToLabControls   (node, 'a', 'b'); }
+function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v'); }
    
 
 
-function switchToRgbHexControls(op)
+function switchToRgbHexControls(node)
 {
-    switchToControls(op, 
+    switchToControls(node, 
         '<span class=\'hash\'>#</span>R', 0, rgbScale[0], '', false, 
         '<span class=\'hash\'>#</span>G', 0, rgbScale[1], 
         '<span class=\'hash\'>#</span>B', 0, rgbScale[2]);  
 
-    showRgbControlHex(op, true);
+    showRgbControlHex(node, true);
 }
 
 
 
-function switchToRgbControls(op)
+function switchToRgbControls(node)
 {
-    switchToControls(op, 
+    switchToControls(node, 
         'R', 0, rgbScale[0], '', false, 
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    showRgbControlHex(op, false);    
+    showRgbControlHex(node, false);    
 }
 
 
 
-function switchToHs_Controls(op, v_or_l) 
+function switchToHs_Controls(node, v_or_l) 
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'H',    0, hs_Scale[0], '°', true,  
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToHclControls(op, scale) 
+function switchToHclControls(node, scale) 
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToHclOklControls(op) { switchToHclControls(op, hcloklScale); }
-function switchToHclLabControls(op) { switchToHclControls(op, hcllabScale); }
-function switchToHclLuvControls(op) { switchToHclControls(op, hclluvScale); }
+function switchToHclOklControls(node) { switchToHclControls(node, hcloklScale); }
+function switchToHclLabControls(node) { switchToHclControls(node, hcllabScale); }
+function switchToHclLuvControls(node) { switchToHclControls(node, hclluvScale); }
 
 
 
-function switchToOppControls(op, c2, c3, scale)
+function switchToOppControls(node, c2, c3, scale)
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'L', 0,        scale[0], '', false,  
         c2, -scale[1], scale[1], 
         c3, -scale[2], scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToOklabControls(op) { switchToOppControls(op, 'a', 'b', oklabScale); }
-function switchToLabControls  (op) { switchToOppControls(op, 'a', 'b', labScale  ); }
-function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale  ); }
+function switchToOklabControls(node) { switchToOppControls(node, 'a', 'b', oklabScale); }
+function switchToLabControls  (node) { switchToOppControls(node, 'a', 'b', labScale  ); }
+function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvScale  ); }
 
 
 
-function showRgbControlHex(op, show)
+function showRgbControlHex(node, show)
 {
-    op.param1.control.showHex = show;
-    op.param2.control.showHex = show;
-    op.param3.control.showHex = show;
+    node.param1.control.showHex = show;
+    node.param2.control.showHex = show;
+    node.param3.control.showHex = show;
 }
 
 
 
-function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
+function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
 {
-    switchToSliders(op);
+    switchToSliders(node);
 
-    op.param1.setName(c1, false); 
-    op.param2.setName(c2, false); 
-    op.param3.setName(c3, false);
+    node.param1.setName(c1, false); 
+    node.param2.setName(c2, false); 
+    node.param3.setName(c3, false);
 
-    op.param1.control.wrapValue = c1wrap;
-    op.param1.control.setSuffix(c1suffix, c1suffix != '');
+    node.param1.control.wrapValue = c1wrap;
+    node.param1.control.setSuffix(c1suffix, c1suffix != '');
 
-    op.param1.control.setMin(c1min, false); 
-    op.param2.control.setMin(c2min, false);
-    op.param3.control.setMin(c3min, false);
+    node.param1.control.setMin(c1min, false); 
+    node.param2.control.setMin(c2min, false);
+    node.param3.control.setMin(c3min, false);
     
-    op.param1.control.setMax(c1max, false); 
-    op.param2.control.setMax(c2max, false); 
-    op.param3.control.setMax(c3max, false); 
+    node.param1.control.setMax(c1max, false); 
+    node.param2.control.setMax(c2max, false); 
+    node.param3.control.setMax(c3max, false); 
     
-    op.param1.updateControls();
-    op.param2.updateControls();
-    op.param3.updateControls();
+    node.param1.updateControls();
+    node.param2.updateControls();
+    node.param3.updateControls();
 }
 
 
 
-function switchToTextbox(op)
+function switchToTextbox(node)
 {
-    if (!op.inner.contains(op.hexbox))
+    if (!node.inner.contains(node.hexbox))
     {
-        removeOpColorParamWires(op);
+        removeOpColorParamWires(node);
 
-        op.inner.removeChild(op.param1.div);
-        op.inner.removeChild(op.param2.div);
-        op.inner.removeChild(op.param3.div);
+        node.inner.removeChild(node.param1.div);
+        node.inner.removeChild(node.param2.div);
+        node.inner.removeChild(node.param3.div);
         
-        op.inner.appendChild(op.hexbox);
+        node.inner.appendChild(node.hexbox);
 
         //graphView.updateNodeTransform(op);
     }
@@ -196,30 +196,30 @@ function switchToTextbox(op)
 
 
 
-function removeOpColorParamWires(op)
+function removeOpColorParamWires(node)
 {
-    for (let i = op.inputs.length-1; i >= 2; i--)
-        if (op.inputs[i].isConnected)
-            uiDisconnect(op.inputs[i]);
+    for (let i = node.inputs.length-1; i >= 2; i--)
+        if (node.inputs[i].connected)
+            uiDisconnect(node.inputs[i]);
 
-    for (let i = op.outputs.length-1; i >= 2; i--)
-        for (const input of op.outputs[i].connectedInputs)
+    for (let i = node.outputs.length-1; i >= 2; i--)
+        for (const input of node.outputs[i].connectedInputs)
             uiDisconnect(input);
 }
 
 
 
-function switchToSliders(op)
+function switchToSliders(node)
 {
-    if (op.inner.contains(op.hexbox))
+    if (node.inner.contains(node.hexbox))
     {
-        op.inner.removeChild(op.hexbox);
+        node.inner.removeChild(node.hexbox);
 
-        op.inner.appendChild(op.param1.div);
-        op.inner.appendChild(op.param2.div);
-        op.inner.appendChild(op.param3.div);
+        node.inner.appendChild(node.param1.div);
+        node.inner.appendChild(node.param2.div);
+        node.inner.appendChild(node.param3.div);
 
-        graphView.updateNodeTransform(op);
+        graphView.updateNodeTransform(node);
     }
 }
 
@@ -435,11 +435,11 @@ function getDataColorHcl(c1, c2, c3)
 
 
 
-function setDataColorToCurrentSpace(op, color)
+function setDataColorToCurrentSpace(node, color)
 {
-    const toSpace = colorSpace(op.paramSpace.value);
-    op._color = convertDataColorToSpace(color, toSpace);
-    op.setColorParams(op._color);
+    const toSpace = colorSpace(node.paramSpace.value);
+    node._color = convertDataColorToSpace(color, toSpace);
+    node.setColorParams(node._color);
 }
 
 

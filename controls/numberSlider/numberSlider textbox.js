@@ -54,7 +54,7 @@ function initNumberSliderTextbox(slider)
             
             if (slider.param)
             {
-                const params = slider.param.op.params;
+                const params = slider.param.node.params;
                 let   index  = slider.param.index;
 
                 slider.textbox.finish(true, false);
@@ -291,7 +291,7 @@ function initNumberSliderTextbox(slider)
         const isConnected =    
                slider.param != null
             && slider.param.input
-            && slider.param.input.isConnected;
+            && slider.param.input.connected;
 
         enableElementText(
             slider.textbox, 

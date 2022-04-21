@@ -14,9 +14,9 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.op.id + '.' + param.id + ' = ' + value);
+        super('set ' + param.node.id + '.' + param.id + ' = ' + value);
 
-        this.nodeId     = param.op.id;
+        this.nodeId     = param.node.id;
         this.paramIndex = param.index;
 
         this.newValue   = value;
@@ -27,7 +27,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -37,7 +37,7 @@ extends Action
     undo()
     {
         this.param.setValue(this.oldValue, false, true);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -47,7 +47,7 @@ extends Action
     redo()
     {
         this.param.setValue(this.newValue);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }

@@ -36,13 +36,13 @@ extends Action
 
         const node = nodeFromId(this.nodeId);
 
-        for (const input of node.inputs.filter(i => i.isConnected))
+        for (const input of node.inputs.filter(i => i.connected))
         {
             const output = input.connectedOutput;
 
             uiSaveConnection(
-                output.op.id, output.index,
-                 input.op.id,  input.index,
+                output.node.id, output.index,
+                 input.node.id,  input.index,
                 input.connection.toJson());
         }
     }

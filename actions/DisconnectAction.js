@@ -1,57 +1,57 @@
 class DisconnectAction
 extends Action
 {
-    outputOpId;
+    outputNodeId;
     outputIndex;
-    get outputOp() { return nodeFromId(this.outputOpId); }
+    get outputNode() { return nodeFromId(this.outputNodeId); }
 
-    inputOpId;
+    inputNodeId;
     inputIndex;
-    get inputOp() { return nodeFromId(this.inputOpId); }
+    get inputNodeId() { return nodeFromId(this.inputNodeId); }
 
-    oldActiveOpIds = [];
-    newActiveOpIds = [];
+    oldActiveNodeIds = [];
+    newActiveNodeIds = [];
 
 
 
     constructor(output, input)
     {
         super('disconnect ' 
-            + output.op.id + '.out[' + output.index + ']'
+            + output.node.id + '.out[' + output.index + ']'
             + ' -> '
-            + input.op.id + '.in[' + input.index + ']');
+            + input.node.id + '.in[' + input.index + ']');
 
 
-        this.outputOpId  = output.op.id;
-        this.outputIndex = output.index;
+        this.outputNodeId = output.node.id;
+        this.outputIndex  = output.index;
 
-        this.inputOpId   = input.op.id;
-        this.inputIndex  = input.index;
+        this.inputNodeId  = input.node.id;
+        this.inputIndex   = input.index;
 
 
-        this.oldActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
+        this.oldActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
     }
 
 
 
     do()
     {
-        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
-        if (!getActiveNodeInTreeFrom(this.inputOp))
+        if (!getActiveNodeInTreeFrom(this.inputNode))
         {
-            uiMakeNodeActive(this.inputOp);
-            this.newActiveOpIds.push(this.inputOpId);
-            this.inputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.inputOp);
+            uiMakeNodeActive(this.inputNode);
+            this.newActiveNodeIds.push(this.inputNodeId);
+            this.inputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.inputNode);
         }
 
-        if (!getActiveNodeInTreeFrom(this.outputOp))
+        if (!getActiveNodeInTreeFrom(this.outputNode))
         {
-            uiMakeNodeActive(this.outputOp);
-            this.newActiveOpIds.push(this.outputOpId);
-            this.outputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.outputOp);
+            uiMakeNodeActive(this.outputNode);
+            this.newActiveNodeIds.push(this.outputNodeId);
+            this.outputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.outputNode);
         }
     }
     
@@ -60,40 +60,40 @@ extends Action
     undo()
     {
         uiVariableConnect(
-            this.outputOp, this.outputIndex, 
-            this. inputOp, this. inputIndex);
+            this.outputNode, this.outputIndex, 
+            this. inputNode, this. inputIndex);
 
-        for (const id of this.newActiveOpIds)
+        for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
-        let oldActiveOpIds = [...this.oldActiveOpIds];
-        oldActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldActiveOpIds)
+        for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        //graphView.updateNodeTransform(this.inputOp);
-        this.inputOp.pushUpdate();
+        //graphView.updateNodeTransform(this.inputNode);
+        this.inputNode.pushUpdate();
     }
     
     
     
     redo()
     {
-        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
-        if (!getActiveNodeInTreeFrom(this.inputOp))
+        if (!getActiveNodeInTreeFrom(this.inputNode))
         {
-            uiMakeNodeActive(this.inputOp);
-            this.inputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.inputOp);
+            uiMakeNodeActive(this.inputNode);
+            this.inputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.inputNode);
         }
 
-        if (!getActiveNodeInTreeFrom(this.outputOp))
+        if (!getActiveNodeInTreeFrom(this.outputNode))
         {
-            uiMakeNodeActive(this.outputOp);
-            this.outputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.outputOp);
+            uiMakeNodeActive(this.outputNode);
+            this.outputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.outputNode);
         }
    }
 }

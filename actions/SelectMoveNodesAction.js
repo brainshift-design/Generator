@@ -72,7 +72,7 @@ extends Action
         for (var i = 0; i < movedNodes.length; i++)
         {
             const p = this.to.find(t => t[0] == movedNodes[i].id)[1];
-            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+            setNodePosition(movedNodes[i].div.node, p.x, p.y);
         }
 
         for (const node of movedNodes)
@@ -91,7 +91,7 @@ extends Action
         for (var i = 0; i < movedNodes.length; i++)
         {
             const p = this.from.find(t => t[0] == movedNodes[i].id)[1];
-            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+            setNodePosition(movedNodes[i].div.node, p.x, p.y);
         }
 
         for (const node of movedNodes)

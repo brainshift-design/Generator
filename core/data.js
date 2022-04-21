@@ -43,13 +43,13 @@ function dataFromDataColor(color)
 
 
 
-function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, opType)
+function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, nodeType)
 {
     return {
         type: 'object',
 
         //nodeId: nodeId,
-        //opType: opType,
+        //nodeType: nodeType,
 
         x:      x,
         y:      y,

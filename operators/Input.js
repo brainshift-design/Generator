@@ -7,17 +7,17 @@ extends EventTarget
     get data()
     {
         return (
-            this.isConnected
+            this.connected
             ? this.connectedOutput.data
             : null);
     }
 
 
-    _op    = null; get op   () { return this._op;    }
+    _node  = null; get node () { return this._node;  }
     _param = null; get param() { return this._param; }
 
 
-    get index() { return this.op.inputs.indexOf(this); }
+    get index() { return this.node.inputs.indexOf(this); }
 
     
     color;
@@ -115,12 +115,12 @@ extends EventTarget
             if (   graphView.tempConn
                 && graphView.tempConn.output
                 && graphView.tempConn.output.dataType == this.dataType
-                && (  !this.isConnected
+                && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
             {
                 const rect = boundingRect(this.control);
-                const loop = graphView.tempConn.output.op.follows(this.op);
+                const loop = graphView.tempConn.output.node.follows(this.node);
 
                 if (!loop)
                 {
@@ -130,7 +130,7 @@ extends EventTarget
                 }
 
                 graphView.overInput = !loop ? this : null;
-                this.op.inputs.forEach(i => i.updateControl());
+                this.node.inputs.forEach(i => i.updateControl());
             }
             else
                 graphView.overInput = this;
@@ -168,7 +168,7 @@ extends EventTarget
             && !(   graphView.tempConn
                  && graphView.tempConn.output
                  && (   graphView.tempConn.output.dataType != this.dataType
-                     || graphView.tempConn.output.op.follows(this.op)));
+                     || graphView.tempConn.output.node.follows(this.node)));
 
         const colorStyle = 
             graphView.showWires
@@ -181,7 +181,7 @@ extends EventTarget
 
 
         const isConnected =
-               this.isConnected
+               this.connected
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
                    ||    graphView.overInput == this
@@ -204,7 +204,7 @@ extends EventTarget
         this.hitbox.style.top  = isConnected ? -2 : -3;
 
         this.wireBall.style.backgroundColor = 
-            this.isConnected
+            this.connected
             ? (   graphView.savedConn
                && graphView.savedConn.input == this
                && graphView.overInput != this

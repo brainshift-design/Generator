@@ -79,7 +79,7 @@ function initSelect(select, items)
 
 
         let options = select.getElementsByTagName('option');
-        for (const op of options) op.disabled = op.value == '-';
+        for (const node of options) node.disabled = node.value == '-';
     };
     
 

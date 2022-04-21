@@ -61,7 +61,7 @@ extends OpColorBase
         {
             for (let i = 1; i < this.params.length; i++)
             {
-                if (!this.params[i].input.isConnected) 
+                if (!this.params[i].input.connected) 
                     enableSliderText(this.params[i].control, true);
             }
 
@@ -95,7 +95,7 @@ extends OpColorBase
 
 
         for (let i = 1; i < this.params.length; i++)
-            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].isConnected); });
+            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].connected); });
     }
 
 
@@ -130,10 +130,10 @@ extends OpColorBase
 
     isConnected()
     {
-        return this.inputs[0].isConnected
-            || this.inputs[2].isConnected
-            || this.inputs[3].isConnected
-            || this.inputs[4].isConnected;
+        return this.inputs[0].connected
+            || this.inputs[2].connected
+            || this.inputs[3].connected
+            || this.inputs[4].connected;
     }
 
 
@@ -145,94 +145,94 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        //log(this.id + '.OpColor.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.OpColor.updateData()');
 
-        if (this.inputs[0].isConnected) 
-        {
-            if (   dataColorIsNaN(this.inputs[0].data.color)
-                && !this.loading
-                && !dataColorIsNaN(this._color))
-            {
-                this._colorBeforeNaN = this._color;
-                this._color          = dataColor_NaN;
-            }
-            else
-            {
-                const toSpace = colorSpace(this.paramSpace.value);
-                const color   = convertDataColorToSpace(this.inputs[0].data.color, toSpace);
+    //     if (this.inputs[0].connected) 
+    //     {
+    //         if (   dataColorIsNaN(this.inputs[0].data.color)
+    //             && !this.loading
+    //             && !dataColorIsNaN(this._color))
+    //         {
+    //             this._colorBeforeNaN = this._color;
+    //             this._color          = dataColor_NaN;
+    //         }
+    //         else
+    //         {
+    //             const toSpace = colorSpace(this.paramSpace.value);
+    //             const color   = convertDataColorToSpace(this.inputs[0].data.color, toSpace);
                 
-                if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
-                if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
-                if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
+    //             if (this.param1.input.connected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
+    //             if (this.param2.input.connected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
+    //             if (this.param3.input.connected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-                switchToSpace(this, toSpace);
-                setDataColorToCurrentSpace(this, color);
-            }
-        }
-        else
-        {
-            if (!dataColorIsNaN(this._colorBeforeNaN))
-            {
-                this._color          = this._colorBeforeNaN;
-                this._colorBeforeNaN = dataColor_NaN;
+    //             switchToSpace(this, toSpace);
+    //             setDataColorToCurrentSpace(this, color);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (!dataColorIsNaN(this._colorBeforeNaN))
+    //         {
+    //             this._color          = this._colorBeforeNaN;
+    //             this._colorBeforeNaN = dataColor_NaN;
 
-                const toSpace = colorSpace(this.paramSpace.value);
+    //             const toSpace = colorSpace(this.paramSpace.value);
 
-                switchToSpace(this, toSpace);
-                setDataColorToCurrentSpace(this, this._color);
+    //             switchToSpace(this, toSpace);
+    //             setDataColorToCurrentSpace(this, this._color);
 
-                this._oldSpace = toSpace;
-            }
-            else
-            {
-                const toSpace = colorSpace(this.paramSpace.value);
+    //             this._oldSpace = toSpace;
+    //         }
+    //         else
+    //         {
+    //             const toSpace = colorSpace(this.paramSpace.value);
 
-                if (   !this.#init
-                    ||  this._oldSpace != toSpace
-                    || !dataColorIsNaN(this._colorBeforeNaN))
-                {
-                    this.param1.allowEditDecimals = this.paramSpace.value > 1;
-                    this.param2.allowEditDecimals = this.paramSpace.value > 1;
-                    this.param3.allowEditDecimals = this.paramSpace.value > 1;
+    //             if (   !this.#init
+    //                 ||  this._oldSpace != toSpace
+    //                 || !dataColorIsNaN(this._colorBeforeNaN))
+    //             {
+    //                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
+    //                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
+    //                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
 
-                    const color =
-                        this.loading 
-                        ? this.getDataColorFromParams()
-                        : this._color;
-
-
-                    switchToSpace(this, toSpace);
-                    setDataColorToCurrentSpace(this, color);
+    //                 const color =
+    //                     this.loading 
+    //                     ? this.getDataColorFromParams()
+    //                     : this._color;
 
 
-                    for (let i = 2; i < 5; i++)
-                    {
-                        if (this.inputs[i].isConnected) 
-                        { 
-                            const param = this.inputs[i].param;
-
-                            param.update(); 
-                            this._color[i-1] = param.value; 
-                        }
-                    }
+    //                 switchToSpace(this, toSpace);
+    //                 setDataColorToCurrentSpace(this, color);
 
 
-                    this.#init = true;
-                }
+    //                 for (let i = 2; i < 5; i++)
+    //                 {
+    //                     if (this.inputs[i].connected) 
+    //                     { 
+    //                         const param = this.inputs[i].param;
 
-                this._color    = this.getDataColorFromParams();
-                this._oldSpace = toSpace;
-            }
-        }
+    //                         param.update(); 
+    //                         this._color[i-1] = param.value; 
+    //                     }
+    //                 }
+
+
+    //                 this.#init = true;
+    //             }
+
+    //             this._color    = this.getDataColorFromParams();
+    //             this._oldSpace = toSpace;
+    //         }
+    //     }
 
     
-        this.outputs[0]._data = dataFromDataColor(this._color);
+    //     this.outputs[0]._data = dataFromDataColor(this._color);
 
 
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
@@ -241,7 +241,7 @@ extends OpColorBase
         //log(this.id + '.OpColor.updateNode()');
 
         
-        enableElementText(this.hexbox, !this.isConnected());
+        enableElementText(this.hexbox, !this.connected());
 
         if (this.hexbox != document.activeElement)
         {
@@ -323,17 +323,17 @@ extends OpColorBase
     updateSlider(slider, isValid)
     {
         // slider.valueText = 
-        //        this.inputs[0].isConnected 
+        //        this.inputs[0].connected 
         //     // && this.inputs[0].data.color[0] != this._color[0]
         //     && !isValid 
         //     ? '?' 
         //     : '';
 
-        if (    this.inputs[0].isConnected
+        if (    this.inputs[0].connected
             && !isValid)
             slider.setValue(Number.NaN, true, false, false);
 
-        enableElementText(slider.textbox, !this.inputs[0].isConnected);
+        enableElementText(slider.textbox, !this.inputs[0].connected);
 
         slider.update();
     }
@@ -422,8 +422,8 @@ extends OpColorBase
     paramIsConsideredDefault(param)
     {
         return super.paramIsConsideredDefault(param)
-            && !this.inputs[0].isConnected
-            && (  !this.paramSpace.input.isConnected
+            && !this.inputs[0].connected
+            && (  !this.paramSpace.input.connected
                 || this.paramSpace.value == 0);
     }
 
@@ -492,20 +492,20 @@ extends OpColorBase
 //     if (   paramSpace.value == 0
 //         && paramSpace.oldValue > 0)
 //     {
-//         for (let i = 2; i < paramSpace.op.inputs.length; i++)
+//         for (let i = 2; i < paramSpace.node.inputs.length; i++)
 //         {
-//             const input = paramSpace.op.inputs[i];
+//             const input = paramSpace.node.inputs[i];
 
-//             if (input.isConnected)
-//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//             if (input.connected)
+//                 paramSpace.node._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
 //         }   
 
-//         for (let i = 2; i < paramSpace.op.outputs.length; i++)
+//         for (let i = 2; i < paramSpace.node.outputs.length; i++)
 //         {
-//             const output = paramSpace.op.outputs[i];
+//             const output = paramSpace.node.outputs[i];
 
 //             for (const input of output.connectedInputs)
-//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//                 paramSpace.node._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
 //         }   
 //     }
 // }
@@ -519,22 +519,22 @@ extends OpColorBase
 //     if (   paramSpace.value > 0
 //         && paramSpace.oldValue == 0)
 //     {
-//         for (const conn of paramSpace.op._oldSpaceConnections)
+//         for (const conn of paramSpace.node._oldSpaceConnections)
 //         {
 //             const outputOp = nodeFromId(conn.outputOpName);
 //             const  inputOp = nodeFromId(conn. inputOpName);
 
 //             if (outputOp && inputOp)
 //             {
-//                 const output = outputOp.outputs[conn.outputIndex];
-//                 const  input =  inputOp. inputs[conn. inputIndex];
+//                 const output = outputNode.outputs[conn.outputIndex];
+//                 const  input =  inputNode. inputs[conn. inputIndex];
 
-//                 uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
+//                 uiVariableConnect(outputNode, conn.outputIndex, inputNode, conn.inputIndex);
 //             }
 //         }
 
-//         paramSpace.op._oldSpaceConnections = [];
+//         paramSpace.node._oldSpaceConnections = [];
 //     }
 
-//     //paramSpace.op.pushUpdate();
+//     //paramSpace.node.pushUpdate();
 // }

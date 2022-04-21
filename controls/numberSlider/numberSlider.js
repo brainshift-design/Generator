@@ -116,15 +116,15 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 return;
             }
     
-            let opDiv = 
+            let nodeDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
                 ? slider.parentNode.parentNode.parentNode
                 : null;
 
-            if (opDiv && opDiv.className == 'node') 
-                graphView.putNodeOnTop(opDiv.op);
+            if (nodeDiv && nodeDiv.className == 'node') 
+                graphView.putNodeOnTop(nodeDiv.node);
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
@@ -159,14 +159,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             const objCol = colorStyleRgb(rgbActiveObject);
 
             if (   !slider.param
-                || !slider.param.op.selected)
+                || !slider.param.node.selected)
                 slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
 
             else
             {
                 slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
                     
-                if (param.index < param.op.params.length-1)
+                if (param.index < param.node.params.length-1)
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
             }
 
@@ -245,7 +245,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
                     if (slider.value != slider.prevValue)
-                        slider.param.op.pushUpdate();
+                        slider.param.node.pushUpdate();
                                         
                     slider.prevValue = slider.value;
                 }
@@ -272,8 +272,8 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             if (    graphView.tempConn.output
                 &&  slider.param.input
                 &&  graphView.tempConn.output.dataType == slider.param.input.dataType
-                && !graphView.tempConn.output.op.follows(slider.param.op)
-                && (  !slider.param.input.isConnected // not already connected to this input
+                && !graphView.tempConn.output.node.follows(slider.param.node)
+                && (  !slider.param.input.connected // not already connected to this input
                     || slider.param.input.connectedOutput != graphView.tempConn.output
                     || slider.param.input == savedInput))
             {
@@ -291,7 +291,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             else if ( graphView.tempConn.input
                   &&  slider.param.output
                   &&  graphView.tempConn.input.dataType == slider.param.output.dataType
-                  && !slider.param.op.follows(graphView.tempConn.input.op))
+                  && !slider.param.node.follows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = slider.param.output;
                     
@@ -336,14 +336,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.op.follows(slider.param.op)
+                && !graphView.tempConn.output.node.follows(slider.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !slider.param.op.follows(graphView.tempConn.input.op)
+                && !slider.param.node.follows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -414,7 +414,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
                 
-                if (!isLastInArray(param.op.params, param))
+                if (!isLastInArray(param.node.params, param))
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
             }
             else
@@ -444,7 +444,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != slider.param.op)
+                && graphView.tempConn.output.node != slider.param.node)
             {
                 const input = graphView.overInput;
                 
@@ -459,7 +459,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != slider.param.op)
+                  && graphView.tempConn.input.node != slider.param.node)
             {
                 const output = graphView.overOutput;
                 

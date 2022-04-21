@@ -50,7 +50,7 @@ extends OperatorBase
         this.inputs[0].addEventListener('disconnect', () =>
         {
             for (const param of this.params)
-                if (!param.input.isConnected) 
+                if (!param.input.connected) 
                     enableSliderText(param.control, true);
         });
 
@@ -101,47 +101,47 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        if (this.inputs[0].isConnected) 
-        {
-            const data = this.inputs[0].data;
+    // updateData()
+    // {
+    //     if (this.inputs[0].connected) 
+    //     {
+    //         const data = this.inputs[0].data;
 
-            this.#paramX     .setValue(this.#paramX     .input.isConnected ? this.#paramX     .input.data.value : data.x,      false, true, false);
-            this.#paramY     .setValue(this.#paramY     .input.isConnected ? this.#paramY     .input.data.value : data.y,      false, true, false);
-            this.#paramWidth .setValue(this.#paramWidth .input.isConnected ? this.#paramWidth .input.data.value : data.width,  false, true, false);
-            this.#paramHeight.setValue(this.#paramHeight.input.isConnected ? this.#paramHeight.input.data.value : data.height, false, true, false);
-            this.#paramAngle .setValue(this.#paramAngle .input.isConnected ? this.#paramAngle .input.data.value : data.angle,  false, true, false);
-            this.#paramRound .setValue(this.#paramRound .input.isConnected ? this.#paramRound .input.data.value : data.round,  false, true, false);
-        }
+    //         this.#paramX     .setValue(this.#paramX     .input.connected ? this.#paramX     .input.data.value : data.x,      false, true, false);
+    //         this.#paramY     .setValue(this.#paramY     .input.connected ? this.#paramY     .input.data.value : data.y,      false, true, false);
+    //         this.#paramWidth .setValue(this.#paramWidth .input.connected ? this.#paramWidth .input.data.value : data.width,  false, true, false);
+    //         this.#paramHeight.setValue(this.#paramHeight.input.connected ? this.#paramHeight.input.data.value : data.height, false, true, false);
+    //         this.#paramAngle .setValue(this.#paramAngle .input.connected ? this.#paramAngle .input.data.value : data.angle,  false, true, false);
+    //         this.#paramRound .setValue(this.#paramRound .input.connected ? this.#paramRound .input.data.value : data.round,  false, true, false);
+    //     }
 
     
-        this.outputs[0]._data = dataFromRectangle(
-            this.#paramX     .value,
-            this.#paramY     .value,
-            this.#paramWidth .value,
-            this.#paramHeight.value,
-            this.#paramAngle .value,
-            this.#paramRound .value);
+    //     this.outputs[0]._data = dataFromRectangle(
+    //         this.#paramX     .value,
+    //         this.#paramY     .value,
+    //         this.#paramWidth .value,
+    //         this.#paramHeight.value,
+    //         this.#paramAngle .value,
+    //         this.#paramRound .value);
 
 
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
-    generateRequest()
-    {
-        return [
-            this.opType,
-            this.id,
-            this.#paramX     .value,
-            this.#paramY     .value,
-            this.#paramWidth .value,
-            this.#paramHeight.value,
-            this.#paramAngle .value,
-            this.#paramRound .value ];
-    }
+    // generateRequest()
+    // {
+    //     return [
+    //         this.nodeType,
+    //         this.id,
+    //         this.#paramX     .value,
+    //         this.#paramY     .value,
+    //         this.#paramWidth .value,
+    //         this.#paramHeight.value,
+    //         this.#paramAngle .value,
+    //         this.#paramRound .value ];
+    // }
 
 
 

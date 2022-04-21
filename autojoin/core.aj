@@ -1,4 +1,6 @@
 ../core/def.js
+../core/types.js
+../core/data.js
 ../core/lib.js
 ../core/math.js
 ../core/geometry.js

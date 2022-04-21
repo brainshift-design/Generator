@@ -1,141 +1,141 @@
 class ReconnectAction
 extends Action
 {
-    outputOpId;
+    outputNodeId;
     outputIndex;
-    get outputOp() { return nodeFromId(this.outputOpId); }
+    get outputNode() { return nodeFromId(this.outputNodeId); }
 
-    oldOutputOpId = '';
+    oldOutputNodeId = '';
     oldOutputIndex;
-    get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
+    get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
 
-    inputOpId;
+    inputNodeId;
     inputIndex;
-    get inputOp() { return nodeFromId(this.inputOpId); }
+    get inputNode() { return nodeFromId(this.inputNodeId); }
 
-    oldInputOpId = '';
+    oldInputNodeId = '';
     oldInputIndex;
-    get oldInputOp() { return nodeFromId(this.oldInputOpId); }
+    get oldInputNode() { return nodeFromId(this.oldInputNodeId); }
     
-    oldOutputActiveOpId;      // the active node in the output node's tree
-    oldInputActiveOpIds = []; // the active nodes in the input node's tree
+    oldOutputActiveNodeId;      // the active node in the output node's tree
+    oldInputActiveNodeIds = []; // the active nodes in the input node's tree
 
-    newActiveOpIds = [];
+    newActiveNodeIds = [];
 
 
 
     constructor(output, oldInput, input)
     {
         const oldOutIndex = 
-            input.isConnected 
+            input.connected 
             ? input.connectedOutput.index
             : -1; 
 
 
         super(
              'reconnect '
-            + output.op.id + '.out[' + output.index + ']'
+            + output.node.id + '.out[' + output.index + ']'
             + ' ( <- '
-            + oldInput.op.id + '.in[' + oldInput.index + '])'
+            + oldInput.node.id + '.in[' + oldInput.index + '])'
             + ' -> '
-            + input.op.id + '.in[' + input.index + ']');
+            + input.node.id + '.in[' + input.index + ']');
 
 
-        this.outputOpId          = output.op.id;
-        this.outputIndex         = output.index;
-             
-        this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
-        this.oldOutputIndex      = oldOutIndex;
-     
-        this.oldInputOpId        = oldInput.op.id;
-        this.oldInputIndex       = oldInput.index;
-     
-        this.inputOpId           = input.op.id;
-        this.inputIndex          = input.index;
+        this.outputNodeId          = output.node.id;
+        this.outputIndex           = output.index;
+               
+        this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
+        this.oldOutputIndex        = oldOutIndex;
+       
+        this.oldInputNodeId        = oldInput.node.id;
+        this.oldInputIndex         = oldInput.index;
+       
+        this.inputNodeId           = input.node.id;
+        this.inputIndex            = input.index;
 
-        this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
-        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
+        this.oldOutputActiveNodeId = getActiveNodeInTreeFrom(nodeFromId(this.outputNodeId)).id;
+        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
     }
 
 
 
     do()
     {
-        uiDisconnect(this.oldInputOp.inputs[this.oldInputIndex]);
+        uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
 
-        graphView.updateNodeTransform(this.oldInputOp);
+        graphView.updateNodeTransform(this.oldInputNode);
         
 
         uiConnect(
-            this.outputOp.outputs[this.outputIndex], 
-            this. inputOp. inputs[this. inputIndex],
+            this.outputNode.outputs[this.outputIndex], 
+            this. inputNode. inputs[this. inputIndex],
             this.inputIndex);
             
 
-        this.newActiveOpIds = [];
+        this.newActiveNodeIds = [];
 
-        if (!getActiveNodeInTreeFrom(this.oldOutputOp))
+        if (!getActiveNodeInTreeFrom(this.oldOutputNode))
         {
-            uiMakeNodeActive(this.oldOutputOp);
-            this.newActiveOpIds.push(this.oldOutputOpId);
-            this.oldOutputOp.pushUpdate();
-            //graphView.updateNodeTransform(oldPrevOutputActiveOp);
+            uiMakeNodeActive(this.oldOutputNode);
+            this.newActiveNodeIds.push(this.oldOutputNodeId);
+            this.oldOutputNode.pushUpdate();
+            //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
 
-        let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
-        oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        let oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
+        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldInputActiveOpIds)
+        for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
 
-        graphView.updateNodeTransform(this.inputOp);
+        graphView.updateNodeTransform(this.inputNode);
 
-        this.oldInputOp.pushUpdate();
-        this.inputOp   .pushUpdate();
+        this.oldInputNode.pushUpdate();
+        this.inputNode   .pushUpdate();
     }
 
 
 
     undo()
     {
-        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
-        // if (this.oldOutputOpId != '')
-        //     uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        // if (this.oldOutputNodeId != '')
+        //     uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
             
         uiVariableConnect(
-            this.outputOp, 
+            this.outputNode, 
             this.outputIndex, 
-            this.oldInputOp, 
+            this.oldInputNode, 
             this.oldInputIndex);
 
-        graphView.updateNodeTransform(this.oldInputOp);
-        this.oldInputOp.pushUpdate();
+        graphView.updateNodeTransform(this.oldInputNode);
+        this.oldInputNode.pushUpdate();
     
 
-        if (this.oldOutputOpId != '')
+        if (this.oldOutputNodeId != '')
         {
             uiVariableConnect(
-                this.oldOutputOp, 
+                this.oldOutputNode, 
                 this.oldOutputIndex, 
-                this.inputOp, 
+                this.inputNode, 
                 this.inputIndex);
 
-            graphView.updateNodeTransform(this.inputOp);
-            this.inputOp.pushUpdate();
+            graphView.updateNodeTransform(this.inputNode);
+            this.inputNode.pushUpdate();
         }
 
 
-        for (const id of this.newActiveOpIds)
+        for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
-        for (const id of this.oldInputActiveOpIds)
+        for (const id of this.oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        if (!this.oldInputActiveOpIds.includes(this.oldOutputActiveOpId))
-            uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
+        if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
+            uiMakeNodeActive(nodeFromId(this.oldOutputActiveNodeId));
     }
 }

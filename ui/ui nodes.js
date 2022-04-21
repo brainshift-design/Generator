@@ -369,9 +369,9 @@ graphView.activeNodes = [];
 
 
 
-function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
+function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
 {
-    let node = createNode(opType, creatingButton, createdId);
+    let node = createNode(nodeType, creatingButton, createdId);
 
     graph.addNode(node);
 
@@ -464,24 +464,24 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
+function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 {
     //console.log('uiVariableConnect()');
 
-    if (inputOp._variableInputs)
+    if (inputNode._variableInputs)
     {
-        const input = lastOf(inputOp.inputs);
+        const input = lastOf(inputNode.inputs);
 
         uiConnect(
-            outputOp.outputs[outputIndex],
+            outputNode.outputs[outputIndex],
             input,
             inputIndex);
     }
     else
     {
         uiConnect(
-            outputOp.outputs[outputIndex],
-             inputOp. inputs[ inputIndex]);
+            outputNode.outputs[outputIndex],
+             inputNode. inputs[ inputIndex]);
     }
 }
 
@@ -492,9 +492,9 @@ function uiConnect(output, input, inputIndex = -1)
     const conn = graph.connect(output, input, inputIndex);
 
     uiSaveConnection(
-        output.op.id,
+        output.node.id,
         output.index,
-        input.op.id,
+        input.node.id,
         input.index,
         conn.toJson());
 
@@ -506,27 +506,27 @@ function uiConnect(output, input, inputIndex = -1)
 function uiDisconnect(input)
 {
     uiRemoveSavedConnection(
-        input.connectedOutput.op.id,
+        input.connectedOutput.node.id,
         input.connectedOutput.index,
-        input.op.id,
+        input.node.id,
         input.index);
 
 
     graph.disconnect(input);
 
     
-    const inputOp = input.op;
+    const inputNode = input.node;
 
-    if (inputOp._variableInputs)
+    if (inputNode._variableInputs)
     {
-        uiRemoveSavedConnectionsToNode(inputOp.id);
+        uiRemoveSavedConnectionsToNode(inputNode.id);
 
-        for (const _input of inputOp.inputs.filter(i => i.isConnected))
+        for (const _input of inputNode.inputs.filter(i => i.connected))
         {
             uiSaveConnection(
-                _input.connectedOutput.op.id,
+                _input.connectedOutput.node.id,
                 _input.connectedOutput.index,
-                inputOp.id,
+                inputNode.id,
                 _input.index,
                 _input.connection.toJson());
         }
@@ -537,7 +537,7 @@ function uiDisconnect(input)
     //     msg: 'genDisconnect',
     //     input:
     //     {
-    //         nodeId: input.op.id,
+    //         nodeId: input.node.id,
     //         index:  input.index
     //     }
     // });
@@ -626,11 +626,11 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
 {
     for (const input of node.inputs)
     {
-        if (input.isConnected)
+        if (input.connected)
         {
             //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.op);
-            uiMakeNodeLeftPassive(input.connectedOutput.op, node);
+            uiMakeNodePassive(input.connectedOutput.node);
+            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
         }
     }
 
@@ -638,11 +638,11 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
     // {
     //     for (const input of output.connectedInputs)
     //     {
-    //         if (input.op != fromNode)
+    //         if (input.node != fromNode)
     //         {
     //             //console.log(input.connectedOutput);
-    //             uiMakeNodePassive(input.op);
-    //             uiMakeNodeRightPassive(input.op, node);
+    //             uiMakeNodePassive(input.node);
+    //             uiMakeNodeRightPassive(input.node, node);
     //         }
     //     }
     // }
@@ -656,19 +656,19 @@ function uiMakeNodeRightPassive(node, fromNode = null)
     {
         for (const connInput of output.connectedInputs)
         {
-            uiMakeNodePassive(connInput.op);
-            uiMakeNodeRightPassive(connInput.op, node);
+            uiMakeNodePassive(connInput.node);
+            uiMakeNodeRightPassive(connInput.node, node);
         }
     }
 
     for (const input of node.inputs)
     {
-        if (   input.isConnected
-            && input.connectedOutput.op != fromNode)
+        if (   input.connected
+            && input.connectedOutput.node != fromNode)
         {
             //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.op);
-            uiMakeNodeLeftPassive(input.connectedOutput.op, node);
+            uiMakeNodePassive(input.connectedOutput.node);
+            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
         }
     }
 }
@@ -680,13 +680,13 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
     if (node.active) return node;
 
 
-    const nodeInputs = [...node.inputs.filter(i => i.isConnected)];
+    const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
     if (    nodeInputs.length == 1
-        && !alreadyChecked.includes(nodeInputs[0].connectedOutput.op))
+        && !alreadyChecked.includes(nodeInputs[0].connectedOutput.node))
     {
         const leftActive = getActiveNodeInBranchFrom(
-            nodeInputs[0].connectedOutput.op, 
+            nodeInputs[0].connectedOutput.node, 
             [...alreadyChecked, node]);
 
         if (leftActive) return leftActive;
@@ -696,10 +696,10 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
     const nodeOutputs = [...node.outputs.filter(o => o.connectedInputs.length == 1)];
 
     if (    nodeOutputs.length == 1
-        && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].op))
+        && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].node))
     {
         const rightActive = getActiveNodeInBranchFrom(
-            nodeOutputs[0].connectedInputs[0].op, 
+            nodeOutputs[0].connectedInputs[0].node, 
             [...alreadyChecked, node]);
 
         if (rightActive) return rightActive;
@@ -724,10 +724,10 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
     {
         for (const input of output.connectedInputs)
         {
-            if (!alreadyChecked.includes(input.op))
+            if (!alreadyChecked.includes(input.node))
             {
                 const rightActive = getActiveNodeInTreeFrom(
-                    input.op, 
+                    input.node, 
                     [...alreadyChecked, node]);
 
                 if (rightActive) return rightActive;
@@ -748,11 +748,11 @@ function getActiveNodeLeftInTreeFrom(node, alreadyChecked = [])
 
     for (const input of node.inputs)
     {
-        if (    input.isConnected
-            && !alreadyChecked.includes(input.connectedOutput.op))
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
         {
             const leftActive = getActiveNodeInTreeFrom(
-                input.connectedOutput.op, 
+                input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 
             if (leftActive) return leftActive;
@@ -776,10 +776,10 @@ function getActiveNodesInTreeFrom(node, alreadyChecked = [])
 
     for (const input of node.inputs)
     {
-        if (    input.isConnected
-            && !alreadyChecked.includes(input.connectedOutput.op))
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveNodesInTreeFrom(input.connectedOutput.op, [...alreadyChecked, node]);
+            const leftActive = getActiveNodesInTreeFrom(input.connectedOutput.node, [...alreadyChecked, node]);
             
             // if (leftActive.length > 0) 
             // {
@@ -794,9 +794,9 @@ function getActiveNodesInTreeFrom(node, alreadyChecked = [])
     {
         for (const input of output.connectedInputs)
         {
-            if (!alreadyChecked.includes(input.op))
+            if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveNodesInTreeFrom(input.op, [...alreadyChecked, node]);
+                const rightActive = getActiveNodesInTreeFrom(input.node, [...alreadyChecked, node]);
                 
                 // if (rightActive.length > 0) 
                 // {
@@ -1007,13 +1007,13 @@ function uiLogAllSavedNodesAndConns()
 
 
 
-function uiSaveConnection(outputOpId, outputIndex, inputOpId, inputIndex, connJson)
+function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
 {
     uiPostMessageToFigma({
         cmd: 'figSaveConnection',
-        name: outputOpId  + ' '
+        name: outputNodeId  + ' '
             + outputIndex + ' '
-            + inputOpId   + ' '
+            + inputNodeId   + ' '
             + inputIndex,
         json: connJson
     });
@@ -1021,23 +1021,23 @@ function uiSaveConnection(outputOpId, outputIndex, inputOpId, inputIndex, connJs
 
 
 
-function uiRemoveSavedConnection(outputOpId, outputIndex, inputOpId, inputIndex)
+function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
 {
     uiPostMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: outputOpId  + ' '
+        name: outputNodeId  + ' '
             + outputIndex + ' '
-            + inputOpId   + ' '
+            + inputNodeId   + ' '
             + inputIndex
     });
 }
 
 
 
-function uiRemoveSavedConnectionsToNode(inputOpId)
+function uiRemoveSavedConnectionsToNode(inputOpNode)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: inputOpId
+        nodeId: inputOpNode
     });
 }

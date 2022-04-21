@@ -30,54 +30,54 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        super.updateData()
+    // updateData()
+    // {
+    //     super.updateData()
 
 
-        let valid = true;
+    //     let valid = true;
         
-        if (this.inputs[0].isConnected)
-        {
-            const rgb      = dataColor2rgb(this.inputs[0].data.color);
-            const validRgb = invalid2validRgb(rgb);
+    //     if (this.inputs[0].connected)
+    //     {
+    //         const rgb      = dataColor2rgb(this.inputs[0].data.color);
+    //         const validRgb = invalid2validRgb(rgb);
             
-            const cb = rgb2colorblind(
-                validRgb,
-                this.#paramL.value / 2,
-                this.#paramM.value / 2,
-                this.#paramS.value / 2);
+    //         const cb = rgb2colorblind(
+    //             validRgb,
+    //             this.#paramL.value / 2,
+    //             this.#paramM.value / 2,
+    //             this.#paramS.value / 2);
 
-            const validCb = invalid2validRgb(cb);
+    //         const validCb = invalid2validRgb(cb);
 
-            this._color = rgb2dataColor(validCb);
+    //         this._color = rgb2dataColor(validCb);
 
 
-            if (!isRgbValid(rgb))
-            {
-                this.warningStyle = this.getDefaultWarningStyle(validRgb);
-                valid             = false;
-            }
+    //         if (!isRgbValid(rgb))
+    //         {
+    //             this.warningStyle = this.getDefaultWarningStyle(validRgb);
+    //             valid             = false;
+    //         }
 
-            this.forceShowWarning = 
-                   this.inputs[0].isConnected
-                && !isRgbValid(rgb);        
-        }
-        else 
-        {
-            this._color = dataColor_NaN;
-            this.forceShowWarning = false;
+    //         this.forceShowWarning = 
+    //                this.inputs[0].connected
+    //             && !isRgbValid(rgb);        
+    //     }
+    //     else 
+    //     {
+    //         this._color = dataColor_NaN;
+    //         this.forceShowWarning = false;
 
-            valid = false;
-        }
+    //         valid = false;
+    //     }
                 
 
-        this.outputs[0]._data = dataFromDataColor(this._color);
+    //     this.outputs[0]._data = dataFromDataColor(this._color);
 
-        if (  !valid
-            || this.forceShowWarning) 
-            this.outputs[0]._data.isValid = false;
-    }
+    //     if (  !valid
+    //         || this.forceShowWarning) 
+    //         this.outputs[0]._data.isValid = false;
+    // }
 
 
 
@@ -105,6 +105,6 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[0].isConnected;
+        return this.inputs[0].connected;
     }
 }

@@ -1,16 +1,16 @@
-function initHexbox(op)
+function initHexbox(node)
 {
-    op.hexbox = createTextbox('hexbox');
+    node.hexbox = createTextbox('hexbox');
     
-    op.hexbox.op      = op;
-    op.hexbox.editing = false;
+    node.hexbox.node    = node;
+    node.hexbox.editing = false;
     
-    op.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
-    op.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
-    op.hexbox.addEventListener('focus',       onHexboxFocus);
-    op.hexbox.addEventListener('focusout',    onHexboxFocusOut);
-    op.hexbox.addEventListener('input',       onHexboxInput);
-    op.hexbox.addEventListener('keydown',     onHexboxKeyDown);
+    node.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
+    node.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
+    node.hexbox.addEventListener('focus',       onHexboxFocus);
+    node.hexbox.addEventListener('focusout',    onHexboxFocusOut);
+    node.hexbox.addEventListener('input',       onHexboxInput);
+    node.hexbox.addEventListener('keydown',     onHexboxKeyDown);
 }
 
 
@@ -57,8 +57,8 @@ function onHexboxFocus(e)
 function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
-    hexboxFinish(hexbox.op, true);
-    hexbox.style.cursor = 'default';//hexbox.op.isConnected() ? 'default' : 'text';
+    hexboxFinish(hexbox.node, true);
+    hexbox.style.cursor = 'default';//hexbox.node.connected() ? 'default' : 'text';
 }
 
 
@@ -95,23 +95,23 @@ function onHexboxKeyDown(e)
 
     else if (   e.code == 'KeyV'
         && getCtrlKey(e)
-        && !hexbox.op.isConnected())
+        && !hexbox.node.connected())
     {
         // do nothing and let the OS do its thing
     }
 
     else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
-           && !hexbox.op.isConnected())
-        hexboxFinish(hexbox.op, true);
+           && !hexbox.node.connected())
+        hexboxFinish(hexbox.node, true);
 
     else if (e.code == 'Escape')
-        hexboxFinish(hexbox.op, false);
+        hexboxFinish(hexbox.node, false);
 
     else if (   e.key.length == 1
              && !isDigitChar(e.key)
              && !isHexDigitChar(e.key)
-         ||     hexbox.op.isConnected()
+         ||     hexbox.node.connected()
             && !isArrowKey(e.code)
          ||    e.key != 'ArrowLeft'
             && e.key != 'ArrowRight'
@@ -130,22 +130,22 @@ function onHexboxKeyDown(e)
 
 
 
-function hexboxFinish(op, success)
+function hexboxFinish(node, success)
 {
-    if (op.hexbox.value.trim() == '')
-        op.hexbox.value = op.hexbox.savedValue;
+    if (node.hexbox.value.trim() == '')
+        node.hexbox.value = node.hexbox.savedValue;
 
 
-    var rgb = hex2rgb(op.hexbox.value);
+    var rgb = hex2rgb(node.hexbox.value);
 
     if (success) 
     {
-        setDataColorToCurrentSpace(op, rgb2dataColor(rgb));
-        op.hexbox.op.pushUpdate();
+        setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
+        node.hexbox.node.pushUpdate();
     }
 
     
-    op.hexbox.selectionEnd = op.hexbox.selectionStart;
-    op.hexbox.editing = false;
-    op.hexbox.blur();
+    node.hexbox.selectionEnd = node.hexbox.selectionStart;
+    node.hexbox.editing = false;
+    node.hexbox.blur();
 };

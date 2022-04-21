@@ -46,7 +46,7 @@ extends Operator
 //         const input  = this.inputs[0];
 //         const output = this.output;
 
-//         if (!input.isConnected)
+//         if (!input.connected)
 //         {
 //             output._data = {};
 //             return;

@@ -1568,6 +1568,186 @@ const largeScrollGap    = 14;
 const MAX_INT32         = 2147483647;
 
 
+//////////// WARNING ////////////
+//                             //
+//  DO NOT TOUCH THIS FILE!!!  //
+//                             //
+/////////////////////////////////
+
+
+
+// data types
+
+const DATA_NUMBER    = 'num';
+const DATA_COLOR     = 'col';
+const DATA_STRING    = 'str';
+const DATA_RECTANGLE = 'rect';
+const DATA_LINE      = 'line';
+const DATA_ELLIPSE   = 'elps';
+const DATA_POLYGON   = 'poly';
+const DATA_STAR      = 'star';
+const DATA_VECTOR    = 'vec';
+const DATA_BOOLEAN   = 'bool';
+const DATA_TEXT      = 'txt';
+const DATA_GROUP     = 'grp';
+const DATA_FRAME     = 'frm';
+const DATA_SLICE     = 'slc';
+
+
+
+function dataTypeIsShape(dataType)
+{
+    return dataType == DATA_RECTANGLE
+        || dataType == DATA_LINE
+        || dataType == DATA_ELLIPSE
+        || dataType == DATA_POLYGON
+        || dataType == DATA_STAR
+        || dataType == DATA_VECTOR
+        || dataType == DATA_BOOLEAN
+        || dataType == DATA_TEXT;
+}
+
+
+
+// node types
+
+const NODE_NUMBER             = 'number';
+const NODE_NUMBER_MINMAX      = 'number_minmax';
+const NODE_NUMBER_ADD         = 'number_add';
+const NODE_NUMBER_SUBTRACT    = 'number_subtract';
+const NODE_NUMBER_MULTIPLY    = 'number_multiply';
+const NODE_NUMBER_DIVIDE      = 'number_divide';
+const NODE_NUMBER_MODULO      = 'number_modulo';
+const NODE_NUMBER_POWER       = 'number_power';
+const NODE_NUMBER_INTERPOLATE = 'number_interpolate';
+
+const NODE_COLOR              = 'color';
+const NODE_COLOR_INTERPOLATE  = 'color_interpolate';
+const NODE_COLOR_VALIDATE     = 'color_validate';
+const NODE_COLOR_CONTRAST     = 'color_contrast';
+const NODE_COLOR_BLIND        = 'color_blind';
+
+const NODE_STRING             = 'string';
+const NODE_STRING_ADD         = 'string_add';
+const NODE_STRING_REPLACE     = 'string_replace';
+
+const NODE_GEOMETRY_RECTANGLE = 'geometry_rectangle';
+const NODE_GEOMETRY_ELLIPSE   = 'geometry_ellipse';
+
+const NODE_GROUP              = 'group';
+
+
+
+function getShortNodeName(nodeType)
+{
+    switch (nodeType)
+    {
+        case NODE_NUMBER:             return 'num';
+        case NODE_NUMBER_SUBTRACT:    
+        case NODE_NUMBER_MULTIPLY:    
+        case NODE_NUMBER_DIVIDE:      
+        case NODE_NUMBER_MODULO:      
+        case NODE_NUMBER_POWER:       return extractShortNodeName(nodeType, 1, 3);
+        case NODE_NUMBER_INTERPOLATE: 
+        case NODE_COLOR_INTERPOLATE:  return 'inter';
+        case NODE_NUMBER_MINMAX:      
+        case NODE_COLOR_CONTRAST:     return extractShortNodeName(nodeType, 2);
+        case NODE_COLOR_VALIDATE:     
+        case NODE_COLOR_BLIND:        return 'colorblind';
+
+        default:                      return extractShortNodeName(nodeType);
+    }
+}
+
+
+
+function extractShortNodeName(nodeType, iPart = -1, nChars = -1)
+{
+    const parts = nodeType.split('_');
+
+    if (   iPart  < 0 
+        && nChars < 0)
+        return nodeType.substring(parts[0].length);
+    
+    return nChars > -1
+         ? parts[iPart].substring(0, nChars)
+         : parts[iPart];
+}
+
+
+const rgbObject       = hex2rgb('#bee0ff');
+const rgbActiveObject = hex2rgb('#18a0fb');
+const rgbNumber       = hex2rgb('#ddd');
+const rgbActiveNumber = hex2rgb('#787878');
+const rgbColor        = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
+const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
+
+
+
+function dataType2rgb(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'number': return active ? rgbActiveNumber : rgbNumber;
+        case 'color':  return active ? rgbActiveColor  : rgbColor;
+        case 'object': return active ? rgbActiveObject : rgbObject;
+    }
+
+    return 'magenta';
+}
+
+
+
+function dataFromNumber(num, dec = -1)
+{
+    return {
+        type:    'number',
+        value:    floorTo(num, dec),
+        decimals: dec
+    };
+}
+
+
+
+function dataFromDataColor(color)
+{
+    return {
+        type:   'color',
+        color:   color,
+        isValid: isRgbValid(dataColor2rgb(color))
+    };
+}
+
+
+
+function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, nodeType)
+{
+    return {
+        type: 'object',
+
+        //nodeId: nodeId,
+        //nodeType: nodeType,
+
+        x:      x,
+        y:      y,
+        width:  width,
+        height: height,
+        angle:  angle,
+        round:  round
+        //color: color
+    };
+}
+
+
+
+function isDataColorNaN(color)
+{
+    return isNaN(color[1])
+        || isNaN(color[2])
+        || isNaN(color[3]);
+}
+
+
 const Eps = 0.0000001;
 
 
@@ -3839,7 +4019,7 @@ onmessage = function(e)
             break;
         
         case 'genGenerateRequest': genGenerateRequest(e.data.request); break;
-        // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
         // case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
@@ -3876,7 +4056,12 @@ function genGenerateRequest(request)
 
     for (let i = 0, so = 0; i < request.length && so < stackOverflowProtect; )
     {
-        if (request[i] == 'rectangle' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
+        // values have to be ... and updated
+
+        // geometry/styles have to be generated
+
+             if (request[i] == 'num'  && request.length >= i+3) { objects.push(genGenerateNumber   (request, i)); i += 3; }
+        else if (request[i] == 'rect' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
         else so++;
     }
 
@@ -3884,6 +4069,22 @@ function genGenerateRequest(request)
         msg:    'uiUpdateCanvasObjects',
         objects: objects
     });
+}
+
+
+
+function genGenerateNumber(request, i)
+{
+    return {
+        type:   OBJ_RECT,
+        id:     nextGenObjectId++,
+        nodeId: request[i+1],
+        x:      request[i+2],
+        y:      request[i+3],
+        width:  request[i+4],
+        height: request[i+5],
+        angle:  request[i+6],
+        round:  request[i+7] };
 }
 
 
@@ -5330,160 +5531,160 @@ const luvScale    = [100, 150, 150];
 
 
 
-function switchToSpace(op, space)
+function switchToSpace(node, space)
 {
     switch (space)
     {
-        case 'hex':    switchToHex   (op); break;
-        case 'rgbhex': switchToRgbHex(op); break;
-        case 'rgb':    switchToRgb   (op); break;
-        case 'hsv':    switchToHsv   (op); break;
-        case 'hsl':    switchToHsl   (op); break;
-        case 'hclokl': switchToHclOkl(op); break;
-        case 'hcllab': switchToHclLab(op); break;
-        case 'hclluv': switchToHclLuv(op); break;
-        case 'oklab':  switchToOklab (op); break;
-        case 'lab':    switchToLab   (op); break;
-        case 'luv':    switchToLuv   (op); break;
+        case 'hex':    switchToHex   (node); break;
+        case 'rgbhex': switchToRgbHex(node); break;
+        case 'rgb':    switchToRgb   (node); break;
+        case 'hsv':    switchToHsv   (node); break;
+        case 'hsl':    switchToHsl   (node); break;
+        case 'hclokl': switchToHclOkl(node); break;
+        case 'hcllab': switchToHclLab(node); break;
+        case 'hclluv': switchToHclLuv(node); break;
+        case 'oklab':  switchToOklab (node); break;
+        case 'lab':    switchToLab   (node); break;
+        case 'luv':    switchToLuv   (node); break;
     }
 
-    op.resetAllControlRanges();
+    node.resetAllControlRanges();
 }
 
 
 
-function switchToHex   (op) { switchToTextbox       (op);           }
-function switchToRgbHex(op) { switchToRgbHexControls(op);           }
-function switchToRgb   (op) { switchToRgbControls   (op);           }
-function switchToHsv   (op) { switchToHs_Controls   (op, 'V');      }
-function switchToHsl   (op) { switchToHs_Controls   (op, 'L');      }
-function switchToHclOkl(op) { switchToHclOklControls(op);           }
-function switchToHclLab(op) { switchToHclLabControls(op);           }
-function switchToHclLuv(op) { switchToHclLuvControls(op);           }
-function switchToOklab (op) { switchToOklabControls (op, 'a', 'b'); }
-function switchToLab   (op) { switchToLabControls   (op, 'a', 'b'); }
-function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
+function switchToHex   (node) { switchToTextbox       (node);           }
+function switchToRgbHex(node) { switchToRgbHexControls(node);           }
+function switchToRgb   (node) { switchToRgbControls   (node);           }
+function switchToHsv   (node) { switchToHs_Controls   (node, 'V');      }
+function switchToHsl   (node) { switchToHs_Controls   (node, 'L');      }
+function switchToHclOkl(node) { switchToHclOklControls(node);           }
+function switchToHclLab(node) { switchToHclLabControls(node);           }
+function switchToHclLuv(node) { switchToHclLuvControls(node);           }
+function switchToOklab (node) { switchToOklabControls (node, 'a', 'b'); }
+function switchToLab   (node) { switchToLabControls   (node, 'a', 'b'); }
+function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v'); }
    
 
 
-function switchToRgbHexControls(op)
+function switchToRgbHexControls(node)
 {
-    switchToControls(op, 
+    switchToControls(node, 
         '<span class=\'hash\'>#</span>R', 0, rgbScale[0], '', false, 
         '<span class=\'hash\'>#</span>G', 0, rgbScale[1], 
         '<span class=\'hash\'>#</span>B', 0, rgbScale[2]);  
 
-    showRgbControlHex(op, true);
+    showRgbControlHex(node, true);
 }
 
 
 
-function switchToRgbControls(op)
+function switchToRgbControls(node)
 {
-    switchToControls(op, 
+    switchToControls(node, 
         'R', 0, rgbScale[0], '', false, 
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    showRgbControlHex(op, false);    
+    showRgbControlHex(node, false);    
 }
 
 
 
-function switchToHs_Controls(op, v_or_l) 
+function switchToHs_Controls(node, v_or_l) 
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'H',    0, hs_Scale[0], '°', true,  
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToHclControls(op, scale) 
+function switchToHclControls(node, scale) 
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToHclOklControls(op) { switchToHclControls(op, hcloklScale); }
-function switchToHclLabControls(op) { switchToHclControls(op, hcllabScale); }
-function switchToHclLuvControls(op) { switchToHclControls(op, hclluvScale); }
+function switchToHclOklControls(node) { switchToHclControls(node, hcloklScale); }
+function switchToHclLabControls(node) { switchToHclControls(node, hcllabScale); }
+function switchToHclLuvControls(node) { switchToHclControls(node, hclluvScale); }
 
 
 
-function switchToOppControls(op, c2, c3, scale)
+function switchToOppControls(node, c2, c3, scale)
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'L', 0,        scale[0], '', false,  
         c2, -scale[1], scale[1], 
         c3, -scale[2], scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToOklabControls(op) { switchToOppControls(op, 'a', 'b', oklabScale); }
-function switchToLabControls  (op) { switchToOppControls(op, 'a', 'b', labScale  ); }
-function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale  ); }
+function switchToOklabControls(node) { switchToOppControls(node, 'a', 'b', oklabScale); }
+function switchToLabControls  (node) { switchToOppControls(node, 'a', 'b', labScale  ); }
+function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvScale  ); }
 
 
 
-function showRgbControlHex(op, show)
+function showRgbControlHex(node, show)
 {
-    op.param1.control.showHex = show;
-    op.param2.control.showHex = show;
-    op.param3.control.showHex = show;
+    node.param1.control.showHex = show;
+    node.param2.control.showHex = show;
+    node.param3.control.showHex = show;
 }
 
 
 
-function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
+function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
 {
-    switchToSliders(op);
+    switchToSliders(node);
 
-    op.param1.setName(c1, false); 
-    op.param2.setName(c2, false); 
-    op.param3.setName(c3, false);
+    node.param1.setName(c1, false); 
+    node.param2.setName(c2, false); 
+    node.param3.setName(c3, false);
 
-    op.param1.control.wrapValue = c1wrap;
-    op.param1.control.setSuffix(c1suffix, c1suffix != '');
+    node.param1.control.wrapValue = c1wrap;
+    node.param1.control.setSuffix(c1suffix, c1suffix != '');
 
-    op.param1.control.setMin(c1min, false); 
-    op.param2.control.setMin(c2min, false);
-    op.param3.control.setMin(c3min, false);
+    node.param1.control.setMin(c1min, false); 
+    node.param2.control.setMin(c2min, false);
+    node.param3.control.setMin(c3min, false);
     
-    op.param1.control.setMax(c1max, false); 
-    op.param2.control.setMax(c2max, false); 
-    op.param3.control.setMax(c3max, false); 
+    node.param1.control.setMax(c1max, false); 
+    node.param2.control.setMax(c2max, false); 
+    node.param3.control.setMax(c3max, false); 
     
-    op.param1.updateControls();
-    op.param2.updateControls();
-    op.param3.updateControls();
+    node.param1.updateControls();
+    node.param2.updateControls();
+    node.param3.updateControls();
 }
 
 
 
-function switchToTextbox(op)
+function switchToTextbox(node)
 {
-    if (!op.inner.contains(op.hexbox))
+    if (!node.inner.contains(node.hexbox))
     {
-        removeOpColorParamWires(op);
+        removeOpColorParamWires(node);
 
-        op.inner.removeChild(op.param1.div);
-        op.inner.removeChild(op.param2.div);
-        op.inner.removeChild(op.param3.div);
+        node.inner.removeChild(node.param1.div);
+        node.inner.removeChild(node.param2.div);
+        node.inner.removeChild(node.param3.div);
         
-        op.inner.appendChild(op.hexbox);
+        node.inner.appendChild(node.hexbox);
 
         //graphView.updateNodeTransform(op);
     }
@@ -5491,30 +5692,30 @@ function switchToTextbox(op)
 
 
 
-function removeOpColorParamWires(op)
+function removeOpColorParamWires(node)
 {
-    for (let i = op.inputs.length-1; i >= 2; i--)
-        if (op.inputs[i].isConnected)
-            uiDisconnect(op.inputs[i]);
+    for (let i = node.inputs.length-1; i >= 2; i--)
+        if (node.inputs[i].connected)
+            uiDisconnect(node.inputs[i]);
 
-    for (let i = op.outputs.length-1; i >= 2; i--)
-        for (const input of op.outputs[i].connectedInputs)
+    for (let i = node.outputs.length-1; i >= 2; i--)
+        for (const input of node.outputs[i].connectedInputs)
             uiDisconnect(input);
 }
 
 
 
-function switchToSliders(op)
+function switchToSliders(node)
 {
-    if (op.inner.contains(op.hexbox))
+    if (node.inner.contains(node.hexbox))
     {
-        op.inner.removeChild(op.hexbox);
+        node.inner.removeChild(node.hexbox);
 
-        op.inner.appendChild(op.param1.div);
-        op.inner.appendChild(op.param2.div);
-        op.inner.appendChild(op.param3.div);
+        node.inner.appendChild(node.param1.div);
+        node.inner.appendChild(node.param2.div);
+        node.inner.appendChild(node.param3.div);
 
-        graphView.updateNodeTransform(op);
+        graphView.updateNodeTransform(node);
     }
 }
 
@@ -5730,11 +5931,11 @@ function getDataColorHcl(c1, c2, c3)
 
 
 
-function setDataColorToCurrentSpace(op, color)
+function setDataColorToCurrentSpace(node, color)
 {
-    const toSpace = colorSpace(op.paramSpace.value);
-    op._color = convertDataColorToSpace(color, toSpace);
-    op.setColorParams(op._color);
+    const toSpace = colorSpace(node.paramSpace.value);
+    node._color = convertDataColorToSpace(color, toSpace);
+    node.setColorParams(node._color);
 }
 
 
@@ -6577,6 +6778,186 @@ const smallScrollGap    =  6;
 const largeScrollGap    = 14;
 
 const MAX_INT32         = 2147483647;
+
+
+//////////// WARNING ////////////
+//                             //
+//  DO NOT TOUCH THIS FILE!!!  //
+//                             //
+/////////////////////////////////
+
+
+
+// data types
+
+const DATA_NUMBER    = 'num';
+const DATA_COLOR     = 'col';
+const DATA_STRING    = 'str';
+const DATA_RECTANGLE = 'rect';
+const DATA_LINE      = 'line';
+const DATA_ELLIPSE   = 'elps';
+const DATA_POLYGON   = 'poly';
+const DATA_STAR      = 'star';
+const DATA_VECTOR    = 'vec';
+const DATA_BOOLEAN   = 'bool';
+const DATA_TEXT      = 'txt';
+const DATA_GROUP     = 'grp';
+const DATA_FRAME     = 'frm';
+const DATA_SLICE     = 'slc';
+
+
+
+function dataTypeIsShape(dataType)
+{
+    return dataType == DATA_RECTANGLE
+        || dataType == DATA_LINE
+        || dataType == DATA_ELLIPSE
+        || dataType == DATA_POLYGON
+        || dataType == DATA_STAR
+        || dataType == DATA_VECTOR
+        || dataType == DATA_BOOLEAN
+        || dataType == DATA_TEXT;
+}
+
+
+
+// node types
+
+const NODE_NUMBER             = 'number';
+const NODE_NUMBER_MINMAX      = 'number_minmax';
+const NODE_NUMBER_ADD         = 'number_add';
+const NODE_NUMBER_SUBTRACT    = 'number_subtract';
+const NODE_NUMBER_MULTIPLY    = 'number_multiply';
+const NODE_NUMBER_DIVIDE      = 'number_divide';
+const NODE_NUMBER_MODULO      = 'number_modulo';
+const NODE_NUMBER_POWER       = 'number_power';
+const NODE_NUMBER_INTERPOLATE = 'number_interpolate';
+
+const NODE_COLOR              = 'color';
+const NODE_COLOR_INTERPOLATE  = 'color_interpolate';
+const NODE_COLOR_VALIDATE     = 'color_validate';
+const NODE_COLOR_CONTRAST     = 'color_contrast';
+const NODE_COLOR_BLIND        = 'color_blind';
+
+const NODE_STRING             = 'string';
+const NODE_STRING_ADD         = 'string_add';
+const NODE_STRING_REPLACE     = 'string_replace';
+
+const NODE_GEOMETRY_RECTANGLE = 'geometry_rectangle';
+const NODE_GEOMETRY_ELLIPSE   = 'geometry_ellipse';
+
+const NODE_GROUP              = 'group';
+
+
+
+function getShortNodeName(nodeType)
+{
+    switch (nodeType)
+    {
+        case NODE_NUMBER:             return 'num';
+        case NODE_NUMBER_SUBTRACT:    
+        case NODE_NUMBER_MULTIPLY:    
+        case NODE_NUMBER_DIVIDE:      
+        case NODE_NUMBER_MODULO:      
+        case NODE_NUMBER_POWER:       return extractShortNodeName(nodeType, 1, 3);
+        case NODE_NUMBER_INTERPOLATE: 
+        case NODE_COLOR_INTERPOLATE:  return 'inter';
+        case NODE_NUMBER_MINMAX:      
+        case NODE_COLOR_CONTRAST:     return extractShortNodeName(nodeType, 2);
+        case NODE_COLOR_VALIDATE:     
+        case NODE_COLOR_BLIND:        return 'colorblind';
+
+        default:                      return extractShortNodeName(nodeType);
+    }
+}
+
+
+
+function extractShortNodeName(nodeType, iPart = -1, nChars = -1)
+{
+    const parts = nodeType.split('_');
+
+    if (   iPart  < 0 
+        && nChars < 0)
+        return nodeType.substring(parts[0].length);
+    
+    return nChars > -1
+         ? parts[iPart].substring(0, nChars)
+         : parts[iPart];
+}
+
+
+const rgbObject       = hex2rgb('#bee0ff');
+const rgbActiveObject = hex2rgb('#18a0fb');
+const rgbNumber       = hex2rgb('#ddd');
+const rgbActiveNumber = hex2rgb('#787878');
+const rgbColor        = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
+const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
+
+
+
+function dataType2rgb(dataType, active)
+{
+    switch (dataType)
+    {
+        case 'number': return active ? rgbActiveNumber : rgbNumber;
+        case 'color':  return active ? rgbActiveColor  : rgbColor;
+        case 'object': return active ? rgbActiveObject : rgbObject;
+    }
+
+    return 'magenta';
+}
+
+
+
+function dataFromNumber(num, dec = -1)
+{
+    return {
+        type:    'number',
+        value:    floorTo(num, dec),
+        decimals: dec
+    };
+}
+
+
+
+function dataFromDataColor(color)
+{
+    return {
+        type:   'color',
+        color:   color,
+        isValid: isRgbValid(dataColor2rgb(color))
+    };
+}
+
+
+
+function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, nodeType)
+{
+    return {
+        type: 'object',
+
+        //nodeId: nodeId,
+        //nodeType: nodeType,
+
+        x:      x,
+        y:      y,
+        width:  width,
+        height: height,
+        angle:  angle,
+        round:  round
+        //color: color
+    };
+}
+
+
+
+function isDataColorNaN(color)
+{
+    return isNaN(color[1])
+        || isNaN(color[2])
+        || isNaN(color[3]);
+}
 
 
 const Eps = 0.0000001;
@@ -10381,7 +10762,7 @@ function initNumberSliderTextbox(slider)
             
             if (slider.param)
             {
-                const params = slider.param.op.params;
+                const params = slider.param.node.params;
                 let   index  = slider.param.index;
 
                 slider.textbox.finish(true, false);
@@ -10618,7 +10999,7 @@ function initNumberSliderTextbox(slider)
         const isConnected =    
                slider.param != null
             && slider.param.input
-            && slider.param.input.isConnected;
+            && slider.param.input.connected;
 
         enableElementText(
             slider.textbox, 
@@ -10772,15 +11153,15 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 return;
             }
     
-            let opDiv = 
+            let nodeDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
                 ? slider.parentNode.parentNode.parentNode
                 : null;
 
-            if (opDiv && opDiv.className == 'node') 
-                graphView.putNodeOnTop(opDiv.op);
+            if (nodeDiv && nodeDiv.className == 'node') 
+                graphView.putNodeOnTop(nodeDiv.node);
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
@@ -10815,14 +11196,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             const objCol = colorStyleRgb(rgbActiveObject);
 
             if (   !slider.param
-                || !slider.param.op.selected)
+                || !slider.param.node.selected)
                 slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
 
             else
             {
                 slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
                     
-                if (param.index < param.op.params.length-1)
+                if (param.index < param.node.params.length-1)
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
             }
 
@@ -10901,7 +11282,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
                     if (slider.value != slider.prevValue)
-                        slider.param.op.pushUpdate();
+                        slider.param.node.pushUpdate();
                                         
                     slider.prevValue = slider.value;
                 }
@@ -10928,8 +11309,8 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             if (    graphView.tempConn.output
                 &&  slider.param.input
                 &&  graphView.tempConn.output.dataType == slider.param.input.dataType
-                && !graphView.tempConn.output.op.follows(slider.param.op)
-                && (  !slider.param.input.isConnected // not already connected to this input
+                && !graphView.tempConn.output.node.follows(slider.param.node)
+                && (  !slider.param.input.connected // not already connected to this input
                     || slider.param.input.connectedOutput != graphView.tempConn.output
                     || slider.param.input == savedInput))
             {
@@ -10947,7 +11328,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             else if ( graphView.tempConn.input
                   &&  slider.param.output
                   &&  graphView.tempConn.input.dataType == slider.param.output.dataType
-                  && !slider.param.op.follows(graphView.tempConn.input.op))
+                  && !slider.param.node.follows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = slider.param.output;
                     
@@ -10992,14 +11373,14 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.op.follows(slider.param.op)
+                && !graphView.tempConn.output.node.follows(slider.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !slider.param.op.follows(graphView.tempConn.input.op)
+                && !slider.param.node.follows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -11070,7 +11451,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
                 
-                if (!isLastInArray(param.op.params, param))
+                if (!isLastInArray(param.node.params, param))
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
             }
             else
@@ -11100,7 +11481,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != slider.param.op)
+                && graphView.tempConn.output.node != slider.param.node)
             {
                 const input = graphView.overInput;
                 
@@ -11115,7 +11496,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != slider.param.op)
+                  && graphView.tempConn.input.node != slider.param.node)
             {
                 const output = graphView.overOutput;
                 
@@ -11730,15 +12111,16 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
                 return;
             }
     
-            let opDiv = 
+            let nodeDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
                 ? slider.parentNode.parentNode.parentNode
                 : null;
 
-            if (opDiv && opDiv.className == 'node') 
-                graphView.putNodeOnTop(opDiv.op);
+            if (   nodeDiv 
+                && nodeDiv.className == 'node') 
+                graphView.putNodeOnTop(nodeDiv.node);
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
@@ -12290,7 +12672,7 @@ function initSelect(select, items)
 
 
         let options = select.getElementsByTagName('option');
-        for (const op of options) op.disabled = op.value == '-';
+        for (const node of options) node.disabled = node.value == '-';
     };
     
 
@@ -13393,9 +13775,9 @@ graphView.placeNewNode = function(node)
     //     const right = intersecting.reduce((a, b) => 
     //         graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
-    //     if (   right.opType == node.opType
-    //         && node.opType != 'color'
-    //         && node.opType != 'webcontrast') ox = bounds.b + dy;
+    //     if (   right.nodeType == node.nodeType
+    //         && node.nodeType != 'color'
+    //         && node.nodeType != 'webcontrast') ox = bounds.b + dy;
     //     else                                 oy = bounds.r + dx;
     // }
 
@@ -13412,8 +13794,8 @@ graphView.putNodeOnTop = function(node)
 {
     const topIndices = 
           1 
-        + node.inputs.filter(i => i.isConnected).length 
-        + (node.outputs.find(o => o.isConnected) ? 1 : 0);
+        + node.inputs.filter(i => i.connected).length 
+        + (node.outputs.find(o => o.connected) ? 1 : 0);
         
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
@@ -13432,7 +13814,7 @@ graphView.putWiresOnTop = function(node)
 
     let z = MAX_INT32;
 
-    for (const input of node.inputs.filter(i => i.isConnected))
+    for (const input of node.inputs.filter(i => i.connected))
     {
         wireContainer.removeChild(input.connection.wire);
         wireContainer.appendChild(input.connection.wire);
@@ -13462,7 +13844,7 @@ graphView.updateNodeTransforms = function(nodes)
     for (const node of nodes)
     {
         for (const input of node.inputs)
-            if (   input.isConnected
+            if (   input.connected
                 && input.connection
                 && !wires.includes(input.connection.wire))
                 wires.push(input.connection.wire);        
@@ -13494,7 +13876,7 @@ graphView.updateNodeTransform = function(node)
     const wires = [];
 
     for (const input of node.inputs)
-        if (   input.isConnected
+        if (   input.connected
             && input.connection)
             wires.push(input.connection.wire);        
 
@@ -13578,8 +13960,8 @@ graphView.updateNodeWires = function(wires)
 
             const isSolo = 
                    graphView._soloNode
-                && (    input.op == graphView._soloNode
-                    || output.op == graphView._soloNode);
+                && (    input.node == graphView._soloNode
+                    || output.node == graphView._soloNode);
 
         show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
@@ -13673,8 +14055,8 @@ graphView.soloNode = function(node)
     graph.connections.forEach(c =>
     { 
         c.wire.style.opacity = 
-               c.input  && graphView._soloNode == c.input .op
-            || c.output && graphView._soloNode == c.output.op
+               c.input  && graphView._soloNode == c.input .node
+            || c.output && graphView._soloNode == c.output.node
             ? 1 
             : 0.09;
     });
@@ -14156,9 +14538,9 @@ graphView.endConnection = pointerId =>
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
                 &&  newReorderIndex >= 0
-                &&  input.op._variableInputs
-                && !isLastInArray(input.op.inputs, input))
-                actionManager.do(new ReorderInputAction(input.op.id, oldReorderIndex, newReorderIndex));
+                &&  input.node._variableInputs
+                && !isLastInArray(input.node.inputs, input))
+                actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
 
             else if (input == savedInput) // reconnect old
             {
@@ -14172,7 +14554,7 @@ graphView.endConnection = pointerId =>
                     actionManager.do(new ReconnectAction(output, savedInput, input));
             }
             else if (   !savedInput
-                     && (  !input.isConnected
+                     && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }
@@ -14437,15 +14819,15 @@ extends EventTarget
     #name;
     get name() { return this.#name; }
 
-    _op;
-    get op()   { return this._op; }
+    _node;
+    get node() { return this._node; }
 
 
     _control; get control() { return this._control; }
     _div;     get div()     { return this._div;     }
 
 
-    get index() { return this.op.params.indexOf(this); }
+    get index() { return this.node.params.indexOf(this); }
 
 
     input;
@@ -14545,8 +14927,8 @@ extends EventTarget
     update(dispatchEvents)
     {
         if (   this.input
-            && this.input.isConnected)
-            this.input.connectedOutput.op.update();
+            && this.input.connected)
+            this.input.connectedOutput.node.update();
 
         if (this.showParamLock)
             this.paramLock.style.display = 'block';
@@ -14807,7 +15189,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        this.op.pushUpdate();
+        this.node.pushUpdate();
     }
 
 
@@ -14824,7 +15206,7 @@ extends Parameter
         super.update();
 
         if (   this.input
-            && this.input.isConnected)
+            && this.input.connected)
         {
             this.setDecimals(this.input.data.decimals);
 
@@ -14845,7 +15227,7 @@ extends Parameter
             this.output._data = dataFromNumber(
                 this.control.value,
                    this.input
-                && this.input.isConnected
+                && this.input.connected
                 ? this.input.data.decimals
                 : this.control.dec);
         }
@@ -14945,14 +15327,14 @@ extends Parameter
 
         this.control.addEventListener('change', e =>
         {
-            this.op.valid = false;
+            this.node.valid = false;
             uiSetParam(this, this.value);
         });
 
 
         this.control.addEventListener('confirm', e =>
         {
-            this.op.valid = false;
+            this.node.valid = false;
             //actionManager.do(new SetParamValueAction(this, this.value));
         });
     }
@@ -15061,7 +15443,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        this.op.pushUpdate();
+        this.node.pushUpdate();
     }
 
 
@@ -15078,7 +15460,7 @@ extends Parameter
         super.update();
 
         if (   this.input
-            && this.input.isConnected)
+            && this.input.connected)
             this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
     }
 
@@ -15104,79 +15486,6 @@ extends Parameter
             
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
-}
-
-
-const rgbObject       = hex2rgb('#bee0ff');
-const rgbActiveObject = hex2rgb('#18a0fb');
-const rgbNumber       = hex2rgb('#ddd');
-const rgbActiveNumber = hex2rgb('#787878');
-const rgbColor        = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
-const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
-
-
-
-function dataType2rgb(dataType, active)
-{
-    switch (dataType)
-    {
-        case 'number': return active ? rgbActiveNumber : rgbNumber;
-        case 'color':  return active ? rgbActiveColor  : rgbColor;
-        case 'object': return active ? rgbActiveObject : rgbObject;
-    }
-
-    return 'magenta';
-}
-
-
-
-function dataFromNumber(num, dec = -1)
-{
-    return {
-        type:    'number',
-        value:    floorTo(num, dec),
-        decimals: dec
-    };
-}
-
-
-
-function dataFromDataColor(color)
-{
-    return {
-        type:   'color',
-        color:   color,
-        isValid: isRgbValid(dataColor2rgb(color))
-    };
-}
-
-
-
-function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, opType)
-{
-    return {
-        type: 'object',
-
-        //nodeId: nodeId,
-        //opType: opType,
-
-        x:      x,
-        y:      y,
-        width:  width,
-        height: height,
-        angle:  angle,
-        round:  round
-        //color: color
-    };
-}
-
-
-
-function isDataColorNaN(color)
-{
-    return isNaN(color[1])
-        || isNaN(color[2])
-        || isNaN(color[3]);
 }
 
 
@@ -15295,9 +15604,9 @@ class Graph
             for (let i = node.inputs.length-1; i >= 0; i--) // backwards for the sake of variable inputs
             {
                 const input = node.inputs[i];
-                if (!input.isConnected) continue;
+                if (!input.connected) continue;
 
-                uiMakeNodeActive(input.connectedOutput.op);
+                uiMakeNodeActive(input.connectedOutput.node);
                 this.disconnect(input, true);
             }
             
@@ -15309,9 +15618,9 @@ class Graph
                 {
                     this.disconnect(connInput, true);
     
-                    // if (!activeNodeInTree(connInput.op))
-                    //     lastNodesInTreeFrom(connInput.op).forEach(n => uiMakeNodeActive(n));
-                    //     uiMakeNodeActive(connInput.op.lastNodeInTree);
+                    // if (!activeNodeInTree(connInput.node))
+                    //     lastNodesInTreeFrom(connInput.node).forEach(n => uiMakeNodeActive(n));
+                    //     uiMakeNodeActive(connInput.node.lastNodeInTree);
                 }
             }
             
@@ -15342,17 +15651,17 @@ class Graph
         }
 
 
-        if (   input.op._variableInputs
+        if (   input.node._variableInputs
             && inputIndex > -1)
         {
-            input = lastOf(input.op.inputs);
+            input = lastOf(input.node.inputs);
             
             // move new input back to correct index
-            moveInArray(input.op.inputs, input.op.inputs.length-1, inputIndex);
+            moveInArray(input.node.inputs, input.node.inputs.length-1, inputIndex);
 
-            input.op.inputControls.insertBefore(
-                lastOf(input.op.inputControls.childNodes), 
-                input.op.inputControls.childNodes[inputIndex]);
+            input.node.inputControls.insertBefore(
+                lastOf(input.node.inputControls.childNodes), 
+                input.node.inputControls.childNodes[inputIndex]);
         }
 
 
@@ -15370,10 +15679,10 @@ class Graph
         this.connections.push(conn);
 
         
-        // output.op.makePassive();
+        // output.node.makePassive();
 
-        // if (!activeNodeInTree(input.op))
-        //     uiMakeNodeActive(input.op);
+        // if (!activeNodeInTree(input.node))
+        //     uiMakeNodeActive(input.node);
        
            
         output.updateControl();
@@ -15386,11 +15695,11 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.index + '])');
+        //console.log( 'graph.disconnect(' + input.node.id + '.in[' + input.index + '])');
         // first remove the current output
 
-        // if (activeNodeInTree(input.op))
-        //     uiDeleteCanvasObjects([activeNodeInTree(input.op).id]);
+        // if (activeNodeInTree(input.node))
+        //     uiDeleteCanvasObjects([activeNodeInTree(input.node).id]);
 
 
         // then disconnect
@@ -15414,12 +15723,12 @@ class Graph
             input.param.valueText = '';
 
 
-        // if (!activeNodeInTree(output.op))
-        //      uiMakeNodeActive(output.op);
+        // if (!activeNodeInTree(output.node))
+        //      uiMakeNodeActive(output.node);
             
         
         output.updateControl();
-        input.op.pushUpdate();
+        input.node.pushUpdate();
 
 
         return true;
@@ -15474,8 +15783,8 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
         for (let j = 0; j < node.inputs.length; j++)
         {
-            if (   !node.inputs[j].isConnected
-                ||    !nodes.includes(node.inputs[j].connectedOutput.op)
+            if (   !node.inputs[j].connected
+                ||    !nodes.includes(node.inputs[j].connectedOutput.node)
                    && connOutputMustBeInNodes)
                 continue;
 
@@ -15512,11 +15821,11 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function createNode(opType, creatingButton = null)//, createdNodeId = -1)
+function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
 {
     let node;
 
-    switch (opType)
+    switch (nodeType)
     {
         case 'number':           node = new OpNumber();           break;
         case 'minmax':           node = new OpMinMax();           break;
@@ -15570,9 +15879,9 @@ function nodeFromId(id)
 
 //     for (const input of node.inputs)
 //     {
-//         if (input.isConnected)
+//         if (input.connected)
 //         {
-//             const left = activeNodeLeft(input.connectedOutput.op);
+//             const left = activeNodeLeft(input.connectedOutput.node);
 //             if (left) return left;
 //         }
 //     }
@@ -15590,7 +15899,7 @@ function nodeFromId(id)
 //     {
 //         for (const connInput of output.connectedInputs)
 //         {
-//             const right = activeNodeRight(connInput.op);
+//             const right = activeNodeRight(connInput.node);
 //             if (right) return right;
 //         }
 //     }
@@ -15609,12 +15918,12 @@ function getAllNodesFromNode(node, ignore = [])
         ignore.push(node);
 
 
-    for (const input of node.inputs.filter(i => i.isConnected))
+    for (const input of node.inputs.filter(i => i.connected))
     {
-        const op = input.connectedOutput.op;
-        if (ignore.includes(op)) continue;
+        const node = input.connectedOutput.node;
+        if (ignore.includes(node)) continue;
 
-        nodes.push(...getAllNodesFromNode(op, ignore));
+        nodes.push(...getAllNodesFromNode(node, ignore));
     }
 
 
@@ -15622,10 +15931,10 @@ function getAllNodesFromNode(node, ignore = [])
     {
         for (const _input of output.connectedInputs)
         {
-            const op = _input.op;
-            if (ignore.includes(op)) continue;
+            const node = _input.node;
+            if (ignore.includes(node)) continue;
 
-            nodes.push(...getAllNodesFromNode(op, ignore));
+            nodes.push(...getAllNodesFromNode(node, ignore));
         }
     }
 
@@ -15650,12 +15959,12 @@ function getNodesBeforeNode(node)
 {
     let before = [];
 
-    for (const input of node.inputs.filter(i => i.isConnected))
+    for (const input of node.inputs.filter(i => i.connected))
     {
-        if (!before.includes(input.connectedOutput.op)) // avoid including diamond tips twice
-            before.push(input.connectedOutput.op);
+        if (!before.includes(input.connectedOutput.node)) // avoid including diamond tips twice
+            before.push(input.connectedOutput.node);
     
-        before.push(...getNodesBeforeNode(input.connectedOutput.op));
+        before.push(...getNodesBeforeNode(input.connectedOutput.node));
     }
 
     return before;
@@ -15670,10 +15979,10 @@ function getNodesAfterNode(node)
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
         {
-            if (!after.includes(input.op)) // avoid including diamond tips twice
-                after.push(input.op);
+            if (!after.includes(input.node)) // avoid including diamond tips twice
+                after.push(input.node);
 
-            after.push(...getNodesAfterNode(input.op));
+            after.push(...getNodesAfterNode(input.node));
         }
 
     return after;
@@ -15687,7 +15996,7 @@ function getTerminalsAfterNode(node)
 
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
-            after.push(...getTerminalsAfterNode(input.op));
+            after.push(...getTerminalsAfterNode(input.node));
 
     return after.length > 0 ? after : [node];
 }
@@ -15723,17 +16032,17 @@ extends EventTarget
     get data()
     {
         return (
-            this.isConnected
+            this.connected
             ? this.connectedOutput.data
             : null);
     }
 
 
-    _op    = null; get op   () { return this._op;    }
+    _node  = null; get node () { return this._node;  }
     _param = null; get param() { return this._param; }
 
 
-    get index() { return this.op.inputs.indexOf(this); }
+    get index() { return this.node.inputs.indexOf(this); }
 
     
     color;
@@ -15831,12 +16140,12 @@ extends EventTarget
             if (   graphView.tempConn
                 && graphView.tempConn.output
                 && graphView.tempConn.output.dataType == this.dataType
-                && (  !this.isConnected
+                && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
             {
                 const rect = boundingRect(this.control);
-                const loop = graphView.tempConn.output.op.follows(this.op);
+                const loop = graphView.tempConn.output.node.follows(this.node);
 
                 if (!loop)
                 {
@@ -15846,7 +16155,7 @@ extends EventTarget
                 }
 
                 graphView.overInput = !loop ? this : null;
-                this.op.inputs.forEach(i => i.updateControl());
+                this.node.inputs.forEach(i => i.updateControl());
             }
             else
                 graphView.overInput = this;
@@ -15884,7 +16193,7 @@ extends EventTarget
             && !(   graphView.tempConn
                  && graphView.tempConn.output
                  && (   graphView.tempConn.output.dataType != this.dataType
-                     || graphView.tempConn.output.op.follows(this.op)));
+                     || graphView.tempConn.output.node.follows(this.node)));
 
         const colorStyle = 
             graphView.showWires
@@ -15897,7 +16206,7 @@ extends EventTarget
 
 
         const isConnected =
-               this.isConnected
+               this.connected
             ||     graphView.tempConn
                && (   graphView.tempConn.input == this
                    ||    graphView.overInput == this
@@ -15920,7 +16229,7 @@ extends EventTarget
         this.hitbox.style.top  = isConnected ? -2 : -3;
 
         this.wireBall.style.backgroundColor = 
-            this.isConnected
+            this.connected
             ? (   graphView.savedConn
                && graphView.savedConn.input == this
                && graphView.overInput != this
@@ -15956,11 +16265,11 @@ class Output
     _dataType;     
     get dataType() { return this._dataType; }
 
-    _op    = null; get op()    { return this._op;    }
+    _node  = null; get node () { return this._node;  }
     _param = null; get param() { return this._param; }
     
     
-    get index() { return this.op.outputs.indexOf(this); }
+    get index() { return this.node.outputs.indexOf(this); }
 
 
     color;
@@ -15977,12 +16286,16 @@ class Output
     connecting = false;
     
     
+    generateRequest = null; // function pointer, must be implemented
+    cachedRequest   = '';
+
+
     _data;
 
     get data() 
     {
         if (this.param) this.param.setOutputData();
-        if (this.op   ) this.op.update();
+        if (this.node ) this.node.update();
 
         return this._data;
     }
@@ -15992,7 +16305,7 @@ class Output
         this._data = value;
 
         // for (const input of this.connectedInputs)
-        //     input.op.pushUpdate();
+        //     input.node.pushUpdate();
     }
 
 
@@ -16001,22 +16314,23 @@ class Output
 
 
 
-    constructor(dataType)
+    constructor(dataType, generateRequest)
     {
-        this._dataType = dataType;
+        this._dataType       = dataType;
+        this.generateRequest = generateRequest;
+
+        this.control         = createDiv('output');
+        this.hitbox          = createDiv('outputHitbox');
+        this.wireBall        = createDiv('outputBall');
         
-        this.control  = createDiv('output');
-        this.hitbox   = createDiv('outputHitbox');
-        this.wireBall = createDiv('outputBall');
-        
-        this.control.output = this;
+        this.control.output  = this;
         
         
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.12];
-        this.wireColor = dataType2rgb(this.dataType, true);
+        this.color           = [0, 0, 0, 0.12];
+        this.wireColor       = dataType2rgb(this.dataType, true);
         
         this.updateControl();
 
@@ -16042,7 +16356,7 @@ class Output
                 && graphView.tempConn.input.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
-                const loop = this.op.follows(graphView.tempConn.input.op);
+                const loop = this.node.follows(graphView.tempConn.input.node);
 
                 if (!loop)
                 {
@@ -16052,7 +16366,7 @@ class Output
                 }
 
                 graphView.overOutput = !loop ? this : null;
-                this.op.outputs.forEach(o => o.updateControl());
+                this.node.outputs.forEach(o => o.updateControl());
             }
             else
                 graphView.overOutput = this; 
@@ -16091,7 +16405,7 @@ class Output
             && !(   graphView.tempConn
                  && graphView.tempConn.input
                  && (   graphView.tempConn.input.dataType != this.dataType
-                     || this.op.follows(graphView.tempConn.input.op)));
+                     || this.node.follows(graphView.tempConn.input.node)));
 
         const colorStyle = 
             graphView.showWires
@@ -16196,8 +16510,8 @@ class Connection
 
             const isSolo = 
                    graphView._soloNode
-                && (   this. input.op == graphView._soloNode
-                    || this.output.op == graphView._soloNode);
+                && (   this. input.node == graphView._soloNode
+                    || this.output.node == graphView._soloNode);
             
             const showWire = 
                    graphView.showWires 
@@ -16354,10 +16668,10 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputOp": "'    + this.output.op.id + '"'
+            +  '\n' + pos + tab + '"outputOp": "'    + this.output.node.id + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputOp": "'     + this.input.op.id + '"'
+            + ',\n' + pos + tab + '"inputOp": "'     + this.input.node.id + '"'
             + ',\n' + pos + tab + '"inputIndex": "'  + this.input.index + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
@@ -16369,35 +16683,35 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputOp    = nodeFromId(_conn.outputOp);
+        const outputNode  = nodeFromId(_conn.outputNode);
         const outputIndex = parseInt(_conn.outputIndex);
 
-        const inputOp     = nodeFromId(_conn.inputOp);
+        const inputNode   = nodeFromId(_conn.inputNode);
         const inputIndex  = parseInt(_conn.inputIndex);
 
 
         // log('---------------------------------------');
 
-        // log('outputOp',                outputOp);
-        // log('outputIndex',             outputIndex);
-        // log('outputOp.outputs.length', outputOp.outputs.length);
+        // log('outputNode',                outputNode);
+        // log('outputIndex',               outputIndex);
+        // log('outputNode.outputs.length', outputNode.outputs.length);
         
-        // log('inputOp',               inputOp);
-        // log('inputIndex',            inputIndex);
-        // log('inputOp.inputs.length', inputOp.inputs.length);
+        // log('inputOp',                 inputOp);
+        // log('inputIndex',              inputIndex);
+        // log('inputNode.inputs.length', inputNode.inputs.length);
 
 
 
-        if (   !outputOp || outputIndex >= outputOp.outputs.length
-            || !inputOp  ||  inputIndex >= inputOp .inputs .length)
+        if (   !outputNode || outputIndex >= outputNode.outputs.length
+            || !inputNode  ||  inputIndex >= inputNode .inputs .length)
         {
             uiError(
                   'Cannot connect ' 
-                + _conn.outputOp + '.out[' + outputIndex + '] to ' 
-                + _conn.inputOp  + '.in[' + _conn.inputIndex + ']');
+                + _conn.outputNode + '.out[' + outputIndex + '] to ' 
+                + _conn.inputNode  + '.in[' + _conn.inputIndex + ']');
         }
         else
-            uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex);
+            uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex);
     }
 }
 
@@ -16406,9 +16720,9 @@ class Connection
 function getConnectionForArrayWithIds(conn)
 {
     return {
-        outputOpId:  conn.output.op.id,
+        outputNodeId:conn.output.node.id,
         outputIndex: conn.output.index,
-        inputOpId:   conn.input .op.id,
+        inputNodeId: conn.input .node.id,
         inputIndex:  conn.input .index };
 }
 
@@ -16417,20 +16731,24 @@ function getConnectionForArrayWithIds(conn)
 function getConnectionForArrayWithNames(conn)
 {
     return {
-        outputOpName: conn.output.op.id,
+        outputNodeName: conn.output.node.id,
         outputIndex:  conn.output.index,
-        inputOpName:  conn.input .op.id,
+        inputNodeName:  conn.input .node.id,
         inputIndex:   conn.input .index };
 }
 
 
 /*
-    Each operator has a generateRequest() method, which creates a string that
+    Operators don't have data types, those are inferred from the outputs.
+
+    Outputs and have a generateRequest() method, which creates a string that
     is added to the complete recursive generation request. 
     
     The generator then does the calculation and sends back two kinds of messages:
     node value updates and Figma page updates.
 
+    Value updates can trigger a visual node update. The update info is passed
+    in the update message.
 */
 
 
@@ -16442,11 +16760,14 @@ const connectionGap  = 2;
 
 class Operator
 {
-    #opType;
-    get opType() { return this.#opType; }
+    graph = null;
     
-    _dataType;
-    get dataType() { return this._dataType; }
+    
+    #nodeType;
+    get nodeType() { return this.#nodeType; }
+    
+    defShortName;
+    
 
     _id;
     get id() { return this._id; }
@@ -16456,13 +16777,7 @@ class Operator
     get name() { return this._name; }
     set name(name) { this.setName(name); }
 
-    shortTypeName;
-    defaultWidth;
 
-
-    graph = null;
-    
-    
     inputs  = [];
     outputs = [];
     params  = [];
@@ -16473,6 +16788,7 @@ class Operator
     alwaysLoadParams = false;
     loading          = false;
 
+    defaultWidth;
     labelOffsetFactor;
 
 
@@ -16496,7 +16812,7 @@ class Operator
 
    
 
-    valid; // this is the flag for regeneration
+    valid; // regeneration flag
 
 
 
@@ -16547,23 +16863,21 @@ class Operator
 
 
 
-    constructor(opType, shortType, dataType, defWidth = 80)
+    constructor(nodeType, defWidth = 80)
     {
-        this.#opType           = opType;   // this is the operator type
-        this._dataType         = dataType; // this is the op's main data type
-           
-        this.shortTypeName     = shortType;
-        this._id               = shortType;
-
-        this.valid             = false;
+        this.#nodeType         = nodeType;
+                
+        this.defShortName      = getShortNodeName(nodeType);
+        this._id               = this.defShortName;
 
         this.defaultWidth      = defWidth;
-        
         this.labelOffsetFactor = 0;
+        
+        this.valid             = false;
 
         createOperatorNode(this);
 
-        this.setName(shortType);
+        this.setName(this.defShortName);
     }    
 
 
@@ -16587,10 +16901,10 @@ class Operator
 
         if (   graphView.savedConn
             && graphView.savedConn.input
-            && graphView.savedConn.input.op == this)
+            && graphView.savedConn.input.node == this)
             return graphView.savedConn.input;
         
-        else if (!graphView.tempConn.output.op.follows(this))
+        else if (!graphView.tempConn.output.node.follows(this))
         {
             if (this._variableInputs)
                 return lastOf(inputs);
@@ -16599,7 +16913,7 @@ class Operator
             {
                 for (const input of inputs)
                 {
-                    if (!input.isConnected)
+                    if (!input.connected)
                         return input;
                 }
 
@@ -16615,7 +16929,7 @@ class Operator
 
     addOutput(output)
     {
-        output._op = this;
+        output._node = this;
         this.outputs.push(output);
         this.outputControls.appendChild(output.control);
     }
@@ -16627,7 +16941,7 @@ class Operator
         const outputs = this.outputs.filter(o => o.dataType == dataType);
 
         return     outputs.length == 1
-               && !this.follows(graphView.tempConn.input.op)
+               && !this.follows(graphView.tempConn.input.node)
                ? outputs[0]
                : null;
     }
@@ -16667,8 +16981,8 @@ class Operator
         {
             input.currentSeed = input.initialSeed;
             
-            if (input.isConnected)
-                input.connectedOutput.op.reset();
+            if (input.connected)
+                input.connectedOutput.node.reset();
         }
     }
 
@@ -16678,8 +16992,8 @@ class Operator
     // {
     //     for (const input of this.inputs)
     //     {
-    //         if (input.isConnected)
-    //             input.connectedOutput.op.refresh();
+    //         if (input.connected)
+    //             input.connectedOutput.node.refresh();
     //     }
     // }
 
@@ -16687,15 +17001,19 @@ class Operator
     
     invalidate()
     {
-        if (!this.valid) // stops an op with inputs from same output 
+        if (!this.valid) // stops a node with inputs from same output 
             return;      // from being invalidated more than once
     
         this.valid = false;
 
 
         for (const output of this.outputs)
+        {
+            output.cachedRequest = '';
+            
             for (const connInput of output.connectedInputs)
-                connInput.op.invalidate();
+                connInput.node.invalidate();
+        }
     }
 
 
@@ -16713,32 +17031,37 @@ class Operator
 
     update()
     {
-        if (this.valid) return;
+        //if (this.valid) return;
         
         //log(this.id + '.Operator.update()');
     
-        this.updateParams(false);
-        this.updateData();
+        //this.updateParams(false);
+        //this.updateData();
 
-        this.valid = true;
+        // this.valid = true;
 
-        if (this.active)
-            uiPostGeneratorRequest(this.generateRequest());
 
-        if (graphView.canUpdateNodes)
-            this.updateNode();
+        // if (this.active)
+        //     uiPostGeneratorRequest(this.generateRequest());
 
-        this.loading = false;
+        for (const output of this.outputs)
+            uiPostGeneratorRequest(output.generateRequest(output));
+        
+
+        //if (graphView.canUpdateNodes)
+        //    this.updateNode();
+
+        //this.loading = false;
     }
 
 
 
-    updateData()
-    {
-        //log(this.id + '.Operator.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.Operator.updateData()');
 
-        this.setParamOutputData();
-    }
+    //     this.setParamOutputData();
+    // }
 
 
 
@@ -16755,7 +17078,7 @@ class Operator
 
             The general format is
 
-                opType [params...] [inputs...]
+                nodeType [params...] [inputs...]
 
 
             #               # of following values
@@ -16889,13 +17212,13 @@ class Operator
 
     isBefore(node)
     {
-        if (!this.outputs.find(o => o.isConnected))
+        if (!this.outputs.find(o => o.connected))
             return false;
 
         for (const input of output.connectedInputs)
         {
-            if (input.op == node)        return true;
-            if (input.op.isBefore(node)) return true;
+            if (input.node == node)        return true;
+            if (input.node.isBefore(node)) return true;
         }
 
         return false;
@@ -16910,8 +17233,8 @@ class Operator
 
         for (const input of inputs)
         {
-            if (input.connectedOutput.op == node)       return true;
-            if (input.connectedOutput.op.isAfter(node)) return true;
+            if (input.connectedOutput.node == node)       return true;
+            if (input.connectedOutput.node.isAfter(node)) return true;
         }
 
         return false;
@@ -16942,8 +17265,8 @@ class Operator
             
         for (const input of this.inputs)
         {
-            if (   input.isConnected
-                && input.connectedOutput.op.follows(node))
+            if (   input.connected
+                && input.connectedOutput.node.follows(node))
                 return true;
         }
 
@@ -16956,7 +17279,7 @@ class Operator
     {
         return param.isDefault()
             && (   !param.input 
-                || !param.input.isConnected);
+                || !param.input.connected);
     }
 
 
@@ -16996,7 +17319,7 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "'        + this.opType            + '",\n'
+              pos + tab + '"type": "'        + this.nodeType            + '",\n'
             + pos + tab + '"id": "'          + this.id                + '",\n'
             + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
@@ -17023,7 +17346,7 @@ class Operator
         {
             if (   !param.isDefault()
                 && (   !param.input
-                    || !param.input.isConnected))
+                    || !param.input.connected))
             {
                 if (!first) json += ',\n'; first = false;
                 json += pos + tab + tab + param.toJson(nTab);
@@ -17114,7 +17437,7 @@ var  oldReorderIndex = Number.NaN;
 function createOperatorNode(node)
 {
     node.div                    = createDiv('node');
-    node.div.op                 = node;
+    node.div.node               = node;
        
     node.div.style.width        = node.defaultWidth + 'px';
            
@@ -17210,7 +17533,7 @@ function createNodeHeader(node)
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.op != node)
+                && graphView.tempConn.output.node != node)
             {
                 const input = graphView.headerInput;
                 
@@ -17226,7 +17549,7 @@ function createNodeHeader(node)
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.op != node)
+                  && graphView.tempConn.input.node != node)
             {
                 const output = graphView.headerOutput;
                 
@@ -17360,7 +17683,7 @@ function createNodeHeader(node)
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.op.follows(node))
+                && !tempConn.output.node.follows(node))
             {
                 if (   node._variableInputs
                     && savedConn)
@@ -17404,8 +17727,8 @@ function createNodeHeader(node)
                     const input = node.getAutoInput(tempConn.output.dataType);
 
                     if ( !input)
-                        // ||    input.isConnected
-                        //    && input.connectedOutput.op == tempConn.output.op) 
+                        // ||    input.connected
+                        //    && input.connectedOutput.node == tempConn.output.node) 
                         return;
 
                     graphView.overInput   = input;
@@ -17423,7 +17746,7 @@ function createNodeHeader(node)
                 }
             }
             else if (tempConn.input
-                  && !node.follows(tempConn.input.op))
+                  && !node.follows(tempConn.input.node))
             {
                 const output = node.getAutoOutput(tempConn.input.dataType);
                 if (!output) return;
@@ -17477,14 +17800,14 @@ function createNodeHeader(node)
         else if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.op.follows(node)
+                && !graphView.tempConn.output.node.follows(node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
-                  && !node.follows(graphView.tempConn.input.op)
+                  && !node.follows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -17547,7 +17870,7 @@ function createNodeLabel(node)
     node.labelWrapper = createDiv('nodeLabelWrapper');
 
     node.label        = createDiv('nodeLabel');
-    node.label.op     = node;
+    node.label.node   = node;
     
     node.labelWrapper.appendChild(node.label);
     node.header.appendChild(node.labelWrapper);
@@ -17816,10 +18139,10 @@ extends OperatorBase
 
     constructor()
     {
-        super('number', 'num', 'number', 70);
+        super(NODE_NUMBER, 70);
 
         this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addOutput(new Output(this.dataType, this.otuput_generateRequest));
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
@@ -17828,29 +18151,48 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        if (this.inputs[0].isConnected)
-        {
-            this.#paramValue.control.setDecimals(this.inputs[0].data.decimals);
-            this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
-        }
+    // updateData()
+    // {
+    //     if (this.inputs[0].connected)
+    //     {
+    //         this.#paramValue.control.setDecimals(this.inputs[0].data.decimals);
+    //         this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
+    //     }
 
-        this.#paramValue.control.readOnly = this.inputs[0].isConnected;
+    //     this.#paramValue.control.readOnly = this.inputs[0].connected;
         
-        this.outputs[0]._data = dataFromNumber(
-            this.#paramValue.value, 
-            this.#paramValue.control.dec);
+    //     this.outputs[0]._data = dataFromNumber(
+    //         this.#paramValue.value, 
+    //         this.#paramValue.control.dec);
             
                   
-        super.updateData()
+    //     super.updateData()
+    // }
+
+
+
+    otuput_generateRequest(output)
+    {
+        const node = output.node;
+
+        if (output.cachedRequest == '')
+        {
+            output.cachedRequest = 
+                node.inputs[0].connected
+                ? node.inputs[0].connectedOutput.generateRequest()
+                : [ node.defShortName,
+                    node.#paramValue.value      .toString(),
+                    node.#paramValue.control.dec.toString() ];
+        }
+
+        return output.cachedRequest;
     }
 
 
 
     updateNode()
     {
-        enableElementText(this.#paramValue.control, !this.inputs[0].isConnected);
+        enableElementText(this.#paramValue.control, !this.inputs[0].connected);
         
         super.updateNode();
     }
@@ -17880,7 +18222,7 @@ extends OperatorBase
     paramIsConsideredDefault(param)
     {
         return param.isDefault()
-            && !this.inputs[0].isConnected;
+            && !this.inputs[0].connected;
     }
 
 
@@ -17907,9 +18249,9 @@ extends OperatorBase
 
     toString()
     {
-        // let str = opType;
+        // let str = nodeType;
 
-        // if (this.inputs[0].isConnected)
+        // if (this.inputs[0].connected)
         //     str +=
 
         // return str;
@@ -17950,40 +18292,40 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        if (this.inputs[0].isConnected)
-        {
-            this.#paramMin.control.setDecimals(this.inputs[0].data.decimals);
-            this.#paramMax.control.setDecimals(this.inputs[0].data.decimals);
+    // updateData()
+    // {
+    //     if (this.inputs[0].connected)
+    //     {
+    //         this.#paramMin.control.setDecimals(this.inputs[0].data.decimals);
+    //         this.#paramMax.control.setDecimals(this.inputs[0].data.decimals);
             
-            if (this.#paramMin.value > this.#paramMax.value)
-                this.#paramMin.setValue(this.#paramMax.value, false, true, false);
+    //         if (this.#paramMin.value > this.#paramMax.value)
+    //             this.#paramMin.setValue(this.#paramMax.value, false, true, false);
 
-            if (this.#paramMax.value < this.#paramMin.value)
-                this.#paramMax.setValue(this.#paramMin.value, false, true, false);
+    //         if (this.#paramMax.value < this.#paramMin.value)
+    //             this.#paramMax.setValue(this.#paramMin.value, false, true, false);
 
-            this.outputs[0]._data = dataFromNumber(
-                Math.min(Math.max(
-                    this.#paramMin.value, 
-                    this.inputs[0].data.value), 
-                    this.#paramMax.value),
-                this.inputs[0].data.decimals);
-        }
-        else
-            this.outputs[0]._data = dataFromNumber(Number.Nan, 0);
+    //         this.outputs[0]._data = dataFromNumber(
+    //             Math.min(Math.max(
+    //                 this.#paramMin.value, 
+    //                 this.inputs[0].data.value), 
+    //                 this.#paramMax.value),
+    //             this.inputs[0].data.decimals);
+    //     }
+    //     else
+    //         this.outputs[0]._data = dataFromNumber(Number.Nan, 0);
             
                   
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
     toString()
     {
-        // let str = opType;
+        // let str = nodeType;
 
-        // if (this.inputs[0].isConnected)
+        // if (this.inputs[0].connected)
         //     str +=
 
         // return str;
@@ -18000,9 +18342,9 @@ extends OperatorBase
     _showOnlySymbol;
 
 
-    constructor(opType, shortType, symbol)
+    constructor(nodeType, shortType, symbol)
     {
-        super(opType, shortType, 'number', 50);
+        super(nodeType, shortType, 'number', 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -18079,39 +18421,39 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        let maxDec = 0;
+    // updateData()
+    // {
+    //     let maxDec = 0;
 
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-            {
-                //input.connectedOutput.op.updateData();
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.connected)
+    //         {
+    //             //input.connectedOutput.node.updateData();
 
-                // ^ this could have removed one or more inputs and connections
-                // in which case abort
-                if (!input.isConnected)
-                {
-                    super.updateData();
-                    return;
-                }
+    //             // ^ this could have removed one or more inputs and connections
+    //             // in which case abort
+    //             if (!input.connected)
+    //             {
+    //                 super.updateData();
+    //                 return;
+    //             }
 
-                maxDec = Math.max(maxDec, input.data.decimals);
-            }
-        }
+    //             maxDec = Math.max(maxDec, input.data.decimals);
+    //         }
+    //     }
 
 
-        const result = this.getResult();
+    //     const result = this.getResult();
 
-        this.outputs[0]._data = dataFromNumber(result, maxDec);
+    //     this.outputs[0]._data = dataFromNumber(result, maxDec);
 
-        this.#paramValue.control.setDecimals(maxDec);
-        this.#paramValue.setValue(result, false, true, false) ;
+    //     this.#paramValue.control.setDecimals(maxDec);
+    //     this.#paramValue.setValue(result, false, true, false) ;
 
         
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
@@ -18192,20 +18534,20 @@ extends OperatorBase
 
 
 
-function onConnectInput(op)
+function onConnectInput(node)
 {
-    op.addNewInput();
-    op.updateNode();
-    graphView.updateNodeTransform(op);
+    node.addNewInput();
+    node.updateNode();
+    graphView.updateNodeTransform(node);
 }
 
 
 
-function onDisconnectInput(op, input)
+function onDisconnectInput(node, input)
 {
-    removeFromArray(op.inputs, input);
-    op.inputControls.removeChild(input.control);
-    op.updateNode();
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.control);
+    node.updateNode();
 }
 
 
@@ -18427,45 +18769,45 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        let result = Number.NaN;
-        let maxDec = 0;
+    // updateData()
+    // {
+    //     let result = Number.NaN;
+    //     let maxDec = 0;
 
-        if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
-        {
-            const a = this.inputs[0].data.value; 
-            const b = this.inputs[1].data.value; 
+    //     if (   this.inputs[0].connected
+    //         && this.inputs[1].connected)
+    //     {
+    //         const a = this.inputs[0].data.value; 
+    //         const b = this.inputs[1].data.value; 
 
-            result = a + (b - a) * this.#paramAmount.value / 100;
+    //         result = a + (b - a) * this.#paramAmount.value / 100;
 
-            maxDec = Math.max(
-                this.inputs[0].data.decimals,
-                this.inputs[1].data.decimals);
-        }
-        else if (this.inputs[0].isConnected)
-        {
-            result = this.inputs[0].data.value;
-            maxDec = this.inputs[0].data.decimals;
-        }
-        else if (this.inputs[1].isConnected)
-        {
-            result = this.inputs[1].data.value;
-            maxDec = this.inputs[1].data.decimals;
-        }
-
-
-        this.outputs[0]._data = dataFromNumber(result, maxDec);
-
-        this.#paramValue.control.setDecimals(maxDec);
-        this.#paramValue.setValue(result, false, true, false);
-
-        this.#paramValue.control.update();
+    //         maxDec = Math.max(
+    //             this.inputs[0].data.decimals,
+    //             this.inputs[1].data.decimals);
+    //     }
+    //     else if (this.inputs[0].connected)
+    //     {
+    //         result = this.inputs[0].data.value;
+    //         maxDec = this.inputs[0].data.decimals;
+    //     }
+    //     else if (this.inputs[1].connected)
+    //     {
+    //         result = this.inputs[1].data.value;
+    //         maxDec = this.inputs[1].data.decimals;
+    //     }
 
 
-        super.updateData()
-    }
+    //     this.outputs[0]._data = dataFromNumber(result, maxDec);
+
+    //     this.#paramValue.control.setDecimals(maxDec);
+    //     this.#paramValue.setValue(result, false, true, false);
+
+    //     this.#paramValue.control.update();
+
+
+    //     super.updateData()
+    // }
 }
 
 
@@ -18482,9 +18824,9 @@ extends Operator
     
 
 
-    constructor(opType, shortType, dataType, defWidth = 80)
+    constructor(nodeType, shortType, dataType, defWidth = 80)
     {
-        super(opType, shortType, dataType, defWidth);
+        super(nodeType, shortType, dataType, defWidth);
 
 
         this._warningOverlay = createDiv('colorWarningOverlay');
@@ -18718,7 +19060,7 @@ extends OpColorBase
         {
             for (let i = 1; i < this.params.length; i++)
             {
-                if (!this.params[i].input.isConnected) 
+                if (!this.params[i].input.connected) 
                     enableSliderText(this.params[i].control, true);
             }
 
@@ -18752,7 +19094,7 @@ extends OpColorBase
 
 
         for (let i = 1; i < this.params.length; i++)
-            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].isConnected); });
+            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].connected); });
     }
 
 
@@ -18787,10 +19129,10 @@ extends OpColorBase
 
     isConnected()
     {
-        return this.inputs[0].isConnected
-            || this.inputs[2].isConnected
-            || this.inputs[3].isConnected
-            || this.inputs[4].isConnected;
+        return this.inputs[0].connected
+            || this.inputs[2].connected
+            || this.inputs[3].connected
+            || this.inputs[4].connected;
     }
 
 
@@ -18802,94 +19144,94 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        //log(this.id + '.OpColor.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.OpColor.updateData()');
 
-        if (this.inputs[0].isConnected) 
-        {
-            if (   dataColorIsNaN(this.inputs[0].data.color)
-                && !this.loading
-                && !dataColorIsNaN(this._color))
-            {
-                this._colorBeforeNaN = this._color;
-                this._color          = dataColor_NaN;
-            }
-            else
-            {
-                const toSpace = colorSpace(this.paramSpace.value);
-                const color   = convertDataColorToSpace(this.inputs[0].data.color, toSpace);
+    //     if (this.inputs[0].connected) 
+    //     {
+    //         if (   dataColorIsNaN(this.inputs[0].data.color)
+    //             && !this.loading
+    //             && !dataColorIsNaN(this._color))
+    //         {
+    //             this._colorBeforeNaN = this._color;
+    //             this._color          = dataColor_NaN;
+    //         }
+    //         else
+    //         {
+    //             const toSpace = colorSpace(this.paramSpace.value);
+    //             const color   = convertDataColorToSpace(this.inputs[0].data.color, toSpace);
                 
-                if (this.param1.input.isConnected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
-                if (this.param2.input.isConnected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
-                if (this.param3.input.isConnected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
+    //             if (this.param1.input.connected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
+    //             if (this.param2.input.connected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
+    //             if (this.param3.input.connected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
 
-                switchToSpace(this, toSpace);
-                setDataColorToCurrentSpace(this, color);
-            }
-        }
-        else
-        {
-            if (!dataColorIsNaN(this._colorBeforeNaN))
-            {
-                this._color          = this._colorBeforeNaN;
-                this._colorBeforeNaN = dataColor_NaN;
+    //             switchToSpace(this, toSpace);
+    //             setDataColorToCurrentSpace(this, color);
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (!dataColorIsNaN(this._colorBeforeNaN))
+    //         {
+    //             this._color          = this._colorBeforeNaN;
+    //             this._colorBeforeNaN = dataColor_NaN;
 
-                const toSpace = colorSpace(this.paramSpace.value);
+    //             const toSpace = colorSpace(this.paramSpace.value);
 
-                switchToSpace(this, toSpace);
-                setDataColorToCurrentSpace(this, this._color);
+    //             switchToSpace(this, toSpace);
+    //             setDataColorToCurrentSpace(this, this._color);
 
-                this._oldSpace = toSpace;
-            }
-            else
-            {
-                const toSpace = colorSpace(this.paramSpace.value);
+    //             this._oldSpace = toSpace;
+    //         }
+    //         else
+    //         {
+    //             const toSpace = colorSpace(this.paramSpace.value);
 
-                if (   !this.#init
-                    ||  this._oldSpace != toSpace
-                    || !dataColorIsNaN(this._colorBeforeNaN))
-                {
-                    this.param1.allowEditDecimals = this.paramSpace.value > 1;
-                    this.param2.allowEditDecimals = this.paramSpace.value > 1;
-                    this.param3.allowEditDecimals = this.paramSpace.value > 1;
+    //             if (   !this.#init
+    //                 ||  this._oldSpace != toSpace
+    //                 || !dataColorIsNaN(this._colorBeforeNaN))
+    //             {
+    //                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
+    //                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
+    //                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
 
-                    const color =
-                        this.loading 
-                        ? this.getDataColorFromParams()
-                        : this._color;
-
-
-                    switchToSpace(this, toSpace);
-                    setDataColorToCurrentSpace(this, color);
+    //                 const color =
+    //                     this.loading 
+    //                     ? this.getDataColorFromParams()
+    //                     : this._color;
 
 
-                    for (let i = 2; i < 5; i++)
-                    {
-                        if (this.inputs[i].isConnected) 
-                        { 
-                            const param = this.inputs[i].param;
-
-                            param.update(); 
-                            this._color[i-1] = param.value; 
-                        }
-                    }
+    //                 switchToSpace(this, toSpace);
+    //                 setDataColorToCurrentSpace(this, color);
 
 
-                    this.#init = true;
-                }
+    //                 for (let i = 2; i < 5; i++)
+    //                 {
+    //                     if (this.inputs[i].connected) 
+    //                     { 
+    //                         const param = this.inputs[i].param;
 
-                this._color    = this.getDataColorFromParams();
-                this._oldSpace = toSpace;
-            }
-        }
+    //                         param.update(); 
+    //                         this._color[i-1] = param.value; 
+    //                     }
+    //                 }
+
+
+    //                 this.#init = true;
+    //             }
+
+    //             this._color    = this.getDataColorFromParams();
+    //             this._oldSpace = toSpace;
+    //         }
+    //     }
 
     
-        this.outputs[0]._data = dataFromDataColor(this._color);
+    //     this.outputs[0]._data = dataFromDataColor(this._color);
 
 
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
@@ -18898,7 +19240,7 @@ extends OpColorBase
         //log(this.id + '.OpColor.updateNode()');
 
         
-        enableElementText(this.hexbox, !this.isConnected());
+        enableElementText(this.hexbox, !this.connected());
 
         if (this.hexbox != document.activeElement)
         {
@@ -18980,17 +19322,17 @@ extends OpColorBase
     updateSlider(slider, isValid)
     {
         // slider.valueText = 
-        //        this.inputs[0].isConnected 
+        //        this.inputs[0].connected 
         //     // && this.inputs[0].data.color[0] != this._color[0]
         //     && !isValid 
         //     ? '?' 
         //     : '';
 
-        if (    this.inputs[0].isConnected
+        if (    this.inputs[0].connected
             && !isValid)
             slider.setValue(Number.NaN, true, false, false);
 
-        enableElementText(slider.textbox, !this.inputs[0].isConnected);
+        enableElementText(slider.textbox, !this.inputs[0].connected);
 
         slider.update();
     }
@@ -19079,8 +19421,8 @@ extends OpColorBase
     paramIsConsideredDefault(param)
     {
         return super.paramIsConsideredDefault(param)
-            && !this.inputs[0].isConnected
-            && (  !this.paramSpace.input.isConnected
+            && !this.inputs[0].connected
+            && (  !this.paramSpace.input.connected
                 || this.paramSpace.value == 0);
     }
 
@@ -19149,20 +19491,20 @@ extends OpColorBase
 //     if (   paramSpace.value == 0
 //         && paramSpace.oldValue > 0)
 //     {
-//         for (let i = 2; i < paramSpace.op.inputs.length; i++)
+//         for (let i = 2; i < paramSpace.node.inputs.length; i++)
 //         {
-//             const input = paramSpace.op.inputs[i];
+//             const input = paramSpace.node.inputs[i];
 
-//             if (input.isConnected)
-//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//             if (input.connected)
+//                 paramSpace.node._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
 //         }   
 
-//         for (let i = 2; i < paramSpace.op.outputs.length; i++)
+//         for (let i = 2; i < paramSpace.node.outputs.length; i++)
 //         {
-//             const output = paramSpace.op.outputs[i];
+//             const output = paramSpace.node.outputs[i];
 
 //             for (const input of output.connectedInputs)
-//                 paramSpace.op._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
+//                 paramSpace.node._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
 //         }   
 //     }
 // }
@@ -19176,24 +19518,24 @@ extends OpColorBase
 //     if (   paramSpace.value > 0
 //         && paramSpace.oldValue == 0)
 //     {
-//         for (const conn of paramSpace.op._oldSpaceConnections)
+//         for (const conn of paramSpace.node._oldSpaceConnections)
 //         {
 //             const outputOp = nodeFromId(conn.outputOpName);
 //             const  inputOp = nodeFromId(conn. inputOpName);
 
 //             if (outputOp && inputOp)
 //             {
-//                 const output = outputOp.outputs[conn.outputIndex];
-//                 const  input =  inputOp. inputs[conn. inputIndex];
+//                 const output = outputNode.outputs[conn.outputIndex];
+//                 const  input =  inputNode. inputs[conn. inputIndex];
 
-//                 uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
+//                 uiVariableConnect(outputNode, conn.outputIndex, inputNode, conn.inputIndex);
 //             }
 //         }
 
-//         paramSpace.op._oldSpaceConnections = [];
+//         paramSpace.node._oldSpaceConnections = [];
 //     }
 
-//     //paramSpace.op.pushUpdate();
+//     //paramSpace.node.pushUpdate();
 // }
 
 
@@ -19234,160 +19576,160 @@ const luvScale    = [100, 150, 150];
 
 
 
-function switchToSpace(op, space)
+function switchToSpace(node, space)
 {
     switch (space)
     {
-        case 'hex':    switchToHex   (op); break;
-        case 'rgbhex': switchToRgbHex(op); break;
-        case 'rgb':    switchToRgb   (op); break;
-        case 'hsv':    switchToHsv   (op); break;
-        case 'hsl':    switchToHsl   (op); break;
-        case 'hclokl': switchToHclOkl(op); break;
-        case 'hcllab': switchToHclLab(op); break;
-        case 'hclluv': switchToHclLuv(op); break;
-        case 'oklab':  switchToOklab (op); break;
-        case 'lab':    switchToLab   (op); break;
-        case 'luv':    switchToLuv   (op); break;
+        case 'hex':    switchToHex   (node); break;
+        case 'rgbhex': switchToRgbHex(node); break;
+        case 'rgb':    switchToRgb   (node); break;
+        case 'hsv':    switchToHsv   (node); break;
+        case 'hsl':    switchToHsl   (node); break;
+        case 'hclokl': switchToHclOkl(node); break;
+        case 'hcllab': switchToHclLab(node); break;
+        case 'hclluv': switchToHclLuv(node); break;
+        case 'oklab':  switchToOklab (node); break;
+        case 'lab':    switchToLab   (node); break;
+        case 'luv':    switchToLuv   (node); break;
     }
 
-    op.resetAllControlRanges();
+    node.resetAllControlRanges();
 }
 
 
 
-function switchToHex   (op) { switchToTextbox       (op);           }
-function switchToRgbHex(op) { switchToRgbHexControls(op);           }
-function switchToRgb   (op) { switchToRgbControls   (op);           }
-function switchToHsv   (op) { switchToHs_Controls   (op, 'V');      }
-function switchToHsl   (op) { switchToHs_Controls   (op, 'L');      }
-function switchToHclOkl(op) { switchToHclOklControls(op);           }
-function switchToHclLab(op) { switchToHclLabControls(op);           }
-function switchToHclLuv(op) { switchToHclLuvControls(op);           }
-function switchToOklab (op) { switchToOklabControls (op, 'a', 'b'); }
-function switchToLab   (op) { switchToLabControls   (op, 'a', 'b'); }
-function switchToLuv   (op) { switchToLuvControls   (op, 'u', 'v'); }
+function switchToHex   (node) { switchToTextbox       (node);           }
+function switchToRgbHex(node) { switchToRgbHexControls(node);           }
+function switchToRgb   (node) { switchToRgbControls   (node);           }
+function switchToHsv   (node) { switchToHs_Controls   (node, 'V');      }
+function switchToHsl   (node) { switchToHs_Controls   (node, 'L');      }
+function switchToHclOkl(node) { switchToHclOklControls(node);           }
+function switchToHclLab(node) { switchToHclLabControls(node);           }
+function switchToHclLuv(node) { switchToHclLuvControls(node);           }
+function switchToOklab (node) { switchToOklabControls (node, 'a', 'b'); }
+function switchToLab   (node) { switchToLabControls   (node, 'a', 'b'); }
+function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v'); }
    
 
 
-function switchToRgbHexControls(op)
+function switchToRgbHexControls(node)
 {
-    switchToControls(op, 
+    switchToControls(node, 
         '<span class=\'hash\'>#</span>R', 0, rgbScale[0], '', false, 
         '<span class=\'hash\'>#</span>G', 0, rgbScale[1], 
         '<span class=\'hash\'>#</span>B', 0, rgbScale[2]);  
 
-    showRgbControlHex(op, true);
+    showRgbControlHex(node, true);
 }
 
 
 
-function switchToRgbControls(op)
+function switchToRgbControls(node)
 {
-    switchToControls(op, 
+    switchToControls(node, 
         'R', 0, rgbScale[0], '', false, 
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    showRgbControlHex(op, false);    
+    showRgbControlHex(node, false);    
 }
 
 
 
-function switchToHs_Controls(op, v_or_l) 
+function switchToHs_Controls(node, v_or_l) 
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'H',    0, hs_Scale[0], '°', true,  
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToHclControls(op, scale) 
+function switchToHclControls(node, scale) 
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToHclOklControls(op) { switchToHclControls(op, hcloklScale); }
-function switchToHclLabControls(op) { switchToHclControls(op, hcllabScale); }
-function switchToHclLuvControls(op) { switchToHclControls(op, hclluvScale); }
+function switchToHclOklControls(node) { switchToHclControls(node, hcloklScale); }
+function switchToHclLabControls(node) { switchToHclControls(node, hcllabScale); }
+function switchToHclLuvControls(node) { switchToHclControls(node, hclluvScale); }
 
 
 
-function switchToOppControls(op, c2, c3, scale)
+function switchToOppControls(node, c2, c3, scale)
 { 
-    switchToControls(op, 
+    switchToControls(node, 
         'L', 0,        scale[0], '', false,  
         c2, -scale[1], scale[1], 
         c3, -scale[2], scale[2]);  
 
-    showRgbControlHex(op, false); 
+    showRgbControlHex(node, false); 
 }
 
 
 
-function switchToOklabControls(op) { switchToOppControls(op, 'a', 'b', oklabScale); }
-function switchToLabControls  (op) { switchToOppControls(op, 'a', 'b', labScale  ); }
-function switchToLuvControls  (op) { switchToOppControls(op, 'u', 'v', luvScale  ); }
+function switchToOklabControls(node) { switchToOppControls(node, 'a', 'b', oklabScale); }
+function switchToLabControls  (node) { switchToOppControls(node, 'a', 'b', labScale  ); }
+function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvScale  ); }
 
 
 
-function showRgbControlHex(op, show)
+function showRgbControlHex(node, show)
 {
-    op.param1.control.showHex = show;
-    op.param2.control.showHex = show;
-    op.param3.control.showHex = show;
+    node.param1.control.showHex = show;
+    node.param2.control.showHex = show;
+    node.param3.control.showHex = show;
 }
 
 
 
-function switchToControls(op, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
+function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
 {
-    switchToSliders(op);
+    switchToSliders(node);
 
-    op.param1.setName(c1, false); 
-    op.param2.setName(c2, false); 
-    op.param3.setName(c3, false);
+    node.param1.setName(c1, false); 
+    node.param2.setName(c2, false); 
+    node.param3.setName(c3, false);
 
-    op.param1.control.wrapValue = c1wrap;
-    op.param1.control.setSuffix(c1suffix, c1suffix != '');
+    node.param1.control.wrapValue = c1wrap;
+    node.param1.control.setSuffix(c1suffix, c1suffix != '');
 
-    op.param1.control.setMin(c1min, false); 
-    op.param2.control.setMin(c2min, false);
-    op.param3.control.setMin(c3min, false);
+    node.param1.control.setMin(c1min, false); 
+    node.param2.control.setMin(c2min, false);
+    node.param3.control.setMin(c3min, false);
     
-    op.param1.control.setMax(c1max, false); 
-    op.param2.control.setMax(c2max, false); 
-    op.param3.control.setMax(c3max, false); 
+    node.param1.control.setMax(c1max, false); 
+    node.param2.control.setMax(c2max, false); 
+    node.param3.control.setMax(c3max, false); 
     
-    op.param1.updateControls();
-    op.param2.updateControls();
-    op.param3.updateControls();
+    node.param1.updateControls();
+    node.param2.updateControls();
+    node.param3.updateControls();
 }
 
 
 
-function switchToTextbox(op)
+function switchToTextbox(node)
 {
-    if (!op.inner.contains(op.hexbox))
+    if (!node.inner.contains(node.hexbox))
     {
-        removeOpColorParamWires(op);
+        removeOpColorParamWires(node);
 
-        op.inner.removeChild(op.param1.div);
-        op.inner.removeChild(op.param2.div);
-        op.inner.removeChild(op.param3.div);
+        node.inner.removeChild(node.param1.div);
+        node.inner.removeChild(node.param2.div);
+        node.inner.removeChild(node.param3.div);
         
-        op.inner.appendChild(op.hexbox);
+        node.inner.appendChild(node.hexbox);
 
         //graphView.updateNodeTransform(op);
     }
@@ -19395,30 +19737,30 @@ function switchToTextbox(op)
 
 
 
-function removeOpColorParamWires(op)
+function removeOpColorParamWires(node)
 {
-    for (let i = op.inputs.length-1; i >= 2; i--)
-        if (op.inputs[i].isConnected)
-            uiDisconnect(op.inputs[i]);
+    for (let i = node.inputs.length-1; i >= 2; i--)
+        if (node.inputs[i].connected)
+            uiDisconnect(node.inputs[i]);
 
-    for (let i = op.outputs.length-1; i >= 2; i--)
-        for (const input of op.outputs[i].connectedInputs)
+    for (let i = node.outputs.length-1; i >= 2; i--)
+        for (const input of node.outputs[i].connectedInputs)
             uiDisconnect(input);
 }
 
 
 
-function switchToSliders(op)
+function switchToSliders(node)
 {
-    if (op.inner.contains(op.hexbox))
+    if (node.inner.contains(node.hexbox))
     {
-        op.inner.removeChild(op.hexbox);
+        node.inner.removeChild(node.hexbox);
 
-        op.inner.appendChild(op.param1.div);
-        op.inner.appendChild(op.param2.div);
-        op.inner.appendChild(op.param3.div);
+        node.inner.appendChild(node.param1.div);
+        node.inner.appendChild(node.param2.div);
+        node.inner.appendChild(node.param3.div);
 
-        graphView.updateNodeTransform(op);
+        graphView.updateNodeTransform(node);
     }
 }
 
@@ -19634,11 +19976,11 @@ function getDataColorHcl(c1, c2, c3)
 
 
 
-function setDataColorToCurrentSpace(op, color)
+function setDataColorToCurrentSpace(node, color)
 {
-    const toSpace = colorSpace(op.paramSpace.value);
-    op._color = convertDataColorToSpace(color, toSpace);
-    op.setColorParams(op._color);
+    const toSpace = colorSpace(node.paramSpace.value);
+    node._color = convertDataColorToSpace(color, toSpace);
+    node.setColorParams(node._color);
 }
 
 
@@ -19682,19 +20024,19 @@ function getColorSpaceScale(space)
 }
 
 
-function initHexbox(op)
+function initHexbox(node)
 {
-    op.hexbox = createTextbox('hexbox');
+    node.hexbox = createTextbox('hexbox');
     
-    op.hexbox.op      = op;
-    op.hexbox.editing = false;
+    node.hexbox.node    = node;
+    node.hexbox.editing = false;
     
-    op.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
-    op.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
-    op.hexbox.addEventListener('focus',       onHexboxFocus);
-    op.hexbox.addEventListener('focusout',    onHexboxFocusOut);
-    op.hexbox.addEventListener('input',       onHexboxInput);
-    op.hexbox.addEventListener('keydown',     onHexboxKeyDown);
+    node.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
+    node.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
+    node.hexbox.addEventListener('focus',       onHexboxFocus);
+    node.hexbox.addEventListener('focusout',    onHexboxFocusOut);
+    node.hexbox.addEventListener('input',       onHexboxInput);
+    node.hexbox.addEventListener('keydown',     onHexboxKeyDown);
 }
 
 
@@ -19741,8 +20083,8 @@ function onHexboxFocus(e)
 function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
-    hexboxFinish(hexbox.op, true);
-    hexbox.style.cursor = 'default';//hexbox.op.isConnected() ? 'default' : 'text';
+    hexboxFinish(hexbox.node, true);
+    hexbox.style.cursor = 'default';//hexbox.node.connected() ? 'default' : 'text';
 }
 
 
@@ -19779,23 +20121,23 @@ function onHexboxKeyDown(e)
 
     else if (   e.code == 'KeyV'
         && getCtrlKey(e)
-        && !hexbox.op.isConnected())
+        && !hexbox.node.connected())
     {
         // do nothing and let the OS do its thing
     }
 
     else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
-           && !hexbox.op.isConnected())
-        hexboxFinish(hexbox.op, true);
+           && !hexbox.node.connected())
+        hexboxFinish(hexbox.node, true);
 
     else if (e.code == 'Escape')
-        hexboxFinish(hexbox.op, false);
+        hexboxFinish(hexbox.node, false);
 
     else if (   e.key.length == 1
              && !isDigitChar(e.key)
              && !isHexDigitChar(e.key)
-         ||     hexbox.op.isConnected()
+         ||     hexbox.node.connected()
             && !isArrowKey(e.code)
          ||    e.key != 'ArrowLeft'
             && e.key != 'ArrowRight'
@@ -19814,24 +20156,24 @@ function onHexboxKeyDown(e)
 
 
 
-function hexboxFinish(op, success)
+function hexboxFinish(node, success)
 {
-    if (op.hexbox.value.trim() == '')
-        op.hexbox.value = op.hexbox.savedValue;
+    if (node.hexbox.value.trim() == '')
+        node.hexbox.value = node.hexbox.savedValue;
 
 
-    var rgb = hex2rgb(op.hexbox.value);
+    var rgb = hex2rgb(node.hexbox.value);
 
     if (success) 
     {
-        setDataColorToCurrentSpace(op, rgb2dataColor(rgb));
-        op.hexbox.op.pushUpdate();
+        setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
+        node.hexbox.node.pushUpdate();
     }
 
     
-    op.hexbox.selectionEnd = op.hexbox.selectionStart;
-    op.hexbox.editing = false;
-    op.hexbox.blur();
+    node.hexbox.selectionEnd = node.hexbox.selectionStart;
+    node.hexbox.editing = false;
+    node.hexbox.blur();
 };
 
 
@@ -20426,7 +20768,7 @@ extends OpColorBase
             if (   e.button == 0
                 && this.btnFind.button0
                 && !validateIsFinding
-                && this.inputs[0].isConnected) 
+                && this.inputs[0].connected) 
             { 
                 this.btnFind.button0 = false;
 
@@ -20488,28 +20830,28 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        //log(this.id + '.OpValidColor.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.OpValidColor.updateData()');
 
-        if (this.inputs[0].isConnected)
-        {
-            this._color = [...validateColor(
-                [...this.inputs[0].data.color],
-                this.paramOrder.value, 
-                this.param1.value,
-                this.param2.value,
-                this.param3.value)];
-        }
-        else
-            this._color = dataColor_NaN;
+    //     if (this.inputs[0].connected)
+    //     {
+    //         this._color = [...validateColor(
+    //             [...this.inputs[0].data.color],
+    //             this.paramOrder.value, 
+    //             this.param1.value,
+    //             this.param2.value,
+    //             this.param3.value)];
+    //     }
+    //     else
+    //         this._color = dataColor_NaN;
 
             
-        this.outputs[0]._data = dataFromDataColor(this._color);
+    //     this.outputs[0]._data = dataFromDataColor(this._color);
 
 
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
@@ -20563,14 +20905,14 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[0].isConnected;
+        return this.inputs[0].connected;
     }
 
 
 
     isConnected()
     {
-        return this.inputs[0].isConnected;
+        return this.inputs[0].connected;
     }
 
 
@@ -20713,104 +21055,104 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        //log(this.id + '.OpWebContrast.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.OpWebContrast.updateData()');
 
         
-        this._color = 
-            this.inputs[1].isConnected
-            ? this.inputs[1].data.color
-            : dataColor_NaN;
+    //     this._color = 
+    //         this.inputs[1].connected
+    //         ? this.inputs[1].data.color
+    //         : dataColor_NaN;
 
 
-        if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
-        {
-            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+    //     if (   this.inputs[0].connected
+    //         && this.inputs[1].connected)
+    //     {
+    //         const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
-            if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
-                && isRgbValid(rgb1) && this.inputs[1].data.isValid)
-            {
-                if (this.#paramStandard.value == 0)
-                {
-                    const ratio = getContrastRatio2(
-                        dataColor2rgb(this.inputs[0].data.color),
-                        dataColor2rgb(this.inputs[1].data.color));
+    //         if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
+    //             && isRgbValid(rgb1) && this.inputs[1].data.isValid)
+    //         {
+    //             if (this.#paramStandard.value == 0)
+    //             {
+    //                 const ratio = getContrastRatio2(
+    //                     dataColor2rgb(this.inputs[0].data.color),
+    //                     dataColor2rgb(this.inputs[1].data.color));
 
-                    let rating = getContrastRating2(ratio);
+    //                 let rating = getContrastRating2(ratio);
 
-                    if (rating != '')
-                        rating = '&nbsp;&nbsp;' + rating;
+    //                 if (rating != '')
+    //                     rating = '&nbsp;&nbsp;' + rating;
 
-                    this.#paramValue.control.min        = 
-                    this.#paramValue.control.displayMin = 0;
+    //                 this.#paramValue.control.min        = 
+    //                 this.#paramValue.control.displayMin = 0;
 
-                    this.#paramValue.control.max        = 
-                    this.#paramValue.control.displayMax = 21;
+    //                 this.#paramValue.control.max        = 
+    //                 this.#paramValue.control.displayMax = 21;
 
-                    this.#paramValue.control.setDecimals(2);
-                    this.#paramValue.control.setSuffix(rating);
-                    this.#paramValue.control.setValue(ratio, false, false, false);
-                }
-                else
-                {
-                    const ratio = getContrastRatio3(
-                        dataColor2rgb(this.inputs[0].data.color),
-                        dataColor2rgb(this.inputs[1].data.color));
+    //                 this.#paramValue.control.setDecimals(2);
+    //                 this.#paramValue.control.setSuffix(rating);
+    //                 this.#paramValue.control.setValue(ratio, false, false, false);
+    //             }
+    //             else
+    //             {
+    //                 const ratio = getContrastRatio3(
+    //                     dataColor2rgb(this.inputs[0].data.color),
+    //                     dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#paramValue.control.min        = 
-                    this.#paramValue.control.displayMin = 0;
+    //                 this.#paramValue.control.min        = 
+    //                 this.#paramValue.control.displayMin = 0;
 
-                    this.#paramValue.control.max        = 
-                    this.#paramValue.control.displayMax = 105;
+    //                 this.#paramValue.control.max        = 
+    //                 this.#paramValue.control.displayMax = 105;
 
-                    this.#paramValue.control.setDecimals(1);
-                    this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-                    this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
-                }
+    //                 this.#paramValue.control.setDecimals(1);
+    //                 this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+    //                 this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
+    //             }
 
 
-                this.forceShowWarning = false;
+    //             this.forceShowWarning = false;
 
-                super.updateData();
-                return;
-            }
+    //             super.updateData();
+    //             return;
+    //         }
 
-            else if ((!isRgbValid(rgb0) || !this.inputs[0].data.isValid)
-                   &&  isRgbValid(rgb1) &&  this.inputs[1].data.isValid)
-            {
-                this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
-                this.forceShowWarning = true;
-            }
+    //         else if ((!isRgbValid(rgb0) || !this.inputs[0].data.isValid)
+    //                &&  isRgbValid(rgb1) &&  this.inputs[1].data.isValid)
+    //         {
+    //             this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
+    //             this.forceShowWarning = true;
+    //         }
             
-            else if (  isRgbValid(rgb0) &&  this.inputs[0].data.isValid
-                  && (!isRgbValid(rgb1) || !this.inputs[1].data.isValid))
-            {
-                this.warningStyle     = this.getDefaultWarningStyle(rgb1);
-                this.forceShowWarning = true;
-            }
+    //         else if (  isRgbValid(rgb0) &&  this.inputs[0].data.isValid
+    //               && (!isRgbValid(rgb1) || !this.inputs[1].data.isValid))
+    //         {
+    //             this.warningStyle     = this.getDefaultWarningStyle(rgb1);
+    //             this.forceShowWarning = true;
+    //         }
 
-            else
-                this.forceShowWarning = false;
-        }
+    //         else
+    //             this.forceShowWarning = false;
+    //     }
 
-        else if (this.inputs[1].isConnected)
-        {
-            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+    //     else if (this.inputs[1].connected)
+    //     {
+    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
-            this.forceShowWarning = 
-                   !isRgbValid(rgb1) 
-                || !this.inputs[1].data.isValid;
-        }
+    //         this.forceShowWarning = 
+    //                !isRgbValid(rgb1) 
+    //             || !this.inputs[1].data.isValid;
+    //     }
 
 
-        this.#paramValue.setValue(Number.NaN, false, true, false);
+    //     this.#paramValue.setValue(Number.NaN, false, true, false);
 
         
-        super.updateData();
-    }
+    //     super.updateData();
+    // }
 
 
 
@@ -20849,17 +21191,17 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[1].isConnected;
+        return this.inputs[1].connected;
     }
 
 
 
     updateHeaderLabel()
     {
-        if (   this.inputs[0].isConnected 
-            && this.inputs[1].isConnected)
+        if (   this.inputs[0].connected 
+            && this.inputs[1].connected)
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
-        else if (this.inputs[1].isConnected)
+        else if (this.inputs[1].connected)
         {
             const [,,,, colText,] = this.getHeaderColors();
             this.label.style.color = colorStyleRgba(colText);
@@ -20908,7 +21250,7 @@ extends OpColorBase
 
         this.inputs[0].addEventListener('connect', () => 
         {
-            if (   !this.inputs[1].isConnected
+            if (   !this.inputs[1].connected
                 && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
                     colorSpaceIndex(this.inputs[0].data.color[0]),
@@ -20918,7 +21260,7 @@ extends OpColorBase
 
         this.inputs[1].addEventListener('connect', () => 
         {
-            if (   !this.inputs[0].isConnected
+            if (   !this.inputs[0].connected
                 && !graphView.loadingNodes) 
                 this.#paramSpace.setValue(
                     colorSpaceIndex(this.inputs[1].data.color[0]),
@@ -20935,38 +21277,38 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        //log(this.id + '.OpColorInterpolate.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.OpColorInterpolate.updateData()');
 
-        if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
-        {
-            const space = colorSpace(this.#paramSpace.value);
-            const f     = this.#paramAmount.value / 100;
+    //     if (   this.inputs[0].connected
+    //         && this.inputs[1].connected)
+    //     {
+    //         const space = colorSpace(this.#paramSpace.value);
+    //         const f     = this.#paramAmount.value / 100;
             
-            const col = this.interpolate(
-                space,
-                dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
-                dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
-                f);
+    //         const col = this.interpolate(
+    //             space,
+    //             dataColor2array(convertDataColorToSpace(this.inputs[0].data.color, space)),
+    //             dataColor2array(convertDataColorToSpace(this.inputs[1].data.color, space)),
+    //             f);
 
-            this._color = [
-                space, 
-                col[0], 
-                col[1], 
-                col[2] ];
-        }
+    //         this._color = [
+    //             space, 
+    //             col[0], 
+    //             col[1], 
+    //             col[2] ];
+    //     }
 
-        else if(this.inputs[0].isConnected) this._color = this.inputs[0].data.color;
-        else if(this.inputs[1].isConnected) this._color = this.inputs[1].data.color;
-        else                                this._color = dataColor_NaN;
+    //     else if(this.inputs[0].connected) this._color = this.inputs[0].data.color;
+    //     else if(this.inputs[1].connected) this._color = this.inputs[1].data.color;
+    //     else                                this._color = dataColor_NaN;
 
-        this.outputs[0]._data = dataFromDataColor(this._color);
+    //     this.outputs[0]._data = dataFromDataColor(this._color);
 
 
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
@@ -20994,8 +21336,8 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[0].isConnected
-            || this.inputs[1].isConnected;
+        return this.inputs[0].connected
+            || this.inputs[1].connected;
     }
 }
 
@@ -21032,54 +21374,54 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        super.updateData()
+    // updateData()
+    // {
+    //     super.updateData()
 
 
-        let valid = true;
+    //     let valid = true;
         
-        if (this.inputs[0].isConnected)
-        {
-            const rgb      = dataColor2rgb(this.inputs[0].data.color);
-            const validRgb = invalid2validRgb(rgb);
+    //     if (this.inputs[0].connected)
+    //     {
+    //         const rgb      = dataColor2rgb(this.inputs[0].data.color);
+    //         const validRgb = invalid2validRgb(rgb);
             
-            const cb = rgb2colorblind(
-                validRgb,
-                this.#paramL.value / 2,
-                this.#paramM.value / 2,
-                this.#paramS.value / 2);
+    //         const cb = rgb2colorblind(
+    //             validRgb,
+    //             this.#paramL.value / 2,
+    //             this.#paramM.value / 2,
+    //             this.#paramS.value / 2);
 
-            const validCb = invalid2validRgb(cb);
+    //         const validCb = invalid2validRgb(cb);
 
-            this._color = rgb2dataColor(validCb);
+    //         this._color = rgb2dataColor(validCb);
 
 
-            if (!isRgbValid(rgb))
-            {
-                this.warningStyle = this.getDefaultWarningStyle(validRgb);
-                valid             = false;
-            }
+    //         if (!isRgbValid(rgb))
+    //         {
+    //             this.warningStyle = this.getDefaultWarningStyle(validRgb);
+    //             valid             = false;
+    //         }
 
-            this.forceShowWarning = 
-                   this.inputs[0].isConnected
-                && !isRgbValid(rgb);        
-        }
-        else 
-        {
-            this._color = dataColor_NaN;
-            this.forceShowWarning = false;
+    //         this.forceShowWarning = 
+    //                this.inputs[0].connected
+    //             && !isRgbValid(rgb);        
+    //     }
+    //     else 
+    //     {
+    //         this._color = dataColor_NaN;
+    //         this.forceShowWarning = false;
 
-            valid = false;
-        }
+    //         valid = false;
+    //     }
                 
 
-        this.outputs[0]._data = dataFromDataColor(this._color);
+    //     this.outputs[0]._data = dataFromDataColor(this._color);
 
-        if (  !valid
-            || this.forceShowWarning) 
-            this.outputs[0]._data.isValid = false;
-    }
+    //     if (  !valid
+    //         || this.forceShowWarning) 
+    //         this.outputs[0]._data.isValid = false;
+    // }
 
 
 
@@ -21107,7 +21449,7 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[0].isConnected;
+        return this.inputs[0].connected;
     }
 }
 
@@ -21164,7 +21506,7 @@ extends OperatorBase
         this.inputs[0].addEventListener('disconnect', () =>
         {
             for (const param of this.params)
-                if (!param.input.isConnected) 
+                if (!param.input.connected) 
                     enableSliderText(param.control, true);
         });
 
@@ -21215,47 +21557,47 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        if (this.inputs[0].isConnected) 
-        {
-            const data = this.inputs[0].data;
+    // updateData()
+    // {
+    //     if (this.inputs[0].connected) 
+    //     {
+    //         const data = this.inputs[0].data;
 
-            this.#paramX     .setValue(this.#paramX     .input.isConnected ? this.#paramX     .input.data.value : data.x,      false, true, false);
-            this.#paramY     .setValue(this.#paramY     .input.isConnected ? this.#paramY     .input.data.value : data.y,      false, true, false);
-            this.#paramWidth .setValue(this.#paramWidth .input.isConnected ? this.#paramWidth .input.data.value : data.width,  false, true, false);
-            this.#paramHeight.setValue(this.#paramHeight.input.isConnected ? this.#paramHeight.input.data.value : data.height, false, true, false);
-            this.#paramAngle .setValue(this.#paramAngle .input.isConnected ? this.#paramAngle .input.data.value : data.angle,  false, true, false);
-            this.#paramRound .setValue(this.#paramRound .input.isConnected ? this.#paramRound .input.data.value : data.round,  false, true, false);
-        }
+    //         this.#paramX     .setValue(this.#paramX     .input.connected ? this.#paramX     .input.data.value : data.x,      false, true, false);
+    //         this.#paramY     .setValue(this.#paramY     .input.connected ? this.#paramY     .input.data.value : data.y,      false, true, false);
+    //         this.#paramWidth .setValue(this.#paramWidth .input.connected ? this.#paramWidth .input.data.value : data.width,  false, true, false);
+    //         this.#paramHeight.setValue(this.#paramHeight.input.connected ? this.#paramHeight.input.data.value : data.height, false, true, false);
+    //         this.#paramAngle .setValue(this.#paramAngle .input.connected ? this.#paramAngle .input.data.value : data.angle,  false, true, false);
+    //         this.#paramRound .setValue(this.#paramRound .input.connected ? this.#paramRound .input.data.value : data.round,  false, true, false);
+    //     }
 
     
-        this.outputs[0]._data = dataFromRectangle(
-            this.#paramX     .value,
-            this.#paramY     .value,
-            this.#paramWidth .value,
-            this.#paramHeight.value,
-            this.#paramAngle .value,
-            this.#paramRound .value);
+    //     this.outputs[0]._data = dataFromRectangle(
+    //         this.#paramX     .value,
+    //         this.#paramY     .value,
+    //         this.#paramWidth .value,
+    //         this.#paramHeight.value,
+    //         this.#paramAngle .value,
+    //         this.#paramRound .value);
 
 
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
-    generateRequest()
-    {
-        return [
-            this.opType,
-            this.id,
-            this.#paramX     .value,
-            this.#paramY     .value,
-            this.#paramWidth .value,
-            this.#paramHeight.value,
-            this.#paramAngle .value,
-            this.#paramRound .value ];
-    }
+    // generateRequest()
+    // {
+    //     return [
+    //         this.nodeType,
+    //         this.id,
+    //         this.#paramX     .value,
+    //         this.#paramY     .value,
+    //         this.#paramWidth .value,
+    //         this.#paramHeight.value,
+    //         this.#paramAngle .value,
+    //         this.#paramRound .value ];
+    // }
 
 
 
@@ -21361,7 +21703,7 @@ extends OperatorBase
 //         const input  = this.inputs[0];
 //         const output = this.output;
 
-//         if (!input.isConnected)
+//         if (!input.connected)
 //         {
 //             output._data = {};
 //             return;
@@ -21541,49 +21883,49 @@ const actionManager = new ActionManager();
 class ConnectAction
 extends Action
 {
-    outputOpId;
+    outputNodeId;
     outputIndex;
-    get outputOp() { return nodeFromId(this.outputOpId); }
+    get outputNode() { return nodeFromId(this.outputNodeId); }
     
-    oldOutputOpId = '';
+    oldOutputNodeId = '';
     oldOutputIndex;
-    get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
+    get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     
-    inputOpId;
+    inputNodeId;
     inputIndex;
-    get inputOp() { return nodeFromId(this.inputOpId); }
+    get inputNode() { return nodeFromId(this.inputNodeId); }
     
-    oldOutputActiveOpId;      // the active node in the output node's tree
-    oldInputActiveOpIds = []; // the active nodes in the input node's tree
+    oldOutputActiveNodeId;      // the active node in the output node's tree
+    oldInputActiveNodeIds = []; // the active nodes in the input node's tree
 
-    newActiveOpIds = [];
+    newActiveNodeIds = [];
 
 
 
     constructor(output, input)
     {
         const oldOutIndex = 
-            input.isConnected 
+            input.connected 
             ? input.connectedOutput.index
             : -1; 
 
         super('connect ' 
-            + output.op.id + '.out[' + output.index + ']'
+            + output.node.id + '.out[' + output.index + ']'
             + ' -> '
-            + input.op.id + '.in[' + input.index + ']');
+            + input.node.id + '.in[' + input.index + ']');
 
 
-        this.outputOpId          = output.op.id;
-        this.outputIndex         = output.index;
+        this.outputNodeId          = output.node.id;
+        this.outputIndex           = output.index;
    
-        this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
-        this.oldOutputIndex      = oldOutIndex;
+        this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
+        this.oldOutputIndex        = oldOutIndex;
    
-        this.inputOpId           = input.op.id;
-        this.inputIndex          = input.index;
+        this.inputNodeId           = input.node.id;
+        this.inputIndex            = input.index;
 
-        this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
-        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
+        this.oldOutputActiveNodeId = getActiveNodeInTreeFrom(nodeFromId(this.outputNodeId)).id;
+        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
     }
 
 
@@ -21591,62 +21933,62 @@ extends Action
     do()
     {
         uiConnect(
-            this.outputOp.outputs[this.outputIndex], 
-            this.inputOp. inputs [this. inputIndex],
+            this.outputNode.outputs[this.outputIndex], 
+            this.inputNode. inputs [this. inputIndex],
             this.inputIndex);
 
 
-        this.newActiveOpIds = [];
+        this.newActiveNodeIds = [];
 
-        if (    this.oldOutputOp
-            && !getActiveNodeInTreeFrom(this.oldOutputOp))
+        if (    this.oldOutputNode
+            && !getActiveNodeInTreeFrom(this.oldOutputNode))
         {
-            uiMakeNodeActive(this.oldOutputOp);
-            this.newActiveOpIds.push(this.oldOutputOpId);
-            this.oldOutputOp.pushUpdate();
-            //graphView.updateNodeTransform(oldPrevOutputActiveOp);
+            uiMakeNodeActive(this.oldOutputNode);
+            this.newActiveNodeIds.push(this.oldOutputNodeId);
+            this.oldOutputNode.pushUpdate();
+            //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
 
-        let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
-        oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        let oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
+        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldInputActiveOpIds)
+        for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
 
-        graphView.updateNodeTransform(this.inputOp);
-        this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputNode);
+        this.inputNode.pushUpdate();
     }
 
 
 
     undo()
     {
-        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
 
-        if (this.oldOutputOpId != '')
+        if (this.oldOutputNodeId != '')
         {
             uiVariableConnect(
-                this.oldOutputOp, 
+                this.oldOutputNode, 
                 this.oldOutputIndex, 
-                this.inputOp, 
+                this.inputNode, 
                 this.inputIndex);
         }
 
-        graphView.updateNodeTransform(this.inputOp);
-        this.inputOp.pushUpdate();
+        graphView.updateNodeTransform(this.inputNode);
+        this.inputNode.pushUpdate();
 
 
-        for (const id of this.newActiveOpIds)
+        for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
-        for (const id of this.oldInputActiveOpIds)
+        for (const id of this.oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        if (!this.oldInputActiveOpIds.includes(this.oldOutputActiveOpId))
-            uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
+        if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
+            uiMakeNodeActive(nodeFromId(this.oldOutputActiveNodeId));
     }
 }
 
@@ -21654,7 +21996,7 @@ extends Action
 class CreateNodeAction
 extends Action
 {
-    opType;
+    nodeType;
     createdNodeId;
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
@@ -21663,11 +22005,11 @@ extends Action
     
 
 
-    constructor(opType, creatingButton)
+    constructor(nodeType, creatingButton)
     {
-        super('create node \'' + opType + '\'');
+        super('create node \'' + nodeType + '\'');
         
-        this.opType         = opType;
+        this.nodeType         = nodeType;
         this.creatingButton = creatingButton;
     }
 
@@ -21677,7 +22019,7 @@ extends Action
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
-        const node = uiCreateNode(this.opType, this.creatingButton);
+        const node = uiCreateNode(this.nodeType, this.creatingButton);
         this.createdNodeId = node.id;
 
         graphView.updateNodeTransform(node);
@@ -21700,7 +22042,7 @@ extends Action
 
     redo()
     {
-        const node = uiCreateNode(this.opType, this.creatingButton, this.createdNodeId);
+        const node = uiCreateNode(this.nodeType, this.creatingButton, this.createdNodeId);
 
         graphView.updateNodeTransform(node);
         setTimeout(() => graphView.updateScrollWithBounds());
@@ -21720,10 +22062,10 @@ extends Action
     nodes            = [];
     nodePos          = [];
 
-    connections      = []; // [{outputOpId, outputIndex, inputOpId, inputIndex}]
+    connections      = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
 
-    newActiveOpIds   = [];
-    oldActiveOpIds   = [];
+    newActiveNodeIds = [];
+    oldActiveNodeIds = [];
 
 
 
@@ -21741,8 +22083,8 @@ extends Action
 
             for (const activeId of activeIds)
             {
-                if (!this.oldActiveOpIds.includes(activeId))
-                    this.oldActiveOpIds.push(activeId);
+                if (!this.oldActiveNodeIds.includes(activeId))
+                    this.oldActiveNodeIds.push(activeId);
             }
         }
     }
@@ -21752,10 +22094,10 @@ extends Action
     addConnection(conn)
     {
         if (!this.connections.find(c => 
-                   c.outputOpId  == conn.output.op.id
-                && c.outputIndex == conn.output.index
-                && c. inputOpId  == conn. input.op.id
-                && c. inputIndex == conn. input.index))
+                   c.outputNodeId == conn.output.node.id
+                && c.outputIndex  == conn.output.index
+                && c. inputNodeId == conn. input.node.id
+                && c. inputIndex  == conn. input.index))
             this.connections.push(getConnectionForArrayWithIds(conn));
     }
 
@@ -21771,7 +22113,7 @@ extends Action
                 node.div.offsetLeft, 
                 node.div.offsetTop));
 
-            for (const input of node.inputs.filter(i => i.isConnected))
+            for (const input of node.inputs.filter(i => i.connected))
                 this.addConnection(input.connection);
 
             for (const output of node.outputs)
@@ -21785,7 +22127,7 @@ extends Action
             const node = nodeFromId(nodeId);
 
 
-            const nodeInputs = [...node.inputs.filter(i => i.isConnected)];
+            const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
             for (let i = nodeInputs.length-1; i >= 0; i--)
                 this.disconnect(nodeInputs[i]);
@@ -21798,13 +22140,13 @@ extends Action
                 // connected inputs need to be sorted by input index
                 connectedInputs.sort((i1, i2) => 
                 {
-                    const op1 = i1.op;
-                    const op2 = i2.op;
+                    const node1 = i1.node;
+                    const node2 = i2.node;
                         
-                    const index1 = op1.inputs.indexOf(i1);
-                    const index2 = op2.inputs.indexOf(i2);
+                    const index1 = node1.inputs.indexOf(i1);
+                    const index2 = node2.inputs.indexOf(i2);
                     
-                    if (op1.id != op2.id) return op1.id - op2.id;
+                    if (node1.id != node2.id) return node1.id - node2.id;
                     if (index1 != index2) return index1 - index2;
                     return 0;
                 });
@@ -21833,16 +22175,16 @@ extends Action
 
         graphView.selectByIds(this.prevSelectedIds);
 
-        for (const id of this.newActiveOpIds)
+        for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
         
-        this.newActiveOpIds = [];
+        this.newActiveNodeIds = [];
 
         
-        let oldActiveOpIds = [...this.oldActiveOpIds];
-        oldActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldActiveOpIds)
+        for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
     }
 
@@ -21868,7 +22210,7 @@ extends Action
             this.nodes[i].id = this.nodeIds[i];
 
         
-        for (const activeId of this.oldActiveOpIds)
+        for (const activeId of this.oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(activeId));
 
 
@@ -21886,7 +22228,7 @@ extends Action
         // connections going into variable inputs must be treated separately
         for (let i = connections.length-1; i >= 0; i--)
         {
-            if (nodeFromId(connections[i].inputOpId)._variableInputs)
+            if (nodeFromId(connections[i].inputNodeId)._variableInputs)
             {
                 varConnections.push(connections[i]);
                 removeAt(connections, i);
@@ -21896,8 +22238,8 @@ extends Action
         
         varConnections.sort((c1, c2) =>
         {
-            if (c1.inputOpId  != c2.inputOpId ) return c1.inputOpId  - c2.inputOpId;
-            if (c1.inputIndex != c2.inputIndex) return c1.inputIndex - c2.inputIndex;
+            if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+            if (c1.inputIndex  != c2.inputIndex ) return c1.inputIndex  - c2.inputIndex;
             return 0;
         });
         
@@ -21912,10 +22254,10 @@ extends Action
     {
         for (const conn of connections)
         {
-            const outputOp = nodeFromId(conn.outputOpId);
-            const inputOp  = nodeFromId(conn. inputOpId);
+            const outputNode = nodeFromId(conn.outputNodeId);
+            const  inputNode = nodeFromId(conn. inputNodeId);
 
-            uiVariableConnect(outputOp, conn.outputIndex, inputOp, conn.inputIndex);
+            uiVariableConnect(outputNode, conn.outputIndex, inputNode, conn.inputIndex);
         }
     }
 
@@ -21928,31 +22270,31 @@ extends Action
         uiDisconnect(input);
 
 
-        const outputOp = output.op;
-        const  inputOp =  input.op;
+        const outputNode = output.node;
+        const  inputNode =  input.node;
 
 
-        if (getActiveNodesInTreeFrom(inputOp))
+        if (getActiveNodesInTreeFrom(inputNode))
         {
-            uiMakeNodeActive(inputOp);
+            uiMakeNodeActive(inputNode);
 
-            if (!this.newActiveOpIds.includes(inputOp.id))
-                this.newActiveOpIds.push(inputOp.id);
+            if (!this.newActiveNodeIds.includes(inputNode.id))
+                this.newActiveNodeIds.push(inputNode.id);
 
-            inputOp.pushUpdate();
-            //graphView.updateNodeTransform(input.op);
+            inputNode.pushUpdate();
+            //graphView.updateNodeTransform(input.node);
         }
 
 
-        if (!getActiveNodeInTreeFrom(outputOp))
+        if (!getActiveNodeInTreeFrom(outputNode))
         {
-            uiMakeNodeActive(outputOp);
+            uiMakeNodeActive(outputNode);
 
-            if (!this.newActiveOpIds.includes(outputOp.id))
-                this.newActiveOpIds.push(outputOp.id);
+            if (!this.newActiveNodeIds.includes(outputNode.id))
+                this.newActiveNodeIds.push(outputNode.id);
 
-            outputOp.pushUpdate();
-            //graphView.updateNodeTransform(output.op);
+            outputNode.pushUpdate();
+            //graphView.updateNodeTransform(output.node);
         }
     }
 }
@@ -21961,57 +22303,57 @@ extends Action
 class DisconnectAction
 extends Action
 {
-    outputOpId;
+    outputNodeId;
     outputIndex;
-    get outputOp() { return nodeFromId(this.outputOpId); }
+    get outputNode() { return nodeFromId(this.outputNodeId); }
 
-    inputOpId;
+    inputNodeId;
     inputIndex;
-    get inputOp() { return nodeFromId(this.inputOpId); }
+    get inputNodeId() { return nodeFromId(this.inputNodeId); }
 
-    oldActiveOpIds = [];
-    newActiveOpIds = [];
+    oldActiveNodeIds = [];
+    newActiveNodeIds = [];
 
 
 
     constructor(output, input)
     {
         super('disconnect ' 
-            + output.op.id + '.out[' + output.index + ']'
+            + output.node.id + '.out[' + output.index + ']'
             + ' -> '
-            + input.op.id + '.in[' + input.index + ']');
+            + input.node.id + '.in[' + input.index + ']');
 
 
-        this.outputOpId  = output.op.id;
-        this.outputIndex = output.index;
+        this.outputNodeId = output.node.id;
+        this.outputIndex  = output.index;
 
-        this.inputOpId   = input.op.id;
-        this.inputIndex  = input.index;
+        this.inputNodeId  = input.node.id;
+        this.inputIndex   = input.index;
 
 
-        this.oldActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
+        this.oldActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
     }
 
 
 
     do()
     {
-        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
-        if (!getActiveNodeInTreeFrom(this.inputOp))
+        if (!getActiveNodeInTreeFrom(this.inputNode))
         {
-            uiMakeNodeActive(this.inputOp);
-            this.newActiveOpIds.push(this.inputOpId);
-            this.inputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.inputOp);
+            uiMakeNodeActive(this.inputNode);
+            this.newActiveNodeIds.push(this.inputNodeId);
+            this.inputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.inputNode);
         }
 
-        if (!getActiveNodeInTreeFrom(this.outputOp))
+        if (!getActiveNodeInTreeFrom(this.outputNode))
         {
-            uiMakeNodeActive(this.outputOp);
-            this.newActiveOpIds.push(this.outputOpId);
-            this.outputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.outputOp);
+            uiMakeNodeActive(this.outputNode);
+            this.newActiveNodeIds.push(this.outputNodeId);
+            this.outputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.outputNode);
         }
     }
     
@@ -22020,40 +22362,40 @@ extends Action
     undo()
     {
         uiVariableConnect(
-            this.outputOp, this.outputIndex, 
-            this. inputOp, this. inputIndex);
+            this.outputNode, this.outputIndex, 
+            this. inputNode, this. inputIndex);
 
-        for (const id of this.newActiveOpIds)
+        for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
-        let oldActiveOpIds = [...this.oldActiveOpIds];
-        oldActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldActiveOpIds)
+        for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        //graphView.updateNodeTransform(this.inputOp);
-        this.inputOp.pushUpdate();
+        //graphView.updateNodeTransform(this.inputNode);
+        this.inputNode.pushUpdate();
     }
     
     
     
     redo()
     {
-        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
-        if (!getActiveNodeInTreeFrom(this.inputOp))
+        if (!getActiveNodeInTreeFrom(this.inputNode))
         {
-            uiMakeNodeActive(this.inputOp);
-            this.inputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.inputOp);
+            uiMakeNodeActive(this.inputNode);
+            this.inputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.inputNode);
         }
 
-        if (!getActiveNodeInTreeFrom(this.outputOp))
+        if (!getActiveNodeInTreeFrom(this.outputNode))
         {
-            uiMakeNodeActive(this.outputOp);
-            this.outputOp.pushUpdate();
-            //graphView.updateNodeTransform(this.outputOp);
+            uiMakeNodeActive(this.outputNode);
+            this.outputNode.pushUpdate();
+            //graphView.updateNodeTransform(this.outputNode);
         }
    }
 }
@@ -22113,9 +22455,9 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.op.id + '.' + param.id + ' = ' + value);
+        super('set ' + param.node.id + '.' + param.id + ' = ' + value);
 
-        this.nodeId     = param.op.id;
+        this.nodeId     = param.node.id;
         this.paramIndex = param.index;
 
         this.newValue   = value;
@@ -22126,7 +22468,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22136,7 +22478,7 @@ extends Action
     undo()
     {
         this.param.setValue(this.oldValue, false, true);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22146,7 +22488,7 @@ extends Action
     redo()
     {
         this.param.setValue(this.newValue);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22274,142 +22616,142 @@ extends Action
 class ReconnectAction
 extends Action
 {
-    outputOpId;
+    outputNodeId;
     outputIndex;
-    get outputOp() { return nodeFromId(this.outputOpId); }
+    get outputNode() { return nodeFromId(this.outputNodeId); }
 
-    oldOutputOpId = '';
+    oldOutputNodeId = '';
     oldOutputIndex;
-    get oldOutputOp() { return nodeFromId(this.oldOutputOpId); }
+    get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
 
-    inputOpId;
+    inputNodeId;
     inputIndex;
-    get inputOp() { return nodeFromId(this.inputOpId); }
+    get inputNode() { return nodeFromId(this.inputNodeId); }
 
-    oldInputOpId = '';
+    oldInputNodeId = '';
     oldInputIndex;
-    get oldInputOp() { return nodeFromId(this.oldInputOpId); }
+    get oldInputNode() { return nodeFromId(this.oldInputNodeId); }
     
-    oldOutputActiveOpId;      // the active node in the output node's tree
-    oldInputActiveOpIds = []; // the active nodes in the input node's tree
+    oldOutputActiveNodeId;      // the active node in the output node's tree
+    oldInputActiveNodeIds = []; // the active nodes in the input node's tree
 
-    newActiveOpIds = [];
+    newActiveNodeIds = [];
 
 
 
     constructor(output, oldInput, input)
     {
         const oldOutIndex = 
-            input.isConnected 
+            input.connected 
             ? input.connectedOutput.index
             : -1; 
 
 
         super(
              'reconnect '
-            + output.op.id + '.out[' + output.index + ']'
+            + output.node.id + '.out[' + output.index + ']'
             + ' ( <- '
-            + oldInput.op.id + '.in[' + oldInput.index + '])'
+            + oldInput.node.id + '.in[' + oldInput.index + '])'
             + ' -> '
-            + input.op.id + '.in[' + input.index + ']');
+            + input.node.id + '.in[' + input.index + ']');
 
 
-        this.outputOpId          = output.op.id;
-        this.outputIndex         = output.index;
-             
-        this.oldOutputOpId       = input.isConnected ? input.connectedOutput.op.id : '';
-        this.oldOutputIndex      = oldOutIndex;
-     
-        this.oldInputOpId        = oldInput.op.id;
-        this.oldInputIndex       = oldInput.index;
-     
-        this.inputOpId           = input.op.id;
-        this.inputIndex          = input.index;
+        this.outputNodeId          = output.node.id;
+        this.outputIndex           = output.index;
+               
+        this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
+        this.oldOutputIndex        = oldOutIndex;
+       
+        this.oldInputNodeId        = oldInput.node.id;
+        this.oldInputIndex         = oldInput.index;
+       
+        this.inputNodeId           = input.node.id;
+        this.inputIndex            = input.index;
 
-        this.oldOutputActiveOpId = getActiveNodeInTreeFrom(nodeFromId(this.outputOpId)).id;
-        this.oldInputActiveOpIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputOpId)).map(n => n.id)];
+        this.oldOutputActiveNodeId = getActiveNodeInTreeFrom(nodeFromId(this.outputNodeId)).id;
+        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
     }
 
 
 
     do()
     {
-        uiDisconnect(this.oldInputOp.inputs[this.oldInputIndex]);
+        uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
 
-        graphView.updateNodeTransform(this.oldInputOp);
+        graphView.updateNodeTransform(this.oldInputNode);
         
 
         uiConnect(
-            this.outputOp.outputs[this.outputIndex], 
-            this. inputOp. inputs[this. inputIndex],
+            this.outputNode.outputs[this.outputIndex], 
+            this. inputNode. inputs[this. inputIndex],
             this.inputIndex);
             
 
-        this.newActiveOpIds = [];
+        this.newActiveNodeIds = [];
 
-        if (!getActiveNodeInTreeFrom(this.oldOutputOp))
+        if (!getActiveNodeInTreeFrom(this.oldOutputNode))
         {
-            uiMakeNodeActive(this.oldOutputOp);
-            this.newActiveOpIds.push(this.oldOutputOpId);
-            this.oldOutputOp.pushUpdate();
-            //graphView.updateNodeTransform(oldPrevOutputActiveOp);
+            uiMakeNodeActive(this.oldOutputNode);
+            this.newActiveNodeIds.push(this.oldOutputNodeId);
+            this.oldOutputNode.pushUpdate();
+            //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
 
-        let oldInputActiveOpIds = [...this.oldInputActiveOpIds];
-        oldInputActiveOpIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        let oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
+        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldInputActiveOpIds)
+        for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
 
-        graphView.updateNodeTransform(this.inputOp);
+        graphView.updateNodeTransform(this.inputNode);
 
-        this.oldInputOp.pushUpdate();
-        this.inputOp   .pushUpdate();
+        this.oldInputNode.pushUpdate();
+        this.inputNode   .pushUpdate();
     }
 
 
 
     undo()
     {
-        uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
-        // if (this.oldOutputOpId != '')
-        //     uiDisconnect(this.inputOp.inputs[this.inputIndex]);
+        // if (this.oldOutputNodeId != '')
+        //     uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
             
         uiVariableConnect(
-            this.outputOp, 
+            this.outputNode, 
             this.outputIndex, 
-            this.oldInputOp, 
+            this.oldInputNode, 
             this.oldInputIndex);
 
-        graphView.updateNodeTransform(this.oldInputOp);
-        this.oldInputOp.pushUpdate();
+        graphView.updateNodeTransform(this.oldInputNode);
+        this.oldInputNode.pushUpdate();
     
 
-        if (this.oldOutputOpId != '')
+        if (this.oldOutputNodeId != '')
         {
             uiVariableConnect(
-                this.oldOutputOp, 
+                this.oldOutputNode, 
                 this.oldOutputIndex, 
-                this.inputOp, 
+                this.inputNode, 
                 this.inputIndex);
 
-            graphView.updateNodeTransform(this.inputOp);
-            this.inputOp.pushUpdate();
+            graphView.updateNodeTransform(this.inputNode);
+            this.inputNode.pushUpdate();
         }
 
 
-        for (const id of this.newActiveOpIds)
+        for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
-        for (const id of this.oldInputActiveOpIds)
+        for (const id of this.oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        if (!this.oldInputActiveOpIds.includes(this.oldOutputActiveOpId))
-            uiMakeNodeActive(nodeFromId(this.oldOutputActiveOpId));
+        if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
+            uiMakeNodeActive(nodeFromId(this.oldOutputActiveNodeId));
     }
 }
 
@@ -22501,13 +22843,13 @@ extends Action
 
         const node = nodeFromId(this.nodeId);
 
-        for (const input of node.inputs.filter(i => i.isConnected))
+        for (const input of node.inputs.filter(i => i.connected))
         {
             const output = input.connectedOutput;
 
             uiSaveConnection(
-                output.op.id, output.index,
-                 input.op.id,  input.index,
+                output.node.id, output.index,
+                 input.node.id,  input.index,
                 input.connection.toJson());
         }
     }
@@ -22620,7 +22962,7 @@ extends Action
         for (var i = 0; i < movedNodes.length; i++)
         {
             const p = this.to.find(t => t[0] == movedNodes[i].id)[1];
-            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+            setNodePosition(movedNodes[i].div.node, p.x, p.y);
         }
 
         for (const node of movedNodes)
@@ -22639,7 +22981,7 @@ extends Action
         for (var i = 0; i < movedNodes.length; i++)
         {
             const p = this.from.find(t => t[0] == movedNodes[i].id)[1];
-            setNodePosition(movedNodes[i].div.op, p.x, p.y);
+            setNodePosition(movedNodes[i].div.node, p.x, p.y);
         }
 
         for (const node of movedNodes)
@@ -22724,7 +23066,7 @@ extends Action
     {
         super('set param settings');
 
-        this.nodeId             = param.op.id;
+        this.nodeId             = param.node.id;
         this.paramIndex         = param.index;
        
         this.newDecimals        = dec;
@@ -22773,9 +23115,9 @@ extends Action
 
     constructor(param, locked)
     {
-        super('set ' + param.op.id + '.' + param.id + '.locked = ' + boolString(locked));
+        super('set ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
 
-        this.nodeId     = param.op.id;
+        this.nodeId     = param.node.id;
         this.paramIndex = param.index;
 
         this.locked  = locked;
@@ -22786,7 +23128,7 @@ extends Action
     do()
     {
         //this.oldValue = this.param.oldValue;
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22796,7 +23138,7 @@ extends Action
     undo()
     {
         this.param.setLocked(!this.locked);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22806,7 +23148,7 @@ extends Action
     redo()
     {
         this.param.setLocked(this.locked);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22829,9 +23171,9 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.op.id + '.' + param.id + ' = ' + value);
+        super('set ' + param.node.id + '.' + param.id + ' = ' + value);
 
-        this.nodeId     = param.op.id;
+        this.nodeId     = param.node.id;
         this.paramIndex = param.index;
 
         this.newValue   = value;
@@ -22842,7 +23184,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22852,7 +23194,7 @@ extends Action
     undo()
     {
         this.param.setValue(this.oldValue, false, true);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22862,7 +23204,7 @@ extends Action
     redo()
     {
         this.param.setValue(this.newValue);
-        this.param.op.pushUpdate();
+        this.param.node.pushUpdate();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23677,8 +24019,8 @@ function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProg
         // variable inputs need connections to be sorted by input index
         connections.sort((c1, c2) => 
         {
-            if (c1.inputOp.id != c2.inputOp.id) return c1.inputOp.id - c2.inputOp.id;
-            if (c1.inputIndex != c2.inputIndex) return c1.inputIndex - c2.inputIndex;
+            if (c1.inputNode.id != c2.inputNode.id) return c1.inputNode.id - c2.inputNode.id;
+            if (c1.inputIndex   != c2.inputIndex  ) return c1.inputIndex   - c2.inputIndex;
             return 0;
         });
 
@@ -24395,9 +24737,9 @@ graphView.activeNodes = [];
 
 
 
-function uiCreateNode(opType, creatingButton, createdId = -1, updateUi = true)
+function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
 {
-    let node = createNode(opType, creatingButton, createdId);
+    let node = createNode(nodeType, creatingButton, createdId);
 
     graph.addNode(node);
 
@@ -24490,24 +24832,24 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputOp, outputIndex, inputOp, inputIndex)
+function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 {
     //console.log('uiVariableConnect()');
 
-    if (inputOp._variableInputs)
+    if (inputNode._variableInputs)
     {
-        const input = lastOf(inputOp.inputs);
+        const input = lastOf(inputNode.inputs);
 
         uiConnect(
-            outputOp.outputs[outputIndex],
+            outputNode.outputs[outputIndex],
             input,
             inputIndex);
     }
     else
     {
         uiConnect(
-            outputOp.outputs[outputIndex],
-             inputOp. inputs[ inputIndex]);
+            outputNode.outputs[outputIndex],
+             inputNode. inputs[ inputIndex]);
     }
 }
 
@@ -24518,9 +24860,9 @@ function uiConnect(output, input, inputIndex = -1)
     const conn = graph.connect(output, input, inputIndex);
 
     uiSaveConnection(
-        output.op.id,
+        output.node.id,
         output.index,
-        input.op.id,
+        input.node.id,
         input.index,
         conn.toJson());
 
@@ -24532,27 +24874,27 @@ function uiConnect(output, input, inputIndex = -1)
 function uiDisconnect(input)
 {
     uiRemoveSavedConnection(
-        input.connectedOutput.op.id,
+        input.connectedOutput.node.id,
         input.connectedOutput.index,
-        input.op.id,
+        input.node.id,
         input.index);
 
 
     graph.disconnect(input);
 
     
-    const inputOp = input.op;
+    const inputNode = input.node;
 
-    if (inputOp._variableInputs)
+    if (inputNode._variableInputs)
     {
-        uiRemoveSavedConnectionsToNode(inputOp.id);
+        uiRemoveSavedConnectionsToNode(inputNode.id);
 
-        for (const _input of inputOp.inputs.filter(i => i.isConnected))
+        for (const _input of inputNode.inputs.filter(i => i.connected))
         {
             uiSaveConnection(
-                _input.connectedOutput.op.id,
+                _input.connectedOutput.node.id,
                 _input.connectedOutput.index,
-                inputOp.id,
+                inputNode.id,
                 _input.index,
                 _input.connection.toJson());
         }
@@ -24563,7 +24905,7 @@ function uiDisconnect(input)
     //     msg: 'genDisconnect',
     //     input:
     //     {
-    //         nodeId: input.op.id,
+    //         nodeId: input.node.id,
     //         index:  input.index
     //     }
     // });
@@ -24652,11 +24994,11 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
 {
     for (const input of node.inputs)
     {
-        if (input.isConnected)
+        if (input.connected)
         {
             //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.op);
-            uiMakeNodeLeftPassive(input.connectedOutput.op, node);
+            uiMakeNodePassive(input.connectedOutput.node);
+            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
         }
     }
 
@@ -24664,11 +25006,11 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
     // {
     //     for (const input of output.connectedInputs)
     //     {
-    //         if (input.op != fromNode)
+    //         if (input.node != fromNode)
     //         {
     //             //console.log(input.connectedOutput);
-    //             uiMakeNodePassive(input.op);
-    //             uiMakeNodeRightPassive(input.op, node);
+    //             uiMakeNodePassive(input.node);
+    //             uiMakeNodeRightPassive(input.node, node);
     //         }
     //     }
     // }
@@ -24682,19 +25024,19 @@ function uiMakeNodeRightPassive(node, fromNode = null)
     {
         for (const connInput of output.connectedInputs)
         {
-            uiMakeNodePassive(connInput.op);
-            uiMakeNodeRightPassive(connInput.op, node);
+            uiMakeNodePassive(connInput.node);
+            uiMakeNodeRightPassive(connInput.node, node);
         }
     }
 
     for (const input of node.inputs)
     {
-        if (   input.isConnected
-            && input.connectedOutput.op != fromNode)
+        if (   input.connected
+            && input.connectedOutput.node != fromNode)
         {
             //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.op);
-            uiMakeNodeLeftPassive(input.connectedOutput.op, node);
+            uiMakeNodePassive(input.connectedOutput.node);
+            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
         }
     }
 }
@@ -24706,13 +25048,13 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
     if (node.active) return node;
 
 
-    const nodeInputs = [...node.inputs.filter(i => i.isConnected)];
+    const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
     if (    nodeInputs.length == 1
-        && !alreadyChecked.includes(nodeInputs[0].connectedOutput.op))
+        && !alreadyChecked.includes(nodeInputs[0].connectedOutput.node))
     {
         const leftActive = getActiveNodeInBranchFrom(
-            nodeInputs[0].connectedOutput.op, 
+            nodeInputs[0].connectedOutput.node, 
             [...alreadyChecked, node]);
 
         if (leftActive) return leftActive;
@@ -24722,10 +25064,10 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
     const nodeOutputs = [...node.outputs.filter(o => o.connectedInputs.length == 1)];
 
     if (    nodeOutputs.length == 1
-        && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].op))
+        && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].node))
     {
         const rightActive = getActiveNodeInBranchFrom(
-            nodeOutputs[0].connectedInputs[0].op, 
+            nodeOutputs[0].connectedInputs[0].node, 
             [...alreadyChecked, node]);
 
         if (rightActive) return rightActive;
@@ -24750,10 +25092,10 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
     {
         for (const input of output.connectedInputs)
         {
-            if (!alreadyChecked.includes(input.op))
+            if (!alreadyChecked.includes(input.node))
             {
                 const rightActive = getActiveNodeInTreeFrom(
-                    input.op, 
+                    input.node, 
                     [...alreadyChecked, node]);
 
                 if (rightActive) return rightActive;
@@ -24774,11 +25116,11 @@ function getActiveNodeLeftInTreeFrom(node, alreadyChecked = [])
 
     for (const input of node.inputs)
     {
-        if (    input.isConnected
-            && !alreadyChecked.includes(input.connectedOutput.op))
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
         {
             const leftActive = getActiveNodeInTreeFrom(
-                input.connectedOutput.op, 
+                input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 
             if (leftActive) return leftActive;
@@ -24802,10 +25144,10 @@ function getActiveNodesInTreeFrom(node, alreadyChecked = [])
 
     for (const input of node.inputs)
     {
-        if (    input.isConnected
-            && !alreadyChecked.includes(input.connectedOutput.op))
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveNodesInTreeFrom(input.connectedOutput.op, [...alreadyChecked, node]);
+            const leftActive = getActiveNodesInTreeFrom(input.connectedOutput.node, [...alreadyChecked, node]);
             
             // if (leftActive.length > 0) 
             // {
@@ -24820,9 +25162,9 @@ function getActiveNodesInTreeFrom(node, alreadyChecked = [])
     {
         for (const input of output.connectedInputs)
         {
-            if (!alreadyChecked.includes(input.op))
+            if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveNodesInTreeFrom(input.op, [...alreadyChecked, node]);
+                const rightActive = getActiveNodesInTreeFrom(input.node, [...alreadyChecked, node]);
                 
                 // if (rightActive.length > 0) 
                 // {
@@ -25033,13 +25375,13 @@ function uiLogAllSavedNodesAndConns()
 
 
 
-function uiSaveConnection(outputOpId, outputIndex, inputOpId, inputIndex, connJson)
+function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
 {
     uiPostMessageToFigma({
         cmd: 'figSaveConnection',
-        name: outputOpId  + ' '
+        name: outputNodeId  + ' '
             + outputIndex + ' '
-            + inputOpId   + ' '
+            + inputNodeId   + ' '
             + inputIndex,
         json: connJson
     });
@@ -25047,24 +25389,24 @@ function uiSaveConnection(outputOpId, outputIndex, inputOpId, inputIndex, connJs
 
 
 
-function uiRemoveSavedConnection(outputOpId, outputIndex, inputOpId, inputIndex)
+function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
 {
     uiPostMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: outputOpId  + ' '
+        name: outputNodeId  + ' '
             + outputIndex + ' '
-            + inputOpId   + ' '
+            + inputNodeId   + ' '
             + inputIndex
     });
 }
 
 
 
-function uiRemoveSavedConnectionsToNode(inputOpId)
+function uiRemoveSavedConnectionsToNode(inputOpNode)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: inputOpId
+        nodeId: inputOpNode
     });
 }
 

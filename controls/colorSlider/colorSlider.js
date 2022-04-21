@@ -86,15 +86,16 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
                 return;
             }
     
-            let opDiv = 
+            let nodeDiv = 
                    slider.parentNode
                 && slider.parentNode.parentNode
                 && slider.parentNode.parentNode.parentNode
                 ? slider.parentNode.parentNode.parentNode
                 : null;
 
-            if (opDiv && opDiv.className == 'node') 
-                graphView.putNodeOnTop(opDiv.op);
+            if (   nodeDiv 
+                && nodeDiv.className == 'node') 
+                graphView.putNodeOnTop(nodeDiv.node);
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway

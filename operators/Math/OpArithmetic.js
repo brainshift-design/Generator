@@ -7,9 +7,9 @@ extends OperatorBase
     _showOnlySymbol;
 
 
-    constructor(opType, shortType, symbol)
+    constructor(nodeType, shortType, symbol)
     {
-        super(opType, shortType, 'number', 50);
+        super(nodeType, shortType, 'number', 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -86,39 +86,39 @@ extends OperatorBase
 
 
 
-    updateData()
-    {
-        let maxDec = 0;
+    // updateData()
+    // {
+    //     let maxDec = 0;
 
-        for (const input of this.inputs)
-        {
-            if (input.isConnected)
-            {
-                //input.connectedOutput.op.updateData();
+    //     for (const input of this.inputs)
+    //     {
+    //         if (input.connected)
+    //         {
+    //             //input.connectedOutput.node.updateData();
 
-                // ^ this could have removed one or more inputs and connections
-                // in which case abort
-                if (!input.isConnected)
-                {
-                    super.updateData();
-                    return;
-                }
+    //             // ^ this could have removed one or more inputs and connections
+    //             // in which case abort
+    //             if (!input.connected)
+    //             {
+    //                 super.updateData();
+    //                 return;
+    //             }
 
-                maxDec = Math.max(maxDec, input.data.decimals);
-            }
-        }
+    //             maxDec = Math.max(maxDec, input.data.decimals);
+    //         }
+    //     }
 
 
-        const result = this.getResult();
+    //     const result = this.getResult();
 
-        this.outputs[0]._data = dataFromNumber(result, maxDec);
+    //     this.outputs[0]._data = dataFromNumber(result, maxDec);
 
-        this.#paramValue.control.setDecimals(maxDec);
-        this.#paramValue.setValue(result, false, true, false) ;
+    //     this.#paramValue.control.setDecimals(maxDec);
+    //     this.#paramValue.setValue(result, false, true, false) ;
 
         
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
@@ -199,18 +199,18 @@ extends OperatorBase
 
 
 
-function onConnectInput(op)
+function onConnectInput(node)
 {
-    op.addNewInput();
-    op.updateNode();
-    graphView.updateNodeTransform(op);
+    node.addNewInput();
+    node.updateNode();
+    graphView.updateNodeTransform(node);
 }
 
 
 
-function onDisconnectInput(op, input)
+function onDisconnectInput(node, input)
 {
-    removeFromArray(op.inputs, input);
-    op.inputControls.removeChild(input.control);
-    op.updateNode();
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.control);
+    node.updateNode();
 }

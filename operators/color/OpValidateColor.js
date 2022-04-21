@@ -148,7 +148,7 @@ extends OpColorBase
             if (   e.button == 0
                 && this.btnFind.button0
                 && !validateIsFinding
-                && this.inputs[0].isConnected) 
+                && this.inputs[0].connected) 
             { 
                 this.btnFind.button0 = false;
 
@@ -210,28 +210,28 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        //log(this.id + '.OpValidColor.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.OpValidColor.updateData()');
 
-        if (this.inputs[0].isConnected)
-        {
-            this._color = [...validateColor(
-                [...this.inputs[0].data.color],
-                this.paramOrder.value, 
-                this.param1.value,
-                this.param2.value,
-                this.param3.value)];
-        }
-        else
-            this._color = dataColor_NaN;
+    //     if (this.inputs[0].connected)
+    //     {
+    //         this._color = [...validateColor(
+    //             [...this.inputs[0].data.color],
+    //             this.paramOrder.value, 
+    //             this.param1.value,
+    //             this.param2.value,
+    //             this.param3.value)];
+    //     }
+    //     else
+    //         this._color = dataColor_NaN;
 
             
-        this.outputs[0]._data = dataFromDataColor(this._color);
+    //     this.outputs[0]._data = dataFromDataColor(this._color);
 
 
-        super.updateData()
-    }
+    //     super.updateData()
+    // }
 
 
 
@@ -285,14 +285,14 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[0].isConnected;
+        return this.inputs[0].connected;
     }
 
 
 
     isConnected()
     {
-        return this.inputs[0].isConnected;
+        return this.inputs[0].connected;
     }
 
 

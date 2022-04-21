@@ -11,9 +11,9 @@ extends Operator
     
 
 
-    constructor(opType, shortType, dataType, defWidth = 80)
+    constructor(nodeType, shortType, dataType, defWidth = 80)
     {
-        super(opType, shortType, dataType, defWidth);
+        super(nodeType, shortType, dataType, defWidth);
 
 
         this._warningOverlay = createDiv('colorWarningOverlay');

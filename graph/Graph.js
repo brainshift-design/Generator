@@ -113,9 +113,9 @@ class Graph
             for (let i = node.inputs.length-1; i >= 0; i--) // backwards for the sake of variable inputs
             {
                 const input = node.inputs[i];
-                if (!input.isConnected) continue;
+                if (!input.connected) continue;
 
-                uiMakeNodeActive(input.connectedOutput.op);
+                uiMakeNodeActive(input.connectedOutput.node);
                 this.disconnect(input, true);
             }
             
@@ -127,9 +127,9 @@ class Graph
                 {
                     this.disconnect(connInput, true);
     
-                    // if (!activeNodeInTree(connInput.op))
-                    //     lastNodesInTreeFrom(connInput.op).forEach(n => uiMakeNodeActive(n));
-                    //     uiMakeNodeActive(connInput.op.lastNodeInTree);
+                    // if (!activeNodeInTree(connInput.node))
+                    //     lastNodesInTreeFrom(connInput.node).forEach(n => uiMakeNodeActive(n));
+                    //     uiMakeNodeActive(connInput.node.lastNodeInTree);
                 }
             }
             
@@ -160,17 +160,17 @@ class Graph
         }
 
 
-        if (   input.op._variableInputs
+        if (   input.node._variableInputs
             && inputIndex > -1)
         {
-            input = lastOf(input.op.inputs);
+            input = lastOf(input.node.inputs);
             
             // move new input back to correct index
-            moveInArray(input.op.inputs, input.op.inputs.length-1, inputIndex);
+            moveInArray(input.node.inputs, input.node.inputs.length-1, inputIndex);
 
-            input.op.inputControls.insertBefore(
-                lastOf(input.op.inputControls.childNodes), 
-                input.op.inputControls.childNodes[inputIndex]);
+            input.node.inputControls.insertBefore(
+                lastOf(input.node.inputControls.childNodes), 
+                input.node.inputControls.childNodes[inputIndex]);
         }
 
 
@@ -188,10 +188,10 @@ class Graph
         this.connections.push(conn);
 
         
-        // output.op.makePassive();
+        // output.node.makePassive();
 
-        // if (!activeNodeInTree(input.op))
-        //     uiMakeNodeActive(input.op);
+        // if (!activeNodeInTree(input.node))
+        //     uiMakeNodeActive(input.node);
        
            
         output.updateControl();
@@ -204,11 +204,11 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.op.id + '.in[' + input.index + '])');
+        //console.log( 'graph.disconnect(' + input.node.id + '.in[' + input.index + '])');
         // first remove the current output
 
-        // if (activeNodeInTree(input.op))
-        //     uiDeleteCanvasObjects([activeNodeInTree(input.op).id]);
+        // if (activeNodeInTree(input.node))
+        //     uiDeleteCanvasObjects([activeNodeInTree(input.node).id]);
 
 
         // then disconnect
@@ -232,12 +232,12 @@ class Graph
             input.param.valueText = '';
 
 
-        // if (!activeNodeInTree(output.op))
-        //      uiMakeNodeActive(output.op);
+        // if (!activeNodeInTree(output.node))
+        //      uiMakeNodeActive(output.node);
             
         
         output.updateControl();
-        input.op.pushUpdate();
+        input.node.pushUpdate();
 
 
         return true;
@@ -292,8 +292,8 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
         for (let j = 0; j < node.inputs.length; j++)
         {
-            if (   !node.inputs[j].isConnected
-                ||    !nodes.includes(node.inputs[j].connectedOutput.op)
+            if (   !node.inputs[j].connected
+                ||    !nodes.includes(node.inputs[j].connectedOutput.node)
                    && connOutputMustBeInNodes)
                 continue;
 
@@ -330,11 +330,11 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function createNode(opType, creatingButton = null)//, createdNodeId = -1)
+function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
 {
     let node;
 
-    switch (opType)
+    switch (nodeType)
     {
         case 'number':           node = new OpNumber();           break;
         case 'minmax':           node = new OpMinMax();           break;

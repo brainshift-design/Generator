@@ -31,7 +31,7 @@ onmessage = function(e)
             break;
         
         case 'genGenerateRequest': genGenerateRequest(e.data.request); break;
-        // case 'genCreateNode':    genCreateNode   (e.data.opType,   e.data.nodeId, e.data.nodeId); break; 
+        // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
         // case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
@@ -68,7 +68,12 @@ function genGenerateRequest(request)
 
     for (let i = 0, so = 0; i < request.length && so < stackOverflowProtect; )
     {
-        if (request[i] == 'rectangle' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
+        // values have to be ... and updated
+
+        // geometry/styles have to be generated
+
+             if (request[i] == 'num'  && request.length >= i+3) { objects.push(genGenerateNumber   (request, i)); i += 3; }
+        else if (request[i] == 'rect' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
         else so++;
     }
 
@@ -76,6 +81,22 @@ function genGenerateRequest(request)
         msg:    'uiUpdateCanvasObjects',
         objects: objects
     });
+}
+
+
+
+function genGenerateNumber(request, i)
+{
+    return {
+        type:   OBJ_RECT,
+        id:     nextGenObjectId++,
+        nodeId: request[i+1],
+        x:      request[i+2],
+        y:      request[i+3],
+        width:  request[i+4],
+        height: request[i+5],
+        angle:  request[i+6],
+        round:  request[i+7] };
 }
 
 

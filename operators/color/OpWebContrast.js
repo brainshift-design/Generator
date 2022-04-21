@@ -44,104 +44,104 @@ extends OpColorBase
 
 
 
-    updateData()
-    {
-        //log(this.id + '.OpWebContrast.updateData()');
+    // updateData()
+    // {
+    //     //log(this.id + '.OpWebContrast.updateData()');
 
         
-        this._color = 
-            this.inputs[1].isConnected
-            ? this.inputs[1].data.color
-            : dataColor_NaN;
+    //     this._color = 
+    //         this.inputs[1].connected
+    //         ? this.inputs[1].data.color
+    //         : dataColor_NaN;
 
 
-        if (   this.inputs[0].isConnected
-            && this.inputs[1].isConnected)
-        {
-            const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+    //     if (   this.inputs[0].connected
+    //         && this.inputs[1].connected)
+    //     {
+    //         const rgb0 = dataColor2rgb(this.inputs[0].data.color);
+    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
-            if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
-                && isRgbValid(rgb1) && this.inputs[1].data.isValid)
-            {
-                if (this.#paramStandard.value == 0)
-                {
-                    const ratio = getContrastRatio2(
-                        dataColor2rgb(this.inputs[0].data.color),
-                        dataColor2rgb(this.inputs[1].data.color));
+    //         if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
+    //             && isRgbValid(rgb1) && this.inputs[1].data.isValid)
+    //         {
+    //             if (this.#paramStandard.value == 0)
+    //             {
+    //                 const ratio = getContrastRatio2(
+    //                     dataColor2rgb(this.inputs[0].data.color),
+    //                     dataColor2rgb(this.inputs[1].data.color));
 
-                    let rating = getContrastRating2(ratio);
+    //                 let rating = getContrastRating2(ratio);
 
-                    if (rating != '')
-                        rating = '&nbsp;&nbsp;' + rating;
+    //                 if (rating != '')
+    //                     rating = '&nbsp;&nbsp;' + rating;
 
-                    this.#paramValue.control.min        = 
-                    this.#paramValue.control.displayMin = 0;
+    //                 this.#paramValue.control.min        = 
+    //                 this.#paramValue.control.displayMin = 0;
 
-                    this.#paramValue.control.max        = 
-                    this.#paramValue.control.displayMax = 21;
+    //                 this.#paramValue.control.max        = 
+    //                 this.#paramValue.control.displayMax = 21;
 
-                    this.#paramValue.control.setDecimals(2);
-                    this.#paramValue.control.setSuffix(rating);
-                    this.#paramValue.control.setValue(ratio, false, false, false);
-                }
-                else
-                {
-                    const ratio = getContrastRatio3(
-                        dataColor2rgb(this.inputs[0].data.color),
-                        dataColor2rgb(this.inputs[1].data.color));
+    //                 this.#paramValue.control.setDecimals(2);
+    //                 this.#paramValue.control.setSuffix(rating);
+    //                 this.#paramValue.control.setValue(ratio, false, false, false);
+    //             }
+    //             else
+    //             {
+    //                 const ratio = getContrastRatio3(
+    //                     dataColor2rgb(this.inputs[0].data.color),
+    //                     dataColor2rgb(this.inputs[1].data.color));
                         
-                    this.#paramValue.control.min        = 
-                    this.#paramValue.control.displayMin = 0;
+    //                 this.#paramValue.control.min        = 
+    //                 this.#paramValue.control.displayMin = 0;
 
-                    this.#paramValue.control.max        = 
-                    this.#paramValue.control.displayMax = 105;
+    //                 this.#paramValue.control.max        = 
+    //                 this.#paramValue.control.displayMax = 105;
 
-                    this.#paramValue.control.setDecimals(1);
-                    this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-                    this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
-                }
+    //                 this.#paramValue.control.setDecimals(1);
+    //                 this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+    //                 this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
+    //             }
 
 
-                this.forceShowWarning = false;
+    //             this.forceShowWarning = false;
 
-                super.updateData();
-                return;
-            }
+    //             super.updateData();
+    //             return;
+    //         }
 
-            else if ((!isRgbValid(rgb0) || !this.inputs[0].data.isValid)
-                   &&  isRgbValid(rgb1) &&  this.inputs[1].data.isValid)
-            {
-                this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
-                this.forceShowWarning = true;
-            }
+    //         else if ((!isRgbValid(rgb0) || !this.inputs[0].data.isValid)
+    //                &&  isRgbValid(rgb1) &&  this.inputs[1].data.isValid)
+    //         {
+    //             this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
+    //             this.forceShowWarning = true;
+    //         }
             
-            else if (  isRgbValid(rgb0) &&  this.inputs[0].data.isValid
-                  && (!isRgbValid(rgb1) || !this.inputs[1].data.isValid))
-            {
-                this.warningStyle     = this.getDefaultWarningStyle(rgb1);
-                this.forceShowWarning = true;
-            }
+    //         else if (  isRgbValid(rgb0) &&  this.inputs[0].data.isValid
+    //               && (!isRgbValid(rgb1) || !this.inputs[1].data.isValid))
+    //         {
+    //             this.warningStyle     = this.getDefaultWarningStyle(rgb1);
+    //             this.forceShowWarning = true;
+    //         }
 
-            else
-                this.forceShowWarning = false;
-        }
+    //         else
+    //             this.forceShowWarning = false;
+    //     }
 
-        else if (this.inputs[1].isConnected)
-        {
-            const rgb1 = dataColor2rgb(this.inputs[1].data.color);
+    //     else if (this.inputs[1].connected)
+    //     {
+    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
-            this.forceShowWarning = 
-                   !isRgbValid(rgb1) 
-                || !this.inputs[1].data.isValid;
-        }
+    //         this.forceShowWarning = 
+    //                !isRgbValid(rgb1) 
+    //             || !this.inputs[1].data.isValid;
+    //     }
 
 
-        this.#paramValue.setValue(Number.NaN, false, true, false);
+    //     this.#paramValue.setValue(Number.NaN, false, true, false);
 
         
-        super.updateData();
-    }
+    //     super.updateData();
+    // }
 
 
 
@@ -180,17 +180,17 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[1].isConnected;
+        return this.inputs[1].connected;
     }
 
 
 
     updateHeaderLabel()
     {
-        if (   this.inputs[0].isConnected 
-            && this.inputs[1].isConnected)
+        if (   this.inputs[0].connected 
+            && this.inputs[1].connected)
             this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
-        else if (this.inputs[1].isConnected)
+        else if (this.inputs[1].connected)
         {
             const [,,,, colText,] = this.getHeaderColors();
             this.label.style.color = colorStyleRgba(colText);

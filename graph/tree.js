@@ -14,9 +14,9 @@
 
 //     for (const input of node.inputs)
 //     {
-//         if (input.isConnected)
+//         if (input.connected)
 //         {
-//             const left = activeNodeLeft(input.connectedOutput.op);
+//             const left = activeNodeLeft(input.connectedOutput.node);
 //             if (left) return left;
 //         }
 //     }
@@ -34,7 +34,7 @@
 //     {
 //         for (const connInput of output.connectedInputs)
 //         {
-//             const right = activeNodeRight(connInput.op);
+//             const right = activeNodeRight(connInput.node);
 //             if (right) return right;
 //         }
 //     }
@@ -53,12 +53,12 @@ function getAllNodesFromNode(node, ignore = [])
         ignore.push(node);
 
 
-    for (const input of node.inputs.filter(i => i.isConnected))
+    for (const input of node.inputs.filter(i => i.connected))
     {
-        const op = input.connectedOutput.op;
-        if (ignore.includes(op)) continue;
+        const node = input.connectedOutput.node;
+        if (ignore.includes(node)) continue;
 
-        nodes.push(...getAllNodesFromNode(op, ignore));
+        nodes.push(...getAllNodesFromNode(node, ignore));
     }
 
 
@@ -66,10 +66,10 @@ function getAllNodesFromNode(node, ignore = [])
     {
         for (const _input of output.connectedInputs)
         {
-            const op = _input.op;
-            if (ignore.includes(op)) continue;
+            const node = _input.node;
+            if (ignore.includes(node)) continue;
 
-            nodes.push(...getAllNodesFromNode(op, ignore));
+            nodes.push(...getAllNodesFromNode(node, ignore));
         }
     }
 
@@ -94,12 +94,12 @@ function getNodesBeforeNode(node)
 {
     let before = [];
 
-    for (const input of node.inputs.filter(i => i.isConnected))
+    for (const input of node.inputs.filter(i => i.connected))
     {
-        if (!before.includes(input.connectedOutput.op)) // avoid including diamond tips twice
-            before.push(input.connectedOutput.op);
+        if (!before.includes(input.connectedOutput.node)) // avoid including diamond tips twice
+            before.push(input.connectedOutput.node);
     
-        before.push(...getNodesBeforeNode(input.connectedOutput.op));
+        before.push(...getNodesBeforeNode(input.connectedOutput.node));
     }
 
     return before;
@@ -114,10 +114,10 @@ function getNodesAfterNode(node)
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
         {
-            if (!after.includes(input.op)) // avoid including diamond tips twice
-                after.push(input.op);
+            if (!after.includes(input.node)) // avoid including diamond tips twice
+                after.push(input.node);
 
-            after.push(...getNodesAfterNode(input.op));
+            after.push(...getNodesAfterNode(input.node));
         }
 
     return after;
@@ -131,7 +131,7 @@ function getTerminalsAfterNode(node)
 
     for (const output of node.outputs)
         for (const input of output.connectedInputs)
-            after.push(...getTerminalsAfterNode(input.op));
+            after.push(...getTerminalsAfterNode(input.node));
 
     return after.length > 0 ? after : [node];
 }

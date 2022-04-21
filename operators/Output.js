@@ -3,11 +3,11 @@ class Output
     _dataType;     
     get dataType() { return this._dataType; }
 
-    _op    = null; get op()    { return this._op;    }
+    _node  = null; get node () { return this._node;  }
     _param = null; get param() { return this._param; }
     
     
-    get index() { return this.op.outputs.indexOf(this); }
+    get index() { return this.node.outputs.indexOf(this); }
 
 
     color;
@@ -24,12 +24,16 @@ class Output
     connecting = false;
     
     
+    generateRequest = null; // function pointer, must be implemented
+    cachedRequest   = '';
+
+
     _data;
 
     get data() 
     {
         if (this.param) this.param.setOutputData();
-        if (this.op   ) this.op.update();
+        if (this.node ) this.node.update();
 
         return this._data;
     }
@@ -39,7 +43,7 @@ class Output
         this._data = value;
 
         // for (const input of this.connectedInputs)
-        //     input.op.pushUpdate();
+        //     input.node.pushUpdate();
     }
 
 
@@ -48,22 +52,23 @@ class Output
 
 
 
-    constructor(dataType)
+    constructor(dataType, generateRequest)
     {
-        this._dataType = dataType;
+        this._dataType       = dataType;
+        this.generateRequest = generateRequest;
+
+        this.control         = createDiv('output');
+        this.hitbox          = createDiv('outputHitbox');
+        this.wireBall        = createDiv('outputBall');
         
-        this.control  = createDiv('output');
-        this.hitbox   = createDiv('outputHitbox');
-        this.wireBall = createDiv('outputBall');
-        
-        this.control.output = this;
+        this.control.output  = this;
         
         
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.12];
-        this.wireColor = dataType2rgb(this.dataType, true);
+        this.color           = [0, 0, 0, 0.12];
+        this.wireColor       = dataType2rgb(this.dataType, true);
         
         this.updateControl();
 
@@ -89,7 +94,7 @@ class Output
                 && graphView.tempConn.input.dataType == this.dataType)
             {
                 const rect = boundingRect(this.control);
-                const loop = this.op.follows(graphView.tempConn.input.op);
+                const loop = this.node.follows(graphView.tempConn.input.node);
 
                 if (!loop)
                 {
@@ -99,7 +104,7 @@ class Output
                 }
 
                 graphView.overOutput = !loop ? this : null;
-                this.op.outputs.forEach(o => o.updateControl());
+                this.node.outputs.forEach(o => o.updateControl());
             }
             else
                 graphView.overOutput = this; 
@@ -138,7 +143,7 @@ class Output
             && !(   graphView.tempConn
                  && graphView.tempConn.input
                  && (   graphView.tempConn.input.dataType != this.dataType
-                     || this.op.follows(graphView.tempConn.input.op)));
+                     || this.node.follows(graphView.tempConn.input.node)));
 
         const colorStyle = 
             graphView.showWires

@@ -112,7 +112,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        this.op.pushUpdate();
+        this.node.pushUpdate();
     }
 
 
@@ -129,7 +129,7 @@ extends Parameter
         super.update();
 
         if (   this.input
-            && this.input.isConnected)
+            && this.input.connected)
         {
             this.setDecimals(this.input.data.decimals);
 
@@ -150,7 +150,7 @@ extends Parameter
             this.output._data = dataFromNumber(
                 this.control.value,
                    this.input
-                && this.input.isConnected
+                && this.input.connected
                 ? this.input.data.decimals
                 : this.control.dec);
         }

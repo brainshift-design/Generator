@@ -458,9 +458,9 @@ graphView.placeNewNode = function(node)
     //     const right = intersecting.reduce((a, b) => 
     //         graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
-    //     if (   right.opType == node.opType
-    //         && node.opType != 'color'
-    //         && node.opType != 'webcontrast') ox = bounds.b + dy;
+    //     if (   right.nodeType == node.nodeType
+    //         && node.nodeType != 'color'
+    //         && node.nodeType != 'webcontrast') ox = bounds.b + dy;
     //     else                                 oy = bounds.r + dx;
     // }
 
@@ -477,8 +477,8 @@ graphView.putNodeOnTop = function(node)
 {
     const topIndices = 
           1 
-        + node.inputs.filter(i => i.isConnected).length 
-        + (node.outputs.find(o => o.isConnected) ? 1 : 0);
+        + node.inputs.filter(i => i.connected).length 
+        + (node.outputs.find(o => o.connected) ? 1 : 0);
         
     for (const n of graph.nodes)
         n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
@@ -497,7 +497,7 @@ graphView.putWiresOnTop = function(node)
 
     let z = MAX_INT32;
 
-    for (const input of node.inputs.filter(i => i.isConnected))
+    for (const input of node.inputs.filter(i => i.connected))
     {
         wireContainer.removeChild(input.connection.wire);
         wireContainer.appendChild(input.connection.wire);
@@ -527,7 +527,7 @@ graphView.updateNodeTransforms = function(nodes)
     for (const node of nodes)
     {
         for (const input of node.inputs)
-            if (   input.isConnected
+            if (   input.connected
                 && input.connection
                 && !wires.includes(input.connection.wire))
                 wires.push(input.connection.wire);        
@@ -559,7 +559,7 @@ graphView.updateNodeTransform = function(node)
     const wires = [];
 
     for (const input of node.inputs)
-        if (   input.isConnected
+        if (   input.connected
             && input.connection)
             wires.push(input.connection.wire);        
 
@@ -643,8 +643,8 @@ graphView.updateNodeWires = function(wires)
 
             const isSolo = 
                    graphView._soloNode
-                && (    input.op == graphView._soloNode
-                    || output.op == graphView._soloNode);
+                && (    input.node == graphView._soloNode
+                    || output.node == graphView._soloNode);
 
         show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
@@ -738,8 +738,8 @@ graphView.soloNode = function(node)
     graph.connections.forEach(c =>
     { 
         c.wire.style.opacity = 
-               c.input  && graphView._soloNode == c.input .op
-            || c.output && graphView._soloNode == c.output.op
+               c.input  && graphView._soloNode == c.input .node
+            || c.output && graphView._soloNode == c.output.node
             ? 1 
             : 0.09;
     });

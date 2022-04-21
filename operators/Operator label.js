@@ -3,7 +3,7 @@ function createNodeLabel(node)
     node.labelWrapper = createDiv('nodeLabelWrapper');
 
     node.label        = createDiv('nodeLabel');
-    node.label.op     = node;
+    node.label.node   = node;
     
     node.labelWrapper.appendChild(node.label);
     node.header.appendChild(node.labelWrapper);

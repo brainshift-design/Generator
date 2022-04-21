@@ -3,7 +3,6 @@
 ../parameters/ColorParam.js
 ../parameters/SelectParam.js
 
-../graph/data.js
 ../graph/Graph.js
 ../graph/tree.js
 

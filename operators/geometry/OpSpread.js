@@ -23,7 +23,7 @@
 //     {
 //         var input = this.inputs[0];
 
-//         if (   !input.isConnected
+//         if (   !input.connected
 //             || isEmptyObject(input.connectedOutput.data)) 
 //         {
 //             this.output._data = {};
@@ -33,7 +33,7 @@
 //         this.output._data = 
 //         {
 //             nodeId: this.id,
-//             opType: this.opType,
+//             nodeType: this.nodeType,
 
 //             count:  this.#count .value,
 //             radius: this.#radius.value,
