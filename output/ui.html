@@ -16085,7 +16085,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.12];
-        this.wireColor = rgbFromType(this.type, true);
+        this.wireColor = rgbFromType(this.types[0], true);
 
         
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -16109,7 +16109,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && graphView.tempConn.output.type == this.type
+                && this.types.includes(graphView.tempConn.output.type)
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -16164,7 +16164,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (   tc.output.type != this.type
+                 && (  !this.types.includes(tc.output.type)
                      || tc.output.node.follows(this.node)));
 
         const colorStyle = 
@@ -16183,8 +16183,8 @@ extends EventTarget
                && (   tc.input == this
                    ||    graphView.overInput == this
                       && !tc.input)
-               && !(   tc.output
-                    && tc.output.type != this.type);
+               && !(    tc.output
+                    && !this.types.includes(tc.output.type));
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -16209,7 +16209,7 @@ extends EventTarget
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
-               && tc.output.type == this.type
+               && this.types.includes(tc.output.type)
                && graphView.overInput == this
                ? colorStyleRgba(toRgba(tc.output.wireColor))
                : (   tc
@@ -16640,11 +16640,11 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputOp": "'    + this.output.node.id + '"'
+            +  '\n' + pos + tab + '"outputNode": "' + this.output.node.id + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputOp": "'     + this.input.node.id + '"'
-            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.index + '"'
+            + ',\n' + pos + tab + '"inputNode": "' + this.input.node.id + '"'
+            + ',\n' + pos + tab + '"inputIndex": "' + this.input.index + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
 
@@ -16662,15 +16662,15 @@ class Connection
         const inputIndex  = parseInt(_conn.inputIndex);
 
 
-        // log('---------------------------------------');
+        log('---------------------------------------');
 
-        // log('outputNode',                outputNode);
-        // log('outputIndex',               outputIndex);
-        // log('outputNode.outputs.length', outputNode.outputs.length);
+        log('outputNode',                outputNode);
+        log('outputIndex',               outputIndex);
+        log('outputNode.outputs.length', outputNode.outputs.length);
         
-        // log('inputOp',                 inputOp);
-        // log('inputIndex',              inputIndex);
-        // log('inputNode.inputs.length', inputNode.inputs.length);
+        log('inputNode',               inputNode);
+        log('inputIndex',              inputIndex);
+        log('inputNode.inputs.length', inputNode.inputs.length);
 
 
 
@@ -16813,7 +16813,7 @@ class Operator
     
     get activeColor()
     {
-        switch (this._dataType)
+        switch (this.type)
         {
             case NUMBER:    return rgbNumber; //activeNumberColor;
             case COLOR:     return rgbActiveColor;
@@ -16827,7 +16827,7 @@ class Operator
 
     get passiveColor()
     {
-        switch (this._dataType)
+        switch (this.type)
         {
             case NUMBER:    return rgbNumber;
             case COLOR:     return rgbColor;
@@ -18359,7 +18359,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input(this.dataType);
+        const input = new Input(this.type);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
@@ -19480,10 +19480,10 @@ extends OpColorBase
 //     {
 //         for (const conn of paramSpace.node._oldSpaceConnections)
 //         {
-//             const outputOp = nodeFromId(conn.outputOpName);
-//             const  inputOp = nodeFromId(conn. inputOpName);
+//             const outputNode = nodeFromId(conn.outputNodeName);
+//             const  inputNode = nodeFromId(conn. inputNodeName);
 
-//             if (outputOp && inputOp)
+//             if (outputNode && inputNode)
 //             {
 //                 const output = outputNode.outputs[conn.outputIndex];
 //                 const  input =  inputNode. inputs[conn. inputIndex];
@@ -24080,8 +24080,8 @@ function resolveLoadConnections(nodes, _connections, first, last)
             {
                 const _conn = _connections[i];
 
-                if (   nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-                    && nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp))
+                if (   nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNode)
+                    && nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNode))
                     Connection.parseJson(_conn);
             }
 
@@ -24135,8 +24135,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
+        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNode)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNode)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 
@@ -24731,7 +24731,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
     // if (graphView.selectedNodes.length > 0)
     // {
     //     const selNode = graph.nodes.find(n => n.selected);
-    //     const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
+    //     const inputs  = node.inputs.filter(i => i.types.includes(selNode.type));
 
     //     if (   !!selNode
     //         && selNode.output
@@ -24910,9 +24910,6 @@ function uiMakeNodeActive(node)
         nodeId: node.id
     });
 
-    // if (node.dataType == 'object')
-    //     uiGenerateObjects([node.id]);
-
     node.updateNode();
     node.pushUpdate();
 }
@@ -24940,7 +24937,7 @@ function uiMakeNodeActive(node)
 //             nodeId: node.id
 //         });
     
-//         // if (node.dataType == 'object')
+//         // if (node.type == 'object')
 //         //     uiGenerateObjects([node.id]);
 
 //         node.updateNode();
@@ -25238,11 +25235,11 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
-        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
+        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNode);
+        if (outputNodeIndex > -1) data.connections[i].outputNode = data.nodes[outputNodeIndex].newId;
 
-        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
-        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
+        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNode);
+        data.connections[i].inputNode = data.nodes[inputNodeIndex].newId;
     }
 }
 
@@ -25384,11 +25381,11 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
 
 
 
-function uiRemoveSavedConnectionsToNode(inputOpNode)
+function uiRemoveSavedConnectionsToNode(inputNode)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: inputOpNode
+        nodeId: inputNode
     });
 }
 

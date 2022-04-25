@@ -101,7 +101,7 @@ class Operator
     
     get activeColor()
     {
-        switch (this._dataType)
+        switch (this.type)
         {
             case NUMBER:    return rgbNumber; //activeNumberColor;
             case COLOR:     return rgbActiveColor;
@@ -115,7 +115,7 @@ class Operator
 
     get passiveColor()
     {
-        switch (this._dataType)
+        switch (this.type)
         {
             case NUMBER:    return rgbNumber;
             case COLOR:     return rgbColor;

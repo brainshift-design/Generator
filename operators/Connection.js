@@ -224,11 +224,11 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputOp": "'    + this.output.node.id + '"'
+            +  '\n' + pos + tab + '"outputNode": "' + this.output.node.id + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputOp": "'     + this.input.node.id + '"'
-            + ',\n' + pos + tab + '"inputIndex": "'  + this.input.index + '"'
+            + ',\n' + pos + tab + '"inputNode": "' + this.input.node.id + '"'
+            + ',\n' + pos + tab + '"inputIndex": "' + this.input.index + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
 
@@ -246,15 +246,15 @@ class Connection
         const inputIndex  = parseInt(_conn.inputIndex);
 
 
-        // log('---------------------------------------');
+        log('---------------------------------------');
 
-        // log('outputNode',                outputNode);
-        // log('outputIndex',               outputIndex);
-        // log('outputNode.outputs.length', outputNode.outputs.length);
+        log('outputNode',                outputNode);
+        log('outputIndex',               outputIndex);
+        log('outputNode.outputs.length', outputNode.outputs.length);
         
-        // log('inputOp',                 inputOp);
-        // log('inputIndex',              inputIndex);
-        // log('inputNode.inputs.length', inputNode.inputs.length);
+        log('inputNode',               inputNode);
+        log('inputIndex',              inputIndex);
+        log('inputNode.inputs.length', inputNode.inputs.length);
 
 
 

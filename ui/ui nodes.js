@@ -381,7 +381,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
     // if (graphView.selectedNodes.length > 0)
     // {
     //     const selNode = graph.nodes.find(n => n.selected);
-    //     const inputs  = node.inputs.filter(i => i.dataType == selNode.dataType);
+    //     const inputs  = node.inputs.filter(i => i.types.includes(selNode.type));
 
     //     if (   !!selNode
     //         && selNode.output
@@ -560,9 +560,6 @@ function uiMakeNodeActive(node)
         nodeId: node.id
     });
 
-    // if (node.dataType == 'object')
-    //     uiGenerateObjects([node.id]);
-
     node.updateNode();
     node.pushUpdate();
 }
@@ -590,7 +587,7 @@ function uiMakeNodeActive(node)
 //             nodeId: node.id
 //         });
     
-//         // if (node.dataType == 'object')
+//         // if (node.type == 'object')
 //         //     uiGenerateObjects([node.id]);
 
 //         node.updateNode();
@@ -888,11 +885,11 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputOpIndex = data.nodes.findIndex(n => n.id == _conn.outputOp);
-        if (outputOpIndex > -1) data.connections[i].outputOp = data.nodes[outputOpIndex].newId;
+        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNode);
+        if (outputNodeIndex > -1) data.connections[i].outputNode = data.nodes[outputNodeIndex].newId;
 
-        const inputOpIndex = data.nodes.findIndex(n => n.id == _conn. inputOp);
-        data.connections[i].inputOp = data.nodes[inputOpIndex].newId;
+        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNode);
+        data.connections[i].inputNode = data.nodes[inputNodeIndex].newId;
     }
 }
 
@@ -1034,10 +1031,10 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
 
 
 
-function uiRemoveSavedConnectionsToNode(inputOpNode)
+function uiRemoveSavedConnectionsToNode(inputNode)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: inputOpNode
+        nodeId: inputNode
     });
 }

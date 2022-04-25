@@ -303,8 +303,8 @@ function resolveLoadConnections(nodes, _connections, first, last)
             {
                 const _conn = _connections[i];
 
-                if (   nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-                    && nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp))
+                if (   nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNode)
+                    && nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNode))
                     Connection.parseJson(_conn);
             }
 
@@ -358,8 +358,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
+        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNode)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNode)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 

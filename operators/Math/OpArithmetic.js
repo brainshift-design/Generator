@@ -64,7 +64,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input(this.dataType);
+        const input = new Input(this.type);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });

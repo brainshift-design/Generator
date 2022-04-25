@@ -521,10 +521,10 @@ extends OpColorBase
 //     {
 //         for (const conn of paramSpace.node._oldSpaceConnections)
 //         {
-//             const outputOp = nodeFromId(conn.outputOpName);
-//             const  inputOp = nodeFromId(conn. inputOpName);
+//             const outputNode = nodeFromId(conn.outputNodeName);
+//             const  inputNode = nodeFromId(conn. inputNodeName);
 
-//             if (outputOp && inputOp)
+//             if (outputNode && inputNode)
 //             {
 //                 const output = outputNode.outputs[conn.outputIndex];
 //                 const  input =  inputNode. inputs[conn. inputIndex];

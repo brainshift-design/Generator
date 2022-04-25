@@ -90,7 +90,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.12];
-        this.wireColor = rgbFromType(this.type, true);
+        this.wireColor = rgbFromType(this.types[0], true);
 
         
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -114,7 +114,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && graphView.tempConn.output.type == this.type
+                && this.types.includes(graphView.tempConn.output.type)
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -169,7 +169,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (   tc.output.type != this.type
+                 && (  !this.types.includes(tc.output.type)
                      || tc.output.node.follows(this.node)));
 
         const colorStyle = 
@@ -188,8 +188,8 @@ extends EventTarget
                && (   tc.input == this
                    ||    graphView.overInput == this
                       && !tc.input)
-               && !(   tc.output
-                    && tc.output.type != this.type);
+               && !(    tc.output
+                    && !this.types.includes(tc.output.type));
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -214,7 +214,7 @@ extends EventTarget
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
-               && tc.output.type == this.type
+               && this.types.includes(tc.output.type)
                && graphView.overInput == this
                ? colorStyleRgba(toRgba(tc.output.wireColor))
                : (   tc
