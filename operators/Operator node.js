@@ -318,7 +318,7 @@ function createNodeHeader(node)
             else if (tempConn.input
                   && !node.follows(tempConn.input.node))
             {
-                const output = node.getAutoOutput(tempConn.input.type);
+                const output = node.getAutoOutput(tempConn.input.types);
                 if (!output) return;
 
                 graphView.overOutput   = output;

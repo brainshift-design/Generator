@@ -101,10 +101,9 @@ extends OperatorBase
 
 
 
-    output_toString(output)
+    output_toString()
     {
-        const node = output.node;
-        if (node.valid) return output.cache;
+        if (this.valid) return this.outputs[0].cache;
 
         // const x = 
         //     node.inputs[0].connected
@@ -114,7 +113,9 @@ extends OperatorBase
         // node.inputs[0].connected
         // ? node.inputs[0].connectedOutput.toString()
         
-        let request = [output.type, node.id];
+        let request = [
+            this.outputs[0].type, 
+            this.id];
 
 
         return output.cache = [...request];

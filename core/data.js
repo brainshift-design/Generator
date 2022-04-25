@@ -7,7 +7,7 @@ const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
-function dataType2rgb(type, active)
+function rgbFromType(type, active)
 {
     switch (type)
     {

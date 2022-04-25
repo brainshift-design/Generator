@@ -75,8 +75,8 @@ function genParseRequest(req, parse = {pos:0})
     {
         const next = req[parse.pos];
 
-             if (next == 'num' )        genNumber   (req, parse.pos);
-        else if (next == 'rect')        genRectangle(req, parse.pos);
+             if (next == NUMBER   )     genNumber   (req, parse.pos);
+        else if (next == RECTANGLE)     genRectangle(req, parse.pos);
         else if (strIsNum(next)) return genNumValue (req, parse.pos);
         else so++;
     }

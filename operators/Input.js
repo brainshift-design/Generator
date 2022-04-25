@@ -90,7 +90,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.12];
-        this.wireColor = dataType2rgb(this.type, true);
+        this.wireColor = rgbFromType(this.type, true);
 
         
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());

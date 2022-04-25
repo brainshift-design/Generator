@@ -1301,24 +1301,24 @@ div
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction("number",           btnCreateNumber));           this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
-    <button class='menuButton' id='btnCreateMinMax'           onclick='actionManager.do(new CreateNodeAction("minmax",           btnCreateMinMax));           this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
-    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction("add",              btnCreateAdd));              this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
-    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction("subtract",         btnCreateSubtract));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
-    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction("multiply",         btnCreateMultiply));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
-    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction("divide",           btnCreateDivide));           this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
-    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction("modulo",           btnCreateModulo));           this.blur();'><span style='font-size: 15px;'>%</span></button>
-    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction("exponent",         btnCreateExponent));         this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
-    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction("interpolate",      btnCreateInterpolate));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,           btnCreateNumber));           this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
+    <button class='menuButton' id='btnCreateMinMax'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MINMAX,           btnCreateMinMax));           this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
+    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,              btnCreateAdd));              this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
+    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,         btnCreateSubtract));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
+    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,         btnCreateMultiply));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
+    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,           btnCreateDivide));           this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
+    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,           btnCreateModulo));           this.blur();'><span style='font-size: 15px;'>%</span></button>
+    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_POWER,         btnCreateExponent));         this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
+    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE,      btnCreateInterpolate));      this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction("color",            btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
-    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction("colorinterpolate", btnCreateColorInterpolate)); this.blur();'></button>
-    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction("validatecolor",    btnCreateValidateColor));    this.blur();'></span></button>
-    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction("webcontrast",      btnCreateWebContrast));      this.blur();'></button>
-    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction("colorblind",       btnCreateColorblind));       this.blur();'></button>
+    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,            btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
+    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnCreateColorInterpolate)); this.blur();'></button>
+    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,    btnCreateValidateColor));    this.blur();'></span></button>
+    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,      btnCreateWebContrast));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,       btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction("rectangle",        btnCreateRectangle));        this.blur();'>RECT</button>
-    <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button>
+    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,        btnCreateRectangle));        this.blur();'>RECT</button>
+    <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
 
@@ -1614,7 +1614,7 @@ const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
-function dataType2rgb(type, active)
+function rgbFromType(type, active)
 {
     switch (type)
     {
@@ -4004,8 +4004,8 @@ function genParseRequest(req, parse = {pos:0})
     {
         const next = req[parse.pos];
 
-             if (next == 'num' )        genNumber   (req, parse.pos);
-        else if (next == 'rect')        genRectangle(req, parse.pos);
+             if (next == NUMBER   )     genNumber   (req, parse.pos);
+        else if (next == RECTANGLE)     genRectangle(req, parse.pos);
         else if (strIsNum(next)) return genNumValue (req, parse.pos);
         else so++;
     }
@@ -6786,7 +6786,7 @@ const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
-function dataType2rgb(type, active)
+function rgbFromType(type, active)
 {
     switch (type)
     {
@@ -11149,7 +11149,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             if (slider.isPointerLocked())
             {
-                slider.movedX  += e.movementX;
+                slider.movedX += e.movementX;
                 
                 if (!isNaN(slider.value))
                 {
@@ -11158,7 +11158,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                     const grain    = Math.pow(10, -slider.dec);
                     const drag     = grain * sqr(slider.dragScale);
 
-                    const val = slider.startValue + dx * drag * adaptive;
+                    const val      = slider.startValue + dx * drag * adaptive;
 
 
                     // reset slider movement at the limits for better UX
@@ -15306,9 +15306,9 @@ extends Parameter
 
 
 
-    output_toString(output)
+    output_toString()
     {
-        return output.param.toString();
+        //return output.param.toString();
     }
 }
 
@@ -15811,7 +15811,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         // case NUMBER_RANDOM:   node = new OpRandom(); break;
         
         case COLOR:              node = new OpColor();            break;
-        case COLOR_INTERPOLAGE:  node = new OpColorInterpolate(); break;
+        case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
         case COLOR_VALIDATE:     node = new OpValidateColor();    break;
         case COLOR_CONTRAST:     node = new OpWebContrast();      break;
         case COLORBLIND:         node = new OpColorblind();       break;
@@ -16085,7 +16085,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.12];
-        this.wireColor = dataType2rgb(this.type, true);
+        this.wireColor = rgbFromType(this.type, true);
 
         
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -16302,7 +16302,7 @@ class Output
         this.control.appendChild(this.wireBall);
 
         this.color           = [0, 0, 0, 0.12];
-        this.wireColor       = dataType2rgb(this.type, true);
+        this.wireColor       = rgbFromType(this.type, true);
         
         this.updateControl();
 
@@ -16866,9 +16866,9 @@ class Operator
 
 
 
-    getAutoInput(type)
+    getAutoInput(outType)
     {
-        const inputs = this.inputs.filter(i => i.type == type);
+        const inputs = this.inputs.filter(i => i.types.includes(outType));
 
         
         if (graphView.overInput)
@@ -16911,9 +16911,9 @@ class Operator
 
 
 
-    getAutoOutput(type)
+    getAutoOutput(inputTypes)
     {
-        const outputs = this.outputs.filter(o => o.type == type);
+        const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
 
         return     outputs.length == 1
                && !this.follows(graphView.tempConn.input.node)
@@ -17006,27 +17006,31 @@ class Operator
 
     update()
     {
-        //if (this.valid) return;
+        if (this.valid) return;
         
-        //log(this.id + '.Operator.update()');
+        log(this.id + '.Operator.update()');
     
         //this.updateParams(false);
         //this.updateData();
 
-        // this.valid = true;
+        this.valid = true;
 
 
         // if (this.active)
-        //     uiPostGenParseRequest(this.toString());
+        //     uiGenParseRequest(this.toString());
 
         for (const output of this.outputs)
-            uiPostGenParseRequest(output.toString(output));
+        {
+            console.log('output', output);
+            if (output) console.log('output.toString()', output.toString());
+            uiGenParseRequest(output.toString());
+        }
         
 
-        //if (graphView.canUpdateNodes)
-        //    this.updateNode();
+        if (graphView.canUpdateNodes)
+            this.updateNode();
 
-        //this.loading = false;
+        this.loading = false;
     }
 
 
@@ -17356,7 +17360,7 @@ extends Operator
 
         super.updateHeader();
 
-        const colBack   = dataType2rgb(this._dataType, this.active);
+        const colBack   = rgbFromType(this.type, this.active);
         const darkText  = rgb2hclokl(colBack)[2] > 0.71;
         
         const colText   = darkText ? [0, 0, 0]      : [1, 1, 1];
@@ -17696,7 +17700,7 @@ function createNodeHeader(node)
             else if (tempConn.input
                   && !node.follows(tempConn.input.node))
             {
-                const output = node.getAutoOutput(tempConn.input.type);
+                const output = node.getAutoOutput(tempConn.input.types);
                 if (!output) return;
 
                 graphView.overOutput   = output;
@@ -18119,28 +18123,29 @@ extends OperatorBase
 
 
 
-    output_toString(output)
+    output_toString()
     {
-        if (output.cache != '') 
-            return output.cache;
+        // 'this' is the output
 
-
-        const node  = output.node;
-        const input = node.inputs[0];
+        if (this.cache != '') 
+            return this.cache;
 
 
         const req = [
-            output.type, 
-            node.id];
+            this.type, 
+            this.node.id];
+                
+                
+        const input = this.node.inputs[0];
 
         req.push(...
             input.connected
             ? input.connectedOutput.toString()
-            : [ node.#paramValue.value      .toString(),
-                node.#paramValue.control.dec.toString() ]);
+            : [ this.node.#paramValue.value      .toString(),
+                this.node.#paramValue.control.dec.toString() ]);
 
                 
-        return output.cache = [...req];
+        return this.cache = [...req];
     }
 
 
@@ -18417,7 +18422,7 @@ extends OperatorBase
         super.updateHeader();
 
 
-        const colBack  = dataType2rgb(this._dataType, this.active);
+        const colBack  = rgbFromType(this.type, this.active);
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
         
         const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
@@ -21512,10 +21517,9 @@ extends OperatorBase
 
 
 
-    output_toString(output)
+    output_toString()
     {
-        const node = output.node;
-        if (node.valid) return output.cache;
+        if (this.valid) return this.outputs[0].cache;
 
         // const x = 
         //     node.inputs[0].connected
@@ -21525,7 +21529,9 @@ extends OperatorBase
         // node.inputs[0].connected
         // ? node.inputs[0].connectedOutput.toString()
         
-        let request = [output.type, node.id];
+        let request = [
+            this.outputs[0].type, 
+            this.id];
 
 
         return output.cache = [...request];
@@ -23737,7 +23743,7 @@ function uiPostMessageToGenerator(msg)
 
 
 
-function uiPostGenParseRequest(request)
+function uiGenParseRequest(request)
 {
     uiPostMessageToGenerator({
         msg:    'genParseRequest',

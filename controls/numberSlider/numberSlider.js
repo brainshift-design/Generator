@@ -211,7 +211,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             if (slider.isPointerLocked())
             {
-                slider.movedX  += e.movementX;
+                slider.movedX += e.movementX;
                 
                 if (!isNaN(slider.value))
                 {
@@ -220,7 +220,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                     const grain    = Math.pow(10, -slider.dec);
                     const drag     = grain * sqr(slider.dragScale);
 
-                    const val = slider.startValue + dx * drag * adaptive;
+                    const val      = slider.startValue + dx * drag * adaptive;
 
 
                     // reset slider movement at the limits for better UX

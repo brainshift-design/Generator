@@ -91,7 +91,7 @@ function uiPostMessageToGenerator(msg)
 
 
 
-function uiPostGenParseRequest(request)
+function uiGenParseRequest(request)
 {
     uiPostMessageToGenerator({
         msg:    'genParseRequest',

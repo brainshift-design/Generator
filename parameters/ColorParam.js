@@ -111,8 +111,8 @@ extends Parameter
 
 
 
-    output_toString(output)
+    output_toString()
     {
-        return output.param.toString();
+        //return output.param.toString();
     }
 }

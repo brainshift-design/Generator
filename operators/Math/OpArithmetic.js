@@ -127,7 +127,7 @@ extends OperatorBase
         super.updateHeader();
 
 
-        const colBack  = dataType2rgb(this._dataType, this.active);
+        const colBack  = rgbFromType(this.type, this.active);
         const darkText = rgb2hclokl(colBack)[2] > 0.71;
         
         const colText  = darkText ? [0, 0, 0] : [1, 1, 1];

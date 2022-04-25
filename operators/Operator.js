@@ -154,9 +154,9 @@ class Operator
 
 
 
-    getAutoInput(type)
+    getAutoInput(outType)
     {
-        const inputs = this.inputs.filter(i => i.type == type);
+        const inputs = this.inputs.filter(i => i.types.includes(outType));
 
         
         if (graphView.overInput)
@@ -199,9 +199,9 @@ class Operator
 
 
 
-    getAutoOutput(type)
+    getAutoOutput(inputTypes)
     {
-        const outputs = this.outputs.filter(o => o.type == type);
+        const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
 
         return     outputs.length == 1
                && !this.follows(graphView.tempConn.input.node)
@@ -294,27 +294,31 @@ class Operator
 
     update()
     {
-        //if (this.valid) return;
+        if (this.valid) return;
         
-        //log(this.id + '.Operator.update()');
+        log(this.id + '.Operator.update()');
     
         //this.updateParams(false);
         //this.updateData();
 
-        // this.valid = true;
+        this.valid = true;
 
 
         // if (this.active)
-        //     uiPostGenParseRequest(this.toString());
+        //     uiGenParseRequest(this.toString());
 
         for (const output of this.outputs)
-            uiPostGenParseRequest(output.toString(output));
+        {
+            console.log('output', output);
+            if (output) console.log('output.toString()', output.toString());
+            uiGenParseRequest(output.toString());
+        }
         
 
-        //if (graphView.canUpdateNodes)
-        //    this.updateNode();
+        if (graphView.canUpdateNodes)
+            this.updateNode();
 
-        //this.loading = false;
+        this.loading = false;
     }
 
 

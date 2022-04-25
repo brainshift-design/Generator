@@ -39,28 +39,29 @@ extends OperatorBase
 
 
 
-    output_toString(output)
+    output_toString()
     {
-        if (output.cache != '') 
-            return output.cache;
+        // 'this' is the output
 
-
-        const node  = output.node;
-        const input = node.inputs[0];
+        if (this.cache != '') 
+            return this.cache;
 
 
         const req = [
-            output.type, 
-            node.id];
+            this.type, 
+            this.node.id];
+                
+                
+        const input = this.node.inputs[0];
 
         req.push(...
             input.connected
             ? input.connectedOutput.toString()
-            : [ node.#paramValue.value      .toString(),
-                node.#paramValue.control.dec.toString() ]);
+            : [ this.node.#paramValue.value      .toString(),
+                this.node.#paramValue.control.dec.toString() ]);
 
                 
-        return output.cache = [...req];
+        return this.cache = [...req];
     }
 
 
