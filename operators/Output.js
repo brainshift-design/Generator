@@ -1,7 +1,7 @@
 class Output
 {
-    _dataType;     
-    get dataType() { return this._dataType; }
+    _type;     
+    get type() { return this._type; }
 
     _node  = null; get node () { return this._node;  }
     _param = null; get param() { return this._param; }
@@ -24,8 +24,8 @@ class Output
     connecting = false;
     
     
-    generateRequest = null; // function pointer, must be implemented
-    cachedRequest   = '';
+    toString   = null; // function pointer, must be implemented
+    cache      = '';
 
 
     _data;
@@ -52,10 +52,10 @@ class Output
 
 
 
-    constructor(dataType, generateRequest)
+    constructor(type, toString)
     {
-        this._dataType       = dataType;
-        this.generateRequest = generateRequest;
+        this._type    = type;
+        this.toString = toString;
 
         this.control         = createDiv('output');
         this.hitbox          = createDiv('outputHitbox');
@@ -68,7 +68,7 @@ class Output
         this.control.appendChild(this.wireBall);
 
         this.color           = [0, 0, 0, 0.12];
-        this.wireColor       = dataType2rgb(this.dataType, true);
+        this.wireColor       = dataType2rgb(this.type, true);
         
         this.updateControl();
 
@@ -91,7 +91,7 @@ class Output
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
-                && graphView.tempConn.input.dataType == this.dataType)
+                && graphView.tempConn.input.type == this.type)
             {
                 const rect = boundingRect(this.control);
                 const loop = this.node.follows(graphView.tempConn.input.node);
@@ -142,7 +142,7 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && (   graphView.tempConn.input.dataType != this.dataType
+                 && (   graphView.tempConn.input.type != this.type
                      || this.node.follows(graphView.tempConn.input.node)));
 
         const colorStyle = 
@@ -173,7 +173,7 @@ class Output
                    ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
                && !(   graphView.tempConn.input
-                    && graphView.tempConn.input.dataType != this.dataType);
+                    && graphView.tempConn.input.type != this.type);
 
         show(this.wireBall, isConnected);
     }

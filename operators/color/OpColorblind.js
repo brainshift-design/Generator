@@ -12,8 +12,8 @@ extends OpColorBase
         super('colorblind', 'colorblind', 'color', 80);
 
 
-        this.addInput (new  Input(this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new  Input(COLOR));
+        this.addOutput(new Output(COLOR));
 
 
         this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));

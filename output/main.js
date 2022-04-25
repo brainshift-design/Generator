@@ -13,7 +13,7 @@ const connTag = 'GC';
 const MAX_OBJECTS = 0x10000;
 const genObjects = new Array(MAX_OBJECTS);
 const OBJ_RECT = 1;
-function figUpdateCanvasObjects(objects) {
+function figUpdateObjects(objects) {
     // // prepare the buffers
     // let nodeId = -1;
     // let prevId = -1;
@@ -44,7 +44,7 @@ function figUpdateCanvasObjects(objects) {
         //             if (  !objNodes[prevId]
         //                 || objNodes[prevId].length != count)
         //             {
-        //                 figDeleteCanvasObjects([prevId]);
+        //                 figDeleteObjects([prevId]);
         //                 objNodes[prevId] = new Array(count).fill(null);
         //             }
         //             count = 0;
@@ -56,7 +56,7 @@ function figUpdateCanvasObjects(objects) {
         //     && (  !objNodes[nodeId]
         //         || objNodes[nodeId].length != count))
         // {
-        //     figDeleteCanvasObjects([nodeId]);
+        //     figDeleteObjects([nodeId]);
         //     objNodes[nodeId] = new Array(count).fill(null);
     }
     // // fill the buffers
@@ -141,7 +141,7 @@ function figUpdateRect(obj) {
     rect.rotation = obj.angle;
     rect.cornerRadius = obj.round;
 }
-function figDeleteCanvasObjects(nodeIds) {
+function figDeleteObjects(nodeIds) {
     const objects = figma.currentPage.findAll(o => nodeIds.includes(o.getPluginData('nodeId')));
     for (const obj of objects)
         obj.remove();
@@ -257,11 +257,11 @@ figma.ui.onmessage = msg => {
         case 'figRemoveSavedActiveNode':
             figRemoveSavedActiveNode(msg.nodeId);
             break;
-        case 'figDeleteCanvasObjects':
-            figDeleteCanvasObjects(msg.nodeIds);
+        case 'figDeleteObjects':
+            figDeleteObjects(msg.nodeIds);
             break;
-        case 'figUpdateCanvasObjects':
-            figUpdateCanvasObjects(msg.objects);
+        case 'figUpdateObjects':
+            figUpdateObjects(msg.objects);
             break;
     }
     figPostMessageToUi({ cmd: 'uiEndFigMessage' });

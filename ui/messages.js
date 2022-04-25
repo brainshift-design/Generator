@@ -38,7 +38,7 @@ generator.onmessage = function(e)
         // case 'uiShowParamValue':    uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         // case 'uiUpdateNodes':       uiUpdateNodes   (e.data.nodeIds);                            break;
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
-        case 'uiUpdateCanvasObjects':  uiUpdateCanvasObjects         (e.data.objects);                 break;
+        case 'uiUpdateObjects':        uiUpdateObjects         (e.data.objects);                 break;
     }
 };
 
@@ -65,7 +65,7 @@ function uiPostNextMessageToFigma()
         let msg = figMessages.shift();
 
         if (   msg.cmd == 'figResizeWindow'
-            || msg.cmd == 'figUpdateCanvasObjects')
+            || msg.cmd == 'figUpdateObjects')
         {
             // move along the queue since only the last message is important
             while (figMessages.length > 0
@@ -91,10 +91,10 @@ function uiPostMessageToGenerator(msg)
 
 
 
-function uiPostGeneratorRequest(request)
+function uiPostGenParseRequest(request)
 {
     uiPostMessageToGenerator({
-        msg:    'genGenerateRequest',
+        msg:    'genParseRequest',
         request: request
     });
 }

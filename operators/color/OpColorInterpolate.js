@@ -11,10 +11,10 @@ extends OpColorBase
         super('colorinterpolate', 'inter', 'color', 80);
 
         
-        this.addInput(new Input(this.dataType));
-        this.addInput(new Input(this.dataType));
+        this.addInput(new Input(COLOR));
+        this.addInput(new Input(COLOR));
 
-        this.addOutput(new Output(this.dataType));
+        this.addOutput(new Output(COLOR));
 
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));

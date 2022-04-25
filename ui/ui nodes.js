@@ -414,7 +414,7 @@ function uiDeleteNodes(nodeIds, actionId)
     graph.deleteNodes(nodeIds);
 
     uiRemoveSavedNodesAndConns(nodeIds);
-    uiDeleteCanvasObjects(nodeIds);
+    uiDeleteObjects(nodeIds);
 }
 
 
@@ -445,10 +445,10 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiDeleteCanvasObjects(nodeIds)
+function uiDeleteObjects(nodeIds)
 {
     uiPostMessageToFigma({
-        cmd:    'figDeleteCanvasObjects',
+        cmd:    'figDeleteObjects',
         nodeIds: nodeIds
     });
 }
@@ -603,7 +603,7 @@ function uiMakeNodeActive(node)
 function uiMakeNodePassive(node)
 {
     //if (node.active)
-    //    uiDeleteCanvasObjects([node.id]);
+    //    uiDeleteObjects([node.id]);
 
     if (node.active)
     {
@@ -947,12 +947,12 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateCanvasObjects(objects)
+function uiUpdateObjects(objects)
 {
     //uiUpdateGraph();
 
     uiPostMessageToFigma({
-        cmd:    'figUpdateCanvasObjects',
+        cmd:    'figUpdateObjects',
         objects: objects
     });
 }

@@ -7,10 +7,10 @@ extends OperatorBase
 
     constructor()
     {
-        super(NODE_NUMBER, 70);
+        super(NUMBER, 'num', 70);
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType, this.otuput_generateRequest));
+        this.addInput (new Input ([NUMBER]));
+        this.addOutput(new Output(NUMBER, this.output_toString));
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
@@ -19,7 +19,7 @@ extends OperatorBase
 
 
 
-    // updateData()
+    // updateData() 
     // {
     //     if (this.inputs[0].connected)
     //     {
@@ -34,26 +34,33 @@ extends OperatorBase
     //         this.#paramValue.control.dec);
             
                   
-    //     super.updateData()
+//     super.updateData()
     // }
 
 
 
-    otuput_generateRequest(output)
+    output_toString(output)
     {
-        const node = output.node;
+        if (output.cache != '') 
+            return output.cache;
 
-        if (output.cachedRequest == '')
-        {
-            output.cachedRequest = 
-                node.inputs[0].connected
-                ? node.inputs[0].connectedOutput.generateRequest()
-                : [ node.defShortName,
-                    node.#paramValue.value      .toString(),
-                    node.#paramValue.control.dec.toString() ];
-        }
 
-        return output.cachedRequest;
+        const node  = output.node;
+        const input = node.inputs[0];
+
+
+        const req = [
+            output.type, 
+            node.id];
+
+        req.push(...
+            input.connected
+            ? input.connectedOutput.toString()
+            : [ node.#paramValue.value      .toString(),
+                node.#paramValue.control.dec.toString() ]);
+
+                
+        return output.cache = [...req];
     }
 
 

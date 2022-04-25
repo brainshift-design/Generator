@@ -12,7 +12,7 @@ const OBJ_RECT = 1;
 
 
 
-function figUpdateCanvasObjects(objects)
+function figUpdateObjects(objects)
 {
     // // prepare the buffers
 
@@ -53,7 +53,7 @@ function figUpdateCanvasObjects(objects)
     //             if (  !objNodes[prevId]
     //                 || objNodes[prevId].length != count)
     //             {
-    //                 figDeleteCanvasObjects([prevId]);
+    //                 figDeleteObjects([prevId]);
     //                 objNodes[prevId] = new Array(count).fill(null);
     //             }
 
@@ -69,7 +69,7 @@ function figUpdateCanvasObjects(objects)
     //     && (  !objNodes[nodeId]
     //         || objNodes[nodeId].length != count))
     // {
-    //     figDeleteCanvasObjects([nodeId]);
+    //     figDeleteObjects([nodeId]);
     //     objNodes[nodeId] = new Array(count).fill(null);
     }
 
@@ -207,7 +207,7 @@ function figUpdateRect(obj)
 
 
 
-function figDeleteCanvasObjects(nodeIds)
+function figDeleteObjects(nodeIds)
 {
     const objects = figma.currentPage.findAll(o => nodeIds.includes(o.getPluginData('nodeId')));
     for (const obj of objects) obj.remove();
@@ -328,8 +328,8 @@ figma.ui.onmessage = msg =>
         case 'figSaveActiveNode':               figSaveActiveNode              (msg.nodeId);                                 break;
         case 'figRemoveSavedActiveNode':        figRemoveSavedActiveNode       (msg.nodeId);                                 break;
   
-        case 'figDeleteCanvasObjects':          figDeleteCanvasObjects         (msg.nodeIds);                                break; 
-        case 'figUpdateCanvasObjects':          figUpdateCanvasObjects         (msg.objects);                                break;
+        case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
+        case 'figUpdateObjects':                figUpdateObjects               (msg.objects);                                break;
     }
 
     figPostMessageToUi({cmd: 'uiEndFigMessage'});

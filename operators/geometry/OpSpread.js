@@ -11,8 +11,8 @@
 //     {
 //         super('spread', 'object');
 
-//         this.addInput (new Input (this.dataType));
-//         this.addOutput(new Output(this.dataType));
+//         this.addInput (new Input ());
+//         this.addOutput(new Output());
         
 //         this.addParam(this.#count  = new NumberParam('count',  'count',  true,   2, 1));
 //         this.addParam(this.#radius = new NumberParam('radius', 'radius', true, 100, 0.01));
@@ -33,7 +33,7 @@
 //         this.output._data = 
 //         {
 //             nodeId: this.id,
-//             nodeType: this.nodeType,
+//             nodeType: this.type,
 
 //             count:  this.#count .value,
 //             radius: this.#radius.value,

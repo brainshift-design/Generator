@@ -59,8 +59,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
 
-        this.initInput();
-        this.initOutput(hasOutput);
+                       this.initInput([COLOR]);
+        if (hasOutput) this.initOutput(COLOR);
 
 
 
@@ -90,5 +90,29 @@ extends Parameter
     setValue(value, fireChangeEvent = true, confirm = true) 
     { 
         //this._control.setValue(value, fireChangeEvent, confirm); 
+    }
+
+
+
+    toString()
+    {
+        // this function exists because a parameter without an output
+        // should still provide a value
+        
+        // return this.input
+        //     && this.input.connected 
+
+        //     ? [ ...this.input.connectedOutput.toString() ]
+
+        //     : [ COLOR, 
+        //         this.value.toString(), 
+        //         this.control.displayDec.toString() ];
+    }
+
+
+
+    output_toString(output)
+    {
+        return output.param.toString();
     }
 }

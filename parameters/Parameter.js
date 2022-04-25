@@ -77,10 +77,9 @@ extends EventTarget
 
 
 
-    initInput(hasInput, dataType)
+    initInput(types)
     {
-        this.input = hasInput ? new Input(dataType) : null;
-        if (!this.input) return;
+        this.input = new Input(types);
 
         this.input._param = this;
         this.input.control.style.float     = 'left';
@@ -95,10 +94,9 @@ extends EventTarget
 
 
 
-    initOutput(hasOutput, dataType)
+    initOutput(type, toString)
     {
-        this.output = hasOutput ? new Output(dataType) : null;
-        if (!this.output) return;
+        this.output = new Output(type, toString);
 
         this.output._param = this;
         this.output.control.style.float     = 'right';
@@ -198,6 +196,13 @@ extends EventTarget
                 }
             }
         }
+    }
+
+
+
+    toString()
+    {
+        // parameter outputs call this method
     }
 
 

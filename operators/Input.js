@@ -1,8 +1,8 @@
 class   Input
 extends EventTarget
 {
-    _dataType;     
-    get dataType() { return this._dataType; }
+    types = []; // an input can accept multiple types
+
 
     get data()
     {
@@ -73,11 +73,11 @@ extends EventTarget
 
 
 
-    constructor(dataType)
+    constructor(types)
     {
         super();
         
-        this._dataType = dataType;
+        this.types = [...types];
 
         this.control  = createDiv('input');
         this.hitbox   = createDiv('inputHitbox');
@@ -90,7 +90,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.12];
-        this.wireColor = dataType2rgb(this.dataType, true);
+        this.wireColor = dataType2rgb(this.type, true);
 
         
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -114,7 +114,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && graphView.tempConn.output.dataType == this.dataType
+                && graphView.tempConn.output.type == this.type
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -161,14 +161,16 @@ extends EventTarget
 
     updateControl()
     {
+        const tc = graphView.tempConn;
+
         const mouseOver =
                this.mouseOver
-            && !(   graphView.tempConn
-                 && graphView.tempConn.input)
-            && !(   graphView.tempConn
-                 && graphView.tempConn.output
-                 && (   graphView.tempConn.output.dataType != this.dataType
-                     || graphView.tempConn.output.node.follows(this.node)));
+            && !(   tc
+                 && tc.input)
+            && !(   tc
+                 && tc.output
+                 && (   tc.output.type != this.type
+                     || tc.output.node.follows(this.node)));
 
         const colorStyle = 
             graphView.showWires
@@ -182,12 +184,12 @@ extends EventTarget
 
         const isConnected =
                this.connected
-            ||     graphView.tempConn
-               && (   graphView.tempConn.input == this
+            ||     tc
+               && (   tc.input == this
                    ||    graphView.overInput == this
-                      && !graphView.tempConn.input)
-               && !(   graphView.tempConn.output
-                    && graphView.tempConn.output.dataType != this.dataType);
+                      && !tc.input)
+               && !(   tc.output
+                    && tc.output.type != this.type);
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -210,19 +212,19 @@ extends EventTarget
                && graphView.overInput != this
                ? 'transparent'
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
-            : (   graphView.tempConn
-               && graphView.tempConn.output
-               && graphView.tempConn.output.dataType == this.dataType
+            : (   tc
+               && tc.output
+               && tc.output.type == this.type
                && graphView.overInput == this
-               ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
-               : (   graphView.tempConn
-                  && graphView.tempConn.input
-                  && graphView.tempConn.input == this)
+               ? colorStyleRgba(toRgba(tc.output.wireColor))
+               : (   tc
+                  && tc.input
+                  && tc.input == this)
                   ? (graphView.overOutput
                      ? colorStyleRgba(toRgba(graphView.overOutput.wireColor))
                      : (graphView.headerOutput
                         ? colorStyleRgba(toRgba(graphView.headerOutput.wireColor))
-                        : colorStyleRgba(toRgba(graphView.tempConn.input.wireColor))))
+                        : colorStyleRgba(toRgba(tc.input.wireColor))))
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;

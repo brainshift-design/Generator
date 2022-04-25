@@ -103,7 +103,7 @@ extends Operator
 //         this.output._data = 
 //         {
 //             id:    this.id,
-//             type:  this.nodeType,
+//             type:  this.type,
             
 //             min:   this.#min  .value,
 //             max:   this.#max  .value,

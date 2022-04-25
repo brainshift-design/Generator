@@ -1,7 +1,7 @@
 /*
     Operators don't have data types, those are inferred from the outputs.
 
-    Outputs and have a generateRequest() method, which creates a string that
+    Outputs and have a toString() method, which creates a string that
     is added to the complete recursive generation request. 
     
     The generator then does the calculation and sends back two kinds of messages:
@@ -9,6 +9,10 @@
 
     Value updates can trigger a visual node update. The update info is passed
     in the update message.
+
+
+    Output.toString(output)
+    Parameter.toString()
 */
 
 
@@ -23,8 +27,8 @@ class Operator
     graph = null;
     
     
-    #nodeType;
-    get nodeType() { return this.#nodeType; }
+    #type; // used in the code, not for generation
+    get type() { return this.#type; }
     
     defShortName;
     
@@ -123,13 +127,12 @@ class Operator
 
 
 
-    constructor(nodeType, defWidth = 80)
+    constructor(type, shortName, defWidth = 80)
     {
-        this.#nodeType         = nodeType;
-                
-        this.defShortName      = getShortNodeName(nodeType);
-        this._id               = this.defShortName;
-
+        this.#type             = type;
+        this._id               = shortName;
+        
+        this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
         this.labelOffsetFactor = 0;
         
@@ -137,7 +140,7 @@ class Operator
 
         createOperatorNode(this);
 
-        this.setName(this.defShortName);
+        this.setName(shortName);
     }    
 
 
@@ -151,9 +154,9 @@ class Operator
 
 
 
-    getAutoInput(dataType)
+    getAutoInput(type)
     {
-        const inputs = this.inputs.filter(i => i.dataType == dataType);
+        const inputs = this.inputs.filter(i => i.type == type);
 
         
         if (graphView.overInput)
@@ -196,9 +199,9 @@ class Operator
 
 
 
-    getAutoOutput(dataType)
+    getAutoOutput(type)
     {
-        const outputs = this.outputs.filter(o => o.dataType == dataType);
+        const outputs = this.outputs.filter(o => o.type == type);
 
         return     outputs.length == 1
                && !this.follows(graphView.tempConn.input.node)
@@ -229,7 +232,7 @@ class Operator
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
         
-''
+
         this.inner.appendChild(param.div);
     }
  
@@ -269,7 +272,7 @@ class Operator
 
         for (const output of this.outputs)
         {
-            output.cachedRequest = '';
+            output.cache = '';
             
             for (const connInput of output.connectedInputs)
                 connInput.node.invalidate();
@@ -302,10 +305,10 @@ class Operator
 
 
         // if (this.active)
-        //     uiPostGeneratorRequest(this.generateRequest());
+        //     uiPostGenParseRequest(this.toString());
 
         for (const output of this.outputs)
-            uiPostGeneratorRequest(output.generateRequest(output));
+            uiPostGenParseRequest(output.toString(output));
         
 
         //if (graphView.canUpdateNodes)
@@ -325,36 +328,9 @@ class Operator
 
 
 
-    generateRequest() 
+    toString() 
     { 
-        // create the generation string here
-
-        /*
-
-            A generation string is only to calculate graph results.
-
-            [ ] = optional
-            ... = list
-
-            The general format is
-
-                nodeType [params...] [inputs...]
-
-
-            #               # of following values
-            N               number value
-            C               color value
-
-
-            OpNumber        number [N]
-
-            OpArithmetic    add [onlySymbol] # N...
-
-            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
-
-            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
-
-        */
+        // create the generator string here
 
         return '';
     }
@@ -579,7 +555,7 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "'        + this.nodeType            + '",\n'
+              pos + tab + '"type": "'        + this.type            + '",\n'
             + pos + tab + '"id": "'          + this.id                + '",\n'
             + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'

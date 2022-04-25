@@ -458,9 +458,9 @@ graphView.placeNewNode = function(node)
     //     const right = intersecting.reduce((a, b) => 
     //         graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
-    //     if (   right.nodeType == node.nodeType
-    //         && node.nodeType != 'color'
-    //         && node.nodeType != 'webcontrast') ox = bounds.b + dy;
+    //     if (   right.type == node.type
+    //         && node.type != 'color'
+    //         && node.type != 'webcontrast') ox = bounds.b + dy;
     //     else                                 oy = bounds.r + dx;
     // }
 

@@ -18,10 +18,10 @@ extends OperatorBase
     
     constructor()
     {
-        super('rectangle', 'rect', 'object');
+        super(RECTANGLE, 'rect');
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input ([RECTANGLE]));
+        this.addOutput(new Output(RECTANGLE, this.output_toString));
 
         this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -101,6 +101,27 @@ extends OperatorBase
 
 
 
+    output_toString(output)
+    {
+        const node = output.node;
+        if (node.valid) return output.cache;
+
+        // const x = 
+        //     node.inputs[0].connected
+        //     ? [node.inputs[0].connectedOutput.toString()]
+        //     : this.#paramX.);
+        
+        // node.inputs[0].connected
+        // ? node.inputs[0].connectedOutput.toString()
+        
+        let request = [output.type, node.id];
+
+
+        return output.cache = [...request];
+    }
+
+
+
     // updateData()
     // {
     //     if (this.inputs[0].connected) 
@@ -130,10 +151,10 @@ extends OperatorBase
 
 
 
-    // generateRequest()
+    // toString()
     // {
     //     return [
-    //         this.nodeType,
+    //         this.type,
     //         this.id,
     //         this.#paramX     .value,
     //         this.#paramY     .value,

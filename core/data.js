@@ -7,9 +7,9 @@ const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
-function dataType2rgb(dataType, active)
+function dataType2rgb(type, active)
 {
-    switch (dataType)
+    switch (type)
     {
         case 'number': return active ? rgbActiveNumber : rgbNumber;
         case 'color':  return active ? rgbActiveColor  : rgbColor;

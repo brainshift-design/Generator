@@ -29,8 +29,8 @@ figma.ui.onmessage = msg =>
         case 'figSaveActiveNode':               figSaveActiveNode              (msg.nodeId);                                 break;
         case 'figRemoveSavedActiveNode':        figRemoveSavedActiveNode       (msg.nodeId);                                 break;
   
-        case 'figDeleteCanvasObjects':          figDeleteCanvasObjects         (msg.nodeIds);                                break; 
-        case 'figUpdateCanvasObjects':          figUpdateCanvasObjects         (msg.objects);                                break;
+        case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
+        case 'figUpdateObjects':                figUpdateObjects               (msg.objects);                                break;
     }
 
     figPostMessageToUi({cmd: 'uiEndFigMessage'});

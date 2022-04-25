@@ -18,7 +18,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(this.dataType));
+        this.addOutput(new Output(NUMBER));
         
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 

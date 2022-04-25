@@ -271,7 +271,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             if (    graphView.tempConn.output
                 &&  slider.param.input
-                &&  graphView.tempConn.output.dataType == slider.param.input.dataType
+                &&  graphView.tempConn.output.type == slider.param.input.type
                 && !graphView.tempConn.output.node.follows(slider.param.node)
                 && (  !slider.param.input.connected // not already connected to this input
                     || slider.param.input.connectedOutput != graphView.tempConn.output
@@ -290,7 +290,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             }
             else if ( graphView.tempConn.input
                   &&  slider.param.output
-                  &&  graphView.tempConn.input.dataType == slider.param.output.dataType
+                  &&  graphView.tempConn.input.type == slider.param.output.type
                   && !slider.param.node.follows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = slider.param.output;
@@ -413,7 +413,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             if (slider.param)
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
-                
+             console.log('param.node', param.node);   
                 if (!isLastInArray(param.node.params, param))
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
             }

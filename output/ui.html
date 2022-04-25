@@ -1575,104 +1575,34 @@ const MAX_INT32         = 2147483647;
 /////////////////////////////////
 
 
-
-// data types
-
-const DATA_NUMBER    = 'num';
-const DATA_COLOR     = 'col';
-const DATA_STRING    = 'str';
-const DATA_RECTANGLE = 'rect';
-const DATA_LINE      = 'line';
-const DATA_ELLIPSE   = 'elps';
-const DATA_POLYGON   = 'poly';
-const DATA_STAR      = 'star';
-const DATA_VECTOR    = 'vec';
-const DATA_BOOLEAN   = 'bool';
-const DATA_TEXT      = 'txt';
-const DATA_GROUP     = 'grp';
-const DATA_FRAME     = 'frm';
-const DATA_SLICE     = 'slc';
+// for gen strings each type is followed first by the node ID, then the params
 
 
 
-function dataTypeIsShape(dataType)
-{
-    return dataType == DATA_RECTANGLE
-        || dataType == DATA_LINE
-        || dataType == DATA_ELLIPSE
-        || dataType == DATA_POLYGON
-        || dataType == DATA_STAR
-        || dataType == DATA_VECTOR
-        || dataType == DATA_BOOLEAN
-        || dataType == DATA_TEXT;
-}
+const NUMBER             = 'num';   // N | (value decimals)
+const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
+const NUMBER_ADD         = 'add';   // N N
+const NUMBER_SUBTRACT    = 'sub';   // N N
+const NUMBER_MULTIPLY    = 'mul';   // N N
+const NUMBER_DIVIDE      = 'div';   // N N
+const NUMBER_MODULO      = 'mod';   // N N
+const NUMBER_POWER       = 'pow';   // N:value N:power
+const NUMBER_INTERPOLATE = 'lerp';  // N N N:amount
 
+const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
+const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
+const COLOR_VALIDATE     = 'cvld';  // C
+const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
+const COLOR_BLIND        = 'blnd';  // C
 
+const STRING             = 'str';   // S|value
+const STRING_ADD         = 'sadd';  // S S
+const STRING_REPLACE     = 'srepl'; // S S:what S:with
 
-// node types
+const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
 
-const NODE_NUMBER             = 'number';
-const NODE_NUMBER_MINMAX      = 'number_minmax';
-const NODE_NUMBER_ADD         = 'number_add';
-const NODE_NUMBER_SUBTRACT    = 'number_subtract';
-const NODE_NUMBER_MULTIPLY    = 'number_multiply';
-const NODE_NUMBER_DIVIDE      = 'number_divide';
-const NODE_NUMBER_MODULO      = 'number_modulo';
-const NODE_NUMBER_POWER       = 'number_power';
-const NODE_NUMBER_INTERPOLATE = 'number_interpolate';
-
-const NODE_COLOR              = 'color';
-const NODE_COLOR_INTERPOLATE  = 'color_interpolate';
-const NODE_COLOR_VALIDATE     = 'color_validate';
-const NODE_COLOR_CONTRAST     = 'color_contrast';
-const NODE_COLOR_BLIND        = 'color_blind';
-
-const NODE_STRING             = 'string';
-const NODE_STRING_ADD         = 'string_add';
-const NODE_STRING_REPLACE     = 'string_replace';
-
-const NODE_GEOMETRY_RECTANGLE = 'geometry_rectangle';
-const NODE_GEOMETRY_ELLIPSE   = 'geometry_ellipse';
-
-const NODE_GROUP              = 'group';
-
-
-
-function getShortNodeName(nodeType)
-{
-    switch (nodeType)
-    {
-        case NODE_NUMBER:             return 'num';
-        case NODE_NUMBER_SUBTRACT:    
-        case NODE_NUMBER_MULTIPLY:    
-        case NODE_NUMBER_DIVIDE:      
-        case NODE_NUMBER_MODULO:      
-        case NODE_NUMBER_POWER:       return extractShortNodeName(nodeType, 1, 3);
-        case NODE_NUMBER_INTERPOLATE: 
-        case NODE_COLOR_INTERPOLATE:  return 'inter';
-        case NODE_NUMBER_MINMAX:      
-        case NODE_COLOR_CONTRAST:     return extractShortNodeName(nodeType, 2);
-        case NODE_COLOR_VALIDATE:     
-        case NODE_COLOR_BLIND:        return 'colorblind';
-
-        default:                      return extractShortNodeName(nodeType);
-    }
-}
-
-
-
-function extractShortNodeName(nodeType, iPart = -1, nChars = -1)
-{
-    const parts = nodeType.split('_');
-
-    if (   iPart  < 0 
-        && nChars < 0)
-        return nodeType.substring(parts[0].length);
-    
-    return nChars > -1
-         ? parts[iPart].substring(0, nChars)
-         : parts[iPart];
-}
+const GROUP              = 'grp';   
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -1684,9 +1614,9 @@ const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
-function dataType2rgb(dataType, active)
+function dataType2rgb(type, active)
 {
-    switch (dataType)
+    switch (type)
     {
         case 'number': return active ? rgbActiveNumber : rgbNumber;
         case 'color':  return active ? rgbActiveColor  : rgbColor;
@@ -3467,6 +3397,17 @@ function isTrue(strBool)
 }
 
 
+
+function strIsNum(str) 
+{
+    if (typeof str != 'string') 
+        return false; // only process strings
+
+    return !isNaN(str) // use type coercion to parse the entirety of the string
+        && !isNaN(parseFloat(str)) // ensure strings of whitespace fail
+  }
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -4018,7 +3959,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genGenerateRequest': genGenerateRequest(e.data.request); break;
+        case 'genParseRequest':  console.log('gen request', e.data.request); genParseRequest(e.data.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -4047,60 +3988,79 @@ function genPostMessageToUi(msg)
 
 
 
-function genGenerateRequest(request)
+// some parse functions return values
+// some parse functions update values
+// some parse functions update objects
+
+
+
+function genParseRequest(req, parse = {pos:0})
 {
-    const objects = [];
     const stackOverflowProtect = 100;
 
     nextGenObjectId = 0;
 
-    for (let i = 0, so = 0; i < request.length && so < stackOverflowProtect; )
+    for (so = 0; parse.pos < req.length && so < stackOverflowProtect; )
     {
-        // values have to be ... and updated
+        const next = req[parse.pos];
 
-        // geometry/styles have to be generated
-
-             if (request[i] == 'num'  && request.length >= i+3) { objects.push(genGenerateNumber   (request, i)); i += 3; }
-        else if (request[i] == 'rect' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
+             if (next == 'num' )        genNumber   (req, parse.pos);
+        else if (next == 'rect')        genRectangle(req, parse.pos);
+        else if (strIsNum(next)) return genNumValue (req, parse.pos);
         else so++;
     }
+}
+
+
+
+function genNumValue(req, parse)
+{
+    // values are always a value/decimals pair
+
+    const val = parseFloat(req[parse.pos++]);
+
+    parse.pos++; // decimals
+
+    return val;
+}
+
+
+
+function genNumber(req, parse)
+{
+    parse.pos++;
+
+    const nodeId = req[parse.pos++];
+    const val    = genParseRequest(req, parse);
 
     genPostMessageToUi({ 
-        msg:    'uiUpdateCanvasObjects',
-        objects: objects
+        msg:    'uiUpdateValues',
+        values: [{
+            nodeId:     nodeId,
+            paramIndex: 0, 
+            value:      val }]
     });
+
+    return val;
 }
 
 
 
-function genGenerateNumber(request, i)
+function genRectangle(req, i)
 {
-    return {
-        type:   OBJ_RECT,
-        id:     nextGenObjectId++,
-        nodeId: request[i+1],
-        x:      request[i+2],
-        y:      request[i+3],
-        width:  request[i+4],
-        height: request[i+5],
-        angle:  request[i+6],
-        round:  request[i+7] };
-}
-
-
-
-function genGenerateRectangle(request, i)
-{
-    return {
-        type:   OBJ_RECT,
-        id:     nextGenObjectId++,
-        nodeId: request[i+1],
-        x:      request[i+2],
-        y:      request[i+3],
-        width:  request[i+4],
-        height: request[i+5],
-        angle:  request[i+6],
-        round:  request[i+7] };
+    genPostMessageToUi({ 
+        msg:    'uiUpdateObjects',
+        objects: [{
+            type:   OBJ_RECT,
+            id:     nextGenObjectId++,
+            nodeId: req[i+1],
+            x:      req[i+2],
+            y:      req[i+3],
+            width:  req[i+4],
+            height: req[i+5],
+            angle:  req[i+6],
+            round:  req[i+7] }]
+    });
 }
 
 
@@ -4189,7 +4149,7 @@ function genGenerateRectangle(request, i)
 //             ? inNode.inputs[input.index]
 //             : inNode.params.find(p => p.name == input.param).input);
 
-//         if (inNode.dataType == 'object')
+//         if (inNode.type == 'object')
 //             genUpdateObjects([input.nodeId]);
 //     }
 // }
@@ -4276,7 +4236,7 @@ function genGenerateRectangle(request, i)
 //         }    
 
 //         genPostMessageToUi({ 
-//             msg:    'uiUpdateCanvasObjects',
+//             msg:    'uiUpdateObjects',
 //             objects: objects
 //         });
 //     }
@@ -6787,104 +6747,34 @@ const MAX_INT32         = 2147483647;
 /////////////////////////////////
 
 
-
-// data types
-
-const DATA_NUMBER    = 'num';
-const DATA_COLOR     = 'col';
-const DATA_STRING    = 'str';
-const DATA_RECTANGLE = 'rect';
-const DATA_LINE      = 'line';
-const DATA_ELLIPSE   = 'elps';
-const DATA_POLYGON   = 'poly';
-const DATA_STAR      = 'star';
-const DATA_VECTOR    = 'vec';
-const DATA_BOOLEAN   = 'bool';
-const DATA_TEXT      = 'txt';
-const DATA_GROUP     = 'grp';
-const DATA_FRAME     = 'frm';
-const DATA_SLICE     = 'slc';
+// for gen strings each type is followed first by the node ID, then the params
 
 
 
-function dataTypeIsShape(dataType)
-{
-    return dataType == DATA_RECTANGLE
-        || dataType == DATA_LINE
-        || dataType == DATA_ELLIPSE
-        || dataType == DATA_POLYGON
-        || dataType == DATA_STAR
-        || dataType == DATA_VECTOR
-        || dataType == DATA_BOOLEAN
-        || dataType == DATA_TEXT;
-}
+const NUMBER             = 'num';   // N | (value decimals)
+const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
+const NUMBER_ADD         = 'add';   // N N
+const NUMBER_SUBTRACT    = 'sub';   // N N
+const NUMBER_MULTIPLY    = 'mul';   // N N
+const NUMBER_DIVIDE      = 'div';   // N N
+const NUMBER_MODULO      = 'mod';   // N N
+const NUMBER_POWER       = 'pow';   // N:value N:power
+const NUMBER_INTERPOLATE = 'lerp';  // N N N:amount
 
+const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
+const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
+const COLOR_VALIDATE     = 'cvld';  // C
+const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
+const COLOR_BLIND        = 'blnd';  // C
 
+const STRING             = 'str';   // S|value
+const STRING_ADD         = 'sadd';  // S S
+const STRING_REPLACE     = 'srepl'; // S S:what S:with
 
-// node types
+const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
 
-const NODE_NUMBER             = 'number';
-const NODE_NUMBER_MINMAX      = 'number_minmax';
-const NODE_NUMBER_ADD         = 'number_add';
-const NODE_NUMBER_SUBTRACT    = 'number_subtract';
-const NODE_NUMBER_MULTIPLY    = 'number_multiply';
-const NODE_NUMBER_DIVIDE      = 'number_divide';
-const NODE_NUMBER_MODULO      = 'number_modulo';
-const NODE_NUMBER_POWER       = 'number_power';
-const NODE_NUMBER_INTERPOLATE = 'number_interpolate';
-
-const NODE_COLOR              = 'color';
-const NODE_COLOR_INTERPOLATE  = 'color_interpolate';
-const NODE_COLOR_VALIDATE     = 'color_validate';
-const NODE_COLOR_CONTRAST     = 'color_contrast';
-const NODE_COLOR_BLIND        = 'color_blind';
-
-const NODE_STRING             = 'string';
-const NODE_STRING_ADD         = 'string_add';
-const NODE_STRING_REPLACE     = 'string_replace';
-
-const NODE_GEOMETRY_RECTANGLE = 'geometry_rectangle';
-const NODE_GEOMETRY_ELLIPSE   = 'geometry_ellipse';
-
-const NODE_GROUP              = 'group';
-
-
-
-function getShortNodeName(nodeType)
-{
-    switch (nodeType)
-    {
-        case NODE_NUMBER:             return 'num';
-        case NODE_NUMBER_SUBTRACT:    
-        case NODE_NUMBER_MULTIPLY:    
-        case NODE_NUMBER_DIVIDE:      
-        case NODE_NUMBER_MODULO:      
-        case NODE_NUMBER_POWER:       return extractShortNodeName(nodeType, 1, 3);
-        case NODE_NUMBER_INTERPOLATE: 
-        case NODE_COLOR_INTERPOLATE:  return 'inter';
-        case NODE_NUMBER_MINMAX:      
-        case NODE_COLOR_CONTRAST:     return extractShortNodeName(nodeType, 2);
-        case NODE_COLOR_VALIDATE:     
-        case NODE_COLOR_BLIND:        return 'colorblind';
-
-        default:                      return extractShortNodeName(nodeType);
-    }
-}
-
-
-
-function extractShortNodeName(nodeType, iPart = -1, nChars = -1)
-{
-    const parts = nodeType.split('_');
-
-    if (   iPart  < 0 
-        && nChars < 0)
-        return nodeType.substring(parts[0].length);
-    
-    return nChars > -1
-         ? parts[iPart].substring(0, nChars)
-         : parts[iPart];
-}
+const GROUP              = 'grp';   
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -6896,9 +6786,9 @@ const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
-function dataType2rgb(dataType, active)
+function dataType2rgb(type, active)
 {
-    switch (dataType)
+    switch (type)
     {
         case 'number': return active ? rgbActiveNumber : rgbNumber;
         case 'color':  return active ? rgbActiveColor  : rgbColor;
@@ -8677,6 +8567,17 @@ function isTrue(strBool)
 {
     return strBool == 'true';
 }
+
+
+
+function strIsNum(str) 
+{
+    if (typeof str != 'string') 
+        return false; // only process strings
+
+    return !isNaN(str) // use type coercion to parse the entirety of the string
+        && !isNaN(parseFloat(str)) // ensure strings of whitespace fail
+  }
 
 
 "use strict";
@@ -11308,7 +11209,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             if (    graphView.tempConn.output
                 &&  slider.param.input
-                &&  graphView.tempConn.output.dataType == slider.param.input.dataType
+                &&  graphView.tempConn.output.type == slider.param.input.type
                 && !graphView.tempConn.output.node.follows(slider.param.node)
                 && (  !slider.param.input.connected // not already connected to this input
                     || slider.param.input.connectedOutput != graphView.tempConn.output
@@ -11327,7 +11228,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             }
             else if ( graphView.tempConn.input
                   &&  slider.param.output
-                  &&  graphView.tempConn.input.dataType == slider.param.output.dataType
+                  &&  graphView.tempConn.input.type == slider.param.output.type
                   && !slider.param.node.follows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = slider.param.output;
@@ -11450,7 +11351,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             if (slider.param)
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
-                
+             console.log('param.node', param.node);   
                 if (!isLastInArray(param.node.params, param))
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
             }
@@ -12672,7 +12573,9 @@ function initSelect(select, items)
 
 
         let options = select.getElementsByTagName('option');
-        for (const node of options) node.disabled = node.value == '-';
+
+        for (const node of options) 
+            node.disabled = node.value == '-';
     };
     
 
@@ -13775,9 +13678,9 @@ graphView.placeNewNode = function(node)
     //     const right = intersecting.reduce((a, b) => 
     //         graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
 
-    //     if (   right.nodeType == node.nodeType
-    //         && node.nodeType != 'color'
-    //         && node.nodeType != 'webcontrast') ox = bounds.b + dy;
+    //     if (   right.type == node.type
+    //         && node.type != 'color'
+    //         && node.type != 'webcontrast') ox = bounds.b + dy;
     //     else                                 oy = bounds.r + dx;
     // }
 
@@ -14533,7 +14436,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.dataType == output.dataType) // TO INPUT
+            && input.type == output.type) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -14572,7 +14475,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
         
         if (   output
-            && output.dataType == input.dataType) // TO OUTPUT
+            && output.type == input.type) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
@@ -14886,10 +14789,9 @@ extends EventTarget
 
 
 
-    initInput(hasInput, dataType)
+    initInput(types)
     {
-        this.input = hasInput ? new Input(dataType) : null;
-        if (!this.input) return;
+        this.input = new Input(types);
 
         this.input._param = this;
         this.input.control.style.float     = 'left';
@@ -14904,10 +14806,9 @@ extends EventTarget
 
 
 
-    initOutput(hasOutput, dataType)
+    initOutput(type, toString)
     {
-        this.output = hasOutput ? new Output(dataType) : null;
-        if (!this.output) return;
+        this.output = new Output(type, toString);
 
         this.output._param = this;
         this.output.control.style.float     = 'right';
@@ -15007,6 +14908,13 @@ extends EventTarget
                 }
             }
         }
+    }
+
+
+
+    toString()
+    {
+        // parameter outputs call this method
     }
 
 
@@ -15139,8 +15047,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
        
-        this.initInput (hasInput,  'number');
-        this.initOutput(hasOutput, 'number');
+        if (hasInput)  this.initInput([NUMBER]);
+        if (hasOutput) this.initOutput(NUMBER, this.output_toString);
 
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -15247,6 +15155,30 @@ extends Parameter
 
 
 
+    toString()
+    {
+        // this function exists because a parameter without an output
+        // should still provide a value
+        
+        return this.input
+            && this.input.connected 
+
+            ? [ ...this.input.connectedOutput.toString() ]
+
+            : [ NUMBER, 
+                this.value.toString(), 
+                this.control.displayDec.toString() ];
+    }
+
+
+
+    output_toString(output)
+    {
+        return output.param.toString();
+    }
+
+
+
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
@@ -15320,8 +15252,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
 
-        this.initInput();
-        this.initOutput(hasOutput);
+                       this.initInput([COLOR]);
+        if (hasOutput) this.initOutput(COLOR);
 
 
 
@@ -15351,6 +15283,30 @@ extends Parameter
     setValue(value, fireChangeEvent = true, confirm = true) 
     { 
         //this._control.setValue(value, fireChangeEvent, confirm); 
+    }
+
+
+
+    toString()
+    {
+        // this function exists because a parameter without an output
+        // should still provide a value
+        
+        // return this.input
+        //     && this.input.connected 
+
+        //     ? [ ...this.input.connectedOutput.toString() ]
+
+        //     : [ COLOR, 
+        //         this.value.toString(), 
+        //         this.control.displayDec.toString() ];
+    }
+
+
+
+    output_toString(output)
+    {
+        return output.param.toString();
     }
 }
 
@@ -15422,8 +15378,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
 
-        this.initInput (hasInput,  'number');
-        this.initOutput(hasOutput, 'number');
+        if (hasInput)  this.initInput([NUMBER]);
+        if (hasOutput) this.initOutput(NUMBER);
 
             
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -15486,6 +15442,20 @@ extends Parameter
             
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
+
+
+
+    toString()
+    {
+        return this.input
+            && this.input.connected 
+
+            ? [ ...this.input.connectedOutput.toString() ]
+
+            : [ NUMBER, 
+                this.value.toString(), 
+                this.control.displayDec.toString() ];
+    }
 }
 
 
@@ -15699,7 +15669,7 @@ class Graph
         // first remove the current output
 
         // if (activeNodeInTree(input.node))
-        //     uiDeleteCanvasObjects([activeNodeInTree(input.node).id]);
+        //     uiDeleteObjects([activeNodeInTree(input.node).id]);
 
 
         // then disconnect
@@ -16026,8 +15996,8 @@ function updateTerminalsAfterNodes(nodes)
 class   Input
 extends EventTarget
 {
-    _dataType;     
-    get dataType() { return this._dataType; }
+    types = []; // an input can accept multiple types
+
 
     get data()
     {
@@ -16098,11 +16068,11 @@ extends EventTarget
 
 
 
-    constructor(dataType)
+    constructor(types)
     {
         super();
         
-        this._dataType = dataType;
+        this.types = [...types];
 
         this.control  = createDiv('input');
         this.hitbox   = createDiv('inputHitbox');
@@ -16115,7 +16085,7 @@ extends EventTarget
         this.control.appendChild(this.wireBall);
 
         this.color     = [0, 0, 0, 0.12];
-        this.wireColor = dataType2rgb(this.dataType, true);
+        this.wireColor = dataType2rgb(this.type, true);
 
         
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -16139,7 +16109,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && graphView.tempConn.output.dataType == this.dataType
+                && graphView.tempConn.output.type == this.type
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -16186,14 +16156,16 @@ extends EventTarget
 
     updateControl()
     {
+        const tc = graphView.tempConn;
+
         const mouseOver =
                this.mouseOver
-            && !(   graphView.tempConn
-                 && graphView.tempConn.input)
-            && !(   graphView.tempConn
-                 && graphView.tempConn.output
-                 && (   graphView.tempConn.output.dataType != this.dataType
-                     || graphView.tempConn.output.node.follows(this.node)));
+            && !(   tc
+                 && tc.input)
+            && !(   tc
+                 && tc.output
+                 && (   tc.output.type != this.type
+                     || tc.output.node.follows(this.node)));
 
         const colorStyle = 
             graphView.showWires
@@ -16207,12 +16179,12 @@ extends EventTarget
 
         const isConnected =
                this.connected
-            ||     graphView.tempConn
-               && (   graphView.tempConn.input == this
+            ||     tc
+               && (   tc.input == this
                    ||    graphView.overInput == this
-                      && !graphView.tempConn.input)
-               && !(   graphView.tempConn.output
-                    && graphView.tempConn.output.dataType != this.dataType);
+                      && !tc.input)
+               && !(   tc.output
+                    && tc.output.type != this.type);
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -16235,19 +16207,19 @@ extends EventTarget
                && graphView.overInput != this
                ? 'transparent'
                : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
-            : (   graphView.tempConn
-               && graphView.tempConn.output
-               && graphView.tempConn.output.dataType == this.dataType
+            : (   tc
+               && tc.output
+               && tc.output.type == this.type
                && graphView.overInput == this
-               ? colorStyleRgba(toRgba(graphView.tempConn.output.wireColor))
-               : (   graphView.tempConn
-                  && graphView.tempConn.input
-                  && graphView.tempConn.input == this)
+               ? colorStyleRgba(toRgba(tc.output.wireColor))
+               : (   tc
+                  && tc.input
+                  && tc.input == this)
                   ? (graphView.overOutput
                      ? colorStyleRgba(toRgba(graphView.overOutput.wireColor))
                      : (graphView.headerOutput
                         ? colorStyleRgba(toRgba(graphView.headerOutput.wireColor))
-                        : colorStyleRgba(toRgba(graphView.tempConn.input.wireColor))))
+                        : colorStyleRgba(toRgba(tc.input.wireColor))))
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
@@ -16262,8 +16234,8 @@ extends EventTarget
 
 class Output
 {
-    _dataType;     
-    get dataType() { return this._dataType; }
+    _type;     
+    get type() { return this._type; }
 
     _node  = null; get node () { return this._node;  }
     _param = null; get param() { return this._param; }
@@ -16286,8 +16258,8 @@ class Output
     connecting = false;
     
     
-    generateRequest = null; // function pointer, must be implemented
-    cachedRequest   = '';
+    toString   = null; // function pointer, must be implemented
+    cache      = '';
 
 
     _data;
@@ -16314,10 +16286,10 @@ class Output
 
 
 
-    constructor(dataType, generateRequest)
+    constructor(type, toString)
     {
-        this._dataType       = dataType;
-        this.generateRequest = generateRequest;
+        this._type    = type;
+        this.toString = toString;
 
         this.control         = createDiv('output');
         this.hitbox          = createDiv('outputHitbox');
@@ -16330,7 +16302,7 @@ class Output
         this.control.appendChild(this.wireBall);
 
         this.color           = [0, 0, 0, 0.12];
-        this.wireColor       = dataType2rgb(this.dataType, true);
+        this.wireColor       = dataType2rgb(this.type, true);
         
         this.updateControl();
 
@@ -16353,7 +16325,7 @@ class Output
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
-                && graphView.tempConn.input.dataType == this.dataType)
+                && graphView.tempConn.input.type == this.type)
             {
                 const rect = boundingRect(this.control);
                 const loop = this.node.follows(graphView.tempConn.input.node);
@@ -16404,7 +16376,7 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && (   graphView.tempConn.input.dataType != this.dataType
+                 && (   graphView.tempConn.input.type != this.type
                      || this.node.follows(graphView.tempConn.input.node)));
 
         const colorStyle = 
@@ -16435,7 +16407,7 @@ class Output
                    ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
                && !(   graphView.tempConn.input
-                    && graphView.tempConn.input.dataType != this.dataType);
+                    && graphView.tempConn.input.type != this.type);
 
         show(this.wireBall, isConnected);
     }
@@ -16605,7 +16577,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && graphView.overOutput.dataType == this.input.dataType) 
+                    && graphView.overOutput.type == this.input.type) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -16741,7 +16713,7 @@ function getConnectionForArrayWithNames(conn)
 /*
     Operators don't have data types, those are inferred from the outputs.
 
-    Outputs and have a generateRequest() method, which creates a string that
+    Outputs and have a toString() method, which creates a string that
     is added to the complete recursive generation request. 
     
     The generator then does the calculation and sends back two kinds of messages:
@@ -16749,6 +16721,10 @@ function getConnectionForArrayWithNames(conn)
 
     Value updates can trigger a visual node update. The update info is passed
     in the update message.
+
+
+    Output.toString(output)
+    Parameter.toString()
 */
 
 
@@ -16763,8 +16739,8 @@ class Operator
     graph = null;
     
     
-    #nodeType;
-    get nodeType() { return this.#nodeType; }
+    #type; // used in the code, not for generation
+    get type() { return this.#type; }
     
     defShortName;
     
@@ -16863,13 +16839,12 @@ class Operator
 
 
 
-    constructor(nodeType, defWidth = 80)
+    constructor(type, shortName, defWidth = 80)
     {
-        this.#nodeType         = nodeType;
-                
-        this.defShortName      = getShortNodeName(nodeType);
-        this._id               = this.defShortName;
-
+        this.#type             = type;
+        this._id               = shortName;
+        
+        this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
         this.labelOffsetFactor = 0;
         
@@ -16877,7 +16852,7 @@ class Operator
 
         createOperatorNode(this);
 
-        this.setName(this.defShortName);
+        this.setName(shortName);
     }    
 
 
@@ -16891,9 +16866,9 @@ class Operator
 
 
 
-    getAutoInput(dataType)
+    getAutoInput(type)
     {
-        const inputs = this.inputs.filter(i => i.dataType == dataType);
+        const inputs = this.inputs.filter(i => i.type == type);
 
         
         if (graphView.overInput)
@@ -16936,9 +16911,9 @@ class Operator
 
 
 
-    getAutoOutput(dataType)
+    getAutoOutput(type)
     {
-        const outputs = this.outputs.filter(o => o.dataType == dataType);
+        const outputs = this.outputs.filter(o => o.type == type);
 
         return     outputs.length == 1
                && !this.follows(graphView.tempConn.input.node)
@@ -16969,7 +16944,7 @@ class Operator
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
         
-''
+
         this.inner.appendChild(param.div);
     }
  
@@ -17009,7 +16984,7 @@ class Operator
 
         for (const output of this.outputs)
         {
-            output.cachedRequest = '';
+            output.cache = '';
             
             for (const connInput of output.connectedInputs)
                 connInput.node.invalidate();
@@ -17042,10 +17017,10 @@ class Operator
 
 
         // if (this.active)
-        //     uiPostGeneratorRequest(this.generateRequest());
+        //     uiPostGenParseRequest(this.toString());
 
         for (const output of this.outputs)
-            uiPostGeneratorRequest(output.generateRequest(output));
+            uiPostGenParseRequest(output.toString(output));
         
 
         //if (graphView.canUpdateNodes)
@@ -17065,36 +17040,9 @@ class Operator
 
 
 
-    generateRequest() 
+    toString() 
     { 
-        // create the generation string here
-
-        /*
-
-            A generation string is only to calculate graph results.
-
-            [ ] = optional
-            ... = list
-
-            The general format is
-
-                nodeType [params...] [inputs...]
-
-
-            #               # of following values
-            N               number value
-            C               color value
-
-
-            OpNumber        number [N]
-
-            OpArithmetic    add [onlySymbol] # N...
-
-            OpColor         color [color C] [space N] [c1 N] [c2 N] [c3 N]
-
-            OpWebContrast   webcontrast [wcag N] [1:C] [2:C]
-
-        */
+        // create the generator string here
 
         return '';
     }
@@ -17319,7 +17267,7 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "'        + this.nodeType            + '",\n'
+              pos + tab + '"type": "'        + this.type            + '",\n'
             + pos + tab + '"id": "'          + this.id                + '",\n'
             + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
@@ -17724,7 +17672,7 @@ function createNodeHeader(node)
                 }
                 else
                 {
-                    const input = node.getAutoInput(tempConn.output.dataType);
+                    const input = node.getAutoInput(tempConn.output.type);
 
                     if ( !input)
                         // ||    input.connected
@@ -17748,7 +17696,7 @@ function createNodeHeader(node)
             else if (tempConn.input
                   && !node.follows(tempConn.input.node))
             {
-                const output = node.getAutoOutput(tempConn.input.dataType);
+                const output = node.getAutoOutput(tempConn.input.type);
                 if (!output) return;
 
                 graphView.overOutput   = output;
@@ -18139,10 +18087,10 @@ extends OperatorBase
 
     constructor()
     {
-        super(NODE_NUMBER, 70);
+        super(NUMBER, 'num', 70);
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType, this.otuput_generateRequest));
+        this.addInput (new Input ([NUMBER]));
+        this.addOutput(new Output(NUMBER, this.output_toString));
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
@@ -18151,7 +18099,7 @@ extends OperatorBase
 
 
 
-    // updateData()
+    // updateData() 
     // {
     //     if (this.inputs[0].connected)
     //     {
@@ -18166,26 +18114,33 @@ extends OperatorBase
     //         this.#paramValue.control.dec);
             
                   
-    //     super.updateData()
+//     super.updateData()
     // }
 
 
 
-    otuput_generateRequest(output)
+    output_toString(output)
     {
-        const node = output.node;
+        if (output.cache != '') 
+            return output.cache;
 
-        if (output.cachedRequest == '')
-        {
-            output.cachedRequest = 
-                node.inputs[0].connected
-                ? node.inputs[0].connectedOutput.generateRequest()
-                : [ node.defShortName,
-                    node.#paramValue.value      .toString(),
-                    node.#paramValue.control.dec.toString() ];
-        }
 
-        return output.cachedRequest;
+        const node  = output.node;
+        const input = node.inputs[0];
+
+
+        const req = [
+            output.type, 
+            node.id];
+
+        req.push(...
+            input.connected
+            ? input.connectedOutput.toString()
+            : [ node.#paramValue.value      .toString(),
+                node.#paramValue.control.dec.toString() ]);
+
+                
+        return output.cache = [...req];
     }
 
 
@@ -18353,7 +18308,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(this.dataType));
+        this.addOutput(new Output(NUMBER));
         
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
@@ -18824,9 +18779,9 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, dataType, defWidth = 80)
+    constructor(nodeType, shortType, type, defWidth = 80)
     {
-        super(nodeType, shortType, dataType, defWidth);
+        super(nodeType, shortType, type, defWidth);
 
 
         this._warningOverlay = createDiv('colorWarningOverlay');
@@ -19046,8 +19001,8 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input (this.type));
+        this.addOutput(new Output(this.type));
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -20665,8 +20620,8 @@ extends OpColorBase
         super('validatecolor', 'validate', 'color', 80);
 
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input (COLOR));
+        this.addOutput(new Output(COLOR));
 
 
         this.alwaysLoadParams = true;
@@ -21022,8 +20977,8 @@ extends OpColorBase
         super('webcontrast', 'contrast', 'color', 80);
 
 
-        this.addInput(new Input(this.dataType));
-        this.addInput(new Input(this.dataType));
+        this.addInput(new Input(COLOR));
+        this.addInput(new Input(COLOR));
 
 
         this.addParam(this.#paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
@@ -21225,10 +21180,10 @@ extends OpColorBase
         super('colorinterpolate', 'inter', 'color', 80);
 
         
-        this.addInput(new Input(this.dataType));
-        this.addInput(new Input(this.dataType));
+        this.addInput(new Input(COLOR));
+        this.addInput(new Input(COLOR));
 
-        this.addOutput(new Output(this.dataType));
+        this.addOutput(new Output(COLOR));
 
 
         this.addParam(this.#paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
@@ -21356,8 +21311,8 @@ extends OpColorBase
         super('colorblind', 'colorblind', 'color', 80);
 
 
-        this.addInput (new  Input(this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new  Input(COLOR));
+        this.addOutput(new Output(COLOR));
 
 
         this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
@@ -21474,10 +21429,10 @@ extends OperatorBase
     
     constructor()
     {
-        super('rectangle', 'rect', 'object');
+        super(RECTANGLE, 'rect');
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input ([RECTANGLE]));
+        this.addOutput(new Output(RECTANGLE, this.output_toString));
 
         this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -21557,6 +21512,27 @@ extends OperatorBase
 
 
 
+    output_toString(output)
+    {
+        const node = output.node;
+        if (node.valid) return output.cache;
+
+        // const x = 
+        //     node.inputs[0].connected
+        //     ? [node.inputs[0].connectedOutput.toString()]
+        //     : this.#paramX.);
+        
+        // node.inputs[0].connected
+        // ? node.inputs[0].connectedOutput.toString()
+        
+        let request = [output.type, node.id];
+
+
+        return output.cache = [...request];
+    }
+
+
+
     // updateData()
     // {
     //     if (this.inputs[0].connected) 
@@ -21586,10 +21562,10 @@ extends OperatorBase
 
 
 
-    // generateRequest()
+    // toString()
     // {
     //     return [
-    //         this.nodeType,
+    //         this.type,
     //         this.id,
     //         this.#paramX     .value,
     //         this.#paramY     .value,
@@ -21661,8 +21637,8 @@ extends OperatorBase
     {
         super('row', 'row', 'object');
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input ());
+        this.addOutput(new Output());
         
         this.addParam(this.#count = new NumberParam('count', 'count', true, true, true,  7, 1));
         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, true, true, 10, 0));
@@ -21670,7 +21646,7 @@ extends OperatorBase
 
 
 
-    generateRequest()
+    toString()
     {
 
     }
@@ -21690,8 +21666,8 @@ extends OperatorBase
 //     {
 //         super('row', 'object');
 
-//         this.addInput (new Input (this.dataType));
-//         this.addOutput(new Output(this.dataType));
+//         this.addInput (new Input ());
+//         this.addOutput(new Output());
         
 //         this.addParam(this.#count = new NumberParam('count', 'count',  4, 1));
 //         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   10, 0));
@@ -23446,7 +23422,7 @@ var figMessages = [];
 //uiClearLocalData('productKey');
 
 //uiClearPageData('GA rect');
-//uiRemoveAllSavedNodesAndConns();
+uiRemoveAllSavedNodesAndConns();
 //uiLogAllSavedNodesAndConns();
 
 
@@ -23708,7 +23684,7 @@ generator.onmessage = function(e)
         // case 'uiShowParamValue':    uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
         // case 'uiUpdateNodes':       uiUpdateNodes   (e.data.nodeIds);                            break;
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
-        case 'uiUpdateCanvasObjects':  uiUpdateCanvasObjects         (e.data.objects);                 break;
+        case 'uiUpdateObjects':        uiUpdateObjects         (e.data.objects);                 break;
     }
 };
 
@@ -23735,7 +23711,7 @@ function uiPostNextMessageToFigma()
         let msg = figMessages.shift();
 
         if (   msg.cmd == 'figResizeWindow'
-            || msg.cmd == 'figUpdateCanvasObjects')
+            || msg.cmd == 'figUpdateObjects')
         {
             // move along the queue since only the last message is important
             while (figMessages.length > 0
@@ -23761,10 +23737,10 @@ function uiPostMessageToGenerator(msg)
 
 
 
-function uiPostGeneratorRequest(request)
+function uiPostGenParseRequest(request)
 {
     uiPostMessageToGenerator({
-        msg:    'genGenerateRequest',
+        msg:    'genParseRequest',
         request: request
     });
 }
@@ -24782,7 +24758,7 @@ function uiDeleteNodes(nodeIds, actionId)
     graph.deleteNodes(nodeIds);
 
     uiRemoveSavedNodesAndConns(nodeIds);
-    uiDeleteCanvasObjects(nodeIds);
+    uiDeleteObjects(nodeIds);
 }
 
 
@@ -24813,10 +24789,10 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 
-function uiDeleteCanvasObjects(nodeIds)
+function uiDeleteObjects(nodeIds)
 {
     uiPostMessageToFigma({
-        cmd:    'figDeleteCanvasObjects',
+        cmd:    'figDeleteObjects',
         nodeIds: nodeIds
     });
 }
@@ -24971,7 +24947,7 @@ function uiMakeNodeActive(node)
 function uiMakeNodePassive(node)
 {
     //if (node.active)
-    //    uiDeleteCanvasObjects([node.id]);
+    //    uiDeleteObjects([node.id]);
 
     if (node.active)
     {
@@ -25315,12 +25291,12 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateCanvasObjects(objects)
+function uiUpdateObjects(objects)
 {
     //uiUpdateGraph();
 
     uiPostMessageToFigma({
-        cmd:    'figUpdateCanvasObjects',
+        cmd:    'figUpdateObjects',
         objects: objects
     });
 }

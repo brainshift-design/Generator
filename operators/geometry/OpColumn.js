@@ -10,8 +10,8 @@ extends Operator
     {
         super('column', 'object');
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input ());
+        this.addOutput(new Output());
         
         this.addParam(this.#count = new NumberParam('count', 'count', true,  7, 1));
         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, 10, 0));
@@ -31,8 +31,8 @@ extends Operator
 //     {
 //         super('row', 'object');
 
-//         this.addInput (new Input (this.dataType));
-//         this.addOutput(new Output(this.dataType));
+//         this.addInput (new Input ());
+//         this.addOutput(new Output());
         
 //         this.addParam(this.#count = new NumberParam('count', 'count',  4, 1));
 //         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   10, 0));

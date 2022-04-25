@@ -292,3 +292,14 @@ function isTrue(strBool)
 {
     return strBool == 'true';
 }
+
+
+
+function strIsNum(str) 
+{
+    if (typeof str != 'string') 
+        return false; // only process strings
+
+    return !isNaN(str) // use type coercion to parse the entirety of the string
+        && !isNaN(parseFloat(str)) // ensure strings of whitespace fail
+  }

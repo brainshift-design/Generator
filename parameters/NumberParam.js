@@ -62,8 +62,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
        
-        this.initInput (hasInput,  'number');
-        this.initOutput(hasOutput, 'number');
+        if (hasInput)  this.initInput([NUMBER]);
+        if (hasOutput) this.initOutput(NUMBER, this.output_toString);
 
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -167,6 +167,30 @@ extends Parameter
 
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
+
+
+
+    toString()
+    {
+        // this function exists because a parameter without an output
+        // should still provide a value
+        
+        return this.input
+            && this.input.connected 
+
+            ? [ ...this.input.connectedOutput.toString() ]
+
+            : [ NUMBER, 
+                this.value.toString(), 
+                this.control.displayDec.toString() ];
+    }
+
+
+
+    output_toString(output)
+    {
+        return output.param.toString();
+    }
 
 
 

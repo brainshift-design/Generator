@@ -65,8 +65,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
 
-        this.initInput (hasInput,  'number');
-        this.initOutput(hasOutput, 'number');
+        if (hasInput)  this.initInput([NUMBER]);
+        if (hasOutput) this.initOutput(NUMBER);
 
             
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -129,4 +129,18 @@ extends Parameter
             
         super.setValue(value, confirm, updateControl, dispatchEvents);
     }    
+
+
+
+    toString()
+    {
+        return this.input
+            && this.input.connected 
+
+            ? [ ...this.input.connectedOutput.toString() ]
+
+            : [ NUMBER, 
+                this.value.toString(), 
+                this.control.displayDec.toString() ];
+    }
 }

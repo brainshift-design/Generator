@@ -47,8 +47,8 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input (this.type));
+        this.addOutput(new Output(this.type));
 
 
         this.inputs[0].addEventListener('connect', () =>

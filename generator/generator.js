@@ -30,7 +30,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genGenerateRequest': genGenerateRequest(e.data.request); break;
+        case 'genParseRequest':  console.log('gen request', e.data.request); genParseRequest(e.data.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -59,60 +59,79 @@ function genPostMessageToUi(msg)
 
 
 
-function genGenerateRequest(request)
+// some parse functions return values
+// some parse functions update values
+// some parse functions update objects
+
+
+
+function genParseRequest(req, parse = {pos:0})
 {
-    const objects = [];
     const stackOverflowProtect = 100;
 
     nextGenObjectId = 0;
 
-    for (let i = 0, so = 0; i < request.length && so < stackOverflowProtect; )
+    for (so = 0; parse.pos < req.length && so < stackOverflowProtect; )
     {
-        // values have to be ... and updated
+        const next = req[parse.pos];
 
-        // geometry/styles have to be generated
-
-             if (request[i] == 'num'  && request.length >= i+3) { objects.push(genGenerateNumber   (request, i)); i += 3; }
-        else if (request[i] == 'rect' && request.length >= i+8) { objects.push(genGenerateRectangle(request, i)); i += 8; }
+             if (next == 'num' )        genNumber   (req, parse.pos);
+        else if (next == 'rect')        genRectangle(req, parse.pos);
+        else if (strIsNum(next)) return genNumValue (req, parse.pos);
         else so++;
     }
+}
+
+
+
+function genNumValue(req, parse)
+{
+    // values are always a value/decimals pair
+
+    const val = parseFloat(req[parse.pos++]);
+
+    parse.pos++; // decimals
+
+    return val;
+}
+
+
+
+function genNumber(req, parse)
+{
+    parse.pos++;
+
+    const nodeId = req[parse.pos++];
+    const val    = genParseRequest(req, parse);
 
     genPostMessageToUi({ 
-        msg:    'uiUpdateCanvasObjects',
-        objects: objects
+        msg:    'uiUpdateValues',
+        values: [{
+            nodeId:     nodeId,
+            paramIndex: 0, 
+            value:      val }]
     });
+
+    return val;
 }
 
 
 
-function genGenerateNumber(request, i)
+function genRectangle(req, i)
 {
-    return {
-        type:   OBJ_RECT,
-        id:     nextGenObjectId++,
-        nodeId: request[i+1],
-        x:      request[i+2],
-        y:      request[i+3],
-        width:  request[i+4],
-        height: request[i+5],
-        angle:  request[i+6],
-        round:  request[i+7] };
-}
-
-
-
-function genGenerateRectangle(request, i)
-{
-    return {
-        type:   OBJ_RECT,
-        id:     nextGenObjectId++,
-        nodeId: request[i+1],
-        x:      request[i+2],
-        y:      request[i+3],
-        width:  request[i+4],
-        height: request[i+5],
-        angle:  request[i+6],
-        round:  request[i+7] };
+    genPostMessageToUi({ 
+        msg:    'uiUpdateObjects',
+        objects: [{
+            type:   OBJ_RECT,
+            id:     nextGenObjectId++,
+            nodeId: req[i+1],
+            x:      req[i+2],
+            y:      req[i+3],
+            width:  req[i+4],
+            height: req[i+5],
+            angle:  req[i+6],
+            round:  req[i+7] }]
+    });
 }
 
 
@@ -201,7 +220,7 @@ function genGenerateRectangle(request, i)
 //             ? inNode.inputs[input.index]
 //             : inNode.params.find(p => p.name == input.param).input);
 
-//         if (inNode.dataType == 'object')
+//         if (inNode.type == 'object')
 //             genUpdateObjects([input.nodeId]);
 //     }
 // }
@@ -288,7 +307,7 @@ function genGenerateRectangle(request, i)
 //         }    
 
 //         genPostMessageToUi({ 
-//             msg:    'uiUpdateCanvasObjects',
+//             msg:    'uiUpdateObjects',
 //             objects: objects
 //         });
 //     }
