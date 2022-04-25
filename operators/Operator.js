@@ -103,9 +103,9 @@ class Operator
     {
         switch (this._dataType)
         {
-            case 'number': return rgbNumber; //activeNumberColor;
-            case 'color':  return rgbActiveColor;
-            case 'object': return rgbActiveObject;
+            case NUMBER:    return rgbNumber; //activeNumberColor;
+            case COLOR:     return rgbActiveColor;
+            case RECTANGLE: return rgbActiveObject;
         }
 
         return 'magenta';
@@ -117,9 +117,9 @@ class Operator
     {
         switch (this._dataType)
         {
-            case 'number': return rgbNumber;
-            case 'color':  return rgbColor;
-            case 'object': return rgbObject;
+            case NUMBER:    return rgbNumber;
+            case COLOR:     return rgbColor;
+            case RECTANGLE: return rgbObject;
         }
 
         return 'magenta';
@@ -147,7 +147,7 @@ class Operator
 
     addInput(input)
     {
-        input._op = this;
+        input._node = this;
         this.inputs.push(input);
         this.inputControls.appendChild(input.control);
     }
@@ -215,17 +215,17 @@ class Operator
     {
         this.params.push(param);
         
-        param._op = this;
+        param._node = this;
 
         if (param.input)
         {
-            param.input._op = this;
+            param.input._node = this;
             this.inputs.push(param.input);
         }
 
         if (param.output)
         {
-            param.output._op = this;
+            param.output._node = this;
             this.outputs.push(param.output);
         }
 

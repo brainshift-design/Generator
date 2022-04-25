@@ -35,7 +35,7 @@ const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
 const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
 const COLOR_VALIDATE     = 'cvld';  // C
 const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
-const COLOR_BLIND        = 'blnd';  // C
+const COLORBLIND         = 'blnd';  // C
 
 const STRING             = 'str';   // S|value
 const STRING_ADD         = 'sadd';  // S S
@@ -60,9 +60,9 @@ function dataType2rgb(type, active)
 {
     switch (type)
     {
-        case 'number': return active ? rgbActiveNumber : rgbNumber;
-        case 'color':  return active ? rgbActiveColor  : rgbColor;
-        case 'object': return active ? rgbActiveObject : rgbObject;
+        case NUMBER:    return active ? rgbActiveNumber : rgbNumber;
+        case COLOR:     return active ? rgbActiveColor  : rgbColor;
+        case RECTANGLE: return active ? rgbActiveObject : rgbObject;
     }
 
     return 'magenta';
@@ -73,7 +73,7 @@ function dataType2rgb(type, active)
 function dataFromNumber(num, dec = -1)
 {
     return {
-        type:    'number',
+        type:    NUMBER,
         value:    floorTo(num, dec),
         decimals: dec
     };

@@ -336,27 +336,25 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
 
     switch (nodeType)
     {
-        case 'number':           node = new OpNumber();           break;
-        case 'minmax':           node = new OpMinMax();           break;
-        case 'add':              node = new OpAdd();              break;
-        case 'subtract':         node = new OpSubtract();         break;
-        case 'multiply':         node = new OpMultiply();         break;
-        case 'divide':           node = new OpDivide();           break;
-        case 'modulo':           node = new OpModulo();           break;
-        case 'exponent':         node = new OpExponent();         break;
-        case 'interpolate':      node = new OpInterpolate();      break;
-        // case 'random': node = new OpRandom(); break;
+        case NUMBER:             node = new OpNumber();           break;
+        case NUMBER_MINMAX:      node = new OpMinMax();           break;
+        case NUMBER_ADD:         node = new OpAdd();              break;
+        case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
+        case NUMBER_MULTIPLY:    node = new OpMultiply();         break;
+        case NUMBER_DIVIDE:      node = new OpDivide();           break;
+        case NUMBER_MODULO:      node = new OpModulo();           break;
+        case NUMBER_POWER:       node = new OpExponent();         break;
+        case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
+        // case NUMBER_RANDOM:   node = new OpRandom(); break;
         
-        case 'color':            node = new OpColor();            break;
-        case 'validatecolor':    node = new OpValidateColor();    break;
-        case 'colorinterpolate': node = new OpColorInterpolate(); break;
-        case 'webcontrast':      node = new OpWebContrast();      break;
-        case 'colorblind':       node = new OpColorblind();       break;
+        case COLOR:              node = new OpColor();            break;
+        case COLOR_INTERPOLAGE:  node = new OpColorInterpolate(); break;
+        case COLOR_VALIDATE:     node = new OpValidateColor();    break;
+        case COLOR_CONTRAST:     node = new OpWebContrast();      break;
+        case COLORBLIND:         node = new OpColorblind();       break;
         
-        case 'rectangle':        node = new OpRectangle();        break;
-        case 'row':              node = new OpRow();              break;
-        // case 'column': node = new OpColumn(); break;
-        //case 'spread': node = new OpSpread(); break;
+        case RECTANGLE:          node = new OpRectangle();        break;
+        case ELLIPSE:            node = new OpRow();              break;
     }
     
     node._creatingButton = creatingButton;

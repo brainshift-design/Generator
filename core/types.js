@@ -23,7 +23,7 @@ const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
 const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
 const COLOR_VALIDATE     = 'cvld';  // C
 const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
-const COLOR_BLIND        = 'blnd';  // C
+const COLORBLIND         = 'blnd';  // C
 
 const STRING             = 'str';   // S|value
 const STRING_ADD         = 'sadd';  // S S

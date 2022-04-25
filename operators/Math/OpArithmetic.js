@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor(nodeType, shortType, symbol)
     {
-        super(nodeType, shortType, 'number', 50);
+        super(nodeType, shortType, NUMBER, 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;

@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super('minmax', 'limits', 'number', 70);
+        super('minmax', 'limits', NUMBER, 70);
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));

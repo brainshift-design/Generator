@@ -10,7 +10,7 @@ extends Operator
 
     constructor()
     {
-        super('random', 'number');
+        super('random', NUMBER);
 
         this.addOutput(new Output(this.dataType));
 
@@ -75,7 +75,7 @@ extends Operator
 
 //     constructor()
 //     {
-//         super('random', 'number');
+//         super('random', NUMBER);
 
 //         this.addOutput(new Output(this.dataType));
 

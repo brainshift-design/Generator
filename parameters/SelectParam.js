@@ -31,7 +31,7 @@ extends Parameter
                 options,
                 value = 0)
     {
-        super(id, name, 'number');
+        super(id, name, NUMBER);
 
         this._control       = createDiv();
         

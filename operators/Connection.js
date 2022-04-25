@@ -161,7 +161,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && graphView.overOutput.type == this.input.type) 
+                    && this.input.types.includes(graphView.overOutput.type)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;

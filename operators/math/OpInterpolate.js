@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super('interpolate', 'inter', 'number', 70);
+        super('interpolate', 'inter', NUMBER, 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));

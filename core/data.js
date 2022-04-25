@@ -11,9 +11,9 @@ function dataType2rgb(type, active)
 {
     switch (type)
     {
-        case 'number': return active ? rgbActiveNumber : rgbNumber;
-        case 'color':  return active ? rgbActiveColor  : rgbColor;
-        case 'object': return active ? rgbActiveObject : rgbObject;
+        case NUMBER:    return active ? rgbActiveNumber : rgbNumber;
+        case COLOR:     return active ? rgbActiveColor  : rgbColor;
+        case RECTANGLE: return active ? rgbActiveObject : rgbObject;
     }
 
     return 'magenta';
@@ -24,7 +24,7 @@ function dataType2rgb(type, active)
 function dataFromNumber(num, dec = -1)
 {
     return {
-        type:    'number',
+        type:    NUMBER,
         value:    floorTo(num, dec),
         decimals: dec
     };

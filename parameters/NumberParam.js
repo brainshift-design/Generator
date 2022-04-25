@@ -33,7 +33,7 @@ extends Parameter
                 decimals  = 0,
                 dragScale = 0.05)
     {
-        super(id, name, 'number');
+        super(id, name, NUMBER);
 
         this._control       = createDiv();
         
@@ -63,7 +63,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_toString);
+        if (hasOutput) this.initOutput(NUMBER, this.output_generateRequest);
 
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -170,7 +170,7 @@ extends Parameter
 
 
 
-    toString()
+    generateRequest()
     {
         // this function exists because a parameter without an output
         // should still provide a value
@@ -178,7 +178,7 @@ extends Parameter
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.toString() ]
+            ? [ ...this.input.connectedOutput.generateRequest() ]
 
             : [ NUMBER, 
                 this.value.toString(), 
@@ -187,9 +187,9 @@ extends Parameter
 
 
 
-    output_toString(output)
+    output_generateRequest(output)
     {
-        return output.param.toString();
+        return output.param.generateRequest();
     }
 
 

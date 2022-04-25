@@ -7,8 +7,8 @@ var figMessages = [];
 //uiClearLocalData('productKey');
 
 //uiClearPageData('GA rect');
-uiRemoveAllSavedNodesAndConns();
-//uiLogAllSavedNodesAndConns();
+//uiRemoveAllSavedNodesAndConns();
+uiLogAllSavedNodesAndConns();
 
 
 var currentUser = '';

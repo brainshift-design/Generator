@@ -207,10 +207,10 @@
 
 #loadingEmpty
 {
-    font-size:   18;
+    font-size:   20;
     font-weight: 800;
     color:       #666;
-    margin-right: 6px;
+    margin-right: 2px;
     position:     relative;
     top:          -4px;
 }
@@ -218,12 +218,12 @@
 
 #loadingFull
 {
-    font-size:   12;
+    font-size:   16;
     font-weight: 800;
     color:       #666;
-    margin-left: 7px;
+    margin-left: 2px;
     position:     relative;
-    top:          -6px;
+    top:          -5px;
 }
 
 
@@ -1593,7 +1593,7 @@ const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
 const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
 const COLOR_VALIDATE     = 'cvld';  // C
 const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
-const COLOR_BLIND        = 'blnd';  // C
+const COLORBLIND         = 'blnd';  // C
 
 const STRING             = 'str';   // S|value
 const STRING_ADD         = 'sadd';  // S S
@@ -1618,9 +1618,9 @@ function dataType2rgb(type, active)
 {
     switch (type)
     {
-        case 'number': return active ? rgbActiveNumber : rgbNumber;
-        case 'color':  return active ? rgbActiveColor  : rgbColor;
-        case 'object': return active ? rgbActiveObject : rgbObject;
+        case NUMBER:    return active ? rgbActiveNumber : rgbNumber;
+        case COLOR:     return active ? rgbActiveColor  : rgbColor;
+        case RECTANGLE: return active ? rgbActiveObject : rgbObject;
     }
 
     return 'magenta';
@@ -1631,7 +1631,7 @@ function dataType2rgb(type, active)
 function dataFromNumber(num, dec = -1)
 {
     return {
-        type:    'number',
+        type:    NUMBER,
         value:    floorTo(num, dec),
         decimals: dec
     };
@@ -6765,7 +6765,7 @@ const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
 const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
 const COLOR_VALIDATE     = 'cvld';  // C
 const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
-const COLOR_BLIND        = 'blnd';  // C
+const COLORBLIND         = 'blnd';  // C
 
 const STRING             = 'str';   // S|value
 const STRING_ADD         = 'sadd';  // S S
@@ -6790,9 +6790,9 @@ function dataType2rgb(type, active)
 {
     switch (type)
     {
-        case 'number': return active ? rgbActiveNumber : rgbNumber;
-        case 'color':  return active ? rgbActiveColor  : rgbColor;
-        case 'object': return active ? rgbActiveObject : rgbObject;
+        case NUMBER:    return active ? rgbActiveNumber : rgbNumber;
+        case COLOR:     return active ? rgbActiveColor  : rgbColor;
+        case RECTANGLE: return active ? rgbActiveObject : rgbObject;
     }
 
     return 'magenta';
@@ -6803,7 +6803,7 @@ function dataType2rgb(type, active)
 function dataFromNumber(num, dec = -1)
 {
     return {
-        type:    'number',
+        type:    NUMBER,
         value:    floorTo(num, dec),
         decimals: dec
     };
@@ -11209,7 +11209,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             if (    graphView.tempConn.output
                 &&  slider.param.input
-                &&  graphView.tempConn.output.type == slider.param.input.type
+                &&  slider.param.input.types.includes(graphView.tempConn.output.type)
                 && !graphView.tempConn.output.node.follows(slider.param.node)
                 && (  !slider.param.input.connected // not already connected to this input
                     || slider.param.input.connectedOutput != graphView.tempConn.output
@@ -11228,7 +11228,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             }
             else if ( graphView.tempConn.input
                   &&  slider.param.output
-                  &&  graphView.tempConn.input.type == slider.param.output.type
+                  &&  graphView.tempConn.input.types.includes(slider.param.output.type)
                   && !slider.param.node.follows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = slider.param.output;
@@ -11351,8 +11351,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             if (slider.param)
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
-             console.log('param.node', param.node);   
-                if (!isLastInArray(param.node.params, param))
+
+                if (    param.node
+                    &&  param.node.params.includes(param)
+                    && !isLastInArray(param.node.params, param))
                     slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
             }
             else
@@ -14436,7 +14438,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.type == output.type) // TO INPUT
+            && input.types.includes(output.type)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -14475,7 +14477,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
         
         if (   output
-            && output.type == input.type) // TO OUTPUT
+            && input.types.includes(output.type)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
@@ -15018,7 +15020,7 @@ extends Parameter
                 decimals  = 0,
                 dragScale = 0.05)
     {
-        super(id, name, 'number');
+        super(id, name, NUMBER);
 
         this._control       = createDiv();
         
@@ -15048,7 +15050,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_toString);
+        if (hasOutput) this.initOutput(NUMBER, this.output_generateRequest);
 
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -15155,7 +15157,7 @@ extends Parameter
 
 
 
-    toString()
+    generateRequest()
     {
         // this function exists because a parameter without an output
         // should still provide a value
@@ -15163,7 +15165,7 @@ extends Parameter
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.toString() ]
+            ? [ ...this.input.connectedOutput.generateRequest() ]
 
             : [ NUMBER, 
                 this.value.toString(), 
@@ -15172,9 +15174,9 @@ extends Parameter
 
 
 
-    output_toString(output)
+    output_generateRequest(output)
     {
-        return output.param.toString();
+        return output.param.generateRequest();
     }
 
 
@@ -15344,7 +15346,7 @@ extends Parameter
                 options,
                 value = 0)
     {
-        super(id, name, 'number');
+        super(id, name, NUMBER);
 
         this._control       = createDiv();
         
@@ -15797,27 +15799,25 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
 
     switch (nodeType)
     {
-        case 'number':           node = new OpNumber();           break;
-        case 'minmax':           node = new OpMinMax();           break;
-        case 'add':              node = new OpAdd();              break;
-        case 'subtract':         node = new OpSubtract();         break;
-        case 'multiply':         node = new OpMultiply();         break;
-        case 'divide':           node = new OpDivide();           break;
-        case 'modulo':           node = new OpModulo();           break;
-        case 'exponent':         node = new OpExponent();         break;
-        case 'interpolate':      node = new OpInterpolate();      break;
-        // case 'random': node = new OpRandom(); break;
+        case NUMBER:             node = new OpNumber();           break;
+        case NUMBER_MINMAX:      node = new OpMinMax();           break;
+        case NUMBER_ADD:         node = new OpAdd();              break;
+        case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
+        case NUMBER_MULTIPLY:    node = new OpMultiply();         break;
+        case NUMBER_DIVIDE:      node = new OpDivide();           break;
+        case NUMBER_MODULO:      node = new OpModulo();           break;
+        case NUMBER_POWER:       node = new OpExponent();         break;
+        case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
+        // case NUMBER_RANDOM:   node = new OpRandom(); break;
         
-        case 'color':            node = new OpColor();            break;
-        case 'validatecolor':    node = new OpValidateColor();    break;
-        case 'colorinterpolate': node = new OpColorInterpolate(); break;
-        case 'webcontrast':      node = new OpWebContrast();      break;
-        case 'colorblind':       node = new OpColorblind();       break;
+        case COLOR:              node = new OpColor();            break;
+        case COLOR_INTERPOLAGE:  node = new OpColorInterpolate(); break;
+        case COLOR_VALIDATE:     node = new OpValidateColor();    break;
+        case COLOR_CONTRAST:     node = new OpWebContrast();      break;
+        case COLORBLIND:         node = new OpColorblind();       break;
         
-        case 'rectangle':        node = new OpRectangle();        break;
-        case 'row':              node = new OpRow();              break;
-        // case 'column': node = new OpColumn(); break;
-        //case 'spread': node = new OpSpread(); break;
+        case RECTANGLE:          node = new OpRectangle();        break;
+        case ELLIPSE:            node = new OpRow();              break;
     }
     
     node._creatingButton = creatingButton;
@@ -16325,7 +16325,7 @@ class Output
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
-                && graphView.tempConn.input.type == this.type)
+                && graphView.tempConn.input.types.includes(this.type))
             {
                 const rect = boundingRect(this.control);
                 const loop = this.node.follows(graphView.tempConn.input.node);
@@ -16376,7 +16376,7 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && (   graphView.tempConn.input.type != this.type
+                 && (   !graphView.tempConn.input.types.includes(this.type)
                      || this.node.follows(graphView.tempConn.input.node)));
 
         const colorStyle = 
@@ -16406,8 +16406,8 @@ class Output
                && (   graphView.tempConn.output == this
                    ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
-               && !(   graphView.tempConn.input
-                    && graphView.tempConn.input.type != this.type);
+               && !(    graphView.tempConn.input
+                    && !graphView.tempConn.input.types.includes(this.type));
 
         show(this.wireBall, isConnected);
     }
@@ -16577,7 +16577,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && graphView.overOutput.type == this.input.type) 
+                    && this.input.types.includes(graphView.overOutput.type)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -16815,9 +16815,9 @@ class Operator
     {
         switch (this._dataType)
         {
-            case 'number': return rgbNumber; //activeNumberColor;
-            case 'color':  return rgbActiveColor;
-            case 'object': return rgbActiveObject;
+            case NUMBER:    return rgbNumber; //activeNumberColor;
+            case COLOR:     return rgbActiveColor;
+            case RECTANGLE: return rgbActiveObject;
         }
 
         return 'magenta';
@@ -16829,9 +16829,9 @@ class Operator
     {
         switch (this._dataType)
         {
-            case 'number': return rgbNumber;
-            case 'color':  return rgbColor;
-            case 'object': return rgbObject;
+            case NUMBER:    return rgbNumber;
+            case COLOR:     return rgbColor;
+            case RECTANGLE: return rgbObject;
         }
 
         return 'magenta';
@@ -16859,7 +16859,7 @@ class Operator
 
     addInput(input)
     {
-        input._op = this;
+        input._node = this;
         this.inputs.push(input);
         this.inputControls.appendChild(input.control);
     }
@@ -16927,17 +16927,17 @@ class Operator
     {
         this.params.push(param);
         
-        param._op = this;
+        param._node = this;
 
         if (param.input)
         {
-            param.input._op = this;
+            param.input._node = this;
             this.inputs.push(param.input);
         }
 
         if (param.output)
         {
-            param.output._op = this;
+            param.output._node = this;
             this.outputs.push(param.output);
         }
 
@@ -18224,7 +18224,7 @@ extends OperatorBase
 
     constructor()
     {
-        super('minmax', 'limits', 'number', 70);
+        super('minmax', 'limits', NUMBER, 70);
 
         this.addInput (new Input (this.dataType));
         this.addOutput(new Output(this.dataType));
@@ -18299,7 +18299,7 @@ extends OperatorBase
 
     constructor(nodeType, shortType, symbol)
     {
-        super(nodeType, shortType, 'number', 50);
+        super(nodeType, shortType, NUMBER, 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -18703,7 +18703,7 @@ extends OperatorBase
 
     constructor()
     {
-        super('interpolate', 'inter', 'number', 70);
+        super('interpolate', 'inter', NUMBER, 70);
 
         this.addInput(new Input(this.dataType));
         this.addInput(new Input(this.dataType));
@@ -23422,8 +23422,8 @@ var figMessages = [];
 //uiClearLocalData('productKey');
 
 //uiClearPageData('GA rect');
-uiRemoveAllSavedNodesAndConns();
-//uiLogAllSavedNodesAndConns();
+//uiRemoveAllSavedNodesAndConns();
+uiLogAllSavedNodesAndConns();
 
 
 var currentUser = '';

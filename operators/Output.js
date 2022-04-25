@@ -91,7 +91,7 @@ class Output
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
-                && graphView.tempConn.input.type == this.type)
+                && graphView.tempConn.input.types.includes(this.type))
             {
                 const rect = boundingRect(this.control);
                 const loop = this.node.follows(graphView.tempConn.input.node);
@@ -142,7 +142,7 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && (   graphView.tempConn.input.type != this.type
+                 && (   !graphView.tempConn.input.types.includes(this.type)
                      || this.node.follows(graphView.tempConn.input.node)));
 
         const colorStyle = 
@@ -172,8 +172,8 @@ class Output
                && (   graphView.tempConn.output == this
                    ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
-               && !(   graphView.tempConn.input
-                    && graphView.tempConn.input.type != this.type);
+               && !(    graphView.tempConn.input
+                    && !graphView.tempConn.input.types.includes(this.type));
 
         show(this.wireBall, isConnected);
     }
