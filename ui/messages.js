@@ -30,15 +30,17 @@ onmessage = e =>
 
 generator.onmessage = function(e)
 {
-    switch (e.data.msg)
+    const msg = JSON.parse(e.data);
+
+    switch (msg.cmd)
     {
-        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(e.data.nodeId, e.data.progress); break;
-        case 'uiEndFindCorrection':    uiEndFindCorrection           (e.data.nodeId, e.data.success, e.data.closestOrder, e.data.closest1, e.data.closest2, e.data.closest3); break;
-        // case 'uiMakeActive':        uiMakeActive    (e.data.nodeIds);                            break;
-        // case 'uiShowParamValue':    uiShowParamValue(e.data.nodeId, e.data.param, e.data.value); break;
-        // case 'uiUpdateNodes':       uiUpdateNodes   (e.data.nodeIds);                            break;
+        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
+        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        // case 'uiMakeActive':        uiMakeActive    (msg.nodeIds);                            break;
+        // case 'uiShowParamValue':    uiShowParamValue(msg.nodeId, msg.param, msg.value); break;
+        // case 'uiUpdateNodes':       uiUpdateNodes   (msg.nodeIds);                            break;
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
-        case 'uiUpdateObjects':        uiUpdateObjects         (e.data.objects);                 break;
+        case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);                 break;
     }
 };
 
@@ -86,16 +88,17 @@ function uiPostNextMessageToFigma()
 // to Generator -->
 function uiPostMessageToGenerator(msg)
 {
-    generator.postMessage(msg);
+    generator.postMessage(JSON.stringify(msg));
 }
 
 
 
 function uiGenParseRequest(request)
 {
-    console.log('request', request);
+    //console.log('request', request);
+    
     uiPostMessageToGenerator({
-        msg:    'genParseRequest',
+        cmd:    'genParseRequest',
         request: request
     });
 }

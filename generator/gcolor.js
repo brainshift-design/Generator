@@ -26,7 +26,7 @@ function genFindCorrection(nodeId,
 
     genPostMessageToUi(
     {
-        msg:         'uiEndFindCorrection',
+        cmd:         'uiEndFindCorrection',
         nodeId:       nodeId,
         success:      closestOklab != null,
         closestOrder: closestOrder,
@@ -213,7 +213,7 @@ function findCorrectionInOrder(nodeId,
 
         genPostMessageToUi(
         {
-            msg:     'uiUpdateFindCorrection',
+            cmd:     'uiUpdateFindCorrection',
             nodeId:   nodeId,
             progress: progress / total
         });

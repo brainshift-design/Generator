@@ -2390,19 +2390,21 @@ const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 onmessage = function(e)
 {
-    console.log(e.data.msg);
-    switch (e.data.msg)
+    const msg = JSON.parse(e.data);
+
+    console.log('msg.cmd', msg.cmd);
+    switch (msg.cmd)
     {
         case 'genFindCorrection':   
             genFindCorrection(
-                e.data.nodeId, 
-                e.data.inputColor, 
-                e.data.param1,  e.data.param2,  e.data.param3,
-                e.data.locked1, e.data.locked2, e.data.locked3);  
+                msg.nodeId, 
+                msg.inputColor, 
+                msg.param1,  msg.param2,  msg.param3,
+                msg.locked1, msg.locked2, msg.locked3);  
         
             break;
         
-        case 'genParseRequest':  console.log('gen request', e.data.request); genParseRequest(e.data.request); break;
+        case 'genParseRequest':  console.log('gen request', msg.request); genParseRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -2422,7 +2424,7 @@ onmessage = function(e)
 
 function genPostMessageToUi(msg)
 {
-    postMessage(msg); // this call is too ambiguous to understand when reading code
+    postMessage(JSON.stringify(msg)); // this call is too ambiguous to understand when reading code
 }
 
 
@@ -2477,7 +2479,7 @@ function genNumber(req, parse)
     const val    = genParseRequest(req, parse);
 
     genPostMessageToUi({ 
-        msg:    'uiUpdateValues',
+        cmd:    'uiUpdateValues',
         values: [{
             nodeId:     nodeId,
             paramIndex: 0, 
@@ -2492,7 +2494,7 @@ function genNumber(req, parse)
 function genRectangle(req, i)
 {
     genPostMessageToUi({ 
-        msg:    'uiUpdateObjects',
+        cmd:    'uiUpdateObjects',
         objects: [{
             type:   OBJ_RECT,
             id:     nextGenObjectId++,
@@ -2523,7 +2525,7 @@ function genRectangle(req, i)
 //     // on the UI side the node has already been created by this point
 
 //     genPostMessageToUi({
-//         msg:     'uiMakeActive',
+//         cmd:     'uiMakeActive',
 //         nodeIds: [node.id]
 //     });
 // }
@@ -2552,7 +2554,7 @@ function genRectangle(req, i)
 
     
 //     genPostMessageToUi({ 
-//         msg:    'uiMakeActive',
+//         cmd:    'uiMakeActive',
 //         nodeIds: nodeIds
 //     });
 
@@ -2628,7 +2630,7 @@ function genRectangle(req, i)
 //     if (activeId > -1)
 //     {
 //         genPostMessageToUi({ 
-//             msg:    'uiUpdateNodes',
+//             cmd:    'uiUpdateNodes',
 //             nodeIds: [activeId]
 //         });
 //     }
@@ -2679,13 +2681,13 @@ function genRectangle(req, i)
 //         }    
 
 //         genPostMessageToUi({ 
-//             msg:    'uiUpdateObjects',
+//             cmd:    'uiUpdateObjects',
 //             objects: objects
 //         });
 //     }
 //     // else
 //     // {
-//     //     genPostMessageToUi({ msg: 'uiUpdateGraph' });
+//     //     genPostMessageToUi({ cmd: 'uiUpdateGraph' });
 //     // }
 // }
 
@@ -4851,7 +4853,7 @@ function genFindCorrection(nodeId,
 
     genPostMessageToUi(
     {
-        msg:         'uiEndFindCorrection',
+        cmd:         'uiEndFindCorrection',
         nodeId:       nodeId,
         success:      closestOklab != null,
         closestOrder: closestOrder,
@@ -5038,7 +5040,7 @@ function findCorrectionInOrder(nodeId,
 
         genPostMessageToUi(
         {
-            msg:     'uiUpdateFindCorrection',
+            cmd:     'uiUpdateFindCorrection',
             nodeId:   nodeId,
             progress: progress / total
         });

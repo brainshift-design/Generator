@@ -160,7 +160,7 @@ extends OpColorBase
 
                 uiPostMessageToGenerator(
                 {
-                    msg:       'genFindCorrection',
+                    cmd:       'genFindCorrection',
                     nodeId:     this.id,
                     inputColor: this.inputs[0].data.color,
                     param1:     this.param1.value,

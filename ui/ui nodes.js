@@ -438,7 +438,7 @@ function uiDeleteNodes(nodeIds, actionId)
 
 
 //     // uiPostMessageToGenerator({
-//     //     msg:       'genUndeleteNodes',
+//     //     cmd:       'genUndeleteNodes',
 //     //     uiActionId: actionId
 //     // });
 // }
@@ -534,7 +534,7 @@ function uiDisconnect(input)
 
 
     // uiPostMessageToGenerator({
-    //     msg: 'genDisconnect',
+    //     cmd: 'genDisconnect',
     //     input:
     //     {
     //         nodeId: input.node.id,
@@ -919,7 +919,7 @@ function uiUpdateNodes(nodeIds)
 
 
     // uiPostMessageToGenerator({
-    //     msg:    'genUpdateObjects',
+    //     cmd:    'genUpdateObjects',
     //     nodeIds: nodeIds
     // });
 }

@@ -310,10 +310,7 @@ class Operator
         //     uiGenParseRequest(this.toString());
 
         for (const output of this.outputs)
-        {
-            //console.log(output.toString());
             uiGenParseRequest(output.toString());
-        }
         
 
         // if (graphView.canUpdateNodes)
