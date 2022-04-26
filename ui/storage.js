@@ -155,21 +155,8 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
     const conns  = JSON.parse( connsJson).map(c => JSON.parse(c));
     const active = JSON.parse(activeJson);
 
-    //console.log('nodes', nodes);
-    //console.log('conns', conns);
-    //console.log('active', active);
-
     loadNodesAndConnsAsync(nodes, conns, active, setLoadingProgress);
 }
-
-
-
-// function saveGraph()
-// {
-//     const json = graph.toJson(); 
-//     //log(json); 
-//     uiSetPageData("graph", json);
-// }
 
 
 
@@ -301,11 +288,14 @@ function resolveLoadConnections(nodes, _connections, first, last)
         {
             for (let i = first; i < last; i++)
             {
-                const _conn = _connections[i];
+                const _conn      = _connections[i];
+                const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
+                const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
-                if (   nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNode)
-                    && nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNode))
-                    Connection.parseJson(_conn);
+                if (!outputNode) { uiError('node \'' + _conn.outputNodeId + '\' not found'); continue; }
+                if (! inputNode) { uiError('node \'' + _conn. inputNodeId + '\' not found'); continue; }
+
+                Connection.parseJson(_conn);
             }
 
             resolve();

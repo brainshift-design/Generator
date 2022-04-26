@@ -224,10 +224,10 @@ class Connection
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputNode": "' + this.output.node.id + '"'
+            +  '\n' + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
             + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputNode": "' + this.input.node.id + '"'
+            + ',\n' + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',\n' + pos + tab + '"inputIndex": "' + this.input.index + '"'
             + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +  '\n' + pos + '}';
@@ -239,10 +239,10 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputNode  = nodeFromId(_conn.outputNode);
+        const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputIndex = parseInt(_conn.outputIndex);
 
-        const inputNode   = nodeFromId(_conn.inputNode);
+        const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputIndex  = parseInt(_conn.inputIndex);
 
 
@@ -262,7 +262,7 @@ class Connection
             || !inputNode  ||  inputIndex >= inputNode .inputs .length)
         {
             uiError(
-                  'Cannot connect ' 
+                  'cannot connect ' 
                 + _conn.outputNode + '.out[' + outputIndex + '] to ' 
                 + _conn.inputNode  + '.in[' + _conn.inputIndex + ']');
         }
@@ -276,10 +276,10 @@ class Connection
 function getConnectionForArrayWithIds(conn)
 {
     return {
-        outputNodeId:conn.output.node.id,
-        outputIndex: conn.output.index,
-        inputNodeId: conn.input .node.id,
-        inputIndex:  conn.input .index };
+        outputNodeId: conn.output.node.id,
+        outputIndex:  conn.output.index,
+        inputNodeId:  conn.input .node.id,
+        inputIndex:   conn.input .index };
 }
 
 
@@ -288,7 +288,7 @@ function getConnectionForArrayWithNames(conn)
 {
     return {
         outputNodeName: conn.output.node.id,
-        outputIndex:  conn.output.index,
+        outputIndex:    conn.output.index,
         inputNodeName:  conn.input .node.id,
-        inputIndex:   conn.input .index };
+        inputIndex:     conn.input .index };
 }
