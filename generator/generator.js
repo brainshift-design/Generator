@@ -21,7 +21,7 @@ onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
 
-    console.log('msg.cmd', msg.cmd);
+    //console.log('msg.cmd', msg.cmd);
     switch (msg.cmd)
     {
         case 'genFindCorrection':   
@@ -33,7 +33,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':  console.log('gen request', msg.request); genParseRequest(msg.request); break;
+        case 'genParseRequest':     genParseRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -59,83 +59,6 @@ function genPostMessageToUi(msg)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// some parse functions return values
-// some parse functions update values
-// some parse functions update objects
-
-
-
-function genParseRequest(req, parse = {pos:0})
-{
-    const stackOverflowProtect = 100;
-
-    nextGenObjectId = 0;
-
-    for (so = 0; parse.pos < req.length && so < stackOverflowProtect; )
-    {
-        const next = req[parse.pos];
-
-             if (next == NUMBER   )     genNumber   (req, parse.pos);
-        else if (next == RECTANGLE)     genRectangle(req, parse.pos);
-        else if (strIsNum(next)) return genNumValue (req, parse.pos);
-        else so++;
-    }
-}
-
-
-
-function genNumValue(req, parse)
-{
-    // values are always a value/decimals pair
-
-    const val = parseFloat(req[parse.pos++]);
-
-    parse.pos++; // decimals
-
-    return val;
-}
-
-
-
-function genNumber(req, parse)
-{
-    parse.pos++;
-
-    const nodeId = req[parse.pos++];
-    const val    = genParseRequest(req, parse);
-
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateValues',
-        values: [{
-            nodeId:     nodeId,
-            paramIndex: 0, 
-            value:      val }]
-    });
-
-    return val;
-}
-
-
-
-function genRectangle(req, i)
-{
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateObjects',
-        objects: [{
-            type:   OBJ_RECT,
-            id:     nextGenObjectId++,
-            nodeId: req[i+1],
-            x:      req[i+2],
-            y:      req[i+3],
-            width:  req[i+4],
-            height: req[i+5],
-            angle:  req[i+6],
-            round:  req[i+7] }]
-    });
-}
 
 
 

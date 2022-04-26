@@ -285,7 +285,7 @@ class Operator
 
     pushUpdate()
     {
-        log(this.id + '.Operator.pushUpdate()');
+        //log(this.id + '.Operator.pushUpdate()');
 
         this.invalidate();
 

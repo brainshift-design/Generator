@@ -7,6 +7,7 @@
     //[../autojoin/goperators.aj]
 
     ../generator/generator.js
+    ../generator/generator parse.js
 
     [../autojoin/color.aj]
     ../operators/color/OpColor spaces.js
