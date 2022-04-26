@@ -130,6 +130,8 @@ function figLogAllSavedNodesAndConns()
     for (const key of   nodeKeys) console.log(key+'\n', figGetPageData(key, false));
     for (const key of activeKeys) console.log(key+'\n', figGetPageData(key, false));
     for (const key of   connKeys) console.log(key+'\n', figGetPageData(key, false));
+
+    console.log('------------------END-LOAD-------------------');
 }
 
 

@@ -560,8 +560,8 @@ function uiMakeNodeActive(node)
         nodeId: node.id
     });
 
-    node.updateNode();
-    node.pushUpdate();
+    //node.updateNode();
+    //node.pushUpdate();
 }
 
 

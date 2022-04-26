@@ -246,15 +246,15 @@ class Connection
         const inputIndex  = parseInt(_conn.inputIndex);
 
 
-        log('---------------------------------------');
+        // log('---------------------------------------');
 
-        log('outputNode',                outputNode);
-        log('outputIndex',               outputIndex);
-        log('outputNode.outputs.length', outputNode.outputs.length);
+        // log('outputNode',                outputNode);
+        // log('outputIndex',               outputIndex);
+        // log('outputNode.outputs.length', outputNode.outputs.length);
         
-        log('inputNode',               inputNode);
-        log('inputIndex',              inputIndex);
-        log('inputNode.inputs.length', inputNode.inputs.length);
+        // log('inputNode',               inputNode);
+        // log('inputIndex',              inputIndex);
+        // log('inputNode.inputs.length', inputNode.inputs.length);
 
 
 

@@ -7,7 +7,7 @@ extends Action
 
     inputNodeId;
     inputIndex;
-    get inputNodeId() { return nodeFromId(this.inputNodeId); }
+    get inputNode() { return nodeFromId(this.inputNodeId); }
 
     oldActiveNodeIds = [];
     newActiveNodeIds = [];

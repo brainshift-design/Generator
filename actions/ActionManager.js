@@ -33,7 +33,7 @@ class ActionManager
         }
 
         action.do(); 
-        log("DO " + action.name);
+        console.log("DO " + action.name);
     }
 
 
@@ -49,7 +49,7 @@ class ActionManager
             this.redoActions.push(last);
 
             last.undo(); 
-            log("UNDO " + last.name);
+            console.log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -70,7 +70,7 @@ class ActionManager
             this.actions.push(last);
 
             last.redo(); 
-            log("REDO " + last.name);
+            console.log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))

@@ -19,6 +19,7 @@ const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 onmessage = function(e)
 {
+    console.log(e.data.msg);
     switch (e.data.msg)
     {
         case 'genFindCorrection':   

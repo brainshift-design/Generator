@@ -364,6 +364,7 @@ function figLogAllSavedNodesAndConns() {
         console.log(key + '\n', figGetPageData(key, false));
     for (const key of connKeys)
         console.log(key + '\n', figGetPageData(key, false));
+    console.log('------------------END-LOAD-------------------');
 }
 function figSaveConnection(name, json) {
     // console.log('key', connName(name));

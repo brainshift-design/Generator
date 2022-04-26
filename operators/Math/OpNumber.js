@@ -43,7 +43,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (this.cache != '') 
+        if (this.node.valid)//this.cache != '') 
             return this.cache;
 
 

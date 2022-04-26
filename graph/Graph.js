@@ -98,8 +98,8 @@ class Graph
         graphView.putNodeOnTop(node);
         graphView.updateScrollWithBounds();
 
-        if (updateLabel)
-            setTimeout(() => node.updateNode());
+        // if (updateLabel)
+        //     setTimeout(() => node.updateNode());
     }
     
 
@@ -166,7 +166,10 @@ class Graph
             input = lastOf(input.node.inputs);
             
             // move new input back to correct index
-            moveInArray(input.node.inputs, input.node.inputs.length-1, inputIndex);
+            moveInArray(
+                input.node.inputs, 
+                input.node.inputs.length-1, 
+                inputIndex);
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 

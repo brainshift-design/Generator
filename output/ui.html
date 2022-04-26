@@ -3948,6 +3948,7 @@ const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
 
 onmessage = function(e)
 {
+    console.log(e.data.msg);
     switch (e.data.msg)
     {
         case 'genFindCorrection':   
@@ -15561,8 +15562,8 @@ class Graph
         graphView.putNodeOnTop(node);
         graphView.updateScrollWithBounds();
 
-        if (updateLabel)
-            setTimeout(() => node.updateNode());
+        // if (updateLabel)
+        //     setTimeout(() => node.updateNode());
     }
     
 
@@ -15629,7 +15630,10 @@ class Graph
             input = lastOf(input.node.inputs);
             
             // move new input back to correct index
-            moveInArray(input.node.inputs, input.node.inputs.length-1, inputIndex);
+            moveInArray(
+                input.node.inputs, 
+                input.node.inputs.length-1, 
+                inputIndex);
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
@@ -16662,15 +16666,15 @@ class Connection
         const inputIndex  = parseInt(_conn.inputIndex);
 
 
-        log('---------------------------------------');
+        // log('---------------------------------------');
 
-        log('outputNode',                outputNode);
-        log('outputIndex',               outputIndex);
-        log('outputNode.outputs.length', outputNode.outputs.length);
+        // log('outputNode',                outputNode);
+        // log('outputIndex',               outputIndex);
+        // log('outputNode.outputs.length', outputNode.outputs.length);
         
-        log('inputNode',               inputNode);
-        log('inputIndex',              inputIndex);
-        log('inputNode.inputs.length', inputNode.inputs.length);
+        // log('inputNode',               inputNode);
+        // log('inputIndex',              inputIndex);
+        // log('inputNode.inputs.length', inputNode.inputs.length);
 
 
 
@@ -16979,6 +16983,8 @@ class Operator
         if (!this.valid) // stops a node with inputs from same output 
             return;      // from being invalidated more than once
     
+        //console.log(this.id + '.Operator.invalidate()');
+
         this.valid = false;
 
 
@@ -16995,11 +17001,13 @@ class Operator
 
     pushUpdate()
     {
-        //log(this.id + '.Operator.pushUpdate()');
+        log(this.id + '.Operator.pushUpdate()');
 
         this.invalidate();
 
-        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
+        //setTimeout(() => 
+        getTerminalsAfterNode(this)
+            .forEach(n => n.update());//);
     }
 
 
@@ -17008,12 +17016,10 @@ class Operator
     {
         if (this.valid) return;
         
-        log(this.id + '.Operator.update()');
+        //console.log(this.id + '.Operator.update()');
     
         //this.updateParams(false);
         //this.updateData();
-
-        this.valid = true;
 
 
         // if (this.active)
@@ -17021,15 +17027,16 @@ class Operator
 
         for (const output of this.outputs)
         {
-            console.log('output', output);
-            if (output) console.log('output.toString()', output.toString());
+            //console.log(output.toString());
             uiGenParseRequest(output.toString());
         }
         
 
-        if (graphView.canUpdateNodes)
-            this.updateNode();
+        // if (graphView.canUpdateNodes)
+        //    this.updateNode();
 
+
+        this.valid   = true;
         this.loading = false;
     }
 
@@ -18127,7 +18134,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (this.cache != '') 
+        if (this.node.valid)//this.cache != '') 
             return this.cache;
 
 
@@ -21811,7 +21818,7 @@ class ActionManager
         }
 
         action.do(); 
-        log("DO " + action.name);
+        console.log("DO " + action.name);
     }
 
 
@@ -21827,7 +21834,7 @@ class ActionManager
             this.redoActions.push(last);
 
             last.undo(); 
-            log("UNDO " + last.name);
+            console.log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -21848,7 +21855,7 @@ class ActionManager
             this.actions.push(last);
 
             last.redo(); 
-            log("REDO " + last.name);
+            console.log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))
@@ -22291,7 +22298,7 @@ extends Action
 
     inputNodeId;
     inputIndex;
-    get inputNodeId() { return nodeFromId(this.inputNodeId); }
+    get inputNode() { return nodeFromId(this.inputNodeId); }
 
     oldActiveNodeIds = [];
     newActiveNodeIds = [];
@@ -23745,6 +23752,7 @@ function uiPostMessageToGenerator(msg)
 
 function uiGenParseRequest(request)
 {
+    console.log('request', request);
     uiPostMessageToGenerator({
         msg:    'genParseRequest',
         request: request
@@ -24910,8 +24918,8 @@ function uiMakeNodeActive(node)
         nodeId: node.id
     });
 
-    node.updateNode();
-    node.pushUpdate();
+    //node.updateNode();
+    //node.pushUpdate();
 }
 
 

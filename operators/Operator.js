@@ -267,6 +267,8 @@ class Operator
         if (!this.valid) // stops a node with inputs from same output 
             return;      // from being invalidated more than once
     
+        //console.log(this.id + '.Operator.invalidate()');
+
         this.valid = false;
 
 
@@ -283,11 +285,13 @@ class Operator
 
     pushUpdate()
     {
-        //log(this.id + '.Operator.pushUpdate()');
+        log(this.id + '.Operator.pushUpdate()');
 
         this.invalidate();
 
-        setTimeout(() => getTerminalsAfterNode(this).forEach(n => n.update()));
+        //setTimeout(() => 
+        getTerminalsAfterNode(this)
+            .forEach(n => n.update());//);
     }
 
 
@@ -296,12 +300,10 @@ class Operator
     {
         if (this.valid) return;
         
-        log(this.id + '.Operator.update()');
+        //console.log(this.id + '.Operator.update()');
     
         //this.updateParams(false);
         //this.updateData();
-
-        this.valid = true;
 
 
         // if (this.active)
@@ -309,15 +311,16 @@ class Operator
 
         for (const output of this.outputs)
         {
-            console.log('output', output);
-            if (output) console.log('output.toString()', output.toString());
+            //console.log(output.toString());
             uiGenParseRequest(output.toString());
         }
         
 
-        if (graphView.canUpdateNodes)
-            this.updateNode();
+        // if (graphView.canUpdateNodes)
+        //    this.updateNode();
 
+
+        this.valid   = true;
         this.loading = false;
     }
 
