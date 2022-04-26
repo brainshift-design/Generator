@@ -29,11 +29,12 @@ function genNumValue(req, parse)
 {
     // values are always a value/decimals pair
 
-    const val = parseFloat(req[parse.pos++]);
+    const strVal = req[parse.pos++];
 
-    parse.pos++; // decimals
+    const val = parseFloat(strVal);
+    const dec = getDecimalCount(strVal);
 
-    return val;
+    return [val, dec];
 }
 
 
@@ -47,10 +48,7 @@ function genNumber(req, parse)
 
     genPostMessageToUi({ 
         cmd:    'uiUpdateValues',
-        values: [{
-            nodeId:     nodeId,
-            paramIndex: 0, 
-            value:      val }]
+        values: [nodeId, 0, val[0], val[1]] // values are sent in [param index, value, dec] tuples
     });
 
     return val;

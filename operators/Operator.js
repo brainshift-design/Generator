@@ -231,8 +231,8 @@ class Operator
 
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
-        
 
+        
         this.inner.appendChild(param.div);
     }
  

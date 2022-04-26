@@ -40,6 +40,7 @@ generator.onmessage = function(e)
         // case 'uiShowParamValue':    uiShowParamValue(msg.nodeId, msg.param, msg.value); break;
         // case 'uiUpdateNodes':       uiUpdateNodes   (msg.nodeIds);                            break;
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
+        case 'uiUpdateValues':         uiUpdateValues                (msg.values);                  break;
         case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);                 break;
     }
 };

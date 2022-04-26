@@ -57,8 +57,9 @@ extends OperatorBase
         req.push(...
             input.connected
             ? input.connectedOutput.toString()
-            : [ this.node.#paramValue.value      .toString(),
-                this.node.#paramValue.control.dec.toString() ]);
+            : [ numToString(
+                    this.node.#paramValue.value,
+                    this.node.#paramValue.control.dec) ]);
 
                 
         return this.cache = [...req];

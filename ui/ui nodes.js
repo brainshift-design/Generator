@@ -944,6 +944,21 @@ function uiUpdateGraph()
 
 
 
+function uiUpdateValues(values)
+{
+    const node = nodeFromId(values[0]);
+
+    for (let i = 1; i < values.length; i += 3)
+    {
+        node.params[values[i]].control.setDecimals(values[i+2]);
+        node.params[values[i]].setValue(values[i+1], false, true, false);
+    }
+
+    node.updateNode();
+}
+
+
+
 function uiUpdateObjects(objects)
 {
     //uiUpdateGraph();

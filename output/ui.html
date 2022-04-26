@@ -3962,7 +3962,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':     genParseRequest(msg.request); break;
+        case 'genParseRequest':     console.log(msg.request); genParseRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -4205,11 +4205,12 @@ function genNumValue(req, parse)
 {
     // values are always a value/decimals pair
 
-    const val = parseFloat(req[parse.pos++]);
+    const strVal = req[parse.pos++];
 
-    parse.pos++; // decimals
+    const val = parseFloat(strVal);
+    const dec = getDecimalCount(strVal);
 
-    return val;
+    return [val, dec];
 }
 
 
@@ -4223,10 +4224,7 @@ function genNumber(req, parse)
 
     genPostMessageToUi({ 
         cmd:    'uiUpdateValues',
-        values: [{
-            nodeId:     nodeId,
-            paramIndex: 0, 
-            value:      val }]
+        values: [nodeId, 0, val[0], val[1]] // values are sent in [param index, value, dec] tuples
     });
 
     return val;
@@ -16950,8 +16948,8 @@ class Operator
 
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
-        
 
+        
         this.inner.appendChild(param.div);
     }
  
@@ -18148,8 +18146,9 @@ extends OperatorBase
         req.push(...
             input.connected
             ? input.connectedOutput.toString()
-            : [ this.node.#paramValue.value      .toString(),
-                this.node.#paramValue.control.dec.toString() ]);
+            : [ numToString(
+                    this.node.#paramValue.value,
+                    this.node.#paramValue.control.dec) ]);
 
                 
         return this.cache = [...req];
@@ -23699,6 +23698,7 @@ generator.onmessage = function(e)
         // case 'uiShowParamValue':    uiShowParamValue(msg.nodeId, msg.param, msg.value); break;
         // case 'uiUpdateNodes':       uiUpdateNodes   (msg.nodeIds);                            break;
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
+        case 'uiUpdateValues':         uiUpdateValues                (msg.values);                  break;
         case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);                 break;
     }
 };
@@ -25291,6 +25291,21 @@ function uiUpdateGraph()
 
         uiUpdateNodes(deferNodes);
     }
+}
+
+
+
+function uiUpdateValues(values)
+{
+    const node = nodeFromId(values[0]);
+
+    for (let i = 1; i < values.length; i += 3)
+    {
+        node.params[values[i]].control.setDecimals(values[i+2]);
+        node.params[values[i]].setValue(values[i+1], false, true, false);
+    }
+
+    node.updateNode();
 }
 
 
