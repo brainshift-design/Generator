@@ -10,7 +10,7 @@ extends OperatorBase
         super(NUMBER, 'num', 70);
 
         this.addInput (new Input ([NUMBER]));
-        this.addOutput(new Output(NUMBER, this.output_toString));
+        this.addOutput(new Output(NUMBER, this.output_genRequest));
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
@@ -39,7 +39,7 @@ extends OperatorBase
 
 
 
-    output_toString()
+    output_genRequest()
     {
         // 'this' is the output
 
@@ -54,12 +54,12 @@ extends OperatorBase
                 
         const input = this.node.inputs[0];
 
-        req.push(...
+        req.push(...(
             input.connected
-            ? input.connectedOutput.toString()
+            ? input.connectedOutput.genRequest()
             : [ numToString(
                     this.node.#paramValue.value,
-                    this.node.#paramValue.control.dec) ]);
+                    this.node.#paramValue.control.dec) ]));
 
                 
         return this.cache = [...req];

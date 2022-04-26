@@ -4190,13 +4190,15 @@ function genParseRequest(req, parse = {pos:0, so:0})
         && parse.so  < stackOverflowProtect)
     {
         const next = req[parse.pos];
-        //console.log('parse', next);
+        console.log('next', next);
 
-             if (next == NUMBER   )     genNumber   (req, parse);
-        else if (next == RECTANGLE)     genRectangle(req, parse);
-        else if (strIsNum(next)) return genNumValue (req, parse);
+             if (next == NUMBER   ) return genNumber   (req, parse);
+        else if (next == RECTANGLE) return genRectangle(req, parse);
+        else if (strIsNum(next))    return genNumValue (req, parse);
         else parse.so++;
     }
+
+    return null;
 }
 
 
@@ -4221,10 +4223,10 @@ function genNumber(req, parse)
 
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
-
+console.log('val', val);
     genPostMessageToUi({ 
         cmd:    'uiUpdateValues',
-        values: [nodeId, 0, val[0], val[1]] // values are sent in [param index, value, dec] tuples
+        values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
     });
 
     return val;
@@ -15052,7 +15054,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_generateRequest);
+        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -15159,7 +15161,7 @@ extends Parameter
 
 
 
-    generateRequest()
+    genRequest()
     {
         // this function exists because a parameter without an output
         // should still provide a value
@@ -15167,7 +15169,7 @@ extends Parameter
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.generateRequest() ]
+            ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER, 
                 this.value.toString(), 
@@ -15176,9 +15178,9 @@ extends Parameter
 
 
 
-    output_generateRequest(output)
+    output_genRequest(output)
     {
-        return output.param.generateRequest();
+        return output.param.genRequest();
     }
 
 
@@ -15299,7 +15301,7 @@ extends Parameter
         // return this.input
         //     && this.input.connected 
 
-        //     ? [ ...this.input.connectedOutput.toString() ]
+        //     ? [ ...this.input.connectedOutput.genRequest() ]
 
         //     : [ COLOR, 
         //         this.value.toString(), 
@@ -15308,9 +15310,9 @@ extends Parameter
 
 
 
-    output_toString()
+    output_genRequest()
     {
-        //return output.param.toString();
+        //return output.param.genRequest();
     }
 }
 
@@ -15454,7 +15456,7 @@ extends Parameter
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.toString() ]
+            ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER, 
                 this.value.toString(), 
@@ -16062,7 +16064,7 @@ extends EventTarget
     initialSeed = 0;
     currentSeed = 0;
 
-    get isConnected() { return this.connectedOutput != null; }
+    get connected() { return this.connectedOutput != null; }
 
 
     isNew      = false; // this indicates that the input is the empty "new" input of a variable node
@@ -16263,7 +16265,7 @@ class Output
     connecting = false;
     
     
-    toString   = null; // function pointer, must be implemented
+    genRequest = null; // function pointer, must be implemented
     cache      = '';
 
 
@@ -16287,14 +16289,14 @@ class Output
 
 
 
-    get isConnected() { return this.connectedInputs.length > 0; }
+    get connected() { return this.connectedInputs.length > 0; }
 
 
 
-    constructor(type, toString)
+    constructor(type, genRequest)
     {
-        this._type    = type;
-        this.toString = toString;
+        this._type           = type;
+        this.genRequest      = genRequest;
 
         this.control         = createDiv('output');
         this.hitbox          = createDiv('outputHitbox');
@@ -16728,8 +16730,8 @@ function getConnectionForArrayWithNames(conn)
     in the update message.
 
 
-    Output.toString(output)
-    Parameter.toString()
+    Output.genRequest()
+    Parameter.genRequest()
 */
 
 
@@ -16949,7 +16951,7 @@ class Operator
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
 
-        
+
         this.inner.appendChild(param.div);
     }
  
@@ -17027,7 +17029,7 @@ class Operator
         //     uiGenParseRequest(this.toString());
 
         for (const output of this.outputs)
-            uiGenParseRequest(output.toString());
+            uiGenParseRequest(output.genRequest());
         
 
         // if (graphView.canUpdateNodes)
@@ -18099,7 +18101,7 @@ extends OperatorBase
         super(NUMBER, 'num', 70);
 
         this.addInput (new Input ([NUMBER]));
-        this.addOutput(new Output(NUMBER, this.output_toString));
+        this.addOutput(new Output(NUMBER, this.output_genRequest));
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
@@ -18128,7 +18130,7 @@ extends OperatorBase
 
 
 
-    output_toString()
+    output_genRequest()
     {
         // 'this' is the output
 
@@ -18143,12 +18145,12 @@ extends OperatorBase
                 
         const input = this.node.inputs[0];
 
-        req.push(...
+        req.push(...(
             input.connected
-            ? input.connectedOutput.toString()
+            ? input.connectedOutput.genRequest()
             : [ numToString(
                     this.node.#paramValue.value,
-                    this.node.#paramValue.control.dec) ]);
+                    this.node.#paramValue.control.dec) ]));
 
                 
         return this.cache = [...req];
@@ -21443,7 +21445,7 @@ extends OperatorBase
         super(RECTANGLE, 'rect');
 
         this.addInput (new Input ([RECTANGLE]));
-        this.addOutput(new Output(RECTANGLE, this.output_toString));
+        this.addOutput(new Output(RECTANGLE, this.output_genRequest));
 
         this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -21523,17 +21525,17 @@ extends OperatorBase
 
 
 
-    output_toString()
+    output_genRequest()
     {
         if (this.valid) return this.outputs[0].cache;
 
         // const x = 
         //     node.inputs[0].connected
-        //     ? [node.inputs[0].connectedOutput.toString()]
+        //     ? [node.inputs[0].connectedOutput.genRequest()]
         //     : this.#paramX.);
         
         // node.inputs[0].connected
-        // ? node.inputs[0].connectedOutput.toString()
+        // ? node.inputs[0].connectedOutput.genRequest()
         
         let request = [
             this.outputs[0].type, 
@@ -22253,6 +22255,7 @@ extends Action
 
     disconnect(input)
     {
+        console.log('disconnect');
         const output = input.connectedOutput;
         
         uiDisconnect(input);
@@ -24882,16 +24885,6 @@ function uiDisconnect(input)
                 _input.connection.toJson());
         }
     }
-
-
-    // uiPostMessageToGenerator({
-    //     cmd: 'genDisconnect',
-    //     input:
-    //     {
-    //         nodeId: input.node.id,
-    //         index:  input.index
-    //     }
-    // });
 }
 
 
@@ -25297,6 +25290,7 @@ function uiUpdateGraph()
 
 function uiUpdateValues(values)
 {
+    console.log('values', values);
     const node = nodeFromId(values[0]);
 
     for (let i = 1; i < values.length; i += 3)

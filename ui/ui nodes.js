@@ -531,16 +531,6 @@ function uiDisconnect(input)
                 _input.connection.toJson());
         }
     }
-
-
-    // uiPostMessageToGenerator({
-    //     cmd: 'genDisconnect',
-    //     input:
-    //     {
-    //         nodeId: input.node.id,
-    //         index:  input.index
-    //     }
-    // });
 }
 
 
@@ -946,6 +936,7 @@ function uiUpdateGraph()
 
 function uiUpdateValues(values)
 {
+    console.log('values', values);
     const node = nodeFromId(values[0]);
 
     for (let i = 1; i < values.length; i += 3)

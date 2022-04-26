@@ -2632,13 +2632,15 @@ function genParseRequest(req, parse = {pos:0, so:0})
         && parse.so  < stackOverflowProtect)
     {
         const next = req[parse.pos];
-        //console.log('parse', next);
+        console.log('next', next);
 
-             if (next == NUMBER   )     genNumber   (req, parse);
-        else if (next == RECTANGLE)     genRectangle(req, parse);
-        else if (strIsNum(next)) return genNumValue (req, parse);
+             if (next == NUMBER   ) return genNumber   (req, parse);
+        else if (next == RECTANGLE) return genRectangle(req, parse);
+        else if (strIsNum(next))    return genNumValue (req, parse);
         else parse.so++;
     }
+
+    return null;
 }
 
 
@@ -2663,10 +2665,10 @@ function genNumber(req, parse)
 
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
-
+console.log('val', val);
     genPostMessageToUi({ 
         cmd:    'uiUpdateValues',
-        values: [nodeId, 0, val[0], val[1]] // values are sent in [param index, value, dec] tuples
+        values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
     });
 
     return val;

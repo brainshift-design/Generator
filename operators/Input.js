@@ -62,7 +62,7 @@ extends EventTarget
     initialSeed = 0;
     currentSeed = 0;
 
-    get isConnected() { return this.connectedOutput != null; }
+    get connected() { return this.connectedOutput != null; }
 
 
     isNew      = false; // this indicates that the input is the empty "new" input of a variable node

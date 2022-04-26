@@ -137,7 +137,7 @@ extends Parameter
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.toString() ]
+            ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER, 
                 this.value.toString(), 

@@ -210,6 +210,7 @@ extends Action
 
     disconnect(input)
     {
+        console.log('disconnect');
         const output = input.connectedOutput;
         
         uiDisconnect(input);

@@ -11,8 +11,8 @@
     in the update message.
 
 
-    Output.toString(output)
-    Parameter.toString()
+    Output.genRequest()
+    Parameter.genRequest()
 */
 
 
@@ -232,7 +232,7 @@ class Operator
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
 
-        
+
         this.inner.appendChild(param.div);
     }
  
@@ -310,7 +310,7 @@ class Operator
         //     uiGenParseRequest(this.toString());
 
         for (const output of this.outputs)
-            uiGenParseRequest(output.toString());
+            uiGenParseRequest(output.genRequest());
         
 
         // if (graphView.canUpdateNodes)

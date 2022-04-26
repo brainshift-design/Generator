@@ -63,7 +63,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_generateRequest);
+        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
         this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
@@ -170,7 +170,7 @@ extends Parameter
 
 
 
-    generateRequest()
+    genRequest()
     {
         // this function exists because a parameter without an output
         // should still provide a value
@@ -178,7 +178,7 @@ extends Parameter
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.generateRequest() ]
+            ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER, 
                 this.value.toString(), 
@@ -187,9 +187,9 @@ extends Parameter
 
 
 
-    output_generateRequest(output)
+    output_genRequest(output)
     {
-        return output.param.generateRequest();
+        return output.param.genRequest();
     }
 
 

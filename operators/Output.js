@@ -24,7 +24,7 @@ class Output
     connecting = false;
     
     
-    toString   = null; // function pointer, must be implemented
+    genRequest = null; // function pointer, must be implemented
     cache      = '';
 
 
@@ -48,14 +48,14 @@ class Output
 
 
 
-    get isConnected() { return this.connectedInputs.length > 0; }
+    get connected() { return this.connectedInputs.length > 0; }
 
 
 
-    constructor(type, toString)
+    constructor(type, genRequest)
     {
-        this._type    = type;
-        this.toString = toString;
+        this._type           = type;
+        this.genRequest      = genRequest;
 
         this.control         = createDiv('output');
         this.hitbox          = createDiv('outputHitbox');

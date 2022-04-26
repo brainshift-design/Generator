@@ -21,7 +21,7 @@ extends OperatorBase
         super(RECTANGLE, 'rect');
 
         this.addInput (new Input ([RECTANGLE]));
-        this.addOutput(new Output(RECTANGLE, this.output_toString));
+        this.addOutput(new Output(RECTANGLE, this.output_genRequest));
 
         this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -101,17 +101,17 @@ extends OperatorBase
 
 
 
-    output_toString()
+    output_genRequest()
     {
         if (this.valid) return this.outputs[0].cache;
 
         // const x = 
         //     node.inputs[0].connected
-        //     ? [node.inputs[0].connectedOutput.toString()]
+        //     ? [node.inputs[0].connectedOutput.genRequest()]
         //     : this.#paramX.);
         
         // node.inputs[0].connected
-        // ? node.inputs[0].connectedOutput.toString()
+        // ? node.inputs[0].connectedOutput.genRequest()
         
         let request = [
             this.outputs[0].type, 
