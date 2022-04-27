@@ -36,6 +36,9 @@ extends EventTarget
     showParamLock = false;
     paramLock;
 
+    noUpdate = false;
+
+
 
     constructor(id, name, type)
     {

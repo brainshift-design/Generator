@@ -480,6 +480,8 @@ function figRemoveAllSavedNodesAndConns()
 
 function figLogAllSavedNodesAndConns()
 {
+    console.log('-----------------START-LOAD------------------');
+
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length+1) == nodeTag+' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag+' ');
 
@@ -494,8 +496,7 @@ function figLogAllSavedNodesAndConns()
 function figSaveConnection(name, json)
 {
     // console.log('key', connNameForStorage(name));
-    // console.log('connection', json);    //     this.#paramValue.control.readOnly = this.inputs[0].connected;
-
+    // console.log('connection', json);
     
     figSetPageData(connNameForStorage(name), json);        
 }

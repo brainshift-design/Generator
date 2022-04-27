@@ -942,8 +942,16 @@ function uiUpdateValues(values)
 
     for (let i = 1; i < values.length; i += 3)
     {
-        node.params[values[i]].control.setDecimals(values[i+2]);
-        node.params[values[i]].setValue(values[i+1], false, true, false);
+        const param = node.params[values[i]];
+
+        if (param.noUpdate)
+        {
+            param.noUpdate = false;
+            continue;
+        }
+
+        param.control.setDecimals(values[i+2]);
+        param.setValue(values[i+1], false, true, false);
     }
 
     node.updateNode();

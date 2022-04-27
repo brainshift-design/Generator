@@ -1577,16 +1577,14 @@ const MAX_INT32         = 2147483647;
 
 // for gen strings each type is followed first by the node ID, then the params
 
-
-
 const NUMBER             = 'num';   // N | (value decimals)
 const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
-const NUMBER_ADD         = 'add';   // N N
-const NUMBER_SUBTRACT    = 'sub';   // N N
-const NUMBER_MULTIPLY    = 'mul';   // N N
-const NUMBER_DIVIDE      = 'div';   // N N
-const NUMBER_MODULO      = 'mod';   // N N
-const NUMBER_POWER       = 'pow';   // N:value N:power
+const NUMBER_ADD         = 'add';   // count N...
+const NUMBER_SUBTRACT    = 'sub';   // count N...
+const NUMBER_MULTIPLY    = 'mul';   // count N...
+const NUMBER_DIVIDE      = 'div';   // count N...
+const NUMBER_MODULO      = 'mod';   // count N...
+const NUMBER_POWER       = 'pow';   // count N...
 const NUMBER_INTERPOLATE = 'lerp';  // N N N:amount
 
 const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
@@ -1602,7 +1600,7 @@ const STRING_REPLACE     = 'srepl'; // S S:what S:with
 const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
 
-const GROUP              = 'grp';   
+const GROUP              = 'grp';   // count O...
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -6752,16 +6750,14 @@ const MAX_INT32         = 2147483647;
 
 // for gen strings each type is followed first by the node ID, then the params
 
-
-
 const NUMBER             = 'num';   // N | (value decimals)
 const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
-const NUMBER_ADD         = 'add';   // N N
-const NUMBER_SUBTRACT    = 'sub';   // N N
-const NUMBER_MULTIPLY    = 'mul';   // N N
-const NUMBER_DIVIDE      = 'div';   // N N
-const NUMBER_MODULO      = 'mod';   // N N
-const NUMBER_POWER       = 'pow';   // N:value N:power
+const NUMBER_ADD         = 'add';   // count N...
+const NUMBER_SUBTRACT    = 'sub';   // count N...
+const NUMBER_MULTIPLY    = 'mul';   // count N...
+const NUMBER_DIVIDE      = 'div';   // count N...
+const NUMBER_MODULO      = 'mod';   // count N...
+const NUMBER_POWER       = 'pow';   // count N...
 const NUMBER_INTERPOLATE = 'lerp';  // N N N:amount
 
 const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
@@ -6777,7 +6773,7 @@ const STRING_REPLACE     = 'srepl'; // S S:what S:with
 const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
 
-const GROUP              = 'grp';   
+const GROUP              = 'grp';   // count O...
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -14754,6 +14750,9 @@ extends EventTarget
     showParamLock = false;
     paramLock;
 
+    noUpdate = false;
+
+
 
     constructor(id, name, type)
     {
@@ -15057,7 +15056,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        this.control.addEventListener('change',  () => { this.node.pushUpdate(); /*this.setValue(this.value, false, false);*/ });
+        this.control.addEventListener('change',  () => { this.noUpdate = true;  this.node.pushUpdate();  /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
 
         this.control.addEventListener('finishedit', e =>
@@ -18134,7 +18133,7 @@ extends OperatorBase
 
 
         const req = [
-            this.type, 
+            this.node.type, 
             this.node.id];
                 
                 
@@ -18145,7 +18144,7 @@ extends OperatorBase
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest()
-            : [ numToString(
+            : [ numToString( // number VALUES are stored as strings as decimal places are important
                     this.node.#paramValue.value,
                     this.node.#paramValue.control.dec) ]));
 
@@ -18310,6 +18309,7 @@ extends OperatorBase
     constructor(type, shortName, symbol)
     {
         super(type, shortName, 50);
+        console.log('this.type', this.type);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -18429,17 +18429,16 @@ extends OperatorBase
         if (this.node.valid)
             return this.cache;
 
-
         const req = [
-            this.type, 
+            this.node.type,
             this.node.id];
 
+        
+        const connectedInputs  = this.node.inputs.filter(i => i.connected);
+
+        req.push(connectedInputs.length); // utility values like param count are stored as numbers
             
-        this.node.inputs.filter(i => i.connected).forEach(input => 
-        {
-            input.node.#paramValue.control.readOnly = input.connected;
-            req.push(...input.connectedOutput.genRequest());
-        });
+        connectedInputs.forEach(i => req.push(...i.connectedOutput.genRequest()));
 
         
         return this.cache = [...req];
@@ -18546,7 +18545,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('add', 'add', '+');
+        super(NUMBER_ADD, 'add', '+');
     }
     
     
@@ -25315,8 +25314,16 @@ function uiUpdateValues(values)
 
     for (let i = 1; i < values.length; i += 3)
     {
-        node.params[values[i]].control.setDecimals(values[i+2]);
-        node.params[values[i]].setValue(values[i+1], false, true, false);
+        const param = node.params[values[i]];
+
+        if (param.noUpdate)
+        {
+            param.noUpdate = false;
+            continue;
+        }
+
+        param.control.setDecimals(values[i+2]);
+        param.setValue(values[i+1], false, true, false);
     }
 
     node.updateNode();

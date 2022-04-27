@@ -48,7 +48,7 @@ extends OperatorBase
 
 
         const req = [
-            this.type, 
+            this.node.type, 
             this.node.id];
                 
                 
@@ -59,7 +59,7 @@ extends OperatorBase
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest()
-            : [ numToString(
+            : [ numToString( // number VALUES are stored as strings as decimal places are important
                     this.node.#paramValue.value,
                     this.node.#paramValue.control.dec) ]));
 
