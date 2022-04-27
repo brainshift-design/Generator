@@ -319,6 +319,7 @@ figma.ui.onmessage = msg =>
         case 'figSaveNodes':                    figSaveNodes                   (msg.nodeIds, msg.nodeJson);                  break;        
         case 'figRemoveSavedNodesAndConns':     figRemoveSavedNodesAndConns    (msg.nodeIds);                                break;
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;
+        
         case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    ();                                           break;
   
         case 'figSaveConnection':               figSaveConnection              (msg.name, msg.json);                         break;
@@ -502,7 +503,8 @@ function figLogAllSavedNodesAndConns()
 function figSaveConnection(name, json)
 {
     // console.log('key', connName(name));
-    // console.log('connection', json);
+    // console.log('connection', json);    //     this.#paramValue.control.readOnly = this.inputs[0].connected;
+
     
     figSetPageData(connName(name), json);        
 }

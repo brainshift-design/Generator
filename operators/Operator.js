@@ -264,8 +264,8 @@ class Operator
     
     invalidate()
     {
-        if (!this.valid) // stops a node with inputs from same output 
-            return;      // from being invalidated more than once
+        //if (!this.valid) // stops a node with inputs from same output 
+        //    return;      // from being invalidated more than once
     
         //console.log(this.id + '.Operator.invalidate()');
 

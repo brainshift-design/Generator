@@ -7,9 +7,9 @@ extends OperatorBase
     _showOnlySymbol;
 
 
-    constructor(nodeType, shortType, symbol)
+    constructor(type, shortName, symbol)
     {
-        super(nodeType, shortType, NUMBER, 50);
+        super(type, shortName, 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -18,7 +18,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(NUMBER));
+        this.addOutput(new Output(NUMBER, this.output_genRequest));
         
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
@@ -64,7 +64,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input(this.type);
+        const input = new Input([NUMBER]);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
@@ -119,6 +119,36 @@ extends OperatorBase
         
     //     super.updateData()
     // }
+
+
+
+    output_genRequest()
+    {
+        // 'this' is the output
+
+        if (this.node.valid)
+            return this.cache;
+
+
+        const req = [
+            this.type, 
+            this.node.id];
+                
+                
+        const input = this.node.inputs[0];
+
+        this.node.#paramValue.control.readOnly = input.connected;
+
+        req.push(...(
+            input.connected
+            ? input.connectedOutput.genRequest()
+            : [ numToString(
+                    this.node.#paramValue.value,
+                    this.node.#paramValue.control.dec) ]));
+
+                
+        return this.cache = [...req];
+    }
 
 
 

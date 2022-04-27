@@ -66,7 +66,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
+        this.control.addEventListener('change',  () => { this.node.pushUpdate(); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
 
         this.control.addEventListener('finishedit', e =>

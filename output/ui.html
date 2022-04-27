@@ -3962,7 +3962,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':     console.log(msg.request); genParseRequest(msg.request); break;
+        case 'genParseRequest':     console.log('request', msg.request); genParseRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -4223,7 +4223,7 @@ function genNumber(req, parse)
 
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
-console.log('val', val);
+
     genPostMessageToUi({ 
         cmd:    'uiUpdateValues',
         values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
@@ -15059,7 +15059,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        this.control.addEventListener('change',  () => { this.setValue(this.value, false, false); });
+        this.control.addEventListener('change',  () => { this.node.pushUpdate(); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
 
         this.control.addEventListener('finishedit', e =>
@@ -16985,8 +16985,8 @@ class Operator
     
     invalidate()
     {
-        if (!this.valid) // stops a node with inputs from same output 
-            return;      // from being invalidated more than once
+        //if (!this.valid) // stops a node with inputs from same output 
+        //    return;      // from being invalidated more than once
     
         //console.log(this.id + '.Operator.invalidate()');
 
@@ -18314,9 +18314,9 @@ extends OperatorBase
     _showOnlySymbol;
 
 
-    constructor(nodeType, shortType, symbol)
+    constructor(type, shortName, symbol)
     {
-        super(nodeType, shortType, NUMBER, 50);
+        super(type, shortName, 50);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -18325,7 +18325,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(NUMBER));
+        this.addOutput(new Output(NUMBER, this.output_genRequest));
         
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
@@ -18371,7 +18371,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input(this.type);
+        const input = new Input([NUMBER]);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
@@ -18426,6 +18426,36 @@ extends OperatorBase
         
     //     super.updateData()
     // }
+
+
+
+    output_genRequest()
+    {
+        // 'this' is the output
+
+        if (this.node.valid)
+            return this.cache;
+
+
+        const req = [
+            this.type, 
+            this.node.id];
+                
+                
+        const input = this.node.inputs[0];
+
+        this.node.#paramValue.control.readOnly = input.connected;
+
+        req.push(...(
+            input.connected
+            ? input.connectedOutput.genRequest()
+            : [ numToString(
+                    this.node.#paramValue.value,
+                    this.node.#paramValue.control.dec) ]));
+
+                
+        return this.cache = [...req];
+    }
 
 
 

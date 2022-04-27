@@ -2404,7 +2404,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':     console.log(msg.request); genParseRequest(msg.request); break;
+        case 'genParseRequest':     console.log('request', msg.request); genParseRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -2665,7 +2665,7 @@ function genNumber(req, parse)
 
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
-console.log('val', val);
+
     genPostMessageToUi({ 
         cmd:    'uiUpdateValues',
         values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array

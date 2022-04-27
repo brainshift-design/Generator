@@ -139,7 +139,8 @@ function figLogAllSavedNodesAndConns()
 function figSaveConnection(name, json)
 {
     // console.log('key', connName(name));
-    // console.log('connection', json);
+    // console.log('connection', json);    //     this.#paramValue.control.readOnly = this.inputs[0].connected;
+
     
     figSetPageData(connName(name), json);        
 }

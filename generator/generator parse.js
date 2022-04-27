@@ -47,7 +47,7 @@ function genNumber(req, parse)
 
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
-console.log('val', val);
+
     genPostMessageToUi({ 
         cmd:    'uiUpdateValues',
         values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
