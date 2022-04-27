@@ -545,10 +545,10 @@ function uiMakeNodeActive(node)
     if (!graphView.activeNodes.includes(node))
         graphView.activeNodes.push(node);
 
-    uiPostMessageToFigma({
-        cmd:   'figSaveActiveNode',
-        nodeId: node.id
-    });
+    // uiPostMessageToFigma({
+    //     cmd:   'figSaveActiveNode',
+    //     nodeId: node.id
+    // });
 
     //node.updateNode();
     //node.pushUpdate();
@@ -846,7 +846,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
     const nodes = loadNodes(data);
-
+console.log('nodes', nodes);
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
@@ -856,6 +856,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
     if (data.connections)
     {
+        console.log('data', data);
         correctNodeNamesInConnections(data);
         loadConnections(data, pasteOutsideConnections);
     }
@@ -936,7 +937,7 @@ function uiUpdateGraph()
 
 function uiUpdateValues(values)
 {
-    console.log('values', values);
+    //console.log('values', values);
     const node = nodeFromId(values[0]);
 
     for (let i = 1; i < values.length; i += 3)

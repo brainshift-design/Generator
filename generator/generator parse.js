@@ -14,7 +14,7 @@ function genParseRequest(req, parse = {pos:0, so:0})
         && parse.so  < stackOverflowProtect)
     {
         const next = req[parse.pos];
-        console.log('next', next);
+        //console.log('next', next);
 
              if (next == NUMBER   ) return genNumber   (req, parse);
         else if (next == RECTANGLE) return genRectangle(req, parse);

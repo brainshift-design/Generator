@@ -3760,9 +3760,8 @@ function writeTextToClipboard(str)
 // }
 
 
-const nodeTag   = 'GN';
-const activeTag = 'GA';
-const connTag   = 'GC';
+const nodeTag = 'G_NODE';
+const connTag = 'G_CONN';
 
 
 
@@ -3962,7 +3961,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':     console.log('request', msg.request); genParseRequest(msg.request); break;
+        case 'genParseRequest':     console.log('REQ', msg.request); genParseRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -4190,7 +4189,7 @@ function genParseRequest(req, parse = {pos:0, so:0})
         && parse.so  < stackOverflowProtect)
     {
         const next = req[parse.pos];
-        console.log('next', next);
+        //console.log('next', next);
 
              if (next == NUMBER   ) return genNumber   (req, parse);
         else if (next == RECTANGLE) return genRectangle(req, parse);
@@ -8936,9 +8935,8 @@ function writeTextToClipboard(str)
 // }
 
 
-const nodeTag   = 'GN';
-const activeTag = 'GA';
-const connTag   = 'GC';
+const nodeTag = 'G_NODE';
+const connTag = 'G_CONN';
 
 
 
@@ -17250,24 +17248,16 @@ class Operator
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
         
+        
         let json = 
               pos + '{\n'
             + this.toJsonBase(nTab);
 
         if (this.params.filter(p => !this.paramIsConsideredDefault(p)).length > 0)
-        {
-            // json +=
-            //     ',\n'
-            //     + pos + tab + '"params":\n'
-            //     + pos + tab + '[\n';
-
             json += this.paramsToJson(nTab);
 
-            // json += 
-            //     pos + tab + ']';
-        }
-
         json += '\n' + pos + '}';
+
 
         return json;
     }
@@ -17280,12 +17270,15 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "'        + this.type            + '",\n'
+              pos + tab + '"type": "'        + this.type              + '",\n'
             + pos + tab + '"id": "'          + this.id                + '",\n'
             + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
             + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
             + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
+
+        if (this.active)
+            json += ',\n' + pos + tab + '"active": "' + this.active + '"';
 
         return json;
     }
@@ -18440,20 +18433,15 @@ extends OperatorBase
         const req = [
             this.type, 
             this.node.id];
-                
-                
-        const input = this.node.inputs[0];
 
-        this.node.#paramValue.control.readOnly = input.connected;
+            
+        this.node.inputs.filter(i => i.connected).forEach(input => 
+        {
+            input.node.#paramValue.control.readOnly = input.connected;
+            req.push(...input.connectedOutput.genRequest());
+        });
 
-        req.push(...(
-            input.connected
-            ? input.connectedOutput.genRequest()
-            : [ numToString(
-                    this.node.#paramValue.value,
-                    this.node.#paramValue.control.dec) ]));
-
-                
+        
         return this.cache = [...req];
     }
 
@@ -18475,10 +18463,10 @@ extends OperatorBase
 
 
 
-    getResult()
-    {
-        return Number.NaN;
-    }
+    // getResult()
+    // {
+    //     return Number.NaN;
+    // }
 
 
 
@@ -18563,15 +18551,15 @@ extends OpArithmetic
     
     
     
-    getResult()
-    {
-        let result = 0;
+    // getResult()
+    // {
+    //     let result = 0;
 
-        for (let i = 0; i < this.inputs.length-1; i++)
-            result += this.inputs[i].data.value;
+    //     for (let i = 0; i < this.inputs.length-1; i++)
+    //         result += this.inputs[i].data.value;
 
-        return result;
-    }
+    //     return result;
+    // }
 }
 
 
@@ -22182,9 +22170,6 @@ extends Action
 
 
         uiDeleteNodes(this.nodeIds, this.id);
-
-        for (const nodeId of this.nodeIds)
-            uiClearPageData(activeTag + ' ' + nodeId)
     }
 
 
@@ -23978,9 +23963,9 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 
     const nodes  = JSON.parse( nodesJson).map(n => JSON.parse(n));
     const conns  = JSON.parse( connsJson).map(c => JSON.parse(c));
-    const active = JSON.parse(activeJson);
+    //const active = JSON.parse(activeJson);
 
-    loadNodesAndConnsAsync(nodes, conns, active, setLoadingProgress);
+    loadNodesAndConnsAsync(nodes, conns, /*active,*/ setLoadingProgress);
 }
 
 
@@ -23992,7 +23977,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAndConnsAsync(nodes, connections, activeNodeIds, setProgress)
+function loadNodesAndConnsAsync(nodes, connections, /*activeNodeIds,*/ setProgress)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';
@@ -24021,13 +24006,13 @@ function loadNodesAndConnsAsync(nodes, connections, activeNodeIds, setProgress)
     promise.then(_nodes => 
     {
         graph.addNodes(_nodes, false, false);
-        loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProgress);    
+        loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, setProgress);    
     });
 }
 
 
 
-function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProgress)
+function loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, setProgress)
 {
     let promise = Promise.resolve([]);
     
@@ -24065,7 +24050,7 @@ function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProg
         updateTerminalsAfterNodes(_nodes);
         finishLoading();
 
-        const activeNodes = activeNodeIds.map(id => nodeFromId(id));
+        const activeNodes = _nodes.filter(n => n.active).map(n => nodeFromId(n.id));
 
         for (const node of activeNodes)
             uiMakeNodeActive(node);
@@ -24933,10 +24918,10 @@ function uiMakeNodeActive(node)
     if (!graphView.activeNodes.includes(node))
         graphView.activeNodes.push(node);
 
-    uiPostMessageToFigma({
-        cmd:   'figSaveActiveNode',
-        nodeId: node.id
-    });
+    // uiPostMessageToFigma({
+    //     cmd:   'figSaveActiveNode',
+    //     nodeId: node.id
+    // });
 
     //node.updateNode();
     //node.pushUpdate();
@@ -25234,7 +25219,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
     const nodes = loadNodes(data);
-
+console.log('nodes', nodes);
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
@@ -25244,6 +25229,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
     if (data.connections)
     {
+        console.log('data', data);
         correctNodeNamesInConnections(data);
         loadConnections(data, pasteOutsideConnections);
     }
@@ -25324,7 +25310,7 @@ function uiUpdateGraph()
 
 function uiUpdateValues(values)
 {
-    console.log('values', values);
+    //console.log('values', values);
     const node = nodeFromId(values[0]);
 
     for (let i = 1; i < values.length; i += 3)

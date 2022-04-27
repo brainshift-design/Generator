@@ -153,9 +153,9 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 
     const nodes  = JSON.parse( nodesJson).map(n => JSON.parse(n));
     const conns  = JSON.parse( connsJson).map(c => JSON.parse(c));
-    const active = JSON.parse(activeJson);
+    //const active = JSON.parse(activeJson);
 
-    loadNodesAndConnsAsync(nodes, conns, active, setLoadingProgress);
+    loadNodesAndConnsAsync(nodes, conns, /*active,*/ setLoadingProgress);
 }
 
 
@@ -167,7 +167,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAndConnsAsync(nodes, connections, activeNodeIds, setProgress)
+function loadNodesAndConnsAsync(nodes, connections, /*activeNodeIds,*/ setProgress)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';
@@ -196,13 +196,13 @@ function loadNodesAndConnsAsync(nodes, connections, activeNodeIds, setProgress)
     promise.then(_nodes => 
     {
         graph.addNodes(_nodes, false, false);
-        loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProgress);    
+        loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, setProgress);    
     });
 }
 
 
 
-function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProgress)
+function loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, setProgress)
 {
     let promise = Promise.resolve([]);
     
@@ -240,7 +240,7 @@ function loadConnectionsAsync(nodes, connections, activeNodeIds, _nodes, setProg
         updateTerminalsAfterNodes(_nodes);
         finishLoading();
 
-        const activeNodes = activeNodeIds.map(id => nodeFromId(id));
+        const activeNodes = _nodes.filter(n => n.active).map(n => nodeFromId(n.id));
 
         for (const node of activeNodes)
             uiMakeNodeActive(node);

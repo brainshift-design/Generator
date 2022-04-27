@@ -529,24 +529,16 @@ class Operator
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
         
+        
         let json = 
               pos + '{\n'
             + this.toJsonBase(nTab);
 
         if (this.params.filter(p => !this.paramIsConsideredDefault(p)).length > 0)
-        {
-            // json +=
-            //     ',\n'
-            //     + pos + tab + '"params":\n'
-            //     + pos + tab + '[\n';
-
             json += this.paramsToJson(nTab);
 
-            // json += 
-            //     pos + tab + ']';
-        }
-
         json += '\n' + pos + '}';
+
 
         return json;
     }
@@ -559,12 +551,15 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "'        + this.type            + '",\n'
+              pos + tab + '"type": "'        + this.type              + '",\n'
             + pos + tab + '"id": "'          + this.id                + '",\n'
             + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
             + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
             + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
+
+        if (this.active)
+            json += ',\n' + pos + tab + '"active": "' + this.active + '"';
 
         return json;
     }

@@ -103,9 +103,6 @@ extends Action
 
 
         uiDeleteNodes(this.nodeIds, this.id);
-
-        for (const nodeId of this.nodeIds)
-            uiClearPageData(activeTag + ' ' + nodeId)
     }
 
 

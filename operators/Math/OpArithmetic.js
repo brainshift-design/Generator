@@ -133,20 +133,15 @@ extends OperatorBase
         const req = [
             this.type, 
             this.node.id];
-                
-                
-        const input = this.node.inputs[0];
 
-        this.node.#paramValue.control.readOnly = input.connected;
+            
+        this.node.inputs.filter(i => i.connected).forEach(input => 
+        {
+            input.node.#paramValue.control.readOnly = input.connected;
+            req.push(...input.connectedOutput.genRequest());
+        });
 
-        req.push(...(
-            input.connected
-            ? input.connectedOutput.genRequest()
-            : [ numToString(
-                    this.node.#paramValue.value,
-                    this.node.#paramValue.control.dec) ]));
-
-                
+        
         return this.cache = [...req];
     }
 
@@ -168,10 +163,10 @@ extends OperatorBase
 
 
 
-    getResult()
-    {
-        return Number.NaN;
-    }
+    // getResult()
+    // {
+    //     return Number.NaN;
+    // }
 
 
 

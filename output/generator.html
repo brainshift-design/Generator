@@ -2202,9 +2202,8 @@ function writeTextToClipboard(str)
 // }
 
 
-const nodeTag   = 'GN';
-const activeTag = 'GA';
-const connTag   = 'GC';
+const nodeTag = 'G_NODE';
+const connTag = 'G_CONN';
 
 
 
@@ -2404,7 +2403,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':     console.log('request', msg.request); genParseRequest(msg.request); break;
+        case 'genParseRequest':     console.log('REQ', msg.request); genParseRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -2632,7 +2631,7 @@ function genParseRequest(req, parse = {pos:0, so:0})
         && parse.so  < stackOverflowProtect)
     {
         const next = req[parse.pos];
-        console.log('next', next);
+        //console.log('next', next);
 
              if (next == NUMBER   ) return genNumber   (req, parse);
         else if (next == RECTANGLE) return genRectangle(req, parse);
