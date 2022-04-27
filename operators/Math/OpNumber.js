@@ -54,6 +54,8 @@ extends OperatorBase
                 
         const input = this.node.inputs[0];
 
+        this.node.#paramValue.control.readOnly = input.connected;
+
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest()

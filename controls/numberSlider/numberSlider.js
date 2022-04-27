@@ -407,9 +407,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.style.cursor = 
                        slider.readOnly 
                     || containsChild(slider, slider.textbox) 
-                    ? 'default' //(slider.readOnly ? 'default' : 'auto')
+                    ? 'default'
                     : 'ew-resize';
             
+
             if (slider.param)
             {
                 slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
@@ -424,6 +425,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset ';
             }
 
+            
             slider.focus.style.visibility = 'visible';
             slider.focus.style.opacity    = '100%';
     
