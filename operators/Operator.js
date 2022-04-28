@@ -50,7 +50,7 @@ class Operator
     _variableInputs  = false;
 
     alwaysLoadParams = false;
-    loading          = false;
+    //loading          = false;
 
     defaultWidth;
     labelOffsetFactor;
@@ -283,22 +283,34 @@ class Operator
 
 
 
-    pushUpdate()
+    pushUpdate(param = null)
     {
         //log(this.id + '.Operator.pushUpdate()');
 
         this.invalidate();
 
-        //setTimeout(() => 
-        getTerminalsAfterNode(this)
-            .forEach(n => n.update());//);
+
+        const req = 
+            param
+            ? [param.node.id, param.index]
+            : ['', 0];
+
+        getTerminalsAfterNode(this).forEach(node => 
+        {
+            for (const output of node.outputs)
+                req.push(...output.genRequest());
+
+            //node.update();
+        });
+
+        uiGenRequest(req);
     }
 
 
 
-    update()
-    {
-        if (this.valid) return;
+    //update()
+    //{
+        //if (this.valid) return;
         
         //console.log(this.id + '.Operator.update()');
     
@@ -307,19 +319,19 @@ class Operator
 
 
         // if (this.active)
-        //     uiGenParseRequest(this.toString());
+        //     uiGenRequest(this.toString());
 
-        for (const output of this.outputs)
-            uiGenParseRequest(output.genRequest());
+        // for (const output of this.outputs)
+        //     uiGenRequest(output.genRequest());
         
 
         // if (graphView.canUpdateNodes)
         //    this.updateNode();
 
 
-        this.valid   = true;
-        this.loading = false;
-    }
+        //this.valid   = true;
+        //this.loading = false;
+    //}
 
 
 
@@ -529,7 +541,7 @@ class Operator
         let   pos = ' '.repeat(nTab);
         const tab = '  ';
         
-        
+
         let json = 
               pos + '{\n'
             + this.toJsonBase(nTab);

@@ -5,7 +5,7 @@
 /////////////////////////////////
 
 
-// for gen strings each type is followed first by the node ID, then the params
+// for gen requests each type is followed first by the node ID, then the params
 
 const NUMBER             = 'num';   // N | (value decimals)
 const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
@@ -30,4 +30,4 @@ const STRING_REPLACE     = 'srepl'; // S S:what S:with
 const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
 
-const GROUP              = 'grp';   // count O...
+const GROUP              = 'grp';   // ???? count O...

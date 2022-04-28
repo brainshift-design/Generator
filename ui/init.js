@@ -1,4 +1,5 @@
-var figMessages = [];
+var figMessages = []; // messages from UI to Figma
+var genMessages = []; // messages from UI to Generator
 
 
 

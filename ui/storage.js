@@ -237,6 +237,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     promise.then(() => 
     {
         updateTerminalsAfterNodes(loadedNodes);
+
         finishLoading();
 
         _nodes
@@ -313,7 +314,7 @@ function loadNodes(data)
 function loadNode(_node)
 {
     const node = createNode(_node.type);
-    node.loading = true;
+    //node.loading = true;
 
     node.id   = _node.id;
     node.name = _node.name;

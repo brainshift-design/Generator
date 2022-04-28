@@ -4,7 +4,37 @@
 
 
 
-function genParseRequest(req, parse = {pos:0, so:0})
+/* 
+    the generation request format
+
+    no-update param nodeId ('' if n/a)
+    no-update paramIndex (0 if n/a)
+
+    generation string
+*/
+
+
+
+function genRequest(req)
+{
+    console.log('REQ', req);
+    
+    const updateNodeId     = req[0];
+    const updateParamIndex = req[1];
+
+    genParseRequest(
+        req, 
+        {
+            pos:              2, 
+            so:               0, 
+            updateNodeId:     updateNodeId, 
+            updateParamIndex: updateParamIndex
+        });
+}
+
+
+
+function genParseRequest(req, parse)
 {
     const stackOverflowProtect = 100;
 
@@ -29,7 +59,7 @@ function genParseRequest(req, parse = {pos:0, so:0})
 
 function genNumValue(req, parse)
 {
-    // values are always a value/decimals pair
+    // numeric values are always a value/decimals pair
 
     const strVal = req[parse.pos++];
 
@@ -48,11 +78,17 @@ function genNumber(req, parse)
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
 
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateValues',
-        values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
-    });
 
+    if (   parse.updateNodeId     != nodeId
+        && parse.updateParamIndex != 0)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateValues',
+            values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
+        });
+    }
+
+    
     return val;
 }
 

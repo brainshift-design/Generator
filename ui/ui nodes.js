@@ -550,7 +550,7 @@ function uiMakeNodeActive(node)
     //     nodeId: node.id
     // });
 
-    //node.updateNode();
+    node.updateNode();
     //node.pushUpdate();
 }
 
@@ -943,17 +943,13 @@ function uiUpdateValues(values)
     for (let i = 1; i < values.length; i += 3)
     {
         const param = node.params[values[i]];
-
-        if (param.noUpdate)
-        {
-            param.noUpdate = false;
-            continue;
-        }
+        if (param.noUpdate) continue;
 
         param.control.setDecimals(values[i+2]);
         param.setValue(values[i+1], false, true, false);
     }
 
+    node.valid = true;
     node.updateNode();
 }
 

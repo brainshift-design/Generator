@@ -17,7 +17,7 @@ const MAX_INT32         = 2147483647;
 /////////////////////////////////
 
 
-// for gen strings each type is followed first by the node ID, then the params
+// for gen requests each type is followed first by the node ID, then the params
 
 const NUMBER             = 'num';   // N | (value decimals)
 const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
@@ -42,7 +42,7 @@ const STRING_REPLACE     = 'srepl'; // S S:what S:with
 const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
 
-const GROUP              = 'grp';   // count O...
+const GROUP              = 'grp';   // ???? count O...
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -2401,7 +2401,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':     console.log('REQ', msg.request); genParseRequest(msg.request); break;
+        case 'genRequest': genRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -2619,7 +2619,37 @@ function genPostMessageToUi(msg)
 
 
 
-function genParseRequest(req, parse = {pos:0, so:0})
+/* 
+    the generation request format
+
+    no-update param nodeId ('' if n/a)
+    no-update paramIndex (0 if n/a)
+
+    generation string
+*/
+
+
+
+function genRequest(req)
+{
+    console.log('REQ', req);
+    
+    const updateNodeId     = req[0];
+    const updateParamIndex = req[1];
+
+    genParseRequest(
+        req, 
+        {
+            pos:              2, 
+            so:               0, 
+            updateNodeId:     updateNodeId, 
+            updateParamIndex: updateParamIndex
+        });
+}
+
+
+
+function genParseRequest(req, parse)
 {
     const stackOverflowProtect = 100;
 
@@ -2644,7 +2674,7 @@ function genParseRequest(req, parse = {pos:0, so:0})
 
 function genNumValue(req, parse)
 {
-    // values are always a value/decimals pair
+    // numeric values are always a value/decimals pair
 
     const strVal = req[parse.pos++];
 
@@ -2663,11 +2693,17 @@ function genNumber(req, parse)
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
 
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateValues',
-        values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
-    });
 
+    if (   parse.updateNodeId     != nodeId
+        && parse.updateParamIndex != 0)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateValues',
+            values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
+        });
+    }
+
+    
     return val;
 }
 

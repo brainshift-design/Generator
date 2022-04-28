@@ -173,6 +173,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
+
+
+            if (this.param)
+                this.param.noUpdate = true;  
         }
         else if (e.button == 1)
         {
@@ -355,6 +359,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
             || document.menuHadFocus)
         {
             slider.unlockPointer(e.pointerId);
+
+            if (this.param)
+                this.param.noUpdate = false;  
+
             return;            
         }
 
@@ -425,7 +433,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset ';
             }
 
-            
+
             slider.focus.style.visibility = 'visible';
             slider.focus.style.opacity    = '100%';
     

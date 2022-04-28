@@ -50,8 +50,6 @@ generator.onmessage = function(e)
 
 
 
-
-
 // <-- to Figma
 function uiPostMessageToFigma(msg)
 {
@@ -89,17 +87,38 @@ function uiPostNextMessageToFigma()
 // to Generator -->
 function uiPostMessageToGenerator(msg)
 {
-    generator.postMessage(JSON.stringify(msg));
+    genMessages.push(msg);
+    uiPostNextMessageToGenerator();
 }
 
 
 
-function uiGenParseRequest(request)
+function uiPostNextMessageToGenerator()
+{
+    if (genMessages.length > 0)
+    {
+        let msg = genMessages.shift();
+
+        if (msg.cmd == 'genRequest')
+        {
+            // move along the queue since only the last message is important
+            // while (genMessages.length > 0
+            //     && genMessages[0].cmd == msg.cmd)
+            //     msg = genMessages.shift();
+        }
+
+        generator.postMessage(JSON.stringify(msg));
+    }
+}
+
+
+
+function uiGenRequest(request)
 {
     //console.log('request', request);
     
     uiPostMessageToGenerator({
-        cmd:    'genParseRequest',
+        cmd:    'genRequest',
         request: request
     });
 }

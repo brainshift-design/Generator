@@ -33,7 +33,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genParseRequest':     console.log('REQ', msg.request); genParseRequest(msg.request); break;
+        case 'genRequest': genRequest(msg.request); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
