@@ -210,8 +210,8 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         // variable inputs connections must be sorted by input index
         _conns.sort((c1, c2) => 
         {
-            if (c1.inputNode.id != c2.inputNode.id) return c1.inputNode.id - c2.inputNode.id;
-            if (c1.inputIndex   != c2.inputIndex  ) return c1.inputIndex   - c2.inputIndex;
+            if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+            if (c1.inputIndex  != c2.inputIndex ) return c1.inputIndex  - c2.inputIndex;
             return 0;
         });
 
