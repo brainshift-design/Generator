@@ -151,11 +151,10 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
     graph.clear();
 
-    const nodes  = JSON.parse( nodesJson).map(n => JSON.parse(n));
-    const conns  = JSON.parse( connsJson).map(c => JSON.parse(c));
-    //const active = JSON.parse(activeJson);
+    const nodes = JSON.parse( nodesJson).map(n => JSON.parse(n));
+    const conns = JSON.parse( connsJson).map(c => JSON.parse(c));
 
-    loadNodesAndConnsAsync(nodes, conns, /*active,*/ setLoadingProgress);
+    loadNodesAndConnsAsync(nodes, conns, setLoadingProgress);
 }
 
 
@@ -167,7 +166,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAndConnsAsync(nodes, connections, /*activeNodeIds,*/ setProgress)
+function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';
@@ -177,39 +176,39 @@ function loadNodesAndConnsAsync(nodes, connections, /*activeNodeIds,*/ setProgre
 
 
     const chunkSize = 10; // nodes
-    for (let i = 0; i < nodes.length; i += chunkSize)
+    for (let i = 0; i < _nodes.length; i += chunkSize)
     {
-        promise = promise.then(_nodes => 
+        promise = promise.then(nodes => 
         {
             const res = resolveLoadNodes(
-                nodes, 
+                _nodes, 
                 i, 
-                Math.min(i + chunkSize, nodes.length), // exclusive
-                _nodes);
+                Math.min(i + chunkSize, _nodes.length), // exclusive
+                nodes);
 
-            setProgress(i / (nodes.length + (connections ? connections.length : 0)));
+            setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
             return res;
         });
     }
 
 
-    promise.then(_nodes => 
+    promise.then(nodes => 
     {
-        graph.addNodes(_nodes, false, false);
-        loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, setProgress);    
+        graph.addNodes(nodes, false, false);
+        loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }
 
 
 
-function loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, setProgress)
+function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
     
-    if (connections)
+    if (_conns)
     {
-        // variable inputs need connections to be sorted by input index
-        connections.sort((c1, c2) => 
+        // variable inputs connections must be sorted by input index
+        _conns.sort((c1, c2) => 
         {
             if (c1.inputNode.id != c2.inputNode.id) return c1.inputNode.id - c2.inputNode.id;
             if (c1.inputIndex   != c2.inputIndex  ) return c1.inputIndex   - c2.inputIndex;
@@ -218,17 +217,17 @@ function loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, set
 
 
         const chunkSize = 10; // connections
-        for (let i = 0; i < connections.length; i += chunkSize)
+        for (let i = 0; i < _conns.length; i += chunkSize)
         {
             promise = promise.then(() => 
             {
                 const res = resolveLoadConnections(
-                    nodes,
-                    connections, 
+                    _nodes,
+                    _conns, 
                     i, 
-                    Math.min(i + chunkSize, connections.length)); // exclusive
+                    Math.min(i + chunkSize, _conns.length)); // exclusive
 
-                setProgress((nodes.length + i) / nozero(nodes.length + connections.length * 19/20)); // the proportion is arbitrary
+                setProgress((_nodes.length + i) / nozero(_nodes.length + _conns.length * 19/20)); // the proportion is arbitrary
                 return res;
             });
         }
@@ -237,13 +236,13 @@ function loadConnectionsAsync(nodes, connections, /*activeNodeIds,*/ _nodes, set
 
     promise.then(() => 
     {
-        updateTerminalsAfterNodes(_nodes);
+        updateTerminalsAfterNodes(loadedNodes);
         finishLoading();
 
-        const activeNodes = _nodes.filter(n => n.active).map(n => nodeFromId(n.id));
-
-        for (const node of activeNodes)
-            uiMakeNodeActive(node);
+        _nodes
+            .filter(n => n.active)
+            .map(n => nodeFromId(n.id))
+            .forEach(n => uiMakeNodeActive(n));
     });
 }
 
@@ -255,14 +254,9 @@ function finishLoading()
     
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
-   
     
     updateToggleShowWiresButton();
     graphView.updateShowWires();
-
-    
-    // now that the graph is loaded, the auto save can start
-    //setInterval(autoSave, 1000);
 }
 
 
