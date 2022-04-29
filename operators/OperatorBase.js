@@ -3,15 +3,13 @@ extends Operator
 {
     updateHeader()
     {
-        console.log(this.id + '.OperatorBase.updateHeader()');
-
-        super.updateHeader();
+        //console.log(this.id + '.OperatorBase.updateHeader()');
 
         const colBack   = rgbFromType(this.type, this.active);
         const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-        console.log('darkText', darkText);
-        const colText   = darkText ? [0, 0, 0]      : [1, 1, 1];
-        const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3];
+
+        const colText   = darkText ? [0, 0, 0     ] : [1, 1, 1      ];
+        const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3 ];
         const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
 
 
@@ -23,5 +21,8 @@ extends Operator
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colInput;
         for (const output of this.outputs.filter(i => !i.param)) output.color = colOutput;
+
+
+        super.updateHeader();
     }
 }

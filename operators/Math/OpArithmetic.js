@@ -228,7 +228,7 @@ function onConnectInput(node)
 {
     node.addNewInput();
     node.updateNode();
-    graphView.updateNodeTransform(node);
+    //graphView.updateNodeTransform(node);
 }
 
 

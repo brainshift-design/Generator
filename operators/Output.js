@@ -150,7 +150,7 @@ class Output
             ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.4, 1) : this.color[3] / 1.4))
             : 'transparent';
 
-        this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
+        this.control.style.pointerEvents   = graphView.showWires ? 'auto' : 'none';
         this.control.style.backgroundColor = colorStyle;
 
         this.control.style.boxShadow = 

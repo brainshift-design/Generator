@@ -773,10 +773,12 @@ graphView.toggleShowWires = function()
 
 
 
-graphView.updateShowWires = function()
+graphView.updateShowWires = function(updateNodes = true)
 {
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
-    graph.nodes      .forEach(n => n.updateNode());
+
+    if (updateNodes) 
+        graph.nodes.forEach(n => n.updateNode());
 };
 
 

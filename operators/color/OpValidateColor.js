@@ -257,8 +257,6 @@ extends OpColorBase
 
     updateHeaderLabel()
     {
-        super.updateHeaderLabel();
-
         this.label  .style.top = '40%';
         this.btnFind.style.top = '67%';
 
@@ -279,6 +277,9 @@ extends OpColorBase
 
         this.findBar     .style.outline    = '1px solid ' + findStyle;
         this.findProgress.style.background = findStyle;
+
+
+        super.updateHeaderLabel();
     }
 
 

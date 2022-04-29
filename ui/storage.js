@@ -111,17 +111,7 @@ function uiLoadGraphView(json)
 {
     graphView.loadingNodes   = true;
     graphView.canUpdateNodes = false;
-    
-
-    // if (  !json
-    //     || json == '')
-    // {
-    //     // set defaults
-    //     //graphView.setPanAndZoom(point(0, 0), 1);
-    //     finishLoading();
-    //     return;
-    // }
-
+   
 
     const data = JSON.parse(json);
     //console.log(json);
@@ -140,7 +130,6 @@ function uiLoadGraphView(json)
 
 
     graphView.setPanAndZoom(pan, zoom);
-
 
     graphView.showWires = isTrue(data.showWires);
 }
@@ -236,14 +225,14 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
     promise.then(() => 
     {
-        updateTerminalsAfterNodes(loadedNodes);
-
         finishLoading();
 
         _nodes
             .filter(n => n.active)
             .map(n => nodeFromId(n.id))
             .forEach(n => n.makeActive());
+
+        updateTerminalsAfterNodes(loadedNodes);
     });
 }
 
@@ -257,7 +246,7 @@ function finishLoading()
     graphView.canUpdateNodes = true;
     
     updateToggleShowWiresButton();
-    graphView.updateShowWires();
+    graphView.updateShowWires(false);
 }
 
 

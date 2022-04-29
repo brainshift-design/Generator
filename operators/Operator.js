@@ -238,6 +238,64 @@ class Operator
  
     
 
+    setSelected(sel)
+    {
+        this._selected = sel;
+
+        this.div.style.boxShadow = 
+            this._selected
+            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
+            : 'none';
+    }
+    
+
+
+    makeActive()
+    {
+        this._active = true;
+
+        if (!graphView.activeNodes.includes(this))
+            graphView.activeNodes.push(this);
+    }
+
+
+
+    makePassive()
+    {
+        if (graphView.activeNodes.includes(this))
+            removeFromArray(graphView.activeNodes, this);
+
+        this._active = false;
+    }
+
+
+
+    follows(node)
+    {
+        if (this == node)
+            return true;
+            
+        for (const input of this.inputs)
+        {
+            if (   input.connected
+                && input.connectedOutput.node.follows(node))
+                return true;
+        }
+
+        return false;
+    }
+
+
+
+    paramIsConsideredDefault(param) // this has to be an op virtual method, not a param method
+    {
+        return param.isDefault()
+            && (   !param.input 
+                || !param.input.connected);
+    }
+
+
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)
@@ -311,6 +369,7 @@ class Operator
 
             //node.update();
         });
+
 
         uiGenRequest(req);
     }
@@ -398,7 +457,19 @@ class Operator
         this.paramBack.style.top    = height;
 
 
-        updateNodeLabelOffset(this);
+        this.updateHeaderLabel();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        this.label.innerHTML    = this.id;
+        
+        const [,,,,, textStyle] = this.getHeaderColors();
+        this.label.style.color  = textStyle;
+
+        updateHeaderLabelOffset(this);
     }
 
 
@@ -435,6 +506,28 @@ class Operator
 
         return Math.max(inputHeight, outputHeight) 
              + this.header.connectionPadding * 2;
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colBack   = rgbFromType(this.type, this.active);
+        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
+
+        const colText   = darkText ? [0, 0, 0, 1] : [1, 1, 1, 1];
+        const textStyle = colorStyleRgba(colText);
+
+        const colInput  = colText;
+        const colOutput = colText;
+        
+        return [
+            colBack, 
+            darkText,
+            colInput,
+            colOutput, 
+            colText,
+            textStyle ];
     }
 
 
@@ -506,64 +599,6 @@ class Operator
     
 
     updateConnectedInputValueText() {}
-
-
-
-    setSelected(sel)
-    {
-        this._selected = sel;
-
-        this.div.style.boxShadow = 
-            this._selected
-            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
-            : 'none';
-    }
-    
-
-
-    makeActive()
-    {
-        this._active = true;
-
-        if (!graphView.activeNodes.includes(this))
-            graphView.activeNodes.push(this);
-    }
-
-
-
-    makePassive()
-    {
-        if (graphView.activeNodes.includes(this))
-            removeFromArray(graphView.activeNodes, node);
-
-        this._active = false;
-    }
-
-
-
-    follows(node)
-    {
-        if (this == node)
-            return true;
-            
-        for (const input of this.inputs)
-        {
-            if (   input.connected
-                && input.connectedOutput.node.follows(node))
-                return true;
-        }
-
-        return false;
-    }
-
-
-
-    paramIsConsideredDefault(param)
-    {
-        return param.isDefault()
-            && (   !param.input 
-                || !param.input.connected);
-    }
 
 
 

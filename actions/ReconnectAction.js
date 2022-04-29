@@ -63,7 +63,7 @@ extends Action
     {
         uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
 
-        graphView.updateNodeTransform(this.oldInputNode);
+        //this.oldInputNode.updateNode();//graphView.updateNodeTransform(this.oldInputNode);
         
 
         uiConnect(
@@ -90,7 +90,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        graphView.updateNodeTransform(this.inputNode);
+        // graphView.updateNodeTransform(this.inputNode);
 
         this.oldInputNode.pushUpdate();
         this.inputNode   .pushUpdate();
@@ -112,7 +112,7 @@ extends Action
             this.oldInputNode, 
             this.oldInputIndex);
 
-        graphView.updateNodeTransform(this.oldInputNode);
+        // graphView.updateNodeTransform(this.oldInputNode);
         this.oldInputNode.pushUpdate();
     
 
@@ -124,7 +124,7 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
 
-            graphView.updateNodeTransform(this.inputNode);
+            // graphView.updateNodeTransform(this.inputNode);
             this.inputNode.pushUpdate();
         }
 

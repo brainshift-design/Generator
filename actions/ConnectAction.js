@@ -75,7 +75,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        graphView.updateNodeTransform(this.inputNode);
+        // graphView.updateNodeTransform(this.inputNode);
         this.inputNode.pushUpdate();
     }
 
@@ -95,7 +95,7 @@ extends Action
                 this.inputIndex);
         }
 
-        graphView.updateNodeTransform(this.inputNode);
+        // graphView.updateNodeTransform(this.inputNode);
         this.inputNode.pushUpdate();
 
 

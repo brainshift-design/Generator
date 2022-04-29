@@ -56,7 +56,6 @@ extends Operator
         }
 
 
-        this.updateHeaderLabel();
         this.updateWarningOverlay();
 
 
@@ -85,6 +84,7 @@ extends Operator
                !this.canShowColor()
             || rgb2hclokl(colBack)[2] > 0.71;
 
+            
         const ba = Math.min((this.header.over ? 14 : 1) * (isRgbValid(colBack) ? 0.03 : 0.22), 0.5);
         const wa = Math.min((this.header.over ? 14 : 1) * (isRgbValid(colBack) ? 0.03 : 0.14), 0.5);
 
@@ -95,10 +95,12 @@ extends Operator
                : [1, 1, 1, wa])
             : [0, 0, 0, 1];
 
+        const textStyle = colorStyleRgba(colText);
+
+        
         const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
         const colOutput = this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
 
-        const textStyle = colorStyleRgba(colText);
 
         return [
             colBack, 

@@ -5712,7 +5712,7 @@ function switchToSliders(node)
         node.inner.appendChild(node.param2.div);
         node.inner.appendChild(node.param3.div);
 
-        graphView.updateNodeTransform(node);
+        node.updateNode();//graphView.updateNodeTransform(node);
     }
 }
 
@@ -14039,10 +14039,12 @@ graphView.toggleShowWires = function()
 
 
 
-graphView.updateShowWires = function()
+graphView.updateShowWires = function(updateNodes = true)
 {
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
-    graph.nodes      .forEach(n => n.updateNode());
+
+    if (updateNodes) 
+        graph.nodes.forEach(n => n.updateNode());
 };
 
 
@@ -16040,6 +16042,8 @@ function updateTerminalsAfterNodes(nodes)
 
     for (const t of terminals)
         t.pushUpdate();
+
+    value update messages don't seem to be arriving
 }
 
 
@@ -16434,7 +16438,7 @@ class Output
             ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.4, 1) : this.color[3] / 1.4))
             : 'transparent';
 
-        this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
+        this.control.style.pointerEvents   = graphView.showWires ? 'auto' : 'none';
         this.control.style.backgroundColor = colorStyle;
 
         this.control.style.boxShadow = 
@@ -17000,6 +17004,64 @@ class Operator
  
     
 
+    setSelected(sel)
+    {
+        this._selected = sel;
+
+        this.div.style.boxShadow = 
+            this._selected
+            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
+            : 'none';
+    }
+    
+
+
+    makeActive()
+    {
+        this._active = true;
+
+        if (!graphView.activeNodes.includes(this))
+            graphView.activeNodes.push(this);
+    }
+
+
+
+    makePassive()
+    {
+        if (graphView.activeNodes.includes(this))
+            removeFromArray(graphView.activeNodes, this);
+
+        this._active = false;
+    }
+
+
+
+    follows(node)
+    {
+        if (this == node)
+            return true;
+            
+        for (const input of this.inputs)
+        {
+            if (   input.connected
+                && input.connectedOutput.node.follows(node))
+                return true;
+        }
+
+        return false;
+    }
+
+
+
+    paramIsConsideredDefault(param) // this has to be an op virtual method, not a param method
+    {
+        return param.isDefault()
+            && (   !param.input 
+                || !param.input.connected);
+    }
+
+
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)
@@ -17073,6 +17135,7 @@ class Operator
 
             //node.update();
         });
+
 
         uiGenRequest(req);
     }
@@ -17160,7 +17223,19 @@ class Operator
         this.paramBack.style.top    = height;
 
 
-        updateNodeLabelOffset(this);
+        this.updateHeaderLabel();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        this.label.innerHTML    = this.id;
+        
+        const [,,,,, textStyle] = this.getHeaderColors();
+        this.label.style.color  = textStyle;
+
+        updateHeaderLabelOffset(this);
     }
 
 
@@ -17197,6 +17272,28 @@ class Operator
 
         return Math.max(inputHeight, outputHeight) 
              + this.header.connectionPadding * 2;
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colBack   = rgbFromType(this.type, this.active);
+        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
+
+        const colText   = darkText ? [0, 0, 0, 1] : [1, 1, 1, 1];
+        const textStyle = colorStyleRgba(colText);
+
+        const colInput  = colText;
+        const colOutput = colText;
+        
+        return [
+            colBack, 
+            darkText,
+            colInput,
+            colOutput, 
+            colText,
+            textStyle ];
     }
 
 
@@ -17268,64 +17365,6 @@ class Operator
     
 
     updateConnectedInputValueText() {}
-
-
-
-    setSelected(sel)
-    {
-        this._selected = sel;
-
-        this.div.style.boxShadow = 
-            this._selected
-            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
-            : 'none';
-    }
-    
-
-
-    makeActive()
-    {
-        this._active = true;
-
-        if (!graphView.activeNodes.includes(this))
-            graphView.activeNodes.push(this);
-    }
-
-
-
-    makePassive()
-    {
-        if (graphView.activeNodes.includes(this))
-            removeFromArray(graphView.activeNodes, node);
-
-        this._active = false;
-    }
-
-
-
-    follows(node)
-    {
-        if (this == node)
-            return true;
-            
-        for (const input of this.inputs)
-        {
-            if (   input.connected
-                && input.connectedOutput.node.follows(node))
-                return true;
-        }
-
-        return false;
-    }
-
-
-
-    paramIsConsideredDefault(param)
-    {
-        return param.isDefault()
-            && (   !param.input 
-                || !param.input.connected);
-    }
 
 
 
@@ -17444,15 +17483,13 @@ extends Operator
 {
     updateHeader()
     {
-        console.log(this.id + '.OperatorBase.updateHeader()');
-
-        super.updateHeader();
+        //console.log(this.id + '.OperatorBase.updateHeader()');
 
         const colBack   = rgbFromType(this.type, this.active);
         const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-        console.log('darkText', darkText);
-        const colText   = darkText ? [0, 0, 0]      : [1, 1, 1];
-        const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3];
+
+        const colText   = darkText ? [0, 0, 0     ] : [1, 1, 1      ];
+        const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3 ];
         const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
 
 
@@ -17464,6 +17501,9 @@ extends Operator
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colInput;
         for (const output of this.outputs.filter(i => !i.param)) output.color = colOutput;
+
+
+        super.updateHeader();
     }
 }
 
@@ -17924,6 +17964,7 @@ function createNodeLabel(node)
         e.preventDefault();
     });
 
+    
     node.labelWrapper.addEventListener('pointermove', e =>
     {
         const wrect      = boundingRect(node.labelWrapper);
@@ -17933,12 +17974,12 @@ function createNodeLabel(node)
         const x          = e.clientX - wrect.x;
 
         if (x >= wrect.width - viewMargin)
-            updateNodeLabelOffset(node, 1);
+            updateHeaderLabelOffset(node, 1);
         else if (x >= viewMargin
               && x < wrect.width - viewMargin)
-            updateNodeLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+            updateHeaderLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
         else
-            updateNodeLabelOffset(node);
+            updateHeaderLabelOffset(node);
     });
 
 
@@ -17947,7 +17988,7 @@ function createNodeLabel(node)
 
 
 
-function updateNodeLabelOffset(node, f = node.labelOffsetFactor)
+function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
 {
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
@@ -17966,10 +18007,6 @@ function updateNodeLabelOffset(node, f = node.labelOffsetFactor)
     const s0         = s1 - df;
     const s2         = s1 + sf;
     const s3         = s2 + df;
-
-
-    //node.label.innerHTML = node._name;
-    node.label.innerHTML = node.id;
 
 
     if (rect.width > rw)
@@ -18135,10 +18172,13 @@ function initLabelTextbox(node)
         
         node.label.style.display = 'block';
 
-        if (node.inFocus)
-            node.focus();
-
-        setTimeout(() => updateNodeLabelOffset(node));
+        setTimeout(() => 
+        {
+            node.updateHeaderLabel();
+            
+            if (node.inFocus)
+                node.focus();
+        });
     };    
  
     
@@ -18617,7 +18657,7 @@ function onConnectInput(node)
 {
     node.addNewInput();
     node.updateNode();
-    graphView.updateNodeTransform(node);
+    //graphView.updateNodeTransform(node);
 }
 
 
@@ -18948,7 +18988,6 @@ extends Operator
         }
 
 
-        this.updateHeaderLabel();
         this.updateWarningOverlay();
 
 
@@ -18977,6 +19016,7 @@ extends Operator
                !this.canShowColor()
             || rgb2hclokl(colBack)[2] > 0.71;
 
+            
         const ba = Math.min((this.header.over ? 14 : 1) * (isRgbValid(colBack) ? 0.03 : 0.22), 0.5);
         const wa = Math.min((this.header.over ? 14 : 1) * (isRgbValid(colBack) ? 0.03 : 0.14), 0.5);
 
@@ -18987,10 +19027,12 @@ extends Operator
                : [1, 1, 1, wa])
             : [0, 0, 0, 1];
 
+        const textStyle = colorStyleRgba(colText);
+
+        
         const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
         const colOutput = this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
 
-        const textStyle = colorStyleRgba(colText);
 
         return [
             colBack, 
@@ -19839,7 +19881,7 @@ function switchToSliders(node)
         node.inner.appendChild(node.param2.div);
         node.inner.appendChild(node.param3.div);
 
-        graphView.updateNodeTransform(node);
+        node.updateNode();//graphView.updateNodeTransform(node);
     }
 }
 
@@ -20956,8 +20998,6 @@ extends OpColorBase
 
     updateHeaderLabel()
     {
-        super.updateHeaderLabel();
-
         this.label  .style.top = '40%';
         this.btnFind.style.top = '67%';
 
@@ -20978,6 +21018,9 @@ extends OpColorBase
 
         this.findBar     .style.outline    = '1px solid ' + findStyle;
         this.findProgress.style.background = findStyle;
+
+
+        super.updateHeaderLabel();
     }
 
 
@@ -22058,7 +22101,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        graphView.updateNodeTransform(this.inputNode);
+        // graphView.updateNodeTransform(this.inputNode);
         this.inputNode.pushUpdate();
     }
 
@@ -22078,7 +22121,7 @@ extends Action
                 this.inputIndex);
         }
 
-        graphView.updateNodeTransform(this.inputNode);
+        // graphView.updateNodeTransform(this.inputNode);
         this.inputNode.pushUpdate();
 
 
@@ -22777,7 +22820,7 @@ extends Action
     {
         uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
 
-        graphView.updateNodeTransform(this.oldInputNode);
+        //this.oldInputNode.updateNode();//graphView.updateNodeTransform(this.oldInputNode);
         
 
         uiConnect(
@@ -22804,7 +22847,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        graphView.updateNodeTransform(this.inputNode);
+        // graphView.updateNodeTransform(this.inputNode);
 
         this.oldInputNode.pushUpdate();
         this.inputNode   .pushUpdate();
@@ -22826,7 +22869,7 @@ extends Action
             this.oldInputNode, 
             this.oldInputIndex);
 
-        graphView.updateNodeTransform(this.oldInputNode);
+        // graphView.updateNodeTransform(this.oldInputNode);
         this.oldInputNode.pushUpdate();
     
 
@@ -22838,7 +22881,7 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
 
-            graphView.updateNodeTransform(this.inputNode);
+            // graphView.updateNodeTransform(this.inputNode);
             this.inputNode.pushUpdate();
         }
 
@@ -24030,17 +24073,7 @@ function uiLoadGraphView(json)
 {
     graphView.loadingNodes   = true;
     graphView.canUpdateNodes = false;
-    
-
-    // if (  !json
-    //     || json == '')
-    // {
-    //     // set defaults
-    //     //graphView.setPanAndZoom(point(0, 0), 1);
-    //     finishLoading();
-    //     return;
-    // }
-
+   
 
     const data = JSON.parse(json);
     //console.log(json);
@@ -24059,7 +24092,6 @@ function uiLoadGraphView(json)
 
 
     graphView.setPanAndZoom(pan, zoom);
-
 
     graphView.showWires = isTrue(data.showWires);
 }
@@ -24155,14 +24187,14 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
     promise.then(() => 
     {
-        updateTerminalsAfterNodes(loadedNodes);
-
         finishLoading();
 
         _nodes
             .filter(n => n.active)
             .map(n => nodeFromId(n.id))
             .forEach(n => n.makeActive());
+
+        updateTerminalsAfterNodes(loadedNodes);
     });
 }
 
@@ -24176,7 +24208,7 @@ function finishLoading()
     graphView.canUpdateNodes = true;
     
     updateToggleShowWiresButton();
-    graphView.updateShowWires();
+    graphView.updateShowWires(false);
 }
 
 

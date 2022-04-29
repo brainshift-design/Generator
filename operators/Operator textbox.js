@@ -130,10 +130,13 @@ function initLabelTextbox(node)
         
         node.label.style.display = 'block';
 
-        if (node.inFocus)
-            node.focus();
-
-        setTimeout(() => updateNodeLabelOffset(node));
+        setTimeout(() => 
+        {
+            node.updateHeaderLabel();
+            
+            if (node.inFocus)
+                node.focus();
+        });
     };    
  
     

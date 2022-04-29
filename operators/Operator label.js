@@ -14,6 +14,7 @@ function createNodeLabel(node)
         e.preventDefault();
     });
 
+    
     node.labelWrapper.addEventListener('pointermove', e =>
     {
         const wrect      = boundingRect(node.labelWrapper);
@@ -23,12 +24,12 @@ function createNodeLabel(node)
         const x          = e.clientX - wrect.x;
 
         if (x >= wrect.width - viewMargin)
-            updateNodeLabelOffset(node, 1);
+            updateHeaderLabelOffset(node, 1);
         else if (x >= viewMargin
               && x < wrect.width - viewMargin)
-            updateNodeLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+            updateHeaderLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
         else
-            updateNodeLabelOffset(node);
+            updateHeaderLabelOffset(node);
     });
 
 
@@ -37,7 +38,7 @@ function createNodeLabel(node)
 
 
 
-function updateNodeLabelOffset(node, f = node.labelOffsetFactor)
+function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
 {
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
@@ -56,10 +57,6 @@ function updateNodeLabelOffset(node, f = node.labelOffsetFactor)
     const s0         = s1 - df;
     const s2         = s1 + sf;
     const s3         = s2 + df;
-
-
-    //node.label.innerHTML = node._name;
-    node.label.innerHTML = node.id;
 
 
     if (rect.width > rw)
