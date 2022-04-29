@@ -153,6 +153,6 @@ function updateTerminalsAfterNodes(nodes)
         }
     }
 
-    //for (const t of terminals)
-    //    t.pushUpdate();
+    for (const t of terminals)
+        t.pushUpdate();
 }

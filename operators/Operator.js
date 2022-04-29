@@ -285,15 +285,16 @@ class Operator
 
     pushUpdate()
     {
-        console.log(this.id + '.Operator.pushUpdate()');
-        pushUpdateFromParam(null);
+        //console.log(this.id + '.Operator.pushUpdate()');
+        
+        this.pushUpdateFromParam(null);
     }
 
 
 
     pushUpdateFromParam(param)
     {
-        console.log(this.id + '.Operator.pushUpdateFromParam()');
+        //console.log(this.id + '.Operator.pushUpdateFromParam()');
 
         this.invalidate();
 

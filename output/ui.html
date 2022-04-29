@@ -11221,10 +11221,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
                     if (slider.value != slider.prevValue)
-                    {
-                        console.log('move slider update');
                         slider.param.node.pushUpdate();
-                    }
                                         
                     slider.prevValue = slider.value;
                 }
@@ -16041,8 +16038,8 @@ function updateTerminalsAfterNodes(nodes)
         }
     }
 
-    //for (const t of terminals)
-    //    t.pushUpdate();
+    for (const t of terminals)
+        t.pushUpdate();
 }
 
 
@@ -17050,15 +17047,16 @@ class Operator
 
     pushUpdate()
     {
-        console.log(this.id + '.Operator.pushUpdate()');
-        pushUpdateFromParam(null);
+        //console.log(this.id + '.Operator.pushUpdate()');
+        
+        this.pushUpdateFromParam(null);
     }
 
 
 
     pushUpdateFromParam(param)
     {
-        console.log(this.id + '.Operator.pushUpdateFromParam()');
+        //console.log(this.id + '.Operator.pushUpdateFromParam()');
 
         this.invalidate();
 
