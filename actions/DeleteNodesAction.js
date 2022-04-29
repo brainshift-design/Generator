@@ -134,7 +134,7 @@ extends Action
 
     undeleteNodes()
     {
-        //log('this.nodes', this.nodes);
+        //console.log('this.nodes', this.nodes);
 
         graph.addNodes(this.nodes);
         graphView.selected = this.nodes;

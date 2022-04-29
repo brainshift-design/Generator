@@ -410,7 +410,7 @@ graphView.getIntersectingNodes = node =>
 
 graphView.placeNewNode = function(node)
 {
-    //log('graphView.placeNewNode()');
+    //console.log('graphView.placeNewNode()');
 
     const nodeRect = boundingRect(node.div);
     
@@ -775,8 +775,8 @@ graphView.toggleShowWires = function()
 
 graphView.updateShowWires = function()
 {
-    graph.nodes      .forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
+    graph.nodes      .forEach(n => n.updateNode());
 };
 
 

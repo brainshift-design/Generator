@@ -69,7 +69,6 @@ extends Action
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        console.log('oldActiveNodeIds', oldActiveNodeIds);
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 

@@ -11221,7 +11221,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
                     if (slider.value != slider.prevValue)
+                    {
+                        console.log('move slider update');
                         slider.param.node.pushUpdate();
+                    }
                                         
                     slider.prevValue = slider.value;
                 }
@@ -13676,7 +13679,7 @@ graphView.getIntersectingNodes = node =>
 
 graphView.placeNewNode = function(node)
 {
-    //log('graphView.placeNewNode()');
+    //console.log('graphView.placeNewNode()');
 
     const nodeRect = boundingRect(node.div);
     
@@ -14041,8 +14044,8 @@ graphView.toggleShowWires = function()
 
 graphView.updateShowWires = function()
 {
-    graph.nodes      .forEach(n => n.updateNode());
     graph.connections.forEach(c => show(c.wire, graphView.showWires));
+    graph.nodes      .forEach(n => n.updateNode());
 };
 
 
@@ -15100,7 +15103,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        this.control.addEventListener('change',  () => { this.node.pushUpdate(this);  /*this.setValue(this.value, false, false);*/ });
+        //this.control.addEventListener('change',  () => { this.node.pushUpdateFromParam(this);  /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
 
         this.control.addEventListener('finishedit', e =>
@@ -15146,7 +15149,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        this.node.pushUpdate();
+        //this.node.pushUpdate();
     }
 
 
@@ -15431,7 +15434,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER);
 
             
-        this.control.addEventListener('change',  () => { this.node.pushUpdate(this); /*this.setValue(this.value, false, false);*/ });
+        //this.control.addEventListener('change',  () => { this.node.pushUpdateFromParam(this); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
 
@@ -15586,7 +15589,7 @@ class Graph
         for (const node of nodes)
             this.addNode(node, placeNode);
         
-        setTimeout(() => nodes.forEach(n => n.updateNode()));
+        //setTimeout(() => nodes.forEach(n => n.updateNode()));
     }
 
 
@@ -17045,9 +17048,17 @@ class Operator
 
 
 
-    pushUpdate(param = null)
+    pushUpdate()
     {
-        //log(this.id + '.Operator.pushUpdate()');
+        console.log(this.id + '.Operator.pushUpdate()');
+        pushUpdateFromParam(null);
+    }
+
+
+
+    pushUpdateFromParam(param)
+    {
+        console.log(this.id + '.Operator.pushUpdateFromParam()');
 
         this.invalidate();
 
@@ -17099,7 +17110,7 @@ class Operator
 
     // updateData()
     // {
-    //     //log(this.id + '.Operator.updateData()');
+    //     //console.log(this.id + '.Operator.updateData()');
 
     //     this.setParamOutputData();
     // }
@@ -17117,7 +17128,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.id + '.Operator.updateNode()');
+        //console.log(this.id + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -17139,11 +17150,13 @@ class Operator
 
     updateHeader()
     {
-        //log(this.id + '.Operator.updateHeader()');
+        //console.log(this.id + '.Operator.updateHeader()');
         
+        //console.log('this.id', this.id);
+
         const height = this.updateHeaderInputsAndOutputs();
 
-        this.header.style.height = height;
+        this.header   .style.height = height;
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
@@ -17270,6 +17283,26 @@ class Operator
             : 'none';
     }
     
+
+
+    makeActive()
+    {
+        this._active = true;
+
+        if (!graphView.activeNodes.includes(this))
+            graphView.activeNodes.push(this);
+    }
+
+
+
+    makePassive()
+    {
+        if (graphView.activeNodes.includes(this))
+            removeFromArray(graphView.activeNodes, node);
+
+        this._active = false;
+    }
+
 
 
     follows(node)
@@ -17413,13 +17446,13 @@ extends Operator
 {
     updateHeader()
     {
-        //log(this.id + '.OperatorBase.updateHeader()');
+        console.log(this.id + '.OperatorBase.updateHeader()');
 
         super.updateHeader();
 
         const colBack   = rgbFromType(this.type, this.active);
         const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-        
+        console.log('darkText', darkText);
         const colText   = darkText ? [0, 0, 0]      : [1, 1, 1];
         const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3];
         const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
@@ -17537,48 +17570,6 @@ function createNodeHeader(node)
 
 
 
-    node.header.addEventListener('pointerleave', e => 
-    { 
-        if (graphView.tempConn)
-        {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.node != node)
-            {
-                const input = graphView.headerInput;
-                
-                graphView.overInput   = null;
-                graphView.headerInput = null;
-                
-                if (input) // will be null if data types don't match or there's no auto input for someo other reason
-                {
-                    input.mouseOver = false;
-                    input.updateControl();
-                }
-                
-                graphView.tempConn.wire.inputPos = point_NaN;
-            }
-            else if (graphView.tempConn.input
-                  && graphView.tempConn.input.node != node)
-            {
-                const output = graphView.headerOutput;
-                
-                graphView.overOutput   = null;
-                graphView.headerOutput = null;
-
-                if (output) // will be null if data types don't match or there's no auto output for someo other reason
-                {
-                    output.mouseOver = false;
-                    output.updateControl();
-                }
-
-                graphView.tempConn.wire.outputPos = point_NaN;
-                graphView.tempConn.input.updateControl();
-           }
-        }
-    });
-
-
-
     node.header.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)    
@@ -17665,6 +17656,8 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointermove', e =>
     {
+        //console.log(node.id + '.header.pointermove');
+
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
         const  tempConn = graphView. tempConn;
@@ -17682,6 +17675,7 @@ function createNodeHeader(node)
             setNodePositions(
                 graphView.selectedNodes,
                 (e.clientX - node.div.sx) / graphView.zoom,
+
                 (e.clientY - node.div.sy) / graphView.zoom);
             
             node.div.moved = true;
@@ -17830,6 +17824,48 @@ function createNodeHeader(node)
     
     
 
+    node.header.addEventListener('pointerleave', e => 
+    { 
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != node)
+            {
+                const input = graphView.headerInput;
+                
+                graphView.overInput   = null;
+                graphView.headerInput = null;
+                
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
+                
+                graphView.tempConn.wire.inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node != node)
+            {
+                const output = graphView.headerOutput;
+                
+                graphView.overOutput   = null;
+                graphView.headerOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
+                graphView.tempConn.wire.outputPos = point_NaN;
+                graphView.tempConn.input.updateControl();
+           }
+        }
+    });
+
+
+
     node.header.addEventListener('dblclick', e =>
     {
         e.preventDefault();
@@ -17848,7 +17884,7 @@ function createNodeHeader(node)
 
 function setNodePositions(nodes, dx, dy, updateTransform = true)
 {
-    //log('setNodePositions()');
+    //console.log('setNodePositions()');
 
     for (const node of nodes)
     {
@@ -17864,7 +17900,7 @@ function setNodePositions(nodes, dx, dy, updateTransform = true)
 
 function setNodePosition(node, x, y, updateTransform = true)
 {
-    //log('setNodePosition()');
+    //console.log('setNodePosition()');
 
     node.div.style.left = x;
     node.div.style.top  = y;
@@ -18212,9 +18248,9 @@ extends OperatorBase
 
     updateNode()
     {
-        enableElementText(this.#paramValue.control, !this.inputs[0].connected);
-        
         super.updateNode();
+        
+        enableElementText(this.#paramValue.control, !this.inputs[0].connected);
     }
 
 
@@ -18887,7 +18923,7 @@ extends Operator
 
     updateHeader()
     {
-        //log(this.id + '.OpColorBase.updateHeader()');
+        //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
         const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
@@ -18971,7 +19007,7 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        //log(this.id + '.updateWarningOverlay()');
+        //console.log(this.id + '.updateWarningOverlay()');
         
         if (this.canShowColor())
         {
@@ -19191,7 +19227,7 @@ extends OpColorBase
 
     // updateData()
     // {
-    //     //log(this.id + '.OpColor.updateData()');
+    //     //console.log(this.id + '.OpColor.updateData()');
 
     //     if (this.inputs[0].connected) 
     //     {
@@ -19282,7 +19318,7 @@ extends OpColorBase
 
     updateNode()
     {
-        //log(this.id + '.OpColor.updateNode()');
+        //console.log(this.id + '.OpColor.updateNode()');
 
         
         enableElementText(this.hexbox, !this.connected());
@@ -19305,7 +19341,7 @@ extends OpColorBase
 
     updateHeader()
     {
-        //log(this.id + '.OpColor.updateHeader()');
+        //console.log(this.id + '.OpColor.updateHeader()');
 
         super.updateHeader();
         
@@ -20877,7 +20913,7 @@ extends OpColorBase
 
     // updateData()
     // {
-    //     //log(this.id + '.OpValidColor.updateData()');
+    //     //console.log(this.id + '.OpValidColor.updateData()');
 
     //     if (this.inputs[0].connected)
     //     {
@@ -21102,7 +21138,7 @@ extends OpColorBase
 
     // updateData()
     // {
-    //     //log(this.id + '.OpWebContrast.updateData()');
+    //     //console.log(this.id + '.OpWebContrast.updateData()');
 
         
     //     this._color = 
@@ -21324,7 +21360,7 @@ extends OpColorBase
 
     // updateData()
     // {
-    //     //log(this.id + '.OpColorInterpolate.updateData()');
+    //     //console.log(this.id + '.OpColorInterpolate.updateData()');
 
     //     if (   this.inputs[0].connected
     //         && this.inputs[1].connected)
@@ -22256,7 +22292,7 @@ extends Action
 
     undeleteNodes()
     {
-        //log('this.nodes', this.nodes);
+        //console.log('this.nodes', this.nodes);
 
         graph.addNodes(this.nodes);
         graphView.selected = this.nodes;
@@ -22436,7 +22472,6 @@ extends Action
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
-        console.log('oldActiveNodeIds', oldActiveNodeIds);
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
@@ -23250,7 +23285,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        this.param.node.pushUpdate();
+        this.param.node.pushUpdateFromParam(this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23260,7 +23295,7 @@ extends Action
     undo()
     {
         this.param.setValue(this.oldValue, false, true);
-        this.param.node.pushUpdate();
+        this.param.node.pushUpdateFromParam(this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23270,7 +23305,7 @@ extends Action
     redo()
     {
         this.param.setValue(this.newValue);
-        this.param.node.pushUpdate();
+        this.param.node.pushUpdateFromParam(this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -24010,7 +24045,7 @@ function uiLoadGraphView(json)
 
 
     const data = JSON.parse(json);
-    //log(json);
+    //console.log(json);
 
 
     const pan = point( 
@@ -24129,7 +24164,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         _nodes
             .filter(n => n.active)
             .map(n => nodeFromId(n.id))
-            .forEach(n => uiMakeNodeActive(n));
+            .forEach(n => n.makeActive());
     });
 }
 
@@ -24984,10 +25019,7 @@ function uiMakeNodeActive(node)
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 
-    node._active = true;
-
-    if (!graphView.activeNodes.includes(node))
-        graphView.activeNodes.push(node);
+    node.makeActive();
 
     // uiPostMessageToFigma({
     //     cmd:   'figSaveActiveNode',
@@ -25036,18 +25068,7 @@ function uiMakeNodePassive(node)
     //if (node.active)
     //    uiDeleteObjects([node.id]);
 
-    if (node.active)
-    {
-        removeFromArray(graphView.activeNodes, node);
-
-        uiPostMessageToFigma({
-            cmd:   'figRemoveSavedActiveNode',
-            nodeId: node.id
-        });
-    }
-
-    node._active = false;
-
+    node.makePassive();
     node.updateNode();
 }
 
@@ -25262,7 +25283,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    //log(copiedJson);
+    //console.log(copiedJson);
 
     return copiedJson;
 }
@@ -25332,6 +25353,7 @@ function correctNodeNamesInConnections(data)
 
 function updateGraphNodes()
 {
+    console.log('updateGraphNodes()');
     for (const node of graphView.selectedNodes)      node.updateNode();
     for (const node of graphView._prevSelectedNodes) node.updateNode();
     for (const node of graphView.lastSelectedNodes)  node.updateNode();
@@ -25419,7 +25441,7 @@ function uiSaveNodes(nodeIds)
     for (const node of nodes)
     {
         nodeJson.push(node.toJson());
-        //log(node.toJson());
+        //console.log(node.toJson());
     }
 
     uiPostMessageToFigma({

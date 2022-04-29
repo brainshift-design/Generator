@@ -124,7 +124,7 @@ function uiLoadGraphView(json)
 
 
     const data = JSON.parse(json);
-    //log(json);
+    //console.log(json);
 
 
     const pan = point( 
@@ -243,7 +243,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         _nodes
             .filter(n => n.active)
             .map(n => nodeFromId(n.id))
-            .forEach(n => uiMakeNodeActive(n));
+            .forEach(n => n.makeActive());
     });
 }
 

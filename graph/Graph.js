@@ -76,7 +76,7 @@ class Graph
         for (const node of nodes)
             this.addNode(node, placeNode);
         
-        setTimeout(() => nodes.forEach(n => n.updateNode()));
+        //setTimeout(() => nodes.forEach(n => n.updateNode()));
     }
 
 

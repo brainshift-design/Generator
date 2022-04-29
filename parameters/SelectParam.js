@@ -69,7 +69,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER);
 
             
-        this.control.addEventListener('change',  () => { this.node.pushUpdate(this); /*this.setValue(this.value, false, false);*/ });
+        //this.control.addEventListener('change',  () => { this.node.pushUpdateFromParam(this); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
 

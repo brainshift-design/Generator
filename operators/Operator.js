@@ -283,9 +283,17 @@ class Operator
 
 
 
-    pushUpdate(param = null)
+    pushUpdate()
     {
-        //log(this.id + '.Operator.pushUpdate()');
+        console.log(this.id + '.Operator.pushUpdate()');
+        pushUpdateFromParam(null);
+    }
+
+
+
+    pushUpdateFromParam(param)
+    {
+        console.log(this.id + '.Operator.pushUpdateFromParam()');
 
         this.invalidate();
 
@@ -337,7 +345,7 @@ class Operator
 
     // updateData()
     // {
-    //     //log(this.id + '.Operator.updateData()');
+    //     //console.log(this.id + '.Operator.updateData()');
 
     //     this.setParamOutputData();
     // }
@@ -355,7 +363,7 @@ class Operator
 
     updateNode() 
     {
-        //log(this.id + '.Operator.updateNode()');
+        //console.log(this.id + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -377,11 +385,13 @@ class Operator
 
     updateHeader()
     {
-        //log(this.id + '.Operator.updateHeader()');
+        //console.log(this.id + '.Operator.updateHeader()');
         
+        //console.log('this.id', this.id);
+
         const height = this.updateHeaderInputsAndOutputs();
 
-        this.header.style.height = height;
+        this.header   .style.height = height;
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
@@ -508,6 +518,26 @@ class Operator
             : 'none';
     }
     
+
+
+    makeActive()
+    {
+        this._active = true;
+
+        if (!graphView.activeNodes.includes(this))
+            graphView.activeNodes.push(this);
+    }
+
+
+
+    makePassive()
+    {
+        if (graphView.activeNodes.includes(this))
+            removeFromArray(graphView.activeNodes, node);
+
+        this._active = false;
+    }
+
 
 
     follows(node)

@@ -71,9 +71,9 @@ extends OperatorBase
 
     updateNode()
     {
-        enableElementText(this.#paramValue.control, !this.inputs[0].connected);
-        
         super.updateNode();
+        
+        enableElementText(this.#paramValue.control, !this.inputs[0].connected);
     }
 
 

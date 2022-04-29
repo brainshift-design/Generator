@@ -540,10 +540,7 @@ function uiMakeNodeActive(node)
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 
-    node._active = true;
-
-    if (!graphView.activeNodes.includes(node))
-        graphView.activeNodes.push(node);
+    node.makeActive();
 
     // uiPostMessageToFigma({
     //     cmd:   'figSaveActiveNode',
@@ -592,18 +589,7 @@ function uiMakeNodePassive(node)
     //if (node.active)
     //    uiDeleteObjects([node.id]);
 
-    if (node.active)
-    {
-        removeFromArray(graphView.activeNodes, node);
-
-        uiPostMessageToFigma({
-            cmd:   'figRemoveSavedActiveNode',
-            nodeId: node.id
-        });
-    }
-
-    node._active = false;
-
+    node.makePassive();
     node.updateNode();
 }
 
@@ -818,7 +804,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    //log(copiedJson);
+    //console.log(copiedJson);
 
     return copiedJson;
 }
@@ -888,6 +874,7 @@ function correctNodeNamesInConnections(data)
 
 function updateGraphNodes()
 {
+    console.log('updateGraphNodes()');
     for (const node of graphView.selectedNodes)      node.updateNode();
     for (const node of graphView._prevSelectedNodes) node.updateNode();
     for (const node of graphView.lastSelectedNodes)  node.updateNode();
@@ -975,7 +962,7 @@ function uiSaveNodes(nodeIds)
     for (const node of nodes)
     {
         nodeJson.push(node.toJson());
-        //log(node.toJson());
+        //console.log(node.toJson());
     }
 
     uiPostMessageToFigma({

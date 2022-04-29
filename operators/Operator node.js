@@ -98,48 +98,6 @@ function createNodeHeader(node)
 
 
 
-    node.header.addEventListener('pointerleave', e => 
-    { 
-        if (graphView.tempConn)
-        {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.node != node)
-            {
-                const input = graphView.headerInput;
-                
-                graphView.overInput   = null;
-                graphView.headerInput = null;
-                
-                if (input) // will be null if data types don't match or there's no auto input for someo other reason
-                {
-                    input.mouseOver = false;
-                    input.updateControl();
-                }
-                
-                graphView.tempConn.wire.inputPos = point_NaN;
-            }
-            else if (graphView.tempConn.input
-                  && graphView.tempConn.input.node != node)
-            {
-                const output = graphView.headerOutput;
-                
-                graphView.overOutput   = null;
-                graphView.headerOutput = null;
-
-                if (output) // will be null if data types don't match or there's no auto output for someo other reason
-                {
-                    output.mouseOver = false;
-                    output.updateControl();
-                }
-
-                graphView.tempConn.wire.outputPos = point_NaN;
-                graphView.tempConn.input.updateControl();
-           }
-        }
-    });
-
-
-
     node.header.addEventListener('pointerdown', e =>
     {
         if (graphView.spaceDown)    
@@ -226,6 +184,8 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointermove', e =>
     {
+        //console.log(node.id + '.header.pointermove');
+
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
         const  tempConn = graphView. tempConn;
@@ -243,6 +203,7 @@ function createNodeHeader(node)
             setNodePositions(
                 graphView.selectedNodes,
                 (e.clientX - node.div.sx) / graphView.zoom,
+
                 (e.clientY - node.div.sy) / graphView.zoom);
             
             node.div.moved = true;
@@ -391,6 +352,48 @@ function createNodeHeader(node)
     
     
 
+    node.header.addEventListener('pointerleave', e => 
+    { 
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != node)
+            {
+                const input = graphView.headerInput;
+                
+                graphView.overInput   = null;
+                graphView.headerInput = null;
+                
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
+                
+                graphView.tempConn.wire.inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node != node)
+            {
+                const output = graphView.headerOutput;
+                
+                graphView.overOutput   = null;
+                graphView.headerOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
+                graphView.tempConn.wire.outputPos = point_NaN;
+                graphView.tempConn.input.updateControl();
+           }
+        }
+    });
+
+
+
     node.header.addEventListener('dblclick', e =>
     {
         e.preventDefault();
@@ -409,7 +412,7 @@ function createNodeHeader(node)
 
 function setNodePositions(nodes, dx, dy, updateTransform = true)
 {
-    //log('setNodePositions()');
+    //console.log('setNodePositions()');
 
     for (const node of nodes)
     {
@@ -425,7 +428,7 @@ function setNodePositions(nodes, dx, dy, updateTransform = true)
 
 function setNodePosition(node, x, y, updateTransform = true)
 {
-    //log('setNodePosition()');
+    //console.log('setNodePosition()');
 
     node.div.style.left = x;
     node.div.style.top  = y;

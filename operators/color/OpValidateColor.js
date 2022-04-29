@@ -212,7 +212,7 @@ extends OpColorBase
 
     // updateData()
     // {
-    //     //log(this.id + '.OpValidColor.updateData()');
+    //     //console.log(this.id + '.OpValidColor.updateData()');
 
     //     if (this.inputs[0].connected)
     //     {

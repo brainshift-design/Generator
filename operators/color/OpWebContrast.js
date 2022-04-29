@@ -46,7 +46,7 @@ extends OpColorBase
 
     // updateData()
     // {
-    //     //log(this.id + '.OpWebContrast.updateData()');
+    //     //console.log(this.id + '.OpWebContrast.updateData()');
 
         
     //     this._color = 

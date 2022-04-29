@@ -29,7 +29,7 @@ extends Operator
 
     updateHeader()
     {
-        //log(this.id + '.OpColorBase.updateHeader()');
+        //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
         const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
@@ -113,7 +113,7 @@ extends Operator
 
     updateWarningOverlay() 
     {
-        //log(this.id + '.updateWarningOverlay()');
+        //console.log(this.id + '.updateWarningOverlay()');
         
         if (this.canShowColor())
         {
