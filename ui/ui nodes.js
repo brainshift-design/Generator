@@ -832,7 +832,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
     const nodes = loadNodes(data);
-console.log('nodes', nodes);
+
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
@@ -892,14 +892,7 @@ function uiUpdateNodes(nodeIds)
         return;
     }
 
-
     graph.mutex = true;
-
-
-    // uiPostMessageToGenerator({
-    //     cmd:    'genUpdateObjects',
-    //     nodeIds: nodeIds
-    // });
 }
 
 
@@ -925,19 +918,36 @@ function uiUpdateGraph()
 function uiUpdateValues(values)
 {
     //console.log('values', values);
-    const node = nodeFromId(values[0]);
+    const updateNodeId     = values[0];
+    const updateParamIndex = values[1];
 
-    for (let i = 1; i < values.length; i += 3)
+    
+    const nodes = [];
+
+    for (let i = 2; i < values.length; i += 4)
     {
-        const param = node.params[values[i]];
-        if (param.noUpdate) continue;
+        const node = nodeFromId(values[3]);
+        
+        if (!nodex.includes(node)) 
+            nodes.push(node);
 
-        param.control.setDecimals(values[i+2]);
-        param.setValue(values[i+1], false, true, false);
+
+        const param = node.params[values[i]];
+ 
+        if (   node .id    != updateNodeId
+            && param.index != updateParamIndex)
+        {
+            param.control.setDecimals(values[i+2]);
+            param.setValue(values[i+1], false, true, false);
+        }
     }
 
-    node.valid = true;
-    node.updateNode();
+
+    for (const node of nodes)
+    {
+        node.valid = true;
+        node.updateNode();
+    }
 }
 
 
