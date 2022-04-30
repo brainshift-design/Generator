@@ -17,7 +17,7 @@
 
 function genRequest(req)
 {
-    console.log('REQ', req);
+    //console.log('REQ', req);
     
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
@@ -32,69 +32,35 @@ function genRequest(req)
         updateValues:     []
     };
 
-    genParseRequest(req, parse);
 
+    const stackOverflowProtect = 100;
 
-    // send messages in chunks
-    
-    const chunkSize = 10;
-    
-    let i = 0, 
-        c = 0;
-    
-    let chunk = [];
-    
-    while (i < parse.updateValues)
+    while (parse.pos < req.length 
+        && parse.so  < stackOverflowProtect)
     {
-        chunk.push(
-            parse.updateValues[i++],  // node id
-            parse.updateValues[i++],  // param index
-            parse.updateValues[i++],  // value
-            parse.updateValues[i++]); // decimals
-
-        chunk.push([nodeId, paramIndex, val, dec]);
-        
-        if (++c == chunkSize)
-        {
-            genPostMessageToUi({ 
-                cmd:    'uiUpdateValues',
-                values: [updateNodeId, updateParamIndex, ...chunk]
-            });
-
-            chunk = [];
-            c = 0;
-        }
+        genParseRequest(req, parse);
+        //console.log('parse', parse);
     }
+    
 
-    if (chunk.length > 0)
-    {
-        genPostMessageToUi({ 
-            cmd:    'uiUpdateValues',
-            values: [updateNodeId, updateParamIndex, ...chunk]
-        });
-    }
+    genUpdateValues(
+        updateNodeId,
+        updateParamIndex,
+        parse.updateValues);
 }
 
 
 
 function genParseRequest(req, parse)
 {
-    const stackOverflowProtect = 100;
+    const next = req[parse.pos];
+    //console.log('next', next);
 
-    nextGenObjectId = 0;
-
-    while (parse.pos < req.length 
-        && parse.so  < stackOverflowProtect)
-    {
-        const next = req[parse.pos];
-        //console.log('next', next);
-
-             if (next == NUMBER   ) return genNumber   (req, parse);
-        else if (next == RECTANGLE) return genRectangle(req, parse);
-        else if (strIsNum(next))    return genNumValue (req, parse);
-        else parse.so++;
-    }
-
+         if (next == NUMBER   ) return genNumber   (req, parse);
+    else if (next == RECTANGLE) return genRectangle(req, parse);
+    else if (strIsNum(next))    return genNumValue (req, parse);
+    
+    parse.so++;
     return null;
 }
 
@@ -121,9 +87,9 @@ function genNumber(req, parse)
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
 
-    parse.updateValues.push([
-        nodeId, 0,        // param
-        val[0], val[1]]); // value
+    parse.updateValues.push(
+        nodeId, 0,       // param
+        val[0], val[1]); // value
     
     return val;
 }

@@ -918,27 +918,34 @@ function uiUpdateGraph()
 function uiUpdateValues(values)
 {
     //console.log('values', values);
+    
     const updateNodeId     = values[0];
     const updateParamIndex = values[1];
 
-    
+
     const nodes = [];
 
     for (let i = 2; i < values.length; i += 4)
     {
-        const node = nodeFromId(values[3]);
+        const nodeId     = values[i  ];
+        const paramIndex = values[i+1];
+        const val        = values[i+2];
+        const dec        = values[i+3];
+
+
+        const node = nodeFromId(nodeId);
         
-        if (!nodex.includes(node)) 
+        if (!nodes.includes(node)) 
             nodes.push(node);
 
 
-        const param = node.params[values[i]];
+        const param = node.params[paramIndex];
  
-        if (   node .id    != updateNodeId
-            && param.index != updateParamIndex)
+        if (   nodeId     != updateNodeId
+            || paramIndex != updateParamIndex)
         {
-            param.control.setDecimals(values[i+2]);
-            param.setValue(values[i+1], false, true, false);
+            param.control.setDecimals(dec);
+            param.setValue(val, false, true, false);
         }
     }
 

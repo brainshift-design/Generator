@@ -62,6 +62,48 @@ function genPostMessageToUi(msg)
 
 
 
+function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
+{
+    // send messages in chunks
+
+    const chunkSize = 10;
+    
+    let i = 0, 
+        c = 0;
+    
+    let chunk = [];
+    
+    while (i < updateValues.length)
+    {
+        chunk.push(
+            updateValues[i++],  // node id
+            updateValues[i++],  // param index
+            updateValues[i++],  // value
+            updateValues[i++]); // decimals
+
+        if (++c == chunkSize)
+        {
+            genPostMessageToUi({ 
+                cmd:    'uiUpdateValues',
+                values: [updateNodeId, updateParamIndex, ...chunk]
+            });
+
+            chunk = [];
+            c = 0;
+        }
+    }
+
+    if (chunk.length > 0)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateValues',
+            values: [updateNodeId, updateParamIndex, ...chunk]
+        });
+    }
+}
+
+
+
 // function genClearGraph()
 // {
 //     genGraph.clear();
