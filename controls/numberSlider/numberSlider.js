@@ -249,7 +249,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
                     if (slider.value != slider.prevValue)
-                        slider.param.node.pushUpdate();
+                        slider.param.node.pushUpdateFromParam(slider.param);
                                         
                     slider.prevValue = slider.value;
                 }

@@ -59,7 +59,7 @@ extends OperatorBase
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest()
-            : [ numToString( // number VALUES are stored as strings as decimal places are important
+            : [ numToString( // number VALUES are stored as strings because decimal places matter
                     this.node.#paramValue.value,
                     this.node.#paramValue.control.dec) ]));
 
