@@ -4195,14 +4195,57 @@ function genRequest(req)
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
 
-    genParseRequest(
-        req, 
+
+    const parse =         
+    {
+        pos:              2, 
+        so:               0, 
+        updateNodeId:     updateNodeId, 
+        updateParamIndex: updateParamIndex,
+        updateValues:     []
+    };
+
+    genParseRequest(req, parse);
+
+
+    // send messages in chunks
+    
+    const chunkSize = 10;
+    
+    let i = 0, 
+        c = 0;
+    
+    let chunk = [];
+    
+    while (i < parse.updateValues)
+    {
+        chunk.push(
+            parse.updateValues[i++],  // node id
+            parse.updateValues[i++],  // param index
+            parse.updateValues[i++],  // value
+            parse.updateValues[i++]); // decimals
+
+        chunk.push([nodeId, paramIndex, val, dec]);
+        
+        if (++c == chunkSize)
         {
-            pos:              2, 
-            so:               0, 
-            updateNodeId:     updateNodeId, 
-            updateParamIndex: updateParamIndex
+            genPostMessageToUi({ 
+                cmd:    'uiUpdateValues',
+                values: [updateNodeId, updateParamIndex, ...chunk]
+            });
+
+            chunk = [];
+            c = 0;
+        }
+    }
+
+    if (chunk.length > 0)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateValues',
+            values: [updateNodeId, updateParamIndex, ...chunk]
         });
+    }
 }
 
 
@@ -4251,16 +4294,9 @@ function genNumber(req, parse)
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
 
-
-    if (   parse.updateNodeId     != nodeId
-        && parse.updateParamIndex != 0)
-    {
-        genPostMessageToUi({ 
-            cmd:    'uiUpdateValues',
-            values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
-        });
-    }
-
+    parse.updateValues.push([
+        nodeId, 0,        // param
+        val[0], val[1]]); // value
     
     return val;
 }
@@ -16043,7 +16079,10 @@ function updateTerminalsAfterNodes(nodes)
     for (const t of terminals)
         t.pushUpdate();
 
-    value update messages don't seem to be arriving
+    // value update messages don't seem to be arriving
+
+    // look in the value update message, maybe after updating all the params,
+    // all nodes that contain updated params should also be updated
 }
 
 
@@ -23811,7 +23850,7 @@ document.addEventListener('keyup', e =>
 },false);
 
 
-// --> from Figma
+// from Figma -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 onmessage = e =>
@@ -23838,7 +23877,7 @@ onmessage = e =>
 
 
 
-// from Generator <--
+//                                                                               <-- from Generator
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 generator.onmessage = function(e)
@@ -23864,6 +23903,8 @@ generator.onmessage = function(e)
 
 
 // <-- to Figma
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 function uiPostMessageToFigma(msg)
 {
     figMessages.push(msg);
@@ -23891,13 +23932,13 @@ function uiPostNextMessageToFigma()
     }
 }
 
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-// to Generator -->
+//                                                                                 to Generator -->
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 function uiPostMessageToGenerator(msg)
 {
     genMessages.push(msg);
@@ -25341,7 +25382,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
     const nodes = loadNodes(data);
-console.log('nodes', nodes);
+
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
@@ -25401,14 +25442,7 @@ function uiUpdateNodes(nodeIds)
         return;
     }
 
-
     graph.mutex = true;
-
-
-    // uiPostMessageToGenerator({
-    //     cmd:    'genUpdateObjects',
-    //     nodeIds: nodeIds
-    // });
 }
 
 
@@ -25434,19 +25468,36 @@ function uiUpdateGraph()
 function uiUpdateValues(values)
 {
     //console.log('values', values);
-    const node = nodeFromId(values[0]);
+    const updateNodeId     = values[0];
+    const updateParamIndex = values[1];
 
-    for (let i = 1; i < values.length; i += 3)
+    
+    const nodes = [];
+
+    for (let i = 2; i < values.length; i += 4)
     {
-        const param = node.params[values[i]];
-        if (param.noUpdate) continue;
+        const node = nodeFromId(values[3]);
+        
+        if (!nodex.includes(node)) 
+            nodes.push(node);
 
-        param.control.setDecimals(values[i+2]);
-        param.setValue(values[i+1], false, true, false);
+
+        const param = node.params[values[i]];
+ 
+        if (   node .id    != updateNodeId
+            && param.index != updateParamIndex)
+        {
+            param.control.setDecimals(values[i+2]);
+            param.setValue(values[i+1], false, true, false);
+        }
     }
 
-    node.valid = true;
-    node.updateNode();
+
+    for (const node of nodes)
+    {
+        node.valid = true;
+        node.updateNode();
+    }
 }
 
 

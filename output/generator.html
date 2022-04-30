@@ -2637,14 +2637,57 @@ function genRequest(req)
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
 
-    genParseRequest(
-        req, 
+
+    const parse =         
+    {
+        pos:              2, 
+        so:               0, 
+        updateNodeId:     updateNodeId, 
+        updateParamIndex: updateParamIndex,
+        updateValues:     []
+    };
+
+    genParseRequest(req, parse);
+
+
+    // send messages in chunks
+    
+    const chunkSize = 10;
+    
+    let i = 0, 
+        c = 0;
+    
+    let chunk = [];
+    
+    while (i < parse.updateValues)
+    {
+        chunk.push(
+            parse.updateValues[i++],  // node id
+            parse.updateValues[i++],  // param index
+            parse.updateValues[i++],  // value
+            parse.updateValues[i++]); // decimals
+
+        chunk.push([nodeId, paramIndex, val, dec]);
+        
+        if (++c == chunkSize)
         {
-            pos:              2, 
-            so:               0, 
-            updateNodeId:     updateNodeId, 
-            updateParamIndex: updateParamIndex
+            genPostMessageToUi({ 
+                cmd:    'uiUpdateValues',
+                values: [updateNodeId, updateParamIndex, ...chunk]
+            });
+
+            chunk = [];
+            c = 0;
+        }
+    }
+
+    if (chunk.length > 0)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateValues',
+            values: [updateNodeId, updateParamIndex, ...chunk]
         });
+    }
 }
 
 
@@ -2693,16 +2736,9 @@ function genNumber(req, parse)
     const nodeId = req[parse.pos++];
     const val    = genParseRequest(req, parse);
 
-
-    if (   parse.updateNodeId     != nodeId
-        && parse.updateParamIndex != 0)
-    {
-        genPostMessageToUi({ 
-            cmd:    'uiUpdateValues',
-            values: [nodeId, 0, val[0], val[1]] // values are sent in index,value pairs as part of the array
-        });
-    }
-
+    parse.updateValues.push([
+        nodeId, 0,        // param
+        val[0], val[1]]); // value
     
     return val;
 }

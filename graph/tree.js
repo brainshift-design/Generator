@@ -156,5 +156,8 @@ function updateTerminalsAfterNodes(nodes)
     for (const t of terminals)
         t.pushUpdate();
 
-    value update messages don't seem to be arriving
+    // value update messages don't seem to be arriving
+
+    // look in the value update message, maybe after updating all the params,
+    // all nodes that contain updated params should also be updated
 }
