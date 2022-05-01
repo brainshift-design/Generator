@@ -10,7 +10,6 @@ extends OperatorBase
     constructor(type, shortName, symbol)
     {
         super(type, shortName, 50);
-        console.log('this.type', this.type);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -130,16 +129,15 @@ extends OperatorBase
         if (this.node.valid)
             return this.cache;
 
-        const req = [
-            this.node.type,
-            this.node.id];
-
-        
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
-        req.push(connectedInputs.length); // utility values like param count are stored as numbers
-            
-        connectedInputs.forEach(i => req.push(...i.connectedOutput.genRequest()));
+        const req = [
+            this.node.type,
+            this.node.id,
+            connectedInputs.length]; // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            req.push(...input.connectedOutput.genRequest()));
 
         
         return this.cache = [...req];

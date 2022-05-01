@@ -7,27 +7,27 @@
 
 // for gen requests each type is followed first by the node ID, then the params
 
-const NUMBER             = 'num';   // N | (value decimals)
-const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
-const NUMBER_ADD         = 'add';   // count N...
-const NUMBER_SUBTRACT    = 'sub';   // count N...
-const NUMBER_MULTIPLY    = 'mul';   // count N...
-const NUMBER_DIVIDE      = 'div';   // count N...
-const NUMBER_MODULO      = 'mod';   // count N...
-const NUMBER_POWER       = 'pow';   // count N...
-const NUMBER_INTERPOLATE = 'lerp';  // N N N:amount
+const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
-const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
-const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
-const COLOR_VALIDATE     = 'cvld';  // C
-const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
-const COLORBLIND         = 'blnd';  // C
+const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
+const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE     = 'CVLD';  // C
+const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
+const COLORBLIND         = 'BLND';  // C
 
-const STRING             = 'str';   // S|value
-const STRING_ADD         = 'sadd';  // S S
-const STRING_REPLACE     = 'srepl'; // S S:what S:with
+const STRING             = 'STR';   // S|value
+const STRING_ADD         = 'SADD';  // S S
+const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
-const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
+const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 
-const GROUP              = 'grp';   // ???? count O...
+const GROUP              = 'GRP';   // ???? count O...

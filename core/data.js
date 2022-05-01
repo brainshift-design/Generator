@@ -11,9 +11,32 @@ function rgbFromType(type, active)
 {
     switch (type)
     {
-        case NUMBER:    return active ? rgbActiveNumber : rgbNumber;
-        case COLOR:     return active ? rgbActiveColor  : rgbColor;
-        case RECTANGLE: return active ? rgbActiveObject : rgbObject;
+        case NUMBER:    
+        case NUMBER_MINMAX:
+        case NUMBER_ADD:
+        case NUMBER_SUBTRACT:
+        case NUMBER_MULTIPLY:
+        case NUMBER_DIVIDE:
+        case NUMBER_MODULO:
+        case NUMBER_POWER:
+        case NUMBER_INTERPOLATE: 
+            return active 
+                 ? rgbActiveNumber 
+                 : rgbNumber;
+        
+        case COLOR:           
+        case COLOR_INTERPOLATE:
+        case COLOR_VALIDATE:
+        case COLOR_CONTRAST:
+        case COLORBLIND:
+            return active 
+                 ? rgbActiveColor  
+                 : rgbColor;
+
+        case RECTANGLE: 
+            return active 
+                 ? rgbActiveObject 
+                 : rgbObject;
     }
 
     return 'magenta';

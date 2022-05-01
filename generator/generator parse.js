@@ -17,7 +17,7 @@
 
 function genRequest(req)
 {
-    //console.log('REQ', req);
+    console.log('REQ', req);
     
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
@@ -56,7 +56,9 @@ function genParseRequest(req, parse)
     const next = req[parse.pos];
     //console.log('next', next);
 
-         if (next == NUMBER   ) return genNumber   (req, parse);
+         if (next == NUMBER    ) return genNumber   (req, parse);
+    else if (next == NUMBER_ADD) return genNumberAdd(req, parse);
+
     else if (next == RECTANGLE) return genRectangle(req, parse);
     else if (strIsNum(next))    return genNumValue (req, parse);
     
@@ -92,6 +94,33 @@ function genNumber(req, parse)
         val[0], val[1]); // value
     
     return val;
+}
+
+
+
+function genNumberAdd(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+
+    let result = 0;
+    let maxDec = 0;
+
+    for (let i = 0; i < nValues; i++)
+    {
+        const val = genParseRequest(req, parse);
+
+        result += val[0];
+        maxDec = Math.max(maxDec, val[1]);
+    }
+
+    parse.updateValues.push(
+        nodeId, 0,       // param
+        result, maxDec); // value
+    
+    return [result, maxDec];
 }
 
 

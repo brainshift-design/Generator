@@ -1577,30 +1577,30 @@ const MAX_INT32         = 2147483647;
 
 // for gen requests each type is followed first by the node ID, then the params
 
-const NUMBER             = 'num';   // N | (value decimals)
-const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
-const NUMBER_ADD         = 'add';   // count N...
-const NUMBER_SUBTRACT    = 'sub';   // count N...
-const NUMBER_MULTIPLY    = 'mul';   // count N...
-const NUMBER_DIVIDE      = 'div';   // count N...
-const NUMBER_MODULO      = 'mod';   // count N...
-const NUMBER_POWER       = 'pow';   // count N...
-const NUMBER_INTERPOLATE = 'lerp';  // N N N:amount
+const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
-const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
-const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
-const COLOR_VALIDATE     = 'cvld';  // C
-const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
-const COLORBLIND         = 'blnd';  // C
+const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
+const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE     = 'CVLD';  // C
+const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
+const COLORBLIND         = 'BLND';  // C
 
-const STRING             = 'str';   // S|value
-const STRING_ADD         = 'sadd';  // S S
-const STRING_REPLACE     = 'srepl'; // S S:what S:with
+const STRING             = 'STR';   // S|value
+const STRING_ADD         = 'SADD';  // S S
+const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
-const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
+const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 
-const GROUP              = 'grp';   // ???? count O...
+const GROUP              = 'GRP';   // ???? count O...
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -1616,9 +1616,32 @@ function rgbFromType(type, active)
 {
     switch (type)
     {
-        case NUMBER:    return active ? rgbActiveNumber : rgbNumber;
-        case COLOR:     return active ? rgbActiveColor  : rgbColor;
-        case RECTANGLE: return active ? rgbActiveObject : rgbObject;
+        case NUMBER:    
+        case NUMBER_MINMAX:
+        case NUMBER_ADD:
+        case NUMBER_SUBTRACT:
+        case NUMBER_MULTIPLY:
+        case NUMBER_DIVIDE:
+        case NUMBER_MODULO:
+        case NUMBER_POWER:
+        case NUMBER_INTERPOLATE: 
+            return active 
+                 ? rgbActiveNumber 
+                 : rgbNumber;
+        
+        case COLOR:           
+        case COLOR_INTERPOLATE:
+        case COLOR_VALIDATE:
+        case COLOR_CONTRAST:
+        case COLORBLIND:
+            return active 
+                 ? rgbActiveColor  
+                 : rgbColor;
+
+        case RECTANGLE: 
+            return active 
+                 ? rgbActiveObject 
+                 : rgbObject;
     }
 
     return 'magenta';
@@ -4234,7 +4257,7 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 
 function genRequest(req)
 {
-    //console.log('REQ', req);
+    console.log('REQ', req);
     
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
@@ -4273,7 +4296,9 @@ function genParseRequest(req, parse)
     const next = req[parse.pos];
     //console.log('next', next);
 
-         if (next == NUMBER   ) return genNumber   (req, parse);
+         if (next == NUMBER    ) return genNumber   (req, parse);
+    else if (next == NUMBER_ADD) return genNumberAdd(req, parse);
+
     else if (next == RECTANGLE) return genRectangle(req, parse);
     else if (strIsNum(next))    return genNumValue (req, parse);
     
@@ -4309,6 +4334,33 @@ function genNumber(req, parse)
         val[0], val[1]); // value
     
     return val;
+}
+
+
+
+function genNumberAdd(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+
+    let result = 0;
+    let maxDec = 0;
+
+    for (let i = 0; i < nValues; i++)
+    {
+        const val = genParseRequest(req, parse);
+
+        result += val[0];
+        maxDec = Math.max(maxDec, val[1]);
+    }
+
+    parse.updateValues.push(
+        nodeId, 0,       // param
+        result, maxDec); // value
+    
+    return [result, maxDec];
 }
 
 
@@ -6832,30 +6884,30 @@ const MAX_INT32         = 2147483647;
 
 // for gen requests each type is followed first by the node ID, then the params
 
-const NUMBER             = 'num';   // N | (value decimals)
-const NUMBER_MINMAX      = 'mnmx';  // N:min N:max
-const NUMBER_ADD         = 'add';   // count N...
-const NUMBER_SUBTRACT    = 'sub';   // count N...
-const NUMBER_MULTIPLY    = 'mul';   // count N...
-const NUMBER_DIVIDE      = 'div';   // count N...
-const NUMBER_MODULO      = 'mod';   // count N...
-const NUMBER_POWER       = 'pow';   // count N...
-const NUMBER_INTERPOLATE = 'lerp';  // N N N:amount
+const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
-const COLOR              = 'clr';   // C N:space N:1 N:2 N:3
-const COLOR_INTERPOLATE  = 'clerp'; // C C N:amount
-const COLOR_VALIDATE     = 'cvld';  // C
-const COLOR_CONTRAST     = 'ccnt';  // C:text C:background
-const COLORBLIND         = 'blnd';  // C
+const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
+const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE     = 'CVLD';  // C
+const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
+const COLORBLIND         = 'BLND';  // C
 
-const STRING             = 'str';   // S|value
-const STRING_ADD         = 'sadd';  // S S
-const STRING_REPLACE     = 'srepl'; // S S:what S:with
+const STRING             = 'STR';   // S|value
+const STRING_ADD         = 'SADD';  // S S
+const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
-const RECTANGLE          = 'rect';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const ELLIPSE            = 'elps';  // N:x N:y N:width N:height N:angle
+const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 
-const GROUP              = 'grp';   // ???? count O...
+const GROUP              = 'GRP';   // ???? count O...
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -6871,9 +6923,32 @@ function rgbFromType(type, active)
 {
     switch (type)
     {
-        case NUMBER:    return active ? rgbActiveNumber : rgbNumber;
-        case COLOR:     return active ? rgbActiveColor  : rgbColor;
-        case RECTANGLE: return active ? rgbActiveObject : rgbObject;
+        case NUMBER:    
+        case NUMBER_MINMAX:
+        case NUMBER_ADD:
+        case NUMBER_SUBTRACT:
+        case NUMBER_MULTIPLY:
+        case NUMBER_DIVIDE:
+        case NUMBER_MODULO:
+        case NUMBER_POWER:
+        case NUMBER_INTERPOLATE: 
+            return active 
+                 ? rgbActiveNumber 
+                 : rgbNumber;
+        
+        case COLOR:           
+        case COLOR_INTERPOLATE:
+        case COLOR_VALIDATE:
+        case COLOR_CONTRAST:
+        case COLORBLIND:
+            return active 
+                 ? rgbActiveColor  
+                 : rgbColor;
+
+        case RECTANGLE: 
+            return active 
+                 ? rgbActiveObject 
+                 : rgbObject;
     }
 
     return 'magenta';
@@ -18490,7 +18565,6 @@ extends OperatorBase
     constructor(type, shortName, symbol)
     {
         super(type, shortName, 50);
-        console.log('this.type', this.type);
 
         this._variableInputs  = true;
         this.alwaysLoadParams = true;
@@ -18610,16 +18684,15 @@ extends OperatorBase
         if (this.node.valid)
             return this.cache;
 
-        const req = [
-            this.node.type,
-            this.node.id];
-
-        
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
-        req.push(connectedInputs.length); // utility values like param count are stored as numbers
-            
-        connectedInputs.forEach(i => req.push(...i.connectedOutput.genRequest()));
+        const req = [
+            this.node.type,
+            this.node.id,
+            connectedInputs.length]; // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            req.push(...input.connectedOutput.genRequest()));
 
         
         return this.cache = [...req];
