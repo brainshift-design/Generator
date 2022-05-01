@@ -329,6 +329,7 @@ figma.ui.onmessage = msg =>
         case 'figUpdateObjects':                figUpdateObjects               (msg.objects);                                break;
     }
 
+    
     figPostMessageToUi({cmd: 'uiEndFigMessage'});
 }
 

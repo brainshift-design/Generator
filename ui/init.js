@@ -1,7 +1,8 @@
 var figMessages = []; // messages from UI to Figma
 var genMessages = []; // messages from UI to Generator
 
-
+var figMessagePosted = false;
+var genMessagePosted = false;
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');

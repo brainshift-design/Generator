@@ -45,6 +45,8 @@ onmessage = function(e)
         // case 'genInvalidate':    genInvalidate   (e.data.nodeId);                                 break;
         // case 'genUpdateObjects': genUpdateObjects(e.data.nodeIds);                                break;
     }
+
+    genPostMessageToUi({cmd: 'uiEndGenMessage'});
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
