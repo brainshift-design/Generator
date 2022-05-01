@@ -42,8 +42,7 @@ class Output
     {
         this._data = value;
 
-        // for (const input of this.connectedInputs)
-        //     input.node.pushUpdate();
+        //pushUpdate(this.connectedInputs.map(i => i.node));
     }
 
 

@@ -26,7 +26,7 @@ extends Action
     {
         // .. already done
 
-        nodeFromId(this.nodeId).pushUpdate();
+        pushUpdate([nodeFromId(this.nodeId)]);
 
         uiSaveNodes([this.nodeId]);
 
@@ -58,7 +58,7 @@ extends Action
             this.newIndex,
             this.oldIndex);
             
-        node.pushUpdate();
+        pushUpdate([node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -76,6 +76,6 @@ extends Action
 
         uiSaveNodes([this.nodeId]);
 
-        node.pushUpdate();
+        pushUpdate([node]);
     }
 }

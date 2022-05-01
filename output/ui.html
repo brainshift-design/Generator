@@ -11267,7 +11267,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
 
                     if (slider.value != slider.prevValue)
-                        slider.param.node.pushUpdateFromParam(slider.param);
+                        pushUpdateFromParam([slider.param.node], slider.param);
                                         
                     slider.prevValue = slider.value;
                 }
@@ -15148,7 +15148,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        //this.control.addEventListener('change',  () => { this.node.pushUpdateFromParam(this);  /*this.setValue(this.value, false, false);*/ });
+        //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this);  /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
 
         this.control.addEventListener('finishedit', e =>
@@ -15194,7 +15194,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        //this.node.pushUpdate();
+        //pushUpdate([this.node]);
     }
 
 
@@ -15479,7 +15479,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER);
 
             
-        //this.control.addEventListener('change',  () => { this.node.pushUpdateFromParam(this); /*this.setValue(this.value, false, false);*/ });
+        //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
 
@@ -15496,7 +15496,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        this.node.pushUpdate();
+        pushUpdate([this.node]);
     }
 
 
@@ -15798,7 +15798,7 @@ class Graph
             
         
         output.updateControl();
-        input.node.pushUpdate();
+        pushUpdate([input.node]);
 
 
         return true;
@@ -16086,8 +16086,7 @@ function updateTerminalsAfterNodes(nodes)
         }
     }
 
-    for (const t of terminals)
-        t.pushUpdate();
+    pushUpdate(terminals);
 
     // value update messages don't seem to be arriving
 
@@ -16379,8 +16378,7 @@ class Output
     {
         this._data = value;
 
-        // for (const input of this.connectedInputs)
-        //     input.node.pushUpdate();
+        //pushUpdate(this.connectedInputs.map(i => i.node));
     }
 
 
@@ -17156,41 +17154,6 @@ class Operator
 
 
 
-    pushUpdate()
-    {
-        //console.log(this.id + '.Operator.pushUpdate()');
-        
-        this.pushUpdateFromParam(null);
-    }
-
-
-
-    pushUpdateFromParam(param)
-    {
-        //console.log(this.id + '.Operator.pushUpdateFromParam()');
-
-        this.invalidate();
-
-
-        const req = 
-            param
-            ? [param.node.id, param.index]
-            : ['', 0];
-
-        getTerminalsAfterNode(this).forEach(node => 
-        {
-            for (const output of node.outputs)
-                req.push(...output.genRequest());
-
-            //node.update();
-        });
-
-
-        uiGenRequest(req);
-    }
-
-
-
     //update()
     //{
         //if (this.valid) return;
@@ -17525,6 +17488,45 @@ function getHeaderConnY(conns, padding, offset)
 
     return [y, height];
 }
+
+
+
+function pushUpdate(nodes)
+{
+    //console.log('pushUpdate('+param.id+')');
+    
+    pushUpdateFromParam(nodes, null);
+}
+
+
+
+function pushUpdateFromParam(nodes, param)
+{
+    //console.log('pushUpdateFromParam('+param.id+')');
+
+    nodes.forEach(n => n.invalidate());
+
+
+    const req = 
+        param
+        ? [param.node.id, param.index]
+        : ['', 0];
+
+    for (const node of nodes)
+    {
+        getTerminalsAfterNode(node).forEach(n => 
+        {
+            for (const output of n.outputs)
+                req.push(...output.genRequest());
+
+            //n.update();
+        });
+    }
+
+
+    uiGenRequest(req);
+}
+
 
 
 class OperatorBase
@@ -19705,7 +19707,7 @@ extends OpColorBase
 //         paramSpace.node._oldSpaceConnections = [];
 //     }
 
-//     //paramSpace.node.pushUpdate();
+//     //pushUpdate([paramSpace.node]);
 // }
 
 
@@ -20337,7 +20339,7 @@ function hexboxFinish(node, success)
     if (success) 
     {
         setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
-        node.hexbox.node.pushUpdate();
+        pushUpdate([node.hexbox.node]);
     }
 
     
@@ -21152,7 +21154,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
     node.findBar.style.display = 'none';
     node.btnFind.style.display = 'block';
 
-    node.pushUpdate();
+    pushUpdate([node]);
 
     uiSaveNodes([nodeId]);
 }
@@ -22138,7 +22140,7 @@ extends Action
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
-            this.oldOutputNode.pushUpdate();
+            pushUpdate([this.oldOutputNode]);
             //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
@@ -22151,7 +22153,7 @@ extends Action
 
 
         // graphView.updateNodeTransform(this.inputNode);
-        this.inputNode.pushUpdate();
+        pushUpdate([this.inputNode]);
     }
 
 
@@ -22171,7 +22173,7 @@ extends Action
         }
 
         // graphView.updateNodeTransform(this.inputNode);
-        this.inputNode.pushUpdate();
+        pushUpdate([this.inputNode]);
 
 
         for (const id of this.newActiveNodeIds)
@@ -22219,7 +22221,7 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
         
         uiMakeNodeActive(node);
-        node.pushUpdate();
+        pushUpdate([node]);
     }
 
 
@@ -22241,7 +22243,7 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
 
         uiMakeNodeActive(node);
-        node.pushUpdate();
+        pushUpdate([node]);
     }
 }
 
@@ -22472,7 +22474,7 @@ extends Action
             if (!this.newActiveNodeIds.includes(inputNode.id))
                 this.newActiveNodeIds.push(inputNode.id);
 
-            inputNode.pushUpdate();
+            pushUpdate([inputNode]);
             //graphView.updateNodeTransform(input.node);
         }
 
@@ -22484,7 +22486,7 @@ extends Action
             if (!this.newActiveNodeIds.includes(outputNode.id))
                 this.newActiveNodeIds.push(outputNode.id);
 
-            outputNode.pushUpdate();
+            pushUpdate([outputNode]);
             //graphView.updateNodeTransform(output.node);
         }
     }
@@ -22535,7 +22537,7 @@ extends Action
         {
             uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
-            this.inputNode.pushUpdate();
+            pushUpdate([this.inputNode]);
             //graphView.updateNodeTransform(this.inputNode);
         }
 
@@ -22543,7 +22545,7 @@ extends Action
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
-            this.outputNode.pushUpdate();
+            pushUpdate([this.outputNode]);
             //graphView.updateNodeTransform(this.outputNode);
         }
     }
@@ -22566,7 +22568,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
         //graphView.updateNodeTransform(this.inputNode);
-        this.inputNode.pushUpdate();
+        pushUpdate([this.inputNode]);
     }
     
     
@@ -22578,14 +22580,14 @@ extends Action
         if (!getActiveNodeInTreeFrom(this.inputNode))
         {
             uiMakeNodeActive(this.inputNode);
-            this.inputNode.pushUpdate();
+            pushUpdate([this.inputNode]);
             //graphView.updateNodeTransform(this.inputNode);
         }
 
         if (!getActiveNodeInTreeFrom(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
-            this.outputNode.pushUpdate();
+            pushUpdate([this.outputNode]);
             //graphView.updateNodeTransform(this.outputNode);
         }
    }
@@ -22659,7 +22661,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22669,7 +22671,7 @@ extends Action
     undo()
     {
         this.param.setValue(this.oldValue, false, true);
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22679,7 +22681,7 @@ extends Action
     redo()
     {
         this.param.setValue(this.newValue);
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -22884,7 +22886,7 @@ extends Action
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
-            this.oldOutputNode.pushUpdate();
+            pushUpdate([this.oldOutputNode]);
             //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
@@ -22898,8 +22900,8 @@ extends Action
 
         // graphView.updateNodeTransform(this.inputNode);
 
-        this.oldInputNode.pushUpdate();
-        this.inputNode   .pushUpdate();
+        pushUpdate([this.oldInputNode]);
+        pushUpdate([this.inputNode   ]);
     }
 
 
@@ -22919,7 +22921,7 @@ extends Action
             this.oldInputIndex);
 
         // graphView.updateNodeTransform(this.oldInputNode);
-        this.oldInputNode.pushUpdate();
+        pushUpdate([this.oldInputNode]);
     
 
         if (this.oldOutputNodeId != '')
@@ -22931,7 +22933,7 @@ extends Action
                 this.inputIndex);
 
             // graphView.updateNodeTransform(this.inputNode);
-            this.inputNode.pushUpdate();
+            pushUpdate([this.inputNode]);
         }
 
 
@@ -23024,7 +23026,7 @@ extends Action
     {
         // .. already done
 
-        nodeFromId(this.nodeId).pushUpdate();
+        pushUpdate([nodeFromId(this.nodeId)]);
 
         uiSaveNodes([this.nodeId]);
 
@@ -23056,7 +23058,7 @@ extends Action
             this.newIndex,
             this.oldIndex);
             
-        node.pushUpdate();
+        pushUpdate([node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23074,7 +23076,7 @@ extends Action
 
         uiSaveNodes([this.nodeId]);
 
-        node.pushUpdate();
+        pushUpdate([node]);
     }
 }
 
@@ -23319,7 +23321,7 @@ extends Action
     do()
     {
         //this.oldValue = this.param.oldValue;
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23329,7 +23331,7 @@ extends Action
     undo()
     {
         this.param.setLocked(!this.locked);
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23339,7 +23341,7 @@ extends Action
     redo()
     {
         this.param.setLocked(this.locked);
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23375,7 +23377,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        this.param.node.pushUpdateFromParam(this.param);
+        pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23385,7 +23387,7 @@ extends Action
     undo()
     {
         this.param.setValue(this.oldValue, false, true);
-        this.param.node.pushUpdateFromParam(this.param);
+        pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23395,7 +23397,7 @@ extends Action
     redo()
     {
         this.param.setValue(this.newValue);
-        this.param.node.pushUpdateFromParam(this.param);
+        pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -23986,10 +23988,7 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
-            {
                 msg = genMessages.shift();
-                console.log('shift');
-            }
         }
 
         generator.postMessage(JSON.stringify(msg));
@@ -24984,7 +24983,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
 
-        //node.pushUpdate();
+        //pushUpdate([node]);
 
         //graphView.putNodeOnTop(node);
         //graphView.updateNodeTransform(node);
@@ -25137,7 +25136,7 @@ function uiMakeNodeActive(node)
     // });
 
     node.updateNode();
-    //node.pushUpdate();
+    //pushUpdate([node]);
 }
 
 
@@ -25167,7 +25166,7 @@ function uiMakeNodeActive(node)
 //         //     uiGenerateObjects([node.id]);
 
 //         node.updateNode();
-//         node.pushUpdate();
+//         pushUpdate([node]);
 //     }
 // }
 

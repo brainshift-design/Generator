@@ -153,8 +153,7 @@ function updateTerminalsAfterNodes(nodes)
         }
     }
 
-    for (const t of terminals)
-        t.pushUpdate();
+    pushUpdate(terminals);
 
     // value update messages don't seem to be arriving
 

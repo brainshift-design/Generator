@@ -224,7 +224,7 @@ extends Action
             if (!this.newActiveNodeIds.includes(inputNode.id))
                 this.newActiveNodeIds.push(inputNode.id);
 
-            inputNode.pushUpdate();
+            pushUpdate([inputNode]);
             //graphView.updateNodeTransform(input.node);
         }
 
@@ -236,7 +236,7 @@ extends Action
             if (!this.newActiveNodeIds.includes(outputNode.id))
                 this.newActiveNodeIds.push(outputNode.id);
 
-            outputNode.pushUpdate();
+            pushUpdate([outputNode]);
             //graphView.updateNodeTransform(output.node);
         }
     }

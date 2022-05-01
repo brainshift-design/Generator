@@ -123,10 +123,7 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
-            {
                 msg = genMessages.shift();
-                console.log('shift');
-            }
         }
 
         generator.postMessage(JSON.stringify(msg));

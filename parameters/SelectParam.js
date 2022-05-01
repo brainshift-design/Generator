@@ -69,7 +69,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER);
 
             
-        //this.control.addEventListener('change',  () => { this.node.pushUpdateFromParam(this); /*this.setValue(this.value, false, false);*/ });
+        //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
     }
 
@@ -86,7 +86,7 @@ extends Parameter
     {
         this.control.setDecimals(dec, displayDec);
         this.control.update();
-        this.node.pushUpdate();
+        pushUpdate([this.node]);
     }
 
 

@@ -362,7 +362,7 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
     node.findBar.style.display = 'none';
     node.btnFind.style.display = 'block';
 
-    node.pushUpdate();
+    pushUpdate([node]);
 
     uiSaveNodes([nodeId]);
 }

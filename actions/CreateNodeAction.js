@@ -31,7 +31,7 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
         
         uiMakeNodeActive(node);
-        node.pushUpdate();
+        pushUpdate([node]);
     }
 
 
@@ -53,6 +53,6 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
 
         uiMakeNodeActive(node);
-        node.pushUpdate();
+        pushUpdate([node]);
     }
 }

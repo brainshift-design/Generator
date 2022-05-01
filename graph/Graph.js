@@ -240,7 +240,7 @@ class Graph
             
         
         output.updateControl();
-        input.node.pushUpdate();
+        pushUpdate([input.node]);
 
 
         return true;

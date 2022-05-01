@@ -395,7 +395,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
 
-        //node.pushUpdate();
+        //pushUpdate([node]);
 
         //graphView.putNodeOnTop(node);
         //graphView.updateNodeTransform(node);
@@ -548,7 +548,7 @@ function uiMakeNodeActive(node)
     // });
 
     node.updateNode();
-    //node.pushUpdate();
+    //pushUpdate([node]);
 }
 
 
@@ -578,7 +578,7 @@ function uiMakeNodeActive(node)
 //         //     uiGenerateObjects([node.id]);
 
 //         node.updateNode();
-//         node.pushUpdate();
+//         pushUpdate([node]);
 //     }
 // }
 

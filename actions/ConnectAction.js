@@ -63,7 +63,7 @@ extends Action
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
-            this.oldOutputNode.pushUpdate();
+            pushUpdate([this.oldOutputNode]);
             //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
@@ -76,7 +76,7 @@ extends Action
 
 
         // graphView.updateNodeTransform(this.inputNode);
-        this.inputNode.pushUpdate();
+        pushUpdate([this.inputNode]);
     }
 
 
@@ -96,7 +96,7 @@ extends Action
         }
 
         // graphView.updateNodeTransform(this.inputNode);
-        this.inputNode.pushUpdate();
+        pushUpdate([this.inputNode]);
 
 
         for (const id of this.newActiveNodeIds)

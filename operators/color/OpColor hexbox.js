@@ -141,7 +141,7 @@ function hexboxFinish(node, success)
     if (success) 
     {
         setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
-        node.hexbox.node.pushUpdate();
+        pushUpdate([node.hexbox.node]);
     }
 
     

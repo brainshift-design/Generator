@@ -536,5 +536,5 @@ extends OpColorBase
 //         paramSpace.node._oldSpaceConnections = [];
 //     }
 
-//     //paramSpace.node.pushUpdate();
+//     //pushUpdate([paramSpace.node]);
 // }

@@ -26,7 +26,7 @@ extends Action
     do()
     {
         //this.oldValue = this.param.oldValue;
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -36,7 +36,7 @@ extends Action
     undo()
     {
         this.param.setLocked(!this.locked);
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -46,7 +46,7 @@ extends Action
     redo()
     {
         this.param.setLocked(this.locked);
-        this.param.node.pushUpdate();
+        pushUpdate([this.param.node]);
 
         uiSaveNodes([this.nodeId]);
     }

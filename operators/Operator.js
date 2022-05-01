@@ -341,41 +341,6 @@ class Operator
 
 
 
-    pushUpdate()
-    {
-        //console.log(this.id + '.Operator.pushUpdate()');
-        
-        this.pushUpdateFromParam(null);
-    }
-
-
-
-    pushUpdateFromParam(param)
-    {
-        //console.log(this.id + '.Operator.pushUpdateFromParam()');
-
-        this.invalidate();
-
-
-        const req = 
-            param
-            ? [param.node.id, param.index]
-            : ['', 0];
-
-        getTerminalsAfterNode(this).forEach(node => 
-        {
-            for (const output of node.outputs)
-                req.push(...output.genRequest());
-
-            //node.update();
-        });
-
-
-        uiGenRequest(req);
-    }
-
-
-
     //update()
     //{
         //if (this.valid) return;
@@ -709,4 +674,42 @@ function getHeaderConnY(conns, padding, offset)
     }
 
     return [y, height];
+}
+
+
+
+function pushUpdate(nodes)
+{
+    //console.log('pushUpdate('+param.id+')');
+    
+    pushUpdateFromParam(nodes, null);
+}
+
+
+
+function pushUpdateFromParam(nodes, param)
+{
+    //console.log('pushUpdateFromParam('+param.id+')');
+
+    nodes.forEach(n => n.invalidate());
+
+
+    const req = 
+        param
+        ? [param.node.id, param.index]
+        : ['', 0];
+
+    for (const node of nodes)
+    {
+        getTerminalsAfterNode(node).forEach(n => 
+        {
+            for (const output of n.outputs)
+                req.push(...output.genRequest());
+
+            //n.update();
+        });
+    }
+
+
+    uiGenRequest(req);
 }

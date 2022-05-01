@@ -42,7 +42,7 @@ extends Action
         {
             uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
-            this.inputNode.pushUpdate();
+            pushUpdate([this.inputNode]);
             //graphView.updateNodeTransform(this.inputNode);
         }
 
@@ -50,7 +50,7 @@ extends Action
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
-            this.outputNode.pushUpdate();
+            pushUpdate([this.outputNode]);
             //graphView.updateNodeTransform(this.outputNode);
         }
     }
@@ -73,7 +73,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
         //graphView.updateNodeTransform(this.inputNode);
-        this.inputNode.pushUpdate();
+        pushUpdate([this.inputNode]);
     }
     
     
@@ -85,14 +85,14 @@ extends Action
         if (!getActiveNodeInTreeFrom(this.inputNode))
         {
             uiMakeNodeActive(this.inputNode);
-            this.inputNode.pushUpdate();
+            pushUpdate([this.inputNode]);
             //graphView.updateNodeTransform(this.inputNode);
         }
 
         if (!getActiveNodeInTreeFrom(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
-            this.outputNode.pushUpdate();
+            pushUpdate([this.outputNode]);
             //graphView.updateNodeTransform(this.outputNode);
         }
    }
