@@ -934,7 +934,8 @@ function uiUpdateValues(values)
 
 
         const node = nodeFromId(nodeId);
-        
+        if (!node) return; // the node was deleted
+
         if (!nodes.includes(node)) 
             nodes.push(node);
 
