@@ -93,6 +93,7 @@ extends Action
     undo()
     {
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        console.log('this.manager.redoActions.length', this.manager.redoActions.length);
 
 
         if (this.oldOutputNodeId != '')
@@ -109,9 +110,11 @@ extends Action
         for (const param of this.oldInputValues)
         {
             this.inputNode.params[param[0]].control.setDecimals(param[1][1]);
-            this.inputNode.params[param[0]].setValue(param[1][0], true);
+            this.inputNode.params[param[0]].setValue(param[1][0], true, true, false);
         }
 
+
+        console.log('this.manager.redoActions.length', this.manager.redoActions.length);
 
         // graphView.updateNodeTransform(this.inputNode);
         pushUpdate([this.inputNode]);
