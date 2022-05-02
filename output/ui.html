@@ -22801,7 +22801,7 @@ extends Action
         const oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)]; 
 
         super(
-             'MAKE ACTIVE ' + activeId;// + ', '
+             'MAKE ACTIVE ' + activeId);// + ', '
             //+ oldActiveIds.length + ' active before');
 
         this.activeId     = activeId;
@@ -25568,7 +25568,7 @@ function correctNodeNamesInConnections(data)
 function updateGraphNodes()
 {
     //console.log('updateGraphNodes()');
-    
+
     for (const node of graphView.selectedNodes)      node.updateNode();
     for (const node of graphView._prevSelectedNodes) node.updateNode();
     for (const node of graphView.lastSelectedNodes)  node.updateNode();
@@ -25649,6 +25649,7 @@ function uiUpdateValues(values)
     {
         node.valid = true;
         node.updateNode();
+        uiSaveNodes([node.id]);
     }
 }
 

@@ -12,7 +12,7 @@ extends Action
         const oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)]; 
 
         super(
-             'MAKE ACTIVE ' + activeId;// + ', '
+             'MAKE ACTIVE ' + activeId);// + ', '
             //+ oldActiveIds.length + ' active before');
 
         this.activeId     = activeId;
