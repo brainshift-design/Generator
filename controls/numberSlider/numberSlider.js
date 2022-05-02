@@ -232,7 +232,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                     const max = getCtrlKey(e) ? slider.max : slider.displayMax;
 
                     slider.setValue(
-                        Math.round(val / grain) * grain, 
+                        getNumberString(
+                            Math.round(val / grain) * grain, 
+                            slider.displayDec), 
                         true, 
                         false, 
                         false,

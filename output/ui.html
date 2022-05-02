@@ -1568,41 +1568,6 @@ const largeScrollGap    = 14;
 const MAX_INT32         = 2147483647;
 
 
-//////////// WARNING ////////////
-//                             //
-//  DO NOT TOUCH THIS FILE!!!  //
-//                             //
-/////////////////////////////////
-
-
-// for gen requests each type is followed first by the node ID, then the params
-
-const NUMBER             = 'NUM';   // N | (value decimals)
-const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_POWER       = 'POW';   // count N...
-const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
-
-const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
-const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE     = 'CVLD';  // C
-const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
-const COLORBLIND         = 'BLND';  // C
-
-const STRING             = 'STR';   // S|value
-const STRING_ADD         = 'SADD';  // S S
-const STRING_REPLACE     = 'SREPL'; // S S:what S:with
-
-const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
-
-const GROUP              = 'GRP';   // ???? count O...
-
-
 const rgbObject       = hex2rgb('#bee0ff');
 const rgbActiveObject = hex2rgb('#18a0fb');
 const rgbNumber       = hex2rgb('#ddd');
@@ -3947,6 +3912,65 @@ function normalizeSeed(x)
 }
 
 
+//////////// WARNING ////////////
+//                             //
+//  DO NOT TOUCH THIS FILE!!!  //
+//                             //
+/////////////////////////////////
+
+
+// for gen requests each type is followed first by the node ID, then the params
+
+const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
+
+const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
+const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE     = 'CVLD';  // C
+const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
+const COLORBLIND         = 'BLND';  // C
+
+const STRING             = 'STR';   // S|value
+const STRING_ADD         = 'SADD';  // S S
+const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+
+const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
+
+const GROUP              = 'GRP';   // ???? count O...
+
+
+// class NumDec
+// {
+//     value;
+//     decimals;
+
+    
+
+//     constructor(val, dec)
+//     {
+//         this.value    = val;
+//         this.decimals = dec;
+//     }
+
+
+
+//     toString()
+//     {
+//         return getNumberString(this.value, this.decimals);    
+//     }
+// }
+
+
+
+
 /*
 
 */
@@ -4321,12 +4345,14 @@ function genNumValue(req, parse)
 {
     // numeric values are always a value/decimals pair
 
-    const strVal = req[parse.pos++];
-
-    const val = parseFloat(strVal);
-    const dec = getDecimalCount(strVal);
-
-    return [val, dec];
+    // const strVal = req[parse.pos++];
+    
+    // const val = parseFloat(strVal);
+    // const dec = getDecimalCount(strVal);
+    
+    // return [val, dec];
+    
+    return req[parse.pos++];
 }
 
 
@@ -4336,13 +4362,13 @@ function genNumber(req, parse)
     parse.pos++;
 
     const nodeId = req[parse.pos++];
-    const val    = genParseRequest(req, parse);
+    const strVal = genParseRequest(req, parse);
 
     parse.updateValues.push(
-        nodeId, 0,       // param
-        val[0], val[1]); // value
+        nodeId, 0, // param
+        strVal);   // value
     
-    return val;
+    return strVal;
 }
 
 
@@ -4365,11 +4391,13 @@ function genNumberAdd(req, parse)
         maxDec = Math.max(maxDec, val[1]);
     }
 
+    const strVal = getNumberString(result, maxDec);
+
     parse.updateValues.push(
-        nodeId, 0,       // param
-        result, maxDec); // value
+        nodeId, 0, // param
+        strVal);   // value
     
-    return [result, maxDec];
+    return strVal;
 }
 
 
@@ -6882,41 +6910,6 @@ const smallScrollGap    =  6;
 const largeScrollGap    = 14;
 
 const MAX_INT32         = 2147483647;
-
-
-//////////// WARNING ////////////
-//                             //
-//  DO NOT TOUCH THIS FILE!!!  //
-//                             //
-/////////////////////////////////
-
-
-// for gen requests each type is followed first by the node ID, then the params
-
-const NUMBER             = 'NUM';   // N | (value decimals)
-const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_POWER       = 'POW';   // count N...
-const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
-
-const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
-const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE     = 'CVLD';  // C
-const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
-const COLORBLIND         = 'BLND';  // C
-
-const STRING             = 'STR';   // S|value
-const STRING_ADD         = 'SADD';  // S S
-const STRING_REPLACE     = 'SREPL'; // S S:what S:with
-
-const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
-
-const GROUP              = 'GRP';   // ???? count O...
 
 
 const rgbObject       = hex2rgb('#bee0ff');
@@ -10638,6 +10631,65 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
+//////////// WARNING ////////////
+//                             //
+//  DO NOT TOUCH THIS FILE!!!  //
+//                             //
+/////////////////////////////////
+
+
+// for gen requests each type is followed first by the node ID, then the params
+
+const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
+
+const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
+const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE     = 'CVLD';  // C
+const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
+const COLORBLIND         = 'BLND';  // C
+
+const STRING             = 'STR';   // S|value
+const STRING_ADD         = 'SADD';  // S S
+const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+
+const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
+
+const GROUP              = 'GRP';   // ???? count O...
+
+
+// class NumDec
+// {
+//     value;
+//     decimals;
+
+    
+
+//     constructor(val, dec)
+//     {
+//         this.value    = val;
+//         this.decimals = dec;
+//     }
+
+
+
+//     toString()
+//     {
+//         return getNumberString(this.value, this.decimals);    
+//     }
+// }
+
+
+
+
 function createToggleButton(width, height)
 {
     const btn = createDiv('toggleButton');
@@ -11334,7 +11386,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                     const max = getCtrlKey(e) ? slider.max : slider.displayMax;
 
                     slider.setValue(
-                        Math.round(val / grain) * grain, 
+                        getNumberString(
+                            Math.round(val / grain) * grain, 
+                            slider.displayDec), 
                         true, 
                         false, 
                         false,
@@ -15172,10 +15226,10 @@ extends Parameter
     allowEditDecimals = true;
     
 
-    get value()      { return this._control.value;    }
-    set value(value) { this._control.setValue(value); }
-    
-    get oldValue()   { return this._control.oldValue; }
+    get value()      { return this.control.value;    }
+    set value(value) { this.control.setValue(value); }
+
+    get oldValue()   { return this.control.oldValue; }
 
 
     
@@ -15235,26 +15289,26 @@ extends Parameter
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this);  /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
 
-        this.control.addEventListener('finishedit', e =>
-        { 
-            const dec    = getDecimalCount(e.detail.value);
-            const oldDec = getDecimalCount(e.detail.oldValue);
+        // this.control.addEventListener('finishedit', e =>
+        // { 
+        //     const dec    = getDecimalCount(e.detail.value);
+        //     const oldDec = getDecimalCount(e.detail.oldValue);
 
-            if (   e.detail.success
-                && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-                    || dec >= oldDec)
-                && this.allowEditDecimals)
-            {
-                const _dec = Math.log10(this.control.valueScale);
+        //     if (   e.detail.success
+        //         && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
+        //             || dec >= oldDec)
+        //         && this.allowEditDecimals)
+        //     {
+        //         const _dec = Math.log10(this.control.valueScale);
 
-                actionManager.do(new SetParamDecimalsAction(this,
-                    dec    + _dec, 
-                    oldDec + _dec,
-                    dec, 
-                    oldDec
-                ), true);
-            }
-        });
+        //         actionManager.do(new SetParamDecimalsAction(this,
+        //             dec    + _dec, 
+        //             oldDec + _dec,
+        //             dec, 
+        //             oldDec
+        //         ), true);
+        //     }
+        // });
     }
 
 
@@ -15324,14 +15378,20 @@ extends Parameter
 
 
 
-    setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(strValue, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        this.preSetValue(value, confirm, dispatchEvents);
+        const val = parseFloat(strValue);
+        const dec = getDecimalCount(strValue);
+
+        this.preSetValue(val, confirm, dispatchEvents);
 
         if (updateControl)
-            this._control.setValue(value, false, false, forceChange); 
+        {
+            this.control.setDecimals(dec, dec);
+            this.control.setValue(val, false, false, forceChange); 
+        }
 
-        super.setValue(value, confirm, updateControl, dispatchEvents);
+        super.setValue(val, confirm, updateControl, dispatchEvents);
     }    
 
 
@@ -15347,7 +15407,7 @@ extends Parameter
             ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER, 
-                this.value.toString(), 
+                this.control.value.toString(), 
                 this.control.displayDec.toString() ];
     }
 
@@ -15360,6 +15420,15 @@ extends Parameter
 
 
 
+    toString()
+    {
+        return getNumberString(
+            this.control.value, 
+            this.control.displayDec); 
+    }
+
+
+
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
@@ -15367,7 +15436,7 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
+        return pos + '["' + id  + '", "' + this.toString() + '"]';
     }
 }
 
@@ -15849,7 +15918,7 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.node.id + '.in[' + input.index + '])');
+        //console.log( 'graph.disconnect(' + input.node.id + ' ' + input.index + ')');
         // first remove the current output
 
         // if (activeNodeInTree(input.node))
@@ -16868,8 +16937,9 @@ class Connection
         {
             uiError(
                   'cannot connect ' 
-                + _conn.outputNode + '.out[' + outputIndex + '] to ' 
-                + _conn.inputNode  + '.in[' + _conn.inputIndex + ']');
+                + _conn.outputNode + ' ' + outputIndex 
+                + ' to ' 
+                + _conn.inputNode  + ' ' + _conn.inputIndex);
         }
         else
             uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex);
@@ -18397,7 +18467,7 @@ extends OperatorBase
     {
         return [[
             this.node.#paramValue.index, 
-            [this.node.#paramValue.value, this.node.#paramValue.control.displayDec]]];
+            this.node.#paramValue.toString()]];
     }
 
 
@@ -18454,7 +18524,6 @@ extends OperatorBase
     {
         if (_node.decimals)
             this.#paramValue.setDecimals(parseInt(_node.decimals));
-
             
         super.loadParams(_node);
     }
@@ -22145,10 +22214,8 @@ class ActionManager
                  color:      #c64;', 
                 last.name);
             
-            console.log('this.redoActions.length', this.redoActions.length);
             last.undo(); 
 
-            console.log('this.redoActions.length', this.redoActions.length);
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
                 break;
@@ -22219,9 +22286,9 @@ extends Action
             : -1; 
 
         super('CONNECT ' 
-            + output.node.id + '.out[' + output.index + ']'
+            + output.node.id + ' ' + output.index
             + ' -> '
-            + input.node.id + '.in[' + input.index + ']');
+            + input.node.id + ' ' + input.index);
 
 
         this.outputNodeId          = output.node.id;
@@ -22240,8 +22307,6 @@ extends Action
             input.getValuesForUndo
             ? input.getValuesForUndo()
             : [];
-
-        console.log('this.oldInputValues', this.oldInputValues);
     }
 
 
@@ -22282,7 +22347,6 @@ extends Action
     undo()
     {
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
-        console.log('this.manager.redoActions.length', this.manager.redoActions.length);
 
 
         if (this.oldOutputNodeId != '')
@@ -22297,13 +22361,8 @@ extends Action
 
         // restore old values
         for (const param of this.oldInputValues)
-        {
-            this.inputNode.params[param[0]].control.setDecimals(param[1][1]);
-            this.inputNode.params[param[0]].setValue(param[1][0], true, true, false);
-        }
+            this.inputNode.params[param[0]].setValue(param[1].toString(), true, true, false);
 
-
-        console.log('this.manager.redoActions.length', this.manager.redoActions.length);
 
         // graphView.updateNodeTransform(this.inputNode);
         pushUpdate([this.inputNode]);
@@ -22645,9 +22704,9 @@ extends Action
     constructor(output, input)
     {
         super('DISCONNECT ' 
-            + output.node.id + '.out[' + output.index + ']'
+            + output.node.id + ' ' + output.index
             + ' -> '
-            + input.node.id + '.in[' + input.index + ']');
+            + input.node.id + ' ' + input.index);
 
 
         this.outputNodeId = output.node.id;
@@ -22769,55 +22828,55 @@ extends Action
 class FindValidColorAction
 extends Action
 {
-    nodeId;
+    // nodeId;
 
-    oldValue1;
-    oldValue1;
-    oldValue1;
+    // oldValue1;
+    // oldValue1;
+    // oldValue1;
     
-    newValue;
+    // newValue;
 
 
 
-    constructor(param, value)
-    {
-        super('FIND VALID ' + param.node.id + '.' + param.id + ' = ' + value);
+    // constructor(param, value)
+    // {
+    //     super('FIND VALID ' + param.node.id + '.' + param.id + ' = ' + value);
 
-        this.nodeId     = param.node.id;
-        this.paramIndex = param.index;
+    //     this.nodeId     = param.node.id;
+    //     this.paramIndex = param.index;
 
-        this.newValue   = value;
-    }
-
-
-
-    do()
-    {
-        this.oldValue = this.param.oldValue;
-        pushUpdate([this.param.node]);
-
-        uiSaveNodes([this.nodeId]);
-    }
+    //     this.newValue   = value;
+    // }
 
 
 
-    undo()
-    {
-        this.param.setValue(this.oldValue, false, true);
-        pushUpdate([this.param.node]);
+    // do()
+    // {
+    //     this.oldValue = this.param.oldValue;
+    //     pushUpdate([this.param.node]);
 
-        uiSaveNodes([this.nodeId]);
-    }
+    //     uiSaveNodes([this.nodeId]);
+    // }
 
 
 
-    redo()
-    {
-        this.param.setValue(this.newValue);
-        pushUpdate([this.param.node]);
+    // undo()
+    // {
+    //     this.param.setValue(this.oldValue, false, true);
+    //     pushUpdate([this.param.node]);
 
-        uiSaveNodes([this.nodeId]);
-    }
+    //     uiSaveNodes([this.nodeId]);
+    // }
+
+
+
+    // redo()
+    // {
+    //     this.param.setValue(this.newValue);
+    //     pushUpdate([this.param.node]);
+
+    //     uiSaveNodes([this.nodeId]);
+    // }
 }
 
 
@@ -22975,11 +23034,11 @@ extends Action
 
         super(
              'RECONNECT '
-            + output.node.id + '.out[' + output.index + ']'
-            + ' ( <- '
-            + oldInput.node.id + '.in[' + oldInput.index + '])'
+            + output.node.id + ' ' + output.index
+            + ' (<- '
+            + oldInput.node.id + ' ' + oldInput.index + ')'
             + ' -> '
-            + input.node.id + '.in[' + input.index + ']');
+            + input.node.id + ' ' + input.index);
 
 
         this.outputNodeId          = output.node.id;
@@ -23145,8 +23204,8 @@ extends Action
     {
         super(
               'REORDER ' + nodeFromId(nodeId).id 
-            + '.in[' + oldIndex + ']'
-            + ' to [' + newIndex + ']');
+            + ' ' + oldIndex
+            + ' to ' + newIndex);
 
         this.nodeId   = nodeId;
         this.oldIndex = oldIndex;
@@ -23371,59 +23430,59 @@ extends Action
 }
 
 
-class SetParamDecimalsAction
-extends Action
-{
-    nodeId;
-    paramIndex;
+// class SetParamDecimalsAction
+// extends Action
+// {
+//     nodeId;
+//     paramIndex;
 
-    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
-
-
-    newDecimals;
-    oldDecimals;
-
-    newDisplayDecimals;
-    oldDisplayDecimals;
+//     get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
+//     newDecimals;
+//     oldDecimals;
 
-    constructor(param, dec, oldDec, dspDec, oldDspDec)
-    {
-        super('SET PARAM DECIMALS ' + param.node.id + ' to ' + dspDec);
+//     newDisplayDecimals;
+//     oldDisplayDecimals;
 
-        this.nodeId             = param.node.id;
-        this.paramIndex         = param.index;
+
+
+//     constructor(param, dec, oldDec, dspDec, oldDspDec)
+//     {
+//         super('SET PARAM DECIMALS ' + param.node.id + ' to ' + dspDec);
+
+//         this.nodeId             = param.node.id;
+//         this.paramIndex         = param.index;
        
-        this.newDecimals        = dec;
-        this.oldDecimals        = oldDec;
+//         this.newDecimals        = dec;
+//         this.oldDecimals        = oldDec;
 
-        this.newDisplayDecimals = dspDec;
-        this.oldDisplayDecimals = oldDspDec;
-    }
-
-
-
-    do()
-    {
-        this.param.setDecimals(
-            this.newDecimals, 
-            this.newDisplayDecimals);
-
-        uiSaveNodes([this.nodeId]);
-    }
+//         this.newDisplayDecimals = dspDec;
+//         this.oldDisplayDecimals = oldDspDec;
+//     }
 
 
 
-    undo()
-    {
-        this.param.setDecimals(
-            this.oldDecimals, 
-            this.oldDisplayDecimals);
+//     do()
+//     {
+//         this.param.setDecimals(
+//             this.newDecimals, 
+//             this.newDisplayDecimals);
 
-        uiSaveNodes([this.nodeId]);
-    }
-}
+//         uiSaveNodes([this.nodeId]);
+//     }
+
+
+
+//     undo()
+//     {
+//         this.param.setDecimals(
+//             this.oldDecimals, 
+//             this.oldDisplayDecimals);
+
+//         uiSaveNodes([this.nodeId]);
+//     }
+// }
 
 
 class SetParamLockAction
@@ -23490,14 +23549,14 @@ extends Action
     get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
-    oldValue;
-    newValue;
+    oldValue; // string, decimals matter
+    newValue; // string, decimals matter
 
 
 
     constructor(param, value)
     {
-        super('SET PARAM VALUE ' + param.node.id + '.' + param.id + ' = ' + value);
+        super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.node.id;
         this.paramIndex = param.index;

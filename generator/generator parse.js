@@ -81,12 +81,14 @@ function genNumValue(req, parse)
 {
     // numeric values are always a value/decimals pair
 
-    const strVal = req[parse.pos++];
-
-    const val = parseFloat(strVal);
-    const dec = getDecimalCount(strVal);
-
-    return [val, dec];
+    // const strVal = req[parse.pos++];
+    
+    // const val = parseFloat(strVal);
+    // const dec = getDecimalCount(strVal);
+    
+    // return [val, dec];
+    
+    return req[parse.pos++];
 }
 
 
@@ -96,13 +98,13 @@ function genNumber(req, parse)
     parse.pos++;
 
     const nodeId = req[parse.pos++];
-    const val    = genParseRequest(req, parse);
+    const strVal = genParseRequest(req, parse);
 
     parse.updateValues.push(
-        nodeId, 0,       // param
-        val[0], val[1]); // value
+        nodeId, 0, // param
+        strVal);   // value
     
-    return val;
+    return strVal;
 }
 
 
@@ -125,11 +127,13 @@ function genNumberAdd(req, parse)
         maxDec = Math.max(maxDec, val[1]);
     }
 
+    const strVal = getNumberString(result, maxDec);
+
     parse.updateValues.push(
-        nodeId, 0,       // param
-        result, maxDec); // value
+        nodeId, 0, // param
+        strVal);   // value
     
-    return [result, maxDec];
+    return strVal;
 }
 
 

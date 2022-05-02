@@ -17,9 +17,9 @@ extends Action
     constructor(output, input)
     {
         super('DISCONNECT ' 
-            + output.node.id + '.out[' + output.index + ']'
+            + output.node.id + ' ' + output.index
             + ' -> '
-            + input.node.id + '.in[' + input.index + ']');
+            + input.node.id + ' ' + input.index);
 
 
         this.outputNodeId = output.node.id;

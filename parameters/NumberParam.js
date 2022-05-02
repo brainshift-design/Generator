@@ -6,10 +6,10 @@ extends Parameter
     allowEditDecimals = true;
     
 
-    get value()      { return this._control.value;    }
-    set value(value) { this._control.setValue(value); }
-    
-    get oldValue()   { return this._control.oldValue; }
+    get value()      { return this.control.value;    }
+    set value(value) { this.control.setValue(value); }
+
+    get oldValue()   { return this.control.oldValue; }
 
 
     
@@ -69,26 +69,26 @@ extends Parameter
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this);  /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
 
-        this.control.addEventListener('finishedit', e =>
-        { 
-            const dec    = getDecimalCount(e.detail.value);
-            const oldDec = getDecimalCount(e.detail.oldValue);
+        // this.control.addEventListener('finishedit', e =>
+        // { 
+        //     const dec    = getDecimalCount(e.detail.value);
+        //     const oldDec = getDecimalCount(e.detail.oldValue);
 
-            if (   e.detail.success
-                && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-                    || dec >= oldDec)
-                && this.allowEditDecimals)
-            {
-                const _dec = Math.log10(this.control.valueScale);
+        //     if (   e.detail.success
+        //         && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
+        //             || dec >= oldDec)
+        //         && this.allowEditDecimals)
+        //     {
+        //         const _dec = Math.log10(this.control.valueScale);
 
-                actionManager.do(new SetParamDecimalsAction(this,
-                    dec    + _dec, 
-                    oldDec + _dec,
-                    dec, 
-                    oldDec
-                ), true);
-            }
-        });
+        //         actionManager.do(new SetParamDecimalsAction(this,
+        //             dec    + _dec, 
+        //             oldDec + _dec,
+        //             dec, 
+        //             oldDec
+        //         ), true);
+        //     }
+        // });
     }
 
 
@@ -158,14 +158,20 @@ extends Parameter
 
 
 
-    setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(strValue, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        this.preSetValue(value, confirm, dispatchEvents);
+        const val = parseFloat(strValue);
+        const dec = getDecimalCount(strValue);
+
+        this.preSetValue(val, confirm, dispatchEvents);
 
         if (updateControl)
-            this._control.setValue(value, false, false, forceChange); 
+        {
+            this.control.setDecimals(dec, dec);
+            this.control.setValue(val, false, false, forceChange); 
+        }
 
-        super.setValue(value, confirm, updateControl, dispatchEvents);
+        super.setValue(val, confirm, updateControl, dispatchEvents);
     }    
 
 
@@ -181,7 +187,7 @@ extends Parameter
             ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER, 
-                this.value.toString(), 
+                this.control.value.toString(), 
                 this.control.displayDec.toString() ];
     }
 
@@ -194,6 +200,15 @@ extends Parameter
 
 
 
+    toString()
+    {
+        return getNumberString(
+            this.control.value, 
+            this.control.displayDec); 
+    }
+
+
+
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
@@ -201,6 +216,6 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + getNumberString(this.value, this._control.dec) + '"]';
+        return pos + '["' + id  + '", "' + this.toString() + '"]';
     }
 }

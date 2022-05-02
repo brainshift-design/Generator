@@ -1,8 +1,9 @@
 ../html/generator_0.html
 
     [../autojoin/core.aj]
-
     ../core/Noise.js
+    
+    [../autojoin/types.aj]
     
     //[../autojoin/goperators.aj]
 

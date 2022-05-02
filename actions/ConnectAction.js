@@ -30,9 +30,9 @@ extends Action
             : -1; 
 
         super('CONNECT ' 
-            + output.node.id + '.out[' + output.index + ']'
+            + output.node.id + ' ' + output.index
             + ' -> '
-            + input.node.id + '.in[' + input.index + ']');
+            + input.node.id + ' ' + input.index);
 
 
         this.outputNodeId          = output.node.id;
@@ -51,8 +51,6 @@ extends Action
             input.getValuesForUndo
             ? input.getValuesForUndo()
             : [];
-
-        console.log('this.oldInputValues', this.oldInputValues);
     }
 
 
@@ -93,7 +91,6 @@ extends Action
     undo()
     {
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
-        console.log('this.manager.redoActions.length', this.manager.redoActions.length);
 
 
         if (this.oldOutputNodeId != '')
@@ -108,13 +105,8 @@ extends Action
 
         // restore old values
         for (const param of this.oldInputValues)
-        {
-            this.inputNode.params[param[0]].control.setDecimals(param[1][1]);
-            this.inputNode.params[param[0]].setValue(param[1][0], true, true, false);
-        }
+            this.inputNode.params[param[0]].setValue(param[1].toString(), true, true, false);
 
-
-        console.log('this.manager.redoActions.length', this.manager.redoActions.length);
 
         // graphView.updateNodeTransform(this.inputNode);
         pushUpdate([this.inputNode]);

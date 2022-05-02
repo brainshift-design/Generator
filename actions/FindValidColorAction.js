@@ -1,53 +1,53 @@
 class FindValidColorAction
 extends Action
 {
-    nodeId;
+    // nodeId;
 
-    oldValue1;
-    oldValue1;
-    oldValue1;
+    // oldValue1;
+    // oldValue1;
+    // oldValue1;
     
-    newValue;
+    // newValue;
 
 
 
-    constructor(param, value)
-    {
-        super('FIND VALID ' + param.node.id + '.' + param.id + ' = ' + value);
+    // constructor(param, value)
+    // {
+    //     super('FIND VALID ' + param.node.id + '.' + param.id + ' = ' + value);
 
-        this.nodeId     = param.node.id;
-        this.paramIndex = param.index;
+    //     this.nodeId     = param.node.id;
+    //     this.paramIndex = param.index;
 
-        this.newValue   = value;
-    }
-
-
-
-    do()
-    {
-        this.oldValue = this.param.oldValue;
-        pushUpdate([this.param.node]);
-
-        uiSaveNodes([this.nodeId]);
-    }
+    //     this.newValue   = value;
+    // }
 
 
 
-    undo()
-    {
-        this.param.setValue(this.oldValue, false, true);
-        pushUpdate([this.param.node]);
+    // do()
+    // {
+    //     this.oldValue = this.param.oldValue;
+    //     pushUpdate([this.param.node]);
 
-        uiSaveNodes([this.nodeId]);
-    }
+    //     uiSaveNodes([this.nodeId]);
+    // }
 
 
 
-    redo()
-    {
-        this.param.setValue(this.newValue);
-        pushUpdate([this.param.node]);
+    // undo()
+    // {
+    //     this.param.setValue(this.oldValue, false, true);
+    //     pushUpdate([this.param.node]);
 
-        uiSaveNodes([this.nodeId]);
-    }
+    //     uiSaveNodes([this.nodeId]);
+    // }
+
+
+
+    // redo()
+    // {
+    //     this.param.setValue(this.newValue);
+    //     pushUpdate([this.param.node]);
+
+    //     uiSaveNodes([this.nodeId]);
+    // }
 }

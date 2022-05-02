@@ -263,8 +263,9 @@ class Connection
         {
             uiError(
                   'cannot connect ' 
-                + _conn.outputNode + '.out[' + outputIndex + '] to ' 
-                + _conn.inputNode  + '.in[' + _conn.inputIndex + ']');
+                + _conn.outputNode + ' ' + outputIndex 
+                + ' to ' 
+                + _conn.inputNode  + ' ' + _conn.inputIndex);
         }
         else
             uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex);

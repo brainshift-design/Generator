@@ -1,53 +1,53 @@
-class SetParamDecimalsAction
-extends Action
-{
-    nodeId;
-    paramIndex;
+// class SetParamDecimalsAction
+// extends Action
+// {
+//     nodeId;
+//     paramIndex;
 
-    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
-
-
-    newDecimals;
-    oldDecimals;
-
-    newDisplayDecimals;
-    oldDisplayDecimals;
+//     get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
+//     newDecimals;
+//     oldDecimals;
 
-    constructor(param, dec, oldDec, dspDec, oldDspDec)
-    {
-        super('SET PARAM DECIMALS ' + param.node.id + ' to ' + dspDec);
+//     newDisplayDecimals;
+//     oldDisplayDecimals;
 
-        this.nodeId             = param.node.id;
-        this.paramIndex         = param.index;
+
+
+//     constructor(param, dec, oldDec, dspDec, oldDspDec)
+//     {
+//         super('SET PARAM DECIMALS ' + param.node.id + ' to ' + dspDec);
+
+//         this.nodeId             = param.node.id;
+//         this.paramIndex         = param.index;
        
-        this.newDecimals        = dec;
-        this.oldDecimals        = oldDec;
+//         this.newDecimals        = dec;
+//         this.oldDecimals        = oldDec;
 
-        this.newDisplayDecimals = dspDec;
-        this.oldDisplayDecimals = oldDspDec;
-    }
-
-
-
-    do()
-    {
-        this.param.setDecimals(
-            this.newDecimals, 
-            this.newDisplayDecimals);
-
-        uiSaveNodes([this.nodeId]);
-    }
+//         this.newDisplayDecimals = dspDec;
+//         this.oldDisplayDecimals = oldDspDec;
+//     }
 
 
 
-    undo()
-    {
-        this.param.setDecimals(
-            this.oldDecimals, 
-            this.oldDisplayDecimals);
+//     do()
+//     {
+//         this.param.setDecimals(
+//             this.newDecimals, 
+//             this.newDisplayDecimals);
 
-        uiSaveNodes([this.nodeId]);
-    }
-}
+//         uiSaveNodes([this.nodeId]);
+//     }
+
+
+
+//     undo()
+//     {
+//         this.param.setDecimals(
+//             this.oldDecimals, 
+//             this.oldDisplayDecimals);
+
+//         uiSaveNodes([this.nodeId]);
+//     }
+// }

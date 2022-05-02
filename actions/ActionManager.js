@@ -59,10 +59,8 @@ class ActionManager
                  color:      #c64;', 
                 last.name);
             
-            console.log('this.redoActions.length', this.redoActions.length);
             last.undo(); 
 
-            console.log('this.redoActions.length', this.redoActions.length);
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
                 break;

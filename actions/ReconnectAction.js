@@ -34,11 +34,11 @@ extends Action
 
         super(
              'RECONNECT '
-            + output.node.id + '.out[' + output.index + ']'
-            + ' ( <- '
-            + oldInput.node.id + '.in[' + oldInput.index + '])'
+            + output.node.id + ' ' + output.index
+            + ' (<- '
+            + oldInput.node.id + ' ' + oldInput.index + ')'
             + ' -> '
-            + input.node.id + '.in[' + input.index + ']');
+            + input.node.id + ' ' + input.index);
 
 
         this.outputNodeId          = output.node.id;

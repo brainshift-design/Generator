@@ -43,7 +43,7 @@ extends OperatorBase
     {
         return [[
             this.node.#paramValue.index, 
-            [this.node.#paramValue.value, this.node.#paramValue.control.displayDec]]];
+            this.node.#paramValue.toString()]];
     }
 
 
@@ -100,7 +100,6 @@ extends OperatorBase
     {
         if (_node.decimals)
             this.#paramValue.setDecimals(parseInt(_node.decimals));
-
             
         super.loadParams(_node);
     }

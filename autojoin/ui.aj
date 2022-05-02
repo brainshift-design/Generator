@@ -24,6 +24,8 @@
 
     ../core/crypto.js
     ../core/base32.js
+
+    [../autojoin/types.aj]
     
     [../autojoin/controls.aj]
     [../autojoin/operators.aj]

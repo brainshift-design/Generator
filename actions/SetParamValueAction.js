@@ -7,14 +7,14 @@ extends Action
     get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
-    oldValue;
-    newValue;
+    oldValue; // string, decimals matter
+    newValue; // string, decimals matter
 
 
 
     constructor(param, value)
     {
-        super('SET PARAM VALUE ' + param.node.id + '.' + param.id + ' = ' + value);
+        super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.node.id;
         this.paramIndex = param.index;
