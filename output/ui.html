@@ -4257,7 +4257,7 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 
 function genRequest(req)
 {
-    console.log('REQ', req);
+    console.log('%c'+JSON.stringify(req).replaceAll('""', '\'\'').replaceAll('"', ''), 'background: #ff8; color: #880');
     
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
@@ -16244,27 +16244,31 @@ extends EventTarget
     ondisconnect = new Event('disconnect');
 
 
+    getValuesForUndo; // function pointer, return array of [index,value] tuples
 
-    constructor(types)
+
+
+    constructor(types, getValuesForUndo = null)
     {
         super();
         
-        this.types = [...types];
+        this.types            = [...types];
+        this.getValuesForUndo = getValuesForUndo;
 
-        this.control  = createDiv('input');
-        this.hitbox   = createDiv('inputHitbox');
-        this.wireBall = createDiv('inputBall');
+        this.control          = createDiv('input');
+        this.hitbox           = createDiv('inputHitbox');
+        this.wireBall         = createDiv('inputBall');
         
-        this.control.input = this;
+        this.control.input    = this;
         
+        this.color            = [0, 0, 0, 0.12];
+        this.wireColor        = rgbFromType(this.types[0], true);
+
 
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.12];
-        this.wireColor = rgbFromType(this.types[0], true);
-
-        
+                
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
 
 
@@ -18350,7 +18354,7 @@ extends OperatorBase
     {
         super(NUMBER, 'num', 70);
 
-        this.addInput (new Input ([NUMBER]));
+        this.addInput (new Input ([NUMBER], this.input_getValuesForUndo));
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
         this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
@@ -18377,6 +18381,15 @@ extends OperatorBase
                   
 //     super.updateData()
     // }
+
+
+
+    input_getValuesForUndo()
+    {
+        return [[
+            this.node.#paramValue.index, 
+            [this.node.#paramValue, this.node.#paramValue.control.decimals]]];
+    }
 
 
 
@@ -22165,8 +22178,10 @@ extends Action
     
     oldOutputActiveNodeId;      // the active node in the output node's tree
     oldInputActiveNodeIds = []; // the active nodes in the input node's tree
-
+    
     newActiveNodeIds = [];
+
+    oldinputValues = []; // in index,value pairs, to be restored on undo
 
 
 
@@ -22194,6 +22209,11 @@ extends Action
 
         this.oldOutputActiveNodeId = getActiveNodeInTreeFrom(nodeFromId(this.outputNodeId)).id;
         this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
+
+        this.oldInputValues = 
+            this.inputNode.getValuesForUndo
+            ? this.inputNode.getValuesForUndo()
+            : [];
     }
 
 
@@ -22244,7 +22264,13 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
         }
+        else // restore values
+        {
+            for (const val of this.oldInputValues)
+                this.inputNode.params[val[0]].setValue(val[1], true);
+        }
 
+        
         // graphView.updateNodeTransform(this.inputNode);
         pushUpdate([this.inputNode]);
 

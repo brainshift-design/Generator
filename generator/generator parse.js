@@ -17,7 +17,7 @@
 
 function genRequest(req)
 {
-    console.log('REQ', req);
+    console.log('%c'+JSON.stringify(req).replaceAll('""', '\'\'').replaceAll('"', ''), 'background: #ff8; color: #880');
     
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];

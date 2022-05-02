@@ -72,27 +72,31 @@ extends EventTarget
     ondisconnect = new Event('disconnect');
 
 
+    getValuesForUndo; // function pointer, return array of [index,value] tuples
 
-    constructor(types)
+
+
+    constructor(types, getValuesForUndo = null)
     {
         super();
         
-        this.types = [...types];
+        this.types            = [...types];
+        this.getValuesForUndo = getValuesForUndo;
 
-        this.control  = createDiv('input');
-        this.hitbox   = createDiv('inputHitbox');
-        this.wireBall = createDiv('inputBall');
+        this.control          = createDiv('input');
+        this.hitbox           = createDiv('inputHitbox');
+        this.wireBall         = createDiv('inputBall');
         
-        this.control.input = this;
+        this.control.input    = this;
         
+        this.color            = [0, 0, 0, 0.12];
+        this.wireColor        = rgbFromType(this.types[0], true);
+
 
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color     = [0, 0, 0, 0.12];
-        this.wireColor = rgbFromType(this.types[0], true);
-
-        
+                
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
 
 

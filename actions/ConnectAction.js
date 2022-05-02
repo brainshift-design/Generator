@@ -15,8 +15,10 @@ extends Action
     
     oldOutputActiveNodeId;      // the active node in the output node's tree
     oldInputActiveNodeIds = []; // the active nodes in the input node's tree
-
+    
     newActiveNodeIds = [];
+
+    oldinputValues = []; // in index,value pairs, to be restored on undo
 
 
 
@@ -44,6 +46,11 @@ extends Action
 
         this.oldOutputActiveNodeId = getActiveNodeInTreeFrom(nodeFromId(this.outputNodeId)).id;
         this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
+
+        this.oldInputValues = 
+            this.inputNode.getValuesForUndo
+            ? this.inputNode.getValuesForUndo()
+            : [];
     }
 
 
@@ -94,7 +101,13 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
         }
+        else // restore values
+        {
+            for (const val of this.oldInputValues)
+                this.inputNode.params[val[0]].setValue(val[1], true);
+        }
 
+        
         // graphView.updateNodeTransform(this.inputNode);
         pushUpdate([this.inputNode]);
 

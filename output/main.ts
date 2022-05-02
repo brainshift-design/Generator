@@ -478,15 +478,11 @@ function figRemoveAllSavedNodesAndConns()
 
 function figLogAllSavedNodesAndConns()
 {
-    console.log('-----------------START-LOAD------------------');
-
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length+1) == nodeTag+' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag+' ');
 
-    for (const key of nodeKeys) console.log(key+'\n', figGetPageData(key, false));
-    for (const key of connKeys) console.log(key+'\n', figGetPageData(key, false));
-
-    console.log('------------------END-LOAD-------------------');
+    for (const key of nodeKeys) console.log('%c%s\n%c%s', 'background: #fdb', key.substring(nodeTag.length+1), 'background: #fed;',    figGetPageData(key, false));
+    for (const key of connKeys) console.log('%c%s', 'background: #cfc', key.substring(connTag.length+1));
 }
 
 
