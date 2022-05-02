@@ -48,8 +48,8 @@ class Action
 
 
 
-function linkActions(prevAction, action)
+function linkActions(prevAction, nextAction)
 {
-    prevAction.nextAction = action;
-    action    .prevAction = prevAction;
+    prevAction.nextAction = nextAction;
+    nextAction.prevAction = prevAction;
 }

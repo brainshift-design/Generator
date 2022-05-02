@@ -4257,8 +4257,17 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 
 function genRequest(req)
 {
-    console.log('%c'+JSON.stringify(req).replaceAll('""', '\'\'').replaceAll('"', ''), 'background: #dfd; color: #050');
+    console.log(
+        '%c%s', 
+        'background: #60aa60; color: #fff', 
+        JSON.stringify(req)
+            .replaceAll('""', '\'\'')
+            .replaceAll('"', '')
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll(',', ' '));
     
+
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
 
@@ -18388,7 +18397,7 @@ extends OperatorBase
     {
         return [[
             this.node.#paramValue.index, 
-            [this.node.#paramValue, this.node.#paramValue.control.decimals]]];
+            [this.node.#paramValue.value, this.node.#paramValue.control.displayDec]]];
     }
 
 
@@ -22068,10 +22077,10 @@ class Action
 
 
 
-function linkActions(prevAction, action)
+function linkActions(prevAction, nextAction)
 {
-    prevAction.nextAction = action;
-    action    .prevAction = prevAction;
+    prevAction.nextAction = nextAction;
+    nextAction.prevAction = prevAction;
 }
 
 
@@ -22109,8 +22118,13 @@ class ActionManager
             }
         }
 
+        console.log(
+            "%cDO %s", 
+            'background: #ffd; \
+             color:      #b80;', 
+            action.name);
+
         action.do(); 
-        console.log("%cDO " + action.name, 'background: #ffd; color: #b80;');
     }
 
 
@@ -22125,8 +22139,13 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
+            console.log(
+                "%cUNDO %s", 
+                'background: #fff4e8; \
+                 color:      #c64;', 
+                last.name);
+            
             last.undo(); 
-            console.log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -22146,8 +22165,13 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
+            console.log(
+                "%cREDO %s", 
+                'background: #e8ffe8; \
+                 color:      #282;', 
+                last.name);
+            
             last.redo(); 
-            console.log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))
@@ -22211,9 +22235,11 @@ extends Action
         this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
 
         this.oldInputValues = 
-            this.inputNode.getValuesForUndo
-            ? this.inputNode.getValuesForUndo()
+            input.getValuesForUndo
+            ? input.getValuesForUndo()
             : [];
+
+        console.log('this.oldInputValues', this.oldInputValues);
     }
 
 
@@ -22264,10 +22290,13 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
         }
-        else // restore values
+
+
+        // restore old values
+        for (const param of this.oldInputValues)
         {
-            for (const val of this.oldInputValues)
-                this.inputNode.params[val[0]].setValue(val[1], true);
+            this.inputNode.params[param[0]].control.setDecimals(param[1][1]);
+            this.inputNode.params[param[0]].setValue(param[1][0], true);
         }
 
 
@@ -23059,12 +23088,12 @@ extends Action
 
 
 
-    constructor(nodeId, name)
+    constructor(nodeId, newName)
     {
-        super('RENAME ' + this.nodeId + ' to \'' + this.newName + '\'');
+        super('RENAME ' + nodeId + ' to \'' + newName + '\'');
 
         this.nodeId  = nodeId;
-        this.newName = name;
+        this.newName = newName;
     }
 
 
@@ -23356,7 +23385,7 @@ extends Action
 
     constructor(param, dec, oldDec, dspDec, oldDspDec)
     {
-        super('SET PARAM DECIMALS ' + this.nodeId + ' to ' + this.newDisplayDecimals);
+        super('SET PARAM DECIMALS ' + param.node.id + ' to ' + dspDec);
 
         this.nodeId             = param.node.id;
         this.paramIndex         = param.index;

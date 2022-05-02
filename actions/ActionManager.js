@@ -32,8 +32,13 @@ class ActionManager
             }
         }
 
+        console.log(
+            "%cDO %s", 
+            'background: #ffd; \
+             color:      #b80;', 
+            action.name);
+
         action.do(); 
-        console.log("%cDO " + action.name, 'background: #ffd; color: #b80;');
     }
 
 
@@ -48,8 +53,13 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
+            console.log(
+                "%cUNDO %s", 
+                'background: #fff4e8; \
+                 color:      #c64;', 
+                last.name);
+            
             last.undo(); 
-            console.log("UNDO " + last.name);
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -69,8 +79,13 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
+            console.log(
+                "%cREDO %s", 
+                'background: #e8ffe8; \
+                 color:      #282;', 
+                last.name);
+            
             last.redo(); 
-            console.log("REDO " + last.name);
         
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))

@@ -43,7 +43,7 @@ extends OperatorBase
     {
         return [[
             this.node.#paramValue.index, 
-            [this.node.#paramValue, this.node.#paramValue.control.decimals]]];
+            [this.node.#paramValue.value, this.node.#paramValue.control.displayDec]]];
     }
 
 

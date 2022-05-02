@@ -48,9 +48,11 @@ extends Action
         this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
 
         this.oldInputValues = 
-            this.inputNode.getValuesForUndo
-            ? this.inputNode.getValuesForUndo()
+            input.getValuesForUndo
+            ? input.getValuesForUndo()
             : [];
+
+        console.log('this.oldInputValues', this.oldInputValues);
     }
 
 
@@ -101,10 +103,13 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
         }
-        else // restore values
+
+
+        // restore old values
+        for (const param of this.oldInputValues)
         {
-            for (const val of this.oldInputValues)
-                this.inputNode.params[val[0]].setValue(val[1], true);
+            this.inputNode.params[param[0]].control.setDecimals(param[1][1]);
+            this.inputNode.params[param[0]].setValue(param[1][0], true);
         }
 
 

@@ -9,12 +9,12 @@ extends Action
 
 
 
-    constructor(nodeId, name)
+    constructor(nodeId, newName)
     {
-        super('RENAME ' + this.nodeId + ' to \'' + this.newName + '\'');
+        super('RENAME ' + nodeId + ' to \'' + newName + '\'');
 
         this.nodeId  = nodeId;
-        this.newName = name;
+        this.newName = newName;
     }
 
 

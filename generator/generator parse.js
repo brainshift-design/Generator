@@ -17,8 +17,17 @@
 
 function genRequest(req)
 {
-    console.log('%c'+JSON.stringify(req).replaceAll('""', '\'\'').replaceAll('"', ''), 'background: #dfd; color: #050');
+    console.log(
+        '%c%s', 
+        'background: #60aa60; color: #fff', 
+        JSON.stringify(req)
+            .replaceAll('""', '\'\'')
+            .replaceAll('"', '')
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll(',', ' '));
     
+
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
 
