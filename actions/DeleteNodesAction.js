@@ -16,7 +16,7 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('delete ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
+        super('DELETE ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -207,7 +207,7 @@ extends Action
 
     disconnect(input)
     {
-        console.log('disconnect');
+        //console.log('disconnect');
         const output = input.connectedOutput;
         
         uiDisconnect(input);

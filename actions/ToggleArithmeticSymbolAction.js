@@ -10,7 +10,7 @@ extends Action
 
     constructor(nodeId, showOnlySymbol)
     {
-        super('show only symbol = ' + boolString(showOnlySymbol));
+        super('TOGGLE ARITHMETIC SYMBOL ' + boolString(showOnlySymbol));
 
         this.nodeId         = nodeId;
         this.showOnlySymbol = showOnlySymbol;

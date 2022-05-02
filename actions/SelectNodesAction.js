@@ -9,7 +9,7 @@ extends Action
     constructor(selectedIds, prevSelectedIds)
     {
         super(
-              'select ' + selectedIds.length 
+              'SELECT ' + selectedIds.length 
             + ' node' + (selectedIds.length == 1 ? '' : 's'));// + ', '
             //+ prevSelectedIds.length + ' selected before');
 

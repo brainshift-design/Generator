@@ -16,7 +16,7 @@ extends Action
 
     constructor(output, input)
     {
-        super('disconnect ' 
+        super('DISCONNECT ' 
             + output.node.id + '.out[' + output.index + ']'
             + ' -> '
             + input.node.id + '.in[' + input.index + ']');

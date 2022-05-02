@@ -17,7 +17,7 @@ extends Action
     constructor(prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
     {
         super(
-            'select move ' + newSelectedIds.length 
+            'SELECT MOVE ' + newSelectedIds.length 
           + ' node' + (newSelectedIds.length == 1 ? '' : 's'));// + ', '
           //+ prevSelectedIds.length + ' selected before');
 

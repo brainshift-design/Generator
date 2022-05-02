@@ -12,7 +12,7 @@ extends Action
 
     constructor(nodeType, creatingButton)
     {
-        super('create node \'' + nodeType + '\'');
+        super('CREATE \'' + nodeType + '\'');
         
         this.nodeType         = nodeType;
         this.creatingButton = creatingButton;

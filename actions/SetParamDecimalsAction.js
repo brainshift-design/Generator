@@ -17,7 +17,7 @@ extends Action
 
     constructor(param, dec, oldDec, dspDec, oldDspDec)
     {
-        super('set param settings');
+        super('SET PARAM DECIMALS ' + this.nodeId + ' to ' + this.newDisplayDecimals);
 
         this.nodeId             = param.node.id;
         this.paramIndex         = param.index;

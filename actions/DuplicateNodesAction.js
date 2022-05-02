@@ -9,7 +9,7 @@ extends Action
     {
         const data = JSON.parse(copiedJson);
 
-        super('paste ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
+        super('DUPLICATE ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
 
         this.copiedJson = copiedJson;
     }

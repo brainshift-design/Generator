@@ -13,7 +13,7 @@ extends Action
 
     constructor(param, value)
     {
-        super('set ' + param.node.id + '.' + param.id + ' = ' + value);
+        super('FIND VALID ' + param.node.id + '.' + param.id + ' = ' + value);
 
         this.nodeId     = param.node.id;
         this.paramIndex = param.index;

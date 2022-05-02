@@ -33,7 +33,7 @@ class ActionManager
         }
 
         action.do(); 
-        console.log("DO " + action.name);
+        console.log("%cDO " + action.name, 'background: #ffd; color: #b80;');
     }
 
 

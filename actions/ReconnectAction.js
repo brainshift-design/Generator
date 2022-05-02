@@ -33,7 +33,7 @@ extends Action
 
 
         super(
-             'reconnect '
+             'RECONNECT '
             + output.node.id + '.out[' + output.index + ']'
             + ' ( <- '
             + oldInput.node.id + '.in[' + oldInput.index + '])'

@@ -11,7 +11,7 @@ extends Action
 
     constructor(nodeId, name)
     {
-        super('rename node');
+        super('RENAME ' + this.nodeId + ' to \'' + this.newName + '\'');
 
         this.nodeId  = nodeId;
         this.newName = name;

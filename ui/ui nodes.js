@@ -874,7 +874,8 @@ function correctNodeNamesInConnections(data)
 
 function updateGraphNodes()
 {
-    console.log('updateGraphNodes()');
+    //console.log('updateGraphNodes()');
+    
     for (const node of graphView.selectedNodes)      node.updateNode();
     for (const node of graphView._prevSelectedNodes) node.updateNode();
     for (const node of graphView.lastSelectedNodes)  node.updateNode();

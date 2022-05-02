@@ -11,7 +11,7 @@ extends Action
     constructor(nodeId, oldIndex, newIndex)
     {
         super(
-              'reorder ' + nodeFromId(nodeId).id 
+              'REORDER ' + nodeFromId(nodeId).id 
             + '.in[' + oldIndex + ']'
             + ' to [' + newIndex + ']');
 

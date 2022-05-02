@@ -13,7 +13,7 @@ extends Action
 
     constructor(param, locked)
     {
-        super('set ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
+        super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
 
         this.nodeId     = param.node.id;
         this.paramIndex = param.index;

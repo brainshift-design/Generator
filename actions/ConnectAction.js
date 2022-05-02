@@ -29,7 +29,7 @@ extends Action
             ? input.connectedOutput.index
             : -1; 
 
-        super('connect ' 
+        super('CONNECT ' 
             + output.node.id + '.out[' + output.index + ']'
             + ' -> '
             + input.node.id + '.in[' + input.index + ']');
@@ -107,7 +107,7 @@ extends Action
                 this.inputNode.params[val[0]].setValue(val[1], true);
         }
 
-        
+
         // graphView.updateNodeTransform(this.inputNode);
         pushUpdate([this.inputNode]);
 
