@@ -105,7 +105,7 @@ extends Action
 
         // restore old values
         for (const param of this.oldInputValues)
-            this.inputNode.params[param[0]].setValue(param[1].toString(), true, true, false);
+            this.inputNode.params[param[0]].setValue(param[1], true, true, false);
 
 
         // graphView.updateNodeTransform(this.inputNode);

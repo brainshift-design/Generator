@@ -173,7 +173,7 @@ extends EventTarget
 
 
 
-    preSetValue(value, confirm, dispatchEvents = true) 
+    preSetValue(value, createAction, dispatchEvents = true) 
     {
         if (dispatchEvents)
         {
@@ -184,7 +184,7 @@ extends EventTarget
 
 
 
-    setValue(value, confirm, updateControl = true, dispatchEvents = true) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (dispatchEvents)
         {
@@ -192,7 +192,7 @@ extends EventTarget
             {
                 this.dispatchEvent(this.onchange);
                 
-                if (confirm)
+                if (createAction)
                 {
                     actionManager.do(new SetParamValueAction(this, value));
                     this.dispatchEvent(this.onconfirm);

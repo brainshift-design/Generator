@@ -1,3 +1,3 @@
 ../types/types.js
 
-//../types/NumDec.js
+../types/Decimal.js

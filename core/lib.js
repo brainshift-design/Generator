@@ -51,7 +51,7 @@ function isArrowKey(code)
 
 
 
-function getNumberString(num, dec, showHex = false)
+function numString(num, dec, showHex = false)
 {
     if (showHex)
     {

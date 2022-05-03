@@ -77,7 +77,7 @@ extends Parameter
 
     setDecimalsFrom(strValue)
     {
-        this.setDecimals(getDecimalCount(strValue));
+        this.setDecimals(decCount(strValue));
     }
 
 
@@ -117,9 +117,9 @@ extends Parameter
 
 
 
-    setValue(value, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
-        this.preSetValue(value, confirm, dispatchEvents);
+        this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
@@ -127,7 +127,7 @@ extends Parameter
         // if (this.output)
         //     this.output._data = dataFromNumber(value);
             
-        super.setValue(value, confirm, updateControl, dispatchEvents);
+        super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
 
 

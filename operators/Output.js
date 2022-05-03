@@ -3,8 +3,8 @@ class Output
     _type;     
     get type() { return this._type; }
 
-    _node  = null; get node () { return this._node;  }
-    _param = null; get param() { return this._param; }
+    _node  = null;  get node () { return this._node;  }
+    _param = null;  get param() { return this._param; }
     
     
     get index() { return this.node.outputs.indexOf(this); }

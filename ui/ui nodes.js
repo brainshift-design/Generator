@@ -926,13 +926,11 @@ function uiUpdateValues(values)
 
     const nodes = [];
 
-    for (let i = 2; i < values.length; i += 4)
+    for (let i = 2; i < values.length; i += 3)
     {
         const nodeId     = values[i  ];
         const paramIndex = values[i+1];
-        const val        = values[i+2];
-        const dec        = values[i+3];
-
+        const strVal     = values[i+2];
 
         const node = nodeFromId(nodeId);
         if (!node) return; // the node was deleted
@@ -945,10 +943,7 @@ function uiUpdateValues(values)
  
         if (   nodeId     != updateNodeId
             || paramIndex != updateParamIndex)
-        {
-            param.control.setDecimals(dec);
-            param.setValue(val, false, true, false);
-        }
+            param.setValue(parseDec(strVal), false, true, false);
     }
 
 

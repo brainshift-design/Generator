@@ -6,11 +6,15 @@ extends Parameter
     allowEditDecimals = true;
     
 
-    get value()      { return this.control.value;    }
-    set value(value) { this.control.setValue(value); }
+    get value() { return new Decimal(this.control.value, this.control.displayDec); }
+    // set value(value) 
+    // {
+    //     this.control.setDecimals(decCount(value));
+    //     this.control.setValue(parseFloat(value)); 
+    // }
+
 
     get oldValue()   { return this.control.oldValue; }
-
 
     
     get valueText() { return this.control.valueText; }
@@ -27,7 +31,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = 0, 
+                value     = new Decimal(0, 0), 
                 min       = Number.MIN_SAFE_INTEGER, 
                 max       = Number.MAX_SAFE_INTEGER,
                 decimals  = 0,
@@ -40,7 +44,7 @@ extends Parameter
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = value;
+        this.defaultValue   = shallowCopy(value);
 
 
         initNumberSlider(
@@ -67,12 +71,11 @@ extends Parameter
 
 
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this);  /*this.setValue(this.value, false, false);*/ });
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
-
+        this.control.addEventListener('confirm', () => this.setValue(new Decimal(this.control.value, this.control.displayDec), true,  false));
         // this.control.addEventListener('finishedit', e =>
         // { 
-        //     const dec    = getDecimalCount(e.detail.value);
-        //     const oldDec = getDecimalCount(e.detail.oldValue);
+        //     const dec    = decCount(e.detail.value);
+        //     const oldDec = decCount(e.detail.oldValue);
 
         //     if (   e.detail.success
         //         && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
@@ -103,7 +106,7 @@ extends Parameter
 
     setDecimalsFrom(strValue)
     {
-        this.setDecimals(getDecimalCount(strValue));
+        this.setDecimals(decCount(strValue));
     }
 
 
@@ -158,20 +161,17 @@ extends Parameter
 
 
 
-    setValue(strValue, confirm, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        const val = parseFloat(strValue);
-        const dec = getDecimalCount(strValue);
-
-        this.preSetValue(val, confirm, dispatchEvents);
+        this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
         {
-            this.control.setDecimals(dec, dec);
-            this.control.setValue(val, false, false, forceChange); 
+            this.control.setDecimals(value.dec, value.dec);
+            this.control.setValue(value.num, false, false, forceChange); 
         }
 
-        super.setValue(val, confirm, updateControl, dispatchEvents);
+        super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
 
 
@@ -202,7 +202,7 @@ extends Parameter
 
     toString()
     {
-        return getNumberString(
+        return numString(
             this.control.value, 
             this.control.displayDec); 
     }

@@ -98,8 +98,8 @@ extends OperatorBase
 
     loadParams(_node)
     {
-        if (_node.decimals)
-            this.#paramValue.setDecimals(parseInt(_node.decimals));
+        // if (_node.decimals)
+        //     this.#paramValue.setDecimals(parseInt(_node.decimals));
             
         super.loadParams(_node);
     }
@@ -114,23 +114,23 @@ extends OperatorBase
 
 
 
-    toJsonBase(nTab)
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+    // toJsonBase(nTab)
+    // {
+    //     let   pos = ' '.repeat(nTab);
+    //     const tab = '  ';
 
 
-        let json = super.toJsonBase(nTab);
+    //     let json = super.toJsonBase(nTab);
 
-        if (this.#paramValue.control.dec != 0)
-        {
-            json += ',\n'
-                + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
-        }
+    //     if (this.#paramValue.control.dec != 0)
+    //     {
+    //         json += ',\n'
+    //             + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
+    //     }
 
 
-        return json;
-    }
+    //     return json;
+    // }
 
 
 

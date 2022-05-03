@@ -66,7 +66,7 @@ function initLabelTextbox(node)
     
     // node.textbox.addEventListener('input', function()
     // {
-    //     node.setValue(Number(node.textbox.value));
+    //     node.setValue(parseFloat(node.textbox.value));
     // });
 
 

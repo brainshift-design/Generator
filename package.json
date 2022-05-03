@@ -5,11 +5,13 @@
   "main": "output/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "watch": "tsc "
+    "watch": "tsc ",
+    "lint": "eslint ./"
   },
   "author": "Alex Bourt",
   "license": "",
   "devDependencies": {
-    "@figma/plugin-typings": "^1.41.1"
+    "@figma/plugin-typings": "^1.41.1",
+    "eslint": "^8.14.0"
   }
 }

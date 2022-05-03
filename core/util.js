@@ -48,7 +48,7 @@ function forwardEvent(event, element)
 
 
 
-function getDecimalCount(strValue)
+function decCount(strValue)
 {
     const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
     const commaIndex = strValue.indexOf(',');//getUserDecimalSeparator());

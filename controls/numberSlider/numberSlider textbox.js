@@ -315,7 +315,7 @@ function initNumberSliderTextbox(slider)
         slider.textbox.value =
             (isNaN(slider.value)
              ? '?'
-             : getNumberString(
+             : numString(
                    slider.value * slider.valueScale, 
                    slider.displayDec, 
                    slider.showHex

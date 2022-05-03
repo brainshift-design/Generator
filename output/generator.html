@@ -159,7 +159,7 @@ function isArrowKey(code)
 
 
 
-function getNumberString(num, dec, showHex = false)
+function numString(num, dec, showHex = false)
 {
     if (showHex)
     {
@@ -1579,7 +1579,7 @@ function forwardEvent(event, element)
 
 
 
-function getDecimalCount(strValue)
+function decCount(strValue)
 {
     const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
     const commaIndex = strValue.indexOf(',');//getUserDecimalSeparator());
@@ -2389,27 +2389,33 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const GROUP              = 'GRP';   // ???? count O...
 
 
-// class NumDec
-// {
-//     value;
-//     decimals;
-
-    
-
-//     constructor(val, dec)
-//     {
-//         this.value    = val;
-//         this.decimals = dec;
-//     }
+class Decimal
+{
+    #num;  get num() { return this.#num; }
+    #dec;  get dec() { return this.#dec; }
 
 
+    constructor(num, dec)
+    {
+        this.#num = num;
+        this.#dec = dec;
+    }
 
-//     toString()
-//     {
-//         return getNumberString(this.value, this.decimals);    
-//     }
-// }
 
+    toString()
+    {
+        return numString(this.#num, this.#dec);    
+    }
+}
+
+
+
+function parseDec(str)
+{
+    return new Decimal(
+        parseFloat(str),
+        decCount(str));
+}
 
 
 
@@ -2790,11 +2796,11 @@ function genNumValue(req, parse)
     // const strVal = req[parse.pos++];
     
     // const val = parseFloat(strVal);
-    // const dec = getDecimalCount(strVal);
+    // const dec = decCount(strVal);
     
     // return [val, dec];
     
-    return req[parse.pos++];
+    return parseDec(req[parse.pos++]);
 }
 
 
@@ -2803,14 +2809,14 @@ function genNumber(req, parse)
 {
     parse.pos++;
 
-    const nodeId = req[parse.pos++];
-    const strVal = genParseRequest(req, parse);
+    const nodeId  = req[parse.pos++];
+    const decimal = genParseRequest(req, parse);
 
     parse.updateValues.push(
-        nodeId, 0, // param
-        strVal);   // value
+        nodeId, 0,           // param
+        decimal.toString()); // value
     
-    return strVal;
+    return decimal;
 }
 
 
@@ -2827,19 +2833,19 @@ function genNumberAdd(req, parse)
 
     for (let i = 0; i < nValues; i++)
     {
-        const val = genParseRequest(req, parse);
+        const num = genParseRequest(req, parse);
 
-        result += val[0];
+        result += num.num;
         maxDec = Math.max(maxDec, val[1]);
     }
 
-    const strVal = getNumberString(result, maxDec);
+    const decimal = new Decimal(result, maxDec);
 
     parse.updateValues.push(
-        nodeId, 0, // param
-        strVal);   // value
+        nodeId, 0,           // param
+        decimal.toString()); // value
     
-    return strVal;
+    return decimal;
 }
 
 

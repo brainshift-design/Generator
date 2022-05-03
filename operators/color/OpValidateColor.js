@@ -248,7 +248,7 @@ extends OpColorBase
 
         if (!margin.locked)
         {
-            margin.control.setDecimals(Math.min(getDecimalCount(getNumberString(correction.value, -1))));
+            margin.control.setDecimals(Math.min(decCount(numString(correction.value, -1))));
             margin.setValue(correction.value, true, true, false);
         }
     }
