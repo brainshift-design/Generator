@@ -116,7 +116,7 @@ function isEmptyObject(obj)
 
 function shallowCopy(obj)
 {
-    return Object.assign({}, obj);
+    return Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
 }
 
 

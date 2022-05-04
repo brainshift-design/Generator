@@ -2,6 +2,7 @@ class   NumberParam
 extends Parameter
 {
     defaultValue;
+    oldValue = null;
     
     allowEditDecimals = true;
     
@@ -14,7 +15,7 @@ extends Parameter
     // }
 
 
-    get oldValue()   { return this.control.oldValue; }
+    // get oldValue()   { return this.control.oldValue; }
 
     
     get valueText() { return this.control.valueText; }
@@ -175,7 +176,17 @@ extends Parameter
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.value;
     }    
+
+
+
+    valuesEqual(val1, val2)
+    {
+        return val1.num == val2.num
+            && val1.dec == val2.dec;
+    }
 
 
 

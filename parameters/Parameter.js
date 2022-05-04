@@ -177,7 +177,7 @@ extends EventTarget
     {
         if (dispatchEvents)
         {
-            if (value != this.oldValue)
+            if (!this.valuesEqual(value, this.oldValue))
                 this.dispatchEvent(this.onbeforechange);
         }
     }
@@ -200,6 +200,14 @@ extends EventTarget
             }
         }
     }
+
+
+
+    valuesEqual(val1, val2)
+    {
+        return val1 == val2;
+    }
+
 
 
 

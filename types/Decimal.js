@@ -1,19 +1,17 @@
 class Decimal
 {
-    #num;  get num() { return this.#num; }
-    #dec;  get dec() { return this.#dec; }
-
+    num;
+    dec;
 
     constructor(num, dec)
     {
-        this.#num = num;
-        this.#dec = dec;
+        this.num = num;
+        this.dec = dec;
     }
-
 
     toString()
     {
-        return numString(this.#num, this.#dec);    
+        return numString(this.num, this.dec);    
     }
 }
 

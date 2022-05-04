@@ -3205,7 +3205,7 @@ function isEmptyObject(obj)
 
 function shallowCopy(obj)
 {
-    return Object.assign({}, obj);
+    return Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
 }
 
 
@@ -3959,20 +3959,18 @@ const GROUP              = 'GRP';   // ???? count O...
 
 class Decimal
 {
-    #num;  get num() { return this.#num; }
-    #dec;  get dec() { return this.#dec; }
-
+    num;
+    dec;
 
     constructor(num, dec)
     {
-        this.#num = num;
-        this.#dec = dec;
+        this.num = num;
+        this.dec = dec;
     }
-
 
     toString()
     {
-        return numString(this.#num, this.#dec);    
+        return numString(this.num, this.dec);    
     }
 }
 
@@ -8565,7 +8563,7 @@ function isEmptyObject(obj)
 
 function shallowCopy(obj)
 {
-    return Object.assign({}, obj);
+    return Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
 }
 
 
@@ -10694,20 +10692,18 @@ const GROUP              = 'GRP';   // ???? count O...
 
 class Decimal
 {
-    #num;  get num() { return this.#num; }
-    #dec;  get dec() { return this.#dec; }
-
+    num;
+    dec;
 
     constructor(num, dec)
     {
-        this.#num = num;
-        this.#dec = dec;
+        this.num = num;
+        this.dec = dec;
     }
-
 
     toString()
     {
-        return numString(this.#num, this.#dec);    
+        return numString(this.num, this.dec);    
     }
 }
 
@@ -15151,7 +15147,7 @@ extends EventTarget
     {
         if (dispatchEvents)
         {
-            if (value != this.oldValue)
+            if (!this.valuesEqual(value, this.oldValue))
                 this.dispatchEvent(this.onbeforechange);
         }
     }
@@ -15174,6 +15170,14 @@ extends EventTarget
             }
         }
     }
+
+
+
+    valuesEqual(val1, val2)
+    {
+        return val1 == val2;
+    }
+
 
 
 
@@ -15252,6 +15256,7 @@ class   NumberParam
 extends Parameter
 {
     defaultValue;
+    oldValue = null;
     
     allowEditDecimals = true;
     
@@ -15264,7 +15269,7 @@ extends Parameter
     // }
 
 
-    get oldValue()   { return this.control.oldValue; }
+    // get oldValue()   { return this.control.oldValue; }
 
     
     get valueText() { return this.control.valueText; }
@@ -15425,7 +15430,17 @@ extends Parameter
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.value;
     }    
+
+
+
+    valuesEqual(val1, val2)
+    {
+        return val1.num == val2.num
+            && val1.dec == val2.dec;
+    }
 
 
 
@@ -22219,8 +22234,8 @@ class ActionManager
 
         console.log(
             "%cDO %s", 
-            'background: #e8ffe8; \
-             color:      #282;', 
+            'background: #ffd; \
+             color:      #b80;', 
             action.name);
 
         action.do(); 
@@ -22266,8 +22281,8 @@ class ActionManager
 
             console.log(
                 "%cREDO %s", 
-                'background: #ffd; \
-                 color:      #b80;', 
+                'background: #e8ffe8; \
+                color:      #282;', 
                 last.name);
             
             last.redo(); 
@@ -23598,7 +23613,9 @@ extends Action
 
     do()
     {
+        console.log('this.param.oldValue', this.param.oldValue);
         this.oldValue = shallowCopy(this.param.oldValue);
+        console.log('this.oldValue', this.oldValue);
         pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
@@ -23608,6 +23625,7 @@ extends Action
 
     undo()
     {
+        console.log('this.oldValue', this.oldValue);
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam([this.param.node], this.param);
 
