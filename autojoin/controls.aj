@@ -1,5 +1,5 @@
 ../controls/toggleButton/*.js
-../controls/numberSlider/*.js
+../controls/NumberSlider/*.js
 ../controls/colorSlider/*.js
 ../controls/select/*.js
 ../controls/menuSelect/*.js

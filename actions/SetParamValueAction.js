@@ -7,8 +7,8 @@ extends Action
     get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
-    oldValue; // string, decimals matter
-    newValue; // string, decimals matter
+    oldValue; // decimal
+    newValue; // decimal
 
 
 
@@ -26,7 +26,7 @@ extends Action
 
     do()
     {
-        this.oldValue = this.param.oldValue;
+        this.oldValue = shallowCopy(this.param.oldValue);
         pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);

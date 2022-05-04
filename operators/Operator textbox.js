@@ -144,7 +144,7 @@ function initLabelTextbox(node)
     node.showLabelTextbox = function()
     {
         node.inFocus = 
-                node == document.activeElement
+               hasFocus(node)
             && !node.clicked;
     
         node.textbox.style.width           = node.header.offsetWidth  - 2;

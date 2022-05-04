@@ -65,3 +65,10 @@ function enableElementText(elem, enable)
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
     elem.style.fontWeight = enable ? 'normal' : 'bold';
 }
+
+
+
+function hasFocus(elem)
+{
+    return elem == document.activeElement;
+}

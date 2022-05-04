@@ -116,7 +116,7 @@ function initMenuSelectTextbox(select)
     select.showTextbox = function()
     {
         select.inFocus = 
-                select == document.activeElement
+               hasFocus(select)
             && !select.clicked;
     
         select.textbox.style.position = 'absolute';

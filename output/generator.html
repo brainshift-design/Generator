@@ -1831,9 +1831,12 @@ function strIsNum(str)
     if (typeof str != 'string') 
         return false; // only process strings
 
+    if (str == 'NaN') // explicitly support NaN
+        return true;
+
     return !isNaN(str) // use type coercion to parse the entirety of the string
-        && !isNaN(parseFloat(str)) // ensure strings of whitespace fail
-  }
+        && str != ''; !isNaN(parseFloat(str)); // ensure strings of whitespace fail
+}
 
 
 "use strict";
@@ -2126,6 +2129,13 @@ function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
     elem.style.fontWeight = enable ? 'normal' : 'bold';
+}
+
+
+
+function hasFocus(elem)
+{
+    return elem == document.activeElement;
 }
 
 

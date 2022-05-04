@@ -111,7 +111,7 @@ function createNodeHeader(node)
 
         for (const param of node.params)
         {
-            if (param.control.textbox == document.activeElement)
+            if (hasFocus(param.control.textbox))
                 param.control.textbox.finish(true);
         }
 

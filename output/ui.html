@@ -3389,9 +3389,12 @@ function strIsNum(str)
     if (typeof str != 'string') 
         return false; // only process strings
 
+    if (str == 'NaN') // explicitly support NaN
+        return true;
+
     return !isNaN(str) // use type coercion to parse the entirety of the string
-        && !isNaN(parseFloat(str)) // ensure strings of whitespace fail
-  }
+        && str != ''; !isNaN(parseFloat(str)); // ensure strings of whitespace fail
+}
 
 
 "use strict";
@@ -3684,6 +3687,13 @@ function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
     elem.style.fontWeight = enable ? 'normal' : 'bold';
+}
+
+
+
+function hasFocus(elem)
+{
+    return elem == document.activeElement;
 }
 
 
@@ -8739,9 +8749,12 @@ function strIsNum(str)
     if (typeof str != 'string') 
         return false; // only process strings
 
+    if (str == 'NaN') // explicitly support NaN
+        return true;
+
     return !isNaN(str) // use type coercion to parse the entirety of the string
-        && !isNaN(parseFloat(str)) // ensure strings of whitespace fail
-  }
+        && str != ''; !isNaN(parseFloat(str)); // ensure strings of whitespace fail
+}
 
 
 "use strict";
@@ -9034,6 +9047,13 @@ function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
     elem.style.fontWeight = enable ? 'normal' : 'bold';
+}
+
+
+
+function hasFocus(elem)
+{
+    return elem == document.activeElement;
 }
 
 
@@ -11565,7 +11585,8 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('focusout', function()
     {
-        if (slider.successOnFocusOut)
+        if (   slider.successOnFocusOut
+            && hasFocus(slider))
             slider.textbox.finish(true);
             
         slider.parentNode.removeChild(slider.textbox);
@@ -11582,8 +11603,8 @@ function initNumberSliderTextbox(slider)
         value = value.replace(slider.suffix, '');
         
         
-        let   val        = value     .indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
-        let   savedVal   = savedValue.indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+        let val      = value     .indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let savedVal = savedValue.indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
 
         if (!isNaN(val))
             val /= slider.valueScale;
@@ -11623,7 +11644,7 @@ function initNumberSliderTextbox(slider)
         slider.text.style.display = 'none';
 
         slider.inFocus = 
-                slider == document.activeElement
+               hasFocus(slider)
             && !slider.clicked;
     
         slider.textbox.style.position  = 'absolute';
@@ -11788,12 +11809,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const oldValue = slider.value;
 
 
-        if (isNaN(value))
-            forceChange = true;
+        // if (isNaN(value))
+        //     forceChange = true;
 
-        else
-        {
+        // else
+        // {
             const dec = Math.pow(10, Math.abs(slider.dec));
+
             value = Math.round(value * dec) / dec;
 
             if (slider.wrapValue)
@@ -11805,11 +11827,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 value = Math.min(Math.max(slider.min, value), slider.max);
             else
                 value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
-        }
+        // }
 
 
-        if (   forceChange
-            || isNaN(oldValue)
+        if (   /*forceChange
+            || isNaN(oldValue)*/
+                isNaN(value) && !isNaN(oldValue)
+            || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
             slider.value = value;
@@ -12135,7 +12159,7 @@ function initColorSliderTextbox(slider)
     slider.showTextbox = function()
     {
         slider.inFocus = 
-                slider == document.activeElement
+               hasFocus(slider)
             && !slider.clicked;
     
         slider.textbox.style.position = 'absolute';
@@ -13197,7 +13221,7 @@ function initMenuSelectTextbox(select)
     select.showTextbox = function()
     {
         select.inFocus = 
-                select == document.activeElement
+               hasFocus(select)
             && !select.clicked;
     
         select.textbox.style.position = 'absolute';
@@ -15296,28 +15320,31 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this);  /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => this.setValue(new Decimal(this.control.value, this.control.displayDec), true,  false));
-        // this.control.addEventListener('finishedit', e =>
-        // { 
-        //     const dec    = decCount(e.detail.value);
-        //     const oldDec = decCount(e.detail.oldValue);
 
-        //     if (   e.detail.success
-        //         && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-        //             || dec >= oldDec)
-        //         && this.allowEditDecimals)
-        //     {
-        //         const _dec = Math.log10(this.control.valueScale);
 
-        //         actionManager.do(new SetParamDecimalsAction(this,
-        //             dec    + _dec, 
-        //             oldDec + _dec,
-        //             dec, 
-        //             oldDec
-        //         ), true);
-        //     }
-        // });
+        this.control.addEventListener('finishedit', e =>
+        { 
+            const dec    = decCount(e.detail.value);
+            const oldDec = decCount(e.detail.oldValue);
+
+            if (   e.detail.success
+                && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
+                    || dec >= oldDec)
+                && this.allowEditDecimals)
+            {
+                const _dec = Math.log10(this.control.valueScale);
+
+                this.control.setDecimals(dec + _dec, dec + _dec);
+
+                // actionManager.do(new SetParamDecimalsAction(this,
+                //     dec    + _dec, 
+                //     oldDec + _dec,
+                //     dec, 
+                //     oldDec
+                // ), true);
+            }
+        });
     }
 
 
@@ -17833,7 +17860,7 @@ function createNodeHeader(node)
 
         for (const param of node.params)
         {
-            if (param.control.textbox == document.activeElement)
+            if (hasFocus(param.control.textbox))
                 param.control.textbox.finish(true);
         }
 
@@ -18398,7 +18425,7 @@ function initLabelTextbox(node)
     node.showLabelTextbox = function()
     {
         node.inFocus = 
-                node == document.activeElement
+               hasFocus(node)
             && !node.clicked;
     
         node.textbox.style.width           = node.header.offsetWidth  - 2;
@@ -19581,7 +19608,7 @@ extends OpColorBase
         
         enableElementText(this.hexbox, !this.connected());
 
-        if (this.hexbox != document.activeElement)
+        if (!hasFocus(this.hexbox))
         {
             const colBack = dataColor2rgb(this._color);
 
@@ -22192,8 +22219,8 @@ class ActionManager
 
         console.log(
             "%cDO %s", 
-            'background: #ffd; \
-             color:      #b80;', 
+            'background: #e8ffe8; \
+             color:      #282;', 
             action.name);
 
         action.do(); 
@@ -22239,8 +22266,8 @@ class ActionManager
 
             console.log(
                 "%cREDO %s", 
-                'background: #e8ffe8; \
-                 color:      #282;', 
+                'background: #ffd; \
+                 color:      #b80;', 
                 last.name);
             
             last.redo(); 
@@ -23552,8 +23579,8 @@ extends Action
     get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
 
 
-    oldValue; // string, decimals matter
-    newValue; // string, decimals matter
+    oldValue; // decimal
+    newValue; // decimal
 
 
 
@@ -23571,7 +23598,7 @@ extends Action
 
     do()
     {
-        this.oldValue = this.param.oldValue;
+        this.oldValue = shallowCopy(this.param.oldValue);
         pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);

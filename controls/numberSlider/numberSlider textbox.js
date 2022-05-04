@@ -217,7 +217,8 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('focusout', function()
     {
-        if (slider.successOnFocusOut)
+        if (   slider.successOnFocusOut
+            && hasFocus(slider))
             slider.textbox.finish(true);
             
         slider.parentNode.removeChild(slider.textbox);
@@ -234,8 +235,8 @@ function initNumberSliderTextbox(slider)
         value = value.replace(slider.suffix, '');
         
         
-        let   val        = value     .indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
-        let   savedVal   = savedValue.indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+        let val      = value     .indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let savedVal = savedValue.indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
 
         if (!isNaN(val))
             val /= slider.valueScale;
@@ -275,7 +276,7 @@ function initNumberSliderTextbox(slider)
         slider.text.style.display = 'none';
 
         slider.inFocus = 
-                slider == document.activeElement
+               hasFocus(slider)
             && !slider.clicked;
     
         slider.textbox.style.position  = 'absolute';

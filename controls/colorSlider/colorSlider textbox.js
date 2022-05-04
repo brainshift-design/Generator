@@ -121,7 +121,7 @@ function initColorSliderTextbox(slider)
     slider.showTextbox = function()
     {
         slider.inFocus = 
-                slider == document.activeElement
+               hasFocus(slider)
             && !slider.clicked;
     
         slider.textbox.style.position = 'absolute';

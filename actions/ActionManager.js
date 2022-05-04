@@ -34,8 +34,8 @@ class ActionManager
 
         console.log(
             "%cDO %s", 
-            'background: #ffd; \
-             color:      #b80;', 
+            'background: #e8ffe8; \
+             color:      #282;', 
             action.name);
 
         action.do(); 
@@ -81,8 +81,8 @@ class ActionManager
 
             console.log(
                 "%cREDO %s", 
-                'background: #e8ffe8; \
-                 color:      #282;', 
+                'background: #ffd; \
+                 color:      #b80;', 
                 last.name);
             
             last.redo(); 

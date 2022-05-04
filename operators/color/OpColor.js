@@ -243,7 +243,7 @@ extends OpColorBase
         
         enableElementText(this.hexbox, !this.connected());
 
-        if (this.hexbox != document.activeElement)
+        if (!hasFocus(this.hexbox))
         {
             const colBack = dataColor2rgb(this._color);
 

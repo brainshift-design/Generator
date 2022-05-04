@@ -300,6 +300,9 @@ function strIsNum(str)
     if (typeof str != 'string') 
         return false; // only process strings
 
+    if (str == 'NaN') // explicitly support NaN
+        return true;
+
     return !isNaN(str) // use type coercion to parse the entirety of the string
-        && !isNaN(parseFloat(str)) // ensure strings of whitespace fail
-  }
+        && str != ''; !isNaN(parseFloat(str)); // ensure strings of whitespace fail
+}

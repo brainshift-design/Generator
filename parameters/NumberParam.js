@@ -70,28 +70,31 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this);  /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => this.setValue(new Decimal(this.control.value, this.control.displayDec), true,  false));
-        // this.control.addEventListener('finishedit', e =>
-        // { 
-        //     const dec    = decCount(e.detail.value);
-        //     const oldDec = decCount(e.detail.oldValue);
 
-        //     if (   e.detail.success
-        //         && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-        //             || dec >= oldDec)
-        //         && this.allowEditDecimals)
-        //     {
-        //         const _dec = Math.log10(this.control.valueScale);
 
-        //         actionManager.do(new SetParamDecimalsAction(this,
-        //             dec    + _dec, 
-        //             oldDec + _dec,
-        //             dec, 
-        //             oldDec
-        //         ), true);
-        //     }
-        // });
+        this.control.addEventListener('finishedit', e =>
+        { 
+            const dec    = decCount(e.detail.value);
+            const oldDec = decCount(e.detail.oldValue);
+
+            if (   e.detail.success
+                && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
+                    || dec >= oldDec)
+                && this.allowEditDecimals)
+            {
+                const _dec = Math.log10(this.control.valueScale);
+
+                this.control.setDecimals(dec + _dec, dec + _dec);
+
+                // actionManager.do(new SetParamDecimalsAction(this,
+                //     dec    + _dec, 
+                //     oldDec + _dec,
+                //     dec, 
+                //     oldDec
+                // ), true);
+            }
+        });
     }
 
 
