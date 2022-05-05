@@ -13,83 +13,85 @@ function initNumberSliderChildren(slider)
 
 function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
 {
-    slider.param                 = param;
+    slider.param                  = param;
+     
+    slider.className              = 'numberSlider';
+     
+    slider.width                  = width;
+    slider.height                 = height;
+             
+    slider.style.width            = width;
+    slider.style.height           = height;
+             
+    slider.min                    = min;
+    slider.max                    = max;
+    slider.value                  = def;
+    slider.acc                    = acc;
+     
+    slider.dec                    =
+    slider.displayDec             = dec;
+         
+    slider.displayMin             = min;
+    slider.displayMax             = max;
+    slider.valueScale             = 1;
+                
+    slider.id                     = id;
+    slider.name                   = name;
+    slider.suffix                 = suffix;
+    slider.valueCanContainSuffix  = false;
+    slider.log                    = log;
+     
+    slider.dragScale              = dragScale;
+    slider.wheelScale             = wheelScale;
+             
+    slider.backColor              = 'transparent';
+    slider.valueColor             = '#7772';
+    slider.textColor              = '#000';
+                
+    slider.fontSize               = 11;
+             
+    slider.style.display          = 'inline';
+             
+    slider.mouseOver              = false;
+    slider.buttonDown0            = false;
+    slider.buttonDown1            = false;
+             
+    slider.clickSize              = 4;
+    slider.moved                  = false;
+         
+    slider.tabIndex               = 0;
+    slider.inFocus                = false;
+    slider.clicked                = false;
+ 
+    slider.oldValue; 
+ 
+    slider.wrapValue              = false;
+     
+    slider.showName               = showName;
+    slider.showHex                = false;
+         
+    slider.enableChangeEvent      = true;
     
-    slider.className             = 'numberSlider';
+    slider.successOnFocusOut      = false;
+    slider.savedSuccessOnFocusOut = null;
     
-    slider.width                 = width;
-    slider.height                = height;
-            
-    slider.style.width           = width;
-    slider.style.height          = height;
-            
-    slider.min                   = min;
-    slider.max                   = max;
-    slider.value                 = def;
-    slider.acc                   = acc;
-    
-    slider.dec                   =
-    slider.displayDec            = dec;
-        
-    slider.displayMin            = min;
-    slider.displayMax            = max;
-    slider.valueScale            = 1;
-               
-    slider.id                    = id;
-    slider.name                  = name;
-    slider.suffix                = suffix;
-    slider.valueCanContainSuffix = false;
-    slider.log                   = log;
-    
-    slider.dragScale             = dragScale;
-    slider.wheelScale            = wheelScale;
-            
-    slider.backColor             = 'transparent';
-    slider.valueColor            = '#7772';
-    slider.textColor             = '#000';
-               
-    slider.fontSize              = 11;
-            
-    slider.style.display         = 'inline';
-            
-    slider.mouseOver             = false;
-    slider.buttonDown0           = false;
-    slider.buttonDown1           = false;
-            
-    slider.clickSize             = 4;
-    slider.moved                 = false;
-        
-    slider.tabIndex              = 0;
-    slider.inFocus               = false;
-    slider.clicked               = false;
-
-    slider.oldValue;
-
-    slider.wrapValue             = false;
-    
-    slider.showName              = showName;
-    slider.showHex               = false;
-        
-    slider.enableChangeEvent     = true;
-    slider.successOnFocusOut     = false;
-    
-    slider.pointerEvents         = true;
-    slider.readOnly              = false;
-    
-    slider.valueText             = '';
-    
-    slider.barTop                = 0;
-    slider.barBottom             = 1;
-    
-    slider.ranges                = [];
-    slider.rangeDivs             = [];
-    
-    slider.options               = []; // if dec == 0, show named choices instead of a value
-
-    
-    slider.onstartchange         = new Event('startchange');
-    slider.onchange              = new Event('change');
-    slider.onconfirm             = new Event('confirm');
+    slider.pointerEvents          = true;
+    slider.readOnly               = false;
+     
+    slider.valueText              = '';
+     
+    slider.barTop                 = 0;
+    slider.barBottom              = 1;
+     
+    slider.ranges                 = [];
+    slider.rangeDivs              = [];
+     
+    slider.options                = []; // if dec == 0, show named choices instead of a value
+ 
+     
+    slider.onstartchange          = new Event('startchange');
+    slider.onchange               = new Event('change');
+    slider.onconfirm              = new Event('confirm');
 
 
     initNumberSliderChildren(slider);    

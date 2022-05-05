@@ -42,11 +42,20 @@ function initNumberSliderTextbox(slider)
         else if (   (   e.code == 'Enter'
                      || e.code == 'NumpadEnter')
                  && !slider.readOnly)
+        {
             slider.textbox.finish(true);
 
+            slider.savedSuccessOnFocusOut = slider.successOnFocusOut;
+            slider.successOnFocusOut      = false;
+        }
+
         else if (e.code == 'Escape')
+        {
             slider.textbox.finish(false);
 
+            slider.savedSuccessOnFocusOut = slider.successOnFocusOut;
+            slider.successOnFocusOut      = false;
+        }
         else if (e.code == 'Tab')
         {
             e.preventDefault();
@@ -217,10 +226,17 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('focusout', function()
     {
-        if (   slider.successOnFocusOut)
-            //&& hasFocus(slider.textbox))
+        console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+        if (slider.successOnFocusOut)
             slider.textbox.finish(true);
             
+        if (slider.savedSuccessOnFocusOut != null)
+        {
+            console.log('saved');
+            slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
+            slider.savedSuccessOnFocusOut = null;
+        }
+
         slider.parentNode.removeChild(slider.textbox);
         slider.clicked = false;
     });

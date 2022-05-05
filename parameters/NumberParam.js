@@ -78,6 +78,7 @@ extends Parameter
         { 
             const dec    = decCount(e.detail.value);
             const oldDec = decCount(e.detail.oldValue);
+            console.log('dec', dec);
 
             if (   e.detail.success
                 && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
