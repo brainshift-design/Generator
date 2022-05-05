@@ -15831,7 +15831,7 @@ class Graph
     {
         node.graph = this;
 
-        node._id = this.getNewNodeId(node.id, node.id);
+        node.id = this.getNewNodeId(node.id, node.id);
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
@@ -17435,7 +17435,7 @@ class Operator
 
     updateNode() 
     {
-        console.log(this.id + '.Operator.updateNode()');
+        //console.log(this.id + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();

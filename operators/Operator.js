@@ -429,7 +429,7 @@ class Operator
 
     updateNode() 
     {
-        console.log(this.id + '.Operator.updateNode()');
+        //console.log(this.id + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();

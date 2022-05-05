@@ -85,7 +85,7 @@ class Graph
     {
         node.graph = this;
 
-        node._id = this.getNewNodeId(node.id, node.id);
+        node.id = this.getNewNodeId(node.id, node.id);
         
         this.nodes.push(node);
         graphView.appendChild(node.div);
