@@ -217,8 +217,8 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('focusout', function()
     {
-        if (   slider.successOnFocusOut
-            && hasFocus(slider))
+        if (   slider.successOnFocusOut)
+            //&& hasFocus(slider.textbox))
             slider.textbox.finish(true);
             
         slider.parentNode.removeChild(slider.textbox);
