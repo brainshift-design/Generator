@@ -19,26 +19,6 @@ extends OperatorBase
 
 
 
-    // updateData() 
-    // {
-    //     if (this.inputs[0].connected)
-    //     {
-    //         this.#paramValue.control.setDecimals(this.inputs[0].data.decimals);
-    //         this.#paramValue.setValue(this.inputs[0].data.value, true, true, false);
-    //     }
-
-    //     this.#paramValue.control.readOnly = this.inputs[0].connected;
-        
-    //     this.outputs[0]._data = dataFromNumber(
-    //         this.#paramValue.value, 
-    //         this.#paramValue.control.dec);
-            
-                  
-//     super.updateData()
-    // }
-
-
-
     input_getValuesForUndo()
     {
         return [[
@@ -52,7 +32,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (this.node.valid)//this.cache != '') 
+        if (this.node.valid)
             return this.cache;
 
 
@@ -62,8 +42,6 @@ extends OperatorBase
                 
                 
         const input = this.node.inputs[0];
-
-        this.node.#paramValue.control.readOnly = input.connected;
 
         req.push(...(
             input.connected
@@ -80,28 +58,10 @@ extends OperatorBase
 
     updateNode()
     {
-        super.updateNode();
-        
+        this.#paramValue.control.readOnly = this.inputs[0].connected;
         enableElementText(this.#paramValue.control, !this.inputs[0].connected);
-    }
 
-
-
-    updateParams(dispatchEvents)
-    {
-        super.updateParams(dispatchEvents);
-
-        this.outputs[0]._value = this.#paramValue.value;
-    }
-
-
-
-    loadParams(_node)
-    {
-        // if (_node.decimals)
-        //     this.#paramValue.setDecimals(parseInt(_node.decimals));
-            
-        super.loadParams(_node);
+        super.updateNode();
     }
 
 
@@ -110,37 +70,5 @@ extends OperatorBase
     {
         return param.isDefault()
             && !this.inputs[0].connected;
-    }
-
-
-
-    // toJsonBase(nTab)
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = '  ';
-
-
-    //     let json = super.toJsonBase(nTab);
-
-    //     if (this.#paramValue.control.dec != 0)
-    //     {
-    //         json += ',\n'
-    //             + pos + tab + '"decimals": "' + this.#paramValue.control.dec + '"';
-    //     }
-
-
-    //     return json;
-    // }
-
-
-
-    toString()
-    {
-        // let str = nodeType;
-
-        // if (this.inputs[0].connected)
-        //     str +=
-
-        // return str;
     }
 }

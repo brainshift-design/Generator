@@ -933,7 +933,7 @@ function uiUpdateValues(values)
         const strVal     = values[i+2];
 
         const node = nodeFromId(nodeId);
-        if (!node) return; // the node was deleted
+        if (!node) continue; // the node was deleted
 
         if (!nodes.includes(node)) 
             nodes.push(node);
@@ -946,13 +946,15 @@ function uiUpdateValues(values)
             param.setValue(parseDec(strVal), false, true, false);
     }
 
-
+//console.log('nodes', nodes);
     for (const node of nodes)
     {
         node.valid = true;
         node.updateNode();
         uiSaveNodes([node.id]);
     }
+
+    graphView.update(nodes);
 }
 
 

@@ -85,15 +85,7 @@ extends Parameter
                 && this.allowEditDecimals)
             {
                 const _dec = Math.log10(this.control.valueScale);
-
                 this.control.setDecimals(dec + _dec, dec + _dec);
-
-                // actionManager.do(new SetParamDecimalsAction(this,
-                //     dec    + _dec, 
-                //     oldDec + _dec,
-                //     dec, 
-                //     oldDec
-                // ), true);
             }
         });
     }

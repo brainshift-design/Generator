@@ -344,7 +344,11 @@ function figLogAllSavedNodesAndConns() {
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length + 1) == nodeTag + ' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length + 1) == connTag + ' ');
     for (const key of nodeKeys) {
-        console.log('%c%s\n%c%s', 'background: #fdb', key.substring(nodeTag.length + 1), 'background: #fed;', figGetPageData(key, false));
+        console.log('%c%s\n%c%s', 'background: #fdb', key.substring(nodeTag.length + 1), 'background: #fed;', figGetPageData(key, false)
+            .replace('{\n', '')
+            .replace('\n}', '')
+            .replace('[\n', '')
+            .replace('\n  ]', ''));
     }
     for (const key of connKeys) {
         let conn = '';

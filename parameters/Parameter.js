@@ -1,21 +1,12 @@
 class Parameter
 extends EventTarget
 {
-    #type;
-    get type() { return this.#type; }
-    
-    #id;
-    get id() { return this.#id; }
-
-    #name;
-    get name() { return this.#name; }
-
-    _node;
-    get node() { return this._node; }
-
-
-    _control; get control() { return this._control; }
-    _div;     get div()     { return this._div;     }
+    #type;     get type()    { return this.#type;    }
+    #id;       get id()      { return this.#id;      }
+    #name;     get name()    { return this.#name;    }
+    _node;     get node()    { return this._node;    }
+    _control;  get control() { return this._control; }
+    _div;      get div()     { return this._div;     }
 
 
     get index() { return this.node.params.indexOf(this); }

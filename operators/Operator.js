@@ -33,9 +33,7 @@ class Operator
     defShortName;
     
 
-    _id;
-    get id() { return this._id; }
-    set id(id) { this._id = id; }
+    id;
 
     _name;
     get name() { return this._name; }
@@ -130,7 +128,7 @@ class Operator
     constructor(type, shortName, defWidth = 80)
     {
         this.#type             = type;
-        this._id               = shortName;
+        this.id                = shortName;
         
         this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
@@ -270,6 +268,49 @@ class Operator
 
 
 
+    setName(newName)
+    {
+        this._name = newName;
+        // this.label.innerHTML = this._name;
+        // //this.label.innerHTML = this.id;
+        
+        return true;
+    }
+
+
+
+    // isBefore(node)
+    // {
+    //     if (!this.outputs.find(o => o.connected))
+    //         return false;
+
+    //     for (const input of output.connectedInputs)
+    //     {
+    //         if (input.node == node)        return true;
+    //         if (input.node.isBefore(node)) return true;
+    //     }
+
+    //     return false;
+    // }
+
+
+
+    // isAfter(node)
+    // {
+    //     if (this.inputs.length == 0)
+    //         return false;
+
+    //     for (const input of inputs)
+    //     {
+    //         if (input.connectedOutput.node == node)       return true;
+    //         if (input.connectedOutput.node.isAfter(node)) return true;
+    //     }
+
+    //     return false;
+    // }
+
+    
+
     follows(node)
     {
         if (this == node)
@@ -388,7 +429,7 @@ class Operator
 
     updateNode() 
     {
-        //console.log(this.id + '.Operator.updateNode()');
+        console.log(this.id + '.Operator.updateNode()');
 
         this.updateBorder();
         this.updateHeader();
@@ -520,49 +561,6 @@ class Operator
 
 
 
-    setName(newName)
-    {
-        this._name = newName;
-        // this.label.innerHTML = this._name;
-        // //this.label.innerHTML = this.id;
-        
-        return true;
-    }
-
-
-
-    isBefore(node)
-    {
-        if (!this.outputs.find(o => o.connected))
-            return false;
-
-        for (const input of output.connectedInputs)
-        {
-            if (input.node == node)        return true;
-            if (input.node.isBefore(node)) return true;
-        }
-
-        return false;
-    }
-
-
-
-    isAfter(node)
-    {
-        if (this.inputs.length == 0)
-            return false;
-
-        for (const input of inputs)
-        {
-            if (input.connectedOutput.node == node)       return true;
-            if (input.connectedOutput.node.isAfter(node)) return true;
-        }
-
-        return false;
-    }
-
-    
-
     updateConnectedInputValueText() {}
 
 
@@ -690,23 +688,17 @@ function pushUpdateFromParam(nodes, param)
 
     nodes.forEach(n => n.invalidate());
 
+    // each type is followed first by the node ID, then the params
 
     const req = 
         param
         ? [param.node.id, param.index]
         : ['', 0];
 
-    for (const node of nodes)
-    {
-        getTerminalsAfterNode(node).forEach(n => 
-        {
-            for (const output of n.outputs)
-                req.push(...output.genRequest());
-
-            //n.update();
-        });
-    }
-
+    nodes.forEach(n =>
+        getTerminalsAfterNode(n).forEach(_n => 
+            _n.outputs.forEach(o =>
+                req.push(...o.genRequest()))));
 
     uiGenRequest(req);
 }

@@ -5,8 +5,6 @@
 /////////////////////////////////
 
 
-// for gen requests each type is followed first by the node ID, then the params
-
 const NUMBER             = 'NUM';   // N | (value decimals)
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
 const NUMBER_ADD         = 'ADD';   // count N...
