@@ -74,7 +74,18 @@ graphView.setPanAndZoom = (pan, zoom) =>
 
 graphView.updatePanAndZoom = () =>
 {
-    graphView.updateNodeTransforms(graph.nodes);
+    graphView.update(graph.nodes);
+    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
+};
+
+
+
+graphView.update = function(nodes = null)
+{
+    if (!nodes)
+        node = graph.nodes;
+        
+    graphView.updateNodeTransforms(nodes);
     
     const x       = graphView.clientLeft;
     const w       = graphView.clientWidth;
@@ -82,10 +93,8 @@ graphView.updatePanAndZoom = () =>
     const yOffset = controlBar.offsetHeight;
     const bounds  = graphView.getAllNodeBounds();
     
-    graphView.updateNodeTransforms(graph.nodes); // this has to be done twice because getAllNodeBounds() forces a reflow
+    graphView.updateNodeTransforms(nodes); // this has to be done twice because getAllNodeBounds() forces a reflow
     graphView.updateScroll(x, w, h, bounds, yOffset);
-
-    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };
 
 
