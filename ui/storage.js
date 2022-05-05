@@ -309,18 +309,18 @@ function loadNodes(data)
 function loadNode(_node)
 {
     const node = createNode(_node.type);
-    //node.loading = true;
 
     node.id   = _node.id;
     node.name = _node.name;
 
-    if (_node.labelOffset)
-        node.labelOffsetFactor = parseFloat(_node.labelOffset);
+    node.labelOffsetFactor = 0.5;
 
     if (  _node.params
         || node.alwaysLoadParams)
         node.loadParams(_node);
 
+    node.updateNode();
+    
     setNodePosition(
         node, 
         parseFloat(_node.x), 

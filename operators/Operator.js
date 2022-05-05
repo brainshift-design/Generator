@@ -48,7 +48,6 @@ class Operator
     _variableInputs  = false;
 
     alwaysLoadParams = false;
-    //loading          = false;
 
     defaultWidth;
     labelOffsetFactor;
@@ -404,7 +403,6 @@ class Operator
 
 
         //this.valid   = true;
-        //this.loading = false;
     //}
 
 
@@ -470,7 +468,7 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.label.innerHTML    = this.id;
+        this.label.innerHTML    = this.name; //id;
         
         const [,,,,, textStyle] = this.getHeaderColors();
         this.label.style.color  = textStyle;
@@ -596,8 +594,8 @@ class Operator
             + pos + tab + '"id": "'          + this.id                + '",\n'
             + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
-            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
-            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
+            + pos + tab + '"y": "'           + this.div.style.top     + '"';//,\n'
+            //+ pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';

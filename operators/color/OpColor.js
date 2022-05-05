@@ -152,7 +152,6 @@ extends OpColorBase
     //     if (this.inputs[0].connected) 
     //     {
     //         if (   dataColorIsNaN(this.inputs[0].data.color)
-    //             && !this.loading
     //             && !dataColorIsNaN(this._color))
     //         {
     //             this._colorBeforeNaN = this._color;

@@ -3929,7 +3929,10 @@ function normalizeSeed(x)
 /////////////////////////////////
 
 
-const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_VALUE       = 'NVAL';  // value decimals
+const COLOR_VALUE        = 'CVAL';  // value decimals
+
+const NUMBER             = 'NUM';   // N
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
 const NUMBER_ADD         = 'ADD';   // count N...
 const NUMBER_SUBTRACT    = 'SUB';   // count N...
@@ -10660,7 +10663,10 @@ function base32toArray(base32, chars = base32chars)
 /////////////////////////////////
 
 
-const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_VALUE       = 'NVAL';  // value decimals
+const COLOR_VALUE        = 'CVAL';  // value decimals
+
+const NUMBER             = 'NUM';   // N
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
 const NUMBER_ADD         = 'ADD';   // count N...
 const NUMBER_SUBTRACT    = 'SUB';   // count N...
@@ -17054,7 +17060,6 @@ class Operator
     _variableInputs  = false;
 
     alwaysLoadParams = false;
-    //loading          = false;
 
     defaultWidth;
     labelOffsetFactor;
@@ -17410,7 +17415,6 @@ class Operator
 
 
         //this.valid   = true;
-        //this.loading = false;
     //}
 
 
@@ -17476,7 +17480,7 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.label.innerHTML    = this.id;
+        this.label.innerHTML    = this.name; //id;
         
         const [,,,,, textStyle] = this.getHeaderColors();
         this.label.style.color  = textStyle;
@@ -17602,8 +17606,8 @@ class Operator
             + pos + tab + '"id": "'          + this.id                + '",\n'
             + pos + tab + '"name": "'        + this.name              + '",\n'
             + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
-            + pos + tab + '"y": "'           + this.div.style.top     + '",\n'
-            + pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
+            + pos + tab + '"y": "'           + this.div.style.top     + '"';//,\n'
+            //+ pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -19439,7 +19443,6 @@ extends OpColorBase
     //     if (this.inputs[0].connected) 
     //     {
     //         if (   dataColorIsNaN(this.inputs[0].data.color)
-    //             && !this.loading
     //             && !dataColorIsNaN(this._color))
     //         {
     //             this._colorBeforeNaN = this._color;
@@ -23119,7 +23122,7 @@ extends Action
         this.oldName = this.node.name;
         this.node.setName(this.newName);
 
-        uiSaveNodes([nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -23128,7 +23131,7 @@ extends Action
     {
         this.node.setName(this.oldName);
 
-        uiSaveNodes([nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -23137,7 +23140,7 @@ extends Action
     {
         this.node.setName(this.newName);
         
-        uiSaveNodes([nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -24442,18 +24445,18 @@ function loadNodes(data)
 function loadNode(_node)
 {
     const node = createNode(_node.type);
-    //node.loading = true;
 
     node.id   = _node.id;
     node.name = _node.name;
 
-    if (_node.labelOffset)
-        node.labelOffsetFactor = parseFloat(_node.labelOffset);
+    node.labelOffsetFactor = 0.5;
 
     if (  _node.params
         || node.alwaysLoadParams)
         node.loadParams(_node);
 
+    node.updateNode();
+    
     setNodePosition(
         node, 
         parseFloat(_node.x), 

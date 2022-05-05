@@ -5,7 +5,10 @@
 /////////////////////////////////
 
 
-const NUMBER             = 'NUM';   // N | (value decimals)
+const NUMBER_VALUE       = 'NVAL';  // value decimals
+const COLOR_VALUE        = 'CVAL';  // value decimals
+
+const NUMBER             = 'NUM';   // N
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
 const NUMBER_ADD         = 'ADD';   // count N...
 const NUMBER_SUBTRACT    = 'SUB';   // count N...
