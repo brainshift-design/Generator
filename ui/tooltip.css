@@ -15,7 +15,8 @@
     top:              44px;
     font-family:      Inter;
     font-size:        11px;
-    /* pointer-events:   none; */
+    box-shadow:    0px 2px  7px rgba(0, 0, 0, 0.15),
+                   0px 5px 17px rgba(0, 0, 0, 0.15 );
 }
 
 
