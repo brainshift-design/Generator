@@ -73,7 +73,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.enableChangeEvent      = true;
     
     slider.successOnFocusOut      = false;
-    slider.savedSuccessOnFocusOut = null;
+    slider.keyBlur                = false;
     
     slider.pointerEvents          = true;
     slider.readOnly               = false;

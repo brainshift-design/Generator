@@ -43,18 +43,14 @@ function initNumberSliderTextbox(slider)
                      || e.code == 'NumpadEnter')
                  && !slider.readOnly)
         {
+            slider.textbox.keyBlur = true;
             slider.textbox.finish(true);
-
-            slider.savedSuccessOnFocusOut = slider.successOnFocusOut;
-            slider.successOnFocusOut      = false;
         }
 
         else if (e.code == 'Escape')
         {
+            slider.textbox.keyBlur = true;
             slider.textbox.finish(false);
-
-            slider.savedSuccessOnFocusOut = slider.successOnFocusOut;
-            slider.successOnFocusOut      = false;
         }
         else if (e.code == 'Tab')
         {
@@ -66,6 +62,7 @@ function initNumberSliderTextbox(slider)
                 const params = slider.param.node.params;
                 let   index  = slider.param.index;
 
+                slider.textbox.keyBlur = true;
                 slider.textbox.finish(true, false);
 
                 if (   e.shiftKey 
@@ -226,13 +223,13 @@ function initNumberSliderTextbox(slider)
 
     slider.textbox.addEventListener('focusout', function()
     {
-        console.log('slider.successOnFocusOut', slider.successOnFocusOut);
-        if (slider.successOnFocusOut)
-            slider.textbox.finish(true);
-            
+        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+
+        if (!slider.textbox.keyBlur) slider.textbox.finish(true);
+        else                         slider.textbox.keyBlur = false;
+
         if (slider.savedSuccessOnFocusOut != null)
         {
-            console.log('saved');
             slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
             slider.savedSuccessOnFocusOut = null;
         }
