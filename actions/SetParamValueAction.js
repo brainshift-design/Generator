@@ -26,9 +26,7 @@ extends Action
 
     do()
     {
-        console.log('this.param.oldValue', this.param.oldValue);
         this.oldValue = shallowCopy(this.param.oldValue);
-        console.log('this.oldValue', this.oldValue);
         pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
@@ -38,7 +36,6 @@ extends Action
 
     undo()
     {
-        console.log('this.oldValue', this.oldValue);
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam([this.param.node], this.param);
 

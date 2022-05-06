@@ -78,19 +78,14 @@ extends Parameter
         { 
             const dec    = decCount(e.detail.value);
             const oldDec = decCount(e.detail.oldValue);
-            console.log('oldDec', oldDec);
-            console.log('dec', dec);
 
             if (   e.detail.success
                 && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-                    || dec != oldDec)
-                && this.allowEditDecimals)
+                    ||    dec != oldDec
+                       && this.allowEditDecimals))
             {
-                console.log('changed');
                 const _dec = Math.log10(this.control.valueScale);
-                console.log('dec + _dec', dec + _dec);
-                this.control.setDecimals(dec + _dec, dec + _dec);
-                pushUpdate([this.node]);
+                this.setValue(new Decimal(this.value.num, dec + _dec), true);
             }
         });
     }
@@ -102,22 +97,6 @@ extends Parameter
         super.setName(name, dispatchEvents);
         this.control.setName(name);
     }
-
-
-
-    // setDecimalsFrom(strValue)
-    // {
-    //     this.setDecimals(decCount(strValue));
-    // }
-
-
-
-    // setDecimals(dec, displayDec)
-    // {
-    //     this.control.setDecimals(dec, displayDec);
-    //     this.control.update();
-    //     //pushUpdate([this.node]);
-    // }
 
 
 

@@ -15363,19 +15363,14 @@ extends Parameter
         { 
             const dec    = decCount(e.detail.value);
             const oldDec = decCount(e.detail.oldValue);
-            console.log('oldDec', oldDec);
-            console.log('dec', dec);
 
             if (   e.detail.success
                 && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-                    || dec != oldDec)
-                && this.allowEditDecimals)
+                    ||    dec != oldDec
+                       && this.allowEditDecimals))
             {
-                console.log('changed');
                 const _dec = Math.log10(this.control.valueScale);
-                console.log('dec + _dec', dec + _dec);
-                this.control.setDecimals(dec + _dec, dec + _dec);
-                pushUpdate([this.node]);
+                this.setValue(new Decimal(this.value.num, dec + _dec), true);
             }
         });
     }
@@ -15387,22 +15382,6 @@ extends Parameter
         super.setName(name, dispatchEvents);
         this.control.setName(name);
     }
-
-
-
-    // setDecimalsFrom(strValue)
-    // {
-    //     this.setDecimals(decCount(strValue));
-    // }
-
-
-
-    // setDecimals(dec, displayDec)
-    // {
-    //     this.control.setDecimals(dec, displayDec);
-    //     this.control.update();
-    //     //pushUpdate([this.node]);
-    // }
 
 
 
@@ -23525,9 +23504,7 @@ extends Action
 
     do()
     {
-        console.log('this.param.oldValue', this.param.oldValue);
         this.oldValue = shallowCopy(this.param.oldValue);
-        console.log('this.oldValue', this.oldValue);
         pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
@@ -23537,7 +23514,6 @@ extends Action
 
     undo()
     {
-        console.log('this.oldValue', this.oldValue);
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam([this.param.node], this.param);
 
@@ -24157,18 +24133,6 @@ function uiEndGenMessage()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// function uiGenRequest(request)
-// {
-//     //console.log('request', request);
-    
-//     uiPostMessageToGenerator({
-//         cmd:    'genRequest',
-//         request: request
-//     });
-// }
 
 
 function setCursor(cursor, asyncForce = true)
