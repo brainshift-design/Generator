@@ -78,15 +78,17 @@ extends Parameter
         { 
             const dec    = decCount(e.detail.value);
             const oldDec = decCount(e.detail.oldValue);
+            console.log('oldDec', oldDec);
             console.log('dec', dec);
 
             if (   e.detail.success
                 && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-                    || dec >= oldDec)
+                    || dec != oldDec)
                 && this.allowEditDecimals)
             {
                 const _dec = Math.log10(this.control.valueScale);
                 this.control.setDecimals(dec + _dec, dec + _dec);
+                this.update();
             }
         });
     }
@@ -209,9 +211,7 @@ extends Parameter
 
     toString()
     {
-        return numString(
-            this.control.value, 
-            this.control.displayDec); 
+        return this.value.toString();
     }
 
 
@@ -223,6 +223,6 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.toString() + '"]';
+        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
     }
 }

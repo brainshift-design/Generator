@@ -468,7 +468,7 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.label.innerHTML    = this.name; //id;
+        this.label.innerHTML    = this.id;// this.name;
         
         const [,,,,, textStyle] = this.getHeaderColors();
         this.label.style.color  = textStyle;
@@ -590,11 +590,11 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "'        + this.type              + '",\n'
-            + pos + tab + '"id": "'          + this.id                + '",\n'
-            + pos + tab + '"name": "'        + this.name              + '",\n'
-            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
-            + pos + tab + '"y": "'           + this.div.style.top     + '"';//,\n'
+              pos + tab + '"type": "'        + this.type                      + '",\n'
+            + pos + tab + '"id": "'          + this.id                        + '",\n'
+            + pos + tab + '"name": "'        + this.name.replace('"', '\\\"') + '",\n'
+            + pos + tab + '"x": "'           + this.div.style.left            + '",\n'
+            + pos + tab + '"y": "'           + this.div.style.top             + '"';//,\n'
             //+ pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
 
         if (this.active)

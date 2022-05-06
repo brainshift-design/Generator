@@ -495,8 +495,8 @@ div
     top:              44px;
     font-family:      Inter;
     font-size:        11px;
-    box-shadow:    0px 2px  7px rgba(0, 0, 0, 0.15),
-                   0px 5px 17px rgba(0, 0, 0, 0.15 );
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
+                      0px 5px 17px rgba(0, 0, 0, 0.15 );
 }
 
 
@@ -15349,15 +15349,17 @@ extends Parameter
         { 
             const dec    = decCount(e.detail.value);
             const oldDec = decCount(e.detail.oldValue);
+            console.log('oldDec', oldDec);
             console.log('dec', dec);
 
             if (   e.detail.success
                 && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
-                    || dec >= oldDec)
+                    || dec != oldDec)
                 && this.allowEditDecimals)
             {
                 const _dec = Math.log10(this.control.valueScale);
                 this.control.setDecimals(dec + _dec, dec + _dec);
+                this.update();
             }
         });
     }
@@ -15480,9 +15482,7 @@ extends Parameter
 
     toString()
     {
-        return numString(
-            this.control.value, 
-            this.control.displayDec); 
+        return this.value.toString();
     }
 
 
@@ -15494,7 +15494,7 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.toString() + '"]';
+        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
     }
 }
 
@@ -17497,7 +17497,7 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.label.innerHTML    = this.name; //id;
+        this.label.innerHTML    = this.id;// this.name;
         
         const [,,,,, textStyle] = this.getHeaderColors();
         this.label.style.color  = textStyle;
@@ -17619,11 +17619,11 @@ class Operator
         const tab = '  ';
 
         let json =
-              pos + tab + '"type": "'        + this.type              + '",\n'
-            + pos + tab + '"id": "'          + this.id                + '",\n'
-            + pos + tab + '"name": "'        + this.name              + '",\n'
-            + pos + tab + '"x": "'           + this.div.style.left    + '",\n'
-            + pos + tab + '"y": "'           + this.div.style.top     + '"';//,\n'
+              pos + tab + '"type": "'        + this.type                      + '",\n'
+            + pos + tab + '"id": "'          + this.id                        + '",\n'
+            + pos + tab + '"name": "'        + this.name.replace('"', '\\\"') + '",\n'
+            + pos + tab + '"x": "'           + this.div.style.left            + '",\n'
+            + pos + tab + '"y": "'           + this.div.style.top             + '"';//,\n'
             //+ pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
 
         if (this.active)
