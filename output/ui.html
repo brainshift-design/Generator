@@ -1718,7 +1718,7 @@ function isArrowKey(code)
 
 
 
-function numString(num, dec, showHex = false)
+function numToString(num, dec, showHex = false)
 {
     if (showHex)
     {
@@ -1735,12 +1735,12 @@ function numString(num, dec, showHex = false)
     const _dec = Math.abs(dec);
     let    str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
     
+
     let i = 0;
 
     // find decimal place
 
     while (i < str.length 
-        //&& str[i] == getUserDecimalSeparator())
         && str[i] !== '.' 
         && str[i] !== ',')
         i++;
@@ -1757,13 +1757,41 @@ function numString(num, dec, showHex = false)
             str = str.substring(0, i--);
         
          if (   str[i] === '.' 
-             || str[i] === ',') // hack because JavaScript
-        //if (str[i] == getUserDecimalSeparator())
+             || str[i] === ',') // hack because JavaScript has shit support for locales
             str = str.substring(0, i--);
     }    
 
     return str;
 }
+
+
+
+// function numToString(num, dec)
+// {
+//     var str = Number(num).toFixed(dec).toString();
+
+//     var i = 0;
+
+//     // find decimal place
+
+//     while (   i < str.length 
+//            && str[i] !== '.' 
+//            && str[i] !== ',')
+//         i++;
+
+//     if (i >= str.length) // if no decimal place
+//         return str;
+
+//     i = str.length-1;
+
+//     while (i >= 0 && str[i] === '0')
+//         str = str.substring(0, i--);
+
+//     if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+//         str = str.substring(0, i--);
+
+//     return str;
+// }
 
 
 
@@ -3163,35 +3191,6 @@ function getUserDecimalSeparator()
 
 
 
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-
 function isEmptyObject(obj)
 {
     if (obj == null)
@@ -3978,7 +3977,7 @@ class Decimal
 
     toString()
     {
-        return numString(this.num, this.dec);    
+        return numToString(this.num, this.dec);    
     }
 }
 
@@ -4354,11 +4353,11 @@ function genParseRequest(req, parse)
     const next = req[parse.pos];
     //console.log('next', next);
 
-         if (next == NUMBER    ) return genNumber   (req, parse);
-    else if (next == NUMBER_ADD) return genNumberAdd(req, parse);
+         if (next == NUMBER_VALUE) return genNumValue (req, parse);
+    else if (next == NUMBER      ) return genNumber   (req, parse);
+    else if (next == NUMBER_ADD  ) return genNumberAdd(req, parse);
 
-    else if (next == RECTANGLE) return genRectangle(req, parse);
-    else if (strIsNum(next))    return genNumValue (req, parse);
+    else if (next == RECTANGLE   ) return genRectangle(req, parse);
     
     parse.so++;
     return null;
@@ -4368,15 +4367,8 @@ function genParseRequest(req, parse)
 
 function genNumValue(req, parse)
 {
-    // numeric values are always a value/decimals pair
+    parse.pos++;
 
-    // const strVal = req[parse.pos++];
-    
-    // const val = parseFloat(strVal);
-    // const dec = decCount(strVal);
-    
-    // return [val, dec];
-    
     return parseDec(req[parse.pos++]);
 }
 
@@ -7086,7 +7078,7 @@ function isArrowKey(code)
 
 
 
-function numString(num, dec, showHex = false)
+function numToString(num, dec, showHex = false)
 {
     if (showHex)
     {
@@ -7103,12 +7095,12 @@ function numString(num, dec, showHex = false)
     const _dec = Math.abs(dec);
     let    str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
     
+
     let i = 0;
 
     // find decimal place
 
     while (i < str.length 
-        //&& str[i] == getUserDecimalSeparator())
         && str[i] !== '.' 
         && str[i] !== ',')
         i++;
@@ -7125,13 +7117,41 @@ function numString(num, dec, showHex = false)
             str = str.substring(0, i--);
         
          if (   str[i] === '.' 
-             || str[i] === ',') // hack because JavaScript
-        //if (str[i] == getUserDecimalSeparator())
+             || str[i] === ',') // hack because JavaScript has shit support for locales
             str = str.substring(0, i--);
     }    
 
     return str;
 }
+
+
+
+// function numToString(num, dec)
+// {
+//     var str = Number(num).toFixed(dec).toString();
+
+//     var i = 0;
+
+//     // find decimal place
+
+//     while (   i < str.length 
+//            && str[i] !== '.' 
+//            && str[i] !== ',')
+//         i++;
+
+//     if (i >= str.length) // if no decimal place
+//         return str;
+
+//     i = str.length-1;
+
+//     while (i >= 0 && str[i] === '0')
+//         str = str.substring(0, i--);
+
+//     if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+//         str = str.substring(0, i--);
+
+//     return str;
+// }
 
 
 
@@ -8527,35 +8547,6 @@ function getUserDecimalSeparator()
     return num
         .toLocaleString(navigator.language)
         .substring(1, 2);
-}
-
-
-
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
 }
 
 
@@ -10721,7 +10712,7 @@ class Decimal
 
     toString()
     {
-        return numString(this.num, this.dec);    
+        return numToString(this.num, this.dec);    
     }
 }
 
@@ -11719,7 +11710,7 @@ function initNumberSliderTextbox(slider)
         slider.textbox.value =
             (isNaN(slider.value)
              ? '?'
-             : numString(
+             : numToString(
                    slider.value * slider.valueScale, 
                    slider.displayDec, 
                    slider.showHex
@@ -12024,7 +12015,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             return isNaN(slider.value)
                    ? '?'
-                   : numString(
+                   : numToString(
                          slider.value * slider.valueScale, 
                          slider.displayDec, 
                          slider.showHex
@@ -15382,6 +15373,7 @@ extends Parameter
             {
                 console.log('changed');
                 const _dec = Math.log10(this.control.valueScale);
+                console.log('dec + _dec', dec + _dec);
                 this.control.setDecimals(dec + _dec, dec + _dec);
                 pushUpdate([this.node]);
             }
@@ -15490,9 +15482,10 @@ extends Parameter
 
             ? [ ...this.input.connectedOutput.genRequest() ]
 
-            : [ NUMBER, 
-                this.control.value.toString(), 
-                this.control.displayDec.toString() ];
+            : [ NUMBER_VALUE, 
+                numToString(
+                    this.control.value, 
+                    this.control.displayDec) ];
     }
 
 
@@ -18547,7 +18540,8 @@ extends OperatorBase
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest()
-            : [ numToString( // number VALUES are stored as strings because decimal places matter
+            : [ NUMBER_VALUE,
+                numToString( // number VALUES are stored as strings because decimal places matter
                     this.node.#paramValue.value,
                     this.node.#paramValue.control.dec) ]));
 
@@ -21208,7 +21202,7 @@ extends OpColorBase
 
         if (!margin.locked)
         {
-            margin.control.setDecimals(Math.min(decCount(numString(correction.value, -1))));
+            margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
             margin.setValue(correction.value, true, true, false);
         }
     }
@@ -21705,9 +21699,9 @@ extends OpColorBase
         this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
         this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
-        this.#paramL.addEventListener('change', () => this.#paramL.control.dragScale = decCount(numString(this.#paramL.value, this.#paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.#paramM.addEventListener('change', () => this.#paramM.control.dragScale = decCount(numString(this.#paramM.value, this.#paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.#paramS.addEventListener('change', () => this.#paramS.control.dragScale = decCount(numString(this.#paramS.value, this.#paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.#paramL.addEventListener('change', () => this.#paramL.control.dragScale = decCount(numToString(this.#paramL.value, this.#paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.#paramM.addEventListener('change', () => this.#paramM.control.dragScale = decCount(numToString(this.#paramM.value, this.#paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.#paramS.addEventListener('change', () => this.#paramS.control.dragScale = decCount(numToString(this.#paramS.value, this.#paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
 
 
         this.header.connectionPadding = 18;

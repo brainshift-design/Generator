@@ -20,9 +20,9 @@ extends OpColorBase
         this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
         this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
-        this.#paramL.addEventListener('change', () => this.#paramL.control.dragScale = decCount(numString(this.#paramL.value, this.#paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.#paramM.addEventListener('change', () => this.#paramM.control.dragScale = decCount(numString(this.#paramM.value, this.#paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.#paramS.addEventListener('change', () => this.#paramS.control.dragScale = decCount(numString(this.#paramS.value, this.#paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.#paramL.addEventListener('change', () => this.#paramL.control.dragScale = decCount(numToString(this.#paramL.value, this.#paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.#paramM.addEventListener('change', () => this.#paramM.control.dragScale = decCount(numToString(this.#paramM.value, this.#paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.#paramS.addEventListener('change', () => this.#paramS.control.dragScale = decCount(numToString(this.#paramS.value, this.#paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
 
 
         this.header.connectionPadding = 18;

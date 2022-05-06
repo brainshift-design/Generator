@@ -68,11 +68,11 @@ function genParseRequest(req, parse)
     const next = req[parse.pos];
     //console.log('next', next);
 
-         if (next == NUMBER    ) return genNumber   (req, parse);
-    else if (next == NUMBER_ADD) return genNumberAdd(req, parse);
+         if (next == NUMBER_VALUE) return genNumValue (req, parse);
+    else if (next == NUMBER      ) return genNumber   (req, parse);
+    else if (next == NUMBER_ADD  ) return genNumberAdd(req, parse);
 
-    else if (next == RECTANGLE) return genRectangle(req, parse);
-    else if (strIsNum(next))    return genNumValue (req, parse);
+    else if (next == RECTANGLE   ) return genRectangle(req, parse);
     
     parse.so++;
     return null;
@@ -82,15 +82,8 @@ function genParseRequest(req, parse)
 
 function genNumValue(req, parse)
 {
-    // numeric values are always a value/decimals pair
+    parse.pos++;
 
-    // const strVal = req[parse.pos++];
-    
-    // const val = parseFloat(strVal);
-    // const dec = decCount(strVal);
-    
-    // return [val, dec];
-    
     return parseDec(req[parse.pos++]);
 }
 

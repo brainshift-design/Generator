@@ -73,35 +73,6 @@ function getUserDecimalSeparator()
 
 
 
-function numToString(num, dec)
-{
-    var str = Number(num).toFixed(dec).toString();
-
-    var i = 0;
-
-    // find decimal place
-
-    while (   i < str.length 
-           && str[i] !== '.' 
-           && str[i] !== ',')
-        i++;
-
-    if (i >= str.length) // if no decimal place
-        return str;
-
-    i = str.length-1;
-
-    while (i >= 0 && str[i] === '0')
-        str = str.substring(0, i--);
-
-    if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
-        str = str.substring(0, i--);
-
-    return str;
-}
-
-
-
 function isEmptyObject(obj)
 {
     if (obj == null)

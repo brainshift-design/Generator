@@ -88,6 +88,7 @@ extends Parameter
             {
                 console.log('changed');
                 const _dec = Math.log10(this.control.valueScale);
+                console.log('dec + _dec', dec + _dec);
                 this.control.setDecimals(dec + _dec, dec + _dec);
                 pushUpdate([this.node]);
             }
@@ -196,9 +197,10 @@ extends Parameter
 
             ? [ ...this.input.connectedOutput.genRequest() ]
 
-            : [ NUMBER, 
-                this.control.value.toString(), 
-                this.control.displayDec.toString() ];
+            : [ NUMBER_VALUE, 
+                numToString(
+                    this.control.value, 
+                    this.control.displayDec) ];
     }
 
 

@@ -11,7 +11,7 @@ class Decimal
 
     toString()
     {
-        return numString(this.num, this.dec);    
+        return numToString(this.num, this.dec);    
     }
 }
 

@@ -291,7 +291,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             return isNaN(slider.value)
                    ? '?'
-                   : numString(
+                   : numToString(
                          slider.value * slider.valueScale, 
                          slider.displayDec, 
                          slider.showHex

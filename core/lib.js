@@ -51,7 +51,7 @@ function isArrowKey(code)
 
 
 
-function numString(num, dec, showHex = false)
+function numToString(num, dec, showHex = false)
 {
     if (showHex)
     {
@@ -68,12 +68,12 @@ function numString(num, dec, showHex = false)
     const _dec = Math.abs(dec);
     let    str = Number(num).toFixed(_dec).toString(showHex ? 16 : 10);
     
+
     let i = 0;
 
     // find decimal place
 
     while (i < str.length 
-        //&& str[i] == getUserDecimalSeparator())
         && str[i] !== '.' 
         && str[i] !== ',')
         i++;
@@ -90,13 +90,41 @@ function numString(num, dec, showHex = false)
             str = str.substring(0, i--);
         
          if (   str[i] === '.' 
-             || str[i] === ',') // hack because JavaScript
-        //if (str[i] == getUserDecimalSeparator())
+             || str[i] === ',') // hack because JavaScript has shit support for locales
             str = str.substring(0, i--);
     }    
 
     return str;
 }
+
+
+
+// function numToString(num, dec)
+// {
+//     var str = Number(num).toFixed(dec).toString();
+
+//     var i = 0;
+
+//     // find decimal place
+
+//     while (   i < str.length 
+//            && str[i] !== '.' 
+//            && str[i] !== ',')
+//         i++;
+
+//     if (i >= str.length) // if no decimal place
+//         return str;
+
+//     i = str.length-1;
+
+//     while (i >= 0 && str[i] === '0')
+//         str = str.substring(0, i--);
+
+//     if (str[i] === '.' || str[i] === ',') // hack because JavaScript has shit support for locales
+//         str = str.substring(0, i--);
+
+//     return str;
+// }
 
 
 
