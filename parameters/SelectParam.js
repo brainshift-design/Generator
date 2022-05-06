@@ -75,19 +75,19 @@ extends Parameter
 
 
 
-    setDecimalsFrom(strValue)
-    {
-        this.setDecimals(decCount(strValue));
-    }
+    // setDecimalsFrom(strValue)
+    // {
+    //     this.setDecimals(decCount(strValue));
+    // }
 
 
 
-    setDecimals(dec, displayDec)
-    {
-        this.control.setDecimals(dec, displayDec);
-        this.control.update();
-        pushUpdate([this.node]);
-    }
+    // setDecimals(dec, displayDec)
+    // {
+    //     this.control.setDecimals(dec, displayDec);
+    //     this.control.update();
+    //     pushUpdate([this.node]);
+    // }
 
 
 

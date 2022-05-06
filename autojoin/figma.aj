@@ -1,3 +1,3 @@
 ../core/tags.js
 
-figma/*.ts0
+../figma/*.ts0

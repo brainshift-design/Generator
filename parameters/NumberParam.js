@@ -86,9 +86,10 @@ extends Parameter
                     || dec != oldDec)
                 && this.allowEditDecimals)
             {
+                console.log('changed');
                 const _dec = Math.log10(this.control.valueScale);
                 this.control.setDecimals(dec + _dec, dec + _dec);
-                this.update();
+                pushUpdate([this.node]);
             }
         });
     }
@@ -103,19 +104,19 @@ extends Parameter
 
 
 
-    setDecimalsFrom(strValue)
-    {
-        this.setDecimals(decCount(strValue));
-    }
+    // setDecimalsFrom(strValue)
+    // {
+    //     this.setDecimals(decCount(strValue));
+    // }
 
 
 
-    setDecimals(dec, displayDec)
-    {
-        this.control.setDecimals(dec, displayDec);
-        this.control.update();
-        //pushUpdate([this.node]);
-    }
+    // setDecimals(dec, displayDec)
+    // {
+    //     this.control.setDecimals(dec, displayDec);
+    //     this.control.update();
+    //     //pushUpdate([this.node]);
+    // }
 
 
 

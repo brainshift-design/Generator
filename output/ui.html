@@ -3930,10 +3930,9 @@ function normalizeSeed(x)
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NVAL';  // value decimals
-const COLOR_VALUE        = 'CVAL';  // value decimals
+const NUMBER_VALUE       = 'NVAL';  // value (s) (with significant decimals)
 
-const NUMBER             = 'NUM';   // N
+const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
 const NUMBER_ADD         = 'ADD';   // count N...
 const NUMBER_SUBTRACT    = 'SUB';   // count N...
@@ -3943,15 +3942,22 @@ const NUMBER_MODULO      = 'MOD';   // count N...
 const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
-const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
+
+const COLOR_VALUE        = 'CVAL';  // N:space N:1 N:2 N:3 (c)
+
+const COLOR              = 'CLR';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE     = 'CVLD';  // C
 const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
-const STRING             = 'STR';   // S|value
+
+const STRING_VALUE       = 'SVAL';  // "..." (s) (escape \\ and \")
+
+const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
@@ -4022,7 +4028,7 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest': genRequest(msg.request); break;
+        case 'genRequest': genRequest(msg.request, msg.settings); break;
         // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
         // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
         // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
@@ -4295,18 +4301,21 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 
 
 
-function genRequest(req)
+function genRequest(req, settings)
 {
-    console.log(
-        '%c%s', 
-        'background: #60aa60; color: #fff', 
-        JSON.stringify(req)
-            .replaceAll('""', '\'\'')
-            .replaceAll('"', '')
-            .replaceAll('[', '')
-            .replaceAll(']', '')
-            .replaceAll(',', ' '));
-    
+    if (settings.logRequests)
+    {
+        console.log(
+            '%c%s', 
+            'background: #60aa60; color: #fff', 
+            JSON.stringify(req)
+                .replaceAll('""', '\'\'')
+                .replaceAll('"', '')
+                .replaceAll('[', '')
+                .replaceAll(']', '')
+                .replaceAll(',', ' '));
+    }
+
 
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
@@ -10664,10 +10673,9 @@ function base32toArray(base32, chars = base32chars)
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NVAL';  // value decimals
-const COLOR_VALUE        = 'CVAL';  // value decimals
+const NUMBER_VALUE       = 'NVAL';  // value (s) (with significant decimals)
 
-const NUMBER             = 'NUM';   // N
+const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
 const NUMBER_ADD         = 'ADD';   // count N...
 const NUMBER_SUBTRACT    = 'SUB';   // count N...
@@ -10677,15 +10685,22 @@ const NUMBER_MODULO      = 'MOD';   // count N...
 const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
-const COLOR              = 'CLR';   // C N:space N:1 N:2 N:3
+
+const COLOR_VALUE        = 'CVAL';  // N:space N:1 N:2 N:3 (c)
+
+const COLOR              = 'CLR';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE     = 'CVLD';  // C
 const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
-const STRING             = 'STR';   // S|value
+
+const STRING_VALUE       = 'SVAL';  // "..." (s) (escape \\ and \")
+
+const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
@@ -10719,6 +10734,14 @@ function parseDec(str)
         decCount(str));
 }
 
+
+
+const settings =
+{
+    logStorage:  true,
+    logActions:  true,
+    logRequests: true
+};
 
 
 function createToggleButton(width, height)
@@ -15357,9 +15380,10 @@ extends Parameter
                     || dec != oldDec)
                 && this.allowEditDecimals)
             {
+                console.log('changed');
                 const _dec = Math.log10(this.control.valueScale);
                 this.control.setDecimals(dec + _dec, dec + _dec);
-                this.update();
+                pushUpdate([this.node]);
             }
         });
     }
@@ -15374,19 +15398,19 @@ extends Parameter
 
 
 
-    setDecimalsFrom(strValue)
-    {
-        this.setDecimals(decCount(strValue));
-    }
+    // setDecimalsFrom(strValue)
+    // {
+    //     this.setDecimals(decCount(strValue));
+    // }
 
 
 
-    setDecimals(dec, displayDec)
-    {
-        this.control.setDecimals(dec, displayDec);
-        this.control.update();
-        //pushUpdate([this.node]);
-    }
+    // setDecimals(dec, displayDec)
+    // {
+    //     this.control.setDecimals(dec, displayDec);
+    //     this.control.update();
+    //     //pushUpdate([this.node]);
+    // }
 
 
 
@@ -15696,19 +15720,19 @@ extends Parameter
 
 
 
-    setDecimalsFrom(strValue)
-    {
-        this.setDecimals(decCount(strValue));
-    }
+    // setDecimalsFrom(strValue)
+    // {
+    //     this.setDecimals(decCount(strValue));
+    // }
 
 
 
-    setDecimals(dec, displayDec)
-    {
-        this.control.setDecimals(dec, displayDec);
-        this.control.update();
-        pushUpdate([this.node]);
-    }
+    // setDecimals(dec, displayDec)
+    // {
+    //     this.control.setDecimals(dec, displayDec);
+    //     this.control.update();
+    //     pushUpdate([this.node]);
+    // }
 
 
 
@@ -17715,9 +17739,10 @@ function pushUpdateFromParam(nodes, param)
 
     nodes.forEach(n => n.invalidate());
 
+
     // each type is followed first by the node ID, then the params
 
-    const req = 
+    const request = 
         param
         ? [param.node.id, param.index]
         : ['', 0];
@@ -17725,9 +17750,16 @@ function pushUpdateFromParam(nodes, param)
     nodes.forEach(n =>
         getTerminalsAfterNode(n).forEach(_n => 
             _n.outputs.forEach(o =>
-                req.push(...o.genRequest()))));
+                request.push(...o.genRequest()))));
 
-    uiGenRequest(req);
+
+    //uiGenRequest(req);
+
+    uiPostMessageToGenerator({
+        cmd:     'genRequest',
+        request:  request,
+        settings: settings
+    });
 }
 
 
@@ -22159,12 +22191,16 @@ class ActionManager
             }
         }
 
-        console.log(
-            "%cDO %s", 
-            'background: #ffd; \
-             color:      #b80;', 
-            action.name);
 
+        if (settings.logActions)
+        {
+            console.log(
+                "%cDO %s", 
+                'background: #ffd; \
+                color:      #b80;', 
+                action.name);
+        }
+        
         action.do(); 
     }
 
@@ -22180,13 +22216,18 @@ class ActionManager
             let last = removeLast(this.actions);
             this.redoActions.push(last);
 
-            console.log(
-                "%cUNDO %s", 
-                'background: #fff4e8; \
-                 color:      #c64;', 
-                last.name);
-            
+
+            if (settings.logActions)
+            {
+                console.log(
+                    "%cUNDO %s", 
+                    'background: #fff4e8; \
+                    color:      #c64;', 
+                    last.name);
+            }
+
             last.undo(); 
+
 
             if (   this.actions.length == 0
                 || last.prevAction != lastOf(this.actions))
@@ -22206,14 +22247,19 @@ class ActionManager
             let last = removeLast(this.redoActions);
             this.actions.push(last);
 
-            console.log(
-                "%cREDO %s", 
-                'background: #e8ffe8; \
-                color:      #282;', 
-                last.name);
-            
+
+            if (settings.logActions)
+            {
+                console.log(
+                    "%cREDO %s", 
+                    'background: #e8ffe8; \
+                    color:      #282;', 
+                    last.name);
+            }
+
             last.redo(); 
         
+
             if (   this.redoActions.length == 0
                 || last.nextAction != lastOf(this.redoActions))
                 break;
@@ -24120,15 +24166,15 @@ function uiEndGenMessage()
 
 
 
-function uiGenRequest(request)
-{
-    //console.log('request', request);
+// function uiGenRequest(request)
+// {
+//     //console.log('request', request);
     
-    uiPostMessageToGenerator({
-        cmd:    'genRequest',
-        request: request
-    });
-}
+//     uiPostMessageToGenerator({
+//         cmd:    'genRequest',
+//         request: request
+//     });
+// }
 
 
 function setCursor(cursor, asyncForce = true)
@@ -25719,7 +25765,8 @@ function uiRemoveAllSavedNodesAndConns()
 function uiLogAllSavedNodesAndConns()
 {
     uiPostMessageToFigma({
-        cmd: 'figLogAllSavedNodesAndConns'
+        cmd:     'figLogAllSavedNodesAndConns',
+        settings: settings
     });
 }
 

@@ -686,9 +686,10 @@ function pushUpdateFromParam(nodes, param)
 
     nodes.forEach(n => n.invalidate());
 
+
     // each type is followed first by the node ID, then the params
 
-    const req = 
+    const request = 
         param
         ? [param.node.id, param.index]
         : ['', 0];
@@ -696,7 +697,14 @@ function pushUpdateFromParam(nodes, param)
     nodes.forEach(n =>
         getTerminalsAfterNode(n).forEach(_n => 
             _n.outputs.forEach(o =>
-                req.push(...o.genRequest()))));
+                request.push(...o.genRequest()))));
 
-    uiGenRequest(req);
+
+    //uiGenRequest(req);
+
+    uiPostMessageToGenerator({
+        cmd:     'genRequest',
+        request:  request,
+        settings: settings
+    });
 }

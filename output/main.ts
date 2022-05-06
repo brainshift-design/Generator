@@ -259,17 +259,19 @@ function figOnPluginClose()
 //var   minNodeId   = Number.MAX_SAFE_INTEGER;
 //var   maxNodeId   = Number.MIN_SAFE_INTEGER;
 
+
+
 figma.on('selectionchange', figOnSelectionChange);
 figma.on('close',           figOnPluginClose);
 
 figma.showUI(__html__);
 
 
+
 function figStartGenerator()
 {
     (async function()
     {
-
         // load product key
         let productKey = await figLoadLocal('productKey');
         if (productKey == null) productKey = '';
@@ -319,11 +321,11 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedNodesAndConns':     figRemoveSavedNodesAndConns    (msg.nodeIds);                                break;
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;
         
-        case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    ();                                           break;
+        case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    (msg.settings);                               break;
   
         case 'figSaveConnection':               figSaveConnection              (msg.name, msg.json);                         break;
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
-        case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                   break;
+        case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
         case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
         case 'figUpdateObjects':                figUpdateObjects               (msg.objects);                                break;
@@ -426,8 +428,8 @@ function figLoadNodesAndConns()
     const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0,   nodeTag.length+1) ==   nodeTag + ' ');
     const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0,   connTag.length+1) ==   connTag + ' ');
     
-    const nodes     =   nodeKeys.map(k => figma.currentPage.getPluginData(k));
-    const conns     =   connKeys.map(k => figma.currentPage.getPluginData(k));
+    const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+    const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
 
     const nodesJson = JSON.stringify(nodes);
     const connsJson = JSON.stringify(conns);
@@ -476,8 +478,12 @@ function figRemoveAllSavedNodesAndConns()
 
 
 
-function figLogAllSavedNodesAndConns()
+function figLogAllSavedNodesAndConns(settings)
 {
+    if (!settings.logStorage)
+        return;
+
+        
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length+1) == nodeTag+' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag+' ');
 

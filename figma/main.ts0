@@ -5,17 +5,19 @@
 //var   minNodeId   = Number.MAX_SAFE_INTEGER;
 //var   maxNodeId   = Number.MIN_SAFE_INTEGER;
 
+
+
 figma.on('selectionchange', figOnSelectionChange);
 figma.on('close',           figOnPluginClose);
 
 figma.showUI(__html__);
 
 
+
 function figStartGenerator()
 {
     (async function()
     {
-
         // load product key
         let productKey = await figLoadLocal('productKey');
         if (productKey == null) productKey = '';

@@ -143,12 +143,12 @@ function uiEndGenMessage()
 
 
 
-function uiGenRequest(request)
-{
-    //console.log('request', request);
+// function uiGenRequest(request)
+// {
+//     //console.log('request', request);
     
-    uiPostMessageToGenerator({
-        cmd:    'genRequest',
-        request: request
-    });
-}
+//     uiPostMessageToGenerator({
+//         cmd:    'genRequest',
+//         request: request
+//     });
+// }

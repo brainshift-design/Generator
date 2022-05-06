@@ -1013,7 +1013,8 @@ function uiRemoveAllSavedNodesAndConns()
 function uiLogAllSavedNodesAndConns()
 {
     uiPostMessageToFigma({
-        cmd: 'figLogAllSavedNodesAndConns'
+        cmd:     'figLogAllSavedNodesAndConns',
+        settings: settings
     });
 }
 

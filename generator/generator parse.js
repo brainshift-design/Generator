@@ -15,18 +15,21 @@
 
 
 
-function genRequest(req)
+function genRequest(req, settings)
 {
-    console.log(
-        '%c%s', 
-        'background: #60aa60; color: #fff', 
-        JSON.stringify(req)
-            .replaceAll('""', '\'\'')
-            .replaceAll('"', '')
-            .replaceAll('[', '')
-            .replaceAll(']', '')
-            .replaceAll(',', ' '));
-    
+    if (settings.logRequests)
+    {
+        console.log(
+            '%c%s', 
+            'background: #60aa60; color: #fff', 
+            JSON.stringify(req)
+                .replaceAll('""', '\'\'')
+                .replaceAll('"', '')
+                .replaceAll('[', '')
+                .replaceAll(']', '')
+                .replaceAll(',', ' '));
+    }
+
 
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];

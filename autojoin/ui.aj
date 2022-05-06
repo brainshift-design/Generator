@@ -26,12 +26,14 @@
     ../core/base32.js
 
     [../autojoin/types.aj]
-    
+
+    ../ui/settings.js
+
     [../autojoin/controls.aj]
     [../autojoin/operators.aj]
 
     ../actions/*.js
-    ../ui/*.js
+    ../ui/*!(settings).js
     ../license/*.js
 
 ../html/ui_3.html

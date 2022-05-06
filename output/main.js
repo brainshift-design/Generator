@@ -239,7 +239,7 @@ figma.ui.onmessage = msg => {
             figRemoveAllSavedNodesAndConns();
             break;
         case 'figLogAllSavedNodesAndConns':
-            figLogAllSavedNodesAndConns();
+            figLogAllSavedNodesAndConns(msg.settings);
             break;
         case 'figSaveConnection':
             figSaveConnection(msg.name, msg.json);
@@ -340,7 +340,9 @@ function figRemoveAllSavedNodesAndConns() {
     for (const key of connKeys)
         figClearPageData(key);
 }
-function figLogAllSavedNodesAndConns() {
+function figLogAllSavedNodesAndConns(settings) {
+    if (!settings.logStorage)
+        return;
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length + 1) == nodeTag + ' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length + 1) == connTag + ' ');
     for (const key of nodeKeys) {
