@@ -237,10 +237,6 @@ class Graph
 
         // if (!activeNodeInTree(output.node))
         //      uiMakeNodeActive(output.node);
-            
-        
-        //output.updateControl();
-        //pushUpdate([input.node]);
 
 
         return true;

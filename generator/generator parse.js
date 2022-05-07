@@ -120,7 +120,7 @@ function genNumberAdd(req, parse)
         const num = genParseRequest(req, parse);
 
         result += num.num;
-        maxDec = Math.max(maxDec, val[1]);
+        maxDec = Math.max(maxDec, num.dec);
     }
 
     const decimal = new Decimal(result, maxDec);

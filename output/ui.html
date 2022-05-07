@@ -4405,7 +4405,7 @@ function genNumberAdd(req, parse)
         const num = genParseRequest(req, parse);
 
         result += num.num;
-        maxDec = Math.max(maxDec, val[1]);
+        maxDec = Math.max(maxDec, num.dec);
     }
 
     const decimal = new Decimal(result, maxDec);
@@ -11843,7 +11843,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         // else
         // {
             const dec = Math.pow(10, Math.abs(slider.dec));
-
+console.log('dec', dec);
             value = Math.round(value * dec) / dec;
 
             if (slider.wrapValue)
@@ -16002,10 +16002,6 @@ class Graph
 
         // if (!activeNodeInTree(output.node))
         //      uiMakeNodeActive(output.node);
-            
-        
-        //output.updateControl();
-        //pushUpdate([input.node]);
 
 
         return true;
