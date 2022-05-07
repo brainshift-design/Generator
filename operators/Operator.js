@@ -673,7 +673,7 @@ function getHeaderConnY(conns, padding, offset)
 
 function pushUpdate(nodes)
 {
-    //console.log('pushUpdate('+param.id+')');
+    //console.log('pushUpdate()', nodes);
     
     pushUpdateFromParam(nodes, null);
 }

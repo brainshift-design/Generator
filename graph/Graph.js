@@ -239,8 +239,8 @@ class Graph
         //      uiMakeNodeActive(output.node);
             
         
-        output.updateControl();
-        pushUpdate([input.node]);
+        //output.updateControl();
+        //pushUpdate([input.node]);
 
 
         return true;

@@ -38,21 +38,21 @@ extends Action
     {
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
+
         if (!getActiveNodeInTreeFrom(this.inputNode))
         {
             uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
-            pushUpdate([this.inputNode]);
-            //graphView.updateNodeTransform(this.inputNode);
         }
 
         if (!getActiveNodeInTreeFrom(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
-            pushUpdate([this.outputNode]);
-            //graphView.updateNodeTransform(this.outputNode);
         }
+
+
+        pushUpdate([this.outputNode, this.inputNode]);
     }
     
     
@@ -66,13 +66,14 @@ extends Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
+
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        //graphView.updateNodeTransform(this.inputNode);
+
         pushUpdate([this.inputNode]);
     }
     
@@ -82,18 +83,14 @@ extends Action
     {
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
+
         if (!getActiveNodeInTreeFrom(this.inputNode))
-        {
             uiMakeNodeActive(this.inputNode);
-            pushUpdate([this.inputNode]);
-            //graphView.updateNodeTransform(this.inputNode);
-        }
 
         if (!getActiveNodeInTreeFrom(this.outputNode))
-        {
             uiMakeNodeActive(this.outputNode);
-            pushUpdate([this.outputNode]);
-            //graphView.updateNodeTransform(this.outputNode);
-        }
+
+
+        pushUpdate([this.outputNode, this.inputNode]);
    }
 }
