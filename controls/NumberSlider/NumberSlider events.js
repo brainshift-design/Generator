@@ -375,7 +375,8 @@ function initNumberSliderEvents(slider)
 
             slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            if (slider.value != slider.oldValue)
+            if (    slider.value != slider.oldValue
+                && !slider.readOnly)
                 slider.dispatchEvent(slider.onconfirm);
         }
         // else if (   e.button == 1
