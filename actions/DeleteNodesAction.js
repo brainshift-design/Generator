@@ -67,6 +67,8 @@ extends Action
         }
 
 
+        //const inputNodeIds = [];
+        
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -97,12 +99,20 @@ extends Action
                 });
 
                 for (const input of connectedInputs)
+                {
                     this.disconnect(input);
+
+                    //if (input.node.variableInputs)
+                    //    inputNodeIds.push(input.node.id);
+                }
             }
         }
 
 
         uiDeleteNodes(this.nodeIds, this.id);
+        //uiRemoveSavedNodesAndConns(inputNodeIds);
+        
+        uiLogAllSavedConns();
     }
 
 
@@ -128,6 +138,8 @@ extends Action
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
+
+        uiLogAllSavedConns();
     }
 
 
@@ -163,20 +175,8 @@ extends Action
 
     undeleteConnections()
     {
-        const connections    = [...this.connections];
-        const varConnections = [];
-       
-        
-        // connections going into variable inputs must be treated separately
-        for (let i = connections.length-1; i >= 0; i--)
-        {
-            if (nodeFromId(connections[i].inputNodeId)._variableInputs)
-            {
-                varConnections.push(connections[i]);
-                removeAt(connections, i);
-            }
-        }
-
+        const connections    = this.connections.filter(c => !nodeFromId(c.inputNodeId).variableInputs);
+        const varConnections = this.connections.filter(c =>  nodeFromId(c.inputNodeId).variableInputs);
         
         varConnections.sort((c1, c2) =>
         {
@@ -184,7 +184,6 @@ extends Action
             if (c1.inputIndex  != c2.inputIndex ) return c1.inputIndex  - c2.inputIndex;
             return 0;
         });
-        
         
         this.connect(connections);
         this.connect(varConnections);

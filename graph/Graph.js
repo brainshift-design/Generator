@@ -160,7 +160,7 @@ class Graph
         }
 
 
-        if (   input.node._variableInputs
+        if (   input.node.variableInputs
             && inputIndex > -1)
         {
             input = lastOf(input.node.inputs);

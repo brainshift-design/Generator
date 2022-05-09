@@ -45,7 +45,7 @@ class Operator
     params  = [];
     
     
-    _variableInputs  = false;
+    variableInputs  = false;
 
     alwaysLoadParams = false;
 
@@ -166,7 +166,7 @@ class Operator
         
         else if (!graphView.tempConn.output.node.follows(this))
         {
-            if (this._variableInputs)
+            if (this.variableInputs)
                 return lastOf(inputs);
 
             else

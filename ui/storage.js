@@ -286,7 +286,7 @@ function resolveLoadConnections(nodes, _connections, first, last)
                 if (! inputNode) { uiError('node \'' + _conn. inputNodeId + '\' not found'); continue; }
 
                 Connection.parseJson(_conn);
-                if (settings.logStorage) logConnection(_conn);                    
+                //if (settings.logStorage) logConnection(_conn);                    
             }
 
             resolve();

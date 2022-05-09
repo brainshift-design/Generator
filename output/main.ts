@@ -322,7 +322,9 @@ figma.ui.onmessage = msg =>
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;
         
         case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    (msg.settings);                               break;
-  
+        case 'figLogAllSavedNodes':             figLogAllSavedNodes            (msg.settings);                               break;
+        case 'figLogAllSavedConns':             figLogAllSavedConns            (msg.settings);                               break;
+     
         case 'figSaveConnection':               figSaveConnection              (msg.name, msg.json);                         break;
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
@@ -480,12 +482,19 @@ function figRemoveAllSavedNodesAndConns()
 
 function figLogAllSavedNodesAndConns(settings)
 {
+    figLogAllSavedNodes(settings);
+    figLogAllSavedConns(settings);
+}
+
+
+
+function figLogAllSavedNodes(settings)
+{
     if (!settings.logStorage)
         return;
 
 
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length+1) == nodeTag+' ');
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag+' ');
 
 
     for (const key of nodeKeys)
@@ -501,27 +510,38 @@ function figLogAllSavedNodesAndConns(settings)
                 .replace('[\n', '')
                 .replace('\n  ]', ''));
     } 
+}
 
 
-    // for (const key of connKeys) 
-    // {
-    //     let conn = '';
 
-    //     const parts = key.substring(connTag.length+1).split(' ');
+function figLogAllSavedConns(settings)
+{
+    if (!settings.logStorage)
+        return;
 
-    //     for (let i = 0; i < parts.length; i++)
-    //     {
-    //         conn += parts[i];
 
-    //              if (i == 1)             conn += ' -> ';
-    //         else if (i < parts.length-1) conn += ' ';
-    //     }
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag+' ');
+
+
+    for (const key of connKeys) 
+    {
+        let conn = '';
+
+        const parts = key.substring(connTag.length+1).split(' ');
+
+        for (let i = 0; i < parts.length; i++)
+        {
+            conn += parts[i];
+
+                 if (i == 1)             conn += ' -> ';
+            else if (i < parts.length-1) conn += ' ';
+        }
         
-    //     console.log(
-    //         '%c%s', 
-    //         'background: #cfc', 
-    //         conn); 
-    // } 
+        console.log(
+            '%c%s', 
+            'background: #cfc', 
+            conn); 
+    } 
 }
 
 

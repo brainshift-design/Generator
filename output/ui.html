@@ -3929,7 +3929,7 @@ function normalizeSeed(x)
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NVAL';  // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
@@ -3942,16 +3942,16 @@ const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
-const COLOR_VALUE        = 'CVAL';  // N:space N:1 N:2 N:3 (c)
+const COLOR_VALUE        = 'COL#';  // N:space N:1 N:2 N:3 (c)
 
-const COLOR              = 'CLR';   // C | c
+const COLOR              = 'COL';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE     = 'CVLD';  // C
 const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
-const STRING_VALUE       = 'SVAL';  // "..." (s) (escape \\ and \")
+const STRING_VALUE       = 'STR#';  // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
@@ -10664,7 +10664,7 @@ function base32toArray(base32, chars = base32chars)
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NVAL';  // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
@@ -10677,16 +10677,16 @@ const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
-const COLOR_VALUE        = 'CVAL';  // N:space N:1 N:2 N:3 (c)
+const COLOR_VALUE        = 'COL#';  // N:space N:1 N:2 N:3 (c)
 
-const COLOR              = 'CLR';   // C | c
+const COLOR              = 'COL';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE     = 'CVLD';  // C
 const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
-const STRING_VALUE       = 'SVAL';  // "..." (s) (escape \\ and \")
+const STRING_VALUE       = 'STR#';  // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
@@ -14746,7 +14746,7 @@ graphView.endConnection = pointerId =>
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
                 &&  newReorderIndex >= 0
-                &&  input.node._variableInputs
+                &&  input.node.variableInputs
                 && !isLastInArray(input.node.inputs, input))
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
 
@@ -15933,7 +15933,7 @@ class Graph
         }
 
 
-        if (   input.node._variableInputs
+        if (   input.node.variableInputs
             && inputIndex > -1)
         {
             input = lastOf(input.node.inputs);
@@ -17076,7 +17076,7 @@ class Operator
     params  = [];
     
     
-    _variableInputs  = false;
+    variableInputs  = false;
 
     alwaysLoadParams = false;
 
@@ -17197,7 +17197,7 @@ class Operator
         
         else if (!graphView.tempConn.output.node.follows(this))
         {
-            if (this._variableInputs)
+            if (this.variableInputs)
                 return lastOf(inputs);
 
             else
@@ -17990,7 +17990,7 @@ function createNodeHeader(node)
             if (    tempConn.output
                 && !tempConn.output.node.follows(node))
             {
-                if (   node._variableInputs
+                if (   node.variableInputs
                     && savedConn)
                 {
                     const rect    = boundingRect(node.div);
@@ -18641,7 +18641,7 @@ extends OperatorBase
     {
         super(type, shortName, 50);
 
-        this._variableInputs  = true;
+        this.variableInputs  = true;
         this.alwaysLoadParams = true;
 
         this._showOnlySymbol  = true;
@@ -22506,6 +22506,8 @@ extends Action
         }
 
 
+        //const inputNodeIds = [];
+        
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -22536,12 +22538,20 @@ extends Action
                 });
 
                 for (const input of connectedInputs)
+                {
                     this.disconnect(input);
+
+                    //if (input.node.variableInputs)
+                    //    inputNodeIds.push(input.node.id);
+                }
             }
         }
 
 
         uiDeleteNodes(this.nodeIds, this.id);
+        //uiRemoveSavedNodesAndConns(inputNodeIds);
+        
+        uiLogAllSavedConns();
     }
 
 
@@ -22567,6 +22577,8 @@ extends Action
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
+
+        uiLogAllSavedConns();
     }
 
 
@@ -22602,20 +22614,8 @@ extends Action
 
     undeleteConnections()
     {
-        const connections    = [...this.connections];
-        const varConnections = [];
-       
-        
-        // connections going into variable inputs must be treated separately
-        for (let i = connections.length-1; i >= 0; i--)
-        {
-            if (nodeFromId(connections[i].inputNodeId)._variableInputs)
-            {
-                varConnections.push(connections[i]);
-                removeAt(connections, i);
-            }
-        }
-
+        const connections    = this.connections.filter(c => !nodeFromId(c.inputNodeId).variableInputs);
+        const varConnections = this.connections.filter(c =>  nodeFromId(c.inputNodeId).variableInputs);
         
         varConnections.sort((c1, c2) =>
         {
@@ -22623,7 +22623,6 @@ extends Action
             if (c1.inputIndex  != c2.inputIndex ) return c1.inputIndex  - c2.inputIndex;
             return 0;
         });
-        
         
         this.connect(connections);
         this.connect(varConnections);
@@ -24446,7 +24445,7 @@ function resolveLoadConnections(nodes, _connections, first, last)
                 if (! inputNode) { uiError('node \'' + _conn. inputNodeId + '\' not found'); continue; }
 
                 Connection.parseJson(_conn);
-                if (settings.logStorage) logConnection(_conn);                    
+                //if (settings.logStorage) logConnection(_conn);                    
             }
 
             resolve();
@@ -25194,7 +25193,7 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 {
     //console.log('uiVariableConnect()');
 
-    if (inputNode._variableInputs)
+    if (inputNode.variableInputs)
     {
         const input = lastOf(inputNode.inputs);
 
@@ -25243,7 +25242,7 @@ function uiDisconnect(input)
     
     const inputNode = input.node;
 
-    if (inputNode._variableInputs)
+    if (inputNode.variableInputs)
     {
         uiRemoveSavedConnectionsToNode(inputNode.id);
 
@@ -25740,6 +25739,26 @@ function uiLogAllSavedNodesAndConns()
 {
     uiPostMessageToFigma({
         cmd:     'figLogAllSavedNodesAndConns',
+        settings: settings
+    });
+}
+
+
+
+function uiLogAllSavedNodes()
+{
+    uiPostMessageToFigma({
+        cmd:     'figLogAllSavedNodes',
+        settings: settings
+    });
+}
+
+
+
+function uiLogAllSavedConns()
+{
+    uiPostMessageToFigma({
+        cmd:     'figLogAllSavedConns',
         settings: settings
     });
 }

@@ -468,7 +468,7 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 {
     //console.log('uiVariableConnect()');
 
-    if (inputNode._variableInputs)
+    if (inputNode.variableInputs)
     {
         const input = lastOf(inputNode.inputs);
 
@@ -517,7 +517,7 @@ function uiDisconnect(input)
     
     const inputNode = input.node;
 
-    if (inputNode._variableInputs)
+    if (inputNode.variableInputs)
     {
         uiRemoveSavedConnectionsToNode(inputNode.id);
 
@@ -1014,6 +1014,26 @@ function uiLogAllSavedNodesAndConns()
 {
     uiPostMessageToFigma({
         cmd:     'figLogAllSavedNodesAndConns',
+        settings: settings
+    });
+}
+
+
+
+function uiLogAllSavedNodes()
+{
+    uiPostMessageToFigma({
+        cmd:     'figLogAllSavedNodes',
+        settings: settings
+    });
+}
+
+
+
+function uiLogAllSavedConns()
+{
+    uiPostMessageToFigma({
+        cmd:     'figLogAllSavedConns',
         settings: settings
     });
 }

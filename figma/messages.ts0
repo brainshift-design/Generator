@@ -22,7 +22,9 @@ figma.ui.onmessage = msg =>
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;
         
         case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    (msg.settings);                               break;
-  
+        case 'figLogAllSavedNodes':             figLogAllSavedNodes            (msg.settings);                               break;
+        case 'figLogAllSavedConns':             figLogAllSavedConns            (msg.settings);                               break;
+     
         case 'figSaveConnection':               figSaveConnection              (msg.name, msg.json);                         break;
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;

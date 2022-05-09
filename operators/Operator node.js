@@ -216,7 +216,7 @@ function createNodeHeader(node)
             if (    tempConn.output
                 && !tempConn.output.node.follows(node))
             {
-                if (   node._variableInputs
+                if (   node.variableInputs
                     && savedConn)
                 {
                     const rect    = boundingRect(node.div);

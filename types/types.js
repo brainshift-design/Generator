@@ -5,7 +5,7 @@
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NVAL';  // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
@@ -18,16 +18,16 @@ const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
-const COLOR_VALUE        = 'CVAL';  // N:space N:1 N:2 N:3 (c)
+const COLOR_VALUE        = 'COL#';  // N:space N:1 N:2 N:3 (c)
 
-const COLOR              = 'CLR';   // C | c
+const COLOR              = 'COL';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE     = 'CVLD';  // C
 const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
-const STRING_VALUE       = 'SVAL';  // "..." (s) (escape \\ and \")
+const STRING_VALUE       = 'STR#';  // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
