@@ -119,7 +119,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         // else
         // {
             const dec = Math.pow(10, Math.abs(slider.dec));
-console.log('dec', dec);
+//console.log('dec', dec);
             value = Math.round(value * dec) / dec;
 
             if (slider.wrapValue)

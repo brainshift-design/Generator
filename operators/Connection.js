@@ -266,9 +266,11 @@ class Connection
                 + _conn.outputNode + ' ' + outputIndex 
                 + ' to ' 
                 + _conn.inputNode  + ' ' + _conn.inputIndex);
+
+            return null;
         }
         else
-            uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex);
+            return uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex);
     }
 }
 

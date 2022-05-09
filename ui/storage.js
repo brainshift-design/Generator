@@ -199,16 +199,18 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         // variable inputs connections must be sorted by input index
         // as well as connection position left to right
 
+        console.log('_conns', _conns);
         _conns.sort((c1, c2) => 
         {
             if (c1.inputNodeId == c2.outputNodeId) return -1;
             if (c2.inputNodeId == c1.outputNodeId) return  1;
 
-            if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId - c2.inputNodeId;
-            if (c1.inputIndex  != c2.inputIndex  ) return c1.inputIndex  - c2.inputIndex;
+            if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
+            if (c1.inputIndex  != c2.inputIndex  ) return c1.inputIndex - c2.inputIndex;
             
             return 0;
         });
+        console.log('_conns', _conns);
 
 
         const chunkSize = 10; // connections
@@ -286,10 +288,23 @@ function resolveLoadConnections(nodes, _connections, first, last)
                 if (! inputNode) { uiError('node \'' + _conn. inputNodeId + '\' not found'); continue; }
 
                 Connection.parseJson(_conn);
+                if (settings.logStorage) logConnection(_conn);                    
             }
 
             resolve();
         }));
+}
+
+
+
+function logConnection(_conn)
+{
+    console.log(
+        '%c%s', 
+        'background: #cfc', 
+          _conn.outputNodeId + ' ' + _conn.outputIndex
+        + ' -> ' 
+        + _conn.inputNodeId + ' ' + _conn.inputIndex); 
 }
 
 

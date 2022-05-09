@@ -120,7 +120,7 @@ function figLogAllSavedNodesAndConns(settings)
     if (!settings.logStorage)
         return;
 
-        
+
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length+1) == nodeTag+' ');
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag+' ');
 
@@ -140,25 +140,25 @@ function figLogAllSavedNodesAndConns(settings)
     } 
 
 
-    for (const key of connKeys) 
-    {
-        let conn = '';
+    // for (const key of connKeys) 
+    // {
+    //     let conn = '';
 
-        const parts = key.substring(connTag.length+1).split(' ');
+    //     const parts = key.substring(connTag.length+1).split(' ');
 
-        for (let i = 0; i < parts.length; i++)
-        {
-            conn += parts[i];
+    //     for (let i = 0; i < parts.length; i++)
+    //     {
+    //         conn += parts[i];
 
-                 if (i == 1)             conn += ' -> ';
-            else if (i < parts.length-1) conn += ' ';
-        }
+    //              if (i == 1)             conn += ' -> ';
+    //         else if (i < parts.length-1) conn += ' ';
+    //     }
         
-        console.log(
-            '%c%s', 
-            'background: #cfc', 
-            conn); 
-    } 
+    //     console.log(
+    //         '%c%s', 
+    //         'background: #cfc', 
+    //         conn); 
+    // } 
 }
 
 

@@ -352,18 +352,21 @@ function figLogAllSavedNodesAndConns(settings) {
             .replace('[\n', '')
             .replace('\n  ]', ''));
     }
-    for (const key of connKeys) {
-        let conn = '';
-        const parts = key.substring(connTag.length + 1).split(' ');
-        for (let i = 0; i < parts.length; i++) {
-            conn += parts[i];
-            if (i == 1)
-                conn += ' -> ';
-            else if (i < parts.length - 1)
-                conn += ' ';
-        }
-        console.log('%c%s', 'background: #cfc', conn);
-    }
+    // for (const key of connKeys) 
+    // {
+    //     let conn = '';
+    //     const parts = key.substring(connTag.length+1).split(' ');
+    //     for (let i = 0; i < parts.length; i++)
+    //     {
+    //         conn += parts[i];
+    //              if (i == 1)             conn += ' -> ';
+    //         else if (i < parts.length-1) conn += ' ';
+    //     }
+    //     console.log(
+    //         '%c%s', 
+    //         'background: #cfc', 
+    //         conn); 
+    // } 
 }
 function figSaveConnection(name, json) {
     // console.log('key', connNameForStorage(name));

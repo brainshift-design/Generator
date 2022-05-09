@@ -472,14 +472,14 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
     {
         const input = lastOf(inputNode.inputs);
 
-        uiConnect(
+        return uiConnect(
             outputNode.outputs[outputIndex],
             input,
             inputIndex);
     }
     else
     {
-        uiConnect(
+        return uiConnect(
             outputNode.outputs[outputIndex],
              inputNode. inputs[ inputIndex]);
     }
