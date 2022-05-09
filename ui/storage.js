@@ -199,7 +199,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         // variable inputs connections must be sorted by input index
         // as well as connection position left to right
 
-        console.log('_conns', _conns);
         _conns.sort((c1, c2) => 
         {
             if (c1.inputNodeId == c2.outputNodeId) return -1;
@@ -210,7 +209,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             
             return 0;
         });
-        console.log('_conns', _conns);
 
 
         const chunkSize = 10; // connections

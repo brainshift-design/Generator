@@ -255,24 +255,30 @@ function initNumberSliderTextbox(slider)
             val /= slider.valueScale;
 
        
-        if (success) 
+        const e = new CustomEvent('finishedit', { 'detail': {
+            'success':         success,
+            'value':           value,
+            'oldValue':        savedValue,
+            'preventSetValue': false }});
+
+        slider.dispatchEvent(e);
+
+
+        if (!e.preventSetValue)
         {
-            slider.setValue(
-                   value.trim() != '' 
-                && value.trim() != '-'
-                ? val 
-                : savedVal);
+            if (success) 
+            {
+                slider.setValue(
+                       value.trim() != '' 
+                    && value.trim() != '-'
+                    ? val 
+                    : savedVal);
+            }
+            else
+                slider.setValue(savedVal);
         }
-        else
-            slider.setValue(savedVal);
-
-            
-        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
-            'success':  success,
-            'value':    value,
-            'oldValue': savedValue }}));
-
-
+         
+        
         slider.textbox.blur();
 
         slider.text.style.display = 'block';

@@ -11637,24 +11637,30 @@ function initNumberSliderTextbox(slider)
             val /= slider.valueScale;
 
        
-        if (success) 
+        const e = new CustomEvent('finishedit', { 'detail': {
+            'success':         success,
+            'value':           value,
+            'oldValue':        savedValue,
+            'preventSetValue': false }});
+
+        slider.dispatchEvent(e);
+
+
+        if (!e.preventSetValue)
         {
-            slider.setValue(
-                   value.trim() != '' 
-                && value.trim() != '-'
-                ? val 
-                : savedVal);
+            if (success) 
+            {
+                slider.setValue(
+                       value.trim() != '' 
+                    && value.trim() != '-'
+                    ? val 
+                    : savedVal);
+            }
+            else
+                slider.setValue(savedVal);
         }
-        else
-            slider.setValue(savedVal);
-
-            
-        slider.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
-            'success':  success,
-            'value':    value,
-            'oldValue': savedValue }}));
-
-
+         
+        
         slider.textbox.blur();
 
         slider.text.style.display = 'block';
@@ -15366,12 +15372,13 @@ extends Parameter
             const oldDec = decCount(e.detail.oldValue);
 
             if (   e.detail.success
-                && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
+                && (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                     ||    dec != oldDec
                        && this.allowEditDecimals))
             {
                 const _dec = Math.log10(this.control.valueScale);
-                this.setValue(new Decimal(this.value.num, dec + _dec), true);
+                this.setValue(new Decimal(e.detail.value, dec + _dec), true);
+                e.preventSetValue = true;
             }
         });
     }
@@ -24352,7 +24359,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         // variable inputs connections must be sorted by input index
         // as well as connection position left to right
 
-        console.log('_conns', _conns);
         _conns.sort((c1, c2) => 
         {
             if (c1.inputNodeId == c2.outputNodeId) return -1;
@@ -24363,7 +24369,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             
             return 0;
         });
-        console.log('_conns', _conns);
 
 
         const chunkSize = 10; // connections

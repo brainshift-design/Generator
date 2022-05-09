@@ -80,12 +80,13 @@ extends Parameter
             const oldDec = decCount(e.detail.oldValue);
 
             if (   e.detail.success
-                && (   Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON
+                && (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                     ||    dec != oldDec
                        && this.allowEditDecimals))
             {
                 const _dec = Math.log10(this.control.valueScale);
-                this.setValue(new Decimal(this.value.num, dec + _dec), true);
+                this.setValue(new Decimal(e.detail.value, dec + _dec), true);
+                e.preventSetValue = true;
             }
         });
     }
