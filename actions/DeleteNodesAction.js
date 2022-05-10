@@ -7,7 +7,7 @@ extends Action
     nodes            = [];
     nodePos          = [];
 
-    connections      = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
+    oldConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
 
     newActiveNodeIds = [];
     oldActiveNodeIds = [];
@@ -16,7 +16,7 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('DELETE ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
+        super('DELETE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -38,18 +38,20 @@ extends Action
 
     addConnection(conn)
     {
-        if (!this.connections.find(c => 
+        if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputIndex  == conn.output.index
                 && c. inputNodeId == conn. input.node.id
                 && c. inputIndex  == conn. input.index))
-            this.connections.push(getConnectionForArrayWithIds(conn));
+            this.oldConnections.push(getConnectionForArrayWithIds(conn));
     }
 
 
 
     do()
     {
+        uiLogAllSavedConns();
+
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -82,7 +84,7 @@ extends Action
 
             for (const output of node.outputs)
             {
-                let connectedInputs = [...output.connectedInputs];
+                const connectedInputs = [...output.connectedInputs];
 
                 // connected inputs need to be sorted by input index
                 connectedInputs.sort((i1, i2) => 
@@ -108,6 +110,7 @@ extends Action
             }
         }
 
+        uiLogAllSavedConns();
 
         uiDeleteNodes(this.nodeIds, this.id);
         //uiRemoveSavedNodesAndConns(inputNodeIds);
@@ -119,11 +122,11 @@ extends Action
 
     undo()
     {
-        this.undeleteNodes();
-        this.undeleteConnections();
+        this.restoreNodes();
+        this.restoreConns();
 
         this.nodePos     = [];
-        this.connections = [];
+        this.oldConnections = [];
 
         graphView.selectByIds(this.prevSelectedIds);
 
@@ -144,7 +147,7 @@ extends Action
 
 
 
-    undeleteNodes()
+    restoreNodes()
     {
         //console.log('this.nodes', this.nodes);
 
@@ -173,10 +176,10 @@ extends Action
 
 
 
-    undeleteConnections()
+    restoreConns()
     {
-        const connections    = this.connections.filter(c => !nodeFromId(c.inputNodeId).variableInputs);
-        const varConnections = this.connections.filter(c =>  nodeFromId(c.inputNodeId).variableInputs);
+        const connections    = this.oldConnections.filter(c => !nodeFromId(c.inputNodeId).variableInputs);
+        const varConnections = this.oldConnections.filter(c =>  nodeFromId(c.inputNodeId).variableInputs);
         
         varConnections.sort((c1, c2) =>
         {
@@ -209,34 +212,29 @@ extends Action
         //console.log('disconnect');
         const output = input.connectedOutput;
         
+
         uiDisconnect(input);
 
 
-        const outputNode = output.node;
-        const  inputNode =  input.node;
-
-
-        if (getActiveNodesInTreeFrom(inputNode))
+        if (getActiveNodesInTreeFrom(input.node))
         {
-            uiMakeNodeActive(inputNode);
+            uiMakeNodeActive(input.node);
 
-            if (!this.newActiveNodeIds.includes(inputNode.id))
-                this.newActiveNodeIds.push(inputNode.id);
+            if (!this.newActiveNodeIds.includes(input.node.id))
+                this.newActiveNodeIds.push(input.node.id);
 
-            pushUpdate([inputNode]);
-            //graphView.updateNodeTransform(input.node);
+            pushUpdate([input.node]);
         }
 
 
-        if (!getActiveNodeInTreeFrom(outputNode))
+        if (!getActiveNodeInTreeFrom(output.node))
         {
-            uiMakeNodeActive(outputNode);
+            uiMakeNodeActive(output.node);
 
-            if (!this.newActiveNodeIds.includes(outputNode.id))
-                this.newActiveNodeIds.push(outputNode.id);
+            if (!this.newActiveNodeIds.includes(output.node.id))
+                this.newActiveNodeIds.push(output.node.id);
 
-            pushUpdate([outputNode]);
-            //graphView.updateNodeTransform(output.node);
+            pushUpdate([output.node]);
         }
     }
 }

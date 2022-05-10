@@ -505,6 +505,9 @@ function uiConnect(output, input, inputIndex = -1)
 
 function uiDisconnect(input)
 {
+    const node = input.node;
+    
+    
     uiRemoveSavedConnection(
         input.connectedOutput.node.id,
         input.connectedOutput.index,
@@ -515,18 +518,16 @@ function uiDisconnect(input)
     graph.disconnect(input);
 
     
-    const inputNode = input.node;
-
-    if (inputNode.variableInputs)
+    if (node.variableInputs)
     {
-        uiRemoveSavedConnectionsToNode(inputNode.id);
+        uiRemoveSavedConnectionsToNode(node.id);
 
-        for (const _input of inputNode.inputs.filter(i => i.connected))
+        for (const _input of node.inputs.filter(i => i.connected))
         {
             uiSaveConnection(
                 _input.connectedOutput.node.id,
                 _input.connectedOutput.index,
-                inputNode.id,
+                node.id,
                 _input.index,
                 _input.connection.toJson());
         }
@@ -1058,19 +1059,19 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
 {
     uiPostMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: outputNodeId  + ' '
-            + outputIndex + ' '
-            + inputNodeId   + ' '
+        name: outputNodeId + ' '
+            + outputIndex  + ' '
+            + inputNodeId  + ' '
             + inputIndex
     });
 }
 
 
 
-function uiRemoveSavedConnectionsToNode(inputNode)
+function uiRemoveSavedConnectionsToNode(node)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: inputNode
+        nodeId: node
     });
 }

@@ -542,6 +542,11 @@ function figLogAllSavedConns(settings)
             'background: #cfc', 
             conn); 
     } 
+
+
+    console.log(
+        '%c-----------------', 
+        'background: #cfc'); 
 }
 
 
@@ -558,6 +563,7 @@ function figSaveConnection(name, json)
 
 function figRemoveSavedConnection(name)
 {
+    console.log('connName', name);
     figClearPageData(connNameForStorage(name));        
 }
 
@@ -565,7 +571,7 @@ function figRemoveSavedConnection(name)
 
 function figRemoveSavedConnectionsToNode(nodeId)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag + ' ');
 
     for (const key of connKeys)
     {
@@ -578,8 +584,8 @@ function figRemoveSavedConnectionsToNode(nodeId)
 
 
 
-function nodeNameForStorage(nodeId) { return nodeTag   + ' ' + nodeId; }
-function connNameForStorage(name)   { return connTag   + ' ' + name;   }
+function nodeNameForStorage(nodeId) { return nodeTag+' '+nodeId; }
+function connNameForStorage(name)   { return connTag+' '+name;   }
 
 
 function figResizeWindow(width, height)

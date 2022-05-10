@@ -3166,6 +3166,13 @@ function forwardEvent(event, element)
 
 
 
+function countToString(items, itemName)
+{
+    return itemName + (items.length == 1 ? '' : 's');
+}
+
+
+
 function decCount(strValue)
 {
     const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
@@ -3929,7 +3936,7 @@ function normalizeSeed(x)
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'NUM_';  // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
@@ -3942,7 +3949,7 @@ const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
-const COLOR_VALUE        = 'COL#';  // N:space N:1 N:2 N:3 (c)
+const COLOR_VALUE        = 'COL_';  // N:space N:1 N:2 N:3 (c)
 
 const COLOR              = 'COL';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
@@ -3951,7 +3958,7 @@ const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
-const STRING_VALUE       = 'STR#';  // "..." (s) (escape \\ and \")
+const STRING_VALUE       = 'STR_';  // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
@@ -8526,6 +8533,13 @@ function forwardEvent(event, element)
 
 
 
+function countToString(items, itemName)
+{
+    return itemName + (items.length == 1 ? '' : 's');
+}
+
+
+
 function decCount(strValue)
 {
     const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
@@ -10664,7 +10678,7 @@ function base32toArray(base32, chars = base32chars)
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'NUM_';  // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
@@ -10677,7 +10691,7 @@ const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
-const COLOR_VALUE        = 'COL#';  // N:space N:1 N:2 N:3 (c)
+const COLOR_VALUE        = 'COL_';  // N:space N:1 N:2 N:3 (c)
 
 const COLOR              = 'COL';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
@@ -10686,7 +10700,7 @@ const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
-const STRING_VALUE       = 'STR#';  // "..." (s) (escape \\ and \")
+const STRING_VALUE       = 'STR_';  // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
@@ -22446,7 +22460,7 @@ extends Action
     nodes            = [];
     nodePos          = [];
 
-    connections      = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
+    oldConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
 
     newActiveNodeIds = [];
     oldActiveNodeIds = [];
@@ -22455,7 +22469,7 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('DELETE ' + nodeIds.length + ' node' + (nodeIds.length == 1 ? '' : 's'));
+        super('DELETE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -22477,18 +22491,20 @@ extends Action
 
     addConnection(conn)
     {
-        if (!this.connections.find(c => 
+        if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputIndex  == conn.output.index
                 && c. inputNodeId == conn. input.node.id
                 && c. inputIndex  == conn. input.index))
-            this.connections.push(getConnectionForArrayWithIds(conn));
+            this.oldConnections.push(getConnectionForArrayWithIds(conn));
     }
 
 
 
     do()
     {
+        uiLogAllSavedConns();
+
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -22521,7 +22537,7 @@ extends Action
 
             for (const output of node.outputs)
             {
-                let connectedInputs = [...output.connectedInputs];
+                const connectedInputs = [...output.connectedInputs];
 
                 // connected inputs need to be sorted by input index
                 connectedInputs.sort((i1, i2) => 
@@ -22547,6 +22563,7 @@ extends Action
             }
         }
 
+        uiLogAllSavedConns();
 
         uiDeleteNodes(this.nodeIds, this.id);
         //uiRemoveSavedNodesAndConns(inputNodeIds);
@@ -22558,11 +22575,11 @@ extends Action
 
     undo()
     {
-        this.undeleteNodes();
-        this.undeleteConnections();
+        this.restoreNodes();
+        this.restoreConns();
 
         this.nodePos     = [];
-        this.connections = [];
+        this.oldConnections = [];
 
         graphView.selectByIds(this.prevSelectedIds);
 
@@ -22583,7 +22600,7 @@ extends Action
 
 
 
-    undeleteNodes()
+    restoreNodes()
     {
         //console.log('this.nodes', this.nodes);
 
@@ -22612,10 +22629,10 @@ extends Action
 
 
 
-    undeleteConnections()
+    restoreConns()
     {
-        const connections    = this.connections.filter(c => !nodeFromId(c.inputNodeId).variableInputs);
-        const varConnections = this.connections.filter(c =>  nodeFromId(c.inputNodeId).variableInputs);
+        const connections    = this.oldConnections.filter(c => !nodeFromId(c.inputNodeId).variableInputs);
+        const varConnections = this.oldConnections.filter(c =>  nodeFromId(c.inputNodeId).variableInputs);
         
         varConnections.sort((c1, c2) =>
         {
@@ -22648,34 +22665,29 @@ extends Action
         //console.log('disconnect');
         const output = input.connectedOutput;
         
+
         uiDisconnect(input);
 
 
-        const outputNode = output.node;
-        const  inputNode =  input.node;
-
-
-        if (getActiveNodesInTreeFrom(inputNode))
+        if (getActiveNodesInTreeFrom(input.node))
         {
-            uiMakeNodeActive(inputNode);
+            uiMakeNodeActive(input.node);
 
-            if (!this.newActiveNodeIds.includes(inputNode.id))
-                this.newActiveNodeIds.push(inputNode.id);
+            if (!this.newActiveNodeIds.includes(input.node.id))
+                this.newActiveNodeIds.push(input.node.id);
 
-            pushUpdate([inputNode]);
-            //graphView.updateNodeTransform(input.node);
+            pushUpdate([input.node]);
         }
 
 
-        if (!getActiveNodeInTreeFrom(outputNode))
+        if (!getActiveNodeInTreeFrom(output.node))
         {
-            uiMakeNodeActive(outputNode);
+            uiMakeNodeActive(output.node);
 
-            if (!this.newActiveNodeIds.includes(outputNode.id))
-                this.newActiveNodeIds.push(outputNode.id);
+            if (!this.newActiveNodeIds.includes(output.node.id))
+                this.newActiveNodeIds.push(output.node.id);
 
-            pushUpdate([outputNode]);
-            //graphView.updateNodeTransform(output.node);
+            pushUpdate([output.node]);
         }
     }
 }
@@ -22790,7 +22802,7 @@ extends Action
     {
         const data = JSON.parse(copiedJson);
 
-        super('DUPLICATE ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
+        super('DUPLICATE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
         this.copiedJson = copiedJson;
     }
@@ -22931,7 +22943,7 @@ extends Action
     {
         const data = JSON.parse(copiedNodesJson);
 
-        super('PASTE ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
+        super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
         this.copiedNodesJson         = copiedNodesJson;
         this.prevSelectedNodeIds     = graphView.selectedNodes.map(n => n.id);
@@ -23286,8 +23298,7 @@ extends Action
     {
         super(
             'SELECT MOVE ' + newSelectedIds.length 
-          + ' node' + (newSelectedIds.length == 1 ? '' : 's'));// + ', '
-          //+ prevSelectedIds.length + ' selected before');
+          + ' ' + countToString(newSelectedIds, 'node'));
 
 
         this.prevSelectedIds = [...prevSelectedIds];
@@ -23393,8 +23404,7 @@ extends Action
     {
         super(
               'SELECT ' + selectedIds.length 
-            + ' node' + (selectedIds.length == 1 ? '' : 's'));// + ', '
-            //+ prevSelectedIds.length + ' selected before');
+            + ' ' + countToString(selectedIds, 'node'));
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];
@@ -23807,7 +23817,7 @@ function uiEndStartGenerator(msg)
     productKey  = msg.productKey;
 
     uiGetLocalData('graphView');
-    uiPostMessageToFigma({cmd: 'figLoadNodesAndConns'});        
+    uiPostMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
     uiEndResizeWindow();
 
@@ -25230,6 +25240,9 @@ function uiConnect(output, input, inputIndex = -1)
 
 function uiDisconnect(input)
 {
+    const node = input.node;
+    
+    
     uiRemoveSavedConnection(
         input.connectedOutput.node.id,
         input.connectedOutput.index,
@@ -25240,18 +25253,16 @@ function uiDisconnect(input)
     graph.disconnect(input);
 
     
-    const inputNode = input.node;
-
-    if (inputNode.variableInputs)
+    if (node.variableInputs)
     {
-        uiRemoveSavedConnectionsToNode(inputNode.id);
+        uiRemoveSavedConnectionsToNode(node.id);
 
-        for (const _input of inputNode.inputs.filter(i => i.connected))
+        for (const _input of node.inputs.filter(i => i.connected))
         {
             uiSaveConnection(
                 _input.connectedOutput.node.id,
                 _input.connectedOutput.index,
-                inputNode.id,
+                node.id,
                 _input.index,
                 _input.connection.toJson());
         }
@@ -25783,20 +25794,20 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
 {
     uiPostMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: outputNodeId  + ' '
-            + outputIndex + ' '
-            + inputNodeId   + ' '
+        name: outputNodeId + ' '
+            + outputIndex  + ' '
+            + inputNodeId  + ' '
             + inputIndex
     });
 }
 
 
 
-function uiRemoveSavedConnectionsToNode(inputNode)
+function uiRemoveSavedConnectionsToNode(node)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: inputNode
+        nodeId: node
     });
 }
 

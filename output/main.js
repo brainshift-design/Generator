@@ -378,6 +378,7 @@ function figLogAllSavedConns(settings) {
         }
         console.log('%c%s', 'background: #cfc', conn);
     }
+    console.log('%c-----------------', 'background: #cfc');
 }
 function figSaveConnection(name, json) {
     // console.log('key', connNameForStorage(name));
@@ -385,10 +386,11 @@ function figSaveConnection(name, json) {
     figSetPageData(connNameForStorage(name), json);
 }
 function figRemoveSavedConnection(name) {
+    console.log('connName', name);
     figClearPageData(connNameForStorage(name));
 }
 function figRemoveSavedConnectionsToNode(nodeId) {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, 3) == connTag + ' ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length + 1) == connTag + ' ');
     for (const key of connKeys) {
         const parts = key.split(' ');
         if (parts[3] == nodeId)

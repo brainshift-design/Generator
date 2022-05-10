@@ -48,6 +48,13 @@ function forwardEvent(event, element)
 
 
 
+function countToString(items, itemName)
+{
+    return itemName + (items.length == 1 ? '' : 's');
+}
+
+
+
 function decCount(strValue)
 {
     const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());

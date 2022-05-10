@@ -15,7 +15,7 @@ extends Action
     {
         const data = JSON.parse(copiedNodesJson);
 
-        super('PASTE ' + data.nodes.length + ' node' + (data.nodes.length == 1 ? '' : 's'));
+        super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
         this.copiedNodesJson         = copiedNodesJson;
         this.prevSelectedNodeIds     = graphView.selectedNodes.map(n => n.id);

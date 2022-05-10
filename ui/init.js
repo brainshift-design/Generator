@@ -45,7 +45,7 @@ function uiEndStartGenerator(msg)
     productKey  = msg.productKey;
 
     uiGetLocalData('graphView');
-    uiPostMessageToFigma({cmd: 'figLoadNodesAndConns'});        
+    uiPostMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
     uiEndResizeWindow();
 
