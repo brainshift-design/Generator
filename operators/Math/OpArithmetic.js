@@ -145,6 +145,17 @@ extends OperatorBase
 
 
 
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        this.outputs[0].cache = [
+            NUMBER_VALUE, 
+            value.toString()];
+    }
+
+
+
     updateHeader()
     {
         super.updateHeader();

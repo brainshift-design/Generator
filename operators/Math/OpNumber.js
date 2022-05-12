@@ -57,6 +57,17 @@ extends OperatorBase
 
 
 
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        this.outputs[0].cache = [
+            NUMBER_VALUE, 
+            value.toString()];
+    }
+
+
+
     updateNode()
     {
         this.#paramValue.control.readOnly = this.inputs[0].connected;

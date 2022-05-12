@@ -962,15 +962,12 @@ function uiUpdateValues(values)
         if (!nodes.includes(node)) 
             nodes.push(node);
 
-
-        const param = node.params[paramIndex];
- 
         if (   nodeId     != updateNodeId
             || paramIndex != updateParamIndex)
-            param.setValue(parseDec(strVal), false, true, false);
+            node.updateParamValue(paramIndex, parseDec(strVal));
     }
 
-//console.log('nodes', nodes);
+
     for (const node of nodes)
     {
         node.valid = true;

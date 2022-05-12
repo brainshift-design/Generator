@@ -17649,6 +17649,13 @@ class Operator
 
 
 
+    updateParamValue(index, value) // virtual
+    {
+        this.params[index].setValue(value, false, true, false);
+    }
+
+
+
     setParamOutputData()
     {
         for (const param of this.params)
@@ -18610,6 +18617,17 @@ extends OperatorBase
 
 
 
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        this.outputs[0].cache = [
+            NUMBER_VALUE, 
+            value.toString()];
+    }
+
+
+
     updateNode()
     {
         this.#paramValue.control.readOnly = this.inputs[0].connected;
@@ -18845,6 +18863,17 @@ extends OperatorBase
 
         
         return this.cache = [...req];
+    }
+
+
+
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        this.outputs[0].cache = [
+            NUMBER_VALUE, 
+            value.toString()];
     }
 
 
@@ -25750,15 +25779,12 @@ function uiUpdateValues(values)
         if (!nodes.includes(node)) 
             nodes.push(node);
 
-
-        const param = node.params[paramIndex];
- 
         if (   nodeId     != updateNodeId
             || paramIndex != updateParamIndex)
-            param.setValue(parseDec(strVal), false, true, false);
+            node.updateParamValue(paramIndex, parseDec(strVal));
     }
 
-//console.log('nodes', nodes);
+
     for (const node of nodes)
     {
         node.valid = true;

@@ -547,6 +547,13 @@ class Operator
 
 
 
+    updateParamValue(index, value) // virtual
+    {
+        this.params[index].setValue(value, false, true, false);
+    }
+
+
+
     setParamOutputData()
     {
         for (const param of this.params)
