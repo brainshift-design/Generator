@@ -78,6 +78,14 @@ function genPushUpdateValue(parse, nodeId, paramIndex, value)
 
 
 
+function genMarkParsedNode(parse, nodeId, outputIndex, cachedValue)
+{
+    console.assert(!parse.parsedNodes.find(n => n[0] == nodeId));
+    parse.parsedNodes.push([nodeId, outputIndex, cachedValue]);
+}
+
+
+
 function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 {
     // send messages in chunks

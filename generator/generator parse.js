@@ -38,11 +38,15 @@ function genRequest(req, settings)
     const parse =         
     {
         pos:              2, 
-        so:               0, 
+        so:               0,
+        skip:             false, 
         updateNodeId:     updateNodeId, 
         updateParamIndex: updateParamIndex,
-        updateValues:     []
+        updateValues:     [],
+        parsedNodes:      [] // [nodeId, outputIndex, cachedValue]
     };
+
+
 
 
     const stackOverflowProtect = 100;
@@ -95,10 +99,25 @@ function genNumber(req, parse)
 {
     parse.pos++;
 
-    const nodeId  = req[parse.pos++];
-    const decimal = genParseRequest(req, parse);
+    const nodeId = req[parse.pos++];
+
+    if (parse.skip) return;
+
+
+    const parsed = parse.parsedNodes.find(n => n[0] == nodeId);
+
+    const savedSkip = parse.skip;
+
+    if (parsed) 
+        parse.skip = true;
+        
+    const decimal = genParseRequest(req, parse);    
+    
+    if (parsed)
+        parse.skip = savedSkip;
 
     genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+    genMarkParsedNode(parse, nodeId, 0, decimal.toString());
 
     return decimal;
 }
@@ -112,6 +131,15 @@ function genNumberAdd(req, parse)
     const nodeId  = req[parse.pos++];
     const nValues = req[parse.pos++];
 
+    if (parse.skip) return;
+    
+
+    const parsed = parse.parsedNodes.find(n => n[0] == nodeId);
+
+    const savedSkip = parse.skip;
+    if (parsed) parse.skip = true;
+
+
     let result = 0;
     let maxDec = 0;
 
@@ -123,10 +151,15 @@ function genNumberAdd(req, parse)
         maxDec = Math.max(maxDec, num.dec);
     }
 
+
+    if (parsed) parse.skip = savedSkip;
+
+
     const decimal = new Decimal(result, maxDec);
 
     genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-    
+    genMarkParsedNode(parse, nodeId, 0, decimal.toString());
+
     return decimal;
 }
 
