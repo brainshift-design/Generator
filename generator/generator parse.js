@@ -74,6 +74,7 @@ function genParseRequest(req, parse)
 
     else if (next == RECTANGLE   ) return genRectangle(req, parse);
     
+
     parse.so++;
     return null;
 }
@@ -99,7 +100,7 @@ function genNumber(req, parse)
     parse.updateValues.push(
         nodeId, 0,           // param
         decimal.toString()); // value
-    
+
     return decimal;
 }
 

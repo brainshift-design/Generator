@@ -4102,8 +4102,7 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
         chunk.push(
             updateValues[i++],  // node id
             updateValues[i++],  // param index
-            updateValues[i++],  // value
-            updateValues[i++]); // decimals
+            updateValues[i++]); // value
 
         if (++c == chunkSize)
         {
@@ -4387,6 +4386,7 @@ function genParseRequest(req, parse)
 
     else if (next == RECTANGLE   ) return genRectangle(req, parse);
     
+
     parse.so++;
     return null;
 }
@@ -4412,7 +4412,7 @@ function genNumber(req, parse)
     parse.updateValues.push(
         nodeId, 0,           // param
         decimal.toString()); // value
-    
+
     return decimal;
 }
 
@@ -25717,7 +25717,7 @@ function uiUpdateGraph()
 
 function uiUpdateValues(values)
 {
-    //console.log('values', values);
+    console.log('%cvalues', 'background: #e70; color: white;', values);
     
     const updateNodeId     = values[0];
     const updateParamIndex = values[1];

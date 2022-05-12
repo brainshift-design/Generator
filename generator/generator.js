@@ -80,8 +80,7 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
         chunk.push(
             updateValues[i++],  // node id
             updateValues[i++],  // param index
-            updateValues[i++],  // value
-            updateValues[i++]); // decimals
+            updateValues[i++]); // value
 
         if (++c == chunkSize)
         {
