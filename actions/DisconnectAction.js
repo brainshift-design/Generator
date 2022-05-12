@@ -29,7 +29,7 @@ extends Action
         this.inputIndex   = input.index;
 
 
-        this.oldActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
+        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
     }
 
 
@@ -39,13 +39,13 @@ extends Action
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
 
-        if (!getActiveNodeInTreeFrom(this.inputNode))
+        if (!getActiveNodeInTreeFromNode(this.inputNode))
         {
             uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
         }
 
-        if (!getActiveNodeInTreeFrom(this.outputNode))
+        if (!getActiveNodeInTreeFromNode(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -84,10 +84,10 @@ extends Action
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
 
-        if (!getActiveNodeInTreeFrom(this.inputNode))
+        if (!getActiveNodeInTreeFromNode(this.inputNode))
             uiMakeNodeActive(this.inputNode);
 
-        if (!getActiveNodeInTreeFrom(this.outputNode))
+        if (!getActiveNodeInTreeFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
 
 

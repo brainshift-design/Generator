@@ -11,7 +11,7 @@
   "author": "Alex Bourt",
   "license": "",
   "devDependencies": {
-    "@figma/plugin-typings": "^1.41.1",
+    "@figma/plugin-typings": "^1.47.0",
     "eslint": "^8.14.0"
   }
 }

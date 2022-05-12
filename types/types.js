@@ -5,7 +5,7 @@
 /////////////////////////////////
 
 
-const NUMBER_VALUE       = 'NUM_';  // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'N';  // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
@@ -18,7 +18,7 @@ const NUMBER_POWER       = 'POW';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
-const COLOR_VALUE        = 'COL_';  // N:space N:1 N:2 N:3 (c)
+const COLOR_VALUE        = 'C';  // N:space N:1 N:2 N:3 (c)
 
 const COLOR              = 'COL';   // C | c
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
@@ -27,7 +27,7 @@ const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
-const STRING_VALUE       = 'STR_';  // "..." (s) (escape \\ and \")
+const STRING_VALUE       = 'S';  // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
@@ -38,3 +38,24 @@ const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundT
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 
 const GROUP              = 'GRP';   // ???? count O...
+
+
+/*
+
+ARROW       A
+COLOR       C
+ELLIPSE     E
+FRAME       F
+GROUP       G
+IMAGE       I
+LIST        L
+NUMBER      N
+POLYGON     P
+RECTANGLE   R
+SLICE       /
+STAR        *
+STRING      S
+TEXT        T
+VECTOR      V
+
+*/

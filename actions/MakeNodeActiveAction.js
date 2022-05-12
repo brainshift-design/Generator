@@ -9,7 +9,7 @@ extends Action
 
     constructor(activeId)
     {
-        const oldActiveIds = [...getActiveNodesInTreeFrom(nodeFromId(activeId)).map(n => n.id)]; 
+        const oldActiveIds = [...getActiveNodesInTreeFromNodeId(activeId).map(n => n.id)]; 
 
         super(
              'MAKE ACTIVE ' + activeId);// + ', '

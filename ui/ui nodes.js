@@ -472,10 +472,14 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
     {
         const input = lastOf(inputNode.inputs);
 
-        return uiConnect(
+        const conn = uiConnect(
             outputNode.outputs[outputIndex],
             input,
             inputIndex);
+
+        uiUpdateSavedConnectionsToNode(inputNode.id);
+
+        return conn;
     }
     else
     {
@@ -506,31 +510,36 @@ function uiConnect(output, input, inputIndex = -1)
 function uiDisconnect(input)
 {
     const node = input.node;
-    
-    
+        
     uiRemoveSavedConnection(
         input.connectedOutput.node.id,
         input.connectedOutput.index,
         input.node.id,
         input.index);
 
-
     graph.disconnect(input);
 
-    
     if (node.variableInputs)
-    {
-        uiRemoveSavedConnectionsToNode(node.id);
+        uiUpdateSavedConnectionsToNode(node.id);
+}
 
-        for (const _input of node.inputs.filter(i => i.connected))
-        {
-            uiSaveConnection(
-                _input.connectedOutput.node.id,
-                _input.connectedOutput.index,
-                node.id,
-                _input.index,
-                _input.connection.toJson());
-        }
+
+
+function uiUpdateSavedConnectionsToNode(nodeId)
+{
+    const node = nodeFromId(nodeId);
+
+
+    uiRemoveSavedConnectionsToNode(node.id);
+
+    for (const _input of node.inputs.filter(i => i.connected))
+    {
+        uiSaveConnection(
+            _input.connectedOutput.node.id,
+            _input.connectedOutput.index,
+            node.id,
+            _input.index,
+            _input.connection.toJson());
     }
 }
 
@@ -685,7 +694,14 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
 
 
 
-function getActiveNodeInTreeFrom(node, alreadyChecked = [])
+function getActiveNodeInTreeFromNodeId(nodeId, alreadyChecked = [])
+{
+    return getActiveNodeInTreeFromNode(nodeFromId(nodeId), alreadyChecked);
+}
+
+
+
+function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
 {
     if (node.active) return node;
 
@@ -700,7 +716,7 @@ function getActiveNodeInTreeFrom(node, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveNodeInTreeFrom(
+                const rightActive = getActiveNodeInTreeFromNode(
                     input.node, 
                     [...alreadyChecked, node]);
 
@@ -725,7 +741,7 @@ function getActiveNodeLeftInTreeFrom(node, alreadyChecked = [])
         if (    input.connected
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveNodeInTreeFrom(
+            const leftActive = getActiveNodeInTreeFromNode(
                 input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 
@@ -739,7 +755,14 @@ function getActiveNodeLeftInTreeFrom(node, alreadyChecked = [])
 
 
 
-function getActiveNodesInTreeFrom(node, alreadyChecked = [])
+function getActiveNodesInTreeFromNodeId(nodeId, alreadyChecked = [])
+{
+    return getActiveNodesInTreeFromNode(nodeFromId(nodeId), alreadyChecked);
+}
+
+
+
+function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
 {
     const activeNodes = [];
 
@@ -753,7 +776,7 @@ function getActiveNodesInTreeFrom(node, alreadyChecked = [])
         if (    input.connected
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveNodesInTreeFrom(input.connectedOutput.node, [...alreadyChecked, node]);
+            const leftActive = getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]);
             
             // if (leftActive.length > 0) 
             // {
@@ -770,7 +793,7 @@ function getActiveNodesInTreeFrom(node, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveNodesInTreeFrom(input.node, [...alreadyChecked, node]);
+                const rightActive = getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]);
                 
                 // if (rightActive.length > 0) 
                 // {
@@ -843,7 +866,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
     if (data.connections)
     {
-        console.log('data', data);
+        //console.log('data', data);
         correctNodeNamesInConnections(data);
         loadConnections(data, pasteOutsideConnections);
     }
@@ -1068,10 +1091,10 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
 
 
 
-function uiRemoveSavedConnectionsToNode(node)
+function uiRemoveSavedConnectionsToNode(nodeId)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: node
+        nodeId: nodeId
     });
 }

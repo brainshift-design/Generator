@@ -468,7 +468,10 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.label.innerHTML    = this.id;// this.name;
+        this.label.innerHTML = 
+            settings.showNodeId 
+            ? this.id 
+            : this.name;
         
         const [,,,,, textStyle] = this.getHeaderColors();
         this.label.style.color  = textStyle;

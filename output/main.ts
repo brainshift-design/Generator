@@ -544,9 +544,9 @@ function figLogAllSavedConns(settings)
     } 
 
 
-    console.log(
-        '%c-----------------', 
-        'background: #cfc'); 
+    // console.log(
+    //     '%c-----------------', 
+    //     'background: #cfc'); 
 }
 
 
@@ -563,7 +563,7 @@ function figSaveConnection(name, json)
 
 function figRemoveSavedConnection(name)
 {
-    console.log('connName', name);
+    //console.log('figRemoveSavedConnection('+name+')');
     figClearPageData(connNameForStorage(name));        
 }
 

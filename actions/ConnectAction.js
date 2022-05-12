@@ -44,8 +44,8 @@ extends Action
         this.inputNodeId           = input.node.id;
         this.inputIndex            = input.index;
 
-        this.oldOutputActiveNodeId = getActiveNodeInTreeFrom(nodeFromId(this.outputNodeId)).id;
-        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFrom(nodeFromId(this.inputNodeId)).map(n => n.id)];
+        this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
+        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
 
         this.oldInputValues = 
             input.getValuesForUndo
@@ -66,7 +66,7 @@ extends Action
         this.newActiveNodeIds = [];
 
         if (    this.oldOutputNode
-            && !getActiveNodeInTreeFrom(this.oldOutputNode))
+            && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
@@ -75,7 +75,7 @@ extends Action
         }
 
 
-        let oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
+        const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)

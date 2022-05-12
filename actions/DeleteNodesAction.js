@@ -21,17 +21,6 @@ extends Action
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
-
-        for (const nodeId of nodeIds)
-        {
-            const activeIds = getActiveNodesInTreeFrom(nodeFromId(nodeId)).map(n => n.id);
-
-            for (const activeId of activeIds)
-            {
-                if (!this.oldActiveNodeIds.includes(activeId))
-                    this.oldActiveNodeIds.push(activeId);
-            }
-        }
     }
 
 
@@ -50,7 +39,18 @@ extends Action
 
     do()
     {
-        uiLogAllSavedConns();
+        this.oldActiveNodeIds = [];
+
+        for (const nodeId of this.nodeIds)
+        {
+            getActiveNodesInTreeFromNodeId(nodeId)
+                .forEach(node =>
+                {
+                    if (!this.oldActiveNodeIds.includes(node.id))
+                        this.oldActiveNodeIds.push(node.id);
+                });
+        }
+        
 
         for (const nodeId of this.nodeIds)
         {
@@ -110,12 +110,10 @@ extends Action
             }
         }
 
-        uiLogAllSavedConns();
-
         uiDeleteNodes(this.nodeIds, this.id);
         //uiRemoveSavedNodesAndConns(inputNodeIds);
         
-        uiLogAllSavedConns();
+        uiLogAllSavedNodesAndConns();
     }
 
 
@@ -142,7 +140,9 @@ extends Action
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        uiLogAllSavedConns();
+        uiSaveNodes(this.nodeIds);
+
+        uiLogAllSavedNodesAndConns();
     }
 
 
@@ -167,11 +167,8 @@ extends Action
             this.nodes[i].id = this.nodeIds[i];
 
         
-        for (const activeId of this.oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(activeId));
-
-
-        uiSaveNodes(this.nodeIds);
+        // for (const activeId of this.oldActiveNodeIds)
+        //     uiMakeNodeActive(nodeFromId(activeId));
     }
 
 
@@ -216,7 +213,7 @@ extends Action
         uiDisconnect(input);
 
 
-        if (getActiveNodesInTreeFrom(input.node))
+        if (getActiveNodesInTreeFromNode(input.node))
         {
             uiMakeNodeActive(input.node);
 
@@ -227,7 +224,7 @@ extends Action
         }
 
 
-        if (!getActiveNodeInTreeFrom(output.node))
+        if (!getActiveNodeInTreeFromNode(output.node))
         {
             uiMakeNodeActive(output.node);
 
