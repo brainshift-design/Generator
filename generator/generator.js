@@ -64,11 +64,25 @@ function genPostMessageToUi(msg)
 
 
 
+function genPushUpdateValue(parse, nodeId, paramIndex, value)
+{
+    const found = parse.updateValues.find(v => 
+           v[0] == nodeId 
+        && v[1] == paramIndex);
+
+    if (!found)
+        parse.updateValues.push([nodeId, paramIndex, value]);
+    else
+        console.assert(found[2] == value);
+}
+
+
+
 function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 {
     // send messages in chunks
 
-    const chunkSize = 10;
+    const chunkSize = 20;
     
     let i = 0, 
         c = 0;
@@ -78,9 +92,9 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
     while (i < updateValues.length)
     {
         chunk.push(
-            updateValues[i++],  // node id
-            updateValues[i++],  // param index
-            updateValues[i++]); // value
+            updateValues[i][0],  // node id
+            updateValues[i][1],  // param index
+            updateValues[i][2]); // value
 
         if (++c == chunkSize)
         {
@@ -92,6 +106,8 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
             chunk = [];
             c = 0;
         }
+
+        i++;
     }
 
     if (chunk.length > 0)

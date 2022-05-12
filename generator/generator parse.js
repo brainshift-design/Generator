@@ -68,12 +68,13 @@ function genParseRequest(req, parse)
     const next = req[parse.pos];
     //console.log('next', next);
 
+
          if (next == NUMBER_VALUE) return genNumValue (req, parse);
     else if (next == NUMBER      ) return genNumber   (req, parse);
     else if (next == NUMBER_ADD  ) return genNumberAdd(req, parse);
 
     else if (next == RECTANGLE   ) return genRectangle(req, parse);
-    
+
 
     parse.so++;
     return null;
@@ -97,9 +98,7 @@ function genNumber(req, parse)
     const nodeId  = req[parse.pos++];
     const decimal = genParseRequest(req, parse);
 
-    parse.updateValues.push(
-        nodeId, 0,           // param
-        decimal.toString()); // value
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
 
     return decimal;
 }
@@ -126,9 +125,7 @@ function genNumberAdd(req, parse)
 
     const decimal = new Decimal(result, maxDec);
 
-    parse.updateValues.push(
-        nodeId, 0,           // param
-        decimal.toString()); // value
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
     
     return decimal;
 }
