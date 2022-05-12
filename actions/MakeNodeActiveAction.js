@@ -3,37 +3,40 @@ extends Action
 {
     activeId;
 
-    oldActiveIds = [];
+    oldActiveNodeIds = [];
 
 
 
     constructor(activeId)
     {
-        const oldActiveIds = [...getActiveNodesInTreeFromNodeId(activeId).map(n => n.id)]; 
-
         super(
              'MAKE ACTIVE ' + activeId);// + ', '
             //+ oldActiveIds.length + ' active before');
 
-        this.activeId     = activeId;
-        this.oldActiveIds = [...oldActiveIds];
+        this.activeId = activeId;
     }
 
 
 
     do()
     {
+        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.activeId).map(n => n.id)]; 
+
         uiMakeNodeActive(nodeFromId(this.activeId));
+
+        uiSaveNodes([this.activeId, ...this.oldActiveNodeIds]);
     }
 
 
 
     undo()
     {
-        if (!this.oldActiveIds.includes(this.activeId));
+        if (!this.oldActiveNodeIds.includes(this.activeId));
             uiMakeNodePassive(nodeFromId(this.activeId));
 
-        for (const id of this.oldActiveIds)
+        for (const id of this.oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
+
+        uiSaveNodes([this.activeId, ...this.oldActiveNodeIds]);
     }
 }

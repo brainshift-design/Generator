@@ -112,8 +112,6 @@ extends Action
 
         uiDeleteNodes(this.nodeIds, this.id);
         //uiRemoveSavedNodesAndConns(inputNodeIds);
-        
-        uiLogAllSavedNodesAndConns();
     }
 
 
@@ -139,10 +137,9 @@ extends Action
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
+    
 
         uiSaveNodes(this.nodeIds);
-
-        uiLogAllSavedNodesAndConns();
     }
 
 
@@ -165,10 +162,6 @@ extends Action
 
         for (let i = 0; i < this.nodes.length; i++)
             this.nodes[i].id = this.nodeIds[i];
-
-        
-        // for (const activeId of this.oldActiveNodeIds)
-        //     uiMakeNodeActive(nodeFromId(activeId));
     }
 
 
