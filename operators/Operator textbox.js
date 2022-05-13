@@ -1,7 +1,9 @@
 function initLabelTextbox(node)
 {
     node.textbox = createTextbox('nodeLabelTextbox');
-    node.textbox.spellcheck = false;
+
+    node.textbox.spellcheck     = false;
+    node.textbox.keyboardFinish = false;
     
 
 
@@ -27,11 +29,15 @@ function initLabelTextbox(node)
         else if (e.code == 'Enter'
               || e.code == 'NumpadEnter')
         {
+            node.textbox.keyboardFinish = true;
             node.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
+        {
+            node.textbox.keyboardFinish = true;
             node.textbox.finish(false);
+        }
 
         else if (e.code == 'Tab')
         {
@@ -88,9 +94,14 @@ function initLabelTextbox(node)
 
     
     
+    node.textbox.addEventListener('focus', () => node.textbox.keyboardFinish = false);
+
+    
+    
     node.textbox.addEventListener('focusout', function()
     {
-        if (node.textbox.value != '')
+        if (    node.textbox.value != ''
+            && !node.textbox.keyboardFinish)
             node.textbox.finish(true);
 
         node.label.style.display = 'block';
