@@ -329,8 +329,8 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
         case 'figUpdateObjects':                figUpdateObjects               (msg.objects);                                break;
+        case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
     }
 
     
@@ -447,6 +447,8 @@ function figLoadNodesAndConns()
 
 function figSaveNodes(nodeIds, nodeJson)
 {
+    console.log('fig nodeIds', nodeIds);
+    console.log('fig nodeJson', nodeJson);
     for (let i = 0; i < nodeIds.length; i++)
     {
         // console.log('key', nodeNameForStorage(nodeIds[i]));

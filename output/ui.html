@@ -3224,6 +3224,14 @@ function deepCopy(obj)
 
 
 
+function filterUnique(array)
+{
+    return array.filter((value, index) => 
+        array.indexOf(value) === index);
+}
+
+
+
 function createSvg(element)
 {
     var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
@@ -8624,6 +8632,14 @@ function shallowCopy(obj)
 function deepCopy(obj)
 {
     return JSON.parse(JSON.stringify(obj));
+}
+
+
+
+function filterUnique(array)
+{
+    return array.filter((value, index) => 
+        array.indexOf(value) === index);
 }
 
 
@@ -18772,14 +18788,14 @@ extends OperatorBase
         { 
             if (e.button == 0)
             {
-                if (this._symbol.clicked0)
+                if (this._symbol.clicked0) // finish double click on tiny symbol
                 {
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
                     actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
                 }
-                else if (!this._showOnlySymbol)
+                else if (!this._showOnlySymbol) // start double cick on small symbol
                 {
                     this._symbol.clicked0 = true;
                     setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
@@ -23004,7 +23020,7 @@ extends Action
 
         uiMakeNodeActive(nodeFromId(this.activeId));
 
-        uiSaveNodes([this.activeId, ...this.oldActiveNodeIds]);
+        uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }
 
 
@@ -23017,7 +23033,7 @@ extends Action
         for (const id of this.oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        uiSaveNodes([this.activeId, ...this.oldActiveNodeIds]);
+        uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }
 }
 
@@ -25760,8 +25776,7 @@ function uiUpdateGraph()
 
     if (graph.deferNodeIds.length > 0)
     {
-        let deferNodes = Array.from(graph.deferNodeIds).filter(
-            (value, index, self) => self.indexOf(value) === index);
+        let deferNodes = filterUnique(graph.deferNodeIds);
 
         graph.deferNodeIds = [];
 
@@ -25825,14 +25840,10 @@ function uiUpdateObjects(objects)
 
 function uiSaveNodes(nodeIds)
 {
-    const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
     const nodeJson = [];
 
-    for (const node of nodes)
-    {
-        nodeJson.push(node.toJson());
-        //console.log(node.toJson());
-    }
+    nodeIds.forEach(id => 
+        nodeJson.push(nodeFromId(id).toJson()));
 
     uiPostMessageToFigma({
         cmd:     'figSaveNodes',

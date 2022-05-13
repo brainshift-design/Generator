@@ -36,14 +36,14 @@ extends OperatorBase
         { 
             if (e.button == 0)
             {
-                if (this._symbol.clicked0)
+                if (this._symbol.clicked0) // finish double click on tiny symbol
                 {
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
                     actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
                 }
-                else if (!this._showOnlySymbol)
+                else if (!this._showOnlySymbol) // start double cick on small symbol
                 {
                     this._symbol.clicked0 = true;
                     setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess

@@ -106,6 +106,14 @@ function deepCopy(obj)
 
 
 
+function filterUnique(array)
+{
+    return array.filter((value, index) => 
+        array.indexOf(value) === index);
+}
+
+
+
 function createSvg(element)
 {
     var svg = document.createElementNS('http://www.w3.org/2000/svg', element);

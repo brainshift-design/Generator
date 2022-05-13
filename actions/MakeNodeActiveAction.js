@@ -24,7 +24,7 @@ extends Action
 
         uiMakeNodeActive(nodeFromId(this.activeId));
 
-        uiSaveNodes([this.activeId, ...this.oldActiveNodeIds]);
+        uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }
 
 
@@ -37,6 +37,6 @@ extends Action
         for (const id of this.oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        uiSaveNodes([this.activeId, ...this.oldActiveNodeIds]);
+        uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }
 }

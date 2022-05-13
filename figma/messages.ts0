@@ -29,8 +29,8 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
         case 'figUpdateObjects':                figUpdateObjects               (msg.objects);                                break;
+        case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
     }
 
     

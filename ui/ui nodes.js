@@ -929,8 +929,7 @@ function uiUpdateGraph()
 
     if (graph.deferNodeIds.length > 0)
     {
-        let deferNodes = Array.from(graph.deferNodeIds).filter(
-            (value, index, self) => self.indexOf(value) === index);
+        let deferNodes = filterUnique(graph.deferNodeIds);
 
         graph.deferNodeIds = [];
 
@@ -994,14 +993,10 @@ function uiUpdateObjects(objects)
 
 function uiSaveNodes(nodeIds)
 {
-    const nodes    = graph.nodes.filter(n => nodeIds.includes(n.id));
     const nodeJson = [];
 
-    for (const node of nodes)
-    {
-        nodeJson.push(node.toJson());
-        //console.log(node.toJson());
-    }
+    nodeIds.forEach(id => 
+        nodeJson.push(nodeFromId(id).toJson()));
 
     uiPostMessageToFigma({
         cmd:     'figSaveNodes',

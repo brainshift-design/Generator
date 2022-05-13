@@ -82,6 +82,8 @@ function figLoadNodesAndConns()
 
 function figSaveNodes(nodeIds, nodeJson)
 {
+    console.log('fig nodeIds', nodeIds);
+    console.log('fig nodeJson', nodeJson);
     for (let i = 0; i < nodeIds.length; i++)
     {
         // console.log('key', nodeNameForStorage(nodeIds[i]));
