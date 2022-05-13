@@ -58,7 +58,7 @@ function onHexboxFocusOut(e)
 {
     const hexbox = e.target;
     hexboxFinish(hexbox.node, true);
-    hexbox.style.cursor = 'default';//hexbox.node.connected() ? 'default' : 'text';
+    hexbox.style.cursor = 'default';
 }
 
 
@@ -120,12 +120,6 @@ function onHexboxKeyDown(e)
             && hexbox.value.length >= 6
             && hexbox.selectionStart == hexbox.selectionEnd)
         e.preventDefault();
-
-    // else if (e.key == 'ArrowUp'
-    //       || e.key == 'ArrowDown')
-    // {
-
-    // }
 }
 
 

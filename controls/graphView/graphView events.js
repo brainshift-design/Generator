@@ -48,13 +48,11 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
-                //hide(graphView.tempConn.wire);
                 
                 graphView.savedConn       = graphView.overInput.connection;
                 graphView.savedInputIndex = graphView.overInput.index;
 
                 hide(graphView.savedConn.wire);
-                //graphView.updateNodeWire(graphView.savedConn.wire);
             }
             else
             {
@@ -63,7 +61,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.updateNodeWire(graphView.tempConn.wire, sx, sy);
             }
         }
-        else // selection
+        else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
         {
             graphView.lastSelectedNodes = [...graphView.selectedNodes];
 
