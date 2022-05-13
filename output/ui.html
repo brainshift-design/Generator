@@ -10817,11 +10817,12 @@ function parseDec(str)
 
 const settings =
 {
-    showNodeId:  true, // instead of name
-
-    logStorage:  true,
-    logActions:  true,
-    logRequests: true
+    showNodeId:      true, // instead of name
+    
+    logStorage:      true,
+    logActions:      true,
+    logRequests:     true,
+    logValueUpdates: true
 };
 
 
@@ -17957,6 +17958,7 @@ function createNodeHeader(node)
     node.header = createDiv('nodeHeader');
     
     node.header.connectionPadding = 8;
+    node.header.ignoreDoubleClick = false; // used by child objects that need to be double clicked
 
 
     createNodeLabel(node);
@@ -18272,13 +18274,17 @@ function createNodeHeader(node)
     {
         e.preventDefault();
 
+        
         var bounds = boundingRect(node.label);
 
         if (   e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
-        else
+        else if (!node.header.ignoreDoubleClick)
             actionManager.do(new MakeNodeActiveAction(node.id));
+
+
+        node.header.ignoreDoubleClick = false;
     });
 }
 
@@ -18788,12 +18794,14 @@ extends OperatorBase
         { 
             if (e.button == 0)
             {
-                if (this._symbol.clicked0) // finish double click on tiny symbol
+                if (this._symbol.clicked0) // finish double click on small symbol
                 {
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
                     actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
+
+                    this.header.ignoreDoubleClick = true;
                 }
                 else if (!this._showOnlySymbol) // start double cick on small symbol
                 {
@@ -25788,8 +25796,10 @@ function uiUpdateGraph()
 
 function uiUpdateValues(values)
 {
-    console.log('%cvalues', 'background: #e70; color: white;', values);
+    if (settings.logValueUpdates)
+        console.log('%cvalues', 'background: #e70; color: white;', values);
     
+
     const updateNodeId     = values[0];
     const updateParamIndex = values[1];
 

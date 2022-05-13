@@ -83,6 +83,7 @@ function createNodeHeader(node)
     node.header = createDiv('nodeHeader');
     
     node.header.connectionPadding = 8;
+    node.header.ignoreDoubleClick = false; // used by child objects that need to be double clicked
 
 
     createNodeLabel(node);
@@ -398,13 +399,17 @@ function createNodeHeader(node)
     {
         e.preventDefault();
 
+        
         var bounds = boundingRect(node.label);
 
         if (   e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
-        else
+        else if (!node.header.ignoreDoubleClick)
             actionManager.do(new MakeNodeActiveAction(node.id));
+
+
+        node.header.ignoreDoubleClick = false;
     });
 }
 

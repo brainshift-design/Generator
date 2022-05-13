@@ -941,8 +941,10 @@ function uiUpdateGraph()
 
 function uiUpdateValues(values)
 {
-    console.log('%cvalues', 'background: #e70; color: white;', values);
+    if (settings.logValueUpdates)
+        console.log('%cvalues', 'background: #e70; color: white;', values);
     
+
     const updateNodeId     = values[0];
     const updateParamIndex = values[1];
 

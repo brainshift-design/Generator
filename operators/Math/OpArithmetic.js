@@ -36,12 +36,14 @@ extends OperatorBase
         { 
             if (e.button == 0)
             {
-                if (this._symbol.clicked0) // finish double click on tiny symbol
+                if (this._symbol.clicked0) // finish double click on small symbol
                 {
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
                     actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
+
+                    this.header.ignoreDoubleClick = true;
                 }
                 else if (!this._showOnlySymbol) // start double cick on small symbol
                 {
