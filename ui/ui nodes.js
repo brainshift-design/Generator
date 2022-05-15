@@ -722,7 +722,7 @@ function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
     if (node.active) return node;
 
 
-    const leftActive = getActiveNodeLeftInTreeFrom(node, [...alreadyChecked]);
+    const leftActive = getActiveNodeLeftInTreeFromNode(node, [...alreadyChecked]);
     if (leftActive) return leftActive;
 
 
@@ -747,8 +747,12 @@ function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveNodeLeftInTreeFrom(node, alreadyChecked = [])
+function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
 {
+    /*  This is different from LeftOnly in that it will go back and check
+        the left node, but then it will also check the right nodes
+        of that left node. */
+
     if (node.active) return node;
 
 
@@ -758,6 +762,32 @@ function getActiveNodeLeftInTreeFrom(node, alreadyChecked = [])
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
             const leftActive = getActiveNodeInTreeFromNode(
+                input.connectedOutput.node, 
+                [...alreadyChecked, node]);
+
+            if (leftActive) return leftActive;
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodeLeftOnlyInTreeFromNode(node, alreadyChecked = [])
+{
+    /*  This is different from Left in that it will only check left nodes. */
+
+    if (node.active) return node;
+
+
+    for (const input of node.inputs)
+    {
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
+        {
+            const leftActive = getActiveNodeLeftOnlyInTreeFromNode(
                 input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 

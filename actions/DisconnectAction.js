@@ -27,15 +27,15 @@ extends Action
 
         this.inputNodeId  = input.node.id;
         this.inputIndex   = input.index;
-
-
-        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
     }
 
 
 
     do()
     {
+        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
+
+
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
 
@@ -45,7 +45,7 @@ extends Action
             this.newActiveNodeIds.push(this.inputNodeId);
         }
 
-        if (!getActiveNodeInTreeFromNode(this.outputNode))
+        if (!getActiveNodeLeftOnlyInTreeFromNode(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -68,6 +68,9 @@ extends Action
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        this.oldActiveNodeIds = [];
+        
+
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
@@ -87,7 +90,7 @@ extends Action
         if (!getActiveNodeInTreeFromNode(this.inputNode))
             uiMakeNodeActive(this.inputNode);
 
-        if (!getActiveNodeInTreeFromNode(this.outputNode))
+        if (!getActiveNodeLeftOnlyInTreeFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
 
 
