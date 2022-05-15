@@ -12,4 +12,5 @@
 ../core/web.js
 ../core/clipboard.js
 ../core/tags.js
+../core/debug.js
 ../core/logging.js

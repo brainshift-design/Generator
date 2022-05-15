@@ -68,30 +68,29 @@ extends Action
 
         const updatedNodes = [];
 
-
         if (    this.oldOutputNode
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
-            pushUnique(updatedNodes, ...uiMakeNodeActive(this.oldOutputNode));
+            uiMakeNodeActive(this.oldOutputNode);
+            //pushUnique(updatedNodes, ...uiMakeNodeActive(this.oldOutputNode));
             pushUnique(updatedNodes, this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
         }
 
 
-        console.assert(this.oldOutputActiveNodeId != '');
         pushUnique(updatedNodes, nodeFromId(this.oldOutputActiveNodeId));
-
 
         const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
         {
-            pushUnique(updatedNodes, ...uiMakeNodeActive(nodeFromId(id)));
+            uiMakeNodeActive(nodeFromId(id));
+            //pushUnique(updatedNodes, ...uiMakeNodeActive(nodeFromId(id)));
             pushUnique(updatedNodes, nodeFromId(id));
         }
 
-        
+
         uiSaveNodes(updatedNodes.map(n => n.id));
         pushUpdate(updatedNodes);
     }
@@ -123,21 +122,24 @@ extends Action
         for (const id of this.newActiveNodeIds)
         {
             const node = nodeFromId(id);
-            pushUnique(updatedNodes, ...uiMakeNodePassive(node));
+            uiMakeNodePassive(node);
+            //pushUnique(updatedNodes, ...uiMakeNodePassive(node));
             pushUnique(updatedNodes, node);
         }
 
         for (const id of this.oldInputActiveNodeIds)
         {
             const node = nodeFromId(id);
-            pushUnique(updatedNodes, ...uiMakeNodeActive(node));
+            uiMakeNodeActive(node);
+            //pushUnique(updatedNodes, ...uiMakeNodeActive(node));
             pushUnique(updatedNodes, node);
         }
 
         if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
         {
             const node = nodeFromId(this.oldOutputActiveNodeId);
-            pushUnique(updatedNodes, ...uiMakeNodeActive(node));
+            uiMakeNodeActive(node);
+            //pushUnique(updatedNodes, ...uiMakeNodeActive(node));
             pushUnique(updatedNodes, node);
         }
 

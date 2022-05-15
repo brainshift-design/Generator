@@ -547,18 +547,11 @@ function uiUpdateSavedConnectionsToNode(nodeId)
 
 function uiMakeNodeActive(node)
 {
-    const prevActive = [];
-
-    if (node.active)
-        prevActive.push(node);
-
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 
     node.makeActive();
     node.updateNode();
-
-    return prevActive;
 }
 
 
@@ -596,35 +589,26 @@ function uiMakeNodeActive(node)
 
 function uiMakeNodePassive(node)
 {
-    const prevActive = [];
+    if (!node.active) return;
 
-    if (node.active)
-    {
-        prevActive.push(node);
+    //if (node.active)
+    //    uiDeleteObjects([node.id]);
 
-        //if (node.active)
-        //    uiDeleteObjects([node.id]);
-
-        node.makePassive();
-        node.updateNode();
-    }
-
-    return prevActive;
+    node.makePassive();
+    node.updateNode();
 }
 
 
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
-    const prevActive = [];
-
     for (const input of node.inputs)
     {
         if (input.connected)
         {
             //console.log(input.connectedOutput);
-            prevActive.push(...uiMakeNodePassive(input.connectedOutput.node));
-            prevActive.push(...uiMakeNodeLeftPassive(input.connectedOutput.node, node));
+            uiMakeNodePassive(input.connectedOutput.node);
+            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
         }
     }
 
@@ -640,22 +624,18 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
     //         }
     //     }
     // }
-
-    return prevActive;
 }
 
 
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
-    const prevActive = [];
-
     for (const output of node.outputs)
     {
         for (const connInput of output.connectedInputs)
         {
-            prevActive.push(...uiMakeNodePassive(connInput.node));
-            prevActive.push(...uiMakeNodeRightPassive(connInput.node, node));
+            uiMakeNodePassive(connInput.node);
+            uiMakeNodeRightPassive(connInput.node, node);
         }
     }
 
@@ -664,12 +644,10 @@ function uiMakeNodeRightPassive(node, fromNode = null)
         if (   input.connected
             && input.connectedOutput.node != fromNode)
         {
-            prevActive.push(...uiMakeNodePassive(input.connectedOutput.node));
-            prevActive.push(...uiMakeNodeLeftPassive(input.connectedOutput.node, node));
+            uiMakeNodePassive(input.connectedOutput.node);
+            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
         }
     }
-
-    return prevActive;
 }
 
 
@@ -792,6 +770,32 @@ function getActiveNodeLeftOnlyInTreeFromNode(node, alreadyChecked = [])
                 [...alreadyChecked, node]);
 
             if (leftActive) return leftActive;
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodeRightInTreeFromNode(node, alreadyChecked = [])
+{
+    if (node.active) return node;
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.node))
+            {
+                const rightActive = getActiveNodeRightInTreeFromNode(
+                    input.node, 
+                    [...alreadyChecked, node]);
+
+                if (rightActive) return rightActive;
+            }
         }
     }
 

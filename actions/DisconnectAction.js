@@ -45,7 +45,9 @@ extends Action
             this.newActiveNodeIds.push(this.inputNodeId);
         }
 
-        if (!getActiveNodeLeftOnlyInTreeFromNode(this.outputNode))
+
+        if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
+            && !getActiveNodeRightInTreeFromNode(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -90,7 +92,8 @@ extends Action
         if (!getActiveNodeInTreeFromNode(this.inputNode))
             uiMakeNodeActive(this.inputNode);
 
-        if (!getActiveNodeLeftOnlyInTreeFromNode(this.outputNode))
+        if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
+            && !getActiveNodeRightInTreeFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
 
 
