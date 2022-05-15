@@ -44,9 +44,6 @@ extends Action
         this.inputNodeId           = input.node.id;
         this.inputIndex            = input.index;
 
-        this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
-
         this.oldInputValues = 
             input.getValuesForUndo
             ? input.getValuesForUndo()
@@ -57,6 +54,10 @@ extends Action
     
     do()
     {
+        this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
+        this.oldInputActiveNodeIds = getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id);
+
+
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
             this.inputNode. inputs [this. inputIndex],
@@ -65,25 +66,34 @@ extends Action
 
         this.newActiveNodeIds = [];
 
+        const updatedNodes = [];
+
+
         if (    this.oldOutputNode
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
-            uiMakeNodeActive(this.oldOutputNode);
+            pushUnique(updatedNodes, ...uiMakeNodeActive(this.oldOutputNode));
+            pushUnique(updatedNodes, this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
-            pushUpdate([this.oldOutputNode]);
-            //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
+
+
+        console.assert(this.oldOutputActiveNodeId != '');
+        pushUnique(updatedNodes, nodeFromId(this.oldOutputActiveNodeId));
 
 
         const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+        {
+            pushUnique(updatedNodes, ...uiMakeNodeActive(nodeFromId(id)));
+            pushUnique(updatedNodes, nodeFromId(id));
+        }
 
-
-        // graphView.updateNodeTransform(this.inputNode);
-        pushUpdate([this.inputNode]);
+        
+        uiSaveNodes(updatedNodes.map(n => n.id));
+        pushUpdate(updatedNodes);
     }
 
 
@@ -108,17 +118,36 @@ extends Action
             this.inputNode.params[param[0]].setValue(param[1], true, true, false);
 
 
-        // graphView.updateNodeTransform(this.inputNode);
-        pushUpdate([this.inputNode]);
-
+        const updatedNodes = [];
 
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+        {
+            const node = nodeFromId(id);
+            pushUnique(updatedNodes, ...uiMakeNodePassive(node));
+            pushUnique(updatedNodes, node);
+        }
 
         for (const id of this.oldInputActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+        {
+            const node = nodeFromId(id);
+            pushUnique(updatedNodes, ...uiMakeNodeActive(node));
+            pushUnique(updatedNodes, node);
+        }
 
         if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
-            uiMakeNodeActive(nodeFromId(this.oldOutputActiveNodeId));
-    }
+        {
+            const node = nodeFromId(this.oldOutputActiveNodeId);
+            pushUnique(updatedNodes, ...uiMakeNodeActive(node));
+            pushUnique(updatedNodes, node);
+        }
+
+
+        uiSaveNodes(updatedNodes.map(n => n.id));
+        pushUpdate([this.inputNode]);
+ 
+
+        // cleanup
+        this.oldOutputActiveNodeId = [];
+        this.oldInputActiveNodeIds = [];
+   }
 }

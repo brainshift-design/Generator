@@ -9,6 +9,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
+function logFunction(funcName) {
+    console.log('%c ' + funcName + '() ', 'background: #09f; color: white;');
+}
+function logSavedNode(nodeKey) {
+    console.log('%c%s\n%c%s', 'background: #fdb', nodeKey.substring(nodeTag.length + 1), 'background: #fed;', figGetPageData(nodeKey, false)
+        .replace('{\n', '')
+        .replace('\n}', '')
+        .replace('[\n', '')
+        .replace('\n  ]', ''));
+}
+function logSavedConn(connKey) {
+    let conn = '';
+    const parts = connKey.substring(connTag.length + 1).split(' ');
+    for (let i = 0; i < parts.length; i++) {
+        conn += parts[i];
+        if (i == 1)
+            conn += ' -> ';
+        else if (i < parts.length - 1)
+            conn += ' ';
+    }
+    console.log('%c%s', 'background: #cfc', conn);
+}
+function logRequest(request) {
+    console.log('%c%s', 'background: #60aa60; color: #fff', JSON.stringify(request)
+        .replaceAll('""', '\'\'')
+        .replaceAll('"', '')
+        .replaceAll('[', '')
+        .replaceAll(']', '')
+        .replaceAll(',', ' '));
+}
+function logUpdateValues(values) {
+    console.log('%cvalues', 'background: #e70; color: white;', values);
+}
 const MAX_OBJECTS = 0x10000;
 const genObjects = new Array(MAX_OBJECTS);
 const OBJ_RECT = 1;
@@ -351,31 +384,16 @@ function figLogAllSavedNodesAndConns(settings) {
 function figLogAllSavedNodes(settings) {
     if (!settings.logStorage)
         return;
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length + 1) == nodeTag + ' ');
-    for (const key of nodeKeys) {
-        console.log('%c%s\n%c%s', 'background: #fdb', key.substring(nodeTag.length + 1), 'background: #fed;', figGetPageData(key, false)
-            .replace('{\n', '')
-            .replace('\n}', '')
-            .replace('[\n', '')
-            .replace('\n  ]', ''));
-    }
+    figma.currentPage.getPluginDataKeys()
+        .filter(k => k.substring(0, nodeTag.length + 1) == nodeTag + ' ')
+        .forEach(k => logSavedNode(k));
 }
 function figLogAllSavedConns(settings) {
     if (!settings.logStorage)
         return;
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length + 1) == connTag + ' ');
-    for (const key of connKeys) {
-        let conn = '';
-        const parts = key.substring(connTag.length + 1).split(' ');
-        for (let i = 0; i < parts.length; i++) {
-            conn += parts[i];
-            if (i == 1)
-                conn += ' -> ';
-            else if (i < parts.length - 1)
-                conn += ' ';
-        }
-        console.log('%c%s', 'background: #cfc', conn);
-    }
+    figma.currentPage.getPluginDataKeys()
+        .filter(k => k.substring(0, connTag.length + 1) == connTag + ' ')
+        .forEach(k => logSavedConn(k));
     // console.log(
     //     '%c-----------------', 
     //     'background: #cfc'); 

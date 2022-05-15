@@ -217,6 +217,20 @@ function isLastInArray(array, item)
 
 
 
+function pushUnique(array, item)
+{
+    if (Array.isArray(item))
+    {
+        items
+            .filter(i => !array.includes(i))
+            .forEach(i => array.push(i));
+    }
+    else if (!array.includes(item))
+        array.push(item);
+}
+
+
+
 function clearChildren(parent) 
 {
     while (parent.firstChild)

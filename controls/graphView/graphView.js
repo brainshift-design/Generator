@@ -290,7 +290,10 @@ graphView.setNodeTransform = function(node, nodeLeft, nodeTop, nodeRect)
 
 graphView.updateNodeWires = function(wires)
 {
-    const pOut    = [];            
+    //logFunction('updateNodeWires');
+
+
+    const pOut    = [];
     const pIn     = [];
     
     const cw      = graphView.clientWidth;

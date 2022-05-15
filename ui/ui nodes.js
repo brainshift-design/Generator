@@ -547,18 +547,18 @@ function uiUpdateSavedConnectionsToNode(nodeId)
 
 function uiMakeNodeActive(node)
 {
+    const prevActive = [];
+
+    if (node.active)
+        prevActive.push(node);
+
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 
     node.makeActive();
-
-    // uiPostMessageToFigma({
-    //     cmd:   'figSaveActiveNode',
-    //     nodeId: node.id
-    // });
-
     node.updateNode();
-    //pushUpdate([node]);
+
+    return prevActive;
 }
 
 
@@ -596,24 +596,35 @@ function uiMakeNodeActive(node)
 
 function uiMakeNodePassive(node)
 {
-    //if (node.active)
-    //    uiDeleteObjects([node.id]);
+    const prevActive = [];
 
-    node.makePassive();
-    node.updateNode();
+    if (node.active)
+    {
+        prevActive.push(node);
+
+        //if (node.active)
+        //    uiDeleteObjects([node.id]);
+
+        node.makePassive();
+        node.updateNode();
+    }
+
+    return prevActive;
 }
 
 
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
+    const prevActive = [];
+
     for (const input of node.inputs)
     {
         if (input.connected)
         {
             //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.node);
-            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
+            prevActive.push(...uiMakeNodePassive(input.connectedOutput.node));
+            prevActive.push(...uiMakeNodeLeftPassive(input.connectedOutput.node, node));
         }
     }
 
@@ -629,18 +640,22 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
     //         }
     //     }
     // }
+
+    return prevActive;
 }
 
 
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
+    const prevActive = [];
+
     for (const output of node.outputs)
     {
         for (const connInput of output.connectedInputs)
         {
-            uiMakeNodePassive(connInput.node);
-            uiMakeNodeRightPassive(connInput.node, node);
+            prevActive.push(...uiMakeNodePassive(connInput.node));
+            prevActive.push(...uiMakeNodeRightPassive(connInput.node, node));
         }
     }
 
@@ -649,11 +664,12 @@ function uiMakeNodeRightPassive(node, fromNode = null)
         if (   input.connected
             && input.connectedOutput.node != fromNode)
         {
-            //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.node);
-            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
+            prevActive.push(...uiMakeNodePassive(input.connectedOutput.node));
+            prevActive.push(...uiMakeNodeLeftPassive(input.connectedOutput.node, node));
         }
     }
+
+    return prevActive;
 }
 
 
@@ -942,7 +958,7 @@ function uiUpdateGraph()
 function uiUpdateValues(values)
 {
     if (settings.logValueUpdates)
-        console.log('%cvalues', 'background: #e70; color: white;', values);
+        logUpdateValues(values);
     
 
     const updateNodeId     = values[0];

@@ -18,17 +18,7 @@
 function genRequest(req, settings)
 {
     if (settings.logRequests)
-    {
-        console.log(
-            '%c%s', 
-            'background: #60aa60; color: #fff', 
-            JSON.stringify(req)
-                .replaceAll('""', '\'\'')
-                .replaceAll('"', '')
-                .replaceAll('[', '')
-                .replaceAll(']', '')
-                .replaceAll(',', ' '));
-    }
+        logRequest(req);
 
 
     const updateNodeId     = req[0];

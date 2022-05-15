@@ -3335,6 +3335,20 @@ function isLastInArray(array, item)
 
 
 
+function pushUnique(array, item)
+{
+    if (Array.isArray(item))
+    {
+        items
+            .filter(i => !array.includes(i))
+            .forEach(i => array.push(i));
+    }
+    else if (!array.includes(item))
+        array.push(item);
+}
+
+
+
 function clearChildren(parent) 
 {
     while (parent.firstChild)
@@ -3774,6 +3788,77 @@ function writeTextToClipboard(str)
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 
+
+
+function logFunction(funcName)
+{
+    console.log(
+        '%c ' + funcName + '() ', 
+        'background: #09f; color: white;');
+}
+
+
+
+function logSavedNode(nodeKey)
+{
+    console.log(
+        '%c%s\n%c%s', 
+        'background: #fdb', 
+        nodeKey.substring(nodeTag.length+1), 
+        'background: #fed;',    
+        figGetPageData(nodeKey, false)
+            .replace('{\n', '')
+            .replace('\n}', '')
+            .replace('[\n', '')
+            .replace('\n  ]', ''));
+}
+
+
+
+function logSavedConn(connKey)
+{
+    let conn = '';
+
+    const parts = connKey.substring(connTag.length+1).split(' ');
+
+    for (let i = 0; i < parts.length; i++)
+    {
+        conn += parts[i];
+
+             if (i == 1)             conn += ' -> ';
+        else if (i < parts.length-1) conn += ' ';
+    }
+    
+    console.log(
+        '%c%s', 
+        'background: #cfc', 
+        conn); 
+}
+
+
+
+function logRequest(request)
+{
+    console.log(
+        '%c%s', 
+        'background: #60aa60; color: #fff', 
+        JSON.stringify(request)
+            .replaceAll('""', '\'\'')
+            .replaceAll('"', '')
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll(',', ' '));
+}
+
+
+
+function logUpdateValues(values)
+{
+    console.log(
+        '%cvalues', 
+        'background: #e70; color: white;', 
+        values);
+}
 
 
 const INTER_STEP   = 0,
@@ -4354,17 +4439,7 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 function genRequest(req, settings)
 {
     if (settings.logRequests)
-    {
-        console.log(
-            '%c%s', 
-            'background: #60aa60; color: #fff', 
-            JSON.stringify(req)
-                .replaceAll('""', '\'\'')
-                .replaceAll('"', '')
-                .replaceAll('[', '')
-                .replaceAll(']', '')
-                .replaceAll(',', ' '));
-    }
+        logRequest(req);
 
 
     const updateNodeId     = req[0];
@@ -8747,6 +8822,20 @@ function isLastInArray(array, item)
 
 
 
+function pushUnique(array, item)
+{
+    if (Array.isArray(item))
+    {
+        items
+            .filter(i => !array.includes(i))
+            .forEach(i => array.push(i));
+    }
+    else if (!array.includes(item))
+        array.push(item);
+}
+
+
+
 function clearChildren(parent) 
 {
     while (parent.firstChild)
@@ -9186,6 +9275,77 @@ function writeTextToClipboard(str)
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 
+
+
+function logFunction(funcName)
+{
+    console.log(
+        '%c ' + funcName + '() ', 
+        'background: #09f; color: white;');
+}
+
+
+
+function logSavedNode(nodeKey)
+{
+    console.log(
+        '%c%s\n%c%s', 
+        'background: #fdb', 
+        nodeKey.substring(nodeTag.length+1), 
+        'background: #fed;',    
+        figGetPageData(nodeKey, false)
+            .replace('{\n', '')
+            .replace('\n}', '')
+            .replace('[\n', '')
+            .replace('\n  ]', ''));
+}
+
+
+
+function logSavedConn(connKey)
+{
+    let conn = '';
+
+    const parts = connKey.substring(connTag.length+1).split(' ');
+
+    for (let i = 0; i < parts.length; i++)
+    {
+        conn += parts[i];
+
+             if (i == 1)             conn += ' -> ';
+        else if (i < parts.length-1) conn += ' ';
+    }
+    
+    console.log(
+        '%c%s', 
+        'background: #cfc', 
+        conn); 
+}
+
+
+
+function logRequest(request)
+{
+    console.log(
+        '%c%s', 
+        'background: #60aa60; color: #fff', 
+        JSON.stringify(request)
+            .replaceAll('""', '\'\'')
+            .replaceAll('"', '')
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .replaceAll(',', ' '));
+}
+
+
+
+function logUpdateValues(values)
+{
+    console.log(
+        '%cvalues', 
+        'background: #e70; color: white;', 
+        values);
+}
 
 
 // Observer = 2°
@@ -13896,7 +14056,10 @@ graphView.setNodeTransform = function(node, nodeLeft, nodeTop, nodeRect)
 
 graphView.updateNodeWires = function(wires)
 {
-    const pOut    = [];            
+    //logFunction('updateNodeWires');
+
+
+    const pOut    = [];
     const pIn     = [];
     
     const cw      = graphView.clientWidth;
@@ -22430,9 +22593,6 @@ extends Action
         this.inputNodeId           = input.node.id;
         this.inputIndex            = input.index;
 
-        this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
-
         this.oldInputValues = 
             input.getValuesForUndo
             ? input.getValuesForUndo()
@@ -22443,6 +22603,10 @@ extends Action
     
     do()
     {
+        this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
+        this.oldInputActiveNodeIds = getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id);
+
+
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
             this.inputNode. inputs [this. inputIndex],
@@ -22451,25 +22615,34 @@ extends Action
 
         this.newActiveNodeIds = [];
 
+        const updatedNodes = [];
+
+
         if (    this.oldOutputNode
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
-            uiMakeNodeActive(this.oldOutputNode);
+            pushUnique(updatedNodes, ...uiMakeNodeActive(this.oldOutputNode));
+            pushUnique(updatedNodes, this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
-            pushUpdate([this.oldOutputNode]);
-            //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
+
+
+        console.assert(this.oldOutputActiveNodeId != '');
+        pushUnique(updatedNodes, nodeFromId(this.oldOutputActiveNodeId));
 
 
         const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+        {
+            pushUnique(updatedNodes, ...uiMakeNodeActive(nodeFromId(id)));
+            pushUnique(updatedNodes, nodeFromId(id));
+        }
 
-
-        // graphView.updateNodeTransform(this.inputNode);
-        pushUpdate([this.inputNode]);
+        
+        uiSaveNodes(updatedNodes.map(n => n.id));
+        pushUpdate(updatedNodes);
     }
 
 
@@ -22494,19 +22667,38 @@ extends Action
             this.inputNode.params[param[0]].setValue(param[1], true, true, false);
 
 
-        // graphView.updateNodeTransform(this.inputNode);
-        pushUpdate([this.inputNode]);
-
+        const updatedNodes = [];
 
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+        {
+            const node = nodeFromId(id);
+            pushUnique(updatedNodes, ...uiMakeNodePassive(node));
+            pushUnique(updatedNodes, node);
+        }
 
         for (const id of this.oldInputActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+        {
+            const node = nodeFromId(id);
+            pushUnique(updatedNodes, ...uiMakeNodeActive(node));
+            pushUnique(updatedNodes, node);
+        }
 
         if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
-            uiMakeNodeActive(nodeFromId(this.oldOutputActiveNodeId));
-    }
+        {
+            const node = nodeFromId(this.oldOutputActiveNodeId);
+            pushUnique(updatedNodes, ...uiMakeNodeActive(node));
+            pushUnique(updatedNodes, node);
+        }
+
+
+        uiSaveNodes(updatedNodes.map(n => n.id));
+        pushUpdate([this.inputNode]);
+ 
+
+        // cleanup
+        this.oldOutputActiveNodeId = [];
+        this.oldInputActiveNodeIds = [];
+   }
 }
 
 
@@ -25394,18 +25586,18 @@ function uiUpdateSavedConnectionsToNode(nodeId)
 
 function uiMakeNodeActive(node)
 {
+    const prevActive = [];
+
+    if (node.active)
+        prevActive.push(node);
+
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 
     node.makeActive();
-
-    // uiPostMessageToFigma({
-    //     cmd:   'figSaveActiveNode',
-    //     nodeId: node.id
-    // });
-
     node.updateNode();
-    //pushUpdate([node]);
+
+    return prevActive;
 }
 
 
@@ -25443,24 +25635,35 @@ function uiMakeNodeActive(node)
 
 function uiMakeNodePassive(node)
 {
-    //if (node.active)
-    //    uiDeleteObjects([node.id]);
+    const prevActive = [];
 
-    node.makePassive();
-    node.updateNode();
+    if (node.active)
+    {
+        prevActive.push(node);
+
+        //if (node.active)
+        //    uiDeleteObjects([node.id]);
+
+        node.makePassive();
+        node.updateNode();
+    }
+
+    return prevActive;
 }
 
 
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
+    const prevActive = [];
+
     for (const input of node.inputs)
     {
         if (input.connected)
         {
             //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.node);
-            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
+            prevActive.push(...uiMakeNodePassive(input.connectedOutput.node));
+            prevActive.push(...uiMakeNodeLeftPassive(input.connectedOutput.node, node));
         }
     }
 
@@ -25476,18 +25679,22 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
     //         }
     //     }
     // }
+
+    return prevActive;
 }
 
 
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
+    const prevActive = [];
+
     for (const output of node.outputs)
     {
         for (const connInput of output.connectedInputs)
         {
-            uiMakeNodePassive(connInput.node);
-            uiMakeNodeRightPassive(connInput.node, node);
+            prevActive.push(...uiMakeNodePassive(connInput.node));
+            prevActive.push(...uiMakeNodeRightPassive(connInput.node, node));
         }
     }
 
@@ -25496,11 +25703,12 @@ function uiMakeNodeRightPassive(node, fromNode = null)
         if (   input.connected
             && input.connectedOutput.node != fromNode)
         {
-            //console.log(input.connectedOutput);
-            uiMakeNodePassive(input.connectedOutput.node);
-            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
+            prevActive.push(...uiMakeNodePassive(input.connectedOutput.node));
+            prevActive.push(...uiMakeNodeLeftPassive(input.connectedOutput.node, node));
         }
     }
+
+    return prevActive;
 }
 
 
@@ -25789,7 +25997,7 @@ function uiUpdateGraph()
 function uiUpdateValues(values)
 {
     if (settings.logValueUpdates)
-        console.log('%cvalues', 'background: #e70; color: white;', values);
+        logUpdateValues(values);
     
 
     const updateNodeId     = values[0];
