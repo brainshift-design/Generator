@@ -2231,6 +2231,29 @@ const connTag = 'G_CONN';
 
 
 
+function isTagKey(key, tag) 
+{
+    return key.substring(0, tag.length+1) == tag + ' ';
+}
+
+
+
+function noTag(key, tag)
+{
+    return key.substring(tag.length+1);
+}
+
+
+
+function isNodeKey(key) { return isTagKey(key, nodeTag); }
+function isConnKey(key) { return isTagKey(key, connTag); }
+
+
+
+function noNodeTag(key) { return noTag(key, nodeTag); }
+function noConnTag(key) { return noTag(key, connTag); }
+
+
 function nodeArrayToString(nodes)
 {
     let str = '';
@@ -2259,7 +2282,7 @@ function logSavedNode(nodeKey)
     console.log(
         '%c%s\n%c%s', 
         'background: #fdb', 
-        nodeKey.substring(nodeTag.length+1), 
+        noNodeTag(nodeKey), 
         'background: #fed;',    
         figGetPageData(nodeKey, false)
             .replace('{\n', '')
@@ -2274,7 +2297,7 @@ function logSavedConn(connKey)
 {
     let conn = '';
 
-    const parts = connKey.substring(connTag.length+1).split(' ');
+    const parts = noConnTag(connKey).split(' ');
 
     for (let i = 0; i < parts.length; i++)
     {

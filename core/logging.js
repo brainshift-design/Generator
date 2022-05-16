@@ -12,7 +12,7 @@ function logSavedNode(nodeKey)
     console.log(
         '%c%s\n%c%s', 
         'background: #fdb', 
-        nodeKey.substring(nodeTag.length+1), 
+        noNodeTag(nodeKey), 
         'background: #fed;',    
         figGetPageData(nodeKey, false)
             .replace('{\n', '')
@@ -27,7 +27,7 @@ function logSavedConn(connKey)
 {
     let conn = '';
 
-    const parts = connKey.substring(connTag.length+1).split(' ');
+    const parts = noConnTag(connKey).split(' ');
 
     for (let i = 0; i < parts.length; i++)
     {

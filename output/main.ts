@@ -3,6 +3,29 @@ const connTag = 'G_CONN';
 
 
 
+function isTagKey(key, tag) 
+{
+    return key.substring(0, tag.length+1) == tag + ' ';
+}
+
+
+
+function noTag(key, tag)
+{
+    return key.substring(tag.length+1);
+}
+
+
+
+function isNodeKey(key) { return isTagKey(key, nodeTag); }
+function isConnKey(key) { return isTagKey(key, connTag); }
+
+
+
+function noNodeTag(key) { return noTag(key, nodeTag); }
+function noConnTag(key) { return noTag(key, connTag); }
+
+
 function logFunction(funcName)
 {
     console.log(
@@ -17,7 +40,7 @@ function logSavedNode(nodeKey)
     console.log(
         '%c%s\n%c%s', 
         'background: #fdb', 
-        nodeKey.substring(nodeTag.length+1), 
+        noNodeTag(nodeKey), 
         'background: #fed;',    
         figGetPageData(nodeKey, false)
             .replace('{\n', '')
@@ -32,7 +55,7 @@ function logSavedConn(connKey)
 {
     let conn = '';
 
-    const parts = connKey.substring(connTag.length+1).split(' ');
+    const parts = noConnTag(connKey).split(' ');
 
     for (let i = 0; i < parts.length; i++)
     {
@@ -498,8 +521,8 @@ function figClearPageData(key)
 
 function figLoadNodesAndConns()
 {
-    const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0,   nodeTag.length+1) ==   nodeTag + ' ');
-    const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0,   connTag.length+1) ==   connTag + ' ');
+    const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+    const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
     
     const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
@@ -538,8 +561,8 @@ function figRemoveSavedNodesAndConns(nodeIds)
 
 function figRemoveAllSavedNodesAndConns()
 {
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, nodeTag.length+1) == nodeTag+' ');
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag+' ');
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
     for (const key of nodeKeys) figClearPageData(key);
     for (const key of connKeys) figClearPageData(key);
@@ -561,7 +584,7 @@ function figLogAllSavedNodes(settings)
         return;
 
     figma.currentPage.getPluginDataKeys()
-        .filter(k => k.substring(0, nodeTag.length+1) == nodeTag+' ')
+        .filter(k => noNodeTag(k))
         .forEach(k => logSavedNode(k));
 }
 
@@ -572,9 +595,24 @@ function figLogAllSavedConns(settings)
     if (!settings.logStorage)
         return;
 
-    figma.currentPage.getPluginDataKeys()
-        .filter(k => k.substring(0, connTag.length+1) == connTag+' ')
-        .forEach(k => logSavedConn(k));
+    const connKeys = figma.currentPage.getPluginDataKeys()
+        .filter(k => isConnKey(k));
+        
+    connKeys.sort((key1, key2) => 
+    {
+        const p1 = noConnTag(key1).split(' ');
+        const p2 = noConnTag(key2).split(' ');
+
+        if (p1[2] == p2[0]) return -1;
+        if (p2[2] == p1[0]) return  1;
+
+        if (p1[2] != p2[2]) return p1[2] < p2[2] ? -1 : 1;
+        if (p1[3] != p2[3]) return parseInt(p1[3]) - parseInt(p2[3]);
+        
+        return 0;
+    });
+    
+    connKeys.forEach(k => logSavedConn(k));
 
     // console.log(
     //     '%c-----------------', 
@@ -603,7 +641,7 @@ function figRemoveSavedConnection(name)
 
 function figRemoveSavedConnectionsToNode(nodeId)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => k.substring(0, connTag.length+1) == connTag + ' ');
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
     for (const key of connKeys)
     {
