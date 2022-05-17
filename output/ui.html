@@ -22716,6 +22716,9 @@ extends Action
 
         uiSaveNodes(updatedNodes.map(n => n.id));
         pushUpdate(updatedNodes);
+
+
+        uiLogAllSavedConns();
     }
 
 
@@ -24756,12 +24759,12 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
         _conns.sort((c1, c2) => 
         {
-            if (c1.inputNodeId == c2.outputNodeId) return -1;
-            if (c2.inputNodeId == c1.outputNodeId) return  1;
-
             if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
             if (c1.inputIndex  != c2.inputIndex  ) return c1.inputIndex - c2.inputIndex;
             
+            if (c1.inputNodeId == c2.outputNodeId) return -1;
+            if (c2.inputNodeId == c1.outputNodeId) return  1;
+
             return 0;
         });
 
@@ -24833,7 +24836,8 @@ function resolveLoadConnections(nodes, _connections, first, last)
         {
             for (let i = first; i < last; i++)
             {
-                const _conn      = _connections[i];
+                const _conn = _connections[i];
+
                 const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 

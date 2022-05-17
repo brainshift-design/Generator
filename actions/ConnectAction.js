@@ -93,6 +93,9 @@ extends Action
 
         uiSaveNodes(updatedNodes.map(n => n.id));
         pushUpdate(updatedNodes);
+
+
+        uiLogAllSavedConns();
     }
 
 
