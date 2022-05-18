@@ -727,9 +727,8 @@ function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
 
 function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
 {
-    /*  This is different from LeftOnly in that it will go back and check
-        the left node, but then it will also check the right nodes
-        of that left node. */
+    /*  This is different from LeftOnly in that it will check the left node, 
+        but then it will also check the right nodes of that left node. */
 
     if (node.active) return node;
 

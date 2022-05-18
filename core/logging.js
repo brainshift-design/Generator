@@ -47,15 +47,19 @@ function logSavedConn(connKey)
 
 function logRequest(request)
 {
+    // typescript doesn't implement String.replaceAll(), 
+    // and because this file is included by both JS and TS,
+    // I'm using .split().join()
+
     console.log(
         '%c%s', 
         'background: #60aa60; color: #fff', 
-        JSON.stringify(request)
-            .replaceAll('""', '\'\'')
-            .replaceAll('"', '')
-            .replaceAll('[', '')
-            .replaceAll(']', '')
-            .replaceAll(',', ' '));
+        JSON.stringify(request)        
+            .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
+            .split('"') .join('')      //.replaceAll('"', '')
+            .split('[') .join('')      //.replaceAll('[', '')
+            .split(']') .join('')      //.replaceAll(']', '')
+            .split(',') .join(' '));   //.replaceAll(',', ' '));
 }
 
 

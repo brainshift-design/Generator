@@ -69,8 +69,6 @@ extends Action
         }
 
 
-        //const inputNodeIds = [];
-        
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -101,17 +99,14 @@ extends Action
                 });
 
                 for (const input of connectedInputs)
-                {
                     this.disconnect(input);
-
-                    //if (input.node.variableInputs)
-                    //    inputNodeIds.push(input.node.id);
-                }
             }
         }
 
+        
         uiDeleteNodes(this.nodeIds, this.id);
-        //uiRemoveSavedNodesAndConns(inputNodeIds);
+
+        uiSaveNodes(this.newActiveNodeIds);
     }
 
 
@@ -129,8 +124,6 @@ extends Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
         
-        this.newActiveNodeIds = [];
-
         
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
@@ -139,7 +132,12 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
     
 
-        uiSaveNodes(this.nodeIds);
+        uiSaveNodes([
+            ...this.newActiveNodeIds,
+            ...this.oldActiveNodeIds]);
+
+
+        this.newActiveNodeIds = [];
     }
 
 
@@ -206,18 +204,18 @@ extends Action
         uiDisconnect(input);
 
 
-        if (getActiveNodesInTreeFromNode(input.node))
-        {
-            uiMakeNodeActive(input.node);
+        // if (getActiveNodeLeftInTreeFromNode(input.node))
+        // {
+        //     uiMakeNodeActive(input.node);
 
-            if (!this.newActiveNodeIds.includes(input.node.id))
-                this.newActiveNodeIds.push(input.node.id);
+        //     if (!this.newActiveNodeIds.includes(input.node.id))
+        //         this.newActiveNodeIds.push(input.node.id);
 
-            pushUpdate([input.node]);
-        }
+        //     pushUpdate([input.node]);
+        // }
 
 
-        if (!getActiveNodeInTreeFromNode(output.node))
+        if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
         {
             uiMakeNodeActive(output.node);
 

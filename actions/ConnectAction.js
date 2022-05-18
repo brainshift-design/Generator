@@ -72,7 +72,6 @@ extends Action
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(this.oldOutputNode));
             pushUnique(updatedNodes, this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
         }
@@ -86,16 +85,12 @@ extends Action
         for (const id of oldInputActiveNodeIds)
         {
             uiMakeNodeActive(nodeFromId(id));
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(nodeFromId(id)));
             pushUnique(updatedNodes, nodeFromId(id));
         }
 
 
         uiSaveNodes(updatedNodes.map(n => n.id));
         pushUpdate(updatedNodes);
-
-
-        uiLogAllSavedConns();
     }
 
 
@@ -126,7 +121,6 @@ extends Action
         {
             const node = nodeFromId(id);
             uiMakeNodePassive(node);
-            //pushUnique(updatedNodes, ...uiMakeNodePassive(node));
             pushUnique(updatedNodes, node);
         }
 
@@ -134,7 +128,6 @@ extends Action
         {
             const node = nodeFromId(id);
             uiMakeNodeActive(node);
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(node));
             pushUnique(updatedNodes, node);
         }
 
@@ -142,7 +135,6 @@ extends Action
         {
             const node = nodeFromId(this.oldOutputActiveNodeId);
             uiMakeNodeActive(node);
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(node));
             pushUnique(updatedNodes, node);
         }
 

@@ -367,3 +367,10 @@ function nodeFromId(id)
 {
     return graph.nodes.find(n => n.id == id);
 }
+
+
+
+function nodesFromIds(ids)
+{
+    return ids.map(id => nodeFromId(id));
+}

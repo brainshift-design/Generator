@@ -3876,15 +3876,19 @@ function logSavedConn(connKey)
 
 function logRequest(request)
 {
+    // typescript doesn't implement String.replaceAll(), 
+    // and because this file is included by both JS and TS,
+    // I'm using .split().join()
+
     console.log(
         '%c%s', 
         'background: #60aa60; color: #fff', 
-        JSON.stringify(request)
-            .replaceAll('""', '\'\'')
-            .replaceAll('"', '')
-            .replaceAll('[', '')
-            .replaceAll(']', '')
-            .replaceAll(',', ' '));
+        JSON.stringify(request)        
+            .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
+            .split('"') .join('')      //.replaceAll('"', '')
+            .split('[') .join('')      //.replaceAll('[', '')
+            .split(']') .join('')      //.replaceAll(']', '')
+            .split(',') .join(' '));   //.replaceAll(',', ' '));
 }
 
 
@@ -9400,15 +9404,19 @@ function logSavedConn(connKey)
 
 function logRequest(request)
 {
+    // typescript doesn't implement String.replaceAll(), 
+    // and because this file is included by both JS and TS,
+    // I'm using .split().join()
+
     console.log(
         '%c%s', 
         'background: #60aa60; color: #fff', 
-        JSON.stringify(request)
-            .replaceAll('""', '\'\'')
-            .replaceAll('"', '')
-            .replaceAll('[', '')
-            .replaceAll(']', '')
-            .replaceAll(',', ' '));
+        JSON.stringify(request)        
+            .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
+            .split('"') .join('')      //.replaceAll('"', '')
+            .split('[') .join('')      //.replaceAll('[', '')
+            .split(']') .join('')      //.replaceAll(']', '')
+            .split(',') .join(' '));   //.replaceAll(',', ' '));
 }
 
 
@@ -16468,6 +16476,13 @@ function nodeFromId(id)
 }
 
 
+
+function nodesFromIds(ids)
+{
+    return ids.map(id => nodeFromId(id));
+}
+
+
 // function activeNodeInTree(node) 
 // { 
 //     const left  = activeNodeLeft(node);  if (!!left ) return left;
@@ -22695,7 +22710,6 @@ extends Action
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(this.oldOutputNode));
             pushUnique(updatedNodes, this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
         }
@@ -22709,16 +22723,12 @@ extends Action
         for (const id of oldInputActiveNodeIds)
         {
             uiMakeNodeActive(nodeFromId(id));
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(nodeFromId(id)));
             pushUnique(updatedNodes, nodeFromId(id));
         }
 
 
         uiSaveNodes(updatedNodes.map(n => n.id));
         pushUpdate(updatedNodes);
-
-
-        uiLogAllSavedConns();
     }
 
 
@@ -22749,7 +22759,6 @@ extends Action
         {
             const node = nodeFromId(id);
             uiMakeNodePassive(node);
-            //pushUnique(updatedNodes, ...uiMakeNodePassive(node));
             pushUnique(updatedNodes, node);
         }
 
@@ -22757,7 +22766,6 @@ extends Action
         {
             const node = nodeFromId(id);
             uiMakeNodeActive(node);
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(node));
             pushUnique(updatedNodes, node);
         }
 
@@ -22765,7 +22773,6 @@ extends Action
         {
             const node = nodeFromId(this.oldOutputActiveNodeId);
             uiMakeNodeActive(node);
-            //pushUnique(updatedNodes, ...uiMakeNodeActive(node));
             pushUnique(updatedNodes, node);
         }
 
@@ -22912,8 +22919,6 @@ extends Action
         }
 
 
-        //const inputNodeIds = [];
-        
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -22944,17 +22949,14 @@ extends Action
                 });
 
                 for (const input of connectedInputs)
-                {
                     this.disconnect(input);
-
-                    //if (input.node.variableInputs)
-                    //    inputNodeIds.push(input.node.id);
-                }
             }
         }
 
+        
         uiDeleteNodes(this.nodeIds, this.id);
-        //uiRemoveSavedNodesAndConns(inputNodeIds);
+
+        uiSaveNodes(this.newActiveNodeIds);
     }
 
 
@@ -22972,8 +22974,6 @@ extends Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
         
-        this.newActiveNodeIds = [];
-
         
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
@@ -22982,7 +22982,12 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
     
 
-        uiSaveNodes(this.nodeIds);
+        uiSaveNodes([
+            ...this.newActiveNodeIds,
+            ...this.oldActiveNodeIds]);
+
+
+        this.newActiveNodeIds = [];
     }
 
 
@@ -23049,18 +23054,18 @@ extends Action
         uiDisconnect(input);
 
 
-        if (getActiveNodesInTreeFromNode(input.node))
-        {
-            uiMakeNodeActive(input.node);
+        // if (getActiveNodeLeftInTreeFromNode(input.node))
+        // {
+        //     uiMakeNodeActive(input.node);
 
-            if (!this.newActiveNodeIds.includes(input.node.id))
-                this.newActiveNodeIds.push(input.node.id);
+        //     if (!this.newActiveNodeIds.includes(input.node.id))
+        //         this.newActiveNodeIds.push(input.node.id);
 
-            pushUpdate([input.node]);
-        }
+        //     pushUpdate([input.node]);
+        // }
 
 
-        if (!getActiveNodeInTreeFromNode(output.node))
+        if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
         {
             uiMakeNodeActive(output.node);
 
@@ -25852,9 +25857,8 @@ function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
 
 function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
 {
-    /*  This is different from LeftOnly in that it will go back and check
-        the left node, but then it will also check the right nodes
-        of that left node. */
+    /*  This is different from LeftOnly in that it will check the left node, 
+        but then it will also check the right nodes of that left node. */
 
     if (node.active) return node;
 
