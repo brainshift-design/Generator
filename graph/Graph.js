@@ -342,7 +342,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case NUMBER_MULTIPLY:    node = new OpMultiply();         break;
         case NUMBER_DIVIDE:      node = new OpDivide();           break;
         case NUMBER_MODULO:      node = new OpModulo();           break;
-        case NUMBER_POWER:       node = new OpExponent();         break;
+        case NUMBER_EXPONENT:    node = new OpExponent();         break;
         case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
         // case NUMBER_RANDOM:   node = new OpRandom(); break;
         

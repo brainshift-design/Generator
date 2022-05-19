@@ -9,6 +9,7 @@
 
     ../generator/generator.js
     ../generator/generator parse.js
+    ../generator/generator parse math.js
 
     [../autojoin/color.aj]
     ../operators/color/OpColor spaces.js

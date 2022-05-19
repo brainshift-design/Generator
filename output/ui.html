@@ -1302,23 +1302,23 @@ div
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,           btnCreateNumber));           this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
-    <button class='menuButton' id='btnCreateMinMax'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MINMAX,           btnCreateMinMax));           this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
-    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,              btnCreateAdd));              this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
-    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,         btnCreateSubtract));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
-    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,         btnCreateMultiply));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
-    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,           btnCreateDivide));           this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
-    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,           btnCreateModulo));           this.blur();'><span style='font-size: 15px;'>%</span></button>
-    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_POWER,         btnCreateExponent));         this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
-    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE,      btnCreateInterpolate));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber));           this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
+    <button class='menuButton' id='btnCreateMinMax'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MINMAX,      btnCreateMinMax));           this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
+    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd));              this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
+    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
+    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
+    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide));           this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
+    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo));           this.blur();'><span style='font-size: 15px;'>%</span></button>
+    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent));         this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
+    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate));      this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,            btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
-    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnCreateColorInterpolate)); this.blur();'></button>
-    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,    btnCreateValidateColor));    this.blur();'></span></button>
-    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,      btnCreateWebContrast));      this.blur();'></button>
-    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,       btnCreateColorblind));       this.blur();'></button>
+    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
+    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate)); this.blur();'></button>
+    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor));    this.blur();'></span></button>
+    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateWebContrast));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,        btnCreateRectangle));        this.blur();'>RECT</button>
+    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle));        this.blur();'>RECT</button>
     <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
@@ -1589,7 +1589,7 @@ function rgbFromType(type, active)
         case NUMBER_MULTIPLY:
         case NUMBER_DIVIDE:
         case NUMBER_MODULO:
-        case NUMBER_POWER:
+        case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
             return active 
                  ? rgbActiveNumber 
@@ -4089,7 +4089,7 @@ const NUMBER_SUBTRACT    = 'SUB';   // count N...
 const NUMBER_MULTIPLY    = 'MUL';   // count N...
 const NUMBER_DIVIDE      = 'DIV';   // count N...
 const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_EXPONENT    = 'EXP';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
@@ -4533,9 +4533,14 @@ function genParseRequest(req, parse)
     //console.log('next', next);
 
 
-         if (next == NUMBER_VALUE) return genNumValue (req, parse);
-    else if (next == NUMBER      ) return genNumber   (req, parse);
-    else if (next == NUMBER_ADD  ) return genNumberAdd(req, parse);
+         if (next == NUMBER_VALUE   ) return genNumValue      (req, parse);
+    else if (next == NUMBER         ) return genNumber        (req, parse);
+    else if (next == NUMBER_ADD     ) return genNumberAdd     (req, parse);
+    else if (next == NUMBER_SUBTRACT) return genNumberSubtract(req, parse);
+    else if (next == NUMBER_MULTIPLY) return genNumberMultiply(req, parse);
+    else if (next == NUMBER_DIVIDE  ) return genNumberDivide  (req, parse);
+    else if (next == NUMBER_MODULO  ) return genNumberModulo  (req, parse);
+    else if (next == NUMBER_EXPONENT) return genNumberExponent(req, parse);
 
     else if (next == RECTANGLE   ) return genRectangle(req, parse);
 
@@ -4544,6 +4549,24 @@ function genParseRequest(req, parse)
     return null;
 }
 
+
+
+function genRectangle(req, parse)
+{
+    genPostMessageToUi({ 
+        cmd:    'uiUpdateObjects',
+        objects: [{
+            type:   OBJ_RECT,
+            id:     nextGenObjectId++,
+            nodeId: req[i+1],
+            x:      req[i+2],
+            y:      req[i+3],
+            width:  req[i+4],
+            height: req[i+5],
+            angle:  req[i+6],
+            round:  req[i+7] }]
+    });
+}
 
 
 function genNumValue(req, parse)
@@ -4597,21 +4620,208 @@ function genNumberAdd(req, parse)
 
 
 
-function genRectangle(req, parse)
+function genNumberSubtract(req, parse)
 {
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateObjects',
-        objects: [{
-            type:   OBJ_RECT,
-            id:     nextGenObjectId++,
-            nodeId: req[i+1],
-            x:      req[i+2],
-            y:      req[i+3],
-            width:  req[i+4],
-            height: req[i+5],
-            angle:  req[i+6],
-            round:  req[i+7] }]
-    });
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            result -= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberMultiply(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        result = 1;
+        maxDec = 0;
+
+        for (let i = 0; i < nValues; i++)
+        {
+            const num = genParseRequest(req, parse);
+
+            result *= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberDivide(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+            if (num.num == 0) { num.num = Number.NaN; break; }
+            
+            result /= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberModulo(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            if (num.num == 0) 
+            { 
+                result = Number.NaN; 
+                maxDec = 0;
+                break; 
+            }
+
+            result %= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberExponent(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+
+    
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            result = Math.pow(result, num.num);
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
 }
 
 
@@ -7127,7 +7337,7 @@ function rgbFromType(type, active)
         case NUMBER_MULTIPLY:
         case NUMBER_DIVIDE:
         case NUMBER_MODULO:
-        case NUMBER_POWER:
+        case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
             return active 
                  ? rgbActiveNumber 
@@ -11002,7 +11212,7 @@ const NUMBER_SUBTRACT    = 'SUB';   // count N...
 const NUMBER_MULTIPLY    = 'MUL';   // count N...
 const NUMBER_DIVIDE      = 'DIV';   // count N...
 const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_EXPONENT    = 'EXP';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
@@ -16469,7 +16679,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case NUMBER_MULTIPLY:    node = new OpMultiply();         break;
         case NUMBER_DIVIDE:      node = new OpDivide();           break;
         case NUMBER_MODULO:      node = new OpModulo();           break;
-        case NUMBER_POWER:       node = new OpExponent();         break;
+        case NUMBER_EXPONENT:    node = new OpExponent();         break;
         case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
         // case NUMBER_RANDOM:   node = new OpRandom(); break;
         
@@ -19107,51 +19317,6 @@ extends OperatorBase
 
 
 
-    // refresh()
-    // {
-    //     super.refresh();
-        
-    //     //this._sampled = Number.NaN;
-    // }
-
-
-
-    // updateData()
-    // {
-    //     let maxDec = 0;
-
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //         {
-    //             //input.connectedOutput.node.updateData();
-
-    //             // ^ this could have removed one or more inputs and connections
-    //             // in which case abort
-    //             if (!input.connected)
-    //             {
-    //                 super.updateData();
-    //                 return;
-    //             }
-
-    //             maxDec = Math.max(maxDec, input.data.decimals);
-    //         }
-    //     }
-
-
-    //     const result = this.getResult();
-
-    //     this.outputs[0]._data = dataFromNumber(result, maxDec);
-
-    //     this.#paramValue.control.setDecimals(maxDec);
-    //     this.#paramValue.setValue(result, false, true, false) ;
-
-        
-    //     super.updateData()
-    // }
-
-
-
     output_genRequest()
     {
         // 'this' is the output
@@ -19199,13 +19364,6 @@ extends OperatorBase
         this._symbol.style.color      = colorStyleRgb(colText);
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
     }
-
-
-
-    // getResult()
-    // {
-    //     return Number.NaN;
-    // }
 
 
 
@@ -19267,7 +19425,6 @@ function onConnectInput(node)
 {
     node.addNewInput();
     node.updateNode();
-    //graphView.updateNodeTransform(node);
 }
 
 
@@ -19287,18 +19444,6 @@ extends OpArithmetic
     {
         super(NUMBER_ADD, 'add', '+');
     }
-    
-    
-    
-    // getResult()
-    // {
-    //     let result = 0;
-
-    //     for (let i = 0; i < this.inputs.length-1; i++)
-    //         result += this.inputs[i].data.value;
-
-    //     return result;
-    // }
 }
 
 
@@ -19307,23 +19452,23 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('subtract', 'sub', '−');
+        super(NUMBER_SUBTRACT, 'sub', '−');
     }
     
     
     
-    getResult()
-    {
-        if (this.inputs.length-1 == 0)
-            return 0;
+    // getResult()
+    // {
+    //     if (this.inputs.length-1 == 0)
+    //         return 0;
 
-        let result = this.inputs[0].data.value;
+    //     let result = this.inputs[0].data.value;
 
-        for (let i = 1; i < this.inputs.length-1; i++)
-            result -= this.inputs[i].data.value;
+    //     for (let i = 1; i < this.inputs.length-1; i++)
+    //         result -= this.inputs[i].data.value;
 
-        return result;
-    }
+    //     return result;
+    // }
 }
 
 
@@ -19332,23 +19477,23 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('multiply', 'mul', '×');
+        super(NUMBER_MULTIPLY, 'mul', '×');
     }
     
     
     
-    getResult()
-    {
-        if (this.inputs.length-1 == 0)
-            return 0;
+    // getResult()
+    // {
+    //     if (this.inputs.length-1 == 0)
+    //         return 0;
 
-        let result = 1;
+    //     let result = 1;
 
-        for (let i = 0; i < this.inputs.length-1; i++)
-            result *= this.inputs[i].data.value;
+    //     for (let i = 0; i < this.inputs.length-1; i++)
+    //         result *= this.inputs[i].data.value;
 
-        return result;
-    }
+    //     return result;
+    // }
 }
 
 
@@ -19357,27 +19502,27 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('divide', 'div', '÷');
+        super(NUMBER_DIVIDE, 'div', '÷');
     }
     
     
     
-    getResult()
-    {
-        if (this.inputs.length-1 == 0)
-            return 0;
+    // getResult()
+    // {
+    //     if (this.inputs.length-1 == 0)
+    //         return 0;
 
-        let result = this.inputs[0].data.value;
+    //     let result = this.inputs[0].data.value;
 
-        for (let i = 1; i < this.inputs.length-1; i++)
-        {
-            const div = this.inputs[i].data.value;
-            if (div == 0) return Number.NaN;
-            result /= div;
-        }
+    //     for (let i = 1; i < this.inputs.length-1; i++)
+    //     {
+    //         const div = this.inputs[i].data.value;
+    //         if (div == 0) return Number.NaN;
+    //         result /= div;
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
 }
 
 
@@ -19386,27 +19531,27 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('modulo', 'mod', '%');
+        super(NUMBER_MODULO, 'mod', '%');
     }
     
     
     
-    getResult()
-    {
-        if (this.inputs.length-1 == 0)
-            return 0;
+    // getResult()
+    // {
+    //     if (this.inputs.length-1 == 0)
+    //         return 0;
 
-        let result = this.inputs[0].data.value;
+    //     let result = this.inputs[0].data.value;
 
-        for (let i = 1; i < this.inputs.length-1; i++)
-        {
-            const div = this.inputs[i].data.value;
-            if (div == 0) return Number.NaN;
-            result %= div;
-        }
+    //     for (let i = 1; i < this.inputs.length-1; i++)
+    //     {
+    //         const div = this.inputs[i].data.value;
+    //         if (div == 0) return Number.NaN;
+    //         result %= div;
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
 
 
 
@@ -19432,23 +19577,23 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('exponent', 'exp', 'xʸ'); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_EXPONENT, 'exp', 'xʸ'); // placeholder symbol, actual symbol set in updateNode()
     }
     
     
     
-    getResult()
-    {
-        if (this.inputs.length-1 == 0)
-            return 0;
+    // getResult()
+    // {
+    //     if (this.inputs.length-1 == 0)
+    //         return 0;
             
-        let result = this.inputs[0].data.value;
+    //     let result = this.inputs[0].data.value;
 
-        for (let i = 1; i < this.inputs.length-1; i++)
-            result = Math.pow(result, this.inputs[i].data.value);
+    //     for (let i = 1; i < this.inputs.length-1; i++)
+    //         result = Math.pow(result, this.inputs[i].data.value);
 
-        return result;
-    }
+    //     return result;
+    // }
 
 
 

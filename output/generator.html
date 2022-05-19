@@ -30,7 +30,7 @@ function rgbFromType(type, active)
         case NUMBER_MULTIPLY:
         case NUMBER_DIVIDE:
         case NUMBER_MODULO:
-        case NUMBER_POWER:
+        case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
             return active 
                  ? rgbActiveNumber 
@@ -2530,7 +2530,7 @@ const NUMBER_SUBTRACT    = 'SUB';   // count N...
 const NUMBER_MULTIPLY    = 'MUL';   // count N...
 const NUMBER_DIVIDE      = 'DIV';   // count N...
 const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_POWER       = 'POW';   // count N...
+const NUMBER_EXPONENT    = 'EXP';   // count N...
 const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
 
 
@@ -2974,9 +2974,14 @@ function genParseRequest(req, parse)
     //console.log('next', next);
 
 
-         if (next == NUMBER_VALUE) return genNumValue (req, parse);
-    else if (next == NUMBER      ) return genNumber   (req, parse);
-    else if (next == NUMBER_ADD  ) return genNumberAdd(req, parse);
+         if (next == NUMBER_VALUE   ) return genNumValue      (req, parse);
+    else if (next == NUMBER         ) return genNumber        (req, parse);
+    else if (next == NUMBER_ADD     ) return genNumberAdd     (req, parse);
+    else if (next == NUMBER_SUBTRACT) return genNumberSubtract(req, parse);
+    else if (next == NUMBER_MULTIPLY) return genNumberMultiply(req, parse);
+    else if (next == NUMBER_DIVIDE  ) return genNumberDivide  (req, parse);
+    else if (next == NUMBER_MODULO  ) return genNumberModulo  (req, parse);
+    else if (next == NUMBER_EXPONENT) return genNumberExponent(req, parse);
 
     else if (next == RECTANGLE   ) return genRectangle(req, parse);
 
@@ -2985,6 +2990,24 @@ function genParseRequest(req, parse)
     return null;
 }
 
+
+
+function genRectangle(req, parse)
+{
+    genPostMessageToUi({ 
+        cmd:    'uiUpdateObjects',
+        objects: [{
+            type:   OBJ_RECT,
+            id:     nextGenObjectId++,
+            nodeId: req[i+1],
+            x:      req[i+2],
+            y:      req[i+3],
+            width:  req[i+4],
+            height: req[i+5],
+            angle:  req[i+6],
+            round:  req[i+7] }]
+    });
+}
 
 
 function genNumValue(req, parse)
@@ -3038,21 +3061,208 @@ function genNumberAdd(req, parse)
 
 
 
-function genRectangle(req, parse)
+function genNumberSubtract(req, parse)
 {
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateObjects',
-        objects: [{
-            type:   OBJ_RECT,
-            id:     nextGenObjectId++,
-            nodeId: req[i+1],
-            x:      req[i+2],
-            y:      req[i+3],
-            width:  req[i+4],
-            height: req[i+5],
-            angle:  req[i+6],
-            round:  req[i+7] }]
-    });
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            result -= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberMultiply(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        result = 1;
+        maxDec = 0;
+
+        for (let i = 0; i < nValues; i++)
+        {
+            const num = genParseRequest(req, parse);
+
+            result *= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberDivide(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+            if (num.num == 0) { num.num = Number.NaN; break; }
+            
+            result /= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberModulo(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            if (num.num == 0) 
+            { 
+                result = Number.NaN; 
+                maxDec = 0;
+                break; 
+            }
+
+            result %= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberExponent(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+
+    
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            result = Math.pow(result, num.num);
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
 }
 
 

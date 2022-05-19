@@ -61,66 +61,20 @@ function genParseRequest(req, parse)
     //console.log('next', next);
 
 
-         if (next == NUMBER_VALUE) return genNumValue (req, parse);
-    else if (next == NUMBER      ) return genNumber   (req, parse);
-    else if (next == NUMBER_ADD  ) return genNumberAdd(req, parse);
+         if (next == NUMBER_VALUE   ) return genNumValue      (req, parse);
+    else if (next == NUMBER         ) return genNumber        (req, parse);
+    else if (next == NUMBER_ADD     ) return genNumberAdd     (req, parse);
+    else if (next == NUMBER_SUBTRACT) return genNumberSubtract(req, parse);
+    else if (next == NUMBER_MULTIPLY) return genNumberMultiply(req, parse);
+    else if (next == NUMBER_DIVIDE  ) return genNumberDivide  (req, parse);
+    else if (next == NUMBER_MODULO  ) return genNumberModulo  (req, parse);
+    else if (next == NUMBER_EXPONENT) return genNumberExponent(req, parse);
 
     else if (next == RECTANGLE   ) return genRectangle(req, parse);
 
 
     parse.so++;
     return null;
-}
-
-
-
-function genNumValue(req, parse)
-{
-    parse.pos++;
-
-    return parseDec(req[parse.pos++]);
-}
-
-
-
-function genNumber(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const decimal = genParseRequest(req, parse);    
-
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
-}
-
-
-
-function genNumberAdd(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const nValues = req[parse.pos++];
-    
-
-    let result = 0;
-    let maxDec = 0;
-
-    for (let i = 0; i < nValues; i++)
-    {
-        const num = genParseRequest(req, parse);
-
-        result += num.num;
-        maxDec = Math.max(maxDec, num.dec);
-    }
-
-
-    const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
 }
 
 

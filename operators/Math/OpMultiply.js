@@ -3,21 +3,21 @@ extends OpArithmetic
 {
     constructor()
     {
-        super('multiply', 'mul', '×');
+        super(NUMBER_MULTIPLY, 'mul', '×');
     }
     
     
     
-    getResult()
-    {
-        if (this.inputs.length-1 == 0)
-            return 0;
+    // getResult()
+    // {
+    //     if (this.inputs.length-1 == 0)
+    //         return 0;
 
-        let result = 1;
+    //     let result = 1;
 
-        for (let i = 0; i < this.inputs.length-1; i++)
-            result *= this.inputs[i].data.value;
+    //     for (let i = 0; i < this.inputs.length-1; i++)
+    //         result *= this.inputs[i].data.value;
 
-        return result;
-    }
+    //     return result;
+    // }
 }

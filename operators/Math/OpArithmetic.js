@@ -79,51 +79,6 @@ extends OperatorBase
 
 
 
-    // refresh()
-    // {
-    //     super.refresh();
-        
-    //     //this._sampled = Number.NaN;
-    // }
-
-
-
-    // updateData()
-    // {
-    //     let maxDec = 0;
-
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //         {
-    //             //input.connectedOutput.node.updateData();
-
-    //             // ^ this could have removed one or more inputs and connections
-    //             // in which case abort
-    //             if (!input.connected)
-    //             {
-    //                 super.updateData();
-    //                 return;
-    //             }
-
-    //             maxDec = Math.max(maxDec, input.data.decimals);
-    //         }
-    //     }
-
-
-    //     const result = this.getResult();
-
-    //     this.outputs[0]._data = dataFromNumber(result, maxDec);
-
-    //     this.#paramValue.control.setDecimals(maxDec);
-    //     this.#paramValue.setValue(result, false, true, false) ;
-
-        
-    //     super.updateData()
-    // }
-
-
-
     output_genRequest()
     {
         // 'this' is the output
@@ -171,13 +126,6 @@ extends OperatorBase
         this._symbol.style.color      = colorStyleRgb(colText);
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
     }
-
-
-
-    // getResult()
-    // {
-    //     return Number.NaN;
-    // }
 
 
 
@@ -239,7 +187,6 @@ function onConnectInput(node)
 {
     node.addNewInput();
     node.updateNode();
-    //graphView.updateNodeTransform(node);
 }
 
 

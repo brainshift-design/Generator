@@ -18,7 +18,7 @@ function rgbFromType(type, active)
         case NUMBER_MULTIPLY:
         case NUMBER_DIVIDE:
         case NUMBER_MODULO:
-        case NUMBER_POWER:
+        case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
             return active 
                  ? rgbActiveNumber 
