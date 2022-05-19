@@ -22,6 +22,7 @@ const graph = new Graph();
 const generator = new Worker(
     window.URL.createObjectURL(
         new Blob([generatorScript.textContent])));
+        
 
 
 

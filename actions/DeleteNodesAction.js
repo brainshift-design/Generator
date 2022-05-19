@@ -39,7 +39,9 @@ extends Action
 
     do()
     {
+        this.newActiveNodeIds = [];
         this.oldActiveNodeIds = [];
+
 
         for (const nodeId of this.nodeIds)
         {
@@ -69,6 +71,9 @@ extends Action
         }
 
 
+        const updateNodes = [];
+
+
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -77,12 +82,13 @@ extends Action
             const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
             for (let i = nodeInputs.length-1; i >= 0; i--)
-                this.disconnect(nodeInputs[i]);
+                updateNodes.push(...this.disconnect(nodeInputs[i], this.nodeIds));
 
-
+                
             for (const output of node.outputs)
             {
                 const connectedInputs = [...output.connectedInputs];
+                removeFromArrayWhere(connectedInputs, i => i.node == node);
 
                 // connected inputs need to be sorted by input index
                 connectedInputs.sort((i1, i2) => 
@@ -97,9 +103,9 @@ extends Action
                     if (index1 != index2) return index1 - index2;
                     return 0;
                 });
-
+ 
                 for (const input of connectedInputs)
-                    this.disconnect(input);
+                    updateNodes.push(...this.disconnect(input, this.nodeIds));
             }
         }
 
@@ -107,6 +113,8 @@ extends Action
         uiDeleteNodes(this.nodeIds, this.id);
 
         uiSaveNodes(this.newActiveNodeIds);
+       
+        pushUpdate(updateNodes);
     }
 
 
@@ -135,9 +143,6 @@ extends Action
         uiSaveNodes([
             ...this.newActiveNodeIds,
             ...this.oldActiveNodeIds]);
-
-
-        this.newActiveNodeIds = [];
     }
 
 
@@ -195,34 +200,41 @@ extends Action
 
 
 
-    disconnect(input)
+    disconnect(input, ignoreNodeIds = [])
     {
         //console.log('disconnect');
-        const output = input.connectedOutput;
-        
+
+        const output      = input.connectedOutput;
+        const updateNodes = [];        
+
 
         uiDisconnect(input);
 
 
-        // if (getActiveNodeLeftInTreeFromNode(input.node))
-        // {
-        //     uiMakeNodeActive(input.node);
+        if (!getActiveNodeRightInTreeFromNode(input.node))
+        {
+            uiMakeNodeActive(input.node);
 
-        //     if (!this.newActiveNodeIds.includes(input.node.id))
-        //         this.newActiveNodeIds.push(input.node.id);
+            if (   !this.newActiveNodeIds.includes(input.node.id)
+                && !ignoreNodeIds.includes(input.node.id))
+                this.newActiveNodeIds.push(input.node.id);
 
-        //     pushUpdate([input.node]);
-        // }
+            updateNodes.push(input.node);
+        }
 
 
         if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
         {
             uiMakeNodeActive(output.node);
 
-            if (!this.newActiveNodeIds.includes(output.node.id))
+            if (   !this.newActiveNodeIds.includes(output.node.id)
+                && !ignoreNodeIds.includes(output.node.id))
                 this.newActiveNodeIds.push(output.node.id);
 
-            pushUpdate([output.node]);
+            updateNodes.push(output.node);
         }
+
+
+        return updateNodes;
     }
 }

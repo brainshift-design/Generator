@@ -31,7 +31,7 @@ extends Action
         uiSaveNodes([this.nodeId]);
 
 
-        uiRemoveSavedConnectionsToNode(this.nodeId);
+        uiRemoveSavedConnectionsToNodeId(this.nodeId);
 
 
         const node = nodeFromId(this.nodeId);

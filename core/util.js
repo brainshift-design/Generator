@@ -210,6 +210,16 @@ function removeFromArray(array, item)
 
 
 
+function removeFromArrayWhere(array, where)
+{
+    var index = array.findIndex(where);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
 function isLastInArray(array, item)
 {
     return array.indexOf(item) == array.length-1;

@@ -477,7 +477,7 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
             input,
             inputIndex);
 
-        uiUpdateSavedConnectionsToNode(inputNode.id);
+        uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
         return conn;
     }
@@ -520,17 +520,17 @@ function uiDisconnect(input)
     graph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNode(node.id);
+        uiUpdateSavedConnectionsToNodeId(node.id);
 }
 
 
 
-function uiUpdateSavedConnectionsToNode(nodeId)
+function uiUpdateSavedConnectionsToNodeId(nodeId)
 {
     const node = nodeFromId(nodeId);
 
 
-    uiRemoveSavedConnectionsToNode(node.id);
+    uiRemoveSavedConnectionsToNodeId(node.id);
 
     for (const _input of node.inputs.filter(i => i.connected))
     {
@@ -1134,7 +1134,7 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
 
 
 
-function uiRemoveSavedConnectionsToNode(nodeId)
+function uiRemoveSavedConnectionsToNodeId(nodeId)
 {
     uiPostMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
