@@ -129,20 +129,18 @@ scrollbarX.addEventListener('pointermove', e =>
 
 graphView.updateScrollY = (x, w, h, bounds, yOffset) =>
 {
-    if (bounds.t < controlBar.offsetHeight)
+    if (bounds.t < yOffset)
     {
-        const ot     = bounds.t - yOffset;
-        const height = sqr(h) / (h - ot) - (smallScrollGap + largeScrollGap);
+        const height = sqr(h) / (h - (bounds.t - yOffset)) - (smallScrollGap + largeScrollGap);
 
         scrollbarY.style.height  = height;
         scrollbarY.style.left    = x + w - smallScrollGap - 6;
         scrollbarY.style.top     = h - largeScrollGap - height;
         scrollbarY.style.display = 'inline-block';
     }
-    else if (bounds.b >= yOffset + h)
+    else if (bounds.b >= h + yOffset)
     {
-        const ob     = bounds.b - h;
-        const height = sqr(h) / ob - (smallScrollGap + largeScrollGap);
+        const height = sqr(h) / (bounds.b - yOffset) - (smallScrollGap + largeScrollGap);
 
         scrollbarY.style.height  = height;
         scrollbarY.style.left    = x + w - smallScrollGap - 6;

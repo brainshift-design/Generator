@@ -290,8 +290,7 @@ graphView.setNodeTransform = function(node, nodeLeft, nodeTop, nodeRect)
 
 graphView.updateNodeWires = function(wires)
 {
-    //debugger;
-    logFunction('updateNodeWires()');
+    //logFunction('updateNodeWires()');
 
 
     const pOut    = [];
