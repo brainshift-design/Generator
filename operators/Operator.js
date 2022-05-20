@@ -486,28 +486,30 @@ class Operator
         // console.log('this.inputs',  this.inputs);
         // console.log('this.outputs', this.outputs);
 
-        const headerInputs  = this.inputs .filter(i => !i.param);
-        const headerOutputs = this.outputs.filter(o => !o.param);
+        const inputs          = this.inputs .filter(i => !i.param);
+        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
+        const outputs         = this.outputs.filter(o => !o.param);
 
         const padding  = this.header.connectionPadding;
             
-        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 5);
-        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 2);
+        const [ inputY,          inputHeight] = getHeaderConnY(inputs,          padding, 5);
+        const [       , connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
+        const [outputY,         outputHeight] = getHeaderConnY(outputs,         padding, 2);
 
-             if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
-        else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
+             if (connectedInputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (connectedInputHeight - outputHeight)/2;
+        else if (        outputHeight > inputHeight ) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < headerInputs.length; i++) 
+        for (let i = 0; i < inputs.length; i++) 
         {
-            headerInputs[i].control.style.top = inputY[i];
-            headerInputs[i].updateControl();
+            inputs[i].control.style.top = inputY[i];
+            inputs[i].updateControl();
         }
 
-        for (let i = 0; i < headerOutputs.length; i++) 
+        for (let i = 0; i < outputs.length; i++) 
         {
-            headerOutputs[i].control.style.top = outputY[i];
-            headerOutputs[i].updateControl();
+            outputs[i].control.style.top = outputY[i];
+            outputs[i].updateControl();
         }
 
 

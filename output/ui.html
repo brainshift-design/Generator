@@ -11289,7 +11289,7 @@ function parseDec(str)
 
 const settings =
 {
-    showNodeId:      true, // instead of name
+    showNodeId:      false, // instead of name
     
     logStorage:      true,
     logActions:      true,
@@ -18118,28 +18118,30 @@ class Operator
         // console.log('this.inputs',  this.inputs);
         // console.log('this.outputs', this.outputs);
 
-        const headerInputs  = this.inputs .filter(i => !i.param);
-        const headerOutputs = this.outputs.filter(o => !o.param);
+        const inputs          = this.inputs .filter(i => !i.param);
+        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
+        const outputs         = this.outputs.filter(o => !o.param);
 
         const padding  = this.header.connectionPadding;
             
-        const [ inputY,  inputHeight] = getHeaderConnY(headerInputs,  padding, 5);
-        const [outputY, outputHeight] = getHeaderConnY(headerOutputs, padding, 2);
+        const [ inputY,          inputHeight] = getHeaderConnY(inputs,          padding, 5);
+        const [       , connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
+        const [outputY,         outputHeight] = getHeaderConnY(outputs,         padding, 2);
 
-             if (inputHeight  > outputHeight) for (let i = 0; i < headerOutputs.length; i++) outputY[i] += (inputHeight  - outputHeight)/2;
-        else if (outputHeight > inputHeight ) for (let i = 0; i < headerInputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
+             if (connectedInputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (connectedInputHeight - outputHeight)/2;
+        else if (        outputHeight > inputHeight ) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < headerInputs.length; i++) 
+        for (let i = 0; i < inputs.length; i++) 
         {
-            headerInputs[i].control.style.top = inputY[i];
-            headerInputs[i].updateControl();
+            inputs[i].control.style.top = inputY[i];
+            inputs[i].updateControl();
         }
 
-        for (let i = 0; i < headerOutputs.length; i++) 
+        for (let i = 0; i < outputs.length; i++) 
         {
-            headerOutputs[i].control.style.top = outputY[i];
-            headerOutputs[i].updateControl();
+            outputs[i].control.style.top = outputY[i];
+            outputs[i].updateControl();
         }
 
 
@@ -19395,32 +19397,44 @@ extends OperatorBase
         
         const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
 
-        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-    }
+        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.left       = 'calc(50% + 1px)';
+        
+
+        const padding         = this.header.connectionPadding;
+        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
 
 
-
-    updateNode()
-    {
-        super.updateNode();
-
-
-        if (this._showOnlySymbol)
+        if (connectedInputs.length == 0)
         {
-            this._symbol.style.fontSize = 17;
-            this._symbol.style.left     = 'calc(50% + 1px)';
-            this._symbol.style.top      = this.header.offsetHeight/2 - 11;
+            if (this._showOnlySymbol)
+            {
+                this._symbol.style.top = 2;
+            }
+            else
+            {
+                this._symbol.style.top = -1;
+                this.label  .style.top = 'calc(50% + 4px)';
+            }
         }
         else
         {
-            this._symbol.style.fontSize = 12;
-            this._symbol.style.left     = 'calc(50% + 1px)';
-            this._symbol.style.top      = this.header.offsetHeight/2 - 15;
-            this.label  .style.top      = 'calc(50% + 3px)';
+            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
+
+            if (this._showOnlySymbol)
+            {
+                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
+            }
+            else
+            {
+                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
+                this.label  .style.top = 'calc(50% + 5px)';
+            }
         }
-       
         
+
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
     }
 

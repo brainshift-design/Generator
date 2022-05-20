@@ -123,32 +123,44 @@ extends OperatorBase
         
         const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
 
-        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-    }
+        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.left       = 'calc(50% + 1px)';
+        
+
+        const padding         = this.header.connectionPadding;
+        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
 
 
-
-    updateNode()
-    {
-        super.updateNode();
-
-
-        if (this._showOnlySymbol)
+        if (connectedInputs.length == 0)
         {
-            this._symbol.style.fontSize = 17;
-            this._symbol.style.left     = 'calc(50% + 1px)';
-            this._symbol.style.top      = this.header.offsetHeight/2 - 11;
+            if (this._showOnlySymbol)
+            {
+                this._symbol.style.top = 2;
+            }
+            else
+            {
+                this._symbol.style.top = -1;
+                this.label  .style.top = 'calc(50% + 4px)';
+            }
         }
         else
         {
-            this._symbol.style.fontSize = 12;
-            this._symbol.style.left     = 'calc(50% + 1px)';
-            this._symbol.style.top      = this.header.offsetHeight/2 - 15;
-            this.label  .style.top      = 'calc(50% + 3px)';
+            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
+
+            if (this._showOnlySymbol)
+            {
+                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
+            }
+            else
+            {
+                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
+                this.label  .style.top = 'calc(50% + 5px)';
+            }
         }
-       
         
+
         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
     }
 
