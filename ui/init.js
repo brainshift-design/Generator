@@ -48,7 +48,7 @@ function uiEndStartGenerator(msg)
     uiGetLocalData('graphView');
     uiPostMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
-    uiEndResizeWindow();
+    //uiEndResizeWindow();
 
     window.focus();
 }

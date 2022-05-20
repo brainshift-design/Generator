@@ -186,7 +186,7 @@ extends OperatorBase
 function onConnectInput(node)
 {
     node.addNewInput();
-    node.updateNode();
+    //node.updateNode();
 }
 
 
@@ -195,5 +195,5 @@ function onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
     node.inputControls.removeChild(input.control);
-    node.updateNode();
+    //node.updateNode();
 }

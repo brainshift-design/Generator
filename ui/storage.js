@@ -129,7 +129,11 @@ function uiLoadGraphView(json)
     if (isNaN(zoom)) zoom  = 1;
 
 
-    graphView.setPanAndZoom(pan, zoom);
+    graphView._zoom = zoom;
+    graphView._pan  = pan;
+
+
+    // graphView.setPanAndZoom(pan, zoom);
 
     graphView.showWires = isTrue(data.showWires);
 }
@@ -333,7 +337,7 @@ function loadNode(_node)
         || node.alwaysLoadParams)
         node.loadParams(_node);
 
-    node.updateNode();
+    //node.updateNode();
     
     setNodePosition(
         node, 
