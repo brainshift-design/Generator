@@ -17,6 +17,8 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
+    e.preventDefault();
+    
     graphView.pStart = point(e.clientX, e.clientY);
 
     const sx = e.clientX;
@@ -219,6 +221,12 @@ graphView.addEventListener('wheel', e =>
 
         if (graphView.selecting)
         {
+            graphView.selectionRect.x -= dPanX;
+            graphView.selectionRect.w += dPanX;
+            
+            graphView.selectionRect.y -= dPanY;
+            graphView.selectionRect.h += dPanY;
+
             graphView.updateSelection(
                 e.clientX, 
                 e.clientY, 

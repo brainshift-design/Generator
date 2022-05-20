@@ -212,7 +212,7 @@ graphView.putWiresOnTop = function(node)
 
 
 
-graphView.updateNodeTransforms = function(nodes)
+graphView.updateNodeTransforms = function(nodes, updateWires = true)
 {
     const nodeLeft = nodes.map(n => n.div.offsetLeft);
     const nodeTop  = nodes.map(n => n.div.offsetTop);
@@ -241,7 +241,8 @@ graphView.updateNodeTransforms = function(nodes)
         graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
 
 
-    graphView.updateNodeWires(wires);
+    if (updateWires)
+        graphView.updateNodeWires(wires);
 };
 
 

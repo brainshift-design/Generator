@@ -102,6 +102,9 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointerdown', e =>
     {
+        e.preventDefault();
+
+        
         if (graphView.spaceDown)    
             return;
 

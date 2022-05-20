@@ -34,7 +34,17 @@ graphView.updateScroll = (x, w, h, bounds, yOffset) =>
 
 graphView.updateScrollX = (w, h, bounds) =>
 {
-    if (bounds.l < 0)
+    if (   bounds.l < 0
+        && bounds.r >= w)
+    {
+        const width = sqr(w) / bounds.width - (smallScrollGap + largeScrollGap);
+
+        scrollbarX.style.display = 'inline-block';
+        scrollbarX.style.width   =  width;
+        scrollbarX.style.left    =  smallScrollGap + (w - smallScrollGap - largeScrollGap - width) * -bounds.l / (-bounds.l + bounds.r - w);
+        scrollbarX.style.top     =  h - smallScrollGap - 6;
+    }
+    else if (bounds.l < 0)
     {
         const width = sqr(w) / (w - bounds.l) - (smallScrollGap + largeScrollGap);
 
@@ -129,23 +139,33 @@ scrollbarX.addEventListener('pointermove', e =>
 
 graphView.updateScrollY = (x, w, h, bounds, yOffset) =>
 {
-    if (bounds.t < yOffset)
+    if (   bounds.t <  yOffset
+        && bounds.b >= h + yOffset)
+    {
+        const height = sqr(h) / bounds.height - (smallScrollGap + largeScrollGap);
+
+        scrollbarY.style.display = 'inline-block';
+        scrollbarY.style.height  =  height;
+        scrollbarY.style.top     =  smallScrollGap + (h - height + smallScrollGap) * (yOffset - bounds.t) / (yOffset - bounds.t + bounds.b - h);
+        scrollbarY.style.left    =  x + w - smallScrollGap - 6;
+    }
+    else if (bounds.t < yOffset)
     {
         const height = sqr(h) / (h - (bounds.t - yOffset)) - (smallScrollGap + largeScrollGap);
 
-        scrollbarY.style.height  = height;
-        scrollbarY.style.left    = x + w - smallScrollGap - 6;
-        scrollbarY.style.top     = h - largeScrollGap - height;
         scrollbarY.style.display = 'inline-block';
+        scrollbarY.style.height  = height;
+        scrollbarY.style.top     = h - largeScrollGap - height;
+        scrollbarY.style.left    = x + w - smallScrollGap - 6;
     }
     else if (bounds.b >= h + yOffset)
     {
         const height = sqr(h) / (bounds.b - yOffset) - (smallScrollGap + largeScrollGap);
 
-        scrollbarY.style.height  = height;
-        scrollbarY.style.left    = x + w - smallScrollGap - 6;
-        scrollbarY.style.top     = smallScrollGap;
         scrollbarY.style.display = 'inline-block';
+        scrollbarY.style.height  = height;
+        scrollbarY.style.top     = smallScrollGap;
+        scrollbarY.style.left    = x + w - smallScrollGap - 6;
     }
     else
         scrollbarY.style.display = 'none';

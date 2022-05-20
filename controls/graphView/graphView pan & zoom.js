@@ -65,8 +65,9 @@ graphView.setPanAndZoom = (pan, zoom) =>
         graphView._zoom = zoom;
         graphView._pan  = pan;
 
-        uiSaveGraphView();
         graphView.updatePanAndZoom();
+
+        uiSaveGraphView();
     }
 };
 
@@ -85,15 +86,17 @@ graphView.update = function(nodes = null)
     if (!nodes)
         node = graph.nodes;
         
-    graphView.updateNodeTransforms(nodes);
+    graphView.updateNodeTransforms(nodes, false);
     
     const x       = graphView.clientLeft;
     const w       = graphView.clientWidth;
     const h       = graphView.clientHeight;
     const yOffset = controlBar.offsetHeight;
-    const bounds  = graphView.getAllNodeBounds();
+    //let   bounds  = graphView.getAllNodeBounds();
     
-    graphView.updateNodeTransforms(nodes); // this has to be done twice because getAllNodeBounds() forces a reflow
+    graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
+
+    bounds = graphView.getAllNodeBounds();
     graphView.updateScroll(x, w, h, bounds, yOffset);
 };
 
