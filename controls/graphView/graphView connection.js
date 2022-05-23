@@ -9,7 +9,7 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
 
     if (updateTempWire)
     {
-        graphView.updateNodeWire(
+        updateWire(
             graphView.tempConn.wire,
             graphView.pStart.x, 
             graphView.pStart.y);
@@ -29,7 +29,7 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     
     graphView.addWire(graphView.tempConn.wire, false);
 
-    graphView.updateNodeWire(
+    updateWire(
         graphView.tempConn.wire,
         graphView.pStart.x, 
         graphView.pStart.y);
@@ -95,7 +95,7 @@ graphView.endConnection = pointerId =>
             else if (input == savedInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
-                graphView.updateNodeWire(input.connection.wire);
+                updateWire(input.connection.wire);
             }
 
             else if (savedInput)

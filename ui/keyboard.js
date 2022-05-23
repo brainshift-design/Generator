@@ -64,7 +64,7 @@ document.addEventListener('keydown', e =>
 
                 setTimeout(() => 
                 {
-                    graphView.updateNodeWire(savedConn.wire);
+                    updateWire(savedConn.wire);
                     savedConn.input.updateControl();
                 });
             }

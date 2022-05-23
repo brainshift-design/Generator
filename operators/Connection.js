@@ -17,8 +17,9 @@ class Connection
         this.wire.style.position         = 'absolute';
         this.wire.style.left             = 0;
         this.wire.style.top              = 0;
-        this.wire.style.width            = '100%';
-        this.wire.style.height           = '100vh';
+        //this.wire.style.width            = '100%';
+        //this.wire.style.height           = '100vh';
+        this.wire.style.overflow = 'hidden';
   
         this.wire.outputPos              = point_NaN;
         this.wire. inputPos              = point_NaN;
@@ -57,12 +58,13 @@ class Connection
 
             this.wire.setAttribute('width',  cw);
             this.wire.setAttribute('height', ch);
-        
-            this.wire.setAttribute('viewBox',
-                        0
-                + ' ' + yOffset/2 // why is only half of yOffset taken???
-                + ' ' + cw
-                + ' ' + ch);
+
+            
+            // this.wire.setAttribute('viewBox',
+            //             0
+            //     + ' ' + yOffset/2 // why is only half of yOffset taken???
+            //     + ' ' + cw
+            //     + ' ' + ch);
 
             const isSolo = 
                    graphView._soloNode

@@ -212,7 +212,7 @@ graphView.putWiresOnTop = function(node)
 
 
 
-graphView.updateNodeTransforms = function(nodes, updateWires = true)
+graphView.updateNodeTransforms = function(nodes, _updateWires = true)
 {
     const nodeLeft = nodes.map(n => n.div.offsetLeft);
     const nodeTop  = nodes.map(n => n.div.offsetTop);
@@ -241,8 +241,8 @@ graphView.updateNodeTransforms = function(nodes, updateWires = true)
         graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
 
 
-    if (updateWires)
-        graphView.updateNodeWires(wires);
+    if (_updateWires)
+        updateWires(wires);
 };
 
 
@@ -269,7 +269,7 @@ graphView.updateNodeTransform = function(node)
 
     graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
 
-    graphView.updateNodeWires(wires);
+    updateWires(wires);
 };
 
 
@@ -289,9 +289,9 @@ graphView.setNodeTransform = function(node, nodeLeft, nodeTop, nodeRect)
 
 
 
-graphView.updateNodeWires = function(wires)
+function updateWires(wires)
 {
-    //logFunction('updateNodeWires()');
+    //logFunction('updateWires()');
 
 
     const pOut    = [];
@@ -330,7 +330,7 @@ graphView.updateNodeWires = function(wires)
     
         wire.setAttribute('viewBox',
                     0
-            + ' ' + yOffset/2 // why is only half of yOffset taken???
+            + ' ' + 0//yOffset/2 // why is only half of yOffset taken???
             + ' ' + cw
             + ' ' + ch);
     }
@@ -342,21 +342,21 @@ graphView.updateNodeWires = function(wires)
         const input  = conn.input;
         const output = conn.output;
 
-            const isSolo = 
-                   graphView._soloNode
-                && (    input.node == graphView._soloNode
-                    || output.node == graphView._soloNode);
+        const isSolo = 
+                graphView._soloNode
+            && (    input.node == graphView._soloNode
+                || output.node == graphView._soloNode);
 
         show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
     }
-};
+}
 
 
 
-graphView.updateNodeWire = function(wire, x = 0, y = 0)
+function updateWire(wire, x = 0, y = 0)
 {
     const yOffset = controlBar.offsetHeight;
 
@@ -387,7 +387,7 @@ graphView.updateNodeWire = function(wire, x = 0, y = 0)
         pOut.y, 
         pIn.x, 
         pIn.y);        
-};
+}
 
 
 
@@ -397,7 +397,7 @@ graphView.addWire = function(wire, updateTransform = true)
     wireContainer.appendChild(wire);
 
     if (updateTransform)
-        graphView.updateNodeWire(wire);
+        updateWire(wire);
 };
 
 
@@ -445,7 +445,7 @@ graphView.soloNode = function(node)
             : 0.09;
     });
 
-    graphView.updateNodeWires(graph.connections.map(c => c.wire));
+    updateWires(graph.connections.map(c => c.wire));
 };
 
 
@@ -457,7 +457,7 @@ graphView.unsoloNode = function()
     graph.nodes.forEach(n => n.div .style.opacity = 1);
 
     graph.connections.forEach(c => c.wire.style.opacity = 1);
-    graphView.updateNodeWires(graph.connections.map(c => c.wire));
+    updateWires(graph.connections.map(c => c.wire));
 };
 
 
