@@ -58,7 +58,8 @@ extends OperatorBase
         
         this.textbox.addEventListener('finishedit', e => 
         {
-            actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+            if (this._showOnlySymbol)
+                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     

@@ -1062,7 +1062,7 @@ div
     position:   absolute;
     width:      100%;
     height:     100%;   
-    box-shadow: 0 0 0 1px blue inset;
+    /* box-shadow: 0 0 0 1px blue inset; */
 }
 
 
@@ -1084,7 +1084,7 @@ div
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
 }
 
 
@@ -11303,7 +11303,7 @@ function parseDec(str)
 
 const settings =
 {
-    showNodeId:      false, // instead of name
+    showNodeId:      true, // instead of name
     
     logStorage:      true,
     logActions:      true,
@@ -14608,7 +14608,7 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
-    e.preventDefault();
+    //e.preventDefault();
     
     graphView.pStart = point(e.clientX, e.clientY);
 
@@ -19348,7 +19348,8 @@ extends OperatorBase
         
         this.textbox.addEventListener('finishedit', e => 
         {
-            actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+            if (this._showOnlySymbol)
+                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     

@@ -17,7 +17,7 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
-    e.preventDefault();
+    //e.preventDefault();
     
     graphView.pStart = point(e.clientX, e.clientY);
 

@@ -1,6 +1,6 @@
 const settings =
 {
-    showNodeId:      false, // instead of name
+    showNodeId:      true, // instead of name
     
     logStorage:      true,
     logActions:      true,
