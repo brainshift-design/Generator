@@ -243,6 +243,8 @@ graphView.addEventListener('wheel', e =>
 
 graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
 
+
+
 graphView.addEventListener('gesturechange', e => 
 {
     const p = point(

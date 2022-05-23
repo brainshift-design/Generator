@@ -429,11 +429,11 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
-        graphView.updateNodeTransform(this);
-
         this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
+
+        graphView.updateNodeTransform(this);
     }
 
 

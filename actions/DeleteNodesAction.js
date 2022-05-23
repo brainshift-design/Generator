@@ -215,21 +215,20 @@ extends Action
         {
             uiMakeNodeActive(input.node);
 
-            if (   !this.newActiveNodeIds.includes(input.node.id)
-                && !ignoreNodeIds.includes(input.node.id))
-                this.newActiveNodeIds.push(input.node.id);
+            if (!ignoreNodeIds.includes(input.node.id))
+                pushUnique(this.newActiveNodeIds, input.node.id);
 
             updateNodes.push(input.node);
         }
 
 
-        if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
+        //if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
+        if (!getActiveNodeInTreeFromNode(output.node))
         {
             uiMakeNodeActive(output.node);
 
-            if (   !this.newActiveNodeIds.includes(output.node.id)
-                && !ignoreNodeIds.includes(output.node.id))
-                this.newActiveNodeIds.push(output.node.id);
+            if (!ignoreNodeIds.includes(output.node.id))
+                pushUnique(this.newActiveNodeIds, output.node.id);
 
             updateNodes.push(output.node);
         }

@@ -55,7 +55,7 @@ extends Action
     do()
     {
         this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id);
+        this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
 
         uiConnect(
@@ -68,6 +68,7 @@ extends Action
 
         const updateNodes = [];
 
+        
         if (    this.oldOutputNode
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {

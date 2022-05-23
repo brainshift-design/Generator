@@ -14834,6 +14834,8 @@ graphView.addEventListener('wheel', e =>
 
 graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
 
+
+
 graphView.addEventListener('gesturechange', e => 
 {
     const p = point(
@@ -16529,6 +16531,7 @@ class Graph
     connect(output, input, inputIndex = -1)
     {
         //console.log('graph.connect()');
+
         if (input.connectedOutput == output)
             return null;
             
@@ -16572,12 +16575,6 @@ class Graph
         this.connections.push(conn);
 
         
-        // output.node.makePassive();
-
-        // if (!activeNodeInTree(input.node))
-        //     uiMakeNodeActive(input.node);
-       
-           
         output.updateControl();
 
 
@@ -16589,6 +16586,7 @@ class Graph
     disconnect(input)
     {
         //console.log( 'graph.disconnect(' + input.node.id + ' ' + input.index + ')');
+     
         // first remove the current output
 
         // if (activeNodeInTree(input.node))
@@ -16614,10 +16612,6 @@ class Graph
 
         if (input.param)
             input.param.valueText = '';
-
-
-        // if (!activeNodeInTree(output.node))
-        //      uiMakeNodeActive(output.node);
 
 
         return true;
@@ -18075,11 +18069,11 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
-        graphView.updateNodeTransform(this);
-
         this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
+
+        graphView.updateNodeTransform(this);
     }
 
 
@@ -22923,7 +22917,7 @@ extends Action
     do()
     {
         this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id);
+        this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
 
         uiConnect(
@@ -22936,6 +22930,7 @@ extends Action
 
         const updateNodes = [];
 
+        
         if (    this.oldOutputNode
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
@@ -23295,21 +23290,20 @@ extends Action
         {
             uiMakeNodeActive(input.node);
 
-            if (   !this.newActiveNodeIds.includes(input.node.id)
-                && !ignoreNodeIds.includes(input.node.id))
-                this.newActiveNodeIds.push(input.node.id);
+            if (!ignoreNodeIds.includes(input.node.id))
+                pushUnique(this.newActiveNodeIds, input.node.id);
 
             updateNodes.push(input.node);
         }
 
 
-        if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
+        //if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
+        if (!getActiveNodeInTreeFromNode(output.node))
         {
             uiMakeNodeActive(output.node);
 
-            if (   !this.newActiveNodeIds.includes(output.node.id)
-                && !ignoreNodeIds.includes(output.node.id))
-                this.newActiveNodeIds.push(output.node.id);
+            if (!ignoreNodeIds.includes(output.node.id))
+                pushUnique(this.newActiveNodeIds, output.node.id);
 
             updateNodes.push(output.node);
         }
@@ -25670,7 +25664,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
 
                          ╲ ╱
         [̅_̅_̅_̅_̅_̅_̅_]─────████╳████─────[̅_̅_̅_̅_̅_̅_̅_]
-√                        ╱ ╲
+                         ╱ ╲
         █████████         ↓         █████████
 
 
@@ -25704,10 +25698,36 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         [̅_̅_̅_̅_̅_̅_̅_]══╡             ╞══████╳████
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘     ╱ ╲
 
-√                         ↓
+                          ↓
 
                    ┌──█████████
         [̅_̅_̅_̅_̅_̅_̅_]══╡
+                   └──█████████
+
+    ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
+                         ╲ ╱
+                   ┌──████╳████──┐
+        [̅_̅_̅_̅_̅_̅_̅_]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
+                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘
+
+                          ↓
+
+        [̅_̅_̅_̅_̅_̅_̅_]──┐             ┌──█████████
+                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘
+
+    ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
+                         ╲ ╱
+                   ┌──████╳████──┐
+        [̅_̅_̅_̅_̅_̅_̅_]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
+                   ╟──[̅_̅_̅_̅_̅_̅_̅_]──┘
+                   │
+                   └──█████████
+
+                          ↓
+                                   
+        [̅_̅_̅_̅_̅_̅_̅_]══╗             ┌──█████████
+                   ╟──[̅_̅_̅_̅_̅_̅_̅_]──┘
+                   │
                    └──█████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
@@ -25718,24 +25738,13 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
                    │
                    └──[̅_̅_̅_̅_̅_̅_̅_]
 
-√                         ↓
+                          ↓
 
                       █████████──┐
                                  ╞══[̅_̅_̅_̅_̅_̅_̅_]
                       [̅_̅_̅_̅_̅_̅_̅_]──┘
 
                       █████████
-
-    ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
-                         ╲ ╱
-                   ┌──████╳████──┐
-        [̅_̅_̅_̅_̅_̅_̅_]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
-                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘
-
-√                         ↓
-
-        █████████──┐             ┌──[̅_̅_̅_̅_̅_̅_̅_]
-                   └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 */
@@ -26177,6 +26186,36 @@ function getActiveNodeRightInTreeFromNode(node, alreadyChecked = [])
 
 
     return null;
+}
+
+
+
+function getActiveNodesRightInTreeFromNodeId(nodeId, alreadyChecked = [])
+{
+    const rightActive = [];
+    
+   
+    const node = nodeFromId(nodeId);
+    
+    if (node.active) 
+        rightActive.push(node);
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.node))
+            {
+                rightActive.push(...getActiveNodesRightInTreeFromNode(
+                    input.node, 
+                    [...alreadyChecked, node]));
+            }
+        }
+    }
+
+
+    return rightActive;
 }
 
 

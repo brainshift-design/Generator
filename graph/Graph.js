@@ -148,6 +148,7 @@ class Graph
     connect(output, input, inputIndex = -1)
     {
         //console.log('graph.connect()');
+
         if (input.connectedOutput == output)
             return null;
             
@@ -191,12 +192,6 @@ class Graph
         this.connections.push(conn);
 
         
-        // output.node.makePassive();
-
-        // if (!activeNodeInTree(input.node))
-        //     uiMakeNodeActive(input.node);
-       
-           
         output.updateControl();
 
 
@@ -208,6 +203,7 @@ class Graph
     disconnect(input)
     {
         //console.log( 'graph.disconnect(' + input.node.id + ' ' + input.index + ')');
+     
         // first remove the current output
 
         // if (activeNodeInTree(input.node))
@@ -233,10 +229,6 @@ class Graph
 
         if (input.param)
             input.param.valueText = '';
-
-
-        // if (!activeNodeInTree(output.node))
-        //      uiMakeNodeActive(output.node);
 
 
         return true;
