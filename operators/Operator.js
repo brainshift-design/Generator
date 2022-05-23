@@ -429,11 +429,11 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
+        graphView.updateNodeTransform(this);
+
         this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
-
-        graphView.updateNodeTransform(this);
     }
 
 
@@ -451,15 +451,12 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateHeader()');
         
-        //console.log('this.id', this.id);
-
         const height = this.updateHeaderInputsAndOutputs();
 
         this.header   .style.height = height;
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
-
 
         this.updateHeaderLabel();
     }
@@ -490,7 +487,7 @@ class Operator
         const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
         const outputs         = this.outputs.filter(o => !o.param);
 
-        const padding  = this.header.connectionPadding;
+        const padding         = this.header.connectionPadding;
             
         const [ inputY,          inputHeight] = getHeaderConnY(inputs,          padding, 5);
         const [       , connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);

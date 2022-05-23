@@ -52,7 +52,7 @@
     position:   absolute;
     width:      100%;
     height:     100%;   
-    /* box-shadow: 0 0 0 1px blue inset; */
+    box-shadow: 0 0 0 1px blue inset;
 }
 
 
@@ -74,7 +74,7 @@
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
-    /* box-shadow:     0 0 0 1px red inset; */
+    box-shadow:     0 0 0 1px red inset;
 }
 
 

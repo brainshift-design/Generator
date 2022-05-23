@@ -331,14 +331,14 @@ function loadNode(_node)
     node.id   = _node.id;
     node.name = _node.name;
 
-    node.labelOffsetFactor = 0.5;
-
     if (  _node.params
         || node.alwaysLoadParams)
         node.loadParams(_node);
 
-    //node.updateNode();
+    node.updateNode();
     
+    updateHeaderLabelOffset(node, 0.5);
+
     setNodePosition(
         node, 
         parseFloat(_node.x), 

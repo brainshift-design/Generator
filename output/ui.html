@@ -1062,7 +1062,7 @@ div
     position:   absolute;
     width:      100%;
     height:     100%;   
-    /* box-shadow: 0 0 0 1px blue inset; */
+    box-shadow: 0 0 0 1px blue inset;
 }
 
 
@@ -1084,7 +1084,7 @@ div
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
-    /* box-shadow:     0 0 0 1px red inset; */
+    box-shadow:     0 0 0 1px red inset;
 }
 
 
@@ -3433,6 +3433,13 @@ function strIsNum(str)
 
     return !isNaN(str) // use type coercion to parse the whole string
         && !isNaN(parseFloat(str)); // ensure strings of whitespace fail
+}
+
+
+
+function reflow(elem)
+{
+    void(elem.offsetHeight);
 }
 
 
@@ -9181,6 +9188,13 @@ function strIsNum(str)
 
     return !isNaN(str) // use type coercion to parse the whole string
         && !isNaN(parseFloat(str)); // ensure strings of whitespace fail
+}
+
+
+
+function reflow(elem)
+{
+    void(elem.offsetHeight);
 }
 
 
@@ -18061,11 +18075,11 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
+        graphView.updateNodeTransform(this);
+
         this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
-
-        graphView.updateNodeTransform(this);
     }
 
 
@@ -18083,15 +18097,12 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateHeader()');
         
-        //console.log('this.id', this.id);
-
         const height = this.updateHeaderInputsAndOutputs();
 
         this.header   .style.height = height;
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
-
 
         this.updateHeaderLabel();
     }
@@ -18122,7 +18133,7 @@ class Operator
         const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
         const outputs         = this.outputs.filter(o => !o.param);
 
-        const padding  = this.header.connectionPadding;
+        const padding         = this.header.connectionPadding;
             
         const [ inputY,          inputHeight] = getHeaderConnY(inputs,          padding, 5);
         const [       , connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
@@ -18491,7 +18502,7 @@ function createNodeHeader(node)
     {
         e.preventDefault();
 
-        
+
         if (graphView.spaceDown)    
             return;
 
@@ -18782,6 +18793,8 @@ function createNodeHeader(node)
                 graphView.tempConn.input.updateControl();
            }
         }
+
+        //updateHeaderLabelOffset(node, 0.5);
     });
 
 
@@ -18859,7 +18872,9 @@ function createNodeLabel(node)
         
         const x          = e.clientX - wrect.x;
 
-        if (x >= wrect.width - viewMargin)
+        if (x < viewMargin)
+            updateHeaderLabelOffset(node, 0);
+        else if (x >= wrect.width - viewMargin)
             updateHeaderLabelOffset(node, 1);
         else if (x >= viewMargin
               && x < wrect.width - viewMargin)
@@ -18876,8 +18891,9 @@ function createNodeLabel(node)
 
 function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
 {
-    node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
+    //console.log('updateHeaderLabelOffset('+f+')');
 
+    node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
     const margin     = 15;
     const viewMargin = margin * graphView.zoom;
@@ -25120,14 +25136,14 @@ function loadNode(_node)
     node.id   = _node.id;
     node.name = _node.name;
 
-    node.labelOffsetFactor = 0.5;
-
     if (  _node.params
         || node.alwaysLoadParams)
         node.loadParams(_node);
 
-    //node.updateNode();
+    node.updateNode();
     
+    updateHeaderLabelOffset(node, 0.5);
+
     setNodePosition(
         node, 
         parseFloat(_node.x), 

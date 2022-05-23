@@ -316,3 +316,10 @@ function strIsNum(str)
     return !isNaN(str) // use type coercion to parse the whole string
         && !isNaN(parseFloat(str)); // ensure strings of whitespace fail
 }
+
+
+
+function reflow(elem)
+{
+    void(elem.offsetHeight);
+}

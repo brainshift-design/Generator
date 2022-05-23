@@ -23,7 +23,9 @@ function createNodeLabel(node)
         
         const x          = e.clientX - wrect.x;
 
-        if (x >= wrect.width - viewMargin)
+        if (x < viewMargin)
+            updateHeaderLabelOffset(node, 0);
+        else if (x >= wrect.width - viewMargin)
             updateHeaderLabelOffset(node, 1);
         else if (x >= viewMargin
               && x < wrect.width - viewMargin)
@@ -40,8 +42,9 @@ function createNodeLabel(node)
 
 function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
 {
-    node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
+    //console.log('updateHeaderLabelOffset('+f+')');
 
+    node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
     const margin     = 15;
     const viewMargin = margin * graphView.zoom;

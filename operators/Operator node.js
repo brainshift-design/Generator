@@ -104,7 +104,7 @@ function createNodeHeader(node)
     {
         e.preventDefault();
 
-        
+
         if (graphView.spaceDown)    
             return;
 
@@ -395,6 +395,8 @@ function createNodeHeader(node)
                 graphView.tempConn.input.updateControl();
            }
         }
+
+        //updateHeaderLabelOffset(node, 0.5);
     });
 
 
