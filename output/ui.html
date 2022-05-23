@@ -468,6 +468,8 @@ body
          -moz-user-select: none; 
           -ms-user-select: none; 
               user-select: none; 
+
+    overflow:         hidden;
 }
 
 
@@ -672,19 +674,8 @@ div
     height:         calc(100% - 1px);
     z-index:        0;
     pointer-events: none;
+    overflow:       hidden;
     /* box-shadow: 0 0 0 1px red inset; */
-}
-
-
-#graphViewCapture
-{
-    position:   fixed;
-    left:       0;
-    top:        0;
-    width:      100%;
-    height:     calc(100% - 1px);
-    z-index:    1;
-    box-shadow: 0 0 0 1px green inset;
 }
 
 
@@ -1334,8 +1325,6 @@ div
     <div id='scrollbarX'></div>
     <div id='scrollbarY'></div>
 </div>
-
-<!-- <div id='graphViewCapture'></div> -->
 
 
 
@@ -15377,13 +15366,7 @@ graphView.endConnection = pointerId =>
 
         graphView.cancelConnection(pointerId);
     }
-};
-
-
-// assuming here elementsFromPoint() will always return graphViewCapture as [0], and then the element I need
-// graphViewCapture.addEventListener('pointerdown', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
-// graphViewCapture.addEventListener('pointermove', e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
-// graphViewCapture.addEventListener('pointerup',   e => forwardEvent(e, document.elementsFromPoint(e.clientX, e.clientY)[1]));
+}
 
 
 scrollbarX.moving = false;

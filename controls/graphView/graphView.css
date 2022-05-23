@@ -22,17 +22,6 @@
     height:         calc(100% - 1px);
     z-index:        0;
     pointer-events: none;
+    overflow:       hidden;
     /* box-shadow: 0 0 0 1px red inset; */
-}
-
-
-#graphViewCapture
-{
-    position:   fixed;
-    left:       0;
-    top:        0;
-    width:      100%;
-    height:     calc(100% - 1px);
-    z-index:    1;
-    box-shadow: 0 0 0 1px green inset;
 }
