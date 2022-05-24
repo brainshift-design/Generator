@@ -346,6 +346,8 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         
         case RECTANGLE:          node = new OpRectangle();        break;
         case ELLIPSE:            node = new OpRow();              break;
+
+        case COMMENT:            node = new OpComment();          break;
     }
     
     node._creatingButton = creatingButton;

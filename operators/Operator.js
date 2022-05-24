@@ -55,6 +55,7 @@ class Operator
 
     _creatingButton  = null; // this is used to place the node under its creating button
 
+    scrollName = true;
 
     
 
@@ -67,6 +68,7 @@ class Operator
     paramBack;
     labelWrapper;
     label;
+    textbox;
     inputControls;
     outputControls;
 

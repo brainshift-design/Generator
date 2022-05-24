@@ -4,13 +4,16 @@ var genMessages = []; // messages from UI to Generator
 var figMessagePosted = false;
 var genMessagePosted = false;
 
+
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiClearPageData('GA rect');
 //uiRemoveAllSavedNodesAndConns();
+
+
 uiLogAllSavedNodesAndConns();
+
 
 
 var currentUser = '';

@@ -17,6 +17,9 @@ function createNodeLabel(node)
     
     node.labelWrapper.addEventListener('pointermove', e =>
     {
+        if (!node.scrollName)
+            return;
+
         const wrect      = boundingRect(node.labelWrapper);
         const margin     = 14;
         const viewMargin = margin * graphView.zoom;

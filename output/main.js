@@ -278,6 +278,9 @@ figma.ui.onmessage = msg => {
         case 'figSaveNodes':
             figSaveNodes(msg.nodeIds, msg.nodeJson);
             break;
+        case 'figRemoveConnsToNodes':
+            figRemoveConnsToNodes(msg.nodeIds);
+            break;
         case 'figRemoveSavedNodesAndConns':
             figRemoveSavedNodesAndConns(msg.nodeIds);
             break;
@@ -378,6 +381,15 @@ function figSaveNodes(nodeIds, nodeJson) {
         figSetPageData(nodeNameForStorage(nodeIds[i]), nodeJson[i]);
     }
 }
+function figRemoveConnsToNodes(nodeIds) {
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+    for (const key of connKeys) {
+        const parts = noConnTag(key).split(' ');
+        if (nodeIds.includes(parts[0])
+            || nodeIds.includes(parts[2]))
+            figClearPageData(key);
+    }
+}
 function figRemoveSavedNodesAndConns(nodeIds) {
     for (let i = 0; i < nodeIds.length; i++)
         figClearPageData(nodeNameForStorage(nodeIds[i]));
@@ -398,7 +410,7 @@ function figLogAllSavedNodes(settings) {
     if (!settings.logStorage)
         return;
     figma.currentPage.getPluginDataKeys()
-        .filter(k => noNodeTag(k))
+        .filter(k => isNodeKey(k))
         .forEach(k => logSavedNode(k));
 }
 function figLogAllSavedConns(settings) {
@@ -420,9 +432,6 @@ function figLogAllSavedConns(settings) {
         return 0;
     });
     connKeys.forEach(k => logSavedConn(k));
-    // console.log(
-    //     '%c-----------------', 
-    //     'background: #cfc'); 
 }
 function figSaveConnection(name, json) {
     // console.log('key', connNameForStorage(name));

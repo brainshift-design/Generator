@@ -293,7 +293,7 @@
 
                          ╲ ╱
         [̅_̅_̅_̅_̅_̅_̅_]─────████╳████─────[̅_̅_̅_̅_̅_̅_̅_]
-                         ╱ ╲
+√                        ╱ ╲
         █████████         ↓         █████████
 
 
@@ -315,7 +315,7 @@
         ████╳████══╡
            ╱ ╲     └──[̅_̅_̅_̅_̅_̅_̅_]
 
-√                 ↓
+                  ↓
 
                       █████████
 
@@ -339,7 +339,7 @@
         [̅_̅_̅_̅_̅_̅_̅_]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
-                          ↓
+√                         ↓
 
         [̅_̅_̅_̅_̅_̅_̅_]──┐             ┌──█████████
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
@@ -1107,6 +1107,16 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiPostMessageToFigma({
         cmd:    'figRemoveSavedNodesAndConns',
+        nodeIds: nodeIds
+    });
+}
+
+
+
+function uiRemoveConnsToNodes(nodeIds)
+{
+    uiPostMessageToFigma({
+        cmd: 'figRemoveConnsToNodes',
         nodeIds: nodeIds
     });
 }

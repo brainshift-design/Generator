@@ -40,6 +40,10 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const GROUP              = 'GRP';   // ???? count O...
 
 
+const COMMENT            = 'CMNT';
+
+
+
 /*
 
 ARROW       A

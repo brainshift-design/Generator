@@ -2,8 +2,8 @@ const settings =
 {
     showNodeId:      true, // instead of name
     
-    logStorage:      true,
+    logStorage:      false,
     logActions:      true,
     logRequests:     true,
-    logValueUpdates: true
+    logValueUpdates: false
 };

@@ -18,6 +18,8 @@
 ../operators/Operator label.js
 ../operators/Operator textbox.js
 
+../operators/utility/OpComment.js
+
 ../operators/math/OpNumber.js
 ../operators/math/OpMinMax.js
 ../operators/math/OpArithmetic.js

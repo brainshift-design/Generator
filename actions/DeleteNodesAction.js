@@ -211,19 +211,13 @@ extends Action
         uiDisconnect(input);
 
 
-        if (!getActiveNodeRightInTreeFromNode(input.node))
-        {
-            uiMakeNodeActive(input.node);
-
-            if (!ignoreNodeIds.includes(input.node.id))
-                pushUnique(this.newActiveNodeIds, input.node.id);
-
-            updateNodes.push(input.node);
-        }
+        const activeLeft     = getActiveNodeLeftInTreeFromNode(output.node);
+        const activeLeftOnly = getActiveNodeLeftOnlyInTreeFromNode(output.node);
+        const activeRight    = getActiveNodeRightInTreeFromNode(input.node);
 
 
-        //if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
-        if (!getActiveNodeInTreeFromNode(output.node))
+        if (  !activeLeftOnly)
+//            || activeLeft != activeRight)
         {
             uiMakeNodeActive(output.node);
 
@@ -233,6 +227,17 @@ extends Action
             updateNodes.push(output.node);
         }
 
+
+        if (!activeRight)
+        {
+            uiMakeNodeActive(input.node);
+
+            if (!ignoreNodeIds.includes(input.node.id))
+                pushUnique(this.newActiveNodeIds, input.node.id);
+
+            updateNodes.push(input.node);
+        }
+        
 
         return updateNodes;
     }

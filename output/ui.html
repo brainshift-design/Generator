@@ -1007,6 +1007,7 @@ div
     border-radius: 4px 4px 0 0;
     padding:       0;
     /* overflow:      visible; */
+    box-shadow:    0 0 0 1px orange inset;
 }
 
 
@@ -1033,7 +1034,7 @@ div
     border-radius: 4px 4px 0 0;
     z-index:       1;
     /* overflow:      visible; */
-    /* box-shadow:    0 0 0 1px red inset; */
+    box-shadow:    0 0 0 1px red inset;
 }
 
 
@@ -1042,9 +1043,10 @@ div
     display:    block;
     position:   absolute;
     width:      100%;
-    height:     20;
+    /* height:     20; */
     background: #fffe;
     z-index:    -1;
+    box-shadow:    0 0 0 1px blue inset;
 }
 
 
@@ -1070,12 +1072,12 @@ div
     position:       absolute;
     left:           50%;
     top:            50%;
-    transform:      translateX(-50%) 
-                    translateY(calc(-50% - 0.5px));
+    /* transform:      translateX(-50%) 
+                    translateY(calc(-50% - 0.5px)); */
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
-    /* box-shadow:     0 0 0 1px red inset; */
+    box-shadow:     0 0 0 1px magenta inset;
 }
 
 
@@ -1310,6 +1312,8 @@ div
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle));        this.blur();'>RECT</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment));          this.blur();'>CMNT</button>
     <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
@@ -4109,6 +4113,10 @@ const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundT
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 
 const GROUP              = 'GRP';   // ???? count O...
+
+
+const COMMENT            = 'CMNT';
+
 
 
 /*
@@ -11241,6 +11249,10 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const GROUP              = 'GRP';   // ???? count O...
 
 
+const COMMENT            = 'CMNT';
+
+
+
 /*
 
 ARROW       A
@@ -11294,10 +11306,10 @@ const settings =
 {
     showNodeId:      true, // instead of name
     
-    logStorage:      true,
+    logStorage:      false,
     logActions:      true,
     logRequests:     true,
-    logValueUpdates: true
+    logValueUpdates: false
 };
 
 
@@ -16712,6 +16724,8 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         
         case RECTANGLE:          node = new OpRectangle();        break;
         case ELLIPSE:            node = new OpRow();              break;
+
+        case COMMENT:            node = new OpComment();          break;
     }
     
     node._creatingButton = creatingButton;
@@ -17680,6 +17694,7 @@ class Operator
 
     _creatingButton  = null; // this is used to place the node under its creating button
 
+    scrollName = true;
 
     
 
@@ -17692,6 +17707,7 @@ class Operator
     paramBack;
     labelWrapper;
     label;
+    textbox;
     inputControls;
     outputControls;
 
@@ -18845,6 +18861,9 @@ function createNodeLabel(node)
     
     node.labelWrapper.addEventListener('pointermove', e =>
     {
+        if (!node.scrollName)
+            return;
+
         const wrect      = boundingRect(node.labelWrapper);
         const margin     = 14;
         const viewMargin = margin * graphView.zoom;
@@ -19101,6 +19120,69 @@ function initLabelTextbox(node)
         
         node.textbox.focus();
         node.textbox.select();
+    }
+}
+
+
+class   OpComment
+extends OperatorBase
+{
+    constructor()
+    {
+        super(COMMENT, 'cmnt', 0);
+
+
+        this.scrollName = false;
+
+        //this.paramBack.style.display = 'hidden';
+
+
+        this.textbox.addEventListener('change', e =>
+        {
+            this.updateNode();
+        });
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        const cnv = this.canvas || (this.canvas = document.createElement("canvas"));
+        const ctx = cnv.getContext("2d");
+        
+        ctx.font = 'Inter 11px';
+        
+        const mes = ctx.measureText(this.name);
+
+        console.log('mes', mes);
+        
+        this.div.style.width = mes.width + 'px';
+    }
+
+
+
+    updateHeader()
+    {
+        this.header.style.background = 'transparent';
+       
+        this.updateHeaderLabel();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        this.label.innerHTML = this.name;
+        
+        this.label.style.color = '#888';
+        this.label.style.background = 'transparent';
+
+        //this.label.style.transform = 'none';
+
+        this.label.style.WebkitBackgroundClip = 'border-box';
+        this.label.style.WebkitTextFillColor  = 'transparent';
     }
 }
 
@@ -22769,8 +22851,8 @@ class ActionManager
         {
             console.log(
                 "%cDO %s", 
-                'background: #ffd; \
-                color:      #b80;', 
+                'background: #e8ffe8; \
+                 color:      #282;', 
                 action.name);
         }
         
@@ -22795,7 +22877,7 @@ class ActionManager
                 console.log(
                     "%cUNDO %s", 
                     'background: #fff4e8; \
-                    color:      #c64;', 
+                     color:      #c64;', 
                     last.name);
             }
 
@@ -22825,8 +22907,8 @@ class ActionManager
             {
                 console.log(
                     "%cREDO %s", 
-                    'background: #e8ffe8; \
-                    color:      #282;', 
+                    'background: #ffd; \
+                     color:      #b80;', 
                     last.name);
             }
 
@@ -23271,19 +23353,13 @@ extends Action
         uiDisconnect(input);
 
 
-        if (!getActiveNodeRightInTreeFromNode(input.node))
-        {
-            uiMakeNodeActive(input.node);
-
-            if (!ignoreNodeIds.includes(input.node.id))
-                pushUnique(this.newActiveNodeIds, input.node.id);
-
-            updateNodes.push(input.node);
-        }
+        const activeLeft     = getActiveNodeLeftInTreeFromNode(output.node);
+        const activeLeftOnly = getActiveNodeLeftOnlyInTreeFromNode(output.node);
+        const activeRight    = getActiveNodeRightInTreeFromNode(input.node);
 
 
-        //if (!getActiveNodeLeftOnlyInTreeFromNode(output.node))
-        if (!getActiveNodeInTreeFromNode(output.node))
+        if (  !activeLeftOnly)
+//            || activeLeft != activeRight)
         {
             uiMakeNodeActive(output.node);
 
@@ -23293,6 +23369,17 @@ extends Action
             updateNodes.push(output.node);
         }
 
+
+        if (!activeRight)
+        {
+            uiMakeNodeActive(input.node);
+
+            if (!ignoreNodeIds.includes(input.node.id))
+                pushUnique(this.newActiveNodeIds, input.node.id);
+
+            updateNodes.push(input.node);
+        }
+        
 
         return updateNodes;
     }
@@ -24391,13 +24478,16 @@ var genMessages = []; // messages from UI to Generator
 var figMessagePosted = false;
 var genMessagePosted = false;
 
+
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiClearPageData('GA rect');
 //uiRemoveAllSavedNodesAndConns();
+
+
 uiLogAllSavedNodesAndConns();
+
 
 
 var currentUser = '';
@@ -25649,7 +25739,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
 
                          ╲ ╱
         [̅_̅_̅_̅_̅_̅_̅_]─────████╳████─────[̅_̅_̅_̅_̅_̅_̅_]
-                         ╱ ╲
+√                        ╱ ╲
         █████████         ↓         █████████
 
 
@@ -25671,7 +25761,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         ████╳████══╡
            ╱ ╲     └──[̅_̅_̅_̅_̅_̅_̅_]
 
-√                 ↓
+                  ↓
 
                       █████████
 
@@ -25695,7 +25785,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
         [̅_̅_̅_̅_̅_̅_̅_]══╡     ╱ ╲     ╞══[̅_̅_̅_̅_̅_̅_̅_]
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
 
-                          ↓
+√                         ↓
 
         [̅_̅_̅_̅_̅_̅_̅_]──┐             ┌──█████████
                    └──[̅_̅_̅_̅_̅_̅_̅_]──┘
@@ -26463,6 +26553,16 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiPostMessageToFigma({
         cmd:    'figRemoveSavedNodesAndConns',
+        nodeIds: nodeIds
+    });
+}
+
+
+
+function uiRemoveConnsToNodes(nodeIds)
+{
+    uiPostMessageToFigma({
+        cmd: 'figRemoveConnsToNodes',
         nodeIds: nodeIds
     });
 }

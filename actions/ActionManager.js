@@ -37,8 +37,8 @@ class ActionManager
         {
             console.log(
                 "%cDO %s", 
-                'background: #ffd; \
-                color:      #b80;', 
+                'background: #e8ffe8; \
+                 color:      #282;', 
                 action.name);
         }
         
@@ -63,7 +63,7 @@ class ActionManager
                 console.log(
                     "%cUNDO %s", 
                     'background: #fff4e8; \
-                    color:      #c64;', 
+                     color:      #c64;', 
                     last.name);
             }
 
@@ -93,8 +93,8 @@ class ActionManager
             {
                 console.log(
                     "%cREDO %s", 
-                    'background: #e8ffe8; \
-                    color:      #282;', 
+                    'background: #ffd; \
+                     color:      #b80;', 
                     last.name);
             }
 
