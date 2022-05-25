@@ -75,7 +75,7 @@ extends Action
         }
 
         for (const node of movedNodes)
-            node.updateBorder();
+            node.updateNode();//Border();
 
         uiSaveNodes(movedIds);
     }
@@ -94,7 +94,7 @@ extends Action
         }
 
         for (const node of movedNodes)
-            node.updateBorder();
+            node.updateNode();//Border();
             
         graphView.selectByIds(this.prevSelectedIds);
 

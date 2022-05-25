@@ -26,12 +26,10 @@ extends OperatorBase
         const cnv = this.canvas || (this.canvas = document.createElement("canvas"));
         const ctx = cnv.getContext("2d");
         
-        ctx.font = 'Inter 11px';
+        ctx.font = '11px Inter';
         
         const mes = ctx.measureText(this.name);
 
-        console.log('mes', mes);
-        
         this.div.style.width = mes.width + 'px';
     }
 
@@ -48,14 +46,20 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        this.label.innerHTML = this.name;
+        console.log(this.id + '.updateHeaderLabel()');
+        console.log(this.id + '.selected', this.selected);
+
+        this.label.innerHTML        = this.name;
         
-        this.label.style.color = '#888';
+        this.label.style.color      = this.selected ? colFigmaBlue : '#666';
         this.label.style.background = 'transparent';
+
+        this.label.style.textAlign  = 'left';
+        //updateHeaderLabelOffset(this);
 
         //this.label.style.transform = 'none';
 
-        this.label.style.WebkitBackgroundClip = 'border-box';
-        this.label.style.WebkitTextFillColor  = 'transparent';
+        this.label.style.WebkitBackgroundClip = 'inherit';
+        this.label.style.WebkitTextFillColor  = 'inherit';
     }
 }

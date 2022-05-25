@@ -26,5 +26,5 @@
 
 .toggleButton:active
 {
-    box-shadow: 0 0 0 2px #18A0FB;
+    box-shadow: 0 0 0 2px var(--colFigmaBlue);
 }

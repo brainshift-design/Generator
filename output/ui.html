@@ -38,6 +38,12 @@
 }
 
 
+:root
+{
+    --colFigmaBlue: #0c8ce9;
+}
+
+
 #controlBar
 {
     display:          flex;
@@ -610,15 +616,9 @@ div
 }
 
 
-:root
-{
-    --activeObjectColor:    #18a0fb;
-}
-
-
 #selectBox
 {
-    outline:          1pt solid var(--activeObjectColor);
+    outline:          1pt solid var(--colFigmaBlue);
     background-color: #18A0FB20;
     pointer-events:   none;
     margin:           0;
@@ -707,7 +707,7 @@ div
 
 .toggleButton:active
 {
-    box-shadow: 0 0 0 2px #18A0FB;
+    box-shadow: 0 0 0 2px var(--colFigmaBlue);
 }
 
 
@@ -1007,7 +1007,7 @@ div
     border-radius: 4px 4px 0 0;
     padding:       0;
     /* overflow:      visible; */
-    box-shadow:    0 0 0 1px orange inset;
+    /* box-shadow:    0 0 0 1px orange inset; */
 }
 
 
@@ -1034,7 +1034,7 @@ div
     border-radius: 4px 4px 0 0;
     z-index:       1;
     /* overflow:      visible; */
-    box-shadow:    0 0 0 1px red inset;
+    /* box-shadow:    0 0 0 1px red inset; */
 }
 
 
@@ -1046,7 +1046,7 @@ div
     /* height:     20; */
     background: #fffe;
     z-index:    -1;
-    box-shadow:    0 0 0 1px blue inset;
+    /* box-shadow:    0 0 0 1px green inset; */
 }
 
 
@@ -1560,15 +1560,6 @@ const smallScrollGap    =  6;
 const largeScrollGap    = 14;
 
 const MAX_INT32         = 2147483647;
-
-
-const rgbObject       = hex2rgb('#bee0ff');
-const rgbActiveObject = hex2rgb('#18a0fb');
-const rgbNumber       = hex2rgb('#ddd');
-const rgbActiveNumber = hex2rgb('#787878');
-const rgbColor        = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
-const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
-
 
 
 function rgbFromType(type, active)
@@ -7319,15 +7310,6 @@ const smallScrollGap    =  6;
 const largeScrollGap    = 14;
 
 const MAX_INT32         = 2147483647;
-
-
-const rgbObject       = hex2rgb('#bee0ff');
-const rgbActiveObject = hex2rgb('#18a0fb');
-const rgbNumber       = hex2rgb('#ddd');
-const rgbActiveNumber = hex2rgb('#787878');
-const rgbColor        = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
-const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
-
 
 
 function rgbFromType(type, active)
@@ -14382,127 +14364,6 @@ graphView.setNodeTransform = function(node, nodeLeft, nodeTop, nodeRect)
 
 
 
-function updateWires(wires)
-{
-    //logFunction('updateWires()');
-
-
-    const pOut    = [];
-    const pIn     = [];
-    
-    const cw      = graphView.clientWidth;
-    const ch      = graphView.clientHeight;
-    const yOffset = controlBar.offsetHeight;
-
-
-    wires.forEach(w => 
-    {
-        const ro = boundingRect(w.connection.output.control);
-        const ri = boundingRect(w.connection.input .control);
-
-        pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
-        pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
-    });
-
-    
-    for (let i = 0; i < wires.length; i++)
-    {
-        const wire = wires[i];
-
-        // the yOffset is to start wire coords just below the control bar,
-        // not at the top of the window
-
-        wire.updateCurve  (pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
-        wire.updateOutBall(pOut[i].x, pOut[i].y                    );
-        wire.updateInBall (                      pIn[i].x, pIn[i].y);
-
-        wire.updateStyle(wire.getColor());
-
-        wire.setAttribute('width',  cw);
-        wire.setAttribute('height', ch);
-    
-        wire.setAttribute('viewBox',
-                    0
-            + ' ' + 0//yOffset/2 // why is only half of yOffset taken???
-            + ' ' + cw
-            + ' ' + ch);
-    }
-
-
-    for (let i = 0; i < wires.length; i++)
-    {
-        const conn   = wires[i].connection;
-        const input  = conn.input;
-        const output = conn.output;
-
-        const isSolo = 
-                graphView._soloNode
-            && (    input.node == graphView._soloNode
-                || output.node == graphView._soloNode);
-
-        show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
-        show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
-    }
-}
-
-
-
-function updateWire(wire, x = 0, y = 0)
-{
-    const yOffset = controlBar.offsetHeight;
-
-    let pOut = point(0, 0),
-        pIn  = point(0, 0);
-
-
-    if (wire.connection.output)
-    {
-        const ro = boundingRect(wire.connection.output.control);
-        pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
-    }
-    else
-        pOut = point(x, y - yOffset);
-
-
-    if (wire.connection.input)
-    {
-        const ri = boundingRect(wire.connection.input .control);
-        pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
-    }
-    else
-        pIn = point(x, y - yOffset);
-
-
-    wire.update(
-        pOut.x, 
-        pOut.y, 
-        pIn.x, 
-        pIn.y);        
-}
-
-
-
-graphView.addWire = function(wire, updateTransform = true)
-{
-    graphView.wires.push(wire);
-    wireContainer.appendChild(wire);
-
-    if (updateTransform)
-        updateWire(wire);
-};
-
-
-
-graphView.removeWire = function(wire)
-{
-    wireContainer.removeChild(wire);    
-    removeFromArray(graphView.wires, wire);
-};
-
-
-
 graphView.getNodeOffsetRect = function(node)
 {
     const ox   = -graphView.pan.x / graphView.zoom;
@@ -15218,9 +15079,9 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     selectBox.style.zIndex = MAX_INT32-3;
         
         
-    //updateGraphNodes();
-    for (const node of selected)
-        node.updateBorder();
+    selected.forEach(n => n.updateNode());
+    graphView._prevSelectedNodes.forEach(n => n.updateNode());
+    graphView.lastSelectedNodes.forEach(n => n.updateNode());
 
 
     graphView._prevSelectedNodes = selected;
@@ -15618,6 +15479,126 @@ scrollbarY.addEventListener('pointermove', e =>
             graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
     }
 });
+
+
+graphView.addWire = function(wire, updateTransform = true)
+{
+    graphView.wires.push(wire);
+    wireContainer.appendChild(wire);
+
+    if (updateTransform)
+        updateWire(wire);
+};
+
+
+
+graphView.removeWire = function(wire)
+{
+    wireContainer.removeChild(wire);    
+    removeFromArray(graphView.wires, wire);
+};
+
+
+
+function updateWire(wire, x = 0, y = 0)
+{
+    const yOffset = controlBar.offsetHeight;
+
+    let pOut = point(0, 0),
+        pIn  = point(0, 0);
+
+
+    if (wire.connection.output)
+    {
+        const ro = boundingRect(wire.connection.output.control);
+        pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
+    }
+    else
+        pOut = point(x, y - yOffset);
+
+
+    if (wire.connection.input)
+    {
+        const ri = boundingRect(wire.connection.input .control);
+        pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
+    }
+    else
+        pIn = point(x, y - yOffset);
+
+
+    wire.update(
+        pOut.x, 
+        pOut.y, 
+        pIn.x, 
+        pIn.y);        
+}
+
+
+
+function updateWires(wires)
+{
+    //logFunction('updateWires()');
+
+
+    const pOut    = [];
+    const pIn     = [];
+    
+    const cw      = graphView.clientWidth;
+    const ch      = graphView.clientHeight;
+    const yOffset = controlBar.offsetHeight;
+
+
+    wires.forEach(w => 
+    {
+        const ro = boundingRect(w.connection.output.control);
+        const ri = boundingRect(w.connection.input .control);
+
+        pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
+        pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
+    });
+
+    
+    for (let i = 0; i < wires.length; i++)
+    {
+        const wire = wires[i];
+
+        // the yOffset is to start wire coords just below the control bar,
+        // not at the top of the window
+
+        wire.updateCurve  (pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
+        wire.updateOutBall(pOut[i].x, pOut[i].y                    );
+        wire.updateInBall (                      pIn[i].x, pIn[i].y);
+
+        wire.updateStyle(wire.getColor());
+
+        wire.setAttribute('width',  cw);
+        wire.setAttribute('height', ch);
+    
+        wire.setAttribute('viewBox',
+                    0
+            + ' ' + 0//yOffset/2 // why is only half of yOffset taken???
+            + ' ' + cw
+            + ' ' + ch);
+    }
+
+
+    for (let i = 0; i < wires.length; i++)
+    {
+        const conn   = wires[i].connection;
+        const input  = conn.input;
+        const output = conn.output;
+
+        const isSolo = 
+                graphView._soloNode
+            && (    input.node == graphView._soloNode
+                || output.node == graphView._soloNode);
+
+        show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
+        show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
+    }
+}
 
 
 class Parameter
@@ -17882,7 +17863,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
+            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject) //colFigmaBlue
             : 'none';
     }
     
@@ -18368,6 +18349,9 @@ extends Operator
     {
         //console.log(this.id + '.OperatorBase.updateHeader()');
 
+        super.updateHeader();
+
+
         const colBack   = rgbFromType(this.type, this.active);
         const darkText  = rgb2hclokl(colBack)[2] > 0.71;
 
@@ -18384,9 +18368,6 @@ extends Operator
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colInput;
         for (const output of this.outputs.filter(i => !i.param)) output.color = colOutput;
-
-
-        super.updateHeader();
     }
 }
 
@@ -18426,7 +18407,7 @@ function createOperatorNode(node)
             &&  graphView._soloNode != node) 
             graphView.soloNode(node);
         
-        node.updateBorder();
+        node.updateNode();
     });
 
     
@@ -18441,7 +18422,7 @@ function createOperatorNode(node)
             && graphView._soloNode == node)
             graphView.unsoloNode();
 
-        node.updateBorder();
+        node.updateNode();
     });
 
     
@@ -19152,12 +19133,10 @@ extends OperatorBase
         const cnv = this.canvas || (this.canvas = document.createElement("canvas"));
         const ctx = cnv.getContext("2d");
         
-        ctx.font = 'Inter 11px';
+        ctx.font = '11px Inter';
         
         const mes = ctx.measureText(this.name);
 
-        console.log('mes', mes);
-        
         this.div.style.width = mes.width + 'px';
     }
 
@@ -19174,15 +19153,21 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        this.label.innerHTML = this.name;
+        console.log(this.id + '.updateHeaderLabel()');
+        console.log(this.id + '.selected', this.selected);
+
+        this.label.innerHTML        = this.name;
         
-        this.label.style.color = '#888';
+        this.label.style.color      = this.selected ? colFigmaBlue : '#666';
         this.label.style.background = 'transparent';
+
+        this.label.style.textAlign  = 'left';
+        //updateHeaderLabelOffset(this);
 
         //this.label.style.transform = 'none';
 
-        this.label.style.WebkitBackgroundClip = 'border-box';
-        this.label.style.WebkitTextFillColor  = 'transparent';
+        this.label.style.WebkitBackgroundClip = 'inherit';
+        this.label.style.WebkitTextFillColor  = 'inherit';
     }
 }
 
@@ -24057,7 +24042,7 @@ extends Action
         }
 
         for (const node of movedNodes)
-            node.updateBorder();
+            node.updateNode();//Border();
 
         uiSaveNodes(movedIds);
     }
@@ -24076,7 +24061,7 @@ extends Action
         }
 
         for (const node of movedNodes)
-            node.updateBorder();
+            node.updateNode();//Border();
             
         graphView.selectByIds(this.prevSelectedIds);
 
@@ -24297,13 +24282,25 @@ function updateToggleShowWiresButton()
     btnToggleWires.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="'+color+'" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="'+color+'"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="'+color+'"/></svg>\')';
     btnToggleWires.style.backgroundPosition = '50% 50%';
     btnToggleWires.style.backgroundRepeat   = 'no-repeat';
-    btnToggleWires.style.backgroundColor    = graphView.showWires ? '#18a0fb' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
+    btnToggleWires.style.backgroundColor    = graphView.showWires ? 'var(--colFigmaBlue)' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
 }
 
 
 
 btnToggleWires.addEventListener('pointerover',  () => updateToggleShowWiresButton());
 btnToggleWires.addEventListener('pointerleave', () => updateToggleShowWiresButton());
+
+
+const colFigmaBlue = '#0c8ce9';
+
+
+const rgbObject       = hex2rgb('#bee0ff');
+const rgbActiveObject = hex2rgb('#18a0fb');
+const rgbNumber       = hex2rgb('#ddd');
+const rgbActiveNumber = hex2rgb('#787878');
+const rgbColor        = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
+const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
+
 
 
 const panCursor = 

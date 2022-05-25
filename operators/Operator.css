@@ -6,7 +6,7 @@
     border-radius: 4px 4px 0 0;
     padding:       0;
     /* overflow:      visible; */
-    box-shadow:    0 0 0 1px orange inset;
+    /* box-shadow:    0 0 0 1px orange inset; */
 }
 
 
@@ -33,7 +33,7 @@
     border-radius: 4px 4px 0 0;
     z-index:       1;
     /* overflow:      visible; */
-    box-shadow:    0 0 0 1px red inset;
+    /* box-shadow:    0 0 0 1px red inset; */
 }
 
 
@@ -45,7 +45,7 @@
     /* height:     20; */
     background: #fffe;
     z-index:    -1;
-    box-shadow:    0 0 0 1px blue inset;
+    /* box-shadow:    0 0 0 1px green inset; */
 }
 
 

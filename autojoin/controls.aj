@@ -13,3 +13,4 @@
 ../controls/graphView/graphView selection.js
 ../controls/graphView/graphView connection.js
 ../controls/graphView/graphView scrollbars.js
+../controls/graphView/graphView wires.js

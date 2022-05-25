@@ -5,6 +5,9 @@ extends Operator
     {
         //console.log(this.id + '.OperatorBase.updateHeader()');
 
+        super.updateHeader();
+
+
         const colBack   = rgbFromType(this.type, this.active);
         const darkText  = rgb2hclokl(colBack)[2] > 0.71;
 
@@ -21,8 +24,5 @@ extends Operator
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colInput;
         for (const output of this.outputs.filter(i => !i.param)) output.color = colOutput;
-
-
-        super.updateHeader();
     }
 }

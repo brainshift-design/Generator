@@ -1,12 +1,6 @@
-:root
-{
-    --activeObjectColor:    #18a0fb;
-}
-
-
 #selectBox
 {
-    outline:          1pt solid var(--activeObjectColor);
+    outline:          1pt solid var(--colFigmaBlue);
     background-color: #18A0FB20;
     pointer-events:   none;
     margin:           0;

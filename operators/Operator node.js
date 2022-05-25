@@ -33,7 +33,7 @@ function createOperatorNode(node)
             &&  graphView._soloNode != node) 
             graphView.soloNode(node);
         
-        node.updateBorder();
+        node.updateNode();
     });
 
     
@@ -48,7 +48,7 @@ function createOperatorNode(node)
             && graphView._soloNode == node)
             graphView.unsoloNode();
 
-        node.updateBorder();
+        node.updateNode();
     });
 
     
