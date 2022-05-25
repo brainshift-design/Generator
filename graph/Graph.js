@@ -95,10 +95,11 @@ class Graph
         
         node.div.style.zIndex = graph.nodes.length-1;
 
+
         graphView.putNodeOnTop(node);
 
-        node.updateNode();
-        graphView.updateNodeTransform(node);
+        // graphView.updateNodeTransform(node);
+        // node.updateNode();
 
 
         graphView.updateScrollWithBounds();

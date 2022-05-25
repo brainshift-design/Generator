@@ -410,6 +410,8 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
 
+        node.updateNode();
+
         //pushUpdate([node]);
 
         //graphView.putNodeOnTop(node);

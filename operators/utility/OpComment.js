@@ -55,10 +55,12 @@ extends OperatorBase
 
         this.div    .style.width   =
         this.textbox.style.width   = Math.max(1, mes.width) + 'px';
- 
+
         this.textbox.style.height  = this.div.offsetHeight;
         this.textbox.style.padding = '0';
         this.textbox.style.margin  = '0';
+
+        this.textbox.style.boxShadow = 'none';
     }
 
 
@@ -81,6 +83,11 @@ extends OperatorBase
         this.label.style.background = 'transparent';
 
         this.label.style.textAlign  = 'left';
+
+        this.label.style.left       = '0';
+        this.label.style.top        = '0';
+
+        this.label.style.transform  = 'none';
 
         this.label.style.WebkitBackgroundClip = 'inherit';
         this.label.style.WebkitTextFillColor  = 'inherit';

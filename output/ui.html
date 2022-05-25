@@ -1034,7 +1034,7 @@ div
     border-radius: 4px 4px 0 0;
     z-index:       1;
     /* overflow:      visible; */
-    box-shadow:    0 0 0 1px red inset;
+    /* box-shadow:    0 0 0 1px red inset; */
 }
 
 
@@ -1070,14 +1070,14 @@ div
     height:         14;
     text-align:     center;
     position:       absolute;
-    left:           50%;
-    top:            50%;
+    /* left:           50%;
+    top:            50%; */
     /* transform:      translateX(-50%) 
                     translateY(calc(-50% - 0.5px)); */
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
-    box-shadow:     0 0 0 1px magenta inset;
+    /* box-shadow:     0 0 0 1px magenta inset; */
 }
 
 
@@ -1085,7 +1085,7 @@ div
 {
     font-family: Inter;
     font-size:   11;
-    box-shadow:  0 0 0 1px #a0a inset;
+    /* box-shadow:  0 0 0 1px #a0a inset; */
     overflow:    visible;
 }
 
@@ -16456,10 +16456,11 @@ class Graph
         
         node.div.style.zIndex = graph.nodes.length-1;
 
+
         graphView.putNodeOnTop(node);
 
-        node.updateNode();
-        graphView.updateNodeTransform(node);
+        // graphView.updateNodeTransform(node);
+        // node.updateNode();
 
 
         graphView.updateScrollWithBounds();
@@ -18102,6 +18103,9 @@ class Operator
         const [,,,,, textStyle] = this.getHeaderColors();
         this.label.style.color  = textStyle;
 
+        this.label.style.left = '50%';
+        this.label.style.top  = '50%';
+
         updateHeaderLabelOffset(this);
     }
 
@@ -19172,10 +19176,12 @@ extends OperatorBase
 
         this.div    .style.width   =
         this.textbox.style.width   = Math.max(1, mes.width) + 'px';
- 
+
         this.textbox.style.height  = this.div.offsetHeight;
         this.textbox.style.padding = '0';
         this.textbox.style.margin  = '0';
+
+        this.textbox.style.boxShadow = 'none';
     }
 
 
@@ -19198,6 +19204,11 @@ extends OperatorBase
         this.label.style.background = 'transparent';
 
         this.label.style.textAlign  = 'left';
+
+        this.label.style.left       = '0';
+        this.label.style.top        = '0';
+
+        this.label.style.transform  = 'none';
 
         this.label.style.WebkitBackgroundClip = 'inherit';
         this.label.style.WebkitTextFillColor  = 'inherit';
@@ -25888,6 +25899,8 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
     {
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
+
+        node.updateNode();
 
         //pushUpdate([node]);
 

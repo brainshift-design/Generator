@@ -475,6 +475,9 @@ class Operator
         const [,,,,, textStyle] = this.getHeaderColors();
         this.label.style.color  = textStyle;
 
+        this.label.style.left = '50%';
+        this.label.style.top  = '50%';
+
         updateHeaderLabelOffset(this);
     }
 
