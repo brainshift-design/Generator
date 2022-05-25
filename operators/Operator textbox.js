@@ -66,10 +66,6 @@ function initLabelTextbox(node)
 
         else if (e.key == 'Alt')
             e.preventDefault();
-
-
-        else
-            node.textbox.dispatchEvent(new Event('change'));        
     });
 
 
@@ -180,6 +176,8 @@ function initLabelTextbox(node)
         node.header.appendChild(node.textbox);
 
         node.label.style.display           = 'none';
+        
+        node.updateNode();
         
         node.textbox.focus();
         node.textbox.select();

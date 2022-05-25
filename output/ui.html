@@ -16457,6 +16457,11 @@ class Graph
         node.div.style.zIndex = graph.nodes.length-1;
 
         graphView.putNodeOnTop(node);
+
+        node.updateNode();
+        graphView.updateNodeTransform(node);
+
+
         graphView.updateScrollWithBounds();
 
         // if (updateLabel)
@@ -18991,10 +18996,6 @@ function initLabelTextbox(node)
 
         else if (e.key == 'Alt')
             e.preventDefault();
-
-
-        else
-            node.textbox.dispatchEvent(new Event('change'));        
     });
 
 
@@ -19106,6 +19107,8 @@ function initLabelTextbox(node)
 
         node.label.style.display           = 'none';
         
+        node.updateNode();
+        
         node.textbox.focus();
         node.textbox.select();
     }
@@ -19117,16 +19120,25 @@ extends OperatorBase
 {
     constructor()
     {
-        super(COMMENT, 'cmnt', 0);
+        super(COMMENT, 'comment', 0);
 
+
+        //this.div.style.pointerEvents = 'auto';
 
         this.scrollName = false;
 
 
-        this.textbox.addEventListener('change', e =>
+        this.textbox.addEventListener('input', e =>
         {
             this.updateNode();
             graphView.updateNodeTransform(this);
+        });
+
+
+        this.textbox.addEventListener('change', e =>
+        {
+            if (this.textbox.value.trim() == '')
+                actionManager.do(new DeleteNodesAction([this.id]), true);
         });
     }
 
@@ -19158,8 +19170,12 @@ extends OperatorBase
             ? this.textbox.value 
             : this.name);
 
-        this.div    .style.width =
-        this.textbox.style.width = mes.width + 'px';
+        this.div    .style.width   =
+        this.textbox.style.width   = Math.max(1, mes.width) + 'px';
+ 
+        this.textbox.style.height  = this.div.offsetHeight;
+        this.textbox.style.padding = '0';
+        this.textbox.style.margin  = '0';
     }
 
 
@@ -25852,7 +25868,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
     let node = createNode(nodeType, creatingButton, createdId);
 
     graph.addNode(node);
-
+   
     uiSaveNodes([node.id]);
 
 
