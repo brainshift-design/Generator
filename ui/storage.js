@@ -242,6 +242,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             .map(n => nodeFromId(n.id))
             .forEach(n => n.makeActive());
 
+        loadedNodes.forEach(n => n.updateNode());
+        graphView.updateNodeTransforms(loadedNodes);
+
         updateTerminalsAfterNodes(loadedNodes);
     });
 }

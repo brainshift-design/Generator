@@ -456,8 +456,8 @@ input[type=text]:focus
 
 input[type=text]::selection
 {
-    background-color: #b9e2fe;
-    color:            black;
+    background-color: var(--colFigmaBlue);
+    color:            white;
 }
 
 
@@ -1034,7 +1034,7 @@ div
     border-radius: 4px 4px 0 0;
     z-index:       1;
     /* overflow:      visible; */
-    /* box-shadow:    0 0 0 1px red inset; */
+    box-shadow:    0 0 0 1px red inset;
 }
 
 
@@ -1085,6 +1085,8 @@ div
 {
     font-family: Inter;
     font-size:   11;
+    box-shadow:  0 0 0 1px #a0a inset;
+    overflow:    visible;
 }
 
 
@@ -18989,6 +18991,10 @@ function initLabelTextbox(node)
 
         else if (e.key == 'Alt')
             e.preventDefault();
+
+
+        else
+            node.textbox.dispatchEvent(new Event('change'));        
     });
 
 
@@ -19088,6 +19094,7 @@ function initLabelTextbox(node)
         node.textbox.style.top             = '50%';
         node.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
         node.textbox.style.textAlign       = 'center';
+        node.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
 
         node.textbox.style.backgroundColor = node.header.style.backgroundColor;
         node.textbox.style.color           = node.label.style.color;
@@ -19115,13 +19122,20 @@ extends OperatorBase
 
         this.scrollName = false;
 
-        //this.paramBack.style.display = 'hidden';
-
 
         this.textbox.addEventListener('change', e =>
         {
             this.updateNode();
+            graphView.updateNodeTransform(this);
         });
+    }
+
+
+
+    setSelected(sel)
+    {
+        this._selected = sel;
+        this.div.style.boxShadow = 'none';
     }
 
 
@@ -19130,20 +19144,29 @@ extends OperatorBase
     {
         super.updateNode();
 
+
+        this.inner.style.boxShadow = 'none';
+
+
         const cnv = this.canvas || (this.canvas = document.createElement("canvas"));
         const ctx = cnv.getContext("2d");
         
         ctx.font = '11px Inter';
         
-        const mes = ctx.measureText(this.name);
+        const mes = ctx.measureText(
+            hasFocus(this.textbox) 
+            ? this.textbox.value 
+            : this.name);
 
-        this.div.style.width = mes.width + 'px';
+        this.div    .style.width =
+        this.textbox.style.width = mes.width + 'px';
     }
 
 
 
     updateHeader()
     {
+        this.header.style.overflow   = 'visible';
         this.header.style.background = 'transparent';
        
         this.updateHeaderLabel();
@@ -19153,18 +19176,12 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        console.log(this.id + '.updateHeaderLabel()');
-        console.log(this.id + '.selected', this.selected);
-
         this.label.innerHTML        = this.name;
         
         this.label.style.color      = this.selected ? colFigmaBlue : '#666';
         this.label.style.background = 'transparent';
 
         this.label.style.textAlign  = 'left';
-        //updateHeaderLabelOffset(this);
-
-        //this.label.style.transform = 'none';
 
         this.label.style.WebkitBackgroundClip = 'inherit';
         this.label.style.WebkitTextFillColor  = 'inherit';
@@ -25113,6 +25130,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             .filter(n => n.active)
             .map(n => nodeFromId(n.id))
             .forEach(n => n.makeActive());
+
+        loadedNodes.forEach(n => n.updateNode());
+        graphView.updateNodeTransforms(loadedNodes);
 
         updateTerminalsAfterNodes(loadedNodes);
     });

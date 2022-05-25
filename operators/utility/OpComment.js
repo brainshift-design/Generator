@@ -8,13 +8,20 @@ extends OperatorBase
 
         this.scrollName = false;
 
-        //this.paramBack.style.display = 'hidden';
-
 
         this.textbox.addEventListener('change', e =>
         {
             this.updateNode();
+            graphView.updateNodeTransform(this);
         });
+    }
+
+
+
+    setSelected(sel)
+    {
+        this._selected = sel;
+        this.div.style.boxShadow = 'none';
     }
 
 
@@ -23,20 +30,29 @@ extends OperatorBase
     {
         super.updateNode();
 
+
+        this.inner.style.boxShadow = 'none';
+
+
         const cnv = this.canvas || (this.canvas = document.createElement("canvas"));
         const ctx = cnv.getContext("2d");
         
         ctx.font = '11px Inter';
         
-        const mes = ctx.measureText(this.name);
+        const mes = ctx.measureText(
+            hasFocus(this.textbox) 
+            ? this.textbox.value 
+            : this.name);
 
-        this.div.style.width = mes.width + 'px';
+        this.div    .style.width =
+        this.textbox.style.width = mes.width + 'px';
     }
 
 
 
     updateHeader()
     {
+        this.header.style.overflow   = 'visible';
         this.header.style.background = 'transparent';
        
         this.updateHeaderLabel();
@@ -46,18 +62,12 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        console.log(this.id + '.updateHeaderLabel()');
-        console.log(this.id + '.selected', this.selected);
-
         this.label.innerHTML        = this.name;
         
         this.label.style.color      = this.selected ? colFigmaBlue : '#666';
         this.label.style.background = 'transparent';
 
         this.label.style.textAlign  = 'left';
-        //updateHeaderLabelOffset(this);
-
-        //this.label.style.transform = 'none';
 
         this.label.style.WebkitBackgroundClip = 'inherit';
         this.label.style.WebkitTextFillColor  = 'inherit';

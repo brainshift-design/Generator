@@ -66,6 +66,10 @@ function initLabelTextbox(node)
 
         else if (e.key == 'Alt')
             e.preventDefault();
+
+
+        else
+            node.textbox.dispatchEvent(new Event('change'));        
     });
 
 
@@ -165,6 +169,7 @@ function initLabelTextbox(node)
         node.textbox.style.top             = '50%';
         node.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
         node.textbox.style.textAlign       = 'center';
+        node.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
 
         node.textbox.style.backgroundColor = node.header.style.backgroundColor;
         node.textbox.style.color           = node.label.style.color;
