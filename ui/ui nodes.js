@@ -871,15 +871,7 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
     {
         if (    input.connected
             && !alreadyChecked.includes(input.connectedOutput.node))
-        {
-            const leftActive = getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]);
-            
-            // if (leftActive.length > 0) 
-            // {
-                activeNodes.push(...leftActive);
-            //    break;
-            // }
-        }
+            pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
     }
 
 
@@ -888,15 +880,7 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
         for (const input of output.connectedInputs)
         {
             if (!alreadyChecked.includes(input.node))
-            {
-                const rightActive = getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]);
-                
-                // if (rightActive.length > 0) 
-                // {
-                    activeNodes.push(...rightActive);
-                //    break;
-                // }
-            }
+                pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]));
         }
     }
 

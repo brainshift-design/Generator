@@ -18785,7 +18785,7 @@ function createNodeHeader(node)
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
         else if (!node.header.ignoreDoubleClick)
-            actionManager.do(new MakeNodeActiveAction(node.id));
+            actionManager.do(new MakeActiveNodeAction(node.id));
 
 
         node.header.ignoreDoubleClick = false;
@@ -23201,16 +23201,8 @@ extends Action
         this.newActiveNodeIds = [];
         this.oldActiveNodeIds = [];
 
-
         for (const nodeId of this.nodeIds)
-        {
-            getActiveNodesInTreeFromNodeId(nodeId)
-                .forEach(node =>
-                {
-                    if (!this.oldActiveNodeIds.includes(node.id))
-                        this.oldActiveNodeIds.push(node.id);
-                });
-        }
+            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
         
 
         for (const nodeId of this.nodeIds)
@@ -23269,7 +23261,7 @@ extends Action
         }
 
         
-        uiDeleteNodes(this.nodeIds);//, this.id);
+        uiDeleteNodes(this.nodeIds);
 
         uiSaveNodes(this.newActiveNodeIds);
        
@@ -23364,7 +23356,7 @@ extends Action
         //console.log('disconnect');
 
         const output      = input.connectedOutput;
-        const updateNodes = [];        
+        const updateNodes = [input.node];        
 
 
         uiDisconnect(input);
@@ -23388,16 +23380,11 @@ extends Action
         }
 
 
-        if (!activeRight)
+        if (   !activeRight
+            && !ignoreNodeIds.includes(input.node.id))
         {
-            
-            if (!ignoreNodeIds.includes(input.node.id))
-            {
-                uiMakeNodeActive(input.node);
-                pushUnique(this.newActiveNodeIds, input.node.id);
-            }
-
-            updateNodes.push(input.node);
+            uiMakeNodeActive(input.node);
+            pushUnique(this.newActiveNodeIds, input.node.id);
         }
         
 
@@ -23605,7 +23592,7 @@ extends Action
 }
 
 
-class MakeNodeActiveAction
+class MakeActiveNodeAction
 extends Action
 {
     activeId;
@@ -23616,9 +23603,7 @@ extends Action
 
     constructor(activeId)
     {
-        super(
-             'MAKE ACTIVE ' + activeId);// + ', '
-            //+ oldActiveIds.length + ' active before');
+        super('MAKE ACTIVE ' + activeId);
 
         this.activeId = activeId;
     }
@@ -23661,6 +23646,9 @@ extends Action
 
     prevSelectedNodeIds = [];
 
+    oldActiveNodeIds = [];
+
+
 
     constructor(copiedNodesJson, pasteOutsideConnections)
     {
@@ -23678,10 +23666,20 @@ extends Action
     {
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
+
         const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
+
+        console.log('this.pastedNodeIds', this.pastedNodeIds);
+
+        this.oldActiveNodeIds = [];
+
+        for (const nodeId of this.pastedNodeIds)
+            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
+
+        console.log('this.oldActiveNodeIds', this.oldActiveNodeIds);
 
         updateTerminalsAfterNodes(nodes);
         graphView.updateNodeTransforms(nodes);
@@ -23699,6 +23697,14 @@ extends Action
         pasteOffset[1] -= pasteOffsetDelta[1];
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+
+
+        let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        console.log('oldActiveNodeIds', oldActiveNodeIds);
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+
+        for (const id of oldActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(id));
     }
 
 
@@ -26375,15 +26381,7 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
     {
         if (    input.connected
             && !alreadyChecked.includes(input.connectedOutput.node))
-        {
-            const leftActive = getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]);
-            
-            // if (leftActive.length > 0) 
-            // {
-                activeNodes.push(...leftActive);
-            //    break;
-            // }
-        }
+            pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
     }
 
 
@@ -26392,15 +26390,7 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
         for (const input of output.connectedInputs)
         {
             if (!alreadyChecked.includes(input.node))
-            {
-                const rightActive = getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]);
-                
-                // if (rightActive.length > 0) 
-                // {
-                    activeNodes.push(...rightActive);
-                //    break;
-                // }
-            }
+                pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]));
         }
     }
 

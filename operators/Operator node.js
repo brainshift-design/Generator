@@ -412,7 +412,7 @@ function createNodeHeader(node)
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
         else if (!node.header.ignoreDoubleClick)
-            actionManager.do(new MakeNodeActiveAction(node.id));
+            actionManager.do(new MakeActiveNodeAction(node.id));
 
 
         node.header.ignoreDoubleClick = false;

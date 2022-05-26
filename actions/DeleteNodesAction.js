@@ -42,16 +42,8 @@ extends Action
         this.newActiveNodeIds = [];
         this.oldActiveNodeIds = [];
 
-
         for (const nodeId of this.nodeIds)
-        {
-            getActiveNodesInTreeFromNodeId(nodeId)
-                .forEach(node =>
-                {
-                    if (!this.oldActiveNodeIds.includes(node.id))
-                        this.oldActiveNodeIds.push(node.id);
-                });
-        }
+            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
         
 
         for (const nodeId of this.nodeIds)
@@ -110,7 +102,7 @@ extends Action
         }
 
         
-        uiDeleteNodes(this.nodeIds);//, this.id);
+        uiDeleteNodes(this.nodeIds);
 
         uiSaveNodes(this.newActiveNodeIds);
        
@@ -205,7 +197,7 @@ extends Action
         //console.log('disconnect');
 
         const output      = input.connectedOutput;
-        const updateNodes = [];        
+        const updateNodes = [input.node];        
 
 
         uiDisconnect(input);
@@ -229,16 +221,11 @@ extends Action
         }
 
 
-        if (!activeRight)
+        if (   !activeRight
+            && !ignoreNodeIds.includes(input.node.id))
         {
-            
-            if (!ignoreNodeIds.includes(input.node.id))
-            {
-                uiMakeNodeActive(input.node);
-                pushUnique(this.newActiveNodeIds, input.node.id);
-            }
-
-            updateNodes.push(input.node);
+            uiMakeNodeActive(input.node);
+            pushUnique(this.newActiveNodeIds, input.node.id);
         }
         
 

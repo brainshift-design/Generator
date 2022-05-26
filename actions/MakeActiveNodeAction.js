@@ -1,4 +1,4 @@
-class MakeNodeActiveAction
+class MakeActiveNodeAction
 extends Action
 {
     activeId;
@@ -9,9 +9,7 @@ extends Action
 
     constructor(activeId)
     {
-        super(
-             'MAKE ACTIVE ' + activeId);// + ', '
-            //+ oldActiveIds.length + ' active before');
+        super('MAKE ACTIVE ' + activeId);
 
         this.activeId = activeId;
     }

@@ -10,6 +10,9 @@ extends Action
 
     prevSelectedNodeIds = [];
 
+    oldActiveNodeIds = [];
+
+
 
     constructor(copiedNodesJson, pasteOutsideConnections)
     {
@@ -27,10 +30,20 @@ extends Action
     {
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
+
         const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
+
+        console.log('this.pastedNodeIds', this.pastedNodeIds);
+
+        this.oldActiveNodeIds = [];
+
+        for (const nodeId of this.pastedNodeIds)
+            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
+
+        console.log('this.oldActiveNodeIds', this.oldActiveNodeIds);
 
         updateTerminalsAfterNodes(nodes);
         graphView.updateNodeTransforms(nodes);
@@ -48,6 +61,14 @@ extends Action
         pasteOffset[1] -= pasteOffsetDelta[1];
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+
+
+        let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        console.log('oldActiveNodeIds', oldActiveNodeIds);
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+
+        for (const id of oldActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(id));
     }
 
 
