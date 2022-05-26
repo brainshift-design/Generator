@@ -383,41 +383,6 @@ class Operator
 
 
 
-    //update()
-    //{
-        //if (this.valid) return;
-        
-        //console.log(this.id + '.Operator.update()');
-    
-        //this.updateParams(false);
-        //this.updateData();
-
-
-        // if (this.active)
-        //     uiGenRequest(this.toString());
-
-        // for (const output of this.outputs)
-        //     uiGenRequest(output.genRequest());
-        
-
-        // if (graphView.canUpdateNodes)
-        //    this.updateNode();
-
-
-        //this.valid   = true;
-    //}
-
-
-
-    // updateData()
-    // {
-    //     //console.log(this.id + '.Operator.updateData()');
-
-    //     this.setParamOutputData();
-    // }
-
-
-
     toString() 
     { 
         // create the generator string here
@@ -708,13 +673,15 @@ function pushUpdateFromParam(nodes, param)
         ? [param.node.id, param.index]
         : ['', 0];
 
-    nodes.forEach(n =>
-        getTerminalsAfterNode(n).forEach(_n => 
-            _n.outputs.forEach(o =>
-                request.push(...o.genRequest()))));
+    const terminals = [];
 
+    for (const node of nodes)
+        pushUnique(terminals, ...getTerminalsAfterNode(node));
+        
+    terminals.forEach(n => 
+        n.outputs.forEach(o =>
+            request.push(...o.genRequest()))); 
 
-    //uiGenRequest(req);
 
     uiPostMessageToGenerator({
         cmd:     'genRequest',

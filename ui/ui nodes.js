@@ -838,8 +838,8 @@ function getActiveNodesRightInTreeFromNodeId(nodeId, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                rightActive.push(...getActiveNodesRightInTreeFromNode(
-                    input.node, 
+                rightActive.push(...getActiveNodesRightInTreeFromNodeId(
+                    input.node.id, 
                     [...alreadyChecked, node]));
             }
         }

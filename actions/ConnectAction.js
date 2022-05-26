@@ -66,7 +66,7 @@ extends Action
 
         this.newActiveNodeIds = [];
 
-        const updateNodes = [];
+        const updateNodes = [this.inputNode];
 
         
         if (    this.oldOutputNode

@@ -37,6 +37,7 @@ extends Action
 
 
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        this.inputNode.invalidate();
         
 
         if (!getActiveNodeInTreeFromNode(this.inputNode))
