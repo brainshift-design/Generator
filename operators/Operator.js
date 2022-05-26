@@ -676,8 +676,8 @@ function pushUpdateFromParam(nodes, param)
     const terminals = [];
 
     for (const node of nodes)
-        pushUnique(terminals, ...getTerminalsAfterNode(node));
-        
+        pushUnique(terminals, getTerminalsAfterNode(node));
+
     terminals.forEach(n => 
         n.outputs.forEach(o =>
             request.push(...o.genRequest()))); 

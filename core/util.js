@@ -231,7 +231,7 @@ function pushUnique(array, item)
 {
     if (Array.isArray(item))
     {
-        items
+        item
             .filter(i => !array.includes(i))
             .forEach(i => array.push(i));
     }

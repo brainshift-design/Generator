@@ -198,6 +198,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
     
+    
     if (_conns)
     {
         // variable inputs connections must be sorted by input index

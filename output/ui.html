@@ -3354,7 +3354,7 @@ function pushUnique(array, item)
 {
     if (Array.isArray(item))
     {
-        items
+        item
             .filter(i => !array.includes(i))
             .forEach(i => array.push(i));
     }
@@ -9104,7 +9104,7 @@ function pushUnique(array, item)
 {
     if (Array.isArray(item))
     {
-        items
+        item
             .filter(i => !array.includes(i))
             .forEach(i => array.push(i));
     }
@@ -11309,7 +11309,7 @@ const settings =
 {
     showNodeId:      true, // instead of name
     
-    logStorage:      true,
+    logStorage:      false,
     logActions:      true,
     logRequests:     true,
     logValueUpdates: false
@@ -16888,8 +16888,10 @@ function getTerminalsAfterNode(node)
     let after = [];
 
     for (const output of node.outputs)
+    {
         for (const input of output.connectedInputs)
-            after.push(...getTerminalsAfterNode(input.node));
+            pushUnique(after, getTerminalsAfterNode(input.node));
+    }
 
     return after.length > 0 ? after : [node];
 }
@@ -18323,8 +18325,8 @@ function pushUpdateFromParam(nodes, param)
     const terminals = [];
 
     for (const node of nodes)
-        pushUnique(terminals, ...getTerminalsAfterNode(node));
-        
+        pushUnique(terminals, getTerminalsAfterNode(node));
+
     terminals.forEach(n => 
         n.outputs.forEach(o =>
             request.push(...o.genRequest()))); 
@@ -25107,6 +25109,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
+    
     
     if (_conns)
     {

@@ -130,8 +130,10 @@ function getTerminalsAfterNode(node)
     let after = [];
 
     for (const output of node.outputs)
+    {
         for (const input of output.connectedInputs)
-            after.push(...getTerminalsAfterNode(input.node));
+            pushUnique(after, getTerminalsAfterNode(input.node));
+    }
 
     return after.length > 0 ? after : [node];
 }
