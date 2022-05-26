@@ -49,6 +49,7 @@ extends Action
 
         updateTerminalsAfterNodes(nodes);
         graphView.updateNodeTransforms(nodes);
+        graphView.updateScrollWithBounds();
 
         uiSaveNodes(nodes.map(n => n.id));
     }
