@@ -940,7 +940,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     pasteOffset[1] += pasteOffsetDelta[1];
 
 
-    const data  = JSON.parse(nodesJson);
+    const data = JSON.parse(nodesJson);
 
 
     // offset new nodes (must be done before loading)
@@ -968,9 +968,11 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     }
 
     graphView.selectedNodes = nodes;
-
-
+    
     graphView.loadingNodes = false;
+    finishLoadingNodes(data.nodes, nodes);
+
+
     return nodes;
 }
 
@@ -982,11 +984,20 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNode);
-        if (outputNodeIndex > -1) data.connections[i].outputNode = data.nodes[outputNodeIndex].newId;
+        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNodeId);
+        if (outputNodeIndex > -1) data.connections[i].outputNodeId = data.nodes[outputNodeIndex].newId;
 
-        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNode);
-        data.connections[i].inputNode = data.nodes[inputNodeIndex].newId;
+        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNodeId);
+
+        data.connections[i].inputNodeId = data.nodes[inputNodeIndex].newId;
+    }
+
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        const _node = data.nodes[i];
+
+        if (_node.newId && _node.newId != _node.id)
+            _node.id = _node.newId;
     }
 }
 

@@ -236,16 +236,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     promise.then(() => 
     {
         finishLoading();
-
-        _nodes
-            .filter(n => n.active)
-            .map(n => nodeFromId(n.id))
-            .forEach(n => n.makeActive());
-
-        loadedNodes.forEach(n => n.updateNode());
-        graphView.updateNodeTransforms(loadedNodes);
-
-        updateTerminalsAfterNodes(loadedNodes);
+        finishLoadingNodes(_nodes, loadedNodes);
     });
 }
 
@@ -260,6 +251,24 @@ function finishLoading()
     
     updateToggleShowWiresButton();
     graphView.updateShowWires(false);
+}
+
+
+
+function finishLoadingNodes(_nodes, loadedNodes)
+{
+    // console.log('_nodes', _nodes);
+    // console.log('_nodes.filter(n => n.active)', _nodes.filter(n => n.active));
+    _nodes
+        .filter(n => n.active)
+        .map(n => nodeFromId(n.id))
+        .forEach(n => n.makeActive());
+    //    console.log('loadedNodes', loadedNodes);
+
+    loadedNodes.forEach(n => n.updateNode());
+    graphView.updateNodeTransforms(loadedNodes);
+
+    updateTerminalsAfterNodes(loadedNodes);
 }
 
 
@@ -290,8 +299,19 @@ function resolveLoadConnections(nodes, _connections, first, last)
                 const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
-                if (!outputNode) { uiError('node \'' + _conn.outputNodeId + '\' not found'); continue; }
-                if (! inputNode) { uiError('node \'' + _conn. inputNodeId + '\' not found'); continue; }
+                if (!outputNode)
+                { 
+                    uiError('node \'' + _conn.outputNodeId + '\' not found'); 
+                    uiRemoveConnsToNodes([_conn.outputNodeId]); 
+                    continue; 
+                }
+
+                if (!inputNode) 
+                { 
+                    uiError('node \'' + _conn. inputNodeId + '\' not found'); 
+                    uiRemoveConnsToNodes([_conn. inputNodeId]); 
+                    continue; 
+                }
 
                 Connection.parseJson(_conn);
                 //if (settings.logStorage) logConnection(_conn);                    
@@ -359,8 +379,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNode)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNode)
+        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 

@@ -17611,9 +17611,9 @@ class Connection
         {
             uiError(
                   'cannot connect ' 
-                + _conn.outputNode + ' ' + outputIndex 
+                + _conn.outputNodeId + ' ' + outputIndex 
                 + ' to ' 
-                + _conn.inputNode  + ' ' + _conn.inputIndex);
+                + _conn.inputNodeId  + ' ' + _conn.inputIndex);
 
             return null;
         }
@@ -23373,13 +23373,14 @@ extends Action
         const activeRight    = getActiveNodeRightInTreeFromNode(input.node);
 
 
-        if (  !activeLeftOnly)
-//            || activeLeft != activeRight)
+        if (  !activeLeftOnly
+            && activeLeft != activeRight)
         {
-            uiMakeNodeActive(output.node);
-
             if (!ignoreNodeIds.includes(output.node.id))
+            {
+                uiMakeNodeActive(output.node);
                 pushUnique(this.newActiveNodeIds, output.node.id);
+            }
 
             updateNodes.push(output.node);
         }
@@ -23387,10 +23388,12 @@ extends Action
 
         if (!activeRight)
         {
-            uiMakeNodeActive(input.node);
-
+            
             if (!ignoreNodeIds.includes(input.node.id))
+            {
+                uiMakeNodeActive(input.node);
                 pushUnique(this.newActiveNodeIds, input.node.id);
+            }
 
             updateNodes.push(input.node);
         }
@@ -23664,7 +23667,6 @@ extends Action
         super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
         this.copiedNodesJson         = copiedNodesJson;
-        this.prevSelectedNodeIds     = graphView.selectedNodes.map(n => n.id);
         this.pasteOutsideConnections = pasteOutsideConnections;
     }
 
@@ -23672,6 +23674,8 @@ extends Action
 
     do()
     {
+        this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
+
         const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
 
         this.pastedNodeIds = nodes.map(n => n.id);
@@ -24511,8 +24515,8 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
+//uiRemoveConnsToNodes(['num10']);
 //uiRemoveAllSavedNodesAndConns();
-
 
 uiLogAllSavedNodesAndConns();
 
@@ -25139,16 +25143,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     promise.then(() => 
     {
         finishLoading();
-
-        _nodes
-            .filter(n => n.active)
-            .map(n => nodeFromId(n.id))
-            .forEach(n => n.makeActive());
-
-        loadedNodes.forEach(n => n.updateNode());
-        graphView.updateNodeTransforms(loadedNodes);
-
-        updateTerminalsAfterNodes(loadedNodes);
+        finishLoadingNodes(_nodes, loadedNodes);
     });
 }
 
@@ -25163,6 +25158,24 @@ function finishLoading()
     
     updateToggleShowWiresButton();
     graphView.updateShowWires(false);
+}
+
+
+
+function finishLoadingNodes(_nodes, loadedNodes)
+{
+    // console.log('_nodes', _nodes);
+    // console.log('_nodes.filter(n => n.active)', _nodes.filter(n => n.active));
+    _nodes
+        .filter(n => n.active)
+        .map(n => nodeFromId(n.id))
+        .forEach(n => n.makeActive());
+    //    console.log('loadedNodes', loadedNodes);
+
+    loadedNodes.forEach(n => n.updateNode());
+    graphView.updateNodeTransforms(loadedNodes);
+
+    updateTerminalsAfterNodes(loadedNodes);
 }
 
 
@@ -25193,8 +25206,19 @@ function resolveLoadConnections(nodes, _connections, first, last)
                 const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
-                if (!outputNode) { uiError('node \'' + _conn.outputNodeId + '\' not found'); continue; }
-                if (! inputNode) { uiError('node \'' + _conn. inputNodeId + '\' not found'); continue; }
+                if (!outputNode)
+                { 
+                    uiError('node \'' + _conn.outputNodeId + '\' not found'); 
+                    uiRemoveConnsToNodes([_conn.outputNodeId]); 
+                    continue; 
+                }
+
+                if (!inputNode) 
+                { 
+                    uiError('node \'' + _conn. inputNodeId + '\' not found'); 
+                    uiRemoveConnsToNodes([_conn. inputNodeId]); 
+                    continue; 
+                }
 
                 Connection.parseJson(_conn);
                 //if (settings.logStorage) logConnection(_conn);                    
@@ -25262,8 +25286,8 @@ function loadConnections(data, loadOutsideConnections, setProgress = null)
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNode)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNode)
+        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
             || loadOutsideConnections)
             Connection.parseJson(_conn);
 
@@ -26417,7 +26441,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     pasteOffset[1] += pasteOffsetDelta[1];
 
 
-    const data  = JSON.parse(nodesJson);
+    const data = JSON.parse(nodesJson);
 
 
     // offset new nodes (must be done before loading)
@@ -26445,9 +26469,11 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     }
 
     graphView.selectedNodes = nodes;
-
-
+    
     graphView.loadingNodes = false;
+    finishLoadingNodes(data.nodes, nodes);
+
+
     return nodes;
 }
 
@@ -26459,11 +26485,20 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNode);
-        if (outputNodeIndex > -1) data.connections[i].outputNode = data.nodes[outputNodeIndex].newId;
+        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNodeId);
+        if (outputNodeIndex > -1) data.connections[i].outputNodeId = data.nodes[outputNodeIndex].newId;
 
-        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNode);
-        data.connections[i].inputNode = data.nodes[inputNodeIndex].newId;
+        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNodeId);
+
+        data.connections[i].inputNodeId = data.nodes[inputNodeIndex].newId;
+    }
+
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        const _node = data.nodes[i];
+
+        if (_node.newId && _node.newId != _node.id)
+            _node.id = _node.newId;
     }
 }
 

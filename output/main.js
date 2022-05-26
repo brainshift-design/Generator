@@ -196,6 +196,10 @@ function figDeleteAllObjects() {
         if (!!obj.getPluginData('id'))
             obj.remove();
 }
+// function logStorage()
+// {
+//     figLogAllSavedNodesAndConns({ logStorage: true });
+// }
 function figOnSelectionChange() {
     /*  Every time a selection changes, check that all objects in the object table
         still exist in the canvas. If not, remove the pointer from the object table.

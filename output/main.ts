@@ -319,6 +319,12 @@ function figDeleteAllObjects()
 }
 
 
+// function logStorage()
+// {
+//     figLogAllSavedNodesAndConns({ logStorage: true });
+// }
+
+
 function figOnSelectionChange()
 {
     /*  Every time a selection changes, check that all objects in the object table

@@ -9,8 +9,8 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
+//uiRemoveConnsToNodes(['num10']);
 //uiRemoveAllSavedNodesAndConns();
-
 
 uiLogAllSavedNodesAndConns();
 

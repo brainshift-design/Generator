@@ -265,9 +265,9 @@ class Connection
         {
             uiError(
                   'cannot connect ' 
-                + _conn.outputNode + ' ' + outputIndex 
+                + _conn.outputNodeId + ' ' + outputIndex 
                 + ' to ' 
-                + _conn.inputNode  + ' ' + _conn.inputIndex);
+                + _conn.inputNodeId  + ' ' + _conn.inputIndex);
 
             return null;
         }

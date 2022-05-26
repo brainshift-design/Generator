@@ -18,7 +18,6 @@ extends Action
         super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
         this.copiedNodesJson         = copiedNodesJson;
-        this.prevSelectedNodeIds     = graphView.selectedNodes.map(n => n.id);
         this.pasteOutsideConnections = pasteOutsideConnections;
     }
 
@@ -26,6 +25,8 @@ extends Action
 
     do()
     {
+        this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
+
         const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
 
         this.pastedNodeIds = nodes.map(n => n.id);

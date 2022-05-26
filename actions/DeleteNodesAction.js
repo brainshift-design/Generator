@@ -216,13 +216,14 @@ extends Action
         const activeRight    = getActiveNodeRightInTreeFromNode(input.node);
 
 
-        if (  !activeLeftOnly)
-//            || activeLeft != activeRight)
+        if (  !activeLeftOnly
+            && activeLeft != activeRight)
         {
-            uiMakeNodeActive(output.node);
-
             if (!ignoreNodeIds.includes(output.node.id))
+            {
+                uiMakeNodeActive(output.node);
                 pushUnique(this.newActiveNodeIds, output.node.id);
+            }
 
             updateNodes.push(output.node);
         }
@@ -230,10 +231,12 @@ extends Action
 
         if (!activeRight)
         {
-            uiMakeNodeActive(input.node);
-
+            
             if (!ignoreNodeIds.includes(input.node.id))
+            {
+                uiMakeNodeActive(input.node);
                 pushUnique(this.newActiveNodeIds, input.node.id);
+            }
 
             updateNodes.push(input.node);
         }
