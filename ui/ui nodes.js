@@ -863,7 +863,7 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
     const activeNodes = [];
 
 
-    if (node.active) 
+    if (node.active)
         activeNodes.push(node);
 
 

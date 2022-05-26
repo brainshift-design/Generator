@@ -31,6 +31,12 @@ extends Action
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
 
+        this.oldActiveNodeIds = [];
+
+        for (const nodeId of this.prevSelectedNodeIds)
+            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
+
+
         const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
 
         this.pastedNodeIds = nodes.map(n => n.id);
@@ -38,10 +44,6 @@ extends Action
 
         console.log('this.pastedNodeIds', this.pastedNodeIds);
 
-        this.oldActiveNodeIds = [];
-
-        for (const nodeId of this.pastedNodeIds)
-            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
 
         console.log('this.oldActiveNodeIds', this.oldActiveNodeIds);
 
