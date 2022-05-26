@@ -395,8 +395,8 @@ function figRemoveConnsToNodes(nodeIds) {
     }
 }
 function figRemoveSavedNodesAndConns(nodeIds) {
-    for (let i = 0; i < nodeIds.length; i++)
-        figClearPageData(nodeNameForStorage(nodeIds[i]));
+    nodeIds.forEach(id => figClearPageData(nodeNameForStorage(id)));
+    figRemoveConnsToNodes(nodeIds);
 }
 function figRemoveAllSavedNodesAndConns() {
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));

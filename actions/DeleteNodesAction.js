@@ -110,7 +110,7 @@ extends Action
         }
 
         
-        uiDeleteNodes(this.nodeIds, this.id);
+        uiDeleteNodes(this.nodeIds);//, this.id);
 
         uiSaveNodes(this.newActiveNodeIds);
        

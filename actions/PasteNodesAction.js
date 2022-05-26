@@ -33,16 +33,18 @@ extends Action
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
 
         updateTerminalsAfterNodes(nodes);
-
         graphView.updateNodeTransforms(nodes);
 
         uiSaveNodes(nodes.map(n => n.id));
+
+        uiLogAllSavedConns();
     }
 
 
 
     undo()
     {
+        console.log('undo paste');
         uiDeleteNodes(this.pastedNodeIds);
         
         pasteOffset[0] -= pasteOffsetDelta[0];
@@ -50,7 +52,8 @@ extends Action
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
 
-        uiRemoveSavedNodesAndConns(this.pastedNodeIds);
+        //uiRemoveSavedNodesAndConns(this.pastedNodeIds);
+        uiLogAllSavedConns();
     }
 
 
@@ -70,6 +73,7 @@ extends Action
         }
 
         updateTerminalsAfterNodes(nodes);
+        graphView.updateNodeTransforms(nodes);
 
         uiSaveNodes(nodes.map(n => n.id));
     }

@@ -11309,7 +11309,7 @@ const settings =
 {
     showNodeId:      true, // instead of name
     
-    logStorage:      false,
+    logStorage:      true,
     logActions:      true,
     logRequests:     true,
     logValueUpdates: false
@@ -23267,7 +23267,7 @@ extends Action
         }
 
         
-        uiDeleteNodes(this.nodeIds, this.id);
+        uiDeleteNodes(this.nodeIds);//, this.id);
 
         uiSaveNodes(this.newActiveNodeIds);
        
@@ -23682,16 +23682,18 @@ extends Action
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
 
         updateTerminalsAfterNodes(nodes);
-
         graphView.updateNodeTransforms(nodes);
 
         uiSaveNodes(nodes.map(n => n.id));
+
+        uiLogAllSavedConns();
     }
 
 
 
     undo()
     {
+        console.log('undo paste');
         uiDeleteNodes(this.pastedNodeIds);
         
         pasteOffset[0] -= pasteOffsetDelta[0];
@@ -23699,7 +23701,8 @@ extends Action
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
 
-        uiRemoveSavedNodesAndConns(this.pastedNodeIds);
+        //uiRemoveSavedNodesAndConns(this.pastedNodeIds);
+        uiLogAllSavedConns();
     }
 
 
@@ -23719,6 +23722,7 @@ extends Action
         }
 
         updateTerminalsAfterNodes(nodes);
+        graphView.updateNodeTransforms(nodes);
 
         uiSaveNodes(nodes.map(n => n.id));
     }
@@ -25164,13 +25168,10 @@ function finishLoading()
 
 function finishLoadingNodes(_nodes, loadedNodes)
 {
-    // console.log('_nodes', _nodes);
-    // console.log('_nodes.filter(n => n.active)', _nodes.filter(n => n.active));
     _nodes
         .filter(n => n.active)
         .map(n => nodeFromId(n.id))
         .forEach(n => n.makeActive());
-    //    console.log('loadedNodes', loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
@@ -25927,7 +25928,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
 
 
 
-function uiDeleteNodes(nodeIds, actionId)
+function uiDeleteNodes(nodeIds)//, actionId)
 {
     graph.deleteNodes(nodeIds);
 

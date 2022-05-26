@@ -426,7 +426,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
 
 
 
-function uiDeleteNodes(nodeIds, actionId)
+function uiDeleteNodes(nodeIds)//, actionId)
 {
     graph.deleteNodes(nodeIds);
 

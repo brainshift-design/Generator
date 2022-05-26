@@ -257,13 +257,10 @@ function finishLoading()
 
 function finishLoadingNodes(_nodes, loadedNodes)
 {
-    // console.log('_nodes', _nodes);
-    // console.log('_nodes.filter(n => n.active)', _nodes.filter(n => n.active));
     _nodes
         .filter(n => n.active)
         .map(n => nodeFromId(n.id))
         .forEach(n => n.makeActive());
-    //    console.log('loadedNodes', loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
