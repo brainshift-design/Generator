@@ -36,24 +36,18 @@ extends Action
         graphView.updateNodeTransforms(nodes);
 
         uiSaveNodes(nodes.map(n => n.id));
-
-        uiLogAllSavedConns();
     }
 
 
 
     undo()
     {
-        console.log('undo paste');
         uiDeleteNodes(this.pastedNodeIds);
         
         pasteOffset[0] -= pasteOffsetDelta[0];
         pasteOffset[1] -= pasteOffsetDelta[1];
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
-
-        //uiRemoveSavedNodesAndConns(this.pastedNodeIds);
-        uiLogAllSavedConns();
     }
 
 

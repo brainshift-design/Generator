@@ -15,15 +15,20 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyV'
           && getCtrlKey(e))
     {
-        actionManager.do(new PasteNodesAction(copiedNodesJson, e.shiftKey));
+        if (copiedNodesJson.trim() != '')
+            actionManager.do(new PasteNodesAction(copiedNodesJson, e.shiftKey));
     }
 
     // duplicate
     else if (e.code == 'KeyD'
           && getCtrlKey(e))
     {
-        pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), e.shiftKey));
+        if (graphView.selectedNodes.length > 0)
+        {
+            pasteOffset = [0, 0];
+            actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), e.shiftKey));
+        }
+
         return false;
     }
 
