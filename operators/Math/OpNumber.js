@@ -32,7 +32,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (!isEmpty(this.cache))//node.valid)
+        if (!isEmpty(this.cache))
             return this.cache;
 
 
@@ -47,7 +47,7 @@ extends OperatorBase
             ? input.connectedOutput.genRequest()
             : this.node.#paramValue.genRequest()));
                 
-        return req;//this.cache = [...req];
+        return req;
     }
 
 
@@ -56,9 +56,8 @@ extends OperatorBase
     {
         super.updateParamValue(index, value);
 
-        // this.outputs[0].cache = [
-        //     NUMBER_VALUE, 
-        //     value.toString()];
+        if (index == 0)
+            this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
     }
 
 

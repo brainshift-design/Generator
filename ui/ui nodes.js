@@ -1072,31 +1072,8 @@ function uiUpdateParamValues(values)
 
 
 
-function uiUpdateOutputCaches(caches)
-{
-    if (settings.logUpdateOutputCaches)
-        logUpdateOutputCaches(caches);
-    
-
-    for (let i = 2; i < caches.length; i += 3)
-    {
-        const nodeId      = caches[i  ];
-        const outputIndex = caches[i+1];
-        const cache       = caches[i+2];
-
-        const node = nodeFromId(nodeId);
-        if (!node) continue; // the node was deleted
-
-        node.updateOutputCache(outputIndex, cache);
-    }
-}
-
-
-
 function uiUpdateObjects(objects)
 {
-    //uiUpdateGraph();
-
     uiPostMessageToFigma({
         cmd:    'figUpdateObjects',
         objects: objects

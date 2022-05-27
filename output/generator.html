@@ -2358,16 +2358,6 @@ function logUpdateParamValues(values)
 }
 
 
-
-function logUpdateOutputCaches(caches)
-{
-    console.log(
-        '%ccaches', 
-        'background: #fe4; color: black;', 
-        caches);
-}
-
-
 const INTER_STEP   = 0,
       INTER_LINEAR = 1,
       INTER_COSINE = 2,
@@ -2973,9 +2963,7 @@ function genNumber(req, parse)
 
     const nodeId  = req[parse.pos++];
     const decimal = genParseRequest(req, parse);    
-
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3003,9 +2991,7 @@ function genNumberAdd(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3045,9 +3031,7 @@ function genNumberSubtract(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3085,9 +3069,7 @@ function genNumberMultiply(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3128,9 +3110,7 @@ function genNumberDivide(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3177,9 +3157,7 @@ function genNumberModulo(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3219,9 +3197,7 @@ function genNumberExponent(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3265,9 +3241,7 @@ function genNumberInterpolate(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-
     genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
-    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -3306,8 +3280,7 @@ function genRequest(req, settings)
         so:                 0,
         updateNodeId:       updateNodeId, 
         updateParamIndex:   updateParamIndex,
-        updateParamValues:  [],
-        updateOutputCaches: []
+        updateParamValues:  []
     };
 
 
@@ -3319,7 +3292,6 @@ function genRequest(req, settings)
     
 
     genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
-    genUpdateOutputCaches(parse.updateOutputCaches);
 }
 
 
@@ -3327,7 +3299,7 @@ function genRequest(req, settings)
 function genParseRequest(req, parse)
 {
     const next = req[parse.pos];
-    //console.log('next', next);
+        //console.log('next', next);
 
 
          if (next == NUMBER_VALUE      ) return genNumValue         (req, parse);
@@ -3428,20 +3400,6 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
 
 
 
-function genPushUpdateOutputCache(parse, nodeId, outputIndex, cache)
-{
-    const found = parse.updateOutputCaches.find(v => 
-           v[0] == nodeId 
-        && v[1] == outputIndex);
-
-    if (!found)
-        parse.updateOutputCaches.push([nodeId, outputIndex, cache]);
-    else
-        found[2] = cache;
-}
-
-
-
 function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 {
     // send messages in chunks
@@ -3479,49 +3437,6 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
         genPostMessageToUi({ 
             cmd:    'uiUpdateParamValues',
             values: [updateNodeId, updateParamIndex, ...chunk]
-        });
-    }
-}
-
-
-
-function genUpdateOutputCaches(updateCaches)
-{
-    // send messages in chunks
-
-    const chunkSize = 20;
-    
-    let i = 0, 
-        c = 0;
-    
-    let chunk = [];
-    
-    while (i < updateCaches.length)
-    {
-        chunk.push(
-            updateCaches[i][0],  // node id
-            updateCaches[i][1],  // output index
-            updateCaches[i][2]); // cached value
-
-        if (++c == chunkSize)
-        {
-            genPostMessageToUi({ 
-                cmd:    'uiUpdateOutputCaches',
-                caches:  chunk
-            });
-
-            chunk = [];
-            c = 0;
-        }
-
-        i++;
-    }
-
-    if (chunk.length > 0)
-    {
-        genPostMessageToUi({ 
-            cmd:    'uiUpdateOutputCaches',
-            caches:  chunk
         });
     }
 }

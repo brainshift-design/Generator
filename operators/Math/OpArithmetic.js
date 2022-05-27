@@ -84,7 +84,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (!isEmpty(this.cache))//node.valid)
+        if (!isEmpty(this.cache))
             return this.cache;
 
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
@@ -98,7 +98,7 @@ extends OperatorBase
             req.push(...input.connectedOutput.genRequest()));
 
         
-        return req;//this.cache = [...req];
+        return req;
     }
 
 
@@ -107,9 +107,8 @@ extends OperatorBase
     {
         super.updateParamValue(index, value);
 
-        this.outputs[0].cache = [
-            NUMBER_VALUE, 
-            value.toString()];
+        if (index == 0)
+            this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
     }
 
 

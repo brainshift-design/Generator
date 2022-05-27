@@ -523,10 +523,10 @@ class Operator
 
 
 
-    updateOutputCache(index, cache)
-    {
-        this.outputs[index].cache = cache;
-    }
+    // updateOutputCache(index, cache)
+    // {
+    //     this.outputs[index].cache = cache;
+    // }
 
 
 
@@ -686,8 +686,10 @@ function pushUpdateFromParam(nodes, param)
         pushUnique(terminals, getTerminalsAfterNode(node));
 
     terminals.forEach(n => 
-        n.outputs.forEach(o =>
-            request.push(...o.genRequest()))); 
+        n.outputs
+            .filter(o => !o.param)
+            .forEach(o =>
+                request.push(...o.genRequest()))); 
 
 
     uiPostMessageToGenerator({

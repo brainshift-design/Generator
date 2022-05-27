@@ -101,16 +101,6 @@ function logUpdateParamValues(values)
 }
 
 
-
-function logUpdateOutputCaches(caches)
-{
-    console.log(
-        '%ccaches', 
-        'background: #fe4; color: black;', 
-        caches);
-}
-
-
 const MAX_OBJECTS = 0x10000;
 const genObjects  = new Array(MAX_OBJECTS);
 

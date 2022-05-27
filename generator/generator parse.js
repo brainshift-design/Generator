@@ -31,8 +31,7 @@ function genRequest(req, settings)
         so:                 0,
         updateNodeId:       updateNodeId, 
         updateParamIndex:   updateParamIndex,
-        updateParamValues:  [],
-        updateOutputCaches: []
+        updateParamValues:  []
     };
 
 
@@ -44,7 +43,6 @@ function genRequest(req, settings)
     
 
     genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
-    genUpdateOutputCaches(parse.updateOutputCaches);
 }
 
 
@@ -52,7 +50,7 @@ function genRequest(req, settings)
 function genParseRequest(req, parse)
 {
     const next = req[parse.pos];
-    //console.log('next', next);
+        //console.log('next', next);
 
 
          if (next == NUMBER_VALUE      ) return genNumValue         (req, parse);

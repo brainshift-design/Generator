@@ -43,7 +43,6 @@ generator.onmessage = function(e)
         // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
 
         case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);                  break;
-        case 'uiUpdateOutputCaches':   uiUpdateOutputCaches          (msg.caches);                  break;
         case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);                 break;
 
         case 'uiEndGenMessage':        uiEndGenMessage();                                           break;

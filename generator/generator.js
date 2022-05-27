@@ -78,20 +78,6 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
 
 
 
-function genPushUpdateOutputCache(parse, nodeId, outputIndex, cache)
-{
-    const found = parse.updateOutputCaches.find(v => 
-           v[0] == nodeId 
-        && v[1] == outputIndex);
-
-    if (!found)
-        parse.updateOutputCaches.push([nodeId, outputIndex, cache]);
-    else
-        found[2] = cache;
-}
-
-
-
 function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 {
     // send messages in chunks
@@ -129,49 +115,6 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
         genPostMessageToUi({ 
             cmd:    'uiUpdateParamValues',
             values: [updateNodeId, updateParamIndex, ...chunk]
-        });
-    }
-}
-
-
-
-function genUpdateOutputCaches(updateCaches)
-{
-    // send messages in chunks
-
-    const chunkSize = 20;
-    
-    let i = 0, 
-        c = 0;
-    
-    let chunk = [];
-    
-    while (i < updateCaches.length)
-    {
-        chunk.push(
-            updateCaches[i][0],  // node id
-            updateCaches[i][1],  // output index
-            updateCaches[i][2]); // cached value
-
-        if (++c == chunkSize)
-        {
-            genPostMessageToUi({ 
-                cmd:    'uiUpdateOutputCaches',
-                caches:  chunk
-            });
-
-            chunk = [];
-            c = 0;
-        }
-
-        i++;
-    }
-
-    if (chunk.length > 0)
-    {
-        genPostMessageToUi({ 
-            cmd:    'uiUpdateOutputCaches',
-            caches:  chunk
         });
     }
 }
