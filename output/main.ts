@@ -92,12 +92,22 @@ function logRequest(request)
 
 
 
-function logUpdateValues(values)
+function logUpdateParamValues(values)
 {
     console.log(
         '%cvalues', 
         'background: #e70; color: white;', 
         values);
+}
+
+
+
+function logUpdateOutputCaches(caches)
+{
+    console.log(
+        '%ccaches', 
+        'background: #fe4; color: black;', 
+        caches);
 }
 
 

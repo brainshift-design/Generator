@@ -27,30 +27,24 @@ function genRequest(req, settings)
 
     const parse =         
     {
-        pos:              2, 
-        so:               0,
-        updateNodeId:     updateNodeId, 
-        updateParamIndex: updateParamIndex,
-        updateValues:     []
+        pos:                2, 
+        so:                 0,
+        updateNodeId:       updateNodeId, 
+        updateParamIndex:   updateParamIndex,
+        updateParamValues:  [],
+        updateOutputCaches: []
     };
-
-
 
 
     const stackOverflowProtect = 100;
 
     while (parse.pos < req.length 
         && parse.so  < stackOverflowProtect)
-    {
         genParseRequest(req, parse);
-        //console.log('parse', parse);
-    }
     
 
-    genUpdateValues(
-        updateNodeId,
-        updateParamIndex,
-        parse.updateValues);
+    genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
+    genUpdateOutputCaches(parse.updateOutputCaches);
 }
 
 

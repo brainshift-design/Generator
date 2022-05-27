@@ -374,7 +374,7 @@ class Operator
 
         for (const output of this.outputs)
         {
-            output.cache = '';
+            output.cache = [];
             
             for (const connInput of output.connectedInputs)
                 connInput.node.invalidate();
@@ -519,6 +519,13 @@ class Operator
     updateParamValue(index, value) // virtual
     {
         this.params[index].setValue(value, false, true, false);
+    }
+
+
+
+    updateOutputCache(index, cache)
+    {
+        this.outputs[index].cache = cache;
     }
 
 

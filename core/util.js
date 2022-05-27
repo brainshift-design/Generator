@@ -184,6 +184,13 @@ function newSizeArrayFrom(array, size) // resizes an array and returns a new arr
 
 
 
+function isEmpty(array)
+{
+    return array.length == 0;
+}
+
+
+
 function arraysEqual(arr1, arr2)
 {
     if (arr1.length != arr2.length)

@@ -14,7 +14,8 @@ function genNumber(req, parse)
     const nodeId  = req[parse.pos++];
     const decimal = genParseRequest(req, parse);    
 
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -42,7 +43,9 @@ function genNumberAdd(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -82,7 +85,9 @@ function genNumberSubtract(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -120,7 +125,9 @@ function genNumberMultiply(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -161,7 +168,9 @@ function genNumberDivide(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+    
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -208,7 +217,9 @@ function genNumberModulo(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -248,7 +259,9 @@ function genNumberExponent(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }
@@ -292,7 +305,9 @@ function genNumberInterpolate(req, parse)
 
 
     const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    genPushUpdateParamValue(parse, nodeId, 0, decimal.toString());
+    genPushUpdateOutputCache(parse, nodeId, 0, [NUMBER_VALUE, decimal.toString()]);
 
     return decimal;
 }

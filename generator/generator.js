@@ -64,21 +64,35 @@ function genPostMessageToUi(msg)
 
 
 
-function genPushUpdateValue(parse, nodeId, paramIndex, value)
+function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
 {
-    const found = parse.updateValues.find(v => 
+    const found = parse.updateParamValues.find(v => 
            v[0] == nodeId 
         && v[1] == paramIndex);
 
     if (!found)
-        parse.updateValues.push([nodeId, paramIndex, value]);
+        parse.updateParamValues.push([nodeId, paramIndex, value]);
     else
         console.assert(found[2] == value);
 }
 
 
 
-function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
+function genPushUpdateOutputCache(parse, nodeId, outputIndex, cache)
+{
+    const found = parse.updateOutputCaches.find(v => 
+           v[0] == nodeId 
+        && v[1] == outputIndex);
+
+    if (!found)
+        parse.updateOutputCaches.push([nodeId, outputIndex, cache]);
+    else
+        found[2] = cache;
+}
+
+
+
+function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 {
     // send messages in chunks
 
@@ -99,7 +113,7 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
         if (++c == chunkSize)
         {
             genPostMessageToUi({ 
-                cmd:    'uiUpdateValues',
+                cmd:    'uiUpdateParamValues',
                 values: [updateNodeId, updateParamIndex, ...chunk]
             });
 
@@ -113,7 +127,7 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
     if (chunk.length > 0)
     {
         genPostMessageToUi({ 
-            cmd:    'uiUpdateValues',
+            cmd:    'uiUpdateParamValues',
             values: [updateNodeId, updateParamIndex, ...chunk]
         });
     }
@@ -121,183 +135,43 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 
 
 
-// function genClearGraph()
-// {
-//     genGraph.clear();
-// }
+function genUpdateOutputCaches(updateCaches)
+{
+    // send messages in chunks
 
-
-
-// function genCreateNode(type, id, name)
-// {
-//     const node = genGraph.createNode(type, id, name);
-//     genGraph.addNode(node);
-
-//     // on the UI side the node has already been created by this point
-
-//     genPostMessageToUi({
-//         cmd:     'uiMakeActive',
-//         nodeIds: [node.id]
-//     });
-// }
-
-
-
-// function genDeleteNodes(nodeIds, uiActionId)
-// {
-//     var deleted = genGraph.deleteNodes(nodeIds);
-//     deletedNodeArrays.push([uiActionId, deleted]);
-// }
-
-
-
-// function genUndeleteNodes(uiActionId)
-// {
-//     var deleted = deletedNodeArrays.find(n => n[0] == uiActionId);
-//     var nodeIds = [];
-
-
-//     for (const node of deleted[1])
-//     {
-//         genGraph.addNode(node);
-//         nodeIds.push(node.id);
-//     }
-
+    const chunkSize = 20;
     
-//     genPostMessageToUi({ 
-//         cmd:    'uiMakeActive',
-//         nodeIds: nodeIds
-//     });
-
+    let i = 0, 
+        c = 0;
     
-//     removeFromArray(deletedNodeArrays, deleted);
-// }
-
-
-
-// function genSetNodeId(id, newId)
-// {
-//     const node = genGraph.nodeFromId(id);
-//     node.id    = newId;
-// }
-
-
-
-// function genSetActive(nodeId, active)
-// {
-//     const node  = genGraph.nodeFromId(nodeId);
-//     node.active = active;
-// }
-
-
-
-// function genConnect(outputId, inputs)
-// {
-//     const outNode = genGraph.nodeFromId(outputId);
-
-//     for (const input of inputs)
-//     {
-//         const inNode = genGraph.nodeFromId(input.nodeId);
-
-//         genGraph.connect(
-//             outNode.output, 
-//             input.index >= 0
-//             ? inNode.inputs[input.index]
-//             : inNode.params.find(p => p.name == input.param).input);
-
-//         if (inNode.type == 'object')
-//             genUpdateObjects([input.nodeId]);
-//     }
-// }
-
-
-
-// function genDisconnect(input)
-// {
-//     const node = genGraph.nodeFromId(input.nodeId);
-//     genGraph.disconnect(node.inputs[input.index]);
-// }
-
-
-
-// function genSetParam(nodeId, name, value)
-// {
-//     const node  = genGraph.nodeFromId(nodeId);
-//     const param = node.params.find(p => p.name == name);
-
-//     param.value = value;
-
-//     updateNodeGraph(node);
-// }
-
-
-
-// function updateNodeGraph(_node)
-// {
-//     const node = nodeFromId(_node.id);
-
-//     let activeId = activeNodeInTree(node).id;
-
-//     if (activeId > -1)
-//     {
-//         genPostMessageToUi({ 
-//             cmd:    'uiUpdateNodes',
-//             nodeIds: [activeId]
-//         });
-//     }
-// }
-
-
-
-// function genInvalidate(nodeId)
-// {
-//     const node = nodeFromId(nodeId);
-//     node.valid = false;
-// }
-
-
-
-// function genUpdateObjects(nodeIds)
-// {
-//     for (const node of genGraph.nodes)
-//         node.reset();
-
-
-//     // first determine number of objects
-
-//     let nObjects = 0;
-
-//     for (const nodeId of nodeIds)
-//     {
-//         const node = genGraph.nodeFromId(nodeId);
-//         const data = node.output.getData();
-//         nObjects  += data.length;
-//     }    
-
+    let chunk = [];
     
-//     // now create the objects if necessary
+    while (i < updateCaches.length)
+    {
+        chunk.push(
+            updateCaches[i][0],  // node id
+            updateCaches[i][1],  // output index
+            updateCaches[i][2]); // cached value
 
-//     if (nObjects > 0)
-//     {
-//         const objects = new Array(nObjects);
+        if (++c == chunkSize)
+        {
+            genPostMessageToUi({ 
+                cmd:    'uiUpdateOutputCaches',
+                caches:  chunk
+            });
 
-//         let i = 0;
-//         for (const nodeId of nodeIds)
-//         {
-//             const node = genGraph.nodeFromId(nodeId);
-//             const data = node.output.getData();
-            
-//             for (const obj of data)
-//                 objects[i++] = obj;
-//         }    
+            chunk = [];
+            c = 0;
+        }
 
-//         genPostMessageToUi({ 
-//             cmd:    'uiUpdateObjects',
-//             objects: objects
-//         });
-//     }
-//     // else
-//     // {
-//     //     genPostMessageToUi({ cmd: 'uiUpdateGraph' });
-//     // }
-// }
+        i++;
+    }
+
+    if (chunk.length > 0)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateOutputCaches',
+            caches:  chunk
+        });
+    }
+}

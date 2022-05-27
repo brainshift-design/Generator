@@ -84,7 +84,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (this.node.valid)
+        if (!isEmpty(this.cache))//node.valid)
             return this.cache;
 
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
@@ -98,7 +98,7 @@ extends OperatorBase
             req.push(...input.connectedOutput.genRequest()));
 
         
-        return this.cache = [...req];
+        return req;//this.cache = [...req];
     }
 
 

@@ -33,7 +33,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (this.node.valid)
+        if (!isEmpty(this.cache))//node.valid)
             return this.cache;
 
 
@@ -59,6 +59,6 @@ extends OperatorBase
 
         req.push(...this.node.paramAmount.genRequest());
 
-        return this.cache = [...req];
+        return req;//this.cache = [...req];
     }
 }

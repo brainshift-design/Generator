@@ -27,7 +27,8 @@ class Action
         console.assert(
                this.name != undefined
             && this.name != null
-            && this.name != '');
+            && this.name != '',
+            'Error: cannot create user action');
     }
 
 

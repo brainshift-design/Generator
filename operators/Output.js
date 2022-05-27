@@ -25,7 +25,7 @@ class Output
     
     
     genRequest = null; // function pointer, must be implemented
-    cache      = '';
+    cache      = [];
 
 
     _data;
