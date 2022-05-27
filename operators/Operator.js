@@ -698,3 +698,11 @@ function pushUpdateFromParam(nodes, param)
         settings: settings
     });
 }
+
+
+
+function areConnected(node1, node2)
+{
+    return node1.follows(node2)
+        || node2.follows(node1);
+}

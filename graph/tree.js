@@ -162,3 +162,22 @@ function updateTerminalsAfterNodes(nodes)
     // look in the value update message, maybe after updating all the params,
     // all nodes that contain updated params should also be updated
 }
+
+
+
+function validateActiveNodesInTrees(nodes)
+{
+    const treeNodes = [];
+
+    for (const node of nodes)
+    {
+        const found = treeNodes.find(n => areConnected(n, node));
+        if (!found) treeNodes.push(node);
+    }
+
+    for (const node of treeNodes)
+    {
+        if (!getActiveNodeInTreeFromNode(node))
+            getTerminalsAfterNode(node).forEach(n => uiMakeNodeActive(n));
+    }
+}

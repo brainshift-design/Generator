@@ -198,7 +198,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
     
-    
+
     if (_conns)
     {
         // variable inputs connections must be sorted by input index
@@ -258,10 +258,13 @@ function finishLoading()
 
 function finishLoadingNodes(_nodes, loadedNodes)
 {
-    _nodes
-        .filter(n => n.active)
-        .map(n => nodeFromId(n.id))
-        .forEach(n => n.makeActive());
+    // const _active = _nodes.filter(n => n.active);
+
+    // _active
+    //     .map(n => nodeFromId(n.id))
+    //     .forEach(n => n.makeActive());
+
+    validateActiveNodesInTrees(loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
