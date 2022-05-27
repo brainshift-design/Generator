@@ -11,7 +11,9 @@ class Decimal
 
     toString()
     {
-        return numToString(this.num, this.dec);    
+        return isNaN(this.num)
+            ? '?'
+            : numToString(this.num, this.dec);    
     }
 }
 
@@ -19,7 +21,9 @@ class Decimal
 
 function parseDec(str)
 {
-    return new Decimal(
-        parseFloat(str),
-        decCount(str));
+    return str == '?'
+        ? new Decimal(Number.NaN, 0)
+        : new Decimal(
+              parseFloat(str),
+              decCount(str));
 }

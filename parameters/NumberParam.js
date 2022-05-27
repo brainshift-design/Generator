@@ -178,9 +178,9 @@ extends Parameter
             ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER_VALUE, 
-                numToString(
+                new Decimal(
                     this.control.value, 
-                    this.control.displayDec) ];
+                    this.control.displayDec).toString() ];
     }
 
 

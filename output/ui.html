@@ -4172,7 +4172,9 @@ class Decimal
 
     toString()
     {
-        return numToString(this.num, this.dec);    
+        return isNaN(this.num)
+            ? '?'
+            : numToString(this.num, this.dec);    
     }
 }
 
@@ -4180,9 +4182,11 @@ class Decimal
 
 function parseDec(str)
 {
-    return new Decimal(
-        parseFloat(str),
-        decCount(str));
+    return str == '?'
+        ? new Decimal(Number.NaN, 0)
+        : new Decimal(
+              parseFloat(str),
+              decCount(str));
 }
 
 
@@ -11155,7 +11159,9 @@ class Decimal
 
     toString()
     {
-        return numToString(this.num, this.dec);    
+        return isNaN(this.num)
+            ? '?'
+            : numToString(this.num, this.dec);    
     }
 }
 
@@ -11163,9 +11169,11 @@ class Decimal
 
 function parseDec(str)
 {
-    return new Decimal(
-        parseFloat(str),
-        decCount(str));
+    return str == '?'
+        ? new Decimal(Number.NaN, 0)
+        : new Decimal(
+              parseFloat(str),
+              decCount(str));
 }
 
 
@@ -11385,7 +11393,7 @@ function initNumberSliderEvents(slider)
 
                     const val      = slider.startValue + dx * drag * adaptive;
 
-
+                    
                     // reset slider movement at the limits for better UX
                     const min = getCtrlKey(e) ? slider.min : slider.displayMin;
                     const max = getCtrlKey(e) ? slider.max : slider.displayMax;
@@ -12202,7 +12210,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
              
     slider.min                    = min;
     slider.max                    = max;
-    slider.value                  = def;
+    slider.value                  = def.num;
     slider.acc                    = acc;
      
     slider.dec                    =
@@ -12240,6 +12248,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.inFocus                = false;
     slider.clicked                = false;
  
+    slider.startValue             = 0;
     slider.oldValue; 
  
     slider.wrapValue              = false;
@@ -15953,9 +15962,9 @@ extends Parameter
             ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER_VALUE, 
-                numToString(
+                new Decimal(
                     this.control.value, 
-                    this.control.displayDec) ];
+                    this.control.displayDec).toString() ];
     }
 
 

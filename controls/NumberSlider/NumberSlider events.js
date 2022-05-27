@@ -162,7 +162,7 @@ function initNumberSliderEvents(slider)
 
                     const val      = slider.startValue + dx * drag * adaptive;
 
-
+                    
                     // reset slider movement at the limits for better UX
                     const min = getCtrlKey(e) ? slider.min : slider.displayMin;
                     const max = getCtrlKey(e) ? slider.max : slider.displayMax;
