@@ -206,8 +206,11 @@ extends EventTarget
         this.control.style.boxShadow     = '0 0 0 1px ' + colorStyle;
         this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
 
-        this.hitbox.style.left = isConnected ? -2 : -3;
-        this.hitbox.style.top  = isConnected ? -2 : -3;
+        this.hitbox.style.left   = isConnected ? -2 : -3;
+        this.hitbox.style.top    = isConnected ? -2 : -3;
+
+        this.wireBall.style.left = '1px';
+        this.wireBall.style.top  = 'calc(50% - 3px)';
 
         this.wireBall.style.backgroundColor = 
             this.connected
@@ -232,8 +235,6 @@ extends EventTarget
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
-        this.wireBall.style.left   = '1px';
-        this.wireBall.style.top    = 'calc(50% - 3px)';
 
 
         show(this.wireBall, isConnected); 

@@ -199,10 +199,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.update = function()
     {
-        const sw = slider.clientWidth;
-        const sh = slider.clientHeight;
+        const sx = slider.getOffsetLeft();
+        const sw = slider.getClientWidth();
+        const sh = slider.getClientHeight();
 
-        const sx = slider.offsetLeft;
         const cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
         const v  =  slider.value      / (slider.displayMax - slider.displayMin);
 
@@ -212,6 +212,11 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         slider.updateFocus(sw, sh);
         
         updateSliderRanges(slider, sw, sh);
+
+
+        slider.cachedOffsetLeft   = null;
+        slider.cachedClientWidth  = null;
+        slider.cachedClientHeight = null;
     };
 
 
@@ -333,6 +338,12 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
              || document.   mozPointerLockElement === slider
              || document.webkitPointerLockElement === slider);
     }
+
+
+
+    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
+    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
+    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
 
 
 

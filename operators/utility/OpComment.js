@@ -58,7 +58,7 @@ extends OperatorBase
 
         this.textbox.style.height  = this.div.offsetHeight;
         this.textbox.style.padding = '0';
-        this.textbox.style.margin  = '0';
+        this.textbox.style.margin  = '2px 0 0 0';
 
         this.textbox.style.boxShadow = 'none';
     }
@@ -77,11 +77,26 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        this.label.innerHTML        = this.name;
-        
-        this.label.style.color      = this.selected ? colFigmaBlue : '#666';
-        this.label.style.background = 'transparent';
+        this.label.innerHTML = this.name;
 
+        if (this.selected)
+        {
+            this.label.style.color      = colorStyleRgb_a(hex2rgb(colFigmaBlue), 0.7);
+            this.label.style.textShadow = '0 0 0 ' + colFigmaBlue;
+
+            this.textbox.style.color      = colorStyleRgb_a(hex2rgb(colFigmaBlue), 0.7);
+            this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
+        }
+        else
+        {
+            this.label.style.color      = '#666';
+            this.label.style.textShadow = 'none';
+
+            this.textbox.style.color      = '#666';
+            this.textbox.style.textShadow = 'none';
+        }
+    
+        this.label.style.background = 'transparent';
         this.label.style.textAlign  = 'left';
 
         this.label.style.left       = '0';
