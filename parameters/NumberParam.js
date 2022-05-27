@@ -127,18 +127,18 @@ extends Parameter
 
 
 
-    setOutputData()
-    {
-        if (this.output)
-        {
-            this.output._data = dataFromNumber(
-                this.control.value,
-                   this.input
-                && this.input.connected
-                ? this.input.data.decimals
-                : this.control.dec);
-        }
-    }
+    // setOutputData()
+    // {
+    //     if (this.output)
+    //     {
+    //         this.output._data = dataFromNumber(
+    //             this.control.value,
+    //                this.input
+    //             && this.input.connected
+    //             ? this.input.data.decimals
+    //             : this.control.dec);
+    //     }
+    // }
 
 
 
@@ -185,9 +185,9 @@ extends Parameter
 
 
 
-    output_genRequest(output)
+    output_genRequest()
     {
-        return output.param.genRequest();
+        return this.param.genRequest();
     }
 
 

@@ -40,17 +40,12 @@ extends OperatorBase
             this.node.type, 
             this.node.id];
                 
-                
         const input = this.node.inputs[0];
 
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest()
-            : [ NUMBER_VALUE,
-                numToString( // number VALUES are stored as strings because decimal places matter
-                    this.node.#paramValue.value,
-                    this.node.#paramValue.control.dec) ]));
-
+            : this.node.#paramValue.genRequest()));
                 
         return this.cache = [...req];
     }

@@ -252,3 +252,47 @@ function genNumberExponent(req, parse)
 
     return decimal;
 }
+
+
+
+function genNumberInterpolate(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+
+
+    let result, maxDec;
+
+    if (nValues == 2)
+    {
+        const num0 = genParseRequest(req, parse);
+        const num1 = genParseRequest(req, parse);
+        const amt  = genParseRequest(req, parse);
+
+        result = num0.num + amt.num * (num1.num - num0.num) / 100;
+        maxDec = Math.max(num0.dec, num1.dec);
+    }
+    else if (nValues == 1)
+    {
+        const num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+    }
+    else if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;       
+    }
+    else 
+        console.assert(false);
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}

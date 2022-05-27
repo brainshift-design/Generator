@@ -103,19 +103,26 @@ extends OperatorBase
 
     output_genRequest()
     {
-        if (this.valid) return this.outputs[0].cache;
+        // 'this' is the output
 
-        // const x = 
-        //     node.inputs[0].connected
-        //     ? [node.inputs[0].connectedOutput.genRequest()]
-        //     : this.#paramX.);
-        
-        // node.inputs[0].connected
-        // ? node.inputs[0].connectedOutput.genRequest()
-        
-        let request = [
-            this.outputs[0].type, 
-            this.id];
+        if (this.node.valid) 
+            return this.cache;
+
+            
+        const req = [
+            this.node.type, 
+            this.node.id];
+                
+                
+        const input = this.node.inputs[0];
+
+        // req.push(...(
+        //     input.connected
+        //     ? input.connectedOutput.genRequest()
+        //     : [ NUMBER_VALUE,
+        //         numToString( // number VALUES are stored as strings because decimal places matter
+        //             this.node.#paramValue.value,
+        //             this.node.#paramValue.control.dec) ]));
 
 
         return output.cache = [...request];

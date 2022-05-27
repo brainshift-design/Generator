@@ -47,45 +47,45 @@ function rgbFromType(type, active)
 
 
 
-function dataFromNumber(num, dec = -1)
-{
-    return {
-        type:    NUMBER,
-        value:    floorTo(num, dec),
-        decimals: dec
-    };
-}
+// function dataFromNumber(num, dec = -1)
+// {
+//     return {
+//         type:     NUMBER,
+//         value:    floorTo(num, dec),
+//         decimals: dec
+//     };
+// }
 
 
 
-function dataFromDataColor(color)
-{
-    return {
-        type:   'color',
-        color:   color,
-        isValid: isRgbValid(dataColor2rgb(color))
-    };
-}
+// function dataFromDataColor(color)
+// {
+//     return {
+//         type:   'color',
+//         color:   color,
+//         isValid: isRgbValid(dataColor2rgb(color))
+//     };
+// }
 
 
 
-function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, nodeType)
-{
-    return {
-        type: 'object',
+// function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, nodeType)
+// {
+//     return {
+//         type: 'object',
 
-        //nodeId: nodeId,
-        //nodeType: nodeType,
+//         //nodeId: nodeId,
+//         //nodeType: nodeType,
 
-        x:      x,
-        y:      y,
-        width:  width,
-        height: height,
-        angle:  angle,
-        round:  round
-        //color: color
-    };
-}
+//         x:      x,
+//         y:      y,
+//         width:  width,
+//         height: height,
+//         angle:  angle,
+//         round:  round
+//         //color: color
+//     };
+// }
 
 
 
@@ -2529,7 +2529,7 @@ const NUMBER_MULTIPLY    = 'MUL';   // count N...
 const NUMBER_DIVIDE      = 'DIV';   // count N...
 const NUMBER_MODULO      = 'MOD';   // count N...
 const NUMBER_EXPONENT    = 'EXP';   // count N...
-const NUMBER_INTERPOLATE = 'LERP';  // N N N:amount
+const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
 
 const COLOR_VALUE        = 'C';     // N:space N:1 N:2 N:3 (c)
@@ -2605,6 +2605,721 @@ function parseDec(str)
         decCount(str));
 }
 
+
+
+function genFindCorrection(nodeId, 
+                           inputColor, 
+                           param1,  param2,  param3, 
+                           locked1, locked2, locked3)
+{
+    const refOklab = dataColor2array(convert2oklab(inputColor));
+
+    let
+  [ closestOklab,
+    closestOrder,
+    closest1,
+    closest2,
+    closest3 ] = findCorrection(
+                     nodeId, 
+                     inputColor, 
+                     refOklab, 
+                     param1,  param2,  param3, 
+                     locked1, locked2, locked3); 
+
+//   [ closestOrder,
+//     closest1, closest2, closest3,
+//     locked1,  locked2,  locked3 ] = reorderCorrection(
+//                                         closestOrder,
+//                                         closest1, closest2, closest3,
+//                                         locked1,  locked2,  locked3);
+
+    genPostMessageToUi(
+    {
+        cmd:         'uiEndFindCorrection',
+        nodeId:       nodeId,
+        success:      closestOklab != null,
+        closestOrder: closestOrder,
+        closest1:     closest1,
+        closest2:     closest2,
+        closest3:     closest3
+    });
+}
+
+
+
+function findCorrection(nodeId, 
+                        color, 
+                        refOklab, 
+                        param1,  param2,  param3, 
+                        locked1, locked2, locked3) 
+{
+    let closestColor = [...color],
+        closestOklab = null, 
+        closestOrder = -1,
+        closest1     = -1,
+        closest2     = -1,
+        closest3     = -1;
+
+
+    let progress = 0,
+        total    = 6 * Math.pow(2, Tau);
+
+
+    let d = 1;
+
+    while (d > 1/1024)
+    {
+        let _closestColor = [...closestColor];
+
+
+        for (let order = 0; order < 6; order++)
+        {
+            closestColor = [..._closestColor];
+
+            const [max1, max2, max3] = getValidateMax(order);
+
+            let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
+                start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
+                start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
+               
+                
+            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
+            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
+            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
+            
+
+          [ closestColor,
+            closestOklab,
+            closestOrder,
+            closest1,
+            closest2,
+            closest3,
+            progress ] = findCorrectionInOrder(
+                nodeId,
+                refOklab,
+                order, 
+                locked1,  locked2,  locked3,
+                closest1, closest2, closest3,
+                start1,   start2,   start3, 
+                end1,     end2,     end3,
+                [...closestColor],
+                closestOklab, 
+                closestOrder,
+                progress,
+                total);
+        }
+
+        
+        d /= 2;
+    }
+
+
+    // reduce closest to necessary minimums
+
+    const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
+
+    let c1 = closest1;
+    let c2 = closest2;
+    let c3 = closest3;
+
+    // console.log('closest1', closest1);
+    // console.log('closest2', closest2);
+    // console.log('closest3', closest3);
+    // console.log('');
+
+    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
+    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
+    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
+
+    closest1 = Math.max(0, c1);
+    closest2 = Math.max(0, c2);
+    closest3 = Math.max(0, c3);
+
+    // console.log('closest1', closest1);
+    // console.log('closest2', closest2);
+    // console.log('closest3', closest3);
+    // console.log('');
+
+    
+    return [
+        closestOklab,
+        closestOrder,
+        closest1,
+        closest2,
+        closest3 ];
+}
+
+
+
+function findCorrectionInOrder(nodeId,
+                               refOklab,
+                               order, 
+                               locked1,  locked2,  locked3,
+                               closest1, closest2, closest3,
+                               start1,   start2,   start3, 
+                               end1,     end2,     end3,
+                               closestColor,
+                               closestOklab,
+                               closestOrder,
+                               progress,
+                               total)
+{
+    const color = [...closestColor];
+
+    // console.log('order', order);
+    // console.log('-------------------')
+
+    // console.log('locked1',  locked1);
+    // console.log('start1',   start1);
+    // console.log('end1',     end1);
+    
+    // console.log('locked2',  locked2);
+    // console.log('start2',   start2);
+    // console.log('end2',     end2);
+    
+    // console.log('locked3',  locked3);
+    // console.log('start3',   start3);
+    // console.log('end3',     end3);
+
+    // console.log('-------------------')
+    // console.log('')
+
+    
+    let nSteps1 = locked1 ? 1 : 2;
+    let nSteps2 = locked2 ? 1 : 2;
+    let nSteps3 = locked3 ? 1 : 2;
+
+
+    for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
+    {
+        for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
+        {
+            for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
+            {
+                const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
+
+                if (   isRgbValid(_rgb)
+                    && (  !closestOklab
+                        || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
+                {
+                    closestColor = _color;
+                    closestOklab = _oklab;
+                    closestOrder = order;
+                    closest1     = m1;
+                    closest2     = m2;
+                    closest3     = m3;
+
+                    console.log('order', order);
+                    console.log('closest1', closest1);
+                    console.log('closest2', closest2);
+                    console.log('closest3', closest3);
+                    console.log('');
+                }
+
+                progress++;
+            }
+        }
+
+        genPostMessageToUi(
+        {
+            cmd:     'uiUpdateFindCorrection',
+            nodeId:   nodeId,
+            progress: progress / total
+        });
+    }
+
+
+    return [
+        closestColor,
+        closestOklab,
+        closestOrder,
+        closest1,
+        closest2,
+        closest3,
+        progress ];
+}
+
+
+
+function getCorrectedColor(color, order, m1, m2, m3)
+{
+    const _color = validateColor(color, order, m1, m2, m3);
+    const _oklab = dataColor2array(convert2oklab(_color));
+    const _rgb   = oklab2rgb(_oklab);
+
+    return [_color, _oklab, _rgb];
+}
+
+
+
+function reorderCorrection(closestOrder,
+                           closest1, closest2, closest3,
+                           locked1,  locked2,  locked3)
+{
+    let c1 = { closest: closest1, locked: locked1 };
+    let c2 = { closest: closest2, locked: locked2 };
+    let c3 = { closest: closest3, locked: locked3 };
+
+    if (   c1.closest <  Eps
+        && c2.closest <  Eps
+        && c3.closest >= Eps)
+    {
+        switch (closestOrder)
+        {
+            case 0: closestOrder = 4; break;
+            case 1: closestOrder = 5; break;
+            case 2: closestOrder = 0; break;
+            case 3: closestOrder = 1; break;
+            case 4: closestOrder = 2; break;
+            case 5: closestOrder = 3; break;
+        }
+
+        const tmp = c2;
+        c1 = c3;
+        c2 = c1;
+        c3 = tmp;
+    }
+    else if (c1.closest >= Eps
+          && c2.closest <  Eps)
+    {
+        switch (closestOrder)
+        {
+            case 0: closestOrder = 3; break;
+            case 1: closestOrder = 2; break;
+            case 2: closestOrder = 1; break;
+            case 3: closestOrder = 0; break;
+            case 4: closestOrder = 5; break;
+            case 5: closestOrder = 4; break;
+        }
+
+        const tmp = c2;
+        c2 = c3;
+        c3 = tmp;
+    }
+    else if (c1.closest < Eps)
+    {
+        switch (closestOrder)
+        {
+            case 0: closestOrder = 2; break;
+            case 1: closestOrder = 3; break;
+            case 2: closestOrder = 4; break;
+            case 3: closestOrder = 5; break;
+            case 4: closestOrder = 0; break;
+            case 5: closestOrder = 1; break;
+        }
+
+        const tmp = c1;
+        c1 = c2;
+        c2 = c3;
+        c3 = tmp;
+    }
+
+
+    return [
+        closestOrder,
+        c1.closest, c2.closest, c3.closest,
+        c1.locked,  c2.locked,  c3.locked ];
+}
+
+
+
+function genRectangle(req, parse)
+{
+    genPostMessageToUi({ 
+        cmd:    'uiUpdateObjects',
+        objects: [{
+            type:   OBJ_RECT,
+            id:     nextGenObjectId++,
+            nodeId: req[i+1],
+            x:      req[i+2],
+            y:      req[i+3],
+            width:  req[i+4],
+            height: req[i+5],
+            angle:  req[i+6],
+            round:  req[i+7] }]
+    });
+}
+
+
+function genNumValue(req, parse)
+{
+    parse.pos++;
+
+    return parseDec(req[parse.pos++]);
+}
+
+
+
+function genNumber(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const decimal = genParseRequest(req, parse);    
+
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberAdd(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result = 0;
+    let maxDec = 0;
+
+    for (let i = 0; i < nValues; i++)
+    {
+        const num = genParseRequest(req, parse);
+
+        result += num.num;
+        maxDec = Math.max(maxDec, num.dec);
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberSubtract(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            result -= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberMultiply(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        result = 1;
+        maxDec = 0;
+
+        for (let i = 0; i < nValues; i++)
+        {
+            const num = genParseRequest(req, parse);
+
+            result *= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberDivide(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+            if (num.num == 0) { num.num = Number.NaN; break; }
+            
+            result /= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberModulo(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            if (num.num == 0) 
+            { 
+                result = Number.NaN; 
+                maxDec = 0;
+                break; 
+            }
+
+            result %= num.num;
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberExponent(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+
+    
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(req, parse);
+
+            result = Math.pow(result, num.num);
+            maxDec = Math.max(maxDec, num.dec);
+        }
+    }
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+
+function genNumberInterpolate(req, parse)
+{
+    parse.pos++;
+
+    const nodeId  = req[parse.pos++];
+    const nValues = req[parse.pos++];
+
+
+    let result, maxDec;
+
+    if (nValues == 2)
+    {
+        const num0 = genParseRequest(req, parse);
+        const num1 = genParseRequest(req, parse);
+        const amt  = genParseRequest(req, parse);
+
+        result = num0.num + amt.num * (num1.num - num0.num) / 100;
+        maxDec = Math.max(num0.dec, num1.dec);
+    }
+    else if (nValues == 1)
+    {
+        const num = genParseRequest(req, parse);
+
+        result = num.num;
+        maxDec = num.dec;
+
+    }
+    else if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;       
+    }
+    else 
+        console.assert(false);
+
+
+    const decimal = new Decimal(result, maxDec);
+    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
+
+    return decimal;
+}
+
+
+// some parse functions return values
+// some parse functions update values
+// some parse functions update objects
+
+
+
+/* 
+    the generation request format
+
+    no-update param nodeId ('' if n/a)
+    no-update paramIndex (0 if n/a)
+
+    generation string
+*/
+
+
+
+function genRequest(req, settings)
+{
+    if (settings.logRequests)
+        logRequest(req);
+
+
+    const updateNodeId     = req[0];
+    const updateParamIndex = req[1];
+
+
+    const parse =         
+    {
+        pos:              2, 
+        so:               0,
+        updateNodeId:     updateNodeId, 
+        updateParamIndex: updateParamIndex,
+        updateValues:     []
+    };
+
+
+
+
+    const stackOverflowProtect = 100;
+
+    while (parse.pos < req.length 
+        && parse.so  < stackOverflowProtect)
+    {
+        genParseRequest(req, parse);
+        //console.log('parse', parse);
+    }
+    
+
+    genUpdateValues(
+        updateNodeId,
+        updateParamIndex,
+        parse.updateValues);
+}
+
+
+
+function genParseRequest(req, parse)
+{
+    const next = req[parse.pos];
+    //console.log('next', next);
+
+
+         if (next == NUMBER_VALUE      ) return genNumValue         (req, parse);
+    else if (next == NUMBER            ) return genNumber           (req, parse);
+    else if (next == NUMBER_ADD        ) return genNumberAdd        (req, parse);
+    else if (next == NUMBER_SUBTRACT   ) return genNumberSubtract   (req, parse);
+    else if (next == NUMBER_MULTIPLY   ) return genNumberMultiply   (req, parse);
+    else if (next == NUMBER_DIVIDE     ) return genNumberDivide     (req, parse);
+    else if (next == NUMBER_MODULO     ) return genNumberModulo     (req, parse);
+    else if (next == NUMBER_EXPONENT   ) return genNumberExponent   (req, parse);
+    else if (next == NUMBER_INTERPOLATE) return genNumberInterpolate(req, parse);
+
+    else if (next == RECTANGLE         ) return genRectangle        (req, parse);
+
+
+    parse.so++;
+    return null;
+}
 
 
 /*
@@ -2913,358 +3628,31 @@ function genUpdateValues(updateNodeId, updateParamIndex, updateValues)
 
 
 
-// some parse functions return values
-// some parse functions update values
-// some parse functions update objects
-
-
-
-/* 
-    the generation request format
-
-    no-update param nodeId ('' if n/a)
-    no-update paramIndex (0 if n/a)
-
-    generation string
-*/
-
-
-
-function genRequest(req, settings)
+function getObjectBounds(objects)
 {
-    if (settings.logRequests)
-        logRequest(req);
-
-
-    const updateNodeId     = req[0];
-    const updateParamIndex = req[1];
-
-
-    const parse =         
-    {
-        pos:              2, 
-        so:               0,
-        updateNodeId:     updateNodeId, 
-        updateParamIndex: updateParamIndex,
-        updateValues:     []
-    };
-
-
-
-
-    const stackOverflowProtect = 100;
-
-    while (parse.pos < req.length 
-        && parse.so  < stackOverflowProtect)
-    {
-        genParseRequest(req, parse);
-        //console.log('parse', parse);
-    }
+    var boundsL = Number.MAX_SAFE_INTEGER;
+    var boundsT = Number.MAX_SAFE_INTEGER;
+    var boundsR = Number.MIN_SAFE_INTEGER;
+    var boundsB = Number.MIN_SAFE_INTEGER;
     
-
-    genUpdateValues(
-        updateNodeId,
-        updateParamIndex,
-        parse.updateValues);
-}
-
-
-
-function genParseRequest(req, parse)
-{
-    const next = req[parse.pos];
-    //console.log('next', next);
-
-
-         if (next == NUMBER_VALUE   ) return genNumValue      (req, parse);
-    else if (next == NUMBER         ) return genNumber        (req, parse);
-    else if (next == NUMBER_ADD     ) return genNumberAdd     (req, parse);
-    else if (next == NUMBER_SUBTRACT) return genNumberSubtract(req, parse);
-    else if (next == NUMBER_MULTIPLY) return genNumberMultiply(req, parse);
-    else if (next == NUMBER_DIVIDE  ) return genNumberDivide  (req, parse);
-    else if (next == NUMBER_MODULO  ) return genNumberModulo  (req, parse);
-    else if (next == NUMBER_EXPONENT) return genNumberExponent(req, parse);
-
-    else if (next == RECTANGLE   ) return genRectangle(req, parse);
-
-
-    parse.so++;
-    return null;
-}
-
-
-
-function genRectangle(req, parse)
-{
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateObjects',
-        objects: [{
-            type:   OBJ_RECT,
-            id:     nextGenObjectId++,
-            nodeId: req[i+1],
-            x:      req[i+2],
-            y:      req[i+3],
-            width:  req[i+4],
-            height: req[i+5],
-            angle:  req[i+6],
-            round:  req[i+7] }]
-    });
-}
-
-
-function genNumValue(req, parse)
-{
-    parse.pos++;
-
-    return parseDec(req[parse.pos++]);
-}
-
-
-
-function genNumber(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const decimal = genParseRequest(req, parse);    
-
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
-}
-
-
-
-function genNumberAdd(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const nValues = req[parse.pos++];
-    
-
-    let result = 0;
-    let maxDec = 0;
-
-    for (let i = 0; i < nValues; i++)
+    for (const obj of objects)
     {
-        const num = genParseRequest(req, parse);
-
-        result += num.num;
-        maxDec = Math.max(maxDec, num.dec);
-    }
-
-
-    const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
-}
-
-
-
-function genNumberSubtract(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const nValues = req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(req, parse);
-
-        result = num.num;
-        maxDec = num.dec;
-
-        for (let i = 1; i < nValues; i++)
+        switch (obj[0])
         {
-            num = genParseRequest(req, parse);
-
-            result -= num.num;
-            maxDec = Math.max(maxDec, num.dec);
+            case OBJ_RECT:
+                boundsL = Math.min(boundsL, obj[3]);
+                boundsT = Math.min(boundsT, obj[4]);
+                boundsR = Math.max(boundsR, obj[3] + obj[5]);
+                boundsB = Math.max(boundsB, obj[4] + obj[6]);
+                break;
         }
     }
 
-
-    const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
-}
-
-
-
-function genNumberMultiply(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const nValues = req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        result = 1;
-        maxDec = 0;
-
-        for (let i = 0; i < nValues; i++)
-        {
-            const num = genParseRequest(req, parse);
-
-            result *= num.num;
-            maxDec = Math.max(maxDec, num.dec);
-        }
-    }
-
-
-    const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
-}
-
-
-
-function genNumberDivide(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const nValues = req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(req, parse);
-
-        result = num.num;
-        maxDec = num.dec;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParseRequest(req, parse);
-            if (num.num == 0) { num.num = Number.NaN; break; }
-            
-            result /= num.num;
-            maxDec = Math.max(maxDec, num.dec);
-        }
-    }
-
-
-    const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
-}
-
-
-
-function genNumberModulo(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const nValues = req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(req, parse);
-
-        result = num.num;
-        maxDec = num.dec;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParseRequest(req, parse);
-
-            if (num.num == 0) 
-            { 
-                result = Number.NaN; 
-                maxDec = 0;
-                break; 
-            }
-
-            result %= num.num;
-            maxDec = Math.max(maxDec, num.dec);
-        }
-    }
-
-
-    const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
-}
-
-
-
-function genNumberExponent(req, parse)
-{
-    parse.pos++;
-
-    const nodeId  = req[parse.pos++];
-    const nValues = req[parse.pos++];
-
-    
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(req, parse);
-
-        result = num.num;
-        maxDec = num.dec;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParseRequest(req, parse);
-
-            result = Math.pow(result, num.num);
-            maxDec = Math.max(maxDec, num.dec);
-        }
-    }
-
-
-    const decimal = new Decimal(result, maxDec);
-    genPushUpdateValue(parse, nodeId, 0, decimal.toString());
-
-    return decimal;
+    return {
+        x: boundsL, 
+        y: boundsT,
+        w: boundsR - boundsL,
+        h: boundsB - boundsT };
 }
 
 
@@ -5397,350 +5785,6 @@ function getValidateMax(order)
 
     // should never get here
     return [0, 0, 0];
-}
-
-
-function genFindCorrection(nodeId, 
-                           inputColor, 
-                           param1,  param2,  param3, 
-                           locked1, locked2, locked3)
-{
-    const refOklab = dataColor2array(convert2oklab(inputColor));
-
-    let
-  [ closestOklab,
-    closestOrder,
-    closest1,
-    closest2,
-    closest3 ] = findCorrection(
-                     nodeId, 
-                     inputColor, 
-                     refOklab, 
-                     param1,  param2,  param3, 
-                     locked1, locked2, locked3); 
-
-//   [ closestOrder,
-//     closest1, closest2, closest3,
-//     locked1,  locked2,  locked3 ] = reorderCorrection(
-//                                         closestOrder,
-//                                         closest1, closest2, closest3,
-//                                         locked1,  locked2,  locked3);
-
-    genPostMessageToUi(
-    {
-        cmd:         'uiEndFindCorrection',
-        nodeId:       nodeId,
-        success:      closestOklab != null,
-        closestOrder: closestOrder,
-        closest1:     closest1,
-        closest2:     closest2,
-        closest3:     closest3
-    });
-}
-
-
-
-function findCorrection(nodeId, 
-                        color, 
-                        refOklab, 
-                        param1,  param2,  param3, 
-                        locked1, locked2, locked3) 
-{
-    let closestColor = [...color],
-        closestOklab = null, 
-        closestOrder = -1,
-        closest1     = -1,
-        closest2     = -1,
-        closest3     = -1;
-
-
-    let progress = 0,
-        total    = 6 * Math.pow(2, Tau);
-
-
-    let d = 1;
-
-    while (d > 1/1024)
-    {
-        let _closestColor = [...closestColor];
-
-
-        for (let order = 0; order < 6; order++)
-        {
-            closestColor = [..._closestColor];
-
-            const [max1, max2, max3] = getValidateMax(order);
-
-            let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
-                start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
-                start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
-               
-                
-            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
-            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
-            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
-            
-
-          [ closestColor,
-            closestOklab,
-            closestOrder,
-            closest1,
-            closest2,
-            closest3,
-            progress ] = findCorrectionInOrder(
-                nodeId,
-                refOklab,
-                order, 
-                locked1,  locked2,  locked3,
-                closest1, closest2, closest3,
-                start1,   start2,   start3, 
-                end1,     end2,     end3,
-                [...closestColor],
-                closestOklab, 
-                closestOrder,
-                progress,
-                total);
-        }
-
-        
-        d /= 2;
-    }
-
-
-    // reduce closest to necessary minimums
-
-    const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
-
-    let c1 = closest1;
-    let c2 = closest2;
-    let c3 = closest3;
-
-    // console.log('closest1', closest1);
-    // console.log('closest2', closest2);
-    // console.log('closest3', closest3);
-    // console.log('');
-
-    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
-    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
-    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
-
-    closest1 = Math.max(0, c1);
-    closest2 = Math.max(0, c2);
-    closest3 = Math.max(0, c3);
-
-    // console.log('closest1', closest1);
-    // console.log('closest2', closest2);
-    // console.log('closest3', closest3);
-    // console.log('');
-
-    
-    return [
-        closestOklab,
-        closestOrder,
-        closest1,
-        closest2,
-        closest3 ];
-}
-
-
-
-function findCorrectionInOrder(nodeId,
-                               refOklab,
-                               order, 
-                               locked1,  locked2,  locked3,
-                               closest1, closest2, closest3,
-                               start1,   start2,   start3, 
-                               end1,     end2,     end3,
-                               closestColor,
-                               closestOklab,
-                               closestOrder,
-                               progress,
-                               total)
-{
-    const color = [...closestColor];
-
-    // console.log('order', order);
-    // console.log('-------------------')
-
-    // console.log('locked1',  locked1);
-    // console.log('start1',   start1);
-    // console.log('end1',     end1);
-    
-    // console.log('locked2',  locked2);
-    // console.log('start2',   start2);
-    // console.log('end2',     end2);
-    
-    // console.log('locked3',  locked3);
-    // console.log('start3',   start3);
-    // console.log('end3',     end3);
-
-    // console.log('-------------------')
-    // console.log('')
-
-    
-    let nSteps1 = locked1 ? 1 : 2;
-    let nSteps2 = locked2 ? 1 : 2;
-    let nSteps3 = locked3 ? 1 : 2;
-
-
-    for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
-    {
-        for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
-        {
-            for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
-            {
-                const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
-
-                if (   isRgbValid(_rgb)
-                    && (  !closestOklab
-                        || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
-                {
-                    closestColor = _color;
-                    closestOklab = _oklab;
-                    closestOrder = order;
-                    closest1     = m1;
-                    closest2     = m2;
-                    closest3     = m3;
-
-                    console.log('order', order);
-                    console.log('closest1', closest1);
-                    console.log('closest2', closest2);
-                    console.log('closest3', closest3);
-                    console.log('');
-                }
-
-                progress++;
-            }
-        }
-
-        genPostMessageToUi(
-        {
-            cmd:     'uiUpdateFindCorrection',
-            nodeId:   nodeId,
-            progress: progress / total
-        });
-    }
-
-
-    return [
-        closestColor,
-        closestOklab,
-        closestOrder,
-        closest1,
-        closest2,
-        closest3,
-        progress ];
-}
-
-
-
-function getCorrectedColor(color, order, m1, m2, m3)
-{
-    const _color = validateColor(color, order, m1, m2, m3);
-    const _oklab = dataColor2array(convert2oklab(_color));
-    const _rgb   = oklab2rgb(_oklab);
-
-    return [_color, _oklab, _rgb];
-}
-
-
-
-function reorderCorrection(closestOrder,
-                           closest1, closest2, closest3,
-                           locked1,  locked2,  locked3)
-{
-    let c1 = { closest: closest1, locked: locked1 };
-    let c2 = { closest: closest2, locked: locked2 };
-    let c3 = { closest: closest3, locked: locked3 };
-
-    if (   c1.closest <  Eps
-        && c2.closest <  Eps
-        && c3.closest >= Eps)
-    {
-        switch (closestOrder)
-        {
-            case 0: closestOrder = 4; break;
-            case 1: closestOrder = 5; break;
-            case 2: closestOrder = 0; break;
-            case 3: closestOrder = 1; break;
-            case 4: closestOrder = 2; break;
-            case 5: closestOrder = 3; break;
-        }
-
-        const tmp = c2;
-        c1 = c3;
-        c2 = c1;
-        c3 = tmp;
-    }
-    else if (c1.closest >= Eps
-          && c2.closest <  Eps)
-    {
-        switch (closestOrder)
-        {
-            case 0: closestOrder = 3; break;
-            case 1: closestOrder = 2; break;
-            case 2: closestOrder = 1; break;
-            case 3: closestOrder = 0; break;
-            case 4: closestOrder = 5; break;
-            case 5: closestOrder = 4; break;
-        }
-
-        const tmp = c2;
-        c2 = c3;
-        c3 = tmp;
-    }
-    else if (c1.closest < Eps)
-    {
-        switch (closestOrder)
-        {
-            case 0: closestOrder = 2; break;
-            case 1: closestOrder = 3; break;
-            case 2: closestOrder = 4; break;
-            case 3: closestOrder = 5; break;
-            case 4: closestOrder = 0; break;
-            case 5: closestOrder = 1; break;
-        }
-
-        const tmp = c1;
-        c1 = c2;
-        c2 = c3;
-        c3 = tmp;
-    }
-
-
-    return [
-        closestOrder,
-        c1.closest, c2.closest, c3.closest,
-        c1.locked,  c2.locked,  c3.locked ];
-}
-
-
-
-function getObjectBounds(objects)
-{
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
-    
-    for (const obj of objects)
-    {
-        switch (obj[0])
-        {
-            case OBJ_RECT:
-                boundsL = Math.min(boundsL, obj[3]);
-                boundsT = Math.min(boundsT, obj[4]);
-                boundsR = Math.max(boundsR, obj[3] + obj[5]);
-                boundsB = Math.max(boundsB, obj[4] + obj[6]);
-                break;
-        }
-    }
-
-    return {
-        x: boundsL, 
-        y: boundsT,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
 }
 
 
