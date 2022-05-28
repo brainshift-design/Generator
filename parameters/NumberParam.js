@@ -7,15 +7,16 @@ extends Parameter
     allowEditDecimals = true;
     
 
-    get value() { return new GNumber(this.control.value, this.control.displayDec); }
+    
+    get value() { return this.control.value; }
     // set value(value) 
     // {
     //     this.control.setDecimals(decCount(value));
     //     this.control.setValue(parseFloat(value)); 
     // }
-
-
-    // get oldValue()   { return this.control.oldValue; }
+        
+        
+    get genValue() { return new GNumber(this.control.value, this.control.displayDec); }
 
     
     get valueText() { return this.control.valueText; }
@@ -32,7 +33,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = new GNumber(0, 0), 
+                value     = 0, 
                 min       = Number.MIN_SAFE_INTEGER, 
                 max       = Number.MAX_SAFE_INTEGER,
                 decimals  = 0,
@@ -51,16 +52,16 @@ extends Parameter
         initNumberSlider(
             this,
             this.control,
-            120,        // width
-            20,         // height
+            120,         // width
+            20,          // height
             this.id,
             this.name, 
             showName,
             min,
             max,
-            value,      // default
-            decimals,   // decimals
-            dragScale); // drag scale
+            value,       // default
+            decimals,    // decimals
+            dragScale);  // drag scale
 
         this.control.successOnFocusOut = true;
 
@@ -103,7 +104,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.value == this.defaultValue;
+        return this.genValue == this.defaultValue;
     }
 
 
@@ -139,7 +140,7 @@ extends Parameter
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
-        this.oldValue = this.value;
+        this.oldValue = this.genValue;
     }    
 
 
@@ -179,7 +180,7 @@ extends Parameter
 
     toString()
     {
-        return this.value.toString();
+        return this.genValue.toString();
     }
 
 
@@ -191,6 +192,6 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
+        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
     }
 }

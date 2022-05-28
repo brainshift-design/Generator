@@ -58,8 +58,8 @@ extends OperatorBase
         {
             if (this.#btnProportional.enabled)
             {
-                this.#refWidth  = this.#paramWidth .value;
-                this.#refHeight = this.#paramHeight.value;
+                this.#refWidth  = this.#paramWidth .genValue;
+                this.#refHeight = this.#paramHeight.genValue;
             }
         });
 
@@ -67,14 +67,14 @@ extends OperatorBase
         this.#paramWidth.addEventListener('change', () =>
         {
             if (this.#btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.value * this.#refHeight / this.#refWidth, false, true, false);
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
         });
 
 
         this.#paramHeight.addEventListener('change', () =>
         {
             if (this.#btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.value * this.#refWidth / this.#refHeight, false, true, false);
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
         });
     }
     
@@ -82,7 +82,7 @@ extends OperatorBase
     
     updateRound()
     {
-        const min = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+        const min = Math.min(this.#paramWidth.genValue, this.#paramHeight.genValue);
         this.setRoundMinMax(0, min/2);
     }
 

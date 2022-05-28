@@ -15,8 +15,8 @@ extends OperatorBase
 
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
-        this.addParam(this.paramValue  = new NumberParam('value',  '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
+        this.addParam(this.paramValue  = new NumberParam('value',  '', false, false, false, 0));
 
         enableSliderText(this.paramValue.control, false);
         

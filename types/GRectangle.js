@@ -7,6 +7,8 @@ class GRectangle
     angle;
     round;
 
+
+
     constructor()//x, y, width, height, angle, round)
     {
         this.x      = new GNumber(  0);
@@ -17,6 +19,20 @@ class GRectangle
         this.round  = new GNumber(  0);
     }
 
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            && this.height.valid
+            && this.angle .valid
+            && this.round .valid;
+    }
+
+
+    
     // toString()
     // {
     //     return isNaN(this.value)

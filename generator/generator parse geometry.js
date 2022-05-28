@@ -61,7 +61,8 @@ function genRectangle(parse)
     genPushUpdateParamValue(parse, nodeId, 5, rect.round .toString());
 
 
-    if (active)
+    if (   active
+        && rect.valid)
     {
         genPushUpdateObject(
             parse, 

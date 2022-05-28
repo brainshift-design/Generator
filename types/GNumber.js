@@ -3,11 +3,23 @@ class GNumber
     value;
     decimals;
 
+
+
     constructor(val, dec = 0)
     {
         this.value    = val;
         this.decimals = dec;
     }
+
+
+
+    get valid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
+    }
+
+
 
     toString()
     {
