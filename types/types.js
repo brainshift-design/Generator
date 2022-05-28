@@ -34,6 +34,8 @@ const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 
+//const RECTANGLE_VALUE    = 'R';
+
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 
@@ -42,6 +44,8 @@ const GROUP              = 'GRP';   // ???? count O...
 
 const COMMENT            = 'CMNT';
 
+
+const ACTIVE             = 'ACT';
 
 
 /*

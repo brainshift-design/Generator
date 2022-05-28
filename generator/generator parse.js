@@ -17,16 +17,9 @@
 
 function genRequest(req, settings)
 {
-    if (settings.logRequests)
-        logRequest(req);
-
-
-    const updateNodeId     = req[0];
-    const updateParamIndex = req[1];
-
-
     const parse =         
     {
+        req:                req,
         pos:                2, 
         so:                 0,
         updateNodeId:       updateNodeId, 
@@ -35,11 +28,19 @@ function genRequest(req, settings)
     };
 
 
+    if (settings.logRequests)
+        logRequest(parse.req);
+
+
+    const updateNodeId     = parse.req[0];
+    const updateParamIndex = parse.req[1];
+
+
     const stackOverflowProtect = 100;
 
-    while (parse.pos < req.length 
-        && parse.so  < stackOverflowProtect)
-        genParseRequest(req, parse);
+    while (   parse.pos < parse.req.length 
+           && parse.so  < stackOverflowProtect)
+        genParseRequest(parse);
     
 
     genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
@@ -47,25 +48,38 @@ function genRequest(req, settings)
 
 
 
-function genParseRequest(req, parse)
+function genParseRequest(parse)
 {
-    const next = req[parse.pos];
+    const next = parse.req[parse.pos];
         //console.log('next', next);
 
+         if (next == NUMBER_VALUE      ) return genNumValue         (parse);
+    else if (next == NUMBER            ) return genNumber           (parse);
+    else if (next == NUMBER_ADD        ) return genNumberAdd        (parse);
+    else if (next == NUMBER_SUBTRACT   ) return genNumberSubtract   (parse);
+    else if (next == NUMBER_MULTIPLY   ) return genNumberMultiply   (parse);
+    else if (next == NUMBER_DIVIDE     ) return genNumberDivide     (parse);
+    else if (next == NUMBER_MODULO     ) return genNumberModulo     (parse);
+    else if (next == NUMBER_EXPONENT   ) return genNumberExponent   (parse);
+    else if (next == NUMBER_INTERPOLATE) return genNumberInterpolate(parse);
 
-         if (next == NUMBER_VALUE      ) return genNumValue         (req, parse);
-    else if (next == NUMBER            ) return genNumber           (req, parse);
-    else if (next == NUMBER_ADD        ) return genNumberAdd        (req, parse);
-    else if (next == NUMBER_SUBTRACT   ) return genNumberSubtract   (req, parse);
-    else if (next == NUMBER_MULTIPLY   ) return genNumberMultiply   (req, parse);
-    else if (next == NUMBER_DIVIDE     ) return genNumberDivide     (req, parse);
-    else if (next == NUMBER_MODULO     ) return genNumberModulo     (req, parse);
-    else if (next == NUMBER_EXPONENT   ) return genNumberExponent   (req, parse);
-    else if (next == NUMBER_INTERPOLATE) return genNumberInterpolate(req, parse);
-
-    else if (next == RECTANGLE         ) return genRectangle        (req, parse);
-
+    else if (next == RECTANGLE         ) return genRectangle        (parse);
 
     parse.so++;
     return null;
+}
+
+
+
+function genActive(parse)
+{
+    let active = false;
+
+    if (parse.req[parse] == ACTIVE)
+    {
+        active = true;
+        parse.pos++;
+    }
+
+    return active;
 }

@@ -632,7 +632,7 @@ class Operator
                 const index = this.params.findIndex(p => p.id == _param[0]);
                 
                 if (index >= 0) 
-                    this.params[index].setValue(parseDec(_param[1]), true, true, false);
+                    this.params[index].setValue(parseGnum(_param[1]), true, true, false);
             }
         }
     }

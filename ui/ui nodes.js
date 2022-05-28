@@ -1056,7 +1056,7 @@ function uiUpdateParamValues(values)
 
         if (   nodeId     != updateNodeId
             || paramIndex != updateParamIndex)
-            node.updateParamValue(paramIndex, parseDec(strVal));
+            node.updateParamValue(paramIndex, parseGnum(strVal));
     }
 
 

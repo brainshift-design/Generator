@@ -25,7 +25,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
              
     slider.min                    = min;
     slider.max                    = max;
-    slider.value                  = def.num;
+    slider.value                  = def;
     slider.acc                    = acc;
      
     slider.dec                    =

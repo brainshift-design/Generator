@@ -7,7 +7,7 @@ extends Parameter
     allowEditDecimals = true;
     
 
-    get value() { return new Decimal(this.control.value, this.control.displayDec); }
+    get value() { return new GNumber(this.control.value, this.control.displayDec); }
     // set value(value) 
     // {
     //     this.control.setDecimals(decCount(value));
@@ -32,7 +32,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = new Decimal(0, 0), 
+                value     = new GNumber(0, 0), 
                 min       = Number.MIN_SAFE_INTEGER, 
                 max       = Number.MAX_SAFE_INTEGER,
                 decimals  = 0,
@@ -71,7 +71,7 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => this.setValue(new Decimal(this.control.value, this.control.displayDec), true,  false));
+        this.control.addEventListener('confirm', () => this.setValue(new GNumber(this.control.value, this.control.displayDec), true,  false));
 
 
         this.control.addEventListener('finishedit', e =>
@@ -85,7 +85,7 @@ extends Parameter
                        && this.allowEditDecimals))
             {
                 const _dec = Math.log10(this.control.valueScale);
-                this.setValue(new Decimal(e.detail.value, dec + _dec), true);
+                this.setValue(new GNumber(e.detail.value, dec + _dec), true);
                 e.preventSetValue = true;
             }
         });
@@ -127,29 +127,14 @@ extends Parameter
 
 
 
-    // setOutputData()
-    // {
-    //     if (this.output)
-    //     {
-    //         this.output._data = dataFromNumber(
-    //             this.control.value,
-    //                this.input
-    //             && this.input.connected
-    //             ? this.input.data.decimals
-    //             : this.control.dec);
-    //     }
-    // }
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
         {
-            this.control.setDecimals(value.dec, value.dec);
-            this.control.setValue(value.num, false, false, forceChange); 
+            this.control.setDecimals(value.decimals, value.decimals);
+            this.control.setValue(value.value, false, false, forceChange); 
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -161,8 +146,8 @@ extends Parameter
 
     valuesEqual(val1, val2)
     {
-        return val1.num == val2.num
-            && val1.dec == val2.dec;
+        return val1.value    == val2.value
+            && val1.decimals == val2.decimals;
     }
 
 
@@ -178,7 +163,7 @@ extends Parameter
             ? [ ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER_VALUE, 
-                new Decimal(
+                new GNumber(
                     this.control.value, 
                     this.control.displayDec).toString() ];
     }

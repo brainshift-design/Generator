@@ -7,7 +7,6 @@ extends OperatorBase
     #paramHeight;
     #paramAngle;
     #paramRound;
-    //#paramColor;
 
     #btnProportional;
 
@@ -18,7 +17,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect');
+        super(RECTANGLE, 'rect', 90);
 
         this.addInput (new Input ([RECTANGLE]));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
@@ -105,7 +104,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (this.node.valid) 
+        if (!isEmpty(this.cache))
             return this.cache;
 
             
@@ -116,61 +115,42 @@ extends OperatorBase
                 
         const input = this.node.inputs[0];
 
-        // req.push(...(
-        //     input.connected
-        //     ? input.connectedOutput.genRequest()
-        //     : [ NUMBER_VALUE,
-        //         numToString( // number VALUES are stored as strings because decimal places matter
-        //             this.node.#paramValue.value,
-        //             this.node.#paramValue.control.dec) ]));
+        const indices = [];
 
 
-        return output.cache = [...request];
+        if (input.connected)
+        {
+            req.push(...input.connectedOutput.genRequest());
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    indices.push(param.index);
+                    
+            req.push(indices.join(','));
+
+
+            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest());
+            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest());
+            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest());
+            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest());
+            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest());
+            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest());
+        }
+        else
+        {
+            req.push(
+                ...this.node.#paramX     .genRequest(),
+                ...this.node.#paramY     .genRequest(),
+                ...this.node.#paramWidth .genRequest(),
+                ...this.node.#paramHeight.genRequest(),
+                ...this.node.#paramAngle .genRequest(),
+                ...this.node.#paramRound .genRequest());
+        }
+
+
+        return req;
     }
-
-
-
-    // updateData()
-    // {
-    //     if (this.inputs[0].connected) 
-    //     {
-    //         const data = this.inputs[0].data;
-
-    //         this.#paramX     .setValue(this.#paramX     .input.connected ? this.#paramX     .input.data.value : data.x,      false, true, false);
-    //         this.#paramY     .setValue(this.#paramY     .input.connected ? this.#paramY     .input.data.value : data.y,      false, true, false);
-    //         this.#paramWidth .setValue(this.#paramWidth .input.connected ? this.#paramWidth .input.data.value : data.width,  false, true, false);
-    //         this.#paramHeight.setValue(this.#paramHeight.input.connected ? this.#paramHeight.input.data.value : data.height, false, true, false);
-    //         this.#paramAngle .setValue(this.#paramAngle .input.connected ? this.#paramAngle .input.data.value : data.angle,  false, true, false);
-    //         this.#paramRound .setValue(this.#paramRound .input.connected ? this.#paramRound .input.data.value : data.round,  false, true, false);
-    //     }
-
-    
-    //     this.outputs[0]._data = dataFromRectangle(
-    //         this.#paramX     .value,
-    //         this.#paramY     .value,
-    //         this.#paramWidth .value,
-    //         this.#paramHeight.value,
-    //         this.#paramAngle .value,
-    //         this.#paramRound .value);
-
-
-    //     super.updateData()
-    // }
-
-
-
-    // toString()
-    // {
-    //     return [
-    //         this.type,
-    //         this.id,
-    //         this.#paramX     .value,
-    //         this.#paramY     .value,
-    //         this.#paramWidth .value,
-    //         this.#paramHeight.value,
-    //         this.#paramAngle .value,
-    //         this.#paramRound .value ];
-    // }
 
 
 

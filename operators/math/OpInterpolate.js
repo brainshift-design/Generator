@@ -37,14 +37,14 @@ extends OperatorBase
             return this.cache;
 
 
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
-
-
         const req = [
             this.node.type, 
             this.node.id];
                 
+
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
 
         if (   input0.connected
             && input1.connected)   req.push(2,
@@ -56,7 +56,7 @@ extends OperatorBase
             
         else                       req.push(0);
 
-        
+
         req.push(...this.node.paramAmount.genRequest());
 
         return req;

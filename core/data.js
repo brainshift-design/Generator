@@ -35,48 +35,6 @@ function rgbFromType(type, active)
 
 
 
-// function dataFromNumber(num, dec = -1)
-// {
-//     return {
-//         type:     NUMBER,
-//         value:    floorTo(num, dec),
-//         decimals: dec
-//     };
-// }
-
-
-
-// function dataFromDataColor(color)
-// {
-//     return {
-//         type:   'color',
-//         color:   color,
-//         isValid: isRgbValid(dataColor2rgb(color))
-//     };
-// }
-
-
-
-// function dataFromRectangle(x, y, width, height, angle, round)//, nodeId, nodeType)
-// {
-//     return {
-//         type: 'object',
-
-//         //nodeId: nodeId,
-//         //nodeType: nodeType,
-
-//         x:      x,
-//         y:      y,
-//         width:  width,
-//         height: height,
-//         angle:  angle,
-//         round:  round
-//         //color: color
-//     };
-// }
-
-
-
 function isDataColorNaN(color)
 {
     return isNaN(color[1])

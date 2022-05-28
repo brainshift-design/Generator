@@ -1,3 +1,2 @@
 ../types/types.js
-
-../types/Decimal.js
+../types/*!(types).js
