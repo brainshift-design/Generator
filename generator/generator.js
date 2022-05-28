@@ -1,17 +1,3 @@
-/*
-
-*/
-
-
-var nextGenObjectId = 0;
-
-
-
-//const genGraph          = new GGraph();
-const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
-
-
-
 // --> from UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,60 +45,3 @@ function genPostMessageToUi(msg)
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
-{
-    const found = parse.updateParamValues.find(v => 
-           v[0] == nodeId 
-        && v[1] == paramIndex);
-
-    if (!found)
-        parse.updateParamValues.push([nodeId, paramIndex, value]);
-    else
-        console.assert(found[2] == value);
-}
-
-
-
-function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
-{
-    // send messages in chunks
-
-    const chunkSize = 20;
-    
-    let i = 0, 
-        c = 0;
-    
-    let chunk = [];
-    
-    while (i < updateValues.length)
-    {
-        chunk.push(
-            updateValues[i][0],  // node id
-            updateValues[i][1],  // param index
-            updateValues[i][2]); // value
-
-        if (++c == chunkSize)
-        {
-            genPostMessageToUi({ 
-                cmd:    'uiUpdateParamValues',
-                values: [updateNodeId, updateParamIndex, ...chunk]
-            });
-
-            chunk = [];
-            c = 0;
-        }
-
-        i++;
-    }
-
-    if (chunk.length > 0)
-    {
-        genPostMessageToUi({ 
-            cmd:    'uiUpdateParamValues',
-            values: [updateNodeId, updateParamIndex, ...chunk]
-        });
-    }
-}

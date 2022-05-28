@@ -63,19 +63,19 @@ function genRectangle(parse)
 
     if (active)
     {
-        genPostMessageToUi({ 
-            cmd:    'uiUpdateObjects',
-            objects: [{ 
+        genPushUpdateObject(
+            parse, 
+            { 
                 type:   RECTANGLE,
-                id:     nextGenObjectId++,
+                id:     parse.nextObjectId++,
                 nodeId: nodeId,
                 x:      rect.x     .value,
                 y:      rect.y     .value,
                 width:  rect.width .value,
                 height: rect.height.value,
                 angle:  rect.angle .value,
-                round:  rect.round .value}]
-        });
+                round:  rect.round .value
+            });
     }
 
 
