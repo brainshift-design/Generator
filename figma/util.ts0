@@ -1,16 +1,16 @@
-function objTypeString(type)
-{
-    switch (type)
-    {
-        case OBJ_RECT: return 'RECTANGLE';
-        // case 'VECTOR':
-        // case 'LINE':
-        // case 'ELLIPSE':
-        // case 'POLYGON':
-        // case 'STAR':
-        // case 'TEXT':
-        // case 'BOOLEAN_OPERATION':
-    }
+// function objTypeString(type)
+// {
+//     switch (type)
+//     {
+//         case RECTANGLE: return 'RECTANGLE';
+//         // case 'VECTOR':
+//         // case 'LINE':
+//         // case 'ELLIPSE':
+//         // case 'POLYGON':
+//         // case 'STAR':
+//         // case 'TEXT':
+//         // case 'BOOLEAN_OPERATION':
+//     }
 
-    return 'ERROR_TYPE';
-}
+//     return 'ERROR_TYPE';
+// }

@@ -17,7 +17,14 @@
 
 function genRequest(req, settings)
 {
-    const parse =         
+    if (settings.logRequests)
+        logRequest(req);
+
+
+    const updateNodeId     = req[0];
+    const updateParamIndex = req[1];
+
+    const parse = 
     {
         req:                req,
         pos:                2, 
@@ -27,15 +34,7 @@ function genRequest(req, settings)
         updateParamValues:  []
     };
 
-
-    if (settings.logRequests)
-        logRequest(parse.req);
-
-
-    const updateNodeId     = parse.req[0];
-    const updateParamIndex = parse.req[1];
-
-
+    
     const stackOverflowProtect = 100;
 
     while (   parse.pos < parse.req.length 
@@ -75,7 +74,7 @@ function genActive(parse)
 {
     let active = false;
 
-    if (parse.req[parse] == ACTIVE)
+    if (parse.req[parse.pos] == ACTIVE)
     {
         active = true;
         parse.pos++;

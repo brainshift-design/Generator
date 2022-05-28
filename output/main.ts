@@ -101,11 +101,80 @@ function logUpdateParamValues(values)
 }
 
 
+//////////// WARNING ////////////
+//                             //
+//  DO NOT TOUCH THIS FILE!!!  //
+//                             //
+/////////////////////////////////
+
+
+const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
+
+const NUMBER             = 'NUM';   // N | n
+const NUMBER_MINMAX      = 'MNMX';  // N:min N:max
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_EXPONENT    = 'EXP';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
+
+
+const COLOR_VALUE        = 'C';     // N:space N:1 N:2 N:3 (c)
+
+const COLOR              = 'COL';   // C | c
+const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE     = 'CVLD';  // C
+const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
+const COLORBLIND         = 'BLND';  // C
+
+
+const STRING_VALUE       = 'S';     // "..." (s) (escape \\ and \")
+
+const STRING             = 'STR';   // S | s
+const STRING_ADD         = 'SADD';  // S S
+const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+
+
+//const RECTANGLE_VALUE    = 'R';
+
+const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
+
+const GROUP              = 'GRP';   // ???? count O...
+
+
+const COMMENT            = 'CMNT';
+
+
+const ACTIVE             = 'ACT';
+
+
+/*
+
+ARROW       A
+COLOR       C
+ELLIPSE     E
+FRAME       F
+GROUP       G
+IMAGE       I
+LIST        L
+NUMBER      N
+POLYGON     P
+RECTANGLE   R
+SLICE       /
+STAR        *
+STRING      S
+TEXT        T
+VECTOR      V
+
+*/
+
+
 const MAX_OBJECTS = 0x10000;
 const genObjects  = new Array(MAX_OBJECTS);
 
-
-const OBJ_RECT = 1;
 
 
 
@@ -138,68 +207,7 @@ function figUpdateObjects(objects)
             genObj.remove();
             figCreateObject(obj);
         }
-
-    //     count++;
-
-    //     if (obj.nodeId != nodeId)
-    //     {
-    //         nodeId = obj.nodeId;
-
-    //         if (prevId > -1)
-    //         {
-    //             if (  !objNodes[prevId]
-    //                 || objNodes[prevId].length != count)
-    //             {
-    //                 figDeleteObjects([prevId]);
-    //                 objNodes[prevId] = new Array(count).fill(null);
-    //             }
-
-    //             count = 0;
-    //         }
-
-    //         prevId = nodeId;
-    //     }
-    // }
-
-
-    // if (   count > 0
-    //     && (  !objNodes[nodeId]
-    //         || objNodes[nodeId].length != count))
-    // {
-    //     figDeleteObjects([nodeId]);
-    //     objNodes[nodeId] = new Array(count).fill(null);
     }
-
-
-    // // fill the buffers
-
-    // for (const obj of objects)
-    // {
-    //     switch (obj.type)
-    //     {
-    //         case OBJ_RECT:
-    //         {
-    //             if (!objNodes[obj.nodeId][obj.id])
-    //             {
-    //                 figCreateRect(obj);
-    //             }
-    //             else 
-    //             {
-    //                 const cur = objNodes[obj.nodeId][obj.id];
-
-    //                 if (   cur.type == objTypeString(obj.type)
-    //                     && cur.getPluginData('id')     == obj.id
-    //                     && cur.getPluginData('nodeId') == obj.nodeId)
-    //                     figUpdateRect(obj);
-
-    //                 else
-    //                     figNotify('Error: Object ID mismatch', '', 400, true);
-    //             }
-
-    //             break;
-    //         }
-    //     }
-    // }
 }
 
 
@@ -210,7 +218,7 @@ function figCreateObject(obj)
     
     switch (obj.type)
     {
-        case OBJ_RECT: genObj = figCreateRect(obj); break;
+        case RECTANGLE: genObj = figCreateRect(obj); break;
     }
 
 
@@ -273,7 +281,7 @@ function figUpdateObject(obj)
 {
     switch (obj.type)
     {
-        case OBJ_RECT:
+        case RECTANGLE:
         {
             figUpdateRect(obj);
             break;
@@ -713,19 +721,19 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false)
 }
 
 
-function objTypeString(type)
-{
-    switch (type)
-    {
-        case OBJ_RECT: return 'RECTANGLE';
-        // case 'VECTOR':
-        // case 'LINE':
-        // case 'ELLIPSE':
-        // case 'POLYGON':
-        // case 'STAR':
-        // case 'TEXT':
-        // case 'BOOLEAN_OPERATION':
-    }
+// function objTypeString(type)
+// {
+//     switch (type)
+//     {
+//         case RECTANGLE: return 'RECTANGLE';
+//         // case 'VECTOR':
+//         // case 'LINE':
+//         // case 'ELLIPSE':
+//         // case 'POLYGON':
+//         // case 'STAR':
+//         // case 'TEXT':
+//         // case 'BOOLEAN_OPERATION':
+//     }
 
-    return 'ERROR_TYPE';
-}
+//     return 'ERROR_TYPE';
+// }

@@ -111,6 +111,8 @@ extends OperatorBase
         const req = [
             this.node.type, 
             this.node.id];
+
+        if (this.node.active) req.push(ACTIVE);
                 
                 
         const input = this.node.inputs[0];

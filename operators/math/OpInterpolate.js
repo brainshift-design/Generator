@@ -41,6 +41,8 @@ extends OperatorBase
             this.node.type, 
             this.node.id];
                 
+        if (this.node.active) req.push(ACTIVE);
+
 
         const input0 = this.node.inputs[0];
         const input1 = this.node.inputs[1];

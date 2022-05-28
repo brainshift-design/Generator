@@ -9,7 +9,7 @@ function getObjectBounds(objects)
     {
         switch (obj[0])
         {
-            case OBJ_RECT:
+            case RECTANGLE:
                 boundsL = Math.min(boundsL, obj[3]);
                 boundsT = Math.min(boundsT, obj[4]);
                 boundsR = Math.max(boundsR, obj[3] + obj[5]);

@@ -4535,12 +4535,13 @@ function genRectangle(parse)
     parse.pos++; // RECTANGLE
  
     const nodeId = parse.req[parse.pos++];
+    const active = genActive(parse);
 
   
     let rect = new GRectangle();
     let indices;
     
-    if (req[parse.pos] == RECTANGLE)
+    if (parse.req[parse.pos] == RECTANGLE)
     {
         rect = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
@@ -4571,19 +4572,22 @@ function genRectangle(parse)
     genPushUpdateParamValue(parse, nodeId, 5, rect.round .toString());
 
 
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateObjects',
-        objects: [{ 
-            type:   RECTANGLE,
-            id:     nextGenObjectId++,
-            nodeId: nodeId,
-            x:      x     .value,
-            y:      y     .value,
-            width:  width .value,
-            height: height.value,
-            angle:  angle .value,
-            round:  round .value}]
-    });
+    if (active)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateObjects',
+            objects: [{ 
+                type:   RECTANGLE,
+                id:     nextGenObjectId++,
+                nodeId: nodeId,
+                x:      rect.x     .value,
+                y:      rect.y     .value,
+                width:  rect.width .value,
+                height: rect.height.value,
+                angle:  rect.angle .value,
+                round:  rect.round .value}]
+        });
+    }
 
 
     return rect;
@@ -4604,6 +4608,8 @@ function genNumber(parse)
     parse.pos++; // NUMBER
 
     const nodeId = parse.req[parse.pos++];
+    genActive(parse);
+
     const num    = genParseRequest(parse);    
     genPushUpdateParamValue(parse, nodeId, 0, num.toString());
 
@@ -4617,6 +4623,8 @@ function genNumberAdd(parse)
     parse.pos++; // NUMBER_ADD
 
     const nodeId  = parse.req[parse.pos++];
+    genActive(parse);
+
     const nValues = parse.req[parse.pos++];
     
 
@@ -4645,6 +4653,8 @@ function genNumberSubtract(parse)
     parse.pos++; // NUMBER_SUBTRACT
 
     const nodeId  = parse.req[parse.pos++];
+    genActive(parse);
+    
     const nValues = parse.req[parse.pos++];
     
 
@@ -4684,7 +4694,9 @@ function genNumberMultiply(parse)
 {
     parse.pos++; // NUMBER_MULTIPLY
 
-    const nodeId  = parse.req[parse.pos++];
+    const nodeId = parse.req[parse.pos++];
+    genActive(parse);
+
     const nValues = parse.req[parse.pos++];
     
 
@@ -4722,7 +4734,9 @@ function genNumberDivide(parse)
 {
     parse.pos++; // NUMBER_DIVIDE
 
-    const nodeId  = parse.req[parse.pos++];
+    const nodeId = parse.req[parse.pos++];
+    genActive(parse);
+
     const nValues = parse.req[parse.pos++];
     
 
@@ -4763,7 +4777,9 @@ function genNumberModulo(parse)
 {
     parse.pos++; // NUMBER_MODULO
 
-    const nodeId  = parse.req[parse.pos++];
+    const nodeId = parse.req[parse.pos++];
+    genActive(parse);
+
     const nValues = parse.req[parse.pos++];
     
 
@@ -4810,7 +4826,9 @@ function genNumberExponent(parse)
 {
     parse.pos++; // NUMBER_EXPONENT
 
-    const nodeId  = parse.req[parse.pos++];
+    const nodeId = parse.req[parse.pos++];
+    genActive(parse);
+    
     const nValues = parse.req[parse.pos++];
 
     
@@ -4850,7 +4868,9 @@ function genNumberInterpolate(parse)
 {
     parse.pos++; // NUMBER_INTERPOLATE
 
-    const nodeId  = parse.req[parse.pos++];
+    const nodeId = parse.req[parse.pos++];
+    genActive(parse);
+
     const nValues = parse.req[parse.pos++];
 
 
@@ -4907,7 +4927,14 @@ function genNumberInterpolate(parse)
 
 function genRequest(req, settings)
 {
-    const parse =         
+    if (settings.logRequests)
+        logRequest(req);
+
+
+    const updateNodeId     = req[0];
+    const updateParamIndex = req[1];
+
+    const parse = 
     {
         req:                req,
         pos:                2, 
@@ -4917,15 +4944,7 @@ function genRequest(req, settings)
         updateParamValues:  []
     };
 
-
-    if (settings.logRequests)
-        logRequest(parse.req);
-
-
-    const updateNodeId     = parse.req[0];
-    const updateParamIndex = parse.req[1];
-
-
+    
     const stackOverflowProtect = 100;
 
     while (   parse.pos < parse.req.length 
@@ -4965,7 +4984,7 @@ function genActive(parse)
 {
     let active = false;
 
-    if (parse.req[parse] == ACTIVE)
+    if (parse.req[parse.pos] == ACTIVE)
     {
         active = true;
         parse.pos++;
@@ -4982,8 +5001,6 @@ function genActive(parse)
 
 var nextGenObjectId = 0;
 
-
-const OBJ_RECT = 1;
 
 
 //const genGraph          = new GGraph();
@@ -5108,7 +5125,7 @@ function getObjectBounds(objects)
     {
         switch (obj[0])
         {
-            case OBJ_RECT:
+            case RECTANGLE:
                 boundsL = Math.min(boundsL, obj[3]);
                 boundsT = Math.min(boundsT, obj[4]);
                 boundsR = Math.max(boundsR, obj[3] + obj[5]);
@@ -19246,6 +19263,9 @@ extends OperatorBase
         const req = [
             this.node.type, 
             this.node.id];
+
+        if (this.node.active) req.push(ACTIVE);
+
                 
         const input = this.node.inputs[0];
 
@@ -19452,10 +19472,15 @@ extends OperatorBase
 
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
+
         const req = [
             this.node.type,
-            this.node.id,
-            connectedInputs.length]; // utility values like param count are stored as numbers
+            this.node.id];
+
+        if (this.node.active) req.push(ACTIVE);
+
+
+        req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
             req.push(...input.connectedOutput.genRequest()));
@@ -19792,6 +19817,8 @@ extends OperatorBase
             this.node.type, 
             this.node.id];
                 
+        if (this.node.active) req.push(ACTIVE);
+
 
         const input0 = this.node.inputs[0];
         const input1 = this.node.inputs[1];
@@ -22577,6 +22604,8 @@ extends OperatorBase
         const req = [
             this.node.type, 
             this.node.id];
+
+        if (this.node.active) req.push(ACTIVE);
                 
                 
         const input = this.node.inputs[0];

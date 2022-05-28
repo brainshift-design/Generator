@@ -89,10 +89,15 @@ extends OperatorBase
 
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
+
         const req = [
             this.node.type,
-            this.node.id,
-            connectedInputs.length]; // utility values like param count are stored as numbers
+            this.node.id];
+
+        if (this.node.active) req.push(ACTIVE);
+
+
+        req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
             req.push(...input.connectedOutput.genRequest()));

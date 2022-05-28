@@ -24,12 +24,13 @@ function genRectangle(parse)
     parse.pos++; // RECTANGLE
  
     const nodeId = parse.req[parse.pos++];
+    const active = genActive(parse);
 
   
     let rect = new GRectangle();
     let indices;
     
-    if (req[parse.pos] == RECTANGLE)
+    if (parse.req[parse.pos] == RECTANGLE)
     {
         rect = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
@@ -60,19 +61,22 @@ function genRectangle(parse)
     genPushUpdateParamValue(parse, nodeId, 5, rect.round .toString());
 
 
-    genPostMessageToUi({ 
-        cmd:    'uiUpdateObjects',
-        objects: [{ 
-            type:   RECTANGLE,
-            id:     nextGenObjectId++,
-            nodeId: nodeId,
-            x:      x     .value,
-            y:      y     .value,
-            width:  width .value,
-            height: height.value,
-            angle:  angle .value,
-            round:  round .value}]
-    });
+    if (active)
+    {
+        genPostMessageToUi({ 
+            cmd:    'uiUpdateObjects',
+            objects: [{ 
+                type:   RECTANGLE,
+                id:     nextGenObjectId++,
+                nodeId: nodeId,
+                x:      rect.x     .value,
+                y:      rect.y     .value,
+                width:  rect.width .value,
+                height: rect.height.value,
+                angle:  rect.angle .value,
+                round:  rect.round .value}]
+        });
+    }
 
 
     return rect;

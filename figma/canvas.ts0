@@ -2,8 +2,6 @@ const MAX_OBJECTS = 0x10000;
 const genObjects  = new Array(MAX_OBJECTS);
 
 
-const OBJ_RECT = 1;
-
 
 
 function figUpdateObjects(objects)
@@ -35,68 +33,7 @@ function figUpdateObjects(objects)
             genObj.remove();
             figCreateObject(obj);
         }
-
-    //     count++;
-
-    //     if (obj.nodeId != nodeId)
-    //     {
-    //         nodeId = obj.nodeId;
-
-    //         if (prevId > -1)
-    //         {
-    //             if (  !objNodes[prevId]
-    //                 || objNodes[prevId].length != count)
-    //             {
-    //                 figDeleteObjects([prevId]);
-    //                 objNodes[prevId] = new Array(count).fill(null);
-    //             }
-
-    //             count = 0;
-    //         }
-
-    //         prevId = nodeId;
-    //     }
-    // }
-
-
-    // if (   count > 0
-    //     && (  !objNodes[nodeId]
-    //         || objNodes[nodeId].length != count))
-    // {
-    //     figDeleteObjects([nodeId]);
-    //     objNodes[nodeId] = new Array(count).fill(null);
     }
-
-
-    // // fill the buffers
-
-    // for (const obj of objects)
-    // {
-    //     switch (obj.type)
-    //     {
-    //         case OBJ_RECT:
-    //         {
-    //             if (!objNodes[obj.nodeId][obj.id])
-    //             {
-    //                 figCreateRect(obj);
-    //             }
-    //             else 
-    //             {
-    //                 const cur = objNodes[obj.nodeId][obj.id];
-
-    //                 if (   cur.type == objTypeString(obj.type)
-    //                     && cur.getPluginData('id')     == obj.id
-    //                     && cur.getPluginData('nodeId') == obj.nodeId)
-    //                     figUpdateRect(obj);
-
-    //                 else
-    //                     figNotify('Error: Object ID mismatch', '', 400, true);
-    //             }
-
-    //             break;
-    //         }
-    //     }
-    // }
 }
 
 
@@ -107,7 +44,7 @@ function figCreateObject(obj)
     
     switch (obj.type)
     {
-        case OBJ_RECT: genObj = figCreateRect(obj); break;
+        case RECTANGLE: genObj = figCreateRect(obj); break;
     }
 
 
@@ -170,7 +107,7 @@ function figUpdateObject(obj)
 {
     switch (obj.type)
     {
-        case OBJ_RECT:
+        case RECTANGLE:
         {
             figUpdateRect(obj);
             break;

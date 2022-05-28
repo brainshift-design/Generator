@@ -6,8 +6,6 @@
 var nextGenObjectId = 0;
 
 
-const OBJ_RECT = 1;
-
 
 //const genGraph          = new GGraph();
 const deletedNodeArrays = []; // array of [id,nodeArray,actionId] tuples
