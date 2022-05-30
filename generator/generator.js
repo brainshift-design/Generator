@@ -23,9 +23,9 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':       genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        genRequest(msg.request, msg.settings); break;
 
-        case 'genEndFigMessage': genEndFigMessage();                    break;
+        case 'genEndFigMessage':  genEndFigMessage();                    break;
     }
 
 

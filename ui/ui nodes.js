@@ -428,6 +428,8 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
 
 function uiDeleteNodes(nodeIds)//, actionId)
 {
+    nodeIds.forEach(id => nodeFromId(id).makePassive());
+
     graph.deleteNodes(nodeIds);
 
     uiRemoveSavedNodesAndConns(nodeIds);
@@ -1078,6 +1080,13 @@ function uiUpdateObjects(objects)
         cmd:    'figUpdateObjects',
         objects: objects
     });
+}
+
+
+
+function uiSetFirstObjectId(nodeId, objId)
+{
+    nodeFromId(nodeId).firstObjectId = objId;
 }
 
 

@@ -99,12 +99,7 @@ extends OperatorBase
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
 
-        const req = [
-            this.node.type,
-            this.node.id];
-
-        if (this.node.active) req.push(ACTIVE);
-
+        const req = this.node.getRequestStart();
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         

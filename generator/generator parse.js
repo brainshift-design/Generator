@@ -33,7 +33,8 @@ function genRequest(req, settings)
         updateParamIndex:  updateParamIndex,
         updateParamValues: [],
         updateObjects:     [],
-        nextObjectId:      0
+        nextObjectId:      0,
+        firstObjectIds:    []
     };
 
     
@@ -44,8 +45,8 @@ function genRequest(req, settings)
         genParseRequest(parse);
     
 
-        genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
         genUpdateObjects(parse.updateObjects);
+        genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
 }
 
 
@@ -102,7 +103,7 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
 
 
 
-function genPushUpdateObject(parse, object)
+function genPushUpdateObject(parse, object, nodeId)
 {
     const found = parse.updateObjects.find(o => o.nodeId == nodeId);
 

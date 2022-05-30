@@ -39,6 +39,7 @@ generator.onmessage = function(e)
 
         case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
         case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);              break;
+        case 'uiSetFirstObjectId':     uiSetFirstObjectId            (msg.nodeId, msg.objId);    break;
 
         case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
 

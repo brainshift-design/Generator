@@ -108,12 +108,7 @@ extends OperatorBase
             return this.cache;
 
             
-        const req = [
-            this.node.type, 
-            this.node.id];
-
-        if (this.node.active) req.push(ACTIVE);
-                
+        const req = this.node.getRequestStart();
                 
         const input = this.node.inputs[0];
 

@@ -4572,13 +4572,13 @@ function genRectangle(parse)
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
+        rect    = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
     }
     else
         indices = [...Array(6).keys()];
 
-
+console.log(rect);
     for (const i of indices)
     {
         switch (i)
@@ -4604,6 +4604,19 @@ function genRectangle(parse)
     if (   active
         && rect.valid)
     {
+        let firstObjId = parse.req[parse.pos++];
+        if (firstObjId < 0) firstObjId = parse.nextObjectId;
+
+        let found = parse.firstObjectIds.find(f => f.nodeId == nodeId);
+        
+        if (found) parse.nextObjectId = found.firstObjectId;
+        else       parse.firstObjectIds.push({nodeId: nodeId, objId: firstObjId});
+
+        genPostMessageToUI({
+            cmd:   'uiSetFirstObjectId', 
+            nodeId: nodeId,
+            objId:  parse.nextObjectId});
+
         genPushUpdateObject(
             parse, 
             { 
@@ -4616,7 +4629,8 @@ function genRectangle(parse)
                 height: rect.height.value,
                 angle:  rect.angle .value,
                 round:  Math.max(0, rect.round.value)
-            });
+            },
+            nodeId);
     }
 
 
@@ -4633,12 +4647,23 @@ function genNumValue(parse)
 
 
 
-function genNumber(parse)
+function genNumberNodeId(parse)
 {
-    parse.pos++; // NUMBER
+    parse.pos++; // tag
 
     const nodeId = parse.req[parse.pos++];
-    genActive(parse);
+
+    const active = genActive(parse);
+    if (active) parse.pos++; // first object id
+
+    return nodeId;
+}
+
+
+
+function genNumber(parse)
+{
+    const nodeId = genNumberNodeId(parse);
 
     const num    = genParseRequest(parse);    
     genPushUpdateParamValue(parse, nodeId, 0, num.toString());
@@ -4650,11 +4675,7 @@ function genNumber(parse)
 
 function genNumberAdd(parse)
 {
-    parse.pos++; // NUMBER_ADD
-
-    const nodeId  = parse.req[parse.pos++];
-    genActive(parse);
-
+    const nodeId  = genNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
 
@@ -4680,11 +4701,7 @@ function genNumberAdd(parse)
 
 function genNumberSubtract(parse)
 {
-    parse.pos++; // NUMBER_SUBTRACT
-
-    const nodeId  = parse.req[parse.pos++];
-    genActive(parse);
-    
+    const nodeId  = genNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
 
@@ -4722,11 +4739,7 @@ function genNumberSubtract(parse)
 
 function genNumberMultiply(parse)
 {
-    parse.pos++; // NUMBER_MULTIPLY
-
-    const nodeId = parse.req[parse.pos++];
-    genActive(parse);
-
+    const nodeId  = genNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
 
@@ -4762,11 +4775,7 @@ function genNumberMultiply(parse)
 
 function genNumberDivide(parse)
 {
-    parse.pos++; // NUMBER_DIVIDE
-
-    const nodeId = parse.req[parse.pos++];
-    genActive(parse);
-
+    const nodeId  = genNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
 
@@ -4805,11 +4814,7 @@ function genNumberDivide(parse)
 
 function genNumberModulo(parse)
 {
-    parse.pos++; // NUMBER_MODULO
-
-    const nodeId = parse.req[parse.pos++];
-    genActive(parse);
-
+    const nodeId  = genNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
 
@@ -4854,11 +4859,7 @@ function genNumberModulo(parse)
 
 function genNumberExponent(parse)
 {
-    parse.pos++; // NUMBER_EXPONENT
-
-    const nodeId = parse.req[parse.pos++];
-    genActive(parse);
-    
+    const nodeId  = genNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
 
     
@@ -4896,11 +4897,7 @@ function genNumberExponent(parse)
 
 function genNumberInterpolate(parse)
 {
-    parse.pos++; // NUMBER_INTERPOLATE
-
-    const nodeId = parse.req[parse.pos++];
-    genActive(parse);
-
+    const nodeId  = genNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
 
 
@@ -4973,7 +4970,8 @@ function genRequest(req, settings)
         updateParamIndex:  updateParamIndex,
         updateParamValues: [],
         updateObjects:     [],
-        nextObjectId:      0
+        nextObjectId:      0,
+        firstObjectIds:    []
     };
 
     
@@ -4984,8 +4982,8 @@ function genRequest(req, settings)
         genParseRequest(parse);
     
 
-        genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
         genUpdateObjects(parse.updateObjects);
+        genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
 }
 
 
@@ -5042,7 +5040,7 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
 
 
 
-function genPushUpdateObject(parse, object)
+function genPushUpdateObject(parse, object, nodeId)
 {
     const found = parse.updateObjects.find(o => o.nodeId == nodeId);
 
@@ -5159,9 +5157,9 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':       genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        genRequest(msg.request, msg.settings); break;
 
-        case 'genEndFigMessage': genEndFigMessage();                    break;
+        case 'genEndFigMessage':  genEndFigMessage();                    break;
     }
 
 
@@ -17838,6 +17836,7 @@ class Operator
     scrollName = true;
 
     
+    firstObjectId = -1;
 
 
     // node UI
@@ -18041,6 +18040,9 @@ class Operator
 
     makePassive()
     {
+        if (!this._active) 
+            return;
+            
         if (graphView.activeNodes.includes(this))
             removeFromArray(graphView.activeNodes, this);
 
@@ -18168,6 +18170,22 @@ class Operator
         // create the generator string here
 
         return '';
+    }
+
+
+
+    getRequestStart()
+    {
+        const req = [
+            this.type, 
+            this.id];
+
+        if (this.active) 
+            req.push([
+                ACTIVE, 
+                this.firstObjectId]);
+
+        return req;
     }
 
 
@@ -19404,13 +19422,8 @@ extends OperatorBase
             return this.cache;
 
 
-        const req = [
-            this.node.type, 
-            this.node.id];
-
-        if (this.node.active) req.push(ACTIVE);
-
-                
+        const req = this.node.getRequestStart();
+                         
         const input = this.node.inputs[0];
 
         req.push(...(
@@ -19617,12 +19630,7 @@ extends OperatorBase
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
 
-        const req = [
-            this.node.type,
-            this.node.id];
-
-        if (this.node.active) req.push(ACTIVE);
-
+        const req = this.node.getRequestStart();
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
@@ -20019,12 +20027,7 @@ extends OperatorBase
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
 
-        const req = [
-            this.node.type,
-            this.node.id];
-
-        if (this.node.active) req.push(ACTIVE);
-
+        const req = this.node.getRequestStart();
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
@@ -20184,17 +20187,12 @@ extends OperatorBase
             return this.cache;
 
 
-        const req = [
-            this.node.type, 
-            this.node.id];
-                
-        if (this.node.active) req.push(ACTIVE);
-
-
         const input0 = this.node.inputs[0];
         const input1 = this.node.inputs[1];
-
-
+        
+        
+        const req = this.node.getRequestStart();
+    
         if (   input0.connected
             && input1.connected)   req.push(2,
                                        ...input0.connectedOutput.genRequest(),
@@ -22972,12 +22970,7 @@ extends OperatorBase
             return this.cache;
 
             
-        const req = [
-            this.node.type, 
-            this.node.id];
-
-        if (this.node.active) req.push(ACTIVE);
-                
+        const req = this.node.getRequestStart();
                 
         const input = this.node.inputs[0];
 
@@ -25181,6 +25174,7 @@ generator.onmessage = function(e)
 
         case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
         case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);              break;
+        case 'uiSetFirstObjectId':     uiSetFirstObjectId            (msg.nodeId, msg.objId);    break;
 
         case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
 
@@ -26347,6 +26341,8 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
 
 function uiDeleteNodes(nodeIds)//, actionId)
 {
+    nodeIds.forEach(id => nodeFromId(id).makePassive());
+
     graph.deleteNodes(nodeIds);
 
     uiRemoveSavedNodesAndConns(nodeIds);
@@ -26997,6 +26993,13 @@ function uiUpdateObjects(objects)
         cmd:    'figUpdateObjects',
         objects: objects
     });
+}
+
+
+
+function uiSetFirstObjectId(nodeId, objId)
+{
+    nodeFromId(nodeId).firstObjectId = objId;
 }
 
 

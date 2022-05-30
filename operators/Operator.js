@@ -58,6 +58,7 @@ class Operator
     scrollName = true;
 
     
+    firstObjectId = -1;
 
 
     // node UI
@@ -261,6 +262,9 @@ class Operator
 
     makePassive()
     {
+        if (!this._active) 
+            return;
+            
         if (graphView.activeNodes.includes(this))
             removeFromArray(graphView.activeNodes, this);
 
@@ -388,6 +392,22 @@ class Operator
         // create the generator string here
 
         return '';
+    }
+
+
+
+    getRequestStart()
+    {
+        const req = [
+            this.type, 
+            this.id];
+
+        if (this.active) 
+            req.push([
+                ACTIVE, 
+                this.firstObjectId]);
+
+        return req;
     }
 
 

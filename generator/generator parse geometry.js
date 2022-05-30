@@ -32,13 +32,13 @@ function genRectangle(parse)
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
+        rect    = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
     }
     else
         indices = [...Array(6).keys()];
 
-
+console.log(rect);
     for (const i of indices)
     {
         switch (i)
@@ -64,6 +64,19 @@ function genRectangle(parse)
     if (   active
         && rect.valid)
     {
+        let firstObjId = parse.req[parse.pos++];
+        if (firstObjId < 0) firstObjId = parse.nextObjectId;
+
+        let found = parse.firstObjectIds.find(f => f.nodeId == nodeId);
+        
+        if (found) parse.nextObjectId = found.firstObjectId;
+        else       parse.firstObjectIds.push({nodeId: nodeId, objId: firstObjId});
+
+        genPostMessageToUI({
+            cmd:   'uiSetFirstObjectId', 
+            nodeId: nodeId,
+            objId:  parse.nextObjectId});
+
         genPushUpdateObject(
             parse, 
             { 
@@ -76,7 +89,8 @@ function genRectangle(parse)
                 height: rect.height.value,
                 angle:  rect.angle .value,
                 round:  Math.max(0, rect.round.value)
-            });
+            },
+            nodeId);
     }
 
 
