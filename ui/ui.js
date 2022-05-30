@@ -24,7 +24,7 @@ function uiError(text, delay = 6000)
 
 function uiNotify(text, prefix = 'Generator: ', delay = 4000, error = false)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd:   'figNotify',
         text:   text,
         prefix: prefix,

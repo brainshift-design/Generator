@@ -158,7 +158,7 @@ extends OpColorBase
                 
                 validateIsFinding = true;
 
-                uiPostMessageToGenerator(
+                uiQueueMessageToGenerator(
                 {
                     cmd:       'genFindCorrection',
                     nodeId:     this.id,

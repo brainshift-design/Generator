@@ -454,7 +454,7 @@ function uiDeleteNodes(nodeIds)//, actionId)
 //     }
 
 
-//     // uiPostMessageToGenerator({
+//     // uiQueueMessageToGenerator({
 //     //     cmd:       'genUndeleteNodes',
 //     //     uiActionId: actionId
 //     // });
@@ -464,7 +464,7 @@ function uiDeleteNodes(nodeIds)//, actionId)
 
 function uiDeleteObjects(nodeIds)
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:    'figDeleteObjects',
         nodeIds: nodeIds
     });
@@ -589,7 +589,7 @@ function uiMakeNodeActive(node)
 //         if (!graphView.activeNodes.includes(node))
 //             graphView.activeNodes.push(node);
 
-//         uiPostMessageToFigma({
+//         uiQueueMessageToFigma({
 //             cmd:   'figSaveActiveNode',
 //             nodeId: node.id
 //         });
@@ -1074,7 +1074,7 @@ function uiUpdateParamValues(values)
 
 function uiUpdateObjects(objects)
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:    'figUpdateObjects',
         objects: objects
     });
@@ -1089,7 +1089,7 @@ function uiSaveNodes(nodeIds)
     nodeIds.forEach(id => 
         nodeJson.push(nodeFromId(id).toJson()));
 
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:     'figSaveNodes',
         nodeIds:  nodeIds,
         nodeJson: nodeJson
@@ -1100,7 +1100,7 @@ function uiSaveNodes(nodeIds)
 
 function uiRemoveSavedNodesAndConns(nodeIds)
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:    'figRemoveSavedNodesAndConns',
         nodeIds: nodeIds
     });
@@ -1110,7 +1110,7 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 function uiRemoveConnsToNodes(nodeIds)
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd: 'figRemoveConnsToNodes',
         nodeIds: nodeIds
     });
@@ -1120,7 +1120,7 @@ function uiRemoveConnsToNodes(nodeIds)
 
 function uiRemoveAllSavedNodesAndConns()
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd: 'figRemoveAllSavedNodesAndConns'
     });
 }
@@ -1129,7 +1129,7 @@ function uiRemoveAllSavedNodesAndConns()
 
 function uiLogAllSavedNodesAndConns()
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:     'figLogAllSavedNodesAndConns',
         settings: settings
     });
@@ -1139,7 +1139,7 @@ function uiLogAllSavedNodesAndConns()
 
 function uiLogAllSavedNodes()
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:     'figLogAllSavedNodes',
         settings: settings
     });
@@ -1149,7 +1149,7 @@ function uiLogAllSavedNodes()
 
 function uiLogAllSavedConns()
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:     'figLogAllSavedConns',
         settings: settings
     });
@@ -1159,7 +1159,7 @@ function uiLogAllSavedConns()
 
 function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
         name: outputNodeId  + ' '
             + outputIndex + ' '
@@ -1173,7 +1173,7 @@ function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, co
 
 function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',
         name: outputNodeId + ' '
             + outputIndex  + ' '
@@ -1186,7 +1186,7 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
 
 function uiRemoveSavedConnectionsToNodeId(nodeId)
 {
-    uiPostMessageToFigma({
+    uiQueueMessageToFigma({
         cmd:   'figRemoveSavedConnectionsToNode',
         nodeId: nodeId
     });

@@ -1,6 +1,6 @@
 function uiGetLocalData(key, value)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd: 'figGetLocalData', 
         key:  key
     });
@@ -10,7 +10,7 @@ function uiGetLocalData(key, value)
 
 function uiSetLocalData(key, value)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd:  'figSetLocalData',
         key:   key,
         value: value
@@ -21,7 +21,7 @@ function uiSetLocalData(key, value)
 
 function uiClearLocalData(key)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd:  'figSetLocalData',
         key:   key,
         value: ''
@@ -32,7 +32,7 @@ function uiClearLocalData(key)
 
 function uiGetPageData(key)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd: 'figGetPageData', 
         key:  key
     });
@@ -42,7 +42,7 @@ function uiGetPageData(key)
 
 function uiSetPageData(key, value)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd:  'figSetPageData', 
         key:   key,
         value: value
@@ -53,7 +53,7 @@ function uiSetPageData(key, value)
 
 function uiClearPageData(key)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd:  'figSetPageData', 
         key:   key,
         value: ''

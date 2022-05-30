@@ -24,7 +24,7 @@ function genFindCorrection(nodeId,
 //                                         closest1, closest2, closest3,
 //                                         locked1,  locked2,  locked3);
 
-    genPostMessageToUi(
+    genPostMessageToUI(
     {
         cmd:         'uiEndFindCorrection',
         nodeId:       nodeId,
@@ -211,7 +211,7 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
-        genPostMessageToUi(
+        genPostMessageToUI(
         {
             cmd:     'uiUpdateFindCorrection',
             nodeId:   nodeId,

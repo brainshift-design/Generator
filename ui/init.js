@@ -41,7 +41,7 @@ clearConsole();
 
 
 
-uiPostMessageToFigma({cmd: 'figStartGenerator'});
+uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function uiEndStartGenerator(msg)
 {
@@ -49,7 +49,7 @@ function uiEndStartGenerator(msg)
     productKey  = msg.productKey;
 
     uiGetLocalData('graphView');
-    uiPostMessageToFigma({cmd: 'figLoadNodesAndConns'});
+    uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
     //uiEndResizeWindow();
 

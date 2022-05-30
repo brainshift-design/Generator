@@ -26,14 +26,14 @@ function genRequest(req, settings)
 
     const parse = 
     {
-        req:                req,
-        pos:                2, 
-        so:                 0,
-        updateNodeId:       updateNodeId, 
-        updateParamIndex:   updateParamIndex,
-        updateParamValues:  [],
-        updateObjects:      [],
-        nextObjectId:       0
+        req:               req,
+        pos:               2, 
+        so:                0,
+        updateNodeId:      updateNodeId, 
+        updateParamIndex:  updateParamIndex,
+        updateParamValues: [],
+        updateObjects:     [],
+        nextObjectId:      0
     };
 
     
@@ -44,8 +44,8 @@ function genRequest(req, settings)
         genParseRequest(parse);
     
 
-    genUpdateObjects(parse.updateObjects);
-    genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
+        genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
+        genUpdateObjects(parse.updateObjects);
 }
 
 
@@ -132,7 +132,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
         if (++c == chunkSize)
         {
-            genPostMessageToUi({ 
+            genPostMessageToUI({ 
                 cmd:    'uiUpdateParamValues',
                 values: [updateNodeId, updateParamIndex, ...chunk]
             });
@@ -146,7 +146,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
     if (chunk.length > 0)
     {
-        genPostMessageToUi({ 
+        genPostMessageToUI({ 
             cmd:    'uiUpdateParamValues',
             values: [updateNodeId, updateParamIndex, ...chunk]
         });
@@ -172,8 +172,8 @@ function genUpdateObjects(updateObjects)
 
         if (++c == chunkSize)
         {
-            genPostMessageToUi({ 
-                cmd:     'uiUpdateObjects',
+            genQueueMessageToFigma({ 
+                cmd:     'figUpdateObjects',
                 objects: [...chunk]
             });
 
@@ -186,8 +186,8 @@ function genUpdateObjects(updateObjects)
 
     if (chunk.length > 0)
     {
-        genPostMessageToUi({ 
-            cmd:     'uiUpdateObjects',
+        genQueueMessageToFigma({ 
+            cmd:     'figUpdateObjects',
             objects: [...chunk]
         });
     }

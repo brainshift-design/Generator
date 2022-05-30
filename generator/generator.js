@@ -1,3 +1,9 @@
+var figMessages = []; // messages from Generator to Figma (through UI)
+var figMessagePosted = false;
+
+
+
+
 // --> from UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,31 +23,70 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest': genRequest(msg.request, msg.settings); break;
-        // case 'genCreateNode':    genCreateNode   (e.data.nodeType,   e.data.nodeId, e.data.nodeId); break; 
-        // case 'genDeleteNodes':   genDeleteNodes  (e.data.nodeIds,  e.data.uiActionId);            break;             
-        // case 'genUndeleteNodes': genUndeleteNodes(e.data.uiActionId);                             break;             
-        // case 'genSetNodeId':     genSetNodeId    (e.data.nodeId,   e.data.newId);                 break; 
-        // case 'genSetActive':     genSetActive    (e.data.nodeId,   e.data.active);                break;  // only state, no regeneration
-        // case 'genConnect':       genConnect      (e.data.outputId, e.data.inputs);                break; 
-        // case 'genDisconnect':    genDisconnect   (e.data.input);                                  break;
-        // case 'genSetParam':      genSetParam     (e.data.nodeId,   e.data.param, e.data.value);   break;
-        // case 'genInvalidate':    genInvalidate   (e.data.nodeId);                                 break;
-        // case 'genUpdateObjects': genUpdateObjects(e.data.nodeIds);                                break;
+        case 'genRequest':       genRequest(msg.request, msg.settings); break;
+
+        case 'genEndFigMessage': genEndFigMessage();                    break;
     }
 
-    genPostMessageToUi({cmd: 'uiEndGenMessage'});
+
+    postMessage(JSON.stringify({cmd: 'uiEndGenMessage'}));
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-function genPostMessageToUi(msg)
+// <-- to UI
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function genPostMessageToUI(msg)
 {
-    postMessage(JSON.stringify(msg)); // this call is too ambiguous to understand when reading code
+    postMessage(JSON.stringify(msg));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// <-- to Figma
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function genQueueMessageToFigma(msg)
+{
+    figMessages.push(msg);
+    genPostNextMessageToFigma();
 }
 
 
+
+function genPostNextMessageToFigma()
+{
+    if (    figMessages.length > 0
+        && !figMessagePosted)
+    {
+        let msg = figMessages.shift();
+
+        // if (msg.cmd == 'uiUpdateObjects')
+        // {
+        //     // move along the queue since only the last message is important
+        //     while (uiMessages.length > 0
+        //         && uiMessages[0].cmd        == msg.cmd
+        //         && uiMessages[0].request[0] == msg.request[0]
+        //         && uiMessages[0].request[1] == msg.request[1])
+        //         msg = uiMessages.shift();
+        // }
+
+        genPostMessageToUI({ cmd: 'uiForwardToFigma', msg: msg });
+        figMessagePosted = true;
+    }
+}
+
+
+
+function genEndFigMessage()
+{
+    figMessagePosted = false;
+    genPostNextMessageToFigma();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

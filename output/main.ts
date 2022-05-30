@@ -118,6 +118,7 @@ const NUMBER_MULTIPLY    = 'MUL';   // count N...
 const NUMBER_DIVIDE      = 'DIV';   // count N...
 const NUMBER_MODULO      = 'MOD';   // count N...
 const NUMBER_EXPONENT    = 'EXP';   // count N...
+const NUMBER_MATH        = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
 
@@ -442,8 +443,8 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figUpdateObjects':                figUpdateObjects               (msg.objects);                                break;
-        case 'figDeleteObjects':                figDeleteObjects               (msg.nodeIds);                                break; 
+        case 'figUpdateObjects':                figUpdateObjects(msg.objects); figPostMessageToGenerator({cmd: 'genEndFigMessage'}); return;
+        case 'figDeleteObjects':                figDeleteObjects(msg.nodeIds); figPostMessageToGenerator({cmd: 'genEndFigMessage'}); return; 
     }
 
     

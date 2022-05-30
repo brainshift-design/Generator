@@ -692,7 +692,7 @@ function pushUpdateFromParam(nodes, param)
                 request.push(...o.genRequest()))); 
 
 
-    uiPostMessageToGenerator({
+    uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,
         settings: settings

@@ -7,17 +7,17 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiEndStartGenerator':  uiEndStartGenerator(msg);                                          break;
-        case 'uiLoadNodesAndConns':  uiLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
-        
-        case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                                         break;
-        case 'uiGetPageDataReturn':  uiGetPageDataReturn(msg);                                          break;
-              
-        case 'uiEndResizeWindow':    uiEndResizeWindow();                                               break;
-              
-        case 'uiForwardToGen':       uiPostMessageToGenerator(msg.msg);                                 break;
-              
-        case 'uiEndFigMessage':      uiEndFigMessage();                                                 break;
+        case 'uiEndStartGenerator':   uiEndStartGenerator(msg);                                          break;
+        case 'uiLoadNodesAndConns':   uiLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
+         
+        case 'uiGetLocalDataReturn':  uiGetLocalDataReturn(msg);                                         break;
+        case 'uiGetPageDataReturn':   uiGetPageDataReturn(msg);                                          break;
+               
+        case 'uiEndResizeWindow':     uiEndResizeWindow();                                               break;
+               
+        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                 break;
+               
+        case 'uiEndFigMessage':       uiEndFigMessage();                                                 break;
     }
 }    
   
@@ -37,15 +37,12 @@ generator.onmessage = function(e)
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
         case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
 
-        // case 'uiMakeActive':        uiMakeActive    (msg.nodeIds);                            break;
-        // case 'uiShowParamValue':    uiShowParamValue(msg.nodeId, msg.param, msg.value); break;
-        // case 'uiUpdateNodes':       uiUpdateNodes   (msg.nodeIds);                            break;
-        // case 'uiUpdateGraph':       uiUpdateGraph   ();                                          break;
+        case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
+        case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);              break;
 
-        case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);                  break;
-        case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);                 break;
+        case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
 
-        case 'uiEndGenMessage':        uiEndGenMessage();                                           break;
+        case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
     }
 };
 
@@ -58,6 +55,13 @@ generator.onmessage = function(e)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function uiPostMessageToFigma(msg)
+{
+    parent.postMessage({pluginMessage: msg}, '*');
+}
+
+
+
+function uiQueueMessageToFigma(msg)
 {
     figMessages.push(msg);
     uiPostNextMessageToFigma();
@@ -81,7 +85,7 @@ function uiPostNextMessageToFigma()
                 msg = figMessages.shift();
         }
 
-        parent.postMessage({pluginMessage: msg}, '*');    
+        uiPostMessageToFigma(msg);    
         figMessagePosted = true;
     }
 }
@@ -94,6 +98,13 @@ function uiEndFigMessage()
     uiPostNextMessageToFigma();
 }
 
+
+
+function uiEndFigObjectMessage()
+{
+    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -102,6 +113,13 @@ function uiEndFigMessage()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 function uiPostMessageToGenerator(msg)
+{
+    generator.postMessage(JSON.stringify(msg));
+}
+
+
+
+function uiQueueMessageToGenerator(msg)
 {
     genMessages.push(msg);
     uiPostNextMessageToGenerator();
@@ -126,7 +144,7 @@ function uiPostNextMessageToGenerator()
                 msg = genMessages.shift();
         }
 
-        generator.postMessage(JSON.stringify(msg));
+        uiPostMessageToGenerator(msg);
         genMessagePosted = true;
     }
 }

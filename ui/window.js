@@ -34,7 +34,7 @@ function checkResize(x, y)
 
 function uiResizeWindow(width, height)
 {
-    uiPostMessageToFigma({ 
+    uiQueueMessageToFigma({ 
         cmd:   'figResizeWindow', 
         width:  width,
         height: height

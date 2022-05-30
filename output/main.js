@@ -69,6 +69,7 @@ const NUMBER_MULTIPLY = 'MUL'; // count N...
 const NUMBER_DIVIDE = 'DIV'; // count N...
 const NUMBER_MODULO = 'MOD'; // count N...
 const NUMBER_EXPONENT = 'EXP'; // count N...
+const NUMBER_MATH = 'MATH'; // op count N...
 const NUMBER_INTERPOLATE = 'LERP'; // count N... N:amount
 const COLOR_VALUE = 'C'; // N:space N:1 N:2 N:3 (c)
 const COLOR = 'COL'; // C | c
@@ -312,10 +313,12 @@ figma.ui.onmessage = msg => {
             break;
         case 'figUpdateObjects':
             figUpdateObjects(msg.objects);
-            break;
+            figPostMessageToGenerator({ cmd: 'genEndFigMessage' });
+            return;
         case 'figDeleteObjects':
             figDeleteObjects(msg.nodeIds);
-            break;
+            figPostMessageToGenerator({ cmd: 'genEndFigMessage' });
+            return;
     }
     figPostMessageToUi({ cmd: 'uiEndFigMessage' });
 };
