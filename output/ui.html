@@ -4615,7 +4615,7 @@ function genRectangle(parse)
                 width:  rect.width .value,
                 height: rect.height.value,
                 angle:  rect.angle .value,
-                round:  rect.round .value
+                round:  Math.max(0, rect.round.value)
             });
     }
 
