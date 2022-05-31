@@ -19,12 +19,12 @@
 */
 
 
-function genRectangle(parse)
+function genParseRectangle(parse)
 {
     parse.pos++; // RECTANGLE
  
     const nodeId = parse.req[parse.pos++];
-    const active = genActive(parse);
+    const active = genParseActive(parse);
 
   
     let rect = new GRectangle();
@@ -38,7 +38,7 @@ function genRectangle(parse)
     else
         indices = [...Array(6).keys()];
 
-console.log(rect);
+
     for (const i of indices)
     {
         switch (i)
@@ -64,33 +64,20 @@ console.log(rect);
     if (   active
         && rect.valid)
     {
-        let firstObjId = parse.req[parse.pos++];
-        if (firstObjId < 0) firstObjId = parse.nextObjectId;
-
-        let found = parse.firstObjectIds.find(f => f.nodeId == nodeId);
-        
-        if (found) parse.nextObjectId = found.firstObjectId;
-        else       parse.firstObjectIds.push({nodeId: nodeId, objId: firstObjId});
-
-        genPostMessageToUI({
-            cmd:   'uiSetFirstObjectId', 
-            nodeId: nodeId,
-            objId:  parse.nextObjectId});
-
         genPushUpdateObject(
-            parse, 
+            parse,
+            nodeId,
             { 
+                nodeId: nodeId,          
                 type:   RECTANGLE,
-                id:     parse.nextObjectId++,
-                nodeId: nodeId,
+                id:     0,
                 x:      rect.x     .value,
                 y:      rect.y     .value,
                 width:  rect.width .value,
                 height: rect.height.value,
                 angle:  rect.angle .value,
                 round:  Math.max(0, rect.round.value)
-            },
-            nodeId);
+            });
     }
 
 

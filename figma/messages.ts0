@@ -30,8 +30,15 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figUpdateObjects':                figUpdateObjects(msg.objects); figPostMessageToGenerator({cmd: 'genEndFigMessage'}); return;
-        case 'figDeleteObjects':                figDeleteObjects(msg.nodeIds); figPostMessageToGenerator({cmd: 'genEndFigMessage'}); return; 
+        case 'figUpdateObjects':                
+            figUpdateObjects(/*msg.updateId,*/ msg.objects); 
+            figEndGeneratorMessage(); 
+            return;
+
+        case 'figDeleteObjects':                
+            figDeleteObjectsFromNodeIds(msg.nodeIds);                          
+            figEndGeneratorMessage(); 
+            return; 
     }
 
     
@@ -43,14 +50,20 @@ figma.ui.onmessage = msg =>
 
 
 // to UI -->
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 function figPostMessageToUi(msg)
 {
     figma.ui.postMessage(msg);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 // to Generator -->
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 function figPostMessageToGenerator(msg)
 {
     figPostMessageToUi({
@@ -60,5 +73,10 @@ function figPostMessageToGenerator(msg)
 }
 
 
+
+function figEndGeneratorMessage()
+{
+    figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

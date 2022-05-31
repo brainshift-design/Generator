@@ -106,57 +106,69 @@ TEXT        T
 VECTOR      V
 
 */
-const MAX_OBJECTS = 0x10000;
-const genObjects = new Array(MAX_OBJECTS);
-function figUpdateObjects(objects) {
-    // // prepare the buffers
-    // let nodeId = -1;
-    // let prevId = -1;
-    // let count  =  0;
-    // here the ID acts as the index into the object table
-    for (const obj of objects) {
-        const genObj = genObjects[obj.id];
-        if (!genObj
-            || genObj.removed) // no existing object, create new object
-         {
-            figCreateObject(obj);
+//const MAX_OBJECTS = 0x10000;
+const figObjectArrays = []; // {nodeId, [objects]}
+function figUpdateObjects(/*updateId,*/ genObjects) {
+    let curNodeId = '';
+    let figObjects = null;
+    for (const genObj of genObjects) {
+        if (genObj.nodeId != curNodeId) {
+            curNodeId = genObj.nodeId;
+            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
+            if (!figObjects)
+                figObjectArrays.push(figObjects = { nodeId: genObj.nodeId, objects: [] });
         }
-        else if (genObj.getPluginData('type') == obj.type.toString()) // update existing object
-         {
-            figUpdateObject(obj);
-        }
+        const figObj = figObjects[genObj.id];
+        if (!figObj
+            || figObj.removed) // no existing object, create new object
+            figCreateObject(figObjects, genObj);
+        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+            figUpdateObject(figObj, genObj);
         else // delete existing object, create new object
          {
-            genObj.remove();
-            figCreateObject(obj);
+            figObj.remove();
+            figCreateObject(figObjects, genObj);
         }
     }
 }
-function figCreateObject(obj) {
-    let genObj;
-    switch (obj.type) {
+// function figUpdateObjectArrays(genNodes)
+// {
+//     for (let i = 0; i < genNodes.length; i++)
+//     {
+//         let index = figObjectArrays.findIndex(a => a.nodeId = genNodes[i].nodeId);
+//         if (index < 0) 
+//         {
+//             figObjectArrays.push({nodeId: genNodes[i].nodeId, objects: []});
+//             index = figObjectArrays.length-1;
+//         }
+//     }
+// }
+function figCreateObject(objects, genObj) {
+    let figObj;
+    switch (genObj.type) {
         case RECTANGLE:
-            genObj = figCreateRect(obj);
+            figObj = figCreateRect(genObj);
             break;
     }
-    genObj.name = obj.nodeId.toString() + ':' + obj.id.toString();
-    genObj.setPluginData('id', obj.id.toString());
-    genObj.setPluginData('type', obj.type.toString());
-    genObj.setPluginData('nodeId', obj.nodeId.toString());
+    figObj.name = 'G   ' + genObj.nodeId.toString() + ':' + genObj.id.toString();
+    figObj.setPluginData('id', genObj.id.toString());
+    figObj.setPluginData('type', genObj.type.toString());
+    figObj.setPluginData('nodeId', genObj.nodeId.toString());
     //genObj.setPluginData('name',   rect.name);
-    genObjects[obj.id] = genObj;
-    figma.currentPage.appendChild(genObj);
+    objects[genObj.id] = figObj;
+    figma.currentPage.appendChild(figObj);
 }
-function figCreateFrame() {
-    let frame = figma.createFrame();
-    frame.name = 'Generator';
-    let tx = { type: 'SOLID', color: { r: 0, g: 0, b: 0 }, opacity: 0 };
-    frame.fills = [tx];
-    //frame.resize(
-    //    (nCols*rectSize + (nCols-1)*hgap),
-    //    (nRows*rectSize + (nRows-1)*hgap));
-    return frame;
-}
+// function figCreateFrame()
+// {
+//     let frame = figma.createFrame();
+//     frame.name = 'Generator';
+//     let tx : Paint = {type: 'SOLID', color: {r: 0, g: 0, b: 0}, opacity: 0};
+//     frame.fills = [tx];
+//     //frame.resize(
+//     //    (nCols*rectSize + (nCols-1)*hgap),
+//     //    (nRows*rectSize + (nRows-1)*hgap));
+//     return frame;
+// }
 function figCreateRect(obj) {
     //console.log(obj);
     const rect = figma.createRectangle();
@@ -168,30 +180,29 @@ function figCreateRect(obj) {
     rect.cornerRadius = obj.round;
     return rect;
 }
-function figUpdateObject(obj) {
-    switch (obj.type) {
+function figUpdateObject(figObj, genObj) {
+    switch (genObj.type) {
         case RECTANGLE:
             {
-                figUpdateRect(obj);
+                figUpdateRect(figObj, genObj);
                 break;
             }
     }
 }
-function figUpdateRect(obj) {
-    const rect = genObjects[obj.id];
-    rect.x = obj.x;
-    rect.y = obj.y;
-    if (rect.width != obj.width
-        || rect.height != obj.height) {
-        rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+function figUpdateRect(figRect, genRect) {
+    figRect.x = genRect.x;
+    figRect.y = genRect.y;
+    if (figRect.width != genRect.width
+        || figRect.height != genRect.height) {
+        figRect.resize(Math.max(0.01, genRect.width), Math.max(0.01, genRect.height));
     }
-    rect.rotation = obj.angle;
-    rect.cornerRadius = obj.round;
+    figRect.rotation = genRect.angle;
+    figRect.cornerRadius = genRect.round;
 }
-function figDeleteObjects(nodeIds) {
-    const objects = figma.currentPage.findAll(o => nodeIds.includes(o.getPluginData('nodeId')));
-    for (const obj of objects)
-        obj.remove();
+function figDeleteObjectsFromNodeIds(nodeIds) {
+    figma.currentPage
+        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+        .forEach(o => o.remove());
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
@@ -312,27 +323,33 @@ figma.ui.onmessage = msg => {
             figRemoveSavedConnectionsToNode(msg.nodeId);
             break;
         case 'figUpdateObjects':
-            figUpdateObjects(msg.objects);
-            figPostMessageToGenerator({ cmd: 'genEndFigMessage' });
+            figUpdateObjects(/*msg.updateId,*/ msg.objects);
+            figEndGeneratorMessage();
             return;
         case 'figDeleteObjects':
-            figDeleteObjects(msg.nodeIds);
-            figPostMessageToGenerator({ cmd: 'genEndFigMessage' });
+            figDeleteObjectsFromNodeIds(msg.nodeIds);
+            figEndGeneratorMessage();
             return;
     }
     figPostMessageToUi({ cmd: 'uiEndFigMessage' });
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to UI -->
+///////////////////////////////////////////////////////////////////////////////////////////////////
 function figPostMessageToUi(msg) {
     figma.ui.postMessage(msg);
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////
 // to Generator -->
+///////////////////////////////////////////////////////////////////////////////////////////////////
 function figPostMessageToGenerator(msg) {
     figPostMessageToUi({
         cmd: 'uiForwardToGen',
         msg: msg
     });
+}
+function figEndGeneratorMessage() {
+    figPostMessageToGenerator({ cmd: 'genEndFigMessage' });
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figLoadLocal(key) {

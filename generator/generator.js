@@ -1,92 +1,136 @@
-var figMessages = []; // messages from Generator to Figma (through UI)
-var figMessagePosted = false;
-
-
-
-
-// --> from UI
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-onmessage = function(e)
+function genRequest(req, settings)
 {
-    const msg = JSON.parse(e.data);
+    if (settings.logRequests)
+        logRequest(req);
 
-    //console.log('msg.cmd', msg.cmd);
-    switch (msg.cmd)
+
+    const updateNodeId     = req[0];
+    const updateParamIndex = req[1];
+
+    const parse = 
     {
-        case 'genFindCorrection':   
-            genFindCorrection(
-                msg.nodeId, 
-                msg.inputColor, 
-                msg.param1,  msg.param2,  msg.param3,
-                msg.locked1, msg.locked2, msg.locked3);  
-        
-            break;
-        
-        case 'genRequest':        genRequest(msg.request, msg.settings); break;
+        req:               req,
+        pos:               2, 
+        so:                0,
+        updateNodeId:      updateNodeId, 
+        updateParamIndex:  updateParamIndex,
+        updateParamValues: [],
+        updateObjects:     []
+    };
 
-        case 'genEndFigMessage':  genEndFigMessage();                    break;
+    
+    const stackOverflowProtect = 100;
+
+    while (   parse.pos < parse.req.length 
+           && parse.so  < stackOverflowProtect)
+        genParseRequest(parse);
+    
+
+    genUpdateObjects(parse.updateObjects);
+    genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
+}
+
+
+
+function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
+{
+    const found = parse.updateParamValues.find(v => 
+           v[0] == nodeId 
+        && v[1] == paramIndex);
+
+    if (!found) parse.updateParamValues.push([nodeId, paramIndex, value]);
+    else        console.assert(found[2] == value);
+}
+
+
+
+function genPushUpdateObject(parse, nodeId, object)
+{
+    const found = parse.updateObjects.find(o => o.nodeId == nodeId);
+
+    if (!found) parse.updateObjects.push(object);
+    else        console.assert(found[2] == value);
+}
+
+
+
+function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
+{
+    // send value updates in chunks
+
+    const chunkSize = 20;
+    
+    let i = 0, 
+        c = 0;
+    
+    let chunk = [];
+    
+    while (i < updateValues.length)
+    {
+        chunk.push(
+            updateValues[i][0],  // node id
+            updateValues[i][1],  // param index
+            updateValues[i][2]); // value
+
+        if (++c == chunkSize)
+        {
+            genPostMessageToUI({ 
+                cmd:    'uiUpdateParamValues',
+                values: [updateNodeId, updateParamIndex, ...chunk]
+            });
+
+            chunk = [];
+            c = 0;
+        }
+
+        i++;
     }
 
-
-    postMessage(JSON.stringify({cmd: 'uiEndGenMessage'}));
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// <-- to UI
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function genPostMessageToUI(msg)
-{
-    postMessage(JSON.stringify(msg));
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// <-- to Figma
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function genQueueMessageToFigma(msg)
-{
-    figMessages.push(msg);
-    genPostNextMessageToFigma();
-}
-
-
-
-function genPostNextMessageToFigma()
-{
-    if (    figMessages.length > 0
-        && !figMessagePosted)
+    if (chunk.length > 0)
     {
-        let msg = figMessages.shift();
-
-        // if (msg.cmd == 'uiUpdateObjects')
-        // {
-        //     // move along the queue since only the last message is important
-        //     while (uiMessages.length > 0
-        //         && uiMessages[0].cmd        == msg.cmd
-        //         && uiMessages[0].request[0] == msg.request[0]
-        //         && uiMessages[0].request[1] == msg.request[1])
-        //         msg = uiMessages.shift();
-        // }
-
-        genPostMessageToUI({ cmd: 'uiForwardToFigma', msg: msg });
-        figMessagePosted = true;
+        genPostMessageToUI({ 
+            cmd:    'uiUpdateParamValues',
+            values: [updateNodeId, updateParamIndex, ...chunk]
+        });
     }
 }
 
 
 
-function genEndFigMessage()
+function genUpdateObjects(updateObjects)
 {
-    figMessagePosted = false;
-    genPostNextMessageToFigma();
-}
+    // send objects in chunks
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+    const chunkSize = 1000;
+    
+    let i = 0, 
+        c = 0;
+    
+    let chunk = [];
+    
+    while (i < updateObjects.length)
+    {
+        chunk.push(updateObjects[i]);
+
+        if (++c == chunkSize)
+        {
+            genQueueMessageToFigma({ 
+                cmd:     'figUpdateObjects',
+                objects: [...chunk]
+            });
+
+            chunk = [];
+            c     = 0;
+        }
+
+        i++;
+    }
+
+    if (chunk.length > 0)
+    {
+        genQueueMessageToFigma({ 
+            cmd:     'figUpdateObjects',
+            objects: [...chunk]
+        });
+    }
+}

@@ -58,9 +58,6 @@ class Operator
     scrollName = true;
 
     
-    firstObjectId = -1;
-
-
     // node UI
 
     div;
@@ -403,9 +400,7 @@ class Operator
             this.id];
 
         if (this.active) 
-            req.push([
-                ACTIVE, 
-                this.firstObjectId]);
+            req.push(ACTIVE);
 
         return req;
     }

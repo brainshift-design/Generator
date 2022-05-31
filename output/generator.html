@@ -2965,603 +2965,8 @@ function reorderCorrection(closestOrder,
 
 
 
-/*
-    RECT 
-    id
-    N 0 
-    N 0 
-    N 100 
-    N 100
-    N 0
-    N 0
-
-    RECT 
-    id
-    RECT 
-    ...
-    0,3,4  // overriding param index list
-    N 0
-    N 100
-    N 0
-*/
-
-
-function genRectangle(parse)
-{
-    parse.pos++; // RECTANGLE
- 
-    const nodeId = parse.req[parse.pos++];
-    const active = genActive(parse);
-
-  
-    let rect = new GRectangle();
-    let indices;
-    
-    if (parse.req[parse.pos] == RECTANGLE)
-    {
-        rect    = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(6).keys()];
-
-console.log(rect);
-    for (const i of indices)
-    {
-        switch (i)
-        {
-        case 0: rect.x      = genParseRequest(parse); break;
-        case 1: rect.y      = genParseRequest(parse); break;
-        case 2: rect.width  = genParseRequest(parse); break;
-        case 3: rect.height = genParseRequest(parse); break;
-        case 4: rect.angle  = genParseRequest(parse); break;
-        case 5: rect.round  = genParseRequest(parse); break;
-        }
-    }
-
-
-    genPushUpdateParamValue(parse, nodeId, 0, rect.x     .toString());
-    genPushUpdateParamValue(parse, nodeId, 1, rect.y     .toString());
-    genPushUpdateParamValue(parse, nodeId, 2, rect.width .toString());
-    genPushUpdateParamValue(parse, nodeId, 3, rect.height.toString());
-    genPushUpdateParamValue(parse, nodeId, 4, rect.angle .toString());
-    genPushUpdateParamValue(parse, nodeId, 5, rect.round .toString());
-
-
-    if (   active
-        && rect.valid)
-    {
-        let firstObjId = parse.req[parse.pos++];
-        if (firstObjId < 0) firstObjId = parse.nextObjectId;
-
-        let found = parse.firstObjectIds.find(f => f.nodeId == nodeId);
-        
-        if (found) parse.nextObjectId = found.firstObjectId;
-        else       parse.firstObjectIds.push({nodeId: nodeId, objId: firstObjId});
-
-        genPostMessageToUI({
-            cmd:   'uiSetFirstObjectId', 
-            nodeId: nodeId,
-            objId:  parse.nextObjectId});
-
-        genPushUpdateObject(
-            parse, 
-            { 
-                type:   RECTANGLE,
-                id:     parse.nextObjectId++,
-                nodeId: nodeId,
-                x:      rect.x     .value,
-                y:      rect.y     .value,
-                width:  rect.width .value,
-                height: rect.height.value,
-                angle:  rect.angle .value,
-                round:  Math.max(0, rect.round.value)
-            },
-            nodeId);
-    }
-
-
-    return rect;
-}
-
-
-function genNumValue(parse)
-{
-    parse.pos++; // N
-
-    return parseGnum(parse.req[parse.pos++]);
-}
-
-
-
-function genNumberNodeId(parse)
-{
-    parse.pos++; // tag
-
-    const nodeId = parse.req[parse.pos++];
-
-    const active = genActive(parse);
-    if (active) parse.pos++; // first object id
-
-    return nodeId;
-}
-
-
-
-function genNumber(parse)
-{
-    const nodeId = genNumberNodeId(parse);
-
-    const num    = genParseRequest(parse);    
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-
-function genNumberAdd(parse)
-{
-    const nodeId  = genNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-    
-
-    let result = 0;
-    let maxDec = 0;
-
-    for (let i = 0; i < nValues; i++)
-    {
-        const num = genParseRequest(parse);
-
-        result += num.value;
-        maxDec = Math.max(maxDec, num.decimals);
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-
-function genNumberSubtract(parse)
-{
-    const nodeId  = genNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParseRequest(parse);
-
-            result -= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-
-function genNumberMultiply(parse)
-{
-    const nodeId  = genNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        result = 1;
-        maxDec = 0;
-
-        for (let i = 0; i < nValues; i++)
-        {
-            const num = genParseRequest(parse);
-
-            result *= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-
-function genNumberDivide(parse)
-{
-    const nodeId  = genNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParseRequest(parse);
-            if (num.value == 0) { num.value = Number.NaN; break; }
-            
-            result /= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-
-function genNumberModulo(parse)
-{
-    const nodeId  = genNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParseRequest(parse);
-
-            if (num.value == 0) 
-            { 
-                result = Number.NaN; 
-                maxDec = 0;
-                break; 
-            }
-
-            result %= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-
-function genNumberExponent(parse)
-{
-    const nodeId  = genNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-
-    
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParseRequest(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParseRequest(parse);
-
-            result = Math.pow(result, num.value);
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-
-function genNumberInterpolate(parse)
-{
-    const nodeId  = genNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-
-
-    let result, maxDec;
-
-    if (nValues == 2)
-    {
-        const num0 = genParseRequest(parse);
-        const num1 = genParseRequest(parse);
-        const amt  = genParseRequest(parse);
-
-        result = num0.value + amt.value * (num1.value - num0.value) / 100;
-        maxDec = Math.max(num0.decimals, num1.decimals);
-    }
-    else if (nValues == 1)
-    {
-        const num = genParseRequest(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-    }
-    else if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;       
-    }
-    else 
-        console.assert(false);
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
-
-    return num;
-}
-
-
-// some parse functions return values
-// some parse functions update values
-// some parse functions update objects
-
-
-
-/* 
-    the generation request format
-
-    no-update param nodeId ('' if n/a)
-    no-update paramIndex (0 if n/a)
-
-    generation string
-*/
-
-
-
-function genRequest(req, settings)
-{
-    if (settings.logRequests)
-        logRequest(req);
-
-
-    const updateNodeId     = req[0];
-    const updateParamIndex = req[1];
-
-    const parse = 
-    {
-        req:               req,
-        pos:               2, 
-        so:                0,
-        updateNodeId:      updateNodeId, 
-        updateParamIndex:  updateParamIndex,
-        updateParamValues: [],
-        updateObjects:     [],
-        nextObjectId:      0,
-        firstObjectIds:    []
-    };
-
-    
-    const stackOverflowProtect = 100;
-
-    while (   parse.pos < parse.req.length 
-           && parse.so  < stackOverflowProtect)
-        genParseRequest(parse);
-    
-
-        genUpdateObjects(parse.updateObjects);
-        genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
-}
-
-
-
-function genParseRequest(parse)
-{
-    const next = parse.req[parse.pos];
-        //console.log('next', next);
-
-         if (next == NUMBER_VALUE      ) return genNumValue         (parse);
-    else if (next == NUMBER            ) return genNumber           (parse);
-    else if (next == NUMBER_ADD        ) return genNumberAdd        (parse);
-    else if (next == NUMBER_SUBTRACT   ) return genNumberSubtract   (parse);
-    else if (next == NUMBER_MULTIPLY   ) return genNumberMultiply   (parse);
-    else if (next == NUMBER_DIVIDE     ) return genNumberDivide     (parse);
-    else if (next == NUMBER_MODULO     ) return genNumberModulo     (parse);
-    else if (next == NUMBER_EXPONENT   ) return genNumberExponent   (parse);
-    else if (next == NUMBER_INTERPOLATE) return genNumberInterpolate(parse);
-
-    else if (next == RECTANGLE         ) return genRectangle        (parse);
-
-    parse.so++;
-    return null;
-}
-
-
-
-function genActive(parse)
-{
-    let active = false;
-
-    if (parse.req[parse.pos] == ACTIVE)
-    {
-        active = true;
-        parse.pos++;
-    }
-
-    return active;
-}
-
-
-
-function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
-{
-    const found = parse.updateParamValues.find(v => 
-           v[0] == nodeId 
-        && v[1] == paramIndex);
-
-    if (!found)
-        parse.updateParamValues.push([nodeId, paramIndex, value]);
-    else
-        console.assert(found[2] == value);
-}
-
-
-
-function genPushUpdateObject(parse, object, nodeId)
-{
-    const found = parse.updateObjects.find(o => o.nodeId == nodeId);
-
-    if (!found) parse.updateObjects.push(object);
-    else        console.assert(found[2] == value);
-}
-
-
-
-function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
-{
-    // send value updates in chunks
-
-    const chunkSize = 20;
-    
-    let i = 0, 
-        c = 0;
-    
-    let chunk = [];
-    
-    while (i < updateValues.length)
-    {
-        chunk.push(
-            updateValues[i][0],  // node id
-            updateValues[i][1],  // param index
-            updateValues[i][2]); // value
-
-        if (++c == chunkSize)
-        {
-            genPostMessageToUI({ 
-                cmd:    'uiUpdateParamValues',
-                values: [updateNodeId, updateParamIndex, ...chunk]
-            });
-
-            chunk = [];
-            c = 0;
-        }
-
-        i++;
-    }
-
-    if (chunk.length > 0)
-    {
-        genPostMessageToUI({ 
-            cmd:    'uiUpdateParamValues',
-            values: [updateNodeId, updateParamIndex, ...chunk]
-        });
-    }
-}
-
-
-
-function genUpdateObjects(updateObjects)
-{
-    // send objects in chunks
-
-    const chunkSize = 20;
-    
-    let i = 0, 
-        c = 0;
-    
-    let chunk = [];
-    
-    while (i < updateObjects.length)
-    {
-        chunk.push(updateObjects[i]);
-
-        if (++c == chunkSize)
-        {
-            genQueueMessageToFigma({ 
-                cmd:     'figUpdateObjects',
-                objects: [...chunk]
-            });
-
-            chunk = [];
-            c = 0;
-        }
-
-        i++;
-    }
-
-    if (chunk.length > 0)
-    {
-        genQueueMessageToFigma({ 
-            cmd:     'figUpdateObjects',
-            objects: [...chunk]
-        });
-    }
-}
-
-
 var figMessages = []; // messages from Generator to Figma (through UI)
 var figMessagePosted = false;
-
 
 
 
@@ -3651,6 +3056,580 @@ function genEndFigMessage()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*
+    RECT 
+    id
+    N 0 
+    N 0 
+    N 100 
+    N 100
+    N 0
+    N 0
+
+    RECT 
+    id
+    RECT 
+    ...
+    0,3,4  // overriding param index list
+    N 0
+    N 100
+    N 0
+*/
+
+
+function genParseRectangle(parse)
+{
+    parse.pos++; // RECTANGLE
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let rect = new GRectangle();
+    let indices;
+    
+    if (parse.req[parse.pos] == RECTANGLE)
+    {
+        rect    = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
+        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(6).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: rect.x      = genParseRequest(parse); break;
+        case 1: rect.y      = genParseRequest(parse); break;
+        case 2: rect.width  = genParseRequest(parse); break;
+        case 3: rect.height = genParseRequest(parse); break;
+        case 4: rect.angle  = genParseRequest(parse); break;
+        case 5: rect.round  = genParseRequest(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, rect.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, rect.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, rect.width .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, rect.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 4, rect.angle .toString());
+    genPushUpdateParamValue(parse, nodeId, 5, rect.round .toString());
+
+
+    if (   active
+        && rect.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   RECTANGLE,
+                id:     0,
+                x:      rect.x     .value,
+                y:      rect.y     .value,
+                width:  rect.width .value,
+                height: rect.height.value,
+                angle:  rect.angle .value,
+                round:  Math.max(0, rect.round.value)
+            });
+    }
+
+
+    return rect;
+}
+
+
+function genParseNumValue(parse)
+{
+    parse.pos++; // N
+
+    return parseGnum(parse.req[parse.pos++]);
+}
+
+
+
+function genParseNumberNodeId(parse)
+{
+    parse.pos++; // tag
+
+    const nodeId = parse.req[parse.pos++];
+    genParseActive(parse);
+
+    return nodeId;
+}
+
+
+
+function genParseNumber(parse)
+{
+    const nodeId = genParseNumberNodeId(parse);
+
+    const num = genParseRequest(parse);    
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+
+function genParseNumberAdd(parse)
+{
+    const nodeId  = genParseNumberNodeId(parse);
+    const nValues = parse.req[parse.pos++];
+    
+
+    let result = 0;
+    let maxDec = 0;
+
+    for (let i = 0; i < nValues; i++)
+    {
+        const num = genParseRequest(parse);
+
+        result += num.value;
+        maxDec = Math.max(maxDec, num.decimals);
+    }
+
+
+    const num = new GNumber(result, maxDec);
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+
+function genParseNumberSubtract(parse)
+{
+    const nodeId  = genParseNumberNodeId(parse);
+    const nValues = parse.req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(parse);
+
+        result = num.value;
+        maxDec = num.decimals;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(parse);
+
+            result -= num.value;
+            maxDec = Math.max(maxDec, num.decimals);
+        }
+    }
+
+
+    const num = new GNumber(result, maxDec);
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+
+function genParseNumberMultiply(parse)
+{
+    const nodeId  = genParseNumberNodeId(parse);
+    const nValues = parse.req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        result = 1;
+        maxDec = 0;
+
+        for (let i = 0; i < nValues; i++)
+        {
+            const num = genParseRequest(parse);
+
+            result *= num.value;
+            maxDec = Math.max(maxDec, num.decimals);
+        }
+    }
+
+
+    const num = new GNumber(result, maxDec);
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+
+function genParseNumberDivide(parse)
+{
+    const nodeId  = genParseNumberNodeId(parse);
+    const nValues = parse.req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(parse);
+
+        result = num.value;
+        maxDec = num.decimals;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(parse);
+            if (num.value == 0) { num.value = Number.NaN; break; }
+            
+            result /= num.value;
+            maxDec = Math.max(maxDec, num.decimals);
+        }
+    }
+
+
+    const num = new GNumber(result, maxDec);
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+
+function genParseNumberModulo(parse)
+{
+    const nodeId  = genParseNumberNodeId(parse);
+    const nValues = parse.req[parse.pos++];
+    
+
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(parse);
+
+        result = num.value;
+        maxDec = num.decimals;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(parse);
+
+            if (num.value == 0) 
+            { 
+                result = Number.NaN; 
+                maxDec = 0;
+                break; 
+            }
+
+            result %= num.value;
+            maxDec = Math.max(maxDec, num.decimals);
+        }
+    }
+
+
+    const num = new GNumber(result, maxDec);
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+
+function genParseNumberExponent(parse)
+{
+    const nodeId  = genParseNumberNodeId(parse);
+    const nValues = parse.req[parse.pos++];
+
+    
+    let result, maxDec;
+
+    if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;
+    }
+    else
+    {
+        let num = genParseRequest(parse);
+
+        result = num.value;
+        maxDec = num.decimals;
+
+        for (let i = 1; i < nValues; i++)
+        {
+            num = genParseRequest(parse);
+
+            result = Math.pow(result, num.value);
+            maxDec = Math.max(maxDec, num.decimals);
+        }
+    }
+
+
+    const num = new GNumber(result, maxDec);
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+
+function genParseNumberInterpolate(parse)
+{
+    const nodeId  = genParseNumberNodeId(parse);
+    const nValues = parse.req[parse.pos++];
+
+
+    let result, maxDec;
+
+    if (nValues == 2)
+    {
+        const num0 = genParseRequest(parse);
+        const num1 = genParseRequest(parse);
+        const amt  = genParseRequest(parse);
+
+        result = num0.value + amt.value * (num1.value - num0.value) / 100;
+        maxDec = Math.max(num0.decimals, num1.decimals);
+    }
+    else if (nValues == 1)
+    {
+        const num = genParseRequest(parse);
+
+        result = num.value;
+        maxDec = num.decimals;
+    }
+    else if (nValues == 0)
+    {
+        result = 0;
+        maxDec = 0;       
+    }
+    else 
+        console.assert(false);
+
+
+    const num = new GNumber(result, maxDec);
+    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+
+    return num;
+}
+
+
+// some parse functions return values
+// some parse functions update values
+// some parse functions update objects
+
+
+
+/* 
+    the generation request format
+
+    no-update param nodeId ('' if n/a)
+    no-update paramIndex (0 if n/a)
+
+    generation string
+*/
+
+
+
+function genParseRequest(parse)
+{
+    const next = parse.req[parse.pos];
+        //console.log('next', next);
+
+         if (next == NUMBER_VALUE      ) return genParseNumValue         (parse);
+    else if (next == NUMBER            ) return genParseNumber           (parse);
+    else if (next == NUMBER_ADD        ) return genParseNumberAdd        (parse);
+    else if (next == NUMBER_SUBTRACT   ) return genParseNumberSubtract   (parse);
+    else if (next == NUMBER_MULTIPLY   ) return genParseNumberMultiply   (parse);
+    else if (next == NUMBER_DIVIDE     ) return genParseNumberDivide     (parse);
+    else if (next == NUMBER_MODULO     ) return genParseNumberModulo     (parse);
+    else if (next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
+    else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
+
+    else if (next == RECTANGLE         ) return genParseRectangle        (parse);
+
+    parse.so++;
+    return null;
+}
+
+
+
+function genParseActive(parse)
+{
+    let active = false;
+
+    if (parse.req[parse.pos] == ACTIVE)
+    {
+        active = true;
+        parse.pos++;
+    }
+
+    return active;
+}
+
+
+function genRequest(req, settings)
+{
+    if (settings.logRequests)
+        logRequest(req);
+
+
+    const updateNodeId     = req[0];
+    const updateParamIndex = req[1];
+
+    const parse = 
+    {
+        req:               req,
+        pos:               2, 
+        so:                0,
+        updateNodeId:      updateNodeId, 
+        updateParamIndex:  updateParamIndex,
+        updateParamValues: [],
+        updateObjects:     []
+    };
+
+    
+    const stackOverflowProtect = 100;
+
+    while (   parse.pos < parse.req.length 
+           && parse.so  < stackOverflowProtect)
+        genParseRequest(parse);
+    
+
+    genUpdateObjects(parse.updateObjects);
+    genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
+}
+
+
+
+function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
+{
+    const found = parse.updateParamValues.find(v => 
+           v[0] == nodeId 
+        && v[1] == paramIndex);
+
+    if (!found) parse.updateParamValues.push([nodeId, paramIndex, value]);
+    else        console.assert(found[2] == value);
+}
+
+
+
+function genPushUpdateObject(parse, nodeId, object)
+{
+    const found = parse.updateObjects.find(o => o.nodeId == nodeId);
+
+    if (!found) parse.updateObjects.push(object);
+    else        console.assert(found[2] == value);
+}
+
+
+
+function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
+{
+    // send value updates in chunks
+
+    const chunkSize = 20;
+    
+    let i = 0, 
+        c = 0;
+    
+    let chunk = [];
+    
+    while (i < updateValues.length)
+    {
+        chunk.push(
+            updateValues[i][0],  // node id
+            updateValues[i][1],  // param index
+            updateValues[i][2]); // value
+
+        if (++c == chunkSize)
+        {
+            genPostMessageToUI({ 
+                cmd:    'uiUpdateParamValues',
+                values: [updateNodeId, updateParamIndex, ...chunk]
+            });
+
+            chunk = [];
+            c = 0;
+        }
+
+        i++;
+    }
+
+    if (chunk.length > 0)
+    {
+        genPostMessageToUI({ 
+            cmd:    'uiUpdateParamValues',
+            values: [updateNodeId, updateParamIndex, ...chunk]
+        });
+    }
+}
+
+
+
+function genUpdateObjects(updateObjects)
+{
+    // send objects in chunks
+
+    const chunkSize = 1000;
+    
+    let i = 0, 
+        c = 0;
+    
+    let chunk = [];
+    
+    while (i < updateObjects.length)
+    {
+        chunk.push(updateObjects[i]);
+
+        if (++c == chunkSize)
+        {
+            genQueueMessageToFigma({ 
+                cmd:     'figUpdateObjects',
+                objects: [...chunk]
+            });
+
+            chunk = [];
+            c     = 0;
+        }
+
+        i++;
+    }
+
+    if (chunk.length > 0)
+    {
+        genQueueMessageToFigma({ 
+            cmd:     'figUpdateObjects',
+            objects: [...chunk]
+        });
+    }
+}
 
 
 function getObjectBounds(objects)

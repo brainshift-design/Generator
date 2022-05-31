@@ -1084,13 +1084,6 @@ function uiUpdateObjects(objects)
 
 
 
-function uiSetFirstObjectId(nodeId, objId)
-{
-    nodeFromId(nodeId).firstObjectId = objId;
-}
-
-
-
 function uiSaveNodes(nodeIds)
 {
     const nodeJson = [];
