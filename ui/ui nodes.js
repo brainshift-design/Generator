@@ -1034,8 +1034,8 @@ function uiUpdateGraph()
 
 function uiUpdateParamValues(values)
 {
-    if (settings.logUpdateParamValues)
-        logUpdateValues(values);
+    if (settings.logParamUpdates)
+        logParamUpdates(values);
     
 
     const updateNodeId     = values[0];
@@ -1044,21 +1044,33 @@ function uiUpdateParamValues(values)
 
     const nodes = [];
 
-    for (let i = 2; i < values.length; i += 3)
+    let i = 2;
+    while (i < values.length)
     {
-        const nodeId     = values[i  ];
-        const paramIndex = values[i+1];
-        const strVal     = values[i+2];
+        const nodeId = values[i++];
+        const count  = values[i++];
 
-        const node = nodeFromId(nodeId);
-        if (!node) continue; // the node was deleted
+        const node   = nodeFromId(nodeId);
 
-        if (!nodes.includes(node)) 
-            nodes.push(node);
+        
+        if (!node) // was deleted
+        { 
+            i += count*2; 
+            continue; 
+        }
 
-        if (   nodeId     != updateNodeId
-            || paramIndex != updateParamIndex)
-            node.updateParamValue(paramIndex, parseGnum(strVal));
+        pushUnique(nodes, node);
+
+        
+        for (let j = 0; j < count; j++)
+        {
+            const paramIndex = values[i++];
+            const strVal     = values[i++];
+
+            if (   nodeId     != updateNodeId
+                || paramIndex != updateParamIndex)
+                node.updateParamValue(paramIndex, parseGnum(strVal));
+        }
     }
 
 

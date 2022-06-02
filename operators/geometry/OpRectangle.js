@@ -107,7 +107,6 @@ extends OperatorBase
         if (!isEmpty(this.cache))
             return this.cache;
 
-            
         const req = this.node.getRequestStart();
                 
         const input = this.node.inputs[0];

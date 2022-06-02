@@ -92,12 +92,22 @@ function logRequest(request)
 
 
 
-function logUpdateParamValues(values)
+function logParamUpdates(values)
 {
     console.log(
         '%cvalues', 
         'background: #e70; color: white;', 
         values);
+}
+
+
+
+function logObjectUpdates(objects)
+{
+    console.log(
+        '%cobjects', 
+        'background: #07e; color: white;', 
+        objects);
 }
 
 
@@ -150,6 +160,7 @@ const COMMENT            = 'CMNT';
 
 
 const ACTIVE             = 'ACT';
+const PARAM              = 'PARAM'; // nodeId paramIndex
 
 
 /*
@@ -173,6 +184,18 @@ VECTOR      V
 */
 
 
+const settings =
+{
+    showNodeId:       true, // instead of name
+    
+    logStorage:       true,
+    logActions:       true,
+    logRequests:      true,
+    logParamUpdates:  true,
+    logObjectUpdates: false
+};
+
+
 //const MAX_OBJECTS = 0x10000;
 
 const figObjectArrays = []; // {nodeId, [objects]}
@@ -181,6 +204,10 @@ const figObjectArrays = []; // {nodeId, [objects]}
 
 function figUpdateObjects(/*updateId,*/ genObjects)
 {
+    if (settings.logObjectUpdates)
+        logObjectUpdates(genObjects);
+
+        
     let curNodeId  = '';
     let figObjects = null;
 

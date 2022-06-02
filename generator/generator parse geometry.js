@@ -32,7 +32,7 @@ function genParseRectangle(parse)
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect    = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
+        rect    = genParse(parse); // not genRectangle() because genParse() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
     }
     else
@@ -43,12 +43,12 @@ function genParseRectangle(parse)
     {
         switch (i)
         {
-        case 0: rect.x      = genParseRequest(parse); break;
-        case 1: rect.y      = genParseRequest(parse); break;
-        case 2: rect.width  = genParseRequest(parse); break;
-        case 3: rect.height = genParseRequest(parse); break;
-        case 4: rect.angle  = genParseRequest(parse); break;
-        case 5: rect.round  = genParseRequest(parse); break;
+        case 0: rect.x      = genParse(parse); break;
+        case 1: rect.y      = genParse(parse); break;
+        case 2: rect.width  = genParse(parse); break;
+        case 3: rect.height = genParse(parse); break;
+        case 4: rect.angle  = genParse(parse); break;
+        case 5: rect.round  = genParse(parse); break;
         }
     }
 

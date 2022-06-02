@@ -71,9 +71,8 @@ class Operator
     outputControls;
 
 
-   
 
-    valid; // regeneration flag
+    valid = false;
 
 
 
@@ -372,13 +371,12 @@ class Operator
 
         this.valid = false;
 
-
         for (const output of this.outputs)
         {
             output.cache = [];
             
-            for (const connInput of output.connectedInputs)
-                connInput.node.invalidate();
+            for (const input of output.connectedInputs)
+                input.node.invalidate();
         }
     }
 
@@ -683,10 +681,7 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.log('pushUpdateFromParam('+param.id+')');
-
-    nodes.forEach(n => n.invalidate());
-
+    //console.log('pushUpdateFromParam('+(param ? param.id : 'null')+')');
 
     // each type is followed first by the node ID, then the params
 
@@ -695,10 +690,11 @@ function pushUpdateFromParam(nodes, param)
         ? [param.node.id, param.index]
         : ['', 0];
 
+
     const terminals = [];
 
-    for (const node of nodes)
-        pushUnique(terminals, getTerminalsAfterNode(node));
+    nodes.forEach(n => n.invalidate());
+    nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
     terminals.forEach(n => 
         n.outputs

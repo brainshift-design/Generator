@@ -1,3 +1,15 @@
+function genParseNumberNodeId(parse)
+{
+    parse.pos++; // tag
+    
+    const nodeId = parse.req[parse.pos++];
+    genParseActive(parse);
+    
+    return nodeId;
+}
+
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -7,23 +19,11 @@ function genParseNumValue(parse)
 
 
 
-function genParseNumberNodeId(parse)
-{
-    parse.pos++; // tag
-
-    const nodeId = parse.req[parse.pos++];
-    genParseActive(parse);
-
-    return nodeId;
-}
-
-
-
 function genParseNumber(parse)
 {
     const nodeId = genParseNumberNodeId(parse);
 
-    const num = genParseRequest(parse);    
+    const num = genParse(parse);    
     genPushUpdateParamValue(parse, nodeId, 0, num.toString());
 
     return num;
@@ -42,7 +42,7 @@ function genParseNumberAdd(parse)
 
     for (let i = 0; i < nValues; i++)
     {
-        const num = genParseRequest(parse);
+        const num = genParse(parse);
 
         result += num.value;
         maxDec = Math.max(maxDec, num.decimals);
@@ -72,14 +72,14 @@ function genParseNumberSubtract(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
 
             result -= num.value;
             maxDec = Math.max(maxDec, num.decimals);
@@ -115,7 +115,7 @@ function genParseNumberMultiply(parse)
 
         for (let i = 0; i < nValues; i++)
         {
-            const num = genParseRequest(parse);
+            const num = genParse(parse);
 
             result *= num.value;
             maxDec = Math.max(maxDec, num.decimals);
@@ -146,14 +146,14 @@ function genParseNumberDivide(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
             if (num.value == 0) { num.value = Number.NaN; break; }
             
             result /= num.value;
@@ -185,14 +185,14 @@ function genParseNumberModulo(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
 
             if (num.value == 0) 
             { 
@@ -230,14 +230,14 @@ function genParseNumberExponent(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
 
             result = Math.pow(result, num.value);
             maxDec = Math.max(maxDec, num.decimals);
@@ -263,16 +263,16 @@ function genParseNumberInterpolate(parse)
 
     if (nValues == 2)
     {
-        const num0 = genParseRequest(parse);
-        const num1 = genParseRequest(parse);
-        const amt  = genParseRequest(parse);
+        const num0 = genParse(parse);
+        const num1 = genParse(parse);
+        const amt  = genParse(parse);
 
         result = num0.value + amt.value * (num1.value - num0.value) / 100;
         maxDec = Math.max(num0.decimals, num1.decimals);
     }
     else if (nValues == 1)
     {
-        const num = genParseRequest(parse);
+        const num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;

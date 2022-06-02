@@ -52,8 +52,11 @@ function logRequest(request) {
         .split(']').join('') //.replaceAll(']', '')
         .split(',').join(' ')); //.replaceAll(',', ' '));
 }
-function logUpdateParamValues(values) {
+function logParamUpdates(values) {
     console.log('%cvalues', 'background: #e70; color: white;', values);
+}
+function logObjectUpdates(objects) {
+    console.log('%cobjects', 'background: #07e; color: white;', objects);
 }
 //////////// WARNING ////////////
 //                             //
@@ -87,6 +90,7 @@ const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
 const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
+const PARAM = 'PARAM'; // nodeId paramIndex
 /*
 
 ARROW       A
@@ -106,9 +110,19 @@ TEXT        T
 VECTOR      V
 
 */
+const settings = {
+    showNodeId: true,
+    logStorage: true,
+    logActions: true,
+    logRequests: true,
+    logParamUpdates: true,
+    logObjectUpdates: false
+};
 //const MAX_OBJECTS = 0x10000;
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdateObjects(/*updateId,*/ genObjects) {
+    if (settings.logObjectUpdates)
+        logObjectUpdates(genObjects);
     let curNodeId = '';
     let figObjects = null;
     for (const genObj of genObjects) {

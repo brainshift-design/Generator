@@ -2307,12 +2307,22 @@ function logRequest(request)
 
 
 
-function logUpdateParamValues(values)
+function logParamUpdates(values)
 {
     console.log(
         '%cvalues', 
         'background: #e70; color: white;', 
         values);
+}
+
+
+
+function logObjectUpdates(objects)
+{
+    console.log(
+        '%cobjects', 
+        'background: #07e; color: white;', 
+        objects);
 }
 
 
@@ -2526,6 +2536,7 @@ const COMMENT            = 'CMNT';
 
 
 const ACTIVE             = 'ACT';
+const PARAM              = 'PARAM'; // nodeId paramIndex
 
 
 /*
@@ -3092,7 +3103,7 @@ function genParseRectangle(parse)
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect    = genParseRequest(parse); // not genRectangle() because genParseRequest() handles stack overflow
+        rect    = genParse(parse); // not genRectangle() because genParse() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
     }
     else
@@ -3103,12 +3114,12 @@ function genParseRectangle(parse)
     {
         switch (i)
         {
-        case 0: rect.x      = genParseRequest(parse); break;
-        case 1: rect.y      = genParseRequest(parse); break;
-        case 2: rect.width  = genParseRequest(parse); break;
-        case 3: rect.height = genParseRequest(parse); break;
-        case 4: rect.angle  = genParseRequest(parse); break;
-        case 5: rect.round  = genParseRequest(parse); break;
+        case 0: rect.x      = genParse(parse); break;
+        case 1: rect.y      = genParse(parse); break;
+        case 2: rect.width  = genParse(parse); break;
+        case 3: rect.height = genParse(parse); break;
+        case 4: rect.angle  = genParse(parse); break;
+        case 5: rect.round  = genParse(parse); break;
         }
     }
 
@@ -3145,6 +3156,18 @@ function genParseRectangle(parse)
 }
 
 
+function genParseNumberNodeId(parse)
+{
+    parse.pos++; // tag
+    
+    const nodeId = parse.req[parse.pos++];
+    genParseActive(parse);
+    
+    return nodeId;
+}
+
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -3154,23 +3177,11 @@ function genParseNumValue(parse)
 
 
 
-function genParseNumberNodeId(parse)
-{
-    parse.pos++; // tag
-
-    const nodeId = parse.req[parse.pos++];
-    genParseActive(parse);
-
-    return nodeId;
-}
-
-
-
 function genParseNumber(parse)
 {
     const nodeId = genParseNumberNodeId(parse);
 
-    const num = genParseRequest(parse);    
+    const num = genParse(parse);    
     genPushUpdateParamValue(parse, nodeId, 0, num.toString());
 
     return num;
@@ -3189,7 +3200,7 @@ function genParseNumberAdd(parse)
 
     for (let i = 0; i < nValues; i++)
     {
-        const num = genParseRequest(parse);
+        const num = genParse(parse);
 
         result += num.value;
         maxDec = Math.max(maxDec, num.decimals);
@@ -3219,14 +3230,14 @@ function genParseNumberSubtract(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
 
             result -= num.value;
             maxDec = Math.max(maxDec, num.decimals);
@@ -3262,7 +3273,7 @@ function genParseNumberMultiply(parse)
 
         for (let i = 0; i < nValues; i++)
         {
-            const num = genParseRequest(parse);
+            const num = genParse(parse);
 
             result *= num.value;
             maxDec = Math.max(maxDec, num.decimals);
@@ -3293,14 +3304,14 @@ function genParseNumberDivide(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
             if (num.value == 0) { num.value = Number.NaN; break; }
             
             result /= num.value;
@@ -3332,14 +3343,14 @@ function genParseNumberModulo(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
 
             if (num.value == 0) 
             { 
@@ -3377,14 +3388,14 @@ function genParseNumberExponent(parse)
     }
     else
     {
-        let num = genParseRequest(parse);
+        let num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
 
         for (let i = 1; i < nValues; i++)
         {
-            num = genParseRequest(parse);
+            num = genParse(parse);
 
             result = Math.pow(result, num.value);
             maxDec = Math.max(maxDec, num.decimals);
@@ -3410,16 +3421,16 @@ function genParseNumberInterpolate(parse)
 
     if (nValues == 2)
     {
-        const num0 = genParseRequest(parse);
-        const num1 = genParseRequest(parse);
-        const amt  = genParseRequest(parse);
+        const num0 = genParse(parse);
+        const num1 = genParse(parse);
+        const amt  = genParse(parse);
 
         result = num0.value + amt.value * (num1.value - num0.value) / 100;
         maxDec = Math.max(num0.decimals, num1.decimals);
     }
     else if (nValues == 1)
     {
-        const num = genParseRequest(parse);
+        const num = genParse(parse);
 
         result = num.value;
         maxDec = num.decimals;
@@ -3457,12 +3468,14 @@ function genParseNumberInterpolate(parse)
 
 
 
-function genParseRequest(parse)
+function genParse(parse)
 {
     const next = parse.req[parse.pos];
         //console.log('next', next);
 
-         if (next == NUMBER_VALUE      ) return genParseNumValue         (parse);
+         if (next == PARAM             ) return genParseParam            (parse);
+
+    else if (next == NUMBER_VALUE      ) return genParseNumValue         (parse);
     else if (next == NUMBER            ) return genParseNumber           (parse);
     else if (next == NUMBER_ADD        ) return genParseNumberAdd        (parse);
     else if (next == NUMBER_SUBTRACT   ) return genParseNumberSubtract   (parse);
@@ -3482,15 +3495,33 @@ function genParseRequest(parse)
 
 function genParseActive(parse)
 {
-    let active = false;
-
     if (parse.req[parse.pos] == ACTIVE)
     {
-        active = true;
         parse.pos++;
+        return true;
     }
 
-    return active;
+    return false;
+}
+
+
+
+function genParseParam(parse)
+{
+    if (parse.req[parse.pos] != PARAM) 
+        return null;
+    
+    parse.pos++;
+
+
+    const nodeId     = parse.req[parse.pos++];
+    const paramIndex = parse.req[parse.pos++];
+
+    const val        = genParse(parse);
+
+    genPushUpdateParamValue(parse, nodeId, paramIndex, val.toString());
+
+    return val;
 }
 
 
@@ -3519,7 +3550,7 @@ function genRequest(req, settings)
 
     while (   parse.pos < parse.req.length 
            && parse.so  < stackOverflowProtect)
-        genParseRequest(parse);
+        genParse(parse);
     
 
     genUpdateObjects(parse.updateObjects);
@@ -3531,11 +3562,16 @@ function genRequest(req, settings)
 function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
 {
     const found = parse.updateParamValues.find(v => 
-           v[0] == nodeId 
-        && v[1] == paramIndex);
+           v.nodeId     == nodeId 
+        && v.paramIndex == paramIndex);
 
-    if (!found) parse.updateParamValues.push([nodeId, paramIndex, value]);
-    else        console.assert(found[2] == value);
+    if (!found) 
+        parse.updateParamValues.push({
+            nodeId:     nodeId, 
+            paramIndex: paramIndex, 
+            value:      value});
+
+    else console.assert(found.value == value);
 }
 
 
@@ -3552,23 +3588,35 @@ function genPushUpdateObject(parse, nodeId, object)
 
 function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 {
+    const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
+    const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
+
+
     // send value updates in chunks
 
-    const chunkSize = 20;
+    const approxChunkSize = 20;
     
-    let i = 0, 
-        c = 0;
-    
+    let n = 0, // node
+        c = 0; // chunk size
+
     let chunk = [];
-    
-    while (i < updateValues.length)
+
+
+    while (n < nodeIds.length)
     {
         chunk.push(
-            updateValues[i][0],  // node id
-            updateValues[i][1],  // param index
-            updateValues[i][2]); // value
+            nodeIds[n],
+            counts [n]);
 
-        if (++c == chunkSize)
+        const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+
+        for (const v of values)
+        {
+            chunk.push(v.paramIndex, v.value);
+            c++;
+        }
+
+        if (c >= approxChunkSize)
         {
             genPostMessageToUI({ 
                 cmd:    'uiUpdateParamValues',
@@ -3579,7 +3627,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
             c = 0;
         }
 
-        i++;
+        n++;
     }
 
     if (chunk.length > 0)

@@ -12,7 +12,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER], this.input_getValuesForUndo));
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
-    this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
         
         this.alwaysLoadParams = true;
     }
@@ -30,7 +30,7 @@ extends OperatorBase
 
     output_genRequest()
     {
-        // 'this' is the output
+        // 'this' is the output        
 
         if (!isEmpty(this.cache))
             return this.cache;

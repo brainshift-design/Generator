@@ -158,10 +158,18 @@ extends Parameter
         // this function exists because a parameter without an output
         // should still provide a value
         
+        if (    this.output
+            && !isEmpty(this.output.cache))
+            return this.cache;
+
+
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.genRequest() ]
+            ? [ PARAM,
+                this.node.id,
+                this.index,
+                ...this.input.connectedOutput.genRequest() ]
 
             : [ NUMBER_VALUE, 
                 new GNumber(

@@ -23,7 +23,7 @@ function genRequest(req, settings)
 
     while (   parse.pos < parse.req.length 
            && parse.so  < stackOverflowProtect)
-        genParseRequest(parse);
+        genParse(parse);
     
 
     genUpdateObjects(parse.updateObjects);
@@ -35,11 +35,16 @@ function genRequest(req, settings)
 function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
 {
     const found = parse.updateParamValues.find(v => 
-           v[0] == nodeId 
-        && v[1] == paramIndex);
+           v.nodeId     == nodeId 
+        && v.paramIndex == paramIndex);
 
-    if (!found) parse.updateParamValues.push([nodeId, paramIndex, value]);
-    else        console.assert(found[2] == value);
+    if (!found) 
+        parse.updateParamValues.push({
+            nodeId:     nodeId, 
+            paramIndex: paramIndex, 
+            value:      value});
+
+    else console.assert(found.value == value);
 }
 
 
@@ -56,23 +61,35 @@ function genPushUpdateObject(parse, nodeId, object)
 
 function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 {
+    const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
+    const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
+
+
     // send value updates in chunks
 
-    const chunkSize = 20;
+    const approxChunkSize = 20;
     
-    let i = 0, 
-        c = 0;
-    
+    let n = 0, // node
+        c = 0; // chunk size
+
     let chunk = [];
-    
-    while (i < updateValues.length)
+
+
+    while (n < nodeIds.length)
     {
         chunk.push(
-            updateValues[i][0],  // node id
-            updateValues[i][1],  // param index
-            updateValues[i][2]); // value
+            nodeIds[n],
+            counts [n]);
 
-        if (++c == chunkSize)
+        const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+
+        for (const v of values)
+        {
+            chunk.push(v.paramIndex, v.value);
+            c++;
+        }
+
+        if (c >= approxChunkSize)
         {
             genPostMessageToUI({ 
                 cmd:    'uiUpdateParamValues',
@@ -83,7 +100,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
             c = 0;
         }
 
-        i++;
+        n++;
     }
 
     if (chunk.length > 0)

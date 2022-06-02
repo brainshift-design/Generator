@@ -64,10 +64,20 @@ function logRequest(request)
 
 
 
-function logUpdateParamValues(values)
+function logParamUpdates(values)
 {
     console.log(
         '%cvalues', 
         'background: #e70; color: white;', 
         values);
+}
+
+
+
+function logObjectUpdates(objects)
+{
+    console.log(
+        '%cobjects', 
+        'background: #07e; color: white;', 
+        objects);
 }

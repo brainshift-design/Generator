@@ -3,4 +3,6 @@
 
 ../types/types.js
 
+../ui/settings.js
+
 ../figma/*.ts0

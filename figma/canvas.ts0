@@ -6,6 +6,10 @@ const figObjectArrays = []; // {nodeId, [objects]}
 
 function figUpdateObjects(/*updateId,*/ genObjects)
 {
+    if (settings.logObjectUpdates)
+        logObjectUpdates(genObjects);
+
+        
     let curNodeId  = '';
     let figObjects = null;
 
