@@ -2991,7 +2991,7 @@ onmessage = function(e)
     //console.log('msg.cmd', msg.cmd);
     switch (msg.cmd)
     {
-        case 'genFindCorrection':   
+        case 'genFindCorrection':
             genFindCorrection(
                 msg.nodeId, 
                 msg.inputColor, 
@@ -3000,9 +3000,13 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        
+            genRequest(msg.request, msg.settings);
+            break;
 
-        case 'genEndFigMessage':  genEndFigMessage();                    break;
+        case 'genEndFigMessage':  
+            genEndFigMessage();
+            break;
     }
 
 
@@ -3043,15 +3047,15 @@ function genPostNextMessageToFigma()
     {
         let msg = figMessages.shift();
 
-        // if (msg.cmd == 'uiUpdateObjects')
-        // {
-        //     // move along the queue since only the last message is important
-        //     while (uiMessages.length > 0
-        //         && uiMessages[0].cmd        == msg.cmd
-        //         && uiMessages[0].request[0] == msg.request[0]
-        //         && uiMessages[0].request[1] == msg.request[1])
-        //         msg = uiMessages.shift();
-        // }
+        if (msg.cmd == 'figUpdateObjects')
+        {
+            // move along the queue since only the last message is important
+            while (figMessages.length > 0
+                && figMessages[0].cmd              == msg.cmd
+                && figMessages[0].updateNodeId     == msg.updateNodeId
+                && figMessages[0].updateParamIndex == msg.updateParamIndex)
+                msg = figMessages.shift();
+        }
 
         genPostMessageToUI({ cmd: 'uiForwardToFigma', msg: msg });
         figMessagePosted = true;
@@ -3471,7 +3475,8 @@ function genParseNumberInterpolate(parse)
 function genParse(parse)
 {
     const next = parse.req[parse.pos];
-        //console.log('next', next);
+    //console.log('next', next);
+
 
          if (next == PARAM             ) return genParseParam            (parse);
 
@@ -3487,6 +3492,7 @@ function genParse(parse)
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
 
+    
     parse.so++;
     return null;
 }
@@ -3553,7 +3559,7 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateObjects(parse.updateObjects);
+    genUpdateObjects    (updateNodeId, updateParamIndex, parse.updateObjects    );
     genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
 }
 
@@ -3641,7 +3647,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
 
 
-function genUpdateObjects(updateObjects)
+function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
 {
     // send objects in chunks
 
@@ -3659,8 +3665,10 @@ function genUpdateObjects(updateObjects)
         if (++c == chunkSize)
         {
             genQueueMessageToFigma({ 
-                cmd:     'figUpdateObjects',
-                objects: [...chunk]
+                cmd:             'figUpdateObjects',
+                updateNodeId:     updateNodeId,
+                updateParamIndex: updateParamIndex,
+                objects:          [...chunk]
             });
 
             chunk = [];
@@ -3673,8 +3681,10 @@ function genUpdateObjects(updateObjects)
     if (chunk.length > 0)
     {
         genQueueMessageToFigma({ 
-            cmd:     'figUpdateObjects',
-            objects: [...chunk]
+            cmd:             'figUpdateObjects',
+            updateNodeId:     updateNodeId,
+            updateParamIndex: updateParamIndex,
+            objects:          [...chunk]
         });
     }
 }

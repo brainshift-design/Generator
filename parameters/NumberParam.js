@@ -163,18 +163,27 @@ extends Parameter
             return this.cache;
 
 
-        return this.input
-            && this.input.connected 
+        if (   this.input
+            && this.input.connected)
+        {
+            const req = [];
 
-            ? [ PARAM,
+            req.push(
+                PARAM,
                 this.node.id,
-                this.index,
-                ...this.input.connectedOutput.genRequest() ]
+                this.index);
 
-            : [ NUMBER_VALUE, 
+            req.push(...this.input.connectedOutput.genRequest());
+
+            return req;
+        }        
+        else
+        {
+            return [ NUMBER_VALUE, 
                 new GNumber(
                     this.control.value, 
                     this.control.displayDec).toString() ];
+        }
     }
 
 

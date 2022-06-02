@@ -132,7 +132,12 @@ function getTerminalsAfterNode(node)
     for (const output of node.outputs)
     {
         for (const input of output.connectedInputs)
+        {
+            if (input.param && (!input.param.output || !input.param.output.connected))
+                pushUnique(after, input.node);
+
             pushUnique(after, getTerminalsAfterNode(input.node));
+        }
     }
 
     return after.length > 0 ? after : [node];
@@ -145,22 +150,9 @@ function updateTerminalsAfterNodes(nodes)
     const terminals = [];
 
     for (const node of nodes)
-    {
-        const tt = getTerminalsAfterNode(node);
-
-        for (const t of tt)
-        {
-            if (!terminals.includes(t))
-                terminals.push(t);
-        }
-    }
+        pushUnique(terminals, getTerminalsAfterNode(node));
 
     pushUpdate(terminals);
-
-    // value update messages don't seem to be arriving
-
-    // look in the value update message, maybe after updating all the params,
-    // all nodes that contain updated params should also be updated
 }
 
 

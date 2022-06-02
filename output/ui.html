@@ -4564,7 +4564,7 @@ onmessage = function(e)
     //console.log('msg.cmd', msg.cmd);
     switch (msg.cmd)
     {
-        case 'genFindCorrection':   
+        case 'genFindCorrection':
             genFindCorrection(
                 msg.nodeId, 
                 msg.inputColor, 
@@ -4573,9 +4573,13 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        
+            genRequest(msg.request, msg.settings);
+            break;
 
-        case 'genEndFigMessage':  genEndFigMessage();                    break;
+        case 'genEndFigMessage':  
+            genEndFigMessage();
+            break;
     }
 
 
@@ -4616,15 +4620,15 @@ function genPostNextMessageToFigma()
     {
         let msg = figMessages.shift();
 
-        // if (msg.cmd == 'uiUpdateObjects')
-        // {
-        //     // move along the queue since only the last message is important
-        //     while (uiMessages.length > 0
-        //         && uiMessages[0].cmd        == msg.cmd
-        //         && uiMessages[0].request[0] == msg.request[0]
-        //         && uiMessages[0].request[1] == msg.request[1])
-        //         msg = uiMessages.shift();
-        // }
+        if (msg.cmd == 'figUpdateObjects')
+        {
+            // move along the queue since only the last message is important
+            while (figMessages.length > 0
+                && figMessages[0].cmd              == msg.cmd
+                && figMessages[0].updateNodeId     == msg.updateNodeId
+                && figMessages[0].updateParamIndex == msg.updateParamIndex)
+                msg = figMessages.shift();
+        }
 
         genPostMessageToUI({ cmd: 'uiForwardToFigma', msg: msg });
         figMessagePosted = true;
@@ -5044,7 +5048,8 @@ function genParseNumberInterpolate(parse)
 function genParse(parse)
 {
     const next = parse.req[parse.pos];
-        //console.log('next', next);
+    //console.log('next', next);
+
 
          if (next == PARAM             ) return genParseParam            (parse);
 
@@ -5060,6 +5065,7 @@ function genParse(parse)
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
 
+    
     parse.so++;
     return null;
 }
@@ -5126,7 +5132,7 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateObjects(parse.updateObjects);
+    genUpdateObjects    (updateNodeId, updateParamIndex, parse.updateObjects    );
     genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
 }
 
@@ -5214,7 +5220,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
 
 
-function genUpdateObjects(updateObjects)
+function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
 {
     // send objects in chunks
 
@@ -5232,8 +5238,10 @@ function genUpdateObjects(updateObjects)
         if (++c == chunkSize)
         {
             genQueueMessageToFigma({ 
-                cmd:     'figUpdateObjects',
-                objects: [...chunk]
+                cmd:             'figUpdateObjects',
+                updateNodeId:     updateNodeId,
+                updateParamIndex: updateParamIndex,
+                objects:          [...chunk]
             });
 
             chunk = [];
@@ -5246,8 +5254,10 @@ function genUpdateObjects(updateObjects)
     if (chunk.length > 0)
     {
         genQueueMessageToFigma({ 
-            cmd:     'figUpdateObjects',
-            objects: [...chunk]
+            cmd:             'figUpdateObjects',
+            updateNodeId:     updateNodeId,
+            updateParamIndex: updateParamIndex,
+            objects:          [...chunk]
         });
     }
 }
@@ -16224,18 +16234,27 @@ extends Parameter
             return this.cache;
 
 
-        return this.input
-            && this.input.connected 
+        if (   this.input
+            && this.input.connected)
+        {
+            const req = [];
 
-            ? [ PARAM,
+            req.push(
+                PARAM,
                 this.node.id,
-                this.index,
-                ...this.input.connectedOutput.genRequest() ]
+                this.index);
 
-            : [ NUMBER_VALUE, 
+            req.push(...this.input.connectedOutput.genRequest());
+
+            return req;
+        }        
+        else
+        {
+            return [ NUMBER_VALUE, 
                 new GNumber(
                     this.control.value, 
                     this.control.displayDec).toString() ];
+        }
     }
 
 
@@ -17046,7 +17065,12 @@ function getTerminalsAfterNode(node)
     for (const output of node.outputs)
     {
         for (const input of output.connectedInputs)
+        {
+            if (input.param && (!input.param.output || !input.param.output.connected))
+                pushUnique(after, input.node);
+
             pushUnique(after, getTerminalsAfterNode(input.node));
+        }
     }
 
     return after.length > 0 ? after : [node];
@@ -17059,22 +17083,9 @@ function updateTerminalsAfterNodes(nodes)
     const terminals = [];
 
     for (const node of nodes)
-    {
-        const tt = getTerminalsAfterNode(node);
-
-        for (const t of tt)
-        {
-            if (!terminals.includes(t))
-                terminals.push(t);
-        }
-    }
+        pushUnique(terminals, getTerminalsAfterNode(node));
 
     pushUpdate(terminals);
-
-    // value update messages don't seem to be arriving
-
-    // look in the value update message, maybe after updating all the params,
-    // all nodes that contain updated params should also be updated
 }
 
 
@@ -17384,8 +17395,6 @@ class Output
     set data(value)
     {
         this._data = value;
-
-        //pushUpdate(this.connectedInputs.map(i => i.node));
     }
 
 
@@ -18176,17 +18185,6 @@ class Operator
 
 
 
-    // refresh() // for repeats requests from nodes that duplicate their input, like row and column
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //             input.connectedOutput.node.refresh();
-    //     }
-    // }
-
-
-    
     invalidate()
     {
         //if (!this.valid) // stops a node with inputs from same output 
@@ -22931,6 +22929,7 @@ extends OperatorBase
         
 
         this.#paramAngle.control.setSuffix('°', true);
+        this.#paramAngle.control.wrapValue = true;
 
         
         this.updateRound();
@@ -24099,6 +24098,7 @@ extends Action
         console.log('this.oldActiveNodeIds', this.oldActiveNodeIds);
 
         updateTerminalsAfterNodes(nodes);
+        
         graphView.updateNodeTransforms(nodes);
         graphView.updateScrollWithBounds();
 
@@ -25170,7 +25170,7 @@ document.addEventListener('keyup', e =>
 },false);
 
 
-// from Figma -->
+// --> from Figma
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 onmessage = e =>
@@ -25179,6 +25179,8 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
+        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                 break;
+
         case 'uiEndStartGenerator':   uiEndStartGenerator(msg);                                          break;
         case 'uiLoadNodesAndConns':   uiLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
          
@@ -25186,9 +25188,7 @@ onmessage = e =>
         case 'uiGetPageDataReturn':   uiGetPageDataReturn(msg);                                          break;
                
         case 'uiEndResizeWindow':     uiEndResizeWindow();                                               break;
-               
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                 break;
-               
+
         case 'uiEndFigMessage':       uiEndFigMessage();                                                 break;
     }
 }    
@@ -25197,22 +25197,23 @@ onmessage = e =>
 
 
 
-//                                                                               <-- from Generator
+//                                                                               from Generator <--
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 generator.onmessage = function(e)
 {
+    console.log('from gen');
     const msg = JSON.parse(e.data);
 
     switch (msg.cmd)
     {
+        case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
+
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
         case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
 
         case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
         case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);              break;
-
-        case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
 
         case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
     }
@@ -25313,7 +25314,7 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
-                msg = genMessages.shift();
+                msg = deepCopy(genMessages.shift());
         }
 
         uiPostMessageToGenerator(msg);

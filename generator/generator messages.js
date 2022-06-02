@@ -13,7 +13,7 @@ onmessage = function(e)
     //console.log('msg.cmd', msg.cmd);
     switch (msg.cmd)
     {
-        case 'genFindCorrection':   
+        case 'genFindCorrection':
             genFindCorrection(
                 msg.nodeId, 
                 msg.inputColor, 
@@ -22,9 +22,13 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        
+            genRequest(msg.request, msg.settings);
+            break;
 
-        case 'genEndFigMessage':  genEndFigMessage();                    break;
+        case 'genEndFigMessage':  
+            genEndFigMessage();
+            break;
     }
 
 
@@ -65,15 +69,15 @@ function genPostNextMessageToFigma()
     {
         let msg = figMessages.shift();
 
-        // if (msg.cmd == 'uiUpdateObjects')
-        // {
-        //     // move along the queue since only the last message is important
-        //     while (uiMessages.length > 0
-        //         && uiMessages[0].cmd        == msg.cmd
-        //         && uiMessages[0].request[0] == msg.request[0]
-        //         && uiMessages[0].request[1] == msg.request[1])
-        //         msg = uiMessages.shift();
-        // }
+        if (msg.cmd == 'figUpdateObjects')
+        {
+            // move along the queue since only the last message is important
+            while (figMessages.length > 0
+                && figMessages[0].cmd              == msg.cmd
+                && figMessages[0].updateNodeId     == msg.updateNodeId
+                && figMessages[0].updateParamIndex == msg.updateParamIndex)
+                msg = figMessages.shift();
+        }
 
         genPostMessageToUI({ cmd: 'uiForwardToFigma', msg: msg });
         figMessagePosted = true;

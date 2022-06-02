@@ -351,17 +351,6 @@ class Operator
 
 
 
-    // refresh() // for repeats requests from nodes that duplicate their input, like row and column
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (input.connected)
-    //             input.connectedOutput.node.refresh();
-    //     }
-    // }
-
-
-    
     invalidate()
     {
         //if (!this.valid) // stops a node with inputs from same output 

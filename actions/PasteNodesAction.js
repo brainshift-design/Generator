@@ -48,6 +48,7 @@ extends Action
         console.log('this.oldActiveNodeIds', this.oldActiveNodeIds);
 
         updateTerminalsAfterNodes(nodes);
+        
         graphView.updateNodeTransforms(nodes);
         graphView.updateScrollWithBounds();
 

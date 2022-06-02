@@ -31,6 +31,7 @@ extends OperatorBase
         
 
         this.#paramAngle.control.setSuffix('°', true);
+        this.#paramAngle.control.wrapValue = true;
 
         
         this.updateRound();

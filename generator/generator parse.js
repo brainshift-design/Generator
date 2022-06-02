@@ -18,7 +18,8 @@
 function genParse(parse)
 {
     const next = parse.req[parse.pos];
-        //console.log('next', next);
+    //console.log('next', next);
+
 
          if (next == PARAM             ) return genParseParam            (parse);
 
@@ -34,6 +35,7 @@ function genParse(parse)
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
 
+    
     parse.so++;
     return null;
 }

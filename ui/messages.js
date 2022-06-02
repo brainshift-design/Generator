@@ -1,4 +1,4 @@
-// from Figma -->
+// --> from Figma
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 onmessage = e =>
@@ -7,6 +7,8 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
+        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                 break;
+
         case 'uiEndStartGenerator':   uiEndStartGenerator(msg);                                          break;
         case 'uiLoadNodesAndConns':   uiLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
          
@@ -14,9 +16,7 @@ onmessage = e =>
         case 'uiGetPageDataReturn':   uiGetPageDataReturn(msg);                                          break;
                
         case 'uiEndResizeWindow':     uiEndResizeWindow();                                               break;
-               
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                 break;
-               
+
         case 'uiEndFigMessage':       uiEndFigMessage();                                                 break;
     }
 }    
@@ -25,22 +25,23 @@ onmessage = e =>
 
 
 
-//                                                                               <-- from Generator
+//                                                                               from Generator <--
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 generator.onmessage = function(e)
 {
+    console.log('from gen');
     const msg = JSON.parse(e.data);
 
     switch (msg.cmd)
     {
+        case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
+
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
         case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
 
         case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
         case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);              break;
-
-        case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
 
         case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
     }
@@ -141,7 +142,7 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
-                msg = genMessages.shift();
+                msg = deepCopy(genMessages.shift());
         }
 
         uiPostMessageToGenerator(msg);

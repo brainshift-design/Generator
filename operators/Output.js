@@ -41,8 +41,6 @@ class Output
     set data(value)
     {
         this._data = value;
-
-        //pushUpdate(this.connectedInputs.map(i => i.node));
     }
 
 
