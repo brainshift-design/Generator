@@ -102,7 +102,7 @@ extends Parameter
         // return this.input
         //     && this.input.connected 
 
-        //     ? [ ...this.input.connectedOutput.genRequest() ]
+        //     ? [ ...this.input.connectedOutput.genRequest(createGenObject()) ]
 
         //     : [ COLOR, 
         //         this.value.toString(), 
@@ -111,7 +111,7 @@ extends Parameter
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         //return output.param.genRequest();
     }

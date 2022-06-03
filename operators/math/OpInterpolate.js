@@ -29,7 +29,7 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output
 
@@ -41,20 +41,28 @@ extends OperatorBase
         const input1 = this.node.inputs[1];
         
         
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
         const req = this.node.getRequestStart();
-    
+
+        
         if (   input0.connected
             && input1.connected)   req.push(2,
-                                       ...input0.connectedOutput.genRequest(),
-                                       ...input1.connectedOutput.genRequest());
+                                       ...input0.connectedOutput.genRequest(gen),
+                                       ...input1.connectedOutput.genRequest(gen));
 
-        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest());
-        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest());
+        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
+        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
             
         else                       req.push(0);
 
 
-        req.push(...this.node.paramAmount.genRequest());
+        req.push(...this.node.paramAmount.genRequest(gen));
+
+
+        gen.scope.pop();
 
         return req;
     }

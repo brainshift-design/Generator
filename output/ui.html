@@ -4889,7 +4889,7 @@ function genParseNumberDivide(parse)
         for (let i = 1; i < nValues; i++)
         {
             num = genParse(parse);
-            if (num.value == 0) { num.value = Number.NaN; break; }
+            if (num.value == 0) { result = Number.NaN; break; }
             
             result /= num.value;
             maxDec = Math.max(maxDec, num.decimals);
@@ -5150,7 +5150,7 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
             paramIndex: paramIndex, 
             value:      value});
 
-    else console.assert(found.value == value);
+    //else console.assert(found.value == value);
 }
 
 
@@ -5160,7 +5160,7 @@ function genPushUpdateObject(parse, nodeId, object)
     const found = parse.updateObjects.find(o => o.nodeId == nodeId);
 
     if (!found) parse.updateObjects.push(object);
-    else        console.assert(found[2] == value);
+    //else        console.assert(found[2] == value);
 }
 
 
@@ -11699,12 +11699,12 @@ function initNumberSliderEvents(slider)
                         slider.movedX     = 0;
                         slider.startValue = slider.value;
                         slider.sx         = e.clientX;
-                    } 
+                    }
 
 
                     if (slider.value != slider.prevValue)
                         pushUpdateFromParam([slider.param.node], slider.param);
-                                        
+
                     slider.prevValue = slider.value;
                 }
             }
@@ -12586,30 +12586,22 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const oldValue = slider.value;
 
 
-        // if (isNaN(value))
-        //     forceChange = true;
+        const dec = Math.pow(10, Math.abs(slider.dec));
 
-        // else
-        // {
-            const dec = Math.pow(10, Math.abs(slider.dec));
-//console.log('dec', dec);
-            value = Math.round(value * dec) / dec;
+        value = Math.round(value * dec) / dec;
 
-            if (slider.wrapValue)
-            {
-                while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
-                while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
-            }
-            else if (fullRange)
-                value = Math.min(Math.max(slider.min, value), slider.max);
-            else
-                value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
-        // }
+        if (slider.wrapValue)
+        {
+            while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
+            while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
+        }
+        else if (fullRange)
+            value = Math.min(Math.max(slider.min, value), slider.max);
+        else
+            value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
 
 
-        if (   /*forceChange
-            || isNaN(oldValue)*/
-                isNaN(value) && !isNaN(oldValue)
+        if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
@@ -16224,7 +16216,7 @@ extends Parameter
 
 
 
-    genRequest()
+    genRequest(gen)
     {
         // this function exists because a parameter without an output
         // should still provide a value
@@ -16234,34 +16226,42 @@ extends Parameter
             return this.cache;
 
 
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: this.index });
+
+        const req = [];
+
+        
         if (   this.input
             && this.input.connected)
         {
-            const req = [];
-
             req.push(
                 PARAM,
                 this.node.id,
-                this.index);
-
-            req.push(...this.input.connectedOutput.genRequest());
-
-            return req;
+                this.index,
+                ...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {
-            return [ NUMBER_VALUE, 
+            req.push( 
+                NUMBER_VALUE, 
                 new GNumber(
                     this.control.value, 
-                    this.control.displayDec).toString() ];
+                    this.control.displayDec).toString());
         }
+
+
+        gen.scope.pop();
+
+        return req;
     }
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
-        return this.param.genRequest();
+        return this.param.genRequest(gen);
     }
 
 
@@ -16389,7 +16389,7 @@ extends Parameter
         // return this.input
         //     && this.input.connected 
 
-        //     ? [ ...this.input.connectedOutput.genRequest() ]
+        //     ? [ ...this.input.connectedOutput.genRequest(createGenObject()) ]
 
         //     : [ COLOR, 
         //         this.value.toString(), 
@@ -16398,7 +16398,7 @@ extends Parameter
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         //return output.param.genRequest();
     }
@@ -16544,7 +16544,7 @@ extends Parameter
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.genRequest() ]
+            ? [ ...this.input.connectedOutput.genRequest(createGenObject()) ]
 
             : [ NUMBER, 
                 this.value.toString(), 
@@ -17080,6 +17080,8 @@ function getTerminalsAfterNode(node)
 
 function updateTerminalsAfterNodes(nodes)
 {
+    //console.log('updateTerminalsAfterNodes()');
+
     const terminals = [];
 
     for (const node of nodes)
@@ -18519,18 +18521,29 @@ function pushUpdateFromParam(nodes, param)
     nodes.forEach(n => n.invalidate());
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
+    const gen = createGenObject();
+
     terminals.forEach(n => 
         n.outputs
             .filter(o => !o.param)
             .forEach(o =>
-                request.push(...o.genRequest()))); 
+                request.push(...o.genRequest(gen)))); 
 
-
+                
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,
         settings: settings
     });
+}
+
+
+
+function createGenObject()
+{
+    return {
+        scope: [] // [{nodeId, paramIndex}]
+    };    
 }
 
 
@@ -19450,7 +19463,7 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output        
 
@@ -19458,15 +19471,23 @@ extends OperatorBase
             return this.cache;
 
 
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+        
         const req = this.node.getRequestStart();
-                         
+
+        
         const input = this.node.inputs[0];
 
         req.push(...(
             input.connected
-            ? input.connectedOutput.genRequest()
-            : this.node.#paramValue.genRequest()));
-                
+            ? input.connectedOutput.genRequest(gen)
+            : this.node.#paramValue.genRequest(gen)));
+
+            
+        gen.scope.pop();
+        
         return req;
     }
 
@@ -19529,47 +19550,6 @@ extends OperatorBase
         //     if (this.#paramMax.value < this.#paramMin.value)
         //         this.#paramMax.setValue(this.#paramMin.value, false, true, false);
         // });
-    }
-
-
-
-    // updateData()
-    // {
-    //     if (this.inputs[0].connected)
-    //     {
-    //         this.#paramMin.control.setDecimals(this.inputs[0].data.decimals);
-    //         this.#paramMax.control.setDecimals(this.inputs[0].data.decimals);
-            
-    //         if (this.#paramMin.value > this.#paramMax.value)
-    //             this.#paramMin.setValue(this.#paramMax.value, false, true, false);
-
-    //         if (this.#paramMax.value < this.#paramMin.value)
-    //             this.#paramMax.setValue(this.#paramMin.value, false, true, false);
-
-    //         this.outputs[0]._data = dataFromNumber(
-    //             Math.min(Math.max(
-    //                 this.#paramMin.value, 
-    //                 this.inputs[0].data.value), 
-    //                 this.#paramMax.value),
-    //             this.inputs[0].data.decimals);
-    //     }
-    //     else
-    //         this.outputs[0]._data = dataFromNumber(Number.Nan, 0);
-            
-                  
-    //     super.updateData()
-    // }
-
-
-
-    toString()
-    {
-        // let str = nodeType;
-
-        // if (this.inputs[0].connected)
-        //     str +=
-
-        // return str;
     }
 }
 
@@ -19656,7 +19636,7 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output
 
@@ -19666,13 +19646,20 @@ extends OperatorBase
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
 
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
         const req = this.node.getRequestStart();
+
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...input.connectedOutput.genRequest()));
+            req.push(...input.connectedOutput.genRequest(gen)));
 
+        
+        gen.scope.pop();
         
         return req;
     }
@@ -19804,21 +19791,6 @@ extends OpArithmetic
     {
         super(NUMBER_SUBTRACT, 'sub', '−');
     }
-    
-    
-    
-    // getResult()
-    // {
-    //     if (this.inputs.length-1 == 0)
-    //         return 0;
-
-    //     let result = this.inputs[0].data.value;
-
-    //     for (let i = 1; i < this.inputs.length-1; i++)
-    //         result -= this.inputs[i].data.value;
-
-    //     return result;
-    // }
 }
 
 
@@ -19829,21 +19801,6 @@ extends OpArithmetic
     {
         super(NUMBER_MULTIPLY, 'mul', '×');
     }
-    
-    
-    
-    // getResult()
-    // {
-    //     if (this.inputs.length-1 == 0)
-    //         return 0;
-
-    //     let result = 1;
-
-    //     for (let i = 0; i < this.inputs.length-1; i++)
-    //         result *= this.inputs[i].data.value;
-
-    //     return result;
-    // }
 }
 
 
@@ -19854,25 +19811,6 @@ extends OpArithmetic
     {
         super(NUMBER_DIVIDE, 'div', '÷');
     }
-    
-    
-    
-    // getResult()
-    // {
-    //     if (this.inputs.length-1 == 0)
-    //         return 0;
-
-    //     let result = this.inputs[0].data.value;
-
-    //     for (let i = 1; i < this.inputs.length-1; i++)
-    //     {
-    //         const div = this.inputs[i].data.value;
-    //         if (div == 0) return Number.NaN;
-    //         result /= div;
-    //     }
-
-    //     return result;
-    // }
 }
 
 
@@ -19886,25 +19824,6 @@ extends OpArithmetic
     
     
     
-    // getResult()
-    // {
-    //     if (this.inputs.length-1 == 0)
-    //         return 0;
-
-    //     let result = this.inputs[0].data.value;
-
-    //     for (let i = 1; i < this.inputs.length-1; i++)
-    //     {
-    //         const div = this.inputs[i].data.value;
-    //         if (div == 0) return Number.NaN;
-    //         result %= div;
-    //     }
-
-    //     return result;
-    // }
-
-
-
     updateNode()
     {
         super.updateNode();
@@ -19929,21 +19848,6 @@ extends OpArithmetic
     {
         super(NUMBER_EXPONENT, 'exp', 'xʸ'); // placeholder symbol, actual symbol set in updateNode()
     }
-    
-    
-    
-    // getResult()
-    // {
-    //     if (this.inputs.length-1 == 0)
-    //         return 0;
-            
-    //     let result = this.inputs[0].data.value;
-
-    //     for (let i = 1; i < this.inputs.length-1; i++)
-    //         result = Math.pow(result, this.inputs[i].data.value);
-
-    //     return result;
-    // }
 
 
 
@@ -20053,7 +19957,7 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output
 
@@ -20063,14 +19967,21 @@ extends OperatorBase
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
 
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
         const req = this.node.getRequestStart();
+
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...input.connectedOutput.genRequest()));
+            req.push(...input.connectedOutput.genRequest(gen)));
 
         
+        gen.scope.pop();
+
         return req;
     }
 
@@ -20215,7 +20126,7 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output
 
@@ -20227,20 +20138,28 @@ extends OperatorBase
         const input1 = this.node.inputs[1];
         
         
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
         const req = this.node.getRequestStart();
-    
+
+        
         if (   input0.connected
             && input1.connected)   req.push(2,
-                                       ...input0.connectedOutput.genRequest(),
-                                       ...input1.connectedOutput.genRequest());
+                                       ...input0.connectedOutput.genRequest(gen),
+                                       ...input1.connectedOutput.genRequest(gen));
 
-        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest());
-        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest());
+        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
+        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
             
         else                       req.push(0);
 
 
-        req.push(...this.node.paramAmount.genRequest());
+        req.push(...this.node.paramAmount.genRequest(gen));
+
+
+        gen.scope.pop();
 
         return req;
     }
@@ -22999,15 +22918,21 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output
 
         if (!isEmpty(this.cache))
             return this.cache;
 
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
         const req = this.node.getRequestStart();
-                
+
+        
         const input = this.node.inputs[0];
 
         const indices = [];
@@ -23015,7 +22940,7 @@ extends OperatorBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest());
+            req.push(...input.connectedOutput.genRequest(gen));
 
 
             for (const param of this.node.params)
@@ -23025,25 +22950,27 @@ extends OperatorBase
             req.push(indices.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest());
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest());
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest());
-            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest());
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest());
-            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest());
+            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
+            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
+            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
+            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
+            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(),
-                ...this.node.#paramY     .genRequest(),
-                ...this.node.#paramWidth .genRequest(),
-                ...this.node.#paramHeight.genRequest(),
-                ...this.node.#paramAngle .genRequest(),
-                ...this.node.#paramRound .genRequest());
+                ...this.node.#paramX     .genRequest(gen),
+                ...this.node.#paramY     .genRequest(gen),
+                ...this.node.#paramWidth .genRequest(gen),
+                ...this.node.#paramHeight.genRequest(gen),
+                ...this.node.#paramAngle .genRequest(gen),
+                ...this.node.#paramRound .genRequest(gen));
         }
 
 
+        gen.scope.pop();
+        
         return req;
     }
 
@@ -25202,7 +25129,6 @@ onmessage = e =>
 
 generator.onmessage = function(e)
 {
-    console.log('from gen');
     const msg = JSON.parse(e.data);
 
     switch (msg.cmd)

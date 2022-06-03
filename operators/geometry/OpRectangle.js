@@ -101,15 +101,21 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output
 
         if (!isEmpty(this.cache))
             return this.cache;
 
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
         const req = this.node.getRequestStart();
-                
+
+        
         const input = this.node.inputs[0];
 
         const indices = [];
@@ -117,7 +123,7 @@ extends OperatorBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest());
+            req.push(...input.connectedOutput.genRequest(gen));
 
 
             for (const param of this.node.params)
@@ -127,25 +133,27 @@ extends OperatorBase
             req.push(indices.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest());
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest());
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest());
-            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest());
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest());
-            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest());
+            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
+            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
+            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
+            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
+            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(),
-                ...this.node.#paramY     .genRequest(),
-                ...this.node.#paramWidth .genRequest(),
-                ...this.node.#paramHeight.genRequest(),
-                ...this.node.#paramAngle .genRequest(),
-                ...this.node.#paramRound .genRequest());
+                ...this.node.#paramX     .genRequest(gen),
+                ...this.node.#paramY     .genRequest(gen),
+                ...this.node.#paramWidth .genRequest(gen),
+                ...this.node.#paramHeight.genRequest(gen),
+                ...this.node.#paramAngle .genRequest(gen),
+                ...this.node.#paramRound .genRequest(gen));
         }
 
 
+        gen.scope.pop();
+        
         return req;
     }
 

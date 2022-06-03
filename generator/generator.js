@@ -26,7 +26,7 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateObjects(parse.updateObjects);
+    genUpdateObjects    (updateNodeId, updateParamIndex, parse.updateObjects    );
     genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
 }
 
@@ -44,7 +44,7 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
             paramIndex: paramIndex, 
             value:      value});
 
-    else console.assert(found.value == value);
+    //else console.assert(found.value == value);
 }
 
 
@@ -54,7 +54,7 @@ function genPushUpdateObject(parse, nodeId, object)
     const found = parse.updateObjects.find(o => o.nodeId == nodeId);
 
     if (!found) parse.updateObjects.push(object);
-    else        console.assert(found[2] == value);
+    //else        console.assert(found[2] == value);
 }
 
 
@@ -114,7 +114,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
 
 
-function genUpdateObjects(updateObjects)
+function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
 {
     // send objects in chunks
 
@@ -132,8 +132,10 @@ function genUpdateObjects(updateObjects)
         if (++c == chunkSize)
         {
             genQueueMessageToFigma({ 
-                cmd:     'figUpdateObjects',
-                objects: [...chunk]
+                cmd:             'figUpdateObjects',
+                updateNodeId:     updateNodeId,
+                updateParamIndex: updateParamIndex,
+                objects:          [...chunk]
             });
 
             chunk = [];
@@ -146,8 +148,10 @@ function genUpdateObjects(updateObjects)
     if (chunk.length > 0)
     {
         genQueueMessageToFigma({ 
-            cmd:     'figUpdateObjects',
-            objects: [...chunk]
+            cmd:             'figUpdateObjects',
+            updateNodeId:     updateNodeId,
+            updateParamIndex: updateParamIndex,
+            objects:          [...chunk]
         });
     }
 }

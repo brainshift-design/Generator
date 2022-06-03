@@ -181,12 +181,12 @@ function initNumberSliderEvents(slider)
                         slider.movedX     = 0;
                         slider.startValue = slider.value;
                         slider.sx         = e.clientX;
-                    } 
+                    }
 
 
                     if (slider.value != slider.prevValue)
                         pushUpdateFromParam([slider.param.node], slider.param);
-                                        
+
                     slider.prevValue = slider.value;
                 }
             }

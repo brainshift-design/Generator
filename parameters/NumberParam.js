@@ -153,7 +153,7 @@ extends Parameter
 
 
 
-    genRequest()
+    genRequest(gen)
     {
         // this function exists because a parameter without an output
         // should still provide a value
@@ -163,34 +163,42 @@ extends Parameter
             return this.cache;
 
 
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: this.index });
+
+        const req = [];
+
+        
         if (   this.input
             && this.input.connected)
         {
-            const req = [];
-
             req.push(
                 PARAM,
                 this.node.id,
-                this.index);
-
-            req.push(...this.input.connectedOutput.genRequest());
-
-            return req;
+                this.index,
+                ...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {
-            return [ NUMBER_VALUE, 
+            req.push( 
+                NUMBER_VALUE, 
                 new GNumber(
                     this.control.value, 
-                    this.control.displayDec).toString() ];
+                    this.control.displayDec).toString());
         }
+
+
+        gen.scope.pop();
+
+        return req;
     }
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
-        return this.param.genRequest();
+        return this.param.genRequest(gen);
     }
 
 

@@ -267,7 +267,7 @@ function figCreateObject(objects, genObj)
     }
 
 
-    figObj.name = 'G   ' + genObj.nodeId.toString() + ':' + genObj.id.toString();
+    figObj.name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
 
     figObj.setPluginData('id',     genObj.id    .toString());
     figObj.setPluginData('type',   genObj.type  .toString());

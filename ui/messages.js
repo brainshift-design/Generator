@@ -30,7 +30,6 @@ onmessage = e =>
 
 generator.onmessage = function(e)
 {
-    console.log('from gen');
     const msg = JSON.parse(e.data);
 
     switch (msg.cmd)

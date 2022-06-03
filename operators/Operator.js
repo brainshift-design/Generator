@@ -685,18 +685,29 @@ function pushUpdateFromParam(nodes, param)
     nodes.forEach(n => n.invalidate());
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
+    const gen = createGenObject();
+
     terminals.forEach(n => 
         n.outputs
             .filter(o => !o.param)
             .forEach(o =>
-                request.push(...o.genRequest()))); 
+                request.push(...o.genRequest(gen)))); 
 
-
+                
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,
         settings: settings
     });
+}
+
+
+
+function createGenObject()
+{
+    return {
+        scope: [] // [{nodeId, paramIndex}]
+    };    
 }
 
 

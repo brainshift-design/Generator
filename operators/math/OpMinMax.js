@@ -28,45 +28,4 @@ extends OperatorBase
         //         this.#paramMax.setValue(this.#paramMin.value, false, true, false);
         // });
     }
-
-
-
-    // updateData()
-    // {
-    //     if (this.inputs[0].connected)
-    //     {
-    //         this.#paramMin.control.setDecimals(this.inputs[0].data.decimals);
-    //         this.#paramMax.control.setDecimals(this.inputs[0].data.decimals);
-            
-    //         if (this.#paramMin.value > this.#paramMax.value)
-    //             this.#paramMin.setValue(this.#paramMax.value, false, true, false);
-
-    //         if (this.#paramMax.value < this.#paramMin.value)
-    //             this.#paramMax.setValue(this.#paramMin.value, false, true, false);
-
-    //         this.outputs[0]._data = dataFromNumber(
-    //             Math.min(Math.max(
-    //                 this.#paramMin.value, 
-    //                 this.inputs[0].data.value), 
-    //                 this.#paramMax.value),
-    //             this.inputs[0].data.decimals);
-    //     }
-    //     else
-    //         this.outputs[0]._data = dataFromNumber(Number.Nan, 0);
-            
-                  
-    //     super.updateData()
-    // }
-
-
-
-    toString()
-    {
-        // let str = nodeType;
-
-        // if (this.inputs[0].connected)
-        //     str +=
-
-        // return str;
-    }
 }

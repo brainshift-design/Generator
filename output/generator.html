@@ -3316,7 +3316,7 @@ function genParseNumberDivide(parse)
         for (let i = 1; i < nValues; i++)
         {
             num = genParse(parse);
-            if (num.value == 0) { num.value = Number.NaN; break; }
+            if (num.value == 0) { result = Number.NaN; break; }
             
             result /= num.value;
             maxDec = Math.max(maxDec, num.decimals);
@@ -3577,7 +3577,7 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
             paramIndex: paramIndex, 
             value:      value});
 
-    else console.assert(found.value == value);
+    //else console.assert(found.value == value);
 }
 
 
@@ -3587,7 +3587,7 @@ function genPushUpdateObject(parse, nodeId, object)
     const found = parse.updateObjects.find(o => o.nodeId == nodeId);
 
     if (!found) parse.updateObjects.push(object);
-    else        console.assert(found[2] == value);
+    //else        console.assert(found[2] == value);
 }
 
 

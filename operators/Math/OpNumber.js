@@ -28,7 +28,7 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output        
 
@@ -36,15 +36,23 @@ extends OperatorBase
             return this.cache;
 
 
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+        
         const req = this.node.getRequestStart();
-                         
+
+        
         const input = this.node.inputs[0];
 
         req.push(...(
             input.connected
-            ? input.connectedOutput.genRequest()
-            : this.node.#paramValue.genRequest()));
-                
+            ? input.connectedOutput.genRequest(gen)
+            : this.node.#paramValue.genRequest(gen)));
+
+            
+        gen.scope.pop();
+        
         return req;
     }
 

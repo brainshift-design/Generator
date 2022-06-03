@@ -80,7 +80,7 @@ extends OperatorBase
 
 
 
-    output_genRequest()
+    output_genRequest(gen)
     {
         // 'this' is the output
 
@@ -90,13 +90,20 @@ extends OperatorBase
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
 
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
         const req = this.node.getRequestStart();
+
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...input.connectedOutput.genRequest()));
+            req.push(...input.connectedOutput.genRequest(gen)));
 
+        
+        gen.scope.pop();
         
         return req;
     }

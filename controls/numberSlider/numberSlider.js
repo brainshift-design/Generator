@@ -114,30 +114,22 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         const oldValue = slider.value;
 
 
-        // if (isNaN(value))
-        //     forceChange = true;
+        const dec = Math.pow(10, Math.abs(slider.dec));
 
-        // else
-        // {
-            const dec = Math.pow(10, Math.abs(slider.dec));
-//console.log('dec', dec);
-            value = Math.round(value * dec) / dec;
+        value = Math.round(value * dec) / dec;
 
-            if (slider.wrapValue)
-            {
-                while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
-                while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
-            }
-            else if (fullRange)
-                value = Math.min(Math.max(slider.min, value), slider.max);
-            else
-                value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
-        // }
+        if (slider.wrapValue)
+        {
+            while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
+            while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
+        }
+        else if (fullRange)
+            value = Math.min(Math.max(slider.min, value), slider.max);
+        else
+            value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
 
 
-        if (   /*forceChange
-            || isNaN(oldValue)*/
-                isNaN(value) && !isNaN(oldValue)
+        if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
