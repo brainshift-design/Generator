@@ -115,7 +115,7 @@ const settings = {
     logStorage: true,
     logActions: true,
     logRequests: true,
-    logParamUpdates: true,
+    logParamUpdates: false,
     logObjectUpdates: false
 };
 //const MAX_OBJECTS = 0x10000;

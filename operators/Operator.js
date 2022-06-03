@@ -685,6 +685,11 @@ function pushUpdateFromParam(nodes, param)
     nodes.forEach(n => n.invalidate());
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
+
+    if (param)
+        pushUnique(terminals, param.node);
+
+
     const gen = createGenObject();
 
     terminals.forEach(n => 
@@ -692,6 +697,16 @@ function pushUpdateFromParam(nodes, param)
             .filter(o => !o.param)
             .forEach(o =>
                 request.push(...o.genRequest(gen)))); 
+
+
+    gen.markParams = false;
+    gen.paramNodes
+        .filter(n => !terminals.includes(n))
+        .forEach(n => 
+            n.outputs
+                .filter(o => !o.param)
+                .forEach(o =>
+                    request.push(...o.genRequest(gen)))); 
 
                 
     uiQueueMessageToGenerator({
@@ -706,7 +721,9 @@ function pushUpdateFromParam(nodes, param)
 function createGenObject()
 {
     return {
-        scope: [] // [{nodeId, paramIndex}]
+        scope:      [], // [{nodeId, paramIndex}]
+        paramNodes: [],
+        markParams: true
     };    
 }
 

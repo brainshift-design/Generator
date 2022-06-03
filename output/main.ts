@@ -191,7 +191,7 @@ const settings =
     logStorage:       true,
     logActions:       true,
     logRequests:      true,
-    logParamUpdates:  true,
+    logParamUpdates:  false,
     logObjectUpdates: false
 };
 

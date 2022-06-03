@@ -169,15 +169,22 @@ extends Parameter
 
         const req = [];
 
-        
+
         if (   this.input
-            && this.input.connected)
+            && this.input.connected
+            && gen.markParams)
         {
-            req.push(
-                PARAM,
-                this.node.id,
-                this.index,
-                ...this.input.connectedOutput.genRequest(gen));
+            if (lastOf(gen.scope).nodeId != this.node.id)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.index);
+                
+                pushUnique(gen.paramNodes, this.node);
+            }
+
+            req.push(...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {

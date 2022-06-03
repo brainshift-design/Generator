@@ -154,7 +154,13 @@ function genParseNumberDivide(parse)
         for (let i = 1; i < nValues; i++)
         {
             num = genParse(parse);
-            if (num.value == 0) { result = Number.NaN; break; }
+
+            if (num.value == 0) 
+            { 
+                result = Number.NaN; 
+                maxDec = 0;
+                break; 
+            }
             
             result /= num.value;
             maxDec = Math.max(maxDec, num.decimals);

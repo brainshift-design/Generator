@@ -4889,7 +4889,13 @@ function genParseNumberDivide(parse)
         for (let i = 1; i < nValues; i++)
         {
             num = genParse(parse);
-            if (num.value == 0) { result = Number.NaN; break; }
+
+            if (num.value == 0) 
+            { 
+                result = Number.NaN; 
+                maxDec = 0;
+                break; 
+            }
             
             result /= num.value;
             maxDec = Math.max(maxDec, num.decimals);
@@ -11471,7 +11477,7 @@ const settings =
     logStorage:       true,
     logActions:       true,
     logRequests:      true,
-    logParamUpdates:  true,
+    logParamUpdates:  false,
     logObjectUpdates: false
 };
 
@@ -16232,15 +16238,22 @@ extends Parameter
 
         const req = [];
 
-        
+
         if (   this.input
-            && this.input.connected)
+            && this.input.connected
+            && gen.markParams)
         {
-            req.push(
-                PARAM,
-                this.node.id,
-                this.index,
-                ...this.input.connectedOutput.genRequest(gen));
+            if (lastOf(gen.scope).nodeId != this.node.id)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.index);
+                
+                pushUnique(gen.paramNodes, this.node);
+            }
+
+            req.push(...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {
@@ -18521,6 +18534,11 @@ function pushUpdateFromParam(nodes, param)
     nodes.forEach(n => n.invalidate());
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
+
+    if (param)
+        pushUnique(terminals, param.node);
+
+
     const gen = createGenObject();
 
     terminals.forEach(n => 
@@ -18528,6 +18546,16 @@ function pushUpdateFromParam(nodes, param)
             .filter(o => !o.param)
             .forEach(o =>
                 request.push(...o.genRequest(gen)))); 
+
+
+    gen.markParams = false;
+    gen.paramNodes
+        .filter(n => !terminals.includes(n))
+        .forEach(n => 
+            n.outputs
+                .filter(o => !o.param)
+                .forEach(o =>
+                    request.push(...o.genRequest(gen)))); 
 
                 
     uiQueueMessageToGenerator({
@@ -18542,7 +18570,9 @@ function pushUpdateFromParam(nodes, param)
 function createGenObject()
 {
     return {
-        scope: [] // [{nodeId, paramIndex}]
+        scope:      [], // [{nodeId, paramIndex}]
+        paramNodes: [],
+        markParams: true
     };    
 }
 
