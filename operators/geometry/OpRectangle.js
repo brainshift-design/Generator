@@ -172,7 +172,7 @@ extends OperatorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json = super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';

@@ -1575,12 +1575,14 @@ div
 
 
 
-//const inputColor        = 'rgba(0, 0, 0, 0.12)';
+const smallScrollGap =  6;
+const largeScrollGap = 14;
 
-const smallScrollGap    =  6;
-const largeScrollGap    = 14;
+const MAX_INT32      = 2147483647;
 
-const MAX_INT32         = 2147483647;
+const TAB            = '    ';
+const NL             = '\n';
+
 
 
 function rgbFromType(type, active)
@@ -3861,21 +3863,30 @@ function logSavedConn(connKey)
 
 
 
-function logRequest(request)
+function logRequest(request, updateNodeId, updateParamIndex)
 {
-    // typescript doesn't implement String.replaceAll(), 
-    // and because this file is included by both JS and TS,
-    // I'm using .split().join()
+    const req = { 
+        request: request, 
+        pos:     2,
+        so:      0,
+        nTab:    0
+    };
+
+
+    let log = updateNodeId + ' ' + updateParamIndex;
+
+
+    const stackOverflowProtect = 100;
+
+    while (   req.pos < req.request.length 
+           && req.so  < stackOverflowProtect)
+        log += logReq(req);
+
 
     console.log(
         '%c%s', 
         'background: #60aa60; color: #fff', 
-        JSON.stringify(request)        
-            .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
-            .split('"') .join('')      //.replaceAll('"', '')
-            .split('[') .join('')      //.replaceAll('[', '')
-            .split(']') .join('')      //.replaceAll(']', '')
-            .split(',') .join(' '));   //.replaceAll(',', ' '));
+         log);
 }
 
 
@@ -3896,6 +3907,203 @@ function logObjectUpdates(objects)
         '%cobjects', 
         'background: #07e; color: white;', 
         objects);
+}
+
+
+function logReq(req)
+{
+    const next = req.request[req.pos];
+
+
+         if (next == PARAM             ) return logReqParam            (req);
+
+    else if (next == NUMBER_VALUE      ) return logReqNumValue         (req);
+    else if (next == NUMBER            ) return logReqNumber           (req);
+    else if (next == NUMBER_ADD         
+          || next == NUMBER_SUBTRACT    
+          || next == NUMBER_MULTIPLY    
+          || next == NUMBER_DIVIDE
+          || next == NUMBER_MODULO
+          || next == NUMBER_EXPONENT   ) return logReqNumberArithmetic (req);
+    else if (next == NUMBER_INTERPOLATE) return logReqNumberInterpolate(req);
+
+    else if (next == RECTANGLE         ) return logReqRectangle        (req);
+
+    
+    req.so++;
+
+    return '';
+
+
+    // return JSON.stringify(req.request)        
+    //     .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
+    //     .split('"') .join('')      //.replaceAll('"', '')
+    //     .split('[') .join('')      //.replaceAll('[', '')
+    //     .split(']') .join('')      //.replaceAll(']', '')
+    //     .split(',') .join(' ');   //.replaceAll(',', ' '));
+}
+
+
+
+function logReqActive(req)
+{
+    return req.request[req.pos] == ACTIVE
+         ? ' ' + req.request[req.pos++]
+         : '';
+}
+
+
+
+function logReqParam(req)
+{
+    if (req.request[req.pos] != PARAM) 
+        return '';
+    
+    //req.pos++;
+
+
+    // const tab        = TAB;
+    // let   pos        = NL + tab.repeat(req.nTab++);
+
+    const tag        = req.request[req.pos++];
+    const nodeId     = req.request[req.pos++];
+    const paramIndex = req.request[req.pos++];
+
+    const val        = logReq(req);
+
+    
+    return tag + ' ' + nodeId + ' ' + paramIndex + ' ' + val;
+}
+
+
+
+function logReqNumberNodeId(req)
+{
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+    
+    return tag + ' ' + nodeId + ' ' + active;
+}
+
+
+
+function logReqNumValue(req)
+{
+    const tab = TAB;
+    let   pos = NL + tab.repeat(req.nTab++);
+
+    const tag = req.request[req.pos++];
+    const val = req.request[req.pos++]; // N
+
+    return pos + tag + ' ' + val;
+}
+
+
+
+function logReqNumber(req)
+{
+    const tab    = TAB;
+    let   pos    = NL + tab.repeat(req.nTab++);
+
+    const node = logReqNumberNodeId(req);
+    const num  = logReq(req);    
+    
+    return pos + node + ' ' + num;
+}
+
+
+
+function logReqNumberArithmetic(req)
+{
+    const tab     = TAB;
+    let   pos     = NL + tab.repeat(req.nTab++);
+
+    const node    = logReqNumberNodeId(req);
+    const nValues = req.request[req.pos++];
+    
+    let log = pos + node + ' ' + nValues;
+
+    for (let i = 0; i < nValues; i++)
+        log += logReq(req);
+
+    return log;
+}
+
+
+
+function logReqNumberInterpolate(req)
+{
+    const tab     = TAB;
+    let   pos     = NL + tab.repeat(req.nTab++);
+
+    const node    = logReqNumberNodeId(req);
+    const nValues = req.request[req.pos++];
+
+
+    let log = pos + node + ' ' + nValues;
+
+    if (nValues == 2)
+    {
+        const num0 = logReq(req);
+        const num1 = logReq(req);
+        const amt  = logReq(req);
+
+        log += num0 + num1 + amt;
+    }
+    else if (nValues == 1)
+    {
+        const num = logReq(req);
+
+        log += num;
+    }
+
+
+    return log;
+}
+
+
+
+function logReqRectangle(req)
+{
+    const tab    = TAB;
+    let   pos    = NL + tab.repeat(req.nTab++);
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = pos + tag + ' ' + nodeId + ' ' + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == RECTANGLE)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(6).keys()];
+    
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: log += logReq(req); break;
+        case 1: log += logReq(req); break;
+        case 2: log += logReq(req); break;
+        case 3: log += logReq(req); break;
+        case 4: log += logReq(req); break;
+        case 5: log += logReq(req); break;
+        }
+    }
+
+
+    return log;
 }
 
 
@@ -5112,12 +5320,13 @@ function genParseParam(parse)
 
 function genRequest(req, settings)
 {
-    if (settings.logRequests)
-        logRequest(req);
-
-
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
+
+
+    if (settings.logRequests)
+        logRequest(req, updateNodeId, updateParamIndex);
+
 
     const parse = 
     {
@@ -7437,12 +7646,14 @@ function getValidateMax(order)
 ////////////////////////////////////////////////////
 
 
-//const inputColor        = 'rgba(0, 0, 0, 0.12)';
+const smallScrollGap =  6;
+const largeScrollGap = 14;
 
-const smallScrollGap    =  6;
-const largeScrollGap    = 14;
+const MAX_INT32      = 2147483647;
 
-const MAX_INT32         = 2147483647;
+const TAB            = '    ';
+const NL             = '\n';
+
 
 
 function rgbFromType(type, active)
@@ -9723,21 +9934,30 @@ function logSavedConn(connKey)
 
 
 
-function logRequest(request)
+function logRequest(request, updateNodeId, updateParamIndex)
 {
-    // typescript doesn't implement String.replaceAll(), 
-    // and because this file is included by both JS and TS,
-    // I'm using .split().join()
+    const req = { 
+        request: request, 
+        pos:     2,
+        so:      0,
+        nTab:    0
+    };
+
+
+    let log = updateNodeId + ' ' + updateParamIndex;
+
+
+    const stackOverflowProtect = 100;
+
+    while (   req.pos < req.request.length 
+           && req.so  < stackOverflowProtect)
+        log += logReq(req);
+
 
     console.log(
         '%c%s', 
         'background: #60aa60; color: #fff', 
-        JSON.stringify(request)        
-            .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
-            .split('"') .join('')      //.replaceAll('"', '')
-            .split('[') .join('')      //.replaceAll('[', '')
-            .split(']') .join('')      //.replaceAll(']', '')
-            .split(',') .join(' '));   //.replaceAll(',', ' '));
+         log);
 }
 
 
@@ -9758,6 +9978,203 @@ function logObjectUpdates(objects)
         '%cobjects', 
         'background: #07e; color: white;', 
         objects);
+}
+
+
+function logReq(req)
+{
+    const next = req.request[req.pos];
+
+
+         if (next == PARAM             ) return logReqParam            (req);
+
+    else if (next == NUMBER_VALUE      ) return logReqNumValue         (req);
+    else if (next == NUMBER            ) return logReqNumber           (req);
+    else if (next == NUMBER_ADD         
+          || next == NUMBER_SUBTRACT    
+          || next == NUMBER_MULTIPLY    
+          || next == NUMBER_DIVIDE
+          || next == NUMBER_MODULO
+          || next == NUMBER_EXPONENT   ) return logReqNumberArithmetic (req);
+    else if (next == NUMBER_INTERPOLATE) return logReqNumberInterpolate(req);
+
+    else if (next == RECTANGLE         ) return logReqRectangle        (req);
+
+    
+    req.so++;
+
+    return '';
+
+
+    // return JSON.stringify(req.request)        
+    //     .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
+    //     .split('"') .join('')      //.replaceAll('"', '')
+    //     .split('[') .join('')      //.replaceAll('[', '')
+    //     .split(']') .join('')      //.replaceAll(']', '')
+    //     .split(',') .join(' ');   //.replaceAll(',', ' '));
+}
+
+
+
+function logReqActive(req)
+{
+    return req.request[req.pos] == ACTIVE
+         ? ' ' + req.request[req.pos++]
+         : '';
+}
+
+
+
+function logReqParam(req)
+{
+    if (req.request[req.pos] != PARAM) 
+        return '';
+    
+    //req.pos++;
+
+
+    // const tab        = TAB;
+    // let   pos        = NL + tab.repeat(req.nTab++);
+
+    const tag        = req.request[req.pos++];
+    const nodeId     = req.request[req.pos++];
+    const paramIndex = req.request[req.pos++];
+
+    const val        = logReq(req);
+
+    
+    return tag + ' ' + nodeId + ' ' + paramIndex + ' ' + val;
+}
+
+
+
+function logReqNumberNodeId(req)
+{
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+    
+    return tag + ' ' + nodeId + ' ' + active;
+}
+
+
+
+function logReqNumValue(req)
+{
+    const tab = TAB;
+    let   pos = NL + tab.repeat(req.nTab++);
+
+    const tag = req.request[req.pos++];
+    const val = req.request[req.pos++]; // N
+
+    return pos + tag + ' ' + val;
+}
+
+
+
+function logReqNumber(req)
+{
+    const tab    = TAB;
+    let   pos    = NL + tab.repeat(req.nTab++);
+
+    const node = logReqNumberNodeId(req);
+    const num  = logReq(req);    
+    
+    return pos + node + ' ' + num;
+}
+
+
+
+function logReqNumberArithmetic(req)
+{
+    const tab     = TAB;
+    let   pos     = NL + tab.repeat(req.nTab++);
+
+    const node    = logReqNumberNodeId(req);
+    const nValues = req.request[req.pos++];
+    
+    let log = pos + node + ' ' + nValues;
+
+    for (let i = 0; i < nValues; i++)
+        log += logReq(req);
+
+    return log;
+}
+
+
+
+function logReqNumberInterpolate(req)
+{
+    const tab     = TAB;
+    let   pos     = NL + tab.repeat(req.nTab++);
+
+    const node    = logReqNumberNodeId(req);
+    const nValues = req.request[req.pos++];
+
+
+    let log = pos + node + ' ' + nValues;
+
+    if (nValues == 2)
+    {
+        const num0 = logReq(req);
+        const num1 = logReq(req);
+        const amt  = logReq(req);
+
+        log += num0 + num1 + amt;
+    }
+    else if (nValues == 1)
+    {
+        const num = logReq(req);
+
+        log += num;
+    }
+
+
+    return log;
+}
+
+
+
+function logReqRectangle(req)
+{
+    const tab    = TAB;
+    let   pos    = NL + tab.repeat(req.nTab++);
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = pos + tag + ' ' + nodeId + ' ' + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == RECTANGLE)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(6).keys()];
+    
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: log += logReq(req); break;
+        case 1: log += logReq(req); break;
+        case 2: log += logReq(req); break;
+        case 3: log += logReq(req); break;
+        case 4: log += logReq(req); break;
+        case 5: log += logReq(req); break;
+        }
+    }
+
+
+    return log;
 }
 
 
@@ -11477,7 +11894,7 @@ const settings =
     logStorage:       true,
     logActions:       true,
     logRequests:      true,
-    logParamUpdates:  false,
+    logParamUpdates:  true,
     logObjectUpdates: false
 };
 
@@ -14631,7 +15048,7 @@ graphView.updateShowWires = function(updateNodes = true)
 
 graphView.toJson = function()
 {
-    const tab = '  ';
+    const tab = TAB;
 
     return '{\n'
         + tab + '"zoom": "'      + graphView.zoom  + '",\n'
@@ -16240,10 +16657,10 @@ extends Parameter
 
 
         if (   this.input
-            && this.input.connected
-            && gen.markParams)
+            && this.input.connected)
         {
-            if (lastOf(gen.scope).nodeId != this.node.id)
+            if (    gen.markParams
+                && !lastOf(gen.scope).nodeId != this.node.id)
             {
                 req.push(
                     PARAM,
@@ -16813,33 +17230,23 @@ class Graph
 
 function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
 {
-    const tab = '  ';
-
+    const tab = TAB;
     
     let json = 
           (encloseBraces ? '{\n' : '')
           + tab + '"nodes":\n'
           + tab + '[';
 
-
     let first = true;
     for (let i = 0; i < nodes.length; i++)
     {
         if (!first) json += ','; first = false;
-        json += '\n' + nodes[i].toJson(4);
+        json += NL + nodes[i].toJson(4);
     }
-    
 
-    json += 
-            '\n' + 
-          tab + ']';
-          
-          
+    json += NL + tab + ']';
     json += this.connectionsToJson(nodes, connOutputMustBeInNodes);
-
-
     json += (encloseBraces ? '\n}' :'');
-
 
     return json;
 }
@@ -16871,24 +17278,20 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
         return '';
 
 
-    const tab = '  ';
+    const tab = TAB;
 
     let json = 
           ',\n'
         + tab + '"connections":\n'
         + tab + '[';
-
     
     for (let i = 0; i < connections.length; i++)
     {
         if (i > 0) json += ',';
-        json += '\n' + connections[i].toJson(4);
+        json += NL + connections[i].toJson(4);
     }
 
-
-    json += '\n'
-        + tab + ']';
-
+    json += NL + tab + ']';
 
     return json;
 }
@@ -17079,7 +17482,9 @@ function getTerminalsAfterNode(node)
     {
         for (const input of output.connectedInputs)
         {
-            if (input.param && (!input.param.output || !input.param.output.connected))
+            if (   input.param 
+                && (   !input.param.output
+                    || !input.param.output.connected))
                 pushUnique(after, input.node);
 
             pushUnique(after, getTerminalsAfterNode(input.node));
@@ -17087,6 +17492,29 @@ function getTerminalsAfterNode(node)
     }
 
     return after.length > 0 ? after : [node];
+}
+
+
+
+function getTerminalsAfterParam(param)
+{
+    if (!param.output)
+        return getTerminalsAfterNode(param.node);
+
+
+    let after = [];
+
+    for (const input of param.output.connectedInputs)
+    {
+        if (   input.param 
+            && (   !input.param.output
+                || !input.param.output.connected))
+            pushUnique(after, input.node);
+
+        pushUnique(after, getTerminalsAfterNode(input.node));
+    }
+
+    return after.length > 0 ? after : [param.node];
 }
 
 
@@ -17770,17 +18198,17 @@ class Connection
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
-            + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
-            + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
-            + ',\n' + pos + tab + '"inputIndex": "' + this.input.index + '"'
-            + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
-            +  '\n' + pos + '}';
+            +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
+            + ',' + NL + pos + tab + '"outputIndex": "' + this.output.index + '"'
+            + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
+            + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
+            + ',' + NL + pos + tab + '"inputIndex": "' + this.input.index + '"'
+            + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
+            +       NL + pos + '}';
 
         return json;
     }
@@ -18403,7 +18831,7 @@ class Operator
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
         
 
         let json = 
@@ -18424,7 +18852,7 @@ class Operator
     toJsonBase(nTab)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json =
               pos + tab + '"type": "'        + this.type                      + '",\n'
@@ -18445,7 +18873,7 @@ class Operator
     paramsToJson(nTab = 0)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json =
              ',\n'
@@ -18531,15 +18959,19 @@ function pushUpdateFromParam(nodes, param)
 
     const terminals = [];
 
+
     nodes.forEach(n => n.invalidate());
-    nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
+
+    nodes.forEach(n => pushUnique(
+        terminals, 
+        getTerminalsAfterNode(n)));
 
 
     if (param)
         pushUnique(terminals, param.node);
 
 
-    const gen = createGenObject();
+    const gen = createGenObject(param ? param.node : null);
 
     terminals.forEach(n => 
         n.outputs
@@ -18567,10 +18999,10 @@ function pushUpdateFromParam(nodes, param)
 
 
 
-function createGenObject()
+function createGenObject(paramNode)
 {
     return {
-        scope:      [], // [{nodeId, paramIndex}]
+        scope:      paramNode ? [{nodeId: paramNode.id, paramIndex: -1}] : [], // [{nodeId, paramIndex}]
         paramNodes: [],
         markParams: true
     };    
@@ -19762,7 +20194,7 @@ extends OperatorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"showOnlySymbol": "' + boolString(this._showOnlySymbol) + '"';
@@ -20083,7 +20515,7 @@ extends OperatorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"showOnlySymbol": "' + boolString(this._showOnlySymbol) + '"';
@@ -20827,7 +21259,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json = super.toJsonBase(nTab);
 
@@ -20842,7 +21274,7 @@ extends OpColorBase
     paramsToJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json =
              ',\n'
@@ -22311,7 +22743,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
 
@@ -23019,7 +23451,7 @@ extends OperatorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json = super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
@@ -25713,7 +26145,7 @@ function uiSaveGraphView()
 function dataColorToJson(color, nTab)
 {
     let   pos = ' '.repeat(nTab);
-    const tab = '  ';
+    const tab = TAB;
 
     let json =
           pos + tab + '[\n'

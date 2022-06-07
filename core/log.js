@@ -45,21 +45,30 @@ function logSavedConn(connKey)
 
 
 
-function logRequest(request)
+function logRequest(request, updateNodeId, updateParamIndex)
 {
-    // typescript doesn't implement String.replaceAll(), 
-    // and because this file is included by both JS and TS,
-    // I'm using .split().join()
+    const req = { 
+        request: request, 
+        pos:     2,
+        so:      0,
+        nTab:    0
+    };
+
+
+    let log = updateNodeId + ' ' + updateParamIndex;
+
+
+    const stackOverflowProtect = 100;
+
+    while (   req.pos < req.request.length 
+           && req.so  < stackOverflowProtect)
+        log += logReq(req);
+
 
     console.log(
         '%c%s', 
         'background: #60aa60; color: #fff', 
-        JSON.stringify(request)        
-            .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
-            .split('"') .join('')      //.replaceAll('"', '')
-            .split('[') .join('')      //.replaceAll('[', '')
-            .split(']') .join('')      //.replaceAll(']', '')
-            .split(',') .join(' '));   //.replaceAll(',', ' '));
+         log);
 }
 
 

@@ -222,17 +222,17 @@ class Connection
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
         
         let json = 
               pos + '{'
-            +  '\n' + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
-            + ',\n' + pos + tab + '"outputIndex": "' + this.output.index + '"'
-            + (this.output.param ? ',\n' + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
-            + ',\n' + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
-            + ',\n' + pos + tab + '"inputIndex": "' + this.input.index + '"'
-            + (this.input.param ? ',\n' + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
-            +  '\n' + pos + '}';
+            +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
+            + ',' + NL + pos + tab + '"outputIndex": "' + this.output.index + '"'
+            + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
+            + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
+            + ',' + NL + pos + tab + '"inputIndex": "' + this.input.index + '"'
+            + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
+            +       NL + pos + '}';
 
         return json;
     }

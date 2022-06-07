@@ -365,7 +365,7 @@ graphView.updateShowWires = function(updateNodes = true)
 
 graphView.toJson = function()
 {
-    const tab = '  ';
+    const tab = TAB;
 
     return '{\n'
         + tab + '"zoom": "'      + graphView.zoom  + '",\n'

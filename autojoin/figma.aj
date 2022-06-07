@@ -1,5 +1,7 @@
 ../core/tags.js
-../core/logging.js
+../core/def.js
+../core/log.js
+../core/log request.js
 
 ../types/types.js
 

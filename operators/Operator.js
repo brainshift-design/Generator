@@ -554,7 +554,7 @@ class Operator
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
         
 
         let json = 
@@ -575,7 +575,7 @@ class Operator
     toJsonBase(nTab)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json =
               pos + tab + '"type": "'        + this.type                      + '",\n'
@@ -596,7 +596,7 @@ class Operator
     paramsToJson(nTab = 0)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json =
              ',\n'
@@ -682,15 +682,19 @@ function pushUpdateFromParam(nodes, param)
 
     const terminals = [];
 
+
     nodes.forEach(n => n.invalidate());
-    nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
+
+    nodes.forEach(n => pushUnique(
+        terminals, 
+        getTerminalsAfterNode(n)));
 
 
     if (param)
         pushUnique(terminals, param.node);
 
 
-    const gen = createGenObject();
+    const gen = createGenObject(param ? param.node : null);
 
     terminals.forEach(n => 
         n.outputs
@@ -718,10 +722,10 @@ function pushUpdateFromParam(nodes, param)
 
 
 
-function createGenObject()
+function createGenObject(paramNode)
 {
     return {
-        scope:      [], // [{nodeId, paramIndex}]
+        scope:      paramNode ? [{nodeId: paramNode.id, paramIndex: -1}] : [], // [{nodeId, paramIndex}]
         paramNodes: [],
         markParams: true
     };    

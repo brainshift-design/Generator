@@ -301,7 +301,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value);
 

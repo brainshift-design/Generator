@@ -13,4 +13,5 @@
 ../core/clipboard.js
 ../core/tags.js
 ../core/debug.js
-../core/logging.js
+../core/log.js
+../core/log request.js

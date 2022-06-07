@@ -1,11 +1,12 @@
 function genRequest(req, settings)
 {
-    if (settings.logRequests)
-        logRequest(req);
-
-
     const updateNodeId     = req[0];
     const updateParamIndex = req[1];
+
+
+    if (settings.logRequests)
+        logRequest(req, updateNodeId, updateParamIndex);
+
 
     const parse = 
     {

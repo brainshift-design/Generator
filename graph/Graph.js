@@ -245,33 +245,23 @@ class Graph
 
 function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
 {
-    const tab = '  ';
-
+    const tab = TAB;
     
     let json = 
           (encloseBraces ? '{\n' : '')
           + tab + '"nodes":\n'
           + tab + '[';
 
-
     let first = true;
     for (let i = 0; i < nodes.length; i++)
     {
         if (!first) json += ','; first = false;
-        json += '\n' + nodes[i].toJson(4);
+        json += NL + nodes[i].toJson(4);
     }
-    
 
-    json += 
-            '\n' + 
-          tab + ']';
-          
-          
+    json += NL + tab + ']';
     json += this.connectionsToJson(nodes, connOutputMustBeInNodes);
-
-
     json += (encloseBraces ? '\n}' :'');
-
 
     return json;
 }
@@ -303,24 +293,20 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
         return '';
 
 
-    const tab = '  ';
+    const tab = TAB;
 
     let json = 
           ',\n'
         + tab + '"connections":\n'
         + tab + '[';
-
     
     for (let i = 0; i < connections.length; i++)
     {
         if (i > 0) json += ',';
-        json += '\n' + connections[i].toJson(4);
+        json += NL + connections[i].toJson(4);
     }
 
-
-    json += '\n'
-        + tab + ']';
-
+    json += NL + tab + ']';
 
     return json;
 }

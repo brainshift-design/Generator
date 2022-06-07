@@ -431,7 +431,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json = super.toJsonBase(nTab);
 
@@ -446,7 +446,7 @@ extends OpColorBase
     paramsToJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = '  ';
+        const tab = TAB;
 
         let json =
              ',\n'

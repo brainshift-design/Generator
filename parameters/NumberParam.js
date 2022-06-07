@@ -171,10 +171,10 @@ extends Parameter
 
 
         if (   this.input
-            && this.input.connected
-            && gen.markParams)
+            && this.input.connected)
         {
-            if (lastOf(gen.scope).nodeId != this.node.id)
+            if (    gen.markParams
+                && !lastOf(gen.scope).nodeId != this.node.id)
             {
                 req.push(
                     PARAM,

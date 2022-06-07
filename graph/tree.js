@@ -133,7 +133,9 @@ function getTerminalsAfterNode(node)
     {
         for (const input of output.connectedInputs)
         {
-            if (input.param && (!input.param.output || !input.param.output.connected))
+            if (   input.param 
+                && (   !input.param.output
+                    || !input.param.output.connected))
                 pushUnique(after, input.node);
 
             pushUnique(after, getTerminalsAfterNode(input.node));
@@ -141,6 +143,29 @@ function getTerminalsAfterNode(node)
     }
 
     return after.length > 0 ? after : [node];
+}
+
+
+
+function getTerminalsAfterParam(param)
+{
+    if (!param.output)
+        return getTerminalsAfterNode(param.node);
+
+
+    let after = [];
+
+    for (const input of param.output.connectedInputs)
+    {
+        if (   input.param 
+            && (   !input.param.output
+                || !input.param.output.connected))
+            pushUnique(after, input.node);
+
+        pushUnique(after, getTerminalsAfterNode(input.node));
+    }
+
+    return after.length > 0 ? after : [param.node];
 }
 
 
