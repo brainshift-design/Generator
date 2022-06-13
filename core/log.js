@@ -98,10 +98,40 @@ function logReqNodeId(nodeId)
 
 function logParamUpdates(values)
 {
+    let str = logReqNodeId(values[0]) + ' ' + values[1];
+    
+    let i    = 2;
+    let nTab = 0;
+
+    while (i < values.length)
+    {
+        const nodeId  = values[i++];
+        const nValues = parseInt(values[i++]);
+
+        str += 
+              NL + TAB.repeat(Math.max(0, nTab))
+            + nodeId + ' ' + nValues;
+
+        nTab++;
+
+        for (let j = 0; j < nValues; j++)
+        {
+            const index = values[i++];
+            const value = values[i++];
+
+            str += 
+                  NL + TAB.repeat(Math.max(0, nTab))
+                + index + ' ' + value;
+        }
+
+        nTab--;
+    }
+
+
     console.log(
-        '%cvalues', 
+        '%c%s', 
         'background: #e70; color: white;', 
-        values);
+        str);
 }
 
 
