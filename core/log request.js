@@ -46,21 +46,19 @@ function logReqParam(req)
 {
     if (req.request[req.pos] != PARAM) 
         return '';
-    
-    //req.pos++;
-
-
-    // const tab        = TAB;
-    // let   pos        = NL + tab.repeat(req.nTab++);
-
+        
     const tag        = req.request[req.pos++];
     const nodeId     = req.request[req.pos++];
     const paramIndex = req.request[req.pos++];
 
     const val        = logReq(req);
+    const _nodeId    = logReqNodeId(nodeId);
 
-    
-    return tag + ' ' + nodeId + ' ' + paramIndex + ' ' + val;
+    req.nTab--;
+    const tab = req.tab;
+    req.nTab++;
+
+    return tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
 }
 
 
@@ -71,49 +69,52 @@ function logReqNumberNodeId(req)
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
     
-    return tag + ' ' + nodeId + ' ' + active;
+    return tag + ' ' + logReqNodeId(nodeId) + active;
 }
 
 
 
 function logReqNumValue(req)
 {
-    const tab = TAB;
-    let   pos = NL + tab.repeat(req.nTab++);
-
     const tag = req.request[req.pos++];
     const val = req.request[req.pos++]; // N
 
-    return pos + tag + ' ' + val;
+    return req.tab + tag + ' ' + val;
 }
 
 
 
 function logReqNumber(req)
 {
-    const tab    = TAB;
-    let   pos    = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+
+    req.nTab++;
 
     const node = logReqNumberNodeId(req);
     const num  = logReq(req);    
     
-    return pos + node + ' ' + num;
+    req.nTab--;
+
+    return tab + node + ' ' + num;
 }
 
 
 
 function logReqNumberArithmetic(req)
 {
-    const tab     = TAB;
-    let   pos     = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+
+    req.nTab++;
 
     const node    = logReqNumberNodeId(req);
     const nValues = req.request[req.pos++];
     
-    let log = pos + node + ' ' + nValues;
+    let log = tab + node + ' ' + nValues;
 
     for (let i = 0; i < nValues; i++)
         log += logReq(req);
+
+    req.nTab--;
 
     return log;
 }
@@ -122,14 +123,15 @@ function logReqNumberArithmetic(req)
 
 function logReqNumberInterpolate(req)
 {
-    const tab     = TAB;
-    let   pos     = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+
+    req.nTab++;
 
     const node    = logReqNumberNodeId(req);
     const nValues = req.request[req.pos++];
 
 
-    let log = pos + node + ' ' + nValues;
+    let log = tab + node + ' ' + nValues;
 
     if (nValues == 2)
     {
@@ -147,6 +149,8 @@ function logReqNumberInterpolate(req)
     }
 
 
+    req.nTab--;
+
     return log;
 }
 
@@ -154,8 +158,9 @@ function logReqNumberInterpolate(req)
 
 function logReqRectangle(req)
 {
-    const tab    = TAB;
-    let   pos    = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+
+    req.nTab++;
 
 
     const tag    = req.request[req.pos++];
@@ -163,7 +168,7 @@ function logReqRectangle(req)
     const active = logReqActive(req);
 
 
-    let log = pos + tag + ' ' + nodeId + ' ' + active;
+    let log = tab + tag + ' ' + nodeId + active;
 
     let indices;
 
@@ -190,6 +195,8 @@ function logReqRectangle(req)
         }
     }
 
+
+    req.nTab--;
 
     return log;
 }

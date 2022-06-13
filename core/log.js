@@ -1,3 +1,24 @@
+class RequestSettings
+{
+    request;
+    pos;
+
+    so   = 0;
+    nTab = 0;
+
+
+    constructor(req, pos)
+    {
+        this.request = req;
+        this.pos     = pos;
+    }
+
+
+    get tab() { return NL + TAB.repeat(Math.max(0, this.nTab)); }
+}
+
+
+
 function logFunction(funcName)
 {
     console.log(
@@ -12,9 +33,9 @@ function logSavedNode(nodeKey)
     console.log(
         '%c%s\n%c%s', 
         'background: #fdb', 
-        noNodeTag(nodeKey), 
+         noNodeTag(nodeKey), 
         'background: #fed;',    
-        figGetPageData(nodeKey, false)
+         figGetPageData(nodeKey, false)
             .replace('{\n', '')
             .replace('\n}', '')
             .replace('[\n', '')
@@ -47,15 +68,10 @@ function logSavedConn(connKey)
 
 function logRequest(request, updateNodeId, updateParamIndex)
 {
-    const req = { 
-        request: request, 
-        pos:     2,
-        so:      0,
-        nTab:    0
-    };
+    const req = new RequestSettings(request, 2);
 
 
-    let log = updateNodeId + ' ' + updateParamIndex;
+    let log = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
 
 
     const stackOverflowProtect = 100;
@@ -69,6 +85,13 @@ function logRequest(request, updateNodeId, updateParamIndex)
         '%c%s', 
         'background: #60aa60; color: #fff', 
          log);
+}
+
+
+
+function logReqNodeId(nodeId)
+{
+    return nodeId == '' ? '\'\'' : nodeId;
 }
 
 

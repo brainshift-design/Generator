@@ -24,6 +24,15 @@ const largeScrollGap = 14;
 const MAX_INT32 = 2147483647;
 const TAB = '    ';
 const NL = '\n';
+class RequestSettings {
+    constructor(req, pos) {
+        this.so = 0;
+        this.nTab = 0;
+        this.request = req;
+        this.pos = pos;
+    }
+    get tab() { return NL + TAB.repeat(Math.max(0, this.nTab)); }
+}
 function logFunction(funcName) {
     console.log('%c ' + funcName + '() ', 'background: #09f; color: white;');
 }
@@ -47,18 +56,16 @@ function logSavedConn(connKey) {
     console.log('%c%s', 'background: #cfc', conn);
 }
 function logRequest(request, updateNodeId, updateParamIndex) {
-    const req = {
-        request: request,
-        pos: 2,
-        so: 0,
-        nTab: 0
-    };
-    let log = updateNodeId + ' ' + updateParamIndex;
+    const req = new RequestSettings(request, 2);
+    let log = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
     const stackOverflowProtect = 100;
     while (req.pos < req.request.length
         && req.so < stackOverflowProtect)
         log += logReq(req);
     console.log('%c%s', 'background: #60aa60; color: #fff', log);
+}
+function logReqNodeId(nodeId) {
+    return nodeId == '' ? '\'\'' : nodeId;
 }
 function logParamUpdates(values) {
     console.log('%cvalues', 'background: #e70; color: white;', values);
@@ -102,51 +109,52 @@ function logReqActive(req) {
 function logReqParam(req) {
     if (req.request[req.pos] != PARAM)
         return '';
-    //req.pos++;
-    // const tab        = TAB;
-    // let   pos        = NL + tab.repeat(req.nTab++);
     const tag = req.request[req.pos++];
     const nodeId = req.request[req.pos++];
     const paramIndex = req.request[req.pos++];
     const val = logReq(req);
-    return tag + ' ' + nodeId + ' ' + paramIndex + ' ' + val;
+    const _nodeId = logReqNodeId(nodeId);
+    req.nTab--;
+    const tab = req.tab;
+    req.nTab++;
+    return tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
 }
 function logReqNumberNodeId(req) {
     const tag = req.request[req.pos++];
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
-    return tag + ' ' + nodeId + ' ' + active;
+    return tag + ' ' + logReqNodeId(nodeId) + active;
 }
 function logReqNumValue(req) {
-    const tab = TAB;
-    let pos = NL + tab.repeat(req.nTab++);
     const tag = req.request[req.pos++];
     const val = req.request[req.pos++]; // N
-    return pos + tag + ' ' + val;
+    return req.tab + tag + ' ' + val;
 }
 function logReqNumber(req) {
-    const tab = TAB;
-    let pos = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+    req.nTab++;
     const node = logReqNumberNodeId(req);
     const num = logReq(req);
-    return pos + node + ' ' + num;
+    req.nTab--;
+    return tab + node + ' ' + num;
 }
 function logReqNumberArithmetic(req) {
-    const tab = TAB;
-    let pos = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+    req.nTab++;
     const node = logReqNumberNodeId(req);
     const nValues = req.request[req.pos++];
-    let log = pos + node + ' ' + nValues;
+    let log = tab + node + ' ' + nValues;
     for (let i = 0; i < nValues; i++)
         log += logReq(req);
+    req.nTab--;
     return log;
 }
 function logReqNumberInterpolate(req) {
-    const tab = TAB;
-    let pos = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+    req.nTab++;
     const node = logReqNumberNodeId(req);
     const nValues = req.request[req.pos++];
-    let log = pos + node + ' ' + nValues;
+    let log = tab + node + ' ' + nValues;
     if (nValues == 2) {
         const num0 = logReq(req);
         const num1 = logReq(req);
@@ -157,15 +165,16 @@ function logReqNumberInterpolate(req) {
         const num = logReq(req);
         log += num;
     }
+    req.nTab--;
     return log;
 }
 function logReqRectangle(req) {
-    const tab = TAB;
-    let pos = NL + tab.repeat(req.nTab++);
+    const tab = req.tab;
+    req.nTab++;
     const tag = req.request[req.pos++];
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
-    let log = pos + tag + ' ' + nodeId + ' ' + active;
+    let log = tab + tag + ' ' + nodeId + active;
     let indices;
     if (req.request[req.pos] == RECTANGLE) {
         log += logReq(req);
@@ -195,6 +204,7 @@ function logReqRectangle(req) {
                 break;
         }
     }
+    req.nTab--;
     return log;
 }
 //////////// WARNING ////////////
