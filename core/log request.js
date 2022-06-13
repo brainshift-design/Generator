@@ -51,14 +51,12 @@ function logReqParam(req)
     const nodeId     = req.request[req.pos++];
     const paramIndex = req.request[req.pos++];
 
-    const val        = logReq(req);
-    const _nodeId    = logReqNodeId(nodeId);
+    req.skipNewLine = true;
 
-    req.nTab--;
-    const tab = req.tab;
-    req.nTab++;
+    const val     = logReq(req);
+    const _nodeId = logReqNodeId(nodeId);
 
-    return tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
 }
 
 

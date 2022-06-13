@@ -28,10 +28,18 @@ class RequestSettings {
     constructor(req, pos) {
         this.so = 0;
         this.nTab = 0;
+        this.skipNewLine = false;
         this.request = req;
         this.pos = pos;
     }
-    get tab() { return NL + TAB.repeat(Math.max(0, this.nTab)); }
+    get tab() {
+        if (this.skipNewLine) {
+            this.skipNewLine = false;
+            return '';
+        }
+        else
+            return NL + TAB.repeat(Math.max(0, this.nTab));
+    }
 }
 function logFunction(funcName) {
     console.log('%c ' + funcName + '() ', 'background: #09f; color: white;');
@@ -131,12 +139,10 @@ function logReqParam(req) {
     const tag = req.request[req.pos++];
     const nodeId = req.request[req.pos++];
     const paramIndex = req.request[req.pos++];
+    req.skipNewLine = true;
     const val = logReq(req);
     const _nodeId = logReqNodeId(nodeId);
-    req.nTab--;
-    const tab = req.tab;
-    req.nTab++;
-    return tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
 }
 function logReqNumberNodeId(req) {
     const tag = req.request[req.pos++];

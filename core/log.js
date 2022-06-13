@@ -3,8 +3,10 @@ class RequestSettings
     request;
     pos;
 
-    so   = 0;
-    nTab = 0;
+    so          = 0;
+    nTab        = 0;
+
+    skipNewLine = false;
 
 
     constructor(req, pos)
@@ -14,7 +16,16 @@ class RequestSettings
     }
 
 
-    get tab() { return NL + TAB.repeat(Math.max(0, this.nTab)); }
+    get tab() 
+    { 
+        if (this.skipNewLine)
+        {
+            this.skipNewLine = false;
+            return '';
+        }
+        else 
+            return NL + TAB.repeat(Math.max(0, this.nTab)); 
+    }
 }
 
 

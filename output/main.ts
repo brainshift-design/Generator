@@ -41,8 +41,10 @@ class RequestSettings
     request;
     pos;
 
-    so   = 0;
-    nTab = 0;
+    so          = 0;
+    nTab        = 0;
+
+    skipNewLine = false;
 
 
     constructor(req, pos)
@@ -52,7 +54,16 @@ class RequestSettings
     }
 
 
-    get tab() { return NL + TAB.repeat(Math.max(0, this.nTab)); }
+    get tab() 
+    { 
+        if (this.skipNewLine)
+        {
+            this.skipNewLine = false;
+            return '';
+        }
+        else 
+            return NL + TAB.repeat(Math.max(0, this.nTab)); 
+    }
 }
 
 
@@ -236,14 +247,12 @@ function logReqParam(req)
     const nodeId     = req.request[req.pos++];
     const paramIndex = req.request[req.pos++];
 
-    const val        = logReq(req);
-    const _nodeId    = logReqNodeId(nodeId);
+    req.skipNewLine = true;
 
-    req.nTab--;
-    const tab = req.tab;
-    req.nTab++;
+    const val     = logReq(req);
+    const _nodeId = logReqNodeId(nodeId);
 
-    return tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
 }
 
 
