@@ -165,7 +165,7 @@ function getTerminalsAfterParam(param)
         pushUnique(after, getTerminalsAfterNode(input.node));
     }
 
-    return after.length > 0 ? after : [param.node];
+    return after.length > 0 ? after : [];
 }
 
 

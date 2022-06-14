@@ -3900,6 +3900,8 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
         const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
 
+        values.sort((a, b) => a.paramIndex - b.paramIndex);
+
         for (const v of values)
         {
             chunk.push(v.paramIndex, v.value);

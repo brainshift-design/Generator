@@ -690,10 +690,6 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
-    if (param)
-        pushUnique(terminals, param.node);
-
-
     const gen = createGenObject(param ? param.node : null);
 
     terminals.forEach(n => 
@@ -712,7 +708,17 @@ function pushUpdateFromParam(nodes, param)
                 .forEach(o =>
                     request.push(...o.genRequest(gen)))); 
 
-                
+
+    if (    param
+        && !terminals.includes(param.node)
+        && !gen.paramNodes.includes(param.node))
+            param.node.outputs
+                .filter(o => !o.param)
+                .forEach(o =>
+                    request.push(...o.genRequest(gen))); 
+        //pushUnique(terminals, param.node);
+
+        
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,
