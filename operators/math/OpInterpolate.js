@@ -63,6 +63,7 @@ extends OperatorBase
 
 
         gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
 
         return req;
     }

@@ -159,7 +159,7 @@ extends Parameter
         // should still provide a value
         
         if (    this.output
-            && !isEmpty(this.output.cache))
+            && gen.passedNodes.includes(this.node))
             return this.cache;
 
 

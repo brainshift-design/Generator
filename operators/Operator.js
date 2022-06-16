@@ -710,7 +710,7 @@ function pushUpdateFromParam(nodes, param)
 
 
     if (    param
-        && !terminals.includes(param.node)
+        && !gen.passedNodes.includes(param.node)
         && !gen.paramNodes.includes(param.node))
             param.node.outputs
                 .filter(o => !o.param)
@@ -730,9 +730,10 @@ function pushUpdateFromParam(nodes, param)
 function createGenObject(paramNode)
 {
     return {
-        scope:      paramNode ? [{nodeId: paramNode.id, paramIndex: -1}] : [], // [{nodeId, paramIndex}]
-        paramNodes: [],
-        markParams: true
+        scope:       paramNode ? [{nodeId: paramNode.id, paramIndex: -1}] : [], // [{nodeId, paramIndex}]
+        passedNodes: [],
+        paramNodes:  [],
+        markParams:  true
     };    
 }
 

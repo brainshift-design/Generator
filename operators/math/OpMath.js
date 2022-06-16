@@ -113,6 +113,7 @@ extends OperatorBase
 
         
         gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
 
         return req;
     }
@@ -177,7 +178,7 @@ extends OperatorBase
         }
         
 
-        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
+        this.label.style.visibility = this._showOnlySymbol ? 'hidden' : 'visible';
     }
 
 
