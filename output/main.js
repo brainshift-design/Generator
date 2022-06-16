@@ -48,8 +48,8 @@ function logSavedNode(nodeKey) {
     console.log('%c%s\n%c%s', 'background: #fdb', noNodeTag(nodeKey), 'background: #fed;', figGetPageData(nodeKey, false)
         .replace('{\n', '')
         .replace('\n}', '')
-        .replace('[\n', '')
-        .replace('\n  ]', ''));
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', ''));
 }
 function logSavedConn(connKey) {
     let conn = '';

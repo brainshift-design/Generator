@@ -49,8 +49,8 @@ function logSavedNode(nodeKey)
          figGetPageData(nodeKey, false)
             .replace('{\n', '')
             .replace('\n}', '')
-            .replace('[\n', '')
-            .replace('\n  ]', ''));
+            .replace('[\n' + TAB, '')
+            .replace('\n' + TAB + ']', ''));
 }
 
 

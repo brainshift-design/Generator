@@ -146,7 +146,7 @@ function figLogAllSavedNodes(settings)
         return;
 
     figma.currentPage.getPluginDataKeys()
-        .filter(k => isNodeKey(k))
+        .filter (k => isNodeKey(k))
         .forEach(k => logSavedNode(k));
 }
 

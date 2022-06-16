@@ -174,7 +174,8 @@ extends OperatorBase
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
-        let json = super.toJsonBase(nTab)
+        let json = 
+               super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
 
         if (this.#btnProportional.enabled)

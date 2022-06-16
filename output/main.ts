@@ -87,8 +87,8 @@ function logSavedNode(nodeKey)
          figGetPageData(nodeKey, false)
             .replace('{\n', '')
             .replace('\n}', '')
-            .replace('[\n', '')
-            .replace('\n  ]', ''));
+            .replace('[\n' + TAB, '')
+            .replace('\n' + TAB + ']', ''));
 }
 
 
@@ -971,7 +971,7 @@ function figLogAllSavedNodes(settings)
         return;
 
     figma.currentPage.getPluginDataKeys()
-        .filter(k => isNodeKey(k))
+        .filter (k => isNodeKey(k))
         .forEach(k => logSavedNode(k));
 }
 
