@@ -163,20 +163,15 @@ extends Parameter
             return this.cache;
 
 
-        gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: this.index });
-
         const req = [];
 
 
         if (   this.input
             && this.input.connected)
         {
-            console.log('numberParam');
-
-            if (   gen.markParams)
-                //&& lastOf(gen.scope).nodeId != this.node.id)
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
             {
                 req.push(
                     PARAM,
@@ -197,8 +192,6 @@ extends Parameter
                     this.control.displayDec).toString());
         }
 
-
-        gen.scope.pop();
 
         return req;
     }

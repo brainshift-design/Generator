@@ -716,7 +716,6 @@ function pushUpdateFromParam(nodes, param)
                 .filter(o => !o.param)
                 .forEach(o =>
                     request.push(...o.genRequest(gen))); 
-        //pushUnique(terminals, param.node);
 
         
     uiQueueMessageToGenerator({
