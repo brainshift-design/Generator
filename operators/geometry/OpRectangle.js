@@ -34,7 +34,7 @@ extends OperatorBase
         this.#paramAngle.control.wrapValue = true;
 
         
-        this.updateRound();
+        //this.updateRound();
 
         this.#btnProportional = createToggleButton(12, 12);
         this.inner.appendChild(this.#btnProportional);
@@ -81,26 +81,6 @@ extends OperatorBase
     
     
     
-    updateRound()
-    {
-        const min = Math.min(this.#paramWidth.genValue, this.#paramHeight.genValue);
-        this.setRoundMinMax(0, min/2);
-    }
-
-    
-
-    setRoundMinMax(min, max)
-    {
-        const control = this.#paramRound.control;
-
-        control.min   = min;
-        control.max   = max;
-
-        this.#paramRound.control.update();
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -169,6 +149,38 @@ extends OperatorBase
     }
 
 
+
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        switch (index)
+        {
+            case 0:
+                this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
+                break;
+
+            case 2:
+            case 3:
+                this.updateRound();
+                break;
+        }
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.#paramRound.control;
+        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        this.#paramRound.control.update();
+    }
+
+    
 
     toJsonBase(nTab = 0) 
     {

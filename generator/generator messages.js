@@ -1,7 +1,8 @@
+var genFigMessagePosted = false;
+
+
+
 var figMessages = []; // messages from Generator to Figma (through UI)
-var figMessagePosted = false;
-
-
 
 // --> from UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +66,7 @@ function genQueueMessageToFigma(msg)
 function genPostNextMessageToFigma()
 {
     if (    figMessages.length > 0
-        && !figMessagePosted)
+        && !genFigMessagePosted)
     {
         let msg = figMessages.shift();
 
@@ -79,8 +80,8 @@ function genPostNextMessageToFigma()
                 msg = figMessages.shift();
         }
 
-        genPostMessageToUI({ cmd: 'uiForwardToFigma', msg: msg });
-        figMessagePosted = true;
+        genPostMessageToUI({cmd: 'uiForwardToFigma', msg: msg});
+        genFigMessagePosted = true;
     }
 }
 
@@ -88,7 +89,7 @@ function genPostNextMessageToFigma()
 
 function genEndFigMessage()
 {
-    figMessagePosted = false;
+    genFigMessagePosted = false;
     genPostNextMessageToFigma();
 }
 

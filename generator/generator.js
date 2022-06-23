@@ -27,8 +27,11 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateObjects    (updateNodeId, updateParamIndex, parse.updateObjects    );
-    genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
+    genUpdateParamValuesAndObjects(
+        updateNodeId, 
+        updateParamIndex, 
+        parse.updateParamValues, 
+        parse.updateObjects);
 }
 
 
@@ -60,6 +63,105 @@ function genPushUpdateObject(parse, nodeId, object)
 
 
 
+function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateValues, updateObjects)
+{
+    const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
+    const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
+
+
+    // send value updates in chunks
+
+    const approxParamChunkSize = 20;
+    const objChunkSize         = 100;
+    
+    let n  = 0, // node
+        nc = 0; // chunk size
+
+    let o  = 0, // object
+        oc = 0; // chunk size
+
+    let nodeChunk = [],
+        objChunk  = [];
+
+
+    while (   (   n < nodeIds.length
+               || o < updateObjects.length)
+           && !genFigMessagePosted)
+    {
+        if (o < updateObjects.length)
+        {
+            objChunk.push(updateObjects[o]);
+
+            if (++oc == objChunkSize)
+            {
+                genQueueMessageToFigma({ 
+                    cmd:             'figUpdateObjects',
+                    updateNodeId:     updateNodeId,
+                    updateParamIndex: updateParamIndex,
+                    objects:          [...objChunk]
+                });
+
+                objChunk = [];
+                oc       = 0;
+            }
+
+            o++;
+        }
+
+
+        if (n < nodeIds.length)
+        {
+            nodeChunk.push(
+                nodeIds[n],
+                counts [n]);
+
+            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+
+            values.sort((a, b) => a.paramIndex - b.paramIndex);
+
+            for (const v of values)
+            {
+                nodeChunk.push(v.paramIndex, v.value);
+                nc++;
+            }
+
+            if (nc >= approxParamChunkSize)
+            {
+                genPostMessageToUI({ 
+                    cmd:    'uiUpdateParamValues',
+                    values: [updateNodeId, updateParamIndex, ...nodeChunk]
+                });
+
+                nodeChunk = [];
+                nc = 0;
+            }
+
+            n++;
+        }
+    }
+
+
+    if (nodeChunk.length > 0)
+    {
+        genPostMessageToUI({ 
+            cmd:    'uiUpdateParamValues',
+            values: [updateNodeId, updateParamIndex, ...nodeChunk]
+        });
+    }
+
+    if (objChunk.length > 0)
+    {
+        genQueueMessageToFigma({ 
+            cmd:             'figUpdateObjects',
+            updateNodeId:     updateNodeId,
+            updateParamIndex: updateParamIndex,
+            objects:          [...objChunk]
+        });
+    }
+}
+
+
+
 function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 {
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
@@ -68,10 +170,10 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
     // send value updates in chunks
 
-    const approxChunkSize = 20;
+    const approxParamChunkSize = 20;
     
-    let n = 0, // node
-        c = 0; // chunk size
+    let n  = 0, // node
+        nc = 0; // chunk size
 
     let chunk = [];
 
@@ -89,10 +191,10 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
         for (const v of values)
         {
             chunk.push(v.paramIndex, v.value);
-            c++;
+            nc++;
         }
 
-        if (c >= approxChunkSize)
+        if (nc >= approxParamChunkSize)
         {
             genPostMessageToUI({ 
                 cmd:    'uiUpdateParamValues',
@@ -100,7 +202,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
             });
 
             chunk = [];
-            c = 0;
+            nc = 0;
         }
 
         n++;
@@ -121,18 +223,18 @@ function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
 {
     // send objects in chunks
 
-    const chunkSize = 1000;
+    const chunkSize = 100;
     
-    let i = 0, 
-        c = 0;
+    let o  = 0, 
+        oc = 0;
     
     let chunk = [];
     
-    while (i < updateObjects.length)
+    while (o < updateObjects.length)
     {
-        chunk.push(updateObjects[i]);
+        chunk.push(updateObjects[o]);
 
-        if (++c == chunkSize)
+        if (++oc == chunkSize)
         {
             genQueueMessageToFigma({ 
                 cmd:             'figUpdateObjects',
@@ -142,10 +244,10 @@ function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
             });
 
             chunk = [];
-            c     = 0;
+            oc     = 0;
         }
 
-        i++;
+        o++;
     }
 
     if (chunk.length > 0)

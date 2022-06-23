@@ -1086,16 +1086,6 @@ function uiUpdateParamValues(values)
 
 
 
-function uiUpdateObjects(objects)
-{
-    uiQueueMessageToFigma({
-        cmd:    'figUpdateObjects',
-        objects: objects
-    });
-}
-
-
-
 function uiSaveNodes(nodeIds)
 {
     const nodeJson = [];

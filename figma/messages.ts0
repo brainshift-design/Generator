@@ -18,6 +18,7 @@ figma.ui.onmessage = msg =>
                 
         case 'figLoadNodesAndConns':            figLoadNodesAndConns           ();                                           break;
         case 'figSaveNodes':                    figSaveNodes                   (msg.nodeIds, msg.nodeJson);                  break;        
+        
         case 'figRemoveConnsToNodes':           figRemoveConnsToNodes          (msg.nodeIds);                                break;
         case 'figRemoveSavedNodesAndConns':     figRemoveSavedNodesAndConns    (msg.nodeIds);                                break;
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;

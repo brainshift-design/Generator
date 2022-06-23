@@ -4826,10 +4826,11 @@ function reorderCorrection(closestOrder,
 
 
 
+var genFigMessagePosted = false;
+
+
+
 var figMessages = []; // messages from Generator to Figma (through UI)
-var figMessagePosted = false;
-
-
 
 // --> from UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4893,7 +4894,7 @@ function genQueueMessageToFigma(msg)
 function genPostNextMessageToFigma()
 {
     if (    figMessages.length > 0
-        && !figMessagePosted)
+        && !genFigMessagePosted)
     {
         let msg = figMessages.shift();
 
@@ -4907,8 +4908,8 @@ function genPostNextMessageToFigma()
                 msg = figMessages.shift();
         }
 
-        genPostMessageToUI({ cmd: 'uiForwardToFigma', msg: msg });
-        figMessagePosted = true;
+        genPostMessageToUI({cmd: 'uiForwardToFigma', msg: msg});
+        genFigMessagePosted = true;
     }
 }
 
@@ -4916,7 +4917,7 @@ function genPostNextMessageToFigma()
 
 function genEndFigMessage()
 {
-    figMessagePosted = false;
+    genFigMessagePosted = false;
     genPostNextMessageToFigma();
 }
 
@@ -5416,8 +5417,11 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateObjects    (updateNodeId, updateParamIndex, parse.updateObjects    );
-    genUpdateParamValues(updateNodeId, updateParamIndex, parse.updateParamValues);
+    genUpdateParamValuesAndObjects(
+        updateNodeId, 
+        updateParamIndex, 
+        parse.updateParamValues, 
+        parse.updateObjects);
 }
 
 
@@ -5449,6 +5453,105 @@ function genPushUpdateObject(parse, nodeId, object)
 
 
 
+function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateValues, updateObjects)
+{
+    const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
+    const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
+
+
+    // send value updates in chunks
+
+    const approxParamChunkSize = 20;
+    const objChunkSize         = 100;
+    
+    let n  = 0, // node
+        nc = 0; // chunk size
+
+    let o  = 0, // object
+        oc = 0; // chunk size
+
+    let nodeChunk = [],
+        objChunk  = [];
+
+
+    while (   (   n < nodeIds.length
+               || o < updateObjects.length)
+           && !genFigMessagePosted)
+    {
+        if (o < updateObjects.length)
+        {
+            objChunk.push(updateObjects[o]);
+
+            if (++oc == objChunkSize)
+            {
+                genQueueMessageToFigma({ 
+                    cmd:             'figUpdateObjects',
+                    updateNodeId:     updateNodeId,
+                    updateParamIndex: updateParamIndex,
+                    objects:          [...objChunk]
+                });
+
+                objChunk = [];
+                oc       = 0;
+            }
+
+            o++;
+        }
+
+
+        if (n < nodeIds.length)
+        {
+            nodeChunk.push(
+                nodeIds[n],
+                counts [n]);
+
+            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+
+            values.sort((a, b) => a.paramIndex - b.paramIndex);
+
+            for (const v of values)
+            {
+                nodeChunk.push(v.paramIndex, v.value);
+                nc++;
+            }
+
+            if (nc >= approxParamChunkSize)
+            {
+                genPostMessageToUI({ 
+                    cmd:    'uiUpdateParamValues',
+                    values: [updateNodeId, updateParamIndex, ...nodeChunk]
+                });
+
+                nodeChunk = [];
+                nc = 0;
+            }
+
+            n++;
+        }
+    }
+
+
+    if (nodeChunk.length > 0)
+    {
+        genPostMessageToUI({ 
+            cmd:    'uiUpdateParamValues',
+            values: [updateNodeId, updateParamIndex, ...nodeChunk]
+        });
+    }
+
+    if (objChunk.length > 0)
+    {
+        genQueueMessageToFigma({ 
+            cmd:             'figUpdateObjects',
+            updateNodeId:     updateNodeId,
+            updateParamIndex: updateParamIndex,
+            objects:          [...objChunk]
+        });
+    }
+}
+
+
+
 function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 {
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
@@ -5457,10 +5560,10 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
 
     // send value updates in chunks
 
-    const approxChunkSize = 20;
+    const approxParamChunkSize = 20;
     
-    let n = 0, // node
-        c = 0; // chunk size
+    let n  = 0, // node
+        nc = 0; // chunk size
 
     let chunk = [];
 
@@ -5478,10 +5581,10 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
         for (const v of values)
         {
             chunk.push(v.paramIndex, v.value);
-            c++;
+            nc++;
         }
 
-        if (c >= approxChunkSize)
+        if (nc >= approxParamChunkSize)
         {
             genPostMessageToUI({ 
                 cmd:    'uiUpdateParamValues',
@@ -5489,7 +5592,7 @@ function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
             });
 
             chunk = [];
-            c = 0;
+            nc = 0;
         }
 
         n++;
@@ -5510,18 +5613,18 @@ function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
 {
     // send objects in chunks
 
-    const chunkSize = 1000;
+    const chunkSize = 100;
     
-    let i = 0, 
-        c = 0;
+    let o  = 0, 
+        oc = 0;
     
     let chunk = [];
     
-    while (i < updateObjects.length)
+    while (o < updateObjects.length)
     {
-        chunk.push(updateObjects[i]);
+        chunk.push(updateObjects[o]);
 
-        if (++c == chunkSize)
+        if (++oc == chunkSize)
         {
             genQueueMessageToFigma({ 
                 cmd:             'figUpdateObjects',
@@ -5531,10 +5634,10 @@ function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
             });
 
             chunk = [];
-            c     = 0;
+            oc     = 0;
         }
 
-        i++;
+        o++;
     }
 
     if (chunk.length > 0)
@@ -12033,8 +12136,8 @@ const settings =
     
     logStorage:       true,
     logActions:       true,
-    logRequests:      true,
-    logParamUpdates:  true,
+    logRequests:      false, //true,
+    logParamUpdates:  false, //true,
     logObjectUpdates: false
 };
 
@@ -23458,7 +23561,7 @@ extends OperatorBase
         this.#paramAngle.control.wrapValue = true;
 
         
-        this.updateRound();
+        //this.updateRound();
 
         this.#btnProportional = createToggleButton(12, 12);
         this.inner.appendChild(this.#btnProportional);
@@ -23505,26 +23608,6 @@ extends OperatorBase
     
     
     
-    updateRound()
-    {
-        const min = Math.min(this.#paramWidth.genValue, this.#paramHeight.genValue);
-        this.setRoundMinMax(0, min/2);
-    }
-
-    
-
-    setRoundMinMax(min, max)
-    {
-        const control = this.#paramRound.control;
-
-        control.min   = min;
-        control.max   = max;
-
-        this.#paramRound.control.update();
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -23593,6 +23676,38 @@ extends OperatorBase
     }
 
 
+
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        switch (index)
+        {
+            case 0:
+                this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
+                break;
+
+            case 2:
+            case 3:
+                this.updateRound();
+                break;
+        }
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.#paramRound.control;
+        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        this.#paramRound.control.update();
+    }
+
+    
 
     toJsonBase(nTab = 0) 
     {
@@ -25710,6 +25825,10 @@ document.addEventListener('keyup', e =>
 },false);
 
 
+var uiFigMessagePosted = false;
+
+
+
 // --> from Figma
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -25719,17 +25838,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                 break;
+        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                      break;
+        case 'uiEndFigMessage':       uiEndFigMessage();                                                      break;
 
-        case 'uiEndStartGenerator':   uiEndStartGenerator(msg);                                          break;
-        case 'uiLoadNodesAndConns':   uiLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
+        case 'uiEndStartGenerator':   uiEndStartGenerator     (msg);                                          break;
+        case 'uiLoadNodesAndConns':   uiLoadNodesAndConns     (msg.nodesJson, msg.connsJson, msg.activeJson); break;
          
-        case 'uiGetLocalDataReturn':  uiGetLocalDataReturn(msg);                                         break;
-        case 'uiGetPageDataReturn':   uiGetPageDataReturn(msg);                                          break;
+        case 'uiGetLocalDataReturn':  uiGetLocalDataReturn    (msg);                                          break;
+        case 'uiGetPageDataReturn':   uiGetPageDataReturn     (msg);                                          break;
                
-        case 'uiEndResizeWindow':     uiEndResizeWindow();                                               break;
-
-        case 'uiEndFigMessage':       uiEndFigMessage();                                                 break;
+        case 'uiEndResizeWindow':     uiEndResizeWindow();                                                    break;
     }
 }    
   
@@ -25746,15 +25864,13 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
-
-        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
-        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        case 'uiForwardToFigma':       uiForwardToFigma              (msg.msg);                  break;
+        case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
 
         case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
-        case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);              break;
-
-        case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
+        
+        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
+        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 };
 
@@ -25804,6 +25920,14 @@ function uiPostNextMessageToFigma()
 
 
 
+function uiForwardToFigma(msg)
+{
+    uiPostMessageToFigma(msg);
+    uiFigMessagePosted = true;
+}
+
+
+
 function uiEndFigMessage()
 {
     figMessagePosted = false;
@@ -25814,6 +25938,7 @@ function uiEndFigMessage()
 
 function uiEndFigObjectMessage()
 {
+    uiFigMessagePosted = false;
     uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
 }
 
@@ -27571,16 +27696,6 @@ function uiUpdateParamValues(values)
     }
 
     graphView.update(nodes);
-}
-
-
-
-function uiUpdateObjects(objects)
-{
-    uiQueueMessageToFigma({
-        cmd:    'figUpdateObjects',
-        objects: objects
-    });
 }
 
 

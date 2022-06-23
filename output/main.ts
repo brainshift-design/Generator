@@ -475,8 +475,8 @@ const settings =
     
     logStorage:       true,
     logActions:       true,
-    logRequests:      true,
-    logParamUpdates:  true,
+    logRequests:      false, //true,
+    logParamUpdates:  false, //true,
     logObjectUpdates: false
 };
 
@@ -759,6 +759,7 @@ figma.ui.onmessage = msg =>
                 
         case 'figLoadNodesAndConns':            figLoadNodesAndConns           ();                                           break;
         case 'figSaveNodes':                    figSaveNodes                   (msg.nodeIds, msg.nodeJson);                  break;        
+        
         case 'figRemoveConnsToNodes':           figRemoveConnsToNodes          (msg.nodeIds);                                break;
         case 'figRemoveSavedNodesAndConns':     figRemoveSavedNodesAndConns    (msg.nodeIds);                                break;
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;

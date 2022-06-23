@@ -288,8 +288,8 @@ const settings = {
     showNodeId: true,
     logStorage: true,
     logActions: true,
-    logRequests: true,
-    logParamUpdates: true,
+    logRequests: false,
+    logParamUpdates: false,
     logObjectUpdates: false
 };
 //const MAX_OBJECTS = 0x10000;

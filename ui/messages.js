@@ -1,3 +1,7 @@
+var uiFigMessagePosted = false;
+
+
+
 // --> from Figma
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -7,17 +11,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                 break;
+        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                      break;
+        case 'uiEndFigMessage':       uiEndFigMessage();                                                      break;
 
-        case 'uiEndStartGenerator':   uiEndStartGenerator(msg);                                          break;
-        case 'uiLoadNodesAndConns':   uiLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
+        case 'uiEndStartGenerator':   uiEndStartGenerator     (msg);                                          break;
+        case 'uiLoadNodesAndConns':   uiLoadNodesAndConns     (msg.nodesJson, msg.connsJson, msg.activeJson); break;
          
-        case 'uiGetLocalDataReturn':  uiGetLocalDataReturn(msg);                                         break;
-        case 'uiGetPageDataReturn':   uiGetPageDataReturn(msg);                                          break;
+        case 'uiGetLocalDataReturn':  uiGetLocalDataReturn    (msg);                                          break;
+        case 'uiGetPageDataReturn':   uiGetPageDataReturn     (msg);                                          break;
                
-        case 'uiEndResizeWindow':     uiEndResizeWindow();                                               break;
-
-        case 'uiEndFigMessage':       uiEndFigMessage();                                                 break;
+        case 'uiEndResizeWindow':     uiEndResizeWindow();                                                    break;
     }
 }    
   
@@ -34,15 +37,13 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiForwardToFigma':       uiPostMessageToFigma          (msg.msg);                  break;
-
-        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
-        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        case 'uiForwardToFigma':       uiForwardToFigma              (msg.msg);                  break;
+        case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
 
         case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
-        case 'uiUpdateObjects':        uiUpdateObjects               (msg.objects);              break;
-
-        case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
+        
+        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
+        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 };
 
@@ -92,6 +93,14 @@ function uiPostNextMessageToFigma()
 
 
 
+function uiForwardToFigma(msg)
+{
+    uiPostMessageToFigma(msg);
+    uiFigMessagePosted = true;
+}
+
+
+
 function uiEndFigMessage()
 {
     figMessagePosted = false;
@@ -102,6 +111,7 @@ function uiEndFigMessage()
 
 function uiEndFigObjectMessage()
 {
+    uiFigMessagePosted = false;
     uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
 }
 
