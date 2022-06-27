@@ -286,8 +286,8 @@ VECTOR      V
 */
 const settings = {
     showNodeId: true,
-    logStorage: true,
-    logActions: true,
+    logStorage: false,
+    logActions: false,
     logRequests: false,
     logParamUpdates: false,
     logObjectUpdates: false

@@ -2,7 +2,10 @@ var genFigMessagePosted = false;
 
 
 
+var  uiMessages = []; // messages from Generator to Figma (through UI)
 var figMessages = []; // messages from Generator to Figma (through UI)
+
+
 
 // --> from UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +30,10 @@ onmessage = function(e)
             genRequest(msg.request, msg.settings);
             break;
 
+        case 'genEndUiMessage':  
+            genEndUiMessage();
+            break;
+
         case 'genEndFigMessage':  
             genEndFigMessage();
             break;
@@ -48,6 +55,35 @@ function genPostMessageToUI(msg)
     postMessage(JSON.stringify(msg));
 }
 
+
+
+function genQueueMessageToUI(msg)
+{
+    uiMessages.push(msg);
+    genPostNextMessageToUI();
+}
+
+
+
+function genPostNextMessageToUI(msg)
+{
+    if (uiMessages.length > 0)
+    {
+        let msg = uiMessages.shift();
+
+        // ...
+
+        postMessage(JSON.stringify(msg));
+    }
+}
+
+
+
+function genEndUiMessage()
+{
+    genPostNextMessageToUI();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -65,8 +101,7 @@ function genQueueMessageToFigma(msg)
 
 function genPostNextMessageToFigma()
 {
-    if (    figMessages.length > 0
-        && !genFigMessagePosted)
+    if (figMessages.length > 0)
     {
         let msg = figMessages.shift();
 
