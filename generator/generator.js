@@ -87,19 +87,9 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     if (lastUpdateTimeout) 
         clearTimeout(lastUpdateTimeout);
 
-    // if (   (   updateValues .length > 0
-    //         || updateObjects.length > 0)
-    //     && lastUpdateTimeout) 
-    //     clearTimeout(lastUpdateTimeout);
-
         
     if (genFigMessagePosted)
     {
-        console.log('prevented');
-
-        // if (lastUpdateTimeout) 
-        //     clearTimeout(lastUpdateTimeout);
-
         if (   updateValues .length > 0
             || updateObjects.length > 0)
         {
@@ -115,8 +105,6 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     }
     else if (lastUpdateTimeout)
     {
-        console.log('catching up');
-
         updateNodeId     = lastUpdateNodeId;
         updateParamIndex = lastUpdateParamIndex;
         updateValues     = lastUpdateValues;

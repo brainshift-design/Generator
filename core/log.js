@@ -41,16 +41,48 @@ function logFunction(funcName)
 
 function logSavedNode(nodeKey)
 {
+    let txt = figGetPageData(nodeKey, false)
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '')
+
+        // .replaceAll('": "', ': ')
+        // .replaceAll('":\n', ':\n')
+        // .replaceAll('",\n', ':\n')
+        // .replaceAll('"', '') // the very last one
+        
+        .replaceAll(TAB + '"params":\n', '')
+
+        .replaceAll('": "', ': ')
+        .replaceAll('", "', ': ')
+        
+        .replaceAll(TAB + '"', TAB)
+        .replaceAll(TAB + TAB + '["', TAB + TAB)
+
+        .replaceAll('",\n', '\n')
+        .replaceAll('"\n', '\n')
+        
+        //.replaceAll('":\n', '\n')
+    
+        .replaceAll('"],\n', '\n');
+        // .replaceAll('"]', '') // the very last one
+
+
+    if (txt[txt.length-1] == '"')    
+        txt = txt.substring(0, txt.length - 1);
+
+    if (txt.substring(txt.length-2) == '"]')    
+        txt = txt.substring(0, txt.length - 2);
+
+
     console.log(
         '%c%s\n%c%s', 
         'background: #fdb', 
          noNodeTag(nodeKey), 
         'background: #fed;',    
-         figGetPageData(nodeKey, false)
-            .replace('{\n', '')
-            .replace('\n}', '')
-            .replace('[\n' + TAB, '')
-            .replace('\n' + TAB + ']', ''));
+         txt);
 }
 
 

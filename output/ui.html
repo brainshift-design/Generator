@@ -3859,16 +3859,48 @@ function logFunction(funcName)
 
 function logSavedNode(nodeKey)
 {
+    let txt = figGetPageData(nodeKey, false)
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '')
+
+        // .replaceAll('": "', ': ')
+        // .replaceAll('":\n', ':\n')
+        // .replaceAll('",\n', ':\n')
+        // .replaceAll('"', '') // the very last one
+        
+        .replaceAll(TAB + '"params":\n', '')
+
+        .replaceAll('": "', ': ')
+        .replaceAll('", "', ': ')
+        
+        .replaceAll(TAB + '"', TAB)
+        .replaceAll(TAB + TAB + '["', TAB + TAB)
+
+        .replaceAll('",\n', '\n')
+        .replaceAll('"\n', '\n')
+        
+        //.replaceAll('":\n', '\n')
+    
+        .replaceAll('"],\n', '\n');
+        // .replaceAll('"]', '') // the very last one
+
+
+    if (txt[txt.length-1] == '"')    
+        txt = txt.substring(0, txt.length - 1);
+
+    if (txt.substring(txt.length-2) == '"]')    
+        txt = txt.substring(0, txt.length - 2);
+
+
     console.log(
         '%c%s\n%c%s', 
         'background: #fdb', 
          noNodeTag(nodeKey), 
         'background: #fed;',    
-         figGetPageData(nodeKey, false)
-            .replace('{\n', '')
-            .replace('\n}', '')
-            .replace('[\n' + TAB, '')
-            .replace('\n' + TAB + ']', ''));
+         txt);
 }
 
 
@@ -5512,19 +5544,9 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     if (lastUpdateTimeout) 
         clearTimeout(lastUpdateTimeout);
 
-    // if (   (   updateValues .length > 0
-    //         || updateObjects.length > 0)
-    //     && lastUpdateTimeout) 
-    //     clearTimeout(lastUpdateTimeout);
-
         
     if (genFigMessagePosted)
     {
-        console.log('prevented');
-
-        // if (lastUpdateTimeout) 
-        //     clearTimeout(lastUpdateTimeout);
-
         if (   updateValues .length > 0
             || updateObjects.length > 0)
         {
@@ -5540,8 +5562,6 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     }
     else if (lastUpdateTimeout)
     {
-        console.log('catching up');
-
         updateNodeId     = lastUpdateNodeId;
         updateParamIndex = lastUpdateParamIndex;
         updateValues     = lastUpdateValues;
@@ -10200,16 +10220,48 @@ function logFunction(funcName)
 
 function logSavedNode(nodeKey)
 {
+    let txt = figGetPageData(nodeKey, false)
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '')
+
+        // .replaceAll('": "', ': ')
+        // .replaceAll('":\n', ':\n')
+        // .replaceAll('",\n', ':\n')
+        // .replaceAll('"', '') // the very last one
+        
+        .replaceAll(TAB + '"params":\n', '')
+
+        .replaceAll('": "', ': ')
+        .replaceAll('", "', ': ')
+        
+        .replaceAll(TAB + '"', TAB)
+        .replaceAll(TAB + TAB + '["', TAB + TAB)
+
+        .replaceAll('",\n', '\n')
+        .replaceAll('"\n', '\n')
+        
+        //.replaceAll('":\n', '\n')
+    
+        .replaceAll('"],\n', '\n');
+        // .replaceAll('"]', '') // the very last one
+
+
+    if (txt[txt.length-1] == '"')    
+        txt = txt.substring(0, txt.length - 1);
+
+    if (txt.substring(txt.length-2) == '"]')    
+        txt = txt.substring(0, txt.length - 2);
+
+
     console.log(
         '%c%s\n%c%s', 
         'background: #fdb', 
          noNodeTag(nodeKey), 
         'background: #fed;',    
-         figGetPageData(nodeKey, false)
-            .replace('{\n', '')
-            .replace('\n}', '')
-            .replace('[\n' + TAB, '')
-            .replace('\n' + TAB + ']', ''));
+         txt);
 }
 
 
@@ -12230,7 +12282,7 @@ const settings =
 {
     showNodeId:       true, // instead of name
     
-    logStorage:       false, 
+    logStorage:       true, 
     logActions:       false, 
     logRequests:      false, 
     logParamUpdates:  false, 
@@ -20539,7 +20591,7 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"showOnlySymbol": "' + boolString(this._showOnlySymbol) + '"';
+             + ',\n' + pos + tab + '"onlySymbol": "' + boolString(this._showOnlySymbol) + '"';
     }
 
 
@@ -20861,7 +20913,7 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"showOnlySymbol": "' + boolString(this._showOnlySymbol) + '"';
+             + ',\n' + pos + tab + '"onlySymbol": "' + boolString(this._showOnlySymbol) + '"';
     }
 
 
