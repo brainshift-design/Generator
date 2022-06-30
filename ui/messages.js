@@ -37,13 +37,13 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiForwardToFigma':       uiForwardToFigma              (msg.msg);                  break;
-        case 'uiEndGenMessage':        uiEndGenMessage();                                        break;
+        case 'uiForwardToFigma':         uiForwardMessageToFigma       (msg.msg);                                                                             break;
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
 
-        case 'uiUpdateParamValues':    uiUpdateParamValues           (msg.values);               break;
+        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamIndex, msg.values, msg.objects);                     break;
         
-        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress); break;
-        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 
     uiEndGeneratorMessage()
@@ -95,7 +95,7 @@ function uiPostNextMessageToFigma()
 
 
 
-function uiForwardToFigma(msg)
+function uiForwardMessageToFigma(msg)
 {
     uiPostMessageToFigma(msg);
     uiFigMessagePosted = true;

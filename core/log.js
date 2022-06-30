@@ -48,26 +48,18 @@ function logSavedNode(nodeKey)
         .replace('[\n' + TAB, '')
         .replace('\n' + TAB + ']', '')
 
-        // .replaceAll('": "', ': ')
-        // .replaceAll('":\n', ':\n')
-        // .replaceAll('",\n', ':\n')
-        // .replaceAll('"', '') // the very last one
-        
-        .replaceAll(TAB + '"params":\n', '')
+        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
 
-        .replaceAll('": "', ': ')
-        .replaceAll('", "', ': ')
-        
-        .replaceAll(TAB + '"', TAB)
-        .replaceAll(TAB + TAB + '["', TAB + TAB)
+        .split('": "').join(': ')
+        .split('", "').join(': ')
 
-        .replaceAll('",\n', '\n')
-        .replaceAll('"\n', '\n')
+        .split(TAB + '"').join(TAB)
+        .split(TAB + TAB + '["').join(TAB + TAB)
         
-        //.replaceAll('":\n', '\n')
-    
-        .replaceAll('"],\n', '\n');
-        // .replaceAll('"]', '') // the very last one
+        .split('",\n').join('\n')
+        .split('"\n').join('\n')
+        
+        .split('"],\n').join('\n');
 
 
     if (txt[txt.length-1] == '"')    
@@ -139,11 +131,11 @@ function logReqNodeId(nodeId)
 
 
 
-function logParamUpdates(values)
+function logParamUpdates(updateNodeId, updateParamIndex, values)
 {
-    let str = logReqNodeId(values[0]) + ' ' + values[1];
+    let str = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
     
-    let i    = 2;
+    let i    = 0;
     let nTab = 0;
 
     while (i < values.length)

@@ -1032,19 +1032,23 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateParamValues(values)
+function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, objects)
 {
-    if (settings.logParamUpdates)
-        logParamUpdates(values);
+    if (settings.logParamUpdates)  logParamUpdates(updateNodeId, updateParamIndex, values);
+    if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
 
-    const updateNodeId     = values[0];
-    const updateParamIndex = values[1];
+    uiForwardMessageToFigma({ 
+        cmd:             'figUpdateObjects',
+        updateNodeId:     updateNodeId,
+        updateParamIndex: updateParamIndex,
+        objects:          [...objects]
+    });
 
 
     const nodes = [];
 
-    let i = 2;
+    let i = 0;
     while (i < values.length)
     {
         const nodeId = values[i++];

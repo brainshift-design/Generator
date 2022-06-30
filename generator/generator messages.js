@@ -71,7 +71,15 @@ function genPostNextMessageToUI(msg)
     {
         let msg = uiMessages.shift();
 
-        // ...
+        if (msg.cmd == 'uiUpdateParams')
+        {
+            // move along the queue since only the last message is important
+            while (uiMessages.length > 0
+                && uiMessages[0].cmd       == msg.cmd
+                && uiMessages[0].values[0] == msg.values[0]
+                && uiMessages[0].values[1] == msg.values[1])
+                msg = uiMessages.shift();
+        }
 
         postMessage(JSON.stringify(msg));
     }
@@ -125,6 +133,16 @@ function genPostNextMessageToFigma()
 function genEndFigMessage()
 {
     genFigMessagePosted = false;
+    
+    if (   lastUpdateValues .length > 0
+        || lastUpdateObjects.length > 0)
+    {
+        console.log('restoring');
+
+        genUpdateParamValuesAndObjects('', -1, [], []);
+        clearLastUpdate();
+    }
+
     genPostNextMessageToFigma();
 }
 

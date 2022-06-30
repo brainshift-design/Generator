@@ -3,8 +3,6 @@ var lastUpdateParamIndex = -1;
 var lastUpdateValues     = [];
 var lastUpdateObjects    = [];
 
-var lastUpdateTimeout    = null;
-
 
 
 function genRequest(req, settings)
@@ -84,34 +82,24 @@ function clearLastUpdate()
 
 function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateValues, updateObjects)
 {
-    if (lastUpdateTimeout) 
-        clearTimeout(lastUpdateTimeout);
-
-        
-    if (genFigMessagePosted)
+    if (   updateValues .length == 0
+        && updateObjects.length == 0)
     {
-        if (   updateValues .length > 0
-            || updateObjects.length > 0)
-        {
-            lastUpdateNodeId     = updateNodeId;
-            lastUpdateParamIndex = updateParamIndex;
-            lastUpdateValues     = updateValues;
-            lastUpdateObjects    = updateObjects;
-        }
-
-        lastUpdateTimeout = setTimeout(() => genUpdateParamValuesAndObjects('', -1, [], []));
-
-        return;
-    }
-    else if (lastUpdateTimeout)
-    {
+        console.log('restoring');
         updateNodeId     = lastUpdateNodeId;
         updateParamIndex = lastUpdateParamIndex;
         updateValues     = lastUpdateValues;
         updateObjects    = lastUpdateObjects;
+    }
+    else if (genFigMessagePosted)
+    {
+        console.log('saving');
+        lastUpdateNodeId     = updateNodeId;
+        lastUpdateParamIndex = updateParamIndex;
+        lastUpdateValues     = updateValues;
+        lastUpdateObjects    = updateObjects;
 
-        clearLastUpdate();
-        lastUpdateTimeout = null;
+        return;
     }
 
 
@@ -137,75 +125,76 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     while (   o < updateObjects.length 
            || n < nodeIds.length)
     {
-        if (o < updateObjects.length)
-        {
-            objChunk.push(updateObjects[o]);
+        // try sending the objects together with the param update, and forward it from there,
+        // otherwise it's two messages per update
 
-            if (++oc == objChunkSize)
+        
+        if (   o < updateObjects.length
+            || n < nodeIds.length)
+        {
+            if (o < updateObjects.length)
             {
-                genQueueMessageToFigma({ 
-                    cmd:             'figUpdateObjects',
-                    updateNodeId:     updateNodeId,
-                    updateParamIndex: updateParamIndex,
+                objChunk.push(updateObjects[o]);
+                oc++;
+                
+                o++;
+            }
+
+
+            if (n < nodeIds.length)
+            {
+                nodeChunk.push(
+                    nodeIds[n],
+                    counts [n]);
+
+                const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+                values.sort((a, b) => a.paramIndex - b.paramIndex);
+
+                for (const v of values)
+                {
+                    nodeChunk.push(v.paramIndex, v.value);
+                    nc++;
+                }
+
+                n++;
+            }
+
+
+            if (   oc == objChunkSize 
+                || nc >= approxParamChunkSize)
+            {
+                genQueueMessageToUI({ 
+                    cmd:             'uiUpdateParamsAndObjects',
+                    updateNodeId:     updateNodeId, 
+                    updateParamIndex: updateParamIndex, 
+                    values:           [...nodeChunk],
                     objects:          [...objChunk]
                 });
+
+                genFigMessagePosted = true;
+
+                nodeChunk = [];
+                nc = 0;
 
                 objChunk = [];
                 oc       = 0;
             }
-
-            o++;
-        }
-
-        
-        if (n < nodeIds.length)
-        {
-            nodeChunk.push(
-                nodeIds[n],
-                counts [n]);
-
-            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
-
-            values.sort((a, b) => a.paramIndex - b.paramIndex);
-
-            for (const v of values)
-            {
-                nodeChunk.push(v.paramIndex, v.value);
-                nc++;
-            }
-
-            if (nc >= approxParamChunkSize)
-            {
-                genQueueMessageToUI({ 
-                    cmd:    'uiUpdateParamValues',
-                    values: [updateNodeId, updateParamIndex, ...nodeChunk]
-                });
-
-                nodeChunk = [];
-                nc = 0;
-            }
-
-            n++;
         }
     }
 
 
-    if (objChunk.length > 0)
-    {
-        genQueueMessageToFigma({ 
-            cmd:             'figUpdateObjects',
-            updateNodeId:     updateNodeId,
-            updateParamIndex: updateParamIndex,
-            objects:          [...objChunk]
-        });
-    }
-
-    if (nodeChunk.length > 0)
+    if (   nodeChunk.length > 0
+        ||  objChunk.length > 0)
     {
         genQueueMessageToUI({ 
-            cmd:    'uiUpdateParamValues',
-            values: [updateNodeId, updateParamIndex, ...nodeChunk]
+            cmd:             'uiUpdateParamsAndObjects',
+            updateNodeId:     updateNodeId, 
+            updateParamIndex: updateParamIndex, 
+            values:           [...nodeChunk],
+            objects:          [...objChunk]
         });
+
+        genFigMessagePosted = true;
     }
 }
 
@@ -246,7 +235,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
 //         if (nc >= approxParamChunkSize)
 //         {
 //             genPostMessageToUI({ 
-//                 cmd:    'uiUpdateParamValues',
+//                 cmd:    'uiUpdateParams',
 //                 values: [updateNodeId, updateParamIndex, ...chunk]
 //             });
 
@@ -260,7 +249,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
 //     if (chunk.length > 0)
 //     {
 //         genPostMessageToUI({ 
-//             cmd:    'uiUpdateParamValues',
+//             cmd:    'uiUpdateParams',
 //             values: [updateNodeId, updateParamIndex, ...chunk]
 //         });
 //     }
