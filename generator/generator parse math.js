@@ -162,8 +162,8 @@ function genParseNumberDivide(parse)
                 break; 
             }
             
-            result /= num.value;
             maxDec = Math.max(maxDec, num.decimals);
+            result = floorTo(result / num.value, maxDec);
         }
     }
 
