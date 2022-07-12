@@ -176,13 +176,14 @@ function logReqRectangle(req)
 
     if (req.request[req.pos] == RECTANGLE)
     {
-            log += logReq(req);
-            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        log += logReq(req);
+        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
     }
     else
         indices = [...Array(6).keys()];
     
 
+console.log('indices.length', indices.length);
     for (const i of indices)
     {
         if (i < 6)
@@ -216,8 +217,8 @@ function logReqEllipse(req)
 
     if (req.request[req.pos] == ELLIPSE)
     {
-            log += logReq(req);
-            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        log += logReq(req);
+        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
     }
     else
         indices = [...Array(5).keys()];
@@ -256,8 +257,8 @@ function logReqPolygon(req)
 
     if (req.request[req.pos] == POLYGON)
     {
-            log += logReq(req);
-            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        log += logReq(req);
+        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
     }
     else
         indices = [...Array(7).keys()];
@@ -296,17 +297,17 @@ function logReqStar(req)
 
     if (req.request[req.pos] == STAR)
     {
-            log += logReq(req);
-            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        log += logReq(req);
+        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
     }
     else
         indices = [...Array(8).keys()];
     
 
-    for (const i of indices)
+        for (const i of indices)
     {
         if (i < 8)
-            log += logReq(req); break;
+            log += logReq(req);
     }
 
 

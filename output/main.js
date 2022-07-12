@@ -221,6 +221,7 @@ function logReqRectangle(req) {
     }
     else
         indices = [...Array(6).keys()];
+    console.log('indices.length', indices.length);
     for (const i of indices) {
         if (i < 6)
             log += logReq(req);
@@ -287,7 +288,6 @@ function logReqStar(req) {
     for (const i of indices) {
         if (i < 8)
             log += logReq(req);
-        break;
     }
     req.nTab--;
     return log;
