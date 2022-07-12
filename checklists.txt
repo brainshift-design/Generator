@@ -1,0 +1,9 @@
+new node:
+
+    types
+    html
+    graph.makeNode();
+    figma obj create
+    figma obj update
+    gen obj parse
+    log node req

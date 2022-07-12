@@ -1,11 +1,10 @@
-class GRectangle
+class GEllipse
 {
     x;
     y;
     width;
     height;
     angle;
-    round;
 
 
 
@@ -16,7 +15,6 @@ class GRectangle
         this.width  = new GNumber(100);
         this.height = new GNumber(100);
         this.angle  = new GNumber(  0);
-        this.round  = new GNumber(  0);
     }
 
 
@@ -27,7 +25,6 @@ class GRectangle
             && this.y     .valid
             && this.width .valid
             && this.height.valid
-            && this.angle .valid
-            && this.round .valid;
+            && this.angle .valid;
     }
 }

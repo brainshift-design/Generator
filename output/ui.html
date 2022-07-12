@@ -1333,6 +1333,9 @@ div
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle));        this.blur();'>RECT</button>
+    <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse));          this.blur();'>ELPS</button>
+    <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon));          this.blur();'>POLY</button>
+    <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar));             this.blur();'>STAR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment));          this.blur();'></button>
     <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
@@ -1612,6 +1615,9 @@ function rgbFromType(type, active)
                  : rgbColor;
 
         case RECTANGLE: 
+        case ELLIPSE: 
+        case POLYGON: 
+        case STAR: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -4011,6 +4017,9 @@ function logReq(req)
     else if (next == NUMBER_INTERPOLATE) return logReqNumberInterpolate(req);
 
     else if (next == RECTANGLE         ) return logReqRectangle        (req);
+    else if (next == ELLIPSE           ) return logReqEllipse          (req);
+    else if (next == POLYGON           ) return logReqPolygon          (req);
+    else if (next == STAR              ) return logReqStar             (req);
 
     
     req.so++;
@@ -4177,15 +4186,128 @@ function logReqRectangle(req)
 
     for (const i of indices)
     {
-        switch (i)
-        {
-        case 0: log += logReq(req); break;
-        case 1: log += logReq(req); break;
-        case 2: log += logReq(req); break;
-        case 3: log += logReq(req); break;
-        case 4: log += logReq(req); break;
-        case 5: log += logReq(req); break;
-        }
+        if (i < 6)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqEllipse(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == ELLIPSE)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 5)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqPolygon(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == POLYGON)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(7).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 7)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqStar(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == STAR)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(8).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 8)
+            log += logReq(req); break;
     }
 
 
@@ -4397,6 +4519,8 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
+const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
+const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 const GROUP              = 'GRP';   // ???? count O...
 
@@ -4484,7 +4608,7 @@ class GRectangle
 
 
 
-    constructor()//x, y, width, height, angle, round)
+    constructor()
     {
         this.x      = new GNumber(  0);
         this.y      = new GNumber(  0);
@@ -4505,28 +4629,118 @@ class GRectangle
             && this.angle .valid
             && this.round .valid;
     }
-
-
-    
-    // toString()
-    // {
-    //     return isNaN(this.value)
-    //         ? '?'
-    //         : numToString(this.value, this.decimals);    
-    // }
 }
 
 
+class GEllipse
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
 
-// function parseGnum(str)
-// {
-//     return str == '?'
-//         ? new GNumber(Number.NaN, 0)
-//         : new GNumber(
-//               parseFloat(str),
-//               decCount(str));
-// }
 
+
+    constructor()
+    {
+        this.x      = new GNumber(  0);
+        this.y      = new GNumber(  0);
+        this.width  = new GNumber(100);
+        this.height = new GNumber(100);
+        this.angle  = new GNumber(  0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            && this.height.valid
+            && this.angle .valid;
+    }
+}
+
+
+class GPolygon
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    corners;
+
+
+
+    constructor()
+    {
+        this.x       = new GNumber(  0);
+        this.y       = new GNumber(  0);
+        this.width   = new GNumber(100);
+        this.height  = new GNumber(100);
+        this.angle   = new GNumber(  0);
+        this.round   = new GNumber(  0);
+        this.corners = new GNumber(  3);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x      .valid
+            && this.y      .valid
+            && this.width  .valid
+            && this.height .valid
+            && this.angle  .valid
+            && this.round  .valid
+            && this.corners.valid;
+    }
+}
+
+
+class GStar
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    points;
+    convex;
+
+
+
+    constructor()
+    {
+        this.x      = new GNumber(  0  );
+        this.y      = new GNumber(  0  );
+        this.width  = new GNumber(100  );
+        this.height = new GNumber(100  );
+        this.angle  = new GNumber(  0  );
+        this.round  = new GNumber(  0  );
+        this.points = new GNumber(  5  );
+        this.convex = new GNumber( 38.2);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            && this.height.valid
+            && this.angle .valid
+            && this.round .valid
+            && this.points.valid
+            && this.convex.valid;
+    }
+}
 
 
 function genFindCorrection(nodeId, 
@@ -4983,7 +5197,7 @@ function genParseRectangle(parse)
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect    = genParse(parse); // not genRectangle() because genParse() handles stack overflow
+        rect    = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
     }
     else
@@ -5033,6 +5247,213 @@ function genParseRectangle(parse)
 
 
     return rect;
+}
+
+
+
+function genParseEllipse(parse)
+{
+    parse.pos++; // ELLIPSE
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let elllipse = new GEllipse();
+    let indices;
+    
+    if (parse.req[parse.pos] == ELLIPSE)
+    {
+        elllipse = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
+        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: elllipse.x      = genParse(parse); break;
+        case 1: elllipse.y      = genParse(parse); break;
+        case 2: elllipse.width  = genParse(parse); break;
+        case 3: elllipse.height = genParse(parse); break;
+        case 4: elllipse.angle  = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, elllipse.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, elllipse.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, elllipse.width .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, elllipse.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 4, elllipse.angle .toString());
+
+
+    if (   active
+        && elllipse.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   ELLIPSE,
+                id:     0,
+                x:      elllipse.x     .value,
+                y:      elllipse.y     .value,
+                width:  elllipse.width .value,
+                height: elllipse.height.value,
+                angle:  elllipse.angle .value
+            });
+    }
+
+
+    return elllipse;
+}
+
+
+
+function genParsePolygon(parse)
+{
+    parse.pos++; // POLYGON
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let poly = new GPolygon();
+    let indices;
+    
+    if (parse.req[parse.pos] == POLYGON)
+    {
+        poly    = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
+        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(7).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: poly.x       = genParse(parse); break;
+        case 1: poly.y       = genParse(parse); break;
+        case 2: poly.width   = genParse(parse); break;
+        case 3: poly.height  = genParse(parse); break;
+        case 4: poly.angle   = genParse(parse); break;
+        case 5: poly.round   = genParse(parse); break;
+        case 6: poly.corners = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, poly.x      .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, poly.y      .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, poly.width  .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, poly.height .toString());
+    genPushUpdateParamValue(parse, nodeId, 4, poly.angle  .toString());
+    genPushUpdateParamValue(parse, nodeId, 5, poly.round  .toString());
+    genPushUpdateParamValue(parse, nodeId, 6, poly.corners.toString());
+
+
+    if (   active
+        && poly.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId:  nodeId,          
+                type:    POLYGON,
+                id:      0,
+                x:       poly.x     .value,
+                y:       poly.y     .value,
+                width:   poly.width .value,
+                height:  poly.height.value,
+                angle:   poly.angle .value,
+                round:   Math.max(0, poly.round.value),
+                corners: Math.max(3, poly.corners.value)
+            });
+    }
+
+
+    return poly;
+}
+
+
+
+function genParseStar(parse)
+{
+    parse.pos++; // STAR
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let star = new GStar();
+    let indices;
+    
+    if (parse.req[parse.pos] == STAR)
+    {
+        star    = genParse(parse); // not genParseStar() because genParse() handles stack overflow
+        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(8).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: star.x      = genParse(parse); break;
+        case 1: star.y      = genParse(parse); break;
+        case 2: star.width  = genParse(parse); break;
+        case 3: star.height = genParse(parse); break;
+        case 4: star.angle  = genParse(parse); break;
+        case 5: star.round  = genParse(parse); break;
+        case 6: star.points = genParse(parse); break;
+        case 7: star.convex = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, star.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, star.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, star.width .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, star.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 4, star.angle .toString());
+    genPushUpdateParamValue(parse, nodeId, 5, star.round .toString());
+    genPushUpdateParamValue(parse, nodeId, 6, star.points.toString());
+    genPushUpdateParamValue(parse, nodeId, 7, star.convex.toString());
+
+
+    if (   active
+        && star.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   STAR,
+                id:     0,
+                x:      star.x     .value,
+                y:      star.y     .value,
+                width:  star.width .value,
+                height: star.height.value,
+                angle:  star.angle .value,
+                round:  Math.max(0, star.round.value),
+                points: Math.max(3, star.points.value),
+                convex: star.convex.value
+            });
+    }
+
+
+    return star;
 }
 
 
@@ -5373,6 +5794,9 @@ function genParse(parse)
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
+    else if (next == ELLIPSE           ) return genParseEllipse          (parse);
+    else if (next == POLYGON           ) return genParsePolygon          (parse);
+    else if (next == STAR              ) return genParseStar             (parse);
 
     
     parse.so++;
@@ -7911,6 +8335,9 @@ function rgbFromType(type, active)
                  : rgbColor;
 
         case RECTANGLE: 
+        case ELLIPSE: 
+        case POLYGON: 
+        case STAR: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -10310,6 +10737,9 @@ function logReq(req)
     else if (next == NUMBER_INTERPOLATE) return logReqNumberInterpolate(req);
 
     else if (next == RECTANGLE         ) return logReqRectangle        (req);
+    else if (next == ELLIPSE           ) return logReqEllipse          (req);
+    else if (next == POLYGON           ) return logReqPolygon          (req);
+    else if (next == STAR              ) return logReqStar             (req);
 
     
     req.so++;
@@ -10476,15 +10906,128 @@ function logReqRectangle(req)
 
     for (const i of indices)
     {
-        switch (i)
-        {
-        case 0: log += logReq(req); break;
-        case 1: log += logReq(req); break;
-        case 2: log += logReq(req); break;
-        case 3: log += logReq(req); break;
-        case 4: log += logReq(req); break;
-        case 5: log += logReq(req); break;
-        }
+        if (i < 6)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqEllipse(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == ELLIPSE)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 5)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqPolygon(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == POLYGON)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(7).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 7)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqStar(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == STAR)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(8).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 8)
+            log += logReq(req); break;
     }
 
 
@@ -12072,6 +12615,8 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
+const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
+const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 const GROUP              = 'GRP';   // ???? count O...
 
@@ -12159,7 +12704,7 @@ class GRectangle
 
 
 
-    constructor()//x, y, width, height, angle, round)
+    constructor()
     {
         this.x      = new GNumber(  0);
         this.y      = new GNumber(  0);
@@ -12180,28 +12725,118 @@ class GRectangle
             && this.angle .valid
             && this.round .valid;
     }
-
-
-    
-    // toString()
-    // {
-    //     return isNaN(this.value)
-    //         ? '?'
-    //         : numToString(this.value, this.decimals);    
-    // }
 }
 
 
+class GEllipse
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
 
-// function parseGnum(str)
-// {
-//     return str == '?'
-//         ? new GNumber(Number.NaN, 0)
-//         : new GNumber(
-//               parseFloat(str),
-//               decCount(str));
-// }
 
+
+    constructor()
+    {
+        this.x      = new GNumber(  0);
+        this.y      = new GNumber(  0);
+        this.width  = new GNumber(100);
+        this.height = new GNumber(100);
+        this.angle  = new GNumber(  0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            && this.height.valid
+            && this.angle .valid;
+    }
+}
+
+
+class GPolygon
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    corners;
+
+
+
+    constructor()
+    {
+        this.x       = new GNumber(  0);
+        this.y       = new GNumber(  0);
+        this.width   = new GNumber(100);
+        this.height  = new GNumber(100);
+        this.angle   = new GNumber(  0);
+        this.round   = new GNumber(  0);
+        this.corners = new GNumber(  3);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x      .valid
+            && this.y      .valid
+            && this.width  .valid
+            && this.height .valid
+            && this.angle  .valid
+            && this.round  .valid
+            && this.corners.valid;
+    }
+}
+
+
+class GStar
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    points;
+    convex;
+
+
+
+    constructor()
+    {
+        this.x      = new GNumber(  0  );
+        this.y      = new GNumber(  0  );
+        this.width  = new GNumber(100  );
+        this.height = new GNumber(100  );
+        this.angle  = new GNumber(  0  );
+        this.round  = new GNumber(  0  );
+        this.points = new GNumber(  5  );
+        this.convex = new GNumber( 38.2);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            && this.height.valid
+            && this.angle .valid
+            && this.round .valid
+            && this.points.valid
+            && this.convex.valid;
+    }
+}
 
 
 const settings =
@@ -17634,7 +18269,9 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLORBLIND:         node = new OpColorblind();       break;
         
         case RECTANGLE:          node = new OpRectangle();        break;
-        case ELLIPSE:            node = new OpRow();              break;
+        case ELLIPSE:            node = new OpEllipse();          break;
+        case POLYGON:            node = new OpPolygon();          break;
+        case STAR:               node = new OpStar();             break;
 
         case COMMENT:            node = new OpComment();          break;
     }
@@ -18903,31 +19540,31 @@ class Operator
     get active() { return this._active; }
        
     
-    get activeColor()
-    {
-        switch (this.type)
-        {
-            case NUMBER:    return rgbNumber; //activeNumberColor;
-            case COLOR:     return rgbActiveColor;
-            case RECTANGLE: return rgbActiveObject;
-        }
+    // get activeColor()
+    // {
+    //     switch (this.type)
+    //     {
+    //         case NUMBER:    return rgbNumber; //activeNumberColor;
+    //         case COLOR:     return rgbActiveColor;
+    //         case RECTANGLE: return rgbActiveObject;
+    //     }
 
-        return 'magenta';
-    }
+    //     return 'magenta';
+    // }
 
 
 
-    get passiveColor()
-    {
-        switch (this.type)
-        {
-            case NUMBER:    return rgbNumber;
-            case COLOR:     return rgbColor;
-            case RECTANGLE: return rgbObject;
-        }
+    // get passiveColor()
+    // {
+    //     switch (this.type)
+    //     {
+    //         case NUMBER:    return rgbNumber;
+    //         case COLOR:     return rgbColor;
+    //         case RECTANGLE: return rgbObject;
+    //     }
 
-        return 'magenta';
-    }
+    //     return 'magenta';
+    // }
 
 
 
@@ -24038,91 +24675,646 @@ extends OperatorBase
 }
 
 
-class   OpRow
+class   OpEllipse
 extends OperatorBase
 {
-    #count;
-    #gap;
+    #paramX;
+    #paramY;
+    #paramWidth;
+    #paramHeight;
+    #paramAngle;
+
+    #btnProportional;
+
+    #refWidth  = Number.NaN;
+    #refHeight = Number.NaN;
 
 
+    
     constructor()
     {
-        super('row', 'row', 'object');
+        super(ELLIPSE, 'elps', 90);
 
-        this.addInput (new Input ());
-        this.addOutput(new Output());
+        this.addInput (new Input ([ELLIPSE]));
+        this.addOutput(new Output(ELLIPSE, this.output_genRequest));
+
+        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         
-        this.addParam(this.#count = new NumberParam('count', 'count', true, true, true,  7, 1));
-        this.addParam(this.#gap   = new NumberParam('gap',   'gap',   true, true, true, 10, 0));
+
+        this.#paramAngle.control.setSuffix('°', true);
+        this.#paramAngle.control.wrapValue = true;
+
+        
+        //this.updateRound();
+
+        this.#btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.#btnProportional);
+
+
+        this.inputs[0].addEventListener('connect', () =>
+        {
+            for (const param of this.params)
+                enableSliderText(param.control, false);
+        });
+
+
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            for (const param of this.params)
+                if (!param.input.connected) 
+                    enableSliderText(param.control, true);
+        });
+
+
+        this.#btnProportional.addEventListener('click', () =>
+        {
+            if (this.#btnProportional.enabled)
+            {
+                this.#refWidth  = this.#paramWidth .genValue;
+                this.#refHeight = this.#paramHeight.genValue;
+            }
+        });
+
+
+        this.#paramWidth.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+        });
+
+
+        this.#paramHeight.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+        });
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
+        const req = this.node.getRequestStart();
+
+        
+        const input = this.node.inputs[0];
+
+        const indices = [];
+
+
+        if (input.connected)
+        {
+            req.push(...input.connectedOutput.genRequest(gen));
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    indices.push(param.index);
+
+            req.push(indices.join(','));
+
+
+            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
+            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
+            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
+            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
+            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+        }
+        else
+        {
+            req.push(
+                ...this.node.#paramX     .genRequest(gen),
+                ...this.node.#paramY     .genRequest(gen),
+                ...this.node.#paramWidth .genRequest(gen),
+                ...this.node.#paramHeight.genRequest(gen),
+                ...this.node.#paramAngle .genRequest(gen));
+        }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
     }
 
 
 
-    toString()
+    updateNode()
     {
+        this.#btnProportional.style.left = 45;
+        this.#btnProportional.style.top  = 79;
 
+        super.updateNode();
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        let json = 
+               super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+
+        if (this.#btnProportional.enabled)
+        {
+            json +=
+                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+        }
+
+        return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        super.loadParams(_node);
+
+        // if (_node.proportional)
+        // {
+            this.#btnProportional.enabled = isTrue(_node.proportional);
+            this.#btnProportional.updateBackground(false);
+
+            if (this.#btnProportional.enabled)
+            {
+                this.#refWidth  = parseFloat(_node.refWidth);
+                this.#refHeight = parseFloat(_node.refHeight);
+            }
+        //}
     }
 }
 
 
+class   OpPolygon
+extends OperatorBase
+{
+    #paramX;
+    #paramY;
+    #paramWidth;
+    #paramHeight;
+    #paramAngle;
+    #paramRound;
+    #paramCorners;
 
+    #btnProportional;
 
-// class   OpRow
-// extends Operator
-// {
-//     #count;
-//     #gap;
+    #refWidth  = Number.NaN;
+    #refHeight = Number.NaN;
 
-
-//     constructor()
-//     {
-//         super('row', 'object');
-
-//         this.addInput (new Input ());
-//         this.addOutput(new Output());
-        
-//         this.addParam(this.#count = new NumberParam('count', 'count',  4, 1));
-//         this.addParam(this.#gap   = new NumberParam('gap',   'gap',   10, 0));
-//     }
-
-
-//     updateData()
-//     {
-//         const input  = this.inputs[0];
-//         const output = this.output;
-
-//         if (!input.connected)
-//         {
-//             output._data = {};
-//             return;
-//         }
 
     
-//         const objects = input.data;
-//         const bounds = getObjectBounds(objects);
+    constructor()
+    {
+        super(POLYGON, 'poly', 90);
 
+        this.addInput (new Input ([POLYGON]));
+        this.addOutput(new Output(POLYGON, this.output_genRequest));
 
-//         output._data = [];
-    
-//         for (var i = 0, x = 0; i < this.#count.value; i++)
-//         {
-//             for (var j = 0; j < objects.length; j++)
-//             {
-//                 const obj = shallowCopy(objects[j]);
-//                 obj.itemId = 'row_' + i + '_' + j;
-   
-//                 obj.x += x;
-                
-//                 output._data.push(obj);
-//             }
-            
-//             x += bounds.w + this.#gap.value;
-//         }
+        this.addParam(this.#paramX       = new NumberParam('x',       'x',       true, true, true,   0));
+        this.addParam(this.#paramY       = new NumberParam('y',       'y',       true, true, true,   0));
+        this.addParam(this.#paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
+        this.addParam(this.#paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
+        this.addParam(this.#paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
+        this.addParam(this.#paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
+        this.addParam(this.#paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
+        
+
+        this.#paramAngle.control.setSuffix('°', true);
+        this.#paramAngle.control.wrapValue = true;
 
         
-//         super.updateData();
-//     }
-// }
+        //this.updateRound();
+
+        this.#btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.#btnProportional);
+
+
+        this.inputs[0].addEventListener('connect', () =>
+        {
+            for (const param of this.params)
+                enableSliderText(param.control, false);
+        });
+
+
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            for (const param of this.params)
+                if (!param.input.connected) 
+                    enableSliderText(param.control, true);
+        });
+
+
+        this.#btnProportional.addEventListener('click', () =>
+        {
+            if (this.#btnProportional.enabled)
+            {
+                this.#refWidth  = this.#paramWidth .genValue;
+                this.#refHeight = this.#paramHeight.genValue;
+            }
+        });
+
+
+        this.#paramWidth.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+        });
+
+
+        this.#paramHeight.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+        });
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
+        const req = this.node.getRequestStart();
+
+        
+        const input = this.node.inputs[0];
+
+        const indices = [];
+
+
+        if (input.connected)
+        {
+            req.push(...input.connectedOutput.genRequest(gen));
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    indices.push(param.index);
+
+            req.push(indices.join(','));
+
+
+            if (this.node.#paramX      .input.connected) req.push(...this.node.#paramX      .genRequest(gen));
+            if (this.node.#paramY      .input.connected) req.push(...this.node.#paramY      .genRequest(gen));
+            if (this.node.#paramWidth  .input.connected) req.push(...this.node.#paramWidth  .genRequest(gen));
+            if (this.node.#paramHeight .input.connected) req.push(...this.node.#paramHeight .genRequest(gen));
+            if (this.node.#paramAngle  .input.connected) req.push(...this.node.#paramAngle  .genRequest(gen));
+            if (this.node.#paramRound  .input.connected) req.push(...this.node.#paramRound  .genRequest(gen));
+            if (this.node.#paramCorners.input.connected) req.push(...this.node.#paramCorners.genRequest(gen));
+        }
+        else
+        {
+            req.push(
+                ...this.node.#paramX      .genRequest(gen),
+                ...this.node.#paramY      .genRequest(gen),
+                ...this.node.#paramWidth  .genRequest(gen),
+                ...this.node.#paramHeight .genRequest(gen),
+                ...this.node.#paramAngle  .genRequest(gen),
+                ...this.node.#paramRound  .genRequest(gen),
+                ...this.node.#paramCorners.genRequest(gen));
+        }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
+    }
+
+
+
+    updateNode()
+    {
+        this.#btnProportional.style.left = 45;
+        this.#btnProportional.style.top  = 79;
+
+        super.updateNode();
+    }
+
+
+
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        switch (index)
+        {
+            case 2:
+            case 3:
+                this.updateRound();
+                break;
+        }
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.#paramRound.control;
+        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        this.#paramRound.control.update();
+    }
+
+    
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        let json = 
+               super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+
+        if (this.#btnProportional.enabled)
+        {
+            json +=
+                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+        }
+
+        return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        super.loadParams(_node);
+
+        // if (_node.proportional)
+        // {
+            this.#btnProportional.enabled = isTrue(_node.proportional);
+            this.#btnProportional.updateBackground(false);
+
+            if (this.#btnProportional.enabled)
+            {
+                this.#refWidth  = parseFloat(_node.refWidth);
+                this.#refHeight = parseFloat(_node.refHeight);
+            }
+        //}
+    }
+}
+
+
+class   OpStar
+extends OperatorBase
+{
+    #paramX;
+    #paramY;
+    #paramWidth;
+    #paramHeight;
+    #paramAngle;
+    #paramRound;
+    #paramPoints;
+    #paramConvex;
+
+    #btnProportional;
+
+    #refWidth  = Number.NaN;
+    #refHeight = Number.NaN;
+
+
+    
+    constructor()
+    {
+        super(STAR, 'star', 90);
+
+        this.addInput (new Input ([STAR]));
+        this.addOutput(new Output(STAR, this.output_genRequest));
+
+        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.#paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
+        this.addParam(this.#paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
+        
+
+        this.#paramAngle.control.setSuffix('°', true);
+        this.#paramAngle.control.wrapValue = true;
+
+        this.#paramConvex.control.setSuffix('%', true);
+        
+
+        //this.updateRound();
+
+        this.#btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.#btnProportional);
+
+
+        this.inputs[0].addEventListener('connect', () =>
+        {
+            for (const param of this.params)
+                enableSliderText(param.control, false);
+        });
+
+
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            for (const param of this.params)
+                if (!param.input.connected) 
+                    enableSliderText(param.control, true);
+        });
+
+
+        this.#btnProportional.addEventListener('click', () =>
+        {
+            if (this.#btnProportional.enabled)
+            {
+                this.#refWidth  = this.#paramWidth .genValue;
+                this.#refHeight = this.#paramHeight.genValue;
+            }
+        });
+
+
+        this.#paramWidth.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+        });
+
+
+        this.#paramHeight.addEventListener('change', () =>
+        {
+            if (this.#btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+        });
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
+        const req = this.node.getRequestStart();
+
+        
+        const input = this.node.inputs[0];
+
+        const indices = [];
+
+
+        if (input.connected)
+        {
+            req.push(...input.connectedOutput.genRequest(gen));
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    indices.push(param.index);
+
+            req.push(indices.join(','));
+
+
+            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
+            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
+            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
+            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
+            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest(gen));
+            if (this.node.#paramPoints.input.connected) req.push(...this.node.#paramPoints.genRequest(gen));
+            if (this.node.#paramConvex.input.connected) req.push(...this.node.#paramConvex.genRequest(gen));
+        }
+        else
+        {
+            req.push(
+                ...this.node.#paramX     .genRequest(gen),
+                ...this.node.#paramY     .genRequest(gen),
+                ...this.node.#paramWidth .genRequest(gen),
+                ...this.node.#paramHeight.genRequest(gen),
+                ...this.node.#paramAngle .genRequest(gen),
+                ...this.node.#paramRound .genRequest(gen),
+                ...this.node.#paramPoints.genRequest(gen),
+                ...this.node.#paramConvex.genRequest(gen));
+        }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
+    }
+
+
+
+    updateNode()
+    {
+        this.#btnProportional.style.left = 45;
+        this.#btnProportional.style.top  = 79;
+
+        super.updateNode();
+    }
+
+
+
+    updateParamValue(index, value)
+    {
+        super.updateParamValue(index, value);
+
+        switch (index)
+        {
+            case 2:
+            case 3:
+                this.updateRound();
+                break;
+        }
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.#paramRound.control;
+        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        this.#paramRound.control.update();
+    }
+
+    
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        let json = 
+               super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+
+        if (this.#btnProportional.enabled)
+        {
+            json +=
+                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+        }
+
+        return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        super.loadParams(_node);
+
+        // if (_node.proportional)
+        // {
+            this.#btnProportional.enabled = isTrue(_node.proportional);
+            this.#btnProportional.updateBackground(false);
+
+            if (this.#btnProportional.enabled)
+            {
+                this.#refWidth  = parseFloat(_node.refWidth);
+                this.#refHeight = parseFloat(_node.refHeight);
+            }
+        //}
+    }
+}
 
 
 class Action

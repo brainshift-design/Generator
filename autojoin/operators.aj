@@ -45,6 +45,9 @@
 ../operators/color/OpColorblind.js
 
 ../operators/geometry/OpRectangle.js
-../operators/geometry/OpRow.js
+../operators/geometry/OpEllipse.js
+../operators/geometry/OpPolygon.js
+../operators/geometry/OpStar.js
+
 //../operators/geometry/OpColumn.js
 //../operators/geometry/UOpSpread.js

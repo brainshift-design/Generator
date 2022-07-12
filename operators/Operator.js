@@ -95,31 +95,31 @@ class Operator
     get active() { return this._active; }
        
     
-    get activeColor()
-    {
-        switch (this.type)
-        {
-            case NUMBER:    return rgbNumber; //activeNumberColor;
-            case COLOR:     return rgbActiveColor;
-            case RECTANGLE: return rgbActiveObject;
-        }
+    // get activeColor()
+    // {
+    //     switch (this.type)
+    //     {
+    //         case NUMBER:    return rgbNumber; //activeNumberColor;
+    //         case COLOR:     return rgbActiveColor;
+    //         case RECTANGLE: return rgbActiveObject;
+    //     }
 
-        return 'magenta';
-    }
+    //     return 'magenta';
+    // }
 
 
 
-    get passiveColor()
-    {
-        switch (this.type)
-        {
-            case NUMBER:    return rgbNumber;
-            case COLOR:     return rgbColor;
-            case RECTANGLE: return rgbObject;
-        }
+    // get passiveColor()
+    // {
+    //     switch (this.type)
+    //     {
+    //         case NUMBER:    return rgbNumber;
+    //         case COLOR:     return rgbColor;
+    //         case RECTANGLE: return rgbObject;
+    //     }
 
-        return 'magenta';
-    }
+    //     return 'magenta';
+    // }
 
 
 

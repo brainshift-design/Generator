@@ -1,0 +1,206 @@
+function figCreateRect(obj)
+{
+    //console.log(obj);
+
+    const rect = figma.createRectangle();
+
+    rect.x = obj.x;
+    rect.y = obj.y;
+    
+    rect.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+    
+    rect.resize(
+        Math.max(0.01, obj.width), 
+        Math.max(0.01, obj.height));
+        
+    rect.rotation     = obj.angle;
+    rect.cornerRadius = obj.round;
+
+    return rect;
+}
+
+
+
+function figUpdateRect(figRect, genRect)
+{
+    figRect.x = genRect.x;
+    figRect.y = genRect.y;
+
+    if (   figRect.width  != genRect.width
+        || figRect.height != genRect.height)
+    {
+        figRect.resize(
+            Math.max(0.01, genRect.width), 
+            Math.max(0.01, genRect.height));
+    }
+
+    figRect.rotation     = genRect.angle;
+    figRect.cornerRadius = genRect.round;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function figCreateEllipse(obj)
+{
+    //console.log(obj);
+
+    const ellipse = figma.createEllipse();
+
+    ellipse.x = obj.x;
+    ellipse.y = obj.y;
+    
+    ellipse.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+    
+    ellipse.resize(
+        Math.max(0.01, obj.width), 
+        Math.max(0.01, obj.height));
+        
+    ellipse.rotation = obj.angle;
+
+    return ellipse;
+}
+
+
+
+function figUpdateEllipse(figEllipse, genEllipse)
+{
+    figEllipse.x = genEllipse.x;
+    figEllipse.y = genEllipse.y;
+
+    if (   figEllipse.width  != genEllipse.width
+        || figEllipse.height != genEllipse.height)
+    {
+        figEllipse.resize(
+            Math.max(0.01, genEllipse.width), 
+            Math.max(0.01, genEllipse.height));
+    }
+
+    figEllipse.rotation = genEllipse.angle;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function figCreatePolygon(obj)
+{
+    //console.log(obj);
+
+    const poly = figma.createPolygon();
+
+    poly.x = obj.x;
+    poly.y = obj.y;
+    
+    poly.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+    
+    poly.resize(
+        Math.max(0.01, obj.width), 
+        Math.max(0.01, obj.height));
+        
+    poly.rotation     = obj.angle;
+    poly.cornerRadius = obj.round;
+    poly.pointCount   = obj.corners;
+
+    return poly;
+}
+
+
+
+function figUpdatePolygon(figPoly, genPoly)
+{
+    figPoly.x = genPoly.x;
+    figPoly.y = genPoly.y;
+
+    if (   figPoly.width  != genPoly.width
+        || figPoly.height != genPoly.height)
+    {
+        figPoly.resize(
+            Math.max(0.01, genPoly.width), 
+            Math.max(0.01, genPoly.height));
+    }
+
+    figPoly.rotation     = genPoly.angle;
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount   = genPoly.corners;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function figCreateStar(obj)
+{
+    //console.log(obj);
+
+    const star = figma.createStar();
+
+    star.x = obj.x;
+    star.y = obj.y;
+    
+    star.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+    
+    star.resize(
+        Math.max(0.01, obj.width), 
+        Math.max(0.01, obj.height));
+        
+    star.rotation     = obj.angle;
+    star.cornerRadius = obj.round;
+    star.pointCount   = obj.points;
+    star.innerRadius  = obj.convex / 100;
+
+    return star;
+}
+
+
+
+function figUpdateStar(figStar, genStar)
+{
+    figStar.x = genStar.x;
+    figStar.y = genStar.y;
+
+    if (   figStar.width  != genStar.width
+        || figStar.height != genStar.height)
+    {
+        figStar.resize(
+            Math.max(0.01, genStar.width), 
+            Math.max(0.01, genStar.height));
+    }
+
+    figStar.rotation     = genStar.angle;
+    figStar.cornerRadius = genStar.round;
+    figStar.pointCount   = genStar.points;
+    figStar.innerRadius  = genStar.convex / 100;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// function figCreateFrame()
+// {
+//     let frame = figma.createFrame();
+
+//     frame.name = 'Generator';
+
+//     let tx : Paint = {type: 'SOLID', color: {r: 0, g: 0, b: 0}, opacity: 0};
+//     frame.fills = [tx];
+
+//     //frame.resize(
+//     //    (nCols*rectSize + (nCols-1)*hgap),
+//     //    (nRows*rectSize + (nRows-1)*hgap));
+
+//     return frame;
+// }
+
+
+

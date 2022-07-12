@@ -127,6 +127,12 @@ function logReq(req) {
         return logReqNumberInterpolate(req);
     else if (next == RECTANGLE)
         return logReqRectangle(req);
+    else if (next == ELLIPSE)
+        return logReqEllipse(req);
+    else if (next == POLYGON)
+        return logReqPolygon(req);
+    else if (next == STAR)
+        return logReqStar(req);
     req.so++;
     return '';
     // return JSON.stringify(req.request)        
@@ -216,26 +222,72 @@ function logReqRectangle(req) {
     else
         indices = [...Array(6).keys()];
     for (const i of indices) {
-        switch (i) {
-            case 0:
-                log += logReq(req);
-                break;
-            case 1:
-                log += logReq(req);
-                break;
-            case 2:
-                log += logReq(req);
-                break;
-            case 3:
-                log += logReq(req);
-                break;
-            case 4:
-                log += logReq(req);
-                break;
-            case 5:
-                log += logReq(req);
-                break;
-        }
+        if (i < 6)
+            log += logReq(req);
+    }
+    req.nTab--;
+    return log;
+}
+function logReqEllipse(req) {
+    const tab = req.tab;
+    req.nTab++;
+    const tag = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+    let log = tab + tag + ' ' + nodeId + active;
+    let indices;
+    if (req.request[req.pos] == ELLIPSE) {
+        log += logReq(req);
+        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+    for (const i of indices) {
+        if (i < 5)
+            log += logReq(req);
+    }
+    req.nTab--;
+    return log;
+}
+function logReqPolygon(req) {
+    const tab = req.tab;
+    req.nTab++;
+    const tag = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+    let log = tab + tag + ' ' + nodeId + active;
+    let indices;
+    if (req.request[req.pos] == POLYGON) {
+        log += logReq(req);
+        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(7).keys()];
+    for (const i of indices) {
+        if (i < 7)
+            log += logReq(req);
+    }
+    req.nTab--;
+    return log;
+}
+function logReqStar(req) {
+    const tab = req.tab;
+    req.nTab++;
+    const tag = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+    let log = tab + tag + ' ' + nodeId + active;
+    let indices;
+    if (req.request[req.pos] == STAR) {
+        log += logReq(req);
+        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(8).keys()];
+    for (const i of indices) {
+        if (i < 8)
+            log += logReq(req);
+        break;
     }
     req.nTab--;
     return log;
@@ -269,6 +321,8 @@ const STRING_REPLACE = 'SREPL'; // S S:what S:with
 //const RECTANGLE_VALUE    = 'R';
 const RECTANGLE = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
+const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
@@ -300,7 +354,6 @@ const settings = {
     logParamUpdates: false,
     logObjectUpdates: false
 };
-//const MAX_OBJECTS = 0x10000;
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdateObjects(/*updateId,*/ genObjects) {
     if (settings.logObjectUpdates)
@@ -327,73 +380,44 @@ function figUpdateObjects(/*updateId,*/ genObjects) {
         }
     }
 }
-// function figUpdateObjectArrays(genNodes)
-// {
-//     for (let i = 0; i < genNodes.length; i++)
-//     {
-//         let index = figObjectArrays.findIndex(a => a.nodeId = genNodes[i].nodeId);
-//         if (index < 0) 
-//         {
-//             figObjectArrays.push({nodeId: genNodes[i].nodeId, objects: []});
-//             index = figObjectArrays.length-1;
-//         }
-//     }
-// }
 function figCreateObject(objects, genObj) {
     let figObj;
     switch (genObj.type) {
         case RECTANGLE:
             figObj = figCreateRect(genObj);
             break;
+        case ELLIPSE:
+            figObj = figCreateEllipse(genObj);
+            break;
+        case POLYGON:
+            figObj = figCreatePolygon(genObj);
+            break;
+        case STAR:
+            figObj = figCreateStar(genObj);
+            break;
     }
     figObj.name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
     figObj.setPluginData('id', genObj.id.toString());
     figObj.setPluginData('type', genObj.type.toString());
     figObj.setPluginData('nodeId', genObj.nodeId.toString());
-    //genObj.setPluginData('name',   rect.name);
     objects[genObj.id] = figObj;
     figma.currentPage.appendChild(figObj);
-}
-// function figCreateFrame()
-// {
-//     let frame = figma.createFrame();
-//     frame.name = 'Generator';
-//     let tx : Paint = {type: 'SOLID', color: {r: 0, g: 0, b: 0}, opacity: 0};
-//     frame.fills = [tx];
-//     //frame.resize(
-//     //    (nCols*rectSize + (nCols-1)*hgap),
-//     //    (nRows*rectSize + (nRows-1)*hgap));
-//     return frame;
-// }
-function figCreateRect(obj) {
-    //console.log(obj);
-    const rect = figma.createRectangle();
-    rect.x = obj.x;
-    rect.y = obj.y;
-    rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
-    rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
-    rect.rotation = obj.angle;
-    rect.cornerRadius = obj.round;
-    return rect;
 }
 function figUpdateObject(figObj, genObj) {
     switch (genObj.type) {
         case RECTANGLE:
-            {
-                figUpdateRect(figObj, genObj);
-                break;
-            }
+            figUpdateRect(figObj, genObj);
+            break;
+        case ELLIPSE:
+            figUpdateEllipse(figObj, genObj);
+            break;
+        case POLYGON:
+            figUpdatePolygon(figObj, genObj);
+            break;
+        case STAR:
+            figUpdateStar(figObj, genObj);
+            break;
     }
-}
-function figUpdateRect(figRect, genRect) {
-    figRect.x = genRect.x;
-    figRect.y = genRect.y;
-    if (figRect.width != genRect.width
-        || figRect.height != genRect.height) {
-        figRect.resize(Math.max(0.01, genRect.width), Math.max(0.01, genRect.height));
-    }
-    figRect.rotation = genRect.angle;
-    figRect.cornerRadius = genRect.round;
 }
 function figDeleteObjectsFromNodeIds(nodeIds) {
     figma.currentPage
@@ -551,6 +575,109 @@ function figPostMessageToUI(msg) {
 //     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+function figCreateRect(obj) {
+    //console.log(obj);
+    const rect = figma.createRectangle();
+    rect.x = obj.x;
+    rect.y = obj.y;
+    rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+    rect.rotation = obj.angle;
+    rect.cornerRadius = obj.round;
+    return rect;
+}
+function figUpdateRect(figRect, genRect) {
+    figRect.x = genRect.x;
+    figRect.y = genRect.y;
+    if (figRect.width != genRect.width
+        || figRect.height != genRect.height) {
+        figRect.resize(Math.max(0.01, genRect.width), Math.max(0.01, genRect.height));
+    }
+    figRect.rotation = genRect.angle;
+    figRect.cornerRadius = genRect.round;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function figCreateEllipse(obj) {
+    //console.log(obj);
+    const ellipse = figma.createEllipse();
+    ellipse.x = obj.x;
+    ellipse.y = obj.y;
+    ellipse.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    ellipse.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+    ellipse.rotation = obj.angle;
+    return ellipse;
+}
+function figUpdateEllipse(figEllipse, genEllipse) {
+    figEllipse.x = genEllipse.x;
+    figEllipse.y = genEllipse.y;
+    if (figEllipse.width != genEllipse.width
+        || figEllipse.height != genEllipse.height) {
+        figEllipse.resize(Math.max(0.01, genEllipse.width), Math.max(0.01, genEllipse.height));
+    }
+    figEllipse.rotation = genEllipse.angle;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function figCreatePolygon(obj) {
+    //console.log(obj);
+    const poly = figma.createPolygon();
+    poly.x = obj.x;
+    poly.y = obj.y;
+    poly.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    poly.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+    poly.rotation = obj.angle;
+    poly.cornerRadius = obj.round;
+    poly.pointCount = obj.corners;
+    return poly;
+}
+function figUpdatePolygon(figPoly, genPoly) {
+    figPoly.x = genPoly.x;
+    figPoly.y = genPoly.y;
+    if (figPoly.width != genPoly.width
+        || figPoly.height != genPoly.height) {
+        figPoly.resize(Math.max(0.01, genPoly.width), Math.max(0.01, genPoly.height));
+    }
+    figPoly.rotation = genPoly.angle;
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount = genPoly.corners;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function figCreateStar(obj) {
+    //console.log(obj);
+    const star = figma.createStar();
+    star.x = obj.x;
+    star.y = obj.y;
+    star.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    star.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+    star.rotation = obj.angle;
+    star.cornerRadius = obj.round;
+    star.pointCount = obj.points;
+    star.innerRadius = obj.convex / 100;
+    return star;
+}
+function figUpdateStar(figStar, genStar) {
+    figStar.x = genStar.x;
+    figStar.y = genStar.y;
+    if (figStar.width != genStar.width
+        || figStar.height != genStar.height) {
+        figStar.resize(Math.max(0.01, genStar.width), Math.max(0.01, genStar.height));
+    }
+    figStar.rotation = genStar.angle;
+    figStar.cornerRadius = genStar.round;
+    figStar.pointCount = genStar.points;
+    figStar.innerRadius = genStar.convex / 100;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// function figCreateFrame()
+// {
+//     let frame = figma.createFrame();
+//     frame.name = 'Generator';
+//     let tx : Paint = {type: 'SOLID', color: {r: 0, g: 0, b: 0}, opacity: 0};
+//     frame.fills = [tx];
+//     //frame.resize(
+//     //    (nCols*rectSize + (nCols-1)*hgap),
+//     //    (nRows*rectSize + (nRows-1)*hgap));
+//     return frame;
+// }
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);

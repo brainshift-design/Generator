@@ -39,6 +39,9 @@ function rgbFromType(type, active)
                  : rgbColor;
 
         case RECTANGLE: 
+        case ELLIPSE: 
+        case POLYGON: 
+        case STAR: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -2438,6 +2441,9 @@ function logReq(req)
     else if (next == NUMBER_INTERPOLATE) return logReqNumberInterpolate(req);
 
     else if (next == RECTANGLE         ) return logReqRectangle        (req);
+    else if (next == ELLIPSE           ) return logReqEllipse          (req);
+    else if (next == POLYGON           ) return logReqPolygon          (req);
+    else if (next == STAR              ) return logReqStar             (req);
 
     
     req.so++;
@@ -2604,15 +2610,128 @@ function logReqRectangle(req)
 
     for (const i of indices)
     {
-        switch (i)
-        {
-        case 0: log += logReq(req); break;
-        case 1: log += logReq(req); break;
-        case 2: log += logReq(req); break;
-        case 3: log += logReq(req); break;
-        case 4: log += logReq(req); break;
-        case 5: log += logReq(req); break;
-        }
+        if (i < 6)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqEllipse(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == ELLIPSE)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 5)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqPolygon(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == POLYGON)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(7).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 7)
+            log += logReq(req);
+    }
+
+
+    req.nTab--;
+
+    return log;
+}
+
+
+
+function logReqStar(req)
+{
+    const tab = req.tab;
+
+    req.nTab++;
+
+
+    const tag    = req.request[req.pos++];
+    const nodeId = req.request[req.pos++];
+    const active = logReqActive(req);
+
+
+    let log = tab + tag + ' ' + nodeId + active;
+
+    let indices;
+
+
+    if (req.request[req.pos] == STAR)
+    {
+            log += logReq(req);
+            indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(8).keys()];
+    
+
+    for (const i of indices)
+    {
+        if (i < 8)
+            log += logReq(req); break;
     }
 
 
@@ -2824,6 +2943,8 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
+const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
+const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 const GROUP              = 'GRP';   // ???? count O...
 
@@ -2911,7 +3032,7 @@ class GRectangle
 
 
 
-    constructor()//x, y, width, height, angle, round)
+    constructor()
     {
         this.x      = new GNumber(  0);
         this.y      = new GNumber(  0);
@@ -2932,28 +3053,118 @@ class GRectangle
             && this.angle .valid
             && this.round .valid;
     }
-
-
-    
-    // toString()
-    // {
-    //     return isNaN(this.value)
-    //         ? '?'
-    //         : numToString(this.value, this.decimals);    
-    // }
 }
 
 
+class GEllipse
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
 
-// function parseGnum(str)
-// {
-//     return str == '?'
-//         ? new GNumber(Number.NaN, 0)
-//         : new GNumber(
-//               parseFloat(str),
-//               decCount(str));
-// }
 
+
+    constructor()
+    {
+        this.x      = new GNumber(  0);
+        this.y      = new GNumber(  0);
+        this.width  = new GNumber(100);
+        this.height = new GNumber(100);
+        this.angle  = new GNumber(  0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            && this.height.valid
+            && this.angle .valid;
+    }
+}
+
+
+class GPolygon
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    corners;
+
+
+
+    constructor()
+    {
+        this.x       = new GNumber(  0);
+        this.y       = new GNumber(  0);
+        this.width   = new GNumber(100);
+        this.height  = new GNumber(100);
+        this.angle   = new GNumber(  0);
+        this.round   = new GNumber(  0);
+        this.corners = new GNumber(  3);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x      .valid
+            && this.y      .valid
+            && this.width  .valid
+            && this.height .valid
+            && this.angle  .valid
+            && this.round  .valid
+            && this.corners.valid;
+    }
+}
+
+
+class GStar
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    points;
+    convex;
+
+
+
+    constructor()
+    {
+        this.x      = new GNumber(  0  );
+        this.y      = new GNumber(  0  );
+        this.width  = new GNumber(100  );
+        this.height = new GNumber(100  );
+        this.angle  = new GNumber(  0  );
+        this.round  = new GNumber(  0  );
+        this.points = new GNumber(  5  );
+        this.convex = new GNumber( 38.2);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            && this.height.valid
+            && this.angle .valid
+            && this.round .valid
+            && this.points.valid
+            && this.convex.valid;
+    }
+}
 
 
 function genFindCorrection(nodeId, 
@@ -3410,7 +3621,7 @@ function genParseRectangle(parse)
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect    = genParse(parse); // not genRectangle() because genParse() handles stack overflow
+        rect    = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
         indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
     }
     else
@@ -3460,6 +3671,213 @@ function genParseRectangle(parse)
 
 
     return rect;
+}
+
+
+
+function genParseEllipse(parse)
+{
+    parse.pos++; // ELLIPSE
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let elllipse = new GEllipse();
+    let indices;
+    
+    if (parse.req[parse.pos] == ELLIPSE)
+    {
+        elllipse = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
+        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: elllipse.x      = genParse(parse); break;
+        case 1: elllipse.y      = genParse(parse); break;
+        case 2: elllipse.width  = genParse(parse); break;
+        case 3: elllipse.height = genParse(parse); break;
+        case 4: elllipse.angle  = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, elllipse.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, elllipse.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, elllipse.width .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, elllipse.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 4, elllipse.angle .toString());
+
+
+    if (   active
+        && elllipse.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   ELLIPSE,
+                id:     0,
+                x:      elllipse.x     .value,
+                y:      elllipse.y     .value,
+                width:  elllipse.width .value,
+                height: elllipse.height.value,
+                angle:  elllipse.angle .value
+            });
+    }
+
+
+    return elllipse;
+}
+
+
+
+function genParsePolygon(parse)
+{
+    parse.pos++; // POLYGON
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let poly = new GPolygon();
+    let indices;
+    
+    if (parse.req[parse.pos] == POLYGON)
+    {
+        poly    = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
+        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(7).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: poly.x       = genParse(parse); break;
+        case 1: poly.y       = genParse(parse); break;
+        case 2: poly.width   = genParse(parse); break;
+        case 3: poly.height  = genParse(parse); break;
+        case 4: poly.angle   = genParse(parse); break;
+        case 5: poly.round   = genParse(parse); break;
+        case 6: poly.corners = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, poly.x      .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, poly.y      .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, poly.width  .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, poly.height .toString());
+    genPushUpdateParamValue(parse, nodeId, 4, poly.angle  .toString());
+    genPushUpdateParamValue(parse, nodeId, 5, poly.round  .toString());
+    genPushUpdateParamValue(parse, nodeId, 6, poly.corners.toString());
+
+
+    if (   active
+        && poly.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId:  nodeId,          
+                type:    POLYGON,
+                id:      0,
+                x:       poly.x     .value,
+                y:       poly.y     .value,
+                width:   poly.width .value,
+                height:  poly.height.value,
+                angle:   poly.angle .value,
+                round:   Math.max(0, poly.round.value),
+                corners: Math.max(3, poly.corners.value)
+            });
+    }
+
+
+    return poly;
+}
+
+
+
+function genParseStar(parse)
+{
+    parse.pos++; // STAR
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let star = new GStar();
+    let indices;
+    
+    if (parse.req[parse.pos] == STAR)
+    {
+        star    = genParse(parse); // not genParseStar() because genParse() handles stack overflow
+        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(8).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: star.x      = genParse(parse); break;
+        case 1: star.y      = genParse(parse); break;
+        case 2: star.width  = genParse(parse); break;
+        case 3: star.height = genParse(parse); break;
+        case 4: star.angle  = genParse(parse); break;
+        case 5: star.round  = genParse(parse); break;
+        case 6: star.points = genParse(parse); break;
+        case 7: star.convex = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, star.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, star.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, star.width .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, star.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 4, star.angle .toString());
+    genPushUpdateParamValue(parse, nodeId, 5, star.round .toString());
+    genPushUpdateParamValue(parse, nodeId, 6, star.points.toString());
+    genPushUpdateParamValue(parse, nodeId, 7, star.convex.toString());
+
+
+    if (   active
+        && star.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   STAR,
+                id:     0,
+                x:      star.x     .value,
+                y:      star.y     .value,
+                width:  star.width .value,
+                height: star.height.value,
+                angle:  star.angle .value,
+                round:  Math.max(0, star.round.value),
+                points: Math.max(3, star.points.value),
+                convex: star.convex.value
+            });
+    }
+
+
+    return star;
 }
 
 
@@ -3800,6 +4218,9 @@ function genParse(parse)
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
+    else if (next == ELLIPSE           ) return genParseEllipse          (parse);
+    else if (next == POLYGON           ) return genParsePolygon          (parse);
+    else if (next == STAR              ) return genParseStar             (parse);
 
     
     parse.so++;
