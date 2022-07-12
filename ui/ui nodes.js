@@ -1038,7 +1038,7 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, object
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
 
-    uiForwardMessageToFigma({ 
+    uiPostMessageToFigma({ 
         cmd:             'figUpdateObjects',
         updateNodeId:     updateNodeId,
         updateParamIndex: updateParamIndex,

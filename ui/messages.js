@@ -1,7 +1,3 @@
-var uiFigMessagePosted = false;
-
-
-
 // --> from Figma
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -11,8 +7,7 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                  break;
-        case 'uiEndFigMessage':       uiEndFigMessage();                                                  break;
+        case 'uiEndFigMessage':       uiEndFigMessage(msg.msgCmd);                                        break;
 
         case 'uiEndStartGenerator':   uiEndStartGenerator (msg);                                          break;
         case 'uiLoadNodesAndConns':   uiLoadNodesAndConns (msg.nodesJson, msg.connsJson, msg.activeJson); break;
@@ -24,33 +19,26 @@ onmessage = e =>
     }
 }    
   
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-//                                                                               from Generator <--
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-generator.onmessage = function(e)
+function uiEndFigMessage(msgCmd)
 {
-    const msg = JSON.parse(e.data);
+    if (msgCmd == 'figUpdateObjects')
+        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
 
-    switch (msg.cmd)
-    {
-        case 'uiForwardToFigma':         uiForwardMessageToFigma       (msg.msg);                                                                             break;
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
+    uiFigMessagePosted = false;
+    uiPostNextMessageToFigma();
+}
 
-        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamIndex, msg.values, msg.objects);                     break;
-        
-        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
-        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
-    }
 
-    uiEndGeneratorMessage()
-};
+
+function uiEndFigObjectMessage()
+{
+    uiFigMessagePosted = false;
+    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 
@@ -74,8 +62,7 @@ function uiQueueMessageToFigma(msg)
 
 function uiPostNextMessageToFigma()
 {
-    if (    figMessages.length > 0
-        && !figMessagePosted)
+    if (figMessages.length > 0)
     {
         let msg = figMessages.shift();
 
@@ -89,39 +76,43 @@ function uiPostNextMessageToFigma()
         }
 
         uiPostMessageToFigma(msg);    
-        figMessagePosted = true;
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function uiForwardMessageToFigma(msg)
+
+//                                                                               from Generator <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+generator.onmessage = function(e)
 {
-    uiPostMessageToFigma(msg);
-    uiFigMessagePosted = true;
-}
+    const msg = JSON.parse(e.data);
+
+
+    switch (msg.cmd)
+    {
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
+
+        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamIndex, msg.values, msg.objects);                     break;
+        
+        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+    }
+
+
+    uiPostMessageToGenerator({
+        cmd:   'genEndUiMessage',
+        msgCmd: msg.cmd }); 
+};
 
 
 
-function uiEndFigMessage()
+function uiEndGenMessage()
 {
-    figMessagePosted = false;
-    uiPostNextMessageToFigma();
-}
-
-
-
-function uiEndGeneratorMessage()
-{
-    uiPostMessageToGenerator({cmd: 'genEndUiMessage'}); 
-}
-
-
-
-function uiEndFigObjectMessage()
-{
-    uiFigMessagePosted = false;
-    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
+    genMessagePosted = false;
+    uiPostNextMessageToGenerator();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,13 +121,6 @@ function uiEndFigObjectMessage()
 
 //                                                                                 to Generator -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function uiPostMessageToGenerator(msg)
-{
-    generator.postMessage(JSON.stringify(msg));
-}
-
-
 
 function uiQueueMessageToGenerator(msg)
 {
@@ -160,7 +144,7 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
-                msg = deepCopy(genMessages.shift());
+                msg = genMessages.shift();//deepCopy(genMessages.shift());
         }
 
         uiPostMessageToGenerator(msg);
@@ -170,10 +154,9 @@ function uiPostNextMessageToGenerator()
 
 
 
-function uiEndGenMessage()
+function uiPostMessageToGenerator(msg)
 {
-    genMessagePosted = false;
-    uiPostNextMessageToGenerator();
+    generator.postMessage(JSON.stringify(msg));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

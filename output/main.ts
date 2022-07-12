@@ -755,7 +755,7 @@ function figStartGenerator()
 
 
         //
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd:        'uiEndStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });
@@ -796,19 +796,14 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figUpdateObjects':                
-            figUpdateObjects(/*msg.updateId,*/ msg.objects); 
-            figEndGeneratorMessage(); 
-            return;
-
-        case 'figDeleteObjects':                
-            figDeleteObjectsFromNodeIds(msg.nodeIds);                          
-            figEndGeneratorMessage(); 
-            return; 
+        case 'figUpdateObjects':                figUpdateObjects(/*msg.updateId,*/ msg.objects);                             break;
+        case 'figDeleteObjects':                figDeleteObjectsFromNodeIds(msg.nodeIds);                                    break; 
     }
 
     
-    figPostMessageToUi({cmd: 'uiEndFigMessage'});
+    figPostMessageToUI({
+        cmd:   'uiEndFigMessage',
+        msgCmd: msg.cmd });
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -818,7 +813,7 @@ figma.ui.onmessage = msg =>
 // to UI -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function figPostMessageToUi(msg)
+function figPostMessageToUI(msg)
 {
     figma.ui.postMessage(msg);
 }
@@ -830,20 +825,20 @@ function figPostMessageToUi(msg)
 // to Generator -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function figPostMessageToGenerator(msg)
-{
-    figPostMessageToUi({
-        cmd: 'uiForwardToGen',
-        msg:  msg
-    });
-}
+// function figPostMessageToGenerator(msg)
+// {
+//     figPostMessageToUI({
+//         cmd: 'uiForwardToGen',
+//         msg:  msg
+//     });
+// }
 
 
 
-function figEndGeneratorMessage()
-{
-    figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
-}
+// function figEndGeneratorMessage()
+// {
+//     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -860,7 +855,7 @@ function figGetLocalData(key)
     figma.clientStorage.getAsync(key).then(data =>
     {
         //console.log('getAsync', data);
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd:  'uiGetLocalDataReturn',
             key:   key,
             value: data
@@ -883,7 +878,7 @@ function figGetPageData(key, postToUi = true)
 
     if (postToUi)
     {
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd:  'uiGetPageDataReturn',
             key:   key,
             value: data
@@ -921,7 +916,7 @@ function figLoadNodesAndConns()
     const nodesJson = JSON.stringify(nodes);
     const connsJson = JSON.stringify(conns);
 
-    figPostMessageToUi({
+    figPostMessageToUI({
         cmd:       'uiLoadNodesAndConns',
         nodesJson:  nodesJson,
         connsJson:  connsJson
@@ -1077,7 +1072,7 @@ function figResizeWindow(width, height)
     figma.clientStorage.setAsync('windowHeight', height);
 
 
-    figPostMessageToUi({cmd: 'uiEndResizeWindow'});
+    figPostMessageToUI({cmd: 'uiEndResizeWindow'});
 }
 
 

@@ -36,7 +36,7 @@ function figStartGenerator()
 
 
         //
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd:        'uiEndStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });

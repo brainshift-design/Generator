@@ -10,7 +10,7 @@ function figGetLocalData(key)
     figma.clientStorage.getAsync(key).then(data =>
     {
         //console.log('getAsync', data);
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd:  'uiGetLocalDataReturn',
             key:   key,
             value: data
@@ -33,7 +33,7 @@ function figGetPageData(key, postToUi = true)
 
     if (postToUi)
     {
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd:  'uiGetPageDataReturn',
             key:   key,
             value: data
@@ -71,7 +71,7 @@ function figLoadNodesAndConns()
     const nodesJson = JSON.stringify(nodes);
     const connsJson = JSON.stringify(conns);
 
-    figPostMessageToUi({
+    figPostMessageToUI({
         cmd:       'uiLoadNodesAndConns',
         nodesJson:  nodesJson,
         connsJson:  connsJson

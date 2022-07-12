@@ -90,6 +90,8 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
         updateParamIndex = lastUpdateParamIndex;
         updateValues     = lastUpdateValues;
         updateObjects    = lastUpdateObjects;
+
+        clearLastUpdate();
     }
     else if (genFigMessagePosted)
     {
@@ -125,60 +127,45 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     while (   o < updateObjects.length 
            || n < nodeIds.length)
     {
-        // try sending the objects together with the param update, and forward it from there,
-        // otherwise it's two messages per update
-
-        
-        if (   o < updateObjects.length
-            || n < nodeIds.length)
+        if (o < updateObjects.length)
         {
-            if (o < updateObjects.length)
+            objChunk.push(updateObjects[o++]);
+            oc++;
+        }
+
+
+        if (n < nodeIds.length)
+        {
+            nodeChunk.push(
+                nodeIds[n],
+                counts [n]);
+
+            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+            values.sort((a, b) => a.paramIndex - b.paramIndex);
+
+            for (const v of values)
             {
-                objChunk.push(updateObjects[o]);
-                oc++;
-                
-                o++;
+                nodeChunk.push(v.paramIndex, v.value);
+                nc++;
             }
 
-
-            if (n < nodeIds.length)
-            {
-                nodeChunk.push(
-                    nodeIds[n],
-                    counts [n]);
-
-                const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
-                values.sort((a, b) => a.paramIndex - b.paramIndex);
-
-                for (const v of values)
-                {
-                    nodeChunk.push(v.paramIndex, v.value);
-                    nc++;
-                }
-
-                n++;
-            }
+            n++;
+        }
 
 
-            if (   oc == objChunkSize 
-                || nc >= approxParamChunkSize)
-            {
-                genQueueMessageToUI({ 
-                    cmd:             'uiUpdateParamsAndObjects',
-                    updateNodeId:     updateNodeId, 
-                    updateParamIndex: updateParamIndex, 
-                    values:           [...nodeChunk],
-                    objects:          [...objChunk]
-                });
+        if (   oc == objChunkSize 
+            || nc >= approxParamChunkSize)
+        {
+            genQueueMessageToUI({ 
+                cmd:             'uiUpdateParamsAndObjects',
+                updateNodeId:     updateNodeId, 
+                updateParamIndex: updateParamIndex, 
+                values:           [...nodeChunk],
+                objects:          [...objChunk]
+            });
 
-                genFigMessagePosted = true;
-
-                nodeChunk = [];
-                nc = 0;
-
-                objChunk = [];
-                oc       = 0;
-            }
+            nodeChunk = [];  nc = 0;
+            objChunk  = [];  oc = 0;
         }
     }
 
@@ -193,9 +180,10 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
             values:           [...nodeChunk],
             objects:          [...objChunk]
         });
-
-        genFigMessagePosted = true;
     }
+
+
+    genFigMessagePosted = true;
 }
 
 

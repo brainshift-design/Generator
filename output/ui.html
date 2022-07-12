@@ -4854,8 +4854,7 @@ var genFigMessagePosted = false;
 
 
 
-var  uiMessages = []; // messages from Generator to Figma (through UI)
-var figMessages = []; // messages from Generator to Figma (through UI)
+var uiMessages = [];
 
 
 
@@ -4866,7 +4865,7 @@ onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
 
-    //console.log('msg.cmd', msg.cmd);
+
     switch (msg.cmd)
     {
         case 'genFindCorrection':
@@ -4878,22 +4877,35 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        
-            genRequest(msg.request, msg.settings);
-            break;
+        case 'genRequest':        genRequest(msg.request, msg.settings); break;
 
-        case 'genEndUiMessage':  
-            genEndUiMessage();
-            break;
-
-        case 'genEndFigMessage':  
-            genEndFigMessage();
-            break;
+        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd);           break;
+        case 'genEndFigMessage':  genEndFigMessage();                    break;
     }
 
 
-    postMessage(JSON.stringify({cmd: 'uiEndGenMessage'}));
+    genPostMessageToUI({cmd: 'uiEndGenMessage'});
 };
+
+
+
+function genEndUiMessage(msgCmd)
+{
+    genPostNextMessageToUI();
+}
+
+
+
+function genEndFigMessage()
+{
+    genFigMessagePosted = false;
+    
+    if (   lastUpdateValues .length > 0
+        || lastUpdateObjects.length > 0)
+        genUpdateParamValuesAndObjects('', -1, [], []);
+
+    genPostNextMessageToUI();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -4923,79 +4935,20 @@ function genPostNextMessageToUI(msg)
     {
         let msg = uiMessages.shift();
 
-        if (msg.cmd == 'uiUpdateParams')
+        if (msg.cmd == 'uiUpdateParamsAndObjects')
         {
             // move along the queue since only the last message is important
             while (uiMessages.length > 0
-                && uiMessages[0].cmd       == msg.cmd
-                && uiMessages[0].values[0] == msg.values[0]
-                && uiMessages[0].values[1] == msg.values[1])
+                && uiMessages[0].cmd              == msg.cmd
+                && uiMessages[0].updateNodeId     == msg.updateNodeId
+                && uiMessages[0].updateParamIndex == msg.updateParamIndex)
                 msg = uiMessages.shift();
         }
 
-        postMessage(JSON.stringify(msg));
+        if (    msg.cmd != 'uiUpdateParamsAndObjects'
+            || !genFigMessagePosted)
+            postMessage(JSON.stringify(msg));
     }
-}
-
-
-
-function genEndUiMessage()
-{
-    genPostNextMessageToUI();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// <-- to Figma
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function genQueueMessageToFigma(msg)
-{
-    figMessages.push(msg);
-    genPostNextMessageToFigma();
-}
-
-
-
-function genPostNextMessageToFigma()
-{
-    if (figMessages.length > 0)
-    {
-        let msg = figMessages.shift();
-
-        if (msg.cmd == 'figUpdateObjects')
-        {
-            // move along the queue since only the last message is important
-            while (figMessages.length > 0
-                && figMessages[0].cmd              == msg.cmd
-                && figMessages[0].updateNodeId     == msg.updateNodeId
-                && figMessages[0].updateParamIndex == msg.updateParamIndex)
-                msg = figMessages.shift();
-        }
-
-        genPostMessageToUI({cmd: 'uiForwardToFigma', msg: msg});
-        genFigMessagePosted = true;
-    }
-}
-
-
-
-function genEndFigMessage()
-{
-    genFigMessagePosted = false;
-    
-    if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0)
-    {
-        console.log('restoring');
-
-        genUpdateParamValuesAndObjects('', -1, [], []);
-        clearLastUpdate();
-    }
-
-    genPostNextMessageToFigma();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5557,6 +5510,8 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
         updateParamIndex = lastUpdateParamIndex;
         updateValues     = lastUpdateValues;
         updateObjects    = lastUpdateObjects;
+
+        clearLastUpdate();
     }
     else if (genFigMessagePosted)
     {
@@ -5592,60 +5547,45 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     while (   o < updateObjects.length 
            || n < nodeIds.length)
     {
-        // try sending the objects together with the param update, and forward it from there,
-        // otherwise it's two messages per update
-
-        
-        if (   o < updateObjects.length
-            || n < nodeIds.length)
+        if (o < updateObjects.length)
         {
-            if (o < updateObjects.length)
+            objChunk.push(updateObjects[o++]);
+            oc++;
+        }
+
+
+        if (n < nodeIds.length)
+        {
+            nodeChunk.push(
+                nodeIds[n],
+                counts [n]);
+
+            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+            values.sort((a, b) => a.paramIndex - b.paramIndex);
+
+            for (const v of values)
             {
-                objChunk.push(updateObjects[o]);
-                oc++;
-                
-                o++;
+                nodeChunk.push(v.paramIndex, v.value);
+                nc++;
             }
 
-
-            if (n < nodeIds.length)
-            {
-                nodeChunk.push(
-                    nodeIds[n],
-                    counts [n]);
-
-                const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
-                values.sort((a, b) => a.paramIndex - b.paramIndex);
-
-                for (const v of values)
-                {
-                    nodeChunk.push(v.paramIndex, v.value);
-                    nc++;
-                }
-
-                n++;
-            }
+            n++;
+        }
 
 
-            if (   oc == objChunkSize 
-                || nc >= approxParamChunkSize)
-            {
-                genQueueMessageToUI({ 
-                    cmd:             'uiUpdateParamsAndObjects',
-                    updateNodeId:     updateNodeId, 
-                    updateParamIndex: updateParamIndex, 
-                    values:           [...nodeChunk],
-                    objects:          [...objChunk]
-                });
+        if (   oc == objChunkSize 
+            || nc >= approxParamChunkSize)
+        {
+            genQueueMessageToUI({ 
+                cmd:             'uiUpdateParamsAndObjects',
+                updateNodeId:     updateNodeId, 
+                updateParamIndex: updateParamIndex, 
+                values:           [...nodeChunk],
+                objects:          [...objChunk]
+            });
 
-                genFigMessagePosted = true;
-
-                nodeChunk = [];
-                nc = 0;
-
-                objChunk = [];
-                oc       = 0;
-            }
+            nodeChunk = [];  nc = 0;
+            objChunk  = [];  oc = 0;
         }
     }
 
@@ -5660,9 +5600,10 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
             values:           [...nodeChunk],
             objects:          [...objChunk]
         });
-
-        genFigMessagePosted = true;
     }
+
+
+    genFigMessagePosted = true;
 }
 
 
@@ -5798,6 +5739,7 @@ function getObjectBounds(objects)
 // Observer = 2°
 
 const D65 = [0.95047, 1, 1.08883]; 
+
 
 function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
 {
@@ -10563,6 +10505,7 @@ function logReqRectangle(req)
 // Observer = 2°
 
 const D65 = [0.95047, 1, 1.08883]; 
+
 
 function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
 {
@@ -25721,7 +25664,6 @@ document.addEventListener('pointerup', function(e)
 var figMessages = []; // messages from UI to Figma
 var genMessages = []; // messages from UI to Generator
 
-var figMessagePosted = false;
 var genMessagePosted = false;
 
 
@@ -25964,10 +25906,6 @@ document.addEventListener('keyup', e =>
 },false);
 
 
-var uiFigMessagePosted = false;
-
-
-
 // --> from Figma
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -25977,8 +25915,7 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiForwardToGen':        uiPostMessageToGenerator(msg.msg);                                  break;
-        case 'uiEndFigMessage':       uiEndFigMessage();                                                  break;
+        case 'uiEndFigMessage':       uiEndFigMessage(msg.msgCmd);                                        break;
 
         case 'uiEndStartGenerator':   uiEndStartGenerator (msg);                                          break;
         case 'uiLoadNodesAndConns':   uiLoadNodesAndConns (msg.nodesJson, msg.connsJson, msg.activeJson); break;
@@ -25990,33 +25927,26 @@ onmessage = e =>
     }
 }    
   
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-//                                                                               from Generator <--
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-generator.onmessage = function(e)
+function uiEndFigMessage(msgCmd)
 {
-    const msg = JSON.parse(e.data);
+    if (msgCmd == 'figUpdateObjects')
+        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
 
-    switch (msg.cmd)
-    {
-        case 'uiForwardToFigma':         uiForwardMessageToFigma       (msg.msg);                                                                             break;
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
+    uiFigMessagePosted = false;
+    uiPostNextMessageToFigma();
+}
 
-        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamIndex, msg.values, msg.objects);                     break;
-        
-        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
-        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
-    }
 
-    uiEndGeneratorMessage()
-};
+
+function uiEndFigObjectMessage()
+{
+    uiFigMessagePosted = false;
+    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 
@@ -26040,8 +25970,7 @@ function uiQueueMessageToFigma(msg)
 
 function uiPostNextMessageToFigma()
 {
-    if (    figMessages.length > 0
-        && !figMessagePosted)
+    if (figMessages.length > 0)
     {
         let msg = figMessages.shift();
 
@@ -26055,39 +25984,43 @@ function uiPostNextMessageToFigma()
         }
 
         uiPostMessageToFigma(msg);    
-        figMessagePosted = true;
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function uiForwardMessageToFigma(msg)
+
+//                                                                               from Generator <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+generator.onmessage = function(e)
 {
-    uiPostMessageToFigma(msg);
-    uiFigMessagePosted = true;
-}
+    const msg = JSON.parse(e.data);
+
+
+    switch (msg.cmd)
+    {
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
+
+        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamIndex, msg.values, msg.objects);                     break;
+        
+        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+    }
+
+
+    uiPostMessageToGenerator({
+        cmd:   'genEndUiMessage',
+        msgCmd: msg.cmd }); 
+};
 
 
 
-function uiEndFigMessage()
+function uiEndGenMessage()
 {
-    figMessagePosted = false;
-    uiPostNextMessageToFigma();
-}
-
-
-
-function uiEndGeneratorMessage()
-{
-    uiPostMessageToGenerator({cmd: 'genEndUiMessage'}); 
-}
-
-
-
-function uiEndFigObjectMessage()
-{
-    uiFigMessagePosted = false;
-    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
+    genMessagePosted = false;
+    uiPostNextMessageToGenerator();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26096,13 +26029,6 @@ function uiEndFigObjectMessage()
 
 //                                                                                 to Generator -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function uiPostMessageToGenerator(msg)
-{
-    generator.postMessage(JSON.stringify(msg));
-}
-
-
 
 function uiQueueMessageToGenerator(msg)
 {
@@ -26126,7 +26052,7 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
-                msg = deepCopy(genMessages.shift());
+                msg = genMessages.shift();//deepCopy(genMessages.shift());
         }
 
         uiPostMessageToGenerator(msg);
@@ -26136,10 +26062,9 @@ function uiPostNextMessageToGenerator()
 
 
 
-function uiEndGenMessage()
+function uiPostMessageToGenerator(msg)
 {
-    genMessagePosted = false;
-    uiPostNextMessageToGenerator();
+    generator.postMessage(JSON.stringify(msg));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27800,7 +27725,7 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, object
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
 
-    uiForwardMessageToFigma({ 
+    uiPostMessageToFigma({ 
         cmd:             'figUpdateObjects',
         updateNodeId:     updateNodeId,
         updateParamIndex: updateParamIndex,

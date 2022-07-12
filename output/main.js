@@ -457,7 +457,7 @@ function figStartGenerator() {
                 wndHeight = 600;
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             //
-            figPostMessageToUi({
+            figPostMessageToUI({
                 cmd: 'uiEndStartGenerator',
                 currentUser: figma.currentUser,
                 productKey: productKey
@@ -525,33 +525,36 @@ figma.ui.onmessage = msg => {
             break;
         case 'figUpdateObjects':
             figUpdateObjects(/*msg.updateId,*/ msg.objects);
-            figEndGeneratorMessage();
-            return;
+            break;
         case 'figDeleteObjects':
             figDeleteObjectsFromNodeIds(msg.nodeIds);
-            figEndGeneratorMessage();
-            return;
+            break;
     }
-    figPostMessageToUi({ cmd: 'uiEndFigMessage' });
+    figPostMessageToUI({
+        cmd: 'uiEndFigMessage',
+        msgCmd: msg.cmd
+    });
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to UI -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figPostMessageToUi(msg) {
+function figPostMessageToUI(msg) {
     figma.ui.postMessage(msg);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to Generator -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figPostMessageToGenerator(msg) {
-    figPostMessageToUi({
-        cmd: 'uiForwardToGen',
-        msg: msg
-    });
-}
-function figEndGeneratorMessage() {
-    figPostMessageToGenerator({ cmd: 'genEndFigMessage' });
-}
+// function figPostMessageToGenerator(msg)
+// {
+//     figPostMessageToUI({
+//         cmd: 'uiForwardToGen',
+//         msg:  msg
+//     });
+// }
+// function figEndGeneratorMessage()
+// {
+//     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
+// }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -561,7 +564,7 @@ function figLoadLocal(key) {
 function figGetLocalData(key) {
     figma.clientStorage.getAsync(key).then(data => {
         //console.log('getAsync', data);
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd: 'uiGetLocalDataReturn',
             key: key,
             value: data
@@ -574,7 +577,7 @@ function figSetLocalData(key, value) {
 function figGetPageData(key, postToUi = true) {
     const data = figma.currentPage.getPluginData(key);
     if (postToUi) {
-        figPostMessageToUi({
+        figPostMessageToUI({
             cmd: 'uiGetPageDataReturn',
             key: key,
             value: data
@@ -596,7 +599,7 @@ function figLoadNodesAndConns() {
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
     const nodesJson = JSON.stringify(nodes);
     const connsJson = JSON.stringify(conns);
-    figPostMessageToUi({
+    figPostMessageToUI({
         cmd: 'uiLoadNodesAndConns',
         nodesJson: nodesJson,
         connsJson: connsJson
@@ -686,7 +689,7 @@ function figResizeWindow(width, height) {
     figma.ui.resize(width, height);
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
-    figPostMessageToUi({ cmd: 'uiEndResizeWindow' });
+    figPostMessageToUI({ cmd: 'uiEndResizeWindow' });
 }
 function figNotify(text, prefix = 'Generator ', delay = 400, error = false) {
     figma.notify(prefix + text, {

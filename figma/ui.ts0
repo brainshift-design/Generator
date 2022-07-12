@@ -9,7 +9,7 @@ function figResizeWindow(width, height)
     figma.clientStorage.setAsync('windowHeight', height);
 
 
-    figPostMessageToUi({cmd: 'uiEndResizeWindow'});
+    figPostMessageToUI({cmd: 'uiEndResizeWindow'});
 }
 
 

@@ -2,8 +2,7 @@ var genFigMessagePosted = false;
 
 
 
-var  uiMessages = []; // messages from Generator to Figma (through UI)
-var figMessages = []; // messages from Generator to Figma (through UI)
+var uiMessages = [];
 
 
 
@@ -14,7 +13,7 @@ onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
 
-    //console.log('msg.cmd', msg.cmd);
+
     switch (msg.cmd)
     {
         case 'genFindCorrection':
@@ -26,22 +25,35 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        
-            genRequest(msg.request, msg.settings);
-            break;
+        case 'genRequest':        genRequest(msg.request, msg.settings); break;
 
-        case 'genEndUiMessage':  
-            genEndUiMessage();
-            break;
-
-        case 'genEndFigMessage':  
-            genEndFigMessage();
-            break;
+        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd);           break;
+        case 'genEndFigMessage':  genEndFigMessage();                    break;
     }
 
 
-    postMessage(JSON.stringify({cmd: 'uiEndGenMessage'}));
+    genPostMessageToUI({cmd: 'uiEndGenMessage'});
 };
+
+
+
+function genEndUiMessage(msgCmd)
+{
+    genPostNextMessageToUI();
+}
+
+
+
+function genEndFigMessage()
+{
+    genFigMessagePosted = false;
+    
+    if (   lastUpdateValues .length > 0
+        || lastUpdateObjects.length > 0)
+        genUpdateParamValuesAndObjects('', -1, [], []);
+
+    genPostNextMessageToUI();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -71,79 +83,20 @@ function genPostNextMessageToUI(msg)
     {
         let msg = uiMessages.shift();
 
-        if (msg.cmd == 'uiUpdateParams')
+        if (msg.cmd == 'uiUpdateParamsAndObjects')
         {
             // move along the queue since only the last message is important
             while (uiMessages.length > 0
-                && uiMessages[0].cmd       == msg.cmd
-                && uiMessages[0].values[0] == msg.values[0]
-                && uiMessages[0].values[1] == msg.values[1])
+                && uiMessages[0].cmd              == msg.cmd
+                && uiMessages[0].updateNodeId     == msg.updateNodeId
+                && uiMessages[0].updateParamIndex == msg.updateParamIndex)
                 msg = uiMessages.shift();
         }
 
-        postMessage(JSON.stringify(msg));
+        if (    msg.cmd != 'uiUpdateParamsAndObjects'
+            || !genFigMessagePosted)
+            postMessage(JSON.stringify(msg));
     }
-}
-
-
-
-function genEndUiMessage()
-{
-    genPostNextMessageToUI();
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// <-- to Figma
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function genQueueMessageToFigma(msg)
-{
-    figMessages.push(msg);
-    genPostNextMessageToFigma();
-}
-
-
-
-function genPostNextMessageToFigma()
-{
-    if (figMessages.length > 0)
-    {
-        let msg = figMessages.shift();
-
-        if (msg.cmd == 'figUpdateObjects')
-        {
-            // move along the queue since only the last message is important
-            while (figMessages.length > 0
-                && figMessages[0].cmd              == msg.cmd
-                && figMessages[0].updateNodeId     == msg.updateNodeId
-                && figMessages[0].updateParamIndex == msg.updateParamIndex)
-                msg = figMessages.shift();
-        }
-
-        genPostMessageToUI({cmd: 'uiForwardToFigma', msg: msg});
-        genFigMessagePosted = true;
-    }
-}
-
-
-
-function genEndFigMessage()
-{
-    genFigMessagePosted = false;
-    
-    if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0)
-    {
-        console.log('restoring');
-
-        genUpdateParamValuesAndObjects('', -1, [], []);
-        clearLastUpdate();
-    }
-
-    genPostNextMessageToFigma();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

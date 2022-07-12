@@ -31,19 +31,14 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figUpdateObjects':                
-            figUpdateObjects(/*msg.updateId,*/ msg.objects); 
-            figEndGeneratorMessage(); 
-            return;
-
-        case 'figDeleteObjects':                
-            figDeleteObjectsFromNodeIds(msg.nodeIds);                          
-            figEndGeneratorMessage(); 
-            return; 
+        case 'figUpdateObjects':                figUpdateObjects(/*msg.updateId,*/ msg.objects);                             break;
+        case 'figDeleteObjects':                figDeleteObjectsFromNodeIds(msg.nodeIds);                                    break; 
     }
 
     
-    figPostMessageToUi({cmd: 'uiEndFigMessage'});
+    figPostMessageToUI({
+        cmd:   'uiEndFigMessage',
+        msgCmd: msg.cmd });
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +48,7 @@ figma.ui.onmessage = msg =>
 // to UI -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function figPostMessageToUi(msg)
+function figPostMessageToUI(msg)
 {
     figma.ui.postMessage(msg);
 }
@@ -65,19 +60,19 @@ function figPostMessageToUi(msg)
 // to Generator -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function figPostMessageToGenerator(msg)
-{
-    figPostMessageToUi({
-        cmd: 'uiForwardToGen',
-        msg:  msg
-    });
-}
+// function figPostMessageToGenerator(msg)
+// {
+//     figPostMessageToUI({
+//         cmd: 'uiForwardToGen',
+//         msg:  msg
+//     });
+// }
 
 
 
-function figEndGeneratorMessage()
-{
-    figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
-}
+// function figEndGeneratorMessage()
+// {
+//     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
