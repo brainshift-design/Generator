@@ -172,8 +172,6 @@ function getTerminalsAfterParam(param)
 
 function updateTerminalsAfterNodes(nodes)
 {
-    //console.log('updateTerminalsAfterNodes()');
-
     const terminals = [];
 
     for (const node of nodes)
@@ -184,19 +182,19 @@ function updateTerminalsAfterNodes(nodes)
 
 
 
-function validateActiveNodesInTrees(nodes)
-{
-    const treeNodes = [];
+// function validateActiveNodesInTrees(nodes)
+// {
+//     const treeNodes = [];
 
-    for (const node of nodes)
-    {
-        const found = treeNodes.find(n => areConnected(n, node));
-        if (!found) treeNodes.push(node);
-    }
+//     for (const node of nodes)
+//     {
+//         const found = treeNodes.find(n => areConnected(n, node));
+//         if (!found) treeNodes.push(node);
+//     }
 
-    for (const node of treeNodes)
-    {
-        if (!getActiveNodeInTreeFromNode(node))
-            getTerminalsAfterNode(node).forEach(n => uiMakeNodeActive(n));
-    }
-}
+//     for (const node of treeNodes)
+//     {
+//         if (!getActiveNodeLeftInTreeFromNode(node))
+//             getTerminalsAfterNode(node).forEach(n => uiMakeNodeActive(n));
+//     }
+// }

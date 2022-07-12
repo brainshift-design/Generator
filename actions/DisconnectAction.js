@@ -18,7 +18,7 @@ extends Action
     {
         super('DISCONNECT ' 
             + output.node.id + ' ' + output.index
-            + ' -> '
+            + ' → '
             + input.node.id + ' ' + input.index);
 
 

@@ -3899,18 +3899,13 @@ function logSavedNode(nodeKey)
 
 function logSavedConn(connKey)
 {
-    let conn = '';
-
     const parts = noConnTag(connKey).split(' ');
 
-    for (let i = 0; i < parts.length; i++)
-    {
-        conn += parts[i];
+    const conn = 
+          parts[0] + '(' + parts[1] + ')'
+        + ' → '
+        + '(' + parts[3] + ')' + parts[2];
 
-             if (i == 1)             conn += ' -> ';
-        else if (i < parts.length-1) conn += ' ';
-    }
-    
     console.log(
         '%c%s', 
         'background: #cfc', 
@@ -5505,7 +5500,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     if (   updateValues .length == 0
         && updateObjects.length == 0)
     {
-        console.log('restoring');
+        //console.log('restoring');
         updateNodeId     = lastUpdateNodeId;
         updateParamIndex = lastUpdateParamIndex;
         updateValues     = lastUpdateValues;
@@ -5515,7 +5510,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     }
     else if (genFigMessagePosted)
     {
-        console.log('saving');
+        //console.log('saving');
         lastUpdateNodeId     = updateNodeId;
         lastUpdateParamIndex = updateParamIndex;
         lastUpdateValues     = updateValues;
@@ -10201,18 +10196,13 @@ function logSavedNode(nodeKey)
 
 function logSavedConn(connKey)
 {
-    let conn = '';
-
     const parts = noConnTag(connKey).split(' ');
 
-    for (let i = 0; i < parts.length; i++)
-    {
-        conn += parts[i];
+    const conn = 
+          parts[0] + '(' + parts[1] + ')'
+        + ' → '
+        + '(' + parts[3] + ')' + parts[2];
 
-             if (i == 1)             conn += ' -> ';
-        else if (i < parts.length-1) conn += ' ';
-    }
-    
     console.log(
         '%c%s', 
         'background: #cfc', 
@@ -17841,8 +17831,6 @@ function getTerminalsAfterParam(param)
 
 function updateTerminalsAfterNodes(nodes)
 {
-    //console.log('updateTerminalsAfterNodes()');
-
     const terminals = [];
 
     for (const node of nodes)
@@ -17853,22 +17841,22 @@ function updateTerminalsAfterNodes(nodes)
 
 
 
-function validateActiveNodesInTrees(nodes)
-{
-    const treeNodes = [];
+// function validateActiveNodesInTrees(nodes)
+// {
+//     const treeNodes = [];
 
-    for (const node of nodes)
-    {
-        const found = treeNodes.find(n => areConnected(n, node));
-        if (!found) treeNodes.push(node);
-    }
+//     for (const node of nodes)
+//     {
+//         const found = treeNodes.find(n => areConnected(n, node));
+//         if (!found) treeNodes.push(node);
+//     }
 
-    for (const node of treeNodes)
-    {
-        if (!getActiveNodeInTreeFromNode(node))
-            getTerminalsAfterNode(node).forEach(n => uiMakeNodeActive(n));
-    }
-}
+//     for (const node of treeNodes)
+//     {
+//         if (!getActiveNodeLeftInTreeFromNode(node))
+//             getTerminalsAfterNode(node).forEach(n => uiMakeNodeActive(n));
+//     }
+// }
 
 
 class   Input
@@ -24124,7 +24112,7 @@ extends Action
 
         super('CONNECT ' 
             + output.node.id + ' ' + output.index
-            + ' -> '
+            + ' → '
             + input.node.id + ' ' + input.index);
 
 
@@ -24560,7 +24548,7 @@ extends Action
     {
         super('DISCONNECT ' 
             + output.node.id + ' ' + output.index
-            + ' -> '
+            + ' → '
             + input.node.id + ' ' + input.index);
 
 
@@ -24919,9 +24907,9 @@ extends Action
         super(
              'RECONNECT '
             + output.node.id + ' ' + output.index
-            + ' (<- '
+            + ' (← '
             + oldInput.node.id + ' ' + oldInput.index + ')'
-            + ' -> '
+            + ' → '
             + input.node.id + ' ' + input.index);
 
 
@@ -26350,13 +26338,12 @@ function finishLoading()
 
 function finishLoadingNodes(_nodes, loadedNodes)
 {
-    // const _active = _nodes.filter(n => n.active);
+    _nodes
+        .filter(n => n.active)
+        .map(n => nodeFromId(n.id))
+        .forEach(n => n.makeActive());
 
-    // _active
-    //     .map(n => nodeFromId(n.id))
-    //     .forEach(n => n.makeActive());
-
-    validateActiveNodesInTrees(loadedNodes);
+    // validateActiveNodesInTrees(loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
@@ -26407,23 +26394,10 @@ function resolveLoadConnections(nodes, _connections, first, last)
                 }
 
                 Connection.parseJson(_conn);
-                //if (settings.logStorage) logConnection(_conn);                    
             }
 
             resolve();
         }));
-}
-
-
-
-function logConnection(_conn)
-{
-    console.log(
-        '%c%s', 
-        'background: #cfc', 
-          _conn.outputNodeId + ' ' + _conn.outputIndex
-        + ' -> ' 
-        + _conn.inputNodeId + ' ' + _conn.inputIndex); 
 }
 
 

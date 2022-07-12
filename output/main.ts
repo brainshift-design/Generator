@@ -119,18 +119,13 @@ function logSavedNode(nodeKey)
 
 function logSavedConn(connKey)
 {
-    let conn = '';
-
     const parts = noConnTag(connKey).split(' ');
 
-    for (let i = 0; i < parts.length; i++)
-    {
-        conn += parts[i];
+    const conn = 
+          parts[0] + '(' + parts[1] + ')'
+        + ' → '
+        + '(' + parts[3] + ')' + parts[2];
 
-             if (i == 1)             conn += ' -> ';
-        else if (i < parts.length-1) conn += ' ';
-    }
-    
     console.log(
         '%c%s', 
         'background: #cfc', 

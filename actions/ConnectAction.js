@@ -31,7 +31,7 @@ extends Action
 
         super('CONNECT ' 
             + output.node.id + ' ' + output.index
-            + ' -> '
+            + ' → '
             + input.node.id + ' ' + input.index);
 
 

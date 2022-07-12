@@ -258,13 +258,12 @@ function finishLoading()
 
 function finishLoadingNodes(_nodes, loadedNodes)
 {
-    // const _active = _nodes.filter(n => n.active);
+    _nodes
+        .filter(n => n.active)
+        .map(n => nodeFromId(n.id))
+        .forEach(n => n.makeActive());
 
-    // _active
-    //     .map(n => nodeFromId(n.id))
-    //     .forEach(n => n.makeActive());
-
-    validateActiveNodesInTrees(loadedNodes);
+    // validateActiveNodesInTrees(loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
@@ -315,23 +314,10 @@ function resolveLoadConnections(nodes, _connections, first, last)
                 }
 
                 Connection.parseJson(_conn);
-                //if (settings.logStorage) logConnection(_conn);                    
             }
 
             resolve();
         }));
-}
-
-
-
-function logConnection(_conn)
-{
-    console.log(
-        '%c%s', 
-        'background: #cfc', 
-          _conn.outputNodeId + ' ' + _conn.outputIndex
-        + ' -> ' 
-        + _conn.inputNodeId + ' ' + _conn.inputIndex); 
 }
 
 

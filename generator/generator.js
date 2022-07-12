@@ -85,7 +85,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     if (   updateValues .length == 0
         && updateObjects.length == 0)
     {
-        console.log('restoring');
+        //console.log('restoring');
         updateNodeId     = lastUpdateNodeId;
         updateParamIndex = lastUpdateParamIndex;
         updateValues     = lastUpdateValues;
@@ -95,7 +95,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
     }
     else if (genFigMessagePosted)
     {
-        console.log('saving');
+        //console.log('saving');
         lastUpdateNodeId     = updateNodeId;
         lastUpdateParamIndex = updateParamIndex;
         lastUpdateValues     = updateValues;

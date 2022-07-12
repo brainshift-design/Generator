@@ -65,15 +65,10 @@ function logSavedNode(nodeKey) {
     console.log('%c%s\n%c%s', 'background: #fdb', noNodeTag(nodeKey), 'background: #fed;', txt);
 }
 function logSavedConn(connKey) {
-    let conn = '';
     const parts = noConnTag(connKey).split(' ');
-    for (let i = 0; i < parts.length; i++) {
-        conn += parts[i];
-        if (i == 1)
-            conn += ' -> ';
-        else if (i < parts.length - 1)
-            conn += ' ';
-    }
+    const conn = parts[0] + '(' + parts[1] + ')'
+        + ' → '
+        + '(' + parts[3] + ')' + parts[2];
     console.log('%c%s', 'background: #cfc', conn);
 }
 function logRequest(request, updateNodeId, updateParamIndex) {
