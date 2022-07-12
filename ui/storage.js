@@ -259,8 +259,8 @@ function finishLoading()
 function finishLoadingNodes(_nodes, loadedNodes)
 {
     _nodes
-        .filter(n => n.active)
-        .map(n => nodeFromId(n.id))
+        .filter(_n => _n.active)
+        .map(_n => nodeFromId(_n.id))
         .forEach(n => n.makeActive());
 
     // validateActiveNodesInTrees(loadedNodes);

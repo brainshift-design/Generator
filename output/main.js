@@ -296,7 +296,7 @@ const settings = {
     showNodeId: true,
     logStorage: true,
     logActions: false,
-    logRequests: false,
+    logRequests: true,
     logParamUpdates: false,
     logObjectUpdates: false
 };

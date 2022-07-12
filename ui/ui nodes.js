@@ -571,6 +571,8 @@ function uiMakeNodeActive(node)
 
     node.makeActive();
     node.updateNode();
+
+    pushUpdate([node]);
 }
 
 
@@ -615,6 +617,8 @@ function uiMakeNodePassive(node)
 
     node.makePassive();
     node.updateNode();
+
+    uiDeleteObjects([node.id]);
 }
 
 

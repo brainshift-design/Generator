@@ -109,7 +109,7 @@ extends OperatorBase
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     indices.push(param.index);
-                    
+
             req.push(indices.join(','));
 
 
@@ -134,7 +134,7 @@ extends OperatorBase
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
-        
+
         return req;
     }
 
@@ -156,10 +156,6 @@ extends OperatorBase
 
         switch (index)
         {
-            case 0:
-                this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
-                break;
-
             case 2:
             case 3:
                 this.updateRound();
