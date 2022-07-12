@@ -164,6 +164,9 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
                 objects:          [...objChunk]
             });
 
+            genFigMessagePosted = true;
+
+            
             nodeChunk = [];  nc = 0;
             objChunk  = [];  oc = 0;
         }
@@ -180,10 +183,9 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
             values:           [...nodeChunk],
             objects:          [...objChunk]
         });
+
+        genFigMessagePosted = true;
     }
-
-
-    genFigMessagePosted = true;
 }
 
 

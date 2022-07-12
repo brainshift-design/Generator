@@ -182,6 +182,227 @@ function updateTerminalsAfterNodes(nodes)
 
 
 
+function getActiveNodeInBranchFrom(node, alreadyChecked = [])
+{
+    if (node.active) return node;
+
+
+    const nodeInputs = [...node.inputs.filter(i => i.connected)];
+
+    if (    nodeInputs.length == 1
+        && !alreadyChecked.includes(nodeInputs[0].connectedOutput.node))
+    {
+        const leftActive = getActiveNodeInBranchFrom(
+            nodeInputs[0].connectedOutput.node, 
+            [...alreadyChecked, node]);
+
+        if (leftActive) return leftActive;
+    }
+
+
+    const nodeOutputs = [...node.outputs.filter(o => o.connectedInputs.length == 1)];
+
+    if (    nodeOutputs.length == 1
+        && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].node))
+    {
+        const rightActive = getActiveNodeInBranchFrom(
+            nodeOutputs[0].connectedInputs[0].node, 
+            [...alreadyChecked, node]);
+
+        if (rightActive) return rightActive;
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodeInTreeFromNodeId(nodeId, alreadyChecked = [])
+{
+    return getActiveNodeInTreeFromNode(nodeFromId(nodeId), alreadyChecked);
+}
+
+
+
+function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
+{
+    if (node.active) return node;
+
+
+    const leftActive = getActiveNodeLeftInTreeFromNode(node, [...alreadyChecked]);
+    if (leftActive) return leftActive;
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.node))
+            {
+                const rightActive = getActiveNodeInTreeFromNode(
+                    input.node, 
+                    [...alreadyChecked, node]);
+
+                if (rightActive) return rightActive;
+            }
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
+{
+    /*  This is different from LeftOnly in that it will check the left node, 
+        but then it will also check the right nodes of that left node. */
+
+    if (node.active) return node;
+
+
+    for (const input of node.inputs)
+    {
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
+        {
+            const leftActive = getActiveNodeInTreeFromNode(
+                input.connectedOutput.node, 
+                [...alreadyChecked, node]);
+
+            if (leftActive) return leftActive;
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodeLeftOnlyInTreeFromNode(node, alreadyChecked = [])
+{
+    /*  This is different from Left in that it will only check left nodes. */
+
+    if (node.active) return node;
+
+
+    for (const input of node.inputs)
+    {
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
+        {
+            const leftActive = getActiveNodeLeftOnlyInTreeFromNode(
+                input.connectedOutput.node, 
+                [...alreadyChecked, node]);
+
+            if (leftActive) return leftActive;
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodeRightInTreeFromNode(node, alreadyChecked = [])
+{
+    if (node.active) return node;
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.node))
+            {
+                const rightActive = getActiveNodeRightInTreeFromNode(
+                    input.node, 
+                    [...alreadyChecked, node]);
+
+                if (rightActive) return rightActive;
+            }
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getActiveNodesRightInTreeFromNodeId(nodeId, alreadyChecked = [])
+{
+    const rightActive = [];
+    
+   
+    const node = nodeFromId(nodeId);
+    
+    if (node.active) 
+        rightActive.push(node);
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.node))
+            {
+                rightActive.push(...getActiveNodesRightInTreeFromNodeId(
+                    input.node.id, 
+                    [...alreadyChecked, node]));
+            }
+        }
+    }
+
+
+    return rightActive;
+}
+
+
+
+function getActiveNodesInTreeFromNodeId(nodeId, alreadyChecked = [])
+{
+    return getActiveNodesInTreeFromNode(nodeFromId(nodeId), alreadyChecked);
+}
+
+
+
+function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
+{
+    const activeNodes = [];
+
+
+    if (node.active)
+        activeNodes.push(node);
+
+
+    for (const input of node.inputs)
+    {
+        if (    input.connected
+            && !alreadyChecked.includes(input.connectedOutput.node))
+            pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
+    }
+
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.node))
+                pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]));
+        }
+    }
+
+
+    return activeNodes;
+}
+
+
+
 // function validateActiveNodesInTrees(nodes)
 // {
 //     const treeNodes = [];
