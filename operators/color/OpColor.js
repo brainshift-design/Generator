@@ -36,7 +36,7 @@ extends OpColorBase
 
     constructor()
     {
-        super('color', 'color', 'color', 80);
+        super(COLOR, 'color', 80);
 
 
         this._color    = ['rgb', 0.5, 0.5, 0.5];
@@ -47,8 +47,8 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput (new Input (this.type));
-        this.addOutput(new Output(this.type));
+        this.addInput (new Input (COLOR));
+        this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -134,6 +134,61 @@ extends OpColorBase
             || this.inputs[2].connected
             || this.inputs[3].connected
             || this.inputs[4].connected;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
+        const req = this.node.getRequestStart();
+
+        
+        const input = this.node.inputs[0];
+
+        const indices = [];
+
+
+        if (input.connected)
+        {
+            req.push(...input.connectedOutput.genRequest(gen));
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    indices.push(param.index);
+
+            req.push(indices.join(','));
+            
+
+            if (this.node.paramSpace.input.connected) req.push(...this.node.paramSpace.genRequest(gen));
+            if (this.node.param1    .input.connected) req.push(...this.node.param1    .genRequest(gen));
+            if (this.node.param2    .input.connected) req.push(...this.node.param2    .genRequest(gen));
+            if (this.node.param3    .input.connected) req.push(...this.node.param3    .genRequest(gen));
+        }
+        else
+        {
+            req.push(
+                ...this.node.paramSpace.genRequest(gen),
+                ...this.node.param1    .genRequest(gen),
+                ...this.node.param2    .genRequest(gen),
+                ...this.node.param3    .genRequest(gen));
+        }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
     }
 
 
@@ -240,7 +295,7 @@ extends OpColorBase
         //console.log(this.id + '.OpColor.updateNode()');
 
         
-        enableElementText(this.hexbox, !this.connected());
+        enableElementText(this.hexbox, !this.isConnected());
 
         if (!hasFocus(this.hexbox))
         {

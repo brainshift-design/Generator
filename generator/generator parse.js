@@ -33,6 +33,8 @@ function genParse(parse)
     else if (next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
+    else if (next == COLOR             ) return genParseNumber           (parse);
+
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
     else if (next == LINE              ) return genParseLine             (parse);
     else if (next == ELLIPSE           ) return genParseEllipse          (parse);
@@ -55,6 +57,18 @@ function genParseActive(parse)
     }
 
     return false;
+}
+
+
+
+function genParseNumberNodeId(parse)
+{
+    parse.pos++; // tag
+    
+    const nodeId = parse.req[parse.pos++];
+    genParseActive(parse);
+    
+    return nodeId;
 }
 
 

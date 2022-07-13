@@ -1,15 +1,3 @@
-function genParseNumberNodeId(parse)
-{
-    parse.pos++; // tag
-    
-    const nodeId = parse.req[parse.pos++];
-    genParseActive(parse);
-    
-    return nodeId;
-}
-
-
-
 function genParseNumValue(parse)
 {
     parse.pos++; // N

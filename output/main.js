@@ -307,8 +307,7 @@ const NUMBER_MODULO = 'MOD'; // count N...
 const NUMBER_EXPONENT = 'EXP'; // count N...
 const NUMBER_MATH = 'MATH'; // op count N...
 const NUMBER_INTERPOLATE = 'LERP'; // count N... N:amount
-const COLOR_VALUE = 'C'; // N:space N:1 N:2 N:3 (c)
-const COLOR = 'COL'; // C | c
+const COLOR = 'COL'; // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE = 'CVLD'; // C
 const COLOR_CONTRAST = 'CCNT'; // C:text C:background
@@ -317,7 +316,6 @@ const STRING_VALUE = 'S'; // "..." (s) (escape \\ and \")
 const STRING = 'STR'; // S | s
 const STRING_ADD = 'SADD'; // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
-//const RECTANGLE_VALUE    = 'R';
 const RECTANGLE = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
 const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
@@ -350,8 +348,8 @@ const settings = {
     showNodeId: true,
     logStorage: true,
     logActions: false,
-    logRequests: false,
-    logParamUpdates: false,
+    logRequests: true,
+    logParamUpdates: true,
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}

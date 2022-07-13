@@ -4501,9 +4501,7 @@ const NUMBER_MATH        = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
 
-const COLOR_VALUE        = 'C';     // N:space N:1 N:2 N:3 (c)
-
-const COLOR              = 'COL';   // C | c
+const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE     = 'CVLD';  // C
 const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
@@ -4516,8 +4514,6 @@ const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
-
-//const RECTANGLE_VALUE    = 'R';
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
@@ -4599,6 +4595,35 @@ function parseGnum(str)
               decCount(str));
 }
 
+
+
+class GColor
+{
+    space;
+    c1;
+    c2;
+    c3;
+
+
+
+    constructor()
+    {
+        this.space = new GNumber(0);
+        this.c1    = new GNumber(0);
+        this.c2    = new GNumber(0);
+        this.c3    = new GNumber(0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.space.valid
+            && this.c1   .valid
+            && this.c2   .valid
+            && this.c3   .valid;
+    }
+}
 
 
 class GRectangle
@@ -5199,6 +5224,49 @@ function genPostNextMessageToUI(msg)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function genParseColor(parse)
+{
+    parse.pos++; // COLOR
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let col = new GColor();
+    let indices;
+    
+    if (parse.req[parse.pos] == COLOR)
+    {
+        col     = genParse(parse); // not genParseColor() because genParse() handles stack overflow
+        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(4).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: col.space = genParse(parse); break;
+        case 1: col.c1    = genParse(parse); break;
+        case 2: col.c2    = genParse(parse); break;
+        case 3: col.c3    = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, col.space.toString());
+    genPushUpdateParamValue(parse, nodeId, 1, col.c1   .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, col.c2   .toString());
+    genPushUpdateParamValue(parse, nodeId, 3, col.c3   .toString());
+
+
+    return col;
+}
+
+
+
 /*
     RECT 
     id
@@ -5557,18 +5625,6 @@ function genParseStar(parse)
 }
 
 
-function genParseNumberNodeId(parse)
-{
-    parse.pos++; // tag
-    
-    const nodeId = parse.req[parse.pos++];
-    genParseActive(parse);
-    
-    return nodeId;
-}
-
-
-
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -5893,6 +5949,8 @@ function genParse(parse)
     else if (next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
+    else if (next == COLOR             ) return genParseNumber           (parse);
+
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
     else if (next == LINE              ) return genParseLine             (parse);
     else if (next == ELLIPSE           ) return genParseEllipse          (parse);
@@ -5915,6 +5973,18 @@ function genParseActive(parse)
     }
 
     return false;
+}
+
+
+
+function genParseNumberNodeId(parse)
+{
+    parse.pos++; // tag
+    
+    const nodeId = parse.req[parse.pos++];
+    genParseActive(parse);
+    
+    return nodeId;
 }
 
 
@@ -12697,9 +12767,7 @@ const NUMBER_MATH        = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
 
-const COLOR_VALUE        = 'C';     // N:space N:1 N:2 N:3 (c)
-
-const COLOR              = 'COL';   // C | c
+const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE     = 'CVLD';  // C
 const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
@@ -12712,8 +12780,6 @@ const STRING             = 'STR';   // S | s
 const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
-
-//const RECTANGLE_VALUE    = 'R';
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
@@ -12795,6 +12861,35 @@ function parseGnum(str)
               decCount(str));
 }
 
+
+
+class GColor
+{
+    space;
+    c1;
+    c2;
+    c3;
+
+
+
+    constructor()
+    {
+        this.space = new GNumber(0);
+        this.c1    = new GNumber(0);
+        this.c2    = new GNumber(0);
+        this.c3    = new GNumber(0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.space.valid
+            && this.c1   .valid
+            && this.c2   .valid
+            && this.c3   .valid;
+    }
+}
 
 
 class GRectangle
@@ -12981,8 +13076,8 @@ const settings =
     
     logStorage:       true, 
     logActions:       false, 
-    logRequests:      false, 
-    logParamUpdates:  false, 
+    logRequests:      true, 
+    logParamUpdates:  true, 
     logObjectUpdates: false
 };
 
@@ -17993,7 +18088,7 @@ extends Parameter
 
 
         if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER);
+        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
             
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
@@ -18056,6 +18151,59 @@ extends Parameter
             
         super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still provide a value
+        
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const req = [];
+
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.index);
+                
+                pushUnique(gen.paramNodes, this.node);
+            }
+
+            req.push(...this.input.connectedOutput.genRequest(gen));
+        }        
+        else
+        {
+            req.push( 
+                NUMBER_VALUE, 
+                new GNumber(
+                    this.control.value, 
+                    this.control.displayDec).toString());
+        }
+
+
+        return req;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
 
 
 
@@ -22190,7 +22338,7 @@ extends OpColorBase
 
     constructor()
     {
-        super('color', 'color', 'color', 80);
+        super(COLOR, 'color', 80);
 
 
         this._color    = ['rgb', 0.5, 0.5, 0.5];
@@ -22201,8 +22349,8 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput (new Input (this.type));
-        this.addOutput(new Output(this.type));
+        this.addInput (new Input (COLOR));
+        this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -22288,6 +22436,61 @@ extends OpColorBase
             || this.inputs[2].connected
             || this.inputs[3].connected
             || this.inputs[4].connected;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
+        const req = this.node.getRequestStart();
+
+        
+        const input = this.node.inputs[0];
+
+        const indices = [];
+
+
+        if (input.connected)
+        {
+            req.push(...input.connectedOutput.genRequest(gen));
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    indices.push(param.index);
+
+            req.push(indices.join(','));
+            
+
+            if (this.node.paramSpace.input.connected) req.push(...this.node.paramSpace.genRequest(gen));
+            if (this.node.param1    .input.connected) req.push(...this.node.param1    .genRequest(gen));
+            if (this.node.param2    .input.connected) req.push(...this.node.param2    .genRequest(gen));
+            if (this.node.param3    .input.connected) req.push(...this.node.param3    .genRequest(gen));
+        }
+        else
+        {
+            req.push(
+                ...this.node.paramSpace.genRequest(gen),
+                ...this.node.param1    .genRequest(gen),
+                ...this.node.param2    .genRequest(gen),
+                ...this.node.param3    .genRequest(gen));
+        }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
     }
 
 
@@ -22394,7 +22597,7 @@ extends OpColorBase
         //console.log(this.id + '.OpColor.updateNode()');
 
         
-        enableElementText(this.hexbox, !this.connected());
+        enableElementText(this.hexbox, !this.isConnected());
 
         if (!hasFocus(this.hexbox))
         {

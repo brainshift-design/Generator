@@ -66,7 +66,7 @@ extends Parameter
 
 
         if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER);
+        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
             
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
@@ -129,6 +129,59 @@ extends Parameter
             
         super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still provide a value
+        
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const req = [];
+
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.index);
+                
+                pushUnique(gen.paramNodes, this.node);
+            }
+
+            req.push(...this.input.connectedOutput.genRequest(gen));
+        }        
+        else
+        {
+            req.push( 
+                NUMBER_VALUE, 
+                new GNumber(
+                    this.control.value, 
+                    this.control.displayDec).toString());
+        }
+
+
+        return req;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
 
 
 
