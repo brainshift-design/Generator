@@ -571,9 +571,11 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 //const RECTANGLE_VALUE    = 'R';
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+
 
 const GROUP              = 'GRP';   // ???? count O...
 
@@ -668,6 +670,7 @@ function figCreateObject(objects, genObj)
     switch (genObj.type)
     {
         case RECTANGLE: figObj = figCreateRect   (genObj); break;
+        case LINE:      figObj = figCreateLine   (genObj); break;
         case ELLIPSE:   figObj = figCreateEllipse(genObj); break;
         case POLYGON:   figObj = figCreatePolygon(genObj); break;
         case STAR:      figObj = figCreateStar   (genObj); break;
@@ -692,6 +695,7 @@ function figUpdateObject(figObj, genObj)
     switch (genObj.type)
     {
         case RECTANGLE: figUpdateRect   (figObj, genObj); break;
+        case LINE:      figUpdateLine   (figObj, genObj); break;
         case ELLIPSE:   figUpdateEllipse(figObj, genObj); break;
         case POLYGON:   figUpdatePolygon(figObj, genObj); break;
         case STAR:      figUpdateStar   (figObj, genObj); break;
@@ -917,6 +921,43 @@ function figUpdateRect(figRect, genRect)
 
     figRect.rotation     = genRect.angle;
     figRect.cornerRadius = genRect.round;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function figCreateLine(obj)
+{
+    //console.log(obj);
+
+    const line = figma.createLine();
+
+    line.x = obj.x;
+    line.y = obj.y;
+    
+    line.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+    
+    line.resize(Math.max(0.01, obj.width), 0);
+        
+    line.rotation = obj.angle;
+
+    return line;
+}
+
+
+
+function figUpdateLine(figLine, genLine)
+{
+    figLine.x = genLine.x;
+    figLine.y = genLine.y;
+
+    if (figLine.width != genLine.width)
+        figLine.resize(Math.max(0.01, genLine.width), 0);
+
+    figLine.rotation = genLine.angle;
 }
 
 

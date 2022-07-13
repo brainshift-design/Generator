@@ -34,6 +34,7 @@ function genParse(parse)
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
+    else if (next == LINE              ) return genParseLine             (parse);
     else if (next == ELLIPSE           ) return genParseEllipse          (parse);
     else if (next == POLYGON           ) return genParsePolygon          (parse);
     else if (next == STAR              ) return genParseStar             (parse);

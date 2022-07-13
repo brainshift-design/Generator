@@ -25,6 +25,7 @@ function rgbFromType(type, active)
                  : rgbColor;
 
         case RECTANGLE: 
+        case LINE: 
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 

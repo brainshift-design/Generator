@@ -1,9 +1,12 @@
-new node:
+NEW OPERATOR:
 
-    types
+    operator
+    GType etc
+    types/types.js
+    autojoin
+    rgbFromType
     html
-    graph.makeNode();
-    figma obj create
-    figma obj update
+    Graph.js/createNode();
+    figma obj create/update
     gen obj parse
     log node req

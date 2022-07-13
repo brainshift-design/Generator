@@ -48,6 +48,7 @@ function figCreateObject(objects, genObj)
     switch (genObj.type)
     {
         case RECTANGLE: figObj = figCreateRect   (genObj); break;
+        case LINE:      figObj = figCreateLine   (genObj); break;
         case ELLIPSE:   figObj = figCreateEllipse(genObj); break;
         case POLYGON:   figObj = figCreatePolygon(genObj); break;
         case STAR:      figObj = figCreateStar   (genObj); break;
@@ -72,6 +73,7 @@ function figUpdateObject(figObj, genObj)
     switch (genObj.type)
     {
         case RECTANGLE: figUpdateRect   (figObj, genObj); break;
+        case LINE:      figUpdateLine   (figObj, genObj); break;
         case ELLIPSE:   figUpdateEllipse(figObj, genObj); break;
         case POLYGON:   figUpdatePolygon(figObj, genObj); break;
         case STAR:      figUpdateStar   (figObj, genObj); break;

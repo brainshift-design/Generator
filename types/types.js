@@ -38,9 +38,11 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 //const RECTANGLE_VALUE    = 'R';
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+
 
 const GROUP              = 'GRP';   // ???? count O...
 

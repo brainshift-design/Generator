@@ -1333,6 +1333,7 @@ div
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle));        this.blur();'>RECT</button>
+    <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine));             this.blur();'>LINE</button>
     <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse));          this.blur();'>ELPS</button>
     <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon));          this.blur();'>POLY</button>
     <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar));             this.blur();'>STAR</button>
@@ -1615,6 +1616,7 @@ function rgbFromType(type, active)
                  : rgbColor;
 
         case RECTANGLE: 
+        case LINE: 
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
@@ -4518,9 +4520,11 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 //const RECTANGLE_VALUE    = 'R';
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+
 
 const GROUP              = 'GRP';   // ???? count O...
 
@@ -4628,6 +4632,38 @@ class GRectangle
             && this.height.valid
             && this.angle .valid
             && this.round .valid;
+    }
+}
+
+
+class GLine
+{
+    x;
+    y;
+    width;
+    //height;
+    angle;
+
+
+
+    constructor()
+    {
+        this.x      = new GNumber(  0);
+        this.y      = new GNumber(  0);
+        this.width  = new GNumber(100);
+        //this.height = new GNumber(0);
+        this.angle  = new GNumber(  0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            //&& this.height.valid
+            && this.angle .valid;
     }
 }
 
@@ -5251,6 +5287,70 @@ function genParseRectangle(parse)
 
 
 
+function genParseLine(parse)
+{
+    parse.pos++; // LINE
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let line = new GLine();
+    let indices;
+    
+    if (parse.req[parse.pos] == LINE)
+    {
+        line = genParse(parse); // not genParseLine() because genParse() handles stack overflow
+        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: line.x     = genParse(parse); break;
+        case 1: line.y     = genParse(parse); break;
+        case 2: line.width = genParse(parse); break;
+        //case 3: line.height = genParse(parse); break;
+        case 3: line.angle = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, line.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, line.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, line.width .toString());
+    //genPushUpdateParamValue(parse, nodeId, 3, line.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 3, line.angle .toString());
+
+
+    if (   active
+        && line.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   LINE,
+                id:     0,
+                x:      line.x     .value,
+                y:      line.y     .value,
+                width:  line.width .value,
+                //height: line.height.value,
+                angle:  line.angle .value
+            });
+    }
+
+
+    return line;
+}
+
+
+
 function genParseEllipse(parse)
 {
     parse.pos++; // ELLIPSE
@@ -5794,6 +5894,7 @@ function genParse(parse)
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
+    else if (next == LINE              ) return genParseLine             (parse);
     else if (next == ELLIPSE           ) return genParseEllipse          (parse);
     else if (next == POLYGON           ) return genParsePolygon          (parse);
     else if (next == STAR              ) return genParseStar             (parse);
@@ -8335,6 +8436,7 @@ function rgbFromType(type, active)
                  : rgbColor;
 
         case RECTANGLE: 
+        case LINE: 
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
@@ -12614,9 +12716,11 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 //const RECTANGLE_VALUE    = 'R';
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+
 
 const GROUP              = 'GRP';   // ???? count O...
 
@@ -12724,6 +12828,38 @@ class GRectangle
             && this.height.valid
             && this.angle .valid
             && this.round .valid;
+    }
+}
+
+
+class GLine
+{
+    x;
+    y;
+    width;
+    //height;
+    angle;
+
+
+
+    constructor()
+    {
+        this.x      = new GNumber(  0);
+        this.y      = new GNumber(  0);
+        this.width  = new GNumber(100);
+        //this.height = new GNumber(0);
+        this.angle  = new GNumber(  0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            //&& this.height.valid
+            && this.angle .valid;
     }
 }
 
@@ -13048,7 +13184,7 @@ function initNumberSliderEvents(slider)
                 
                 if (!isNaN(slider.value))
                 {
-                    const dx       = slider.movedX;
+                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
                     const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                     const grain    = Math.pow(10, -slider.dec);
                     const drag     = grain * sqr(slider.dragScale);
@@ -13299,8 +13435,8 @@ function initNumberSliderEvents(slider)
         }
 
 
-        const dWheelX = e.deltaX /  20;
-        const dWheelY = e.deltaY / 100;
+        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
 
 
         if (   !getCtrlKey(e)
@@ -13888,6 +14024,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.valueCanContainSuffix  = false;
     slider.log                    = log;
      
+    slider.dragReverse            = false;
     slider.dragScale              = dragScale;
     slider.wheelScale             = wheelScale;
              
@@ -14063,6 +14200,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.updateBar = function(sx, cx, v, sw, sh)
     {
+        if (slider.dragReverse)
+            v *= -1;
+
+            
         if (isNaN(slider.value))
             slider.bar.style.display = 'none';
 
@@ -18271,6 +18412,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLORBLIND:         node = new OpColorblind();       break;
         
         case RECTANGLE:          node = new OpRectangle();        break;
+        case LINE:               node = new OpLine();             break;
         case ELLIPSE:            node = new OpEllipse();          break;
         case POLYGON:            node = new OpPolygon();          break;
         case STAR:               node = new OpStar();             break;
@@ -24494,7 +24636,8 @@ extends OperatorBase
         
 
         this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue = true;
+        this.#paramAngle.control.wrapValue   = true;
+        this.#paramAngle.control.dragReverse = true;
 
         
         //this.updateRound();
@@ -24681,6 +24824,110 @@ extends OperatorBase
 }
 
 
+class   OpLine
+extends OperatorBase
+{
+    #paramX;
+    #paramY;
+    #paramWidth;
+    //#paramHeight;
+    #paramAngle;
+
+
+    
+    constructor()
+    {
+        super(LINE, 'line', 90);
+
+        this.addInput (new Input ([LINE]));
+        this.addOutput(new Output(LINE, this.output_genRequest));
+
+        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        //this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        
+
+        this.#paramAngle.control.setSuffix('°', true);
+        this.#paramAngle.control.wrapValue   = true;
+        this.#paramAngle.control.dragReverse = true;
+
+
+        this.inputs[0].addEventListener('connect', () =>
+        {
+            for (const param of this.params)
+                enableSliderText(param.control, false);
+        });
+
+
+        this.inputs[0].addEventListener('disconnect', () =>
+        {
+            for (const param of this.params)
+                if (!param.input.connected) 
+                    enableSliderText(param.control, true);
+        });
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:     this.node.id, 
+            paramIndex: -1 });
+
+        const req = this.node.getRequestStart();
+
+        
+        const input = this.node.inputs[0];
+
+        const indices = [];
+
+
+        if (input.connected)
+        {
+            req.push(...input.connectedOutput.genRequest(gen));
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    indices.push(param.index);
+
+            req.push(indices.join(','));
+
+
+            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
+            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
+            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
+            //if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
+            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+        }
+        else
+        {
+            req.push(
+                ...this.node.#paramX     .genRequest(gen),
+                ...this.node.#paramY     .genRequest(gen),
+                ...this.node.#paramWidth .genRequest(gen),
+                //...this.node.#paramHeight.genRequest(gen),
+                ...this.node.#paramAngle .genRequest(gen));
+        }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
+    }
+}
+
+
 class   OpEllipse
 extends OperatorBase
 {
@@ -24712,11 +24959,10 @@ extends OperatorBase
         
 
         this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue = true;
+        this.#paramAngle.control.wrapValue   = true;
+        this.#paramAngle.control.dragReverse = true;
 
         
-        //this.updateRound();
-
         this.#btnProportional = createToggleButton(12, 12);
         this.inner.appendChild(this.#btnProportional);
 
@@ -24904,7 +25150,8 @@ extends OperatorBase
         
 
         this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue = true;
+        this.#paramAngle.control.wrapValue   = true;
+        this.#paramAngle.control.dragReverse = true;
 
         
         //this.updateRound();
@@ -25130,7 +25377,8 @@ extends OperatorBase
         
 
         this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue = true;
+        this.#paramAngle.control.wrapValue   = true;
+        this.#paramAngle.control.dragReverse = true;
 
         this.#paramConvex.control.setSuffix('%', true);
         

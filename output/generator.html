@@ -39,6 +39,7 @@ function rgbFromType(type, active)
                  : rgbColor;
 
         case RECTANGLE: 
+        case LINE: 
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
@@ -2942,9 +2943,11 @@ const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 //const RECTANGLE_VALUE    = 'R';
 
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+
 
 const GROUP              = 'GRP';   // ???? count O...
 
@@ -3052,6 +3055,38 @@ class GRectangle
             && this.height.valid
             && this.angle .valid
             && this.round .valid;
+    }
+}
+
+
+class GLine
+{
+    x;
+    y;
+    width;
+    //height;
+    angle;
+
+
+
+    constructor()
+    {
+        this.x      = new GNumber(  0);
+        this.y      = new GNumber(  0);
+        this.width  = new GNumber(100);
+        //this.height = new GNumber(0);
+        this.angle  = new GNumber(  0);
+    }
+
+
+    
+    get valid()
+    {
+        return this.x     .valid
+            && this.y     .valid
+            && this.width .valid
+            //&& this.height.valid
+            && this.angle .valid;
     }
 }
 
@@ -3675,6 +3710,70 @@ function genParseRectangle(parse)
 
 
 
+function genParseLine(parse)
+{
+    parse.pos++; // LINE
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let line = new GLine();
+    let indices;
+    
+    if (parse.req[parse.pos] == LINE)
+    {
+        line = genParse(parse); // not genParseLine() because genParse() handles stack overflow
+        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: line.x     = genParse(parse); break;
+        case 1: line.y     = genParse(parse); break;
+        case 2: line.width = genParse(parse); break;
+        //case 3: line.height = genParse(parse); break;
+        case 3: line.angle = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, line.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, line.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, line.width .toString());
+    //genPushUpdateParamValue(parse, nodeId, 3, line.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 3, line.angle .toString());
+
+
+    if (   active
+        && line.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   LINE,
+                id:     0,
+                x:      line.x     .value,
+                y:      line.y     .value,
+                width:  line.width .value,
+                //height: line.height.value,
+                angle:  line.angle .value
+            });
+    }
+
+
+    return line;
+}
+
+
+
 function genParseEllipse(parse)
 {
     parse.pos++; // ELLIPSE
@@ -4218,6 +4317,7 @@ function genParse(parse)
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
+    else if (next == LINE              ) return genParseLine             (parse);
     else if (next == ELLIPSE           ) return genParseEllipse          (parse);
     else if (next == POLYGON           ) return genParsePolygon          (parse);
     else if (next == STAR              ) return genParseStar             (parse);

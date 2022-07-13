@@ -86,6 +86,70 @@ function genParseRectangle(parse)
 
 
 
+function genParseLine(parse)
+{
+    parse.pos++; // LINE
+ 
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+
+  
+    let line = new GLine();
+    let indices;
+    
+    if (parse.req[parse.pos] == LINE)
+    {
+        line = genParse(parse); // not genParseLine() because genParse() handles stack overflow
+        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+    }
+    else
+        indices = [...Array(5).keys()];
+
+
+    for (const i of indices)
+    {
+        switch (i)
+        {
+        case 0: line.x     = genParse(parse); break;
+        case 1: line.y     = genParse(parse); break;
+        case 2: line.width = genParse(parse); break;
+        //case 3: line.height = genParse(parse); break;
+        case 3: line.angle = genParse(parse); break;
+        }
+    }
+
+
+    genPushUpdateParamValue(parse, nodeId, 0, line.x     .toString());
+    genPushUpdateParamValue(parse, nodeId, 1, line.y     .toString());
+    genPushUpdateParamValue(parse, nodeId, 2, line.width .toString());
+    //genPushUpdateParamValue(parse, nodeId, 3, line.height.toString());
+    genPushUpdateParamValue(parse, nodeId, 3, line.angle .toString());
+
+
+    if (   active
+        && line.valid)
+    {
+        genPushUpdateObject(
+            parse,
+            nodeId,
+            { 
+                nodeId: nodeId,          
+                type:   LINE,
+                id:     0,
+                x:      line.x     .value,
+                y:      line.y     .value,
+                width:  line.width .value,
+                //height: line.height.value,
+                angle:  line.angle .value
+            });
+    }
+
+
+    return line;
+}
+
+
+
 function genParseEllipse(parse)
 {
     parse.pos++; // ELLIPSE

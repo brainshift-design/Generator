@@ -41,6 +41,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.valueCanContainSuffix  = false;
     slider.log                    = log;
      
+    slider.dragReverse            = false;
     slider.dragScale              = dragScale;
     slider.wheelScale             = wheelScale;
              
@@ -216,6 +217,10 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.updateBar = function(sx, cx, v, sw, sh)
     {
+        if (slider.dragReverse)
+            v *= -1;
+
+            
         if (isNaN(slider.value))
             slider.bar.style.display = 'none';
 

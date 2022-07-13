@@ -155,7 +155,7 @@ function initNumberSliderEvents(slider)
                 
                 if (!isNaN(slider.value))
                 {
-                    const dx       = slider.movedX;
+                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
                     const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
                     const grain    = Math.pow(10, -slider.dec);
                     const drag     = grain * sqr(slider.dragScale);
@@ -406,8 +406,8 @@ function initNumberSliderEvents(slider)
         }
 
 
-        const dWheelX = e.deltaX /  20;
-        const dWheelY = e.deltaY / 100;
+        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
 
 
         if (   !getCtrlKey(e)

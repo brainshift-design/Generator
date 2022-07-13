@@ -44,6 +44,43 @@ function figUpdateRect(figRect, genRect)
 
 
 
+function figCreateLine(obj)
+{
+    //console.log(obj);
+
+    const line = figma.createLine();
+
+    line.x = obj.x;
+    line.y = obj.y;
+    
+    line.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
+    
+    line.resize(Math.max(0.01, obj.width), 0);
+        
+    line.rotation = obj.angle;
+
+    return line;
+}
+
+
+
+function figUpdateLine(figLine, genLine)
+{
+    figLine.x = genLine.x;
+    figLine.y = genLine.y;
+
+    if (figLine.width != genLine.width)
+        figLine.resize(Math.max(0.01, genLine.width), 0);
+
+    figLine.rotation = genLine.angle;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 function figCreateEllipse(obj)
 {
     //console.log(obj);
