@@ -692,12 +692,16 @@ function pushUpdateFromParam(nodes, param)
 
     const gen = createGenObject(param ? param.node : null);
 
+
     terminals.forEach(n => 
         n.outputs
             .filter(o => !o.param)
             .forEach(o =>
-                request.push(...o.genRequest(gen)))); 
-
+            {
+                const _r = o.genRequest(gen);
+                const r = [..._r];
+                request.push(...r);
+            })); 
 
     gen.markParams = false;
     gen.paramNodes
@@ -711,7 +715,7 @@ function pushUpdateFromParam(nodes, param)
 
     if (    param
         && !gen.passedNodes.includes(param.node)
-        && !gen.paramNodes.includes(param.node))
+        && !gen.paramNodes .includes(param.node))
             param.node.outputs
                 .filter(o => !o.param)
                 .forEach(o =>

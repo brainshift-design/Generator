@@ -221,7 +221,6 @@ function logReqRectangle(req) {
     }
     else
         indices = [...Array(6).keys()];
-    console.log('indices.length', indices.length);
     for (const i of indices) {
         if (i < 6)
             log += logReq(req);
@@ -350,7 +349,7 @@ const settings = {
     showNodeId: true,
     logStorage: true,
     logActions: false,
-    logRequests: true,
+    logRequests: false,
     logParamUpdates: false,
     logObjectUpdates: false
 };

@@ -183,7 +183,6 @@ function logReqRectangle(req)
         indices = [...Array(6).keys()];
     
 
-console.log('indices.length', indices.length);
     for (const i of indices)
     {
         if (i < 6)

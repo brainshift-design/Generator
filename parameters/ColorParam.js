@@ -114,5 +114,6 @@ extends Parameter
     output_genRequest(gen)
     {
         //return output.param.genRequest();
+        return [];
     }
 }

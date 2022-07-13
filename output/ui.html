@@ -4184,7 +4184,6 @@ function logReqRectangle(req)
         indices = [...Array(6).keys()];
     
 
-console.log('indices.length', indices.length);
     for (const i of indices)
     {
         if (i < 6)
@@ -10905,7 +10904,6 @@ function logReqRectangle(req)
         indices = [...Array(6).keys()];
     
 
-console.log('indices.length', indices.length);
     for (const i of indices)
     {
         if (i < 6)
@@ -12847,7 +12845,7 @@ const settings =
     
     logStorage:       true, 
     logActions:       false, 
-    logRequests:      true, 
+    logRequests:      false, 
     logParamUpdates:  false, 
     logObjectUpdates: false
 };
@@ -17599,8 +17597,9 @@ extends Parameter
         // should still provide a value
         
         if (    this.output
-            && gen.passedNodes.includes(this.node))
-            return this.cache;
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
 
 
         const req = [];
@@ -17780,6 +17779,7 @@ extends Parameter
     output_genRequest(gen)
     {
         //return output.param.genRequest();
+        return [];
     }
 }
 
@@ -20139,12 +20139,16 @@ function pushUpdateFromParam(nodes, param)
 
     const gen = createGenObject(param ? param.node : null);
 
+
     terminals.forEach(n => 
         n.outputs
             .filter(o => !o.param)
             .forEach(o =>
-                request.push(...o.genRequest(gen)))); 
-
+            {
+                const _r = o.genRequest(gen);
+                const r = [..._r];
+                request.push(...r);
+            })); 
 
     gen.markParams = false;
     gen.paramNodes
@@ -20158,7 +20162,7 @@ function pushUpdateFromParam(nodes, param)
 
     if (    param
         && !gen.passedNodes.includes(param.node)
-        && !gen.paramNodes.includes(param.node))
+        && !gen.paramNodes .includes(param.node))
             param.node.outputs
                 .filter(o => !o.param)
                 .forEach(o =>
@@ -27073,6 +27077,7 @@ var genMessagePosted = false;
 //uiClearLocalData('productKey');
 
 //uiRemoveConnsToNodes(['num10']);
+//uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
 
 uiLogAllSavedNodesAndConns();

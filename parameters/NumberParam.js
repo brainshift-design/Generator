@@ -159,8 +159,9 @@ extends Parameter
         // should still provide a value
         
         if (    this.output
-            && gen.passedNodes.includes(this.node))
-            return this.cache;
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
 
 
         const req = [];
