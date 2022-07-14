@@ -518,9 +518,13 @@ class Operator
 
 
 
-    updateParamValue(index, value) // virtual
+    updateParamValues(updateIndex, indices, values) // virtual
     {
-        this.params[index].setValue(value, false, true, false);
+        for (let i = 0; i < indices.length; i++)
+        {
+            if (indices[i] != updateIndex)
+                this.params[indices[i]].setValue(values[i], false, true, false);
+        }
     }
 
 

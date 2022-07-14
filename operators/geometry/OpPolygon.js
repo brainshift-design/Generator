@@ -155,17 +155,13 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        switch (index)
-        {
-            case 2:
-            case 3:
-                this.updateRound();
-                break;
-        }
+        if (   indices.includes(2)
+            || indices.includes(3))
+            this.updateRound();
     }
 
 

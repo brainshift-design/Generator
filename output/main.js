@@ -125,6 +125,8 @@ function logReq(req) {
         return logReqNumberArithmetic(req);
     else if (next == NUMBER_INTERPOLATE)
         return logReqNumberInterpolate(req);
+    else if (next == COLOR)
+        return logReqColor(req);
     else if (next == RECTANGLE)
         return logReqRectangle(req);
     else if (next == ELLIPSE)
@@ -207,7 +209,12 @@ function logReqNumberInterpolate(req) {
     req.nTab--;
     return log;
 }
-function logReqRectangle(req) {
+function logReqColor(req) { return logReqNode(req, COLOR, 4); }
+function logReqRectangle(req) { return logReqNode(req, RECTANGLE, 6); }
+function logReqEllipse(req) { return logReqNode(req, ELLIPSE, 5); }
+function logReqPolygon(req) { return logReqNode(req, POLYGON, 7); }
+function logReqStar(req) { return logReqNode(req, STAR, 8); }
+function logReqNode(req, type, nParams) {
     const tab = req.tab;
     req.nTab++;
     const tag = req.request[req.pos++];
@@ -215,77 +222,14 @@ function logReqRectangle(req) {
     const active = logReqActive(req);
     let log = tab + tag + ' ' + nodeId + active;
     let indices;
-    if (req.request[req.pos] == RECTANGLE) {
+    if (req.request[req.pos] == type) {
         log += logReq(req);
         indices = req.request[req.pos++].split(',').map(s => parseInt(s));
     }
     else
-        indices = [...Array(6).keys()];
+        indices = [...Array(nParams).keys()];
     for (const i of indices) {
-        if (i < 6)
-            log += logReq(req);
-    }
-    req.nTab--;
-    return log;
-}
-function logReqEllipse(req) {
-    const tab = req.tab;
-    req.nTab++;
-    const tag = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-    let log = tab + tag + ' ' + nodeId + active;
-    let indices;
-    if (req.request[req.pos] == ELLIPSE) {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(5).keys()];
-    for (const i of indices) {
-        if (i < 5)
-            log += logReq(req);
-    }
-    req.nTab--;
-    return log;
-}
-function logReqPolygon(req) {
-    const tab = req.tab;
-    req.nTab++;
-    const tag = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-    let log = tab + tag + ' ' + nodeId + active;
-    let indices;
-    if (req.request[req.pos] == POLYGON) {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(7).keys()];
-    for (const i of indices) {
-        if (i < 7)
-            log += logReq(req);
-    }
-    req.nTab--;
-    return log;
-}
-function logReqStar(req) {
-    const tab = req.tab;
-    req.nTab++;
-    const tag = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-    let log = tab + tag + ' ' + nodeId + active;
-    let indices;
-    if (req.request[req.pos] == STAR) {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(8).keys()];
-    for (const i of indices) {
-        if (i < 8)
+        if (i < nParams)
             log += logReq(req);
     }
     req.nTab--;
@@ -348,8 +292,8 @@ const settings = {
     showNodeId: true,
     logStorage: true,
     logActions: false,
-    logRequests: true,
-    logParamUpdates: true,
+    logRequests: false,
+    logParamUpdates: false,
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}

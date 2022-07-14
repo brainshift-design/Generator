@@ -120,12 +120,12 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        if (index == 0)
-            this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
+        if (indices.includes(0))
+            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
 

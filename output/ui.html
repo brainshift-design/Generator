@@ -4018,6 +4018,8 @@ function logReq(req)
           || next == NUMBER_EXPONENT   ) return logReqNumberArithmetic (req);
     else if (next == NUMBER_INTERPOLATE) return logReqNumberInterpolate(req);
 
+    else if (next == COLOR             ) return logReqColor            (req);
+
     else if (next == RECTANGLE         ) return logReqRectangle        (req);
     else if (next == ELLIPSE           ) return logReqEllipse          (req);
     else if (next == POLYGON           ) return logReqPolygon          (req);
@@ -4160,7 +4162,15 @@ function logReqNumberInterpolate(req)
 
 
 
-function logReqRectangle(req)
+function logReqColor    (req) { return logReqNode(req, COLOR,     4); }
+function logReqRectangle(req) { return logReqNode(req, RECTANGLE, 6); }
+function logReqEllipse  (req) { return logReqNode(req, ELLIPSE,   5); }
+function logReqPolygon  (req) { return logReqNode(req, POLYGON,   7); }
+function logReqStar     (req) { return logReqNode(req, STAR,      8); }
+
+
+
+function logReqNode(req, type, nParams)
 {
     const tab = req.tab;
 
@@ -4177,138 +4187,18 @@ function logReqRectangle(req)
     let indices;
 
 
-    if (req.request[req.pos] == RECTANGLE)
+    if (req.request[req.pos] == type)
     {
         log += logReq(req);
         indices = req.request[req.pos++].split(',').map(s => parseInt(s));
     }
     else
-        indices = [...Array(6).keys()];
+        indices = [...Array(nParams).keys()];
     
 
     for (const i of indices)
     {
-        if (i < 6)
-            log += logReq(req);
-    }
-
-
-    req.nTab--;
-
-    return log;
-}
-
-
-
-function logReqEllipse(req)
-{
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let indices;
-
-
-    if (req.request[req.pos] == ELLIPSE)
-    {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(5).keys()];
-    
-
-    for (const i of indices)
-    {
-        if (i < 5)
-            log += logReq(req);
-    }
-
-
-    req.nTab--;
-
-    return log;
-}
-
-
-
-function logReqPolygon(req)
-{
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let indices;
-
-
-    if (req.request[req.pos] == POLYGON)
-    {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(7).keys()];
-    
-
-    for (const i of indices)
-    {
-        if (i < 7)
-            log += logReq(req);
-    }
-
-
-    req.nTab--;
-
-    return log;
-}
-
-
-
-function logReqStar(req)
-{
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let indices;
-
-
-    if (req.request[req.pos] == STAR)
-    {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(8).keys()];
-    
-
-        for (const i of indices)
-    {
-        if (i < 8)
+        if (i < nParams)
             log += logReq(req);
     }
 
@@ -5229,7 +5119,7 @@ function genParseColor(parse)
     parse.pos++; // COLOR
  
     const nodeId = parse.req[parse.pos++];
-    const active = genParseActive(parse);
+    /*const active =*/ genParseActive(parse);
 
   
     let col = new GColor();
@@ -5949,7 +5839,7 @@ function genParse(parse)
     else if (next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
     else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
-    else if (next == COLOR             ) return genParseNumber           (parse);
+    else if (next == COLOR             ) return genParseColor            (parse);
 
     else if (next == RECTANGLE         ) return genParseRectangle        (parse);
     else if (next == LINE              ) return genParseLine             (parse);
@@ -10908,6 +10798,8 @@ function logReq(req)
           || next == NUMBER_EXPONENT   ) return logReqNumberArithmetic (req);
     else if (next == NUMBER_INTERPOLATE) return logReqNumberInterpolate(req);
 
+    else if (next == COLOR             ) return logReqColor            (req);
+
     else if (next == RECTANGLE         ) return logReqRectangle        (req);
     else if (next == ELLIPSE           ) return logReqEllipse          (req);
     else if (next == POLYGON           ) return logReqPolygon          (req);
@@ -11050,7 +10942,15 @@ function logReqNumberInterpolate(req)
 
 
 
-function logReqRectangle(req)
+function logReqColor    (req) { return logReqNode(req, COLOR,     4); }
+function logReqRectangle(req) { return logReqNode(req, RECTANGLE, 6); }
+function logReqEllipse  (req) { return logReqNode(req, ELLIPSE,   5); }
+function logReqPolygon  (req) { return logReqNode(req, POLYGON,   7); }
+function logReqStar     (req) { return logReqNode(req, STAR,      8); }
+
+
+
+function logReqNode(req, type, nParams)
 {
     const tab = req.tab;
 
@@ -11067,138 +10967,18 @@ function logReqRectangle(req)
     let indices;
 
 
-    if (req.request[req.pos] == RECTANGLE)
+    if (req.request[req.pos] == type)
     {
         log += logReq(req);
         indices = req.request[req.pos++].split(',').map(s => parseInt(s));
     }
     else
-        indices = [...Array(6).keys()];
+        indices = [...Array(nParams).keys()];
     
 
     for (const i of indices)
     {
-        if (i < 6)
-            log += logReq(req);
-    }
-
-
-    req.nTab--;
-
-    return log;
-}
-
-
-
-function logReqEllipse(req)
-{
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let indices;
-
-
-    if (req.request[req.pos] == ELLIPSE)
-    {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(5).keys()];
-    
-
-    for (const i of indices)
-    {
-        if (i < 5)
-            log += logReq(req);
-    }
-
-
-    req.nTab--;
-
-    return log;
-}
-
-
-
-function logReqPolygon(req)
-{
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let indices;
-
-
-    if (req.request[req.pos] == POLYGON)
-    {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(7).keys()];
-    
-
-    for (const i of indices)
-    {
-        if (i < 7)
-            log += logReq(req);
-    }
-
-
-    req.nTab--;
-
-    return log;
-}
-
-
-
-function logReqStar(req)
-{
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let indices;
-
-
-    if (req.request[req.pos] == STAR)
-    {
-        log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
-    }
-    else
-        indices = [...Array(8).keys()];
-    
-
-        for (const i of indices)
-    {
-        if (i < 8)
+        if (i < nParams)
             log += logReq(req);
     }
 
@@ -13076,8 +12856,8 @@ const settings =
     
     logStorage:       true, 
     logActions:       false, 
-    logRequests:      true, 
-    logParamUpdates:  true, 
+    logRequests:      false, 
+    logParamUpdates:  false, 
     logObjectUpdates: false
 };
 
@@ -20255,9 +20035,13 @@ class Operator
 
 
 
-    updateParamValue(index, value) // virtual
+    updateParamValues(updateIndex, indices, values) // virtual
     {
-        this.params[index].setValue(value, false, true, false);
+        for (let i = 0; i < indices.length; i++)
+        {
+            if (indices[i] != updateIndex)
+                this.params[indices[i]].setValue(values[i], false, true, false);
+        }
     }
 
 
@@ -21426,12 +21210,12 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        if (index == 0)
-            this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
+        if (indices.includes(0))
+            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
 
@@ -21600,12 +21384,12 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        if (index == 0)
-            this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
+        if (indices.includes(0))
+            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
 
@@ -21922,12 +21706,12 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        if (index == 0)
-            this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
+        if (indices.includes(0))
+            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
 
@@ -22102,12 +21886,12 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        if (index == 0)
-            this.outputs[0].cache = [NUMBER_VALUE, value.toString()];
+        if (indices.includes(0))
+            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 }
 
@@ -24959,17 +24743,13 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        switch (index)
-        {
-            case 2:
-            case 3:
-                this.updateRound();
-                break;
-        }
+        if (   indices.includes(2)
+            || indices.includes(3))
+            this.updateRound();
     }
 
 
@@ -25475,17 +25255,13 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        switch (index)
-        {
-            case 2:
-            case 3:
-                this.updateRound();
-                break;
-        }
+        if (   indices.includes(2)
+            || indices.includes(3))
+            this.updateRound();
     }
 
 
@@ -25706,17 +25482,13 @@ extends OperatorBase
 
 
 
-    updateParamValue(index, value)
+    updateParamValues(updateIndex, indices, values)
     {
-        super.updateParamValue(index, value);
+        super.updateParamValues(updateIndex, indices, values);
 
-        switch (index)
-        {
-            case 2:
-            case 3:
-                this.updateRound();
-                break;
-        }
+        if (   indices.includes(2)
+            || indices.includes(3))
+            this.updateRound();
     }
 
 
@@ -29378,15 +29150,22 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, object
 
         pushUnique(nodes, node);
 
-        
-        for (let j = 0; j < count; j++)
-        {
-            const paramIndex = values[i++];
-            const strVal     = values[i++];
 
-            if (   nodeId     != updateNodeId
-                || paramIndex != updateParamIndex)
-                node.updateParamValue(paramIndex, parseGnum(strVal));
+        if (count > 0)
+        {
+            const _indices = [];
+            const _values  = [];
+            
+            for (let j = 0; j < count; j++)
+            {
+                _indices.push(values[i++]);
+                _values .push(parseGnum(values[i++]));
+            }
+
+            node.updateParamValues(
+                updateNodeId == nodeId ? updateParamIndex : -1,
+                _indices,
+                _values);
         }
     }
 

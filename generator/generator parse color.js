@@ -3,7 +3,7 @@ function genParseColor(parse)
     parse.pos++; // COLOR
  
     const nodeId = parse.req[parse.pos++];
-    const active = genParseActive(parse);
+    /*const active =*/ genParseActive(parse);
 
   
     let col = new GColor();

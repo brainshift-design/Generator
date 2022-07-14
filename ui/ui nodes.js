@@ -848,15 +848,22 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, object
 
         pushUnique(nodes, node);
 
-        
-        for (let j = 0; j < count; j++)
-        {
-            const paramIndex = values[i++];
-            const strVal     = values[i++];
 
-            if (   nodeId     != updateNodeId
-                || paramIndex != updateParamIndex)
-                node.updateParamValue(paramIndex, parseGnum(strVal));
+        if (count > 0)
+        {
+            const _indices = [];
+            const _values  = [];
+            
+            for (let j = 0; j < count; j++)
+            {
+                _indices.push(values[i++]);
+                _values .push(parseGnum(values[i++]));
+            }
+
+            node.updateParamValues(
+                updateNodeId == nodeId ? updateParamIndex : -1,
+                _indices,
+                _values);
         }
     }
 
