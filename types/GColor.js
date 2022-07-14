@@ -1,4 +1,5 @@
 class GColor
+extends GType
 {
     space;
     c1;
@@ -9,6 +10,8 @@ class GColor
 
     constructor()
     {
+        super(COLOR);
+
         this.space = new GNumber(0);
         this.c1    = new GNumber(0);
         this.c2    = new GNumber(0);

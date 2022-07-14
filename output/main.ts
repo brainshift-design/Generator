@@ -264,19 +264,19 @@ function logReqActive(req)
 
 function logReqParam(req)
 {
-    if (req.request[req.pos] != PARAM) 
-        return '';
+    // if (req.request[req.pos] != PARAM) 
+    //     return '';
         
     const tag        = req.request[req.pos++];
     const nodeId     = req.request[req.pos++];
     const paramIndex = req.request[req.pos++];
 
-    req.skipNewLine = true;
+    //req.skipNewLine = true;
 
-    const val     = logReq(req);
+    //const val     = logReq(req);
     const _nodeId = logReqNodeId(nodeId);
 
-    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex;// + ' ' + val;
 }
 
 
@@ -500,8 +500,8 @@ const settings =
     
     logStorage:       true, 
     logActions:       false, 
-    logRequests:      false, 
-    logParamUpdates:  false, 
+    logRequests:      true, 
+    logParamUpdates:  true, 
     logObjectUpdates: false
 };
 

@@ -1,4 +1,5 @@
 class GStar
+extends GType
 {
     x;
     y;
@@ -13,6 +14,8 @@ class GStar
 
     constructor()
     {
+        super(STAR);
+        
         this.x      = new GNumber(  0  );
         this.y      = new GNumber(  0  );
         this.width  = new GNumber(100  );

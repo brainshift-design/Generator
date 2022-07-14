@@ -30,10 +30,10 @@ function genParseColor(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, col.space.toString());
-    genPushUpdateParamValue(parse, nodeId, 1, col.c1   .toString());
-    genPushUpdateParamValue(parse, nodeId, 2, col.c2   .toString());
-    genPushUpdateParamValue(parse, nodeId, 3, col.c3   .toString());
+    genPushUpdateParamValue(parse, nodeId, 0, col.space);
+    genPushUpdateParamValue(parse, nodeId, 1, col.c1   );
+    genPushUpdateParamValue(parse, nodeId, 2, col.c2   );
+    genPushUpdateParamValue(parse, nodeId, 3, col.c3   );
 
 
     return col;

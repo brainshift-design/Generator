@@ -300,6 +300,7 @@ extends OpColorBase
 
         super.updateParamValues(updateIndex, indices, values);
 
+        
         this._color    = this.getDataColorFromParams();
         //this._oldSpace = toSpace;
 

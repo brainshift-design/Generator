@@ -1,4 +1,5 @@
 class GNumber
+extends GType
 {
     value;
     decimals;
@@ -7,6 +8,8 @@ class GNumber
 
     constructor(val, dec = 0)
     {
+        super(NUMBER);
+
         this.value    = val;
         this.decimals = dec;
     }

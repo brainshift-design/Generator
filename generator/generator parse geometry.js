@@ -53,12 +53,12 @@ function genParseRectangle(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, rect.x     .toString());
-    genPushUpdateParamValue(parse, nodeId, 1, rect.y     .toString());
-    genPushUpdateParamValue(parse, nodeId, 2, rect.width .toString());
-    genPushUpdateParamValue(parse, nodeId, 3, rect.height.toString());
-    genPushUpdateParamValue(parse, nodeId, 4, rect.angle .toString());
-    genPushUpdateParamValue(parse, nodeId, 5, rect.round .toString());
+    genPushUpdateParamValue(parse, nodeId, 0, rect.x     );
+    genPushUpdateParamValue(parse, nodeId, 1, rect.y     );
+    genPushUpdateParamValue(parse, nodeId, 2, rect.width );
+    genPushUpdateParamValue(parse, nodeId, 3, rect.height);
+    genPushUpdateParamValue(parse, nodeId, 4, rect.angle );
+    genPushUpdateParamValue(parse, nodeId, 5, rect.round );
 
 
     if (   active
@@ -119,11 +119,11 @@ function genParseLine(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, line.x     .toString());
-    genPushUpdateParamValue(parse, nodeId, 1, line.y     .toString());
-    genPushUpdateParamValue(parse, nodeId, 2, line.width .toString());
-    //genPushUpdateParamValue(parse, nodeId, 3, line.height.toString());
-    genPushUpdateParamValue(parse, nodeId, 3, line.angle .toString());
+    genPushUpdateParamValue(parse, nodeId, 0, line.x    );
+    genPushUpdateParamValue(parse, nodeId, 1, line.y    );
+    genPushUpdateParamValue(parse, nodeId, 2, line.width);
+    //genPushUpdateParamValue(parse, nodeId, 3, line.height);
+    genPushUpdateParamValue(parse, nodeId, 3, line.angle);
 
 
     if (   active
@@ -183,11 +183,11 @@ function genParseEllipse(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, elllipse.x     .toString());
-    genPushUpdateParamValue(parse, nodeId, 1, elllipse.y     .toString());
-    genPushUpdateParamValue(parse, nodeId, 2, elllipse.width .toString());
-    genPushUpdateParamValue(parse, nodeId, 3, elllipse.height.toString());
-    genPushUpdateParamValue(parse, nodeId, 4, elllipse.angle .toString());
+    genPushUpdateParamValue(parse, nodeId, 0, elllipse.x     );
+    genPushUpdateParamValue(parse, nodeId, 1, elllipse.y     );
+    genPushUpdateParamValue(parse, nodeId, 2, elllipse.width );
+    genPushUpdateParamValue(parse, nodeId, 3, elllipse.height);
+    genPushUpdateParamValue(parse, nodeId, 4, elllipse.angle );
 
 
     if (   active
@@ -249,13 +249,13 @@ function genParsePolygon(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, poly.x      .toString());
-    genPushUpdateParamValue(parse, nodeId, 1, poly.y      .toString());
-    genPushUpdateParamValue(parse, nodeId, 2, poly.width  .toString());
-    genPushUpdateParamValue(parse, nodeId, 3, poly.height .toString());
-    genPushUpdateParamValue(parse, nodeId, 4, poly.angle  .toString());
-    genPushUpdateParamValue(parse, nodeId, 5, poly.round  .toString());
-    genPushUpdateParamValue(parse, nodeId, 6, poly.corners.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, poly.x      );
+    genPushUpdateParamValue(parse, nodeId, 1, poly.y      );
+    genPushUpdateParamValue(parse, nodeId, 2, poly.width  );
+    genPushUpdateParamValue(parse, nodeId, 3, poly.height );
+    genPushUpdateParamValue(parse, nodeId, 4, poly.angle  );
+    genPushUpdateParamValue(parse, nodeId, 5, poly.round  );
+    genPushUpdateParamValue(parse, nodeId, 6, poly.corners);
 
 
     if (   active
@@ -320,14 +320,14 @@ function genParseStar(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, star.x     .toString());
-    genPushUpdateParamValue(parse, nodeId, 1, star.y     .toString());
-    genPushUpdateParamValue(parse, nodeId, 2, star.width .toString());
-    genPushUpdateParamValue(parse, nodeId, 3, star.height.toString());
-    genPushUpdateParamValue(parse, nodeId, 4, star.angle .toString());
-    genPushUpdateParamValue(parse, nodeId, 5, star.round .toString());
-    genPushUpdateParamValue(parse, nodeId, 6, star.points.toString());
-    genPushUpdateParamValue(parse, nodeId, 7, star.convex.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, star.x     );
+    genPushUpdateParamValue(parse, nodeId, 1, star.y     );
+    genPushUpdateParamValue(parse, nodeId, 2, star.width );
+    genPushUpdateParamValue(parse, nodeId, 3, star.height);
+    genPushUpdateParamValue(parse, nodeId, 4, star.angle );
+    genPushUpdateParamValue(parse, nodeId, 5, star.round );
+    genPushUpdateParamValue(parse, nodeId, 6, star.points);
+    genPushUpdateParamValue(parse, nodeId, 7, star.convex);
 
 
     if (   active

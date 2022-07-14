@@ -12,7 +12,7 @@ function genParseNumber(parse)
     const nodeId = genParseNumberNodeId(parse);
 
     const num = genParse(parse);    
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }
@@ -38,7 +38,7 @@ function genParseNumberAdd(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }
@@ -76,7 +76,7 @@ function genParseNumberSubtract(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }
@@ -112,7 +112,7 @@ function genParseNumberMultiply(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }
@@ -157,7 +157,7 @@ function genParseNumberDivide(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }
@@ -202,7 +202,7 @@ function genParseNumberModulo(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }
@@ -240,7 +240,7 @@ function genParseNumberExponent(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }
@@ -281,7 +281,7 @@ function genParseNumberInterpolate(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num.toString());
+    genPushUpdateParamValue(parse, nodeId, 0, num);
 
     return num;
 }

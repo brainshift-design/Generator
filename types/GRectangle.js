@@ -1,4 +1,5 @@
 class GRectangle
+extends GType
 {
     x;
     y;
@@ -11,6 +12,8 @@ class GRectangle
 
     constructor()
     {
+        super(RECTANGLE);
+
         this.x      = new GNumber(  0);
         this.y      = new GNumber(  0);
         this.width  = new GNumber(100);

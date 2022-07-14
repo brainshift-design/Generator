@@ -81,12 +81,12 @@ function genParseParam(parse)
     parse.pos++;
 
 
-    const nodeId     = parse.req[parse.pos++];
-    const paramIndex = parse.req[parse.pos++];
+    const val = new GParam(
+        parse.req[parse.pos++],
+        parse.req[parse.pos++]);
 
-    const val        = genParse(parse);
 
-    genPushUpdateParamValue(parse, nodeId, paramIndex, val.toString());
+    //genPushUpdateParamValue(parse, nodeId, paramIndex, val);
 
     return val;
 }

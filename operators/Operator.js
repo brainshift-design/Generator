@@ -674,7 +674,7 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.log('pushUpdateFromParam('+(param ? param.id : 'null')+')');
+    //console.log((param ? param.node.id + '.': '') + 'pushUpdateFromParam('+(param ? param.id : 'null')+')');
 
     // each type is followed first by the node ID, then the params
 
@@ -684,17 +684,18 @@ function pushUpdateFromParam(nodes, param)
         : ['', 0];
 
 
-    const terminals = [];
+    const gen = createGenObject(param ? param.node : null);
 
-
+        
     nodes.forEach(n => n.invalidate());
 
+        
+    const terminals = [];
+    
     nodes.forEach(n => pushUnique(
         terminals, 
         getTerminalsAfterNode(n)));
 
-
-    const gen = createGenObject(param ? param.node : null);
 
 
     terminals.forEach(n => 
@@ -707,6 +708,7 @@ function pushUpdateFromParam(nodes, param)
                 request.push(...r);
             })); 
 
+
     gen.markParams = false;
     gen.paramNodes
         .filter(n => !terminals.includes(n))
@@ -717,13 +719,13 @@ function pushUpdateFromParam(nodes, param)
                     request.push(...o.genRequest(gen)))); 
 
 
-    if (    param
-        && !gen.passedNodes.includes(param.node)
-        && !gen.paramNodes .includes(param.node))
-            param.node.outputs
-                .filter(o => !o.param)
-                .forEach(o =>
-                    request.push(...o.genRequest(gen))); 
+    // if (    param
+    //     && !gen.passedNodes.includes(param.node)
+    //     && !gen.paramNodes .includes(param.node))
+    //         param.node.outputs
+    //             .filter(o => !o.param)
+    //             .forEach(o =>
+    //                 request.push(...o.genRequest(gen))); 
 
         
     uiQueueMessageToGenerator({

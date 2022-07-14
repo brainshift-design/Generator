@@ -1,5 +1,8 @@
 ../types/types.js
 
+../types/GType.js
+../types/GParam.js
+
 ../types/GNumber.js
 
 ../types/GColor.js

@@ -1,4 +1,5 @@
 class GLine
+extends GType
 {
     x;
     y;
@@ -10,6 +11,8 @@ class GLine
 
     constructor()
     {
+        super(LINE);
+        
         this.x      = new GNumber(  0);
         this.y      = new GNumber(  0);
         this.width  = new GNumber(100);

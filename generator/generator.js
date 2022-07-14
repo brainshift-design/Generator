@@ -13,7 +13,7 @@ function genRequest(req, settings)
 
     if (settings.logRequests)
         logRequest(req, updateNodeId, updateParamIndex);
-
+        
 
     const parse = 
     {
@@ -23,6 +23,7 @@ function genRequest(req, settings)
         updateNodeId:      updateNodeId, 
         updateParamIndex:  updateParamIndex,
         updateParamValues: [],
+        updateParams:      [],
         updateObjects:     []
     };
 
@@ -43,7 +44,7 @@ function genRequest(req, settings)
 
 
 
-function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
+function genPushUpdateParamValue(parse, nodeId, paramIndex, gvalue)
 {
     const found = parse.updateParamValues.find(v => 
            v.nodeId     == nodeId 
@@ -53,7 +54,7 @@ function genPushUpdateParamValue(parse, nodeId, paramIndex, value)
         parse.updateParamValues.push({
             nodeId:     nodeId, 
             paramIndex: paramIndex, 
-            value:      value});
+            value:      gvalue});
 
     //else console.assert(found.value == value);
 }
@@ -102,6 +103,21 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
         lastUpdateObjects    = updateObjects;
 
         return;
+    }
+
+
+    for (let i = 0; i < updateValues.length; i++)
+    {
+        console.log('updateValues[i].value', updateValues[i].value);
+        if (updateValues[i].value.type == PARAM)
+        {
+            const val = updateValues.find(v => 
+                   v.nodeId     == updateValues[i].nodeId
+                && v.paramIndex == updateValues[i].index);
+
+            console.assert(val);
+            updateValues[i].value = val;
+        }
     }
 
 
@@ -160,7 +176,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
                 cmd:             'uiUpdateParamsAndObjects',
                 updateNodeId:     updateNodeId, 
                 updateParamIndex: updateParamIndex, 
-                values:           [...nodeChunk],
+                values:           [...nodeChunk].map(v => v.toString()),
                 objects:          [...objChunk]
             });
 
@@ -180,7 +196,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
             cmd:             'uiUpdateParamsAndObjects',
             updateNodeId:     updateNodeId, 
             updateParamIndex: updateParamIndex, 
-            values:           [...nodeChunk],
+            values:           [...nodeChunk].map(v => v.toString()),
             objects:          [...objChunk]
         });
 

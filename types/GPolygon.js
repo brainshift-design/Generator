@@ -1,4 +1,5 @@
 class GPolygon
+extends GType
 {
     x;
     y;
@@ -12,6 +13,8 @@ class GPolygon
 
     constructor()
     {
+        super(POLYGON);
+        
         this.x       = new GNumber(  0);
         this.y       = new GNumber(  0);
         this.width   = new GNumber(100);
