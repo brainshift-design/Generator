@@ -33,7 +33,7 @@ class Output
     get data() 
     {
         if (this.param) this.param.setOutputData();
-        if (this.node ) this.node.update();
+        //if (this.node ) this.node.update();
 
         return this._data;
     }

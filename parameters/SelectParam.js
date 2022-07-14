@@ -98,14 +98,14 @@ extends Parameter
 
 
 
-    update(dispatchEvents)
-    {
-        super.update();
+    // update(dispatchEvents)
+    // {
+    //     super.update();
 
-        if (   this.input
-            && this.input.connected)
-            this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
-    }
+    //     // if (   this.input
+    //     //     && this.input.connected)
+    //     //     this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
+    // }
 
 
 

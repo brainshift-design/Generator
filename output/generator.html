@@ -3561,7 +3561,7 @@ function genParseColor(parse)
     {
         switch (i)
         {
-        case 0: col.space = genParse(parse); break;
+        case 0: col.space = Math.min(Math.max(0, genParse(parse)), OpColorSpaces.length-1); break;
         case 1: col.c1    = genParse(parse); break;
         case 2: col.c2    = genParse(parse); break;
         case 3: col.c3    = genParse(parse); break;

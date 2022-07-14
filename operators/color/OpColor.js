@@ -47,7 +47,7 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput (new Input (COLOR));
+        this.addInput (new Input ([COLOR]));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
@@ -287,6 +287,24 @@ extends OpColorBase
 
     //     super.updateData()
     // }
+
+
+
+    updateParamValues(updateIndex, indices, values)
+    {
+        if (indices.includes(0))
+        {
+            switchToSpace(this, colorSpace(values[indices.indexOf(0)].value));
+            //setDataColorToCurrentSpace(this, color);
+        }
+
+        super.updateParamValues(updateIndex, indices, values);
+
+        this._color    = this.getDataColorFromParams();
+        //this._oldSpace = toSpace;
+
+        this.updateHeader();
+    }
 
 
 

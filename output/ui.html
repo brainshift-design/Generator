@@ -5138,7 +5138,7 @@ function genParseColor(parse)
     {
         switch (i)
         {
-        case 0: col.space = genParse(parse); break;
+        case 0: col.space = Math.min(Math.max(0, genParse(parse)), OpColorSpaces.length-1); break;
         case 1: col.c1    = genParse(parse); break;
         case 2: col.c2    = genParse(parse); break;
         case 3: col.c3    = genParse(parse); break;
@@ -17288,9 +17288,9 @@ extends EventTarget
     
     update(dispatchEvents)
     {
-        if (   this.input
-            && this.input.connected)
-            this.input.connectedOutput.node.update();
+        // if (   this.input
+        //     && this.input.connected)
+        //     this.input.connectedOutput.node.update();
 
         if (this.showParamLock)
             this.paramLock.style.display = 'block';
@@ -17567,17 +17567,17 @@ extends Parameter
     {
         super.update();
 
-        if (   this.input
-            && this.input.connected)
-        {
-            this.setDecimals(this.input.data.decimals);
+        // if (   this.input
+        //     && this.input.connected)
+        // {
+        //     this.setDecimals(this.input.data.decimals);
 
-            this.setValue(
-                this.input.data.value, 
-                false, 
-                true, 
-                dispatchEvents);
-        }
+        //     this.setValue(
+        //         this.input.data.value, 
+        //         false, 
+        //         true, 
+        //         dispatchEvents);
+        // }
     }
 
 
@@ -17900,14 +17900,14 @@ extends Parameter
 
 
 
-    update(dispatchEvents)
-    {
-        super.update();
+    // update(dispatchEvents)
+    // {
+    //     super.update();
 
-        if (   this.input
-            && this.input.connected)
-            this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
-    }
+    //     // if (   this.input
+    //     //     && this.input.connected)
+    //     //     this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
+    // }
 
 
 
@@ -19070,7 +19070,7 @@ class Output
     get data() 
     {
         if (this.param) this.param.setOutputData();
-        if (this.node ) this.node.update();
+        //if (this.node ) this.node.update();
 
         return this._data;
     }
@@ -22133,7 +22133,7 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput (new Input (COLOR));
+        this.addInput (new Input ([COLOR]));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
@@ -22373,6 +22373,24 @@ extends OpColorBase
 
     //     super.updateData()
     // }
+
+
+
+    updateParamValues(updateIndex, indices, values)
+    {
+        if (indices.includes(0))
+        {
+            switchToSpace(this, colorSpace(values[indices.indexOf(0)].value));
+            //setDataColorToCurrentSpace(this, color);
+        }
+
+        super.updateParamValues(updateIndex, indices, values);
+
+        this._color    = this.getDataColorFromParams();
+        //this._oldSpace = toSpace;
+
+        this.updateHeader();
+    }
 
 
 
@@ -24733,16 +24751,6 @@ extends OperatorBase
 
 
 
-    updateNode()
-    {
-        this.#btnProportional.style.left = 45;
-        this.#btnProportional.style.top  = 79;
-
-        super.updateNode();
-    }
-
-
-
     updateParamValues(updateIndex, indices, values)
     {
         super.updateParamValues(updateIndex, indices, values);
@@ -24750,6 +24758,16 @@ extends OperatorBase
         if (   indices.includes(2)
             || indices.includes(3))
             this.updateRound();
+    }
+
+
+
+    updateNode()
+    {
+        this.#btnProportional.style.left = 45;
+        this.#btnProportional.style.top  = 79;
+
+        super.updateNode();
     }
 
 

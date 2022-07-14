@@ -141,16 +141,6 @@ extends OperatorBase
 
 
 
-    updateNode()
-    {
-        this.#btnProportional.style.left = 45;
-        this.#btnProportional.style.top  = 79;
-
-        super.updateNode();
-    }
-
-
-
     updateParamValues(updateIndex, indices, values)
     {
         super.updateParamValues(updateIndex, indices, values);
@@ -158,6 +148,16 @@ extends OperatorBase
         if (   indices.includes(2)
             || indices.includes(3))
             this.updateRound();
+    }
+
+
+
+    updateNode()
+    {
+        this.#btnProportional.style.left = 45;
+        this.#btnProportional.style.top  = 79;
+
+        super.updateNode();
     }
 
 

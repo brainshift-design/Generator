@@ -113,17 +113,17 @@ extends Parameter
     {
         super.update();
 
-        if (   this.input
-            && this.input.connected)
-        {
-            this.setDecimals(this.input.data.decimals);
+        // if (   this.input
+        //     && this.input.connected)
+        // {
+        //     this.setDecimals(this.input.data.decimals);
 
-            this.setValue(
-                this.input.data.value, 
-                false, 
-                true, 
-                dispatchEvents);
-        }
+        //     this.setValue(
+        //         this.input.data.value, 
+        //         false, 
+        //         true, 
+        //         dispatchEvents);
+        // }
     }
 
 

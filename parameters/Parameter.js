@@ -109,9 +109,9 @@ extends EventTarget
     
     update(dispatchEvents)
     {
-        if (   this.input
-            && this.input.connected)
-            this.input.connectedOutput.node.update();
+        // if (   this.input
+        //     && this.input.connected)
+        //     this.input.connectedOutput.node.update();
 
         if (this.showParamLock)
             this.paramLock.style.display = 'block';
