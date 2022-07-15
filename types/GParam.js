@@ -4,8 +4,6 @@ extends GType
     nodeId;
     paramId;
 
-    value;
-
 
 
     constructor(nodeId, paramId)
@@ -14,8 +12,6 @@ extends GType
 
         this.nodeId  = nodeId;
         this.paramId = paramId;
-
-        this.value   = null;
     }
 
 

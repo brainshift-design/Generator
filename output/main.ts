@@ -192,7 +192,7 @@ function logParamUpdates(updateNodeId, updateParamId, values)
 
         log += 
               (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-            + nodeId + ' ' + nValues;
+            + nodeId;// + ' ' + nValues;
 
         newLine = true;
 

@@ -113,7 +113,8 @@ extends Action
 
         // restore old values
         for (const param of this.oldInputValues)
-            this.inputNode.params[param[0]].setValue(param[1], true, true, false);
+            this.inputNode.params[this.inputNode.params.indexOf(param[0])]
+                .setValue(param[1], true, true, false);
 
 
         const updateNodes = [];

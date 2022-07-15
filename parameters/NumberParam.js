@@ -177,31 +177,31 @@ extends Parameter
                 req.push(
                     PARAM,
                     this.node.id,
-                    this.index);
+                    this.id);
                 
                 pushUnique(gen.paramNodes, this.node);
             }
 
             req.push(...this.input.connectedOutput.genRequest(gen));
         }        
-        // else if (this.output
-        //       && this.output.connected
-        //       && this.node.headerConnected)
-        // {
-        //     if (    gen.markParams
-        //         &&  lastOf(gen.scope).nodeId != this.node.id
-        //         && !this.node.valid)
-        //     {
-        //         req.push(
-        //             PARAM,
-        //             this.node.id,
-        //             this.index);
+        else if (this.output
+              && this.output.connected
+              && this.node.headerConnected)
+        {
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.id);
                 
-        //         pushUnique(gen.paramNodes, this.node);
-        //     }
+                pushUnique(gen.paramNodes, this.node);
+            }
 
-        //     //req.push(...this.node.inputs[0].connectedOutput.genRequest(gen));
-        // }
+            //req.push(...this.node.inputs[0].connectedOutput.genRequest(gen));
+        }
         else
         {
             req.push( 

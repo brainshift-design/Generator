@@ -106,17 +106,19 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
     }
 
 
+    // replace params with values
     for (let i = 0; i < updateValues.length; i++)
     {
         //console.log('updateValues[i].value', updateValues[i].value);
-        if (updateValues[i].value.type == PARAM)
+        if (updateValues[i].type == PARAM)
         {
             const val = updateValues.find(v => 
                    v.nodeId  == updateValues[i].nodeId
                 && v.paramId == updateValues[i].paramId);
 
             console.assert(val);
-            updateValues[i].value = val;
+            console.log('val =', val);
+            updateValues[i] = val;
         }
     }
 

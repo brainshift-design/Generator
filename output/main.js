@@ -103,7 +103,7 @@ function logParamUpdates(updateNodeId, updateParamId, values) {
         const nValues = parseInt(values[i++]);
         log +=
             (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-                + nodeId + ' ' + nValues;
+                + nodeId; // + ' ' + nValues;
         newLine = true;
         nTab++;
         for (let j = 0; j < nValues; j++) {

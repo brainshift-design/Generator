@@ -22,7 +22,7 @@ extends OperatorBase
     input_getValuesForUndo()
     {
         return [[
-            this.node.#paramValue.index, 
+            this.node.#paramValue.id, 
             this.node.#paramValue.value]];
     }
 

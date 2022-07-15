@@ -3980,7 +3980,7 @@ function logParamUpdates(updateNodeId, updateParamId, values)
 
         log += 
               (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-            + nodeId + ' ' + nValues;
+            + nodeId;// + ' ' + nValues;
 
         newLine = true;
 
@@ -4484,8 +4484,6 @@ extends GType
     nodeId;
     paramId;
 
-    value;
-
 
 
     constructor(nodeId, paramId)
@@ -4494,8 +4492,6 @@ extends GType
 
         this.nodeId  = nodeId;
         this.paramId = paramId;
-
-        this.value   = null;
     }
 
 
@@ -5977,13 +5973,11 @@ function genParseParam(parse)
     
     parse.pos++;
 
+    const nodeId  = parse.req[parse.pos++];
+    const paramId = parse.req[parse.pos++];
 
-    const val = new GParam(
-        parse.req[parse.pos++],
-        parse.req[parse.pos++]);
-
-
-    //genPushUpdateParamValue(parse, nodeId, paramId, val);
+    const val = new GParam(nodeId, paramId);
+    genPushUpdateParamValue(parse, nodeId, paramId, val);
 
     return val;
 }
@@ -6097,17 +6091,19 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
     }
 
 
+    // replace params with values
     for (let i = 0; i < updateValues.length; i++)
     {
         //console.log('updateValues[i].value', updateValues[i].value);
-        if (updateValues[i].value.type == PARAM)
+        if (updateValues[i].type == PARAM)
         {
             const val = updateValues.find(v => 
                    v.nodeId  == updateValues[i].nodeId
                 && v.paramId == updateValues[i].paramId);
 
             console.assert(val);
-            updateValues[i].value = val;
+            console.log('val =', val);
+            updateValues[i] = val;
         }
     }
 
@@ -10766,7 +10762,7 @@ function logParamUpdates(updateNodeId, updateParamId, values)
 
         log += 
               (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-            + nodeId + ' ' + nValues;
+            + nodeId;// + ' ' + nValues;
 
         newLine = true;
 
@@ -12646,8 +12642,6 @@ extends GType
     nodeId;
     paramId;
 
-    value;
-
 
 
     constructor(nodeId, paramId)
@@ -12656,8 +12650,6 @@ extends GType
 
         this.nodeId  = nodeId;
         this.paramId = paramId;
-
-        this.value   = null;
     }
 
 
@@ -17722,31 +17714,31 @@ extends Parameter
                 req.push(
                     PARAM,
                     this.node.id,
-                    this.index);
+                    this.id);
                 
                 pushUnique(gen.paramNodes, this.node);
             }
 
             req.push(...this.input.connectedOutput.genRequest(gen));
         }        
-        // else if (this.output
-        //       && this.output.connected
-        //       && this.node.headerConnected)
-        // {
-        //     if (    gen.markParams
-        //         &&  lastOf(gen.scope).nodeId != this.node.id
-        //         && !this.node.valid)
-        //     {
-        //         req.push(
-        //             PARAM,
-        //             this.node.id,
-        //             this.index);
+        else if (this.output
+              && this.output.connected
+              && this.node.headerConnected)
+        {
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.id);
                 
-        //         pushUnique(gen.paramNodes, this.node);
-        //     }
+                pushUnique(gen.paramNodes, this.node);
+            }
 
-        //     //req.push(...this.node.inputs[0].connectedOutput.genRequest(gen));
-        // }
+            //req.push(...this.node.inputs[0].connectedOutput.genRequest(gen));
+        }
         else
         {
             req.push( 
@@ -21296,7 +21288,7 @@ extends OperatorBase
     input_getValuesForUndo()
     {
         return [[
-            this.node.#paramValue.index, 
+            this.node.#paramValue.id, 
             this.node.#paramValue.value]];
     }
 
@@ -25976,7 +25968,8 @@ extends Action
 
         // restore old values
         for (const param of this.oldInputValues)
-            this.inputNode.params[param[0]].setValue(param[1], true, true, false);
+            this.inputNode.params[this.inputNode.params.indexOf(param[0])]
+                .setValue(param[1], true, true, false);
 
 
         const updateNodes = [];
