@@ -5841,8 +5841,12 @@ function genParseNumberInterpolate(parse)
         const num1 = genParse(parse);
         const amt  = genParse(parse);
 
-        result = num0.value + amt.value * (num1.value - num0.value) / 100;
         maxDec = Math.max(num0.decimals, num1.decimals);
+
+        result = 
+            maxDec == 0
+            ? num0.value + Math.floor(amt.value * (num1.value - num0.value) / 100)
+            : num0.value + amt.value * (num1.value - num0.value) / 100;
     }
     else if (nValues == 1)
     {
@@ -5861,7 +5865,7 @@ function genParseNumberInterpolate(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 1, num);
 
     return num;
 }
@@ -17780,24 +17784,24 @@ extends Parameter
 
             //req.push(...this.input.connectedOutput.genRequest(gen));
         }        
-        else if (this.node.inputs.length > 0
-             && !this.node.inputs[0].param
-             &&  this.node.inputs[0].connected)
-        {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.node.id,
-                    this.index);
+        // else if (this.node.inputs.length > 0
+        //      && !this.node.inputs[0].param
+        //      &&  this.node.inputs[0].connected)
+        // {
+        //     if (    gen.markParams
+        //         &&  lastOf(gen.scope).nodeId != this.node.id
+        //         && !this.node.valid)
+        //     {
+        //         req.push(
+        //             PARAM,
+        //             this.node.id,
+        //             this.index);
                 
-                pushUnique(gen.paramNodes, this.node);
-            }
+        //         pushUnique(gen.paramNodes, this.node);
+        //     }
 
-            //req.push(...this.node.inputs[0].connectedOutput.genRequest(gen));
-        }
+        //     //req.push(...this.node.inputs[0].connectedOutput.genRequest(gen));
+        // }
         else
         {
             req.push( 
@@ -21994,7 +21998,7 @@ extends OperatorBase
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
-        this.addParam(this.paramValue  = new NumberParam('value',  '', false, false, false, 0));
+        this.addParam(this.paramValue  = new NumberParam('value',  '', false, false, true, 0));
 
         enableSliderText(this.paramValue.control, false);
         

@@ -261,8 +261,12 @@ function genParseNumberInterpolate(parse)
         const num1 = genParse(parse);
         const amt  = genParse(parse);
 
-        result = num0.value + amt.value * (num1.value - num0.value) / 100;
         maxDec = Math.max(num0.decimals, num1.decimals);
+
+        result = 
+            maxDec == 0
+            ? num0.value + Math.floor(amt.value * (num1.value - num0.value) / 100)
+            : num0.value + amt.value * (num1.value - num0.value) / 100;
     }
     else if (nValues == 1)
     {
@@ -281,7 +285,7 @@ function genParseNumberInterpolate(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 1, num);
 
     return num;
 }
