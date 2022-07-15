@@ -148,8 +148,15 @@ function logReqNumberInterpolate(req)
     else if (nValues == 1)
     {
         const num = logReq(req);
+        const amt = logReq(req);
 
-        log += num;
+        log += num + amt;
+    }
+    else if (nValues == 0)
+    {
+        const amt = logReq(req);
+
+        log += amt;
     }
 
 

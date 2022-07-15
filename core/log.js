@@ -105,7 +105,7 @@ function logRequest(request, updateNodeId, updateParamId)
 
     if (   updateNodeId  != '' 
         || updateParamId != '')
-        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
     else
         req.skipNewLine = true;
 
@@ -139,7 +139,7 @@ function logParamUpdates(updateNodeId, updateParamId, values)
 
     if (   updateNodeId  != '' 
         || updateParamId != '')
-        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
     else
         newLine = false;
 
@@ -157,7 +157,7 @@ function logParamUpdates(updateNodeId, updateParamId, values)
             + nodeId + ' ' + nValues;
 
         newLine = true;
-        
+
         nTab++;
 
         for (let j = 0; j < nValues; j++)

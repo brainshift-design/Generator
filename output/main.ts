@@ -143,7 +143,7 @@ function logRequest(request, updateNodeId, updateParamId)
 
     if (   updateNodeId  != '' 
         || updateParamId != '')
-        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
     else
         req.skipNewLine = true;
 
@@ -177,7 +177,7 @@ function logParamUpdates(updateNodeId, updateParamId, values)
 
     if (   updateNodeId  != '' 
         || updateParamId != '')
-        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
     else
         newLine = false;
 
@@ -195,7 +195,7 @@ function logParamUpdates(updateNodeId, updateParamId, values)
             + nodeId + ' ' + nValues;
 
         newLine = true;
-        
+
         nTab++;
 
         for (let j = 0; j < nValues; j++)
@@ -379,8 +379,15 @@ function logReqNumberInterpolate(req)
     else if (nValues == 1)
     {
         const num = logReq(req);
+        const amt = logReq(req);
 
-        log += num;
+        log += num + amt;
+    }
+    else if (nValues == 0)
+    {
+        const amt = logReq(req);
+
+        log += amt;
     }
 
 

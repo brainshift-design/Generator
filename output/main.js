@@ -76,7 +76,7 @@ function logRequest(request, updateNodeId, updateParamId) {
     let log = '';
     if (updateNodeId != ''
         || updateParamId != '')
-        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
     else
         req.skipNewLine = true;
     const stackOverflowProtect = 100;
@@ -93,7 +93,7 @@ function logParamUpdates(updateNodeId, updateParamId, values) {
     let newLine = true;
     if (updateNodeId != ''
         || updateParamId != '')
-        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
     else
         newLine = false;
     let i = 0;
@@ -218,7 +218,12 @@ function logReqNumberInterpolate(req) {
     }
     else if (nValues == 1) {
         const num = logReq(req);
-        log += num;
+        const amt = logReq(req);
+        log += num + amt;
+    }
+    else if (nValues == 0) {
+        const amt = logReq(req);
+        log += amt;
     }
     req.nTab--;
     return log;

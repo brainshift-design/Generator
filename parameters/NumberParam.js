@@ -182,7 +182,7 @@ extends Parameter
                 pushUnique(gen.paramNodes, this.node);
             }
 
-            //req.push(...this.input.connectedOutput.genRequest(gen));
+            req.push(...this.input.connectedOutput.genRequest(gen));
         }        
         // else if (this.output
         //       && this.output.connected
