@@ -18,6 +18,7 @@ function logReq(req)
     else if (next == COLOR             ) return logReqColor            (req);
 
     else if (next == RECTANGLE         ) return logReqRectangle        (req);
+    else if (next == LINE              ) return logReqLine             (req);
     else if (next == ELLIPSE           ) return logReqEllipse          (req);
     else if (next == POLYGON           ) return logReqPolygon          (req);
     else if (next == STAR              ) return logReqStar             (req);
@@ -159,15 +160,16 @@ function logReqNumberInterpolate(req)
 
 
 
-function logReqColor    (req) { return logReqNode(req, COLOR,     4); }
-function logReqRectangle(req) { return logReqNode(req, RECTANGLE, 6); }
-function logReqEllipse  (req) { return logReqNode(req, ELLIPSE,   5); }
-function logReqPolygon  (req) { return logReqNode(req, POLYGON,   7); }
-function logReqStar     (req) { return logReqNode(req, STAR,      8); }
+function logReqColor    (req) { return logReqNode(req, COLOR,     ['space', 'c1', 'c2', 'c3']); }
+function logReqRectangle(req) { return logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
+function logReqLine     (req) { return logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
+function logReqEllipse  (req) { return logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
+function logReqPolygon  (req) { return logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
+function logReqStar     (req) { return logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
 
 
 
-function logReqNode(req, type, nParams)
+function logReqNode(req, type, _paramIds)
 {
     const tab = req.tab;
 
@@ -190,14 +192,11 @@ function logReqNode(req, type, nParams)
         paramIds = req.request[req.pos++].split(',');
     }
     else
-        paramIds = [...Array(nParams).keys()];
+        paramIds = _paramIds;
     
 
     for (const i of paramIds)
-    {
-        if (i < nParams)
-            log += logReq(req);
-    }
+        log += logReq(req);
 
 
     req.nTab--;

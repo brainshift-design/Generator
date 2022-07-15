@@ -101,11 +101,13 @@ function logRequest(request, updateNodeId, updateParamId)
     const req = new RequestSettings(request, 2);
 
 
-    let log = 
-             updateNodeId  != '' 
-          || updateParamId != ''
-          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
-          : '';
+    let log = '';
+
+    if (   updateNodeId  != '' 
+        || updateParamId != '')
+        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+    else
+        req.skipNewLine = true;
 
 
     const stackOverflowProtect = 100;
@@ -132,11 +134,14 @@ function logReqId(nodeId)
 
 function logParamUpdates(updateNodeId, updateParamId, values)
 {
-    let log = 
-             updateNodeId  != '' 
-          || updateParamId != ''
-          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
-          : '';
+    let log     = '';
+    let newLine = true;
+
+    if (   updateNodeId  != '' 
+        || updateParamId != '')
+        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+    else
+        newLine = false;
 
           
     let i    = 0;
@@ -148,9 +153,11 @@ function logParamUpdates(updateNodeId, updateParamId, values)
         const nValues = parseInt(values[i++]);
 
         log += 
-              NL + TAB.repeat(Math.max(0, nTab))
+              (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
             + nodeId + ' ' + nValues;
 
+        newLine = true;
+        
         nTab++;
 
         for (let j = 0; j < nValues; j++)

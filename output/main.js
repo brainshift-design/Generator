@@ -73,10 +73,12 @@ function logSavedConn(connKey) {
 }
 function logRequest(request, updateNodeId, updateParamId) {
     const req = new RequestSettings(request, 2);
-    let log = updateNodeId != ''
-        || updateParamId != ''
-        ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
-        : '';
+    let log = '';
+    if (updateNodeId != ''
+        || updateParamId != '')
+        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+    else
+        req.skipNewLine = true;
     const stackOverflowProtect = 100;
     while (req.pos < req.request.length
         && req.so < stackOverflowProtect)
@@ -87,18 +89,22 @@ function logReqId(nodeId) {
     return nodeId == '' ? '\'\'' : nodeId;
 }
 function logParamUpdates(updateNodeId, updateParamId, values) {
-    let log = updateNodeId != ''
-        || updateParamId != ''
-        ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
-        : '';
+    let log = '';
+    let newLine = true;
+    if (updateNodeId != ''
+        || updateParamId != '')
+        log = logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+    else
+        newLine = false;
     let i = 0;
     let nTab = 0;
     while (i < values.length) {
         const nodeId = values[i++];
         const nValues = parseInt(values[i++]);
         log +=
-            NL + TAB.repeat(Math.max(0, nTab))
+            (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
                 + nodeId + ' ' + nValues;
+        newLine = true;
         nTab++;
         for (let j = 0; j < nValues; j++) {
             const index = values[i++];
@@ -135,6 +141,8 @@ function logReq(req) {
         return logReqColor(req);
     else if (next == RECTANGLE)
         return logReqRectangle(req);
+    else if (next == LINE)
+        return logReqLine(req);
     else if (next == ELLIPSE)
         return logReqEllipse(req);
     else if (next == POLYGON)
@@ -215,12 +223,13 @@ function logReqNumberInterpolate(req) {
     req.nTab--;
     return log;
 }
-function logReqColor(req) { return logReqNode(req, COLOR, 4); }
-function logReqRectangle(req) { return logReqNode(req, RECTANGLE, 6); }
-function logReqEllipse(req) { return logReqNode(req, ELLIPSE, 5); }
-function logReqPolygon(req) { return logReqNode(req, POLYGON, 7); }
-function logReqStar(req) { return logReqNode(req, STAR, 8); }
-function logReqNode(req, type, nParams) {
+function logReqColor(req) { return logReqNode(req, COLOR, ['space', 'c1', 'c2', 'c3']); }
+function logReqRectangle(req) { return logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
+function logReqLine(req) { return logReqNode(req, LINE, ['x', 'y', 'width', 'angle']); }
+function logReqEllipse(req) { return logReqNode(req, ELLIPSE, ['x', 'y', 'width', 'height', 'angle']); }
+function logReqPolygon(req) { return logReqNode(req, POLYGON, ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
+function logReqStar(req) { return logReqNode(req, STAR, ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
+function logReqNode(req, type, _paramIds) {
     const tab = req.tab;
     req.nTab++;
     const tag = req.request[req.pos++];
@@ -233,11 +242,9 @@ function logReqNode(req, type, nParams) {
         paramIds = req.request[req.pos++].split(',');
     }
     else
-        paramIds = [...Array(nParams).keys()];
-    for (const i of paramIds) {
-        if (i < nParams)
-            log += logReq(req);
-    }
+        paramIds = _paramIds;
+    for (const i of paramIds)
+        log += logReq(req);
     req.nTab--;
     return log;
 }
