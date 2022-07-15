@@ -8,7 +8,7 @@
     the generation request format
 
     no-update param nodeId ('' if n/a)
-    no-update paramIndex (0 if n/a)
+    no-update paramId ('' if n/a)
 
     generation string
 */
@@ -86,7 +86,7 @@ function genParseParam(parse)
         parse.req[parse.pos++]);
 
 
-    //genPushUpdateParamValue(parse, nodeId, paramIndex, val);
+    //genPushUpdateParamValue(parse, nodeId, paramId, val);
 
     return val;
 }

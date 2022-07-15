@@ -15,10 +15,10 @@ extends Action
     // {
     //     super('FIND VALID ' + param.node.id + '.' + param.id + ' = ' + value);
 
-    //     this.nodeId     = param.node.id;
-    //     this.paramIndex = param.index;
+    //     this.nodeId  = param.node.id;
+    //     this.paramId = param.id;
 
-    //     this.newValue   = value;
+    //     this.newValue = value;
     // }
 
 

@@ -184,9 +184,9 @@ extends Parameter
 
             //req.push(...this.input.connectedOutput.genRequest(gen));
         }        
-        // else if (this.node.inputs.length > 0
-        //      && !this.node.inputs[0].param
-        //      &&  this.node.inputs[0].connected)
+        // else if (this.output
+        //       && this.output.connected
+        //       && this.node.headerConnected)
         // {
         //     if (    gen.markParams
         //         &&  lastOf(gen.scope).nodeId != this.node.id

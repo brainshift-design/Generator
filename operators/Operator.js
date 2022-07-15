@@ -123,6 +123,17 @@ class Operator
 
 
 
+    get headerConnected()
+    {
+        const inputs = this.inputs.filter(i => 
+              !i.param 
+            && i.connected);
+            
+        return inputs.length > 0;
+    }
+
+
+
     constructor(type, shortName, defWidth = 80)
     {
         this.#type             = type;
@@ -518,12 +529,13 @@ class Operator
 
 
 
-    updateParamValues(updateIndex, indices, values) // virtual
+    updateParamValues(updateParamId, paramIds, values) // virtual
     {
-        for (let i = 0; i < indices.length; i++)
+        for (let i = 0; i < paramIds.length; i++)
         {
-            if (indices[i] != updateIndex)
-                this.params[indices[i]].setValue(values[i], false, true, false);
+            if (paramIds[i] != updateParamId)
+                this.params.find(p => p.id == paramIds[i])
+                    .setValue(values[i], false, true, false);
         }
     }
 
@@ -680,8 +692,8 @@ function pushUpdateFromParam(nodes, param)
 
     const request = 
         param
-        ? [param.node.id, param.index]
-        : ['', 0];
+        ? [param.node.id, param.id]
+        : ['', ''];
 
 
     const gen = createGenObject(param ? param.node : null);
@@ -740,7 +752,7 @@ function pushUpdateFromParam(nodes, param)
 function createGenObject(paramNode)
 {
     return {
-        scope:       paramNode ? [{nodeId: paramNode.id, paramIndex: -1}] : [], // [{nodeId, paramIndex}]
+        scope:       paramNode ? [{nodeId: paramNode.id, paramId: ''}] : [], // [{nodeId, paramId}]
         passedNodes: [],
         paramNodes:  [],
         markParams:  true

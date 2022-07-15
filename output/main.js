@@ -71,39 +71,45 @@ function logSavedConn(connKey) {
         + '(' + parts[3] + ')' + parts[2];
     console.log('%c%s', 'background: #cfc', conn);
 }
-function logRequest(request, updateNodeId, updateParamIndex) {
+function logRequest(request, updateNodeId, updateParamId) {
     const req = new RequestSettings(request, 2);
-    let log = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
+    let log = updateNodeId != ''
+        || updateParamId != ''
+        ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+        : '';
     const stackOverflowProtect = 100;
     while (req.pos < req.request.length
         && req.so < stackOverflowProtect)
         log += logReq(req);
     console.log('%c%s', 'background: #60aa60; color: #fff', log);
 }
-function logReqNodeId(nodeId) {
+function logReqId(nodeId) {
     return nodeId == '' ? '\'\'' : nodeId;
 }
-function logParamUpdates(updateNodeId, updateParamIndex, values) {
-    let str = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
+function logParamUpdates(updateNodeId, updateParamId, values) {
+    let log = updateNodeId != ''
+        || updateParamId != ''
+        ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+        : '';
     let i = 0;
     let nTab = 0;
     while (i < values.length) {
         const nodeId = values[i++];
         const nValues = parseInt(values[i++]);
-        str +=
+        log +=
             NL + TAB.repeat(Math.max(0, nTab))
                 + nodeId + ' ' + nValues;
         nTab++;
         for (let j = 0; j < nValues; j++) {
             const index = values[i++];
             const value = values[i++];
-            str +=
+            log +=
                 NL + TAB.repeat(Math.max(0, nTab))
                     + index + ' ' + value;
         }
         nTab--;
     }
-    console.log('%c%s', 'background: #e70; color: white;', str);
+    console.log('%c%s', 'background: #e70; color: white;', log);
 }
 function logObjectUpdates(objects) {
     console.log('%cobjects', 'background: #07e; color: white;', objects);
@@ -154,17 +160,17 @@ function logReqParam(req) {
     //     return '';
     const tag = req.request[req.pos++];
     const nodeId = req.request[req.pos++];
-    const paramIndex = req.request[req.pos++];
+    const paramId = req.request[req.pos++];
     //req.skipNewLine = true;
     //const val     = logReq(req);
-    const _nodeId = logReqNodeId(nodeId);
-    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex; // + ' ' + val;
+    const _nodeId = logReqId(nodeId);
+    return req.tab + tag + ' ' + _nodeId + '.' + paramId; // + ' ' + val;
 }
 function logReqNumberNodeId(req) {
     const tag = req.request[req.pos++];
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
-    return tag + ' ' + logReqNodeId(nodeId) + active;
+    return tag + ' ' + logReqId(nodeId) + active;
 }
 function logReqNumValue(req) {
     const tag = req.request[req.pos++];
@@ -221,14 +227,14 @@ function logReqNode(req, type, nParams) {
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
     let log = tab + tag + ' ' + nodeId + active;
-    let indices;
+    let paramIds;
     if (req.request[req.pos] == type) {
         log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        paramIds = req.request[req.pos++].split(',');
     }
     else
-        indices = [...Array(nParams).keys()];
-    for (const i of indices) {
+        paramIds = [...Array(nParams).keys()];
+    for (const i of paramIds) {
         if (i < nParams)
             log += logReq(req);
     }
@@ -268,7 +274,7 @@ const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
-const PARAM = 'PARAM'; // nodeId paramIndex
+const PARAM = 'PARAM'; // nodeId paramId
 /*
 
 ARROW       A

@@ -815,17 +815,17 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, objects)
+function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    if (settings.logParamUpdates)  logParamUpdates(updateNodeId, updateParamIndex, values);
+    if (settings.logParamUpdates)  logParamUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
 
     uiPostMessageToFigma({ 
-        cmd:             'figUpdateObjects',
-        updateNodeId:     updateNodeId,
-        updateParamIndex: updateParamIndex,
-        objects:          [...objects]
+        cmd:          'figUpdateObjects',
+        updateNodeId:  updateNodeId,
+        updateParamId: updateParamId,
+        objects:       [...objects]
     });
 
 
@@ -861,7 +861,7 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, object
             }
 
             node.updateParamValues(
-                updateNodeId == nodeId ? updateParamIndex : -1,
+                updateNodeId == nodeId ? updateParamId : -1,
                 _indices,
                 _values);
         }

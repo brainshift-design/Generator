@@ -97,15 +97,15 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -115,9 +115,9 @@ extends OperatorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
 
 
             if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
@@ -161,12 +161,12 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (   indices.includes(2)
-            || indices.includes(3))
+        if (   paramIds.includes('width')
+            || paramIds.includes('height'))
             this.updateRound();
     }
 

@@ -37,8 +37,8 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
         
         const req = this.node.getRequestStart();
 
@@ -59,11 +59,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (indices.includes(0))
+        if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 

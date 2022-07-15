@@ -2,9 +2,13 @@ class SetParamLockAction
 extends Action
 {
     nodeId;
-    paramIndex;
+    paramId;
 
-    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
+    get param() 
+    { 
+        return nodeFromId(this.nodeId).params
+            .find(p => p.id == this.paramId); 
+    } 
 
 
     locked;
@@ -15,8 +19,8 @@ extends Action
     {
         super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
 
-        this.nodeId     = param.node.id;
-        this.paramIndex = param.index;
+        this.nodeId  = param.node.id;
+        this.paramId = param.id;
 
         this.locked  = locked;
     }

@@ -28,8 +28,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramOperation = new SelectParam('op',    '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
-        this.addParam(this.#paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.#paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
+        this.addParam(this.#paramValue     = new NumberParam('result', '', false, false, false));
 
         enableSliderText(this.#paramValue.control, false);
 
@@ -100,8 +100,8 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
@@ -120,11 +120,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (indices.includes(0))
+        if (paramIds.includes('result'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 

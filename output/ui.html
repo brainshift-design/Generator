@@ -3922,12 +3922,16 @@ function logSavedConn(connKey)
 
 
 
-function logRequest(request, updateNodeId, updateParamIndex)
+function logRequest(request, updateNodeId, updateParamId)
 {
     const req = new RequestSettings(request, 2);
 
 
-    let log = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
 
 
     const stackOverflowProtect = 100;
@@ -3945,17 +3949,22 @@ function logRequest(request, updateNodeId, updateParamIndex)
 
 
 
-function logReqNodeId(nodeId)
+function logReqId(nodeId)
 {
     return nodeId == '' ? '\'\'' : nodeId;
 }
 
 
 
-function logParamUpdates(updateNodeId, updateParamIndex, values)
+function logParamUpdates(updateNodeId, updateParamId, values)
 {
-    let str = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
-    
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
+
+          
     let i    = 0;
     let nTab = 0;
 
@@ -3964,7 +3973,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
         const nodeId  = values[i++];
         const nValues = parseInt(values[i++]);
 
-        str += 
+        log += 
               NL + TAB.repeat(Math.max(0, nTab))
             + nodeId + ' ' + nValues;
 
@@ -3975,7 +3984,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
             const index = values[i++];
             const value = values[i++];
 
-            str += 
+            log += 
                   NL + TAB.repeat(Math.max(0, nTab))
                 + index + ' ' + value;
         }
@@ -3987,7 +3996,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
     console.log(
         '%c%s', 
         'background: #e70; color: white;', 
-        str);
+        log);
 }
 
 
@@ -4055,16 +4064,16 @@ function logReqParam(req)
     // if (req.request[req.pos] != PARAM) 
     //     return '';
         
-    const tag        = req.request[req.pos++];
-    const nodeId     = req.request[req.pos++];
-    const paramIndex = req.request[req.pos++];
+    const tag     = req.request[req.pos++];
+    const nodeId  = req.request[req.pos++];
+    const paramId = req.request[req.pos++];
 
     //req.skipNewLine = true;
 
     //const val     = logReq(req);
-    const _nodeId = logReqNodeId(nodeId);
+    const _nodeId = logReqId(nodeId);
 
-    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex;// + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + '.' + paramId;// + ' ' + val;
 }
 
 
@@ -4075,7 +4084,7 @@ function logReqNumberNodeId(req)
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
     
-    return tag + ' ' + logReqNodeId(nodeId) + active;
+    return tag + ' ' + logReqId(nodeId) + active;
 }
 
 
@@ -4184,19 +4193,19 @@ function logReqNode(req, type, nParams)
 
     let log = tab + tag + ' ' + nodeId + active;
 
-    let indices;
+    let paramIds;
 
 
     if (req.request[req.pos] == type)
     {
         log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        paramIds = req.request[req.pos++].split(',');
     }
     else
-        indices = [...Array(nParams).keys()];
+        paramIds = [...Array(nParams).keys()];
     
 
-    for (const i of indices)
+    for (const i of paramIds)
     {
         if (i < nParams)
             log += logReq(req);
@@ -4419,7 +4428,7 @@ const COMMENT            = 'CMNT';
 
 
 const ACTIVE             = 'ACT';
-const PARAM              = 'PARAM'; // nodeId paramIndex
+const PARAM              = 'PARAM'; // nodeId paramId
 
 
 /*
@@ -4460,20 +4469,20 @@ class GParam
 extends GType
 {
     nodeId;
-    index;
+    paramId;
 
     value;
 
 
 
-    constructor(nodeId, index)
+    constructor(nodeId, paramId)
     {
         super(PARAM);
 
-        this.nodeId = nodeId;
-        this.index  = index;
+        this.nodeId  = nodeId;
+        this.paramId = paramId;
 
-        this.value  = null;
+        this.value   = null;
     }
 
 
@@ -5162,9 +5171,9 @@ function genPostNextMessageToUI(msg)
         {
             // move along the queue since only the last message is important
             while (uiMessages.length > 0
-                && uiMessages[0].cmd              == msg.cmd
-                && uiMessages[0].updateNodeId     == msg.updateNodeId
-                && uiMessages[0].updateParamIndex == msg.updateParamIndex)
+                && uiMessages[0].cmd           == msg.cmd
+                && uiMessages[0].updateNodeId  == msg.updateNodeId
+                && uiMessages[0].updateParamId == msg.updateParamId)
                 msg = uiMessages.shift();
         }
 
@@ -5186,33 +5195,33 @@ function genParseColor(parse)
 
   
     let col = new GColor();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == COLOR)
     {
         col     = genParse(parse); // not genParseColor() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(4).keys()];
+        paramIds = ['space', 'c1', 'c2', 'c3'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: col.space = Math.min(Math.max(0, genParse(parse)), OpColorSpaces.length-1); break;
-        case 1: col.c1    = genParse(parse); break;
-        case 2: col.c2    = genParse(parse); break;
-        case 3: col.c3    = genParse(parse); break;
+        case 'space': col.space = Math.min(Math.max(0, genParse(parse)), OpColorSpaces.length-1); break;
+        case 'c1':    col.c1    = genParse(parse); break;
+        case 'c2':    col.c2    = genParse(parse); break;
+        case 'c3':    col.c3    = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, col.space);
-    genPushUpdateParamValue(parse, nodeId, 1, col.c1   );
-    genPushUpdateParamValue(parse, nodeId, 2, col.c2   );
-    genPushUpdateParamValue(parse, nodeId, 3, col.c3   );
+    genPushUpdateParamValue(parse, nodeId, 'space', col.space);
+    genPushUpdateParamValue(parse, nodeId, 'c1',    col.c1   );
+    genPushUpdateParamValue(parse, nodeId, 'c2',    col.c2   );
+    genPushUpdateParamValue(parse, nodeId, 'c3',    col.c3   );
 
 
     return col;
@@ -5250,37 +5259,37 @@ function genParseRectangle(parse)
 
   
     let rect = new GRectangle();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect    = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        rect     = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(6).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: rect.x      = genParse(parse); break;
-        case 1: rect.y      = genParse(parse); break;
-        case 2: rect.width  = genParse(parse); break;
-        case 3: rect.height = genParse(parse); break;
-        case 4: rect.angle  = genParse(parse); break;
-        case 5: rect.round  = genParse(parse); break;
+        case 'x':      rect.x      = genParse(parse); break;
+        case 'y':      rect.y      = genParse(parse); break;
+        case 'width':  rect.width  = genParse(parse); break;
+        case 'height': rect.height = genParse(parse); break;
+        case 'angle':  rect.angle  = genParse(parse); break;
+        case 'round':  rect.round  = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, rect.x     );
-    genPushUpdateParamValue(parse, nodeId, 1, rect.y     );
-    genPushUpdateParamValue(parse, nodeId, 2, rect.width );
-    genPushUpdateParamValue(parse, nodeId, 3, rect.height);
-    genPushUpdateParamValue(parse, nodeId, 4, rect.angle );
-    genPushUpdateParamValue(parse, nodeId, 5, rect.round );
+    genPushUpdateParamValue(parse, nodeId, 'x',      rect.x     );
+    genPushUpdateParamValue(parse, nodeId, 'y',      rect.y     );
+    genPushUpdateParamValue(parse, nodeId, 'width',  rect.width );
+    genPushUpdateParamValue(parse, nodeId, 'height', rect.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle',  rect.angle );
+    genPushUpdateParamValue(parse, nodeId, 'round',  rect.round );
 
 
     if (   active
@@ -5317,35 +5326,35 @@ function genParseLine(parse)
 
   
     let line = new GLine();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == LINE)
     {
         line = genParse(parse); // not genParseLine() because genParse() handles stack overflow
-        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        paramIds  = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(5).keys()];
+        paramIds = ['x', 'y', 'width', 'angle'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: line.x     = genParse(parse); break;
-        case 1: line.y     = genParse(parse); break;
-        case 2: line.width = genParse(parse); break;
-        //case 3: line.height = genParse(parse); break;
-        case 3: line.angle = genParse(parse); break;
+        case 'x':     line.x     = genParse(parse); break;
+        case 'y':     line.y     = genParse(parse); break;
+        case 'width': line.width = genParse(parse); break;
+        //case 'height': line.height = genParse(parse); break;
+        case 'angle': line.angle = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, line.x    );
-    genPushUpdateParamValue(parse, nodeId, 1, line.y    );
-    genPushUpdateParamValue(parse, nodeId, 2, line.width);
-    //genPushUpdateParamValue(parse, nodeId, 3, line.height);
-    genPushUpdateParamValue(parse, nodeId, 3, line.angle);
+    genPushUpdateParamValue(parse, nodeId, 'x',     line.x    );
+    genPushUpdateParamValue(parse, nodeId, 'y',     line.y    );
+    genPushUpdateParamValue(parse, nodeId, 'width', line.width);
+    //genPushUpdateParamValue(parse, nodeId, 'height', line.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle', line.angle);
 
 
     if (   active
@@ -5381,35 +5390,35 @@ function genParseEllipse(parse)
 
   
     let elllipse = new GEllipse();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == ELLIPSE)
     {
         elllipse = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
-        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        paramIds  = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(5).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: elllipse.x      = genParse(parse); break;
-        case 1: elllipse.y      = genParse(parse); break;
-        case 2: elllipse.width  = genParse(parse); break;
-        case 3: elllipse.height = genParse(parse); break;
-        case 4: elllipse.angle  = genParse(parse); break;
+        case 'x':      elllipse.x      = genParse(parse); break;
+        case 'y':      elllipse.y      = genParse(parse); break;
+        case 'width':  elllipse.width  = genParse(parse); break;
+        case 'height': elllipse.height = genParse(parse); break;
+        case 'angle':  elllipse.angle  = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, elllipse.x     );
-    genPushUpdateParamValue(parse, nodeId, 1, elllipse.y     );
-    genPushUpdateParamValue(parse, nodeId, 2, elllipse.width );
-    genPushUpdateParamValue(parse, nodeId, 3, elllipse.height);
-    genPushUpdateParamValue(parse, nodeId, 4, elllipse.angle );
+    genPushUpdateParamValue(parse, nodeId, 'x',      elllipse.x     );
+    genPushUpdateParamValue(parse, nodeId, 'y',      elllipse.y     );
+    genPushUpdateParamValue(parse, nodeId, 'width',  elllipse.width );
+    genPushUpdateParamValue(parse, nodeId, 'height', elllipse.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle',  elllipse.angle );
 
 
     if (   active
@@ -5445,39 +5454,39 @@ function genParsePolygon(parse)
 
   
     let poly = new GPolygon();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == POLYGON)
     {
-        poly    = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        poly     = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(7).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'corners'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: poly.x       = genParse(parse); break;
-        case 1: poly.y       = genParse(parse); break;
-        case 2: poly.width   = genParse(parse); break;
-        case 3: poly.height  = genParse(parse); break;
-        case 4: poly.angle   = genParse(parse); break;
-        case 5: poly.round   = genParse(parse); break;
-        case 6: poly.corners = genParse(parse); break;
+        case 'x':       poly.x       = genParse(parse); break;
+        case 'y':       poly.y       = genParse(parse); break;
+        case 'width':   poly.width   = genParse(parse); break;
+        case 'height':  poly.height  = genParse(parse); break;
+        case 'angle':   poly.angle   = genParse(parse); break;
+        case 'round':   poly.round   = genParse(parse); break;
+        case 'corners': poly.corners = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, poly.x      );
-    genPushUpdateParamValue(parse, nodeId, 1, poly.y      );
-    genPushUpdateParamValue(parse, nodeId, 2, poly.width  );
-    genPushUpdateParamValue(parse, nodeId, 3, poly.height );
-    genPushUpdateParamValue(parse, nodeId, 4, poly.angle  );
-    genPushUpdateParamValue(parse, nodeId, 5, poly.round  );
-    genPushUpdateParamValue(parse, nodeId, 6, poly.corners);
+    genPushUpdateParamValue(parse, nodeId, 'x',       poly.x      );
+    genPushUpdateParamValue(parse, nodeId, 'y',       poly.y      );
+    genPushUpdateParamValue(parse, nodeId, 'width',   poly.width  );
+    genPushUpdateParamValue(parse, nodeId, 'height',  poly.height );
+    genPushUpdateParamValue(parse, nodeId, 'angle',   poly.angle  );
+    genPushUpdateParamValue(parse, nodeId, 'round',   poly.round  );
+    genPushUpdateParamValue(parse, nodeId, 'corners', poly.corners);
 
 
     if (   active
@@ -5515,41 +5524,41 @@ function genParseStar(parse)
 
   
     let star = new GStar();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == STAR)
     {
-        star    = genParse(parse); // not genParseStar() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        star     = genParse(parse); // not genParseStar() because genParse() handles stack overflow
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(8).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: star.x      = genParse(parse); break;
-        case 1: star.y      = genParse(parse); break;
-        case 2: star.width  = genParse(parse); break;
-        case 3: star.height = genParse(parse); break;
-        case 4: star.angle  = genParse(parse); break;
-        case 5: star.round  = genParse(parse); break;
-        case 6: star.points = genParse(parse); break;
-        case 7: star.convex = genParse(parse); break;
+        case 'x':      star.x      = genParse(parse); break;
+        case 'y':      star.y      = genParse(parse); break;
+        case 'width':  star.width  = genParse(parse); break;
+        case 'height': star.height = genParse(parse); break;
+        case 'angle':  star.angle  = genParse(parse); break;
+        case 'round':  star.round  = genParse(parse); break;
+        case 'points': star.points = genParse(parse); break;
+        case 'convex': star.convex = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, star.x     );
-    genPushUpdateParamValue(parse, nodeId, 1, star.y     );
-    genPushUpdateParamValue(parse, nodeId, 2, star.width );
-    genPushUpdateParamValue(parse, nodeId, 3, star.height);
-    genPushUpdateParamValue(parse, nodeId, 4, star.angle );
-    genPushUpdateParamValue(parse, nodeId, 5, star.round );
-    genPushUpdateParamValue(parse, nodeId, 6, star.points);
-    genPushUpdateParamValue(parse, nodeId, 7, star.convex);
+    genPushUpdateParamValue(parse, nodeId, 'x',      star.x     );
+    genPushUpdateParamValue(parse, nodeId, 'y',      star.y     );
+    genPushUpdateParamValue(parse, nodeId, 'width',  star.width );
+    genPushUpdateParamValue(parse, nodeId, 'height', star.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle',  star.angle );
+    genPushUpdateParamValue(parse, nodeId, 'round',  star.round );
+    genPushUpdateParamValue(parse, nodeId, 'points', star.points);
+    genPushUpdateParamValue(parse, nodeId, 'convex', star.convex);
 
 
     if (   active
@@ -5592,7 +5601,7 @@ function genParseNumber(parse)
     const nodeId = genParseNumberNodeId(parse);
 
     const num = genParse(parse);    
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
 }
@@ -5618,7 +5627,7 @@ function genParseNumberAdd(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 'result', num);
 
     return num;
 }
@@ -5656,7 +5665,7 @@ function genParseNumberSubtract(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 'result', num);
 
     return num;
 }
@@ -5692,7 +5701,7 @@ function genParseNumberMultiply(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 'result', num);
 
     return num;
 }
@@ -5737,7 +5746,7 @@ function genParseNumberDivide(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 'result', num);
 
     return num;
 }
@@ -5782,7 +5791,7 @@ function genParseNumberModulo(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 'result', num);
 
     return num;
 }
@@ -5820,7 +5829,7 @@ function genParseNumberExponent(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 0, num);
+    genPushUpdateParamValue(parse, nodeId, 'result', num);
 
     return num;
 }
@@ -5865,7 +5874,7 @@ function genParseNumberInterpolate(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 1, num);
+    genPushUpdateParamValue(parse, nodeId, 'result', num);
 
     return num;
 }
@@ -5881,7 +5890,7 @@ function genParseNumberInterpolate(parse)
     the generation request format
 
     no-update param nodeId ('' if n/a)
-    no-update paramIndex (0 if n/a)
+    no-update paramId ('' if n/a)
 
     generation string
 */
@@ -5959,27 +5968,27 @@ function genParseParam(parse)
         parse.req[parse.pos++]);
 
 
-    //genPushUpdateParamValue(parse, nodeId, paramIndex, val);
+    //genPushUpdateParamValue(parse, nodeId, paramId, val);
 
     return val;
 }
 
 
-var lastUpdateNodeId     = '';
-var lastUpdateParamIndex = -1;
-var lastUpdateValues     = [];
-var lastUpdateObjects    = [];
+var lastUpdateNodeId  = '';
+var lastUpdateParamId = '';
+var lastUpdateValues  = [];
+var lastUpdateObjects = [];
 
 
 
 function genRequest(req, settings)
 {
-    const updateNodeId     = req[0];
-    const updateParamIndex = req[1];
+    const updateNodeId  = req[0];
+    const updateParamId = req[1];
 
 
     if (settings.logRequests)
-        logRequest(req, updateNodeId, updateParamIndex);
+        logRequest(req, updateNodeId, updateParamId);
         
 
     const parse = 
@@ -5988,7 +5997,7 @@ function genRequest(req, settings)
         pos:               2, 
         so:                0,
         updateNodeId:      updateNodeId, 
-        updateParamIndex:  updateParamIndex,
+        updateParamId:     updateParamId,
         updateParamValues: [],
         updateParams:      [],
         updateObjects:     []
@@ -6004,24 +6013,24 @@ function genRequest(req, settings)
 
     genUpdateParamValuesAndObjects(
         updateNodeId, 
-        updateParamIndex, 
+        updateParamId, 
         parse.updateParamValues, 
         parse.updateObjects);
 }
 
 
 
-function genPushUpdateParamValue(parse, nodeId, paramIndex, gvalue)
+function genPushUpdateParamValue(parse, nodeId, paramId, gvalue)
 {
     const found = parse.updateParamValues.find(v => 
-           v.nodeId     == nodeId 
-        && v.paramIndex == paramIndex);
+           v.nodeId  == nodeId 
+        && v.paramId == paramId);
 
     if (!found) 
         parse.updateParamValues.push({
-            nodeId:     nodeId, 
-            paramIndex: paramIndex, 
-            value:      gvalue});
+            nodeId:  nodeId, 
+            paramId: paramId, 
+            value:   gvalue});
 
     //else console.assert(found.value == value);
 }
@@ -6033,41 +6042,41 @@ function genPushUpdateObject(parse, nodeId, object)
     const found = parse.updateObjects.find(o => o.nodeId == nodeId);
 
     if (!found) parse.updateObjects.push(object);
-    //else        console.assert(found[2] == value);
+    //else console.assert(found[2] == value);
 }
 
 
 
 function clearLastUpdate()
 {
-    lastUpdateNodeId     = '';
-    lastUpdateParamIndex = -1;
-    lastUpdateValues     = [];
-    lastUpdateObjects    = [];
+    lastUpdateNodeId  = '';
+    lastUpdateParamId = -1;
+    lastUpdateValues  = [];
+    lastUpdateObjects = [];
 }
 
 
 
-function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateValues, updateObjects)
+function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
     if (   updateValues .length == 0
         && updateObjects.length == 0)
     {
         //console.log('restoring');
-        updateNodeId     = lastUpdateNodeId;
-        updateParamIndex = lastUpdateParamIndex;
-        updateValues     = lastUpdateValues;
-        updateObjects    = lastUpdateObjects;
+        updateNodeId  = lastUpdateNodeId;
+        updateParamId = lastUpdateParamId;
+        updateValues  = lastUpdateValues;
+        updateObjects = lastUpdateObjects;
 
         clearLastUpdate();
     }
     else if (genFigMessagePosted)
     {
         //console.log('saving');
-        lastUpdateNodeId     = updateNodeId;
-        lastUpdateParamIndex = updateParamIndex;
-        lastUpdateValues     = updateValues;
-        lastUpdateObjects    = updateObjects;
+        lastUpdateNodeId  = updateNodeId;
+        lastUpdateParamId = updateParamId;
+        lastUpdateValues  = updateValues;
+        lastUpdateObjects = updateObjects;
 
         return;
     }
@@ -6075,12 +6084,12 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
 
     for (let i = 0; i < updateValues.length; i++)
     {
-        console.log('updateValues[i].value', updateValues[i].value);
+        //console.log('updateValues[i].value', updateValues[i].value);
         if (updateValues[i].value.type == PARAM)
         {
             const val = updateValues.find(v => 
-                   v.nodeId     == updateValues[i].nodeId
-                && v.paramIndex == updateValues[i].index);
+                   v.nodeId  == updateValues[i].nodeId
+                && v.paramId == updateValues[i].paramId);
 
             console.assert(val);
             updateValues[i].value = val;
@@ -6124,11 +6133,11 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
                 counts [n]);
 
             const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
-            values.sort((a, b) => a.paramIndex - b.paramIndex);
+            values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
             {
-                nodeChunk.push(v.paramIndex, v.value);
+                nodeChunk.push(v.paramId, v.value);
                 nc++;
             }
 
@@ -6140,11 +6149,11 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
             || nc >= approxParamChunkSize)
         {
             genQueueMessageToUI({ 
-                cmd:             'uiUpdateParamsAndObjects',
-                updateNodeId:     updateNodeId, 
-                updateParamIndex: updateParamIndex, 
-                values:           [...nodeChunk].map(v => v.toString()),
-                objects:          [...objChunk]
+                cmd:          'uiUpdateParamsAndObjects',
+                updateNodeId:  updateNodeId, 
+                updateParamId: updateParamId, 
+                values:        [...nodeChunk].map(v => v.toString()),
+                objects:       [...objChunk]
             });
 
             genFigMessagePosted = true;
@@ -6160,117 +6169,16 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamIndex, updateVa
         ||  objChunk.length > 0)
     {
         genQueueMessageToUI({ 
-            cmd:             'uiUpdateParamsAndObjects',
-            updateNodeId:     updateNodeId, 
-            updateParamIndex: updateParamIndex, 
-            values:           [...nodeChunk].map(v => v.toString()),
-            objects:          [...objChunk]
+            cmd:          'uiUpdateParamsAndObjects',
+            updateNodeId:  updateNodeId, 
+            updateParamId: updateParamId, 
+            values:        [...nodeChunk].map(v => v.toString()),
+            objects:       [...objChunk]
         });
 
         genFigMessagePosted = true;
     }
 }
-
-
-
-// function genUpdateParamValues(updateNodeId, updateParamIndex, updateValues)
-// {
-//     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
-//     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
-
-
-//     // send value updates in chunks
-
-//     const approxParamChunkSize = 20;
-    
-//     let n  = 0, // node
-//         nc = 0; // chunk size
-
-//     let chunk = [];
-
-
-//     while (n < nodeIds.length)
-//     {
-//         chunk.push(
-//             nodeIds[n],
-//             counts [n]);
-
-//         const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
-
-//         values.sort((a, b) => a.paramIndex - b.paramIndex);
-
-//         for (const v of values)
-//         {
-//             chunk.push(v.paramIndex, v.value);
-//             nc++;
-//         }
-
-//         if (nc >= approxParamChunkSize)
-//         {
-//             genPostMessageToUI({ 
-//                 cmd:    'uiUpdateParams',
-//                 values: [updateNodeId, updateParamIndex, ...chunk]
-//             });
-
-//             chunk = [];
-//             nc = 0;
-//         }
-
-//         n++;
-//     }
-
-//     if (chunk.length > 0)
-//     {
-//         genPostMessageToUI({ 
-//             cmd:    'uiUpdateParams',
-//             values: [updateNodeId, updateParamIndex, ...chunk]
-//         });
-//     }
-// }
-
-
-
-// function genUpdateObjects(updateNodeId, updateParamIndex, updateObjects)
-// {
-//     // send objects in chunks
-
-//     const chunkSize = 100;
-    
-//     let o  = 0, 
-//         oc = 0;
-    
-//     let chunk = [];
-    
-//     while (o < updateObjects.length)
-//     {
-//         chunk.push(updateObjects[o]);
-
-//         if (++oc == chunkSize)
-//         {
-//             genQueueMessageToFigma({ 
-//                 cmd:             'figUpdateObjects',
-//                 updateNodeId:     updateNodeId,
-//                 updateParamIndex: updateParamIndex,
-//                 objects:          [...chunk]
-//             });
-
-//             chunk = [];
-//             oc     = 0;
-//         }
-
-//         o++;
-//     }
-
-//     if (chunk.length > 0)
-//     {
-//         genQueueMessageToFigma({ 
-//             cmd:             'figUpdateObjects',
-//             updateNodeId:     updateNodeId,
-//             updateParamIndex: updateParamIndex,
-//             objects:          [...chunk]
-//         });
-//     }
-// }
 
 
 function getObjectBounds(objects)
@@ -10785,12 +10693,16 @@ function logSavedConn(connKey)
 
 
 
-function logRequest(request, updateNodeId, updateParamIndex)
+function logRequest(request, updateNodeId, updateParamId)
 {
     const req = new RequestSettings(request, 2);
 
 
-    let log = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
 
 
     const stackOverflowProtect = 100;
@@ -10808,17 +10720,22 @@ function logRequest(request, updateNodeId, updateParamIndex)
 
 
 
-function logReqNodeId(nodeId)
+function logReqId(nodeId)
 {
     return nodeId == '' ? '\'\'' : nodeId;
 }
 
 
 
-function logParamUpdates(updateNodeId, updateParamIndex, values)
+function logParamUpdates(updateNodeId, updateParamId, values)
 {
-    let str = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
-    
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
+
+          
     let i    = 0;
     let nTab = 0;
 
@@ -10827,7 +10744,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
         const nodeId  = values[i++];
         const nValues = parseInt(values[i++]);
 
-        str += 
+        log += 
               NL + TAB.repeat(Math.max(0, nTab))
             + nodeId + ' ' + nValues;
 
@@ -10838,7 +10755,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
             const index = values[i++];
             const value = values[i++];
 
-            str += 
+            log += 
                   NL + TAB.repeat(Math.max(0, nTab))
                 + index + ' ' + value;
         }
@@ -10850,7 +10767,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
     console.log(
         '%c%s', 
         'background: #e70; color: white;', 
-        str);
+        log);
 }
 
 
@@ -10918,16 +10835,16 @@ function logReqParam(req)
     // if (req.request[req.pos] != PARAM) 
     //     return '';
         
-    const tag        = req.request[req.pos++];
-    const nodeId     = req.request[req.pos++];
-    const paramIndex = req.request[req.pos++];
+    const tag     = req.request[req.pos++];
+    const nodeId  = req.request[req.pos++];
+    const paramId = req.request[req.pos++];
 
     //req.skipNewLine = true;
 
     //const val     = logReq(req);
-    const _nodeId = logReqNodeId(nodeId);
+    const _nodeId = logReqId(nodeId);
 
-    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex;// + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + '.' + paramId;// + ' ' + val;
 }
 
 
@@ -10938,7 +10855,7 @@ function logReqNumberNodeId(req)
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
     
-    return tag + ' ' + logReqNodeId(nodeId) + active;
+    return tag + ' ' + logReqId(nodeId) + active;
 }
 
 
@@ -11047,19 +10964,19 @@ function logReqNode(req, type, nParams)
 
     let log = tab + tag + ' ' + nodeId + active;
 
-    let indices;
+    let paramIds;
 
 
     if (req.request[req.pos] == type)
     {
         log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        paramIds = req.request[req.pos++].split(',');
     }
     else
-        indices = [...Array(nParams).keys()];
+        paramIds = [...Array(nParams).keys()];
     
 
-    for (const i of indices)
+    for (const i of paramIds)
     {
         if (i < nParams)
             log += logReq(req);
@@ -12658,7 +12575,7 @@ const COMMENT            = 'CMNT';
 
 
 const ACTIVE             = 'ACT';
-const PARAM              = 'PARAM'; // nodeId paramIndex
+const PARAM              = 'PARAM'; // nodeId paramId
 
 
 /*
@@ -12699,20 +12616,20 @@ class GParam
 extends GType
 {
     nodeId;
-    index;
+    paramId;
 
     value;
 
 
 
-    constructor(nodeId, index)
+    constructor(nodeId, paramId)
     {
         super(PARAM);
 
-        this.nodeId = nodeId;
-        this.index  = index;
+        this.nodeId  = nodeId;
+        this.paramId = paramId;
 
-        this.value  = null;
+        this.value   = null;
     }
 
 
@@ -17784,9 +17701,9 @@ extends Parameter
 
             //req.push(...this.input.connectedOutput.genRequest(gen));
         }        
-        // else if (this.node.inputs.length > 0
-        //      && !this.node.inputs[0].param
-        //      &&  this.node.inputs[0].connected)
+        // else if (this.output
+        //       && this.output.connected
+        //       && this.node.headerConnected)
         // {
         //     if (    gen.markParams
         //         &&  lastOf(gen.scope).nodeId != this.node.id
@@ -19804,6 +19721,17 @@ class Operator
 
 
 
+    get headerConnected()
+    {
+        const inputs = this.inputs.filter(i => 
+              !i.param 
+            && i.connected);
+            
+        return inputs.length > 0;
+    }
+
+
+
     constructor(type, shortName, defWidth = 80)
     {
         this.#type             = type;
@@ -20199,12 +20127,13 @@ class Operator
 
 
 
-    updateParamValues(updateIndex, indices, values) // virtual
+    updateParamValues(updateParamId, paramIds, values) // virtual
     {
-        for (let i = 0; i < indices.length; i++)
+        for (let i = 0; i < paramIds.length; i++)
         {
-            if (indices[i] != updateIndex)
-                this.params[indices[i]].setValue(values[i], false, true, false);
+            if (paramIds[i] != updateParamId)
+                this.params.find(p => p.id == paramIds[i])
+                    .setValue(values[i], false, true, false);
         }
     }
 
@@ -20361,8 +20290,8 @@ function pushUpdateFromParam(nodes, param)
 
     const request = 
         param
-        ? [param.node.id, param.index]
-        : ['', 0];
+        ? [param.node.id, param.id]
+        : ['', ''];
 
 
     const gen = createGenObject(param ? param.node : null);
@@ -20421,7 +20350,7 @@ function pushUpdateFromParam(nodes, param)
 function createGenObject(paramNode)
 {
     return {
-        scope:       paramNode ? [{nodeId: paramNode.id, paramIndex: -1}] : [], // [{nodeId, paramIndex}]
+        scope:       paramNode ? [{nodeId: paramNode.id, paramId: ''}] : [], // [{nodeId, paramId}]
         passedNodes: [],
         paramNodes:  [],
         markParams:  true
@@ -21354,8 +21283,8 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
         
         const req = this.node.getRequestStart();
 
@@ -21376,11 +21305,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (indices.includes(0))
+        if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
@@ -21459,7 +21388,7 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('result', '', false, false, false));
 
         enableSliderText(this.#paramValue.control, false);
 
@@ -21530,8 +21459,8 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
@@ -21550,11 +21479,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (indices.includes(0))
+        if (paramIds.includes('result'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
@@ -21780,8 +21709,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramOperation = new SelectParam('op',    '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
-        this.addParam(this.#paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.#paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
+        this.addParam(this.#paramValue     = new NumberParam('result', '', false, false, false));
 
         enableSliderText(this.#paramValue.control, false);
 
@@ -21852,8 +21781,8 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
@@ -21872,11 +21801,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (indices.includes(0))
+        if (paramIds.includes('result'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
@@ -21997,8 +21926,8 @@ extends OperatorBase
 
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
+        this.addParam(this.paramValue  = new NumberParam('result', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
-        this.addParam(this.paramValue  = new NumberParam('value',  '', false, false, true, 0));
 
         enableSliderText(this.paramValue.control, false);
         
@@ -22024,8 +21953,8 @@ extends OperatorBase
         
         
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
@@ -22052,11 +21981,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (indices.includes(0))
+        if (paramIds.includes('result'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 }
@@ -22399,15 +22328,15 @@ extends OpColorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -22417,9 +22346,9 @@ extends OpColorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
             
 
             if (this.node.paramSpace.input.connected) req.push(...this.node.paramSpace.genRequest(gen));
@@ -22542,17 +22471,17 @@ extends OpColorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        if (indices.includes(0))
+        if (paramIds.includes('space'))
         {
-            switchToSpace(this, colorSpace(values[indices.indexOf(0)].value));
+            switchToSpace(this, colorSpace(values[paramIds.findIndex(id => id == 'space')].value));
             //setDataColorToCurrentSpace(this, color);
         }
 
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        
+
         this._color    = this.getDataColorFromParams();
         //this._oldSpace = toSpace;
 
@@ -24868,15 +24797,15 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -24886,9 +24815,9 @@ extends OperatorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
 
 
             if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
@@ -24918,12 +24847,12 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (   indices.includes(2)
-            || indices.includes(3))
+        if (   paramIds.includes('width')
+            || paramIds.includes('height'))
             this.updateRound();
     }
 
@@ -25048,15 +24977,15 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -25066,9 +24995,9 @@ extends OperatorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
 
 
             if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
@@ -25185,15 +25114,15 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -25203,9 +25132,9 @@ extends OperatorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
 
 
             if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
@@ -25378,15 +25307,15 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -25396,9 +25325,9 @@ extends OperatorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
 
 
             if (this.node.#paramX      .input.connected) req.push(...this.node.#paramX      .genRequest(gen));
@@ -25440,12 +25369,12 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (   indices.includes(2)
-            || indices.includes(3))
+        if (   paramIds.includes('width')
+            || paramIds.includes('height'))
             this.updateRound();
     }
 
@@ -25603,15 +25532,15 @@ extends OperatorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -25621,9 +25550,9 @@ extends OperatorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
 
 
             if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
@@ -25667,12 +25596,12 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        if (   indices.includes(2)
-            || indices.includes(3))
+        if (   paramIds.includes('width')
+            || paramIds.includes('height'))
             this.updateRound();
     }
 
@@ -26514,10 +26443,10 @@ extends Action
     // {
     //     super('FIND VALID ' + param.node.id + '.' + param.id + ' = ' + value);
 
-    //     this.nodeId     = param.node.id;
-    //     this.paramIndex = param.index;
+    //     this.nodeId  = param.node.id;
+    //     this.paramId = param.id;
 
-    //     this.newValue   = value;
+    //     this.newValue = value;
     // }
 
 
@@ -27129,9 +27058,13 @@ class SetParamLockAction
 extends Action
 {
     nodeId;
-    paramIndex;
+    paramId;
 
-    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
+    get param() 
+    { 
+        return nodeFromId(this.nodeId).params
+            .find(p => p.id == this.paramId); 
+    } 
 
 
     locked;
@@ -27142,8 +27075,8 @@ extends Action
     {
         super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
 
-        this.nodeId     = param.node.id;
-        this.paramIndex = param.index;
+        this.nodeId  = param.node.id;
+        this.paramId = param.id;
 
         this.locked  = locked;
     }
@@ -27184,9 +27117,13 @@ class SetParamValueAction
 extends Action
 {
     nodeId;
-    paramIndex;
+    paramId;
 
-    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
+    get param() 
+    { 
+        return nodeFromId(this.nodeId).params
+            .find(p => p.id == this.paramId); 
+    } 
 
 
     oldValue; // decimal
@@ -27198,10 +27135,10 @@ extends Action
     {
         super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value);
 
-        this.nodeId     = param.node.id;
-        this.paramIndex = param.index;
+        this.nodeId   = param.node.id;
+        this.paramId  = param.id;
 
-        this.newValue   = value;
+        this.newValue = value;
     }
 
 
@@ -27817,7 +27754,7 @@ generator.onmessage = function(e)
     {
         case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
 
-        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamIndex, msg.values, msg.objects);                     break;
+        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
         
         case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
         case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
@@ -29302,17 +29239,17 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, objects)
+function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    if (settings.logParamUpdates)  logParamUpdates(updateNodeId, updateParamIndex, values);
+    if (settings.logParamUpdates)  logParamUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
 
     uiPostMessageToFigma({ 
-        cmd:             'figUpdateObjects',
-        updateNodeId:     updateNodeId,
-        updateParamIndex: updateParamIndex,
-        objects:          [...objects]
+        cmd:          'figUpdateObjects',
+        updateNodeId:  updateNodeId,
+        updateParamId: updateParamId,
+        objects:       [...objects]
     });
 
 
@@ -29348,7 +29285,7 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamIndex, values, object
             }
 
             node.updateParamValues(
-                updateNodeId == nodeId ? updateParamIndex : -1,
+                updateNodeId == nodeId ? updateParamId : -1,
                 _indices,
                 _values);
         }

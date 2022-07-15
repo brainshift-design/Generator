@@ -52,16 +52,16 @@ function logReqParam(req)
     // if (req.request[req.pos] != PARAM) 
     //     return '';
         
-    const tag        = req.request[req.pos++];
-    const nodeId     = req.request[req.pos++];
-    const paramIndex = req.request[req.pos++];
+    const tag     = req.request[req.pos++];
+    const nodeId  = req.request[req.pos++];
+    const paramId = req.request[req.pos++];
 
     //req.skipNewLine = true;
 
     //const val     = logReq(req);
-    const _nodeId = logReqNodeId(nodeId);
+    const _nodeId = logReqId(nodeId);
 
-    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex;// + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + '.' + paramId;// + ' ' + val;
 }
 
 
@@ -72,7 +72,7 @@ function logReqNumberNodeId(req)
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
     
-    return tag + ' ' + logReqNodeId(nodeId) + active;
+    return tag + ' ' + logReqId(nodeId) + active;
 }
 
 
@@ -181,19 +181,19 @@ function logReqNode(req, type, nParams)
 
     let log = tab + tag + ' ' + nodeId + active;
 
-    let indices;
+    let paramIds;
 
 
     if (req.request[req.pos] == type)
     {
         log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        paramIds = req.request[req.pos++].split(',');
     }
     else
-        indices = [...Array(nParams).keys()];
+        paramIds = [...Array(nParams).keys()];
     
 
-    for (const i of indices)
+    for (const i of paramIds)
     {
         if (i < nParams)
             log += logReq(req);

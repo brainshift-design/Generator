@@ -134,12 +134,16 @@ function logSavedConn(connKey)
 
 
 
-function logRequest(request, updateNodeId, updateParamIndex)
+function logRequest(request, updateNodeId, updateParamId)
 {
     const req = new RequestSettings(request, 2);
 
 
-    let log = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
 
 
     const stackOverflowProtect = 100;
@@ -157,17 +161,22 @@ function logRequest(request, updateNodeId, updateParamIndex)
 
 
 
-function logReqNodeId(nodeId)
+function logReqId(nodeId)
 {
     return nodeId == '' ? '\'\'' : nodeId;
 }
 
 
 
-function logParamUpdates(updateNodeId, updateParamIndex, values)
+function logParamUpdates(updateNodeId, updateParamId, values)
 {
-    let str = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
-    
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
+
+          
     let i    = 0;
     let nTab = 0;
 
@@ -176,7 +185,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
         const nodeId  = values[i++];
         const nValues = parseInt(values[i++]);
 
-        str += 
+        log += 
               NL + TAB.repeat(Math.max(0, nTab))
             + nodeId + ' ' + nValues;
 
@@ -187,7 +196,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
             const index = values[i++];
             const value = values[i++];
 
-            str += 
+            log += 
                   NL + TAB.repeat(Math.max(0, nTab))
                 + index + ' ' + value;
         }
@@ -199,7 +208,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
     console.log(
         '%c%s', 
         'background: #e70; color: white;', 
-        str);
+        log);
 }
 
 
@@ -267,16 +276,16 @@ function logReqParam(req)
     // if (req.request[req.pos] != PARAM) 
     //     return '';
         
-    const tag        = req.request[req.pos++];
-    const nodeId     = req.request[req.pos++];
-    const paramIndex = req.request[req.pos++];
+    const tag     = req.request[req.pos++];
+    const nodeId  = req.request[req.pos++];
+    const paramId = req.request[req.pos++];
 
     //req.skipNewLine = true;
 
     //const val     = logReq(req);
-    const _nodeId = logReqNodeId(nodeId);
+    const _nodeId = logReqId(nodeId);
 
-    return req.tab + tag + ' ' + _nodeId + ' ' + paramIndex;// + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + '.' + paramId;// + ' ' + val;
 }
 
 
@@ -287,7 +296,7 @@ function logReqNumberNodeId(req)
     const nodeId = req.request[req.pos++];
     const active = logReqActive(req);
     
-    return tag + ' ' + logReqNodeId(nodeId) + active;
+    return tag + ' ' + logReqId(nodeId) + active;
 }
 
 
@@ -396,19 +405,19 @@ function logReqNode(req, type, nParams)
 
     let log = tab + tag + ' ' + nodeId + active;
 
-    let indices;
+    let paramIds;
 
 
     if (req.request[req.pos] == type)
     {
         log += logReq(req);
-        indices = req.request[req.pos++].split(',').map(s => parseInt(s));
+        paramIds = req.request[req.pos++].split(',');
     }
     else
-        indices = [...Array(nParams).keys()];
+        paramIds = [...Array(nParams).keys()];
     
 
-    for (const i of indices)
+    for (const i of paramIds)
     {
         if (i < nParams)
             log += logReq(req);
@@ -470,7 +479,7 @@ const COMMENT            = 'CMNT';
 
 
 const ACTIVE             = 'ACT';
-const PARAM              = 'PARAM'; // nodeId paramIndex
+const PARAM              = 'PARAM'; // nodeId paramId
 
 
 /*

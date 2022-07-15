@@ -96,12 +96,16 @@ function logSavedConn(connKey)
 
 
 
-function logRequest(request, updateNodeId, updateParamIndex)
+function logRequest(request, updateNodeId, updateParamId)
 {
     const req = new RequestSettings(request, 2);
 
 
-    let log = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
 
 
     const stackOverflowProtect = 100;
@@ -119,17 +123,22 @@ function logRequest(request, updateNodeId, updateParamIndex)
 
 
 
-function logReqNodeId(nodeId)
+function logReqId(nodeId)
 {
     return nodeId == '' ? '\'\'' : nodeId;
 }
 
 
 
-function logParamUpdates(updateNodeId, updateParamIndex, values)
+function logParamUpdates(updateNodeId, updateParamId, values)
 {
-    let str = logReqNodeId(updateNodeId) + ' ' + updateParamIndex;
-    
+    let log = 
+             updateNodeId  != '' 
+          || updateParamId != ''
+          ? logReqId(updateNodeId) + '.' + logReqId(updateParamId)
+          : '';
+
+          
     let i    = 0;
     let nTab = 0;
 
@@ -138,7 +147,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
         const nodeId  = values[i++];
         const nValues = parseInt(values[i++]);
 
-        str += 
+        log += 
               NL + TAB.repeat(Math.max(0, nTab))
             + nodeId + ' ' + nValues;
 
@@ -149,7 +158,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
             const index = values[i++];
             const value = values[i++];
 
-            str += 
+            log += 
                   NL + TAB.repeat(Math.max(0, nTab))
                 + index + ' ' + value;
         }
@@ -161,7 +170,7 @@ function logParamUpdates(updateNodeId, updateParamIndex, values)
     console.log(
         '%c%s', 
         'background: #e70; color: white;', 
-        str);
+        log);
 }
 
 

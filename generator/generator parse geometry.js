@@ -28,37 +28,37 @@ function genParseRectangle(parse)
 
   
     let rect = new GRectangle();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == RECTANGLE)
     {
-        rect    = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        rect     = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(6).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: rect.x      = genParse(parse); break;
-        case 1: rect.y      = genParse(parse); break;
-        case 2: rect.width  = genParse(parse); break;
-        case 3: rect.height = genParse(parse); break;
-        case 4: rect.angle  = genParse(parse); break;
-        case 5: rect.round  = genParse(parse); break;
+        case 'x':      rect.x      = genParse(parse); break;
+        case 'y':      rect.y      = genParse(parse); break;
+        case 'width':  rect.width  = genParse(parse); break;
+        case 'height': rect.height = genParse(parse); break;
+        case 'angle':  rect.angle  = genParse(parse); break;
+        case 'round':  rect.round  = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, rect.x     );
-    genPushUpdateParamValue(parse, nodeId, 1, rect.y     );
-    genPushUpdateParamValue(parse, nodeId, 2, rect.width );
-    genPushUpdateParamValue(parse, nodeId, 3, rect.height);
-    genPushUpdateParamValue(parse, nodeId, 4, rect.angle );
-    genPushUpdateParamValue(parse, nodeId, 5, rect.round );
+    genPushUpdateParamValue(parse, nodeId, 'x',      rect.x     );
+    genPushUpdateParamValue(parse, nodeId, 'y',      rect.y     );
+    genPushUpdateParamValue(parse, nodeId, 'width',  rect.width );
+    genPushUpdateParamValue(parse, nodeId, 'height', rect.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle',  rect.angle );
+    genPushUpdateParamValue(parse, nodeId, 'round',  rect.round );
 
 
     if (   active
@@ -95,35 +95,35 @@ function genParseLine(parse)
 
   
     let line = new GLine();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == LINE)
     {
         line = genParse(parse); // not genParseLine() because genParse() handles stack overflow
-        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        paramIds  = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(5).keys()];
+        paramIds = ['x', 'y', 'width', 'angle'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: line.x     = genParse(parse); break;
-        case 1: line.y     = genParse(parse); break;
-        case 2: line.width = genParse(parse); break;
-        //case 3: line.height = genParse(parse); break;
-        case 3: line.angle = genParse(parse); break;
+        case 'x':     line.x     = genParse(parse); break;
+        case 'y':     line.y     = genParse(parse); break;
+        case 'width': line.width = genParse(parse); break;
+        //case 'height': line.height = genParse(parse); break;
+        case 'angle': line.angle = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, line.x    );
-    genPushUpdateParamValue(parse, nodeId, 1, line.y    );
-    genPushUpdateParamValue(parse, nodeId, 2, line.width);
-    //genPushUpdateParamValue(parse, nodeId, 3, line.height);
-    genPushUpdateParamValue(parse, nodeId, 3, line.angle);
+    genPushUpdateParamValue(parse, nodeId, 'x',     line.x    );
+    genPushUpdateParamValue(parse, nodeId, 'y',     line.y    );
+    genPushUpdateParamValue(parse, nodeId, 'width', line.width);
+    //genPushUpdateParamValue(parse, nodeId, 'height', line.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle', line.angle);
 
 
     if (   active
@@ -159,35 +159,35 @@ function genParseEllipse(parse)
 
   
     let elllipse = new GEllipse();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == ELLIPSE)
     {
         elllipse = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
-        indices  = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        paramIds  = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(5).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: elllipse.x      = genParse(parse); break;
-        case 1: elllipse.y      = genParse(parse); break;
-        case 2: elllipse.width  = genParse(parse); break;
-        case 3: elllipse.height = genParse(parse); break;
-        case 4: elllipse.angle  = genParse(parse); break;
+        case 'x':      elllipse.x      = genParse(parse); break;
+        case 'y':      elllipse.y      = genParse(parse); break;
+        case 'width':  elllipse.width  = genParse(parse); break;
+        case 'height': elllipse.height = genParse(parse); break;
+        case 'angle':  elllipse.angle  = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, elllipse.x     );
-    genPushUpdateParamValue(parse, nodeId, 1, elllipse.y     );
-    genPushUpdateParamValue(parse, nodeId, 2, elllipse.width );
-    genPushUpdateParamValue(parse, nodeId, 3, elllipse.height);
-    genPushUpdateParamValue(parse, nodeId, 4, elllipse.angle );
+    genPushUpdateParamValue(parse, nodeId, 'x',      elllipse.x     );
+    genPushUpdateParamValue(parse, nodeId, 'y',      elllipse.y     );
+    genPushUpdateParamValue(parse, nodeId, 'width',  elllipse.width );
+    genPushUpdateParamValue(parse, nodeId, 'height', elllipse.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle',  elllipse.angle );
 
 
     if (   active
@@ -223,39 +223,39 @@ function genParsePolygon(parse)
 
   
     let poly = new GPolygon();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == POLYGON)
     {
-        poly    = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        poly     = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(7).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'corners'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: poly.x       = genParse(parse); break;
-        case 1: poly.y       = genParse(parse); break;
-        case 2: poly.width   = genParse(parse); break;
-        case 3: poly.height  = genParse(parse); break;
-        case 4: poly.angle   = genParse(parse); break;
-        case 5: poly.round   = genParse(parse); break;
-        case 6: poly.corners = genParse(parse); break;
+        case 'x':       poly.x       = genParse(parse); break;
+        case 'y':       poly.y       = genParse(parse); break;
+        case 'width':   poly.width   = genParse(parse); break;
+        case 'height':  poly.height  = genParse(parse); break;
+        case 'angle':   poly.angle   = genParse(parse); break;
+        case 'round':   poly.round   = genParse(parse); break;
+        case 'corners': poly.corners = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, poly.x      );
-    genPushUpdateParamValue(parse, nodeId, 1, poly.y      );
-    genPushUpdateParamValue(parse, nodeId, 2, poly.width  );
-    genPushUpdateParamValue(parse, nodeId, 3, poly.height );
-    genPushUpdateParamValue(parse, nodeId, 4, poly.angle  );
-    genPushUpdateParamValue(parse, nodeId, 5, poly.round  );
-    genPushUpdateParamValue(parse, nodeId, 6, poly.corners);
+    genPushUpdateParamValue(parse, nodeId, 'x',       poly.x      );
+    genPushUpdateParamValue(parse, nodeId, 'y',       poly.y      );
+    genPushUpdateParamValue(parse, nodeId, 'width',   poly.width  );
+    genPushUpdateParamValue(parse, nodeId, 'height',  poly.height );
+    genPushUpdateParamValue(parse, nodeId, 'angle',   poly.angle  );
+    genPushUpdateParamValue(parse, nodeId, 'round',   poly.round  );
+    genPushUpdateParamValue(parse, nodeId, 'corners', poly.corners);
 
 
     if (   active
@@ -293,41 +293,41 @@ function genParseStar(parse)
 
   
     let star = new GStar();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == STAR)
     {
-        star    = genParse(parse); // not genParseStar() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        star     = genParse(parse); // not genParseStar() because genParse() handles stack overflow
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(8).keys()];
+        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: star.x      = genParse(parse); break;
-        case 1: star.y      = genParse(parse); break;
-        case 2: star.width  = genParse(parse); break;
-        case 3: star.height = genParse(parse); break;
-        case 4: star.angle  = genParse(parse); break;
-        case 5: star.round  = genParse(parse); break;
-        case 6: star.points = genParse(parse); break;
-        case 7: star.convex = genParse(parse); break;
+        case 'x':      star.x      = genParse(parse); break;
+        case 'y':      star.y      = genParse(parse); break;
+        case 'width':  star.width  = genParse(parse); break;
+        case 'height': star.height = genParse(parse); break;
+        case 'angle':  star.angle  = genParse(parse); break;
+        case 'round':  star.round  = genParse(parse); break;
+        case 'points': star.points = genParse(parse); break;
+        case 'convex': star.convex = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, star.x     );
-    genPushUpdateParamValue(parse, nodeId, 1, star.y     );
-    genPushUpdateParamValue(parse, nodeId, 2, star.width );
-    genPushUpdateParamValue(parse, nodeId, 3, star.height);
-    genPushUpdateParamValue(parse, nodeId, 4, star.angle );
-    genPushUpdateParamValue(parse, nodeId, 5, star.round );
-    genPushUpdateParamValue(parse, nodeId, 6, star.points);
-    genPushUpdateParamValue(parse, nodeId, 7, star.convex);
+    genPushUpdateParamValue(parse, nodeId, 'x',      star.x     );
+    genPushUpdateParamValue(parse, nodeId, 'y',      star.y     );
+    genPushUpdateParamValue(parse, nodeId, 'width',  star.width );
+    genPushUpdateParamValue(parse, nodeId, 'height', star.height);
+    genPushUpdateParamValue(parse, nodeId, 'angle',  star.angle );
+    genPushUpdateParamValue(parse, nodeId, 'round',  star.round );
+    genPushUpdateParamValue(parse, nodeId, 'points', star.points);
+    genPushUpdateParamValue(parse, nodeId, 'convex', star.convex);
 
 
     if (   active

@@ -2,9 +2,13 @@ class SetParamValueAction
 extends Action
 {
     nodeId;
-    paramIndex;
+    paramId;
 
-    get param() { return nodeFromId(this.nodeId).params[this.paramIndex]; } 
+    get param() 
+    { 
+        return nodeFromId(this.nodeId).params
+            .find(p => p.id == this.paramId); 
+    } 
 
 
     oldValue; // decimal
@@ -16,10 +20,10 @@ extends Action
     {
         super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value);
 
-        this.nodeId     = param.node.id;
-        this.paramIndex = param.index;
+        this.nodeId   = param.node.id;
+        this.paramId  = param.id;
 
-        this.newValue   = value;
+        this.newValue = value;
     }
 
 

@@ -95,7 +95,7 @@ generator.onmessage = function(e)
     {
         case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
 
-        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamIndex, msg.values, msg.objects);                     break;
+        case 'uiUpdateParamsAndObjects': uiUpdateParamsAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
         
         case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
         case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;

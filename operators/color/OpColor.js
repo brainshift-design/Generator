@@ -147,15 +147,15 @@ extends OpColorBase
 
 
         gen.scope.push({
-            nodeId:     this.node.id, 
-            paramIndex: -1 });
+            nodeId:  this.node.id, 
+            paramId: '' });
 
         const req = this.node.getRequestStart();
 
         
         const input = this.node.inputs[0];
 
-        const indices = [];
+        const paramIds = [];
 
 
         if (input.connected)
@@ -165,9 +165,9 @@ extends OpColorBase
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
-                    indices.push(param.index);
+                    paramIds.push(param.id);
 
-            req.push(indices.join(','));
+            req.push(paramIds.join(','));
             
 
             if (this.node.paramSpace.input.connected) req.push(...this.node.paramSpace.genRequest(gen));
@@ -290,17 +290,17 @@ extends OpColorBase
 
 
 
-    updateParamValues(updateIndex, indices, values)
+    updateParamValues(updateParamId, paramIds, values)
     {
-        if (indices.includes(0))
+        if (paramIds.includes('space'))
         {
-            switchToSpace(this, colorSpace(values[indices.indexOf(0)].value));
+            switchToSpace(this, colorSpace(values[paramIds.findIndex(id => id == 'space')].value));
             //setDataColorToCurrentSpace(this, color);
         }
 
-        super.updateParamValues(updateIndex, indices, values);
+        super.updateParamValues(updateParamId, paramIds, values);
 
-        
+
         this._color    = this.getDataColorFromParams();
         //this._oldSpace = toSpace;
 

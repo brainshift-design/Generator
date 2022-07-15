@@ -7,33 +7,33 @@ function genParseColor(parse)
 
   
     let col = new GColor();
-    let indices;
+    let paramIds;
     
     if (parse.req[parse.pos] == COLOR)
     {
         col     = genParse(parse); // not genParseColor() because genParse() handles stack overflow
-        indices = parse.req[parse.pos++].split(',').map(s => parseInt(s));
+        paramIds = parse.req[parse.pos++].split(',');
     }
     else
-        indices = [...Array(4).keys()];
+        paramIds = ['space', 'c1', 'c2', 'c3'];
 
 
-    for (const i of indices)
+    for (const id of paramIds)
     {
-        switch (i)
+        switch (id)
         {
-        case 0: col.space = Math.min(Math.max(0, genParse(parse)), OpColorSpaces.length-1); break;
-        case 1: col.c1    = genParse(parse); break;
-        case 2: col.c2    = genParse(parse); break;
-        case 3: col.c3    = genParse(parse); break;
+        case 'space': col.space = Math.min(Math.max(0, genParse(parse)), OpColorSpaces.length-1); break;
+        case 'c1':    col.c1    = genParse(parse); break;
+        case 'c2':    col.c2    = genParse(parse); break;
+        case 'c3':    col.c3    = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 0, col.space);
-    genPushUpdateParamValue(parse, nodeId, 1, col.c1   );
-    genPushUpdateParamValue(parse, nodeId, 2, col.c2   );
-    genPushUpdateParamValue(parse, nodeId, 3, col.c3   );
+    genPushUpdateParamValue(parse, nodeId, 'space', col.space);
+    genPushUpdateParamValue(parse, nodeId, 'c1',    col.c1   );
+    genPushUpdateParamValue(parse, nodeId, 'c2',    col.c2   );
+    genPushUpdateParamValue(parse, nodeId, 'c3',    col.c3   );
 
 
     return col;

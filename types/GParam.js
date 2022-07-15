@@ -2,20 +2,20 @@ class GParam
 extends GType
 {
     nodeId;
-    index;
+    paramId;
 
     value;
 
 
 
-    constructor(nodeId, index)
+    constructor(nodeId, paramId)
     {
         super(PARAM);
 
-        this.nodeId = nodeId;
-        this.index  = index;
+        this.nodeId  = nodeId;
+        this.paramId = paramId;
 
-        this.value  = null;
+        this.value   = null;
     }
 
 

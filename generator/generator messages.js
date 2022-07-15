@@ -87,9 +87,9 @@ function genPostNextMessageToUI(msg)
         {
             // move along the queue since only the last message is important
             while (uiMessages.length > 0
-                && uiMessages[0].cmd              == msg.cmd
-                && uiMessages[0].updateNodeId     == msg.updateNodeId
-                && uiMessages[0].updateParamIndex == msg.updateParamIndex)
+                && uiMessages[0].cmd           == msg.cmd
+                && uiMessages[0].updateNodeId  == msg.updateNodeId
+                && uiMessages[0].updateParamId == msg.updateParamId)
                 msg = uiMessages.shift();
         }
 

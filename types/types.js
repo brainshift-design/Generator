@@ -47,7 +47,7 @@ const COMMENT            = 'CMNT';
 
 
 const ACTIVE             = 'ACT';
-const PARAM              = 'PARAM'; // nodeId paramIndex
+const PARAM              = 'PARAM'; // nodeId paramId
 
 
 /*
