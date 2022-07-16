@@ -352,6 +352,13 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
 
 
 
+function idFromNode(node)
+{
+    return node ? node.id : '';
+}
+
+
+
 function nodeFromId(id)
 {
     return graph.nodes.find(n => n.id == id);

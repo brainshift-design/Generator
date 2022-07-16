@@ -54,7 +54,7 @@ extends Action
     
     do()
     {
-        this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
+        this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
 

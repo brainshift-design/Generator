@@ -18,7 +18,7 @@ function genParseNumber(parse)
 
     parse.scope.pop();
     if (parse.scope.length == 0) // only top level
-        pushUnique(parse.parsed, num)
+        pushUnique(parse.tree, num)
 
 
     return num;
@@ -41,7 +41,7 @@ function genParseNumberAdd(parse)
         
     parse.scope.pop();
     if (parse.scope.length == 0) // only top level
-        pushUnique(parse.parsed, add)
+        pushUnique(parse.tree, add)
 
 
     return add;

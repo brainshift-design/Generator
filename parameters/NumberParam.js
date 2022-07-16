@@ -150,7 +150,9 @@ extends Parameter
 
     valuesEqual(val1, val2)
     {
-        return val1.value    == val2.value
+        return val1
+            && val2
+            && val1.value    == val2.value
             && val1.decimals == val2.decimals;
     }
 

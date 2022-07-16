@@ -26,7 +26,7 @@ function genRequest(req, settings)
         updateParamId: updateParamId,
 
         scope:         [], // current parse stack
-        parsed:        [], // GTypes that must be evaluated to create the value updates
+        tree:          [], // GTypes that must be evaluated to create the value updates
 
         updateValues:  [],
         updateParams:  [],
@@ -41,23 +41,28 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateValuesAndObjects(parse);
+    genUpdateValuesAndObjects(
+        parse,
+        parse.updateNodeId,
+        parse.updateParamId,
+        parse.updateValues,
+        parse.updateObjects);
 }
 
 
 
-function genPushUpdateParamValue(parse, nodeId, paramId, gvalue)
+function genPushUpdateParamValue(parse, nodeId, paramId, gval)
 {
     const found = parse.updateValues.find(v => 
            v.nodeId     == nodeId 
         && v.paramId    == paramId
-        && v.value.type == gvalue.type);
+        && v.value.type == gval.type);
 
     if (!found) 
         parse.updateValues.push({
             nodeId:  nodeId, 
             paramId: paramId, 
-            value:   gvalue});
+            value:   gval});
 
     //else console.assert(found.value == value);
 }
@@ -77,40 +82,43 @@ function genPushUpdateObject(parse, nodeId, object)
 function clearLastUpdate()
 {
     lastUpdateNodeId  = '';
-    lastUpdateParamId = -1;
+    lastUpdateParamId = '';
     lastUpdateValues  = [];
     lastUpdateObjects = [];
 }
 
 
 
-function genUpdateValuesAndObjects(parse)
+function genUpdateValuesAndObjects(parse, updateNodeId, updateParamId, updateValues, updateObjects)
 {
-    if (   parse.updateValues .length == 0
-        && parse.updateObjects.length == 0)
+    if (!parse)
+        //   updateValues .length == 0
+        //&& updateObjects.length == 0)
     {
-        //console.log('restoring');
-        parse.updateNodeId  = lastUpdateNodeId;
-        parse.updateParamId = lastUpdateParamId;
-        parse.updateValues  = lastUpdateValues;
-        parse.updateObjects = lastUpdateObjects;
+        console.log('restoring');
+        updateNodeId  = lastUpdateNodeId;
+        updateParamId = lastUpdateParamId;
+        updateValues  = lastUpdateValues;
+        updateObjects = lastUpdateObjects;
 
         clearLastUpdate();
     }
     else if (genFigMessagePosted)
     {
-        //console.log('saving');
-        lastUpdateNodeId  = parse.updateNodeId;
-        lastUpdateParamId = parse.updateParamId;
-        lastUpdateValues  = parse.updateValues;
-        lastUpdateObjects = parse.updateObjects;
+        console.log('saving');
+        lastUpdateNodeId  = updateNodeId;
+        lastUpdateParamId = updateParamId;
+        lastUpdateValues  = updateValues;
+        lastUpdateObjects = updateObjects;
 
         return;
     }
+    else // evaluate parse tree
+    {
+        for (const val of parse.tree)
+            val.eval(parse);
+    }
 
-
-    for (const val of parse.parsed)
-        val.eval(parse);
 
     // TODO
     //     eval stage
@@ -132,8 +140,8 @@ function genUpdateValuesAndObjects(parse)
     // }
 
 
-    const nodeIds = filterUnique(parse.updateValues.map(v => v.nodeId));
-    const counts  = nodeIds.map(id => parse.updateValues.filter(v => v.nodeId == id).length);
+    const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
+    const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
 
 
     // send value updates in chunks
@@ -151,12 +159,12 @@ function genUpdateValuesAndObjects(parse)
         objChunk  = [];
 
 
-    while (   o < parse.updateObjects.length 
+    while (   o < updateObjects.length 
            || n < nodeIds.length)
     {
-        if (o < parse.updateObjects.length)
+        if (o < updateObjects.length)
         {
-            objChunk.push(parse.updateObjects[o++]);
+            objChunk.push(updateObjects[o++]);
             oc++;
         }
 
@@ -167,7 +175,7 @@ function genUpdateValuesAndObjects(parse)
                 nodeIds[n],
                 counts [n]);
 
-            const values = parse.updateValues.filter(v => v.nodeId == nodeIds[n]);
+            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
             values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
@@ -185,8 +193,8 @@ function genUpdateValuesAndObjects(parse)
         {
             genQueueMessageToUI({ 
                 cmd:          'uiUpdateParamsAndObjects',
-                updateNodeId:  parse.updateNodeId, 
-                updateParamId: parse.updateParamId, 
+                updateNodeId:  updateNodeId, 
+                updateParamId: updateParamId, 
                 values:        [...nodeChunk].map(v => v.toString()),
                 objects:       [...objChunk]
             });
@@ -205,8 +213,8 @@ function genUpdateValuesAndObjects(parse)
     {
         genQueueMessageToUI({ 
             cmd:          'uiUpdateParamsAndObjects',
-            updateNodeId:  parse.updateNodeId, 
-            updateParamId: parse.updateParamId, 
+            updateNodeId:  updateNodeId, 
+            updateParamId: updateParamId, 
             values:        [...nodeChunk].map(v => v.toString()),
             objects:       [...objChunk]
         });

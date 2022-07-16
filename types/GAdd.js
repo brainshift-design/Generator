@@ -25,7 +25,6 @@ extends GOperator
 
         for (const _val of this.values)
         {
-            console.log('_val =', _val);
             const val = _val.eval(parse);
             console.assert(val.type == NUMBER_VALUE);
 
