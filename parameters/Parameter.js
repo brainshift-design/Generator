@@ -83,7 +83,7 @@ extends EventTarget
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => enableSliderText(this.control, false));
-        this.input.addEventListener('disconnect', () => enableSliderText(this.control, true ));
+        this.input.addEventListener('disconnect', () => { if (!this.node.headerConnected) enableSliderText(this.control, true ); });
     }
 
 

@@ -1,0 +1,49 @@
+class GDivide
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_DIVIDE, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        const result = new GNumber(0);
+
+        
+        if (this.values.length > 0)
+        {
+            result = this.values[0].eval();
+
+
+            for (let i = 1; i < this.values.length; i++)
+            {
+                const val = this.values[i].eval();
+
+                if (val.value == 0) 
+                { 
+                    result.value    = Number.NaN; 
+                    result.decimals = 0;
+                    break; 
+                }
+
+                result.decimals = Math.max(result.decimals, val.decimals);
+                result.value    = floorTo(result.value / val.value, result.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+        }
+
+
+        return result;
+    }
+}

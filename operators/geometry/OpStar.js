@@ -161,9 +161,9 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
         if (   paramIds.includes('width')
             || paramIds.includes('height'))

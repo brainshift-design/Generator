@@ -20,7 +20,7 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramValue = new NumberParam('result', '', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
         enableSliderText(this.#paramValue.control, false);
 
@@ -111,11 +111,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('result'))
+        if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 

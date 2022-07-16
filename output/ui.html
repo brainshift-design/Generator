@@ -4468,52 +4468,92 @@ VECTOR      V
 class GType
 {
     type;
+    value; // eval() result
+
+
 
     constructor(type) 
     {
-        this.type = type;
+        this.type  = type;
+        this.value = null;
     }
 
-    toString() { return ''; }
+
+
+    toString() 
+    { 
+        return type; 
+    }
+}
+
+
+class GOperator
+extends GType
+{
+    nodeId;
+    valid;
+
+
+
+    constructor(type, nodeId)
+    {
+        super(type);
+
+        this.nodeId = nodeId;
+        this.valid  = false;
+    }
+
+
+
+    eval(parse)
+    {
+        // calculate and add value update here
+
+        return null;
+    }
 }
 
 
 class GParam
-extends GType
+extends GOperator
 {
-    nodeId;
     paramId;
 
 
 
     constructor(nodeId, paramId)
     {
-        super(PARAM);
+        super(PARAM, nodeId);
 
-        this.nodeId  = nodeId;
         this.paramId = paramId;
     }
 
 
 
-    toString()
+    eval(parse)
     {
-        return 'GPARAM ERROR';
+        const val = parse.parsed.find(v =>
+               v.nodeId  == this.nodeId
+            && v.paramId == this.paramId);
+
+        console.assert(val);
+
+        return val.eval();
     }
 }
 
 
 class GNumber
-extends GType
+extends GOperator
 {
     value;
     decimals;
 
 
 
-    constructor(val, dec = 0)
+    constructor(nodeId, val, dec = 0)
     {
-        super(NUMBER);
+        super(NUMBER, nodeId);
 
         this.value    = val;
         this.decimals = dec;
@@ -4529,6 +4569,23 @@ extends GType
 
 
 
+    eval(parse)
+    {
+        if (this.valid)
+            return this.value;
+
+
+        this.value = this;
+        
+        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.valid = true;
+        return this.value;
+    }
+
+
+
     toString()
     {
         return isNaN(this.value)
@@ -4539,13 +4596,199 @@ extends GType
 
 
 
-function parseGnum(str)
+function parseGnum(str, nodeId = '')
 {
     return str == '?'
-        ? new GNumber(Number.NaN, 0)
+        ? new GNumber(nodeId, Number.NaN, 0)
         : new GNumber(
+              nodeId,
               parseFloat(str),
               decCount(str));
+}
+
+
+
+class GAdd
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_ADD, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        if (this.valid)
+            return this.value;
+
+
+        this.value = new GNumber(0);
+
+
+        for (const _val of this.values)
+        {
+            const val = _val.value.eval();
+
+            this.value.value   += val.value;
+            this.value.decimals = Math.max(result.decimals, val.decimals);
+        }
+
+
+        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
+
+        this.valid = true;
+        return this.value;
+    }
+}
+
+
+
+class GSubtract
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_SUBTRACT, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        const result = new GNumber(0);
+
+
+        if (this.values.length > 0)
+        {
+            result = this.values[0].eval();
+
+
+            for (let i = 1; i < this.values.length; i++)
+            {
+                const val = this.values[i].eval();
+                
+                result.value   -= val.value;
+                result.decimals = Math.max(result.decimals, val.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+        }
+
+
+        return result;
+    }
+}
+
+
+
+class GMultiply
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_MULTIPLY, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        const result = new GNumber(0);
+
+        
+        if (this.values.length > 0)
+        {
+            result.value = 1;
+
+
+            for (const _val of this.values)
+            {
+                const val = _val.value.eval();
+
+                result.value   *= val.value;
+                result.decimals = Math.max(result.decimals, val.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+        }
+
+
+        return result;
+    }
+}
+
+
+
+class GDivide
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_DIVIDE, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        const result = new GNumber(0);
+
+        
+        if (this.values.length > 0)
+        {
+            result = this.values[0].eval();
+
+
+            for (let i = 1; i < this.values.length; i++)
+            {
+                const val = this.values[i].eval();
+
+                if (val.value == 0) 
+                { 
+                    result.value    = Number.NaN; 
+                    result.decimals = 0;
+                    break; 
+                }
+
+                result.decimals = Math.max(result.decimals, val.decimals);
+                result.value    = floorTo(result.value / val.value, result.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+        }
+
+
+        return result;
+    }
 }
 
 
@@ -5143,7 +5386,7 @@ function genEndFigMessage()
     
     if (   lastUpdateValues .length > 0
         || lastUpdateObjects.length > 0)
-        genUpdateParamValuesAndObjects('', -1, [], []);
+        genUpdateValuesAndObjects('', -1, [], []);
 
     genPostNextMessageToUI();
 }
@@ -5608,9 +5851,16 @@ function genParseNumValue(parse)
 function genParseNumber(parse)
 {
     const nodeId = genParseNumberNodeId(parse);
+    parse.scope.push(nodeId);
+
 
     const num = genParse(parse);    
-    genPushUpdateParamValue(parse, nodeId, 'value', num);
+
+
+    parse.scope.pop();
+    if (parse.scope.length == 0) // only top level
+        pushUnique(parse.parsed, num)
+
 
     return num;
 }
@@ -5619,26 +5869,23 @@ function genParseNumber(parse)
 
 function genParseNumberAdd(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-    
+    const nodeId = genParseNumberNodeId(parse);
+    parse.scope.push(nodeId);
 
-    let result = 0;
-    let maxDec = 0;
+
+    const nValues = parse.req[parse.pos++];
+    const add     = new GAdd(nodeId);
 
     for (let i = 0; i < nValues; i++)
-    {
-        const num = genParse(parse);
+        add.values.push(genParse(parse));
 
-        result += num.value;
-        maxDec = Math.max(maxDec, num.decimals);
-    }
+        
+    parse.scope.pop();
+    if (parse.scope.length == 0) // only top level
+        pushUnique(parse.parsed, add)
 
 
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return add;
 }
 
 
@@ -5648,35 +5895,12 @@ function genParseNumberSubtract(parse)
     const nodeId  = genParseNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
+    const sub = new GSubtract(nodeId);
 
-    let result, maxDec;
+    for (let i = 0; i < nValues; i++)
+        sub.values.push(genParse(parse));
 
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            result -= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return sub;
 }
 
 
@@ -5686,33 +5910,12 @@ function genParseNumberMultiply(parse)
     const nodeId  = genParseNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
+    const mul = new GMultiply(nodeId);
 
-    let result, maxDec;
+    for (let i = 0; i < nValues; i++)
+        mul.values.push(genParse(parse));
 
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        result = 1;
-        maxDec = 0;
-
-        for (let i = 0; i < nValues; i++)
-        {
-            const num = genParse(parse);
-
-            result *= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return mul;
 }
 
 
@@ -5722,42 +5925,12 @@ function genParseNumberDivide(parse)
     const nodeId  = genParseNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
+    const div = new GDivide(nodeId);
 
-    let result, maxDec;
+    for (let i = 0; i < nValues; i++)
+        div.values.push(genParse(parse));
 
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            if (num.value == 0) 
-            { 
-                result = Number.NaN; 
-                maxDec = 0;
-                break; 
-            }
-            
-            maxDec = Math.max(maxDec, num.decimals);
-            result = floorTo(result / num.value, maxDec);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return div;
 }
 
 
@@ -5800,7 +5973,7 @@ function genParseNumberModulo(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
+    genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
 }
@@ -5838,7 +6011,7 @@ function genParseNumberExponent(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
+    genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
 }
@@ -5885,7 +6058,7 @@ function genParseNumberInterpolate(parse)
 
 
     genPushUpdateParamValue(parse, nodeId, 'amount', amount);
-    genPushUpdateParamValue(parse, nodeId, 'result', result);
+    genPushUpdateParamValue(parse, nodeId, 'value', result);
 
     return result;
 }
@@ -5976,10 +6149,7 @@ function genParseParam(parse)
     const nodeId  = parse.req[parse.pos++];
     const paramId = parse.req[parse.pos++];
 
-    const val = new GParam(nodeId, paramId);
-    genPushUpdateParamValue(parse, nodeId, paramId, val);
-
-    return val;
+    return new GParam(nodeId, paramId);
 }
 
 
@@ -6003,11 +6173,17 @@ function genRequest(req, settings)
     const parse = 
     {
         req:               req,
+        
         pos:               2, 
         so:                0,
+        
         updateNodeId:      updateNodeId, 
         updateParamId:     updateParamId,
-        updateParamValues: [],
+
+        scope:             [], // current parse stack
+        parsed:            [], // GTypes that must be evaluated to create the value updates
+
+        updateValues: [],
         updateParams:      [],
         updateObjects:     []
     };
@@ -6020,23 +6196,20 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateParamValuesAndObjects(
-        updateNodeId, 
-        updateParamId, 
-        parse.updateParamValues, 
-        parse.updateObjects);
+    genUpdateValuesAndObjects(parse);
 }
 
 
 
 function genPushUpdateParamValue(parse, nodeId, paramId, gvalue)
 {
-    const found = parse.updateParamValues.find(v => 
-           v.nodeId  == nodeId 
-        && v.paramId == paramId);
+    const found = parse.updateValues.find(v => 
+           v.nodeId     == nodeId 
+        && v.paramId    == paramId
+        && v.value.type == gvalue.type);
 
     if (!found) 
-        parse.updateParamValues.push({
+        parse.updateValues.push({
             nodeId:  nodeId, 
             paramId: paramId, 
             value:   gvalue});
@@ -6066,50 +6239,56 @@ function clearLastUpdate()
 
 
 
-function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(parse)
 {
-    if (   updateValues .length == 0
-        && updateObjects.length == 0)
+    if (   parse.updateValues .length == 0
+        && parse.updateObjects.length == 0)
     {
         //console.log('restoring');
-        updateNodeId  = lastUpdateNodeId;
-        updateParamId = lastUpdateParamId;
-        updateValues  = lastUpdateValues;
-        updateObjects = lastUpdateObjects;
+        parse.updateNodeId  = lastUpdateNodeId;
+        parse.updateParamId = lastUpdateParamId;
+        parse.updateValues  = lastUpdateValues;
+        parse.updateObjects = lastUpdateObjects;
 
         clearLastUpdate();
     }
     else if (genFigMessagePosted)
     {
         //console.log('saving');
-        lastUpdateNodeId  = updateNodeId;
-        lastUpdateParamId = updateParamId;
-        lastUpdateValues  = updateValues;
-        lastUpdateObjects = updateObjects;
+        lastUpdateNodeId  = parse.updateNodeId;
+        lastUpdateParamId = parse.updateParamId;
+        lastUpdateValues  = parse.updateValues;
+        lastUpdateObjects = parse.updateObjects;
 
         return;
     }
 
 
-    // replace params with values
-    for (let i = 0; i < updateValues.length; i++)
-    {
-        //console.log('updateValues[i].value', updateValues[i].value);
-        if (updateValues[i].type == PARAM)
-        {
-            const val = updateValues.find(v => 
-                   v.nodeId  == updateValues[i].nodeId
-                && v.paramId == updateValues[i].paramId);
+    for (const val of parse.parsed)
+        val.eval();
 
-            console.assert(val);
-            console.log('val =', val);
-            updateValues[i] = val;
-        }
-    }
+    // TODO
+    //     eval stage
+    //     GParam() should eval its reference
+    //     add valid tag, only eval invalid types
+
+    // // replace params with values
+    // for (let i = 0; i < updateValues.length; i++)
+    // {
+    //     if (updateValues[i].value.type == PARAM)
+    //     {
+    //         const val = updateValues.find(v => 
+    //                v.nodeId  == updateValues[i].value.nodeId
+    //             && v.paramId == updateValues[i].value.paramId);
+
+    //         console.assert(val);
+    //         updateValues[i].value = val.value;
+    //     }
+    // }
 
 
-    const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
-    const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
+    const nodeIds = filterUnique(parse.updateValues.map(v => v.nodeId));
+    const counts  = nodeIds.map(id => parse.updateValues.filter(v => v.nodeId == id).length);
 
 
     // send value updates in chunks
@@ -6127,12 +6306,12 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
         objChunk  = [];
 
 
-    while (   o < updateObjects.length 
+    while (   o < parse.updateObjects.length 
            || n < nodeIds.length)
     {
-        if (o < updateObjects.length)
+        if (o < parse.updateObjects.length)
         {
-            objChunk.push(updateObjects[o++]);
+            objChunk.push(parse.updateObjects[o++]);
             oc++;
         }
 
@@ -6143,7 +6322,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
                 nodeIds[n],
                 counts [n]);
 
-            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+            const values = parse.updateValues.filter(v => v.nodeId == nodeIds[n]);
             values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
@@ -6161,8 +6340,8 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
         {
             genQueueMessageToUI({ 
                 cmd:          'uiUpdateParamsAndObjects',
-                updateNodeId:  updateNodeId, 
-                updateParamId: updateParamId, 
+                updateNodeId:  parse.updateNodeId, 
+                updateParamId: parse.updateParamId, 
                 values:        [...nodeChunk].map(v => v.toString()),
                 objects:       [...objChunk]
             });
@@ -6181,8 +6360,8 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
     {
         genQueueMessageToUI({ 
             cmd:          'uiUpdateParamsAndObjects',
-            updateNodeId:  updateNodeId, 
-            updateParamId: updateParamId, 
+            updateNodeId:  parse.updateNodeId, 
+            updateParamId: parse.updateParamId, 
             values:        [...nodeChunk].map(v => v.toString()),
             objects:       [...objChunk]
         });
@@ -12626,52 +12805,92 @@ VECTOR      V
 class GType
 {
     type;
+    value; // eval() result
+
+
 
     constructor(type) 
     {
-        this.type = type;
+        this.type  = type;
+        this.value = null;
     }
 
-    toString() { return ''; }
+
+
+    toString() 
+    { 
+        return type; 
+    }
+}
+
+
+class GOperator
+extends GType
+{
+    nodeId;
+    valid;
+
+
+
+    constructor(type, nodeId)
+    {
+        super(type);
+
+        this.nodeId = nodeId;
+        this.valid  = false;
+    }
+
+
+
+    eval(parse)
+    {
+        // calculate and add value update here
+
+        return null;
+    }
 }
 
 
 class GParam
-extends GType
+extends GOperator
 {
-    nodeId;
     paramId;
 
 
 
     constructor(nodeId, paramId)
     {
-        super(PARAM);
+        super(PARAM, nodeId);
 
-        this.nodeId  = nodeId;
         this.paramId = paramId;
     }
 
 
 
-    toString()
+    eval(parse)
     {
-        return 'GPARAM ERROR';
+        const val = parse.parsed.find(v =>
+               v.nodeId  == this.nodeId
+            && v.paramId == this.paramId);
+
+        console.assert(val);
+
+        return val.eval();
     }
 }
 
 
 class GNumber
-extends GType
+extends GOperator
 {
     value;
     decimals;
 
 
 
-    constructor(val, dec = 0)
+    constructor(nodeId, val, dec = 0)
     {
-        super(NUMBER);
+        super(NUMBER, nodeId);
 
         this.value    = val;
         this.decimals = dec;
@@ -12687,6 +12906,23 @@ extends GType
 
 
 
+    eval(parse)
+    {
+        if (this.valid)
+            return this.value;
+
+
+        this.value = this;
+        
+        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.valid = true;
+        return this.value;
+    }
+
+
+
     toString()
     {
         return isNaN(this.value)
@@ -12697,13 +12933,199 @@ extends GType
 
 
 
-function parseGnum(str)
+function parseGnum(str, nodeId = '')
 {
     return str == '?'
-        ? new GNumber(Number.NaN, 0)
+        ? new GNumber(nodeId, Number.NaN, 0)
         : new GNumber(
+              nodeId,
               parseFloat(str),
               decCount(str));
+}
+
+
+
+class GAdd
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_ADD, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        if (this.valid)
+            return this.value;
+
+
+        this.value = new GNumber(0);
+
+
+        for (const _val of this.values)
+        {
+            const val = _val.value.eval();
+
+            this.value.value   += val.value;
+            this.value.decimals = Math.max(result.decimals, val.decimals);
+        }
+
+
+        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
+
+        this.valid = true;
+        return this.value;
+    }
+}
+
+
+
+class GSubtract
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_SUBTRACT, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        const result = new GNumber(0);
+
+
+        if (this.values.length > 0)
+        {
+            result = this.values[0].eval();
+
+
+            for (let i = 1; i < this.values.length; i++)
+            {
+                const val = this.values[i].eval();
+                
+                result.value   -= val.value;
+                result.decimals = Math.max(result.decimals, val.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+        }
+
+
+        return result;
+    }
+}
+
+
+
+class GMultiply
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_MULTIPLY, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        const result = new GNumber(0);
+
+        
+        if (this.values.length > 0)
+        {
+            result.value = 1;
+
+
+            for (const _val of this.values)
+            {
+                const val = _val.value.eval();
+
+                result.value   *= val.value;
+                result.decimals = Math.max(result.decimals, val.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+        }
+
+
+        return result;
+    }
+}
+
+
+
+class GDivide
+extends GOperator
+{
+    values;
+
+
+
+    constructor(nodeId, values = [])
+    {
+        super(NUMBER_DIVIDE, nodeId);
+        
+        this.values = values;
+    }
+
+
+    
+    eval(parse)
+    {
+        const result = new GNumber(0);
+
+        
+        if (this.values.length > 0)
+        {
+            result = this.values[0].eval();
+
+
+            for (let i = 1; i < this.values.length; i++)
+            {
+                const val = this.values[i].eval();
+
+                if (val.value == 0) 
+                { 
+                    result.value    = Number.NaN; 
+                    result.decimals = 0;
+                    break; 
+                }
+
+                result.decimals = Math.max(result.decimals, val.decimals);
+                result.value    = floorTo(result.value / val.value, result.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+        }
+
+
+        return result;
+    }
 }
 
 
@@ -17345,7 +17767,7 @@ extends EventTarget
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => enableSliderText(this.control, false));
-        this.input.addEventListener('disconnect', () => enableSliderText(this.control, true ));
+        this.input.addEventListener('disconnect', () => { if (!this.node.headerConnected) enableSliderText(this.control, true ); });
     }
 
 
@@ -20147,7 +20569,7 @@ class Operator
 
 
 
-    updateParamValues(updateParamId, paramIds, values) // virtual
+    updateValues(updateParamId, paramIds, values) // virtual
     {
         for (let i = 0; i < paramIds.length; i++)
         {
@@ -20268,7 +20690,7 @@ class Operator
                 const index = this.params.findIndex(p => p.id == _param[0]);
                 
                 if (index >= 0) 
-                    this.params[index].setValue(parseGnum(_param[1]), true, true, false);
+                    this.params[index].setValue(parseGnum(_param[1], _node.nodeId), true, true, false);
             }
         }
     }
@@ -21325,9 +21747,9 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
         if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
@@ -21408,7 +21830,7 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramValue = new NumberParam('result', '', false, false, false));
+        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
         enableSliderText(this.#paramValue.control, false);
 
@@ -21499,11 +21921,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('result'))
+        if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
@@ -21730,7 +22152,7 @@ extends OperatorBase
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
         this.addParam(this.#paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
-        this.addParam(this.#paramValue     = new NumberParam('result', '', false, false, false));
+        this.addParam(this.#paramValue     = new NumberParam('value', '', false, false, false));
 
         enableSliderText(this.#paramValue.control, false);
 
@@ -21821,11 +22243,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('result'))
+        if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 
@@ -21946,7 +22368,7 @@ extends OperatorBase
 
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
-        this.addParam(this.paramValue  = new NumberParam('result', '', false, false, false, 0));
+        this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
 
         enableSliderText(this.paramValue.control, false);
@@ -22001,11 +22423,11 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('result'))
+        if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     }
 }
@@ -22491,7 +22913,7 @@ extends OpColorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
         if (paramIds.includes('space'))
         {
@@ -22499,7 +22921,7 @@ extends OpColorBase
             //setDataColorToCurrentSpace(this, color);
         }
 
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
 
         this._color    = this.getDataColorFromParams();
@@ -24867,9 +25289,9 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
         if (   paramIds.includes('width')
             || paramIds.includes('height'))
@@ -25389,9 +25811,9 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
         if (   paramIds.includes('width')
             || paramIds.includes('height'))
@@ -25616,9 +26038,9 @@ extends OperatorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
         if (   paramIds.includes('width')
             || paramIds.includes('height'))
@@ -29302,10 +29724,10 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
             for (let j = 0; j < count; j++)
             {
                 _indices.push(values[i++]);
-                _values .push(parseGnum(values[i++]));
+                _values .push(parseGnum(values[i++], nodeId));
             }
 
-            node.updateParamValues(
+            node.updateValues(
                 updateNodeId == nodeId ? updateParamId : -1,
                 _indices,
                 _values);

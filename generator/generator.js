@@ -18,11 +18,17 @@ function genRequest(req, settings)
     const parse = 
     {
         req:               req,
+        
         pos:               2, 
         so:                0,
+        
         updateNodeId:      updateNodeId, 
         updateParamId:     updateParamId,
-        updateParamValues: [],
+
+        scope:             [], // current parse stack
+        parsed:            [], // GTypes that must be evaluated to create the value updates
+
+        updateValues: [],
         updateParams:      [],
         updateObjects:     []
     };
@@ -35,23 +41,20 @@ function genRequest(req, settings)
         genParse(parse);
     
 
-    genUpdateParamValuesAndObjects(
-        updateNodeId, 
-        updateParamId, 
-        parse.updateParamValues, 
-        parse.updateObjects);
+    genUpdateValuesAndObjects(parse);
 }
 
 
 
 function genPushUpdateParamValue(parse, nodeId, paramId, gvalue)
 {
-    const found = parse.updateParamValues.find(v => 
-           v.nodeId  == nodeId 
-        && v.paramId == paramId);
+    const found = parse.updateValues.find(v => 
+           v.nodeId     == nodeId 
+        && v.paramId    == paramId
+        && v.value.type == gvalue.type);
 
     if (!found) 
-        parse.updateParamValues.push({
+        parse.updateValues.push({
             nodeId:  nodeId, 
             paramId: paramId, 
             value:   gvalue});
@@ -81,50 +84,56 @@ function clearLastUpdate()
 
 
 
-function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(parse)
 {
-    if (   updateValues .length == 0
-        && updateObjects.length == 0)
+    if (   parse.updateValues .length == 0
+        && parse.updateObjects.length == 0)
     {
         //console.log('restoring');
-        updateNodeId  = lastUpdateNodeId;
-        updateParamId = lastUpdateParamId;
-        updateValues  = lastUpdateValues;
-        updateObjects = lastUpdateObjects;
+        parse.updateNodeId  = lastUpdateNodeId;
+        parse.updateParamId = lastUpdateParamId;
+        parse.updateValues  = lastUpdateValues;
+        parse.updateObjects = lastUpdateObjects;
 
         clearLastUpdate();
     }
     else if (genFigMessagePosted)
     {
         //console.log('saving');
-        lastUpdateNodeId  = updateNodeId;
-        lastUpdateParamId = updateParamId;
-        lastUpdateValues  = updateValues;
-        lastUpdateObjects = updateObjects;
+        lastUpdateNodeId  = parse.updateNodeId;
+        lastUpdateParamId = parse.updateParamId;
+        lastUpdateValues  = parse.updateValues;
+        lastUpdateObjects = parse.updateObjects;
 
         return;
     }
 
 
-    // replace params with values
-    for (let i = 0; i < updateValues.length; i++)
-    {
-        //console.log('updateValues[i].value', updateValues[i].value);
-        if (updateValues[i].type == PARAM)
-        {
-            const val = updateValues.find(v => 
-                   v.nodeId  == updateValues[i].nodeId
-                && v.paramId == updateValues[i].paramId);
+    for (const val of parse.parsed)
+        val.eval();
 
-            console.assert(val);
-            console.log('val =', val);
-            updateValues[i] = val;
-        }
-    }
+    // TODO
+    //     eval stage
+    //     GParam() should eval its reference
+    //     add valid tag, only eval invalid types
+
+    // // replace params with values
+    // for (let i = 0; i < updateValues.length; i++)
+    // {
+    //     if (updateValues[i].value.type == PARAM)
+    //     {
+    //         const val = updateValues.find(v => 
+    //                v.nodeId  == updateValues[i].value.nodeId
+    //             && v.paramId == updateValues[i].value.paramId);
+
+    //         console.assert(val);
+    //         updateValues[i].value = val.value;
+    //     }
+    // }
 
 
-    const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
-    const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
+    const nodeIds = filterUnique(parse.updateValues.map(v => v.nodeId));
+    const counts  = nodeIds.map(id => parse.updateValues.filter(v => v.nodeId == id).length);
 
 
     // send value updates in chunks
@@ -142,12 +151,12 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
         objChunk  = [];
 
 
-    while (   o < updateObjects.length 
+    while (   o < parse.updateObjects.length 
            || n < nodeIds.length)
     {
-        if (o < updateObjects.length)
+        if (o < parse.updateObjects.length)
         {
-            objChunk.push(updateObjects[o++]);
+            objChunk.push(parse.updateObjects[o++]);
             oc++;
         }
 
@@ -158,7 +167,7 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
                 nodeIds[n],
                 counts [n]);
 
-            const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
+            const values = parse.updateValues.filter(v => v.nodeId == nodeIds[n]);
             values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
@@ -176,8 +185,8 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
         {
             genQueueMessageToUI({ 
                 cmd:          'uiUpdateParamsAndObjects',
-                updateNodeId:  updateNodeId, 
-                updateParamId: updateParamId, 
+                updateNodeId:  parse.updateNodeId, 
+                updateParamId: parse.updateParamId, 
                 values:        [...nodeChunk].map(v => v.toString()),
                 objects:       [...objChunk]
             });
@@ -196,8 +205,8 @@ function genUpdateParamValuesAndObjects(updateNodeId, updateParamId, updateValue
     {
         genQueueMessageToUI({ 
             cmd:          'uiUpdateParamsAndObjects',
-            updateNodeId:  updateNodeId, 
-            updateParamId: updateParamId, 
+            updateNodeId:  parse.updateNodeId, 
+            updateParamId: parse.updateParamId, 
             values:        [...nodeChunk].map(v => v.toString()),
             objects:       [...objChunk]
         });

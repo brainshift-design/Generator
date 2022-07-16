@@ -50,7 +50,7 @@ function genEndFigMessage()
     
     if (   lastUpdateValues .length > 0
         || lastUpdateObjects.length > 0)
-        genUpdateParamValuesAndObjects('', -1, [], []);
+        genUpdateValuesAndObjects('', -1, [], []);
 
     genPostNextMessageToUI();
 }

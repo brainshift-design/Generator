@@ -10,9 +10,16 @@ function genParseNumValue(parse)
 function genParseNumber(parse)
 {
     const nodeId = genParseNumberNodeId(parse);
+    parse.scope.push(nodeId);
+
 
     const num = genParse(parse);    
-    genPushUpdateParamValue(parse, nodeId, 'value', num);
+
+
+    parse.scope.pop();
+    if (parse.scope.length == 0) // only top level
+        pushUnique(parse.parsed, num)
+
 
     return num;
 }
@@ -21,26 +28,23 @@ function genParseNumber(parse)
 
 function genParseNumberAdd(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
-    const nValues = parse.req[parse.pos++];
-    
+    const nodeId = genParseNumberNodeId(parse);
+    parse.scope.push(nodeId);
 
-    let result = 0;
-    let maxDec = 0;
+
+    const nValues = parse.req[parse.pos++];
+    const add     = new GAdd(nodeId);
 
     for (let i = 0; i < nValues; i++)
-    {
-        const num = genParse(parse);
+        add.values.push(genParse(parse));
 
-        result += num.value;
-        maxDec = Math.max(maxDec, num.decimals);
-    }
+        
+    parse.scope.pop();
+    if (parse.scope.length == 0) // only top level
+        pushUnique(parse.parsed, add)
 
 
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return add;
 }
 
 
@@ -50,35 +54,12 @@ function genParseNumberSubtract(parse)
     const nodeId  = genParseNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
+    const sub = new GSubtract(nodeId);
 
-    let result, maxDec;
+    for (let i = 0; i < nValues; i++)
+        sub.values.push(genParse(parse));
 
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            result -= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return sub;
 }
 
 
@@ -88,33 +69,12 @@ function genParseNumberMultiply(parse)
     const nodeId  = genParseNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
+    const mul = new GMultiply(nodeId);
 
-    let result, maxDec;
+    for (let i = 0; i < nValues; i++)
+        mul.values.push(genParse(parse));
 
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        result = 1;
-        maxDec = 0;
-
-        for (let i = 0; i < nValues; i++)
-        {
-            const num = genParse(parse);
-
-            result *= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return mul;
 }
 
 
@@ -124,42 +84,12 @@ function genParseNumberDivide(parse)
     const nodeId  = genParseNumberNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
+    const div = new GDivide(nodeId);
 
-    let result, maxDec;
+    for (let i = 0; i < nValues; i++)
+        div.values.push(genParse(parse));
 
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            if (num.value == 0) 
-            { 
-                result = Number.NaN; 
-                maxDec = 0;
-                break; 
-            }
-            
-            maxDec = Math.max(maxDec, num.decimals);
-            result = floorTo(result / num.value, maxDec);
-        }
-    }
-
-
-    const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
-
-    return num;
+    return div;
 }
 
 
@@ -202,7 +132,7 @@ function genParseNumberModulo(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
+    genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
 }
@@ -240,7 +170,7 @@ function genParseNumberExponent(parse)
 
 
     const num = new GNumber(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'result', num);
+    genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
 }
@@ -287,7 +217,7 @@ function genParseNumberInterpolate(parse)
 
 
     genPushUpdateParamValue(parse, nodeId, 'amount', amount);
-    genPushUpdateParamValue(parse, nodeId, 'result', result);
+    genPushUpdateParamValue(parse, nodeId, 'value', result);
 
     return result;
 }

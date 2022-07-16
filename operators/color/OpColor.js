@@ -290,7 +290,7 @@ extends OpColorBase
 
 
 
-    updateParamValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values)
     {
         if (paramIds.includes('space'))
         {
@@ -298,7 +298,7 @@ extends OpColorBase
             //setDataColorToCurrentSpace(this, color);
         }
 
-        super.updateParamValues(updateParamId, paramIds, values);
+        super.updateValues(updateParamId, paramIds, values);
 
 
         this._color    = this.getDataColorFromParams();

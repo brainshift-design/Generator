@@ -1,23 +1,27 @@
 class GParam
-extends GType
+extends GOperator
 {
-    nodeId;
     paramId;
 
 
 
     constructor(nodeId, paramId)
     {
-        super(PARAM);
+        super(PARAM, nodeId);
 
-        this.nodeId  = nodeId;
         this.paramId = paramId;
     }
 
 
 
-    toString()
+    eval(parse)
     {
-        return 'GPARAM ERROR';
+        const val = parse.parsed.find(v =>
+               v.nodeId  == this.nodeId
+            && v.paramId == this.paramId);
+
+        console.assert(val);
+
+        return val.eval();
     }
 }

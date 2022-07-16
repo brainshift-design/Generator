@@ -1,14 +1,14 @@
 class GNumber
-extends GType
+extends GOperator
 {
     value;
     decimals;
 
 
 
-    constructor(val, dec = 0)
+    constructor(nodeId, val, dec = 0)
     {
-        super(NUMBER);
+        super(NUMBER, nodeId);
 
         this.value    = val;
         this.decimals = dec;
@@ -24,6 +24,23 @@ extends GType
 
 
 
+    eval(parse)
+    {
+        if (this.valid)
+            return this.value;
+
+
+        this.value = this;
+        
+        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.valid = true;
+        return this.value;
+    }
+
+
+
     toString()
     {
         return isNaN(this.value)
@@ -34,11 +51,12 @@ extends GType
 
 
 
-function parseGnum(str)
+function parseGnum(str, nodeId = '')
 {
     return str == '?'
-        ? new GNumber(Number.NaN, 0)
+        ? new GNumber(nodeId, Number.NaN, 0)
         : new GNumber(
+              nodeId,
               parseFloat(str),
               decCount(str));
 }

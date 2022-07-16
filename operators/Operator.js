@@ -529,7 +529,7 @@ class Operator
 
 
 
-    updateParamValues(updateParamId, paramIds, values) // virtual
+    updateValues(updateParamId, paramIds, values) // virtual
     {
         for (let i = 0; i < paramIds.length; i++)
         {
@@ -650,7 +650,7 @@ class Operator
                 const index = this.params.findIndex(p => p.id == _param[0]);
                 
                 if (index >= 0) 
-                    this.params[index].setValue(parseGnum(_param[1]), true, true, false);
+                    this.params[index].setValue(parseGnum(_param[1], _node.nodeId), true, true, false);
             }
         }
     }

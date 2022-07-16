@@ -857,10 +857,10 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
             for (let j = 0; j < count; j++)
             {
                 _indices.push(values[i++]);
-                _values .push(parseGnum(values[i++]));
+                _values .push(parseGnum(values[i++], nodeId));
             }
 
-            node.updateParamValues(
+            node.updateValues(
                 updateNodeId == nodeId ? updateParamId : -1,
                 _indices,
                 _values);
