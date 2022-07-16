@@ -167,7 +167,7 @@ extends Parameter
         {
             req.push( 
                 NUMBER_VALUE, 
-                new GNumber(
+                new GNumberValue(
                     this.control.value, 
                     this.control.displayDec).toString());
         }

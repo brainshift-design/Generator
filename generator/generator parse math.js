@@ -2,7 +2,7 @@ function genParseNumValue(parse)
 {
     parse.pos++; // N
 
-    return parseGnum(parse.req[parse.pos++]);
+    return parseGnumVal(parse.req[parse.pos++]);
 }
 
 
@@ -131,7 +131,7 @@ function genParseNumberModulo(parse)
     }
 
 
-    const num = new GNumber(result, maxDec);
+    const num = new GNumberValue(result, maxDec);
     genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
@@ -169,7 +169,7 @@ function genParseNumberExponent(parse)
     }
 
 
-    const num = new GNumber(result, maxDec);
+    const num = new GNumberValue(result, maxDec);
     genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
@@ -193,7 +193,7 @@ function genParseNumberInterpolate(parse)
 
         const maxDec = Math.max(num0.decimals, num1.decimals);
 
-        result = new GNumber(
+        result = new GNumberValue(
             maxDec == 0
             ? num0.value + Math.floor(amount.value * (num1.value - num0.value) / 100)
             : num0.value + amount.value * (num1.value - num0.value) / 100,
@@ -209,7 +209,7 @@ function genParseNumberInterpolate(parse)
     else if (nValues == 0)
     {
         amount = genParse(parse);
-        result = new GNumber(0);
+        result = new GNumberValue(0);
     }
 
 

@@ -2891,7 +2891,7 @@ VECTOR      V
 class GType
 {
     type;
-    value; // eval() result
+    value; // eval result
 
 
 
@@ -2899,6 +2899,15 @@ class GType
     {
         this.type  = type;
         this.value = null;
+    }
+
+
+
+    eval(parse)
+    {
+        // calculate and add value update here
+
+        return null;
     }
 
 
@@ -2924,15 +2933,6 @@ extends GType
 
         this.nodeId = nodeId;
         this.valid  = false;
-    }
-
-
-
-    eval(parse)
-    {
-        // calculate and add value update here
-
-        return null;
     }
 }
 
@@ -2961,9 +2961,64 @@ extends GOperator
 
         console.assert(val);
 
-        return val.eval();
+        return val.eval(parse);
     }
 }
+
+
+class GNumberValue
+extends GType
+{
+    value;
+    decimals;
+
+
+
+    constructor(val, dec = 0)
+    {
+        super(NUMBER_VALUE);
+
+        this.value    = val;
+        this.decimals = dec;
+    }
+
+
+
+    get valid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return isNaN(this.value)
+            ? '?'
+            : numToString(this.value, this.decimals);    
+    }
+}
+
+
+
+function parseGnumVal(str, nodeId = '')
+{
+    return str == '?'
+        ? new GNumberValue(nodeId, Number.NaN, 0)
+        : new GNumberValue(
+              nodeId,
+              parseFloat(str),
+              decCount(str));
+}
+
 
 
 class GNumber
@@ -3006,25 +3061,15 @@ extends GOperator
         this.valid = true;
         return this.value;
     }
-
-
-
-    toString()
-    {
-        return isNaN(this.value)
-            ? '?'
-            : numToString(this.value, this.decimals);    
-    }
 }
 
 
 
-function parseGnum(str, nodeId = '')
+function parseGnumVal(str)
 {
     return str == '?'
-        ? new GNumber(nodeId, Number.NaN, 0)
-        : new GNumber(
-              nodeId,
+        ? new GNumberValue(Number.NaN, 0)
+        : new GNumberValue(
               parseFloat(str),
               decCount(str));
 }
@@ -3053,15 +3098,17 @@ extends GOperator
             return this.value;
 
 
-        this.value = new GNumber(0);
+        this.value = new GNumberValue(0);
 
 
         for (const _val of this.values)
         {
-            const val = _val.value.eval();
+            console.log('_val =', _val);
+            const val = _val.eval(parse);
+            console.assert(val.type == NUMBER_VALUE);
 
             this.value.value   += val.value;
-            this.value.decimals = Math.max(result.decimals, val.decimals);
+            this.value.decimals = Math.max(this.value.decimals, val.decimals);
         }
 
 
@@ -3097,12 +3144,12 @@ extends GOperator
 
         if (this.values.length > 0)
         {
-            result = this.values[0].eval();
+        result = this.values[0].eval(parse);
 
 
             for (let i = 1; i < this.values.length; i++)
             {
-                const val = this.values[i].eval();
+                const val = this.values[i].eval(parse);
                 
                 result.value   -= val.value;
                 result.decimals = Math.max(result.decimals, val.decimals);
@@ -3147,7 +3194,7 @@ extends GOperator
 
             for (const _val of this.values)
             {
-                const val = _val.value.eval();
+                const val = _val.value.eval(parse);
 
                 result.value   *= val.value;
                 result.decimals = Math.max(result.decimals, val.decimals);
@@ -3187,12 +3234,12 @@ extends GOperator
         
         if (this.values.length > 0)
         {
-            result = this.values[0].eval();
+            result = this.values[0].eval(parse);
 
 
             for (let i = 1; i < this.values.length; i++)
             {
-                const val = this.values[i].eval();
+                const val = this.values[i].eval(parse);
 
                 if (val.value == 0) 
                 { 
@@ -4266,7 +4313,7 @@ function genParseNumValue(parse)
 {
     parse.pos++; // N
 
-    return parseGnum(parse.req[parse.pos++]);
+    return parseGnumVal(parse.req[parse.pos++]);
 }
 
 
@@ -4395,7 +4442,7 @@ function genParseNumberModulo(parse)
     }
 
 
-    const num = new GNumber(result, maxDec);
+    const num = new GNumberValue(result, maxDec);
     genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
@@ -4433,7 +4480,7 @@ function genParseNumberExponent(parse)
     }
 
 
-    const num = new GNumber(result, maxDec);
+    const num = new GNumberValue(result, maxDec);
     genPushUpdateParamValue(parse, nodeId, 'value', num);
 
     return num;
@@ -4457,7 +4504,7 @@ function genParseNumberInterpolate(parse)
 
         const maxDec = Math.max(num0.decimals, num1.decimals);
 
-        result = new GNumber(
+        result = new GNumberValue(
             maxDec == 0
             ? num0.value + Math.floor(amount.value * (num1.value - num0.value) / 100)
             : num0.value + amount.value * (num1.value - num0.value) / 100,
@@ -4473,7 +4520,7 @@ function genParseNumberInterpolate(parse)
     else if (nValues == 0)
     {
         amount = genParse(parse);
-        result = new GNumber(0);
+        result = new GNumberValue(0);
     }
 
 
@@ -4595,20 +4642,20 @@ function genRequest(req, settings)
 
     const parse = 
     {
-        req:               req,
+        req:           req,
         
-        pos:               2, 
-        so:                0,
+        pos:           2, 
+        so:            0,
         
-        updateNodeId:      updateNodeId, 
-        updateParamId:     updateParamId,
+        updateNodeId:  updateNodeId, 
+        updateParamId: updateParamId,
 
-        scope:             [], // current parse stack
-        parsed:            [], // GTypes that must be evaluated to create the value updates
+        scope:         [], // current parse stack
+        parsed:        [], // GTypes that must be evaluated to create the value updates
 
-        updateValues: [],
-        updateParams:      [],
-        updateObjects:     []
+        updateValues:  [],
+        updateParams:  [],
+        updateObjects: []
     };
 
     
@@ -4688,7 +4735,7 @@ function genUpdateValuesAndObjects(parse)
 
 
     for (const val of parse.parsed)
-        val.eval();
+        val.eval(parse);
 
     // TODO
     //     eval stage

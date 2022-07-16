@@ -20,15 +20,17 @@ extends GOperator
             return this.value;
 
 
-        this.value = new GNumber(0);
+        this.value = new GNumberValue(0);
 
 
         for (const _val of this.values)
         {
-            const val = _val.value.eval();
+            console.log('_val =', _val);
+            const val = _val.eval(parse);
+            console.assert(val.type == NUMBER_VALUE);
 
             this.value.value   += val.value;
-            this.value.decimals = Math.max(result.decimals, val.decimals);
+            this.value.decimals = Math.max(this.value.decimals, val.decimals);
         }
 
 

@@ -22,6 +22,6 @@ extends GOperator
 
         console.assert(val);
 
-        return val.eval();
+        return val.eval(parse);
     }
 }

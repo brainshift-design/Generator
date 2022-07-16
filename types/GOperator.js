@@ -13,13 +13,4 @@ extends GType
         this.nodeId = nodeId;
         this.valid  = false;
     }
-
-
-
-    eval(parse)
-    {
-        // calculate and add value update here
-
-        return null;
-    }
 }

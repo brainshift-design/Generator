@@ -5,6 +5,7 @@
 ../types/GOperator.js
 ../types/GParam.js
 
+../types/GNumberValue.js
 ../types/GNumber.js
 ../types/GAdd.js
 ../types/GSubtract.js

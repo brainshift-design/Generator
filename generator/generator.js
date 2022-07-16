@@ -17,20 +17,20 @@ function genRequest(req, settings)
 
     const parse = 
     {
-        req:               req,
+        req:           req,
         
-        pos:               2, 
-        so:                0,
+        pos:           2, 
+        so:            0,
         
-        updateNodeId:      updateNodeId, 
-        updateParamId:     updateParamId,
+        updateNodeId:  updateNodeId, 
+        updateParamId: updateParamId,
 
-        scope:             [], // current parse stack
-        parsed:            [], // GTypes that must be evaluated to create the value updates
+        scope:         [], // current parse stack
+        parsed:        [], // GTypes that must be evaluated to create the value updates
 
-        updateValues: [],
-        updateParams:      [],
-        updateObjects:     []
+        updateValues:  [],
+        updateParams:  [],
+        updateObjects: []
     };
 
     
@@ -110,7 +110,7 @@ function genUpdateValuesAndObjects(parse)
 
 
     for (const val of parse.parsed)
-        val.eval();
+        val.eval(parse);
 
     // TODO
     //     eval stage

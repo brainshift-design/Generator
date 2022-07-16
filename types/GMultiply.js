@@ -26,7 +26,7 @@ extends GOperator
 
             for (const _val of this.values)
             {
-                const val = _val.value.eval();
+                const val = _val.value.eval(parse);
 
                 result.value   *= val.value;
                 result.decimals = Math.max(result.decimals, val.decimals);

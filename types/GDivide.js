@@ -21,12 +21,12 @@ extends GOperator
         
         if (this.values.length > 0)
         {
-            result = this.values[0].eval();
+            result = this.values[0].eval(parse);
 
 
             for (let i = 1; i < this.values.length; i++)
             {
-                const val = this.values[i].eval();
+                const val = this.values[i].eval(parse);
 
                 if (val.value == 0) 
                 { 

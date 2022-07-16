@@ -38,25 +38,15 @@ extends GOperator
         this.valid = true;
         return this.value;
     }
-
-
-
-    toString()
-    {
-        return isNaN(this.value)
-            ? '?'
-            : numToString(this.value, this.decimals);    
-    }
 }
 
 
 
-function parseGnum(str, nodeId = '')
+function parseGnumVal(str)
 {
     return str == '?'
-        ? new GNumber(nodeId, Number.NaN, 0)
-        : new GNumber(
-              nodeId,
+        ? new GNumberValue(Number.NaN, 0)
+        : new GNumberValue(
               parseFloat(str),
               decCount(str));
 }

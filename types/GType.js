@@ -1,7 +1,7 @@
 class GType
 {
     type;
-    value; // eval() result
+    value; // eval result
 
 
 
@@ -9,6 +9,15 @@ class GType
     {
         this.type  = type;
         this.value = null;
+    }
+
+
+
+    eval(parse)
+    {
+        // calculate and add value update here
+
+        return null;
     }
 
 

@@ -16,7 +16,7 @@ extends Parameter
     // }
         
         
-    get genValue() { return new GNumber(this.control.value, this.control.displayDec); }
+    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
     get valueText() { return this.control.valueText; }
@@ -72,7 +72,10 @@ extends Parameter
         if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => this.setValue(new GNumber(this.control.value, this.control.displayDec), true,  false));
+        this.control.addEventListener('confirm', () => 
+        {
+            this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
+        });
 
 
         this.control.addEventListener('finishedit', e =>
@@ -86,7 +89,7 @@ extends Parameter
                        && this.allowEditDecimals))
             {
                 const _dec = Math.log10(this.control.valueScale);
-                this.setValue(new GNumber(e.detail.value, dec + _dec), true);
+                this.setValue(new GNumberValue(e.detail.value, dec + _dec), true);
                 e.preventSetValue = true;
             }
         });
@@ -206,7 +209,7 @@ extends Parameter
         {
             req.push( 
                 NUMBER_VALUE, 
-                new GNumber(
+                new GNumberValue(
                     this.control.value, 
                     this.control.displayDec).toString());
         }

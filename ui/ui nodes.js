@@ -857,11 +857,11 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
             for (let j = 0; j < count; j++)
             {
                 _indices.push(values[i++]);
-                _values .push(parseGnum(values[i++], nodeId));
+                _values .push(parseGnumVal(values[i++]));
             }
 
             node.updateValues(
-                updateNodeId == nodeId ? updateParamId : -1,
+                updateNodeId == nodeId ? updateParamId : '',
                 _indices,
                 _values);
         }
