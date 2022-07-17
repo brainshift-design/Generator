@@ -1,14 +1,14 @@
 class GRectangle
 extends GOperator
 {
-    input = null;
+    input  = null;
 
-    x;
-    y;
-    width;
-    height;
-    angle;
-    round;
+    x      = null;
+    y      = null;
+    width  = null;
+    height = null;
+    angle  = null;
+    round  = null;
 
 
 
@@ -21,12 +21,14 @@ extends GOperator
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid();
+        return this.input
+               ? this.input.isValid()
+               : (   this.x     .isValid()
+                  && this.y     .isValid()
+                  && this.width .isValid()
+                  && this.height.isValid()
+                  && this.angle .isValid()
+                  && this.round .isValid());
     }
 
     
@@ -37,28 +39,35 @@ extends GOperator
         {
             this.result = new GRectangle(this.nodeId, this.active);
 
+            console.log('this = ', this);
+
             
             if (this.input)
             {
-                this.result.input = this.input.eval(parse);
+                const input = this.input.eval(parse);
+console.log('input = ', input);
+                this.result.x      = (this.x      ? this.x      : input.x     ).eval(parse);
+                this.result.y      = (this.y      ? this.y      : input.y     ).eval(parse);
+                this.result.width  = (this.width  ? this.width  : input.width ).eval(parse);
+                this.result.height = (this.height ? this.height : input.height).eval(parse);
+                this.result.angle  = (this.angle  ? this.angle  : input.angle ).eval(parse);
+                this.result.round  = (this.round  ? this.round  : input.round ).eval(parse);
 
-                this.result.x      = this.result.input.x     .result;
-                this.result.y      = this.result.input.y     .result;
-                this.result.width  = this.result.input.width .result;
-                this.result.height = this.result.input.height.result;
-                this.result.angle  = this.result.input.angle .result;
-                this.result.round  = this.result.input.round .result;
+                console.log('this.result = ', this.result);
             }
-            
-            
-            this.result.x      = this.x     .eval(parse);
-            this.result.y      = this.y     .eval(parse);
-            this.result.width  = this.width .eval(parse);
-            this.result.height = this.height.eval(parse);
-            this.result.angle  = this.angle .eval(parse);
-            this.result.round  = this.round .eval(parse);
+            else
+            {
+                this.result.x      = this.x     .eval(parse);
+                this.result.y      = this.y     .eval(parse);
+                this.result.width  = this.width .eval(parse);
+                this.result.height = this.height.eval(parse);
+                this.result.angle  = this.angle .eval(parse);
+                this.result.round  = this.round .eval(parse);
 
+                console.log('this.result = ', this.result);
+            }
            
+            
             genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );
             genPushUpdateParamValue(parse, this.nodeId, 'y',      this.result.y     );
             genPushUpdateParamValue(parse, this.nodeId, 'width',  this.result.width );
@@ -67,8 +76,11 @@ extends GOperator
             genPushUpdateParamValue(parse, this.nodeId, 'round',  this.result.round );
 
 
-            if (   this.active
-                && this.result.isValid())
+            this.valid        = true;
+            this.result.valid = true;
+
+
+            if (this.active)
             {
                 genPushUpdateObject(
                     parse,
@@ -85,10 +97,6 @@ extends GOperator
                         round:  Math.max(0, this.result.round.value)
                     });
             }
-
-
-            this.valid        = true;
-            this.result.valid = true;
         }
 
 

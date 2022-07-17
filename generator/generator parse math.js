@@ -2,7 +2,7 @@ function genParseNumValue(parse)
 {
     parse.pos++; // N
 
-    return parseGNumberValue(parse.req[parse.pos++]);
+    return parseGNumberValue(parse.move());
 }
 
 
@@ -28,7 +28,7 @@ function genParseNumberAdd(parse)
     const add = new GAdd(nodeId, active);
 
 
-    const nValues = parse.req[parse.pos++];
+    const nValues = parse.move();
 
     for (let i = 0; i < nValues; i++)
         add.inputs.push(genParse(parse));
@@ -43,7 +43,7 @@ function genParseNumberAdd(parse)
 function genParseNumberSubtract(parse)
 {
     const nodeId  = genParseNodeId(parse);
-    const nValues = parse.req[parse.pos++];
+    const nValues = parse.move();
     
     const sub = new GSubtract(nodeId);
 
@@ -58,7 +58,7 @@ function genParseNumberSubtract(parse)
 function genParseNumberMultiply(parse)
 {
     const nodeId  = genParseNodeId(parse);
-    const nValues = parse.req[parse.pos++];
+    const nValues = parse.move();
     
     const mul = new GMultiply(nodeId);
 
@@ -73,7 +73,7 @@ function genParseNumberMultiply(parse)
 function genParseNumberDivide(parse)
 {
     const nodeId  = genParseNodeId(parse);
-    const nValues = parse.req[parse.pos++];
+    const nValues = parse.move();
     
     const div = new GDivide(nodeId);
 
@@ -88,7 +88,7 @@ function genParseNumberDivide(parse)
 function genParseNumberModulo(parse)
 {
     const nodeId  = genParseNodeId(parse);
-    const nValues = parse.req[parse.pos++];
+    const nValues = parse.move();
     
 
     let result, maxDec;
@@ -133,7 +133,7 @@ function genParseNumberModulo(parse)
 function genParseNumberExponent(parse)
 {
     const nodeId  = genParseNodeId(parse);
-    const nValues = parse.req[parse.pos++];
+    const nValues = parse.move();
 
     
     let result, maxDec;
@@ -171,7 +171,7 @@ function genParseNumberExponent(parse)
 function genParseNumberInterpolate(parse)
 {
     const nodeId  = genParseNodeId(parse);
-    const nValues = parse.req[parse.pos++];
+    const nValues = parse.move();
 
 
     let result, amount;

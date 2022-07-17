@@ -28,7 +28,7 @@ function genParseRectangle(parse)
     if (parse.next == RECTANGLE)
     {
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
-        paramIds   = parse.req[parse.pos++].split(',');
+        paramIds   = parse.move().split(',');
     }
     else
         paramIds = ['x', 'y', 'width', 'height', 'angle', 'round'];
@@ -46,7 +46,7 @@ function genParseRectangle(parse)
         case 'round':  rect.round  = genParse(parse); break;
         }
     }
-    
+
 
     genParseNodeEnd(parse, rect);
     return rect;

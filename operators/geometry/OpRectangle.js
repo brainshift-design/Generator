@@ -1,14 +1,14 @@
 class   OpRectangle
 extends OperatorBase
 {
-    #paramX;
-    #paramY;
-    #paramWidth;
-    #paramHeight;
-    #paramAngle;
-    #paramRound;
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
 
-    #btnProportional;
+    btnProportional;
 
     #refWidth  = Number.NaN;
     #refHeight = Number.NaN;
@@ -22,23 +22,23 @@ extends OperatorBase
         this.addInput (new Input ([RECTANGLE]));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
 
-        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
         
 
-        this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue   = true;
-        this.#paramAngle.control.dragReverse = true;
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
 
         
         //this.updateRound();
 
-        this.#btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.#btnProportional);
+        this.btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.btnProportional);
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -56,27 +56,27 @@ extends OperatorBase
         });
 
 
-        this.#btnProportional.addEventListener('click', () =>
+        this.btnProportional.addEventListener('click', () =>
         {
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = this.#paramWidth .genValue;
-                this.#refHeight = this.#paramHeight.genValue;
+                this.#refWidth  = this.paramWidth .genValue;
+                this.#refHeight = this.paramHeight.genValue;
             }
         });
 
 
-        this.#paramWidth.addEventListener('change', () =>
+        this.paramWidth.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+            if (this.btnProportional.enabled)
+                this.paramHeight.setValue(this.paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
         });
 
 
-        this.#paramHeight.addEventListener('change', () =>
+        this.paramHeight.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+            if (this.btnProportional.enabled)
+                this.paramWidth.setValue(this.paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
         });
     }
     
@@ -114,22 +114,22 @@ extends OperatorBase
             req.push(paramIds.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
-            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest(gen));
+            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) req.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramRound .input.connected) req.push(...this.node.paramRound .genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(gen),
-                ...this.node.#paramY     .genRequest(gen),
-                ...this.node.#paramWidth .genRequest(gen),
-                ...this.node.#paramHeight.genRequest(gen),
-                ...this.node.#paramAngle .genRequest(gen),
-                ...this.node.#paramRound .genRequest(gen));
+                ...this.node.paramX     .genRequest(gen),
+                ...this.node.paramY     .genRequest(gen),
+                ...this.node.paramWidth .genRequest(gen),
+                ...this.node.paramHeight.genRequest(gen),
+                ...this.node.paramAngle .genRequest(gen),
+                ...this.node.paramRound .genRequest(gen));
         }
 
 
@@ -154,8 +154,8 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#btnProportional.style.left = 45;
-        this.#btnProportional.style.top  = 79;
+        this.btnProportional.style.left = 45;
+        this.btnProportional.style.top  = 79;
 
         super.updateNode();
     }
@@ -164,13 +164,13 @@ extends OperatorBase
 
     updateRound()
     {
-        const control = this.#paramRound.control;
-        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+        const control = this.paramRound.control;
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.#paramRound.control.update();
+        this.paramRound.control.update();
     }
 
     
@@ -182,9 +182,9 @@ extends OperatorBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
 
-        if (this.#btnProportional.enabled)
+        if (this.btnProportional.enabled)
         {
             json +=
                   ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
@@ -202,10 +202,10 @@ extends OperatorBase
 
         // if (_node.proportional)
         // {
-            this.#btnProportional.enabled = isTrue(_node.proportional);
-            this.#btnProportional.updateBackground(false);
+            this.btnProportional.enabled = isTrue(_node.proportional);
+            this.btnProportional.updateBackground(false);
 
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
                 this.#refWidth  = parseFloat(_node.refWidth);
                 this.#refHeight = parseFloat(_node.refHeight);

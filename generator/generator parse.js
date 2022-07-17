@@ -35,6 +35,13 @@ class Parse
         this.updateNodeId  = updateNodeId; 
         this.updateParamId = updateParamId;
     }
+
+
+
+    move()
+    {
+        return this.req[this.pos++];
+    }
 }
 
 
@@ -86,7 +93,7 @@ function genParseNodeStart(parse)
 {
     parse.pos++; // tag
     
-    const nodeId = parse.req[parse.pos++];
+    const nodeId = parse.move();
     const active = genParseActive(parse);
     
     parse.scope.push(nodeId);
@@ -127,8 +134,8 @@ function genParseParam(parse)
     
     parse.pos++;
 
-    const nodeId  = parse.req[parse.pos++];
-    const paramId = parse.req[parse.pos++];
+    const nodeId  = parse.move();
+    const paramId = parse.move();
 
     return new GParam(nodeId, paramId);
 }

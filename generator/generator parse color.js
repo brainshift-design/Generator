@@ -2,7 +2,7 @@ function genParseColor(parse)
 {
     parse.pos++; // COLOR
  
-    const nodeId = parse.req[parse.pos++];
+    const nodeId = parse.move();
     /*const active =*/ genParseActive(parse);
 
   
@@ -12,7 +12,7 @@ function genParseColor(parse)
     if (parse.next == COLOR)
     {
         col     = genParse(parse); // not genParseColor() because genParse() handles stack overflow
-        paramIds = parse.req[parse.pos++].split(',');
+        paramIds = parse.move().split(',');
     }
     else
         paramIds = ['space', 'c1', 'c2', 'c3'];
