@@ -13884,9 +13884,9 @@ function initNumberSliderEvents(slider)
 
             slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            if (    slider.value != slider.oldValue
-                && !slider.readOnly)
-                slider.dispatchEvent(slider.onconfirm);
+            // if (    slider.value != slider.oldValue
+            //     && !slider.readOnly)
+            //     slider.dispatchEvent(slider.onconfirm);
         }
         // else if (   e.button == 1
         //     && slider.buttonDown1)
@@ -18111,16 +18111,16 @@ extends Parameter
         initNumberSlider(
             this,
             this.control,
-            120,         // width
-            20,          // height
+            120,        // width
+            20,         // height
             this.id,
             this.name, 
             showName,
             min,
             max,
-            value,       // default
-            decimals,    // decimals
-            dragScale);  // drag scale
+            value,      // default
+            decimals,   // decimals
+            dragScale); // drag scale
 
         this.control.successOnFocusOut = true;
 

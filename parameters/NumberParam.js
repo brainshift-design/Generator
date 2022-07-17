@@ -52,16 +52,16 @@ extends Parameter
         initNumberSlider(
             this,
             this.control,
-            120,         // width
-            20,          // height
+            120,        // width
+            20,         // height
             this.id,
             this.name, 
             showName,
             min,
             max,
-            value,       // default
-            decimals,    // decimals
-            dragScale);  // drag scale
+            value,      // default
+            decimals,   // decimals
+            dragScale); // drag scale
 
         this.control.successOnFocusOut = true;
 
