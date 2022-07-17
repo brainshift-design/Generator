@@ -39,33 +39,18 @@ extends GOperator
         {
             this.result = new GRectangle(this.nodeId, this.active);
 
-            console.log('this = ', this);
 
-            
-            if (this.input)
-            {
-                const input = this.input.eval(parse);
-console.log('input = ', input);
-                this.result.x      = (this.x      ? this.x      : input.x     ).eval(parse);
-                this.result.y      = (this.y      ? this.y      : input.y     ).eval(parse);
-                this.result.width  = (this.width  ? this.width  : input.width ).eval(parse);
-                this.result.height = (this.height ? this.height : input.height).eval(parse);
-                this.result.angle  = (this.angle  ? this.angle  : input.angle ).eval(parse);
-                this.result.round  = (this.round  ? this.round  : input.round ).eval(parse);
+            let input = 
+                this.input 
+                ? this.input.eval(parse) 
+                : null;
 
-                console.log('this.result = ', this.result);
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse);
-                this.result.y      = this.y     .eval(parse);
-                this.result.width  = this.width .eval(parse);
-                this.result.height = this.height.eval(parse);
-                this.result.angle  = this.angle .eval(parse);
-                this.result.round  = this.round .eval(parse);
-
-                console.log('this.result = ', this.result);
-            }
+            this.result.x      = (!input || this.x      ? this.x      : input.x     ).eval(parse);
+            this.result.y      = (!input || this.y      ? this.y      : input.y     ).eval(parse);
+            this.result.width  = (!input || this.width  ? this.width  : input.width ).eval(parse);
+            this.result.height = (!input || this.height ? this.height : input.height).eval(parse);
+            this.result.angle  = (!input || this.angle  ? this.angle  : input.angle ).eval(parse);
+            this.result.round  = (!input || this.round  ? this.round  : input.round ).eval(parse);
            
             
             genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );

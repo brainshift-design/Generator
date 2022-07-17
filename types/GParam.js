@@ -16,12 +16,19 @@ extends GOperator
 
     eval(parse)
     {
-        const val = parse.parsed.find(v =>
-               v.nodeId  == this.nodeId
-            && v.paramId == this.paramId);
+        if (!this.valid)
+        {
+            this.result = parse.tree
+                .find(v => v.nodeId  == this.nodeId)
+                .eval(parse)[this.paramId]
+                .eval(parse);
 
-        console.assert(val);
+            this.result = this.result.eval(parse);
 
-        return val.eval(parse);
+            this.valid        = true;
+            this.result.valid = true;
+        }
+
+        return this.result;
     }
 }
