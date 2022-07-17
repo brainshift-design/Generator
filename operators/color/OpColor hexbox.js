@@ -109,8 +109,8 @@ function onHexboxKeyDown(e)
         hexboxFinish(hexbox.node, false);
 
     else if (   e.key.length == 1
-             && !isDigitChar(e.key)
-             && !isHexDigitChar(e.key)
+             && !isDigit(e.key)
+             && !isHexDigit(e.key)
          ||     hexbox.node.connected()
             && !isArrowKey(e.code)
          ||    e.key != 'ArrowLeft'

@@ -41,12 +41,11 @@ extends GType
 
 
 
-function parseGnumVal(str, nodeId = '')
+function parseGnumVal(str)
 {
     return str == '?'
-        ? new GNumberValue(nodeId, Number.NaN, 0)
+        ? new GNumberValue(Number.NaN, 0)
         : new GNumberValue(
-              nodeId,
               parseFloat(str),
               decCount(str));
 }

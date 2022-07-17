@@ -227,10 +227,10 @@ class Connection
         let json = 
               pos + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
-            + ',' + NL + pos + tab + '"outputIndex": "' + this.output.index + '"'
+            + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
             + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
-            + ',' + NL + pos + tab + '"inputIndex": "' + this.input.index + '"'
+            + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +       NL + pos + '}';
 
@@ -242,10 +242,12 @@ class Connection
     static parseJson(_conn)
     {
         const outputNode  = nodeFromId(_conn.outputNodeId);
-        const outputIndex = parseInt(_conn.outputIndex);
+        const outputId    = _conn.outputId;
+        //const outputIndex = parseInt(_conn.outputIndex);
 
         const inputNode   = nodeFromId(_conn.inputNodeId);
-        const inputIndex  = parseInt(_conn.inputIndex);
+        const inputId     = _conn.inputId;
+        //const inputIndex  = parseInt(_conn.inputIndex);
 
 
         // log('---------------------------------------');
@@ -260,19 +262,37 @@ class Connection
 
 
 
-        if (   !outputNode || outputIndex >= outputNode.outputs.length
-            || !inputNode  ||  inputIndex >= inputNode .inputs .length)
+        if (   !outputNode 
+            ||    isDigit(outputId[0])
+               && parseInt(outputId) >= outputNode.outputs.filter(o => !o.param).length
+            ||   !isDigit(outputId[0])
+               && !outputNode.params.find(p => p.id == outputId && p.output)
+            || !inputNode  
+            ||    isDigit(inputId[0])
+               && parseInt(inputId) >= inputNode.inputs.filter(i => !i.param).length
+            ||   !isDigit(inputId[0])
+               && !inputNode.params.find(p => p.id == inputId && p.input))
         {
             uiError(
                   'cannot connect ' 
-                + _conn.outputNodeId + ' ' + outputIndex 
+                + _conn.outputNodeId + '.' + outputId 
                 + ' to ' 
-                + _conn.inputNodeId  + ' ' + _conn.inputIndex);
+                + _conn.inputNodeId  + '.' + inputId);
 
             return null;
         }
         else
-            return uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex);
+        {
+            return uiVariableConnect(
+                outputNode, 
+                isDigit(outputId[0]) 
+                ? parseInt(outputId) 
+                : outputNode.params.find(p => p.id == outputId).output.index,
+                inputNode, 
+                isDigit(inputId[0])
+                ? parseInt(inputId)
+                : inputNode.params.find(p => p.id == inputId).input.index);
+        }
     }
 }
 

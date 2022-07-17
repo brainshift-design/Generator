@@ -87,7 +87,7 @@ function getDigitCount(i)
 
 
 
-function isDigitChar(c)
+function isDigit(c)
 {
     return c >= '0' 
         && c <= '9';
@@ -95,7 +95,7 @@ function isDigitChar(c)
 
 
 
-function isHexDigitChar(c)
+function isHexDigit(c)
 {
     return c.length == 1
         && (   c >= 'A' && c <= 'F'
@@ -1751,12 +1751,18 @@ function isLastInArray(array, item)
 function pushUnique(array, item)
 {
     if (Array.isArray(item))
-    {
-        item
-            .filter(i => !array.includes(i))
-            .forEach(i => array.push(i));
-    }
+        item.forEach(i => pushUnique(array, i));
     else if (!array.includes(item))
+        array.push(item);
+}
+
+
+
+function pushUniqueExcept(array, item, except)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueExcept(array, i, except));
+    else if (!array.find(except))
         array.push(item);
 }
 
@@ -2333,9 +2339,9 @@ function logSavedConn(connKey)
     const parts = noConnTag(connKey).split(' ');
 
     const conn = 
-          parts[0] + '(' + parts[1] + ')'
+          parts[0] + '.' + parts[1]
         + ' → '
-        + '(' + parts[3] + ')' + parts[2];
+        + parts[2] + '.' + parts[3];
 
     console.log(
         '%c%s', 
@@ -2923,7 +2929,8 @@ class GOperator
 extends GType
 {
     nodeId;
-    valid;
+
+    valid = false;
 
 
 
@@ -2932,7 +2939,6 @@ extends GType
         super(type);
 
         this.nodeId = nodeId;
-        this.valid  = false;
     }
 }
 
@@ -3009,12 +3015,11 @@ extends GType
 
 
 
-function parseGnumVal(str, nodeId = '')
+function parseGnumVal(str)
 {
     return str == '?'
-        ? new GNumberValue(nodeId, Number.NaN, 0)
+        ? new GNumberValue(Number.NaN, 0)
         : new GNumberValue(
-              nodeId,
               parseFloat(str),
               decCount(str));
 }
@@ -3025,55 +3030,31 @@ class GNumber
 extends GOperator
 {
     value;
-    decimals;
 
 
 
-    constructor(nodeId, val, dec = 0)
+    constructor(nodeId, value)
     {
         super(NUMBER, nodeId);
 
-        this.value    = val;
-        this.decimals = dec;
-    }
-
-
-
-    get valid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
+        this.value = value;
     }
 
 
 
     eval(parse)
     {
-        if (this.valid)
-            return this.value;
-
-
-        this.value = this;
+        if (!this.valid)
+        {
+            this.value = this.value.eval(parse);
+            this.valid = true;
+        }
         
         genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
 
-        
-        this.valid = true;
         return this.value;
     }
 }
-
-
-
-function parseGnumVal(str)
-{
-    return str == '?'
-        ? new GNumberValue(Number.NaN, 0)
-        : new GNumberValue(
-              parseFloat(str),
-              decCount(str));
-}
-
 
 
 class GAdd
@@ -3855,7 +3836,7 @@ function genEndFigMessage()
     
     if (   lastUpdateValues .length > 0
         || lastUpdateObjects.length > 0)
-        genUpdateValuesAndObjects(null, '', '', [], []);
+        genUpdateValuesAndObjects('', '', [], []);
 
     genPostNextMessageToUI();
 }
@@ -4322,10 +4303,11 @@ function genParseNumber(parse)
     const nodeId = genParseNumberNodeId(parse);
     parse.scope.push(nodeId);
 
+   
+    const value = genParse(parse);
+    const num   = new GNumber(nodeId, value);
 
-    const num = genParse(parse);    
-
-
+    
     parse.scope.pop();
     if (parse.scope.length == 0) // only top level
         pushUnique(parse.tree, num)
@@ -4650,10 +4632,10 @@ function genRequest(req, settings)
         updateParamId: updateParamId,
 
         scope:         [], // current parse stack
-        tree:          [], // GTypes that must be evaluated to create the value updates
+        tree:          [], // must be evaluated to create the value updates
 
-        updateValues:  [],
         updateParams:  [],
+        updateValues:  [],
         updateObjects: []
     };
 
@@ -4663,10 +4645,13 @@ function genRequest(req, settings)
     while (   parse.pos < parse.req.length 
            && parse.so  < stackOverflowProtect)
         genParse(parse);
-    
+
+
+    for (const val of parse.tree)
+        val.eval(parse);
+
 
     genUpdateValuesAndObjects(
-        parse,
         parse.updateNodeId,
         parse.updateParamId,
         parse.updateValues,
@@ -4695,10 +4680,10 @@ function genPushUpdateParamValue(parse, nodeId, paramId, gval)
 
 function genPushUpdateObject(parse, nodeId, object)
 {
-    const found = parse.updateObjects.find(o => o.nodeId == nodeId);
-
-    if (!found) parse.updateObjects.push(object);
-    //else console.assert(found[2] == value);
+    pushUniqueExcept(
+        parse.updateObjects, 
+        object, 
+        o => o.nodeId == nodeId);
 }
 
 
@@ -4713,13 +4698,12 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(parse, updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
-    if (!parse)
-        //   updateValues .length == 0
-        //&& updateObjects.length == 0)
+    if (   updateValues .length == 0
+        && updateObjects.length == 0)
     {
-        console.log('restoring');
+        //console.log('restoring');
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         updateValues  = lastUpdateValues;
@@ -4729,7 +4713,7 @@ function genUpdateValuesAndObjects(parse, updateNodeId, updateParamId, updateVal
     }
     else if (genFigMessagePosted)
     {
-        console.log('saving');
+        //console.log('saving');
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;
@@ -4737,31 +4721,6 @@ function genUpdateValuesAndObjects(parse, updateNodeId, updateParamId, updateVal
 
         return;
     }
-    else // evaluate parse tree
-    {
-        for (const val of parse.tree)
-            val.eval(parse);
-    }
-
-
-    // TODO
-    //     eval stage
-    //     GParam() should eval its reference
-    //     add valid tag, only eval invalid types
-
-    // // replace params with values
-    // for (let i = 0; i < updateValues.length; i++)
-    // {
-    //     if (updateValues[i].value.type == PARAM)
-    //     {
-    //         const val = updateValues.find(v => 
-    //                v.nodeId  == updateValues[i].value.nodeId
-    //             && v.paramId == updateValues[i].value.paramId);
-
-    //         console.assert(val);
-    //         updateValues[i].value = val.value;
-    //     }
-    // }
 
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));

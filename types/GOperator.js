@@ -2,7 +2,8 @@ class GOperator
 extends GType
 {
     nodeId;
-    valid;
+
+    valid = false;
 
 
 
@@ -11,6 +12,5 @@ extends GType
         super(type);
 
         this.nodeId = nodeId;
-        this.valid  = false;
     }
 }

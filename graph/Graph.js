@@ -62,7 +62,7 @@ class Graph
 
         for (let i = name.length - 1; i >= 0; i--)
         {
-            if (isDigitChar(name[i])) numLength++;
+            if (isDigit(name[i])) numLength++;
             else break;
         }
 

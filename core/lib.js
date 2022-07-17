@@ -24,7 +24,7 @@ function getDigitCount(i)
 
 
 
-function isDigitChar(c)
+function isDigit(c)
 {
     return c >= '0' 
         && c <= '9';
@@ -32,7 +32,7 @@ function isDigitChar(c)
 
 
 
-function isHexDigitChar(c)
+function isHexDigit(c)
 {
     return c.length == 1
         && (   c >= 'A' && c <= 'F'

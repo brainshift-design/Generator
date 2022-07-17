@@ -12,10 +12,11 @@ function genParseNumber(parse)
     const nodeId = genParseNumberNodeId(parse);
     parse.scope.push(nodeId);
 
+   
+    const value = genParse(parse);
+    const num   = new GNumber(nodeId, value);
 
-    const num = genParse(parse);    
-
-
+    
     parse.scope.pop();
     if (parse.scope.length == 0) // only top level
         pushUnique(parse.tree, num)

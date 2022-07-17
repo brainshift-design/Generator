@@ -237,12 +237,18 @@ function isLastInArray(array, item)
 function pushUnique(array, item)
 {
     if (Array.isArray(item))
-    {
-        item
-            .filter(i => !array.includes(i))
-            .forEach(i => array.push(i));
-    }
+        item.forEach(i => pushUnique(array, i));
     else if (!array.includes(item))
+        array.push(item);
+}
+
+
+
+function pushUniqueExcept(array, item, except)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueExcept(array, i, except));
+    else if (!array.find(except))
         array.push(item);
 }
 

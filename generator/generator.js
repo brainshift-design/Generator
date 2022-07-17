@@ -26,10 +26,10 @@ function genRequest(req, settings)
         updateParamId: updateParamId,
 
         scope:         [], // current parse stack
-        tree:          [], // GTypes that must be evaluated to create the value updates
+        tree:          [], // must be evaluated to create the value updates
 
-        updateValues:  [],
         updateParams:  [],
+        updateValues:  [],
         updateObjects: []
     };
 
@@ -39,10 +39,13 @@ function genRequest(req, settings)
     while (   parse.pos < parse.req.length 
            && parse.so  < stackOverflowProtect)
         genParse(parse);
-    
+
+
+    for (const val of parse.tree)
+        val.eval(parse);
+
 
     genUpdateValuesAndObjects(
-        parse,
         parse.updateNodeId,
         parse.updateParamId,
         parse.updateValues,
@@ -71,10 +74,10 @@ function genPushUpdateParamValue(parse, nodeId, paramId, gval)
 
 function genPushUpdateObject(parse, nodeId, object)
 {
-    const found = parse.updateObjects.find(o => o.nodeId == nodeId);
-
-    if (!found) parse.updateObjects.push(object);
-    //else console.assert(found[2] == value);
+    pushUniqueExcept(
+        parse.updateObjects, 
+        object, 
+        o => o.nodeId == nodeId);
 }
 
 
@@ -89,13 +92,12 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(parse, updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
-    if (!parse)
-        //   updateValues .length == 0
-        //&& updateObjects.length == 0)
+    if (   updateValues .length == 0
+        && updateObjects.length == 0)
     {
-        console.log('restoring');
+        //console.log('restoring');
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         updateValues  = lastUpdateValues;
@@ -105,7 +107,7 @@ function genUpdateValuesAndObjects(parse, updateNodeId, updateParamId, updateVal
     }
     else if (genFigMessagePosted)
     {
-        console.log('saving');
+        //console.log('saving');
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;
@@ -113,31 +115,6 @@ function genUpdateValuesAndObjects(parse, updateNodeId, updateParamId, updateVal
 
         return;
     }
-    else // evaluate parse tree
-    {
-        for (const val of parse.tree)
-            val.eval(parse);
-    }
-
-
-    // TODO
-    //     eval stage
-    //     GParam() should eval its reference
-    //     add valid tag, only eval invalid types
-
-    // // replace params with values
-    // for (let i = 0; i < updateValues.length; i++)
-    // {
-    //     if (updateValues[i].value.type == PARAM)
-    //     {
-    //         const val = updateValues.find(v => 
-    //                v.nodeId  == updateValues[i].value.nodeId
-    //             && v.paramId == updateValues[i].value.paramId);
-
-    //         console.assert(val);
-    //         updateValues[i].value = val.value;
-    //     }
-    // }
 
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));

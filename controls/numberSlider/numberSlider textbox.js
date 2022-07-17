@@ -168,12 +168,12 @@ function initNumberSliderTextbox(slider)
             let curVal = slider.textbox.value;
 
             if (      e.key.length == 1
-                   && !isDigitChar(e.key)
+                   && !isDigit(e.key)
                    && e.key != '?'
                    && (   !slider.valueCanContainSuffix
                        || !slider.suffix.includes(e.key))
                    && (   !slider.showHex 
-                       || !isHexDigitChar(e.key))
+                       || !isHexDigit(e.key))
                    && (   slider.showHex
                        ||    e.key != '.'
                           && e.key != ',')

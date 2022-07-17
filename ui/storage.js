@@ -173,7 +173,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     {
         promise = promise.then(nodes => 
         {
-            const res = resolveLoadNodes(
+            const res = resolveNodes(
                 _nodes, 
                 i, 
                 Math.min(i + chunkSize, _nodes.length), // exclusive
@@ -207,7 +207,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         _conns.sort((c1, c2) => 
         {
             if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
-            if (c1.inputIndex  != c2.inputIndex  ) return c1.inputIndex - c2.inputIndex;
+            if (c1.inputIdd    != c2.inputId     ) return c1.inputId - c2.inputId;
             
             if (c1.inputNodeId == c2.outputNodeId) return -1;
             if (c2.inputNodeId == c1.outputNodeId) return  1;
@@ -221,7 +221,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         {
             promise = promise.then(() => 
             {
-                const res = resolveLoadConnections(
+                const res = resolveConnections(
                     _nodes,
                     _conns, 
                     i, 
@@ -273,7 +273,7 @@ function finishLoadingNodes(_nodes, loadedNodes)
 
 
 
-function resolveLoadNodes(_nodes, first, last, nodes)
+function resolveNodes(_nodes, first, last, nodes)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 
@@ -287,7 +287,7 @@ function resolveLoadNodes(_nodes, first, last, nodes)
 
 
 
-function resolveLoadConnections(nodes, _connections, first, last)
+function resolveConnections(nodes, _connections, first, last)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 

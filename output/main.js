@@ -66,9 +66,9 @@ function logSavedNode(nodeKey) {
 }
 function logSavedConn(connKey) {
     const parts = noConnTag(connKey).split(' ');
-    const conn = parts[0] + '(' + parts[1] + ')'
+    const conn = parts[0] + '.' + parts[1]
         + ' → '
-        + '(' + parts[3] + ')' + parts[2];
+        + parts[2] + '.' + parts[3];
     console.log('%c%s', 'background: #cfc', conn);
 }
 function logRequest(request, updateNodeId, updateParamId) {
