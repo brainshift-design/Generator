@@ -2,15 +2,15 @@ class GOperator
 extends GType
 {
     nodeId;
-
-    valid = false;
-
+    active;
 
 
-    constructor(type, nodeId)
+
+    constructor(type, nodeId, active)
     {
         super(type);
 
         this.nodeId = nodeId;
+        this.active = active;
     }
 }

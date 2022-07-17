@@ -857,7 +857,7 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
             for (let j = 0; j < count; j++)
             {
                 _indices.push(values[i++]);
-                _values .push(parseGnumVal(values[i++]));
+                _values .push(parseGNumberValue(values[i++]));
             }
 
             node.updateValues(

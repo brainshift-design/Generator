@@ -2,26 +2,21 @@ function genParseNumValue(parse)
 {
     parse.pos++; // N
 
-    return parseGnumVal(parse.req[parse.pos++]);
+    return parseGNumberValue(parse.req[parse.pos++]);
 }
 
 
 
 function genParseNumber(parse)
 {
-    const nodeId = genParseNumberNodeId(parse);
-    parse.scope.push(nodeId);
-
-   
-    const value = genParse(parse);
-    const num   = new GNumber(nodeId, value);
-
+    const [nodeId, active] = genParseNodeStart(parse);
+    const num = new GNumber(nodeId, active);
     
-    parse.scope.pop();
-    if (parse.scope.length == 0) // only top level
-        pushUnique(parse.tree, num)
+    
+    num.input = genParse(parse);
 
 
+    genParseNodeEnd(parse, num);
     return num;
 }
 
@@ -29,22 +24,17 @@ function genParseNumber(parse)
 
 function genParseNumberAdd(parse)
 {
-    const nodeId = genParseNumberNodeId(parse);
-    parse.scope.push(nodeId);
+    const [nodeId, active] = genParseNodeStart(parse);
+    const add = new GAdd(nodeId, active);
 
 
     const nValues = parse.req[parse.pos++];
-    const add     = new GAdd(nodeId);
 
     for (let i = 0; i < nValues; i++)
-        add.values.push(genParse(parse));
+        add.inputs.push(genParse(parse));
 
         
-    parse.scope.pop();
-    if (parse.scope.length == 0) // only top level
-        pushUnique(parse.tree, add)
-
-
+    genParseNodeEnd(parse, add);
     return add;
 }
 
@@ -52,7 +42,7 @@ function genParseNumberAdd(parse)
 
 function genParseNumberSubtract(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
     const sub = new GSubtract(nodeId);
@@ -67,7 +57,7 @@ function genParseNumberSubtract(parse)
 
 function genParseNumberMultiply(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
     const mul = new GMultiply(nodeId);
@@ -82,7 +72,7 @@ function genParseNumberMultiply(parse)
 
 function genParseNumberDivide(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
     const div = new GDivide(nodeId);
@@ -97,7 +87,7 @@ function genParseNumberDivide(parse)
 
 function genParseNumberModulo(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
 
@@ -142,7 +132,7 @@ function genParseNumberModulo(parse)
 
 function genParseNumberExponent(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
 
     
@@ -180,7 +170,7 @@ function genParseNumberExponent(parse)
 
 function genParseNumberInterpolate(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
 
 

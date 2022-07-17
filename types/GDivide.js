@@ -30,13 +30,13 @@ extends GOperator
 
                 if (val.value == 0) 
                 { 
-                    result.value    = Number.NaN; 
+                    result.result    = Number.NaN; 
                     result.decimals = 0;
                     break; 
                 }
 
                 result.decimals = Math.max(result.decimals, val.decimals);
-                result.value    = floorTo(result.value / val.value, result.decimals);
+                result.result    = floorTo(result.result / val.value, result.decimals);
             }
 
 

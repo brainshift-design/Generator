@@ -2897,14 +2897,25 @@ VECTOR      V
 class GType
 {
     type;
-    value; // eval result
+
+    result;
+    valid; // has been evaluated
 
 
 
     constructor(type) 
     {
-        this.type  = type;
-        this.value = null;
+        this.type   = type;
+
+        this.result = null;
+        this.valid  = false;
+    }
+
+
+
+    isValid() // is a valid value
+    {
+        return false;
     }
 
 
@@ -2929,16 +2940,16 @@ class GOperator
 extends GType
 {
     nodeId;
-
-    valid = false;
-
+    active;
 
 
-    constructor(type, nodeId)
+
+    constructor(type, nodeId, active)
     {
         super(type);
 
         this.nodeId = nodeId;
+        this.active = active;
     }
 }
 
@@ -2975,24 +2986,28 @@ extends GOperator
 class GNumberValue
 extends GType
 {
-    value;
     decimals;
 
 
 
+    get value()    { return this.result; }
+    set value(val) { this.result = val;  }
+
+
+
     constructor(val, dec = 0)
-    {
+{
         super(NUMBER_VALUE);
 
-        this.value    = val;
+        this.result   = val;
         this.decimals = dec;
     }
 
 
 
-    get valid()
+    isValid()
     {
-        return !isNaN(this.value)
+        return !isNaN(this.result)
             && !isNaN(this.decimals);
     }
 
@@ -3007,15 +3022,15 @@ extends GType
 
     toString()
     {
-        return isNaN(this.value)
+        return isNaN(this.result)
             ? '?'
-            : numToString(this.value, this.decimals);    
+            : numToString(this.result, this.decimals);    
     }
 }
 
 
 
-function parseGnumVal(str)
+function parseGNumberValue(str)
 {
     return str == '?'
         ? new GNumberValue(Number.NaN, 0)
@@ -3029,15 +3044,14 @@ function parseGnumVal(str)
 class GNumber
 extends GOperator
 {
-    value;
+    input = null;
 
 
-
-    constructor(nodeId, value)
+    constructor(nodeId, active)
     {
-        super(NUMBER, nodeId);
+        super(NUMBER, nodeId, active);
 
-        this.value = value;
+        this.result = new GNumberValue(0);
     }
 
 
@@ -3046,13 +3060,19 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.value = this.value.eval(parse);
-            this.valid = true;
-        }
-        
-        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
+            if (this.input)
+                this.result = this.input.eval(parse);
 
-        return this.value;
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.valid        = true;
+            this.result.valid = true;
+        }
+
+
+        return this.result;
     }
 }
 
@@ -3060,42 +3080,43 @@ extends GOperator
 class GAdd
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
 
-    constructor(nodeId, values = [])
+    constructor(nodeId, active)
     {
-        super(NUMBER_ADD, nodeId);
-        
-        this.values = values;
+        super(NUMBER_ADD, nodeId, active);
     }
 
 
     
     eval(parse)
     {
-        if (this.valid)
-            return this.value;
-
-
-        this.value = new GNumberValue(0);
-
-
-        for (const _val of this.values)
+        if (!this.valid)
         {
-            const val = _val.eval(parse);
-            console.assert(val.type == NUMBER_VALUE);
+            this.result = new GNumberValue(0);
 
-            this.value.value   += val.value;
-            this.value.decimals = Math.max(this.value.decimals, val.decimals);
+
+            for (const input of this.inputs)
+            {
+                const val = input.eval(parse);
+                console.assert(val.type == NUMBER_VALUE);
+
+                this.result.value   += val.value;
+                this.result.decimals = Math.max(this.result.decimals, val.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.valid        = true;
+            this.result.valid = true;
         }
 
 
-        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
-
-        this.valid = true;
-        return this.value;
+        return this.result;
     }
 }
 
@@ -3131,7 +3152,7 @@ extends GOperator
             {
                 const val = this.values[i].eval(parse);
                 
-                result.value   -= val.value;
+                result.result   -= val.value;
                 result.decimals = Math.max(result.decimals, val.decimals);
             }
 
@@ -3169,14 +3190,14 @@ extends GOperator
         
         if (this.values.length > 0)
         {
-            result.value = 1;
+            result.result = 1;
 
 
             for (const _val of this.values)
             {
                 const val = _val.value.eval(parse);
 
-                result.value   *= val.value;
+                result.result   *= val.value;
                 result.decimals = Math.max(result.decimals, val.decimals);
             }
 
@@ -3223,13 +3244,13 @@ extends GOperator
 
                 if (val.value == 0) 
                 { 
-                    result.value    = Number.NaN; 
+                    result.result    = Number.NaN; 
                     result.decimals = 0;
                     break; 
                 }
 
                 result.decimals = Math.max(result.decimals, val.decimals);
-                result.value    = floorTo(result.value / val.value, result.decimals);
+                result.result    = floorTo(result.result / val.value, result.decimals);
             }
 
 
@@ -3265,19 +3286,21 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.space.valid
-            && this.c1   .valid
-            && this.c2   .valid
-            && this.c3   .valid;
+        return this.space.mustNotEval
+            && this.c1   .mustNotEval
+            && this.c2   .mustNotEval
+            && this.c3   .mustNotEval;
     }
 }
 
 
 class GRectangle
-extends GType
+extends GOperator
 {
+    input = null;
+
     x;
     y;
     width;
@@ -3287,28 +3310,87 @@ extends GType
 
 
 
-    constructor()
+    constructor(nodeId, active)
     {
-        super(RECTANGLE);
-
-        this.x      = new GNumber(  0);
-        this.y      = new GNumber(  0);
-        this.width  = new GNumber(100);
-        this.height = new GNumber(100);
-        this.angle  = new GNumber(  0);
-        this.round  = new GNumber(  0);
+        super(RECTANGLE, nodeId, active);
     }
 
 
-    
-    get valid()
+
+    isValid()
     {
-        return this.x     .valid
-            && this.y     .valid
-            && this.width .valid
-            && this.height.valid
-            && this.angle .valid
-            && this.round .valid;
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
+    }
+
+    
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GRectangle(this.nodeId, this.active);
+
+            
+            if (this.input)
+            {
+                this.result.input = this.input.eval(parse);
+
+                this.result.x      = this.result.input.x     .result;
+                this.result.y      = this.result.input.y     .result;
+                this.result.width  = this.result.input.width .result;
+                this.result.height = this.result.input.height.result;
+                this.result.angle  = this.result.input.angle .result;
+                this.result.round  = this.result.input.round .result;
+            }
+            
+            
+            this.result.x      = this.x     .eval(parse);
+            this.result.y      = this.y     .eval(parse);
+            this.result.width  = this.width .eval(parse);
+            this.result.height = this.height.eval(parse);
+            this.result.angle  = this.angle .eval(parse);
+            this.result.round  = this.round .eval(parse);
+
+           
+            genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );
+            genPushUpdateParamValue(parse, this.nodeId, 'y',      this.result.y     );
+            genPushUpdateParamValue(parse, this.nodeId, 'width',  this.result.width );
+            genPushUpdateParamValue(parse, this.nodeId, 'height', this.result.height);
+            genPushUpdateParamValue(parse, this.nodeId, 'angle',  this.result.angle );
+            genPushUpdateParamValue(parse, this.nodeId, 'round',  this.result.round );
+
+
+            if (   this.active
+                && this.result.isValid())
+            {
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    { 
+                        nodeId: this.nodeId,          
+                        type:   RECTANGLE,
+                        id:     0,
+                        x:      this.result.x     .value,
+                        y:      this.result.y     .value,
+                        width:  this.result.width .value,
+                        height: this.result.height.value,
+                        angle:  this.result.angle .value,
+                        round:  Math.max(0, this.result.round.value)
+                    });
+            }
+
+
+            this.valid        = true;
+            this.result.valid = true;
+        }
+
+
+        return this.result;
     }
 }
 
@@ -3337,13 +3419,13 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.x     .valid
-            && this.y     .valid
-            && this.width .valid
+        return this.x     .mustNotEval
+            && this.y     .mustNotEval
+            && this.width .mustNotEval
             //&& this.height.valid
-            && this.angle .valid;
+            && this.angle .mustNotEval;
     }
 }
 
@@ -3372,13 +3454,13 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.x     .valid
-            && this.y     .valid
-            && this.width .valid
-            && this.height.valid
-            && this.angle .valid;
+        return this.x     .mustNotEval
+            && this.y     .mustNotEval
+            && this.width .mustNotEval
+            && this.height.mustNotEval
+            && this.angle .mustNotEval;
     }
 }
 
@@ -3411,15 +3493,15 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.x      .valid
-            && this.y      .valid
-            && this.width  .valid
-            && this.height .valid
-            && this.angle  .valid
-            && this.round  .valid
-            && this.corners.valid;
+        return this.x      .mustNotEval
+            && this.y      .mustNotEval
+            && this.width  .mustNotEval
+            && this.height .mustNotEval
+            && this.angle  .mustNotEval
+            && this.round  .mustNotEval
+            && this.corners.mustNotEval;
     }
 }
 
@@ -3454,16 +3536,16 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.x     .valid
-            && this.y     .valid
-            && this.width .valid
-            && this.height.valid
-            && this.angle .valid
-            && this.round .valid
-            && this.points.valid
-            && this.convex.valid;
+        return this.x     .mustNotEval
+            && this.y     .mustNotEval
+            && this.width .mustNotEval
+            && this.height.mustNotEval
+            && this.angle .mustNotEval
+            && this.round .mustNotEval
+            && this.points.mustNotEval
+            && this.convex.mustNotEval;
     }
 }
 
@@ -3899,7 +3981,7 @@ function genParseColor(parse)
     let col = new GColor();
     let paramIds;
     
-    if (parse.req[parse.pos] == COLOR)
+    if (parse.next == COLOR)
     {
         col     = genParse(parse); // not genParseColor() because genParse() handles stack overflow
         paramIds = parse.req[parse.pos++].split(',');
@@ -3954,24 +4036,19 @@ function genParseColor(parse)
 
 function genParseRectangle(parse)
 {
-    parse.pos++; // RECTANGLE
- 
-    const nodeId = parse.req[parse.pos++];
-    const active = genParseActive(parse);
+    const [nodeId, active] = genParseNodeStart(parse);
+    const rect = new GRectangle(nodeId, active);
 
-  
-    let rect = new GRectangle();
-    let paramIds;
-    
-    if (parse.req[parse.pos] == RECTANGLE)
+
+    if (parse.next == RECTANGLE)
     {
-        rect     = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
-        paramIds = parse.req[parse.pos++].split(',');
+        rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
+        paramIds   = parse.req[parse.pos++].split(',');
     }
     else
         paramIds = ['x', 'y', 'width', 'height', 'angle', 'round'];
 
-
+    
     for (const id of paramIds)
     {
         switch (id)
@@ -3984,36 +4061,9 @@ function genParseRectangle(parse)
         case 'round':  rect.round  = genParse(parse); break;
         }
     }
+    
 
-
-    genPushUpdateParamValue(parse, nodeId, 'x',      rect.x     );
-    genPushUpdateParamValue(parse, nodeId, 'y',      rect.y     );
-    genPushUpdateParamValue(parse, nodeId, 'width',  rect.width );
-    genPushUpdateParamValue(parse, nodeId, 'height', rect.height);
-    genPushUpdateParamValue(parse, nodeId, 'angle',  rect.angle );
-    genPushUpdateParamValue(parse, nodeId, 'round',  rect.round );
-
-
-    if (   active
-        && rect.valid)
-    {
-        genPushUpdateObject(
-            parse,
-            nodeId,
-            { 
-                nodeId: nodeId,          
-                type:   RECTANGLE,
-                id:     0,
-                x:      rect.x     .value,
-                y:      rect.y     .value,
-                width:  rect.width .value,
-                height: rect.height.value,
-                angle:  rect.angle .value,
-                round:  Math.max(0, rect.round.value)
-            });
-    }
-
-
+    genParseNodeEnd(parse, rect);
     return rect;
 }
 
@@ -4030,7 +4080,7 @@ function genParseLine(parse)
     let line = new GLine();
     let paramIds;
     
-    if (parse.req[parse.pos] == LINE)
+    if (parse.next == LINE)
     {
         line = genParse(parse); // not genParseLine() because genParse() handles stack overflow
         paramIds  = parse.req[parse.pos++].split(',');
@@ -4094,7 +4144,7 @@ function genParseEllipse(parse)
     let elllipse = new GEllipse();
     let paramIds;
     
-    if (parse.req[parse.pos] == ELLIPSE)
+    if (parse.next == ELLIPSE)
     {
         elllipse = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
         paramIds  = parse.req[parse.pos++].split(',');
@@ -4158,7 +4208,7 @@ function genParsePolygon(parse)
     let poly = new GPolygon();
     let paramIds;
     
-    if (parse.req[parse.pos] == POLYGON)
+    if (parse.next == POLYGON)
     {
         poly     = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
         paramIds = parse.req[parse.pos++].split(',');
@@ -4228,7 +4278,7 @@ function genParseStar(parse)
     let star = new GStar();
     let paramIds;
     
-    if (parse.req[parse.pos] == STAR)
+    if (parse.next == STAR)
     {
         star     = genParse(parse); // not genParseStar() because genParse() handles stack overflow
         paramIds = parse.req[parse.pos++].split(',');
@@ -4293,26 +4343,21 @@ function genParseNumValue(parse)
 {
     parse.pos++; // N
 
-    return parseGnumVal(parse.req[parse.pos++]);
+    return parseGNumberValue(parse.req[parse.pos++]);
 }
 
 
 
 function genParseNumber(parse)
 {
-    const nodeId = genParseNumberNodeId(parse);
-    parse.scope.push(nodeId);
-
-   
-    const value = genParse(parse);
-    const num   = new GNumber(nodeId, value);
-
+    const [nodeId, active] = genParseNodeStart(parse);
+    const num = new GNumber(nodeId, active);
     
-    parse.scope.pop();
-    if (parse.scope.length == 0) // only top level
-        pushUnique(parse.tree, num)
+    
+    num.input = genParse(parse);
 
 
+    genParseNodeEnd(parse, num);
     return num;
 }
 
@@ -4320,22 +4365,17 @@ function genParseNumber(parse)
 
 function genParseNumberAdd(parse)
 {
-    const nodeId = genParseNumberNodeId(parse);
-    parse.scope.push(nodeId);
+    const [nodeId, active] = genParseNodeStart(parse);
+    const add = new GAdd(nodeId, active);
 
 
     const nValues = parse.req[parse.pos++];
-    const add     = new GAdd(nodeId);
 
     for (let i = 0; i < nValues; i++)
-        add.values.push(genParse(parse));
+        add.inputs.push(genParse(parse));
 
         
-    parse.scope.pop();
-    if (parse.scope.length == 0) // only top level
-        pushUnique(parse.tree, add)
-
-
+    genParseNodeEnd(parse, add);
     return add;
 }
 
@@ -4343,7 +4383,7 @@ function genParseNumberAdd(parse)
 
 function genParseNumberSubtract(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
     const sub = new GSubtract(nodeId);
@@ -4358,7 +4398,7 @@ function genParseNumberSubtract(parse)
 
 function genParseNumberMultiply(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
     const mul = new GMultiply(nodeId);
@@ -4373,7 +4413,7 @@ function genParseNumberMultiply(parse)
 
 function genParseNumberDivide(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
     const div = new GDivide(nodeId);
@@ -4388,7 +4428,7 @@ function genParseNumberDivide(parse)
 
 function genParseNumberModulo(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
     
 
@@ -4433,7 +4473,7 @@ function genParseNumberModulo(parse)
 
 function genParseNumberExponent(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
 
     
@@ -4471,7 +4511,7 @@ function genParseNumberExponent(parse)
 
 function genParseNumberInterpolate(parse)
 {
-    const nodeId  = genParseNumberNodeId(parse);
+    const nodeId  = genParseNodeId(parse);
     const nValues = parse.req[parse.pos++];
 
 
@@ -4521,6 +4561,41 @@ function genParseNumberInterpolate(parse)
 
 
 
+class Parse
+{
+    req;
+    
+    pos; 
+    so;
+    
+    updateNodeId;
+    updateParamId;
+
+    scope         = []; // current parse stack
+    tree          = []; // must be evaluated to create the value updates
+
+    updateParams  = [];
+    updateValues  = [];
+    updateObjects = [];
+
+    get next() { return this.req[this.pos]; }
+
+
+
+    constructor(req, updateNodeId, updateParamId)
+    {
+        this.req           = req;
+          
+        this.pos           = 2; 
+        this.so            = 0;
+        
+        this.updateNodeId  = updateNodeId; 
+        this.updateParamId = updateParamId;
+    }
+}
+
+
+
 /* 
     the generation request format
 
@@ -4534,29 +4609,28 @@ function genParseNumberInterpolate(parse)
 
 function genParse(parse)
 {
-    const next = parse.req[parse.pos];
     //console.log('next', next);
 
 
-         if (next == PARAM             ) return genParseParam            (parse);
+         if (parse.next == PARAM             ) return genParseParam            (parse);
 
-    else if (next == NUMBER_VALUE      ) return genParseNumValue         (parse);
-    else if (next == NUMBER            ) return genParseNumber           (parse);
-    else if (next == NUMBER_ADD        ) return genParseNumberAdd        (parse);
-    else if (next == NUMBER_SUBTRACT   ) return genParseNumberSubtract   (parse);
-    else if (next == NUMBER_MULTIPLY   ) return genParseNumberMultiply   (parse);
-    else if (next == NUMBER_DIVIDE     ) return genParseNumberDivide     (parse);
-    else if (next == NUMBER_MODULO     ) return genParseNumberModulo     (parse);
-    else if (next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
-    else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
+    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue         (parse);
+    else if (parse.next == NUMBER            ) return genParseNumber           (parse);
+    else if (parse.next == NUMBER_ADD        ) return genParseNumberAdd        (parse);
+    else if (parse.next == NUMBER_SUBTRACT   ) return genParseNumberSubtract   (parse);
+    else if (parse.next == NUMBER_MULTIPLY   ) return genParseNumberMultiply   (parse);
+    else if (parse.next == NUMBER_DIVIDE     ) return genParseNumberDivide     (parse);
+    else if (parse.next == NUMBER_MODULO     ) return genParseNumberModulo     (parse);
+    else if (parse.next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
+    else if (parse.next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
-    else if (next == COLOR             ) return genParseColor            (parse);
+    else if (parse.next == COLOR             ) return genParseColor            (parse);
 
-    else if (next == RECTANGLE         ) return genParseRectangle        (parse);
-    else if (next == LINE              ) return genParseLine             (parse);
-    else if (next == ELLIPSE           ) return genParseEllipse          (parse);
-    else if (next == POLYGON           ) return genParsePolygon          (parse);
-    else if (next == STAR              ) return genParseStar             (parse);
+    else if (parse.next == RECTANGLE         ) return genParseRectangle        (parse);
+    else if (parse.next == LINE              ) return genParseLine             (parse);
+    else if (parse.next == ELLIPSE           ) return genParseEllipse          (parse);
+    else if (parse.next == POLYGON           ) return genParsePolygon          (parse);
+    else if (parse.next == STAR              ) return genParseStar             (parse);
 
     
     parse.so++;
@@ -4565,9 +4639,34 @@ function genParse(parse)
 
 
 
+function genParseNodeStart(parse)
+{
+    parse.pos++; // tag
+    
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+    
+    parse.scope.push(nodeId);
+
+    return [nodeId, active];
+}
+
+
+
+function genParseNodeEnd(parse, value = null)
+{
+    parse.scope.pop();
+
+    if (   value
+        && parse.scope.length == 0) // only top level
+        pushUnique(parse.tree, value);
+}
+
+
+
 function genParseActive(parse)
 {
-    if (parse.req[parse.pos] == ACTIVE)
+    if (parse.next == ACTIVE)
     {
         parse.pos++;
         return true;
@@ -4578,21 +4677,9 @@ function genParseActive(parse)
 
 
 
-function genParseNumberNodeId(parse)
-{
-    parse.pos++; // tag
-    
-    const nodeId = parse.req[parse.pos++];
-    genParseActive(parse);
-    
-    return nodeId;
-}
-
-
-
 function genParseParam(parse)
 {
-    if (parse.req[parse.pos] != PARAM) 
+    if (parse.next != PARAM) 
         return null;
     
     parse.pos++;
@@ -4621,24 +4708,8 @@ function genRequest(req, settings)
         logRequest(req, updateNodeId, updateParamId);
         
 
-    const parse = 
-    {
-        req:           req,
-        
-        pos:           2, 
-        so:            0,
-        
-        updateNodeId:  updateNodeId, 
-        updateParamId: updateParamId,
-
-        scope:         [], // current parse stack
-        tree:          [], // must be evaluated to create the value updates
-
-        updateParams:  [],
-        updateValues:  [],
-        updateObjects: []
-    };
-
+    const parse = new Parse(req, updateNodeId, updateParamId);
+    
     
     const stackOverflowProtect = 100;
 

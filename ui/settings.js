@@ -6,5 +6,5 @@ const settings =
     logActions:       false, 
     logRequests:      true, 
     logParamUpdates:  true, 
-    logObjectUpdates: false
+    logObjectUpdates: true
 };

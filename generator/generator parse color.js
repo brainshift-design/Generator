@@ -9,7 +9,7 @@ function genParseColor(parse)
     let col = new GColor();
     let paramIds;
     
-    if (parse.req[parse.pos] == COLOR)
+    if (parse.next == COLOR)
     {
         col     = genParse(parse); // not genParseColor() because genParse() handles stack overflow
         paramIds = parse.req[parse.pos++].split(',');

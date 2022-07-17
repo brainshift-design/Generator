@@ -20,11 +20,11 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.space.valid
-            && this.c1   .valid
-            && this.c2   .valid
-            && this.c3   .valid;
+        return this.space.mustNotEval
+            && this.c1   .mustNotEval
+            && this.c2   .mustNotEval
+            && this.c3   .mustNotEval;
     }
 }

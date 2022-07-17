@@ -28,15 +28,15 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.x     .valid
-            && this.y     .valid
-            && this.width .valid
-            && this.height.valid
-            && this.angle .valid
-            && this.round .valid
-            && this.points.valid
-            && this.convex.valid;
+        return this.x     .mustNotEval
+            && this.y     .mustNotEval
+            && this.width .mustNotEval
+            && this.height.mustNotEval
+            && this.angle .mustNotEval
+            && this.round .mustNotEval
+            && this.points.mustNotEval
+            && this.convex.mustNotEval;
     }
 }

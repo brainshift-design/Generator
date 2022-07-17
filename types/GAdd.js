@@ -1,41 +1,42 @@
 class GAdd
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
 
-    constructor(nodeId, values = [])
+    constructor(nodeId, active)
     {
-        super(NUMBER_ADD, nodeId);
-        
-        this.values = values;
+        super(NUMBER_ADD, nodeId, active);
     }
 
 
     
     eval(parse)
     {
-        if (this.valid)
-            return this.value;
-
-
-        this.value = new GNumberValue(0);
-
-
-        for (const _val of this.values)
+        if (!this.valid)
         {
-            const val = _val.eval(parse);
-            console.assert(val.type == NUMBER_VALUE);
+            this.result = new GNumberValue(0);
 
-            this.value.value   += val.value;
-            this.value.decimals = Math.max(this.value.decimals, val.decimals);
+
+            for (const input of this.inputs)
+            {
+                const val = input.eval(parse);
+                console.assert(val.type == NUMBER_VALUE);
+
+                this.result.value   += val.value;
+                this.result.decimals = Math.max(this.result.decimals, val.decimals);
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.valid        = true;
+            this.result.valid = true;
         }
 
 
-        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
-
-        this.valid = true;
-        return this.value;
+        return this.result;
     }
 }

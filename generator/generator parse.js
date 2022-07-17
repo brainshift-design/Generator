@@ -4,6 +4,41 @@
 
 
 
+class Parse
+{
+    req;
+    
+    pos; 
+    so;
+    
+    updateNodeId;
+    updateParamId;
+
+    scope         = []; // current parse stack
+    tree          = []; // must be evaluated to create the value updates
+
+    updateParams  = [];
+    updateValues  = [];
+    updateObjects = [];
+
+    get next() { return this.req[this.pos]; }
+
+
+
+    constructor(req, updateNodeId, updateParamId)
+    {
+        this.req           = req;
+          
+        this.pos           = 2; 
+        this.so            = 0;
+        
+        this.updateNodeId  = updateNodeId; 
+        this.updateParamId = updateParamId;
+    }
+}
+
+
+
 /* 
     the generation request format
 
@@ -17,29 +52,28 @@
 
 function genParse(parse)
 {
-    const next = parse.req[parse.pos];
     //console.log('next', next);
 
 
-         if (next == PARAM             ) return genParseParam            (parse);
+         if (parse.next == PARAM             ) return genParseParam            (parse);
 
-    else if (next == NUMBER_VALUE      ) return genParseNumValue         (parse);
-    else if (next == NUMBER            ) return genParseNumber           (parse);
-    else if (next == NUMBER_ADD        ) return genParseNumberAdd        (parse);
-    else if (next == NUMBER_SUBTRACT   ) return genParseNumberSubtract   (parse);
-    else if (next == NUMBER_MULTIPLY   ) return genParseNumberMultiply   (parse);
-    else if (next == NUMBER_DIVIDE     ) return genParseNumberDivide     (parse);
-    else if (next == NUMBER_MODULO     ) return genParseNumberModulo     (parse);
-    else if (next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
-    else if (next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
+    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue         (parse);
+    else if (parse.next == NUMBER            ) return genParseNumber           (parse);
+    else if (parse.next == NUMBER_ADD        ) return genParseNumberAdd        (parse);
+    else if (parse.next == NUMBER_SUBTRACT   ) return genParseNumberSubtract   (parse);
+    else if (parse.next == NUMBER_MULTIPLY   ) return genParseNumberMultiply   (parse);
+    else if (parse.next == NUMBER_DIVIDE     ) return genParseNumberDivide     (parse);
+    else if (parse.next == NUMBER_MODULO     ) return genParseNumberModulo     (parse);
+    else if (parse.next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
+    else if (parse.next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
-    else if (next == COLOR             ) return genParseColor            (parse);
+    else if (parse.next == COLOR             ) return genParseColor            (parse);
 
-    else if (next == RECTANGLE         ) return genParseRectangle        (parse);
-    else if (next == LINE              ) return genParseLine             (parse);
-    else if (next == ELLIPSE           ) return genParseEllipse          (parse);
-    else if (next == POLYGON           ) return genParsePolygon          (parse);
-    else if (next == STAR              ) return genParseStar             (parse);
+    else if (parse.next == RECTANGLE         ) return genParseRectangle        (parse);
+    else if (parse.next == LINE              ) return genParseLine             (parse);
+    else if (parse.next == ELLIPSE           ) return genParseEllipse          (parse);
+    else if (parse.next == POLYGON           ) return genParsePolygon          (parse);
+    else if (parse.next == STAR              ) return genParseStar             (parse);
 
     
     parse.so++;
@@ -48,9 +82,34 @@ function genParse(parse)
 
 
 
+function genParseNodeStart(parse)
+{
+    parse.pos++; // tag
+    
+    const nodeId = parse.req[parse.pos++];
+    const active = genParseActive(parse);
+    
+    parse.scope.push(nodeId);
+
+    return [nodeId, active];
+}
+
+
+
+function genParseNodeEnd(parse, value = null)
+{
+    parse.scope.pop();
+
+    if (   value
+        && parse.scope.length == 0) // only top level
+        pushUnique(parse.tree, value);
+}
+
+
+
 function genParseActive(parse)
 {
-    if (parse.req[parse.pos] == ACTIVE)
+    if (parse.next == ACTIVE)
     {
         parse.pos++;
         return true;
@@ -61,21 +120,9 @@ function genParseActive(parse)
 
 
 
-function genParseNumberNodeId(parse)
-{
-    parse.pos++; // tag
-    
-    const nodeId = parse.req[parse.pos++];
-    genParseActive(parse);
-    
-    return nodeId;
-}
-
-
-
 function genParseParam(parse)
 {
-    if (parse.req[parse.pos] != PARAM) 
+    if (parse.next != PARAM) 
         return null;
     
     parse.pos++;

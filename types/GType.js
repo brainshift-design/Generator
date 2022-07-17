@@ -1,14 +1,25 @@
 class GType
 {
     type;
-    value; // eval result
+
+    result;
+    valid; // has been evaluated
 
 
 
     constructor(type) 
     {
-        this.type  = type;
-        this.value = null;
+        this.type   = type;
+
+        this.result = null;
+        this.valid  = false;
+    }
+
+
+
+    isValid() // is a valid value
+    {
+        return false;
     }
 
 

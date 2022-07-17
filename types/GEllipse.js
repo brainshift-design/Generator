@@ -22,12 +22,12 @@ extends GType
 
 
     
-    get valid()
+    get mustNotEval()
     {
-        return this.x     .valid
-            && this.y     .valid
-            && this.width .valid
-            && this.height.valid
-            && this.angle .valid;
+        return this.x     .mustNotEval
+            && this.y     .mustNotEval
+            && this.width .mustNotEval
+            && this.height.mustNotEval
+            && this.angle .mustNotEval;
     }
 }

@@ -21,14 +21,14 @@ extends GOperator
         
         if (this.values.length > 0)
         {
-            result.value = 1;
+            result.result = 1;
 
 
             for (const _val of this.values)
             {
                 const val = _val.value.eval(parse);
 
-                result.value   *= val.value;
+                result.result   *= val.value;
                 result.decimals = Math.max(result.decimals, val.decimals);
             }
 

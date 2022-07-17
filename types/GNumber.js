@@ -1,15 +1,14 @@
 class GNumber
 extends GOperator
 {
-    value;
+    input = null;
 
 
-
-    constructor(nodeId, value)
+    constructor(nodeId, active)
     {
-        super(NUMBER, nodeId);
+        super(NUMBER, nodeId, active);
 
-        this.value = value;
+        this.result = new GNumberValue(0);
     }
 
 
@@ -18,12 +17,18 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.value = this.value.eval(parse);
-            this.valid = true;
-        }
-        
-        genPushUpdateParamValue(parse, this.nodeId, 'value', this.value);
+            if (this.input)
+                this.result = this.input.eval(parse);
 
-        return this.value;
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.valid        = true;
+            this.result.valid = true;
+        }
+
+
+        return this.result;
     }
 }

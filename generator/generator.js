@@ -15,24 +15,8 @@ function genRequest(req, settings)
         logRequest(req, updateNodeId, updateParamId);
         
 
-    const parse = 
-    {
-        req:           req,
-        
-        pos:           2, 
-        so:            0,
-        
-        updateNodeId:  updateNodeId, 
-        updateParamId: updateParamId,
-
-        scope:         [], // current parse stack
-        tree:          [], // must be evaluated to create the value updates
-
-        updateParams:  [],
-        updateValues:  [],
-        updateObjects: []
-    };
-
+    const parse = new Parse(req, updateNodeId, updateParamId);
+    
     
     const stackOverflowProtect = 100;
 
