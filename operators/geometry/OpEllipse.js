@@ -1,16 +1,11 @@
 class   OpEllipse
-extends OperatorBase
+extends OpGeometryBase
 {
     #paramX;
     #paramY;
     #paramWidth;
     #paramHeight;
     #paramAngle;
-
-    #btnProportional;
-
-    #refWidth  = Number.NaN;
-    #refHeight = Number.NaN;
 
 
     
@@ -33,8 +28,8 @@ extends OperatorBase
         this.#paramAngle.control.dragReverse = true;
 
         
-        this.#btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.#btnProportional);
+        this.btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.btnProportional);
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -52,27 +47,27 @@ extends OperatorBase
         });
 
 
-        this.#btnProportional.addEventListener('click', () =>
+        this.btnProportional.addEventListener('click', () =>
         {
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = this.#paramWidth .genValue;
-                this.#refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.#paramWidth .genValue;
+                this.refHeight = this.#paramHeight.genValue;
             }
         });
 
 
         this.#paramWidth.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
         this.#paramHeight.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -137,8 +132,8 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#btnProportional.style.left = 45;
-        this.#btnProportional.style.top  = 79;
+        this.btnProportional.style.left = 45;
+        this.btnProportional.style.top  = 79;
 
         super.updateNode();
     }
@@ -152,13 +147,13 @@ extends OperatorBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
 
-        if (this.#btnProportional.enabled)
+        if (this.btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
         }
 
         return json;
@@ -172,13 +167,13 @@ extends OperatorBase
 
         // if (_node.proportional)
         // {
-            this.#btnProportional.enabled = isTrue(_node.proportional);
-            this.#btnProportional.updateBackground(false);
+            this.btnProportional.enabled = isTrue(_node.proportional);
+            this.btnProportional.updateBackground(false);
 
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = parseFloat(_node.refWidth);
-                this.#refHeight = parseFloat(_node.refHeight);
+                this.refWidth  = parseFloat(_node.refWidth);
+                this.refHeight = parseFloat(_node.refHeight);
             }
         //}
     }

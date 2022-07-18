@@ -44,6 +44,7 @@
 ../operators/color/OpColorInterpolate.js
 ../operators/color/OpColorblind.js
 
+../operators/geometry/OpGeometryBase.js
 ../operators/geometry/OpRectangle.js
 ../operators/geometry/OpLine.js
 ../operators/geometry/OpEllipse.js

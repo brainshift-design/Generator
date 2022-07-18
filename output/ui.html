@@ -4551,20 +4551,18 @@ extends GOperator
     {
         if (!this.valid)
         {
-            let node = parse.tree
+            this.result = parse.tree
                 .find(v => v.nodeId == this.nodeId);
 
-            if (   node.type == RECTANGLE
-                || node.type == LINE
-                || node.type == ELLIPSE
-                || node.type == POLYGON
-                || node.type == STAR)
-                node = node.eval(parse);
+            if (   this.result.type == RECTANGLE
+                || this.result.type == LINE
+                || this.result.type == ELLIPSE
+                || this.result.type == POLYGON
+                || this.result.type == STAR)
+                //|| this.result.type == TEXT)
+                this.result = this.result.eval(parse);
 
-            this.result = node[this.paramId]
-                .eval(parse);
-
-            this.result = this.result.eval(parse);
+            this.result = this.result[this.paramId].eval(parse);
 
             this.valid        = true;
             this.result.valid = true;
@@ -4699,14 +4697,14 @@ extends GOperator
 
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                this.result.valid    = true;
             }
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
         }
 
 
@@ -4860,6 +4858,12 @@ extends GOperator
         return result;
     }
 }
+
+
+
+
+
+
 
 
 
@@ -13039,20 +13043,18 @@ extends GOperator
     {
         if (!this.valid)
         {
-            let node = parse.tree
+            this.result = parse.tree
                 .find(v => v.nodeId == this.nodeId);
 
-            if (   node.type == RECTANGLE
-                || node.type == LINE
-                || node.type == ELLIPSE
-                || node.type == POLYGON
-                || node.type == STAR)
-                node = node.eval(parse);
+            if (   this.result.type == RECTANGLE
+                || this.result.type == LINE
+                || this.result.type == ELLIPSE
+                || this.result.type == POLYGON
+                || this.result.type == STAR)
+                //|| this.result.type == TEXT)
+                this.result = this.result.eval(parse);
 
-            this.result = node[this.paramId]
-                .eval(parse);
-
-            this.result = this.result.eval(parse);
+            this.result = this.result[this.paramId].eval(parse);
 
             this.valid        = true;
             this.result.valid = true;
@@ -13187,14 +13189,14 @@ extends GOperator
 
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                this.result.valid    = true;
             }
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
         }
 
 
@@ -13348,6 +13350,12 @@ extends GOperator
         return result;
     }
 }
+
+
+
+
+
+
 
 
 
@@ -18103,7 +18111,7 @@ extends EventTarget
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => enableSliderText(this.control, false));
-        this.input.addEventListener('disconnect', () => { if (!this.node.headerConnected) enableSliderText(this.control, true ); });
+        this.input.addEventListener('disconnect', () => { if (!this.node.headerReplacesParams) enableSliderText(this.control, true ); });
     }
 
 
@@ -18484,24 +18492,6 @@ extends Parameter
 
             req.push(...this.input.connectedOutput.genRequest(gen));
         }        
-        else if (this.output
-              && this.output.connected
-              && this.node.headerConnected)
-        {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.node.id,
-                    this.id);
-                
-                pushUnique(gen.paramNodes, this.node);
-            }
-
-            //req.push(...this.node.inputs[0].connectedOutput.genRequest(gen));
-        }
         else
         {
             req.push( 
@@ -18509,6 +18499,17 @@ extends Parameter
                 new GNumberValue(
                     this.control.value, 
                     this.control.displayDec).toString());
+        }
+
+
+        if (   this.output
+            && this.output.connected
+            && this.node.headerConnected)
+        {
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+                pushUnique(gen.paramNodes, this.node);
         }
 
 
@@ -20453,17 +20454,19 @@ class Operator
     params  = [];
     
     
-    variableInputs  = false;
+    variableInputs       = false;
+    headerReplacesParams = false
 
-    alwaysLoadParams = false;
+    alwaysLoadParams     = false;
+
+    scrollName           = true;
+
 
     defaultWidth;
     labelOffsetFactor;
 
 
     _creatingButton  = null; // this is used to place the node under its creating button
-
-    scrollName = true;
 
     
     // node UI
@@ -25514,8 +25517,27 @@ extends OpColorBase
 }
 
 
-class   OpRectangle
+class   OpGeometryBase
 extends OperatorBase
+{
+    btnProportional;
+
+    refWidth  = Number.NaN;
+    refHeight = Number.NaN;
+
+
+    
+    constructor(type, shortName, defWidth = 80)
+    {
+        super(type, shortName, defWidth);
+
+        this.headerReplacesParams = true;
+    }
+}
+
+
+class   OpRectangle
+extends OpGeometryBase
 {
     paramX;
     paramY;
@@ -25524,16 +25546,12 @@ extends OperatorBase
     paramAngle;
     paramRound;
 
-    btnProportional;
-
-    #refWidth  = Number.NaN;
-    #refHeight = Number.NaN;
-
 
     
     constructor()
     {
         super(RECTANGLE, 'rect', 90);
+
 
         this.addInput (new Input ([RECTANGLE]));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
@@ -25576,8 +25594,8 @@ extends OperatorBase
         {
             if (this.btnProportional.enabled)
             {
-                this.#refWidth  = this.paramWidth .genValue;
-                this.#refHeight = this.paramHeight.genValue;
+                this.refWidth  = this.paramWidth .genValue;
+                this.refHeight = this.paramHeight.genValue;
             }
         });
 
@@ -25585,14 +25603,14 @@ extends OperatorBase
         this.paramWidth.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.paramHeight.setValue(this.paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+                this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
         this.paramHeight.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.paramWidth.setValue(this.paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+                this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -25703,8 +25721,8 @@ extends OperatorBase
         if (this.btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
         }
 
         return json;
@@ -25723,8 +25741,8 @@ extends OperatorBase
 
             if (this.btnProportional.enabled)
             {
-                this.#refWidth  = parseFloat(_node.refWidth);
-                this.#refHeight = parseFloat(_node.refHeight);
+                this.refWidth  = parseFloat(_node.refWidth);
+                this.refHeight = parseFloat(_node.refHeight);
             }
         //}
     }
@@ -25732,12 +25750,11 @@ extends OperatorBase
 
 
 class   OpLine
-extends OperatorBase
+extends OpGeometryBase
 {
     #paramX;
     #paramY;
     #paramWidth;
-    //#paramHeight;
     #paramAngle;
 
 
@@ -25752,7 +25769,6 @@ extends OperatorBase
         this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
         this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        //this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
         this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         
 
@@ -25813,7 +25829,6 @@ extends OperatorBase
             if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
             if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
             if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            //if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
             if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
         }
         else
@@ -25822,7 +25837,6 @@ extends OperatorBase
                 ...this.node.#paramX     .genRequest(gen),
                 ...this.node.#paramY     .genRequest(gen),
                 ...this.node.#paramWidth .genRequest(gen),
-                //...this.node.#paramHeight.genRequest(gen),
                 ...this.node.#paramAngle .genRequest(gen));
         }
 
@@ -25836,18 +25850,13 @@ extends OperatorBase
 
 
 class   OpEllipse
-extends OperatorBase
+extends OpGeometryBase
 {
     #paramX;
     #paramY;
     #paramWidth;
     #paramHeight;
     #paramAngle;
-
-    #btnProportional;
-
-    #refWidth  = Number.NaN;
-    #refHeight = Number.NaN;
 
 
     
@@ -25870,8 +25879,8 @@ extends OperatorBase
         this.#paramAngle.control.dragReverse = true;
 
         
-        this.#btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.#btnProportional);
+        this.btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.btnProportional);
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -25889,27 +25898,27 @@ extends OperatorBase
         });
 
 
-        this.#btnProportional.addEventListener('click', () =>
+        this.btnProportional.addEventListener('click', () =>
         {
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = this.#paramWidth .genValue;
-                this.#refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.#paramWidth .genValue;
+                this.refHeight = this.#paramHeight.genValue;
             }
         });
 
 
         this.#paramWidth.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
         this.#paramHeight.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -25974,8 +25983,8 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#btnProportional.style.left = 45;
-        this.#btnProportional.style.top  = 79;
+        this.btnProportional.style.left = 45;
+        this.btnProportional.style.top  = 79;
 
         super.updateNode();
     }
@@ -25989,13 +25998,13 @@ extends OperatorBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
 
-        if (this.#btnProportional.enabled)
+        if (this.btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
         }
 
         return json;
@@ -26009,13 +26018,13 @@ extends OperatorBase
 
         // if (_node.proportional)
         // {
-            this.#btnProportional.enabled = isTrue(_node.proportional);
-            this.#btnProportional.updateBackground(false);
+            this.btnProportional.enabled = isTrue(_node.proportional);
+            this.btnProportional.updateBackground(false);
 
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = parseFloat(_node.refWidth);
-                this.#refHeight = parseFloat(_node.refHeight);
+                this.refWidth  = parseFloat(_node.refWidth);
+                this.refHeight = parseFloat(_node.refHeight);
             }
         //}
     }
@@ -26023,7 +26032,7 @@ extends OperatorBase
 
 
 class   OpPolygon
-extends OperatorBase
+extends OpGeometryBase
 {
     #paramX;
     #paramY;
@@ -26032,11 +26041,6 @@ extends OperatorBase
     #paramAngle;
     #paramRound;
     #paramCorners;
-
-    #btnProportional;
-
-    #refWidth  = Number.NaN;
-    #refHeight = Number.NaN;
 
 
     
@@ -26063,8 +26067,8 @@ extends OperatorBase
         
         //this.updateRound();
 
-        this.#btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.#btnProportional);
+        this.btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.btnProportional);
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -26082,27 +26086,27 @@ extends OperatorBase
         });
 
 
-        this.#btnProportional.addEventListener('click', () =>
+        this.btnProportional.addEventListener('click', () =>
         {
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = this.#paramWidth .genValue;
-                this.#refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.#paramWidth .genValue;
+                this.refHeight = this.#paramHeight.genValue;
             }
         });
 
 
         this.#paramWidth.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
         this.#paramHeight.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -26171,8 +26175,8 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#btnProportional.style.left = 45;
-        this.#btnProportional.style.top  = 79;
+        this.btnProportional.style.left = 45;
+        this.btnProportional.style.top  = 79;
 
         super.updateNode();
     }
@@ -26210,13 +26214,13 @@ extends OperatorBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
 
-        if (this.#btnProportional.enabled)
+        if (this.btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
         }
 
         return json;
@@ -26230,13 +26234,13 @@ extends OperatorBase
 
         // if (_node.proportional)
         // {
-            this.#btnProportional.enabled = isTrue(_node.proportional);
-            this.#btnProportional.updateBackground(false);
+            this.btnProportional.enabled = isTrue(_node.proportional);
+            this.btnProportional.updateBackground(false);
 
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = parseFloat(_node.refWidth);
-                this.#refHeight = parseFloat(_node.refHeight);
+                this.refWidth  = parseFloat(_node.refWidth);
+                this.refHeight = parseFloat(_node.refHeight);
             }
         //}
     }
@@ -26244,7 +26248,7 @@ extends OperatorBase
 
 
 class   OpStar
-extends OperatorBase
+extends OpGeometryBase
 {
     #paramX;
     #paramY;
@@ -26254,11 +26258,6 @@ extends OperatorBase
     #paramRound;
     #paramPoints;
     #paramConvex;
-
-    #btnProportional;
-
-    #refWidth  = Number.NaN;
-    #refHeight = Number.NaN;
 
 
     
@@ -26288,8 +26287,8 @@ extends OperatorBase
 
         //this.updateRound();
 
-        this.#btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.#btnProportional);
+        this.btnProportional = createToggleButton(12, 12);
+        this.inner.appendChild(this.btnProportional);
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -26307,27 +26306,27 @@ extends OperatorBase
         });
 
 
-        this.#btnProportional.addEventListener('click', () =>
+        this.btnProportional.addEventListener('click', () =>
         {
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = this.#paramWidth .genValue;
-                this.#refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.#paramWidth .genValue;
+                this.refHeight = this.#paramHeight.genValue;
             }
         });
 
 
         this.#paramWidth.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.#refHeight / this.#refWidth, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
         this.#paramHeight.addEventListener('change', () =>
         {
-            if (this.#btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.#refWidth / this.#refHeight, false, true, false);
+            if (this.btnProportional.enabled)
+                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -26398,8 +26397,8 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#btnProportional.style.left = 45;
-        this.#btnProportional.style.top  = 79;
+        this.btnProportional.style.left = 45;
+        this.btnProportional.style.top  = 79;
 
         super.updateNode();
     }
@@ -26437,13 +26436,13 @@ extends OperatorBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.#btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
 
-        if (this.#btnProportional.enabled)
+        if (this.btnProportional.enabled)
         {
             json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.#refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.#refHeight + '"';
+                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
         }
 
         return json;
@@ -26457,13 +26456,13 @@ extends OperatorBase
 
         // if (_node.proportional)
         // {
-            this.#btnProportional.enabled = isTrue(_node.proportional);
-            this.#btnProportional.updateBackground(false);
+            this.btnProportional.enabled = isTrue(_node.proportional);
+            this.btnProportional.updateBackground(false);
 
-            if (this.#btnProportional.enabled)
+            if (this.btnProportional.enabled)
             {
-                this.#refWidth  = parseFloat(_node.refWidth);
-                this.#refHeight = parseFloat(_node.refHeight);
+                this.refWidth  = parseFloat(_node.refWidth);
+                this.refHeight = parseFloat(_node.refHeight);
             }
         //}
     }

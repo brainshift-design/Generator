@@ -26,14 +26,14 @@ extends GOperator
 
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                this.result.valid    = true;
             }
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
         }
 
 

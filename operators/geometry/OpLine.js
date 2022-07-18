@@ -1,10 +1,9 @@
 class   OpLine
-extends OperatorBase
+extends OpGeometryBase
 {
     #paramX;
     #paramY;
     #paramWidth;
-    //#paramHeight;
     #paramAngle;
 
 
@@ -19,7 +18,6 @@ extends OperatorBase
         this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
         this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        //this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
         this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         
 
@@ -80,7 +78,6 @@ extends OperatorBase
             if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
             if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
             if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            //if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
             if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
         }
         else
@@ -89,7 +86,6 @@ extends OperatorBase
                 ...this.node.#paramX     .genRequest(gen),
                 ...this.node.#paramY     .genRequest(gen),
                 ...this.node.#paramWidth .genRequest(gen),
-                //...this.node.#paramHeight.genRequest(gen),
                 ...this.node.#paramAngle .genRequest(gen));
         }
 

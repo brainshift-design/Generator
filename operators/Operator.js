@@ -45,17 +45,19 @@ class Operator
     params  = [];
     
     
-    variableInputs  = false;
+    variableInputs       = false;
+    headerReplacesParams = false
 
-    alwaysLoadParams = false;
+    alwaysLoadParams     = false;
+
+    scrollName           = true;
+
 
     defaultWidth;
     labelOffsetFactor;
 
 
     _creatingButton  = null; // this is used to place the node under its creating button
-
-    scrollName = true;
 
     
     // node UI

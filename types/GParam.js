@@ -18,20 +18,18 @@ extends GOperator
     {
         if (!this.valid)
         {
-            let node = parse.tree
+            this.result = parse.tree
                 .find(v => v.nodeId == this.nodeId);
 
-            if (   node.type == RECTANGLE
-                || node.type == LINE
-                || node.type == ELLIPSE
-                || node.type == POLYGON
-                || node.type == STAR)
-                node = node.eval(parse);
+            if (   this.result.type == RECTANGLE
+                || this.result.type == LINE
+                || this.result.type == ELLIPSE
+                || this.result.type == POLYGON
+                || this.result.type == STAR)
+                //|| this.result.type == TEXT)
+                this.result = this.result.eval(parse);
 
-            this.result = node[this.paramId]
-                .eval(parse);
-
-            this.result = this.result.eval(parse);
+            this.result = this.result[this.paramId].eval(parse);
 
             this.valid        = true;
             this.result.valid = true;
