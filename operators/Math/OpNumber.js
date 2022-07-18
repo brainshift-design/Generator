@@ -1,7 +1,7 @@
 class   OpNumber
 extends OperatorBase
 {
-    #paramValue;
+    paramValue;
 
 
 
@@ -12,7 +12,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER], this.input_getValuesForUndo));
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
-        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
         
         this.alwaysLoadParams = true;
     }
@@ -22,8 +22,8 @@ extends OperatorBase
     input_getValuesForUndo()
     {
         return [[
-            this.node.#paramValue.id, 
-            this.node.#paramValue.value]];
+            this.node.paramValue.id, 
+            this.node.paramValue.value]];
     }
 
 
@@ -48,7 +48,7 @@ extends OperatorBase
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest(gen)
-            : this.node.#paramValue.genRequest(gen)));
+            : this.node.paramValue.genRequest(gen)));
 
             
         gen.scope.pop();
@@ -71,8 +71,8 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#paramValue.control.readOnly = this.inputs[0].connected;
-        enableElementText(this.#paramValue.control, !this.inputs[0].connected);
+        this.paramValue.control.readOnly = this.inputs[0].connected;
+        enableElementText(this.paramValue.control, !this.inputs[0].connected);
 
         super.updateNode();
     }

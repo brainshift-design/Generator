@@ -51,6 +51,10 @@ extends GOperator
             this.result.height = (!input || this.height ? this.height : input.height).eval(parse);
             this.result.angle  = (!input || this.angle  ? this.angle  : input.angle ).eval(parse);
             this.result.round  = (!input || this.round  ? this.round  : input.round ).eval(parse);
+
+
+            this.valid        = true;
+            this.result.valid = true;
            
             
             genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );
@@ -59,10 +63,6 @@ extends GOperator
             genPushUpdateParamValue(parse, this.nodeId, 'height', this.result.height);
             genPushUpdateParamValue(parse, this.nodeId, 'angle',  this.result.angle );
             genPushUpdateParamValue(parse, this.nodeId, 'round',  this.result.round );
-
-
-            this.valid        = true;
-            this.result.valid = true;
 
 
             if (this.active)

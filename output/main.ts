@@ -497,7 +497,6 @@ const PARAM              = 'PARAM'; // nodeId paramId
 
 /*
 
-ARROW       A
 COLOR       C
 ELLIPSE     E
 FRAME       F

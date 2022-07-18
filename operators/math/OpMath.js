@@ -12,8 +12,8 @@ ops = [ // the order is important for logical keyboard value changes
 class   OpMath
 extends OperatorBase
 {
-    #paramOperation;
-    #paramValue;
+    paramOperation;
+    paramValue;
 
 
 
@@ -28,10 +28,10 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
-        this.addParam(this.#paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
 
-        enableSliderText(this.#paramValue.control, false);
+        enableSliderText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');

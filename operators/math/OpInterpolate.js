@@ -37,15 +37,15 @@ extends OperatorBase
             return this.cache;
 
 
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
-        
-        
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
 
         const req = this.node.getRequestStart();
+
+        
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected

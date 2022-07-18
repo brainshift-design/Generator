@@ -1,8 +1,8 @@
 class   OpColorInterpolate
 extends OpColorBase
 {
-    #paramSpace;
-    #paramAmount;
+    paramSpace;
+    paramAmount;
 
 
 
@@ -17,18 +17,18 @@ extends OpColorBase
         this.addOutput(new Output(COLOR));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
+        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
       
         
-        this.#paramSpace.control.min         = 1;
-        this.#paramSpace.control.displayMin  = 1;
-        this.#paramSpace.control.update();
+        this.paramSpace.control.min         = 1;
+        this.paramSpace.control.displayMin  = 1;
+        this.paramSpace.control.update();
         
-        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
-        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
 
-        this.#paramAmount.control.setSuffix('%', true);
+        this.paramAmount.control.setSuffix('%', true);
         
 
         this.header.connectionPadding = 12.5;
@@ -38,7 +38,7 @@ extends OpColorBase
         {
             if (   !this.inputs[1].connected
                 && !graphView.loadingNodes) 
-                this.#paramSpace.setValue(
+                this.paramSpace.setValue(
                     colorSpaceIndex(this.inputs[0].data.color[0]),
                     true, true, false);
         });
@@ -48,17 +48,17 @@ extends OpColorBase
         {
             if (   !this.inputs[0].connected
                 && !graphView.loadingNodes) 
-                this.#paramSpace.setValue(
+                this.paramSpace.setValue(
                     colorSpaceIndex(this.inputs[1].data.color[0]),
                     true, true, false);
         });
 
 
-        this.#paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
+        this.paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
 
 
         createTooltip(ttInterpolationSpace);
-        createTooltipSrc(this.#paramSpace.control, () => ttInterpolationSpace);
+        createTooltipSrc(this.paramSpace.control, () => ttInterpolationSpace);
     }
 
 
@@ -70,8 +70,8 @@ extends OpColorBase
     //     if (   this.inputs[0].connected
     //         && this.inputs[1].connected)
     //     {
-    //         const space = colorSpace(this.#paramSpace.value);
-    //         const f     = this.#paramAmount.value / 100;
+    //         const space = colorSpace(this.paramSpace.value);
+    //         const f     = this.paramAmount.value / 100;
             
     //         const col = this.interpolate(
     //             space,

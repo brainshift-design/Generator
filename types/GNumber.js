@@ -21,11 +21,12 @@ extends GOperator
                 this.result = this.input.eval(parse);
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.valid        = true;
+            this.valid = true;
             //this.result.valid = true;
+
+
+            console.assert(this.result.valid);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 

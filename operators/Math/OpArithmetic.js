@@ -1,7 +1,7 @@
 class   OpArithmetic
 extends OperatorBase
 {
-    #paramValue;
+    paramValue;
 
     _symbol;
     _showOnlySymbol;
@@ -20,9 +20,9 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
-        enableSliderText(this.#paramValue.control, false);
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        enableSliderText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');

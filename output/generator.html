@@ -2875,7 +2875,6 @@ const PARAM              = 'PARAM'; // nodeId paramId
 
 /*
 
-ARROW       A
 COLOR       C
 ELLIPSE     E
 FRAME       F
@@ -3079,17 +3078,69 @@ extends GOperator
                 this.result = this.input.eval(parse);
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.valid        = true;
+            this.valid = true;
             //this.result.valid = true;
+
+
+            console.assert(this.result.valid);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
         return this.result;
     }
 }
+
+
+class GMinMax
+extends GOperator
+{
+    input = null;
+
+    min;
+    max;
+
+
+    constructor(nodeId, active)
+    {
+        super(NUMBER_MINMAX, nodeId, active);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GNumberValue(0);
+
+
+            if (this.input)
+                this.result = this.input.eval(parse);
+
+            const min = this.min.eval(parse);
+            const max = this.max.eval(parse);
+
+            this.result.value = Math.min(Math.max(
+                min.value,
+                this.result.value),
+                max.value);
+
+
+            this.valid        = true;
+            this.result.valid = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateParamValue(parse, this.nodeId, 'min',   min);
+            genPushUpdateParamValue(parse, this.nodeId, 'max',   max);
+        }
+
+
+        return this.result;
+    }
+}
+
 
 
 class GAdd
@@ -3121,13 +3172,13 @@ extends GOperator
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
             }
+            
+            
+            this.result.valid = true;
+            this.valid        = true;
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.result.valid = true;
-            this.valid        = true;
         }
 
 
@@ -3222,11 +3273,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -3279,11 +3330,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -3336,11 +3387,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -3386,11 +3437,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -3447,11 +3498,11 @@ extends GOperator
             }
 
 
+            this.valid = true;
+
+
             genPushUpdateParamValue(parse, this.nodeId, 'value',  this.result);
             genPushUpdateParamValue(parse, this.nodeId, 'amount', amount);
-
-
-            this.valid = true;
         }
 
 
@@ -3546,6 +3597,10 @@ extends GOperator
             this.result.height = (!input || this.height ? this.height : input.height).eval(parse);
             this.result.angle  = (!input || this.angle  ? this.angle  : input.angle ).eval(parse);
             this.result.round  = (!input || this.round  ? this.round  : input.round ).eval(parse);
+
+
+            this.valid        = true;
+            this.result.valid = true;
            
             
             genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );
@@ -3554,10 +3609,6 @@ extends GOperator
             genPushUpdateParamValue(parse, this.nodeId, 'height', this.result.height);
             genPushUpdateParamValue(parse, this.nodeId, 'angle',  this.result.angle );
             genPushUpdateParamValue(parse, this.nodeId, 'round',  this.result.round );
-
-
-            this.valid        = true;
-            this.result.valid = true;
 
 
             if (this.active)
@@ -4553,153 +4604,47 @@ function genParseNumber(parse)
 
 
 
+function genParseMinMax(parse)
+{
+    const [nodeId, active] = genParseNodeStart(parse);
+    const minmax = new GMinMax(nodeId, active);
+    
+    
+    const nValues = parse.move();
+    console.assert(nValues == 0 || nValues == 1);
+
+    if (nValues == 1)
+        minmax.input = genParse(parse);
+
+    minmax.min = genParse(parse);
+    minmax.max = genParse(parse);
+    
+
+    genParseNodeEnd(parse, minmax);
+    return minmax;
+}
+
+
+
 function genParseArithmetic(parse, newNode)
 {
     const [nodeId, active] = genParseNodeStart(parse);
-    const node = newNode(nodeId, active);
+    const arith = newNode(nodeId, active);
 
 
     const nValues = parse.move();
 
     for (let i = 0; i < nValues; i++)
-        node.inputs.push(genParse(parse));
+        arith.inputs.push(genParse(parse));
 
         
-    genParseNodeEnd(parse, node);
-    return node;
+    genParseNodeEnd(parse, arith);
+    return arith;
 }
 
 
 
-function genParseNumberSubtract(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-    const sub = new GSubtract(nodeId);
-
-    for (let i = 0; i < nValues; i++)
-        sub.values.push(genParse(parse));
-
-    return sub;
-}
-
-
-
-function genParseNumberMultiply(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-    const mul = new GMultiply(nodeId);
-
-    for (let i = 0; i < nValues; i++)
-        mul.values.push(genParse(parse));
-
-    return mul;
-}
-
-
-
-function genParseNumberDivide(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-    const div = new GDivide(nodeId);
-
-    for (let i = 0; i < nValues; i++)
-        div.values.push(genParse(parse));
-
-    return div;
-}
-
-
-
-function genParseNumberModulo(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            if (num.value == 0) 
-            { 
-                result = Number.NaN; 
-                maxDec = 0;
-                break; 
-            }
-
-            result %= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumberValue(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'value', num);
-
-    return num;
-}
-
-
-
-function genParseNumberExponent(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-
-    
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            result = Math.pow(result, num.value);
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumberValue(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'value', num);
-
-    return num;
-}
-
-
-
-function genParseNumberInterpolate(parse)
+function genParseInterpolate(parse)
 {
     const [nodeId, active] = genParseNodeStart(parse);
     const inter = new GInterpolate(nodeId, active);
@@ -4793,25 +4738,26 @@ function genParse(parse)
     //console.log('next', next);
 
 
-         if (parse.next == PARAM             ) return genParseParam            (parse);
+         if (parse.next == PARAM             ) return genParseParam      (parse);
 
-    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue         (parse);
-    else if (parse.next == NUMBER            ) return genParseNumber           (parse);
-    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic       (parse, (nodeId, active) => new GAdd     (nodeId, active));
-    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic       (parse, (nodeId, active) => new GSubtract(nodeId, active));
-    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic       (parse, (nodeId, active) => new GMultiply(nodeId, active));
-    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic       (parse, (nodeId, active) => new GDivide  (nodeId, active));
-    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic       (parse, (nodeId, active) => new GModulo  (nodeId, active));
-    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic       (parse, (nodeId, active) => new GExponent(nodeId, active));
-    else if (parse.next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
+    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue   (parse);
+    else if (parse.next == NUMBER            ) return genParseNumber     (parse);
+    else if (parse.next == NUMBER_MINMAX     ) return genParseMinMax     (parse);
+    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic (parse, (nodeId, active) => new GAdd     (nodeId, active));
+    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic (parse, (nodeId, active) => new GSubtract(nodeId, active));
+    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic (parse, (nodeId, active) => new GMultiply(nodeId, active));
+    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic (parse, (nodeId, active) => new GDivide  (nodeId, active));
+    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic (parse, (nodeId, active) => new GModulo  (nodeId, active));
+    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic (parse, (nodeId, active) => new GExponent(nodeId, active));
+    else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate(parse);
 
-    else if (parse.next == COLOR             ) return genParseColor            (parse);
+    else if (parse.next == COLOR             ) return genParseColor      (parse);
 
-    else if (parse.next == RECTANGLE         ) return genParseRectangle        (parse);
-    else if (parse.next == LINE              ) return genParseLine             (parse);
-    else if (parse.next == ELLIPSE           ) return genParseEllipse          (parse);
-    else if (parse.next == POLYGON           ) return genParsePolygon          (parse);
-    else if (parse.next == STAR              ) return genParseStar             (parse);
+    else if (parse.next == RECTANGLE         ) return genParseRectangle  (parse);
+    else if (parse.next == LINE              ) return genParseLine       (parse);
+    else if (parse.next == ELLIPSE           ) return genParseEllipse    (parse);
+    else if (parse.next == POLYGON           ) return genParsePolygon    (parse);
+    else if (parse.next == STAR              ) return genParseStar       (parse);
 
     
     parse.so++;

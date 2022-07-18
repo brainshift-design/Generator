@@ -1,14 +1,14 @@
 class   OpStar
 extends OpGeometryBase
 {
-    #paramX;
-    #paramY;
-    #paramWidth;
-    #paramHeight;
-    #paramAngle;
-    #paramRound;
-    #paramPoints;
-    #paramConvex;
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+    paramPoints;
+    paramConvex;
 
 
     
@@ -19,21 +19,21 @@ extends OpGeometryBase
         this.addInput (new Input ([STAR]));
         this.addOutput(new Output(STAR, this.output_genRequest));
 
-        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-        this.addParam(this.#paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
-        this.addParam(this.#paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
+        this.addParam(this.aramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.aramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
+        this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
         
 
-        this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue   = true;
-        this.#paramAngle.control.dragReverse = true;
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
 
-        this.#paramConvex.control.setSuffix('%', true);
+        this.paramConvex.control.setSuffix('%', true);
         
 
         //this.updateRound();
@@ -61,23 +61,23 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
             {
-                this.refWidth  = this.#paramWidth .genValue;
-                this.refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.paramWidth .genValue;
+                this.refHeight = this.paramHeight.genValue;
             }
         });
 
 
-        this.#paramWidth.addEventListener('change', () =>
+        this.paramWidth.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
+                this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
-        this.#paramHeight.addEventListener('change', () =>
+        this.paramHeight.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
+                this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -115,26 +115,26 @@ extends OpGeometryBase
             req.push(paramIds.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
-            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest(gen));
-            if (this.node.#paramPoints.input.connected) req.push(...this.node.#paramPoints.genRequest(gen));
-            if (this.node.#paramConvex.input.connected) req.push(...this.node.#paramConvex.genRequest(gen));
+            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) req.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramRound .input.connected) req.push(...this.node.paramRound .genRequest(gen));
+            if (this.node.paramPoints.input.connected) req.push(...this.node.paramPoints.genRequest(gen));
+            if (this.node.paramConvex.input.connected) req.push(...this.node.paramConvex.genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(gen),
-                ...this.node.#paramY     .genRequest(gen),
-                ...this.node.#paramWidth .genRequest(gen),
-                ...this.node.#paramHeight.genRequest(gen),
-                ...this.node.#paramAngle .genRequest(gen),
-                ...this.node.#paramRound .genRequest(gen),
-                ...this.node.#paramPoints.genRequest(gen),
-                ...this.node.#paramConvex.genRequest(gen));
+                ...this.node.paramX     .genRequest(gen),
+                ...this.node.paramY     .genRequest(gen),
+                ...this.node.paramWidth .genRequest(gen),
+                ...this.node.paramHeight.genRequest(gen),
+                ...this.node.paramAngle .genRequest(gen),
+                ...this.node.paramRound .genRequest(gen),
+                ...this.node.paramPoints.genRequest(gen),
+                ...this.node.paramConvex.genRequest(gen));
         }
 
 
@@ -169,13 +169,13 @@ extends OpGeometryBase
 
     updateRound()
     {
-        const control = this.#paramRound.control;
-        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+        const control = this.paramRound.control;
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.#paramRound.control.update();
+        this.paramRound.control.update();
     }
 
     

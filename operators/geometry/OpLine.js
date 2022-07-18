@@ -1,10 +1,10 @@
 class   OpLine
 extends OpGeometryBase
 {
-    #paramX;
-    #paramY;
-    #paramWidth;
-    #paramAngle;
+    paramX;
+    paramY;
+    paramWidth;
+    paramAngle;
 
 
     
@@ -15,15 +15,15 @@ extends OpGeometryBase
         this.addInput (new Input ([LINE]));
         this.addOutput(new Output(LINE, this.output_genRequest));
 
-        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         
 
-        this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue   = true;
-        this.#paramAngle.control.dragReverse = true;
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -75,18 +75,18 @@ extends OpGeometryBase
             req.push(paramIds.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(gen),
-                ...this.node.#paramY     .genRequest(gen),
-                ...this.node.#paramWidth .genRequest(gen),
-                ...this.node.#paramAngle .genRequest(gen));
+                ...this.node.paramX     .genRequest(gen),
+                ...this.node.paramY     .genRequest(gen),
+                ...this.node.paramWidth .genRequest(gen),
+                ...this.node.paramAngle .genRequest(gen));
         }
 
 

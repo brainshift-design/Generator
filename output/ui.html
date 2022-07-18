@@ -4452,7 +4452,6 @@ const PARAM              = 'PARAM'; // nodeId paramId
 
 /*
 
-ARROW       A
 COLOR       C
 ELLIPSE     E
 FRAME       F
@@ -4656,17 +4655,69 @@ extends GOperator
                 this.result = this.input.eval(parse);
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.valid        = true;
+            this.valid = true;
             //this.result.valid = true;
+
+
+            console.assert(this.result.valid);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
         return this.result;
     }
 }
+
+
+class GMinMax
+extends GOperator
+{
+    input = null;
+
+    min;
+    max;
+
+
+    constructor(nodeId, active)
+    {
+        super(NUMBER_MINMAX, nodeId, active);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GNumberValue(0);
+
+
+            if (this.input)
+                this.result = this.input.eval(parse);
+
+            const min = this.min.eval(parse);
+            const max = this.max.eval(parse);
+
+            this.result.value = Math.min(Math.max(
+                min.value,
+                this.result.value),
+                max.value);
+
+
+            this.valid        = true;
+            this.result.valid = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateParamValue(parse, this.nodeId, 'min',   min);
+            genPushUpdateParamValue(parse, this.nodeId, 'max',   max);
+        }
+
+
+        return this.result;
+    }
+}
+
 
 
 class GAdd
@@ -4698,13 +4749,13 @@ extends GOperator
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
             }
+            
+            
+            this.result.valid = true;
+            this.valid        = true;
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.result.valid = true;
-            this.valid        = true;
         }
 
 
@@ -4799,11 +4850,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -4856,11 +4907,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -4913,11 +4964,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -4963,11 +5014,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -5024,11 +5075,11 @@ extends GOperator
             }
 
 
+            this.valid = true;
+
+
             genPushUpdateParamValue(parse, this.nodeId, 'value',  this.result);
             genPushUpdateParamValue(parse, this.nodeId, 'amount', amount);
-
-
-            this.valid = true;
         }
 
 
@@ -5123,6 +5174,10 @@ extends GOperator
             this.result.height = (!input || this.height ? this.height : input.height).eval(parse);
             this.result.angle  = (!input || this.angle  ? this.angle  : input.angle ).eval(parse);
             this.result.round  = (!input || this.round  ? this.round  : input.round ).eval(parse);
+
+
+            this.valid        = true;
+            this.result.valid = true;
            
             
             genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );
@@ -5131,10 +5186,6 @@ extends GOperator
             genPushUpdateParamValue(parse, this.nodeId, 'height', this.result.height);
             genPushUpdateParamValue(parse, this.nodeId, 'angle',  this.result.angle );
             genPushUpdateParamValue(parse, this.nodeId, 'round',  this.result.round );
-
-
-            this.valid        = true;
-            this.result.valid = true;
 
 
             if (this.active)
@@ -6130,153 +6181,47 @@ function genParseNumber(parse)
 
 
 
+function genParseMinMax(parse)
+{
+    const [nodeId, active] = genParseNodeStart(parse);
+    const minmax = new GMinMax(nodeId, active);
+    
+    
+    const nValues = parse.move();
+    console.assert(nValues == 0 || nValues == 1);
+
+    if (nValues == 1)
+        minmax.input = genParse(parse);
+
+    minmax.min = genParse(parse);
+    minmax.max = genParse(parse);
+    
+
+    genParseNodeEnd(parse, minmax);
+    return minmax;
+}
+
+
+
 function genParseArithmetic(parse, newNode)
 {
     const [nodeId, active] = genParseNodeStart(parse);
-    const node = newNode(nodeId, active);
+    const arith = newNode(nodeId, active);
 
 
     const nValues = parse.move();
 
     for (let i = 0; i < nValues; i++)
-        node.inputs.push(genParse(parse));
+        arith.inputs.push(genParse(parse));
 
         
-    genParseNodeEnd(parse, node);
-    return node;
+    genParseNodeEnd(parse, arith);
+    return arith;
 }
 
 
 
-function genParseNumberSubtract(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-    const sub = new GSubtract(nodeId);
-
-    for (let i = 0; i < nValues; i++)
-        sub.values.push(genParse(parse));
-
-    return sub;
-}
-
-
-
-function genParseNumberMultiply(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-    const mul = new GMultiply(nodeId);
-
-    for (let i = 0; i < nValues; i++)
-        mul.values.push(genParse(parse));
-
-    return mul;
-}
-
-
-
-function genParseNumberDivide(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-    const div = new GDivide(nodeId);
-
-    for (let i = 0; i < nValues; i++)
-        div.values.push(genParse(parse));
-
-    return div;
-}
-
-
-
-function genParseNumberModulo(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-    
-
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            if (num.value == 0) 
-            { 
-                result = Number.NaN; 
-                maxDec = 0;
-                break; 
-            }
-
-            result %= num.value;
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumberValue(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'value', num);
-
-    return num;
-}
-
-
-
-function genParseNumberExponent(parse)
-{
-    const nodeId  = genParseNodeId(parse);
-    const nValues = parse.move();
-
-    
-    let result, maxDec;
-
-    if (nValues == 0)
-    {
-        result = 0;
-        maxDec = 0;
-    }
-    else
-    {
-        let num = genParse(parse);
-
-        result = num.value;
-        maxDec = num.decimals;
-
-        for (let i = 1; i < nValues; i++)
-        {
-            num = genParse(parse);
-
-            result = Math.pow(result, num.value);
-            maxDec = Math.max(maxDec, num.decimals);
-        }
-    }
-
-
-    const num = new GNumberValue(result, maxDec);
-    genPushUpdateParamValue(parse, nodeId, 'value', num);
-
-    return num;
-}
-
-
-
-function genParseNumberInterpolate(parse)
+function genParseInterpolate(parse)
 {
     const [nodeId, active] = genParseNodeStart(parse);
     const inter = new GInterpolate(nodeId, active);
@@ -6370,25 +6315,26 @@ function genParse(parse)
     //console.log('next', next);
 
 
-         if (parse.next == PARAM             ) return genParseParam            (parse);
+         if (parse.next == PARAM             ) return genParseParam      (parse);
 
-    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue         (parse);
-    else if (parse.next == NUMBER            ) return genParseNumber           (parse);
-    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic       (parse, (nodeId, active) => new GAdd     (nodeId, active));
-    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic       (parse, (nodeId, active) => new GSubtract(nodeId, active));
-    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic       (parse, (nodeId, active) => new GMultiply(nodeId, active));
-    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic       (parse, (nodeId, active) => new GDivide  (nodeId, active));
-    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic       (parse, (nodeId, active) => new GModulo  (nodeId, active));
-    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic       (parse, (nodeId, active) => new GExponent(nodeId, active));
-    else if (parse.next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
+    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue   (parse);
+    else if (parse.next == NUMBER            ) return genParseNumber     (parse);
+    else if (parse.next == NUMBER_MINMAX     ) return genParseMinMax     (parse);
+    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic (parse, (nodeId, active) => new GAdd     (nodeId, active));
+    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic (parse, (nodeId, active) => new GSubtract(nodeId, active));
+    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic (parse, (nodeId, active) => new GMultiply(nodeId, active));
+    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic (parse, (nodeId, active) => new GDivide  (nodeId, active));
+    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic (parse, (nodeId, active) => new GModulo  (nodeId, active));
+    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic (parse, (nodeId, active) => new GExponent(nodeId, active));
+    else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate(parse);
 
-    else if (parse.next == COLOR             ) return genParseColor            (parse);
+    else if (parse.next == COLOR             ) return genParseColor      (parse);
 
-    else if (parse.next == RECTANGLE         ) return genParseRectangle        (parse);
-    else if (parse.next == LINE              ) return genParseLine             (parse);
-    else if (parse.next == ELLIPSE           ) return genParseEllipse          (parse);
-    else if (parse.next == POLYGON           ) return genParsePolygon          (parse);
-    else if (parse.next == STAR              ) return genParseStar             (parse);
+    else if (parse.next == RECTANGLE         ) return genParseRectangle  (parse);
+    else if (parse.next == LINE              ) return genParseLine       (parse);
+    else if (parse.next == ELLIPSE           ) return genParseEllipse    (parse);
+    else if (parse.next == POLYGON           ) return genParsePolygon    (parse);
+    else if (parse.next == STAR              ) return genParseStar       (parse);
 
     
     parse.so++;
@@ -13054,7 +13000,6 @@ const PARAM              = 'PARAM'; // nodeId paramId
 
 /*
 
-ARROW       A
 COLOR       C
 ELLIPSE     E
 FRAME       F
@@ -13258,17 +13203,69 @@ extends GOperator
                 this.result = this.input.eval(parse);
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.valid        = true;
+            this.valid = true;
             //this.result.valid = true;
+
+
+            console.assert(this.result.valid);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
         return this.result;
     }
 }
+
+
+class GMinMax
+extends GOperator
+{
+    input = null;
+
+    min;
+    max;
+
+
+    constructor(nodeId, active)
+    {
+        super(NUMBER_MINMAX, nodeId, active);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GNumberValue(0);
+
+
+            if (this.input)
+                this.result = this.input.eval(parse);
+
+            const min = this.min.eval(parse);
+            const max = this.max.eval(parse);
+
+            this.result.value = Math.min(Math.max(
+                min.value,
+                this.result.value),
+                max.value);
+
+
+            this.valid        = true;
+            this.result.valid = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateParamValue(parse, this.nodeId, 'min',   min);
+            genPushUpdateParamValue(parse, this.nodeId, 'max',   max);
+        }
+
+
+        return this.result;
+    }
+}
+
 
 
 class GAdd
@@ -13300,13 +13297,13 @@ extends GOperator
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
             }
+            
+            
+            this.result.valid = true;
+            this.valid        = true;
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.result.valid = true;
-            this.valid        = true;
         }
 
 
@@ -13401,11 +13398,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -13458,11 +13455,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -13515,11 +13512,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -13565,11 +13562,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -13626,11 +13623,11 @@ extends GOperator
             }
 
 
+            this.valid = true;
+
+
             genPushUpdateParamValue(parse, this.nodeId, 'value',  this.result);
             genPushUpdateParamValue(parse, this.nodeId, 'amount', amount);
-
-
-            this.valid = true;
         }
 
 
@@ -13725,6 +13722,10 @@ extends GOperator
             this.result.height = (!input || this.height ? this.height : input.height).eval(parse);
             this.result.angle  = (!input || this.angle  ? this.angle  : input.angle ).eval(parse);
             this.result.round  = (!input || this.round  ? this.round  : input.round ).eval(parse);
+
+
+            this.valid        = true;
+            this.result.valid = true;
            
             
             genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );
@@ -13733,10 +13734,6 @@ extends GOperator
             genPushUpdateParamValue(parse, this.nodeId, 'height', this.result.height);
             genPushUpdateParamValue(parse, this.nodeId, 'angle',  this.result.angle );
             genPushUpdateParamValue(parse, this.nodeId, 'round',  this.result.round );
-
-
-            this.valid        = true;
-            this.result.valid = true;
 
 
             if (this.active)
@@ -22282,7 +22279,7 @@ extends OperatorBase
 class   OpNumber
 extends OperatorBase
 {
-    #paramValue;
+    paramValue;
 
 
 
@@ -22293,7 +22290,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER], this.input_getValuesForUndo));
         this.addOutput(new Output(NUMBER, this.output_genRequest));
 
-        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
         
         this.alwaysLoadParams = true;
     }
@@ -22303,8 +22300,8 @@ extends OperatorBase
     input_getValuesForUndo()
     {
         return [[
-            this.node.#paramValue.id, 
-            this.node.#paramValue.value]];
+            this.node.paramValue.id, 
+            this.node.paramValue.value]];
     }
 
 
@@ -22329,7 +22326,7 @@ extends OperatorBase
         req.push(...(
             input.connected
             ? input.connectedOutput.genRequest(gen)
-            : this.node.#paramValue.genRequest(gen)));
+            : this.node.paramValue.genRequest(gen)));
 
             
         gen.scope.pop();
@@ -22352,8 +22349,8 @@ extends OperatorBase
 
     updateNode()
     {
-        this.#paramValue.control.readOnly = this.inputs[0].connected;
-        enableElementText(this.#paramValue.control, !this.inputs[0].connected);
+        this.paramValue.control.readOnly = this.inputs[0].connected;
+        enableElementText(this.paramValue.control, !this.inputs[0].connected);
 
         super.updateNode();
     }
@@ -22371,32 +22368,74 @@ extends OperatorBase
 class   OpMinMax
 extends OperatorBase
 {
-    #paramMin;
-    #paramMax;
+    paramValue;
+
+    paramMin;
+    paramMax;
 
 
 
     constructor()
     {
-        super('minmax', 'limits', NUMBER, 70);
+        super(NUMBER_MINMAX, 'minmax', 70);
 
-        this.addInput (new Input (this.dataType));
-        this.addOutput(new Output(this.dataType));
+        this.addInput (new Input ([NUMBER]));
+        this.addOutput(new Output(NUMBER, this.output_genRequest));
 
-        this.addParam(this.#paramMin = new NumberParam('min', 'min', true, true, true, 0));
-        this.addParam(this.#paramMax = new NumberParam('max', 'max', true, true, true));
+
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        enableSliderText(this.paramValue.control, false);
+       
+        this.addParam(this.paramMin   = new NumberParam('min', 'min', true, true, true, 0));
+        this.addParam(this.paramMax   = new NumberParam('max', 'max', true, true, true));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const req = this.node.getRequestStart();
+
         
-        // this.#paramMin.addEventListener('change', () =>
-        // {
-        //     if (this.#paramMin.value > this.#paramMax.value)
-        //         this.#paramMin.setValue(this.#paramMax.value, false, true, false);
-        // });
+        const input = this.node.inputs[0];
 
-        // this.#paramMax.addEventListener('change', () => 
-        // {
-        //     if (this.#paramMax.value < this.#paramMin.value)
-        //         this.#paramMax.setValue(this.#paramMin.value, false, true, false);
-        // });
+
+        req.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            req.push(...input.connectedOutput.genRequest(gen));
+
+        req.push(...this.node.paramMin.genRequest(gen));
+        req.push(...this.node.paramMax.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        super.updateValues(updateParamId, paramIds, values);
+
+        if (paramIds.includes('value'))
+            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+
+        this.paramMax.control.setMin(parseFloat(values[paramIds.indexOf('min')]), false);
+        this.paramMin.control.setMax(parseFloat(values[paramIds.indexOf('max')]), false);
     }
 }
 
@@ -22404,7 +22443,7 @@ extends OperatorBase
 class   OpArithmetic
 extends OperatorBase
 {
-    #paramValue;
+    paramValue;
 
     _symbol;
     _showOnlySymbol;
@@ -22423,9 +22462,9 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramValue = new NumberParam('value', '', false, false, false));
 
-        enableSliderText(this.#paramValue.control, false);
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        enableSliderText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -22728,8 +22767,8 @@ ops = [ // the order is important for logical keyboard value changes
 class   OpMath
 extends OperatorBase
 {
-    #paramOperation;
-    #paramValue;
+    paramOperation;
+    paramValue;
 
 
 
@@ -22744,10 +22783,10 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output(NUMBER, this.output_genRequest));
         
-        this.addParam(this.#paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
-        this.addParam(this.#paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
 
-        enableSliderText(this.#paramValue.control, false);
+        enableSliderText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -22983,15 +23022,15 @@ extends OperatorBase
             return this.cache;
 
 
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
-        
-        
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
 
         const req = this.node.getRequestStart();
+
+        
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected
@@ -25297,8 +25336,8 @@ function addValidateSymbol(name)
 class   OpWebContrast
 extends OpColorBase
 {
-    #paramValue;
-    #paramStandard;
+    paramValue;
+    paramStandard;
 
 
 
@@ -25311,19 +25350,19 @@ extends OpColorBase
         this.addInput(new Input(COLOR));
 
 
-        this.addParam(this.#paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
-        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
       
 
-        enableSliderText(this.#paramValue.control, false);
+        enableSliderText(this.paramValue.control, false);
 
 
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
 
         createTooltipSrc(
-            this.#paramValue.control, 
-            () => this.#paramStandard.value == 1 ? ttWcag3 : ttWcag2);
+            this.paramValue.control, 
+            () => this.paramStandard.value == 1 ? ttWcag3 : ttWcag2);
 
 
             this.header.connectionPadding = 12.5;
@@ -25333,7 +25372,7 @@ extends OpColorBase
 
     getShowTooltip()
     {
-        return this.#paramStandard.value == 1
+        return this.paramStandard.value == 1
                ? ttWcag3
                : ttWcag2;
     }
@@ -25360,7 +25399,7 @@ extends OpColorBase
     //         if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
     //             && isRgbValid(rgb1) && this.inputs[1].data.isValid)
     //         {
-    //             if (this.#paramStandard.value == 0)
+    //             if (this.paramStandard.value == 0)
     //             {
     //                 const ratio = getContrastRatio2(
     //                     dataColor2rgb(this.inputs[0].data.color),
@@ -25371,15 +25410,15 @@ extends OpColorBase
     //                 if (rating != '')
     //                     rating = '&nbsp;&nbsp;' + rating;
 
-    //                 this.#paramValue.control.min        = 
-    //                 this.#paramValue.control.displayMin = 0;
+    //                 this.paramValue.control.min        = 
+    //                 this.paramValue.control.displayMin = 0;
 
-    //                 this.#paramValue.control.max        = 
-    //                 this.#paramValue.control.displayMax = 21;
+    //                 this.paramValue.control.max        = 
+    //                 this.paramValue.control.displayMax = 21;
 
-    //                 this.#paramValue.control.setDecimals(2);
-    //                 this.#paramValue.control.setSuffix(rating);
-    //                 this.#paramValue.control.setValue(ratio, false, false, false);
+    //                 this.paramValue.control.setDecimals(2);
+    //                 this.paramValue.control.setSuffix(rating);
+    //                 this.paramValue.control.setValue(ratio, false, false, false);
     //             }
     //             else
     //             {
@@ -25387,15 +25426,15 @@ extends OpColorBase
     //                     dataColor2rgb(this.inputs[0].data.color),
     //                     dataColor2rgb(this.inputs[1].data.color));
                         
-    //                 this.#paramValue.control.min        = 
-    //                 this.#paramValue.control.displayMin = 0;
+    //                 this.paramValue.control.min        = 
+    //                 this.paramValue.control.displayMin = 0;
 
-    //                 this.#paramValue.control.max        = 
-    //                 this.#paramValue.control.displayMax = 105;
+    //                 this.paramValue.control.max        = 
+    //                 this.paramValue.control.displayMax = 105;
 
-    //                 this.#paramValue.control.setDecimals(1);
-    //                 this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-    //                 this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
+    //                 this.paramValue.control.setDecimals(1);
+    //                 this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+    //                 this.paramValue.control.setValue(Math.abs(ratio), false, false, false);
     //             }
 
 
@@ -25433,7 +25472,7 @@ extends OpColorBase
     //     }
 
 
-    //     this.#paramValue.setValue(Number.NaN, false, true, false);
+    //     this.paramValue.setValue(Number.NaN, false, true, false);
 
         
     //     super.updateData();
@@ -25452,15 +25491,15 @@ extends OpColorBase
 
     setRanges()
     {
-        if (this.#paramStandard.value == 0)
-            this.#paramValue.control.ranges = [
+        if (this.paramStandard.value == 0)
+            this.paramValue.control.ranges = [
                 new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.1)', 0.8),
                 new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.2)', 0.8),
                 new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  255, 64, 0.2)', 0.8),
                 new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
 
         else
-            this.#paramValue.control.ranges = [
+            this.paramValue.control.ranges = [
                 new NumberSliderRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
                 new NumberSliderRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
                 new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
@@ -25469,7 +25508,7 @@ extends OpColorBase
                 new NumberSliderRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
                 new NumberSliderRange(90/105, 105/105, 'transparent') ];
 
-        this.#paramValue.control.update();
+        this.paramValue.control.update();
     }
 
 
@@ -25500,8 +25539,8 @@ extends OpColorBase
 class   OpColorInterpolate
 extends OpColorBase
 {
-    #paramSpace;
-    #paramAmount;
+    paramSpace;
+    paramAmount;
 
 
 
@@ -25516,18 +25555,18 @@ extends OpColorBase
         this.addOutput(new Output(COLOR));
 
 
-        this.addParam(this.#paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.#paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
+        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
       
         
-        this.#paramSpace.control.min         = 1;
-        this.#paramSpace.control.displayMin  = 1;
-        this.#paramSpace.control.update();
+        this.paramSpace.control.min         = 1;
+        this.paramSpace.control.displayMin  = 1;
+        this.paramSpace.control.update();
         
-        this.#paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
-        this.#paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
 
-        this.#paramAmount.control.setSuffix('%', true);
+        this.paramAmount.control.setSuffix('%', true);
         
 
         this.header.connectionPadding = 12.5;
@@ -25537,7 +25576,7 @@ extends OpColorBase
         {
             if (   !this.inputs[1].connected
                 && !graphView.loadingNodes) 
-                this.#paramSpace.setValue(
+                this.paramSpace.setValue(
                     colorSpaceIndex(this.inputs[0].data.color[0]),
                     true, true, false);
         });
@@ -25547,17 +25586,17 @@ extends OpColorBase
         {
             if (   !this.inputs[0].connected
                 && !graphView.loadingNodes) 
-                this.#paramSpace.setValue(
+                this.paramSpace.setValue(
                     colorSpaceIndex(this.inputs[1].data.color[0]),
                     true, true, false);
         });
 
 
-        this.#paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
+        this.paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
 
 
         createTooltip(ttInterpolationSpace);
-        createTooltipSrc(this.#paramSpace.control, () => ttInterpolationSpace);
+        createTooltipSrc(this.paramSpace.control, () => ttInterpolationSpace);
     }
 
 
@@ -25569,8 +25608,8 @@ extends OpColorBase
     //     if (   this.inputs[0].connected
     //         && this.inputs[1].connected)
     //     {
-    //         const space = colorSpace(this.#paramSpace.value);
-    //         const f     = this.#paramAmount.value / 100;
+    //         const space = colorSpace(this.paramSpace.value);
+    //         const f     = this.paramAmount.value / 100;
             
     //         const col = this.interpolate(
     //             space,
@@ -25630,9 +25669,9 @@ extends OpColorBase
 class   OpColorblind
 extends OpColorBase
 {
-    #paramL;
-    #paramM;
-    #paramS;
+    paramL;
+    paramM;
+    paramS;
 
 
 
@@ -25645,13 +25684,13 @@ extends OpColorBase
         this.addOutput(new Output(COLOR));
 
 
-        this.addParam(this.#paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
-        this.addParam(this.#paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
-        this.addParam(this.#paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
-        this.#paramL.addEventListener('change', () => this.#paramL.control.dragScale = decCount(numToString(this.#paramL.value, this.#paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.#paramM.addEventListener('change', () => this.#paramM.control.dragScale = decCount(numToString(this.#paramM.value, this.#paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.#paramS.addEventListener('change', () => this.#paramS.control.dragScale = decCount(numToString(this.#paramS.value, this.#paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramS.addEventListener('change', () => this.paramS.control.dragScale = decCount(numToString(this.paramS.value, this.paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
 
 
         this.header.connectionPadding = 18;
@@ -25673,9 +25712,9 @@ extends OpColorBase
             
     //         const cb = rgb2colorblind(
     //             validRgb,
-    //             this.#paramL.value / 2,
-    //             this.#paramM.value / 2,
-    //             this.#paramS.value / 2);
+    //             this.paramL.value / 2,
+    //             this.paramM.value / 2,
+    //             this.paramS.value / 2);
 
     //         const validCb = invalid2validRgb(cb);
 
@@ -25714,9 +25753,9 @@ extends OpColorBase
     {
         super.updateParams(dispatchEvents);
 
-        this.setParamText(this.#paramL, 'L');
-        this.setParamText(this.#paramM, 'M');
-        this.setParamText(this.#paramS, 'S');
+        this.setParamText(this.paramL, 'L');
+        this.setParamText(this.paramM, 'M');
+        this.setParamText(this.paramS, 'S');
     }
 
 
@@ -25974,10 +26013,10 @@ extends OpGeometryBase
 class   OpLine
 extends OpGeometryBase
 {
-    #paramX;
-    #paramY;
-    #paramWidth;
-    #paramAngle;
+    paramX;
+    paramY;
+    paramWidth;
+    paramAngle;
 
 
     
@@ -25988,15 +26027,15 @@ extends OpGeometryBase
         this.addInput (new Input ([LINE]));
         this.addOutput(new Output(LINE, this.output_genRequest));
 
-        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         
 
-        this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue   = true;
-        this.#paramAngle.control.dragReverse = true;
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
 
 
         this.inputs[0].addEventListener('connect', () =>
@@ -26048,18 +26087,18 @@ extends OpGeometryBase
             req.push(paramIds.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(gen),
-                ...this.node.#paramY     .genRequest(gen),
-                ...this.node.#paramWidth .genRequest(gen),
-                ...this.node.#paramAngle .genRequest(gen));
+                ...this.node.paramX     .genRequest(gen),
+                ...this.node.paramY     .genRequest(gen),
+                ...this.node.paramWidth .genRequest(gen),
+                ...this.node.paramAngle .genRequest(gen));
         }
 
 
@@ -26074,11 +26113,11 @@ extends OpGeometryBase
 class   OpEllipse
 extends OpGeometryBase
 {
-    #paramX;
-    #paramY;
-    #paramWidth;
-    #paramHeight;
-    #paramAngle;
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
 
 
     
@@ -26089,16 +26128,16 @@ extends OpGeometryBase
         this.addInput (new Input ([ELLIPSE]));
         this.addOutput(new Output(ELLIPSE, this.output_genRequest));
 
-        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         
 
-        this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue   = true;
-        this.#paramAngle.control.dragReverse = true;
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
 
         
         this.btnProportional = createToggleButton(12, 12);
@@ -26124,23 +26163,23 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
             {
-                this.refWidth  = this.#paramWidth .genValue;
-                this.refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.paramWidth .genValue;
+                this.refHeight = this.paramHeight.genValue;
             }
         });
 
 
-        this.#paramWidth.addEventListener('change', () =>
+        this.paramWidth.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
+                this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
-        this.#paramHeight.addEventListener('change', () =>
+        this.paramHeight.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
+                this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -26178,20 +26217,20 @@ extends OpGeometryBase
             req.push(paramIds.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
+            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) req.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(gen),
-                ...this.node.#paramY     .genRequest(gen),
-                ...this.node.#paramWidth .genRequest(gen),
-                ...this.node.#paramHeight.genRequest(gen),
-                ...this.node.#paramAngle .genRequest(gen));
+                ...this.node.paramX     .genRequest(gen),
+                ...this.node.paramY     .genRequest(gen),
+                ...this.node.paramWidth .genRequest(gen),
+                ...this.node.paramHeight.genRequest(gen),
+                ...this.node.paramAngle .genRequest(gen));
         }
 
 
@@ -26256,13 +26295,13 @@ extends OpGeometryBase
 class   OpPolygon
 extends OpGeometryBase
 {
-    #paramX;
-    #paramY;
-    #paramWidth;
-    #paramHeight;
-    #paramAngle;
-    #paramRound;
-    #paramCorners;
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+    paramCorners;
 
 
     
@@ -26273,18 +26312,18 @@ extends OpGeometryBase
         this.addInput (new Input ([POLYGON]));
         this.addOutput(new Output(POLYGON, this.output_genRequest));
 
-        this.addParam(this.#paramX       = new NumberParam('x',       'x',       true, true, true,   0));
-        this.addParam(this.#paramY       = new NumberParam('y',       'y',       true, true, true,   0));
-        this.addParam(this.#paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
-        this.addParam(this.#paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
-        this.addParam(this.#paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
-        this.addParam(this.#paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
+        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
+        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
+        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
+        this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
         
 
-        this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue   = true;
-        this.#paramAngle.control.dragReverse = true;
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
 
         
         //this.updateRound();
@@ -26312,23 +26351,23 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
             {
-                this.refWidth  = this.#paramWidth .genValue;
-                this.refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.paramWidth .genValue;
+                this.refHeight = this.paramHeight.genValue;
             }
         });
 
 
-        this.#paramWidth.addEventListener('change', () =>
+        this.paramWidth.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
+                this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
-        this.#paramHeight.addEventListener('change', () =>
+        this.paramHeight.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
+                this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -26366,24 +26405,24 @@ extends OpGeometryBase
             req.push(paramIds.join(','));
 
 
-            if (this.node.#paramX      .input.connected) req.push(...this.node.#paramX      .genRequest(gen));
-            if (this.node.#paramY      .input.connected) req.push(...this.node.#paramY      .genRequest(gen));
-            if (this.node.#paramWidth  .input.connected) req.push(...this.node.#paramWidth  .genRequest(gen));
-            if (this.node.#paramHeight .input.connected) req.push(...this.node.#paramHeight .genRequest(gen));
-            if (this.node.#paramAngle  .input.connected) req.push(...this.node.#paramAngle  .genRequest(gen));
-            if (this.node.#paramRound  .input.connected) req.push(...this.node.#paramRound  .genRequest(gen));
-            if (this.node.#paramCorners.input.connected) req.push(...this.node.#paramCorners.genRequest(gen));
+            if (this.node.paramX      .input.connected) req.push(...this.node.paramX      .genRequest(gen));
+            if (this.node.paramY      .input.connected) req.push(...this.node.paramY      .genRequest(gen));
+            if (this.node.paramWidth  .input.connected) req.push(...this.node.paramWidth  .genRequest(gen));
+            if (this.node.paramHeight .input.connected) req.push(...this.node.paramHeight .genRequest(gen));
+            if (this.node.paramAngle  .input.connected) req.push(...this.node.paramAngle  .genRequest(gen));
+            if (this.node.paramRound  .input.connected) req.push(...this.node.paramRound  .genRequest(gen));
+            if (this.node.paramCorners.input.connected) req.push(...this.node.paramCorners.genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX      .genRequest(gen),
-                ...this.node.#paramY      .genRequest(gen),
-                ...this.node.#paramWidth  .genRequest(gen),
-                ...this.node.#paramHeight .genRequest(gen),
-                ...this.node.#paramAngle  .genRequest(gen),
-                ...this.node.#paramRound  .genRequest(gen),
-                ...this.node.#paramCorners.genRequest(gen));
+                ...this.node.paramX      .genRequest(gen),
+                ...this.node.paramY      .genRequest(gen),
+                ...this.node.paramWidth  .genRequest(gen),
+                ...this.node.paramHeight .genRequest(gen),
+                ...this.node.paramAngle  .genRequest(gen),
+                ...this.node.paramRound  .genRequest(gen),
+                ...this.node.paramCorners.genRequest(gen));
         }
 
 
@@ -26418,13 +26457,13 @@ extends OpGeometryBase
 
     updateRound()
     {
-        const control = this.#paramRound.control;
-        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+        const control = this.paramRound.control;
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.#paramRound.control.update();
+        this.paramRound.control.update();
     }
 
     
@@ -26472,14 +26511,14 @@ extends OpGeometryBase
 class   OpStar
 extends OpGeometryBase
 {
-    #paramX;
-    #paramY;
-    #paramWidth;
-    #paramHeight;
-    #paramAngle;
-    #paramRound;
-    #paramPoints;
-    #paramConvex;
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+    paramPoints;
+    paramConvex;
 
 
     
@@ -26490,21 +26529,21 @@ extends OpGeometryBase
         this.addInput (new Input ([STAR]));
         this.addOutput(new Output(STAR, this.output_genRequest));
 
-        this.addParam(this.#paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.#paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.#paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.#paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.#paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.#paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-        this.addParam(this.#paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
-        this.addParam(this.#paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
+        this.addParam(this.aramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.aramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
+        this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
         
 
-        this.#paramAngle.control.setSuffix('°', true);
-        this.#paramAngle.control.wrapValue   = true;
-        this.#paramAngle.control.dragReverse = true;
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
 
-        this.#paramConvex.control.setSuffix('%', true);
+        this.paramConvex.control.setSuffix('%', true);
         
 
         //this.updateRound();
@@ -26532,23 +26571,23 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
             {
-                this.refWidth  = this.#paramWidth .genValue;
-                this.refHeight = this.#paramHeight.genValue;
+                this.refWidth  = this.paramWidth .genValue;
+                this.refHeight = this.paramHeight.genValue;
             }
         });
 
 
-        this.#paramWidth.addEventListener('change', () =>
+        this.paramWidth.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramHeight.setValue(this.#paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
+                this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
         });
 
 
-        this.#paramHeight.addEventListener('change', () =>
+        this.paramHeight.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.#paramWidth.setValue(this.#paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
+                this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
     }
     
@@ -26586,26 +26625,26 @@ extends OpGeometryBase
             req.push(paramIds.join(','));
 
 
-            if (this.node.#paramX     .input.connected) req.push(...this.node.#paramX     .genRequest(gen));
-            if (this.node.#paramY     .input.connected) req.push(...this.node.#paramY     .genRequest(gen));
-            if (this.node.#paramWidth .input.connected) req.push(...this.node.#paramWidth .genRequest(gen));
-            if (this.node.#paramHeight.input.connected) req.push(...this.node.#paramHeight.genRequest(gen));
-            if (this.node.#paramAngle .input.connected) req.push(...this.node.#paramAngle .genRequest(gen));
-            if (this.node.#paramRound .input.connected) req.push(...this.node.#paramRound .genRequest(gen));
-            if (this.node.#paramPoints.input.connected) req.push(...this.node.#paramPoints.genRequest(gen));
-            if (this.node.#paramConvex.input.connected) req.push(...this.node.#paramConvex.genRequest(gen));
+            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) req.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramRound .input.connected) req.push(...this.node.paramRound .genRequest(gen));
+            if (this.node.paramPoints.input.connected) req.push(...this.node.paramPoints.genRequest(gen));
+            if (this.node.paramConvex.input.connected) req.push(...this.node.paramConvex.genRequest(gen));
         }
         else
         {
             req.push(
-                ...this.node.#paramX     .genRequest(gen),
-                ...this.node.#paramY     .genRequest(gen),
-                ...this.node.#paramWidth .genRequest(gen),
-                ...this.node.#paramHeight.genRequest(gen),
-                ...this.node.#paramAngle .genRequest(gen),
-                ...this.node.#paramRound .genRequest(gen),
-                ...this.node.#paramPoints.genRequest(gen),
-                ...this.node.#paramConvex.genRequest(gen));
+                ...this.node.paramX     .genRequest(gen),
+                ...this.node.paramY     .genRequest(gen),
+                ...this.node.paramWidth .genRequest(gen),
+                ...this.node.paramHeight.genRequest(gen),
+                ...this.node.paramAngle .genRequest(gen),
+                ...this.node.paramRound .genRequest(gen),
+                ...this.node.paramPoints.genRequest(gen),
+                ...this.node.paramConvex.genRequest(gen));
         }
 
 
@@ -26640,13 +26679,13 @@ extends OpGeometryBase
 
     updateRound()
     {
-        const control = this.#paramRound.control;
-        const min     = Math.min(this.#paramWidth.value, this.#paramHeight.value);
+        const control = this.paramRound.control;
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.#paramRound.control.update();
+        this.paramRound.control.update();
     }
 
     

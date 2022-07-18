@@ -45,11 +45,11 @@ extends GOperator
             }
 
 
+            this.valid = true;
+
+
             genPushUpdateParamValue(parse, this.nodeId, 'value',  this.result);
             genPushUpdateParamValue(parse, this.nodeId, 'amount', amount);
-
-
-            this.valid = true;
         }
 
 

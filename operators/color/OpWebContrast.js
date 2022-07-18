@@ -1,8 +1,8 @@
 class   OpWebContrast
 extends OpColorBase
 {
-    #paramValue;
-    #paramStandard;
+    paramValue;
+    paramStandard;
 
 
 
@@ -15,19 +15,19 @@ extends OpColorBase
         this.addInput(new Input(COLOR));
 
 
-        this.addParam(this.#paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
-        this.addParam(this.#paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
       
 
-        enableSliderText(this.#paramValue.control, false);
+        enableSliderText(this.paramValue.control, false);
 
 
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
 
         createTooltipSrc(
-            this.#paramValue.control, 
-            () => this.#paramStandard.value == 1 ? ttWcag3 : ttWcag2);
+            this.paramValue.control, 
+            () => this.paramStandard.value == 1 ? ttWcag3 : ttWcag2);
 
 
             this.header.connectionPadding = 12.5;
@@ -37,7 +37,7 @@ extends OpColorBase
 
     getShowTooltip()
     {
-        return this.#paramStandard.value == 1
+        return this.paramStandard.value == 1
                ? ttWcag3
                : ttWcag2;
     }
@@ -64,7 +64,7 @@ extends OpColorBase
     //         if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
     //             && isRgbValid(rgb1) && this.inputs[1].data.isValid)
     //         {
-    //             if (this.#paramStandard.value == 0)
+    //             if (this.paramStandard.value == 0)
     //             {
     //                 const ratio = getContrastRatio2(
     //                     dataColor2rgb(this.inputs[0].data.color),
@@ -75,15 +75,15 @@ extends OpColorBase
     //                 if (rating != '')
     //                     rating = '&nbsp;&nbsp;' + rating;
 
-    //                 this.#paramValue.control.min        = 
-    //                 this.#paramValue.control.displayMin = 0;
+    //                 this.paramValue.control.min        = 
+    //                 this.paramValue.control.displayMin = 0;
 
-    //                 this.#paramValue.control.max        = 
-    //                 this.#paramValue.control.displayMax = 21;
+    //                 this.paramValue.control.max        = 
+    //                 this.paramValue.control.displayMax = 21;
 
-    //                 this.#paramValue.control.setDecimals(2);
-    //                 this.#paramValue.control.setSuffix(rating);
-    //                 this.#paramValue.control.setValue(ratio, false, false, false);
+    //                 this.paramValue.control.setDecimals(2);
+    //                 this.paramValue.control.setSuffix(rating);
+    //                 this.paramValue.control.setValue(ratio, false, false, false);
     //             }
     //             else
     //             {
@@ -91,15 +91,15 @@ extends OpColorBase
     //                     dataColor2rgb(this.inputs[0].data.color),
     //                     dataColor2rgb(this.inputs[1].data.color));
                         
-    //                 this.#paramValue.control.min        = 
-    //                 this.#paramValue.control.displayMin = 0;
+    //                 this.paramValue.control.min        = 
+    //                 this.paramValue.control.displayMin = 0;
 
-    //                 this.#paramValue.control.max        = 
-    //                 this.#paramValue.control.displayMax = 105;
+    //                 this.paramValue.control.max        = 
+    //                 this.paramValue.control.displayMax = 105;
 
-    //                 this.#paramValue.control.setDecimals(1);
-    //                 this.#paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-    //                 this.#paramValue.control.setValue(Math.abs(ratio), false, false, false);
+    //                 this.paramValue.control.setDecimals(1);
+    //                 this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+    //                 this.paramValue.control.setValue(Math.abs(ratio), false, false, false);
     //             }
 
 
@@ -137,7 +137,7 @@ extends OpColorBase
     //     }
 
 
-    //     this.#paramValue.setValue(Number.NaN, false, true, false);
+    //     this.paramValue.setValue(Number.NaN, false, true, false);
 
         
     //     super.updateData();
@@ -156,15 +156,15 @@ extends OpColorBase
 
     setRanges()
     {
-        if (this.#paramStandard.value == 0)
-            this.#paramValue.control.ranges = [
+        if (this.paramStandard.value == 0)
+            this.paramValue.control.ranges = [
                 new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.1)', 0.8),
                 new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.2)', 0.8),
                 new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  255, 64, 0.2)', 0.8),
                 new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
 
         else
-            this.#paramValue.control.ranges = [
+            this.paramValue.control.ranges = [
                 new NumberSliderRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
                 new NumberSliderRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
                 new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
@@ -173,7 +173,7 @@ extends OpColorBase
                 new NumberSliderRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
                 new NumberSliderRange(90/105, 105/105, 'transparent') ];
 
-        this.#paramValue.control.update();
+        this.paramValue.control.update();
     }
 
 
