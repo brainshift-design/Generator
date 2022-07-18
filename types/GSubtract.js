@@ -16,19 +16,19 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const result = new GNumber(0);
+            this.result = new GNumberValue(0);
 
 
-            if (this.values.length > 0)
+            if (this.inputs.length > 0)
             {
-                result = this.inputs[0].eval(parse);
+                this.result = this.inputs[0].eval(parse);
 
                 for (let i = 1; i < this.inputs.length; i++)
                 {
                     const input = this.inputs[i].eval(parse);
                     console.assert(input.type == NUMBER_VALUE);
                         
-                    this.result.value  -= val.value;
+                    this.result.value   -= input.value;
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
                 }
             }
@@ -37,11 +37,11 @@ extends GOperator
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
 
 
-            this.valid        = true;
             this.result.valid = true;
+            this.valid        = true;
         }
 
 
-        return result;
+        return this.result;
     }
 }

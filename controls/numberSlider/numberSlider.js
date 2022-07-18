@@ -294,11 +294,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             return isNaN(slider.value)
                    ? '?'
-                   : numToString(
-                         slider.value * slider.valueScale, 
-                         slider.displayDec, 
-                         slider.showHex
-                     ).toUpperCase();
+                   : Math.abs(slider.value * slider.valueScale) > 999999
+                     ? (slider.value * slider.valueScale).toExponential(1)
+                     : numToString(
+                           slider.value * slider.valueScale, 
+                           slider.displayDec, 
+                           slider.showHex
+                       ).toUpperCase();
         }
     };
 

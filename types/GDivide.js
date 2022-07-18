@@ -1,49 +1,54 @@
 class GDivide
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
 
-    constructor(nodeId, values = [])
+    constructor(nodeId, active)
     {
-        super(NUMBER_DIVIDE, nodeId);
-        
-        this.values = values;
+        super(NUMBER_DIVIDE, nodeId, active);
     }
 
 
     
     eval(parse)
     {
-        const result = new GNumber(0);
-
-        
-        if (this.values.length > 0)
+        if (!this.valid)
         {
-            result = this.values[0].eval(parse);
+            this.result = new GNumberValue(0);
 
-
-            for (let i = 1; i < this.values.length; i++)
+            
+            if (this.inputs.length > 0)
             {
-                const val = this.values[i].eval(parse);
+                this.result = this.inputs[0].eval(parse);
 
-                if (val.value == 0) 
-                { 
-                    result.result    = Number.NaN; 
-                    result.decimals = 0;
-                    break; 
+
+                for (let i = 1; i < this.inputs.length; i++)
+                {
+                    const input = this.inputs[i].eval(parse);
+
+                    if (input.value == 0) 
+                    { 
+                        this.result.value    = Number.NaN; 
+                        this.result.decimals = 0;
+                        break; 
+                    }
+
+                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                    this.result.value    = floorTo(this.result.result / input.value, this.result.decimals);
                 }
-
-                result.decimals = Math.max(result.decimals, val.decimals);
-                result.result    = floorTo(result.result / val.value, result.decimals);
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.result.valid = true;
+            this.valid        = true;
         }
 
 
-        return result;
+        return this.result;
     }
 }

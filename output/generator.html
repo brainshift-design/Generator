@@ -3155,19 +3155,19 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const result = new GNumber(0);
+            this.result = new GNumberValue(0);
 
 
-            if (this.values.length > 0)
+            if (this.inputs.length > 0)
             {
-                result = this.inputs[0].eval(parse);
+                this.result = this.inputs[0].eval(parse);
 
                 for (let i = 1; i < this.inputs.length; i++)
                 {
                     const input = this.inputs[i].eval(parse);
                     console.assert(input.type == NUMBER_VALUE);
                         
-                    this.result.value  -= val.value;
+                    this.result.value   -= input.value;
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
                 }
             }
@@ -3176,12 +3176,12 @@ extends GOperator
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
 
 
-            this.valid        = true;
             this.result.valid = true;
+            this.valid        = true;
         }
 
 
-        return result;
+        return this.result;
     }
 }
 
@@ -3190,43 +3190,47 @@ extends GOperator
 class GMultiply
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
 
-    constructor(nodeId, values = [])
+    constructor(nodeId, active)
     {
-        super(NUMBER_MULTIPLY, nodeId);
-        
-        this.values = values;
+        super(NUMBER_MULTIPLY, nodeId, active);
     }
 
 
     
     eval(parse)
     {
-        const result = new GNumber(0);
-
-        
-        if (this.values.length > 0)
+        if (!this.valid)
         {
-            result.result = 1;
+            this.result = new GNumberValue(0);
 
 
-            for (const _val of this.values)
+            if (this.inputs.length > 0)
             {
-                const val = _val.value.eval(parse);
+                this.result.value = 1;
 
-                result.result   *= val.value;
-                result.decimals = Math.max(result.decimals, val.decimals);
+                for (const _input of this.inputs)
+                {
+                    const input = _input.eval(parse);
+
+                    this.result.value   *= input.value;
+                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                }
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.result.valid = true;
+            this.valid        = true;
         }
 
 
-        return result;
+        return this.result;
     }
 }
 
@@ -3235,58 +3239,164 @@ extends GOperator
 class GDivide
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
 
-    constructor(nodeId, values = [])
+    constructor(nodeId, active)
     {
-        super(NUMBER_DIVIDE, nodeId);
-        
-        this.values = values;
+        super(NUMBER_DIVIDE, nodeId, active);
     }
 
 
     
     eval(parse)
     {
-        const result = new GNumber(0);
-
-        
-        if (this.values.length > 0)
+        if (!this.valid)
         {
-            result = this.values[0].eval(parse);
+            this.result = new GNumberValue(0);
 
-
-            for (let i = 1; i < this.values.length; i++)
+            
+            if (this.inputs.length > 0)
             {
-                const val = this.values[i].eval(parse);
+                this.result = this.inputs[0].eval(parse);
 
-                if (val.value == 0) 
-                { 
-                    result.result    = Number.NaN; 
-                    result.decimals = 0;
-                    break; 
+
+                for (let i = 1; i < this.inputs.length; i++)
+                {
+                    const input = this.inputs[i].eval(parse);
+
+                    if (input.value == 0) 
+                    { 
+                        this.result.value    = Number.NaN; 
+                        this.result.decimals = 0;
+                        break; 
+                    }
+
+                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                    this.result.value    = floorTo(this.result.result / input.value, this.result.decimals);
                 }
-
-                result.decimals = Math.max(result.decimals, val.decimals);
-                result.result    = floorTo(result.result / val.value, result.decimals);
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.result.valid = true;
+            this.valid        = true;
         }
 
 
-        return result;
+        return this.result;
     }
 }
 
 
 
+class GModulo
+extends GOperator
+{
+    inputs = [];
 
 
 
+    constructor(nodeId, active)
+    {
+        super(NUMBER_MODULO, nodeId, active);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GNumberValue(0);
+
+            
+            if (this.inputs.length > 0)
+            {
+                this.result = this.inputs[0].eval(parse);
+
+
+                for (let i = 1; i < this.inputs.length; i++)
+                {
+                    const input = this.inputs[i].eval(parse);
+
+                    if (input.value == 0) 
+                    { 
+                        this.result.value    = Number.NaN; 
+                        this.result.decimals = 0;
+                        break; 
+                    }
+
+                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                    this.result.value    = floorTo(this.result.result % input.value, this.result.decimals);
+                }
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.result.valid = true;
+            this.valid        = true;
+        }
+
+
+        return this.result;
+    }
+}
+
+
+
+class GExponent
+extends GOperator
+{
+    inputs = [];
+
+
+
+    constructor(nodeId, active)
+    {
+        super(NUMBER_EXPONENT, nodeId, active);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GNumberValue(0);
+
+
+            if (this.inputs.length > 0)
+            {
+                this.result = this.inputs[0].eval(parse);
+
+                for (let i = 1; i < this.inputs.length; i++)
+                {
+                    const input = this.inputs[i].eval(parse);
+                    console.assert(input.type == NUMBER_VALUE);
+                        
+                    this.result.value    = Math.pow(this.result.value, input.value);
+                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                }
+            }
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.result.valid = true;
+            this.valid        = true;
+        }
+
+
+        return this.result;
+    }
+}
 
 
 

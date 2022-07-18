@@ -1,42 +1,46 @@
 class GMultiply
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
 
-    constructor(nodeId, values = [])
+    constructor(nodeId, active)
     {
-        super(NUMBER_MULTIPLY, nodeId);
-        
-        this.values = values;
+        super(NUMBER_MULTIPLY, nodeId, active);
     }
 
 
     
     eval(parse)
     {
-        const result = new GNumber(0);
-
-        
-        if (this.values.length > 0)
+        if (!this.valid)
         {
-            result.result = 1;
+            this.result = new GNumberValue(0);
 
 
-            for (const _val of this.values)
+            if (this.inputs.length > 0)
             {
-                const val = _val.value.eval(parse);
+                this.result.value = 1;
 
-                result.result   *= val.value;
-                result.decimals = Math.max(result.decimals, val.decimals);
+                for (const _input of this.inputs)
+                {
+                    const input = _input.eval(parse);
+
+                    this.result.value   *= input.value;
+                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                }
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.result.valid = true;
+            this.valid        = true;
         }
 
 
-        return result;
+        return this.result;
     }
 }
