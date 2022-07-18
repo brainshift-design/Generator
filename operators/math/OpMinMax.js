@@ -67,7 +67,7 @@ extends OperatorBase
         if (paramIds.includes('value'))
             this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
 
-        this.paramMax.control.setMin(parseFloat(values[paramIds.indexOf('min')]), false);
-        this.paramMin.control.setMax(parseFloat(values[paramIds.indexOf('max')]), false);
+        this.paramMax.control.setMin(values[paramIds.indexOf('min')].toString(), false);
+        this.paramMin.control.setMax(values[paramIds.indexOf('max')].toString(), false);
     }
 }
