@@ -19,21 +19,21 @@ extends GOperator
             this.result = new GNumberValue(0);
 
 
-            for (const input of this.inputs)
+            for (const _input of this.inputs)
             {
-                const val = input.eval(parse);
-                console.assert(val.type == NUMBER_VALUE);
+                const input = _input.eval(parse);
+                console.assert(input.type == NUMBER_VALUE);
 
-                this.result.value   += val.value;
-                this.result.decimals = Math.max(this.result.decimals, val.decimals);
+                this.result.value   += input.value;
+                this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                this.result.valid    = true;
             }
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
 
 
-            this.valid        = true;
-            this.result.valid = true;
+            this.valid = true;
         }
 
 

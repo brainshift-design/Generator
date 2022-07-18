@@ -66,12 +66,12 @@ function genParse(parse)
 
     else if (parse.next == NUMBER_VALUE      ) return genParseNumValue         (parse);
     else if (parse.next == NUMBER            ) return genParseNumber           (parse);
-    else if (parse.next == NUMBER_ADD        ) return genParseNumberAdd        (parse);
-    else if (parse.next == NUMBER_SUBTRACT   ) return genParseNumberSubtract   (parse);
-    else if (parse.next == NUMBER_MULTIPLY   ) return genParseNumberMultiply   (parse);
-    else if (parse.next == NUMBER_DIVIDE     ) return genParseNumberDivide     (parse);
-    else if (parse.next == NUMBER_MODULO     ) return genParseNumberModulo     (parse);
-    else if (parse.next == NUMBER_EXPONENT   ) return genParseNumberExponent   (parse);
+    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic       (parse, (nodeId, active) => new GAdd     (nodeId, active));
+    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic       (parse, (nodeId, active) => new GSubtract(nodeId, active));
+    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic       (parse, (nodeId, active) => new GMultiply(nodeId, active));
+    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic       (parse, (nodeId, active) => new GDivide  (nodeId, active));
+    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic       (parse, (nodeId, active) => new GModulo  (nodeId, active));
+    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic       (parse, (nodeId, active) => new GExponent(nodeId, active));
     else if (parse.next == NUMBER_INTERPOLATE) return genParseNumberInterpolate(parse);
 
     else if (parse.next == COLOR             ) return genParseColor            (parse);

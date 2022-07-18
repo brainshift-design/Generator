@@ -25,7 +25,7 @@ extends GOperator
 
 
             this.valid        = true;
-            this.result.valid = true;
+            //this.result.valid = true;
         }
 
 

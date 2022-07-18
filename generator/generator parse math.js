@@ -22,20 +22,20 @@ function genParseNumber(parse)
 
 
 
-function genParseNumberAdd(parse)
+function genParseArithmetic(parse, newNode)
 {
     const [nodeId, active] = genParseNodeStart(parse);
-    const add = new GAdd(nodeId, active);
+    const node = newNode(nodeId, active);
 
 
     const nValues = parse.move();
 
     for (let i = 0; i < nValues; i++)
-        add.inputs.push(genParse(parse));
+        node.inputs.push(genParse(parse));
 
         
-    genParseNodeEnd(parse, add);
-    return add;
+    genParseNodeEnd(parse, node);
+    return node;
 }
 
 
@@ -170,45 +170,29 @@ function genParseNumberExponent(parse)
 
 function genParseNumberInterpolate(parse)
 {
-    const nodeId  = genParseNodeId(parse);
+    const [nodeId, active] = genParseNodeStart(parse);
+    const inter = new GInterpolate(nodeId, active);
+
+
     const nValues = parse.move();
-
-
-    let result, amount;
 
     if (nValues == 2)
     {
-        const num0 = genParse(parse);
-        const num1 = genParse(parse);
-        amount     = genParse(parse);
-
-        const maxDec = Math.max(num0.decimals, num1.decimals);
-
-        result = new GNumberValue(
-            maxDec == 0
-            ? num0.value + Math.floor(amount.value * (num1.value - num0.value) / 100)
-            : num0.value + amount.value * (num1.value - num0.value) / 100,
-            maxDec);
+        inter.input0 = genParse(parse);
+        inter.input1 = genParse(parse);
+        inter.amount = genParse(parse);
     }
     else if (nValues == 1)
     {
-        result = genParse(parse);
-        amount = genParse(parse);
-
-        result = num;
+        inter.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        inter.amount = genParse(parse);
     }
     else if (nValues == 0)
     {
-        amount = genParse(parse);
-        result = new GNumberValue(0);
+        inter.amount = genParse(parse);
     }
 
 
-    console.assert(result);
-
-
-    genPushUpdateParamValue(parse, nodeId, 'amount', amount);
-    genPushUpdateParamValue(parse, nodeId, 'value', result);
-
-    return result;
+    genParseNodeEnd(parse, inter);
+    return inter;
 }

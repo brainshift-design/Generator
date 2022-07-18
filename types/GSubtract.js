@@ -1,39 +1,44 @@
 class GSubtract
 extends GOperator
 {
-    values;
+    inputs = [];
 
 
 
-    constructor(nodeId, values = [])
+    constructor(nodeId, active)
     {
-        super(NUMBER_SUBTRACT, nodeId);
-        
-        this.values = values;
+        super(NUMBER_SUBTRACT, nodeId, active);
     }
 
 
     
     eval(parse)
     {
-        const result = new GNumber(0);
-
-
-        if (this.values.length > 0)
+        if (!this.valid)
         {
-        result = this.values[0].eval(parse);
+            const result = new GNumber(0);
 
 
-            for (let i = 1; i < this.values.length; i++)
+            if (this.values.length > 0)
             {
-                const val = this.values[i].eval(parse);
-                
-                result.result   -= val.value;
-                result.decimals = Math.max(result.decimals, val.decimals);
+                result = this.inputs[0].eval(parse);
+
+                for (let i = 1; i < this.inputs.length; i++)
+                {
+                    const input = this.inputs[i].eval(parse);
+                    console.assert(input.type == NUMBER_VALUE);
+                        
+                    this.result.value  -= val.value;
+                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
+                }
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', result);
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.valid        = true;
+            this.result.valid = true;
         }
 
 
