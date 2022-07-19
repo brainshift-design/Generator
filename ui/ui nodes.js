@@ -572,7 +572,7 @@ function uiMakeNodeActive(node)
     node.makeActive();
     node.updateNode();
 
-    pushUpdate([node]);
+    //pushUpdate([node]);
 }
 
 
