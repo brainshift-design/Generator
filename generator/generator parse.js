@@ -101,17 +101,17 @@ function genParse(parse)
 
 function genParseNodeStart(parse)
 {
-    parse.pos++; // tag
+    const type = parse.pos++;
     
     const nodeId = parse.move();
     parse.scope.push(nodeId);
 
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
-        return [nodeId, false, true];
+        return [type, nodeId, false, true];
 
     const active = genParseActive(parse);
 
-    return [nodeId, active, false];
+    return [type, nodeId, active, false];
 }
 
 

@@ -46,7 +46,7 @@ function genParseNumber(parse)
 
 function genParseLimits(parse)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
     const lim = new GLimits(nodeId, active);
@@ -91,26 +91,37 @@ function genParseLimits(parse)
 
 function genParseArithmetic(parse, newNode)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [type, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
     const arith = newNode(nodeId, active);
 
 
-    const nValues = parse.move();
+    let nValues = 0;
+    
+    if (!ignore)
+        nValues = parse.move();
+
+
+    if (parse.logRequests) 
+        logReqArithmetic(arith, type, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arith);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
 
     for (let i = 0; i < nValues; i++)
         arith.inputs.push(genParse(parse));
 
+    parse.nTab--;
+
         
-    if (ignore) 
-    {
-
-        genParseNodeEnd(parse, arith);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-    
-
     genParseNodeEnd(parse, arith);
     return arith;
 }
@@ -119,7 +130,7 @@ function genParseArithmetic(parse, newNode)
 
 function genParseInterpolate(parse)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
     if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
 
 

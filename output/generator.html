@@ -2537,23 +2537,13 @@ function logReqLimits(lim, nValues, parse)
 
 
 
-function logReqArithmetic(req)
+function logReqArithmetic(arith, type, nValues, parse)
 {
-    const tab = req.tab;
+    parse.log += parse.tab + type;
+    parse.log += logReqNodeId(arith);
 
-    req.nTab++;
-
-    const node    = logReqNodeId(req);
-    const nValues = req.request[req.pos++];
-    
-    let log = tab + node + ' ' + nValues;
-
-    for (let i = 0; i < nValues; i++)
-        log += logReq(req);
-
-    req.nTab--;
-
-    return log;
+    if (nValues > 0)
+        parse.log += ' ' + nValues;
 }
 
 
@@ -4274,7 +4264,7 @@ function genParseColor(parse)
 
 function genParseRectangle(parse)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
     if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
 
 
@@ -4628,7 +4618,7 @@ function genParseNumber(parse)
 
 function genParseLimits(parse)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
     const lim = new GLimits(nodeId, active);
@@ -4673,26 +4663,37 @@ function genParseLimits(parse)
 
 function genParseArithmetic(parse, newNode)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [type, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
     const arith = newNode(nodeId, active);
 
 
-    const nValues = parse.move();
+    let nValues = 0;
+    
+    if (!ignore)
+        nValues = parse.move();
+
+
+    if (parse.logRequests) 
+        logReqArithmetic(arith, type, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arith);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
 
     for (let i = 0; i < nValues; i++)
         arith.inputs.push(genParse(parse));
 
+    parse.nTab--;
+
         
-    if (ignore) 
-    {
-
-        genParseNodeEnd(parse, arith);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-    
-
     genParseNodeEnd(parse, arith);
     return arith;
 }
@@ -4701,7 +4702,7 @@ function genParseArithmetic(parse, newNode)
 
 function genParseInterpolate(parse)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
     if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
 
 
@@ -4835,17 +4836,17 @@ function genParse(parse)
 
 function genParseNodeStart(parse)
 {
-    parse.pos++; // tag
+    const type = parse.pos++;
     
     const nodeId = parse.move();
     parse.scope.push(nodeId);
 
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
-        return [nodeId, false, true];
+        return [type, nodeId, false, true];
 
     const active = genParseActive(parse);
 
-    return [nodeId, active, false];
+    return [type, nodeId, active, false];
 }
 
 

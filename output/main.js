@@ -174,16 +174,11 @@ function logReqLimits(lim, nValues, parse) {
     if (nValues > -1)
         parse.log += ' ' + nValues;
 }
-function logReqArithmetic(req) {
-    const tab = req.tab;
-    req.nTab++;
-    const node = logReqNodeId(req);
-    const nValues = req.request[req.pos++];
-    let log = tab + node + ' ' + nValues;
-    for (let i = 0; i < nValues; i++)
-        log += logReq(req);
-    req.nTab--;
-    return log;
+function logReqArithmetic(arith, type, nValues, parse) {
+    parse.log += parse.tab + type;
+    parse.log += logReqNodeId(arith);
+    if (nValues > 0)
+        parse.log += ' ' + nValues;
 }
 function logReqInterpolate(req) {
     const tab = req.tab;
