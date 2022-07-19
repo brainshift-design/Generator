@@ -185,7 +185,6 @@ function initNumberSliderTextbox(slider)
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
-
             curVal =
                 curVal == '?'
                 ? ''

@@ -21,7 +21,7 @@
 ../operators/utility/OpComment.js
 
 ../operators/math/OpNumber.js
-../operators/math/OpMinMax.js
+../operators/math/OpLimits.js
 ../operators/math/OpArithmetic.js
 ../operators/math/OpAdd.js
 ../operators/math/OpSubtract.js

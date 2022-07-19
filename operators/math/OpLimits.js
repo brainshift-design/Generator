@@ -1,4 +1,4 @@
-class   OpMinMax
+class   OpLimits
 extends OperatorBase
 {
     paramValue;
@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_MINMAX, 'minmax', 70);
+        super(NUMBER_LIMITS, 'lim', 70);
 
         this.addInput (new Input ([NUMBER]));
         this.addOutput(new Output(NUMBER, this.output_genRequest));
@@ -37,7 +37,8 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const req = this.node.getRequestStart();
+        const [req, ignore] = this.node.getRequestStart(gen);
+        if (ignore) return req;
 
         
         const input = this.node.inputs[0];
@@ -51,7 +52,6 @@ extends OperatorBase
         req.push(...this.node.paramMin.genRequest(gen));
         req.push(...this.node.paramMax.genRequest(gen));
 
-        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -64,10 +64,10 @@ extends OperatorBase
     {
         super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+        // if (paramIds.includes('value'))
+        //     this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
 
-        this.paramMax.control.setMin(values[paramIds.indexOf('min')].toString(), false);
-        this.paramMin.control.setMax(values[paramIds.indexOf('max')].toString(), false);
+        this.paramMax.control.setMin(values[paramIds.indexOf('min')].value, false);
+        this.paramMin.control.setMax(values[paramIds.indexOf('max')].value, false);
     }
 }

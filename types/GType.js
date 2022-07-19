@@ -5,14 +5,18 @@ class GType
     result;
     valid; // has been evaluated
 
+    topLevel;
+
 
 
     constructor(type) 
     {
-        this.type   = type;
+        this.type     = type;
 
-        this.result = null;
-        this.valid  = false;
+        this.result   = null;
+        this.valid    = false;
+
+        this.topLevel = false;
     }
 
 

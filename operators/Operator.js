@@ -393,16 +393,19 @@ class Operator
 
 
 
-    getRequestStart()
+    getRequestStart(gen)
     {
         const req = [
             this.type, 
             this.id];
 
-        if (this.active) 
+        const ignore = gen.passedNodes.includes(this);
+
+        if (    this.active
+            && !ignore) 
             req.push(ACTIVE);
 
-        return req;
+        return [req, ignore];
     }
 
 
@@ -688,7 +691,11 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.log((param ? param.node.id + '.': '') + 'pushUpdateFromParam('+(param ? param.id : 'null')+')');
+    // console.log(
+    //       (param ? param.node.id+'.' : '') 
+    //     + 'pushUpdateFromParam('
+    //     + (param ? param.id : 'null')
+    //     + ')');
 
     // each type is followed first by the node ID, then the params
 
@@ -711,14 +718,13 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
-
     terminals.forEach(n => 
         n.outputs
             .filter(o => !o.param)
             .forEach(o =>
             {
                 const _r = o.genRequest(gen);
-                const r = [..._r];
+                const  r = [..._r];
                 request.push(...r);
             })); 
 
@@ -730,18 +736,9 @@ function pushUpdateFromParam(nodes, param)
             n.outputs
                 .filter(o => !o.param)
                 .forEach(o =>
-                    request.push(...o.genRequest(gen)))); 
+                    request.push(...o.genRequest(gen))));
 
 
-    // if (    param
-    //     && !gen.passedNodes.includes(param.node)
-    //     && !gen.paramNodes .includes(param.node))
-    //         param.node.outputs
-    //             .filter(o => !o.param)
-    //             .forEach(o =>
-    //                 request.push(...o.genRequest(gen))); 
-
-        
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,

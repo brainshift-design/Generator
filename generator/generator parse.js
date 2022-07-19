@@ -11,11 +11,18 @@ class Parse
     pos; 
     so;
     
+    logRequests;
+    log  = '';
+    
+    nTab = 0;
+
+    get tab() { return NL + TAB.repeat(Math.max(0, this.nTab)); }
+
     updateNodeId;
     updateParamId;
 
     scope         = []; // current parse stack
-    tree          = []; // must be evaluated to create the value updates
+    parsedNodes   = []; // must be evaluated to create the value updates
 
     updateParams  = [];
     updateValues  = [];
@@ -25,13 +32,15 @@ class Parse
 
 
 
-    constructor(req, updateNodeId, updateParamId)
+    constructor(req, updateNodeId, updateParamId, logRequests)
     {
         this.req           = req;
           
         this.pos           = 2; 
         this.so            = 0;
         
+        this.logRequests   = logRequests;
+
         this.updateNodeId  = updateNodeId; 
         this.updateParamId = updateParamId;
     }
@@ -66,7 +75,7 @@ function genParse(parse)
 
     else if (parse.next == NUMBER_VALUE      ) return genParseNumValue   (parse);
     else if (parse.next == NUMBER            ) return genParseNumber     (parse);
-    else if (parse.next == NUMBER_MINMAX     ) return genParseMinMax     (parse);
+    else if (parse.next == NUMBER_LIMITS     ) return genParseLimits     (parse);
     else if (parse.next == NUMBER_ADD        ) return genParseArithmetic (parse, (nodeId, active) => new GAdd     (nodeId, active));
     else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic (parse, (nodeId, active) => new GSubtract(nodeId, active));
     else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic (parse, (nodeId, active) => new GMultiply(nodeId, active));
@@ -95,22 +104,29 @@ function genParseNodeStart(parse)
     parse.pos++; // tag
     
     const nodeId = parse.move();
-    const active = genParseActive(parse);
-    
     parse.scope.push(nodeId);
 
-    return [nodeId, active];
+    if (parse.parsedNodes.find(n => n.nodeId == nodeId))
+        return [nodeId, false, true];
+
+    const active = genParseActive(parse);
+
+    return [nodeId, active, false];
 }
 
 
 
-function genParseNodeEnd(parse, value = null)
+function genParseNodeEnd(parse, node = null)
 {
     parse.scope.pop();
 
-    if (   value
-        && parse.scope.length == 0) // only top level
-        pushUnique(parse.tree, value);
+    if (node)
+    {
+        if (parse.scope.length == 0)
+            node.topLevel = true;
+
+        pushUnique(parse.parsedNodes, node);
+    }
 }
 
 

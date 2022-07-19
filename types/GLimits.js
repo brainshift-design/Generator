@@ -1,4 +1,4 @@
-class GMinMax
+class GLimits
 extends GOperator
 {
     input = null;
@@ -6,10 +6,12 @@ extends GOperator
     min;
     max;
 
+    minMaxPriority = -1; 
+
 
     constructor(nodeId, active)
     {
-        super(NUMBER_MINMAX, nodeId, active);
+        super(NUMBER_LIMITS, nodeId, active);
     }
 
 
@@ -24,17 +26,23 @@ extends GOperator
             if (this.input)
                 this.result = this.input.eval(parse);
 
+
             const min = this.min.eval(parse);
             const max = this.max.eval(parse);
+
+
+            this.valid        = true;
+            this.result.valid = true;
+
+
+            // min.value = Math.min(min.value, max.value);
+            // max.value = Math.max(min.value, max.value);
+
 
             this.result.value = Math.min(Math.max(
                 min.value,
                 this.result.value),
                 max.value);
-
-
-            this.valid        = true;
-            this.result.valid = true;
 
 
             genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);

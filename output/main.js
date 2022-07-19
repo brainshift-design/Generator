@@ -29,6 +29,7 @@ class RequestSettings {
         this.so = 0;
         this.nTab = 0;
         this.skipNewLine = false;
+        this.loggedNodeIds = [];
         this.request = req;
         this.pos = pos;
     }
@@ -71,23 +72,6 @@ function logSavedConn(connKey) {
         + parts[2] + '.' + parts[3];
     console.log('%c%s', 'background: #cfc', conn);
 }
-function logRequest(request, updateNodeId, updateParamId) {
-    const req = new RequestSettings(request, 2);
-    let log = '';
-    if (updateNodeId != ''
-        || updateParamId != '')
-        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
-    else
-        req.skipNewLine = true;
-    const stackOverflowProtect = 100;
-    while (req.pos < req.request.length
-        && req.so < stackOverflowProtect)
-        log += logReq(req);
-    console.log('%c%s', 'background: #60aa60; color: #fff', log);
-}
-function logReqId(nodeId) {
-    return nodeId == '' ? '\'\'' : nodeId;
-}
 function logParamUpdates(updateNodeId, updateParamId, values) {
     let log = '';
     let newLine = true;
@@ -120,83 +104,80 @@ function logParamUpdates(updateNodeId, updateParamId, values) {
 function logObjectUpdates(objects) {
     console.log('%cobjects', 'background: #07e; color: white;', objects);
 }
-function logReq(req) {
-    const next = req.request[req.pos];
-    if (next == PARAM)
-        return logReqParam(req);
-    else if (next == NUMBER_VALUE)
-        return logReqNumValue(req);
-    else if (next == NUMBER)
-        return logReqNumber(req);
-    else if (next == NUMBER_ADD
-        || next == NUMBER_SUBTRACT
-        || next == NUMBER_MULTIPLY
-        || next == NUMBER_DIVIDE
-        || next == NUMBER_MODULO
-        || next == NUMBER_EXPONENT)
-        return logReqNumberArithmetic(req);
-    else if (next == NUMBER_INTERPOLATE)
-        return logReqNumberInterpolate(req);
-    else if (next == COLOR)
-        return logReqColor(req);
-    else if (next == RECTANGLE)
-        return logReqRectangle(req);
-    else if (next == LINE)
-        return logReqLine(req);
-    else if (next == ELLIPSE)
-        return logReqEllipse(req);
-    else if (next == POLYGON)
-        return logReqPolygon(req);
-    else if (next == STAR)
-        return logReqStar(req);
-    req.so++;
-    return '';
-    // return JSON.stringify(req.request)        
-    //     .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
-    //     .split('"') .join('')      //.replaceAll('"', '')
-    //     .split('[') .join('')      //.replaceAll('[', '')
-    //     .split(']') .join('')      //.replaceAll(']', '')
-    //     .split(',') .join(' ');   //.replaceAll(',', ' '));
+// function logReq(req)
+// {
+//     const next = req.request[req.pos];
+//          if (next == PARAM             ) return logReqParam      (req);
+//     else if (next == NUMBER_VALUE      ) return logReqNumValue   (req);
+//     else if (next == NUMBER            ) return logReqNumber     (req);
+//     else if (next == NUMBER_LIMITS     ) return logReqLimits     (req);
+//     else if (next == NUMBER_ADD         
+//           || next == NUMBER_SUBTRACT    
+//           || next == NUMBER_MULTIPLY    
+//           || next == NUMBER_DIVIDE
+//           || next == NUMBER_MODULO
+//           || next == NUMBER_EXPONENT   ) return logReqArithmetic (req);
+//     else if (next == NUMBER_INTERPOLATE) return logReqInterpolate(req);
+//     else if (next == COLOR             ) return logReqColor      (req);
+//     else if (next == RECTANGLE         ) return logReqRectangle  (req);
+//     else if (next == LINE              ) return logReqLine       (req);
+//     else if (next == ELLIPSE           ) return logReqEllipse    (req);
+//     else if (next == POLYGON           ) return logReqPolygon    (req);
+//     else if (next == STAR              ) return logReqStar       (req);
+//     req.so++;
+//     return '';
+//     // return JSON.stringify(req.request)        
+//     //     .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
+//     //     .split('"') .join('')      //.replaceAll('"', '')
+//     //     .split('[') .join('')      //.replaceAll('[', '')
+//     //     .split(']') .join('')      //.replaceAll(']', '')
+//     //     .split(',') .join(' ');    //.replaceAll(',', ' '));
+// }
+function logRequest(parse) {
+    let log = '';
+    if (parse.updateNodeId != ''
+        || parse.updateParamId != '')
+        log = '↓ ' + logReqId(parse.updateNodeId) + '.' + logReqId(parse.updateParamId);
+    log += parse.log;
+    console.log('%c%s', 'background: #60aa60; color: #fff', log);
 }
-function logReqActive(req) {
-    return req.request[req.pos] == ACTIVE
-        ? ' ' + req.request[req.pos++]
+function logReqNodeId(node) {
+    return ' '
+        + logReqId(node.nodeId)
+        + logReqActive(node);
+}
+function logReqId(nodeId) {
+    return nodeId == '' ? '\'\'' : nodeId;
+}
+function logReqActive(node) {
+    return node.active
+        ? ' ' + ACTIVE
         : '';
 }
 function logReqParam(req) {
-    // if (req.request[req.pos] != PARAM) 
-    //     return '';
     const tag = req.request[req.pos++];
     const nodeId = req.request[req.pos++];
     const paramId = req.request[req.pos++];
-    //req.skipNewLine = true;
-    //const val     = logReq(req);
     const _nodeId = logReqId(nodeId);
-    return req.tab + tag + ' ' + _nodeId + '.' + paramId; // + ' ' + val;
+    return req.tab + tag + ' ' + _nodeId + '.' + paramId;
 }
-function logReqNumberNodeId(req) {
-    const tag = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-    return tag + ' ' + logReqId(nodeId) + active;
+function logReqNumberValue(val, parse) {
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
 }
-function logReqNumValue(req) {
-    const tag = req.request[req.pos++];
-    const val = req.request[req.pos++]; // N
-    return req.tab + tag + ' ' + val;
+function logReqNumber(num, parse) {
+    parse.log += parse.tab + NUMBER;
+    parse.log += logReqNodeId(num);
 }
-function logReqNumber(req) {
+function logReqLimits(lim, nValues, parse) {
+    parse.log += parse.tab + NUMBER_LIMITS;
+    parse.log += logReqNodeId(lim);
+    if (nValues > -1)
+        parse.log += ' ' + nValues;
+}
+function logReqArithmetic(req) {
     const tab = req.tab;
     req.nTab++;
-    const node = logReqNumberNodeId(req);
-    const num = logReq(req);
-    req.nTab--;
-    return tab + node + ' ' + num;
-}
-function logReqNumberArithmetic(req) {
-    const tab = req.tab;
-    req.nTab++;
-    const node = logReqNumberNodeId(req);
+    const node = logReqNodeId(req);
     const nValues = req.request[req.pos++];
     let log = tab + node + ' ' + nValues;
     for (let i = 0; i < nValues; i++)
@@ -204,10 +185,10 @@ function logReqNumberArithmetic(req) {
     req.nTab--;
     return log;
 }
-function logReqNumberInterpolate(req) {
+function logReqInterpolate(req) {
     const tab = req.tab;
     req.nTab++;
-    const node = logReqNumberNodeId(req);
+    const node = logReqNodeId(req);
     const nValues = req.request[req.pos++];
     let log = tab + node + ' ' + nValues;
     if (nValues == 2) {
@@ -260,7 +241,7 @@ function logReqNode(req, type, _paramIds) {
 /////////////////////////////////
 const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
 const NUMBER = 'NUM'; // N | n
-const NUMBER_MINMAX = 'MNMX'; // N:min N:max
+const NUMBER_LIMITS = 'LIM'; // N:min N:max
 const NUMBER_ADD = 'ADD'; // count N...
 const NUMBER_SUBTRACT = 'SUB'; // count N...
 const NUMBER_MULTIPLY = 'MUL'; // count N...

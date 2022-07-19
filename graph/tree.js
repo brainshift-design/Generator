@@ -48,7 +48,6 @@ function getAllNodesFromNode(node, ignore = [])
 {
     const nodes = [node];
 
-
     if (!ignore.includes(node)) 
         ignore.push(node);
 
@@ -73,7 +72,7 @@ function getAllNodesFromNode(node, ignore = [])
         }
     }
 
-
+console.log('nodes =', nodes);
     return nodes;
 }
 

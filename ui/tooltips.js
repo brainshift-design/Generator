@@ -1,5 +1,5 @@
 createTooltip(ttCreateNumber);           createTooltipSrc(btnCreateNumber,           () => ttCreateNumber);
-createTooltip(ttCreateMinMax);           createTooltipSrc(btnCreateMinMax,           () => ttCreateMinMax);
+createTooltip(ttCreateLimits);           createTooltipSrc(btnCreateLimits,           () => ttCreateLimits);
 createTooltip(ttCreateAdd);              createTooltipSrc(btnCreateAdd,              () => ttCreateAdd);
 createTooltip(ttCreateSubtract);         createTooltipSrc(btnCreateSubtract,         () => ttCreateSubtract);
 createTooltip(ttCreateMultiply);         createTooltipSrc(btnCreateMultiply,         () => ttCreateMultiply);

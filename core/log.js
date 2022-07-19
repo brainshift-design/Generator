@@ -3,10 +3,13 @@ class RequestSettings
     request;
     pos;
 
-    so          = 0;
-    nTab        = 0;
+    so            = 0;
+    nTab          = 0;
+  
+    skipNewLine   = false;
 
-    skipNewLine = false;
+    loggedNodeIds = [];
+    
 
 
     constructor(req, pos)
@@ -92,42 +95,6 @@ function logSavedConn(connKey)
         '%c%s', 
         'background: #cfc', 
         conn); 
-}
-
-
-
-function logRequest(request, updateNodeId, updateParamId)
-{
-    const req = new RequestSettings(request, 2);
-
-
-    let log = '';
-
-    if (   updateNodeId  != '' 
-        || updateParamId != '')
-        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
-    else
-        req.skipNewLine = true;
-
-
-    const stackOverflowProtect = 100;
-
-    while (   req.pos < req.request.length 
-           && req.so  < stackOverflowProtect)
-        log += logReq(req);
-
-
-    console.log(
-        '%c%s', 
-        'background: #60aa60; color: #fff', 
-         log);
-}
-
-
-
-function logReqId(nodeId)
-{
-    return nodeId == '' ? '\'\'' : nodeId;
 }
 
 

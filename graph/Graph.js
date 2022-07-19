@@ -75,8 +75,6 @@ class Graph
     {
         for (const node of nodes)
             this.addNode(node, placeNode);
-        
-        //setTimeout(() => nodes.forEach(n => n.updateNode()));
     }
 
 
@@ -97,15 +95,7 @@ class Graph
 
 
         graphView.putNodeOnTop(node);
-
-        // graphView.updateNodeTransform(node);
-        // node.updateNode();
-
-
         graphView.updateScrollWithBounds();
-
-        // if (updateLabel)
-        //     setTimeout(() => node.updateNode());
     }
     
 
@@ -130,13 +120,7 @@ class Graph
                 const output = node.outputs[i];
                 
                 for (const connInput of output.connectedInputs)
-                {
                     this.disconnect(connInput, true);
-    
-                    // if (!activeNodeInTree(connInput.node))
-                    //     lastNodesInTreeFrom(connInput.node).forEach(n => uiMakeNodeActive(n));
-                    //     uiMakeNodeActive(connInput.node.lastNodeInTree);
-                }
             }
             
             node.selected = false;
@@ -208,16 +192,6 @@ class Graph
 
     disconnect(input)
     {
-        //console.log( 'graph.disconnect(' + input.node.id + ' ' + input.index + ')');
-     
-        // first remove the current output
-
-        // if (activeNodeInTree(input.node))
-        //     uiDeleteObjects([activeNodeInTree(input.node).id]);
-
-
-        // then disconnect
-
         var output = input.connectedOutput;
         if (!output) return false;
 
@@ -320,7 +294,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
     switch (nodeType)
     {
         case NUMBER:             node = new OpNumber();           break;
-        case NUMBER_MINMAX:      node = new OpMinMax();           break;
+        case NUMBER_LIMITS:      node = new OpLimits();           break;
         case NUMBER_ADD:         node = new OpAdd();              break;
         case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
         case NUMBER_MULTIPLY:    node = new OpMultiply();         break;

@@ -91,7 +91,8 @@ extends OpGeometryBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const req = this.node.getRequestStart();
+        const [req, ignore] = this.node.getRequestStart(gen);
+        if (ignore) return req;
 
         
         const input = this.node.inputs[0];

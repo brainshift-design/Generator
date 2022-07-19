@@ -7,26 +7,30 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
+    //console.log('req =', req);
+        
     const updateNodeId  = req[0];
     const updateParamId = req[1];
 
 
-    if (settings.logRequests)
-        logRequest(req, updateNodeId, updateParamId);
-        
+    const parse = new Parse(req, updateNodeId, updateParamId, settings);
+    
 
-    const parse = new Parse(req, updateNodeId, updateParamId);
-    
-    
     const stackOverflowProtect = 100;
 
     while (   parse.pos < parse.req.length 
            && parse.so  < stackOverflowProtect)
         genParse(parse);
 
+    
+    if (settings.logRequests)
+        logRequest(parse);
 
-    for (const val of parse.tree)
-        val.eval(parse);
+
+    const tree = parse.parsedNodes.filter(n => n.topLevel);
+
+    for (const node of tree) 
+        node.eval(parse);
 
 
     genUpdateValuesAndObjects(

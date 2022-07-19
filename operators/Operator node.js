@@ -139,7 +139,10 @@ function createNodeHeader(node)
             if (   getCtrlKey(e)
                 && e.shiftKey
                 && e.altKey)
+                {
                 graphView.selectedNodes = [node, ...getAllNodesFromNode(node)];
+                console.log('graphView.selectedNodes = ', graphView.selectedNodes);
+                }
 
             else if (e.shiftKey
                   && e.altKey)

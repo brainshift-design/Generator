@@ -8,14 +8,7 @@ extends Parameter
     
 
     
-    get value() { return this.control.value; }
-    // set value(value) 
-    // {
-    //     this.control.setDecimals(decCount(value));
-    //     this.control.setValue(parseFloat(value)); 
-    // }
-        
-        
+    get value   () { return this.control.value; }
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
@@ -112,25 +105,6 @@ extends Parameter
 
 
 
-    // update(dispatchEvents)
-    // {
-    //     super.update();
-
-    //     // if (   this.input
-    //     //     && this.input.connected)
-    //     // {
-    //     //     this.setDecimals(this.input.data.decimals);
-
-    //     //     this.setValue(
-    //     //         this.input.data.value, 
-    //     //         false, 
-    //     //         true, 
-    //     //         dispatchEvents);
-    //     // }
-    // }
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         this.preSetValue(value, createAction, dispatchEvents);
@@ -183,7 +157,7 @@ extends Parameter
                     PARAM,
                     this.node.id,
                     this.id);
-                
+
                 pushUnique(gen.paramNodes, this.node);
             }
 

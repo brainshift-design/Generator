@@ -103,7 +103,8 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const req = this.node.getRequestStart();
+        const [req, ignore] = this.node.getRequestStart(gen);
+        if (ignore) return req;
 
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers

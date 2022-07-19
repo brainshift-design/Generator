@@ -3,7 +3,7 @@ function rgbFromType(type, active)
     switch (type)
     {
         case NUMBER:    
-        case NUMBER_MINMAX:
+        case NUMBER_LIMITS:
         case NUMBER_ADD:
         case NUMBER_SUBTRACT:
         case NUMBER_MULTIPLY:

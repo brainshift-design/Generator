@@ -18,8 +18,8 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = parse.tree
-                .find(v => v.nodeId == this.nodeId);
+            this.result = parse.parsedNodes.find(v => 
+                v.nodeId == this.nodeId);
 
             if (   this.result.type == RECTANGLE
                 || this.result.type == LINE

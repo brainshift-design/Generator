@@ -21,7 +21,10 @@
 
 function genParseRectangle(parse)
 {
-    const [nodeId, active] = genParseNodeStart(parse);
+    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
+
+
     const rect = new GRectangle(nodeId, active);
 
 

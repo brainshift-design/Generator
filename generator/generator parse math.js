@@ -2,18 +2,40 @@ function genParseNumValue(parse)
 {
     parse.pos++; // N
 
-    return parseGNumberValue(parse.move());
+    const val = parse.move();
+
+    if (parse.logRequests)
+        logReqNumberValue(val, parse);
+
+    return parseGNumberValue(val);
 }
 
 
 
 function genParseNumber(parse)
 {
-    const [nodeId, active] = genParseNodeStart(parse);
+    const [nodeId, active, ignore] = genParseNodeStart(parse);
+
+
     const num = new GNumber(nodeId, active);
+
     
-    
+    if (parse.logRequests) 
+        logReqNumber(num, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, num);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
     num.input = genParse(parse);
+
+    parse.nTab--;
 
 
     genParseNodeEnd(parse, num);
@@ -22,31 +44,56 @@ function genParseNumber(parse)
 
 
 
-function genParseMinMax(parse)
+function genParseLimits(parse)
 {
-    const [nodeId, active] = genParseNodeStart(parse);
-    const minmax = new GMinMax(nodeId, active);
+    const [nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const lim = new GLimits(nodeId, active);
+   
+
+    let nValues = -1;
     
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues == 0 || nValues == 1);
+    }
+
     
-    const nValues = parse.move();
-    console.assert(nValues == 0 || nValues == 1);
+    if (parse.logRequests) 
+        logReqLimits(lim, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lim);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
 
     if (nValues == 1)
-        minmax.input = genParse(parse);
+        lim.input = genParse(parse);
 
-    minmax.min = genParse(parse);
-    minmax.max = genParse(parse);
+    lim.min = genParse(parse);
+    lim.max = genParse(parse);
     
+    parse.nTab--;
 
-    genParseNodeEnd(parse, minmax);
-    return minmax;
+
+    genParseNodeEnd(parse, lim);
+    return lim;
 }
 
 
 
 function genParseArithmetic(parse, newNode)
 {
-    const [nodeId, active] = genParseNodeStart(parse);
+    const [nodeId, active, ignore] = genParseNodeStart(parse);
+
+
     const arith = newNode(nodeId, active);
 
 
@@ -56,6 +103,14 @@ function genParseArithmetic(parse, newNode)
         arith.inputs.push(genParse(parse));
 
         
+    if (ignore) 
+    {
+
+        genParseNodeEnd(parse, arith);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+    
+
     genParseNodeEnd(parse, arith);
     return arith;
 }
@@ -64,7 +119,10 @@ function genParseArithmetic(parse, newNode)
 
 function genParseInterpolate(parse)
 {
-    const [nodeId, active] = genParseNodeStart(parse);
+    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
+
+
     const inter = new GInterpolate(nodeId, active);
 
 

@@ -10,7 +10,7 @@
 ../types/GNumberValue.js
 ../types/GNumber.js
 
-../types/GMinMax.js
+../types/GLimits.js
 ../types/GAdd.js
 ../types/GSubtract.js
 ../types/GMultiply.js
