@@ -10,7 +10,7 @@ extends GType
     {
         super(NUMBER_VALUE);
 
-        this.value   = val;
+        this.value    = val;
         this.decimals = dec;
 
         this.valid    = true;

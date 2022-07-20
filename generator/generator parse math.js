@@ -77,7 +77,7 @@ function genParseLimits(parse)
 
     if (nValues == 1)
         lim.input = genParse(parse);
-
+console.log('lim.input = ', lim.input);
     lim.min = genParse(parse);
     lim.max = genParse(parse);
     
@@ -132,31 +132,52 @@ function genParseArithmetic(parse, newNode)
 function genParseInterpolate(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
-    if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
 
 
-    const inter = new GInterpolate(nodeId, active);
+    const lerp = new GInterpolate(nodeId, active);
 
 
-    const nValues = parse.move();
+    let nValues = -1;
+
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues => 0 && nValues <= 2);
+    }
+
+    
+    if (parse.logRequests) 
+        logReqInterpolate(lerp, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lerp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
 
     if (nValues == 2)
     {
-        inter.input0 = genParse(parse);
-        inter.input1 = genParse(parse);
-        inter.amount = genParse(parse);
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
+        lerp.amount = genParse(parse);
     }
     else if (nValues == 1)
     {
-        inter.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        inter.amount = genParse(parse);
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        lerp.amount = genParse(parse);
     }
     else if (nValues == 0)
     {
-        inter.amount = genParse(parse);
+        lerp.amount = genParse(parse);
     }
 
+    parse.nTab--;
 
-    genParseNodeEnd(parse, inter);
-    return inter;
+
+    genParseNodeEnd(parse, lerp);
+    return lerp;
 }

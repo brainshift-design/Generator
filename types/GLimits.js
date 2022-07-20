@@ -23,8 +23,8 @@ extends GOperator
         if (this.input) 
             lim.input = this.input.copy();
 
-        lim.min            = this.min.copy();
-        lim.max            = this.max.copy();
+        lim.min = this.min.copy();
+        lim.max = this.max.copy();
 
         lim.minMaxPriority = this.minMaxPriority;
 
@@ -48,10 +48,6 @@ extends GOperator
             const max = this.max.eval(parse).copy();
 
 
-            this.valid        = true;
-            this.result.valid = true;
-
-
             // min.value = Math.min(min.value, max.value);
             // max.value = Math.max(min.value, max.value);
 
@@ -62,9 +58,13 @@ extends GOperator
                 max.value);
 
 
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.valid        = true;
+            this.result.valid = true;
+
+
             genPushUpdateValue(parse, this.nodeId, 'min',   min);
             genPushUpdateValue(parse, this.nodeId, 'max',   max);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 

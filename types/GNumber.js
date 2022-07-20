@@ -16,7 +16,12 @@ extends GOperator
     copy()
     {
         const num = new GNumber(this.nodeId, this.active);
-        if (this.input) num.input = this.input.copy();
+        
+        num.value = this.value;
+
+        if (this.input) 
+            num.input = this.input.copy();
+        
         return num;
     }
 
@@ -26,13 +31,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            if (this.input)
-                this.result = this.input.eval(parse).copy();
-            else
-                this.result = this.value.copy();
+            this.result = 
+                this.input
+                ? this.input.eval(parse).copy()
+                : this.value.copy();
 
 
-            this.result.valid = true;
+            //this.result.valid = true;
             this.valid        = true;
 
             console.assert(this.result.valid);

@@ -124,7 +124,7 @@ function genParseActive(parse)
 {
     if (parse.next == ACTIVE)
     {
-        parse.pos++;
+        parse.move();
         return true;
     }
 
@@ -138,7 +138,7 @@ function genParseParam(parse)
     if (parse.next != PARAM) 
         return null;
     
-    parse.pos++;
+    parse.move();
 
     const nodeId  = parse.move();
     const paramId = parse.move();

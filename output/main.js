@@ -180,29 +180,10 @@ function logReqArithmetic(arith, type, nValues, parse) {
     parse.log += logReqNodeId(arith);
     parse.log += ' ' + nValues;
 }
-function logReqInterpolate(req) {
-    const tab = req.tab;
-    req.nTab++;
-    const node = logReqNodeId(req);
-    const nValues = req.request[req.pos++];
-    let log = tab + node + ' ' + nValues;
-    if (nValues == 2) {
-        const num0 = logReq(req);
-        const num1 = logReq(req);
-        const amt = logReq(req);
-        log += num0 + num1 + amt;
-    }
-    else if (nValues == 1) {
-        const num = logReq(req);
-        const amt = logReq(req);
-        log += num + amt;
-    }
-    else if (nValues == 0) {
-        const amt = logReq(req);
-        log += amt;
-    }
-    req.nTab--;
-    return log;
+function logReqInterpolate(lerp, nValues, parse) {
+    parse.log += parse.tab + NUMBER_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
+    parse.log += ' ' + nValues;
 }
 function logReqColor(req) { return logReqNode(req, COLOR, ['space', 'c1', 'c2', 'c3']); }
 function logReqRectangle(req) { return logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }

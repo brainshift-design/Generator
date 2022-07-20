@@ -14,6 +14,20 @@ extends GOperator
 
 
     
+    copy()
+    {
+        const lerp = new GInterpolate(this.nodeId, this.active);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
     eval(parse)
     {
         if (!this.valid)

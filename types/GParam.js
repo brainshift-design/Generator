@@ -14,6 +14,14 @@ extends GOperator
 
 
 
+    copy()
+    {
+        const param = new GParam(this.nodeId, this.paramId);
+        return param;
+    }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -27,9 +35,9 @@ extends GOperator
                 || this.result.type == POLYGON
                 || this.result.type == STAR)
                 //|| this.result.type == TEXT)
-                this.result = this.result.eval(parse);
+                this.result = this.result.eval(parse).copy();
 
-            this.result = this.result[this.paramId].eval(parse);
+            this.result = this.result[this.paramId].eval(parse).copy();
 
             this.valid        = true;
             this.result.valid = true;

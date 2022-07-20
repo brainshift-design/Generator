@@ -2548,44 +2548,11 @@ function logReqArithmetic(arith, type, nValues, parse)
 
 
 
-function logReqInterpolate(req)
+function logReqInterpolate(lerp, nValues, parse)
 {
-    const tab = req.tab;
-
-    req.nTab++;
-
-    const node    = logReqNodeId(req);
-    const nValues = req.request[req.pos++];
-
-
-    let log = tab + node + ' ' + nValues;
-
-    if (nValues == 2)
-    {
-        const num0 = logReq(req);
-        const num1 = logReq(req);
-        const amt  = logReq(req);
-
-        log += num0 + num1 + amt;
-    }
-    else if (nValues == 1)
-    {
-        const num = logReq(req);
-        const amt = logReq(req);
-
-        log += num + amt;
-    }
-    else if (nValues == 0)
-    {
-        const amt = logReq(req);
-
-        log += amt;
-    }
-
-
-    req.nTab--;
-
-    return log;
+    parse.log += parse.tab + NUMBER_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
+    parse.log += ' ' + nValues;
 }
 
 
@@ -2955,6 +2922,14 @@ extends GOperator
 
 
 
+    copy()
+    {
+        const param = new GParam(this.nodeId, this.paramId);
+        return param;
+    }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -2968,9 +2943,9 @@ extends GOperator
                 || this.result.type == POLYGON
                 || this.result.type == STAR)
                 //|| this.result.type == TEXT)
-                this.result = this.result.eval(parse);
+                this.result = this.result.eval(parse).copy();
 
-            this.result = this.result[this.paramId].eval(parse);
+            this.result = this.result[this.paramId].eval(parse).copy();
 
             this.valid        = true;
             this.result.valid = true;
@@ -2993,7 +2968,7 @@ extends GType
     {
         super(NUMBER_VALUE);
 
-        this.value   = val;
+        this.value    = val;
         this.decimals = dec;
 
         this.valid    = true;
@@ -3063,7 +3038,12 @@ extends GOperator
     copy()
     {
         const num = new GNumber(this.nodeId, this.active);
-        if (this.input) num.input = this.input.copy();
+        
+        num.value = this.value;
+
+        if (this.input) 
+            num.input = this.input.copy();
+        
         return num;
     }
 
@@ -3073,13 +3053,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            if (this.input)
-                this.result = this.input.eval(parse).copy();
-            else
-                this.result = this.value.copy();
+            this.result = 
+                this.input
+                ? this.input.eval(parse).copy()
+                : this.value.copy();
 
 
-            this.result.valid = true;
+            //this.result.valid = true;
             this.valid        = true;
 
             console.assert(this.result.valid);
@@ -3117,8 +3097,8 @@ extends GOperator
         if (this.input) 
             lim.input = this.input.copy();
 
-        lim.min            = this.min.copy();
-        lim.max            = this.max.copy();
+        lim.min = this.min.copy();
+        lim.max = this.max.copy();
 
         lim.minMaxPriority = this.minMaxPriority;
 
@@ -3142,10 +3122,6 @@ extends GOperator
             const max = this.max.eval(parse).copy();
 
 
-            this.valid        = true;
-            this.result.valid = true;
-
-
             // min.value = Math.min(min.value, max.value);
             // max.value = Math.max(min.value, max.value);
 
@@ -3156,9 +3132,13 @@ extends GOperator
                 max.value);
 
 
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.valid        = true;
+            this.result.valid = true;
+
+
             genPushUpdateValue(parse, this.nodeId, 'min',   min);
             genPushUpdateValue(parse, this.nodeId, 'max',   max);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -3546,6 +3526,20 @@ extends GOperator
 
 
     
+    copy()
+    {
+        const lerp = new GInterpolate(this.nodeId, this.active);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -4741,7 +4735,7 @@ function genParseLimits(parse)
 
     if (nValues == 1)
         lim.input = genParse(parse);
-
+console.log('lim.input = ', lim.input);
     lim.min = genParse(parse);
     lim.max = genParse(parse);
     
@@ -4796,33 +4790,54 @@ function genParseArithmetic(parse, newNode)
 function genParseInterpolate(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
-    if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
 
 
-    const inter = new GInterpolate(nodeId, active);
+    const lerp = new GInterpolate(nodeId, active);
 
 
-    const nValues = parse.move();
+    let nValues = -1;
+
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues => 0 && nValues <= 2);
+    }
+
+    
+    if (parse.logRequests) 
+        logReqInterpolate(lerp, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lerp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
 
     if (nValues == 2)
     {
-        inter.input0 = genParse(parse);
-        inter.input1 = genParse(parse);
-        inter.amount = genParse(parse);
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
+        lerp.amount = genParse(parse);
     }
     else if (nValues == 1)
     {
-        inter.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        inter.amount = genParse(parse);
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        lerp.amount = genParse(parse);
     }
     else if (nValues == 0)
     {
-        inter.amount = genParse(parse);
+        lerp.amount = genParse(parse);
     }
 
+    parse.nTab--;
 
-    genParseNodeEnd(parse, inter);
-    return inter;
+
+    genParseNodeEnd(parse, lerp);
+    return lerp;
 }
 
 
@@ -4952,7 +4967,7 @@ function genParseActive(parse)
 {
     if (parse.next == ACTIVE)
     {
-        parse.pos++;
+        parse.move();
         return true;
     }
 
@@ -4966,7 +4981,7 @@ function genParseParam(parse)
     if (parse.next != PARAM) 
         return null;
     
-    parse.pos++;
+    parse.move();
 
     const nodeId  = parse.move();
     const paramId = parse.move();
@@ -4984,7 +4999,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    console.log('req =', req);
+    //console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];

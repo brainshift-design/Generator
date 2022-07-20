@@ -729,14 +729,14 @@ function pushUpdateFromParam(nodes, param)
             })); 
 
 
-    gen.markParams = false;
-    gen.paramNodes
-        .filter(n => !terminals.includes(n))
-        .forEach(n => 
-            n.outputs
-                .filter(o => !o.param)
-                .forEach(o =>
-                    request.push(...o.genRequest(gen))));
+    // gen.markParams = false;
+    // gen.paramNodes
+    //     .filter(n => !terminals.includes(n))
+    //     .forEach(n => 
+    //         n.outputs
+    //             .filter(o => !o.param)
+    //             .forEach(o =>
+    //                 request.push(...o.genRequest(gen))));
 
 
     uiQueueMessageToGenerator({
