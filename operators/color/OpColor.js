@@ -150,7 +150,7 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.getRequestStart(gen);
+        const [req, ignore] = this.node.genRequestStart(gen);
         if (ignore) return req;
 
         

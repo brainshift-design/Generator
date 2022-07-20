@@ -87,15 +87,17 @@ extends OperatorBase
         if (!isEmpty(this.cache))
             return this.cache;
 
-        const connectedInputs  = this.node.inputs.filter(i => i.connected);
-
 
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.getRequestStart(gen);
+
+        const [req, ignore] = this.node.genRequestStart(gen);
         if (ignore) return req;
+            
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
 
 
         req.push(connectedInputs.length); // utility values like param count are stored as numbers

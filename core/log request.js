@@ -126,9 +126,7 @@ function logReqArithmetic(arith, type, nValues, parse)
 {
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(arith);
-
-    if (nValues > 0)
-        parse.log += ' ' + nValues;
+    parse.log += ' ' + nValues;
 }
 
 

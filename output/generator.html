@@ -2541,9 +2541,7 @@ function logReqArithmetic(arith, type, nValues, parse)
 {
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(arith);
-
-    if (nValues > 0)
-        parse.log += ' ' + nValues;
+    parse.log += ' ' + nValues;
 }
 
 
@@ -3211,11 +3209,11 @@ extends GOperator
             }
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
-
-
             this.result.valid = true;
             this.valid        = true;
+
+
+            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -4586,7 +4584,7 @@ function genParseNumValue(parse)
 
 function genParseNumber(parse)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
     const num = new GNumber(nodeId, active);
@@ -4790,17 +4788,6 @@ class Parse
 
 
 
-/* 
-    the generation request format
-
-    no-update param nodeId ('' if n/a)
-    no-update paramId ('' if n/a)
-
-    generation string
-*/
-
-
-
 function genParse(parse)
 {
     //console.log('next', next);
@@ -4836,9 +4823,9 @@ function genParse(parse)
 
 function genParseNodeStart(parse)
 {
-    const type = parse.pos++;
-    
+    const type   = parse.move();
     const nodeId = parse.move();
+
     parse.scope.push(nodeId);
 
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
@@ -4902,7 +4889,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    //console.log('req =', req);
+    console.log('req =', req);
         
     const updateNodeId  = req[0];
     const updateParamId = req[1];

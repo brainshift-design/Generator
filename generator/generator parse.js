@@ -55,17 +55,6 @@ class Parse
 
 
 
-/* 
-    the generation request format
-
-    no-update param nodeId ('' if n/a)
-    no-update paramId ('' if n/a)
-
-    generation string
-*/
-
-
-
 function genParse(parse)
 {
     //console.log('next', next);
@@ -101,9 +90,9 @@ function genParse(parse)
 
 function genParseNodeStart(parse)
 {
-    const type = parse.pos++;
-    
+    const type   = parse.move();
     const nodeId = parse.move();
+
     parse.scope.push(nodeId);
 
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))

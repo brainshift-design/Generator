@@ -393,7 +393,7 @@ class Operator
 
 
 
-    getRequestStart(gen)
+    genRequestStart(gen)
     {
         const req = [
             this.type, 

@@ -14,7 +14,7 @@ function genParseNumValue(parse)
 
 function genParseNumber(parse)
 {
-    const [nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
     const num = new GNumber(nodeId, active);
