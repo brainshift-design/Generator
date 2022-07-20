@@ -64,8 +64,10 @@ extends OperatorBase
     {
         super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+        const index = paramIds.indexOf('value');
+ 
+        if (index > -1) 
+            this.outputs[0].cache = [NUMBER_VALUE, values[index].toString()];
     }
 
 

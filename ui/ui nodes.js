@@ -815,9 +815,9 @@ function uiUpdateGraph()
 
 
 
-function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
+function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    if (settings.logParamUpdates)  logParamUpdates(updateNodeId, updateParamId, values);
+    if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
 
@@ -845,6 +845,7 @@ function uiUpdateParamsAndObjects(updateNodeId, updateParamId, values, objects)
             i += count*2; 
             continue; 
         }
+
 
         pushUnique(nodes, node);
 

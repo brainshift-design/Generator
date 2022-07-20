@@ -2,13 +2,22 @@ class GNumber
 extends GOperator
 {
     input = null;
+    value;
+    
 
 
     constructor(nodeId, active)
     {
         super(NUMBER, nodeId, active);
+    }
 
-        this.result = new GNumberValue(0);
+
+
+    copy()
+    {
+        const num = new GNumber(this.nodeId, this.active);
+        if (this.input) num.input = this.input.copy();
+        return num;
     }
 
 
@@ -18,15 +27,19 @@ extends GOperator
         if (!this.valid)
         {
             if (this.input)
-                this.result = this.input.eval(parse);
+                this.result = this.input.eval(parse).copy();
+            // else
+            //     this.result = new                
 
 
             this.valid = true;
-            //this.result.valid = true;
 
-
+            console.log('GNumber.nodeId = ', this.nodeId);
+            console.log('GNumber.result = ', this.result);
+console.log('0 parse.updateValues = ', [...parse.updateValues]);
             console.assert(this.result.valid);
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            console.log('1 parse.updateValues = ', [...parse.updateValues]);
         }
 
 

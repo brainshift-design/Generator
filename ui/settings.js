@@ -5,6 +5,6 @@ const settings =
     logStorage:       true, 
     logActions:       false, 
     logRequests:      true, 
-    logParamUpdates:  true, 
+    logValueUpdates:  true, 
     logObjectUpdates: true
 };

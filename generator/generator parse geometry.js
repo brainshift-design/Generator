@@ -90,11 +90,11 @@ function genParseLine(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 'x',     line.x    );
-    genPushUpdateParamValue(parse, nodeId, 'y',     line.y    );
-    genPushUpdateParamValue(parse, nodeId, 'width', line.width);
-    //genPushUpdateParamValue(parse, nodeId, 'height', line.height);
-    genPushUpdateParamValue(parse, nodeId, 'angle', line.angle);
+    genPushUpdateValue(parse, nodeId, 'x',     line.x    );
+    genPushUpdateValue(parse, nodeId, 'y',     line.y    );
+    genPushUpdateValue(parse, nodeId, 'width', line.width);
+    //genPushUpdateValue(parse, nodeId, 'height', line.height);
+    genPushUpdateValue(parse, nodeId, 'angle', line.angle);
 
 
     if (   active
@@ -154,11 +154,11 @@ function genParseEllipse(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 'x',      elllipse.x     );
-    genPushUpdateParamValue(parse, nodeId, 'y',      elllipse.y     );
-    genPushUpdateParamValue(parse, nodeId, 'width',  elllipse.width );
-    genPushUpdateParamValue(parse, nodeId, 'height', elllipse.height);
-    genPushUpdateParamValue(parse, nodeId, 'angle',  elllipse.angle );
+    genPushUpdateValue(parse, nodeId, 'x',      elllipse.x     );
+    genPushUpdateValue(parse, nodeId, 'y',      elllipse.y     );
+    genPushUpdateValue(parse, nodeId, 'width',  elllipse.width );
+    genPushUpdateValue(parse, nodeId, 'height', elllipse.height);
+    genPushUpdateValue(parse, nodeId, 'angle',  elllipse.angle );
 
 
     if (   active
@@ -220,13 +220,13 @@ function genParsePolygon(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 'x',       poly.x      );
-    genPushUpdateParamValue(parse, nodeId, 'y',       poly.y      );
-    genPushUpdateParamValue(parse, nodeId, 'width',   poly.width  );
-    genPushUpdateParamValue(parse, nodeId, 'height',  poly.height );
-    genPushUpdateParamValue(parse, nodeId, 'angle',   poly.angle  );
-    genPushUpdateParamValue(parse, nodeId, 'round',   poly.round  );
-    genPushUpdateParamValue(parse, nodeId, 'corners', poly.corners);
+    genPushUpdateValue(parse, nodeId, 'x',       poly.x      );
+    genPushUpdateValue(parse, nodeId, 'y',       poly.y      );
+    genPushUpdateValue(parse, nodeId, 'width',   poly.width  );
+    genPushUpdateValue(parse, nodeId, 'height',  poly.height );
+    genPushUpdateValue(parse, nodeId, 'angle',   poly.angle  );
+    genPushUpdateValue(parse, nodeId, 'round',   poly.round  );
+    genPushUpdateValue(parse, nodeId, 'corners', poly.corners);
 
 
     if (   active
@@ -291,14 +291,14 @@ function genParseStar(parse)
     }
 
 
-    genPushUpdateParamValue(parse, nodeId, 'x',      star.x     );
-    genPushUpdateParamValue(parse, nodeId, 'y',      star.y     );
-    genPushUpdateParamValue(parse, nodeId, 'width',  star.width );
-    genPushUpdateParamValue(parse, nodeId, 'height', star.height);
-    genPushUpdateParamValue(parse, nodeId, 'angle',  star.angle );
-    genPushUpdateParamValue(parse, nodeId, 'round',  star.round );
-    genPushUpdateParamValue(parse, nodeId, 'points', star.points);
-    genPushUpdateParamValue(parse, nodeId, 'convex', star.convex);
+    genPushUpdateValue(parse, nodeId, 'x',      star.x     );
+    genPushUpdateValue(parse, nodeId, 'y',      star.y     );
+    genPushUpdateValue(parse, nodeId, 'width',  star.width );
+    genPushUpdateValue(parse, nodeId, 'height', star.height);
+    genPushUpdateValue(parse, nodeId, 'angle',  star.angle );
+    genPushUpdateValue(parse, nodeId, 'round',  star.round );
+    genPushUpdateValue(parse, nodeId, 'points', star.points);
+    genPushUpdateValue(parse, nodeId, 'convex', star.convex);
 
 
     if (   active

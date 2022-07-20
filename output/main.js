@@ -72,7 +72,8 @@ function logSavedConn(connKey) {
         + parts[2] + '.' + parts[3];
     console.log('%c%s', 'background: #cfc', conn);
 }
-function logParamUpdates(updateNodeId, updateParamId, values) {
+function logValueUpdates(updateNodeId, updateParamId, values) {
+    //console.log('values = ', values);
     let log = '';
     let newLine = true;
     if (updateNodeId != ''
@@ -285,7 +286,7 @@ const settings = {
     logStorage: true,
     logActions: false,
     logRequests: true,
-    logParamUpdates: true,
+    logValueUpdates: true,
     logObjectUpdates: true
 };
 const figObjectArrays = []; // {nodeId, [objects]}

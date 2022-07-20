@@ -8,28 +8,28 @@ var lastUpdateObjects = [];
 function genRequest(req, settings)
 {
     console.log('req =', req);
-        
+
     const updateNodeId  = req[0];
     const updateParamId = req[1];
 
 
     const parse = new Parse(req, updateNodeId, updateParamId, settings);
-    
+
 
     const stackOverflowProtect = 100;
 
-    while (   parse.pos < parse.req.length 
+    while (   parse.pos < parse.req.length
            && parse.so  < stackOverflowProtect)
         genParse(parse);
 
-    
+
     if (settings.logRequests)
         logRequest(parse);
 
 
     const tree = parse.parsedNodes.filter(n => n.topLevel);
 
-    for (const node of tree) 
+    for (const node of tree)
         node.eval(parse);
 
 
@@ -42,17 +42,21 @@ function genRequest(req, settings)
 
 
 
-function genPushUpdateParamValue(parse, nodeId, paramId, gval)
+function genPushUpdateValue(parse, nodeId, paramId, gval)
 {
-    const found = parse.updateValues.find(v => 
-           v.nodeId     == nodeId 
+    // if (   parse.updateNodeId  == nodeId
+    //     && parse.updateParamId == paramId)
+    //     return;
+
+    const found = parse.updateValues.find(v =>
+           v.nodeId     == nodeId
         && v.paramId    == paramId
         && v.value.type == gval.type);
 
-    if (!found) 
+    if (!found)
         parse.updateValues.push({
-            nodeId:  nodeId, 
-            paramId: paramId, 
+            nodeId:  nodeId,
+            paramId: paramId,
             value:   gval});
 
     //else console.assert(found.value == value);
@@ -63,8 +67,8 @@ function genPushUpdateParamValue(parse, nodeId, paramId, gval)
 function genPushUpdateObject(parse, nodeId, object)
 {
     pushUniqueExcept(
-        parse.updateObjects, 
-        object, 
+        parse.updateObjects,
+        object,
         o => o.nodeId == nodeId);
 }
 
@@ -113,7 +117,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
     const approxParamChunkSize = 20;
     const objChunkSize         = 100;
-    
+
     let n  = 0, // node
         nc = 0; // chunk size
 
@@ -124,7 +128,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
         objChunk  = [];
 
 
-    while (   o < updateObjects.length 
+    while (   o < updateObjects.length
            || n < nodeIds.length)
     {
         if (o < updateObjects.length)
@@ -153,20 +157,20 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
         }
 
 
-        if (   oc == objChunkSize 
+        if (   oc == objChunkSize
             || nc >= approxParamChunkSize)
         {
-            genQueueMessageToUI({ 
-                cmd:          'uiUpdateParamsAndObjects',
-                updateNodeId:  updateNodeId, 
-                updateParamId: updateParamId, 
+            genQueueMessageToUI({
+                cmd:          'uiUpdateValuesAndObjects',
+                updateNodeId:  updateNodeId,
+                updateParamId: updateParamId,
                 values:        [...nodeChunk].map(v => v.toString()),
                 objects:       [...objChunk]
             });
 
             genFigMessagePosted = true;
 
-            
+
             nodeChunk = [];  nc = 0;
             objChunk  = [];  oc = 0;
         }
@@ -176,10 +180,10 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     if (   nodeChunk.length > 0
         ||  objChunk.length > 0)
     {
-        genQueueMessageToUI({ 
-            cmd:          'uiUpdateParamsAndObjects',
-            updateNodeId:  updateNodeId, 
-            updateParamId: updateParamId, 
+        genQueueMessageToUI({
+            cmd:          'uiUpdateValuesAndObjects',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
             values:        [...nodeChunk].map(v => v.toString()),
             objects:       [...objChunk]
         });

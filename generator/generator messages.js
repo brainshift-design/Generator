@@ -83,7 +83,7 @@ function genPostNextMessageToUI(msg)
     {
         let msg = uiMessages.shift();
 
-        if (msg.cmd == 'uiUpdateParamsAndObjects')
+        if (msg.cmd == 'uiUpdateValuesAndObjects')
         {
             // move along the queue since only the last message is important
             while (uiMessages.length > 0
@@ -93,7 +93,7 @@ function genPostNextMessageToUI(msg)
                 msg = uiMessages.shift();
         }
 
-        if (    msg.cmd != 'uiUpdateParamsAndObjects'
+        if (    msg.cmd != 'uiUpdateValuesAndObjects'
             || !genFigMessagePosted)
             postMessage(JSON.stringify(msg));
     }

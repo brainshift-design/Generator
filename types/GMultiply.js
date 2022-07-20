@@ -12,6 +12,15 @@ extends GOperator
 
 
     
+    copy()
+    {
+        const mul = new GMultiply(this.nodeId, this.active);
+        add.inputs = this.inputs.map(i => i.copy());
+        return mul;
+    }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -25,7 +34,7 @@ extends GOperator
 
                 for (const _input of this.inputs)
                 {
-                    const input = _input.eval(parse);
+                    const input = _input.eval(parse).copy();
 
                     this.result.value   *= input.value;
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
@@ -37,7 +46,7 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 

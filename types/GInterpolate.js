@@ -18,13 +18,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const amount = this.amount.eval(parse);
+            const amount = this.amount.eval(parse).copy();
 
             if (   this.input0 
                 && this.input1)
             {
-                const input0 = this.input0.eval(parse);
-                const input1 = this.input1.eval(parse);
+                const input0 = this.input0.eval(parse).copy();
+                const input1 = this.input1.eval(parse).copy();
 
                 const maxDec = Math.max(input0.decimals, input1.decimals);
 
@@ -35,8 +35,8 @@ extends GOperator
                 this.result.valid = true;
             }
 
-            else if (this.input0) this.result = this.input0.eval(parse);
-            else if (this.input1) this.result = this.input1.eval(parse);
+            else if (this.input0) this.result = this.input0.eval(parse).copy();
+            else if (this.input1) this.result = this.input1.eval(parse).copy();
 
             else
             {
@@ -48,8 +48,8 @@ extends GOperator
             this.valid = true;
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value',  this.result);
-            genPushUpdateParamValue(parse, this.nodeId, 'amount', amount);
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }
 
 

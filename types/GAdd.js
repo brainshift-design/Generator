@@ -12,6 +12,15 @@ extends GOperator
 
 
     
+    copy()
+    {
+        const add = new GAdd(this.nodeId, this.active);
+        add.inputs = this.inputs.map(i => i.copy());
+        return add;
+    }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -21,7 +30,7 @@ extends GOperator
 
             for (const _input of this.inputs)
             {
-                const input = _input.eval(parse);
+                const input = _input.eval(parse).copy();
                 console.assert(input.type == NUMBER_VALUE);
 
                 this.result.value   += input.value;
@@ -33,7 +42,7 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 

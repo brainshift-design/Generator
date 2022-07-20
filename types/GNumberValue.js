@@ -1,20 +1,16 @@
 class GNumberValue
 extends GType
 {
+    value;
     decimals;
 
 
 
-    get value()    { return this.result; }
-    set value(val) { this.result = val;  }
-
-
-
     constructor(val, dec = 0)
-{
+    {
         super(NUMBER_VALUE);
 
-        this.result   = val;
+        this.value   = val;
         this.decimals = dec;
 
         this.valid    = true;
@@ -22,9 +18,17 @@ extends GType
 
 
 
+    copy()
+    {
+        const val = new GNumberValue(this.value, this.decimals);
+        return val;
+    }
+
+
+
     isValid()
     {
-        return !isNaN(this.result)
+        return !isNaN(this.value)
             && !isNaN(this.decimals);
     }
 
@@ -32,16 +36,16 @@ extends GType
 
     eval(parse)
     {
-        return this;
+        return this.result = this;
     }
 
 
 
     toString()
     {
-        return isNaN(this.result)
+        return isNaN(this.value)
             ? '?'
-            : numToString(this.result, this.decimals);    
+            : numToString(this.value, this.decimals);    
     }
 }
 

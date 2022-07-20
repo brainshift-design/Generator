@@ -21,6 +21,13 @@ class GType
 
 
 
+    copy()
+    {
+        return null;
+    }
+
+
+
     isValid() // is a valid value
     {
         return false;

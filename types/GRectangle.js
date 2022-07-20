@@ -57,12 +57,12 @@ extends GOperator
             this.result.valid = true;
            
             
-            genPushUpdateParamValue(parse, this.nodeId, 'x',      this.result.x     );
-            genPushUpdateParamValue(parse, this.nodeId, 'y',      this.result.y     );
-            genPushUpdateParamValue(parse, this.nodeId, 'width',  this.result.width );
-            genPushUpdateParamValue(parse, this.nodeId, 'height', this.result.height);
-            genPushUpdateParamValue(parse, this.nodeId, 'angle',  this.result.angle );
-            genPushUpdateParamValue(parse, this.nodeId, 'round',  this.result.round );
+            genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
+            genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
+            genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
+            genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
+            genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
+            genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
 
 
             if (this.active)

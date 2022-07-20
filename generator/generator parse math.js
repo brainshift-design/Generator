@@ -33,7 +33,8 @@ function genParseNumber(parse)
 
     parse.nTab++;
 
-    num.input = genParse(parse);
+    if (parse.next == NUMBER_VALUE) num.result = genParse(parse);
+    else                            num.input  = genParse(parse);
 
     parse.nTab--;
 

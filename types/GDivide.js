@@ -12,6 +12,15 @@ extends GOperator
 
 
     
+    copy()
+    {
+        const div = new GDivide(this.nodeId, this.active);
+        add.inputs = this.inputs.map(i => i.copy());
+        return div;
+    }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -21,7 +30,7 @@ extends GOperator
             
             if (this.inputs.length > 0)
             {
-                this.result = this.inputs[0].eval(parse);
+                this.result = this.inputs[0].eval(parse).copy();
 
 
                 for (let i = 1; i < this.inputs.length; i++)
@@ -45,7 +54,7 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateParamValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 

@@ -99,8 +99,10 @@ function logSavedConn(connKey)
 
 
 
-function logParamUpdates(updateNodeId, updateParamId, values)
+function logValueUpdates(updateNodeId, updateParamId, values)
 {
+    //console.log('values = ', values);
+
     let log     = '';
     let newLine = true;
 
