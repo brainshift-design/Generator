@@ -35,7 +35,7 @@ extends GOperator
 
                 for (let i = 1; i < this.inputs.length; i++)
                 {
-                    const input = this.inputs[i].eval(parse);
+                    const input = this.inputs[i].eval(parse).copy();
 
                     if (input.value == 0) 
                     { 
@@ -45,7 +45,7 @@ extends GOperator
                     }
 
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.result % input.value, this.result.decimals);
+                    this.result.value    = floorTo(this.result.value % input.value, this.result.decimals);
                 }
             }
 

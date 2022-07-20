@@ -28,18 +28,15 @@ extends GOperator
         {
             if (this.input)
                 this.result = this.input.eval(parse).copy();
-            // else
-            //     this.result = new                
+            else
+                this.result = this.value.copy();
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
 
-            console.log('GNumber.nodeId = ', this.nodeId);
-            console.log('GNumber.result = ', this.result);
-console.log('0 parse.updateValues = ', [...parse.updateValues]);
             console.assert(this.result.valid);
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-            console.log('1 parse.updateValues = ', [...parse.updateValues]);
         }
 
 

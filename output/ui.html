@@ -4652,18 +4652,15 @@ extends GOperator
         {
             if (this.input)
                 this.result = this.input.eval(parse).copy();
-            // else
-            //     this.result = new                
+            else
+                this.result = this.value.copy();
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
 
-            console.log('GNumber.nodeId = ', this.nodeId);
-            console.log('GNumber.result = ', this.result);
-console.log('0 parse.updateValues = ', [...parse.updateValues]);
             console.assert(this.result.valid);
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-            console.log('1 parse.updateValues = ', [...parse.updateValues]);
         }
 
 
@@ -4956,7 +4953,7 @@ extends GOperator
 
                 for (let i = 1; i < this.inputs.length; i++)
                 {
-                    const input = this.inputs[i].eval(parse);
+                    const input = this.inputs[i].eval(parse).copy();
 
                     if (input.value == 0) 
                     { 
@@ -4966,7 +4963,7 @@ extends GOperator
                     }
 
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.result / input.value, this.result.decimals);
+                    this.result.value    = floorTo(this.result.value / input.value, this.result.decimals);
                 }
             }
 
@@ -5022,7 +5019,7 @@ extends GOperator
 
                 for (let i = 1; i < this.inputs.length; i++)
                 {
-                    const input = this.inputs[i].eval(parse);
+                    const input = this.inputs[i].eval(parse).copy();
 
                     if (input.value == 0) 
                     { 
@@ -5032,7 +5029,7 @@ extends GOperator
                     }
 
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.result % input.value, this.result.decimals);
+                    this.result.value    = floorTo(this.result.value % input.value, this.result.decimals);
                 }
             }
 
@@ -6277,8 +6274,8 @@ function genParseNumber(parse)
 
     parse.nTab++;
 
-    if (parse.next == NUMBER_VALUE) num.result = genParse(parse);
-    else                            num.input  = genParse(parse);
+    if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
+    else                            num.input = genParse(parse);
 
     parse.nTab--;
 
@@ -13368,18 +13365,15 @@ extends GOperator
         {
             if (this.input)
                 this.result = this.input.eval(parse).copy();
-            // else
-            //     this.result = new                
+            else
+                this.result = this.value.copy();
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
 
-            console.log('GNumber.nodeId = ', this.nodeId);
-            console.log('GNumber.result = ', this.result);
-console.log('0 parse.updateValues = ', [...parse.updateValues]);
             console.assert(this.result.valid);
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-            console.log('1 parse.updateValues = ', [...parse.updateValues]);
         }
 
 
@@ -13672,7 +13666,7 @@ extends GOperator
 
                 for (let i = 1; i < this.inputs.length; i++)
                 {
-                    const input = this.inputs[i].eval(parse);
+                    const input = this.inputs[i].eval(parse).copy();
 
                     if (input.value == 0) 
                     { 
@@ -13682,7 +13676,7 @@ extends GOperator
                     }
 
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.result / input.value, this.result.decimals);
+                    this.result.value    = floorTo(this.result.value / input.value, this.result.decimals);
                 }
             }
 
@@ -13738,7 +13732,7 @@ extends GOperator
 
                 for (let i = 1; i < this.inputs.length; i++)
                 {
-                    const input = this.inputs[i].eval(parse);
+                    const input = this.inputs[i].eval(parse).copy();
 
                     if (input.value == 0) 
                     { 
@@ -13748,7 +13742,7 @@ extends GOperator
                     }
 
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.result % input.value, this.result.decimals);
+                    this.result.value    = floorTo(this.result.value % input.value, this.result.decimals);
                 }
             }
 
