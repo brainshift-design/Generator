@@ -35,14 +35,14 @@ extends Action
             + input.node.id + ' ' + input.index);
 
 
-        this.outputNodeId          = output.node.id;
-        this.outputIndex           = output.index;
+        this.outputNodeId    = output.node.id;
+        this.outputIndex     = output.index;
    
-        this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIndex        = oldOutIndex;
+        this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
+        this.oldOutputIndex  = oldOutIndex;
    
-        this.inputNodeId           = input.node.id;
-        this.inputIndex            = input.index;
+        this.inputNodeId     = input.node.id;
+        this.inputIndex      = input.index;
 
         this.oldInputValues = 
             input.getValuesForUndo

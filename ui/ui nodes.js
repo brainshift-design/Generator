@@ -612,9 +612,6 @@ function uiMakeNodePassive(node)
 {
     if (!node.active) return;
 
-    //if (node.active)
-    //    uiDeleteObjects([node.id]);
-
     node.makePassive();
     node.updateNode();
 
@@ -625,52 +622,42 @@ function uiMakeNodePassive(node)
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
-    for (const input of node.inputs)
+    for (const input of node.inputs.filter(i => !i.param))
     {
-        if (input.connected)
+        if (    input.connected
+            && !input.connectedOutput.param
+            && (  !fromNode
+                || input.connectedOutput.node != fromNode))
         {
-            //console.log(input.connectedOutput);
             uiMakeNodePassive(input.connectedOutput.node);
             uiMakeNodeLeftPassive(input.connectedOutput.node, node);
         }
     }
-
-    // for (const output of node.outputs)
-    // {
-    //     for (const input of output.connectedInputs)
-    //     {
-    //         if (input.node != fromNode)
-    //         {
-    //             //console.log(input.connectedOutput);
-    //             uiMakeNodePassive(input.node);
-    //             uiMakeNodeRightPassive(input.node, node);
-    //         }
-    //     }
-    // }
 }
 
 
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
-    for (const output of node.outputs)
+    for (const output of node.outputs.filter(o => !o.param))
     {
-        for (const connInput of output.connectedInputs)
+        for (const connInput of output.connectedInputs.filter(i => !i.param))
         {
             uiMakeNodePassive(connInput.node);
             uiMakeNodeRightPassive(connInput.node, node);
         }
     }
 
-    for (const input of node.inputs)
-    {
-        if (   input.connected
-            && input.connectedOutput.node != fromNode)
-        {
-            uiMakeNodePassive(input.connectedOutput.node);
-            uiMakeNodeLeftPassive(input.connectedOutput.node, node);
-        }
-    }
+    uiMakeNodeLeftPassive(node, fromNode);//
+    // for (const input of node.inputs.filter(i => !i.param))
+    // {
+    //     if (   input.connected
+    //         && input.connectedOutput.node != fromNode)
+    //     {
+    //         uiMakeNodePassive(input.connectedOutput.node);
+    //         uiMakeNodeLeftPassive(input.connectedOutput.node, node);
+    //     }
+    // }
 }
 
 

@@ -52,7 +52,7 @@ function getAllNodesFromNode(node, ignore = [])
         ignore.push(node);
 
 
-    for (const input of node.inputs.filter(i => i.connected))
+    for (const input of node.inputs)
     {
         const node = input.connectedOutput.node;
         if (ignore.includes(node)) continue;
@@ -72,7 +72,7 @@ function getAllNodesFromNode(node, ignore = [])
         }
     }
 
-console.log('nodes =', nodes);
+
     return nodes;
 }
 
@@ -93,7 +93,7 @@ function getNodesBeforeNode(node)
 {
     let before = [];
 
-    for (const input of node.inputs.filter(i => i.connected))
+    for (const input of node.inputs)
     {
         if (!before.includes(input.connectedOutput.node)) // avoid including diamond tips twice
             before.push(input.connectedOutput.node);
@@ -189,6 +189,7 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
     const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
     if (    nodeInputs.length == 1
+        && !nodeInputs[0].connectedOutput.param
         && !alreadyChecked.includes(nodeInputs[0].connectedOutput.node))
     {
         const leftActive = getActiveNodeInBranchFrom(
@@ -199,9 +200,12 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
     }
 
 
-    const nodeOutputs = [...node.outputs.filter(o => o.connectedInputs.length == 1)];
+    const nodeOutputs = node.outputs
+        .filter(o => o.connectedInputs.length == 1)
+        .filter(o => !o.param);
 
     if (    nodeOutputs.length == 1
+        && !nodeOutputs[0].connectedInputs[0].param
         && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].node))
     {
         const rightActive = getActiveNodeInBranchFrom(
@@ -233,9 +237,9 @@ function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
     if (leftActive) return leftActive;
 
 
-    for (const output of node.outputs)
+    for (const output of node.outputs.filter(o => !o.param))
     {
-        for (const input of output.connectedInputs)
+        for (const input of output.connectedInputs.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
             {
@@ -262,9 +266,10 @@ function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
     if (node.active) return node;
 
 
-    for (const input of node.inputs)
+    for (const input of node.inputs.filter(i => !i.param))
     {
         if (    input.connected
+            && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
             const leftActive = getActiveNodeInTreeFromNode(
@@ -288,9 +293,10 @@ function getActiveNodeLeftOnlyInTreeFromNode(node, alreadyChecked = [])
     if (node.active) return node;
 
 
-    for (const input of node.inputs)
+    for (const input of node.inputs.filter(i => !i.param))
     {
         if (    input.connected
+            && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
             const leftActive = getActiveNodeLeftOnlyInTreeFromNode(
@@ -312,9 +318,9 @@ function getActiveNodeRightInTreeFromNode(node, alreadyChecked = [])
     if (node.active) return node;
 
 
-    for (const output of node.outputs)
+    for (const output of node.outputs.filter(o => !o.param))
     {
-        for (const input of output.connectedInputs)
+        for (const input of output.connectedInputs.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
             {
@@ -344,9 +350,9 @@ function getActiveNodesRightInTreeFromNodeId(nodeId, alreadyChecked = [])
         rightActive.push(node);
 
 
-    for (const output of node.outputs)
+    for (const output of node.outputs.filter(o => !o.param))
     {
-        for (const input of output.connectedInputs)
+        for (const input of output.connectedInputs.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
             {
@@ -379,17 +385,18 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
         activeNodes.push(node);
 
 
-    for (const input of node.inputs)
+    for (const input of node.inputs.filter(i => !i.param))
     {
         if (    input.connected
+            && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
             pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
     }
 
 
-    for (const output of node.outputs)
+    for (const output of node.outputs.filter(o => !o.param))
     {
-        for (const input of output.connectedInputs)
+        for (const input of output.connectedInputs.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
                 pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]));
@@ -399,22 +406,3 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
 
     return activeNodes;
 }
-
-
-
-// function validateActiveNodesInTrees(nodes)
-// {
-//     const treeNodes = [];
-
-//     for (const node of nodes)
-//     {
-//         const found = treeNodes.find(n => areConnected(n, node));
-//         if (!found) treeNodes.push(node);
-//     }
-
-//     for (const node of treeNodes)
-//     {
-//         if (!getActiveNodeLeftInTreeFromNode(node))
-//             getTerminalsAfterNode(node).forEach(n => uiMakeNodeActive(n));
-//     }
-// }
