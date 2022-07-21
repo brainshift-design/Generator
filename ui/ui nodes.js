@@ -712,7 +712,6 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
     const data = JSON.parse(nodesJson);
-    //console.log('data = ', data);
 
 
     // offset new nodes (must be done before loading)
@@ -740,12 +739,18 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     }
 
     graphView.selectedNodes = nodes;
-    console.log('nodes = ', nodes);
 
-    // if (!nodes.find(n => n.active))
-    // {
-    //     const terminals = getTerminalsAfterNode()
-    // }
+
+    // if there are no active nodes, activate terminals
+    if (!nodes.find(n => n.active))
+    {
+        const terminals = [];
+
+        for (const node of nodes)
+            pushUnique(terminals, getTerminalsAfterNode(node));
+
+        terminals.forEach(n => n.makeActive());
+    }
 
 
     graphView.loadingNodes = false;
