@@ -96,6 +96,7 @@ extends Action
                     return 0;
                 });
  
+
                 for (const input of connectedInputs)
                     updateNodes.push(...this.disconnect(input, this.nodeIds));
             }
@@ -106,7 +107,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
        
-        pushUpdate(updateNodes);
+        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -135,6 +136,9 @@ extends Action
         uiSaveNodes([
             ...this.newActiveNodeIds,
             ...this.oldActiveNodeIds]);
+
+
+        pushUpdate(this.nodeIds.map(id => nodeFromId(id)));
     }
 
 
