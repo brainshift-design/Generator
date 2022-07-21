@@ -6312,7 +6312,7 @@ function genParseLimits(parse)
 
     if (nValues == 1)
         lim.input = genParse(parse);
-console.log('lim.input = ', lim.input);
+
     lim.min = genParse(parse);
     lim.max = genParse(parse);
     
@@ -21088,6 +21088,8 @@ class Operator
 
     makeActive()
     {
+        //console.log(this.id + '.makeActive()');
+        
         this._active = true;
 
         if (!graphView.activeNodes.includes(this))
@@ -29384,11 +29386,11 @@ function finishLoading()
 
 
 
-function finishLoadingNodes(_nodes, loadedNodes)
+function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
 {
     _nodes
         .filter(_n => _n.active)
-        .map(_n => nodeFromId(_n.id))
+        .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
     // validateActiveNodesInTrees(loadedNodes);
@@ -30411,6 +30413,8 @@ function uiCopyNodes(nodeIds)
 
 function uiPasteNodes(nodesJson, pasteOutsideConnections)
 {
+    //console.log(nodesJson);
+
     graphView.loadingNodes = true;
 
 
@@ -30419,6 +30423,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
     const data = JSON.parse(nodesJson);
+    //console.log('data = ', data);
 
 
     // offset new nodes (must be done before loading)
@@ -30440,15 +30445,22 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
     if (data.connections)
     {
-        //console.log('data', data);
         correctNodeNamesInConnections(data);
+        console.log('data = ', data);
         loadConnections(data, pasteOutsideConnections);
     }
 
     graphView.selectedNodes = nodes;
-    
+    console.log('nodes = ', nodes);
+
+    // if (!nodes.find(n => n.active))
+    // {
+    //     const terminals = getTerminalsAfterNode()
+    // }
+
+
     graphView.loadingNodes = false;
-    finishLoadingNodes(data.nodes, nodes);
+    finishLoadingNodes(data.nodes, nodes, true);
 
 
     return nodes;

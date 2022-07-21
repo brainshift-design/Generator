@@ -272,7 +272,8 @@ const settings = {
 };
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdateObjects(/*updateId,*/ genObjects) {
-    if (settings.logObjectUpdates)
+    if (settings.logObjectUpdates
+        && genObjects.length > 0)
         logObjectUpdates(genObjects);
     let curNodeId = '';
     let figObjects = null;

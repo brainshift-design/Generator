@@ -702,6 +702,8 @@ function uiCopyNodes(nodeIds)
 
 function uiPasteNodes(nodesJson, pasteOutsideConnections)
 {
+    //console.log(nodesJson);
+
     graphView.loadingNodes = true;
 
 
@@ -710,6 +712,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
 
     const data = JSON.parse(nodesJson);
+    //console.log('data = ', data);
 
 
     // offset new nodes (must be done before loading)
@@ -731,15 +734,22 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
 
     if (data.connections)
     {
-        //console.log('data', data);
         correctNodeNamesInConnections(data);
+        console.log('data = ', data);
         loadConnections(data, pasteOutsideConnections);
     }
 
     graphView.selectedNodes = nodes;
-    
+    console.log('nodes = ', nodes);
+
+    // if (!nodes.find(n => n.active))
+    // {
+    //     const terminals = getTerminalsAfterNode()
+    // }
+
+
     graphView.loadingNodes = false;
-    finishLoadingNodes(data.nodes, nodes);
+    finishLoadingNodes(data.nodes, nodes, true);
 
 
     return nodes;

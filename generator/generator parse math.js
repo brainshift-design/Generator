@@ -77,7 +77,7 @@ function genParseLimits(parse)
 
     if (nValues == 1)
         lim.input = genParse(parse);
-console.log('lim.input = ', lim.input);
+
     lim.min = genParse(parse);
     lim.max = genParse(parse);
     

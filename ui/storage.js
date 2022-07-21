@@ -256,11 +256,11 @@ function finishLoading()
 
 
 
-function finishLoadingNodes(_nodes, loadedNodes)
+function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
 {
     _nodes
         .filter(_n => _n.active)
-        .map(_n => nodeFromId(_n.id))
+        .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
     // validateActiveNodesInTrees(loadedNodes);
