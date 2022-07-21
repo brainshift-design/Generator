@@ -20,8 +20,7 @@ extends GType
 
     copy()
     {
-        const val = new GNumberValue(this.value, this.decimals);
-        return val;
+        return new GNumberValue(this.value, this.decimals);
     }
 
 

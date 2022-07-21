@@ -1,6 +1,7 @@
 ../html/generator_0.html
 
     [../autojoin/core.aj]
+    [../autojoin/logging.aj]
     ../core/Noise.js
     
     [../autojoin/types.aj]

@@ -3992,48 +3992,6 @@ function logObjectUpdates(objects)
 }
 
 
-// function logReq(req)
-// {
-//     const next = req.request[req.pos];
-
-
-//          if (next == PARAM             ) return logReqParam      (req);
-
-//     else if (next == NUMBER_VALUE      ) return logReqNumValue   (req);
-//     else if (next == NUMBER            ) return logReqNumber     (req);
-//     else if (next == NUMBER_LIMITS     ) return logReqLimits     (req);
-//     else if (next == NUMBER_ADD         
-//           || next == NUMBER_SUBTRACT    
-//           || next == NUMBER_MULTIPLY    
-//           || next == NUMBER_DIVIDE
-//           || next == NUMBER_MODULO
-//           || next == NUMBER_EXPONENT   ) return logReqArithmetic (req);
-//     else if (next == NUMBER_INTERPOLATE) return logReqInterpolate(req);
-
-//     else if (next == COLOR             ) return logReqColor      (req);
-
-//     else if (next == RECTANGLE         ) return logReqRectangle  (req);
-//     else if (next == LINE              ) return logReqLine       (req);
-//     else if (next == ELLIPSE           ) return logReqEllipse    (req);
-//     else if (next == POLYGON           ) return logReqPolygon    (req);
-//     else if (next == STAR              ) return logReqStar       (req);
-
-    
-//     req.so++;
-
-//     return '';
-
-
-//     // return JSON.stringify(req.request)        
-//     //     .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
-//     //     .split('"') .join('')      //.replaceAll('"', '')
-//     //     .split('[') .join('')      //.replaceAll('[', '')
-//     //     .split(']') .join('')      //.replaceAll(']', '')
-//     //     .split(',') .join(' ');    //.replaceAll(',', ' '));
-// }
-
-
-
 function logRequest(parse)
 {
     let log = '';
@@ -4090,6 +4048,50 @@ function logReqParam(req)
 
 
 
+function logReqNode(node, type, parse)
+{
+    parse.log += parse.tab + type;
+    parse.log += logReqNodeId(node);
+}
+
+
+
+// function logReqNode(req, type, _paramIds)
+// {
+//     const tab = req.tab;
+
+//     req.nTab++;
+
+
+//     const tag    = req.request[req.pos++];
+//     const nodeId = req.request[req.pos++];
+//     const active = logReqActive(req);
+
+
+//     let log = tab + tag + ' ' + nodeId + active;
+
+//     let paramIds;
+
+
+//     if (req.request[req.pos] == type)
+//     {
+//         log += logReq(req);
+//         paramIds = req.request[req.pos++].split(',');
+//     }
+//     else
+//         paramIds = _paramIds;
+    
+
+//     for (const i of paramIds)
+//         log += logReq(req);
+
+
+//     req.nTab--;
+
+//     return log;
+// }
+
+
 function logReqNumberValue(val, parse)
 {
     parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
@@ -4134,49 +4136,21 @@ function logReqInterpolate(lerp, nValues, parse)
 
 
 
-function logReqColor    (req) { return logReqNode(req, COLOR,     ['space', 'c1', 'c2', 'c3']); }
-function logReqRectangle(req) { return logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
-function logReqLine     (req) { return logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
-function logReqEllipse  (req) { return logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
-function logReqPolygon  (req) { return logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
-function logReqStar     (req) { return logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
+// function logReqRectangle(req) { logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
+// function logReqLine     (req) { logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
+// function logReqEllipse  (req) { logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
+// function logReqPolygon  (req) { logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
+// function logReqStar     (req) { logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
 
 
-
-function logReqNode(req, type, _paramIds)
+function logReqColor(col, parse) 
 {
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let paramIds;
-
-
-    if (req.request[req.pos] == type)
-    {
-        log += logReq(req);
-        paramIds = req.request[req.pos++].split(',');
-    }
-    else
-        paramIds = _paramIds;
-    
-
-    for (const i of paramIds)
-        log += logReq(req);
-
-
-    req.nTab--;
-
-    return log;
+    logReqNode(col, COLOR, parse); 
 }
+
+
+
+
 
 
 const INTER_STEP   = 0,
@@ -4555,8 +4529,7 @@ extends GType
 
     copy()
     {
-        const val = new GNumberValue(this.value, this.decimals);
-        return val;
+        return new GNumberValue(this.value, this.decimals);
     }
 
 
@@ -5163,8 +5136,10 @@ extends GOperator
 
 
 class GColor
-extends GType
+extends GOperator
 {
+    input = null;
+
     space;
     c1;
     c2;
@@ -5172,18 +5147,109 @@ extends GType
 
 
 
-    constructor()
+    constructor(nodeId, active)
     {
-        super(COLOR);
-
-        this.space = new GNumber(0);
-        this.c1    = new GNumber(0);
-        this.c2    = new GNumber(0);
-        this.c3    = new GNumber(0);
+        super(COLOR, nodeId, active);
     }
 
 
     
+    copy()
+    {
+        const col = new GColor(this.nodeId, this.active);
+
+        if (this.input) 
+            col.input = this.input.copy();
+
+        col.space = this.space.copy();
+        col.c1    = this.c1   .copy();
+        col.c2    = this.c2   .copy();
+        col.c3    = this.c3   .copy();
+
+        return col;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColor(this.nodeId, this.active);
+
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                
+
+                console.assert(this.result.space.type == NUMBER_VALUE);
+                const fromSpaceIndex = this.result.space.value;
+
+                this.result.space = this.space.eval(parse).copy();
+                console.assert(this.result.space.type == NUMBER_VALUE);
+                const toSpaceIndex = this.result.space.value;
+
+
+                this.convert(
+                    colorSpace(fromSpaceIndex), 
+                    colorSpace(toSpaceIndex));
+                
+
+                if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
+                if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
+                if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
+            }
+            else
+            {
+                this.result.space = this.space.eval(parse).copy();
+                this.result.c1    = this.c1   .eval(parse).copy();
+                this.result.c2    = this.c2   .eval(parse).copy();
+                this.result.c3    = this.c3   .eval(parse).copy();
+            }
+
+
+            console.assert(this.result.space.type == NUMBER_VALUE);
+            this.result.space.value = Math.min(Math.max(
+                0, 
+                this.result.space.value), 
+                OpColorSpaces.length-1);
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
+        }
+
+
+        return this.result;
+    }
+
+
+
+    convert(fromSpace, toSpace)
+    {
+        let color = makeDataColor(
+            fromSpace, 
+            getNormalValue(this.result.c1.value, fromSpace, 0),
+            getNormalValue(this.result.c2.value, fromSpace, 1),
+            getNormalValue(this.result.c3.value, fromSpace, 2));
+
+        color = convertDataColorToSpace(color, toSpace);
+        color = getDataColor(color);
+
+        this.result.c1.value = color[0];
+        this.result.c2.value = color[1];
+        this.result.c3.value = color[2];
+    }
+
+
+
     get mustNotEval()
     {
         return this.space.mustNotEval
@@ -5863,29 +5929,42 @@ function genPostNextMessageToUI(msg)
 
 function genParseColor(parse)
 {
-    parse.pos++; // COLOR
- 
-    const nodeId = parse.move();
-    /*const active =*/ genParseActive(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const col = new GColor(nodeId, active);
 
   
-    let col = new GColor();
-    let paramIds;
+    if (parse.logRequests) 
+        logReqColor(col, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, col);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
     
+    let paramIds;
+
     if (parse.next == COLOR)
     {
-        col     = genParse(parse); // not genParseColor() because genParse() handles stack overflow
-        paramIds = parse.move().split(',');
+        col.input = genParse(parse);
+        paramIds  = parse.move().split(',');
     }
     else
         paramIds = ['space', 'c1', 'c2', 'c3'];
 
-
+    
     for (const id of paramIds)
     {
         switch (id)
         {
-        case 'space': col.space = Math.min(Math.max(0, genParse(parse)), OpColorSpaces.length-1); break;
+        case 'space': col.space = genParse(parse); break;
         case 'c1':    col.c1    = genParse(parse); break;
         case 'c2':    col.c2    = genParse(parse); break;
         case 'c3':    col.c3    = genParse(parse); break;
@@ -5893,12 +5972,10 @@ function genParseColor(parse)
     }
 
 
-    genPushUpdateValue(parse, nodeId, 'space', col.space);
-    genPushUpdateValue(parse, nodeId, 'c1',    col.c1   );
-    genPushUpdateValue(parse, nodeId, 'c2',    col.c2   );
-    genPushUpdateValue(parse, nodeId, 'c3',    col.c3   );
+    parse.nTab--;
 
 
+    genParseNodeEnd(parse, col);
     return col;
 }
 
@@ -5933,6 +6010,8 @@ function genParseRectangle(parse)
 
     const rect = new GRectangle(nodeId, active);
 
+
+    let paramIds;
 
     if (parse.next == RECTANGLE)
     {
@@ -8220,6 +8299,13 @@ function switchToSliders(node)
 
         node.updateNode();//graphView.updateNodeTransform(node);
     }
+}
+
+
+
+function makeDataColor(space, c1, c2, c3)
+{
+    return [space, c1, c2, c3];
 }
 
 
@@ -11344,48 +11430,6 @@ function logObjectUpdates(objects)
 }
 
 
-// function logReq(req)
-// {
-//     const next = req.request[req.pos];
-
-
-//          if (next == PARAM             ) return logReqParam      (req);
-
-//     else if (next == NUMBER_VALUE      ) return logReqNumValue   (req);
-//     else if (next == NUMBER            ) return logReqNumber     (req);
-//     else if (next == NUMBER_LIMITS     ) return logReqLimits     (req);
-//     else if (next == NUMBER_ADD         
-//           || next == NUMBER_SUBTRACT    
-//           || next == NUMBER_MULTIPLY    
-//           || next == NUMBER_DIVIDE
-//           || next == NUMBER_MODULO
-//           || next == NUMBER_EXPONENT   ) return logReqArithmetic (req);
-//     else if (next == NUMBER_INTERPOLATE) return logReqInterpolate(req);
-
-//     else if (next == COLOR             ) return logReqColor      (req);
-
-//     else if (next == RECTANGLE         ) return logReqRectangle  (req);
-//     else if (next == LINE              ) return logReqLine       (req);
-//     else if (next == ELLIPSE           ) return logReqEllipse    (req);
-//     else if (next == POLYGON           ) return logReqPolygon    (req);
-//     else if (next == STAR              ) return logReqStar       (req);
-
-    
-//     req.so++;
-
-//     return '';
-
-
-//     // return JSON.stringify(req.request)        
-//     //     .split('""').join('\'\'')  //.replaceAll('""', '\'\'')
-//     //     .split('"') .join('')      //.replaceAll('"', '')
-//     //     .split('[') .join('')      //.replaceAll('[', '')
-//     //     .split(']') .join('')      //.replaceAll(']', '')
-//     //     .split(',') .join(' ');    //.replaceAll(',', ' '));
-// }
-
-
-
 function logRequest(parse)
 {
     let log = '';
@@ -11442,6 +11486,50 @@ function logReqParam(req)
 
 
 
+function logReqNode(node, type, parse)
+{
+    parse.log += parse.tab + type;
+    parse.log += logReqNodeId(node);
+}
+
+
+
+// function logReqNode(req, type, _paramIds)
+// {
+//     const tab = req.tab;
+
+//     req.nTab++;
+
+
+//     const tag    = req.request[req.pos++];
+//     const nodeId = req.request[req.pos++];
+//     const active = logReqActive(req);
+
+
+//     let log = tab + tag + ' ' + nodeId + active;
+
+//     let paramIds;
+
+
+//     if (req.request[req.pos] == type)
+//     {
+//         log += logReq(req);
+//         paramIds = req.request[req.pos++].split(',');
+//     }
+//     else
+//         paramIds = _paramIds;
+    
+
+//     for (const i of paramIds)
+//         log += logReq(req);
+
+
+//     req.nTab--;
+
+//     return log;
+// }
+
+
 function logReqNumberValue(val, parse)
 {
     parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
@@ -11486,49 +11574,21 @@ function logReqInterpolate(lerp, nValues, parse)
 
 
 
-function logReqColor    (req) { return logReqNode(req, COLOR,     ['space', 'c1', 'c2', 'c3']); }
-function logReqRectangle(req) { return logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
-function logReqLine     (req) { return logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
-function logReqEllipse  (req) { return logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
-function logReqPolygon  (req) { return logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
-function logReqStar     (req) { return logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
+// function logReqRectangle(req) { logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
+// function logReqLine     (req) { logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
+// function logReqEllipse  (req) { logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
+// function logReqPolygon  (req) { logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
+// function logReqStar     (req) { logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
 
 
-
-function logReqNode(req, type, _paramIds)
+function logReqColor(col, parse) 
 {
-    const tab = req.tab;
-
-    req.nTab++;
-
-
-    const tag    = req.request[req.pos++];
-    const nodeId = req.request[req.pos++];
-    const active = logReqActive(req);
-
-
-    let log = tab + tag + ' ' + nodeId + active;
-
-    let paramIds;
-
-
-    if (req.request[req.pos] == type)
-    {
-        log += logReq(req);
-        paramIds = req.request[req.pos++].split(',');
-    }
-    else
-        paramIds = _paramIds;
-    
-
-    for (const i of paramIds)
-        log += logReq(req);
-
-
-    req.nTab--;
-
-    return log;
+    logReqNode(col, COLOR, parse); 
 }
+
+
+
+
 
 
 // Observer = 2°
@@ -13283,8 +13343,7 @@ extends GType
 
     copy()
     {
-        const val = new GNumberValue(this.value, this.decimals);
-        return val;
+        return new GNumberValue(this.value, this.decimals);
     }
 
 
@@ -13891,8 +13950,10 @@ extends GOperator
 
 
 class GColor
-extends GType
+extends GOperator
 {
+    input = null;
+
     space;
     c1;
     c2;
@@ -13900,18 +13961,109 @@ extends GType
 
 
 
-    constructor()
+    constructor(nodeId, active)
     {
-        super(COLOR);
-
-        this.space = new GNumber(0);
-        this.c1    = new GNumber(0);
-        this.c2    = new GNumber(0);
-        this.c3    = new GNumber(0);
+        super(COLOR, nodeId, active);
     }
 
 
     
+    copy()
+    {
+        const col = new GColor(this.nodeId, this.active);
+
+        if (this.input) 
+            col.input = this.input.copy();
+
+        col.space = this.space.copy();
+        col.c1    = this.c1   .copy();
+        col.c2    = this.c2   .copy();
+        col.c3    = this.c3   .copy();
+
+        return col;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColor(this.nodeId, this.active);
+
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                
+
+                console.assert(this.result.space.type == NUMBER_VALUE);
+                const fromSpaceIndex = this.result.space.value;
+
+                this.result.space = this.space.eval(parse).copy();
+                console.assert(this.result.space.type == NUMBER_VALUE);
+                const toSpaceIndex = this.result.space.value;
+
+
+                this.convert(
+                    colorSpace(fromSpaceIndex), 
+                    colorSpace(toSpaceIndex));
+                
+
+                if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
+                if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
+                if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
+            }
+            else
+            {
+                this.result.space = this.space.eval(parse).copy();
+                this.result.c1    = this.c1   .eval(parse).copy();
+                this.result.c2    = this.c2   .eval(parse).copy();
+                this.result.c3    = this.c3   .eval(parse).copy();
+            }
+
+
+            console.assert(this.result.space.type == NUMBER_VALUE);
+            this.result.space.value = Math.min(Math.max(
+                0, 
+                this.result.space.value), 
+                OpColorSpaces.length-1);
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
+        }
+
+
+        return this.result;
+    }
+
+
+
+    convert(fromSpace, toSpace)
+    {
+        let color = makeDataColor(
+            fromSpace, 
+            getNormalValue(this.result.c1.value, fromSpace, 0),
+            getNormalValue(this.result.c2.value, fromSpace, 1),
+            getNormalValue(this.result.c3.value, fromSpace, 2));
+
+        color = convertDataColorToSpace(color, toSpace);
+        color = getDataColor(color);
+
+        this.result.c1.value = color[0];
+        this.result.c2.value = color[1];
+        this.result.c3.value = color[2];
+    }
+
+
+
     get mustNotEval()
     {
         return this.space.mustNotEval
@@ -18947,15 +19099,15 @@ extends Parameter
         }
 
 
-        if (   this.output
-            && this.output.connected
-            && this.node.headerConnected)
-        {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-                pushUnique(gen.paramNodes, this.node);
-        }
+        // if (   this.output
+        //     && this.output.connected
+        //     && this.node.headerConnected)
+        // {
+        //     if (    gen.markParams
+        //         &&  lastOf(gen.scope).nodeId != this.node.id
+        //         && !this.node.valid)
+        //         pushUnique(gen.paramNodes, this.node);
+        // }
 
 
         return req;
@@ -19265,12 +19417,12 @@ extends Parameter
                 &&  lastOf(gen.scope).nodeId != this.node.id
                 && !this.node.valid)
             {
-                req.push(
-                    PARAM,
-                    this.node.id,
-                    this.index);
+                // req.push(
+                //     PARAM,
+                //     this.node.id,
+                //     this.index);
                 
-                pushUnique(gen.paramNodes, this.node);
+                // pushUnique(gen.paramNodes, this.node);
             }
 
             req.push(...this.input.connectedOutput.genRequest(gen));
@@ -23616,17 +23768,19 @@ extends OpColorBase
             req.push(...input.connectedOutput.genRequest(gen));
 
 
-            for (const param of this.node.params)
+            paramIds.push(this.node.paramSpace.id);
+
+            for (const param of this.node.params.filter(p => p.id != this.node.paramSpace.id))
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
             req.push(paramIds.join(','));
             
 
-            if (this.node.paramSpace.input.connected) req.push(...this.node.paramSpace.genRequest(gen));
-            if (this.node.param1    .input.connected) req.push(...this.node.param1    .genRequest(gen));
-            if (this.node.param2    .input.connected) req.push(...this.node.param2    .genRequest(gen));
-            if (this.node.param3    .input.connected) req.push(...this.node.param3    .genRequest(gen));
+                                                  req.push(...this.node.paramSpace.genRequest(gen));
+            if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
+            if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
+            if (this.node.param3.input.connected) req.push(...this.node.param3    .genRequest(gen));
         }
         else
         {
@@ -24289,6 +24443,13 @@ function switchToSliders(node)
 
         node.updateNode();//graphView.updateNodeTransform(node);
     }
+}
+
+
+
+function makeDataColor(space, c1, c2, c3)
+{
+    return [space, c1, c2, c3];
 }
 
 

@@ -164,17 +164,19 @@ extends OpColorBase
             req.push(...input.connectedOutput.genRequest(gen));
 
 
-            for (const param of this.node.params)
+            paramIds.push(this.node.paramSpace.id);
+
+            for (const param of this.node.params.filter(p => p.id != this.node.paramSpace.id))
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
             req.push(paramIds.join(','));
             
 
-            if (this.node.paramSpace.input.connected) req.push(...this.node.paramSpace.genRequest(gen));
-            if (this.node.param1    .input.connected) req.push(...this.node.param1    .genRequest(gen));
-            if (this.node.param2    .input.connected) req.push(...this.node.param2    .genRequest(gen));
-            if (this.node.param3    .input.connected) req.push(...this.node.param3    .genRequest(gen));
+                                                  req.push(...this.node.paramSpace.genRequest(gen));
+            if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
+            if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
+            if (this.node.param3.input.connected) req.push(...this.node.param3    .genRequest(gen));
         }
         else
         {

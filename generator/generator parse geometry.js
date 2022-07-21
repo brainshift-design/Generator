@@ -28,6 +28,8 @@ function genParseRectangle(parse)
     const rect = new GRectangle(nodeId, active);
 
 
+    let paramIds;
+
     if (parse.next == RECTANGLE)
     {
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow

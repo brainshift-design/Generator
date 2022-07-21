@@ -153,12 +153,12 @@ extends Parameter
                 &&  lastOf(gen.scope).nodeId != this.node.id
                 && !this.node.valid)
             {
-                req.push(
-                    PARAM,
-                    this.node.id,
-                    this.index);
+                // req.push(
+                //     PARAM,
+                //     this.node.id,
+                //     this.index);
                 
-                pushUnique(gen.paramNodes, this.node);
+                // pushUnique(gen.paramNodes, this.node);
             }
 
             req.push(...this.input.connectedOutput.genRequest(gen));

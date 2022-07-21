@@ -20,6 +20,7 @@
 ../html/ui_2.html
 
     [../autojoin/core.aj]
+    [../autojoin/logging.aj]
     [../autojoin/color.aj]
 
     ../core/crypto.js
