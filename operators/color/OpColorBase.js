@@ -167,6 +167,8 @@ extends Operator
 
     updateWarningOverlayStyle(colBack, height = -1)
     {
+        //console.log('colBack =', colBack);
+        
         this._warningOverlay.style.height = 
             height < 0
             ? this.header.offsetHeight

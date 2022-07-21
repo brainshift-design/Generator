@@ -23583,6 +23583,8 @@ extends Operator
 
     updateWarningOverlayStyle(colBack, height = -1)
     {
+        //console.log('colBack =', colBack);
+        
         this._warningOverlay.style.height = 
             height < 0
             ? this.header.offsetHeight
@@ -23899,17 +23901,25 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        if (paramIds.includes('space'))
-        {
-            switchToSpace(this, colorSpace(values[paramIds.findIndex(id => id == 'space')].value));
-            //setDataColorToCurrentSpace(this, color);
-        }
+        console.assert(paramIds.includes('space'));
+
+        const space = values[paramIds.findIndex(id => id == 'space')].value;
+        const c1    = values[paramIds.findIndex(id => id == 'c1')]   .value;
+        const c2    = values[paramIds.findIndex(id => id == 'c2')]   .value;
+        const c3    = values[paramIds.findIndex(id => id == 'c3')]   .value;
+
+
+        switchToSpace(this, colorSpace(space));
 
         super.updateValues(updateParamId, paramIds, values);
 
 
-        this._color    = this.getDataColorFromParams();
-        //this._oldSpace = toSpace;
+        this._color = [
+            colorSpace(space), 
+            getNormalValue(c1, colorSpace(space), 0), 
+            getNormalValue(c2, colorSpace(space), 1), 
+            getNormalValue(c3, colorSpace(space), 2)]; 
+
 
         this.updateHeader();
     }
@@ -24809,14 +24819,14 @@ function onHexboxKeyDown(e)
 
     else if (   e.code == 'KeyV'
         && getCtrlKey(e)
-        && !hexbox.node.connected())
+        && !hexbox.node.isConnected())
     {
         // do nothing and let the OS do its thing
     }
 
     else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
-           && !hexbox.node.connected())
+           && !hexbox.node.isConnected())
         hexboxFinish(hexbox.node, true);
 
     else if (e.code == 'Escape')
@@ -24825,7 +24835,7 @@ function onHexboxKeyDown(e)
     else if (   e.key.length == 1
              && !isDigit(e.key)
              && !isHexDigit(e.key)
-         ||     hexbox.node.connected()
+         ||     hexbox.node.isConnected()
             && !isArrowKey(e.code)
          ||    e.key != 'ArrowLeft'
             && e.key != 'ArrowRight'
