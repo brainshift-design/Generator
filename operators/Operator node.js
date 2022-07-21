@@ -139,26 +139,25 @@ function createNodeHeader(node)
             if (   getCtrlKey(e)
                 && e.shiftKey
                 && e.altKey)
-                {
-                graphView.selectedNodes = [node, ...getAllNodesFromNode(node)];
+            {
+                graphView.selectedNodes = getAllNodesFromNode(node);
                 console.log('graphView.selectedNodes = ', graphView.selectedNodes);
-                }
-
+            }
             else if (e.shiftKey
                   && e.altKey)
             {
-                if (isMac) graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
-                else       graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
+                if (isMac) graphView.selectedNodes = getNodesBeforeNode(node);
+                else       graphView.selectedNodes = getNodesAcrossNode(node);
             }
             else if (getCtrlKey(e)
                   && e.shiftKey)
             {
-                if (isMac) graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
-                else       graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
+                if (isMac) graphView.selectedNodes = getNodesAcrossNode(node);
+                else       graphView.selectedNodes = getNodesBeforeNode(node);
             }
             else if (getCtrlKey(e)
                   && e.altKey)
-                graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
+                graphView.selectedNodes = getNodesAfterNode(node);
 
             else if (!node.selected)
             {
