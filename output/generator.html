@@ -3564,6 +3564,8 @@ extends GOperator
     input = null;
 
     space;
+    convert = null;
+
     c1;
     c2;
     c3;
@@ -3585,9 +3587,13 @@ extends GOperator
             col.input = this.input.copy();
 
         col.space = this.space.copy();
-        col.c1    = this.c1   .copy();
-        col.c2    = this.c2   .copy();
-        col.c3    = this.c3   .copy();
+
+        if (this.convert) 
+            col.convert = this.convert.copy();
+
+        col.c1 = this.c1.copy();
+        col.c2 = this.c2.copy();
+        col.c3 = this.c3.copy();
 
         return col;
     }
@@ -3614,7 +3620,7 @@ extends GOperator
                 const toSpaceIndex = this.result.space.value;
 
 
-                this.convert(
+                this.convertColor(
                     colorSpace(fromSpaceIndex), 
                     colorSpace(toSpaceIndex));
                 
@@ -3629,6 +3635,24 @@ extends GOperator
                 this.result.c1    = this.c1   .eval(parse).copy();
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
+ 
+                if (   this.convert
+                    && !isNaN(this.convert.value))
+                {
+                    this.result.convert = this.convert.eval(parse).copy();
+
+                    console.assert(this.result.convert.type == NUMBER_VALUE);
+                    const fromSpaceIndex = this.result.convert.value;
+                    
+                    console.assert(this.result.space.type == NUMBER_VALUE);
+                    const toSpaceIndex = this.result.space.value;
+                    
+                    this.convertColor(
+                        colorSpace(fromSpaceIndex), 
+                        colorSpace(toSpaceIndex));
+
+                    this.result.convert = null;
+                }
             }
 
 
@@ -3643,10 +3667,10 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'space',   this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',      this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',      this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',      this.result.c3   );
         }
 
 
@@ -3655,13 +3679,13 @@ extends GOperator
 
 
 
-    convert(fromSpace, toSpace)
+    convertColor(fromSpace, toSpace)
     {
         let color = makeDataColor(
             fromSpace, 
-            getNormalValue(this.result.c1.value, fromSpace, 0),
-            getNormalValue(this.result.c2.value, fromSpace, 1),
-            getNormalValue(this.result.c3.value, fromSpace, 2));
+            getNormalColorValue(this.result.c1.value, fromSpace, 0),
+            getNormalColorValue(this.result.c2.value, fromSpace, 1),
+            getNormalColorValue(this.result.c3.value, fromSpace, 2));
 
         color = convertDataColorToSpace(color, toSpace);
         color = getDataColor(color);
@@ -4380,17 +4404,18 @@ function genParseColor(parse)
         paramIds  = parse.move().split(',');
     }
     else
-        paramIds = ['space', 'c1', 'c2', 'c3'];
+        paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
 
     
     for (const id of paramIds)
     {
         switch (id)
         {
-        case 'space': col.space = genParse(parse); break;
-        case 'c1':    col.c1    = genParse(parse); break;
-        case 'c2':    col.c2    = genParse(parse); break;
-        case 'c3':    col.c3    = genParse(parse); break;
+        case 'space':   col.space   = genParse(parse); break;
+        case 'convert': col.convert = genParse(parse); break;
+        case 'c1':      col.c1      = genParse(parse); break;
+        case 'c2':      col.c2      = genParse(parse); break;
+        case 'c3':      col.c3      = genParse(parse); break;
         }
     }
 
@@ -5198,7 +5223,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     let nodeChunk = [],
         objChunk  = [];
 
-
+        
     while (   o < updateObjects.length
            || n < nodeIds.length)
     {
@@ -5235,7 +5260,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
                 cmd:          'uiUpdateValuesAndObjects',
                 updateNodeId:  updateNodeId,
                 updateParamId: updateParamId,
-                values:        [...nodeChunk].map(v => v.toString()),
+                values:        [...nodeChunk].map(v => v ? v.toString() : '?'),
                 objects:       [...objChunk]
             });
 
@@ -5255,7 +5280,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
             cmd:          'uiUpdateValuesAndObjects',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
-            values:        [...nodeChunk].map(v => v.toString()),
+            values:        [...nodeChunk].map(v => v ? v.toString() : '?'),
             objects:       [...objChunk]
         });
 
@@ -6591,6 +6616,14 @@ function switchToRgbControls(node)
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
+    node.param1.control.min = 
+    node.param2.control.min = 
+    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    node.param1.control.max = 
+    node.param2.control.max = 
+    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+
     showRgbControlHex(node, false);    
 }
 
@@ -6602,6 +6635,12 @@ function switchToHs_Controls(node, v_or_l)
         'H',    0, hs_Scale[0], '°', true,  
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
+
+    node.param2.control.min = 
+    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    node.param2.control.max = 
+    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -6744,7 +6783,7 @@ function rgb2dataColor(rgb)
 
 
 
-function getNormalValue(value, space, chan)
+function getNormalColorValue(value, space, chan)
 {
     switch (space)
     {
@@ -6758,7 +6797,7 @@ function getNormalValue(value, space, chan)
         case 'hclluv': return getNormalValueHcl (value, chan);
         case 'oklab':  
         case 'lab':    
-        case 'luv':    return getNormalValuesOpp(value, chan);
+        case 'luv':    return getNormalValueOpp (value, chan);
     }
 }
 
@@ -6946,7 +6985,8 @@ function getDataColorHcl(c1, c2, c3)
 function setDataColorToCurrentSpace(node, color)
 {
     const toSpace = colorSpace(node.paramSpace.value);
-    node._color = convertDataColorToSpace(color, toSpace);
+    node._color   = convertDataColorToSpace(color, toSpace);
+
     node.setColorParams(node._color);
 }
 

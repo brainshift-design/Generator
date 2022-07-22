@@ -4,6 +4,8 @@ extends GOperator
     input = null;
 
     space;
+    convert = null;
+
     c1;
     c2;
     c3;
@@ -25,9 +27,13 @@ extends GOperator
             col.input = this.input.copy();
 
         col.space = this.space.copy();
-        col.c1    = this.c1   .copy();
-        col.c2    = this.c2   .copy();
-        col.c3    = this.c3   .copy();
+
+        if (this.convert) 
+            col.convert = this.convert.copy();
+
+        col.c1 = this.c1.copy();
+        col.c2 = this.c2.copy();
+        col.c3 = this.c3.copy();
 
         return col;
     }
@@ -54,7 +60,7 @@ extends GOperator
                 const toSpaceIndex = this.result.space.value;
 
 
-                this.convert(
+                this.convertColor(
                     colorSpace(fromSpaceIndex), 
                     colorSpace(toSpaceIndex));
                 
@@ -69,6 +75,24 @@ extends GOperator
                 this.result.c1    = this.c1   .eval(parse).copy();
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
+ 
+                if (   this.convert
+                    && !isNaN(this.convert.value))
+                {
+                    this.result.convert = this.convert.eval(parse).copy();
+
+                    console.assert(this.result.convert.type == NUMBER_VALUE);
+                    const fromSpaceIndex = this.result.convert.value;
+                    
+                    console.assert(this.result.space.type == NUMBER_VALUE);
+                    const toSpaceIndex = this.result.space.value;
+                    
+                    this.convertColor(
+                        colorSpace(fromSpaceIndex), 
+                        colorSpace(toSpaceIndex));
+
+                    this.result.convert = null;
+                }
             }
 
 
@@ -83,10 +107,10 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'space',   this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',      this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',      this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',      this.result.c3   );
         }
 
 
@@ -95,13 +119,13 @@ extends GOperator
 
 
 
-    convert(fromSpace, toSpace)
+    convertColor(fromSpace, toSpace)
     {
         let color = makeDataColor(
             fromSpace, 
-            getNormalValue(this.result.c1.value, fromSpace, 0),
-            getNormalValue(this.result.c2.value, fromSpace, 1),
-            getNormalValue(this.result.c3.value, fromSpace, 2));
+            getNormalColorValue(this.result.c1.value, fromSpace, 0),
+            getNormalColorValue(this.result.c2.value, fromSpace, 1),
+            getNormalColorValue(this.result.c3.value, fromSpace, 2));
 
         color = convertDataColorToSpace(color, toSpace);
         color = getDataColor(color);

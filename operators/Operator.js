@@ -538,11 +538,11 @@ class Operator
 
     updateValues(updateParamId, paramIds, values) // virtual
     {
-        for (let i = 0; i < paramIds.length; i++)
+        for (let i = 0, param; i < paramIds.length; i++)
         {
-            if (paramIds[i] != updateParamId)
-                this.params.find(p => p.id == paramIds[i])
-                    .setValue(values[i], false, true, false);
+            if (    paramIds[i] != updateParamId
+                && (param = this.params.find(p => p.id == paramIds[i])))
+                    param.setValue(values[i], false, true, false);
         }
     }
 

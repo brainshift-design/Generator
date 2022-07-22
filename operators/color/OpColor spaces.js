@@ -90,6 +90,14 @@ function switchToRgbControls(node)
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
+    node.param1.control.min = 
+    node.param2.control.min = 
+    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    node.param1.control.max = 
+    node.param2.control.max = 
+    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+
     showRgbControlHex(node, false);    
 }
 
@@ -101,6 +109,12 @@ function switchToHs_Controls(node, v_or_l)
         'H',    0, hs_Scale[0], '°', true,  
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
+
+    node.param2.control.min = 
+    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    node.param2.control.max = 
+    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -243,7 +257,7 @@ function rgb2dataColor(rgb)
 
 
 
-function getNormalValue(value, space, chan)
+function getNormalColorValue(value, space, chan)
 {
     switch (space)
     {
@@ -257,7 +271,7 @@ function getNormalValue(value, space, chan)
         case 'hclluv': return getNormalValueHcl (value, chan);
         case 'oklab':  
         case 'lab':    
-        case 'luv':    return getNormalValuesOpp(value, chan);
+        case 'luv':    return getNormalValueOpp (value, chan);
     }
 }
 
@@ -445,7 +459,8 @@ function getDataColorHcl(c1, c2, c3)
 function setDataColorToCurrentSpace(node, color)
 {
     const toSpace = colorSpace(node.paramSpace.value);
-    node._color = convertDataColorToSpace(color, toSpace);
+    node._color   = convertDataColorToSpace(color, toSpace);
+
     node.setColorParams(node._color);
 }
 

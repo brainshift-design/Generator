@@ -127,7 +127,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     let nodeChunk = [],
         objChunk  = [];
 
-
+        
     while (   o < updateObjects.length
            || n < nodeIds.length)
     {
@@ -164,7 +164,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
                 cmd:          'uiUpdateValuesAndObjects',
                 updateNodeId:  updateNodeId,
                 updateParamId: updateParamId,
-                values:        [...nodeChunk].map(v => v.toString()),
+                values:        [...nodeChunk].map(v => v ? v.toString() : '?'),
                 objects:       [...objChunk]
             });
 
@@ -184,7 +184,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
             cmd:          'uiUpdateValuesAndObjects',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
-            values:        [...nodeChunk].map(v => v.toString()),
+            values:        [...nodeChunk].map(v => v ? v.toString() : '?'),
             objects:       [...objChunk]
         });
 

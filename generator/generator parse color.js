@@ -28,17 +28,18 @@ function genParseColor(parse)
         paramIds  = parse.move().split(',');
     }
     else
-        paramIds = ['space', 'c1', 'c2', 'c3'];
+        paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
 
     
     for (const id of paramIds)
     {
         switch (id)
         {
-        case 'space': col.space = genParse(parse); break;
-        case 'c1':    col.c1    = genParse(parse); break;
-        case 'c2':    col.c2    = genParse(parse); break;
-        case 'c3':    col.c3    = genParse(parse); break;
+        case 'space':   col.space   = genParse(parse); break;
+        case 'convert': col.convert = genParse(parse); break;
+        case 'c1':      col.c1      = genParse(parse); break;
+        case 'c2':      col.c2      = genParse(parse); break;
+        case 'c3':      col.c3      = genParse(parse); break;
         }
     }
 

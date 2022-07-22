@@ -95,14 +95,14 @@ function onHexboxKeyDown(e)
 
     else if (   e.code == 'KeyV'
         && getCtrlKey(e)
-        && !hexbox.node.connected())
+        && !hexbox.node.isConnected())
     {
         // do nothing and let the OS do its thing
     }
 
     else if ((   e.code == 'Enter'
               || e.code == 'NumpadEnter')
-           && !hexbox.node.connected())
+           && !hexbox.node.isConnected())
         hexboxFinish(hexbox.node, true);
 
     else if (e.code == 'Escape')
@@ -111,7 +111,7 @@ function onHexboxKeyDown(e)
     else if (   e.key.length == 1
              && !isDigit(e.key)
              && !isHexDigit(e.key)
-         ||     hexbox.node.connected()
+         ||     hexbox.node.isConnected()
             && !isArrowKey(e.code)
          ||    e.key != 'ArrowLeft'
             && e.key != 'ArrowRight'
@@ -128,7 +128,6 @@ function hexboxFinish(node, success)
 {
     if (node.hexbox.value.trim() == '')
         node.hexbox.value = node.hexbox.savedValue;
-
 
     var rgb = hex2rgb(node.hexbox.value);
 

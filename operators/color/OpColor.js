@@ -30,6 +30,9 @@ extends OpColorBase
     _colorBeforeNaN = dataColor_NaN;
 
 
+    fromSpace = Number.NaN;
+
+
     #init = false;
     
 
@@ -87,8 +90,7 @@ extends OpColorBase
         this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
-        // this.paramSpace.addEventListener('beforechange', e => paramSpace_onbeforechange(e.target));
-        // this.paramSpace.addEventListener('change',       e => paramSpace_onchange(e.target));
+        this.paramSpace.addEventListener('beforechange', () => { this.fromSpace = this.paramSpace.oldValue; });
 
 
         initHexbox(this);
@@ -163,7 +165,7 @@ extends OpColorBase
         {
             req.push(...input.connectedOutput.genRequest(gen));
 
-
+            
             paramIds.push(this.node.paramSpace.id);
 
             for (const param of this.node.params.filter(p => p.id != this.node.paramSpace.id))
@@ -172,7 +174,6 @@ extends OpColorBase
 
             req.push(paramIds.join(','));
             
-
                                                   req.push(...this.node.paramSpace.genRequest(gen));
             if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
             if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
@@ -182,9 +183,12 @@ extends OpColorBase
         {
             req.push(
                 ...this.node.paramSpace.genRequest(gen),
-                ...this.node.param1    .genRequest(gen),
-                ...this.node.param2    .genRequest(gen),
-                ...this.node.param3    .genRequest(gen));
+                'N', !isNaN(this.node.fromSpace) 
+                     ? numToString(this.node.fromSpace)
+                     : '?',
+                ...this.node.param1.genRequest(gen),
+                ...this.node.param2.genRequest(gen),
+                ...this.node.param3.genRequest(gen));
         }
 
 
@@ -192,13 +196,6 @@ extends OpColorBase
         pushUnique(gen.passedNodes, this.node);
 
         return req;
-    }
-
-
-
-    getHeaderColor() 
-    {
-        return dataColor2rgb(this._color); 
     }
 
 
@@ -295,17 +292,28 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        if (paramIds.includes('space'))
-        {
-            switchToSpace(this, colorSpace(values[paramIds.findIndex(id => id == 'space')].value));
-            //setDataColorToCurrentSpace(this, color);
-        }
+        console.assert(paramIds.includes('space'));
+
+        const space = values[paramIds.findIndex(id => id == 'space')].value;
+        const c1    = values[paramIds.findIndex(id => id == 'c1')]   .value;
+        const c2    = values[paramIds.findIndex(id => id == 'c2')]   .value;
+        const c3    = values[paramIds.findIndex(id => id == 'c3')]   .value;
+
+
+        switchToSpace(this, colorSpace(space));
+
 
         super.updateValues(updateParamId, paramIds, values);
 
+        this.fromSpace = Number.NaN;
 
-        this._color    = this.getDataColorFromParams();
-        //this._oldSpace = toSpace;
+
+        this._color = [
+            colorSpace(space), 
+            getNormalColorValue(c1, colorSpace(space), 0), 
+            getNormalColorValue(c2, colorSpace(space), 1), 
+            getNormalColorValue(c3, colorSpace(space), 2) ]; 
+
 
         this.updateHeader();
     }
@@ -405,13 +413,20 @@ extends OpColorBase
         //     ? '?' 
         //     : '';
 
-        if (    this.inputs[0].connected
-            && !isValid)
-            slider.setValue(Number.NaN, true, false, false);
+        // if (    this.inputs[0].connected
+        //     && !isValid)
+        //     slider.setValue(Number.NaN, true, false, false);
 
         enableElementText(slider.textbox, !this.inputs[0].connected);
 
         slider.update();
+    }
+
+
+
+    getHeaderColor() 
+    {
+        return dataColor2rgb(this._color); 
     }
 
 
