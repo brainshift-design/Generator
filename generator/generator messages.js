@@ -35,26 +35,6 @@ onmessage = function(e)
     genPostMessageToUI({cmd: 'uiEndGenMessage'});
 };
 
-
-
-function genEndUiMessage(msgCmd)
-{
-    genPostNextMessageToUI();
-}
-
-
-
-function genEndFigMessage()
-{
-    genFigMessagePosted = false;
-    
-    if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0)
-        genUpdateValuesAndObjects('', '', [], []);
-
-    genPostNextMessageToUI();
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -79,24 +59,60 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
-    if (uiMessages.length > 0)
+    //console.log('gen.uiMessages.length = ', uiMessages.length);
+
+    if (    uiMessages.length > 0
+        && !genFigMessagePosted)
     {
+        //console.log('yes');
         let msg = uiMessages.shift();
 
-        if (msg.cmd == 'uiUpdateValuesAndObjects')
+        while (   uiMessages.length > 0
+               && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
+               && uiMessages[0].chunkId == 0)
         {
-            // move along the queue since only the last message is important
-            while (uiMessages.length > 0
-                && uiMessages[0].cmd           == msg.cmd
-                && uiMessages[0].updateNodeId  == msg.updateNodeId
-                && uiMessages[0].updateParamId == msg.updateParamId)
+            const nextFirst = uiMessages.find(m => 
+                   m.cmd     == msg.cmd 
+                && m.chunkId == 0);
+
+            if (nextFirst)
+            {
+                while (uiMessages.length > 0
+                    && uiMessages[0].cmd           == msg.cmd
+                    && uiMessages[0].updateNodeId  == msg.updateNodeId
+                    && uiMessages[0].updateParamId == msg.updateParamId
+                    && uiMessages[0].cmd.chunkId   >  0)
+                    msg = uiMessages.shift();
+
                 msg = uiMessages.shift();
+            }
         }
 
-        if (    msg.cmd != 'uiUpdateValuesAndObjects'
-            || !genFigMessagePosted)
-            postMessage(JSON.stringify(msg));
+        postMessage(JSON.stringify(msg));
     }
+}
+
+
+
+function genEndUiMessage(msgCmd)
+{
+    //console.log('next UI message');
+    genPostNextMessageToUI();
+}
+
+
+
+function genEndFigMessage()
+{
+    //console.log('next FIG message');
+
+    genFigMessagePosted = false;
+    
+    if (   lastUpdateValues .length > 0
+        || lastUpdateObjects.length > 0)
+        genUpdateValuesAndObjects('', '', [], []);
+
+    genPostNextMessageToUI();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

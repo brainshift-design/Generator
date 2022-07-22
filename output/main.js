@@ -211,12 +211,12 @@ VECTOR      V
 
 */
 const settings = {
-    showNodeId: true,
-    logStorage: true,
+    showNodeId: false,
+    logStorage: false,
     logActions: false,
-    logRequests: true,
-    logValueUpdates: true,
-    logObjectUpdates: true
+    logRequests: false,
+    logValueUpdates: false,
+    logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdateObjects(/*updateId,*/ genObjects) {

@@ -5244,10 +5244,10 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.result.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -5884,26 +5884,6 @@ onmessage = function(e)
     genPostMessageToUI({cmd: 'uiEndGenMessage'});
 };
 
-
-
-function genEndUiMessage(msgCmd)
-{
-    genPostNextMessageToUI();
-}
-
-
-
-function genEndFigMessage()
-{
-    genFigMessagePosted = false;
-    
-    if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0)
-        genUpdateValuesAndObjects('', '', [], []);
-
-    genPostNextMessageToUI();
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -5928,24 +5908,60 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
-    if (uiMessages.length > 0)
+    //console.log('gen.uiMessages.length = ', uiMessages.length);
+
+    if (    uiMessages.length > 0
+        && !genFigMessagePosted)
     {
+        //console.log('yes');
         let msg = uiMessages.shift();
 
-        if (msg.cmd == 'uiUpdateValuesAndObjects')
+        while (   uiMessages.length > 0
+               && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
+               && uiMessages[0].chunkId == 0)
         {
-            // move along the queue since only the last message is important
-            while (uiMessages.length > 0
-                && uiMessages[0].cmd           == msg.cmd
-                && uiMessages[0].updateNodeId  == msg.updateNodeId
-                && uiMessages[0].updateParamId == msg.updateParamId)
+            const nextFirst = uiMessages.find(m => 
+                   m.cmd     == msg.cmd 
+                && m.chunkId == 0);
+
+            if (nextFirst)
+            {
+                while (uiMessages.length > 0
+                    && uiMessages[0].cmd           == msg.cmd
+                    && uiMessages[0].updateNodeId  == msg.updateNodeId
+                    && uiMessages[0].updateParamId == msg.updateParamId
+                    && uiMessages[0].cmd.chunkId   >  0)
+                    msg = uiMessages.shift();
+
                 msg = uiMessages.shift();
+            }
         }
 
-        if (    msg.cmd != 'uiUpdateValuesAndObjects'
-            || !genFigMessagePosted)
-            postMessage(JSON.stringify(msg));
+        postMessage(JSON.stringify(msg));
     }
+}
+
+
+
+function genEndUiMessage(msgCmd)
+{
+    //console.log('next UI message');
+    genPostNextMessageToUI();
+}
+
+
+
+function genEndFigMessage()
+{
+    //console.log('next FIG message');
+
+    genFigMessagePosted = false;
+    
+    if (   lastUpdateValues .length > 0
+        || lastUpdateObjects.length > 0)
+        genUpdateValuesAndObjects('', '', [], []);
+
+    genPostNextMessageToUI();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -6706,6 +6722,8 @@ function genRequest(req, settings)
         node.eval(parse);
 
 
+    // console.log('parse.updateValues = ', parse.updateValues);
+
     genUpdateValuesAndObjects(
         parse.updateNodeId,
         parse.updateParamId,
@@ -6715,24 +6733,22 @@ function genRequest(req, settings)
 
 
 
-function genPushUpdateValue(parse, nodeId, paramId, gval)
+function genPushUpdateValue(parse, nodeId, paramId, value)
 {
-    // if (   parse.updateNodeId  == nodeId
-    //     && parse.updateParamId == paramId)
-    //     return;
-
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
-        && v.value.type == gval.type);
+        && v.value.type == value.type);
 
     if (!found)
+    {
+        //console.log(nodeId+'.'+paramId);
+        
         parse.updateValues.push({
             nodeId:  nodeId,
             paramId: paramId,
-            value:   gval});
-
-    //else console.assert(found.value == value);
+            value:   value});
+    }
 }
 
 
@@ -6788,18 +6804,19 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
     // send value updates in chunks
 
-    const approxParamChunkSize = 20;
-    const objChunkSize         = 100;
+    const approxNodeChunkSize = 20;
+    const objChunkSize        = 100;
 
     let n  = 0, // node
-        nc = 0; // chunk size
+        vc = 0; // chunk count
 
     let o  = 0, // object
-        oc = 0; // chunk size
+        oc = 0; // chunk count
 
-    let nodeChunk = [],
-        objChunk  = [];
+    let valChunk = [],
+        objChunk = [];
 
+    let chunkId  = 0;
         
     while (   o < updateObjects.length
            || n < nodeIds.length)
@@ -6813,7 +6830,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
         if (n < nodeIds.length)
         {
-            nodeChunk.push(
+            valChunk.push(
                 nodeIds[n],
                 counts [n]);
 
@@ -6822,8 +6839,8 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
             for (const v of values)
             {
-                nodeChunk.push(v.paramId, v.value);
-                nc++;
+                valChunk.push(v.paramId, v.value);
+                vc++;
             }
 
             n++;
@@ -6831,33 +6848,39 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
 
         if (   oc == objChunkSize
-            || nc >= approxParamChunkSize)
+            || vc >= approxNodeChunkSize)
         {
+            //console.log('update chunk ' + valChunk.length);
+            
             genQueueMessageToUI({
                 cmd:          'uiUpdateValuesAndObjects',
                 updateNodeId:  updateNodeId,
                 updateParamId: updateParamId,
-                values:        [...nodeChunk].map(v => v ? v.toString() : '?'),
-                objects:       [...objChunk]
+                chunkId:       chunkId++,
+                values:        [...valChunk].map(v => v ? v.toString() : '?'),
+                objects:       [...objChunk],
             });
 
             genFigMessagePosted = true;
 
 
-            nodeChunk = [];  nc = 0;
-            objChunk  = [];  oc = 0;
+            valChunk = [];  vc = 0;
+            objChunk = [];  oc = 0;
         }
     }
 
 
-    if (   nodeChunk.length > 0
-        ||  objChunk.length > 0)
+    if (   valChunk.length > 0
+        || objChunk.length > 0)
     {
+        //console.log('update last');
+        
         genQueueMessageToUI({
             cmd:          'uiUpdateValuesAndObjects',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
-            values:        [...nodeChunk].map(v => v ? v.toString() : '?'),
+            chunkId:       chunkId++,
+            values:        [...valChunk].map(v => v ? v.toString() : '?'),
             objects:       [...objChunk]
         });
 
@@ -14098,10 +14121,10 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.result.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -14387,13 +14410,13 @@ extends GType
 
 const settings =
 {
-    showNodeId:       true, // instead of name
+    showNodeId:       false, // instead of name
     
-    logStorage:       true, 
+    logStorage:       false, 
     logActions:       false, 
-    logRequests:      true, 
-    logValueUpdates:  true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValueUpdates:  false, 
+    logObjectUpdates: false
 };
 
 
@@ -29211,25 +29234,6 @@ onmessage = e =>
         case 'uiEndResizeWindow':     uiEndResizeWindow();                                                break;
     }
 }    
-  
-
-
-function uiEndFigMessage(msgCmd)
-{
-    if (msgCmd == 'figUpdateObjects')
-        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
-
-    uiFigMessagePosted = false;
-    uiPostNextMessageToFigma();
-}
-
-
-
-function uiEndFigObjectMessage()
-{
-    uiFigMessagePosted = false;
-    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29272,6 +29276,25 @@ function uiPostNextMessageToFigma()
     }
 }
 
+
+
+function uiEndFigMessage(msgCmd)
+{
+    if (msgCmd == 'figUpdateObjects')
+        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
+
+    uiFigMessagePosted = false;
+    uiPostNextMessageToFigma();
+}
+
+
+
+function uiEndFigObjectMessage()
+{
+    uiFigMessagePosted = false;
+    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -29288,16 +29311,22 @@ generator.onmessage = function(e)
     {
         case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
 
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
+        case 'uiUpdateValuesAndObjects': 
+            uiUpdateValuesAndObjects(
+                msg.updateNodeId, 
+                msg.updateParamId, 
+                msg.values, 
+                msg.objects);
+                
+            uiPostMessageToGenerator({
+                cmd:   'genEndUiMessage',
+                msgCmd: msg.cmd }); 
+
+            break;
         
         case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
         case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
-
-
-    uiPostMessageToGenerator({
-        cmd:   'genEndUiMessage',
-        msgCmd: msg.cmd }); 
 };
 
 

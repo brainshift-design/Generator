@@ -18,25 +18,6 @@ onmessage = e =>
         case 'uiEndResizeWindow':     uiEndResizeWindow();                                                break;
     }
 }    
-  
-
-
-function uiEndFigMessage(msgCmd)
-{
-    if (msgCmd == 'figUpdateObjects')
-        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
-
-    uiFigMessagePosted = false;
-    uiPostNextMessageToFigma();
-}
-
-
-
-function uiEndFigObjectMessage()
-{
-    uiFigMessagePosted = false;
-    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -79,6 +60,25 @@ function uiPostNextMessageToFigma()
     }
 }
 
+
+
+function uiEndFigMessage(msgCmd)
+{
+    if (msgCmd == 'figUpdateObjects')
+        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
+
+    uiFigMessagePosted = false;
+    uiPostNextMessageToFigma();
+}
+
+
+
+function uiEndFigObjectMessage()
+{
+    uiFigMessagePosted = false;
+    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -95,16 +95,22 @@ generator.onmessage = function(e)
     {
         case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
 
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
+        case 'uiUpdateValuesAndObjects': 
+            uiUpdateValuesAndObjects(
+                msg.updateNodeId, 
+                msg.updateParamId, 
+                msg.values, 
+                msg.objects);
+                
+            uiPostMessageToGenerator({
+                cmd:   'genEndUiMessage',
+                msgCmd: msg.cmd }); 
+
+            break;
         
         case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
         case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
-
-
-    uiPostMessageToGenerator({
-        cmd:   'genEndUiMessage',
-        msgCmd: msg.cmd }); 
 };
 
 

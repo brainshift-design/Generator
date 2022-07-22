@@ -107,10 +107,10 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.result.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
