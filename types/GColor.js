@@ -2,7 +2,7 @@ class GColor
 extends GOperator
 {
     input = null;
-    value;
+    //value;
 
     convert = null;
 
@@ -27,9 +27,9 @@ extends GOperator
         if (this.convert) 
             col.convert = this.convert.copy();
 
-        col.c1 = this.c1.copy();
-        col.c2 = this.c2.copy();
-        col.c3 = this.c3.copy();
+        if (this.c1) col.c1 = this.c1.copy();
+        if (this.c2) col.c2 = this.c2.copy();
+        if (this.c3) col.c3 = this.c3.copy();
 
         return col;
     }
@@ -40,13 +40,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColor(this.nodeId, this.active);
+            this.result = new GColorValue();
 
 
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                
+                console.assert(this.result.type == COLOR_VALUE);
 
                 console.assert(this.result.space.type == NUMBER_VALUE);
                 const fromSpaceIndex = this.result.space.value;
@@ -58,7 +58,7 @@ extends GOperator
 
                 this.convertColor(
                     colorSpace(fromSpaceIndex), 
-                    colorSpace(toSpaceIndex));
+                    colorSpace(  toSpaceIndex));
                 
 
                 if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
@@ -71,23 +71,19 @@ extends GOperator
                 this.result.c1    = this.c1   .eval(parse).copy();
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
- 
+
+                
                 if (   this.convert
                     && !isNaN(this.convert.value))
                 {
-                    this.result.convert = this.convert.eval(parse).copy();
+                    const convert = this.convert.eval(parse).copy();
 
-                    console.assert(this.result.convert.type == NUMBER_VALUE);
-                    const fromSpaceIndex = this.result.convert.value;
-                    
+                    console.assert(convert.type == NUMBER_VALUE);
                     console.assert(this.result.space.type == NUMBER_VALUE);
-                    const toSpaceIndex = this.result.space.value;
-                    
-                    this.convertColor(
-                        colorSpace(fromSpaceIndex), 
-                        colorSpace(toSpaceIndex));
 
-                    this.result.convert = null;
+                    this.convertColor(
+                        colorSpace(convert.value), 
+                        colorSpace(this.result.space.value));
                 }
             }
 
@@ -103,10 +99,13 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
+            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            
+
+            // genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            // genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            // genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            // genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -129,18 +128,6 @@ extends GOperator
         this.result.c1.value = color[0];
         this.result.c2.value = color[1];
         this.result.c3.value = color[2];
-    }
-
-
-
-    toDataColor()
-    {
-        return [
-            colorSpace(this.space.value),
-            this.c1.value,
-            this.c2.value,
-            this.c3.value
-        ]
     }
 
 

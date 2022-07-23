@@ -45,7 +45,7 @@ extends OpColorBase
         super('validatecolor', 'validate', 'color', 80);
 
 
-        this.addInput (new Input (COLOR));
+        this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output(COLOR));
 
 

@@ -27,6 +27,15 @@ extends Operator
 
 
 
+    updateValues(updateParamId, paramIds, values)
+    {
+        super.updateValues(updateParamId, paramIds, values);
+        
+        this.updateHeader();
+    }
+
+
+
     updateHeader()
     {
         //console.log(this.id + '.OpColorBase.updateHeader()');

@@ -10,7 +10,7 @@ extends GOperator
 
     constructor(nodeId, active)
     {
-        super(NUMBER_INTERPOLATE, nodeId, active);
+        super(COLOR_INTERPOLATE, nodeId, active);
     }
 
 
@@ -34,7 +34,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result       = new GColor(this.nodeId, this.active);
+            this.result       = new GColorValue();
 
             this.result.space = this.space.eval(parse).copy();
             const amount      = this.amount.eval(parse).copy();
@@ -46,26 +46,33 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
+                console.log('input0 =', input0);
+                console.log('input1 =', input1);
+
                 console.assert(amount.type == NUMBER_VALUE);
                 const f = amount.value / 100;
-
+                console.log('this.result =', this.result);
+                console.log('this.result.space =', this.result.space);
                 const _space = colorSpace(this.result.space.value);
+                console.log('_space =', _space);
                 
                 const col0 = input0.toDataColor();
                 const col1 = input1.toDataColor();
 
                 console.log('col0 =', col0);
                 console.log('col1 =', col1);
-                
+
                 const col = this.interpolate(
                     this.result.space.value,
                     dataColor2array(convertDataColorToSpace(col0, _space)),
                     dataColor2array(convertDataColorToSpace(col1, _space)),
                     f);
 
-                if (this.c1) this.result.c1 = new GNumberValue(col[0]);
-                if (this.c2) this.result.c2 = new GNumberValue(col[1]);
-                if (this.c3) this.result.c3 = new GNumberValue(col[2]);
+                console.log('col =', col);
+
+                this.result.c1 = new GNumberValue(col[0]);
+                this.result.c2 = new GNumberValue(col[1]);
+                this.result.c3 = new GNumberValue(col[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -76,8 +83,8 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space',  this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount           );
+            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }
 
 
@@ -88,9 +95,7 @@ extends GOperator
 
     interpolate(space, col0, col1, f)
     {
-        const iSpace = colorSpaceIndex(space);
-
-        if (iSpace <= 1) // hex, rgb
+        if (space <= 1) // hex, rgb
         {
             return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
         }

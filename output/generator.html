@@ -1852,6 +1852,13 @@ function reflow(elem)
 }
 
 
+function readonly(target, name, descriptor)
+{
+    descriptor.writable = false;
+    return descriptor;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -2768,6 +2775,16 @@ const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
+const COLOR_TYPES =
+[
+    COLOR,
+    COLOR_VALUE,
+    COLOR_INTERPOLATE,
+    COLOR_VALIDATE,
+    COLORBLIND
+];
+
+
 const STRING_VALUE       = 'S';     // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s
@@ -2972,7 +2989,7 @@ extends GType
 
     eval(parse)
     {
-        return this.result = this;
+        return this.result = this.copy();
     }
 
 
@@ -2983,6 +3000,12 @@ extends GType
             ? '?'
             : numToString(this.value, this.decimals);    
     }
+
+
+
+    static NaN = new GNumberValue(
+        Number.NaN, 
+        Number.NaN);
 }
 
 
@@ -3567,7 +3590,10 @@ extends GType
 
 
 
-    constructor(space, c1, c2, c3)
+    constructor(space = new GNumberValue(0), 
+                c1    = new GNumberValue(0), 
+                c2    = new GNumberValue(0), 
+                c3    = new GNumberValue(0))
     {
         super(COLOR_VALUE);
 
@@ -3582,10 +3608,10 @@ extends GType
     copy()
     {
         return new GColorValue(
-            this.space, 
-            this.c1, 
-            this.c2, 
-            this.c3);
+            this.space.copy(), 
+            this.c1   .copy(), 
+            this.c2   .copy(), 
+            this.c3   .copy());
     }
 
 
@@ -3602,7 +3628,18 @@ extends GType
 
     eval(parse)
     {
-        return this.result = this;
+        return this.result = this.copy();
+    }
+
+
+
+    toDataColor()
+    {
+        return[
+            colorSpace(this.space.value), 
+            getNormalColorValue(this.c1.value, colorSpace(this.space.value), 0), 
+            getNormalColorValue(this.c2.value, colorSpace(this.space.value), 1), 
+            getNormalColorValue(this.c3.value, colorSpace(this.space.value), 2) ]; 
     }
 
 
@@ -3616,14 +3653,39 @@ extends GType
               + ' ' + this.c3.toString()
             : '?';
     }
+
+
+
+    static NaN = new GColorValue(
+        GNumberValue.NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN);
 }
+
+
+
+function parseGColorValue(str)
+{
+    if (str == '?')
+        return GColorValue.NaN;
+
+    const col = str.split(' ');
+
+    return new GColorValue(
+        new GNumberValue(col[0]),
+        new GNumberValue(col[1]),
+        new GNumberValue(col[2]),
+        new GNumberValue(col[3]));
+}
+
 
 
 class GColor
 extends GOperator
 {
     input = null;
-    value;
+    //value;
 
     convert = null;
 
@@ -3648,9 +3710,9 @@ extends GOperator
         if (this.convert) 
             col.convert = this.convert.copy();
 
-        col.c1 = this.c1.copy();
-        col.c2 = this.c2.copy();
-        col.c3 = this.c3.copy();
+        if (this.c1) col.c1 = this.c1.copy();
+        if (this.c2) col.c2 = this.c2.copy();
+        if (this.c3) col.c3 = this.c3.copy();
 
         return col;
     }
@@ -3661,13 +3723,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColor(this.nodeId, this.active);
+            this.result = new GColorValue();
 
 
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                
+                console.assert(this.result.type == COLOR_VALUE);
 
                 console.assert(this.result.space.type == NUMBER_VALUE);
                 const fromSpaceIndex = this.result.space.value;
@@ -3679,7 +3741,7 @@ extends GOperator
 
                 this.convertColor(
                     colorSpace(fromSpaceIndex), 
-                    colorSpace(toSpaceIndex));
+                    colorSpace(  toSpaceIndex));
                 
 
                 if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
@@ -3692,23 +3754,19 @@ extends GOperator
                 this.result.c1    = this.c1   .eval(parse).copy();
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
- 
+
+                
                 if (   this.convert
                     && !isNaN(this.convert.value))
                 {
-                    this.result.convert = this.convert.eval(parse).copy();
+                    const convert = this.convert.eval(parse).copy();
 
-                    console.assert(this.result.convert.type == NUMBER_VALUE);
-                    const fromSpaceIndex = this.result.convert.value;
-                    
+                    console.assert(convert.type == NUMBER_VALUE);
                     console.assert(this.result.space.type == NUMBER_VALUE);
-                    const toSpaceIndex = this.result.space.value;
-                    
-                    this.convertColor(
-                        colorSpace(fromSpaceIndex), 
-                        colorSpace(toSpaceIndex));
 
-                    this.result.convert = null;
+                    this.convertColor(
+                        colorSpace(convert.value), 
+                        colorSpace(this.result.space.value));
                 }
             }
 
@@ -3724,10 +3782,13 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
+            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            
+
+            // genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            // genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            // genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            // genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -3754,18 +3815,6 @@ extends GOperator
 
 
 
-    toDataColor()
-    {
-        return [
-            colorSpace(this.space.value),
-            this.c1.value,
-            this.c2.value,
-            this.c3.value
-        ]
-    }
-
-
-
     get mustNotEval()
     {
         return this.space.mustNotEval
@@ -3788,7 +3837,7 @@ extends GOperator
 
     constructor(nodeId, active)
     {
-        super(NUMBER_INTERPOLATE, nodeId, active);
+        super(COLOR_INTERPOLATE, nodeId, active);
     }
 
 
@@ -3812,7 +3861,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result       = new GColor(this.nodeId, this.active);
+            this.result       = new GColorValue();
 
             this.result.space = this.space.eval(parse).copy();
             const amount      = this.amount.eval(parse).copy();
@@ -3824,26 +3873,33 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
+                console.log('input0 =', input0);
+                console.log('input1 =', input1);
+
                 console.assert(amount.type == NUMBER_VALUE);
                 const f = amount.value / 100;
-
+                console.log('this.result =', this.result);
+                console.log('this.result.space =', this.result.space);
                 const _space = colorSpace(this.result.space.value);
+                console.log('_space =', _space);
                 
                 const col0 = input0.toDataColor();
                 const col1 = input1.toDataColor();
 
                 console.log('col0 =', col0);
                 console.log('col1 =', col1);
-                
+
                 const col = this.interpolate(
                     this.result.space.value,
                     dataColor2array(convertDataColorToSpace(col0, _space)),
                     dataColor2array(convertDataColorToSpace(col1, _space)),
                     f);
 
-                if (this.c1) this.result.c1 = new GNumberValue(col[0]);
-                if (this.c2) this.result.c2 = new GNumberValue(col[1]);
-                if (this.c3) this.result.c3 = new GNumberValue(col[2]);
+                console.log('col =', col);
+
+                this.result.c1 = new GNumberValue(col[0]);
+                this.result.c2 = new GNumberValue(col[1]);
+                this.result.c3 = new GNumberValue(col[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -3854,8 +3910,8 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, 'space',  this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount           );
+            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }
 
 
@@ -3866,9 +3922,7 @@ extends GOperator
 
     interpolate(space, col0, col1, f)
     {
-        const iSpace = colorSpaceIndex(space);
-
-        if (iSpace <= 1) // hex, rgb
+        if (space <= 1) // hex, rgb
         {
             return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
         }
@@ -4594,7 +4648,7 @@ function genParseColor(parse)
     
     let paramIds;
 
-    if (parse.next == COLOR)
+    if (COLOR_TYPES.includes(parse.next))
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');

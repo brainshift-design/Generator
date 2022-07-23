@@ -37,7 +37,7 @@ extends GType
 
     eval(parse)
     {
-        return this.result = this;
+        return this.result = this.copy();
     }
 
 
@@ -48,6 +48,12 @@ extends GType
             ? '?'
             : numToString(this.value, this.decimals);    
     }
+
+
+
+    static NaN = new GNumberValue(
+        Number.NaN, 
+        Number.NaN);
 }
 
 

@@ -336,3 +336,10 @@ function reflow(elem)
 {
     void(elem.offsetHeight);
 }
+
+
+function readonly(target, name, descriptor)
+{
+    descriptor.writable = false;
+    return descriptor;
+}

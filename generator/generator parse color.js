@@ -22,7 +22,7 @@ function genParseColor(parse)
     
     let paramIds;
 
-    if (parse.next == COLOR)
+    if (COLOR_TYPES.includes(parse.next))
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');

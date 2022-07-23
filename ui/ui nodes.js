@@ -819,6 +819,8 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
+    //console.log('raw values = ', values);
+    
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
@@ -860,7 +862,12 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             for (let j = 0; j < count; j++)
             {
                 _indices.push(values[i++]);
-                _values .push(parseGNumberValue(values[i++]));
+
+                switch (lastOf(_indices))
+                {
+                    case NUMBER_VALUE: _values.push(parseGNumberValue(values[i++])); break;
+                    case COLOR_VALUE:  _values.push(parseGColorValue (values[i++])); break;
+                }
             }
 
             node.updateValues(

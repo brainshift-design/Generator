@@ -253,7 +253,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject) //colFigmaBlue
+            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
             : 'none';
     }
     

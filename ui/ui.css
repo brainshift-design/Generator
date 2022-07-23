@@ -1,6 +1,6 @@
 #selectBox
 {
-    outline:          1pt solid var(--colFigmaBlue);
+    outline:          1pt solid var(--figma-color-bg-brand);
     background-color: #18A0FB20;
     pointer-events:   none;
     margin:           0;
@@ -12,21 +12,25 @@
 
 #scrollbarX
 {
-    background-color: #a7a7a7;
+    background-color: var(--figma-color-text-tertiary);
     height:           6px;
     border-radius:    3px;
     position:         absolute;
     display:          none;
-    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
+    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); */
 }
 
 
 #scrollbarY
 {
-    background-color: #a7a7a7;
+    background-color: var(--figma-color-text-tertiary);
     width:            6px;
     border-radius:    3px;
     position:         absolute;
     display:          none;
-    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);
+    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); */
 }
+
+
+.figma-light #scrollbarX { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
+.figma-dark  #scrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }

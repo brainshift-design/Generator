@@ -21,6 +21,16 @@ const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
 const COLORBLIND         = 'BLND';  // C
 
 
+const COLOR_TYPES =
+[
+    COLOR,
+    COLOR_VALUE,
+    COLOR_INTERPOLATE,
+    COLOR_VALIDATE,
+    COLORBLIND
+];
+
+
 const STRING_VALUE       = 'S';     // "..." (s) (escape \\ and \")
 
 const STRING             = 'STR';   // S | s

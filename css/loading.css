@@ -9,8 +9,8 @@
 }
 
 
-.figma-light #loadingOverlay { background: var(--figma-color-bg-secondary); }
-.figma-dark  #loadingOverlay { background: var(--figma-color-bg);           }
+.figma-light #loadingOverlay { background: #f0f0f0; } /* my tuning of bg-tertiary */
+.figma-dark  #loadingOverlay { background: #1e1e1e; }
 
 
 #loadingGraphic 
@@ -69,7 +69,7 @@
 
 
 .figma-light #loadingBar { background: white; }
-.figma-dark  #loadingBar { background: #181818; }
+.figma-dark  #loadingBar { background: var(--figma-color-bg-tertiary); }
 
 
 #loadingProgress

@@ -65,9 +65,6 @@ extends OperatorBase
     {
         super.updateValues(updateParamId, paramIds, values);
 
-        // if (paramIds.includes('value'))
-        //     this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-
         this.paramMax.control.setMin(values[paramIds.indexOf('min')].value, false);
         this.paramMin.control.setMax(values[paramIds.indexOf('max')].value, false);
     }

@@ -119,6 +119,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
+        console.log('SelectParam.setValue()');
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
@@ -126,8 +127,8 @@ extends Parameter
 
         // if (this.output)
         //     this.output._data = dataFromNumber(value);
-            
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+            // console.log('super = ', super);
+        // super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
 
 

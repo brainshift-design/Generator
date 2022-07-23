@@ -16,6 +16,10 @@ body
 }
 
 
+.figma-light body { background: var(--figma-color-bg-secondary); }
+.figma-dark  body { background: var(--figma-color-bg);           }
+
+
 div
 {
     margin:  0;

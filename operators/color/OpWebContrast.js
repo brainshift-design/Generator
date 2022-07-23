@@ -11,8 +11,8 @@ extends OpColorBase
         super('webcontrast', 'contrast', 'color', 80);
 
 
-        this.addInput(new Input(COLOR));
-        this.addInput(new Input(COLOR));
+        this.addInput(new Input(COLOR_TYPES));
+        this.addInput(new Input(COLOR_TYPES));
 
 
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));

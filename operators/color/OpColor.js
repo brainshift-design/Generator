@@ -54,7 +54,7 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput (new Input ([COLOR]));
+        this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
@@ -189,19 +189,19 @@ extends OpColorBase
             {
                 req.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    'N', 
+                    NUMBER_VALUE, 
                     !isNaN(this.node.fromSpace) 
                         ? numToString(this.node.fromSpace)
                         : '?',
-                    'N', numToString(this.node._color[1] * rgbScale[0]),
-                    'N', numToString(this.node._color[2] * rgbScale[1]),
-                    'N', numToString(this.node._color[3] * rgbScale[2]));
+                    NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
+                    NUMBER_VALUE, numToString(this.node._color[2] * rgbScale[1]),
+                    NUMBER_VALUE, numToString(this.node._color[3] * rgbScale[2]));
             }
             else
             {
                 req.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    'N', 
+                    NUMBER_VALUE, 
                     !isNaN(this.node.fromSpace) 
                         ? numToString(this.node.fromSpace)
                         : '?',
@@ -222,30 +222,17 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        console.assert(paramIds.includes('space'));
-
-        const space = values[paramIds.findIndex(id => id == 'space')].value;
-        const c1    = values[paramIds.findIndex(id => id == 'c1')]   .value;
-        const c2    = values[paramIds.findIndex(id => id == 'c2')]   .value;
-        const c3    = values[paramIds.findIndex(id => id == 'c3')]   .value;
+        const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
 
 
-        switchToSpace(this, colorSpace(space));
+        switchToSpace(this, colorSpace(col.space));
+
+
+        this.fromSpace = Number.NaN;
+        this._color = col.toDataColor();
 
 
         super.updateValues(updateParamId, paramIds, values);
-
-        this.fromSpace = Number.NaN;
-
-
-        this._color = [
-            colorSpace(space), 
-            getNormalColorValue(c1, colorSpace(space), 0), 
-            getNormalColorValue(c2, colorSpace(space), 1), 
-            getNormalColorValue(c3, colorSpace(space), 2) ]; 
-
-
-        this.updateHeader();
     }
 
 
