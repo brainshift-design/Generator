@@ -20,9 +20,8 @@ extends OperatorBase
 
         enableSliderText(this.paramValue.control, false);
         
-        this.paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
-        this.paramAmount.control.displayDec = 0;
+        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
         
         this.paramAmount.control.setSuffix('%', true);
     }

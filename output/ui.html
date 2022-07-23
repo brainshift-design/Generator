@@ -211,9 +211,12 @@
     left:       0;
     width:      100%;
     height:     100%;
-    background: #e5e5e5;
     display:    none;
 }
+
+
+.figma-light #loadingOverlay { background: var(--figma-color-bg-secondary); }
+.figma-dark  #loadingOverlay { background: var(--figma-color-bg);           }
 
 
 #loadingGraphic 
@@ -221,7 +224,7 @@
     font-family: Inter;
     font-size:   26;
     font-weight: 800;
-    color:       #333;
+    color:       var(--figma-color-text);/*#333;*/
     position:    absolute;
     left:        50%;
     top:         45%;
@@ -230,13 +233,17 @@
 }
 
 
+.figma-light #loadingGraphic { font-weight: 800; }
+.figma-dark  #loadingGraphic { font-weight: 600; }
+
+
 #loadingEmpty
 {
-    font-size:   20;
-    font-weight: 800;
-    color:       #666;
-    margin-right: 2px;
-    position:     relative;
+    font-size:     20;
+    font-weight:   800;
+    color:         var(--figma-color-text-secondary);/*#666;*/
+    margin-right:  2px;
+    position:      relative;
     top:          -4px;
 }
 
@@ -245,10 +252,10 @@
 {
     font-size:   16;
     font-weight: 800;
-    color:       #666;
+    color:       var(--figma-color-text-secondary);/*#666;*/
     margin-left: 2px;
-    position:     relative;
-    top:          -5px;
+    position:    relative;
+    top:        -5px;
 }
 
 
@@ -261,10 +268,14 @@
                    translateY(-50%);
     width:         180px;
     height:        5px;   
-    background:    white;
+    /* background:    var(--figma-color-bg);white; */
     border-radius: 2.5px;
     overflow:      hidden;
 }
+
+
+.figma-light #loadingBar { background: white; }
+.figma-dark  #loadingBar { background: #181818; }
 
 
 #loadingProgress
@@ -274,7 +285,7 @@
     top:           0;
     width:         0;
     height:        5px;   
-    background:    #333;
+    background:    var(--figma-color-text);/*#333;*/
 }
 
 
@@ -483,7 +494,7 @@ input[type=text]::selection
 body
 {
     margin:           0;
-    background-color: #f4f4f4;
+    background-color: var(--figma-color-bg);/*#f4f4f4;*/
     user-select:      none;
     font-family:      Inter;
 
@@ -736,7 +747,7 @@ div
     width:            74px;
     height:           26px;
     overflow:         hidden;
-    background-color: white;
+    background-color: var(--figma-color-bg);/*white;*/
     text-align:       center;
     touch-action:     none;
 }    
@@ -4150,6 +4161,14 @@ function logReqColor(col, parse)
 
 
 
+function logReqColorInterpolate(lerp, nValues, parse)
+{
+    parse.log += parse.tab + COLOR_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
+    parse.log += ' ' + nValues;
+}
+
+
 
 
 
@@ -4314,13 +4333,6 @@ function normalizeSeed(x)
 }
 
 
-//////////// WARNING ////////////
-//                             //
-//  DO NOT TOUCH THIS FILE!!!  //
-//                             //
-/////////////////////////////////
-
-
 const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
@@ -4334,6 +4346,8 @@ const NUMBER_EXPONENT    = 'EXP';   // count N...
 const NUMBER_MATH        = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
+
+const COLOR_VALUE        = 'C';     // color value
 
 const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
@@ -4529,7 +4543,9 @@ extends GType
 
     copy()
     {
-        return new GNumberValue(this.value, this.decimals);
+        return new GNumberValue(
+            this.value, 
+            this.decimals);
     }
 
 
@@ -5107,21 +5123,15 @@ extends GOperator
                 this.result = new GNumberValue(
                     floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
                     maxDec);
-                
-                this.result.valid = true;
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
-
-            else
-            {
-                this.result       = new GNumberValue(0);
-                this.result.valid = true;
-            }
+            else                  this.result = new GNumberValue(0);
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
@@ -5135,17 +5145,75 @@ extends GOperator
 
 
 
+class GColorValue
+extends GType
+{
+    space;
+    c1;
+    c2;
+    c3;
+
+
+
+    constructor(space, c1, c2, c3)
+    {
+        super(COLOR_VALUE);
+
+        this.space = space;
+        this.c1    = c1;
+        this.c2    = c2;
+        this.c3    = c3;
+    }
+
+
+
+    copy()
+    {
+        return new GColorValue(
+            this.space, 
+            this.c1, 
+            this.c2, 
+            this.c3);
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.space)
+            && !isNaN(this.c1)
+            && !isNaN(this.c2)
+            && !isNaN(this.c3);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this;
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.space.toString()
+              + ' ' + this.c1.toString()
+              + ' ' + this.c2.toString()
+              + ' ' + this.c3.toString()
+            : '?';
+    }
+}
+
+
 class GColor
 extends GOperator
 {
     input = null;
+    value;
 
-    space;
     convert = null;
-
-    c1;
-    c2;
-    c3;
 
 
 
@@ -5274,6 +5342,18 @@ extends GOperator
 
 
 
+    toDataColor()
+    {
+        return [
+            colorSpace(this.space.value),
+            this.c1.value,
+            this.c2.value,
+            this.c3.value
+        ]
+    }
+
+
+
     get mustNotEval()
     {
         return this.space.mustNotEval
@@ -5282,6 +5362,117 @@ extends GOperator
             && this.c3   .mustNotEval;
     }
 }
+
+
+class GColorInterpolate
+extends GOperator
+{
+    input0 = null;
+    input1 = null;
+
+    space;
+    amount;
+
+
+    constructor(nodeId, active)
+    {
+        super(NUMBER_INTERPOLATE, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const lerp = new GColorInterpolate(this.nodeId, this.active);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.space  = this.space .copy();
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result       = new GColor(this.nodeId, this.active);
+
+            this.result.space = this.space.eval(parse).copy();
+            const amount      = this.amount.eval(parse).copy();
+
+
+            if (   this.input0 
+                && this.input1)
+            {
+                const input0 = this.input0.eval(parse).copy();
+                const input1 = this.input1.eval(parse).copy();
+
+                console.assert(amount.type == NUMBER_VALUE);
+                const f = amount.value / 100;
+
+                const _space = colorSpace(this.result.space.value);
+                
+                const col0 = input0.toDataColor();
+                const col1 = input1.toDataColor();
+
+                console.log('col0 =', col0);
+                console.log('col1 =', col1);
+                
+                const col = this.interpolate(
+                    this.result.space.value,
+                    dataColor2array(convertDataColorToSpace(col0, _space)),
+                    dataColor2array(convertDataColorToSpace(col1, _space)),
+                    f);
+
+                if (this.c1) this.result.c1 = new GNumberValue(col[0]);
+                if (this.c2) this.result.c2 = new GNumberValue(col[1]);
+                if (this.c3) this.result.c3 = new GNumberValue(col[2]);
+            }
+
+            else if (this.input0) this.result = this.input0.eval(parse).copy();
+            else if (this.input1) this.result = this.input1.eval(parse).copy();
+            
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'space',  this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount           );
+        }
+
+
+        return this.result;
+    }
+
+
+
+    interpolate(space, col0, col1, f)
+    {
+        const iSpace = colorSpaceIndex(space);
+
+        if (iSpace <= 1) // hex, rgb
+        {
+            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+        }
+        else // hsv, hsl, hcl
+        {
+            const h0 = col0[0] * Tau;
+            const h1 = col1[0] * Tau;
+            
+            return [
+                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                lerp(col0[1], col1[1], f),
+                lerp(col0[2], col1[2], f) ];
+        }
+    }
+}
+
 
 
 class GRectangle
@@ -6022,6 +6213,63 @@ function genParseColor(parse)
 
 
 
+function genParseColorInterpolate(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const lerp = new GColorInterpolate(nodeId, active);
+
+
+    let nValues = -1;
+
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues => 0 && nValues <= 2);
+    }
+
+    
+    if (parse.logRequests) 
+        logReqColorInterpolate(lerp, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lerp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nValues == 2)
+    {
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
+        lerp.space  = genParse(parse);
+        lerp.amount = genParse(parse);
+    }
+    else if (nValues == 1)
+    {
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        lerp.space  = genParse(parse);
+        lerp.amount = genParse(parse);
+    }
+    else if (nValues == 0)
+    {
+        lerp.space  = genParse(parse);
+        lerp.amount = genParse(parse);
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, lerp);
+    return lerp;
+}
+
+
 /*
     RECT 
     id
@@ -6600,26 +6848,27 @@ function genParse(parse)
     //console.log('next', next);
 
 
-         if (parse.next == PARAM             ) return genParseParam      (parse);
+         if (parse.next == PARAM             ) return genParseParam           (parse);
 
-    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue   (parse);
-    else if (parse.next == NUMBER            ) return genParseNumber     (parse);
-    else if (parse.next == NUMBER_LIMITS     ) return genParseLimits     (parse);
-    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic (parse, (nodeId, active) => new GAdd     (nodeId, active));
-    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic (parse, (nodeId, active) => new GSubtract(nodeId, active));
-    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic (parse, (nodeId, active) => new GMultiply(nodeId, active));
-    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic (parse, (nodeId, active) => new GDivide  (nodeId, active));
-    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic (parse, (nodeId, active) => new GModulo  (nodeId, active));
-    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic (parse, (nodeId, active) => new GExponent(nodeId, active));
-    else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate(parse);
+    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue        (parse);
+    else if (parse.next == NUMBER            ) return genParseNumber          (parse);
+    else if (parse.next == NUMBER_LIMITS     ) return genParseLimits          (parse);
+    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic      (parse, (nodeId, active) => new GAdd     (nodeId, active));
+    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic      (parse, (nodeId, active) => new GSubtract(nodeId, active));
+    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic      (parse, (nodeId, active) => new GMultiply(nodeId, active));
+    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic      (parse, (nodeId, active) => new GDivide  (nodeId, active));
+    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic      (parse, (nodeId, active) => new GModulo  (nodeId, active));
+    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
+    else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate     (parse);
 
-    else if (parse.next == COLOR             ) return genParseColor      (parse);
+    else if (parse.next == COLOR             ) return genParseColor           (parse);
+    else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
 
-    else if (parse.next == RECTANGLE         ) return genParseRectangle  (parse);
-    else if (parse.next == LINE              ) return genParseLine       (parse);
-    else if (parse.next == ELLIPSE           ) return genParseEllipse    (parse);
-    else if (parse.next == POLYGON           ) return genParsePolygon    (parse);
-    else if (parse.next == STAR              ) return genParseStar       (parse);
+    else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
+    else if (parse.next == LINE              ) return genParseLine            (parse);
+    else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);
+    else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
+    else if (parse.next == STAR              ) return genParseStar            (parse);
 
     
     parse.so++;
@@ -6696,7 +6945,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    //console.log('req =', req);
+    console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];
@@ -11651,6 +11900,14 @@ function logReqColor(col, parse)
 
 
 
+function logReqColorInterpolate(lerp, nValues, parse)
+{
+    parse.log += parse.tab + COLOR_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
+    parse.log += ' ' + nValues;
+}
+
+
 
 
 
@@ -13191,13 +13448,6 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
-//////////// WARNING ////////////
-//                             //
-//  DO NOT TOUCH THIS FILE!!!  //
-//                             //
-/////////////////////////////////
-
-
 const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
@@ -13211,6 +13461,8 @@ const NUMBER_EXPONENT    = 'EXP';   // count N...
 const NUMBER_MATH        = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
+
+const COLOR_VALUE        = 'C';     // color value
 
 const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
@@ -13406,7 +13658,9 @@ extends GType
 
     copy()
     {
-        return new GNumberValue(this.value, this.decimals);
+        return new GNumberValue(
+            this.value, 
+            this.decimals);
     }
 
 
@@ -13984,21 +14238,15 @@ extends GOperator
                 this.result = new GNumberValue(
                     floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
                     maxDec);
-                
-                this.result.valid = true;
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
-
-            else
-            {
-                this.result       = new GNumberValue(0);
-                this.result.valid = true;
-            }
+            else                  this.result = new GNumberValue(0);
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
@@ -14012,17 +14260,75 @@ extends GOperator
 
 
 
+class GColorValue
+extends GType
+{
+    space;
+    c1;
+    c2;
+    c3;
+
+
+
+    constructor(space, c1, c2, c3)
+    {
+        super(COLOR_VALUE);
+
+        this.space = space;
+        this.c1    = c1;
+        this.c2    = c2;
+        this.c3    = c3;
+    }
+
+
+
+    copy()
+    {
+        return new GColorValue(
+            this.space, 
+            this.c1, 
+            this.c2, 
+            this.c3);
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.space)
+            && !isNaN(this.c1)
+            && !isNaN(this.c2)
+            && !isNaN(this.c3);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this;
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.space.toString()
+              + ' ' + this.c1.toString()
+              + ' ' + this.c2.toString()
+              + ' ' + this.c3.toString()
+            : '?';
+    }
+}
+
+
 class GColor
 extends GOperator
 {
     input = null;
+    value;
 
-    space;
     convert = null;
-
-    c1;
-    c2;
-    c3;
 
 
 
@@ -14151,6 +14457,18 @@ extends GOperator
 
 
 
+    toDataColor()
+    {
+        return [
+            colorSpace(this.space.value),
+            this.c1.value,
+            this.c2.value,
+            this.c3.value
+        ]
+    }
+
+
+
     get mustNotEval()
     {
         return this.space.mustNotEval
@@ -14159,6 +14477,117 @@ extends GOperator
             && this.c3   .mustNotEval;
     }
 }
+
+
+class GColorInterpolate
+extends GOperator
+{
+    input0 = null;
+    input1 = null;
+
+    space;
+    amount;
+
+
+    constructor(nodeId, active)
+    {
+        super(NUMBER_INTERPOLATE, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const lerp = new GColorInterpolate(this.nodeId, this.active);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.space  = this.space .copy();
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result       = new GColor(this.nodeId, this.active);
+
+            this.result.space = this.space.eval(parse).copy();
+            const amount      = this.amount.eval(parse).copy();
+
+
+            if (   this.input0 
+                && this.input1)
+            {
+                const input0 = this.input0.eval(parse).copy();
+                const input1 = this.input1.eval(parse).copy();
+
+                console.assert(amount.type == NUMBER_VALUE);
+                const f = amount.value / 100;
+
+                const _space = colorSpace(this.result.space.value);
+                
+                const col0 = input0.toDataColor();
+                const col1 = input1.toDataColor();
+
+                console.log('col0 =', col0);
+                console.log('col1 =', col1);
+                
+                const col = this.interpolate(
+                    this.result.space.value,
+                    dataColor2array(convertDataColorToSpace(col0, _space)),
+                    dataColor2array(convertDataColorToSpace(col1, _space)),
+                    f);
+
+                if (this.c1) this.result.c1 = new GNumberValue(col[0]);
+                if (this.c2) this.result.c2 = new GNumberValue(col[1]);
+                if (this.c3) this.result.c3 = new GNumberValue(col[2]);
+            }
+
+            else if (this.input0) this.result = this.input0.eval(parse).copy();
+            else if (this.input1) this.result = this.input1.eval(parse).copy();
+            
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'space',  this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount           );
+        }
+
+
+        return this.result;
+    }
+
+
+
+    interpolate(space, col0, col1, f)
+    {
+        const iSpace = colorSpaceIndex(space);
+
+        if (iSpace <= 1) // hex, rgb
+        {
+            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+        }
+        else // hsv, hsl, hcl
+        {
+            const h0 = col0[0] * Tau;
+            const h1 = col1[0] * Tau;
+            
+            return [
+                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                lerp(col0[1], col1[1], f),
+                lerp(col0[2], col1[2], f) ];
+        }
+    }
+}
+
 
 
 class GRectangle
@@ -14414,8 +14843,8 @@ const settings =
     
     logStorage:       false, 
     logActions:       false, 
-    logRequests:      false, 
-    logValueUpdates:  false, 
+    logRequests:      true, 
+    logValueUpdates:  true, 
     logObjectUpdates: false
 };
 
@@ -21784,17 +22213,7 @@ function pushUpdateFromParam(nodes, param)
                 request.push(...r);
             })); 
 
-
-    // gen.markParams = false;
-    // gen.paramNodes
-    //     .filter(n => !terminals.includes(n))
-    //     .forEach(n => 
-    //         n.outputs
-    //             .filter(o => !o.param)
-    //             .forEach(o =>
-    //                 request.push(...o.genRequest(gen))));
-
-
+            
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,
@@ -23440,9 +23859,8 @@ extends OperatorBase
 
         enableSliderText(this.paramValue.control, false);
         
-        this.paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
-        this.paramAmount.control.displayDec = 0;
+        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
         
         this.paramAmount.control.setSuffix('%', true);
     }
@@ -23878,14 +24296,30 @@ extends OpColorBase
         }
         else
         {
-            req.push(
-                ...this.node.paramSpace.genRequest(gen),
-                'N', !isNaN(this.node.fromSpace) 
-                     ? numToString(this.node.fromSpace)
-                     : '?',
-                ...this.node.param1.genRequest(gen),
-                ...this.node.param2.genRequest(gen),
-                ...this.node.param3.genRequest(gen));
+            if (this.node.paramSpace.value == 0) // hex
+            {
+                req.push(
+                    ...this.node.paramSpace.genRequest(gen),
+                    'N', 
+                    !isNaN(this.node.fromSpace) 
+                        ? numToString(this.node.fromSpace)
+                        : '?',
+                    'N', numToString(this.node._color[1] * rgbScale[0]),
+                    'N', numToString(this.node._color[2] * rgbScale[1]),
+                    'N', numToString(this.node._color[3] * rgbScale[2]));
+            }
+            else
+            {
+                req.push(
+                    ...this.node.paramSpace.genRequest(gen),
+                    'N', 
+                    !isNaN(this.node.fromSpace) 
+                        ? numToString(this.node.fromSpace)
+                        : '?',
+                    ...this.node.param1.genRequest(gen),
+                    ...this.node.param2.genRequest(gen),
+                    ...this.node.param3.genRequest(gen));
+            }
         }
 
 
@@ -23894,96 +24328,6 @@ extends OpColorBase
 
         return req;
     }
-
-
-
-    // updateData()
-    // {
-    //     //console.log(this.id + '.OpColor.updateData()');
-
-    //     if (this.inputs[0].connected) 
-    //     {
-    //         if (   dataColorIsNaN(this.inputs[0].data.color)
-    //             && !dataColorIsNaN(this._color))
-    //         {
-    //             this._colorBeforeNaN = this._color;
-    //             this._color          = dataColor_NaN;
-    //         }
-    //         else
-    //         {
-    //             const toSpace = colorSpace(this.paramSpace.value);
-    //             const color   = convertDataColorToSpace(this.inputs[0].data.color, toSpace);
-                
-    //             if (this.param1.input.connected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
-    //             if (this.param2.input.connected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
-    //             if (this.param3.input.connected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
-
-    //             switchToSpace(this, toSpace);
-    //             setDataColorToCurrentSpace(this, color);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         if (!dataColorIsNaN(this._colorBeforeNaN))
-    //         {
-    //             this._color          = this._colorBeforeNaN;
-    //             this._colorBeforeNaN = dataColor_NaN;
-
-    //             const toSpace = colorSpace(this.paramSpace.value);
-
-    //             switchToSpace(this, toSpace);
-    //             setDataColorToCurrentSpace(this, this._color);
-
-    //             this._oldSpace = toSpace;
-    //         }
-    //         else
-    //         {
-    //             const toSpace = colorSpace(this.paramSpace.value);
-
-    //             if (   !this.#init
-    //                 ||  this._oldSpace != toSpace
-    //                 || !dataColorIsNaN(this._colorBeforeNaN))
-    //             {
-    //                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
-    //                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
-    //                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
-
-    //                 const color =
-    //                     this.loading 
-    //                     ? this.getDataColorFromParams()
-    //                     : this._color;
-
-
-    //                 switchToSpace(this, toSpace);
-    //                 setDataColorToCurrentSpace(this, color);
-
-
-    //                 for (let i = 2; i < 5; i++)
-    //                 {
-    //                     if (this.inputs[i].connected) 
-    //                     { 
-    //                         const param = this.inputs[i].param;
-
-    //                         param.update(); 
-    //                         this._color[i-1] = param.value; 
-    //                     }
-    //                 }
-
-
-    //                 this.#init = true;
-    //             }
-
-    //             this._color    = this.getDataColorFromParams();
-    //             this._oldSpace = toSpace;
-    //         }
-    //     }
-
-    
-    //     this.outputs[0]._data = dataFromDataColor(this._color);
-
-
-    //     super.updateData()
-    // }
 
 
 
@@ -24998,8 +25342,9 @@ function hexboxFinish(node, success)
     if (node.hexbox.value.trim() == '')
         node.hexbox.value = node.hexbox.savedValue;
 
+        
     var rgb = hex2rgb(node.hexbox.value);
-
+    
     if (success) 
     {
         setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
@@ -26059,25 +26404,24 @@ extends OpColorBase
 
     constructor()
     {
-        super('colorinterpolate', 'inter', 'color', 80);
+        super(COLOR_INTERPOLATE, 'inter', 80);
 
         
-        this.addInput(new Input(COLOR));
-        this.addInput(new Input(COLOR));
+        this.addInput(new Input([COLOR]));
+        this.addInput(new Input([COLOR]));
 
-        this.addOutput(new Output(COLOR));
+        this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
         this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
       
         
-        this.paramSpace.control.min         = 1;
-        this.paramSpace.control.displayMin  = 1;
-        this.paramSpace.control.update();
+        this.paramSpace.control.setMin(1);
+        //this.paramSpace.control.update();
         
-        this.paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
 
         this.paramAmount.control.setSuffix('%', true);
         
@@ -26149,24 +26493,45 @@ extends OpColorBase
 
 
 
-    interpolate(space, col0, col1, f)
+    output_genRequest(gen)
     {
-        const iSpace = colorSpaceIndex(space);
+        // 'this' is the output
 
-        if (iSpace <= 1) // hex, rgb
-        {
-            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-        }
-        else // hsv, hsl, hcl
-        {
-            const h0 = col0[0] * Tau;
-            const h1 = col1[0] * Tau;
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [req, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return req;
+
+
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   req.push(2,
+                                       ...input0.connectedOutput.genRequest(gen),
+                                       ...input1.connectedOutput.genRequest(gen));
+
+        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
+        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
             
-            return [
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(col0[1], col1[1], f),
-                lerp(col0[2], col1[2], f) ];
-        }
+        else                       req.push(0);
+
+
+        req.push(...this.node.paramSpace .genRequest(gen));
+        req.push(...this.node.paramAmount.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
     }
 
 

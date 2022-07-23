@@ -158,11 +158,6 @@ function logReqNode(node, type, parse) {
 //     req.nTab--;
 //     return log;
 // }
-//////////// WARNING ////////////
-//                             //
-//  DO NOT TOUCH THIS FILE!!!  //
-//                             //
-/////////////////////////////////
 const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
 const NUMBER = 'NUM'; // N | n
 const NUMBER_LIMITS = 'LIM'; // N:min N:max
@@ -174,6 +169,7 @@ const NUMBER_MODULO = 'MOD'; // count N...
 const NUMBER_EXPONENT = 'EXP'; // count N...
 const NUMBER_MATH = 'MATH'; // op count N...
 const NUMBER_INTERPOLATE = 'LERP'; // count N... N:amount
+const COLOR_VALUE = 'C'; // color value
 const COLOR = 'COL'; // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE = 'CVLD'; // C
@@ -214,8 +210,8 @@ const settings = {
     showNodeId: false,
     logStorage: false,
     logActions: false,
-    logRequests: false,
-    logValueUpdates: false,
+    logRequests: true,
+    logValueUpdates: true,
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}
@@ -330,15 +326,16 @@ function figOnPluginClose() {
 //var   maxNodeId   = Number.MIN_SAFE_INTEGER;
 figma.on('selectionchange', figOnSelectionChange);
 figma.on('close', figOnPluginClose);
-figma.showUI(__html__);
+figma.showUI(__html__, {
+    visible: false,
+    themeColors: true
+});
 function figStartGenerator() {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
-            // load product key
             let productKey = yield figLoadLocal('productKey');
             if (productKey == null)
                 productKey = '';
-            // size window
             let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
             let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
             if (wndWidth == null)
@@ -346,12 +343,12 @@ function figStartGenerator() {
             if (wndHeight == null)
                 wndHeight = 600;
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
-            //
             figPostMessageToUI({
                 cmd: 'uiEndStartGenerator',
                 currentUser: figma.currentUser,
                 productKey: productKey
             });
+            figma.ui.show();
         });
     })();
 }

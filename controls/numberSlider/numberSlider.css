@@ -4,7 +4,7 @@
     width:            74px;
     height:           26px;
     overflow:         hidden;
-    background-color: white;
+    background-color: var(--figma-color-bg);/*white;*/
     text-align:       center;
     touch-action:     none;
 }    

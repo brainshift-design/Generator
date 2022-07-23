@@ -8,25 +8,24 @@ extends OpColorBase
 
     constructor()
     {
-        super('colorinterpolate', 'inter', 'color', 80);
+        super(COLOR_INTERPOLATE, 'inter', 80);
 
         
-        this.addInput(new Input(COLOR));
-        this.addInput(new Input(COLOR));
+        this.addInput(new Input([COLOR]));
+        this.addInput(new Input([COLOR]));
 
-        this.addOutput(new Output(COLOR));
+        this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
         this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
       
         
-        this.paramSpace.control.min         = 1;
-        this.paramSpace.control.displayMin  = 1;
-        this.paramSpace.control.update();
+        this.paramSpace.control.setMin(1);
+        //this.paramSpace.control.update();
         
-        this.paramAmount.control.min        = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max        = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
 
         this.paramAmount.control.setSuffix('%', true);
         
@@ -98,24 +97,45 @@ extends OpColorBase
 
 
 
-    interpolate(space, col0, col1, f)
+    output_genRequest(gen)
     {
-        const iSpace = colorSpaceIndex(space);
+        // 'this' is the output
 
-        if (iSpace <= 1) // hex, rgb
-        {
-            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-        }
-        else // hsv, hsl, hcl
-        {
-            const h0 = col0[0] * Tau;
-            const h1 = col1[0] * Tau;
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [req, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return req;
+
+
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   req.push(2,
+                                       ...input0.connectedOutput.genRequest(gen),
+                                       ...input1.connectedOutput.genRequest(gen));
+
+        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
+        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
             
-            return [
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(col0[1], col1[1], f),
-                lerp(col0[2], col1[2], f) ];
-        }
+        else                       req.push(0);
+
+
+        req.push(...this.node.paramSpace .genRequest(gen));
+        req.push(...this.node.paramAmount.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
     }
 
 

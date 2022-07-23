@@ -5,9 +5,12 @@
     left:       0;
     width:      100%;
     height:     100%;
-    background: #e5e5e5;
     display:    none;
 }
+
+
+.figma-light #loadingOverlay { background: var(--figma-color-bg-secondary); }
+.figma-dark  #loadingOverlay { background: var(--figma-color-bg);           }
 
 
 #loadingGraphic 
@@ -15,7 +18,7 @@
     font-family: Inter;
     font-size:   26;
     font-weight: 800;
-    color:       #333;
+    color:       var(--figma-color-text);/*#333;*/
     position:    absolute;
     left:        50%;
     top:         45%;
@@ -24,13 +27,17 @@
 }
 
 
+.figma-light #loadingGraphic { font-weight: 800; }
+.figma-dark  #loadingGraphic { font-weight: 600; }
+
+
 #loadingEmpty
 {
-    font-size:   20;
-    font-weight: 800;
-    color:       #666;
-    margin-right: 2px;
-    position:     relative;
+    font-size:     20;
+    font-weight:   800;
+    color:         var(--figma-color-text-secondary);/*#666;*/
+    margin-right:  2px;
+    position:      relative;
     top:          -4px;
 }
 
@@ -39,10 +46,10 @@
 {
     font-size:   16;
     font-weight: 800;
-    color:       #666;
+    color:       var(--figma-color-text-secondary);/*#666;*/
     margin-left: 2px;
-    position:     relative;
-    top:          -5px;
+    position:    relative;
+    top:        -5px;
 }
 
 
@@ -55,10 +62,14 @@
                    translateY(-50%);
     width:         180px;
     height:        5px;   
-    background:    white;
+    /* background:    var(--figma-color-bg);white; */
     border-radius: 2.5px;
     overflow:      hidden;
 }
+
+
+.figma-light #loadingBar { background: white; }
+.figma-dark  #loadingBar { background: #181818; }
 
 
 #loadingProgress
@@ -68,5 +79,5 @@
     top:           0;
     width:         0;
     height:        5px;   
-    background:    #333;
+    background:    var(--figma-color-text);/*#333;*/
 }

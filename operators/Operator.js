@@ -730,17 +730,7 @@ function pushUpdateFromParam(nodes, param)
                 request.push(...r);
             })); 
 
-
-    // gen.markParams = false;
-    // gen.paramNodes
-    //     .filter(n => !terminals.includes(n))
-    //     .forEach(n => 
-    //         n.outputs
-    //             .filter(o => !o.param)
-    //             .forEach(o =>
-    //                 request.push(...o.genRequest(gen))));
-
-
+            
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,

@@ -4,7 +4,7 @@ const settings =
     
     logStorage:       false, 
     logActions:       false, 
-    logRequests:      false, 
-    logValueUpdates:  false, 
+    logRequests:      true, 
+    logValueUpdates:  true, 
     logObjectUpdates: false
 };

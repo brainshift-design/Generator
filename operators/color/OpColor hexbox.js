@@ -129,8 +129,9 @@ function hexboxFinish(node, success)
     if (node.hexbox.value.trim() == '')
         node.hexbox.value = node.hexbox.savedValue;
 
+        
     var rgb = hex2rgb(node.hexbox.value);
-
+    
     if (success) 
     {
         setDataColorToCurrentSpace(node, rgb2dataColor(rgb));

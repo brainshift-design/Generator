@@ -45,21 +45,15 @@ extends GOperator
                 this.result = new GNumberValue(
                     floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
                     maxDec);
-                
-                this.result.valid = true;
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
-
-            else
-            {
-                this.result       = new GNumberValue(0);
-                this.result.valid = true;
-            }
+            else                  this.result = new GNumberValue(0);
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);

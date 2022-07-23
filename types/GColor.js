@@ -2,13 +2,9 @@ class GColor
 extends GOperator
 {
     input = null;
+    value;
 
-    space;
     convert = null;
-
-    c1;
-    c2;
-    c3;
 
 
 
@@ -133,6 +129,18 @@ extends GOperator
         this.result.c1.value = color[0];
         this.result.c2.value = color[1];
         this.result.c3.value = color[2];
+    }
+
+
+
+    toDataColor()
+    {
+        return [
+            colorSpace(this.space.value),
+            this.c1.value,
+            this.c2.value,
+            this.c3.value
+        ]
     }
 
 

@@ -10,7 +10,13 @@
 figma.on('selectionchange', figOnSelectionChange);
 figma.on('close',           figOnPluginClose);
 
-figma.showUI(__html__);
+
+figma.showUI(
+    __html__,
+    {
+        visible:     false,
+        themeColors: true
+    });
 
 
 
@@ -18,12 +24,10 @@ function figStartGenerator()
 {
     (async function()
     {
-        // load product key
         let productKey = await figLoadLocal('productKey');
         if (productKey == null) productKey = '';
 
 
-        // size window
         let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
         let wndHeight = await figma.clientStorage.getAsync('windowHeight');
 
@@ -35,10 +39,11 @@ function figStartGenerator()
             Math.max(0, wndHeight));
 
 
-        //
         figPostMessageToUI({
             cmd:        'uiEndStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });
+
+        figma.ui.show();
     })();
 }

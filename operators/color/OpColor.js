@@ -185,14 +185,30 @@ extends OpColorBase
         }
         else
         {
-            req.push(
-                ...this.node.paramSpace.genRequest(gen),
-                'N', !isNaN(this.node.fromSpace) 
-                     ? numToString(this.node.fromSpace)
-                     : '?',
-                ...this.node.param1.genRequest(gen),
-                ...this.node.param2.genRequest(gen),
-                ...this.node.param3.genRequest(gen));
+            if (this.node.paramSpace.value == 0) // hex
+            {
+                req.push(
+                    ...this.node.paramSpace.genRequest(gen),
+                    'N', 
+                    !isNaN(this.node.fromSpace) 
+                        ? numToString(this.node.fromSpace)
+                        : '?',
+                    'N', numToString(this.node._color[1] * rgbScale[0]),
+                    'N', numToString(this.node._color[2] * rgbScale[1]),
+                    'N', numToString(this.node._color[3] * rgbScale[2]));
+            }
+            else
+            {
+                req.push(
+                    ...this.node.paramSpace.genRequest(gen),
+                    'N', 
+                    !isNaN(this.node.fromSpace) 
+                        ? numToString(this.node.fromSpace)
+                        : '?',
+                    ...this.node.param1.genRequest(gen),
+                    ...this.node.param2.genRequest(gen),
+                    ...this.node.param3.genRequest(gen));
+            }
         }
 
 
@@ -201,96 +217,6 @@ extends OpColorBase
 
         return req;
     }
-
-
-
-    // updateData()
-    // {
-    //     //console.log(this.id + '.OpColor.updateData()');
-
-    //     if (this.inputs[0].connected) 
-    //     {
-    //         if (   dataColorIsNaN(this.inputs[0].data.color)
-    //             && !dataColorIsNaN(this._color))
-    //         {
-    //             this._colorBeforeNaN = this._color;
-    //             this._color          = dataColor_NaN;
-    //         }
-    //         else
-    //         {
-    //             const toSpace = colorSpace(this.paramSpace.value);
-    //             const color   = convertDataColorToSpace(this.inputs[0].data.color, toSpace);
-                
-    //             if (this.param1.input.connected) color[1] = getNormalValue(this.param1.input.data.value, color[0], 0);
-    //             if (this.param2.input.connected) color[2] = getNormalValue(this.param2.input.data.value, color[0], 1);
-    //             if (this.param3.input.connected) color[3] = getNormalValue(this.param3.input.data.value, color[0], 2);
-
-    //             switchToSpace(this, toSpace);
-    //             setDataColorToCurrentSpace(this, color);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         if (!dataColorIsNaN(this._colorBeforeNaN))
-    //         {
-    //             this._color          = this._colorBeforeNaN;
-    //             this._colorBeforeNaN = dataColor_NaN;
-
-    //             const toSpace = colorSpace(this.paramSpace.value);
-
-    //             switchToSpace(this, toSpace);
-    //             setDataColorToCurrentSpace(this, this._color);
-
-    //             this._oldSpace = toSpace;
-    //         }
-    //         else
-    //         {
-    //             const toSpace = colorSpace(this.paramSpace.value);
-
-    //             if (   !this.#init
-    //                 ||  this._oldSpace != toSpace
-    //                 || !dataColorIsNaN(this._colorBeforeNaN))
-    //             {
-    //                 this.param1.allowEditDecimals = this.paramSpace.value > 1;
-    //                 this.param2.allowEditDecimals = this.paramSpace.value > 1;
-    //                 this.param3.allowEditDecimals = this.paramSpace.value > 1;
-
-    //                 const color =
-    //                     this.loading 
-    //                     ? this.getDataColorFromParams()
-    //                     : this._color;
-
-
-    //                 switchToSpace(this, toSpace);
-    //                 setDataColorToCurrentSpace(this, color);
-
-
-    //                 for (let i = 2; i < 5; i++)
-    //                 {
-    //                     if (this.inputs[i].connected) 
-    //                     { 
-    //                         const param = this.inputs[i].param;
-
-    //                         param.update(); 
-    //                         this._color[i-1] = param.value; 
-    //                     }
-    //                 }
-
-
-    //                 this.#init = true;
-    //             }
-
-    //             this._color    = this.getDataColorFromParams();
-    //             this._oldSpace = toSpace;
-    //         }
-    //     }
-
-    
-    //     this.outputs[0]._data = dataFromDataColor(this._color);
-
-
-    //     super.updateData()
-    // }
 
 
 

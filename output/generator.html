@@ -2573,6 +2573,14 @@ function logReqColor(col, parse)
 
 
 
+function logReqColorInterpolate(lerp, nValues, parse)
+{
+    parse.log += parse.tab + COLOR_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
+    parse.log += ' ' + nValues;
+}
+
+
 
 
 
@@ -2737,13 +2745,6 @@ function normalizeSeed(x)
 }
 
 
-//////////// WARNING ////////////
-//                             //
-//  DO NOT TOUCH THIS FILE!!!  //
-//                             //
-/////////////////////////////////
-
-
 const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
@@ -2757,6 +2758,8 @@ const NUMBER_EXPONENT    = 'EXP';   // count N...
 const NUMBER_MATH        = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
+
+const COLOR_VALUE        = 'C';     // color value
 
 const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
@@ -2952,7 +2955,9 @@ extends GType
 
     copy()
     {
-        return new GNumberValue(this.value, this.decimals);
+        return new GNumberValue(
+            this.value, 
+            this.decimals);
     }
 
 
@@ -3530,21 +3535,15 @@ extends GOperator
                 this.result = new GNumberValue(
                     floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
                     maxDec);
-                
-                this.result.valid = true;
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
-
-            else
-            {
-                this.result       = new GNumberValue(0);
-                this.result.valid = true;
-            }
+            else                  this.result = new GNumberValue(0);
 
 
-            this.valid = true;
+            this.result.valid = true;
+            this.valid        = true;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
@@ -3558,17 +3557,75 @@ extends GOperator
 
 
 
+class GColorValue
+extends GType
+{
+    space;
+    c1;
+    c2;
+    c3;
+
+
+
+    constructor(space, c1, c2, c3)
+    {
+        super(COLOR_VALUE);
+
+        this.space = space;
+        this.c1    = c1;
+        this.c2    = c2;
+        this.c3    = c3;
+    }
+
+
+
+    copy()
+    {
+        return new GColorValue(
+            this.space, 
+            this.c1, 
+            this.c2, 
+            this.c3);
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.space)
+            && !isNaN(this.c1)
+            && !isNaN(this.c2)
+            && !isNaN(this.c3);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this;
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.space.toString()
+              + ' ' + this.c1.toString()
+              + ' ' + this.c2.toString()
+              + ' ' + this.c3.toString()
+            : '?';
+    }
+}
+
+
 class GColor
 extends GOperator
 {
     input = null;
+    value;
 
-    space;
     convert = null;
-
-    c1;
-    c2;
-    c3;
 
 
 
@@ -3697,6 +3754,18 @@ extends GOperator
 
 
 
+    toDataColor()
+    {
+        return [
+            colorSpace(this.space.value),
+            this.c1.value,
+            this.c2.value,
+            this.c3.value
+        ]
+    }
+
+
+
     get mustNotEval()
     {
         return this.space.mustNotEval
@@ -3705,6 +3774,117 @@ extends GOperator
             && this.c3   .mustNotEval;
     }
 }
+
+
+class GColorInterpolate
+extends GOperator
+{
+    input0 = null;
+    input1 = null;
+
+    space;
+    amount;
+
+
+    constructor(nodeId, active)
+    {
+        super(NUMBER_INTERPOLATE, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const lerp = new GColorInterpolate(this.nodeId, this.active);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.space  = this.space .copy();
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result       = new GColor(this.nodeId, this.active);
+
+            this.result.space = this.space.eval(parse).copy();
+            const amount      = this.amount.eval(parse).copy();
+
+
+            if (   this.input0 
+                && this.input1)
+            {
+                const input0 = this.input0.eval(parse).copy();
+                const input1 = this.input1.eval(parse).copy();
+
+                console.assert(amount.type == NUMBER_VALUE);
+                const f = amount.value / 100;
+
+                const _space = colorSpace(this.result.space.value);
+                
+                const col0 = input0.toDataColor();
+                const col1 = input1.toDataColor();
+
+                console.log('col0 =', col0);
+                console.log('col1 =', col1);
+                
+                const col = this.interpolate(
+                    this.result.space.value,
+                    dataColor2array(convertDataColorToSpace(col0, _space)),
+                    dataColor2array(convertDataColorToSpace(col1, _space)),
+                    f);
+
+                if (this.c1) this.result.c1 = new GNumberValue(col[0]);
+                if (this.c2) this.result.c2 = new GNumberValue(col[1]);
+                if (this.c3) this.result.c3 = new GNumberValue(col[2]);
+            }
+
+            else if (this.input0) this.result = this.input0.eval(parse).copy();
+            else if (this.input1) this.result = this.input1.eval(parse).copy();
+            
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'space',  this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount           );
+        }
+
+
+        return this.result;
+    }
+
+
+
+    interpolate(space, col0, col1, f)
+    {
+        const iSpace = colorSpaceIndex(space);
+
+        if (iSpace <= 1) // hex, rgb
+        {
+            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+        }
+        else // hsv, hsl, hcl
+        {
+            const h0 = col0[0] * Tau;
+            const h1 = col1[0] * Tau;
+            
+            return [
+                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                lerp(col0[1], col1[1], f),
+                lerp(col0[2], col1[2], f) ];
+        }
+    }
+}
+
 
 
 class GRectangle
@@ -4445,6 +4625,63 @@ function genParseColor(parse)
 
 
 
+function genParseColorInterpolate(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const lerp = new GColorInterpolate(nodeId, active);
+
+
+    let nValues = -1;
+
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues => 0 && nValues <= 2);
+    }
+
+    
+    if (parse.logRequests) 
+        logReqColorInterpolate(lerp, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lerp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nValues == 2)
+    {
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
+        lerp.space  = genParse(parse);
+        lerp.amount = genParse(parse);
+    }
+    else if (nValues == 1)
+    {
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        lerp.space  = genParse(parse);
+        lerp.amount = genParse(parse);
+    }
+    else if (nValues == 0)
+    {
+        lerp.space  = genParse(parse);
+        lerp.amount = genParse(parse);
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, lerp);
+    return lerp;
+}
+
+
 /*
     RECT 
     id
@@ -5023,26 +5260,27 @@ function genParse(parse)
     //console.log('next', next);
 
 
-         if (parse.next == PARAM             ) return genParseParam      (parse);
+         if (parse.next == PARAM             ) return genParseParam           (parse);
 
-    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue   (parse);
-    else if (parse.next == NUMBER            ) return genParseNumber     (parse);
-    else if (parse.next == NUMBER_LIMITS     ) return genParseLimits     (parse);
-    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic (parse, (nodeId, active) => new GAdd     (nodeId, active));
-    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic (parse, (nodeId, active) => new GSubtract(nodeId, active));
-    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic (parse, (nodeId, active) => new GMultiply(nodeId, active));
-    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic (parse, (nodeId, active) => new GDivide  (nodeId, active));
-    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic (parse, (nodeId, active) => new GModulo  (nodeId, active));
-    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic (parse, (nodeId, active) => new GExponent(nodeId, active));
-    else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate(parse);
+    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue        (parse);
+    else if (parse.next == NUMBER            ) return genParseNumber          (parse);
+    else if (parse.next == NUMBER_LIMITS     ) return genParseLimits          (parse);
+    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic      (parse, (nodeId, active) => new GAdd     (nodeId, active));
+    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic      (parse, (nodeId, active) => new GSubtract(nodeId, active));
+    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic      (parse, (nodeId, active) => new GMultiply(nodeId, active));
+    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic      (parse, (nodeId, active) => new GDivide  (nodeId, active));
+    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic      (parse, (nodeId, active) => new GModulo  (nodeId, active));
+    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
+    else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate     (parse);
 
-    else if (parse.next == COLOR             ) return genParseColor      (parse);
+    else if (parse.next == COLOR             ) return genParseColor           (parse);
+    else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
 
-    else if (parse.next == RECTANGLE         ) return genParseRectangle  (parse);
-    else if (parse.next == LINE              ) return genParseLine       (parse);
-    else if (parse.next == ELLIPSE           ) return genParseEllipse    (parse);
-    else if (parse.next == POLYGON           ) return genParsePolygon    (parse);
-    else if (parse.next == STAR              ) return genParseStar       (parse);
+    else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
+    else if (parse.next == LINE              ) return genParseLine            (parse);
+    else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);
+    else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
+    else if (parse.next == STAR              ) return genParseStar            (parse);
 
     
     parse.so++;
@@ -5119,7 +5357,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    //console.log('req =', req);
+    console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];

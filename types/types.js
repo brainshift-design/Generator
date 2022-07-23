@@ -1,10 +1,3 @@
-//////////// WARNING ////////////
-//                             //
-//  DO NOT TOUCH THIS FILE!!!  //
-//                             //
-/////////////////////////////////
-
-
 const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
@@ -18,6 +11,8 @@ const NUMBER_EXPONENT    = 'EXP';   // count N...
 const NUMBER_MATH        = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
+
+const COLOR_VALUE        = 'C';     // color value
 
 const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount

@@ -20,7 +20,10 @@
 ../types/GInterpolate.js
 
 
+../types/GColorValue.js
 ../types/GColor.js
+
+../types/GColorInterpolate.js
 
 ../types/GRectangle.js
 ../types/GLine.js
