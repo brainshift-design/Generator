@@ -70,9 +70,11 @@ extends GOperator
 
                 console.log('col =', col);
 
-                this.result.c1 = new GNumberValue(col[0]);
-                this.result.c2 = new GNumberValue(col[1]);
-                this.result.c3 = new GNumberValue(col[2]);
+                const scale = getColorSpaceScale(_space);
+
+                this.result.c1 = new GNumberValue(col[0] * scale[0]);
+                this.result.c2 = new GNumberValue(col[1] * scale[1]);
+                this.result.c3 = new GNumberValue(col[2] * scale[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();

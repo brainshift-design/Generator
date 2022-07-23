@@ -225,11 +225,15 @@ extends OpColorBase
         const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
 
 
-        switchToSpace(this, colorSpace(col.space));
+        switchToSpace(this, colorSpace(col.space.value));
+
+        this.param1.setValue(col.c1, false, true, false);
+        this.param2.setValue(col.c2, false, true, false);
+        this.param3.setValue(col.c3, false, true, false);
 
 
         this.fromSpace = Number.NaN;
-        this._color = col.toDataColor();
+        this._color    = col.toDataColor();
 
 
         super.updateValues(updateParamId, paramIds, values);

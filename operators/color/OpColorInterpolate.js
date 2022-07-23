@@ -108,10 +108,13 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        console.log('updateValues.values = ', values);
+        const col    = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        //const amount = values[paramIds.findIndex(id => id == 'amount')];
 
 console.log('col.space =', col.space);
-        this.paramSpace.setValue(col.space, false, true, false);
+        this.paramSpace .setValue(col.space, false, true, false);
+        //this.paramAmount.setValue(amount,    false, true, false);
 
         this._color = col.toDataColor();
 

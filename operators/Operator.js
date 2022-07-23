@@ -538,11 +538,17 @@ class Operator
 
     updateValues(updateParamId, paramIds, values) // virtual
     {
-        for (let i = 0, param; i < paramIds.length; i++)
+        console.log('Operator.updateValues()');
+        console.log('values = ', values);
+
+        for (let i = 0, paramIndex; i < paramIds.length; i++)
         {
             if (    paramIds[i] != updateParamId
-                && (param = this.params.find(p => p.id == paramIds[i])))
-                    param.setValue(values[i], false, true, false);
+                && (paramIndex = this.params.findIndex(p => p.id == paramIds[i])) > -1)
+            {
+                console.log('paramIndex =', paramIndex);
+                this.params[paramIndex].setValue(values[i], false, true, false);
+            }
         }
     }
 

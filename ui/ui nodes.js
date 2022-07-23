@@ -856,23 +856,25 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
         if (count > 0)
         {
-            const _indices = [];
-            const _values  = [];
+            const _ids    = [];
+            const _values = [];
             
             for (let j = 0; j < count; j++)
             {
-                _indices.push(values[i++]);
+                const id = values[i++];
 
-                switch (lastOf(_indices))
+                _ids.push(id);
+
+                switch (id)
                 {
-                    case NUMBER_VALUE: _values.push(parseGNumberValue(values[i++])); break;
-                    case COLOR_VALUE:  _values.push(parseGColorValue (values[i++])); break;
+                    case COLOR_VALUE: _values.push(parseGColorValue (values[i++])); break;
+                    default:          _values.push(parseGNumberValue(values[i++])); break;
                 }
             }
 
             node.updateValues(
                 updateNodeId == nodeId ? updateParamId : '',
-                _indices,
+                _ids,
                 _values);
         }
     }

@@ -4562,6 +4562,7 @@ extends GType
         this.value    = val;
         this.decimals = dec;
 
+        this.result   = this;
         this.valid    = true;
     }
 
@@ -5194,10 +5195,13 @@ extends GType
     {
         super(COLOR_VALUE);
 
-        this.space = space;
-        this.c1    = c1;
-        this.c2    = c2;
-        this.c3    = c3;
+        this.space  = space;
+        this.c1     = c1;
+        this.c2     = c2;
+        this.c3     = c3;
+
+        this.result = this;
+        this.valid  = true;
     }
 
 
@@ -5270,10 +5274,10 @@ function parseGColorValue(str)
     const col = str.split(' ');
 
     return new GColorValue(
-        new GNumberValue(col[0]),
-        new GNumberValue(col[1]),
-        new GNumberValue(col[2]),
-        new GNumberValue(col[3]));
+        new GNumberValue(parseInt(col[0])),
+        new GNumberValue(parseGNumberValue(col[1])),
+        new GNumberValue(parseGNumberValue(col[2])),
+        new GNumberValue(parseGNumberValue(col[3])));
 }
 
 
@@ -5494,9 +5498,11 @@ extends GOperator
 
                 console.log('col =', col);
 
-                this.result.c1 = new GNumberValue(col[0]);
-                this.result.c2 = new GNumberValue(col[1]);
-                this.result.c3 = new GNumberValue(col[2]);
+                const scale = getColorSpaceScale(_space);
+
+                this.result.c1 = new GNumberValue(col[0] * scale[0]);
+                this.result.c2 = new GNumberValue(col[1] * scale[1]);
+                this.result.c3 = new GNumberValue(col[2] * scale[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -13731,6 +13737,7 @@ extends GType
         this.value    = val;
         this.decimals = dec;
 
+        this.result   = this;
         this.valid    = true;
     }
 
@@ -14363,10 +14370,13 @@ extends GType
     {
         super(COLOR_VALUE);
 
-        this.space = space;
-        this.c1    = c1;
-        this.c2    = c2;
-        this.c3    = c3;
+        this.space  = space;
+        this.c1     = c1;
+        this.c2     = c2;
+        this.c3     = c3;
+
+        this.result = this;
+        this.valid  = true;
     }
 
 
@@ -14439,10 +14449,10 @@ function parseGColorValue(str)
     const col = str.split(' ');
 
     return new GColorValue(
-        new GNumberValue(col[0]),
-        new GNumberValue(col[1]),
-        new GNumberValue(col[2]),
-        new GNumberValue(col[3]));
+        new GNumberValue(parseInt(col[0])),
+        new GNumberValue(parseGNumberValue(col[1])),
+        new GNumberValue(parseGNumberValue(col[2])),
+        new GNumberValue(parseGNumberValue(col[3])));
 }
 
 
@@ -14663,9 +14673,11 @@ extends GOperator
 
                 console.log('col =', col);
 
-                this.result.c1 = new GNumberValue(col[0]);
-                this.result.c2 = new GNumberValue(col[1]);
-                this.result.c3 = new GNumberValue(col[2]);
+                const scale = getColorSpaceScale(_space);
+
+                this.result.c1 = new GNumberValue(col[0] * scale[0]);
+                this.result.c2 = new GNumberValue(col[1] * scale[1]);
+                this.result.c3 = new GNumberValue(col[2] * scale[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -19667,6 +19679,8 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         console.log('NumberParam.setValue()');
+        console.log('value = ', value);
+
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
@@ -20018,15 +20032,13 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
         console.log('SelectParam.setValue()');
+        console.log('value = ', value);
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
-        // if (this.output)
-        //     this.output._data = dataFromNumber(value);
-            // console.log('super = ', super);
-        // super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
 
 
@@ -22140,11 +22152,17 @@ class Operator
 
     updateValues(updateParamId, paramIds, values) // virtual
     {
-        for (let i = 0, param; i < paramIds.length; i++)
+        console.log('Operator.updateValues()');
+        console.log('values = ', values);
+
+        for (let i = 0, paramIndex; i < paramIds.length; i++)
         {
             if (    paramIds[i] != updateParamId
-                && (param = this.params.find(p => p.id == paramIds[i])))
-                    param.setValue(values[i], false, true, false);
+                && (paramIndex = this.params.findIndex(p => p.id == paramIds[i])) > -1)
+            {
+                console.log('paramIndex =', paramIndex);
+                this.params[paramIndex].setValue(values[i], false, true, false);
+            }
         }
     }
 
@@ -24461,11 +24479,15 @@ extends OpColorBase
         const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
 
 
-        switchToSpace(this, colorSpace(col.space));
+        switchToSpace(this, colorSpace(col.space.value));
+
+        this.param1.setValue(col.c1, false, true, false);
+        this.param2.setValue(col.c2, false, true, false);
+        this.param3.setValue(col.c3, false, true, false);
 
 
         this.fromSpace = Number.NaN;
-        this._color = col.toDataColor();
+        this._color    = col.toDataColor();
 
 
         super.updateValues(updateParamId, paramIds, values);
@@ -26616,10 +26638,13 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        console.log('updateValues.values = ', values);
+        const col    = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        //const amount = values[paramIds.findIndex(id => id == 'amount')];
 
 console.log('col.space =', col.space);
-        this.paramSpace.setValue(col.space, false, true, false);
+        this.paramSpace .setValue(col.space, false, true, false);
+        //this.paramAmount.setValue(amount,    false, true, false);
 
         this._color = col.toDataColor();
 
@@ -31337,23 +31362,25 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
         if (count > 0)
         {
-            const _indices = [];
-            const _values  = [];
+            const _ids    = [];
+            const _values = [];
             
             for (let j = 0; j < count; j++)
             {
-                _indices.push(values[i++]);
+                const id = values[i++];
 
-                switch (lastOf(_indices))
+                _ids.push(id);
+
+                switch (id)
                 {
-                    case NUMBER_VALUE: _values.push(parseGNumberValue(values[i++])); break;
-                    case COLOR_VALUE:  _values.push(parseGColorValue (values[i++])); break;
+                    case COLOR_VALUE: _values.push(parseGColorValue (values[i++])); break;
+                    default:          _values.push(parseGNumberValue(values[i++])); break;
                 }
             }
 
             node.updateValues(
                 updateNodeId == nodeId ? updateParamId : '',
-                _indices,
+                _ids,
                 _values);
         }
     }

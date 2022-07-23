@@ -13,6 +13,7 @@ extends GType
         this.value    = val;
         this.decimals = dec;
 
+        this.result   = this;
         this.valid    = true;
     }
 

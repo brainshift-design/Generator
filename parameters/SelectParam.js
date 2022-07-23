@@ -120,15 +120,13 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     { 
         console.log('SelectParam.setValue()');
+        console.log('value = ', value);
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
             this._control.setValue(value, false, false, forceChange); 
 
-        // if (this.output)
-        //     this.output._data = dataFromNumber(value);
-            // console.log('super = ', super);
-        // super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
 
 

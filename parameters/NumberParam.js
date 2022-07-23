@@ -108,6 +108,8 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         console.log('NumberParam.setValue()');
+        console.log('value = ', value);
+
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
