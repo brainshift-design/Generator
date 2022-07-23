@@ -83,28 +83,85 @@ function genParseColorInterpolate(parse)
 
     parse.nTab++;
 
+
     if (nValues == 2)
     {
         lerp.input0 = genParse(parse);
         lerp.input1 = genParse(parse);
-        lerp.space  = genParse(parse);
-        lerp.amount = genParse(parse);
-    }
-    else if (nValues == 1)
-    {
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        lerp.space  = genParse(parse);
-        lerp.amount = genParse(parse);
-    }
-    else if (nValues == 0)
-    {
-        lerp.space  = genParse(parse);
-        lerp.amount = genParse(parse);
     }
 
+    else if (nValues == 1)
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+
+    else if (nValues != 0)
+        console.assert(false);
+
+
+    lerp.space  = genParse(parse);
+    lerp.amount = genParse(parse);
+    lerp.gamma  = genParse(parse);
+
+    
     parse.nTab--;
 
 
     genParseNodeEnd(parse, lerp);
     return lerp;
+}
+
+
+
+function genParseColorContrast(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const cnt = new GColorContrast(nodeId, active);
+
+
+    let nValues = -1;
+
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues => 0 && nValues <= 2);
+    }
+
+    
+    if (parse.logRequests) 
+        logReqColorContrast(cnt, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nValues == 2)
+    {
+        cnt.input0   = genParse(parse);
+        cnt.input1   = genParse(parse);
+        cnt.standard = genParse(parse);
+    }
+    else if (nValues == 1)
+    {
+        cnt.input0   = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        cnt.space    = genParse(parse);
+        cnt.standard = genParse(parse);
+    }
+    else if (nValues == 0)
+    {
+        cnt.space    = genParse(parse);
+        cnt.standard = genParse(parse);
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cnt);
+    return cnt;
 }

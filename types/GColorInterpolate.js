@@ -6,6 +6,7 @@ extends GOperator
 
     space;
     amount;
+    gamma;
 
 
     constructor(nodeId, active)
@@ -24,6 +25,7 @@ extends GOperator
 
         lerp.space  = this.space .copy();
         lerp.amount = this.amount.copy();
+        lerp.gamma  = this.gamma .copy();
 
         return lerp;
     }
@@ -36,8 +38,9 @@ extends GOperator
         {
             this.result       = new GColorValue();
 
-            this.result.space = this.space.eval(parse).copy();
+            this.result.space = this.space .eval(parse).copy();
             const amount      = this.amount.eval(parse).copy();
+            const gamma       = this.gamma .eval(parse).copy();
 
 
             if (   this.input0 
@@ -46,29 +49,23 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
-                console.log('input0 =', input0);
-                console.log('input1 =', input1);
 
                 console.assert(amount.type == NUMBER_VALUE);
                 const f = amount.value / 100;
-                console.log('this.result =', this.result);
-                console.log('this.result.space =', this.result.space);
+
                 const _space = colorSpace(this.result.space.value);
-                console.log('_space =', _space);
                 
+
                 const col0 = input0.toDataColor();
                 const col1 = input1.toDataColor();
-
-                console.log('col0 =', col0);
-                console.log('col1 =', col1);
 
                 const col = this.interpolate(
                     this.result.space.value,
                     dataColor2array(convertDataColorToSpace(col0, _space)),
                     dataColor2array(convertDataColorToSpace(col1, _space)),
-                    f);
+                    f,
+                    gamma);
 
-                console.log('col =', col);
 
                 const scale = getColorSpaceScale(_space);
 
@@ -95,21 +92,43 @@ extends GOperator
 
 
 
-    interpolate(space, col0, col1, f)
+    interpolate(space, col0, col1, f, gamma)
     {
         if (space <= 1) // hex, rgb
         {
-            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+            const r0 = Math.pow(col0[0], gamma);  const r1 = Math.pow(col1[0], gamma);
+            const g0 = Math.pow(col0[1], gamma);  const g1 = Math.pow(col1[1], gamma);
+            const b0 = Math.pow(col0[2], gamma);  const b1 = Math.pow(col1[2], gamma);
+
+            return [
+                Math.pow(lerp(r0, r1, f), 1/gamma),
+                Math.pow(lerp(g0, g1, f), 1/gamma),
+                Math.pow(lerp(b0, b1, f), 1/gamma) ];
+
+            //return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
         }
-        else // hsv, hsl, hcl
+        else //if (space == 2  // hsv
+             // || space == 3) // hsl
         {
-            const h0 = col0[0] * Tau;
-            const h1 = col1[0] * Tau;
-            
+            const h0 = col0[0] * Tau;  const h1 = col1[0] * Tau;
+            const c0 = col0[1];        const c1 = col1[1];
+            const l0 = col0[2];        const l1 = col1[2];
+
             return [
                 normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(col0[1], col1[1], f),
-                lerp(col0[2], col1[2], f) ];
+                lerp(c0, c1, f),
+                lerp(l0, l1, f) ];
         }
+        // else // hcl
+        // {
+        //     const h0 = col0[0] * Tau;  const h1 = col1[0] * Tau;
+        //     const c0 = col0[1];        const c1 = col1[1];
+        //     const l0 = col0[1];        const l1 = col1[1];
+
+        //     return [
+        //         normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+        //         lerp(c0, c1, f),
+        //         lerp(l0, l1, f) ];
+        // }
     }
 }

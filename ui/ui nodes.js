@@ -721,7 +721,6 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        console.log('data = ', data);
         loadConnections(data, pasteOutsideConnections);
     }
 

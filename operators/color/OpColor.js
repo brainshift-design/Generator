@@ -253,7 +253,7 @@ extends OpColorBase
             const colBack = dataColor2rgb(this._color);
 
             this.hexbox.value = 
-                isRgbValid(colBack)
+                isValidRgb(colBack)
                 ? rgb2hex(colBack)
                 : '?';
         }
@@ -284,8 +284,8 @@ extends OpColorBase
 
         const colSpaceBar = 
             darkText 
-            ? [0, 0, 0, isRgbValid(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isRgbValid(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
+            ? [0, 0, 0, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
@@ -316,7 +316,7 @@ extends OpColorBase
 
         const isValid = 
                colorSpaceIndex(this._color[0]) > 3
-            || isRgbValid(colBack);
+            || isValidRgb(colBack);
 
         this.updateSlider(this.param1.control, isValid);
         this.updateSlider(this.param2.control, isValid);
@@ -364,7 +364,7 @@ extends OpColorBase
     updateAllSliderRanges()
     {
         if (    this.paramSpace.value == 1
-            && !isRgbValid(dataColor2rgb(this._color))) // RGB warning ranges
+            && !isValidRgb(dataColor2rgb(this._color))) // RGB warning ranges
         {
             const rangesR = [];
             if (this._color[1] < 0) rangesR.push(new NumberSliderRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
@@ -383,7 +383,7 @@ extends OpColorBase
         }
         else if ((   this.paramSpace.value == 2  // HSV
                   || this.paramSpace.value == 3) // HSL
-              && !isRgbValid(dataColor2rgb(this._color)))
+              && !isValidRgb(dataColor2rgb(this._color)))
         {
             const rangesS = [];
             if (this._color[2] < 0) rangesS.push(new NumberSliderRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
@@ -438,12 +438,12 @@ extends OpColorBase
         {
             const rgb = getRgb(f);
 
-            if (!open && !isRgbValid(rgb))
+            if (!open && !isValidRgb(rgb))
             {
                 ranges.push(new NumberSliderRange(f, f, warnLineStyle, 0.8));
                 open = true;
             }
-            else if (open && isRgbValid(rgb)) 
+            else if (open && isValidRgb(rgb)) 
             {
                 ranges[ranges.length-1].end = f;
                 open = false;

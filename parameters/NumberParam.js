@@ -107,9 +107,6 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.log('NumberParam.setValue()');
-        console.log('value = ', value);
-
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
@@ -138,7 +135,7 @@ extends Parameter
     genRequest(gen)
     {
         // this function exists because a parameter without an output
-        // should still provide a value
+        // should still be able to generate a request a value
         
         if (    this.output
             && !isEmpty(this.output.cache)

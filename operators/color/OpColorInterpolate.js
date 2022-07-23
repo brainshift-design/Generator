@@ -3,6 +3,7 @@ extends OpColorBase
 {
     paramSpace;
     paramAmount;
+    paramGamma;
 
 
 
@@ -18,10 +19,11 @@ extends OpColorBase
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0, 100, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0,  100, 0));
+        this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
       
         
-        this.paramSpace.control.setMin(1);
+        // this.paramSpace.control.setMin(2);
 
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
@@ -96,6 +98,7 @@ extends OpColorBase
 
         req.push(...this.node.paramSpace .genRequest(gen));
         req.push(...this.node.paramAmount.genRequest(gen));
+        req.push(...this.node.paramGamma .genRequest(gen));
 
 
         gen.scope.pop();
@@ -108,13 +111,10 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        console.log('updateValues.values = ', values);
-        const col    = values[paramIds.findIndex(id => id == COLOR_VALUE)];
-        //const amount = values[paramIds.findIndex(id => id == 'amount')];
+        const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
 
-console.log('col.space =', col.space);
-        this.paramSpace .setValue(col.space, false, true, false);
-        //this.paramAmount.setValue(amount,    false, true, false);
+
+        this.paramSpace.setValue(col.space, false, true, false);
 
         this._color = col.toDataColor();
 

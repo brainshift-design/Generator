@@ -60,6 +60,9 @@ class Operator
     _creatingButton  = null; // this is used to place the node under its creating button
 
     
+    requestCache = []; // for nodes without an output
+
+
     // node UI
 
     div;
@@ -395,6 +398,16 @@ class Operator
 
 
 
+    genRequest(gen)
+    {
+        // this function exists because a node without outputs
+        // should still be able to generate a request
+        
+        return [];
+    }
+
+
+
     genRequestStart(gen)
     {
         const req = [
@@ -538,17 +551,11 @@ class Operator
 
     updateValues(updateParamId, paramIds, values) // virtual
     {
-        console.log('Operator.updateValues()');
-        console.log('values = ', values);
-
         for (let i = 0, paramIndex; i < paramIds.length; i++)
         {
             if (    paramIds[i] != updateParamId
                 && (paramIndex = this.params.findIndex(p => p.id == paramIds[i])) > -1)
-            {
-                console.log('paramIndex =', paramIndex);
                 this.params[paramIndex].setValue(values[i], false, true, false);
-            }
         }
     }
 
@@ -727,14 +734,21 @@ function pushUpdateFromParam(nodes, param)
 
 
     terminals.forEach(n => 
-        n.outputs
-            .filter(o => !o.param)
-            .forEach(o =>
-            {
-                const _r = o.genRequest(gen);
-                const  r = [..._r];
-                request.push(...r);
-            })); 
+    {
+        if (n.outputs.length > 0)
+        {
+            n.outputs
+                .filter(o => !o.param)
+                .forEach(o =>
+                {
+                    const _r = o.genRequest(gen);
+                    const  r = [..._r];
+                    request.push(...r);
+                });
+        }
+        else
+            request.push(...n.genRequest(gen));
+    }); 
 
             
     uiQueueMessageToGenerator({

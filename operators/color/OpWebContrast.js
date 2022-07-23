@@ -1,22 +1,22 @@
 class   OpWebContrast
 extends OpColorBase
 {
-    paramValue;
     paramStandard;
+    paramValue;
 
 
 
     constructor()
     {
-        super('webcontrast', 'contrast', 'color', 80);
+        super(COLOR_CONTRAST, 'contrast', 80);
 
 
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
 
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         enableSliderText(this.paramValue.control, false);
@@ -44,8 +44,48 @@ extends OpColorBase
 
 
 
-    // updateData()
-    // {
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        if (!isEmpty(this.requestCache))
+            return this.requestCache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+
+
+        const [req, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return req;
+
+
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   req.push(2,
+                                       ...input0.connectedOutput.genRequest(gen),
+                                       ...input1.connectedOutput.genRequest(gen));
+
+        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
+        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
+            
+        else                       req.push(0);
+
+
+        req.push(...this.node.paramStandard.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
+
+
     //     //console.log(this.id + '.OpWebContrast.updateData()');
 
         
@@ -61,8 +101,8 @@ extends OpColorBase
     //         const rgb0 = dataColor2rgb(this.inputs[0].data.color);
     //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
-    //         if (   isRgbValid(rgb0) && this.inputs[0].data.isValid
-    //             && isRgbValid(rgb1) && this.inputs[1].data.isValid)
+    //         if (   isValidRgb(rgb0) && this.inputs[0].data.isValid
+    //             && isValidRgb(rgb1) && this.inputs[1].data.isValid)
     //         {
     //             if (this.paramStandard.value == 0)
     //             {
@@ -109,15 +149,15 @@ extends OpColorBase
     //             return;
     //         }
 
-    //         else if ((!isRgbValid(rgb0) || !this.inputs[0].data.isValid)
-    //                &&  isRgbValid(rgb1) &&  this.inputs[1].data.isValid)
+    //         else if ((!isValidRgb(rgb0) || !this.inputs[0].data.isValid)
+    //                &&  isValidRgb(rgb1) &&  this.inputs[1].data.isValid)
     //         {
     //             this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
     //             this.forceShowWarning = true;
     //         }
             
-    //         else if (  isRgbValid(rgb0) &&  this.inputs[0].data.isValid
-    //               && (!isRgbValid(rgb1) || !this.inputs[1].data.isValid))
+    //         else if (  isValidRgb(rgb0) &&  this.inputs[0].data.isValid
+    //               && (!isValidRgb(rgb1) || !this.inputs[1].data.isValid))
     //         {
     //             this.warningStyle     = this.getDefaultWarningStyle(rgb1);
     //             this.forceShowWarning = true;
@@ -132,7 +172,7 @@ extends OpColorBase
     //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
             
     //         this.forceShowWarning = 
-    //                !isRgbValid(rgb1) 
+    //                !isValidRgb(rgb1) 
     //             || !this.inputs[1].data.isValid;
     //     }
 
@@ -141,7 +181,7 @@ extends OpColorBase
 
         
     //     super.updateData();
-    // }
+    }
 
 
 

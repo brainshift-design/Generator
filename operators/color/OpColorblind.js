@@ -53,7 +53,7 @@ extends OpColorBase
     //         this._color = rgb2dataColor(validCb);
 
 
-    //         if (!isRgbValid(rgb))
+    //         if (!isValidRgb(rgb))
     //         {
     //             this.warningStyle = this.getDefaultWarningStyle(validRgb);
     //             valid             = false;
@@ -61,7 +61,7 @@ extends OpColorBase
 
     //         this.forceShowWarning = 
     //                this.inputs[0].connected
-    //             && !isRgbValid(rgb);        
+    //             && !isValidRgb(rgb);        
     //     }
     //     else 
     //     {

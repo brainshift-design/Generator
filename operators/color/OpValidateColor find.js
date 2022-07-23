@@ -10,8 +10,8 @@ function validateColor(color, order, margin1, margin2, margin3)
     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
                                            color = validateChannel(color, i1, margin1);
-    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i2, margin2);
-    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i3, margin3);
+    if (!isValidRgb(dataColor2rgb(color))) color = validateChannel(color, i2, margin2);
+    if (!isValidRgb(dataColor2rgb(color))) color = validateChannel(color, i3, margin3);
 
     return color;
 }
@@ -34,7 +34,7 @@ function validateChannel(color, iChan, margin)
     let _c  = savedValue,
          c_ = savedValue;
 
-    let _valid  = isRgbValid(dataColor2rgb(color));
+    let _valid  = isValidRgb(dataColor2rgb(color));
     let  valid_ = _valid;
 
 
@@ -56,7 +56,7 @@ function validateChannel(color, iChan, margin)
 
     if (_valid) 
     { 
-        _valid = isRgbValid(dataColor2rgb(color));
+        _valid = isValidRgb(dataColor2rgb(color));
         _c     = savedValue;
 
         while (   !_valid
@@ -72,7 +72,7 @@ function validateChannel(color, iChan, margin)
     }
     else if (valid_)
     { 
-        valid_ = isRgbValid(dataColor2rgb(color));
+        valid_ = isValidRgb(dataColor2rgb(color));
         c_     = savedValue;
 
         while (   !valid_
@@ -97,7 +97,7 @@ function isColorValid(c, iChan, savedColor)
 {
     let color = [...savedColor];
     color[iChan+1] = c; 
-    return isRgbValid(dataColor2rgb(color));
+    return isValidRgb(dataColor2rgb(color));
 }
 
 

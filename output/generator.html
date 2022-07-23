@@ -2589,6 +2589,15 @@ function logReqColorInterpolate(lerp, nValues, parse)
 
 
 
+function logReqColorContrast(lerp, nValues, parse)
+{
+    parse.log += parse.tab + COLOR_CONTRAST;
+    parse.log += logReqNodeId(lerp);
+    parse.log += ' ' + nValues;
+}
+
+
+
 
 
 const INTER_STEP   = 0,
@@ -3837,6 +3846,7 @@ extends GOperator
 
     space;
     amount;
+    gamma;
 
 
     constructor(nodeId, active)
@@ -3855,6 +3865,7 @@ extends GOperator
 
         lerp.space  = this.space .copy();
         lerp.amount = this.amount.copy();
+        lerp.gamma  = this.gamma .copy();
 
         return lerp;
     }
@@ -3867,8 +3878,9 @@ extends GOperator
         {
             this.result       = new GColorValue();
 
-            this.result.space = this.space.eval(parse).copy();
+            this.result.space = this.space .eval(parse).copy();
             const amount      = this.amount.eval(parse).copy();
+            const gamma       = this.gamma .eval(parse).copy();
 
 
             if (   this.input0 
@@ -3877,29 +3889,23 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
-                console.log('input0 =', input0);
-                console.log('input1 =', input1);
 
                 console.assert(amount.type == NUMBER_VALUE);
                 const f = amount.value / 100;
-                console.log('this.result =', this.result);
-                console.log('this.result.space =', this.result.space);
+
                 const _space = colorSpace(this.result.space.value);
-                console.log('_space =', _space);
                 
+
                 const col0 = input0.toDataColor();
                 const col1 = input1.toDataColor();
-
-                console.log('col0 =', col0);
-                console.log('col1 =', col1);
 
                 const col = this.interpolate(
                     this.result.space.value,
                     dataColor2array(convertDataColorToSpace(col0, _space)),
                     dataColor2array(convertDataColorToSpace(col1, _space)),
-                    f);
+                    f,
+                    gamma);
 
-                console.log('col =', col);
 
                 const scale = getColorSpaceScale(_space);
 
@@ -3910,6 +3916,167 @@ extends GOperator
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
+            
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        }
+
+
+        return this.result;
+    }
+
+
+
+    interpolate(space, col0, col1, f, gamma)
+    {
+        if (space <= 1) // hex, rgb
+        {
+            const r0 = Math.pow(col0[0], gamma);  const r1 = Math.pow(col1[0], gamma);
+            const g0 = Math.pow(col0[1], gamma);  const g1 = Math.pow(col1[1], gamma);
+            const b0 = Math.pow(col0[2], gamma);  const b1 = Math.pow(col1[2], gamma);
+
+            return [
+                Math.pow(lerp(r0, r1, f), 1/gamma),
+                Math.pow(lerp(g0, g1, f), 1/gamma),
+                Math.pow(lerp(b0, b1, f), 1/gamma) ];
+
+            //return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
+        }
+        else //if (space == 2  // hsv
+             // || space == 3) // hsl
+        {
+            const h0 = col0[0] * Tau;  const h1 = col1[0] * Tau;
+            const c0 = col0[1];        const c1 = col1[1];
+            const l0 = col0[2];        const l1 = col1[2];
+
+            return [
+                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                lerp(c0, c1, f),
+                lerp(l0, l1, f) ];
+        }
+        // else // hcl
+        // {
+        //     const h0 = col0[0] * Tau;  const h1 = col1[0] * Tau;
+        //     const c0 = col0[1];        const c1 = col1[1];
+        //     const l0 = col0[1];        const l1 = col1[1];
+
+        //     return [
+        //         normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+        //         lerp(c0, c1, f),
+        //         lerp(l0, l1, f) ];
+        // }
+    }
+}
+
+
+
+class GColorContrast
+extends GOperator
+{
+    input0 = null;
+    input1 = null;
+
+    standard;
+    value;
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_CONTRAST, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const cnt = new GColorContrast(this.nodeId, this.active);
+
+        if (this.input0) cnt.input0 = this.input0.copy();
+        if (this.input1) cnt.input1 = this.input1.copy();
+
+        cnt.standard = this.standard.copy();
+        cnt.value    = this.value   .copy();
+
+        return cnt;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result       = this;//new GColorValue();
+
+            const standard = this.standard.eval(parse).copy();
+            const value    = this.value   .eval(parse).copy();
+
+
+            if (   this.input0 
+                && this.input1)
+            {
+                const input0 = this.input0.eval(parse).copy();
+                const input1 = this.input1.eval(parse).copy();
+
+                if (   input0.isValid()
+                    && input1.isValid())
+                {
+                    if (standard.value == 0)
+                    {
+                        const ratio = getContrastRatio2(
+                            dataColor2rgb(input0.toDataColor()),
+                            dataColor2rgb(input1.toDataColor()));
+
+                        // let rating = getContrastRating2(ratio);
+
+                        // if (rating != '')
+                        //     rating = '&nbsp;&nbsp;' + rating;
+
+                        // this.paramValue.control.min        = 
+                        // this.paramValue.control.displayMin = 0;
+
+                        // this.paramValue.control.max        = 
+                        // this.paramValue.control.displayMax = 21;
+
+                        // this.paramValue.control.setDecimals(2);
+                        // this.paramValue.control.setSuffix(rating);
+
+                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(ratio, 2));
+                    }
+                    else
+                    {
+                        const ratio = getContrastRatio3(
+                            dataColor2rgb(this.inputs[0].data.color),
+                            dataColor2rgb(this.inputs[1].data.color));
+                            
+                        // this.paramValue.control.min        = 
+                        // this.paramValue.control.displayMin = 0;
+
+                        // this.paramValue.control.max        = 
+                        // this.paramValue.control.displayMax = 105;
+
+                        // this.paramValue.control.setDecimals(1);
+                        // this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+
+                        this.paramValue.control.setValue(Math.abs(ratio), false, false, false);
+
+                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(ratio, 1));
+                    }
+
+
+    //             this.forceShowWarning = false;
+                }
+            }
+
+            else if (this.input1) 
+            {
+                //this.result = this.input1.eval(parse).copy();
+            }
             
 
             this.result.valid = true;
@@ -4385,7 +4552,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   isRgbValid(_rgb)
+                if (   isValidRgb(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -4715,30 +4882,87 @@ function genParseColorInterpolate(parse)
 
     parse.nTab++;
 
+
     if (nValues == 2)
     {
         lerp.input0 = genParse(parse);
         lerp.input1 = genParse(parse);
-        lerp.space  = genParse(parse);
-        lerp.amount = genParse(parse);
-    }
-    else if (nValues == 1)
-    {
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        lerp.space  = genParse(parse);
-        lerp.amount = genParse(parse);
-    }
-    else if (nValues == 0)
-    {
-        lerp.space  = genParse(parse);
-        lerp.amount = genParse(parse);
     }
 
+    else if (nValues == 1)
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+
+    else if (nValues != 0)
+        console.assert(false);
+
+
+    lerp.space  = genParse(parse);
+    lerp.amount = genParse(parse);
+    lerp.gamma  = genParse(parse);
+
+    
     parse.nTab--;
 
 
     genParseNodeEnd(parse, lerp);
     return lerp;
+}
+
+
+
+function genParseColorContrast(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const cnt = new GColorContrast(nodeId, active);
+
+
+    let nValues = -1;
+
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues => 0 && nValues <= 2);
+    }
+
+    
+    if (parse.logRequests) 
+        logReqColorContrast(cnt, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nValues == 2)
+    {
+        cnt.input0   = genParse(parse);
+        cnt.input1   = genParse(parse);
+        cnt.standard = genParse(parse);
+    }
+    else if (nValues == 1)
+    {
+        cnt.input0   = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        cnt.space    = genParse(parse);
+        cnt.standard = genParse(parse);
+    }
+    else if (nValues == 0)
+    {
+        cnt.space    = genParse(parse);
+        cnt.standard = genParse(parse);
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cnt);
+    return cnt;
 }
 
 
@@ -5335,6 +5559,7 @@ function genParse(parse)
 
     else if (parse.next == COLOR             ) return genParseColor           (parse);
     else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
+    else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
 
     else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
     else if (parse.next == LINE              ) return genParseLine            (parse);
@@ -5417,7 +5642,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    console.log('req =', req);
+    //console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];
@@ -6344,7 +6569,7 @@ function invalid2validRgb(rgb)
 
 
 
-function isRgbValid(rgb, lim = Eps)
+function isValidRgb(rgb, lim = Eps)
 {
     return (!isNaN(rgb[0])
          && !isNaN(rgb[1])
@@ -6720,7 +6945,7 @@ function hex2rgb(hex)
 
 function getContrastRatio2(textColor, backColor)
 {
-    if (!isRgbValid(textColor))
+    if (!isValidRgb(textColor))
         return Number.NaN;
 
     const txtY = sRGB.luminance(textColor);
@@ -6746,7 +6971,7 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (!isRgbValid(textColor))
+    if (!isValidRgb(textColor))
         return Number.NaN;
 
     return APCAcontrast(
@@ -7684,8 +7909,8 @@ function validateColor(color, order, margin1, margin2, margin3)
     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
                                            color = validateChannel(color, i1, margin1);
-    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i2, margin2);
-    if (!isRgbValid(dataColor2rgb(color))) color = validateChannel(color, i3, margin3);
+    if (!isValidRgb(dataColor2rgb(color))) color = validateChannel(color, i2, margin2);
+    if (!isValidRgb(dataColor2rgb(color))) color = validateChannel(color, i3, margin3);
 
     return color;
 }
@@ -7708,7 +7933,7 @@ function validateChannel(color, iChan, margin)
     let _c  = savedValue,
          c_ = savedValue;
 
-    let _valid  = isRgbValid(dataColor2rgb(color));
+    let _valid  = isValidRgb(dataColor2rgb(color));
     let  valid_ = _valid;
 
 
@@ -7730,7 +7955,7 @@ function validateChannel(color, iChan, margin)
 
     if (_valid) 
     { 
-        _valid = isRgbValid(dataColor2rgb(color));
+        _valid = isValidRgb(dataColor2rgb(color));
         _c     = savedValue;
 
         while (   !_valid
@@ -7746,7 +7971,7 @@ function validateChannel(color, iChan, margin)
     }
     else if (valid_)
     { 
-        valid_ = isRgbValid(dataColor2rgb(color));
+        valid_ = isValidRgb(dataColor2rgb(color));
         c_     = savedValue;
 
         while (   !valid_
@@ -7771,7 +7996,7 @@ function isColorValid(c, iChan, savedColor)
 {
     let color = [...savedColor];
     color[iChan+1] = c; 
-    return isRgbValid(dataColor2rgb(color));
+    return isValidRgb(dataColor2rgb(color));
 }
 
 
