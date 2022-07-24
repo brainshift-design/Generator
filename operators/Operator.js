@@ -706,14 +706,6 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    // console.log(
-    //       (param ? param.node.id+'.' : '') 
-    //     + 'pushUpdateFromParam('
-    //     + (param ? param.id : 'null')
-    //     + ')');
-
-    // each type is followed first by the node ID, then the params
-
     const request = 
         param
         ? [param.node.id, param.id]
@@ -737,7 +729,9 @@ function pushUpdateFromParam(nodes, param)
 
 
     gen.paramNodes
-        .filter(n => !terminals.includes(n))
+        .filter(n => 
+               !terminals.includes(n)
+            && !gen.passedNodes.includes(n))
         .forEach(n => request.push(...getNodeRequest(n, gen)));
 
     

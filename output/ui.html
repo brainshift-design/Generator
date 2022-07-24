@@ -20088,7 +20088,6 @@ extends Parameter
 
         if (   this.output
             && this.output.connected)
-            //&& this.node.headerConnected)
         {
             if (    gen.markParams
                 &&  lastOf(gen.scope).nodeId != this.node.id
@@ -20414,15 +20413,14 @@ extends Parameter
         }
 
 
-        // if (   this.output
-        //     && this.output.connected)
-        //     //&& this.node.headerConnected)
-        // {
-        //     if (    gen.markParams
-        //         &&  lastOf(gen.scope).nodeId != this.node.id
-        //         && !this.node.valid)
-        //         pushUnique(gen.paramNodes, this.node);
-        // }
+        if (   this.output
+            && this.output.connected)
+        {
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+                pushUnique(gen.paramNodes, this.node);
+        }
 
 
         return req;
@@ -22661,14 +22659,6 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    // console.log(
-    //       (param ? param.node.id+'.' : '') 
-    //     + 'pushUpdateFromParam('
-    //     + (param ? param.id : 'null')
-    //     + ')');
-
-    // each type is followed first by the node ID, then the params
-
     const request = 
         param
         ? [param.node.id, param.id]
@@ -22692,7 +22682,9 @@ function pushUpdateFromParam(nodes, param)
 
 
     gen.paramNodes
-        .filter(n => !terminals.includes(n))
+        .filter(n => 
+               !terminals.includes(n)
+            && !gen.passedNodes.includes(n))
         .forEach(n => request.push(...getNodeRequest(n, gen)));
 
     
@@ -24801,7 +24793,7 @@ extends OpColorBase
             req.push(paramIds.join(','));
             
                                                   req.push(...this.node.paramSpace.genRequest(gen));
-                                                  req.push(NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)));
+                                                  //req.push(NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)));
             if (this.node.param1.input.connected) req.push(...this.node.param1.genRequest(gen));
             if (this.node.param2.input.connected) req.push(...this.node.param2.genRequest(gen));
             if (this.node.param3.input.connected) req.push(...this.node.param3.genRequest(gen));
