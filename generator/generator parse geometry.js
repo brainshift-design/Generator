@@ -22,15 +22,29 @@
 function genParseRectangle(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
-    if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
 
 
     const rect = new GRectangle(nodeId, active);
 
 
+    if (parse.logRequests) 
+        logReqRectangle(rect, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rect);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
     let paramIds;
 
-    if (parse.next == RECTANGLE)
+    if (   parse.next == RECTANGLE_VALUE
+        || parse.next == RECTANGLE)
     {
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
         paramIds   = parse.move().split(',');
@@ -51,6 +65,9 @@ function genParseRectangle(parse)
         case 'round':  rect.round  = genParse(parse); break;
         }
     }
+
+
+    parse.nTab--;
 
 
     genParseNodeEnd(parse, rect);

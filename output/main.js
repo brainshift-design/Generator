@@ -154,8 +154,8 @@ const COLOR_VALIDATE = 'CVLD'; // C
 const COLOR_CONTRAST = 'CCNT'; // C:text C:background
 const COLORBLIND = 'BLND'; // C
 const COLOR_TYPES = [
-    COLOR,
     COLOR_VALUE,
+    COLOR,
     COLOR_INTERPOLATE,
     COLOR_VALIDATE,
     COLORBLIND
@@ -164,12 +164,22 @@ const STRING_VALUE = 'S'; // "..." (s) (escape \\ and \")
 const STRING = 'STR'; // S | s
 const STRING_ADD = 'SADD'; // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
+const RECTANGLE_VALUE = 'R';
+const LINE_VALUE = 'R';
+const ELLIPSE_VALUE = 'R';
+const POLYGON_VALUE = 'R';
+const STAR_VALUE = 'R';
 const RECTANGLE = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
 const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
 const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const GEOMETRY_TYPES = [
+    RECTANGLE_VALUE,
+    LINE_VALUE,
+    ELLIPSE_VALUE,
+    POLYGON_VALUE,
+    STAR_VALUE,
     RECTANGLE,
     LINE,
     ELLIPSE,
@@ -183,18 +193,14 @@ const ACTIVE = 'ACT';
 const PARAM = 'PARAM'; // nodeId paramId
 /*
 
-COLOR       C
 ELLIPSE     E
 FRAME       F
 GROUP       G
 IMAGE       I
 LIST        L
-NUMBER      N
 POLYGON     P
-RECTANGLE   R
 SLICE       /
 STAR        *
-STRING      S
 TEXT        T
 VECTOR      V
 

@@ -19,6 +19,25 @@ extends GOperator
 
 
 
+    copy()
+    {
+        const rect = new GRectangle(this.nodeId, this.active);
+
+        if (this.input) 
+            col.input = this.input.copy();
+
+        if (this.x     ) rect.x      = this.x     .copy();
+        if (this.y     ) rect.y      = this.y     .copy();
+        if (this.width ) rect.width  = this.width .copy();
+        if (this.height) rect.height = this.height.copy();
+        if (this.angle ) rect.angle  = this.angle .copy();
+        if (this.round ) rect.round  = this.round .copy();
+
+        return rect;
+    }
+
+
+
     isValid()
     {
         return this.input
@@ -37,32 +56,45 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GRectangle(this.nodeId, this.active);
+            this.result = new GRectangleValue();
 
 
-            let input = 
-                this.input 
-                ? this.input.eval(parse) 
-                : null;
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == RECTANGLE_VALUE);
 
-            this.result.x      = (!input || this.x      ? this.x      : input.x     ).eval(parse);
-            this.result.y      = (!input || this.y      ? this.y      : input.y     ).eval(parse);
-            this.result.width  = (!input || this.width  ? this.width  : input.width ).eval(parse);
-            this.result.height = (!input || this.height ? this.height : input.height).eval(parse);
-            this.result.angle  = (!input || this.angle  ? this.angle  : input.angle ).eval(parse);
-            this.result.round  = (!input || this.round  ? this.round  : input.round ).eval(parse);
+                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
+                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
+                if (this.width ) this.result.width  = this.width .eval(parse).copy();
+                if (this.height) this.result.height = this.height.eval(parse).copy();
+                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
+                if (this.round ) this.result.round  = this.round .eval(parse).copy();
+            }
+            else
+            {
+                this.result.x      = this.x     .eval(parse).copy();
+                this.result.y      = this.y     .eval(parse).copy();
+                this.result.width  = this.width .eval(parse).copy();
+                this.result.height = this.height.eval(parse).copy();
+                this.result.angle  = this.angle .eval(parse).copy();
+                this.result.round  = this.round .eval(parse).copy();
+            }
 
 
             this.valid        = true;
             this.result.valid = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
-            genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
+            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            // genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
+            // genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
+            // genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
+            // genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
+            // genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
+            // genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
 
 
             if (this.active)

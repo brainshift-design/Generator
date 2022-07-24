@@ -15,7 +15,7 @@ extends OpGeometryBase
         super(RECTANGLE, 'rect', 90);
 
 
-        this.addInput (new Input ([RECTANGLE]));
+        this.addInput(new Input([RECTANGLE, RECTANGLE_VALUE]));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));

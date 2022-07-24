@@ -21,10 +21,17 @@
 
 
 ../types/GColorValue.js
-../types/GColor.js
 
+../types/GColor.js
 ../types/GColorInterpolate.js
 ../types/GColorContrast.js
+
+
+../types/GRectangleValue.js
+../types/GLineValue.js
+../types/GEllipseValue.js
+../types/GPolygonValue.js
+../types/GStarValue.js
 
 ../types/GRectangle.js
 ../types/GLine.js

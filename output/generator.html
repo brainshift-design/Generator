@@ -2557,6 +2557,11 @@ function logReqColorContrast(lerp, nValues, parse)
 }
 
 
+function logReqRectangle(rect, parse)
+{
+    parse.log += parse.tab + RECTANGLE;
+    parse.log += logReqNodeId(rect);
+}
 
 
 
@@ -2746,8 +2751,9 @@ const COLORBLIND         = 'BLND';  // C
 
 const COLOR_TYPES =
 [
-    COLOR,
     COLOR_VALUE,
+
+    COLOR,
     COLOR_INTERPOLATE,
     COLOR_VALIDATE,
     COLORBLIND
@@ -2761,6 +2767,12 @@ const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 
+const RECTANGLE_VALUE    = 'R';
+const LINE_VALUE         = 'R';
+const ELLIPSE_VALUE      = 'R';
+const POLYGON_VALUE      = 'R';
+const STAR_VALUE         = 'R';
+
 const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
@@ -2770,6 +2782,12 @@ const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points
 
 const GEOMETRY_TYPES =
 [
+    RECTANGLE_VALUE,
+    LINE_VALUE,
+    ELLIPSE_VALUE,
+    POLYGON_VALUE,
+    STAR_VALUE,
+
     RECTANGLE,
     LINE,
     ELLIPSE,
@@ -2791,18 +2809,14 @@ const PARAM              = 'PARAM'; // nodeId paramId
 
 /*
 
-COLOR       C
 ELLIPSE     E
 FRAME       F
 GROUP       G
 IMAGE       I
 LIST        L
-NUMBER      N
 POLYGON     P
-RECTANGLE   R
 SLICE       /
 STAR        *
-STRING      S
 TEXT        T
 VECTOR      V
 
@@ -3667,7 +3681,6 @@ class GColor
 extends GOperator
 {
     input = null;
-    //value;
 
     convert = null;
 
@@ -3765,7 +3778,7 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-            
+
 
             // genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
             // genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
@@ -4083,6 +4096,127 @@ extends GOperator
 
 
 
+class GRectangleValue
+extends GType
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+
+
+
+    constructor(x      = new GNumberValue(0), 
+                y      = new GNumberValue(0), 
+                width  = new GNumberValue(0), 
+                height = new GNumberValue(0), 
+                angle  = new GNumberValue(0), 
+                round  = new GNumberValue(0))
+    {
+        super(RECTANGLE_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new GRectangleValue(
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.angle .copy(), 
+            this.round .copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x     )
+            && !isNaN(this.y     )
+            && !isNaN(this.width )
+            && !isNaN(this.height)
+            && !isNaN(this.angle )
+            && !isNaN(this.round );
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.height.toString()
+              + ' ' + this.angle .toString()
+              + ' ' + this.round .toString()
+            : '?';
+    }
+
+
+
+    static NaN = new GRectangleValue(
+        GNumberValue.NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN);
+}
+
+
+
+function parseGRectangleValue(str)
+{
+    if (str == '?')
+        return GRectangleValue.NaN;
+
+    const rect = str.split(' ');
+
+    return new GRectangleValue(
+        new GNumberValue(parseGNumberValue(rect[0])),
+        new GNumberValue(parseGNumberValue(rect[1])),
+        new GNumberValue(parseGNumberValue(rect[2])),
+        new GNumberValue(parseGNumberValue(rect[3])),
+        new GNumberValue(parseGNumberValue(rect[4])),
+        new GNumberValue(parseGNumberValue(rect[5])));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class GRectangle
 extends GOperator
 {
@@ -4100,6 +4234,25 @@ extends GOperator
     constructor(nodeId, active)
     {
         super(RECTANGLE, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const rect = new GRectangle(this.nodeId, this.active);
+
+        if (this.input) 
+            col.input = this.input.copy();
+
+        if (this.x     ) rect.x      = this.x     .copy();
+        if (this.y     ) rect.y      = this.y     .copy();
+        if (this.width ) rect.width  = this.width .copy();
+        if (this.height) rect.height = this.height.copy();
+        if (this.angle ) rect.angle  = this.angle .copy();
+        if (this.round ) rect.round  = this.round .copy();
+
+        return rect;
     }
 
 
@@ -4122,32 +4275,45 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GRectangle(this.nodeId, this.active);
+            this.result = new GRectangleValue();
 
 
-            let input = 
-                this.input 
-                ? this.input.eval(parse) 
-                : null;
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == RECTANGLE_VALUE);
 
-            this.result.x      = (!input || this.x      ? this.x      : input.x     ).eval(parse);
-            this.result.y      = (!input || this.y      ? this.y      : input.y     ).eval(parse);
-            this.result.width  = (!input || this.width  ? this.width  : input.width ).eval(parse);
-            this.result.height = (!input || this.height ? this.height : input.height).eval(parse);
-            this.result.angle  = (!input || this.angle  ? this.angle  : input.angle ).eval(parse);
-            this.result.round  = (!input || this.round  ? this.round  : input.round ).eval(parse);
+                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
+                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
+                if (this.width ) this.result.width  = this.width .eval(parse).copy();
+                if (this.height) this.result.height = this.height.eval(parse).copy();
+                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
+                if (this.round ) this.result.round  = this.round .eval(parse).copy();
+            }
+            else
+            {
+                this.result.x      = this.x     .eval(parse).copy();
+                this.result.y      = this.y     .eval(parse).copy();
+                this.result.width  = this.width .eval(parse).copy();
+                this.result.height = this.height.eval(parse).copy();
+                this.result.angle  = this.angle .eval(parse).copy();
+                this.result.round  = this.round .eval(parse).copy();
+            }
 
 
             this.valid        = true;
             this.result.valid = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
-            genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
+            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            // genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
+            // genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
+            // genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
+            // genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
+            // genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
+            // genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
 
 
             if (this.active)
@@ -4959,15 +5125,29 @@ function genParseColorContrast(parse)
 function genParseRectangle(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
-    if (ignore) return parse.parsedNodes.find(n => n.nodeId == nodeId);
 
 
     const rect = new GRectangle(nodeId, active);
 
 
+    if (parse.logRequests) 
+        logReqRectangle(rect, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rect);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
     let paramIds;
 
-    if (parse.next == RECTANGLE)
+    if (   parse.next == RECTANGLE_VALUE
+        || parse.next == RECTANGLE)
     {
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
         paramIds   = parse.move().split(',');
@@ -4988,6 +5168,9 @@ function genParseRectangle(parse)
         case 'round':  rect.round  = genParse(parse); break;
         }
     }
+
+
+    parse.nTab--;
 
 
     genParseNodeEnd(parse, rect);

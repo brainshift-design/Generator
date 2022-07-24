@@ -2,7 +2,6 @@ class GColor
 extends GOperator
 {
     input = null;
-    //value;
 
     convert = null;
 
@@ -100,7 +99,7 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-            
+
 
             // genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
             // genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );

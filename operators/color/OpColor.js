@@ -177,7 +177,6 @@ extends OpColorBase
             req.push(paramIds.join(','));
             
                                                   req.push(...this.node.paramSpace.genRequest(gen));
-                                                  //req.push(NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)));
             if (this.node.param1.input.connected) req.push(...this.node.param1.genRequest(gen));
             if (this.node.param2.input.connected) req.push(...this.node.param2.genRequest(gen));
             if (this.node.param3.input.connected) req.push(...this.node.param3.genRequest(gen));
@@ -519,7 +518,6 @@ extends OpColorBase
 
     loadParams(_node)
     {
-        console.log('_node = ', _node);
         if (_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
 

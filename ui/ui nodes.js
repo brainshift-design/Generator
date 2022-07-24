@@ -866,8 +866,9 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (id)
                 {
-                    case COLOR_VALUE: _values.push(parseGColorValue (values[i++])); break;
-                    default:          _values.push(parseGNumberValue(values[i++])); break;
+                    case COLOR_VALUE:     _values.push(parseGColorValue    (values[i++])); break;
+                    case RECTANGLE_VALUE: _values.push(parseGRectangleValue(values[i++])); break;
+                    default:              _values.push(parseGNumberValue   (values[i++])); break;
                 }
             }
 
