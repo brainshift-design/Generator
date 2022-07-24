@@ -241,15 +241,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(req)
+function logReqParam(param, parse)
 {
-    const tag     = req.request[req.pos++];
-    const nodeId  = req.request[req.pos++];
-    const paramId = req.request[req.pos++];
-
-    const _nodeId = logReqId(nodeId);
-
-    return req.tab + tag + ' ' + _nodeId + '.' + paramId;
+    parse.log += parse.tab + PARAM;
+    parse.log += 
+          ' ' + logReqId(param.nodeId) 
+        + ' ' + logReqId(param.paramId);
 }
 
 
@@ -259,43 +256,6 @@ function logReqNode(node, type, parse)
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(node);
 }
-
-
-
-// function logReqNode(req, type, _paramIds)
-// {
-//     const tab = req.tab;
-
-//     req.nTab++;
-
-
-//     const tag    = req.request[req.pos++];
-//     const nodeId = req.request[req.pos++];
-//     const active = logReqActive(req);
-
-
-//     let log = tab + tag + ' ' + nodeId + active;
-
-//     let paramIds;
-
-
-//     if (req.request[req.pos] == type)
-//     {
-//         log += logReq(req);
-//         paramIds = req.request[req.pos++].split(',');
-//     }
-//     else
-//         paramIds = _paramIds;
-    
-
-//     for (const i of paramIds)
-//         log += logReq(req);
-
-
-//     req.nTab--;
-
-//     return log;
-// }
 
 
 const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
@@ -345,6 +305,17 @@ const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corner
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
+const GEOMETRY_TYPES =
+[
+    RECTANGLE,
+    LINE,
+    ELLIPSE,
+    POLYGON,
+    STAR//,
+    //TEXT
+];
+
+
 const GROUP              = 'GRP';   // ???? count O...
 
 
@@ -377,7 +348,7 @@ VECTOR      V
 
 const settings =
 {
-    showNodeId:       false, // instead of name
+    showNodeId:       true, // instead of name
     
     logStorage:       false, 
     logActions:       false, 

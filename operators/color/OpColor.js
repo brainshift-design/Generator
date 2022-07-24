@@ -27,14 +27,12 @@ extends OpColorBase
     hexbox;
 
     
-    _oldSpace;
-    _oldSpaceConnections = [];
+    prevSpace;
+    prevSpaceConnections = [];
 
 
     _colorBeforeNaN = dataColor_NaN;
 
-
-    fromSpace = Number.NaN;
 
 
     #init = false;
@@ -47,7 +45,7 @@ extends OpColorBase
 
 
         this._color    = ['rgb', 0.5, 0.5, 0.5];
-        this._oldSpace =  'rgb';
+        this.prevSpace =  'rgb';
 
 
         this.#colorBack = createDiv('colorBack');
@@ -82,7 +80,7 @@ extends OpColorBase
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
-        this.paramSpace.control.barTop  = 0.8;
+        this.paramSpace.control.barTop = 0.8;
 
         this.paramSpace.control.wheelScale = 1;
         this.param1    .control.wheelScale = 1;
@@ -94,7 +92,7 @@ extends OpColorBase
         this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
-        this.paramSpace.addEventListener('beforechange', () => { this.fromSpace = this.paramSpace.oldValue; });
+        //this.paramSpace.addEventListener('beforechange', () => { this.fromSpace = this.paramSpace.oldValue; });
 
 
         initHexbox(this);
@@ -179,9 +177,10 @@ extends OpColorBase
             req.push(paramIds.join(','));
             
                                                   req.push(...this.node.paramSpace.genRequest(gen));
-            if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
-            if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
-            if (this.node.param3.input.connected) req.push(...this.node.param3    .genRequest(gen));
+                                                  req.push(NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)));
+            if (this.node.param1.input.connected) req.push(...this.node.param1.genRequest(gen));
+            if (this.node.param2.input.connected) req.push(...this.node.param2.genRequest(gen));
+            if (this.node.param3.input.connected) req.push(...this.node.param3.genRequest(gen));
         }
         else
         {
@@ -189,10 +188,7 @@ extends OpColorBase
             {
                 req.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, 
-                    !isNaN(this.node.fromSpace) 
-                        ? numToString(this.node.fromSpace)
-                        : '?',
+                    NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
                     NUMBER_VALUE, numToString(this.node._color[2] * rgbScale[1]),
                     NUMBER_VALUE, numToString(this.node._color[3] * rgbScale[2]));
@@ -201,10 +197,7 @@ extends OpColorBase
             {
                 req.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, 
-                    !isNaN(this.node.fromSpace) 
-                        ? numToString(this.node.fromSpace)
-                        : '?',
+                    NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     ...this.node.param1.genRequest(gen),
                     ...this.node.param2.genRequest(gen),
                     ...this.node.param3.genRequest(gen));
@@ -225,6 +218,8 @@ extends OpColorBase
         const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
 
 
+        this.paramSpace.setValue(col.space, false, true, false);
+
         switchToSpace(this, colorSpace(col.space.value));
 
         this.param1.setValue(col.c1, false, true, false);
@@ -232,7 +227,7 @@ extends OpColorBase
         this.param3.setValue(col.c3, false, true, false);
 
 
-        this.fromSpace = Number.NaN;
+        this.prevSpace = colorSpace(col.space.value);
         this._color    = col.toDataColor();
 
 

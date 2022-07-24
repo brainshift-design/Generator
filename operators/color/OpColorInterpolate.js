@@ -35,7 +35,6 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
 
-
         // this.inputs[0].addEventListener('connect', () => 
         // {
         //     if (   !this.inputs[1].connected

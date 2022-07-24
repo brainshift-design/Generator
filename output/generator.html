@@ -2465,15 +2465,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(req)
+function logReqParam(param, parse)
 {
-    const tag     = req.request[req.pos++];
-    const nodeId  = req.request[req.pos++];
-    const paramId = req.request[req.pos++];
-
-    const _nodeId = logReqId(nodeId);
-
-    return req.tab + tag + ' ' + _nodeId + '.' + paramId;
+    parse.log += parse.tab + PARAM;
+    parse.log += 
+          ' ' + logReqId(param.nodeId) 
+        + ' ' + logReqId(param.paramId);
 }
 
 
@@ -2483,43 +2480,6 @@ function logReqNode(node, type, parse)
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(node);
 }
-
-
-
-// function logReqNode(req, type, _paramIds)
-// {
-//     const tab = req.tab;
-
-//     req.nTab++;
-
-
-//     const tag    = req.request[req.pos++];
-//     const nodeId = req.request[req.pos++];
-//     const active = logReqActive(req);
-
-
-//     let log = tab + tag + ' ' + nodeId + active;
-
-//     let paramIds;
-
-
-//     if (req.request[req.pos] == type)
-//     {
-//         log += logReq(req);
-//         paramIds = req.request[req.pos++].split(',');
-//     }
-//     else
-//         paramIds = _paramIds;
-    
-
-//     for (const i of paramIds)
-//         log += logReq(req);
-
-
-//     req.nTab--;
-
-//     return log;
-// }
 
 
 function logReqNumberValue(val, parse)
@@ -2808,6 +2768,17 @@ const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corner
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
+const GEOMETRY_TYPES =
+[
+    RECTANGLE,
+    LINE,
+    ELLIPSE,
+    POLYGON,
+    STAR//,
+    //TEXT
+];
+
+
 const GROUP              = 'GRP';   // ???? count O...
 
 
@@ -2937,22 +2908,20 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = parse.parsedNodes.find(v => 
-                v.nodeId == this.nodeId);
+            this.result = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            console.assert(this.result, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            if (   this.result.type == RECTANGLE
-                || this.result.type == LINE
-                || this.result.type == ELLIPSE
-                || this.result.type == POLYGON
-                || this.result.type == STAR)
-                //|| this.result.type == TEXT)
+            if (   COLOR_TYPES   .includes(this.result.type)
+                || GEOMETRY_TYPES.includes(this.result.type))
                 this.result = this.result.eval(parse).copy();
 
             this.result = this.result[this.paramId].eval(parse).copy();
 
-            this.valid        = true;
+
             this.result.valid = true;
+            this.valid        = true;
         }
+
 
         return this.result;
     }
@@ -5623,13 +5592,22 @@ function genParseParam(parse)
 {
     if (parse.next != PARAM) 
         return null;
-    
+
+        
     parse.move();
 
     const nodeId  = parse.move();
     const paramId = parse.move();
+    
 
-    return new GParam(nodeId, paramId);
+    const param = new GParam(nodeId, paramId);
+    
+
+    if (parse.logRequests) 
+        logReqParam(param, parse);
+
+
+    return param;
 }
 
 
@@ -5642,7 +5620,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    //console.log('req =', req);
+    console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];

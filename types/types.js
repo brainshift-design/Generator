@@ -45,6 +45,17 @@ const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corner
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
+const GEOMETRY_TYPES =
+[
+    RECTANGLE,
+    LINE,
+    ELLIPSE,
+    POLYGON,
+    STAR//,
+    //TEXT
+];
+
+
 const GROUP              = 'GRP';   // ???? count O...
 
 

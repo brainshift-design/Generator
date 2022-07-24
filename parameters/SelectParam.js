@@ -98,17 +98,6 @@ extends Parameter
 
 
 
-    // update(dispatchEvents)
-    // {
-    //     super.update();
-
-    //     // if (   this.input
-    //     //     && this.input.connected)
-    //     //     this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
-    // }
-
-
-
     setOutputData()
     {
         if (this.output)
@@ -134,6 +123,8 @@ extends Parameter
         // this function exists because a parameter without an output
         // should still provide a value
         
+        // 'this' is the param
+        
         if (    this.output
             && !isEmpty(this.output.cache)
             &&  gen.passedNodes.includes(this.node))
@@ -146,28 +137,41 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-            {
-                // req.push(
-                //     PARAM,
-                //     this.node.id,
-                //     this.index);
-                
-                // pushUnique(gen.paramNodes, this.node);
-            }
-
             req.push(...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {
-            req.push( 
-                NUMBER_VALUE, 
-                new GNumberValue(
-                    this.control.value, 
-                    this.control.displayDec).toString());
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.id);
+                
+                pushUnique(gen.paramNodes, this.node);
+            }
+            else
+            {
+                req.push( 
+                    NUMBER_VALUE, 
+                    new GNumberValue(
+                        this.control.value, 
+                        this.control.displayDec).toString());
+            }
         }
+
+
+        // if (   this.output
+        //     && this.output.connected)
+        //     //&& this.node.headerConnected)
+        // {
+        //     if (    gen.markParams
+        //         &&  lastOf(gen.scope).nodeId != this.node.id
+        //         && !this.node.valid)
+        //         pushUnique(gen.paramNodes, this.node);
+        // }
 
 
         return req;

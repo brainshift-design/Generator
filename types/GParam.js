@@ -26,22 +26,20 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = parse.parsedNodes.find(v => 
-                v.nodeId == this.nodeId);
+            this.result = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            console.assert(this.result, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            if (   this.result.type == RECTANGLE
-                || this.result.type == LINE
-                || this.result.type == ELLIPSE
-                || this.result.type == POLYGON
-                || this.result.type == STAR)
-                //|| this.result.type == TEXT)
+            if (   COLOR_TYPES   .includes(this.result.type)
+                || GEOMETRY_TYPES.includes(this.result.type))
                 this.result = this.result.eval(parse).copy();
 
             this.result = this.result[this.paramId].eval(parse).copy();
 
-            this.valid        = true;
+
             this.result.valid = true;
+            this.valid        = true;
         }
+
 
         return this.result;
     }

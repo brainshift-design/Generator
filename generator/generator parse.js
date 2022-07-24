@@ -139,11 +139,20 @@ function genParseParam(parse)
 {
     if (parse.next != PARAM) 
         return null;
-    
+
+        
     parse.move();
 
     const nodeId  = parse.move();
     const paramId = parse.move();
+    
 
-    return new GParam(nodeId, paramId);
+    const param = new GParam(nodeId, paramId);
+    
+
+    if (parse.logRequests) 
+        logReqParam(param, parse);
+
+
+    return param;
 }

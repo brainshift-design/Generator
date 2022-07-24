@@ -733,29 +733,44 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
-    terminals.forEach(n => 
-    {
-        if (n.outputs.length > 0)
-        {
-            n.outputs
-                .filter(o => !o.param)
-                .forEach(o =>
-                {
-                    const _r = o.genRequest(gen);
-                    const  r = [..._r];
-                    request.push(...r);
-                });
-        }
-        else
-            request.push(...n.genRequest(gen));
-    }); 
+    terminals.forEach(n => request.push(...getNodeRequest(n, gen)));
 
-            
+
+    gen.paramNodes
+        .filter(n => !terminals.includes(n))
+        .forEach(n => request.push(...getNodeRequest(n, gen)));
+
+    
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,
         settings: settings
     });
+}
+
+
+
+function getNodeRequest(node, gen)
+{
+    const request = [];
+
+
+    if (node.outputs.length > 0)
+    {
+        node.outputs
+            .filter(o => !o.param)
+            .forEach(o =>
+            {
+                const _r = o.genRequest(gen);
+                const  r = [..._r];
+                request.push(...r);
+            });
+    }
+    else
+        request.push(...node.genRequest(gen));
+
+
+    return request;
 }
 
 

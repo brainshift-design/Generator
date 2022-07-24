@@ -4062,15 +4062,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(req)
+function logReqParam(param, parse)
 {
-    const tag     = req.request[req.pos++];
-    const nodeId  = req.request[req.pos++];
-    const paramId = req.request[req.pos++];
-
-    const _nodeId = logReqId(nodeId);
-
-    return req.tab + tag + ' ' + _nodeId + '.' + paramId;
+    parse.log += parse.tab + PARAM;
+    parse.log += 
+          ' ' + logReqId(param.nodeId) 
+        + ' ' + logReqId(param.paramId);
 }
 
 
@@ -4080,43 +4077,6 @@ function logReqNode(node, type, parse)
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(node);
 }
-
-
-
-// function logReqNode(req, type, _paramIds)
-// {
-//     const tab = req.tab;
-
-//     req.nTab++;
-
-
-//     const tag    = req.request[req.pos++];
-//     const nodeId = req.request[req.pos++];
-//     const active = logReqActive(req);
-
-
-//     let log = tab + tag + ' ' + nodeId + active;
-
-//     let paramIds;
-
-
-//     if (req.request[req.pos] == type)
-//     {
-//         log += logReq(req);
-//         paramIds = req.request[req.pos++].split(',');
-//     }
-//     else
-//         paramIds = _paramIds;
-    
-
-//     for (const i of paramIds)
-//         log += logReq(req);
-
-
-//     req.nTab--;
-
-//     return log;
-// }
 
 
 function logReqNumberValue(val, parse)
@@ -4405,6 +4365,17 @@ const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corner
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
+const GEOMETRY_TYPES =
+[
+    RECTANGLE,
+    LINE,
+    ELLIPSE,
+    POLYGON,
+    STAR//,
+    //TEXT
+];
+
+
 const GROUP              = 'GRP';   // ???? count O...
 
 
@@ -4534,22 +4505,20 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = parse.parsedNodes.find(v => 
-                v.nodeId == this.nodeId);
+            this.result = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            console.assert(this.result, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            if (   this.result.type == RECTANGLE
-                || this.result.type == LINE
-                || this.result.type == ELLIPSE
-                || this.result.type == POLYGON
-                || this.result.type == STAR)
-                //|| this.result.type == TEXT)
+            if (   COLOR_TYPES   .includes(this.result.type)
+                || GEOMETRY_TYPES.includes(this.result.type))
                 this.result = this.result.eval(parse).copy();
 
             this.result = this.result[this.paramId].eval(parse).copy();
 
-            this.valid        = true;
+
             this.result.valid = true;
+            this.valid        = true;
         }
+
 
         return this.result;
     }
@@ -7220,13 +7189,22 @@ function genParseParam(parse)
 {
     if (parse.next != PARAM) 
         return null;
-    
+
+        
     parse.move();
 
     const nodeId  = parse.move();
     const paramId = parse.move();
+    
 
-    return new GParam(nodeId, paramId);
+    const param = new GParam(nodeId, paramId);
+    
+
+    if (parse.logRequests) 
+        logReqParam(param, parse);
+
+
+    return param;
 }
 
 
@@ -7239,7 +7217,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    //console.log('req =', req);
+    console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];
@@ -12086,15 +12064,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(req)
+function logReqParam(param, parse)
 {
-    const tag     = req.request[req.pos++];
-    const nodeId  = req.request[req.pos++];
-    const paramId = req.request[req.pos++];
-
-    const _nodeId = logReqId(nodeId);
-
-    return req.tab + tag + ' ' + _nodeId + '.' + paramId;
+    parse.log += parse.tab + PARAM;
+    parse.log += 
+          ' ' + logReqId(param.nodeId) 
+        + ' ' + logReqId(param.paramId);
 }
 
 
@@ -12104,43 +12079,6 @@ function logReqNode(node, type, parse)
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(node);
 }
-
-
-
-// function logReqNode(req, type, _paramIds)
-// {
-//     const tab = req.tab;
-
-//     req.nTab++;
-
-
-//     const tag    = req.request[req.pos++];
-//     const nodeId = req.request[req.pos++];
-//     const active = logReqActive(req);
-
-
-//     let log = tab + tag + ' ' + nodeId + active;
-
-//     let paramIds;
-
-
-//     if (req.request[req.pos] == type)
-//     {
-//         log += logReq(req);
-//         paramIds = req.request[req.pos++].split(',');
-//     }
-//     else
-//         paramIds = _paramIds;
-    
-
-//     for (const i of paramIds)
-//         log += logReq(req);
-
-
-//     req.nTab--;
-
-//     return log;
-// }
 
 
 function logReqNumberValue(val, parse)
@@ -13805,6 +13743,17 @@ const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corner
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
+const GEOMETRY_TYPES =
+[
+    RECTANGLE,
+    LINE,
+    ELLIPSE,
+    POLYGON,
+    STAR//,
+    //TEXT
+];
+
+
 const GROUP              = 'GRP';   // ???? count O...
 
 
@@ -13934,22 +13883,20 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = parse.parsedNodes.find(v => 
-                v.nodeId == this.nodeId);
+            this.result = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            console.assert(this.result, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            if (   this.result.type == RECTANGLE
-                || this.result.type == LINE
-                || this.result.type == ELLIPSE
-                || this.result.type == POLYGON
-                || this.result.type == STAR)
-                //|| this.result.type == TEXT)
+            if (   COLOR_TYPES   .includes(this.result.type)
+                || GEOMETRY_TYPES.includes(this.result.type))
                 this.result = this.result.eval(parse).copy();
 
             this.result = this.result[this.paramId].eval(parse).copy();
 
-            this.valid        = true;
+
             this.result.valid = true;
+            this.valid        = true;
         }
+
 
         return this.result;
     }
@@ -15360,7 +15307,7 @@ extends GType
 
 const settings =
 {
-    showNodeId:       false, // instead of name
+    showNodeId:       true, // instead of name
     
     logStorage:       false, 
     logActions:       false, 
@@ -20100,6 +20047,8 @@ extends Parameter
         // this function exists because a parameter without an output
         // should still be able to generate a request a value
         
+        // 'this' is the param
+
         if (    this.output
             && !isEmpty(this.output.cache)
             &&  gen.passedNodes.includes(this.node))
@@ -20112,39 +20061,30 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-            {
-                // req.push(
-                //     PARAM,
-                //     this.node.id,
-                //     this.id);
-
-                // pushUnique(gen.paramNodes, this.node);
-            }
-
             req.push(...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {
-            req.push( 
-                NUMBER_VALUE, 
-                new GNumberValue(
-                    this.control.value, 
-                    this.control.displayDec).toString());
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.id);
+
+                pushUnique(gen.paramNodes, this.node);
+            }
+            else
+            {
+                req.push( 
+                    NUMBER_VALUE, 
+                    new GNumberValue(
+                        this.control.value, 
+                        this.control.displayDec).toString());
+            }
         }
-
-
-        // if (   this.output
-        //     && this.output.connected
-        //     && this.node.headerConnected)
-        // {
-        //     if (    gen.markParams
-        //         &&  lastOf(gen.scope).nodeId != this.node.id
-        //         && !this.node.valid)
-        //         pushUnique(gen.paramNodes, this.node);
-        // }
 
 
         return req;
@@ -20399,17 +20339,6 @@ extends Parameter
 
 
 
-    // update(dispatchEvents)
-    // {
-    //     super.update();
-
-    //     // if (   this.input
-    //     //     && this.input.connected)
-    //     //     this.setValue(Math.round(this.input.data.value), false, true, dispatchEvents); // assuming the data types match
-    // }
-
-
-
     setOutputData()
     {
         if (this.output)
@@ -20435,6 +20364,8 @@ extends Parameter
         // this function exists because a parameter without an output
         // should still provide a value
         
+        // 'this' is the param
+        
         if (    this.output
             && !isEmpty(this.output.cache)
             &&  gen.passedNodes.includes(this.node))
@@ -20447,28 +20378,41 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-            {
-                // req.push(
-                //     PARAM,
-                //     this.node.id,
-                //     this.index);
-                
-                // pushUnique(gen.paramNodes, this.node);
-            }
-
             req.push(...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {
-            req.push( 
-                NUMBER_VALUE, 
-                new GNumberValue(
-                    this.control.value, 
-                    this.control.displayDec).toString());
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+            {
+                req.push(
+                    PARAM,
+                    this.node.id,
+                    this.id);
+                
+                pushUnique(gen.paramNodes, this.node);
+            }
+            else
+            {
+                req.push( 
+                    NUMBER_VALUE, 
+                    new GNumberValue(
+                        this.control.value, 
+                        this.control.displayDec).toString());
+            }
         }
+
+
+        // if (   this.output
+        //     && this.output.connected)
+        //     //&& this.node.headerConnected)
+        // {
+        //     if (    gen.markParams
+        //         &&  lastOf(gen.scope).nodeId != this.node.id
+        //         && !this.node.valid)
+        //         pushUnique(gen.paramNodes, this.node);
+        // }
 
 
         return req;
@@ -22734,29 +22678,44 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
-    terminals.forEach(n => 
-    {
-        if (n.outputs.length > 0)
-        {
-            n.outputs
-                .filter(o => !o.param)
-                .forEach(o =>
-                {
-                    const _r = o.genRequest(gen);
-                    const  r = [..._r];
-                    request.push(...r);
-                });
-        }
-        else
-            request.push(...n.genRequest(gen));
-    }); 
+    terminals.forEach(n => request.push(...getNodeRequest(n, gen)));
 
-            
+
+    gen.paramNodes
+        .filter(n => !terminals.includes(n))
+        .forEach(n => request.push(...getNodeRequest(n, gen)));
+
+    
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
         request:  request,
         settings: settings
     });
+}
+
+
+
+function getNodeRequest(node, gen)
+{
+    const request = [];
+
+
+    if (node.outputs.length > 0)
+    {
+        node.outputs
+            .filter(o => !o.param)
+            .forEach(o =>
+            {
+                const _r = o.genRequest(gen);
+                const  r = [..._r];
+                request.push(...r);
+            });
+    }
+    else
+        request.push(...node.genRequest(gen));
+
+
+    return request;
 }
 
 
@@ -24682,14 +24641,12 @@ extends OpColorBase
     hexbox;
 
     
-    _oldSpace;
-    _oldSpaceConnections = [];
+    prevSpace;
+    prevSpaceConnections = [];
 
 
     _colorBeforeNaN = dataColor_NaN;
 
-
-    fromSpace = Number.NaN;
 
 
     #init = false;
@@ -24702,7 +24659,7 @@ extends OpColorBase
 
 
         this._color    = ['rgb', 0.5, 0.5, 0.5];
-        this._oldSpace =  'rgb';
+        this.prevSpace =  'rgb';
 
 
         this.#colorBack = createDiv('colorBack');
@@ -24737,7 +24694,7 @@ extends OpColorBase
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true, true, Math.round(this._color[3] * rgbFactor[2])));
 
         
-        this.paramSpace.control.barTop  = 0.8;
+        this.paramSpace.control.barTop = 0.8;
 
         this.paramSpace.control.wheelScale = 1;
         this.param1    .control.wheelScale = 1;
@@ -24749,7 +24706,7 @@ extends OpColorBase
         this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
-        this.paramSpace.addEventListener('beforechange', () => { this.fromSpace = this.paramSpace.oldValue; });
+        //this.paramSpace.addEventListener('beforechange', () => { this.fromSpace = this.paramSpace.oldValue; });
 
 
         initHexbox(this);
@@ -24834,9 +24791,10 @@ extends OpColorBase
             req.push(paramIds.join(','));
             
                                                   req.push(...this.node.paramSpace.genRequest(gen));
-            if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
-            if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
-            if (this.node.param3.input.connected) req.push(...this.node.param3    .genRequest(gen));
+                                                  req.push(NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)));
+            if (this.node.param1.input.connected) req.push(...this.node.param1.genRequest(gen));
+            if (this.node.param2.input.connected) req.push(...this.node.param2.genRequest(gen));
+            if (this.node.param3.input.connected) req.push(...this.node.param3.genRequest(gen));
         }
         else
         {
@@ -24844,10 +24802,7 @@ extends OpColorBase
             {
                 req.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, 
-                    !isNaN(this.node.fromSpace) 
-                        ? numToString(this.node.fromSpace)
-                        : '?',
+                    NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
                     NUMBER_VALUE, numToString(this.node._color[2] * rgbScale[1]),
                     NUMBER_VALUE, numToString(this.node._color[3] * rgbScale[2]));
@@ -24856,10 +24811,7 @@ extends OpColorBase
             {
                 req.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, 
-                    !isNaN(this.node.fromSpace) 
-                        ? numToString(this.node.fromSpace)
-                        : '?',
+                    NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     ...this.node.param1.genRequest(gen),
                     ...this.node.param2.genRequest(gen),
                     ...this.node.param3.genRequest(gen));
@@ -24880,6 +24832,8 @@ extends OpColorBase
         const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
 
 
+        this.paramSpace.setValue(col.space, false, true, false);
+
         switchToSpace(this, colorSpace(col.space.value));
 
         this.param1.setValue(col.c1, false, true, false);
@@ -24887,7 +24841,7 @@ extends OpColorBase
         this.param3.setValue(col.c3, false, true, false);
 
 
-        this.fromSpace = Number.NaN;
+        this.prevSpace = colorSpace(col.space.value);
         this._color    = col.toDataColor();
 
 
@@ -27004,7 +26958,6 @@ extends OpColorBase
         
 
         this.header.connectionPadding = 12.5;
-
 
 
         // this.inputs[0].addEventListener('connect', () => 
