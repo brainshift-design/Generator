@@ -130,7 +130,7 @@ function logReqParam(param, parse) {
     parse.log += parse.tab + PARAM;
     parse.log +=
         ' ' + logReqId(param.nodeId)
-            + ' ' + logReqId(param.paramId);
+            + '.' + logReqId(param.paramId);
 }
 function logReqNode(node, type, parse) {
     parse.log += parse.tab + type;

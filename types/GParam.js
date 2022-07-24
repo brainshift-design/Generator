@@ -26,14 +26,15 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-            console.assert(this.result, 'can\'t find parameter node \'' + this.nodeId + '\'');
+            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            //console.log('this.nodeId = ', this.nodeId);
+            console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            if (   COLOR_TYPES   .includes(this.result.type)
-                || GEOMETRY_TYPES.includes(this.result.type))
-                this.result = this.result.eval(parse).copy();
+            // if (   COLOR_TYPES   .includes(node.type)
+            //     || GEOMETRY_TYPES.includes(node.type))
+                //this.result = this.result.eval(parse).copy();
 
-            this.result = this.result[this.paramId].eval(parse).copy();
+            this.result = node[this.paramId].eval(parse).copy();
 
 
             this.result.valid = true;

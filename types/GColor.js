@@ -44,15 +44,17 @@ extends GOperator
 
             if (this.input)
             {
-                this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_VALUE);
-
-                console.assert(this.result.space.type == NUMBER_VALUE);
-                const fromSpaceIndex = this.result.space.value;
-
+                this.result       = this.input.eval(parse).copy();
                 this.result.space = this.space.eval(parse).copy();
-                console.assert(this.result.space.type == NUMBER_VALUE);
-                const toSpaceIndex = this.result.space.value;
+
+
+                const fromSpaceIndex = this.result.space.value;
+                const toSpaceIndex = Math.min(Math.max(
+                    1,
+                    this.result.space.value),
+                    OpColorSpaces.length-1);
+
+                this.result.space.value = toSpaceIndex;
 
 
                 this.convertColor(
@@ -72,17 +74,22 @@ extends GOperator
                 this.result.c3    = this.c3   .eval(parse).copy();
 
                 
+                const toSpaceIndex = Math.min(Math.max(
+                    1,
+                    this.result.space.value),
+                    OpColorSpaces.length-1);
+                
+                this.result.space.value = toSpaceIndex;
+
+
                 if (   this.convert
                     && !isNaN(this.convert.value))
                 {
-                    const convert = this.convert.eval(parse).copy();
-
-                    console.assert(convert.type == NUMBER_VALUE);
-                    console.assert(this.result.space.type == NUMBER_VALUE);
+                    const fromSpace = this.convert.eval(parse).copy();
 
                     this.convertColor(
-                        colorSpace(convert.value), 
-                        colorSpace(this.result.space.value));
+                        colorSpace(fromSpace.value), 
+                        colorSpace(toSpaceIndex));
                 }
             }
 
