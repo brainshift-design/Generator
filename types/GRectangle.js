@@ -82,19 +82,11 @@ extends GOperator
             }
 
 
-            this.valid        = true;
             this.result.valid = true;
+            this.valid        = true;
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
-
-            // genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
-            // genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
-            // genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
-            // genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
-            // genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
-            // genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
 
 
             if (this.active)

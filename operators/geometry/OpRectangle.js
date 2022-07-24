@@ -140,11 +140,16 @@ extends OpGeometryBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        super.updateValues(updateParamId, paramIds, values);
+        const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
 
-        if (   paramIds.includes('width')
-            || paramIds.includes('height'))
-            this.updateRound();
+        this.paramX     .setValue(rect.x,      false, true, false);
+        this.paramY     .setValue(rect.y,      false, true, false);
+        this.paramWidth .setValue(rect.width,  false, true, false);
+        this.paramHeight.setValue(rect.height, false, true, false);
+        this.paramAngle .setValue(rect.angle,  false, true, false);
+        this.paramRound .setValue(rect.round,  false, true, false);
+
+        super.updateValues(updateParamId, paramIds, values);
     }
 
 

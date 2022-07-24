@@ -5375,12 +5375,6 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-
-
-            // genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
-            // genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
-            // genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
-            // genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -5898,19 +5892,11 @@ extends GOperator
             }
 
 
-            this.valid        = true;
             this.result.valid = true;
+            this.valid        = true;
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
-
-            // genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
-            // genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
-            // genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
-            // genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
-            // genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
-            // genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
 
 
             if (this.active)
@@ -14936,12 +14922,6 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-
-
-            // genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
-            // genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
-            // genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
-            // genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -15459,19 +15439,11 @@ extends GOperator
             }
 
 
-            this.valid        = true;
             this.result.valid = true;
+            this.valid        = true;
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
-
-            // genPushUpdateValue(parse, this.nodeId, 'x',      this.result.x     );
-            // genPushUpdateValue(parse, this.nodeId, 'y',      this.result.y     );
-            // genPushUpdateValue(parse, this.nodeId, 'width',  this.result.width );
-            // genPushUpdateValue(parse, this.nodeId, 'height', this.result.height);
-            // genPushUpdateValue(parse, this.nodeId, 'angle',  this.result.angle );
-            // genPushUpdateValue(parse, this.nodeId, 'round',  this.result.round );
 
 
             if (this.active)
@@ -27683,11 +27655,16 @@ extends OpGeometryBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        super.updateValues(updateParamId, paramIds, values);
+        const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
 
-        if (   paramIds.includes('width')
-            || paramIds.includes('height'))
-            this.updateRound();
+        this.paramX     .setValue(rect.x,      false, true, false);
+        this.paramY     .setValue(rect.y,      false, true, false);
+        this.paramWidth .setValue(rect.width,  false, true, false);
+        this.paramHeight.setValue(rect.height, false, true, false);
+        this.paramAngle .setValue(rect.angle,  false, true, false);
+        this.paramRound .setValue(rect.round,  false, true, false);
+
+        super.updateValues(updateParamId, paramIds, values);
     }
 
 
