@@ -177,6 +177,17 @@ extends Parameter
         }
 
 
+        if (   this.output
+            && this.output.connected)
+            //&& this.node.headerConnected)
+        {
+            if (    gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.node.id
+                && !this.node.valid)
+                pushUnique(gen.paramNodes, this.node);
+        }
+
+
         return req;
     }
 

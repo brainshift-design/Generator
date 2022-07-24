@@ -144,8 +144,8 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
     graph.clear();
 
-    const nodes = JSON.parse( nodesJson).map(n => JSON.parse(n));
-    const conns = JSON.parse( connsJson).map(c => JSON.parse(c));
+    const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
+    const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
 
     loadNodesAndConnsAsync(nodes, conns, setLoadingProgress);
 }

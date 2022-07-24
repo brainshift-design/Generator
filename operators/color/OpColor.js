@@ -44,8 +44,8 @@ extends OpColorBase
         super(COLOR, 'color', 80);
 
 
-        this._color    = ['rgb', 0.5, 0.5, 0.5];
-        this.prevSpace =  'rgb';
+        this._color    = ['hex', 0.5, 0.5, 0.5];
+        this.prevSpace =  'hex';
 
 
         this.#colorBack = createDiv('colorBack');
@@ -475,6 +475,8 @@ extends OpColorBase
 
         let json = super.toJsonBase(nTab);
 
+        json += ',\n' + pos + tab + '"prevSpace": "' + this.prevSpace + '"';
+
         if (!dataColorIsNaN(this._colorBeforeNaN))
             json += ',\n' + pos + tab + '"colorBeforeNaN":\n' + dataColorToJson(this._colorBeforeNaN, 4);
 
@@ -517,8 +519,11 @@ extends OpColorBase
 
     loadParams(_node)
     {
+        console.log('_node = ', _node);
         if (_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
+
+        this.prevSpace = _node.prevSpace;
 
         super.loadParams(_node);
     }
