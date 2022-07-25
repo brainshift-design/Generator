@@ -34,10 +34,10 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result       = this;//new GColorValue();
+            this.result = new GColorValue();
+
 
             const standard = this.standard.eval(parse).copy();
-            const value    = this.value   .eval(parse).copy();
 
 
             if (   this.input0 
@@ -46,9 +46,16 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
+                
                 if (   input0.isValid()
                     && input1.isValid())
                 {
+                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
+                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
+
+                    this.result = input1;
+
+    
                     if (standard.value == 0)
                     {
                         const ratio = getContrastRatio2(
@@ -98,7 +105,22 @@ extends GOperator
 
             else if (this.input1) 
             {
+                const input1 = this.input1.eval(parse).copy();
+
+                if (input1.isValid())
+                {
+                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
+
+                    this.result = input1;
+                }
+
                 //this.result = this.input1.eval(parse).copy();
+            }
+            else
+            {
+                genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
             }
             
 
@@ -106,31 +128,11 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            genPushUpdateValue(parse, this.nodeId, 'fore', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'back', this.result);
         }
 
 
         return this.result;
-    }
-
-
-
-    interpolate(space, col0, col1, f)
-    {
-        if (space <= 1) // hex, rgb
-        {
-            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-        }
-        else // hsv, hsl, hcl
-        {
-            const h0 = col0[0] * Tau;
-            const h1 = col1[0] * Tau;
-            
-            return [
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(col0[1], col1[1], f),
-                lerp(col0[2], col1[2], f) ];
-        }
     }
 }

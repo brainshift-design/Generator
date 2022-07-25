@@ -113,7 +113,7 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const col   = values[paramIds.findIndex(id => id == COLOR_VALUE)];
         this._color = col.toDataColor();
 
         super.updateValues(updateParamId, paramIds, values);
@@ -148,7 +148,7 @@ function showOpColorInterpolateGammaControl(node, show)
     if (    show
         && !node.inner.contains(node.paramGamma.div))
         node.inner.appendChild(node.paramGamma.div);
-        
+
     else if (!show
            && node.inner.contains(node.paramGamma.div))
         node.inner.removeChild(node.paramGamma.div);

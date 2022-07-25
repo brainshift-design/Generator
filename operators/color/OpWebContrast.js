@@ -53,17 +53,17 @@ extends OpColorBase
 
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: '' });
 
 
 
-        const [req, ignore] = this.node.genRequestStart(gen);
+        const [req, ignore] = this.genRequestStart(gen);
         if (ignore) return req;
 
 
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
+        const input0 = this.inputs[0];
+        const input1 = this.inputs[1];
 
         
         if (   input0.connected
@@ -77,11 +77,11 @@ extends OpColorBase
         else                       req.push(0);
 
 
-        req.push(...this.node.paramStandard.genRequest(gen));
+        req.push(...this.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return req;
 
@@ -181,6 +181,23 @@ extends OpColorBase
 
         
     //     super.updateData();
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        console.log('paramIds =', paramIds);
+        console.log('values =', values);
+        const colText = values[paramIds.findIndex(id => id == 'text')];
+        const colBack = values[paramIds.findIndex(id => id == 'back')];
+
+        console.assert(colText.type == COLOR_VALUE, 'colText = ' + colText.type);
+        console.assert(colBack.type == COLOR_VALUE, 'colBack = ' + colBack.type);
+
+        this._color = colBack.toDataColor();
+
+        super.updateValues(updateParamId, paramIds, values);
     }
 
 

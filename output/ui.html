@@ -5479,6 +5479,7 @@ extends GOperator
         {
             this.result  = new GColorValue();
 
+            
             const space  = this.space .eval(parse).copy();
             const amount = this.amount.eval(parse).copy();
             const gamma  = this.gamma .eval(parse).copy();
@@ -5604,10 +5605,10 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result       = this;//new GColorValue();
+            this.result = new GColorValue();
+
 
             const standard = this.standard.eval(parse).copy();
-            const value    = this.value   .eval(parse).copy();
 
 
             if (   this.input0 
@@ -5616,9 +5617,16 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
+                
                 if (   input0.isValid()
                     && input1.isValid())
                 {
+                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
+                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
+
+                    this.result = input1;
+
+    
                     if (standard.value == 0)
                     {
                         const ratio = getContrastRatio2(
@@ -5668,7 +5676,22 @@ extends GOperator
 
             else if (this.input1) 
             {
+                const input1 = this.input1.eval(parse).copy();
+
+                if (input1.isValid())
+                {
+                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
+
+                    this.result = input1;
+                }
+
                 //this.result = this.input1.eval(parse).copy();
+            }
+            else
+            {
+                genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
             }
             
 
@@ -5676,32 +5699,12 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            genPushUpdateValue(parse, this.nodeId, 'fore', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'back', this.result);
         }
 
 
         return this.result;
-    }
-
-
-
-    interpolate(space, col0, col1, f)
-    {
-        if (space <= 1) // hex, rgb
-        {
-            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-        }
-        else // hsv, hsl, hcl
-        {
-            const h0 = col0[0] * Tau;
-            const h1 = col1[0] * Tau;
-            
-            return [
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(col0[1], col1[1], f),
-                lerp(col0[2], col1[2], f) ];
-        }
     }
 }
 
@@ -7357,7 +7360,7 @@ function genParseColorInterpolate(parse)
     lerp.amount = genParse(parse);
     lerp.gamma  = genParse(parse);
 
-    
+
     parse.nTab--;
 
 
@@ -7406,12 +7409,10 @@ function genParseColorContrast(parse)
     else if (nValues == 1)
     {
         cnt.input0   = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        cnt.space    = genParse(parse);
         cnt.standard = genParse(parse);
     }
     else if (nValues == 0)
     {
-        cnt.space    = genParse(parse);
         cnt.standard = genParse(parse);
     }
 
@@ -15726,6 +15727,7 @@ extends GOperator
         {
             this.result  = new GColorValue();
 
+            
             const space  = this.space .eval(parse).copy();
             const amount = this.amount.eval(parse).copy();
             const gamma  = this.gamma .eval(parse).copy();
@@ -15851,10 +15853,10 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result       = this;//new GColorValue();
+            this.result = new GColorValue();
+
 
             const standard = this.standard.eval(parse).copy();
-            const value    = this.value   .eval(parse).copy();
 
 
             if (   this.input0 
@@ -15863,9 +15865,16 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
+                
                 if (   input0.isValid()
                     && input1.isValid())
                 {
+                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
+                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
+
+                    this.result = input1;
+
+    
                     if (standard.value == 0)
                     {
                         const ratio = getContrastRatio2(
@@ -15915,7 +15924,22 @@ extends GOperator
 
             else if (this.input1) 
             {
+                const input1 = this.input1.eval(parse).copy();
+
+                if (input1.isValid())
+                {
+                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
+
+                    this.result = input1;
+                }
+
                 //this.result = this.input1.eval(parse).copy();
+            }
+            else
+            {
+                genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
             }
             
 
@@ -15923,32 +15947,12 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            genPushUpdateValue(parse, this.nodeId, 'fore', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'back', this.result);
         }
 
 
         return this.result;
-    }
-
-
-
-    interpolate(space, col0, col1, f)
-    {
-        if (space <= 1) // hex, rgb
-        {
-            return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
-        }
-        else // hsv, hsl, hcl
-        {
-            const h0 = col0[0] * Tau;
-            const h1 = col1[0] * Tau;
-            
-            return [
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(col0[1], col1[1], f),
-                lerp(col0[2], col1[2], f) ];
-        }
     }
 }
 
@@ -24029,7 +24033,8 @@ class Operator
     
         //console.log(this.id + '.Operator.invalidate()');
 
-        this.valid = false;
+        this.valid        = false;
+        this.requestCache = [];
 
         for (const output of this.outputs)
         {
@@ -24429,7 +24434,7 @@ function getNodeRequest(node, gen)
     const request = [];
 
 
-    if (node.outputs.length > 0)
+    if (node.outputs.filter(o => !o.param).length > 0)
     {
         node.outputs
             .filter(o => !o.param)
@@ -28483,17 +28488,17 @@ extends OpColorBase
 
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: '' });
 
 
 
-        const [req, ignore] = this.node.genRequestStart(gen);
+        const [req, ignore] = this.genRequestStart(gen);
         if (ignore) return req;
 
 
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
+        const input0 = this.inputs[0];
+        const input1 = this.inputs[1];
 
         
         if (   input0.connected
@@ -28507,11 +28512,11 @@ extends OpColorBase
         else                       req.push(0);
 
 
-        req.push(...this.node.paramStandard.genRequest(gen));
+        req.push(...this.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return req;
 
@@ -28611,6 +28616,23 @@ extends OpColorBase
 
         
     //     super.updateData();
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        console.log('paramIds =', paramIds);
+        console.log('values =', values);
+        const colText = values[paramIds.findIndex(id => id == 'text')];
+        const colBack = values[paramIds.findIndex(id => id == 'back')];
+
+        console.assert(colText.type == COLOR_VALUE, 'colText = ' + colText.type);
+        console.assert(colBack.type == COLOR_VALUE, 'colBack = ' + colBack.type);
+
+        this._color = colBack.toDataColor();
+
+        super.updateValues(updateParamId, paramIds, values);
     }
 
 
@@ -28786,7 +28808,7 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const col   = values[paramIds.findIndex(id => id == COLOR_VALUE)];
         this._color = col.toDataColor();
 
         super.updateValues(updateParamId, paramIds, values);
@@ -28821,7 +28843,7 @@ function showOpColorInterpolateGammaControl(node, show)
     if (    show
         && !node.inner.contains(node.paramGamma.div))
         node.inner.appendChild(node.paramGamma.div);
-        
+
     else if (!show
            && node.inner.contains(node.paramGamma.div))
         node.inner.removeChild(node.paramGamma.div);

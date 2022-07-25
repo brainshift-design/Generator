@@ -101,7 +101,7 @@ function genParseColorInterpolate(parse)
     lerp.amount = genParse(parse);
     lerp.gamma  = genParse(parse);
 
-    
+
     parse.nTab--;
 
 
@@ -150,12 +150,10 @@ function genParseColorContrast(parse)
     else if (nValues == 1)
     {
         cnt.input0   = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        cnt.space    = genParse(parse);
         cnt.standard = genParse(parse);
     }
     else if (nValues == 0)
     {
-        cnt.space    = genParse(parse);
         cnt.standard = genParse(parse);
     }
 

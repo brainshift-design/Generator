@@ -38,6 +38,7 @@ extends GOperator
         {
             this.result  = new GColorValue();
 
+            
             const space  = this.space .eval(parse).copy();
             const amount = this.amount.eval(parse).copy();
             const gamma  = this.gamma .eval(parse).copy();

@@ -375,7 +375,8 @@ class Operator
     
         //console.log(this.id + '.Operator.invalidate()');
 
-        this.valid = false;
+        this.valid        = false;
+        this.requestCache = [];
 
         for (const output of this.outputs)
         {
@@ -775,7 +776,7 @@ function getNodeRequest(node, gen)
     const request = [];
 
 
-    if (node.outputs.length > 0)
+    if (node.outputs.filter(o => !o.param).length > 0)
     {
         node.outputs
             .filter(o => !o.param)
