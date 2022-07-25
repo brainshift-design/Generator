@@ -36,11 +36,11 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result       = new GColorValue();
+            this.result  = new GColorValue();
 
-            this.result.space = this.space .eval(parse).copy();
-            const amount      = this.amount.eval(parse).copy();
-            const gamma       = this.gamma .eval(parse).copy();
+            const space  = this.space .eval(parse).copy();
+            const amount = this.amount.eval(parse).copy();
+            const gamma  = this.gamma .eval(parse).copy();
 
 
             if (   this.input0 
@@ -53,25 +53,26 @@ extends GOperator
                 console.assert(amount.type == NUMBER_VALUE);
                 const f = amount.value / 100;
 
-                const _space = colorSpace(this.result.space.value);
-                
+                const _space = colorSpace(space.value);
 
                 const col0 = input0.toDataColor();
                 const col1 = input1.toDataColor();
 
                 const col = this.interpolate(
-                    this.result.space.value,
-                    dataColor2array(convertDataColorToSpace(col0, _space)),
-                    dataColor2array(convertDataColorToSpace(col1, _space)),
+                    space.value,
+                    convertDataColorToSpace(col0, _space),
+                    convertDataColorToSpace(col1, _space),
                     f,
-                    gamma);
+                    gamma.value);
 
+                this.result.space = space;
+           
 
                 const scale = getColorSpaceScale(_space);
 
-                this.result.c1 = new GNumberValue(col[0] * scale[0]);
-                this.result.c2 = new GNumberValue(col[1] * scale[1]);
-                this.result.c3 = new GNumberValue(col[2] * scale[2]);
+                this.result.c1 = new GNumberValue(col[1] * scale[0]);
+                this.result.c2 = new GNumberValue(col[2] * scale[1]);
+                this.result.c3 = new GNumberValue(col[3] * scale[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -82,7 +83,10 @@ extends GOperator
             this.valid        = true;
 
 
+            console.log('this.result =', this.result);
+
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }
 
@@ -96,39 +100,27 @@ extends GOperator
     {
         if (space <= 1) // hex, rgb
         {
-            const r0 = Math.pow(col0[0], gamma);  const r1 = Math.pow(col1[0], gamma);
-            const g0 = Math.pow(col0[1], gamma);  const g1 = Math.pow(col1[1], gamma);
-            const b0 = Math.pow(col0[2], gamma);  const b1 = Math.pow(col1[2], gamma);
+            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
+            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
+            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
 
             return [
+                colorSpace(space),
                 Math.pow(lerp(r0, r1, f), 1/gamma),
                 Math.pow(lerp(g0, g1, f), 1/gamma),
                 Math.pow(lerp(b0, b1, f), 1/gamma) ];
-
-            //return rgbAdd(col0, rgbMuls(rgbSub(col1, col0), f));
         }
-        else //if (space == 2  // hsv
-             // || space == 3) // hsl
+        else // hsv/hsl/hcl
         {
-            const h0 = col0[0] * Tau;  const h1 = col1[0] * Tau;
-            const c0 = col0[1];        const c1 = col1[1];
-            const l0 = col0[2];        const l1 = col1[2];
+            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
+            const c0 = col0[2];        const c1 = col1[2];
+            const l0 = col0[3];        const l1 = col1[3];
 
             return [
+                colorSpace(space),
                 normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
         }
-        // else // hcl
-        // {
-        //     const h0 = col0[0] * Tau;  const h1 = col1[0] * Tau;
-        //     const c0 = col0[1];        const c1 = col1[1];
-        //     const l0 = col0[1];        const l1 = col1[1];
-
-        //     return [
-        //         normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-        //         lerp(c0, c1, f),
-        //         lerp(l0, l1, f) ];
-        // }
     }
 }

@@ -51,24 +51,24 @@ extends GOperator
             {
                 this.result = this.input.eval(parse).copy();
                 console.assert(this.result.type == COLOR_VALUE);
-
-                
-                this.result.space = this.space.eval(parse).copy();
-
-
                 const fromSpaceIndex = this.result.space.value;
+
+                this.result.space = this.space.eval(parse).copy();
                 const toSpaceIndex = Math.min(Math.max(
                     1,
                     this.result.space.value),
                     OpColorSpaces.length-1);
 
-                this.result.space.value = toSpaceIndex;
+                if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
+                if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
+                if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
 
 
                 this.convertColor(
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
-                
+                    
+                this.result.space.value = toSpaceIndex;
 
                 if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
                 if (this.c2) this.result.c2 = this.c2.eval(parse).copy();

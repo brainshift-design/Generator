@@ -56,11 +56,13 @@ extends GType
 
     toDataColor()
     {
+        const space = colorSpace(this.space.value);
+
         return[
-            colorSpace(this.space.value), 
-            getNormalColorValue(this.c1.value, colorSpace(this.space.value), 0), 
-            getNormalColorValue(this.c2.value, colorSpace(this.space.value), 1), 
-            getNormalColorValue(this.c3.value, colorSpace(this.space.value), 2) ]; 
+            space, 
+            getNormalColorValue(this.c1.value, space, 0), 
+            getNormalColorValue(this.c2.value, space, 1), 
+            getNormalColorValue(this.c3.value, space, 2) ]; 
     }
 
 
