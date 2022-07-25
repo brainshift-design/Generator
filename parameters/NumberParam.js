@@ -1,7 +1,7 @@
 class   NumberParam
-extends Parameter
+extends NumberParamBase
 {
-    defaultValue;
+    //defaultValue;
     oldValue = null;
     
     allowEditDecimals = true;
@@ -12,12 +12,12 @@ extends Parameter
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
-    get valueText() { return this.control.valueText; }
-    set valueText(text) 
-    {
-        this.control.valueText = text;
-        this.control.update();
-    }
+    // get valueText() { return this.control.valueText; }
+    // set valueText(text) 
+    // {
+    //     this.control.valueText = text;
+    //     this.control.update();
+    // }
 
 
     
@@ -75,14 +75,23 @@ extends Parameter
         { 
             const dec    = decCount(e.detail.value);
             const oldDec = decCount(e.detail.oldValue);
+console.log('dec =', dec);
+console.log('oldDec =', oldDec);
 
-            if (   e.detail.success
-                && (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-                    ||    dec != oldDec
-                       && this.allowEditDecimals))
+            if (!e.detail.success)
+                return;
+
+
+            if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+                ||    dec != oldDec
+                   && this.allowEditDecimals)
             {
-                const _dec = Math.log10(this.control.valueScale);
-                this.setValue(new GNumberValue(e.detail.value, dec + _dec), true);
+                const _dec = 
+                    Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+                    ? oldDec
+                    : dec + Math.log10(this.control.valueScale);
+                
+                this.setValue(new GNumberValue(e.detail.value, _dec), true);
                 e.preventSetValue = true;
             }
         });
@@ -128,62 +137,6 @@ extends Parameter
             && val2
             && val1.value    == val2.value
             && val1.decimals == val2.decimals;
-    }
-
-
-
-    genRequest(gen)
-    {
-        // this function exists because a parameter without an output
-        // should still be able to generate a request a value
-        
-        // 'this' is the param
-
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
-
-
-        const req = [];
-
-
-        if (   this.input
-            && this.input.connected)
-        {
-            if (    this.input.connectedOutput.param
-                &&  gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.input.connectedOutput.node.id
-                && !this.input.connectedOutput.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.input.connectedOutput.node.id,
-                    this.input.connectedOutput.param.id);
-
-                pushUnique(gen.paramNodes, this.input.connectedOutput.node);
-            }
-            else
-                req.push(...this.input.connectedOutput.genRequest(gen));
-        }        
-        else
-        {
-            req.push( 
-                NUMBER_VALUE, 
-                new GNumberValue(
-                    this.control.value, 
-                    this.control.displayDec).toString());
-        }
-
-
-        return req;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        return this.param.genRequest(gen);
     }
 
 

@@ -1,25 +1,23 @@
 class   SelectParam
-extends Parameter
+extends NumberParamBase
 {
-    defaultValue;
-
     options = [];
     
 
     
     get value()      { return this._control.value;    }
-    set value(value) { this._control.setValue(value); }
+    //set value(value) { this._control.setValue(value); }
     
     get oldValue()   { return this._control.oldValue; }
 
 
 
-    get valueText() { return this.control.valueText; }
-    set valueText(text) 
-    {
-        this.control.valueText = text;
-        this.control.update();
-    }
+    // get valueText() { return this.control.valueText; }
+    // set valueText(text) 
+    // {
+    //     this.control.valueText = text;
+    //     this.control.update();
+    // }
 
 
     
@@ -98,11 +96,11 @@ extends Parameter
 
 
 
-    setOutputData()
-    {
-        if (this.output)
-            this.output._data = dataFromNumber(this._control.value, 0);
-    }
+    // setOutputData()
+    // {
+    //     if (this.output)
+    //         this.output._data = dataFromNumber(this._control.value, 0);
+    // }
 
 
 
@@ -115,62 +113,6 @@ extends Parameter
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
     }    
-
-
-
-    genRequest(gen)
-    {
-        // this function exists because a parameter without an output
-        // should still provide a value
-        
-        // 'this' is the param
-        
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
-
-
-        const req = [];
-
-
-        if (   this.input
-            && this.input.connected)
-        {
-            if (    this.input.connectedOutput.param
-                &&  gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.input.connectedOutput.node.id
-                && !this.input.connectedOutput.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.input.connectedOutput.node.id,
-                    this.input.connectedOutput.param.id);
-
-                pushUnique(gen.paramNodes, this.input.connectedOutput.node);
-            }
-            else
-                req.push(...this.input.connectedOutput.genRequest(gen));
-        }        
-        else
-        {
-            req.push( 
-                NUMBER_VALUE, 
-                new GNumberValue(
-                    this.control.value, 
-                    this.control.displayDec).toString());
-        }
-
-
-        return req;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        return this.param.genRequest(gen);
-    }
 
 
 

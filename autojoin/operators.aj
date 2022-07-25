@@ -1,7 +1,10 @@
 ../parameters/Parameter.js
+
+../parameters/NumberParamBase.js
 ../parameters/NumberParam.js
-../parameters/ColorParam.js
 ../parameters/SelectParam.js
+
+../parameters/ColorParam.js
 
 ../graph/Graph.js
 ../graph/tree.js
