@@ -206,11 +206,11 @@ VECTOR      V
 
 */
 const settings = {
-    showNodeId: true,
+    showNodeId: false,
     logStorage: false,
     logActions: false,
-    logRequests: true,
-    logValueUpdates: true,
+    logRequests: false,
+    logValueUpdates: false,
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}

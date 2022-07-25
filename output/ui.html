@@ -7393,7 +7393,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    console.log('req =', req);
+    //console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];
@@ -15642,12 +15642,12 @@ extends GType
 
 const settings =
 {
-    showNodeId:       true, // instead of name
+    showNodeId:       false, // instead of name
     
     logStorage:       false, 
     logActions:       false, 
-    logRequests:      true, 
-    logValueUpdates:  true, 
+    logRequests:      false, 
+    logValueUpdates:  false, 
     logObjectUpdates: false
 };
 
