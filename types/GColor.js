@@ -55,7 +55,7 @@ extends GOperator
 
                 this.result.space = this.space.eval(parse).copy();
                 const toSpaceIndex = Math.min(Math.max(
-                    1,
+                    0,
                     this.result.space.value),
                     OpColorSpaces.length-1);
 
@@ -83,7 +83,7 @@ extends GOperator
 
 
                 const toSpaceIndex = Math.min(Math.max(
-                    1,
+                    0,
                     this.result.space.value),
                     OpColorSpaces.length-1);
                 
