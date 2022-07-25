@@ -125,9 +125,9 @@ extends OpColorBase
     {
         const col = getDataColor(color);
 
-        this.param1.setValue(col[0], fireChangeEvent);
-        this.param2.setValue(col[1], fireChangeEvent);
-        this.param3.setValue(col[2], fireChangeEvent);
+        this.param1.setValue(col[1], fireChangeEvent);
+        this.param2.setValue(col[2], fireChangeEvent);
+        this.param3.setValue(col[3], fireChangeEvent);
     }
 
 
@@ -177,9 +177,9 @@ extends OpColorBase
             req.push(paramIds.join(','));
             
                                                   req.push(...this.node.paramSpace.genRequest(gen));
-            if (this.node.param1.input.connected) req.push(...this.node.param1.genRequest(gen));
-            if (this.node.param2.input.connected) req.push(...this.node.param2.genRequest(gen));
-            if (this.node.param3.input.connected) req.push(...this.node.param3.genRequest(gen));
+            if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
+            if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
+            if (this.node.param3.input.connected) req.push(...this.node.param3    .genRequest(gen));
         }
         else
         {

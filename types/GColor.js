@@ -130,12 +130,11 @@ extends GOperator
             getNormalColorValue(this.result.c2.value, fromSpace, 1),
             getNormalColorValue(this.result.c3.value, fromSpace, 2));
 
-        color = convertDataColorToSpace(color, toSpace);
-        color = getDataColor(color);
+        color = getDataColor(convertDataColorToSpace(color, toSpace));
 
-        this.result.c1.value = color[0];
-        this.result.c2.value = color[1];
-        this.result.c3.value = color[2];
+        this.result.c1.value = color[1];
+        this.result.c2.value = color[2];
+        this.result.c3.value = color[3];
     }
 
 

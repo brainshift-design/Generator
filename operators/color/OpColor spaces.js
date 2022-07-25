@@ -402,15 +402,15 @@ function getDataColor(color)
     {
         case 'hex':
         case 'rgbhex':
-        case 'rgb':    return getDataColorRgb(color[1], color[2], color[3]);
-        case 'hsv':   
-        case 'hsl':    return getDataColorHs_(color[1], color[2], color[3]);
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return getDataColorHcl(color[1], color[2], color[3]);
-        case 'oklab': 
-        case 'lab': 
-        case 'luv':    return getDataColorOpp(color[1], color[2], color[3]);
+        case 'rgb':    return getDataColorRgb(          color[1], color[2], color[3]);
+        case 'hsv':    return getDataColorHs_('hsv',    color[1], color[2], color[3]);
+        case 'hsl':    return getDataColorHs_('hsl',    color[1], color[2], color[3]);
+        case 'hclokl': return getDataColorHcl('hclokl', color[1], color[2], color[3]);
+        case 'hcllab': return getDataColorHcl('hcllab', color[1], color[2], color[3]);
+        case 'hclluv': return getDataColorHcl('hclluv', color[1], color[2], color[3]);
+        case 'oklab':  return getDataColorOpp('oklab',  color[1], color[2], color[3]);
+        case 'lab':    return getDataColorOpp('lab',    color[1], color[2], color[3]);
+        case 'luv':    return getDataColorOpp('luv',    color[1], color[2], color[3]);
     }
 }
 
@@ -419,6 +419,7 @@ function getDataColor(color)
 function getDataColorRgb(c1, c2, c3)
 {
     return [
+       'rgb',
         c1 * rgbFactor[0], 
         c2 * rgbFactor[1], 
         c3 * rgbFactor[2] ];
@@ -426,9 +427,10 @@ function getDataColorRgb(c1, c2, c3)
 
 
 
-function getDataColorHs_(c1, c2, c3)
+function getDataColorHs_(space, c1, c2, c3)
 {
     return [
+        space,
         c1 * hs_Factor[0], 
         c2 * hs_Factor[1], 
         c3 * hs_Factor[2] ];
@@ -436,22 +438,24 @@ function getDataColorHs_(c1, c2, c3)
 
 
 
-function getDataColorOpp(c1, c2, c3)
+function getDataColorHcl(space, c1, c2, c3)
 {
     return [
-        c1 * oppFactor[0], 
-        c2 * oppFactor[1], 
-        c3 * oppFactor[2] ];
+        space,
+        c1 * hclFactor[0], 
+        c2 * hclFactor[1], 
+        c3 * hclFactor[2] ];
 }
 
 
 
-function getDataColorHcl(c1, c2, c3)
+function getDataColorOpp(space, c1, c2, c3)
 {
     return [
-        c1 * hclFactor[0], 
-        c2 * hclFactor[1], 
-        c3 * hclFactor[2] ];
+        space,
+        c1 * oppFactor[0], 
+        c2 * oppFactor[1], 
+        c3 * oppFactor[2] ];
 }
 
 

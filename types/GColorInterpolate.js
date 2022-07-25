@@ -68,11 +68,11 @@ extends GOperator
                 this.result.space = space;
            
 
-                const scale = getColorSpaceScale(_space);
+                const factor = getColorSpaceFactor(_space);
 
-                this.result.c1 = new GNumberValue(col[1] * scale[0]);
-                this.result.c2 = new GNumberValue(col[2] * scale[1]);
-                this.result.c3 = new GNumberValue(col[3] * scale[2]);
+                this.result.c1 = new GNumberValue(col[1] * factor[0]);
+                this.result.c2 = new GNumberValue(col[2] * factor[1]);
+                this.result.c3 = new GNumberValue(col[3] * factor[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -82,8 +82,6 @@ extends GOperator
             this.result.valid = true;
             this.valid        = true;
 
-
-            console.log('this.result =', this.result);
 
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
@@ -103,6 +101,8 @@ extends GOperator
             const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
             const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
             const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+
+            gamma = Math.max(0.01, gamma);
 
             return [
                 colorSpace(space),
