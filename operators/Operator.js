@@ -724,7 +724,14 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
-    terminals.forEach(n => request.push(...getNodeRequest(n, gen)));
+    for (const node of terminals)
+    {
+        if (!gen.passedNodes.includes(node))
+        {
+            request.push(...getNodeRequest(node, gen));
+            pushUnique(gen.passedNodes, node);
+        }
+    }
 
 
     for (const node of gen.paramNodes)

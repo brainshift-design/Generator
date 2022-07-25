@@ -5277,7 +5277,12 @@ function parseGColorValue(str)
 class GColor
 extends GOperator
 {
-    input = null;
+    input   = null;
+
+    space   = null;
+    c1      = null;
+    c2      = null;
+    c3      = null;
 
     convert = null;
 
@@ -5320,7 +5325,10 @@ extends GOperator
 
             if (this.input)
             {
-                this.result       = this.input.eval(parse).copy();
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_VALUE);
+
+                
                 this.result.space = this.space.eval(parse).copy();
 
 
@@ -5349,7 +5357,7 @@ extends GOperator
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
 
-                
+
                 const toSpaceIndex = Math.min(Math.max(
                     1,
                     this.result.space.value),
@@ -6278,20 +6286,6 @@ extends GOperator
     }
 
 
-
-    isValid()
-    {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.height.isValid()
-                  && this.angle .isValid()
-                  && this.round .isValid());
-    }
-
-    
 
     eval(parse)
     {
@@ -8083,7 +8077,7 @@ var lastUpdateObjects = [];
 
 function genRequest(req, settings)
 {
-    //console.log('req =', req);
+    console.log('req =', req);
 
     const updateNodeId  = req[0];
     const updateParamId = req[1];
@@ -15521,7 +15515,12 @@ function parseGColorValue(str)
 class GColor
 extends GOperator
 {
-    input = null;
+    input   = null;
+
+    space   = null;
+    c1      = null;
+    c2      = null;
+    c3      = null;
 
     convert = null;
 
@@ -15564,7 +15563,10 @@ extends GOperator
 
             if (this.input)
             {
-                this.result       = this.input.eval(parse).copy();
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_VALUE);
+
+                
                 this.result.space = this.space.eval(parse).copy();
 
 
@@ -15593,7 +15595,7 @@ extends GOperator
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
 
-                
+
                 const toSpaceIndex = Math.min(Math.max(
                     1,
                     this.result.space.value),
@@ -16522,20 +16524,6 @@ extends GOperator
     }
 
 
-
-    isValid()
-    {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.height.isValid()
-                  && this.angle .isValid()
-                  && this.round .isValid());
-    }
-
-    
 
     eval(parse)
     {
@@ -24413,7 +24401,14 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
-    terminals.forEach(n => request.push(...getNodeRequest(n, gen)));
+    for (const node of terminals)
+    {
+        if (!gen.passedNodes.includes(node))
+        {
+            request.push(...getNodeRequest(node, gen));
+            pushUnique(gen.passedNodes, node);
+        }
+    }
 
 
     for (const node of gen.paramNodes)

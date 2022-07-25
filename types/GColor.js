@@ -1,7 +1,12 @@
 class GColor
 extends GOperator
 {
-    input = null;
+    input   = null;
+
+    space   = null;
+    c1      = null;
+    c2      = null;
+    c3      = null;
 
     convert = null;
 
@@ -44,7 +49,10 @@ extends GOperator
 
             if (this.input)
             {
-                this.result       = this.input.eval(parse).copy();
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_VALUE);
+
+                
                 this.result.space = this.space.eval(parse).copy();
 
 
@@ -73,7 +81,7 @@ extends GOperator
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
 
-                
+
                 const toSpaceIndex = Math.min(Math.max(
                     1,
                     this.result.space.value),
