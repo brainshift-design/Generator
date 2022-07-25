@@ -35,6 +35,9 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
 
+        //this._color = dataColor_NaN;
+
+        
         // this.inputs[0].addEventListener('connect', () => 
         // {
         //     if (   !this.inputs[1].connected
@@ -111,8 +114,9 @@ extends OpColorBase
     updateValues(updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
-
+console.log('col =', col);
         this._color = col.toDataColor();
+console.log('this._color =', this._color);
 
         super.updateValues(updateParamId, paramIds, values);
     }

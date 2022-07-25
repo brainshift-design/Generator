@@ -125,7 +125,7 @@ extends Operator
     updateWarningOverlay() 
     {
         //console.log(this.id + '.updateWarningOverlay()');
-        
+
         if (this.canShowColor())
         {
             const rgb = dataColor2rgb(this._color);

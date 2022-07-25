@@ -3,9 +3,11 @@ extends Parameter
 {
     defaultValue;
 
+    oldValue = null;
+
     
     get value   () { return this._control.value; }
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
+    //get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
     get valueText() { return this.control.valueText; }

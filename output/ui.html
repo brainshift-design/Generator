@@ -5229,11 +5229,11 @@ extends GType
     toDataColor()
     {
         if (!this.isValid())
-            return GColorValue.NaN;
-            
+            return dataColor_NaN;
+
         const space = colorSpace(this.space.value);
 
-        return[
+        return [
             space, 
             getNormalColorValue(this.c1.value, space, 0), 
             getNormalColorValue(this.c2.value, space, 1), 
@@ -5523,7 +5523,8 @@ extends GOperator
             this.result.valid = true;
             this.valid        = true;
 
-
+            
+console.log('space =', space);
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
@@ -15476,11 +15477,11 @@ extends GType
     toDataColor()
     {
         if (!this.isValid())
-            return GColorValue.NaN;
-            
+            return dataColor_NaN;
+
         const space = colorSpace(this.space.value);
 
-        return[
+        return [
             space, 
             getNormalColorValue(this.c1.value, space, 0), 
             getNormalColorValue(this.c2.value, space, 1), 
@@ -15770,7 +15771,8 @@ extends GOperator
             this.result.valid = true;
             this.valid        = true;
 
-
+            
+console.log('space =', space);
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
@@ -21672,9 +21674,11 @@ extends Parameter
 {
     defaultValue;
 
+    oldValue = null;
+
     
     get value   () { return this._control.value; }
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
+    //get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
     get valueText() { return this.control.valueText; }
@@ -21745,13 +21749,11 @@ extends Parameter
 class   NumberParam
 extends NumberParamBase
 {
-    oldValue = null;
-    
     allowEditDecimals = true;
     
 
     
-    get value   () { return this.control.value; }
+    //get value   () { return this.control.value; }
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
@@ -21773,7 +21775,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = shallowCopy(value);
+        this.defaultValue   = value;
 
 
         initNumberSlider(
@@ -21901,10 +21903,10 @@ extends NumberParamBase
     
 
     
-    get value()      { return this._control.value;    }
+    // get value()      { return this._control.value;    }
     //set value(value) { this._control.setValue(value); }
     
-    get oldValue()   { return this._control.oldValue; }
+    //get oldValue()   { return this._control.oldValue; }
 
 
 
@@ -26265,7 +26267,7 @@ extends Operator
     updateWarningOverlay() 
     {
         //console.log(this.id + '.updateWarningOverlay()');
-        
+
         if (this.canShowColor())
         {
             const rgb = dataColor2rgb(this._color);
@@ -28705,6 +28707,9 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
 
+        //this._color = dataColor_NaN;
+
+        
         // this.inputs[0].addEventListener('connect', () => 
         // {
         //     if (   !this.inputs[1].connected
@@ -28781,8 +28786,9 @@ extends OpColorBase
     updateValues(updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
-
+console.log('col =', col);
         this._color = col.toDataColor();
+console.log('this._color =', this._color);
 
         super.updateValues(updateParamId, paramIds, values);
     }
@@ -31353,7 +31359,7 @@ extends Action
 
     do()
     {
-        this.oldValue = shallowCopy(this.param.oldValue);
+        this.oldValue = this.param.oldValue;
         pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);

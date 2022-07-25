@@ -5,10 +5,10 @@ extends NumberParamBase
     
 
     
-    get value()      { return this._control.value;    }
+    // get value()      { return this._control.value;    }
     //set value(value) { this._control.setValue(value); }
     
-    get oldValue()   { return this._control.oldValue; }
+    //get oldValue()   { return this._control.oldValue; }
 
 
 

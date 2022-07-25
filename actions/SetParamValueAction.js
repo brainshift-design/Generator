@@ -30,7 +30,7 @@ extends Action
 
     do()
     {
-        this.oldValue = shallowCopy(this.param.oldValue);
+        this.oldValue = this.param.oldValue;
         pushUpdateFromParam([this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);

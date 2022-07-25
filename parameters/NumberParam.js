@@ -1,13 +1,11 @@
 class   NumberParam
 extends NumberParamBase
 {
-    oldValue = null;
-    
     allowEditDecimals = true;
     
 
     
-    get value   () { return this.control.value; }
+    //get value   () { return this.control.value; }
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
@@ -29,7 +27,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = shallowCopy(value);
+        this.defaultValue   = value;
 
 
         initNumberSlider(

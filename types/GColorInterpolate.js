@@ -82,7 +82,8 @@ extends GOperator
             this.result.valid = true;
             this.valid        = true;
 
-
+            
+console.log('space =', space);
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
