@@ -7,7 +7,7 @@ extends GOperator
 
     constructor(nodeId, paramId)
     {
-        super(PARAM, nodeId);
+        super(PARAM, nodeId, false);
 
         this.paramId = paramId;
     }
@@ -16,8 +16,7 @@ extends GOperator
 
     copy()
     {
-        const param = new GParam(this.nodeId, this.paramId);
-        return param;
+        return new GParam(this.nodeId, this.paramId);
     }
 
 

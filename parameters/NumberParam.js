@@ -151,6 +151,11 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
+            // console.log(this.node.id + '.' + this.id);
+            // console.log('gen.markParams = ', gen.markParams);
+            // console.log('gen.scope = ', gen.scope);
+            // console.log(this.node.id + '.valid =', this.node.valid);
+
             if (    gen.markParams
                 &&  lastOf(gen.scope).nodeId != this.node.id
                 && !this.node.valid)

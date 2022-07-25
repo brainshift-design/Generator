@@ -4500,7 +4500,7 @@ extends GOperator
 
     constructor(nodeId, paramId)
     {
-        super(PARAM, nodeId);
+        super(PARAM, nodeId, false);
 
         this.paramId = paramId;
     }
@@ -4509,8 +4509,7 @@ extends GOperator
 
     copy()
     {
-        const param = new GParam(this.nodeId, this.paramId);
-        return param;
+        return new GParam(this.nodeId, this.paramId);
     }
 
 
@@ -14055,7 +14054,7 @@ extends GOperator
 
     constructor(nodeId, paramId)
     {
-        super(PARAM, nodeId);
+        super(PARAM, nodeId, false);
 
         this.paramId = paramId;
     }
@@ -14064,8 +14063,7 @@ extends GOperator
 
     copy()
     {
-        const param = new GParam(this.nodeId, this.paramId);
-        return param;
+        return new GParam(this.nodeId, this.paramId);
     }
 
 
@@ -20397,6 +20395,11 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
+            // console.log(this.node.id + '.' + this.id);
+            // console.log('gen.markParams = ', gen.markParams);
+            // console.log('gen.scope = ', gen.scope);
+            // console.log(this.node.id + '.valid =', this.node.valid);
+
             if (    gen.markParams
                 &&  lastOf(gen.scope).nodeId != this.node.id
                 && !this.node.valid)
@@ -23042,11 +23045,12 @@ function pushUpdateFromParam(nodes, param)
     terminals.forEach(n => request.push(...getNodeRequest(n, gen)));
 
 
-    gen.paramNodes
-        .filter(n => 
-               !terminals.includes(n)
-            && !gen.passedNodes.includes(n))
-        .forEach(n => request.push(...getNodeRequest(n, gen)));
+    for (const node of gen.paramNodes)
+    {
+        if (   !terminals.includes(node)
+            && !gen.passedNodes.includes(node))
+            request.push(...getNodeRequest(node, gen));
+    }
 
     
     uiQueueMessageToGenerator({

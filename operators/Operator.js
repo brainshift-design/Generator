@@ -728,11 +728,12 @@ function pushUpdateFromParam(nodes, param)
     terminals.forEach(n => request.push(...getNodeRequest(n, gen)));
 
 
-    gen.paramNodes
-        .filter(n => 
-               !terminals.includes(n)
-            && !gen.passedNodes.includes(n))
-        .forEach(n => request.push(...getNodeRequest(n, gen)));
+    for (const node of gen.paramNodes)
+    {
+        if (   !terminals.includes(node)
+            && !gen.passedNodes.includes(node))
+            request.push(...getNodeRequest(node, gen));
+    }
 
     
     uiQueueMessageToGenerator({
