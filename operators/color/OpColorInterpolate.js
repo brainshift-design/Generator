@@ -117,6 +117,8 @@ extends OpColorBase
         this._color = col.toDataColor();
 
         super.updateValues(updateParamId, paramIds, values);
+
+        showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
     }
 
 
@@ -126,4 +128,28 @@ extends OpColorBase
         return this.inputs[0].connected
             || this.inputs[1].connected;
     }
+}
+
+
+
+function removeOpColorInterpolateParamWires(node)
+{
+    if (node.paramGamma.input.connected)
+        uiDisconnect(node.paramGamma.input);
+
+    for (const input of node.paramGamma.output.connectedInputs)
+        uiDisconnect(input);
+}
+
+
+
+function showOpColorInterpolateGammaControl(node, show)
+{
+    if (    show
+        && !node.inner.contains(node.paramGamma.div))
+        node.inner.appendChild(node.paramGamma.div);
+        
+    else if (!show
+           && node.inner.contains(node.paramGamma.div))
+        node.inner.removeChild(node.paramGamma.div);
 }
