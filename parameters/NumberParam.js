@@ -151,19 +151,15 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            // console.log(this.node.id + '.' + this.id);
-            // console.log('gen.markParams = ', gen.markParams);
-            // console.log('gen.scope = ', gen.scope);
-            // console.log(this.node.id + '.valid =', this.node.valid);
-
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
+            if (    this.input.connectedOutput.param
+                &&  gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.input.connectedOutput.node.id
+                && !this.input.connectedOutput.node.valid)
             {
                 req.push(
                     PARAM,
-                    this.node.id,
-                    this.id);
+                    this.input.connectedOutput.node.id,
+                    this.input.connectedOutput.param.id);
 
                 pushUnique(gen.paramNodes, this.node);
             }
@@ -172,25 +168,11 @@ extends Parameter
         }        
         else
         {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.node.id,
-                    this.id);
-
-                pushUnique(gen.paramNodes, this.node);
-            }
-            else
-            {
-                req.push( 
-                    NUMBER_VALUE, 
-                    new GNumberValue(
-                        this.control.value, 
-                        this.control.displayDec).toString());
-            }
+            req.push( 
+                NUMBER_VALUE, 
+                new GNumberValue(
+                    this.control.value, 
+                    this.control.displayDec).toString());
         }
 
 
