@@ -47,36 +47,44 @@ extends GOperator
             this.result = new GColorValue();
 
 
+            const space = this.space.eval(parse).copy();
+
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
                 console.assert(this.result.type == COLOR_VALUE);
-                const fromSpaceIndex = this.result.space.value;
 
-                this.result.space = this.space.eval(parse).copy();
-                const toSpaceIndex = Math.min(Math.max(
-                    0,
-                    this.result.space.value),
-                    OpColorSpaces.length-1);
+                if (this.result.isValid())
+                {
+                    const fromSpaceIndex = this.result.space.value;
 
-                if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
+                    console.log('this.result =', this.result);
+                    this.result.space = space;
+                    const toSpaceIndex = Math.min(Math.max(
+                        0,
+                        this.result.space.value),
+                        OpColorSpaces.length-1);
+
+                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
+                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
+                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
 
 
-                this.convertColor(
-                    colorSpace(fromSpaceIndex), 
-                    colorSpace(  toSpaceIndex));
-                    
-                this.result.space.value = toSpaceIndex;
+                    this.convertColor(
+                        colorSpace(fromSpaceIndex), 
+                        colorSpace(  toSpaceIndex));
+                        
+                    this.result.space.value = toSpaceIndex;
 
-                if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
+                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
+                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
+                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
+                }
             }
             else
             {
-                this.result.space = this.space.eval(parse).copy();
+                this.result.space = space;
                 this.result.c1    = this.c1   .eval(parse).copy();
                 this.result.c2    = this.c2   .eval(parse).copy();
                 this.result.c3    = this.c3   .eval(parse).copy();
@@ -114,6 +122,7 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'space',     space);
         }
 
 

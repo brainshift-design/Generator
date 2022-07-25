@@ -8,10 +8,10 @@ extends GType
 
 
 
-    constructor(space = new GNumberValue(0), 
-                c1    = new GNumberValue(0), 
-                c2    = new GNumberValue(0), 
-                c3    = new GNumberValue(0))
+    constructor(space = GNumberValue.NaN, 
+                c1    = GNumberValue.NaN, 
+                c2    = GNumberValue.NaN, 
+                c3    = GNumberValue.NaN)
     {
         super(COLOR_VALUE);
 
@@ -56,6 +56,9 @@ extends GType
 
     toDataColor()
     {
+        if (!this.isValid())
+            return GColorValue.NaN;
+            
         const space = colorSpace(this.space.value);
 
         return[

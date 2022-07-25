@@ -214,20 +214,33 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const col   = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const space = values[paramIds.findIndex(id => id == 'space')];
+        
+
+        this.paramSpace.setValue(space, false, true, false);
+        switchToSpace(this, colorSpace(space.value));
 
 
-        this.paramSpace.setValue(col.space, false, true, false);
+        if (col.isValid())
+        {
+            this._color = col.toDataColor();
 
-        switchToSpace(this, colorSpace(col.space.value));
+            this.param1.setValue(col.c1, false, true, false);
+            this.param2.setValue(col.c2, false, true, false);
+            this.param3.setValue(col.c3, false, true, false);
+        }
+        else
+        {
+            this._color = dataColor_NaN;
 
-        this.param1.setValue(col.c1, false, true, false);
-        this.param2.setValue(col.c2, false, true, false);
-        this.param3.setValue(col.c3, false, true, false);
+            this.param1.setValue(GNumberValue.NaN, false, true, false);
+            this.param2.setValue(GNumberValue.NaN, false, true, false);
+            this.param3.setValue(GNumberValue.NaN, false, true, false);
+        }
 
 
-        this.prevSpace = colorSpace(col.space.value);
-        this._color    = col.toDataColor();
+        this.prevSpace = colorSpace(space.value);
 
 
         super.updateValues(updateParamId, paramIds, values);
