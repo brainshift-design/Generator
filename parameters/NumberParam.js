@@ -161,7 +161,7 @@ extends Parameter
                     this.input.connectedOutput.node.id,
                     this.input.connectedOutput.param.id);
 
-                pushUnique(gen.paramNodes, this.node);
+                pushUnique(gen.paramNodes, this.input.connectedOutput.node);
             }
             else
                 req.push(...this.input.connectedOutput.genRequest(gen));
@@ -173,16 +173,6 @@ extends Parameter
                 new GNumberValue(
                     this.control.value, 
                     this.control.displayDec).toString());
-        }
-
-
-        if (   this.output
-            && this.output.connected)
-        {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-                pushUnique(gen.paramNodes, this.node);
         }
 
 

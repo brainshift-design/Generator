@@ -46,7 +46,6 @@ class Operator
     
     
     variableInputs       = false;
-    headerReplacesParams = false
 
     alwaysLoadParams     = false;
 

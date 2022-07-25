@@ -137,51 +137,28 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
+            if (    this.input.connectedOutput.param
+                &&  gen.markParams
+                &&  lastOf(gen.scope).nodeId != this.input.connectedOutput.node.id
+                && !this.input.connectedOutput.node.valid)
             {
                 req.push(
                     PARAM,
-                    this.node.id,
-                    this.id);
-                
-                pushUnique(gen.paramNodes, this.node);
+                    this.input.connectedOutput.node.id,
+                    this.input.connectedOutput.param.id);
+
+                pushUnique(gen.paramNodes, this.input.connectedOutput.node);
             }
             else
                 req.push(...this.input.connectedOutput.genRequest(gen));
         }        
         else
         {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.node.id,
-                    this.id);
-                
-                pushUnique(gen.paramNodes, this.node);
-            }
-            else
-            {
-                req.push( 
-                    NUMBER_VALUE, 
-                    new GNumberValue(
-                        this.control.value, 
-                        this.control.displayDec).toString());
-            }
-        }
-
-
-        if (   this.output
-            && this.output.connected)
-        {
-            if (    gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.node.id
-                && !this.node.valid)
-                pushUnique(gen.paramNodes, this.node);
+            req.push( 
+                NUMBER_VALUE, 
+                new GNumberValue(
+                    this.control.value, 
+                    this.control.displayDec).toString());
         }
 
 

@@ -11,7 +11,5 @@ extends OperatorBase
     constructor(type, shortName, defWidth = 80)
     {
         super(type, shortName, defWidth);
-
-        this.headerReplacesParams = true;
     }
 }
