@@ -12,7 +12,7 @@ extends OpGeometryBase
     {
         super(LINE, 'line', 90);
 
-        this.addInput (new Input ([LINE]));
+        this.addInput (new Input ([LINE, LINE_VALUE]));
         this.addOutput(new Output(LINE, this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));

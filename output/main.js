@@ -165,10 +165,10 @@ const STRING = 'STR'; // S | s
 const STRING_ADD = 'SADD'; // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
 const RECTANGLE_VALUE = 'R';
-const LINE_VALUE = 'R';
-const ELLIPSE_VALUE = 'R';
-const POLYGON_VALUE = 'R';
-const STAR_VALUE = 'R';
+const LINE_VALUE = 'L';
+const ELLIPSE_VALUE = 'E';
+const POLYGON_VALUE = 'P';
+const STAR_VALUE = 'ST';
 const RECTANGLE = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
 const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
@@ -206,11 +206,11 @@ VECTOR      V
 
 */
 const settings = {
-    showNodeId: false,
+    showNodeId: true,
     logStorage: false,
     logActions: false,
-    logRequests: false,
-    logValueUpdates: false,
+    logRequests: true,
+    logValueUpdates: true,
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}

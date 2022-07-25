@@ -15,7 +15,7 @@ extends OpGeometryBase
     {
         super(POLYGON, 'poly', 90);
 
-        this.addInput (new Input ([POLYGON]));
+        this.addInput (new Input ([POLYGON, POLYGON_VALUE]));
         this.addOutput(new Output(POLYGON, this.output_genRequest));
 
         this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
@@ -32,8 +32,6 @@ extends OpGeometryBase
         this.paramAngle.control.dragReverse = true;
 
         
-        //this.updateRound();
-
         this.btnProportional = createToggleButton(12, 12);
         this.inner.appendChild(this.btnProportional);
 

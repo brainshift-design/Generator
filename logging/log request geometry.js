@@ -1,5 +1,5 @@
-function logReqRectangle(rect, parse)
+function logReqGeometry(node, parse)
 {
-    parse.log += parse.tab + RECTANGLE;
-    parse.log += logReqNodeId(rect);
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node);
 }

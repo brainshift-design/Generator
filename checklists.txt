@@ -1,12 +1,13 @@
 NEW OPERATOR:
 
-    operator
-    GType etc
-    types/types.js
-    autojoin
-    rgbFromType
-    html
+    types.js
+    GTypeValue
+    GType
+    types.aj
     Graph.js/createNode();
-    figma obj create/update
+    rgbFromType
+    operator
     gen obj parse
     log node req
+    figma obj create/update
+    html

@@ -16,11 +16,11 @@ extends OpGeometryBase
     {
         super(STAR, 'star', 90);
 
-        this.addInput (new Input ([STAR]));
+        this.addInput (new Input ([STAR, STAR_VALUE]));
         this.addOutput(new Output(STAR, this.output_genRequest));
 
-        this.addParam(this.aramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.aramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
@@ -35,8 +35,6 @@ extends OpGeometryBase
 
         this.paramConvex.control.setSuffix('%', true);
         
-
-        //this.updateRound();
 
         this.btnProportional = createToggleButton(12, 12);
         this.inner.appendChild(this.btnProportional);

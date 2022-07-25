@@ -24,7 +24,7 @@ extends GOperator
         const rect = new GRectangle(this.nodeId, this.active);
 
         if (this.input) 
-            col.input = this.input.copy();
+            rect.input = this.input.copy();
 
         if (this.x     ) rect.x      = this.x     .copy();
         if (this.y     ) rect.y      = this.y     .copy();

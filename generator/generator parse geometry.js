@@ -28,7 +28,7 @@ function genParseRectangle(parse)
 
 
     if (parse.logRequests) 
-        logReqRectangle(rect, parse);
+        logReqGeometry(rect, parse);
 
 
     if (ignore) 
@@ -78,19 +78,33 @@ function genParseRectangle(parse)
 
 function genParseLine(parse)
 {
-    parse.pos++; // LINE
- 
-    const nodeId = parse.req[parse.pos++];
-    const active = genParseActive(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
   
-    let line = new GLine();
+    let line = new GLine(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(line, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rect);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
     let paramIds;
     
-    if (parse.next == LINE)
+    if (   parse.next == LINE_VALUE
+        || parse.next == LINE)
     {
-        line = genParse(parse); // not genParseLine() because genParse() handles stack overflow
-        paramIds  = parse.req[parse.pos++].split(',');
+        line.input = genParse(parse); // not genParseLine() because genParse() handles stack overflow
+        paramIds   = parse.move().split(',');
     }
     else
         paramIds = ['x', 'y', 'width', 'angle'];
@@ -103,38 +117,15 @@ function genParseLine(parse)
         case 'x':     line.x     = genParse(parse); break;
         case 'y':     line.y     = genParse(parse); break;
         case 'width': line.width = genParse(parse); break;
-        //case 'height': line.height = genParse(parse); break;
         case 'angle': line.angle = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateValue(parse, nodeId, 'x',     line.x    );
-    genPushUpdateValue(parse, nodeId, 'y',     line.y    );
-    genPushUpdateValue(parse, nodeId, 'width', line.width);
-    //genPushUpdateValue(parse, nodeId, 'height', line.height);
-    genPushUpdateValue(parse, nodeId, 'angle', line.angle);
+    parse.nTab--;
 
 
-    if (   active
-        && line.valid)
-    {
-        genPushUpdateObject(
-            parse,
-            nodeId,
-            { 
-                nodeId: nodeId,          
-                type:   LINE,
-                id:     0,
-                x:      line.x     .value,
-                y:      line.y     .value,
-                width:  line.width .value,
-                //height: line.height.value,
-                angle:  line.angle .value
-            });
-    }
-
-
+    genParseNodeEnd(parse, line);
     return line;
 }
 
@@ -142,19 +133,33 @@ function genParseLine(parse)
 
 function genParseEllipse(parse)
 {
-    parse.pos++; // ELLIPSE
- 
-    const nodeId = parse.req[parse.pos++];
-    const active = genParseActive(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
-  
-    let elllipse = new GEllipse();
-    let paramIds;
-    
-    if (parse.next == ELLIPSE)
+
+    const elps = new GEllipse(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(elps, parse);
+
+
+    if (ignore) 
     {
-        elllipse = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
-        paramIds  = parse.req[parse.pos++].split(',');
+        genParseNodeEnd(parse, elps);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (   parse.next == ELLIPSE_VALUE
+        || parse.next == ELLIPSE)
+    {
+        elps.input = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
+        paramIds   = parse.move().split(',');
     }
     else
         paramIds = ['x', 'y', 'width', 'height', 'angle'];
@@ -164,61 +169,53 @@ function genParseEllipse(parse)
     {
         switch (id)
         {
-        case 'x':      elllipse.x      = genParse(parse); break;
-        case 'y':      elllipse.y      = genParse(parse); break;
-        case 'width':  elllipse.width  = genParse(parse); break;
-        case 'height': elllipse.height = genParse(parse); break;
-        case 'angle':  elllipse.angle  = genParse(parse); break;
+        case 'x':      elps.x      = genParse(parse); break;
+        case 'y':      elps.y      = genParse(parse); break;
+        case 'width':  elps.width  = genParse(parse); break;
+        case 'height': elps.height = genParse(parse); break;
+        case 'angle':  elps.angle  = genParse(parse); break;
         }
     }
 
 
-    genPushUpdateValue(parse, nodeId, 'x',      elllipse.x     );
-    genPushUpdateValue(parse, nodeId, 'y',      elllipse.y     );
-    genPushUpdateValue(parse, nodeId, 'width',  elllipse.width );
-    genPushUpdateValue(parse, nodeId, 'height', elllipse.height);
-    genPushUpdateValue(parse, nodeId, 'angle',  elllipse.angle );
+    parse.nTab--;
 
 
-    if (   active
-        && elllipse.valid)
-    {
-        genPushUpdateObject(
-            parse,
-            nodeId,
-            { 
-                nodeId: nodeId,          
-                type:   ELLIPSE,
-                id:     0,
-                x:      elllipse.x     .value,
-                y:      elllipse.y     .value,
-                width:  elllipse.width .value,
-                height: elllipse.height.value,
-                angle:  elllipse.angle .value
-            });
-    }
-
-
-    return elllipse;
+    genParseNodeEnd(parse, elps);
+    return elps;
 }
 
 
 
 function genParsePolygon(parse)
 {
-    parse.pos++; // POLYGON
- 
-    const nodeId = parse.req[parse.pos++];
-    const active = genParseActive(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
-  
-    let poly = new GPolygon();
-    let paramIds;
-    
-    if (parse.next == POLYGON)
+
+    const poly = new GPolygon(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(poly, parse);
+
+
+    if (ignore) 
     {
-        poly     = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
-        paramIds = parse.req[parse.pos++].split(',');
+        genParseNodeEnd(parse, poly);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (   parse.next == POLYGON_VALUE
+        || parse.next == POLYGON)
+    {
+        poly.input = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
+        paramIds   = parse.move().split(',');
     }
     else
         paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'corners'];
@@ -239,36 +236,10 @@ function genParsePolygon(parse)
     }
 
 
-    genPushUpdateValue(parse, nodeId, 'x',       poly.x      );
-    genPushUpdateValue(parse, nodeId, 'y',       poly.y      );
-    genPushUpdateValue(parse, nodeId, 'width',   poly.width  );
-    genPushUpdateValue(parse, nodeId, 'height',  poly.height );
-    genPushUpdateValue(parse, nodeId, 'angle',   poly.angle  );
-    genPushUpdateValue(parse, nodeId, 'round',   poly.round  );
-    genPushUpdateValue(parse, nodeId, 'corners', poly.corners);
+    parse.nTab--;
 
 
-    if (   active
-        && poly.valid)
-    {
-        genPushUpdateObject(
-            parse,
-            nodeId,
-            { 
-                nodeId:  nodeId,          
-                type:    POLYGON,
-                id:      0,
-                x:       poly.x     .value,
-                y:       poly.y     .value,
-                width:   poly.width .value,
-                height:  poly.height.value,
-                angle:   poly.angle .value,
-                round:   Math.max(0, poly.round.value),
-                corners: Math.max(3, poly.corners.value)
-            });
-    }
-
-
+    genParseNodeEnd(parse, poly);
     return poly;
 }
 
@@ -276,19 +247,33 @@ function genParsePolygon(parse)
 
 function genParseStar(parse)
 {
-    parse.pos++; // STAR
- 
-    const nodeId = parse.req[parse.pos++];
-    const active = genParseActive(parse);
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
-  
-    let star = new GStar();
-    let paramIds;
-    
-    if (parse.next == STAR)
+
+    const star = new GStar(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(star, parse);
+
+
+    if (ignore) 
     {
-        star     = genParse(parse); // not genParseStar() because genParse() handles stack overflow
-        paramIds = parse.req[parse.pos++].split(',');
+        genParseNodeEnd(parse, star);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (   parse.next == STAR_VALUE
+        || parse.next == STAR)
+    {
+        star.input = genParse(parse); // not genParseStar() because genParse() handles stack overflow
+        paramIds   = parse.move().split(',');
     }
     else
         paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex'];
@@ -310,37 +295,9 @@ function genParseStar(parse)
     }
 
 
-    genPushUpdateValue(parse, nodeId, 'x',      star.x     );
-    genPushUpdateValue(parse, nodeId, 'y',      star.y     );
-    genPushUpdateValue(parse, nodeId, 'width',  star.width );
-    genPushUpdateValue(parse, nodeId, 'height', star.height);
-    genPushUpdateValue(parse, nodeId, 'angle',  star.angle );
-    genPushUpdateValue(parse, nodeId, 'round',  star.round );
-    genPushUpdateValue(parse, nodeId, 'points', star.points);
-    genPushUpdateValue(parse, nodeId, 'convex', star.convex);
+    parse.nTab--;
 
 
-    if (   active
-        && star.valid)
-    {
-        genPushUpdateObject(
-            parse,
-            nodeId,
-            { 
-                nodeId: nodeId,          
-                type:   STAR,
-                id:     0,
-                x:      star.x     .value,
-                y:      star.y     .value,
-                width:  star.width .value,
-                height: star.height.value,
-                angle:  star.angle .value,
-                round:  Math.max(0, star.round.value),
-                points: Math.max(3, star.points.value),
-                convex: star.convex.value
-            });
-    }
-
-
+    genParseNodeEnd(parse, star);
     return star;
 }
