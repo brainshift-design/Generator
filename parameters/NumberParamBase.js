@@ -52,30 +52,13 @@ extends Parameter
 
         if (   this.input
             && this.input.connected)
-        {
-            if (    this.input.connectedOutput.param
-                &&  gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.input.connectedOutput.node.id
-                && !this.input.connectedOutput.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.input.connectedOutput.node.id,
-                    this.input.connectedOutput.param.id);
+            req.push(...pushInputOrParam(this.input, gen));
 
-                pushUnique(gen.paramNodes, this.input.connectedOutput.node);
-            }
-            else
-                req.push(...this.input.connectedOutput.genRequest(gen));
-        }        
-        else
-        {
-            req.push( 
-                NUMBER_VALUE, 
-                new GNumberValue(
-                    this.control.value, 
-                    this.control.displayDec).toString());
-        }
+        else req.push( 
+            NUMBER_VALUE, 
+            new GNumberValue(
+                this.control.value, 
+                this.control.displayDec).toString());
 
 
         return req;

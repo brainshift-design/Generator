@@ -46,10 +46,9 @@ extends OperatorBase
         
         const input = this.node.inputs[0];
 
-        req.push(...(
-            input.connected
-            ? input.connectedOutput.genRequest(gen)
-            : this.node.paramValue.genRequest(gen)));
+        if (input.connected) req.push(...pushInputOrParam(input, gen));
+        else                 req.push(...this.node.paramValue.genRequest(gen));
+
 
             
         gen.scope.pop();

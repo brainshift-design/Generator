@@ -103,7 +103,7 @@ extends OperatorBase
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...input.connectedOutput.genRequest(gen)));
+            req.push(...pushInputOrParam(input, gen)));
 
         
         gen.scope.pop();

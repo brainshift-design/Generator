@@ -1,7 +1,6 @@
 class   NumberParam
 extends NumberParamBase
 {
-    //defaultValue;
     oldValue = null;
     
     allowEditDecimals = true;
@@ -10,15 +9,6 @@ extends NumberParamBase
     
     get value   () { return this.control.value; }
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
-
-    
-    // get valueText() { return this.control.valueText; }
-    // set valueText(text) 
-    // {
-    //     this.control.valueText = text;
-    //     this.control.update();
-    // }
-
 
     
     constructor(id,

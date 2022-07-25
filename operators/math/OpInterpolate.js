@@ -50,11 +50,11 @@ extends OperatorBase
         
         if (   input0.connected
             && input1.connected)   req.push(2,
-                                       ...input0.connectedOutput.genRequest(gen),
-                                       ...input1.connectedOutput.genRequest(gen));
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
-        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
+        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
             
         else                       req.push(0);
 

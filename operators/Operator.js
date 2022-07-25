@@ -751,6 +751,25 @@ function pushUpdateFromParam(nodes, param)
 
 
 
+function pushInputOrParam(input, gen)
+{
+    if (    input.connectedOutput.param
+        &&  gen.markParams
+        &&  lastOf(gen.scope).nodeId != input.connectedOutput.node.id
+        && !input.connectedOutput.node.valid)
+    {
+        pushUnique(gen.paramNodes, input.connectedOutput.node);
+
+        return[ PARAM,
+                input.connectedOutput.node.id,
+                input.connectedOutput.param.id ];
+    }
+    else
+        return input.connectedOutput.genRequest(gen);
+}
+
+
+
 function getNodeRequest(node, gen)
 {
     const request = [];

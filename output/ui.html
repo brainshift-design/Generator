@@ -21721,30 +21721,13 @@ extends Parameter
 
         if (   this.input
             && this.input.connected)
-        {
-            if (    this.input.connectedOutput.param
-                &&  gen.markParams
-                &&  lastOf(gen.scope).nodeId != this.input.connectedOutput.node.id
-                && !this.input.connectedOutput.node.valid)
-            {
-                req.push(
-                    PARAM,
-                    this.input.connectedOutput.node.id,
-                    this.input.connectedOutput.param.id);
+            req.push(...pushInputOrParam(this.input, gen));
 
-                pushUnique(gen.paramNodes, this.input.connectedOutput.node);
-            }
-            else
-                req.push(...this.input.connectedOutput.genRequest(gen));
-        }        
-        else
-        {
-            req.push( 
-                NUMBER_VALUE, 
-                new GNumberValue(
-                    this.control.value, 
-                    this.control.displayDec).toString());
-        }
+        else req.push( 
+            NUMBER_VALUE, 
+            new GNumberValue(
+                this.control.value, 
+                this.control.displayDec).toString());
 
 
         return req;
@@ -21762,7 +21745,6 @@ extends Parameter
 class   NumberParam
 extends NumberParamBase
 {
-    //defaultValue;
     oldValue = null;
     
     allowEditDecimals = true;
@@ -21771,15 +21753,6 @@ extends NumberParamBase
     
     get value   () { return this.control.value; }
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
-
-    
-    // get valueText() { return this.control.valueText; }
-    // set valueText(text) 
-    // {
-    //     this.control.valueText = text;
-    //     this.control.update();
-    // }
-
 
     
     constructor(id,
@@ -24429,6 +24402,25 @@ function pushUpdateFromParam(nodes, param)
 
 
 
+function pushInputOrParam(input, gen)
+{
+    if (    input.connectedOutput.param
+        &&  gen.markParams
+        &&  lastOf(gen.scope).nodeId != input.connectedOutput.node.id
+        && !input.connectedOutput.node.valid)
+    {
+        pushUnique(gen.paramNodes, input.connectedOutput.node);
+
+        return[ PARAM,
+                input.connectedOutput.node.id,
+                input.connectedOutput.param.id ];
+    }
+    else
+        return input.connectedOutput.genRequest(gen);
+}
+
+
+
 function getNodeRequest(node, gen)
 {
     const request = [];
@@ -25401,10 +25393,9 @@ extends OperatorBase
         
         const input = this.node.inputs[0];
 
-        req.push(...(
-            input.connected
-            ? input.connectedOutput.genRequest(gen)
-            : this.node.paramValue.genRequest(gen)));
+        if (input.connected) req.push(...pushInputOrParam(input, gen));
+        else                 req.push(...this.node.paramValue.genRequest(gen));
+
 
             
         gen.scope.pop();
@@ -25494,7 +25485,7 @@ extends OperatorBase
         req.push(input.connected ? 1 : 0);
         
         if (input.connected)
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
         req.push(...this.node.paramMin.genRequest(gen));
         req.push(...this.node.paramMax.genRequest(gen));
@@ -25623,7 +25614,7 @@ extends OperatorBase
         req.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...input.connectedOutput.genRequest(gen)));
+            req.push(...pushInputOrParam(input, gen)));
 
         
         gen.scope.pop();
@@ -26117,11 +26108,11 @@ extends OperatorBase
         
         if (   input0.connected
             && input1.connected)   req.push(2,
-                                       ...input0.connectedOutput.genRequest(gen),
-                                       ...input1.connectedOutput.genRequest(gen));
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
-        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
+        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
             
         else                       req.push(0);
 
@@ -26513,7 +26504,7 @@ extends OpColorBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
             
             paramIds.push(this.node.paramSpace.id);
@@ -28504,11 +28495,11 @@ extends OpColorBase
         
         if (   input0.connected
             && input1.connected)   req.push(2,
-                                       ...input0.connectedOutput.genRequest(gen),
-                                       ...input1.connectedOutput.genRequest(gen));
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
-        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
+        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
             
         else                       req.push(0);
 
@@ -28765,11 +28756,11 @@ extends OpColorBase
         
         if (   input0.connected
             && input1.connected)   req.push(2,
-                                       ...input0.connectedOutput.genRequest(gen),
-                                       ...input1.connectedOutput.genRequest(gen));
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...input0.connectedOutput.genRequest(gen));
-        else if (input1.connected) req.push(1, ...input1.connectedOutput.genRequest(gen));
+        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
             
         else                       req.push(0);
 
@@ -29036,7 +29027,7 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
@@ -29220,7 +29211,7 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
@@ -29351,7 +29342,7 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
@@ -29538,7 +29529,7 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
@@ -29757,7 +29748,7 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)

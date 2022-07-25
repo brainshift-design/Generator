@@ -165,7 +165,7 @@ extends OpColorBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
             
             paramIds.push(this.node.paramSpace.id);

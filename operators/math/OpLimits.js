@@ -47,7 +47,7 @@ extends OperatorBase
         req.push(input.connected ? 1 : 0);
         
         if (input.connected)
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
         req.push(...this.node.paramMin.genRequest(gen));
         req.push(...this.node.paramMax.genRequest(gen));

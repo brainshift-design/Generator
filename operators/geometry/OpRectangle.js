@@ -99,7 +99,7 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...input.connectedOutput.genRequest(gen));
+            req.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
