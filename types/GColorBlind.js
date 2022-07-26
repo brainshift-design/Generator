@@ -1,0 +1,98 @@
+class GColorBlind
+extends GOperator
+{
+    input = null;
+
+    l;
+    m;
+    s;
+
+
+    constructor(nodeId, active)
+    {
+        super(COLORBLIND, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const cb = new GColorBlind(this.nodeId, this.active);
+
+        if (this.input) cb.input = this.input.copy();
+
+        cb.l = this.l.copy();
+        cb.m = this.m.copy();
+        cb.s = this.s.copy();
+
+        return cb;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColorValue();
+
+
+            const l = this.l.eval(parse).copy();
+            const m = this.m.eval(parse).copy();
+            const s = this.s.eval(parse).copy();
+
+
+            if (this.input)
+            {
+                const input = this.input.eval(parse).copy();
+
+                const rgb = dataColor2rgb(input.toDataColor());
+
+                const validRgb = invalid2validRgb(rgb);
+
+                const cb = rgb2colorblind(
+                    rgb,
+                    this.l.value / 2,
+                    this.m.value / 2,
+                    this.s.value / 2);
+
+                const validCb = cb;//invalid2validRgb(cb);
+                
+                const validCol = convertDataColorToSpace(
+                    rgb2dataColor(validCb), 
+                    colorSpace(input.space.value));
+
+
+                const factor = getColorSpaceFactor(validCol[0]);
+
+                if (isValidRgb(rgb)) 
+                {
+                    this.result = new GColorValue(
+                        new GNumberValue(input.space.value),
+                        new GNumberValue(validCol[1] * factor[0]),
+                        new GNumberValue(validCol[2] * factor[1]),
+                        new GNumberValue(validCol[3] * factor[2]));
+                        
+                    genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+                }
+                else
+                {
+                    this.result = GColorValue.NaN;
+                    genPushUpdateValue(parse, this.nodeId, 'value', GColorValue.NaN);
+                }
+            }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'l', l);
+            genPushUpdateValue(parse, this.nodeId, 'm', m);
+            genPushUpdateValue(parse, this.nodeId, 's', s);
+        }
+
+
+        return this.result;
+    }
+}

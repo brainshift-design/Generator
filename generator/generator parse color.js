@@ -171,3 +171,41 @@ function genParseColorContrast(parse)
     genParseNodeEnd(parse, cnt);
     return cnt;
 }
+
+
+
+function genParseColorBlind(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const cb = new GColorBlind(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorBlind(cb, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cb);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (COLOR_TYPES.includes(parse.next))
+        cb.input = genParse(parse);
+
+    cb.l = genParse(parse);
+    cb.m = genParse(parse);
+    cb.s = genParse(parse);
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cb);
+    return cb;
+}

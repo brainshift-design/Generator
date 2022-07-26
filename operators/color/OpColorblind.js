@@ -1,4 +1,4 @@
-class   OpColorblind
+class   OpColorBlind
 extends OpColorBase
 {
     paramL;
@@ -9,11 +9,11 @@ extends OpColorBase
 
     constructor()
     {
-        super('colorblind', 'colorblind', 'color', 80);
+        super(COLORBLIND, 'colorblind', 80);
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output(COLOR));
+        this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
         this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
@@ -30,60 +30,49 @@ extends OpColorBase
 
 
 
-    // updateData()
-    // {
-    //     super.updateData()
-
-
-    //     let valid = true;
-        
-    //     if (this.inputs[0].connected)
-    //     {
-    //         const rgb      = dataColor2rgb(this.inputs[0].data.color);
-    //         const validRgb = invalid2validRgb(rgb);
-            
-    //         const cb = rgb2colorblind(
-    //             validRgb,
-    //             this.paramL.value / 2,
-    //             this.paramM.value / 2,
-    //             this.paramS.value / 2);
-
-    //         const validCb = invalid2validRgb(cb);
-
-    //         this._color = rgb2dataColor(validCb);
-
-
-    //         if (!isValidRgb(rgb))
-    //         {
-    //             this.warningStyle = this.getDefaultWarningStyle(validRgb);
-    //             valid             = false;
-    //         }
-
-    //         this.forceShowWarning = 
-    //                this.inputs[0].connected
-    //             && !isValidRgb(rgb);        
-    //     }
-    //     else 
-    //     {
-    //         this._color = dataColor_NaN;
-    //         this.forceShowWarning = false;
-
-    //         valid = false;
-    //     }
-                
-
-    //     this.outputs[0]._data = dataFromDataColor(this._color);
-
-    //     if (  !valid
-    //         || this.forceShowWarning) 
-    //         this.outputs[0]._data.isValid = false;
-    // }
-
-
-
-    updateParams(dispatchEvents)
+    output_genRequest(gen)
     {
-        super.updateParams(dispatchEvents);
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [req, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return req;
+
+
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+            req.push(...pushInputOrParam(input, gen));
+
+
+        req.push(...this.node.paramL.genRequest(gen));
+        req.push(...this.node.paramM.genRequest(gen));
+        req.push(...this.node.paramS.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        const col = values[paramIds.findIndex(id => id == 'value')];
+
+        if (col)
+            this._color = col.toDataColor();
+
+        super.updateValues(updateParamId, paramIds, values);
 
         this.setParamText(this.paramL, 'L');
         this.setParamText(this.paramM, 'M');

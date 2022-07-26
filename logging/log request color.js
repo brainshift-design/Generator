@@ -23,3 +23,11 @@ function logReqColorContrast(lerp, nValues, valueIndex, parse)
     if (nValues == 1)
         parse.log += ' ' + valueIndex;
 }
+
+
+
+function logReqColorBlind(cb, parse)
+{
+    parse.log += parse.tab + COLORBLIND;
+    parse.log += logReqNodeId(cb);
+}

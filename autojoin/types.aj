@@ -25,6 +25,7 @@
 ../types/GColor.js
 ../types/GColorInterpolate.js
 ../types/GColorContrast.js
+../types/GColorBlind.js
 
 
 ../types/GRectangleValue.js

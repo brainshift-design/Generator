@@ -308,7 +308,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
         case COLOR_VALIDATE:     node = new OpValidateColor();    break;
         case COLOR_CONTRAST:     node = new OpColorContrast();      break;
-        case COLORBLIND:         node = new OpColorblind();       break;
+        case COLORBLIND:         node = new OpColorBlind();       break;
         
         case RECTANGLE:          node = new OpRectangle();        break;
         case LINE:               node = new OpLine();             break;

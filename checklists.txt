@@ -1,12 +1,12 @@
 NEW OPERATOR:
 
     types.js
+    operator
     GTypeValue
     GType
     types.aj
     Graph.js/createNode();
     rgbFromType
-    operator
     gen obj parse
     log node req
     figma obj create/update
