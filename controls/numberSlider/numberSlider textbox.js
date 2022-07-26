@@ -186,7 +186,7 @@ function initNumberSliderTextbox(slider)
                 e.preventDefault();
 
             curVal =
-                curVal == '?'
+                curVal == INVALID
                 ? ''
                 :   curVal.substring(0, slider.textbox.selectionStart) 
                   + curVal.substring(slider.textbox.selectionEnd, curVal.length);
@@ -247,8 +247,8 @@ function initNumberSliderTextbox(slider)
         value = value.replace(slider.suffix, '');
         
         
-        let val      = value     .indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
-        let savedVal = savedValue.indexOf('?') > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+        let val      = value     .indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let savedVal = savedValue.indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
 
         if (!isNaN(val))
             val /= slider.valueScale;
@@ -333,7 +333,7 @@ function initNumberSliderTextbox(slider)
     {
         slider.textbox.value =
             (isNaN(slider.value)
-             ? '?'
+             ? DISPLAY_INVALID
              : numToString(
                    slider.value * slider.valueScale, 
                    slider.displayDec, 

@@ -61,7 +61,7 @@ extends GType
               + ' ' + this.y     .toString()
               + ' ' + this.width .toString()
               + ' ' + this.angle .toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -77,7 +77,7 @@ extends GType
 
 function parseGLineValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GLineValue.NaN;
 
     const rect = str.split(' ');

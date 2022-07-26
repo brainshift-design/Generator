@@ -79,7 +79,7 @@ extends GType
               + ' ' + this.angle  .toString()
               + ' ' + this.round  .toString()
               + ' ' + this.corners.toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -98,7 +98,7 @@ extends GType
 
 function parseGPolygonValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GPolygonValue.NaN;
 
     const rect = str.split(' ');

@@ -77,7 +77,7 @@ extends GType
               + ' ' + this.c1.toString()
               + ' ' + this.c2.toString()
               + ' ' + this.c3.toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -93,7 +93,7 @@ extends GType
 
 function parseGColorValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GColorValue.NaN;
 
     const col = str.split(' ');

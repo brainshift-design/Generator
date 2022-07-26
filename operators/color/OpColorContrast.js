@@ -142,6 +142,33 @@ extends OpColorBase
 
             this.paramValue.control.setValue(Math.abs(value), false, false, false);
         }
+
+
+        if (   this.inputs[0].connected
+            && this.inputs[1].connected)
+        {
+            const rgb0 = dataColor2rgb(colText.toDataColor());
+            const rgb1 = dataColor2rgb(colBack.toDataColor());
+
+            if (  !isValidRgb(rgb0)
+                && isValidRgb(rgb1))
+            {
+                this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
+                this.forceShowWarning = true;
+            }
+            else if ( isValidRgb(rgb0)
+                  && !isValidRgb(rgb1))
+            {
+                this.warningStyle     = this.getDefaultWarningStyle(rgb1);
+                this.forceShowWarning = true;
+            }
+            else
+                this.forceShowWarning = false;
+        }
+        else
+        {
+            this.forceShowWarning = false;
+        }
     }
 
 

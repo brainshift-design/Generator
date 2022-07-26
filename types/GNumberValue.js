@@ -46,7 +46,7 @@ extends GType
     toString()
     {
         return isNaN(this.value)
-            ? '?'
+            ? INVALID
             : numToString(this.value, this.decimals);    
     }
 
@@ -61,7 +61,7 @@ extends GType
 
 function parseGNumberValue(str)
 {
-    return str == '?'
+    return str == INVALID
         ? new GNumberValue(Number.NaN, 0)
         : new GNumberValue(
               parseFloat(str),

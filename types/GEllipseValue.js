@@ -67,7 +67,7 @@ extends GType
               + ' ' + this.width .toString()
               + ' ' + this.height.toString()
               + ' ' + this.angle .toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -84,7 +84,7 @@ extends GType
 
 function parseGEllipseValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GEllipseValue.NaN;
 
     const rect = str.split(' ');

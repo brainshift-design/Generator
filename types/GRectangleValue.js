@@ -73,7 +73,7 @@ extends GType
               + ' ' + this.height.toString()
               + ' ' + this.angle .toString()
               + ' ' + this.round .toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -91,7 +91,7 @@ extends GType
 
 function parseGRectangleValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GRectangleValue.NaN;
 
     const rect = str.split(' ');

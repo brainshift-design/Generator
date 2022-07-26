@@ -2730,6 +2730,10 @@ function normalizeSeed(x)
 }
 
 
+const INVALID            = '?';
+const DISPLAY_INVALID    = '🤷‍♂️';
+
+
 const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
 
 const NUMBER             = 'NUM';   // N | n
@@ -2994,7 +2998,7 @@ extends GType
     toString()
     {
         return isNaN(this.value)
-            ? '?'
+            ? INVALID
             : numToString(this.value, this.decimals);    
     }
 
@@ -3009,7 +3013,7 @@ extends GType
 
 function parseGNumberValue(str)
 {
-    return str == '?'
+    return str == INVALID
         ? new GNumberValue(Number.NaN, 0)
         : new GNumberValue(
               parseFloat(str),
@@ -3654,7 +3658,7 @@ extends GType
               + ' ' + this.c1.toString()
               + ' ' + this.c2.toString()
               + ' ' + this.c3.toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -3670,7 +3674,7 @@ extends GType
 
 function parseGColorValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GColorValue.NaN;
 
     const col = str.split(' ');
@@ -4030,22 +4034,28 @@ extends GOperator
 
                     this.result = input1;
 
-                    if (standard.value == 0)
+                    if (   isValidRgb(dataColor2rgb(input0.toDataColor()))
+                        && isValidRgb(dataColor2rgb(input1.toDataColor())))
                     {
-                        const value = getContrastRatio2(
-                            dataColor2rgb(input0.toDataColor()),
-                            dataColor2rgb(input1.toDataColor()));
+                        if (standard.value == 0)
+                        {
+                            const value = getContrastRatio2(
+                                dataColor2rgb(input0.toDataColor()),
+                                dataColor2rgb(input1.toDataColor()));
 
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                        }
+                        else
+                        {
+                            const value = getContrastRatio3(
+                                dataColor2rgb(input0.toDataColor()),
+                                dataColor2rgb(input1.toDataColor()));
+
+                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
+                        }
                     }
                     else
-                    {
-                        const value = getContrastRatio3(
-                            dataColor2rgb(input0.toDataColor()),
-                            dataColor2rgb(input1.toDataColor()));
-
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
-                    }
+                        genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
                 }
             }
 
@@ -4174,7 +4184,7 @@ extends GType
               + ' ' + this.height.toString()
               + ' ' + this.angle .toString()
               + ' ' + this.round .toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -4192,7 +4202,7 @@ extends GType
 
 function parseGRectangleValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GRectangleValue.NaN;
 
     const rect = str.split(' ');
@@ -4271,7 +4281,7 @@ extends GType
               + ' ' + this.y     .toString()
               + ' ' + this.width .toString()
               + ' ' + this.angle .toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -4287,7 +4297,7 @@ extends GType
 
 function parseGLineValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GLineValue.NaN;
 
     const rect = str.split(' ');
@@ -4370,7 +4380,7 @@ extends GType
               + ' ' + this.width .toString()
               + ' ' + this.height.toString()
               + ' ' + this.angle .toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -4387,7 +4397,7 @@ extends GType
 
 function parseGEllipseValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GEllipseValue.NaN;
 
     const rect = str.split(' ');
@@ -4483,7 +4493,7 @@ extends GType
               + ' ' + this.angle  .toString()
               + ' ' + this.round  .toString()
               + ' ' + this.corners.toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -4502,7 +4512,7 @@ extends GType
 
 function parseGPolygonValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GPolygonValue.NaN;
 
     const rect = str.split(' ');
@@ -4606,7 +4616,7 @@ extends GType
               + ' ' + this.round .toString()
               + ' ' + this.points.toString()
               + ' ' + this.convex.toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -4626,7 +4636,7 @@ extends GType
 
 function parseGStarValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GStarValue.NaN;
 
     const rect = str.split(' ');
@@ -6531,7 +6541,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         parse.updateValues.push({
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse '?'
+            type:    value.type, // needed to correctly parse INVALID
             value:   value});
     }
 }
@@ -6669,7 +6679,7 @@ function genQueueChunk(updateNodeId, updateParamId, chunkId, valChunk, objChunk)
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       chunkId,
-        values:        [...valChunk].map(v => v ? v.toString() : '?'),
+        values:        [...valChunk].map(v => v ? v.toString() : INVALID),
         objects:       [...objChunk]
     });
 

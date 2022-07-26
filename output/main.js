@@ -137,6 +137,8 @@ function logReqNode(node, type, parse) {
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(node);
 }
+const INVALID = '?';
+const DISPLAY_INVALID = '🤷‍♂️';
 const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
 const NUMBER = 'NUM'; // N | n
 const NUMBER_LIMITS = 'LIM'; // N:min N:max

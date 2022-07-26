@@ -58,7 +58,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         parse.updateValues.push({
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse '?'
+            type:    value.type, // needed to correctly parse INVALID
             value:   value});
     }
 }
@@ -196,7 +196,7 @@ function genQueueChunk(updateNodeId, updateParamId, chunkId, valChunk, objChunk)
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       chunkId,
-        values:        [...valChunk].map(v => v ? v.toString() : '?'),
+        values:        [...valChunk].map(v => v ? v.toString() : INVALID),
         objects:       [...objChunk]
     });
 

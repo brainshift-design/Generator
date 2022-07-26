@@ -282,7 +282,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         {
             if (   slider.value <  0 
                 || slider.value >= slider.options.length)
-                return '?';
+                return INVALID;
             else
                 return slider.options[Math.round(slider.value)];
         }
@@ -293,7 +293,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         else
         {
             return isNaN(slider.value)
-                   ? '?'
+                   ? INVALID
                    : Math.abs(slider.value * slider.valueScale) > 999999
                      ? (slider.value * slider.valueScale).toExponential(1)
                      : numToString(

@@ -262,7 +262,7 @@ extends OpColorBase
             this.hexbox.value = 
                 isValidRgb(colBack)
                 ? rgb2hex(colBack)
-                : '?';
+                : DISPLAY_INVALID;
         }
 
 
@@ -338,7 +338,7 @@ extends OpColorBase
         //        this.inputs[0].connected 
         //     // && this.inputs[0].data.color[0] != this._color[0]
         //     && !isValid 
-        //     ? '?' 
+        //     ? DISPLAY_INVALID
         //     : '';
 
         // if (    this.inputs[0].connected

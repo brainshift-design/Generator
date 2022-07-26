@@ -85,7 +85,7 @@ extends GType
               + ' ' + this.round .toString()
               + ' ' + this.points.toString()
               + ' ' + this.convex.toString()
-            : '?';
+            : INVALID;
     }
 
 
@@ -105,7 +105,7 @@ extends GType
 
 function parseGStarValue(str)
 {
-    if (str == '?')
+    if (str == INVALID)
         return GStarValue.NaN;
 
     const rect = str.split(' ');

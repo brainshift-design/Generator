@@ -54,22 +54,28 @@ extends GOperator
 
                     this.result = input1;
 
-                    if (standard.value == 0)
+                    if (   isValidRgb(dataColor2rgb(input0.toDataColor()))
+                        && isValidRgb(dataColor2rgb(input1.toDataColor())))
                     {
-                        const value = getContrastRatio2(
-                            dataColor2rgb(input0.toDataColor()),
-                            dataColor2rgb(input1.toDataColor()));
+                        if (standard.value == 0)
+                        {
+                            const value = getContrastRatio2(
+                                dataColor2rgb(input0.toDataColor()),
+                                dataColor2rgb(input1.toDataColor()));
 
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                        }
+                        else
+                        {
+                            const value = getContrastRatio3(
+                                dataColor2rgb(input0.toDataColor()),
+                                dataColor2rgb(input1.toDataColor()));
+
+                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
+                        }
                     }
                     else
-                    {
-                        const value = getContrastRatio3(
-                            dataColor2rgb(input0.toDataColor()),
-                            dataColor2rgb(input1.toDataColor()));
-
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
-                    }
+                        genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
                 }
             }
 
