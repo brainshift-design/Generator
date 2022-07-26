@@ -3,6 +3,8 @@
 
 figma.ui.onmessage = msg => 
 {
+    msg = JSON.parse(msg);
+    
     switch (msg.cmd)
     {
         case 'figStartGenerator':               figStartGenerator              ();                                           break;
@@ -50,7 +52,7 @@ figma.ui.onmessage = msg =>
 
 function figPostMessageToUI(msg)
 {
-    figma.ui.postMessage(msg);
+    figma.ui.postMessage(JSON.stringify(msg));
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

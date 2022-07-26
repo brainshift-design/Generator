@@ -113,7 +113,7 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col   = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const col   = values[paramIds.findIndex(id => id == 'value')];
         this._color = col.toDataColor();
 
         super.updateValues(updateParamId, paramIds, values);

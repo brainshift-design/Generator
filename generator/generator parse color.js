@@ -127,9 +127,15 @@ function genParseColorContrast(parse)
         console.assert(nValues => 0 && nValues <= 2);
     }
 
+
+    const valueIndex = 
+        nValues == 1
+        ? parseInt(parse.move())
+        : -1;
+
     
     if (parse.logRequests) 
-        logReqColorContrast(cnt, nValues, parse);
+        logReqColorContrast(cnt, nValues, valueIndex, parse);
 
 
     if (ignore) 
@@ -149,7 +155,9 @@ function genParseColorContrast(parse)
     }
     else if (nValues == 1)
     {
-        cnt.input0   = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+             if (valueIndex == 0) cnt.input0 = genParse(parse); 
+        else if (valueIndex == 1) cnt.input1 = genParse(parse); 
+
         cnt.standard = genParse(parse);
     }
     else if (nValues == 0)

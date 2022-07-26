@@ -41,11 +41,11 @@ extends Operator
         //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
-        const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
         this.header.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colBack)
+            ? colorStyleRgb(colors.back)
             : '#ead8eaee';
 
 
@@ -53,15 +53,15 @@ extends Operator
 
         for (const input of this.inputs.filter(i => !i.param))
         {
-            input.wireColor = this.canShowColor() ? colBack : noColor;
-            input.color     = colInput;
+            input.wireColor = this.canShowColor() ? colors.back : noColor;
+            input.color     = colors.input;
         }
 
 
         for (const output of this.outputs.filter(i => !i.param))
         {
-            output.wireColor = this.canShowColor() ? colBack : noColor;
-            output.color     = colOutput;
+            output.wireColor = this.canShowColor() ? colors.back : noColor;
+            output.color     = colors.output;
         }
 
 
@@ -73,12 +73,10 @@ extends Operator
 
 
 
-    updateHeaderLabel()
-    {
-        const [,,,,, textStyle] = this.getHeaderColors();
-        
-        this.label.style.color = textStyle;
-    }
+    // updateHeaderLabel()
+    // {
+    //     this.label.style.color = this.getHeaderColors().textStyle;
+    // }
 
 
 
@@ -111,13 +109,13 @@ extends Operator
         const colOutput = this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
 
 
-        return [
-            colBack, 
-            darkText,
-            colInput,
-            colOutput, 
-            colText,
-            textStyle ];
+        return {
+            back:      colBack, 
+            text:      colText,
+            darkText:  darkText,
+            textStyle: textStyle,
+            input:     colInput,
+            output:    colOutput };
     }
 
 

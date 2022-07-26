@@ -43,7 +43,7 @@
 ../operators/color/OpColor convert.js
 ../operators/color/OpValidateColor find.js
 ../operators/color/OpValidateColor.js
-../operators/color/OpWebContrast.js
+../operators/color/OpColorContrast.js
 ../operators/color/OpColorInterpolate.js
 ../operators/color/OpColorblind.js
 

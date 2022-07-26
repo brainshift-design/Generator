@@ -58,6 +58,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         parse.updateValues.push({
             nodeId:  nodeId,
             paramId: paramId,
+            type:    value.type, // needed to correctly parse '?'
             value:   value});
     }
 }
@@ -150,7 +151,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
             for (const v of values)
             {
-                valChunk.push(v.paramId, v.value);
+                valChunk.push(v.paramId, v.type, v.value);
                 vc++;
             }
 
@@ -161,19 +162,12 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
         if (   oc == objChunkSize
             || vc >= approxNodeChunkSize)
         {
-            //console.log('update chunk ' + valChunk.length);
-            
-            genQueueMessageToUI({
-                cmd:          'uiUpdateValuesAndObjects',
-                updateNodeId:  updateNodeId,
-                updateParamId: updateParamId,
-                chunkId:       chunkId++,
-                values:        [...valChunk].map(v => v ? v.toString() : '?'),
-                objects:       [...objChunk],
-            });
-
-            genFigMessagePosted = true;
-
+            genQueueChunk(
+                updateNodeId,
+                updateParamId,
+                chunkId++,
+                valChunk,
+                objChunk);
 
             valChunk = [];  vc = 0;
             objChunk = [];  oc = 0;
@@ -184,17 +178,27 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     if (   valChunk.length > 0
         || objChunk.length > 0)
     {
-        //console.log('update last');
-        
-        genQueueMessageToUI({
-            cmd:          'uiUpdateValuesAndObjects',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            chunkId:       chunkId++,
-            values:        [...valChunk].map(v => v ? v.toString() : '?'),
-            objects:       [...objChunk]
-        });
-
-        genFigMessagePosted = true;
+        genQueueChunk(
+            updateNodeId,
+            updateParamId,
+            chunkId++,
+            valChunk,
+            objChunk);
     }
+}
+
+
+
+function genQueueChunk(updateNodeId, updateParamId, chunkId, valChunk, objChunk)
+{
+    genQueueMessageToUI({
+        cmd:          'uiUpdateValuesAndObjects',
+        updateNodeId:  updateNodeId,
+        updateParamId: updateParamId,
+        chunkId:       chunkId,
+        values:        [...valChunk].map(v => v ? v.toString() : '?'),
+        objects:       [...objChunk]
+    });
+
+    genFigMessagePosted = true;
 }

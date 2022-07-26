@@ -38,7 +38,7 @@ extends GOperator
         {
             this.result  = new GColorValue();
 
-            
+
             const space  = this.space .eval(parse).copy();
             const amount = this.amount.eval(parse).copy();
             const gamma  = this.gamma .eval(parse).copy();
@@ -84,7 +84,7 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }

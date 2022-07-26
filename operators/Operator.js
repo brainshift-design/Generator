@@ -470,8 +470,8 @@ class Operator
             ? this.id 
             : this.name;
         
-        const [,,,,, textStyle] = this.getHeaderColors();
-        this.label.style.color  = textStyle;
+        const colors = this.getHeaderColors();
+        this.label.style.color = colors.textStyle;
 
         this.label.style.left = '50%';
         this.label.style.top  = '50%';
@@ -519,28 +519,6 @@ class Operator
 
 
 
-    getHeaderColors()
-    {
-        const colBack   = rgbFromType(this.type, this.active);
-        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-
-        const colText   = darkText ? [0, 0, 0, 1] : [1, 1, 1, 1];
-        const textStyle = colorStyleRgba(colText);
-
-        const colInput  = colText;
-        const colOutput = colText;
-        
-        return [
-            colBack, 
-            darkText,
-            colInput,
-            colOutput, 
-            colText,
-            textStyle ];
-    }
-
-
-
     updateParams(dispatchEvents)
     {
         for (const param of this.params)
@@ -558,13 +536,6 @@ class Operator
                 this.params[paramIndex].setValue(values[i], false, true, false);
         }
     }
-
-
-
-    // updateOutputCache(index, cache)
-    // {
-    //     this.outputs[index].cache = cache;
-    // }
 
 
 

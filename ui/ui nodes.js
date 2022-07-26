@@ -818,8 +818,8 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    //console.log('raw values = ', values);
-    
+    console.log('raw values = ', values);
+
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
@@ -860,11 +860,12 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             
             for (let j = 0; j < count; j++)
             {
-                const id = values[i++];
+                const id   = values[i++];
+                const type = values[i++];
 
                 _ids.push(id);
 
-                switch (id)
+                switch (type)
                 {
                     case COLOR_VALUE:     _values.push(parseGColorValue    (values[i++])); break;
                     case RECTANGLE_VALUE: _values.push(parseGRectangleValue(values[i++])); break;

@@ -14,9 +14,12 @@ function logReqColorInterpolate(lerp, nValues, parse)
 
 
 
-function logReqColorContrast(lerp, nValues, parse)
+function logReqColorContrast(lerp, nValues, valueIndex, parse)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nValues;
+
+    if (nValues == 1)
+        parse.log += ' ' + valueIndex;
 }

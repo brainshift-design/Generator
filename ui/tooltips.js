@@ -11,7 +11,7 @@ createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate, 
 createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            () => ttCreateColor);
 createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, () => ttCreateColorInterpolate);
 createTooltip(ttCreateValidateColor);    createTooltipSrc(btnCreateValidateColor,    () => ttCreateValidateColor);
-createTooltip(ttCreateWebContrast);      createTooltipSrc(btnCreateWebContrast,      () => ttCreateWebContrast);
+createTooltip(ttCreateColorContrast);      createTooltipSrc(btnCreateColorContrast,      () => ttCreateColorContrast);
 createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 
 createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);

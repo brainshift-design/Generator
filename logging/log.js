@@ -132,6 +132,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         for (let j = 0; j < nValues; j++)
         {
             const index = values[i++];
+            const type  = values[i++];
             const value = values[i++];
 
             log += 

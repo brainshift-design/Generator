@@ -57,7 +57,7 @@ extends Action
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
-
+        
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
             this.inputNode. inputs [this. inputIndex],

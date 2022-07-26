@@ -214,7 +214,7 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col   = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const col   = values[paramIds.findIndex(id => id == 'value')];
         const space = values[paramIds.findIndex(id => id == 'space')];
         
 
@@ -281,28 +281,28 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText, colInput, colOutput,, textStyle] = this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
         this.#colorBack.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colBack)
+            ? colorStyleRgb(colors.back)
             : '#ead8eaee';
 
 
         const colSpaceBar = 
-            darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
+            colors.darkText 
+            ? [0, 0, 0, isValidRgb(colors.back) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colors.back) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColor  = textStyle;
-        this.paramSpace.input .color       = colInput;
-        this.paramSpace.output.color       = colOutput;
+        this.paramSpace.control.textColor  = colors.textStyle;
+        this.paramSpace.input .color       = colors.input;
+        this.paramSpace.output.color       = colors.output;
         this.paramSpace.updateControls();
 
         const colWarning = 
-            darkText 
+            colors.darkText 
             ? [0, 0, 0, 0.12] 
             : [1, 1, 1, 0.2 ];
 
@@ -310,20 +310,20 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colBack, 45);
+        this.updateWarningOverlayStyle(colors.back, 45);
     }
 
 
 
     updateParamControls()
     {
-        const [colBack,,,,] = this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
         this.updateAllSliderRanges();
 
         const isValid = 
                colorSpaceIndex(this._color[0]) > 3
-            || isValidRgb(colBack);
+            || isValidRgb(colors.back);
 
         this.updateSlider(this.param1.control, isValid);
         this.updateSlider(this.param2.control, isValid);

@@ -3,7 +3,8 @@
 
 onmessage = e =>
 {
-    let msg = e.data.pluginMessage;
+    let msg = JSON.parse(e.data.pluginMessage);
+
 
     switch (msg.cmd)
     {
@@ -28,7 +29,7 @@ onmessage = e =>
 
 function uiPostMessageToFigma(msg)
 {
-    parent.postMessage({pluginMessage: msg}, '*');
+    parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 }
 
 
@@ -89,11 +90,12 @@ function uiEndFigObjectMessage()
 generator.onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
+    //console.log('msg =', msg);
 
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
+        case 'uiEndGenMessage':        uiEndGenMessage();                                                                                                   break;
 
         case 'uiUpdateValuesAndObjects': 
             uiUpdateValuesAndObjects(
@@ -108,8 +110,8 @@ generator.onmessage = function(e)
 
             break;
         
-        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
-        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 };
 

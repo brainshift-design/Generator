@@ -102,7 +102,7 @@
 }
 
 
-#btnCreateWebContrast
+#btnCreateColorContrast
 {
     padding-left:        3px;
     padding-right:       30px;
@@ -112,7 +112,7 @@
 }
 
 
-#btnCreateWebContrast:hover
+#btnCreateColorContrast:hover
 {
     background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
     background-position: 50% 50%;

@@ -148,7 +148,7 @@
 }
 
 
-#btnCreateWebContrast
+#btnCreateColorContrast
 {
     padding-left:        3px;
     padding-right:       30px;
@@ -158,7 +158,7 @@
 }
 
 
-#btnCreateWebContrast:hover
+#btnCreateColorContrast:hover
 {
     background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
     background-position: 50% 50%;
@@ -1349,7 +1349,7 @@ div
     <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate)); this.blur();'></button>
     <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor));    this.blur();'></span></button>
-    <button class='menuButton' id='btnCreateWebContrast'      onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateWebContrast));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateColorContrast'      onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast));      this.blur();'></button>
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle));        this.blur();'>RECT</button>
@@ -1427,7 +1427,7 @@ div
 <div id='ttCreateColor' class='tooltip'>Color</div>
 <div id='ttCreateColorInterpolate' class='tooltip'>Interpolate color</div>
 <div id='ttCreateValidateColor' class='tooltip'>Validate color</div>
-<div id='ttCreateWebContrast' class='tooltip'>Web contrast</div>
+<div id='ttCreateColorContrast' class='tooltip'>Web contrast</div>
 
 <div id='ttCreateColorblind' class='tooltip'>
 
@@ -3991,6 +3991,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         for (let j = 0; j < nValues; j++)
         {
             const index = values[i++];
+            const type  = values[i++];
             const value = values[i++];
 
             log += 
@@ -4146,11 +4147,14 @@ function logReqColorInterpolate(lerp, nValues, parse)
 
 
 
-function logReqColorContrast(lerp, nValues, parse)
+function logReqColorContrast(lerp, nValues, valueIndex, parse)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nValues;
+
+    if (nValues == 1)
+        parse.log += ' ' + valueIndex;
 }
 
 
@@ -4649,9 +4653,7 @@ extends GOperator
                 ? this.input.eval(parse).copy()
                 : this.value.copy();
 
-
-            //this.result.valid = true;
-            this.valid        = true;
+            this.valid = true;
 
             console.assert(this.result.valid);
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
@@ -5402,8 +5404,8 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-            genPushUpdateValue(parse, this.nodeId, 'space',     space);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'space', space);
         }
 
 
@@ -5479,7 +5481,7 @@ extends GOperator
         {
             this.result  = new GColorValue();
 
-            
+
             const space  = this.space .eval(parse).copy();
             const amount = this.amount.eval(parse).copy();
             const gamma  = this.gamma .eval(parse).copy();
@@ -5525,7 +5527,7 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }
@@ -5607,7 +5609,6 @@ extends GOperator
         {
             this.result = new GColorValue();
 
-
             const standard = this.standard.eval(parse).copy();
 
 
@@ -5626,54 +5627,39 @@ extends GOperator
 
                     this.result = input1;
 
-    
                     if (standard.value == 0)
                     {
-                        const ratio = getContrastRatio2(
+                        const value = getContrastRatio2(
                             dataColor2rgb(input0.toDataColor()),
                             dataColor2rgb(input1.toDataColor()));
 
-                        // let rating = getContrastRating2(ratio);
-
-                        // if (rating != '')
-                        //     rating = '&nbsp;&nbsp;' + rating;
-
-                        // this.paramValue.control.min        = 
-                        // this.paramValue.control.displayMin = 0;
-
-                        // this.paramValue.control.max        = 
-                        // this.paramValue.control.displayMax = 21;
-
-                        // this.paramValue.control.setDecimals(2);
-                        // this.paramValue.control.setSuffix(rating);
-
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(ratio, 2));
+                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
                     }
                     else
                     {
-                        const ratio = getContrastRatio3(
-                            dataColor2rgb(this.inputs[0].data.color),
-                            dataColor2rgb(this.inputs[1].data.color));
-                            
-                        // this.paramValue.control.min        = 
-                        // this.paramValue.control.displayMin = 0;
+                        const value = getContrastRatio3(
+                            dataColor2rgb(input0.toDataColor()),
+                            dataColor2rgb(input1.toDataColor()));
 
-                        // this.paramValue.control.max        = 
-                        // this.paramValue.control.displayMax = 105;
-
-                        // this.paramValue.control.setDecimals(1);
-                        // this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-
-                        this.paramValue.control.setValue(Math.abs(ratio), false, false, false);
-
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(ratio, 1));
+                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
                     }
-
-
-    //             this.forceShowWarning = false;
                 }
             }
 
+            else if (this.input0) 
+            {
+                const input0 = this.input0.eval(parse).copy();
+
+                if (input0.isValid())
+                {
+                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
+                    genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
+
+                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+
+                    this.result = GColorValue.NaN;
+                }
+            }
             else if (this.input1) 
             {
                 const input1 = this.input1.eval(parse).copy();
@@ -5683,24 +5669,24 @@ extends GOperator
                     genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                     genPushUpdateValue(parse, this.nodeId, 'back', input1);
 
+                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+
                     this.result = input1;
                 }
-
-                //this.result = this.input1.eval(parse).copy();
             }
             else
             {
                 genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                 genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
+
+                genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+
+                this.result = GColorValue.NaN;
             }
             
 
             this.result.valid = true;
             this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'fore', this.result);
-            genPushUpdateValue(parse, this.nodeId, 'back', this.result);
         }
 
 
@@ -7386,9 +7372,15 @@ function genParseColorContrast(parse)
         console.assert(nValues => 0 && nValues <= 2);
     }
 
+
+    const valueIndex = 
+        nValues == 1
+        ? parseInt(parse.move())
+        : -1;
+
     
     if (parse.logRequests) 
-        logReqColorContrast(cnt, nValues, parse);
+        logReqColorContrast(cnt, nValues, valueIndex, parse);
 
 
     if (ignore) 
@@ -7408,7 +7400,9 @@ function genParseColorContrast(parse)
     }
     else if (nValues == 1)
     {
-        cnt.input0   = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+             if (valueIndex == 0) cnt.input0 = genParse(parse); 
+        else if (valueIndex == 1) cnt.input1 = genParse(parse); 
+
         cnt.standard = genParse(parse);
     }
     else if (nValues == 0)
@@ -8134,6 +8128,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         parse.updateValues.push({
             nodeId:  nodeId,
             paramId: paramId,
+            type:    value.type, // needed to correctly parse '?'
             value:   value});
     }
 }
@@ -8226,7 +8221,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
             for (const v of values)
             {
-                valChunk.push(v.paramId, v.value);
+                valChunk.push(v.paramId, v.type, v.value);
                 vc++;
             }
 
@@ -8237,19 +8232,12 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
         if (   oc == objChunkSize
             || vc >= approxNodeChunkSize)
         {
-            //console.log('update chunk ' + valChunk.length);
-            
-            genQueueMessageToUI({
-                cmd:          'uiUpdateValuesAndObjects',
-                updateNodeId:  updateNodeId,
-                updateParamId: updateParamId,
-                chunkId:       chunkId++,
-                values:        [...valChunk].map(v => v ? v.toString() : '?'),
-                objects:       [...objChunk],
-            });
-
-            genFigMessagePosted = true;
-
+            genQueueChunk(
+                updateNodeId,
+                updateParamId,
+                chunkId++,
+                valChunk,
+                objChunk);
 
             valChunk = [];  vc = 0;
             objChunk = [];  oc = 0;
@@ -8260,19 +8248,29 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     if (   valChunk.length > 0
         || objChunk.length > 0)
     {
-        //console.log('update last');
-        
-        genQueueMessageToUI({
-            cmd:          'uiUpdateValuesAndObjects',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            chunkId:       chunkId++,
-            values:        [...valChunk].map(v => v ? v.toString() : '?'),
-            objects:       [...objChunk]
-        });
-
-        genFigMessagePosted = true;
+        genQueueChunk(
+            updateNodeId,
+            updateParamId,
+            chunkId++,
+            valChunk,
+            objChunk);
     }
+}
+
+
+
+function genQueueChunk(updateNodeId, updateParamId, chunkId, valChunk, objChunk)
+{
+    genQueueMessageToUI({
+        cmd:          'uiUpdateValuesAndObjects',
+        updateNodeId:  updateNodeId,
+        updateParamId: updateParamId,
+        chunkId:       chunkId,
+        values:        [...valChunk].map(v => v ? v.toString() : '?'),
+        objects:       [...objChunk]
+    });
+
+    genFigMessagePosted = true;
 }
 
 
@@ -12863,6 +12861,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         for (let j = 0; j < nValues; j++)
         {
             const index = values[i++];
+            const type  = values[i++];
             const value = values[i++];
 
             log += 
@@ -13018,11 +13017,14 @@ function logReqColorInterpolate(lerp, nValues, parse)
 
 
 
-function logReqColorContrast(lerp, nValues, parse)
+function logReqColorContrast(lerp, nValues, valueIndex, parse)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nValues;
+
+    if (nValues == 1)
+        parse.log += ' ' + valueIndex;
 }
 
 
@@ -14897,9 +14899,7 @@ extends GOperator
                 ? this.input.eval(parse).copy()
                 : this.value.copy();
 
-
-            //this.result.valid = true;
-            this.valid        = true;
+            this.valid = true;
 
             console.assert(this.result.valid);
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
@@ -15650,8 +15650,8 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
-            genPushUpdateValue(parse, this.nodeId, 'space',     space);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'space', space);
         }
 
 
@@ -15727,7 +15727,7 @@ extends GOperator
         {
             this.result  = new GColorValue();
 
-            
+
             const space  = this.space .eval(parse).copy();
             const amount = this.amount.eval(parse).copy();
             const gamma  = this.gamma .eval(parse).copy();
@@ -15773,7 +15773,7 @@ extends GOperator
             this.valid        = true;
 
 
-            genPushUpdateValue(parse, this.nodeId, COLOR_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }
@@ -15855,7 +15855,6 @@ extends GOperator
         {
             this.result = new GColorValue();
 
-
             const standard = this.standard.eval(parse).copy();
 
 
@@ -15874,54 +15873,39 @@ extends GOperator
 
                     this.result = input1;
 
-    
                     if (standard.value == 0)
                     {
-                        const ratio = getContrastRatio2(
+                        const value = getContrastRatio2(
                             dataColor2rgb(input0.toDataColor()),
                             dataColor2rgb(input1.toDataColor()));
 
-                        // let rating = getContrastRating2(ratio);
-
-                        // if (rating != '')
-                        //     rating = '&nbsp;&nbsp;' + rating;
-
-                        // this.paramValue.control.min        = 
-                        // this.paramValue.control.displayMin = 0;
-
-                        // this.paramValue.control.max        = 
-                        // this.paramValue.control.displayMax = 21;
-
-                        // this.paramValue.control.setDecimals(2);
-                        // this.paramValue.control.setSuffix(rating);
-
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(ratio, 2));
+                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
                     }
                     else
                     {
-                        const ratio = getContrastRatio3(
-                            dataColor2rgb(this.inputs[0].data.color),
-                            dataColor2rgb(this.inputs[1].data.color));
-                            
-                        // this.paramValue.control.min        = 
-                        // this.paramValue.control.displayMin = 0;
+                        const value = getContrastRatio3(
+                            dataColor2rgb(input0.toDataColor()),
+                            dataColor2rgb(input1.toDataColor()));
 
-                        // this.paramValue.control.max        = 
-                        // this.paramValue.control.displayMax = 105;
-
-                        // this.paramValue.control.setDecimals(1);
-                        // this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-
-                        this.paramValue.control.setValue(Math.abs(ratio), false, false, false);
-
-                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(ratio, 1));
+                        genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
                     }
-
-
-    //             this.forceShowWarning = false;
                 }
             }
 
+            else if (this.input0) 
+            {
+                const input0 = this.input0.eval(parse).copy();
+
+                if (input0.isValid())
+                {
+                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
+                    genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
+
+                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+
+                    this.result = GColorValue.NaN;
+                }
+            }
             else if (this.input1) 
             {
                 const input1 = this.input1.eval(parse).copy();
@@ -15931,24 +15915,24 @@ extends GOperator
                     genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                     genPushUpdateValue(parse, this.nodeId, 'back', input1);
 
+                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+
                     this.result = input1;
                 }
-
-                //this.result = this.input1.eval(parse).copy();
             }
             else
             {
                 genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                 genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
+
+                genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+
+                this.result = GColorValue.NaN;
             }
             
 
             this.result.valid = true;
             this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'fore', this.result);
-            genPushUpdateValue(parse, this.nodeId, 'back', this.result);
         }
 
 
@@ -22463,7 +22447,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLOR:              node = new OpColor();            break;
         case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
         case COLOR_VALIDATE:     node = new OpValidateColor();    break;
-        case COLOR_CONTRAST:     node = new OpWebContrast();      break;
+        case COLOR_CONTRAST:     node = new OpColorContrast();      break;
         case COLORBLIND:         node = new OpColorblind();       break;
         
         case RECTANGLE:          node = new OpRectangle();        break;
@@ -24128,8 +24112,8 @@ class Operator
             ? this.id 
             : this.name;
         
-        const [,,,,, textStyle] = this.getHeaderColors();
-        this.label.style.color  = textStyle;
+        const colors = this.getHeaderColors();
+        this.label.style.color = colors.textStyle;
 
         this.label.style.left = '50%';
         this.label.style.top  = '50%';
@@ -24177,28 +24161,6 @@ class Operator
 
 
 
-    getHeaderColors()
-    {
-        const colBack   = rgbFromType(this.type, this.active);
-        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-
-        const colText   = darkText ? [0, 0, 0, 1] : [1, 1, 1, 1];
-        const textStyle = colorStyleRgba(colText);
-
-        const colInput  = colText;
-        const colOutput = colText;
-        
-        return [
-            colBack, 
-            darkText,
-            colInput,
-            colOutput, 
-            colText,
-            textStyle ];
-    }
-
-
-
     updateParams(dispatchEvents)
     {
         for (const param of this.params)
@@ -24216,13 +24178,6 @@ class Operator
                 this.params[paramIndex].setValue(values[i], false, true, false);
         }
     }
-
-
-
-    // updateOutputCache(index, cache)
-    // {
-    //     this.outputs[index].cache = cache;
-    // }
 
 
 
@@ -26189,11 +26144,11 @@ extends Operator
         //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
-        const [colBack,, colInput, colOutput,,] = this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
         this.header.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colBack)
+            ? colorStyleRgb(colors.back)
             : '#ead8eaee';
 
 
@@ -26201,15 +26156,15 @@ extends Operator
 
         for (const input of this.inputs.filter(i => !i.param))
         {
-            input.wireColor = this.canShowColor() ? colBack : noColor;
-            input.color     = colInput;
+            input.wireColor = this.canShowColor() ? colors.back : noColor;
+            input.color     = colors.input;
         }
 
 
         for (const output of this.outputs.filter(i => !i.param))
         {
-            output.wireColor = this.canShowColor() ? colBack : noColor;
-            output.color     = colOutput;
+            output.wireColor = this.canShowColor() ? colors.back : noColor;
+            output.color     = colors.output;
         }
 
 
@@ -26221,12 +26176,10 @@ extends Operator
 
 
 
-    updateHeaderLabel()
-    {
-        const [,,,,, textStyle] = this.getHeaderColors();
-        
-        this.label.style.color = textStyle;
-    }
+    // updateHeaderLabel()
+    // {
+    //     this.label.style.color = this.getHeaderColors().textStyle;
+    // }
 
 
 
@@ -26259,13 +26212,13 @@ extends Operator
         const colOutput = this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
 
 
-        return [
-            colBack, 
-            darkText,
-            colInput,
-            colOutput, 
-            colText,
-            textStyle ];
+        return {
+            back:      colBack, 
+            text:      colText,
+            darkText:  darkText,
+            textStyle: textStyle,
+            input:     colInput,
+            output:    colOutput };
     }
 
 
@@ -26561,7 +26514,7 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col   = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const col   = values[paramIds.findIndex(id => id == 'value')];
         const space = values[paramIds.findIndex(id => id == 'space')];
         
 
@@ -26628,28 +26581,28 @@ extends OpColorBase
         this.header.style.background = 'transparent';
     
     
-        const [colBack, darkText, colInput, colOutput,, textStyle] = this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
         this.#colorBack.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colBack)
+            ? colorStyleRgb(colors.back)
             : '#ead8eaee';
 
 
         const colSpaceBar = 
-            darkText 
-            ? [0, 0, 0, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colBack) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
+            colors.darkText 
+            ? [0, 0, 0, isValidRgb(colors.back) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colors.back) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColor  = textStyle;
-        this.paramSpace.input .color       = colInput;
-        this.paramSpace.output.color       = colOutput;
+        this.paramSpace.control.textColor  = colors.textStyle;
+        this.paramSpace.input .color       = colors.input;
+        this.paramSpace.output.color       = colors.output;
         this.paramSpace.updateControls();
 
         const colWarning = 
-            darkText 
+            colors.darkText 
             ? [0, 0, 0, 0.12] 
             : [1, 1, 1, 0.2 ];
 
@@ -26657,20 +26610,20 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colBack, 45);
+        this.updateWarningOverlayStyle(colors.back, 45);
     }
 
 
 
     updateParamControls()
     {
-        const [colBack,,,,] = this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
         this.updateAllSliderRanges();
 
         const isValid = 
                colorSpaceIndex(this._color[0]) > 3
-            || isValidRgb(colBack);
+            || isValidRgb(colors.back);
 
         this.updateSlider(this.param1.control, isValid);
         this.updateSlider(this.param2.control, isValid);
@@ -28303,20 +28256,20 @@ extends OpColorBase
         this.label  .style.top = '40%';
         this.btnFind.style.top = '67%';
 
-        const [,,,, textColor,] = this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
         const textStyle = colorStyleRgb_a(
-            textColor, 
+            colors.text, 
             this.btnFind.over
-            ? Math.min(textColor[3] * 1.8, 1) 
-            : textColor[3]);
+            ? Math.min(colors.text[3] * 1.8, 1) 
+            : colors.text[3]);
 
         this.btnFind.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.10345 5.05172C8.10345 7.01329 6.51329 8.60345 4.55172 8.60345C2.59016 8.60345 1 7.01329 1 5.05172C1 3.09016 2.59016 1.5 4.55172 1.5C6.51329 1.5 8.10345 3.09016 8.10345 5.05172ZM7.39723 8.60458C6.61787 9.22958 5.62846 9.60345 4.55172 9.60345C2.03788 9.60345 0 7.56557 0 5.05172C0 2.53788 2.03788 0.5 4.55172 0.5C7.06557 0.5 9.10345 2.53788 9.10345 5.05172C9.10345 6.12858 8.72949 7.1181 8.10436 7.8975L11.3535 11.1467L10.6464 11.8538L7.39723 8.60458Z" fill="'+textStyle+'" fill-opacity="0.8"/></svg>\')';
         this.btnFind.style.backgroundPosition = '50% 50%';
         this.btnFind.style.backgroundRepeat   = 'no-repeat';
 
 
-        const findStyle = colorStyleRgb_a(textColor, 0.35);
+        const findStyle = colorStyleRgb_a(colors.text, 0.35);
 
         this.findBar     .style.outline    = '1px solid ' + findStyle;
         this.findProgress.style.background = findStyle;
@@ -28433,12 +28386,13 @@ function addValidateSymbol(name)
 }
 
 
-class   OpWebContrast
+class   OpColorContrast
 extends OpColorBase
 {
     paramStandard;
     paramValue;
 
+    labelColor = [0, 0, 0];
 
 
     constructor()
@@ -28465,7 +28419,7 @@ extends OpColorBase
             () => this.paramStandard.value == 1 ? ttWcag3 : ttWcag2);
 
 
-            this.header.connectionPadding = 12.5;
+        this.header.connectionPadding = 12.5;
     }
 
 
@@ -28506,8 +28460,8 @@ extends OpColorBase
                                        ...pushInputOrParam(input0, gen),
                                        ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
+        else if (input0.connected) req.push(1, 0, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) req.push(1, 1, ...pushInputOrParam(input1, gen));
             
         else                       req.push(0);
 
@@ -28519,120 +28473,63 @@ extends OpColorBase
         pushUnique(gen.passedNodes, this);
 
         return req;
-
-
-    //     //console.log(this.id + '.OpWebContrast.updateData()');
-
-        
-    //     this._color = 
-    //         this.inputs[1].connected
-    //         ? this.inputs[1].data.color
-    //         : dataColor_NaN;
-
-
-    //     if (   this.inputs[0].connected
-    //         && this.inputs[1].connected)
-    //     {
-    //         const rgb0 = dataColor2rgb(this.inputs[0].data.color);
-    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
-            
-    //         if (   isValidRgb(rgb0) && this.inputs[0].data.isValid
-    //             && isValidRgb(rgb1) && this.inputs[1].data.isValid)
-    //         {
-    //             if (this.paramStandard.value == 0)
-    //             {
-    //                 const ratio = getContrastRatio2(
-    //                     dataColor2rgb(this.inputs[0].data.color),
-    //                     dataColor2rgb(this.inputs[1].data.color));
-
-    //                 let rating = getContrastRating2(ratio);
-
-    //                 if (rating != '')
-    //                     rating = '&nbsp;&nbsp;' + rating;
-
-    //                 this.paramValue.control.min        = 
-    //                 this.paramValue.control.displayMin = 0;
-
-    //                 this.paramValue.control.max        = 
-    //                 this.paramValue.control.displayMax = 21;
-
-    //                 this.paramValue.control.setDecimals(2);
-    //                 this.paramValue.control.setSuffix(rating);
-    //                 this.paramValue.control.setValue(ratio, false, false, false);
-    //             }
-    //             else
-    //             {
-    //                 const ratio = getContrastRatio3(
-    //                     dataColor2rgb(this.inputs[0].data.color),
-    //                     dataColor2rgb(this.inputs[1].data.color));
-                        
-    //                 this.paramValue.control.min        = 
-    //                 this.paramValue.control.displayMin = 0;
-
-    //                 this.paramValue.control.max        = 
-    //                 this.paramValue.control.displayMax = 105;
-
-    //                 this.paramValue.control.setDecimals(1);
-    //                 this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-    //                 this.paramValue.control.setValue(Math.abs(ratio), false, false, false);
-    //             }
-
-
-    //             this.forceShowWarning = false;
-
-    //             super.updateData();
-    //             return;
-    //         }
-
-    //         else if ((!isValidRgb(rgb0) || !this.inputs[0].data.isValid)
-    //                &&  isValidRgb(rgb1) &&  this.inputs[1].data.isValid)
-    //         {
-    //             this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
-    //             this.forceShowWarning = true;
-    //         }
-            
-    //         else if (  isValidRgb(rgb0) &&  this.inputs[0].data.isValid
-    //               && (!isValidRgb(rgb1) || !this.inputs[1].data.isValid))
-    //         {
-    //             this.warningStyle     = this.getDefaultWarningStyle(rgb1);
-    //             this.forceShowWarning = true;
-    //         }
-
-    //         else
-    //             this.forceShowWarning = false;
-    //     }
-
-    //     else if (this.inputs[1].connected)
-    //     {
-    //         const rgb1 = dataColor2rgb(this.inputs[1].data.color);
-            
-    //         this.forceShowWarning = 
-    //                !isValidRgb(rgb1) 
-    //             || !this.inputs[1].data.isValid;
-    //     }
-
-
-    //     this.paramValue.setValue(Number.NaN, false, true, false);
-
-        
-    //     super.updateData();
     }
 
 
 
     updateValues(updateParamId, paramIds, values)
     {
-        console.log('paramIds =', paramIds);
-        console.log('values =', values);
+        console.assert(paramIds.length == values.length);
+
         const colText = values[paramIds.findIndex(id => id == 'text')];
         const colBack = values[paramIds.findIndex(id => id == 'back')];
 
-        console.assert(colText.type == COLOR_VALUE, 'colText = ' + colText.type);
-        console.assert(colBack.type == COLOR_VALUE, 'colBack = ' + colBack.type);
+        console.assert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
+        console.assert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
+
+        this.labelColor = 
+            colText.isValid()
+            ? dataColor2rgb(colText.toDataColor())
+            : [0, 0, 0];
 
         this._color = colBack.toDataColor();
 
+
         super.updateValues(updateParamId, paramIds, values);
+
+
+        const value = this.paramValue.value;
+
+
+        if (this.paramStandard.value == 0)
+        {
+            let rating = getContrastRating2(value);
+
+            if (rating != '')
+                rating = '&nbsp;&nbsp;' + rating;
+
+            this.paramValue.control.min        = 
+            this.paramValue.control.displayMin = 0;
+
+            this.paramValue.control.max        = 
+            this.paramValue.control.displayMax = 21;
+
+            this.paramValue.control.setDecimals(2);
+            this.paramValue.control.setSuffix(rating);
+        }
+        else
+        {
+            this.paramValue.control.min        = 
+            this.paramValue.control.displayMin = 0;
+
+            this.paramValue.control.max        = 
+            this.paramValue.control.displayMax = 105;
+
+            this.paramValue.control.setDecimals(1);
+            this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+
+            this.paramValue.control.setValue(Math.abs(value), false, false, false);
+        }
     }
 
 
@@ -28650,9 +28547,9 @@ extends OpColorBase
     {
         if (this.paramStandard.value == 0)
             this.paramValue.control.ranges = [
-                new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.1)', 0.8),
-                new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.2)', 0.8),
-                new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  255, 64, 0.2)', 0.8),
+                new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
+                new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
+                new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
                 new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
 
         else
@@ -28677,18 +28574,21 @@ extends OpColorBase
 
 
 
-    updateHeaderLabel()
+    getHeaderColors()
     {
+        const colors = super.getHeaderColors();
+
+
         if (   this.inputs[0].connected 
             && this.inputs[1].connected)
-            this.label.style.color = colorStyleRgb(dataColor2rgb(this.inputs[0].data.color));
+            colors.textStyle = colorStyleRgb(this.labelColor);
         else if (this.inputs[1].connected)
-        {
-            const [,,,, colText,] = this.getHeaderColors();
-            this.label.style.color = colorStyleRgba(colText);
-        }
+            colors.textStyle = colorStyleRgba(coltext);
         else 
-            this.label.style.color = 'black';
+            colors.textStyle = 'black';
+
+
+        return colors;
     }
 }
 
@@ -28808,7 +28708,7 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col   = values[paramIds.findIndex(id => id == COLOR_VALUE)];
+        const col   = values[paramIds.findIndex(id => id == 'value')];
         this._color = col.toDataColor();
 
         super.updateValues(updateParamId, paramIds, values);
@@ -30149,7 +30049,7 @@ extends Action
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
-
+        
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
             this.inputNode. inputs [this. inputIndex],
@@ -31924,7 +31824,8 @@ document.addEventListener('keyup', e =>
 
 onmessage = e =>
 {
-    let msg = e.data.pluginMessage;
+    let msg = JSON.parse(e.data.pluginMessage);
+
 
     switch (msg.cmd)
     {
@@ -31949,7 +31850,7 @@ onmessage = e =>
 
 function uiPostMessageToFigma(msg)
 {
-    parent.postMessage({pluginMessage: msg}, '*');
+    parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 }
 
 
@@ -32010,11 +31911,12 @@ function uiEndFigObjectMessage()
 generator.onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
+    //console.log('msg =', msg);
 
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
+        case 'uiEndGenMessage':        uiEndGenMessage();                                                                                                   break;
 
         case 'uiUpdateValuesAndObjects': 
             uiUpdateValuesAndObjects(
@@ -32029,8 +31931,8 @@ generator.onmessage = function(e)
 
             break;
         
-        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
-        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 };
 
@@ -32660,7 +32562,7 @@ createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate, 
 createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            () => ttCreateColor);
 createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, () => ttCreateColorInterpolate);
 createTooltip(ttCreateValidateColor);    createTooltipSrc(btnCreateValidateColor,    () => ttCreateValidateColor);
-createTooltip(ttCreateWebContrast);      createTooltipSrc(btnCreateWebContrast,      () => ttCreateWebContrast);
+createTooltip(ttCreateColorContrast);      createTooltipSrc(btnCreateColorContrast,      () => ttCreateColorContrast);
 createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 
 createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);
@@ -33510,8 +33412,8 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    //console.log('raw values = ', values);
-    
+    console.log('raw values = ', values);
+
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
     
@@ -33552,11 +33454,12 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             
             for (let j = 0; j < count; j++)
             {
-                const id = values[i++];
+                const id   = values[i++];
+                const type = values[i++];
 
                 _ids.push(id);
 
-                switch (id)
+                switch (type)
                 {
                     case COLOR_VALUE:     _values.push(parseGColorValue    (values[i++])); break;
                     case RECTANGLE_VALUE: _values.push(parseGRectangleValue(values[i++])); break;

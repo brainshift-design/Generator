@@ -93,6 +93,7 @@ function logValueUpdates(updateNodeId, updateParamId, values) {
         nTab++;
         for (let j = 0; j < nValues; j++) {
             const index = values[i++];
+            const type = values[i++];
             const value = values[i++];
             log +=
                 NL + TAB.repeat(Math.max(0, nTab))
@@ -354,6 +355,7 @@ function figStartGenerator() {
 // from UI <--
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 figma.ui.onmessage = msg => {
+    msg = JSON.parse(msg);
     switch (msg.cmd) {
         case 'figStartGenerator':
             figStartGenerator();
@@ -425,7 +427,7 @@ figma.ui.onmessage = msg => {
 // to UI -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figPostMessageToUI(msg) {
-    figma.ui.postMessage(msg);
+    figma.ui.postMessage(JSON.stringify(msg));
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to Generator -->

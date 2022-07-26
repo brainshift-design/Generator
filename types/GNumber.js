@@ -36,9 +36,7 @@ extends GOperator
                 ? this.input.eval(parse).copy()
                 : this.value.copy();
 
-
-            //this.result.valid = true;
-            this.valid        = true;
+            this.valid = true;
 
             console.assert(this.result.valid);
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
