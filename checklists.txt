@@ -1,4 +1,4 @@
-NEW OPERATOR:
+NEW OPERATOR
 
     types.js
     operator

@@ -11,6 +11,6 @@
     [../autojoin/color.aj]
     ../operators/color/OpColor spaces.js
     ../operators/color/OpColor convert.js
-    ../operators/color/OpValidateColor find.js
+    ../operators/color/OpColorValidate find.js
 
 ../html/generator_1.html

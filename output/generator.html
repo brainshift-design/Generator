@@ -2569,6 +2569,14 @@ function logReqColorBlind(cb, parse)
 }
 
 
+
+function logReqColorValidate(val, parse)
+{
+    parse.log += parse.tab + COLOR_VALIDATE;
+    parse.log += logReqNodeId(val);
+}
+
+
 function logReqGeometry(node, parse)
 {
     parse.log += parse.tab + node.type;
@@ -4042,8 +4050,8 @@ extends GOperator
 
                     this.result = input1;
 
-                    if (   isValidRgb(dataColor2rgb(input0.toDataColor()))
-                        && isValidRgb(dataColor2rgb(input1.toDataColor())))
+                    if (   isValidDataColor(input0.toDataColor())
+                        && isValidDataColor(input1.toDataColor()))
                     {
                         if (standard.value == 0)
                         {
@@ -4167,39 +4175,42 @@ extends GOperator
 
                 const rgb = dataColor2rgb(input.toDataColor());
 
-                const validRgb = invalid2validRgb(rgb);
+                //const validRgb = invalid2validRgb(rgb);
 
-                const cb = rgb2colorblind(
+                const rgbCb = rgb2colorblind(
                     rgb,
                     this.l.value / 2,
                     this.m.value / 2,
                     this.s.value / 2);
 
-                const validCb = cb;//invalid2validRgb(cb);
-                
-                const validCol = convertDataColorToSpace(
-                    rgb2dataColor(validCb), 
-                    colorSpace(input.space.value));
-
-
-                const factor = getColorSpaceFactor(validCol[0]);
-
-                if (isValidRgb(rgb)) 
+                if (   isValidRgb(rgb)
+                    && isValidRgb(rgbCb))
                 {
+                    console.log('valid');
+                    const validRgbCb = rgbCb;//invalid2validRgb(cb);
+                
+                    const validCol = convertDataColorToSpace(
+                        rgb2dataColor(validRgbCb), 
+                        colorSpace(input.space.value));
+    
+                    const factor = getColorSpaceFactor(validCol[0]);
+    
                     this.result = new GColorValue(
                         new GNumberValue(input.space.value),
                         new GNumberValue(validCol[1] * factor[0]),
                         new GNumberValue(validCol[2] * factor[1]),
                         new GNumberValue(validCol[3] * factor[2]));
-                        
-                    genPushUpdateValue(parse, this.nodeId, 'value', this.result);
                 }
                 else
                 {
                     this.result = GColorValue.NaN;
-                    genPushUpdateValue(parse, this.nodeId, 'value', GColorValue.NaN);
                 }
+
+
+                genPushUpdateValue(parse, this.nodeId, 'value', this.result);
             }
+            else
+                genPushUpdateValue(parse, this.nodeId, 'value', GColorValue.NaN);
 
 
             this.result.valid = true;
@@ -4209,6 +4220,117 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, 'l', l);
             genPushUpdateValue(parse, this.nodeId, 'm', m);
             genPushUpdateValue(parse, this.nodeId, 's', s);
+        }
+
+
+        return this.result;
+    }
+}
+
+
+
+class GColorValidate
+extends GOperator
+{
+    input = null;
+
+    order;
+    
+    margin1;
+    margin2;
+    margin3;
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_VALIDATE, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const val = new GColorBlind(this.nodeId, this.active);
+
+        if (this.input) val.input = this.input.copy();
+
+        val.order   = this.order  .copy();
+        val.margin1 = this.margin1.copy();
+        val.margin2 = this.margin2.copy();
+        val.margin3 = this.margin3.copy();
+
+        return val;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColorValue();
+
+
+            const order   = this.order  .eval(parse).copy();
+
+            const margin1 = this.margin1.eval(parse).copy();
+            const margin2 = this.margin2.eval(parse).copy();
+            const margin3 = this.margin3.eval(parse).copy();
+
+
+            if (this.input)
+            {
+                const input = this.input.eval(parse).copy();
+
+                // const rgb = dataColor2rgb(input.toDataColor());
+
+                // //const validRgb = invalid2validRgb(rgb);
+
+                // const rgbCb = rgb2colorblind(
+                //     rgb,
+                //     this.l.value / 2,
+                //     this.m.value / 2,
+                //     this.s.value / 2);
+
+                // if (   isValidRgb(rgb)
+                //     && isValidRgb(rgbCb))
+                // {
+                //     console.log('valid');
+                //     const validRgbCb = rgbCb;//invalid2validRgb(cb);
+                
+                //     const validCol = convertDataColorToSpace(
+                //         rgb2dataColor(validRgbCb), 
+                //         colorSpace(input.space.value));
+    
+                //     const factor = getColorSpaceFactor(validCol[0]);
+    
+                //     this.result = new GColorValue(
+                //         new GNumberValue(input.space.value),
+                //         new GNumberValue(validCol[1] * factor[0]),
+                //         new GNumberValue(validCol[2] * factor[1]),
+                //         new GNumberValue(validCol[3] * factor[2]));
+                // }
+                // else
+                // {
+                //     this.result = GColorValue.NaN;
+                // }
+
+                this.result = input;
+            }
+            else
+                this.result = GColorValue.NaN;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'margin1', margin1);
+            genPushUpdateValue(parse, this.nodeId, 'margin2', margin2);
+            genPushUpdateValue(parse, this.nodeId, 'margin3', margin3);
         }
 
 
@@ -5978,6 +6100,44 @@ function genParseColorBlind(parse)
 }
 
 
+
+function genParseColorValidate(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const val = new GColorValidate(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorValidate(val, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, val);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (COLOR_TYPES.includes(parse.next))
+        val.input = genParse(parse);
+
+    val.margin1 = genParse(parse);
+    val.margin2 = genParse(parse);
+    val.margin3 = genParse(parse);
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, val);
+    return val;
+}
+
+
 /*
     RECT 
     id
@@ -6547,6 +6707,7 @@ function genParse(parse)
     else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) return genParseColorBlind      (parse);
+    else if (parse.next == COLOR_VALIDATE    ) return genParseColorBlind      (parse);
 
     else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
     else if (parse.next == LINE              ) return genParseLine            (parse);
@@ -7577,6 +7738,13 @@ function isValidRgb(rgb, lim = Eps)
          && rgb[0] > -lim && rgb[0] < 1 + lim 
          && rgb[1] > -lim && rgb[1] < 1 + lim 
          && rgb[2] > -lim && rgb[2] < 1 + lim);
+}
+
+
+
+function isValidDataColor(col, lim = Eps)
+{
+    return isValidRgb(dataColor2rgb(col));
 }
 
 
@@ -8912,9 +9080,9 @@ function validateColor(color, order, margin1, margin2, margin3)
     else if (order == 4) { i1 = 2; i2 = 0; i3 = 1; } // LHC
     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
-                                           color = validateChannel(color, i1, margin1);
-    if (!isValidRgb(dataColor2rgb(color))) color = validateChannel(color, i2, margin2);
-    if (!isValidRgb(dataColor2rgb(color))) color = validateChannel(color, i3, margin3);
+                                  color = validateChannel(color, i1, margin1);
+    if (!isValidDataColor(color)) color = validateChannel(color, i2, margin2);
+    if (!isValidDataColor(color)) color = validateChannel(color, i3, margin3);
 
     return color;
 }
@@ -8937,7 +9105,7 @@ function validateChannel(color, iChan, margin)
     let _c  = savedValue,
          c_ = savedValue;
 
-    let _valid  = isValidRgb(dataColor2rgb(color));
+    let _valid  = isValidDataColor(color);
     let  valid_ = _valid;
 
 
@@ -8959,7 +9127,7 @@ function validateChannel(color, iChan, margin)
 
     if (_valid) 
     { 
-        _valid = isValidRgb(dataColor2rgb(color));
+        _valid = isValidDataColor(color);
         _c     = savedValue;
 
         while (   !_valid
@@ -8975,7 +9143,7 @@ function validateChannel(color, iChan, margin)
     }
     else if (valid_)
     { 
-        valid_ = isValidRgb(dataColor2rgb(color));
+        valid_ = isValidDataColor(color);
         c_     = savedValue;
 
         while (   !valid_
@@ -9000,7 +9168,7 @@ function isColorValid(c, iChan, savedColor)
 {
     let color = [...savedColor];
     color[iChan+1] = c; 
-    return isValidRgb(dataColor2rgb(color));
+    return isValidDataColor(color);
 }
 
 

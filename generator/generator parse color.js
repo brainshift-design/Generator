@@ -209,3 +209,41 @@ function genParseColorBlind(parse)
     genParseNodeEnd(parse, cb);
     return cb;
 }
+
+
+
+function genParseColorValidate(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const val = new GColorValidate(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorValidate(val, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, val);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (COLOR_TYPES.includes(parse.next))
+        val.input = genParse(parse);
+
+    val.margin1 = genParse(parse);
+    val.margin2 = genParse(parse);
+    val.margin3 = genParse(parse);
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, val);
+    return val;
+}

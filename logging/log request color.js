@@ -31,3 +31,11 @@ function logReqColorBlind(cb, parse)
     parse.log += parse.tab + COLORBLIND;
     parse.log += logReqNodeId(cb);
 }
+
+
+
+function logReqColorValidate(val, parse)
+{
+    parse.log += parse.tab + COLOR_VALIDATE;
+    parse.log += logReqNodeId(val);
+}

@@ -69,11 +69,18 @@ extends OpColorBase
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
-        if (col)
-            this._color = col.toDataColor();
+        this._color = 
+            col
+            ? col.toDataColor()
+            : dataColor_NaN;
+
+        this.forceShowWarning = 
+               this.inputs[0].connected
+            && !isValidDataColor(this._color);        
 
         super.updateValues(updateParamId, paramIds, values);
 
+        
         this.setParamText(this.paramL, 'L');
         this.setParamText(this.paramM, 'M');
         this.setParamText(this.paramS, 'S');
@@ -94,6 +101,6 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[0].connected;
+        return isValidDataColor(this._color);//this.inputs[0].connected;
     }
 }

@@ -44,7 +44,7 @@ extends Operator
         const colors = this.getHeaderColors();
 
         this.header.style.background = 
-            this.canShowColor()
+            isValidDataColor(this._color)//this.canShowColor()
             ? colorStyleRgb(colors.back)
             : '#ead8eaee';
 
@@ -88,7 +88,7 @@ extends Operator
             : dataColor2rgb(this._color);
 
         const darkText = 
-               !this.canShowColor()
+              !this.canShowColor()
             || rgb2hclokl(colBack)[2] > 0.71;
 
             

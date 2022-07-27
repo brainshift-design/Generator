@@ -371,7 +371,7 @@ extends OpColorBase
     updateAllSliderRanges()
     {
         if (    this.paramSpace.value == 1
-            && !isValidRgb(dataColor2rgb(this._color))) // RGB warning ranges
+            && !isValidDataColor(this._color)) // RGB warning ranges
         {
             const rangesR = [];
             if (this._color[1] < 0) rangesR.push(new NumberSliderRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
@@ -390,7 +390,7 @@ extends OpColorBase
         }
         else if ((   this.paramSpace.value == 2  // HSV
                   || this.paramSpace.value == 3) // HSL
-              && !isValidRgb(dataColor2rgb(this._color)))
+              && !isValidDataColor(this._color))
         {
             const rangesS = [];
             if (this._color[2] < 0) rangesS.push(new NumberSliderRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));

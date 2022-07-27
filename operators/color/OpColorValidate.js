@@ -2,7 +2,7 @@ var validateIsFinding = false;
 
 
 
-class OpValidateColor_Correction
+class OpColorValidate_Correction
 {
     name; // 'H', 'C', or 'L'
     max;
@@ -20,7 +20,7 @@ class OpValidateColor_Correction
 
 
 
-class   OpValidateColor
+class   OpColorValidate
 extends OpColorBase
 {
     paramOrder;
@@ -28,8 +28,6 @@ extends OpColorBase
     param1;
     param2;
     param3;
-
-    btnFind;
 
 
     findBar;
@@ -42,11 +40,11 @@ extends OpColorBase
 
     constructor()
     {
-        super('validatecolor', 'validate', 'color', 80);
+        super(COLOR_VALIDATE, 'validate', 80);
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output(COLOR));
+        this.addOutput(new Output(COLOR, this.output_genRequest));
 
 
         this.alwaysLoadParams = true;
@@ -68,9 +66,9 @@ extends OpColorBase
         this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
 
-        this.param1.showParamLock = true;
-        this.param2.showParamLock = true;
-        this.param3.showParamLock = true;
+        // this.param1.showParamLock = true;
+        // this.param2.showParamLock = true;
+        // this.param3.showParamLock = true;
 
 
         this.param1.addEventListener('change', () => 
@@ -80,12 +78,12 @@ extends OpColorBase
             uiSaveNodes([this.id]);
         });
 
-        this.param1.addEventListener('changelock', () => 
-        {
-            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i1].locked = this.param1.locked;
-            actionManager.do(new SetParamLockAction(this.params[1+i1], this.param1.locked));
-        });
+        // this.param1.addEventListener('changelock', () => 
+        // {
+        //     const [i1,,] = getCorrectionOrder(this.paramOrder.value);
+        //     this.corrections[i1].locked = this.param1.locked;
+        //     actionManager.do(new SetParamLockAction(this.params[1+i1], this.param1.locked));
+        // });
 
 
         this.param2.addEventListener('change', () => 
@@ -95,12 +93,12 @@ extends OpColorBase
             uiSaveNodes([this.id]);
         });
 
-        this.param2.addEventListener('changelock', () => 
-        {
-            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i2].locked = this.param2.locked;
-            actionManager.do(new SetParamLockAction(this.params[1+i2], this.param2.locked));
-        });
+        // this.param2.addEventListener('changelock', () => 
+        // {
+        //     const [, i2,] = getCorrectionOrder(this.paramOrder.value);
+        //     this.corrections[i2].locked = this.param2.locked;
+        //     actionManager.do(new SetParamLockAction(this.params[1+i2], this.param2.locked));
+        // });
 
 
         this.param3.addEventListener('change', () => 
@@ -110,12 +108,12 @@ extends OpColorBase
             uiSaveNodes([this.id]);
         });
 
-        this.param3.addEventListener('changelock', () => 
-        {
-            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i3].locked = this.param3.locked;
-            actionManager.do(new SetParamLockAction(this.params[1+i3], this.param3.locked));
-        });
+        // this.param3.addEventListener('changelock', () => 
+        // {
+        //     const [,, i3] = getCorrectionOrder(this.paramOrder.value);
+        //     this.corrections[i3].locked = this.param3.locked;
+        //     actionManager.do(new SetParamLockAction(this.params[1+i3], this.param3.locked));
+        // });
 
 
         this.initCorrections();
@@ -125,51 +123,29 @@ extends OpColorBase
         this.header.connectionPadding = 18;
 
 
-        this.btnFind = createDiv('findColorCorrection');
-        this.header.appendChild(this.btnFind);
-
-
-        this.btnFind.addEventListener('pointerenter', () => { this.btnFind.over = true;  this.updateHeaderLabel(); });
-        this.btnFind.addEventListener('pointerleave', () => { this.btnFind.over = false; this.updateHeaderLabel(); });
-
-
-        this.btnFind.addEventListener('pointerdown', e => 
-        { 
-            if (e.button == 0) 
-            {
-                this.btnFind.button0 = true;  
-                this.updateHeaderLabel(); 
-            }
-        });
-
-        
         this.header.addEventListener('pointerup', e => 
         { 
             if (   e.button == 0
-                && this.btnFind.button0
                 && !validateIsFinding
                 && this.inputs[0].connected) 
             { 
-                this.btnFind.button0 = false;
-
-                this.btnFind     .style.display = 'none';
                 this.findBar     .style.display = 'block';
                 this.findProgress.style.width   = 0;
                 
                 validateIsFinding = true;
 
-                uiQueueMessageToGenerator(
-                {
-                    cmd:       'genFindCorrection',
-                    nodeId:     this.id,
-                    inputColor: this.inputs[0].data.color,
-                    param1:     this.param1.value,
-                    param2:     this.param2.value,
-                    param3:     this.param3.value,
-                    locked1:    this.param1.locked,
-                    locked2:    this.param2.locked,
-                    locked3:    this.param3.locked
-                });
+                // uiQueueMessageToGenerator(
+                // {
+                //     cmd:       'genFindCorrection',
+                //     nodeId:     this.id,
+                //     inputColor: this.inputs[0].data.color,
+                //     param1:     this.param1.value,
+                //     param2:     this.param2.value,
+                //     param3:     this.param3.value,
+                //     locked1:    this.param1.locked,
+                //     locked2:    this.param2.locked,
+                //     locked3:    this.param3.locked
+                // });
             }
         });
 
@@ -192,9 +168,65 @@ extends OpColorBase
 
     initCorrections()
     {
-        this.corrections.push(new OpValidateColor_Correction('H', 180));
-        this.corrections.push(new OpValidateColor_Correction('C', 100));
-        this.corrections.push(new OpValidateColor_Correction('L', 100));
+        this.corrections.push(new OpColorValidate_Correction('H', 180));
+        this.corrections.push(new OpColorValidate_Correction('C', 100));
+        this.corrections.push(new OpColorValidate_Correction('L', 100));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [req, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return req;
+
+
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+            req.push(...pushInputOrParam(input, gen));
+
+
+        req.push(...this.node.param1.genRequest(gen));
+        req.push(...this.node.param2.genRequest(gen));
+        req.push(...this.node.param3.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return req;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        const col = values[paramIds.findIndex(id => id == 'value')];
+
+        if (this.inputs[0].connected)
+        {
+            this._color = [...validateColor(
+                col.toDataColor(),
+                this.paramOrder.value, 
+                this.param1.value,
+                this.param2.value,
+                this.param3.value)];
+        }
+        else
+            this._color = dataColor_NaN;
+
+        super.updateValues(updateParamId, paramIds, values);
     }
 
 
@@ -207,31 +239,6 @@ extends OpColorBase
         this.updateMargin(this.param2, this.corrections[i2]);
         this.updateMargin(this.param3, this.corrections[i3]);
     }
-
-
-
-    // updateData()
-    // {
-    //     //console.log(this.id + '.OpValidColor.updateData()');
-
-    //     if (this.inputs[0].connected)
-    //     {
-    //         this._color = [...validateColor(
-    //             [...this.inputs[0].data.color],
-    //             this.paramOrder.value, 
-    //             this.param1.value,
-    //             this.param2.value,
-    //             this.param3.value)];
-    //     }
-    //     else
-    //         this._color = dataColor_NaN;
-
-            
-    //     this.outputs[0]._data = dataFromDataColor(this._color);
-
-
-    //     super.updateData()
-    // }
 
 
 
@@ -258,21 +265,8 @@ extends OpColorBase
     updateHeaderLabel()
     {
         this.label  .style.top = '40%';
-        this.btnFind.style.top = '67%';
 
-        const colors = this.getHeaderColors();
-
-        const textStyle = colorStyleRgb_a(
-            colors.text, 
-            this.btnFind.over
-            ? Math.min(colors.text[3] * 1.8, 1) 
-            : colors.text[3]);
-
-        this.btnFind.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.10345 5.05172C8.10345 7.01329 6.51329 8.60345 4.55172 8.60345C2.59016 8.60345 1 7.01329 1 5.05172C1 3.09016 2.59016 1.5 4.55172 1.5C6.51329 1.5 8.10345 3.09016 8.10345 5.05172ZM7.39723 8.60458C6.61787 9.22958 5.62846 9.60345 4.55172 9.60345C2.03788 9.60345 0 7.56557 0 5.05172C0 2.53788 2.03788 0.5 4.55172 0.5C7.06557 0.5 9.10345 2.53788 9.10345 5.05172C9.10345 6.12858 8.72949 7.1181 8.10436 7.8975L11.3535 11.1467L10.6464 11.8538L7.39723 8.60458Z" fill="'+textStyle+'" fill-opacity="0.8"/></svg>\')';
-        this.btnFind.style.backgroundPosition = '50% 50%';
-        this.btnFind.style.backgroundRepeat   = 'no-repeat';
-
-
+        const colors    = this.getHeaderColors();
         const findStyle = colorStyleRgb_a(colors.text, 0.35);
 
         this.findBar     .style.outline    = '1px solid ' + findStyle;
@@ -360,7 +354,6 @@ function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, 
     validateIsFinding = false;
 
     node.findBar.style.display = 'none';
-    node.btnFind.style.display = 'block';
 
     pushUpdate([node]);
 

@@ -37,6 +37,13 @@ function isValidRgb(rgb, lim = Eps)
 
 
 
+function isValidDataColor(col, lim = Eps)
+{
+    return isValidRgb(dataColor2rgb(col));
+}
+
+
+
 function rgbLerp(rgb1, rgb2, t)
 {
     return [ lerp(rgb1[0], rgb2[0], t),

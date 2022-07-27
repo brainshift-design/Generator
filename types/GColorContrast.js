@@ -54,8 +54,8 @@ extends GOperator
 
                     this.result = input1;
 
-                    if (   isValidRgb(dataColor2rgb(input0.toDataColor()))
-                        && isValidRgb(dataColor2rgb(input1.toDataColor())))
+                    if (   isValidDataColor(input0.toDataColor())
+                        && isValidDataColor(input1.toDataColor()))
                     {
                         if (standard.value == 0)
                         {

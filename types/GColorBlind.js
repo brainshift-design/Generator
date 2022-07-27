@@ -48,39 +48,42 @@ extends GOperator
 
                 const rgb = dataColor2rgb(input.toDataColor());
 
-                const validRgb = invalid2validRgb(rgb);
+                //const validRgb = invalid2validRgb(rgb);
 
-                const cb = rgb2colorblind(
+                const rgbCb = rgb2colorblind(
                     rgb,
                     this.l.value / 2,
                     this.m.value / 2,
                     this.s.value / 2);
 
-                const validCb = cb;//invalid2validRgb(cb);
-                
-                const validCol = convertDataColorToSpace(
-                    rgb2dataColor(validCb), 
-                    colorSpace(input.space.value));
-
-
-                const factor = getColorSpaceFactor(validCol[0]);
-
-                if (isValidRgb(rgb)) 
+                if (   isValidRgb(rgb)
+                    && isValidRgb(rgbCb))
                 {
+                    console.log('valid');
+                    const validRgbCb = rgbCb;//invalid2validRgb(cb);
+                
+                    const validCol = convertDataColorToSpace(
+                        rgb2dataColor(validRgbCb), 
+                        colorSpace(input.space.value));
+    
+                    const factor = getColorSpaceFactor(validCol[0]);
+    
                     this.result = new GColorValue(
                         new GNumberValue(input.space.value),
                         new GNumberValue(validCol[1] * factor[0]),
                         new GNumberValue(validCol[2] * factor[1]),
                         new GNumberValue(validCol[3] * factor[2]));
-                        
-                    genPushUpdateValue(parse, this.nodeId, 'value', this.result);
                 }
                 else
                 {
                     this.result = GColorValue.NaN;
-                    genPushUpdateValue(parse, this.nodeId, 'value', GColorValue.NaN);
                 }
+
+
+                genPushUpdateValue(parse, this.nodeId, 'value', this.result);
             }
+            else
+                genPushUpdateValue(parse, this.nodeId, 'value', GColorValue.NaN);
 
 
             this.result.valid = true;
