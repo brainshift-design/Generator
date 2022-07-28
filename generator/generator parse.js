@@ -77,7 +77,7 @@ function genParse(parse)
     else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) return genParseColorBlind      (parse);
-    else if (parse.next == COLOR_VALIDATE    ) return genParseColorBlind      (parse);
+    else if (parse.next == COLOR_VALIDATE    ) return genParseColorValidate   (parse);
 
     else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
     else if (parse.next == LINE              ) return genParseLine            (parse);

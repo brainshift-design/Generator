@@ -1,13 +1,3 @@
-/* 
-    the data type 'color' contains four elements: 
-        color space 
-        component 1
-        component 2
-        component 3
-*/
-
-
-
 const warnLineStyle = 'rgba(255, 0, 0, 0.16)';
 
 
@@ -355,6 +345,13 @@ extends OpColorBase
     getHeaderColor() 
     {
         return dataColor2rgb(this._color); 
+    }
+
+
+
+    canShowColor()
+    {
+        return !isDataColorNaN(this._color);
     }
 
 

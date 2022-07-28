@@ -34,7 +34,7 @@ extends OpColorBase
 
         this.header.connectionPadding = 12.5;
 
-
+        
         //this._color = dataColor_NaN;
 
         
@@ -113,10 +113,15 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col   = values[paramIds.findIndex(id => id == 'value')];
-        this._color = col.toDataColor();
+        const col = values[paramIds.findIndex(id => id == 'value')];
+
+        this._color = 
+            col
+            ? col.toDataColor()
+            : dataColor_NaN;
 
         super.updateValues(updateParamId, paramIds, values);
+
 
         showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
     }
@@ -125,8 +130,7 @@ extends OpColorBase
 
     canShowColor()
     {
-        return this.inputs[0].connected
-            || this.inputs[1].connected;
+        return !isDataColorNaN(this._color);
     }
 }
 

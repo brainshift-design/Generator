@@ -59,7 +59,6 @@ extends GOperator
                 {
                     const fromSpaceIndex = this.result.space.value;
 
-                    console.log('this.result =', this.result);
                     this.result.space = space;
                     const toSpaceIndex = Math.min(Math.max(
                         0,

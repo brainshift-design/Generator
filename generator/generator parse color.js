@@ -233,9 +233,10 @@ function genParseColorValidate(parse)
 
     parse.nTab++;
 
-
     if (COLOR_TYPES.includes(parse.next))
         val.input = genParse(parse);
+
+    val.order   = genParse(parse);
 
     val.margin1 = genParse(parse);
     val.margin2 = genParse(parse);

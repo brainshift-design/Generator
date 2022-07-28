@@ -37,54 +37,44 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
-
-
             const order   = this.order  .eval(parse).copy();
-
             const margin1 = this.margin1.eval(parse).copy();
             const margin2 = this.margin2.eval(parse).copy();
             const margin3 = this.margin3.eval(parse).copy();
 
-
+            
             if (this.input)
             {
                 const input = this.input.eval(parse).copy();
 
-                // const rgb = dataColor2rgb(input.toDataColor());
+                const rgb = dataColor2rgb(input.toDataColor());
 
-                // //const validRgb = invalid2validRgb(rgb);
 
-                // const rgbCb = rgb2colorblind(
-                //     rgb,
-                //     this.l.value / 2,
-                //     this.m.value / 2,
-                //     this.s.value / 2);
+                if (isValidRgb(rgb))
+                {
+                    console.log('valid');
 
-                // if (   isValidRgb(rgb)
-                //     && isValidRgb(rgbCb))
-                // {
-                //     console.log('valid');
-                //     const validRgbCb = rgbCb;//invalid2validRgb(cb);
-                
-                //     const validCol = convertDataColorToSpace(
-                //         rgb2dataColor(validRgbCb), 
-                //         colorSpace(input.space.value));
+                    // this._color = 
+                    //     col
+                    //     ? [...validateColor(
+                    //         col.toDataColor(),
+                    //         this.order  .value, 
+                    //         this.margin1.value,
+                    //         this.margin2.value,
+                    //         this.margin3.value)]
+                    //     : dataColor_NaN;
+
+
+                    const factor = getColorSpaceFactor('rgb');
     
-                //     const factor = getColorSpaceFactor(validCol[0]);
-    
-                //     this.result = new GColorValue(
-                //         new GNumberValue(input.space.value),
-                //         new GNumberValue(validCol[1] * factor[0]),
-                //         new GNumberValue(validCol[2] * factor[1]),
-                //         new GNumberValue(validCol[3] * factor[2]));
-                // }
-                // else
-                // {
-                //     this.result = GColorValue.NaN;
-                // }
-
-                this.result = input;
+                    this.result = new GColorValue(
+                        new GNumberValue(1),
+                        new GNumberValue(rgb[0] * factor[0]),
+                        new GNumberValue(rgb[1] * factor[1]),
+                        new GNumberValue(rgb[2] * factor[2]));
+                }
+                else
+                    this.result = GColorValue.NaN;
             }
             else
                 this.result = GColorValue.NaN;
@@ -97,6 +87,7 @@ extends GOperator
             this.valid        = true;
 
 
+            genPushUpdateValue(parse, this.nodeId, 'order',   order  );
             genPushUpdateValue(parse, this.nodeId, 'margin1', margin1);
             genPushUpdateValue(parse, this.nodeId, 'margin2', margin2);
             genPushUpdateValue(parse, this.nodeId, 'margin3', margin3);

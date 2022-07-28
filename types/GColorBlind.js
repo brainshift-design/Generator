@@ -34,9 +34,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
-
-
             const l = this.l.eval(parse).copy();
             const m = this.m.eval(parse).copy();
             const s = this.s.eval(parse).copy();
@@ -75,20 +72,17 @@ extends GOperator
                         new GNumberValue(validCol[3] * factor[2]));
                 }
                 else
-                {
                     this.result = GColorValue.NaN;
-                }
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value', this.result);
             }
             else
-                genPushUpdateValue(parse, this.nodeId, 'value', GColorValue.NaN);
+                this.result = GColorValue.NaN;
 
 
             this.result.valid = true;
             this.valid        = true;
 
+
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'l', l);
             genPushUpdateValue(parse, this.nodeId, 'm', m);

@@ -74,33 +74,23 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
-        this.forceShowWarning = 
-               this.inputs[0].connected
-            && !isValidDataColor(this._color);        
 
         super.updateValues(updateParamId, paramIds, values);
 
-        
-        this.setParamText(this.paramL, 'L');
-        this.setParamText(this.paramM, 'M');
-        this.setParamText(this.paramS, 'S');
+
+        this.updateParamText(this.paramL, 'L');
+        this.updateParamText(this.paramM, 'M');
+        this.updateParamText(this.paramS, 'S');
     }
 
 
 
-    setParamText(param, cone)
+    updateParamText(param, cone)
     {
         const v = Math.round(param.value);
 
              if (v == 2) param.control.valueText = cone;
         else if (v == 1) param.control.valueText = cone + ' weak';
         else             param.control.valueText = cone + ' blind';
-    }
-
-
-
-    canShowColor()
-    {
-        return isValidDataColor(this._color);//this.inputs[0].connected;
     }
 }

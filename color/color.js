@@ -39,7 +39,7 @@ function isValidRgb(rgb, lim = Eps)
 
 function isValidDataColor(col, lim = Eps)
 {
-    return isValidRgb(dataColor2rgb(col));
+    return isValidRgb(dataColor2rgb(col), lim);
 }
 
 

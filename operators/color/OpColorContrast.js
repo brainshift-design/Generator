@@ -206,13 +206,6 @@ extends OpColorBase
 
 
 
-    canShowColor()
-    {
-        return this.inputs[1].connected;
-    }
-
-
-
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
@@ -222,7 +215,7 @@ extends OpColorBase
             && this.inputs[1].connected)
             colors.textStyle = colorStyleRgb(this.labelColor);
         else if (this.inputs[1].connected)
-            colors.textStyle = colorStyleRgba(coltext);
+            colors.textStyle = colorStyleRgba(colors.text);
         else 
             colors.textStyle = 'black';
 

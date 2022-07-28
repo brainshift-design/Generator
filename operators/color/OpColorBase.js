@@ -44,7 +44,7 @@ extends Operator
         const colors = this.getHeaderColors();
 
         this.header.style.background = 
-            isValidDataColor(this._color)//this.canShowColor()
+            this.canShowColor()//isValidDataColor(this._color)//this.canShowColor()
             ? colorStyleRgb(colors.back)
             : '#ead8eaee';
 
@@ -167,7 +167,7 @@ extends Operator
 
     canShowColor()
     {
-        return !isDataColorNaN(this._color);
+        return isValidDataColor(this._color);
     }
 
 

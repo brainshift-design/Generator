@@ -36,9 +36,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result  = new GColorValue();
-
-
             const space  = this.space .eval(parse).copy();
             const amount = this.amount.eval(parse).copy();
             const gamma  = this.gamma .eval(parse).copy();
@@ -66,25 +63,32 @@ extends GOperator
                     f,
                     gamma.value);
 
-                this.result.space = space;
-           
+
+                // allow interpolating invalid colors,
+                // so no valid color check here
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result.c1 = new GNumberValue(col[1] * factor[0]);
-                this.result.c2 = new GNumberValue(col[2] * factor[1]);
-                this.result.c3 = new GNumberValue(col[3] * factor[2]);
+                this.result = new GColorValue(
+                    space,
+                    new GNumberValue(col[1] * factor[0]),
+                    new GNumberValue(col[2] * factor[1]),
+                    new GNumberValue(col[3] * factor[2]));
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
-            
+
+            else 
+                this.result = GColorValue.NaN;
+
 
             this.result.valid = true;
             this.valid        = true;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+
             genPushUpdateValue(parse, this.nodeId, 'space',  space );
             genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         }
