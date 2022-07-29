@@ -18684,6 +18684,8 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline   = 'none';
         slider.textbox.style.textAlign = 'center';
+        slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
+
 
         const isConnected =    
                slider.param != null
@@ -18777,7 +18779,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
                 
     slider.backColorDark          = 'transparent';
     slider.valueColorDark         = '#fff4';
-    slider.textColorDark          = '#f0f0f0';
+    slider.textColorDark          = '#eee';
                 
     slider.fontSize               = 11;
              
@@ -27019,10 +27021,6 @@ extends Operator
 }
 
 
-const warnLineStyle = 'rgba(255, 0, 0, 0.16)';
-
-
-
 class   OpColor
 extends OpColorBase
 {
@@ -27277,6 +27275,12 @@ extends OpColorBase
                 : DISPLAY_INVALID;
         }
 
+        
+        this.hexbox.style.color = 
+            isDarkMode()
+            ? '#eee'
+            : 'black';
+
 
         super.updateNode();
     }
@@ -27390,8 +27394,20 @@ extends OpColorBase
 
 
 
+    getWarnLineStyle()
+    {
+        return isDarkMode()
+            ? 'rgba(255, 96, 96, 0.5)'
+            : 'rgba(255, 0, 0, 0.16)';
+    }
+
+
+
     updateAllSliderRanges()
     {
+        const warnLineStyle = this.getWarnLineStyle();
+
+
         if (    this.paramSpace.value == 1
             && !isValidDataColor(this._color)) // RGB warning ranges
         {
@@ -27457,6 +27473,9 @@ extends OpColorBase
 
     updateSliderRanges(slider, getRgb)
     {
+        const warnLineStyle = this.getWarnLineStyle();
+
+
         const ranges    = [];
  
         

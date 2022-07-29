@@ -1,7 +1,3 @@
-const warnLineStyle = 'rgba(255, 0, 0, 0.16)';
-
-
-
 class   OpColor
 extends OpColorBase
 {
@@ -256,6 +252,12 @@ extends OpColorBase
                 : DISPLAY_INVALID;
         }
 
+        
+        this.hexbox.style.color = 
+            isDarkMode()
+            ? '#eee'
+            : 'black';
+
 
         super.updateNode();
     }
@@ -369,8 +371,20 @@ extends OpColorBase
 
 
 
+    getWarnLineStyle()
+    {
+        return isDarkMode()
+            ? 'rgba(255, 96, 96, 0.5)'
+            : 'rgba(255, 0, 0, 0.16)';
+    }
+
+
+
     updateAllSliderRanges()
     {
+        const warnLineStyle = this.getWarnLineStyle();
+
+
         if (    this.paramSpace.value == 1
             && !isValidDataColor(this._color)) // RGB warning ranges
         {
@@ -436,6 +450,9 @@ extends OpColorBase
 
     updateSliderRanges(slider, getRgb)
     {
+        const warnLineStyle = this.getWarnLineStyle();
+
+
         const ranges    = [];
  
         

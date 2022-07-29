@@ -306,6 +306,8 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
         slider.textbox.style.outline   = 'none';
         slider.textbox.style.textAlign = 'center';
+        slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
+
 
         const isConnected =    
                slider.param != null
