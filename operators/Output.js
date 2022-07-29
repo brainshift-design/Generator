@@ -10,7 +10,8 @@ class Output
     get index() { return this.node.outputs.indexOf(this); }
 
 
-    color;
+    colorLight;
+    colorDark;
     wireColor;
 
     control;
@@ -64,7 +65,9 @@ class Output
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.color           = [0, 0, 0, 0.12];
+        this.colorLight      = [0, 0, 0, 0.12];
+        this.colorDark       = [255, 255, 255, 0.12];
+
         this.wireColor       = rgbFromType(this.type, true);
         
         this.updateControl();
@@ -142,9 +145,14 @@ class Output
                  && (   !graphView.tempConn.input.types.includes(this.type)
                      || this.node.follows(graphView.tempConn.input.node)));
 
+        const color =
+            isDarkMode()
+            ? this.colorDark
+            : this.colorLight;
+
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(this.color, mouseOver ? Math.min(this.color[3] * 1.4, 1) : this.color[3] / 1.4))
+            ? colorStyleRgba(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
             : 'transparent';
 
         this.control.style.pointerEvents   = graphView.showWires ? 'auto' : 'none';

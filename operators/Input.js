@@ -20,7 +20,8 @@ extends EventTarget
     get index() { return this.node.inputs.indexOf(this); }
 
     
-    color;
+    colorLight;
+    colorDark;
     wireColor;
 
     control;
@@ -89,7 +90,9 @@ extends EventTarget
         
         this.control.input    = this;
         
-        this.color            = [0, 0, 0, 0.12];
+        this.colorLight       = [0, 0, 0, 0.12];
+        this.colorDark        = [255, 255, 255, 0.12];
+
         this.wireColor        = rgbFromType(this.types[0], true);
 
 
@@ -176,13 +179,18 @@ extends EventTarget
                  && (  !this.types.includes(tc.output.type)
                      || tc.output.node.follows(this.node)));
 
+        const color =
+            isDarkMode()
+            ? this.colorDark
+            : this.colorLight;
+                     
         const colorStyle = 
             graphView.showWires
             ? colorStyleRgba(rgb_a(
-                this.color, 
-                mouseOver 
-                ? Math.min(this.color[3] * 1.8, 1) 
-                : this.color[3]))
+                color,
+                (mouseOver 
+                 ? Math.min(color[3] * 1.8, 1) 
+                 : color[3])))
             : 'transparent';
 
 
