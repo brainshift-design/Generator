@@ -61,3 +61,27 @@ function isDarkMode()
     const style = window.getComputedStyle(document.body);
     return isDark(style2rgba(style.backgroundColor));
 }
+
+
+
+// create and observer for when the UI theme changes
+
+function onClassChange(element, callback) 
+{
+    const observer = new MutationObserver((mutations) => 
+    {
+        mutations.forEach((mutation) => 
+        {
+            if (   mutation.type          == 'attributes' 
+                && mutation.attributeName == 'class') 
+                callback(mutation.target);
+        });
+    });
+
+    observer.observe(element, { attributes: true });
+
+    return observer.disconnect;
+}
+  
+onClassChange(document.childNodes[0], () => 
+    graph.nodes.forEach(n => n.updateNode()));
