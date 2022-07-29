@@ -304,6 +304,8 @@ const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 
+const GEOMETRY           = 'GEOM';  // abstract placeholder node
+
 const RECTANGLE_VALUE    = 'R';
 const LINE_VALUE         = 'L';
 const ELLIPSE_VALUE      = 'E';
@@ -319,6 +321,8 @@ const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points
 
 const GEOMETRY_TYPES =
 [
+    GEOMETRY,
+
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
@@ -334,6 +338,9 @@ const GEOMETRY_TYPES =
 ];
 
 
+const FILL               = 'FILL';
+
+
 const GROUP              = 'GRP';   // ???? count O...
 
 
@@ -346,14 +353,9 @@ const PARAM              = 'PARAM'; // nodeId paramId
 
 /*
 
-ELLIPSE     E
 FRAME       F
-GROUP       G
 IMAGE       I
-LIST        L
-POLYGON     P
 SLICE       /
-STAR        *
 TEXT        T
 VECTOR      V
 

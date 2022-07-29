@@ -2,6 +2,7 @@ NEW OPERATOR
 
     types.js
     operator
+    operators.aj
     GTypeValue
     GType
     types.aj

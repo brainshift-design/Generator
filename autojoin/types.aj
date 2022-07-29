@@ -40,3 +40,5 @@
 ../types/GEllipse.js
 ../types/GPolygon.js
 ../types/GStar.js
+
+../types/GFill.js

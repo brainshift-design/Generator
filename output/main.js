@@ -167,6 +167,7 @@ const STRING_VALUE = 'S'; // "..." (s) (escape \\ and \")
 const STRING = 'STR'; // S | s
 const STRING_ADD = 'SADD'; // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
+const GEOMETRY = 'GEOM'; // abstract placeholder node
 const RECTANGLE_VALUE = 'R';
 const LINE_VALUE = 'L';
 const ELLIPSE_VALUE = 'E';
@@ -178,6 +179,7 @@ const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
 const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const GEOMETRY_TYPES = [
+    GEOMETRY,
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
@@ -190,20 +192,16 @@ const GEOMETRY_TYPES = [
     STAR //,
     //TEXT
 ];
+const FILL = 'FILL';
 const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
 const PARAM = 'PARAM'; // nodeId paramId
 /*
 
-ELLIPSE     E
 FRAME       F
-GROUP       G
 IMAGE       I
-LIST        L
-POLYGON     P
 SLICE       /
-STAR        *
 TEXT        T
 VECTOR      V
 
