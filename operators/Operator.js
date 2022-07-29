@@ -429,7 +429,7 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
-        this.paramBack.style.backgroundColor = isDarkMode() ? '#555' : 'white';
+        this.paramBack.style.backgroundColor = isDarkMode() ? '#505050' : 'white';
 
         this.updateBorder();
         this.updateHeader();
