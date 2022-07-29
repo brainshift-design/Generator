@@ -33,4 +33,7 @@
 
 
 .figma-light #scrollbarX { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
+.figma-dark  #scrollbarX { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
+
+.figma-light #scrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
 .figma-dark  #scrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }

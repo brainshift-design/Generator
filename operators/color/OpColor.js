@@ -245,6 +245,7 @@ extends OpColorBase
         
         enableElementText(this.hexbox, !this.isConnected());
 
+
         if (!hasFocus(this.hexbox))
         {
             const colBack = dataColor2rgb(this._color);
@@ -276,7 +277,9 @@ extends OpColorBase
         this.#colorBack.style.background = 
             this.canShowColor()
             ? colorStyleRgb(colors.back)
-            : '#ead8eaee';
+            : isDarkMode()
+              ? '#888088ee'
+              : '#ead8eaee';
 
 
         const colSpaceBar = 
@@ -286,7 +289,8 @@ extends OpColorBase
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColor  = colors.textStyle;
+        this.paramSpace.control.textColorLight =
+        this.paramSpace.control.textColorDark = colors.textStyle;
         this.paramSpace.input .color       = colors.input;
         this.paramSpace.output.color       = colors.output;
         this.paramSpace.updateControls();
@@ -351,7 +355,7 @@ extends OpColorBase
 
     canShowColor()
     {
-        return !isDataColorNaN(this._color);
+        return isValidDataColor(this._color);
     }
 
 

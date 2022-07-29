@@ -46,7 +46,9 @@ extends Operator
         this.header.style.background = 
             this.canShowColor()//isValidDataColor(this._color)//this.canShowColor()
             ? colorStyleRgb(colors.back)
-            : '#ead8eaee';
+            : isDarkMode()
+              ? '#888088ee'
+              : '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];
@@ -92,15 +94,17 @@ extends Operator
             || rgb2hclokl(colBack)[2] > 0.71;
 
             
-        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.22), 0.5);
-        const wa = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.14), 0.5);
+        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
+        const wa = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()
             ? (darkText 
                ? [0, 0, 0, ba] 
                : [1, 1, 1, wa])
-            : [0, 0, 0, 1];
+            : (isDarkMode()
+               ? [1, 1, 1, wa]
+               : [0, 0, 0, ba ]);
 
         const textStyle = colorStyleRgba(colText);
 
@@ -152,15 +156,18 @@ extends Operator
     {
         return colorStyleRgba(
             isDark(colBack) 
-            ? [0, 0, 0, 0.12]  
-            : [1, 1, 1, 0.2 ]);
+            ? [1, 1, 1, 0.2 ]
+            : [0, 0, 0, 0.12]); 
     }
 
 
 
     resetWarningStyle()
     {
-        this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);        
+        this.warningStyle = 
+            isDarkMode()
+            ? colorStyleRgba([0.3, 0.55, 0.3, 0.2])
+            : colorStyleRgba([0.5, 1, 0.5, 0.2]);        
     }
 
 

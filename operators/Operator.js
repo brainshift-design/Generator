@@ -429,6 +429,8 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
+        this.paramBack.style.backgroundColor = isDarkMode() ? '#555' : 'white';
+
         this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
@@ -535,6 +537,32 @@ class Operator
                 && (paramIndex = this.params.findIndex(p => p.id == paramIds[i])) > -1)
                 this.params[paramIndex].setValue(values[i], false, true, false);
         }
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colBack = rgbFromType(this.type);
+            
+        const colText = 
+            !this.active 
+            ? [0, 0, 0] 
+            : [1, 1, 1];
+
+        const textStyle = colorStyleRgba(colText);
+
+        const colInput  = colText;
+        const colOutput = colText;
+
+
+        return {
+            back:      colBack, 
+            text:      colText,
+            darkText:  !this.active,
+            textStyle: textStyle,
+            input:     colInput,
+            output:    colOutput };
     }
 
 

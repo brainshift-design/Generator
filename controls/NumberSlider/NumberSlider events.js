@@ -103,19 +103,25 @@ function initNumberSliderEvents(slider)
                     || containsChild(slider, slider.textbox) 
                     ? 'default'
                     : 'ew-resize';
-            
+
+                    
+            const colShadow = 
+                isDarkMode()
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
             if (slider.param)
             {
-                slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
+                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
 
                 if (    slider.param.node
                     &&  slider.param.node.params.includes(slider.param)
                     && !isLastInArray(slider.param.node.params, slider.param))
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
             }
             else
             {
-                slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset ';
+                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
 
 

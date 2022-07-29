@@ -18,7 +18,7 @@ function rgb2hclokl(rgb, cs = sRGB)
 {
     const hcl = opp2pol(rgb2oklab(rgb, cs));
     hcl[0] /= Tau;
-    hcl[1] /= hcl[2];
+    hcl[1] /= nozero(hcl[2]);
     return hcl;
 }
 

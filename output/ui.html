@@ -686,6 +686,9 @@ div
 
 
 .figma-light #scrollbarX { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
+.figma-dark  #scrollbarX { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
+
+.figma-light #scrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
 .figma-dark  #scrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
 
 
@@ -718,7 +721,7 @@ div
 }
 
 
-.toggleButton
+.figma-light .toggleButton
 {
     position:            absolute;
     left:                16;
@@ -733,18 +736,41 @@ div
 }
 
 
-.toggleButton:hover
+.figma-light .toggleButton:hover
 {
-    /* background:            url('data:image/svg+xml;utf8,<svg width="6" height="14" viewBox="0 -2 6 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 1C4.10457 1 5 1.89543 5 3V5H6V3C6 1.34315 4.65685 0 3 0C1.34315 0 0 1.34315 0 3V5H1V3C1 1.89543 1.89543 1 3 1Z" fill="black"/><path d="M5 9H6V11C6 12.6569 4.65685 14 3 14C1.34315 14 0 12.6569 0 11V9H1V11C1 12.1046 1.89543 13 3 13C4.10457 13 5 12.1046 5 11V9Z" fill="black"/><path d="M2.5 4V10H3.5V4H2.5Z" fill="black"/></svg>');
-    background-position:   50% 50%;
-    background-repeat:     no-repeat;
-    background-blend-mode: multiply; */
-    /* background-color:      #f0f0f0; */
     box-shadow: 0 0 0 1px #e6e6e6
 }
 
 
-.toggleButton:active
+.figma-light .toggleButton:active
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand);
+}
+
+
+.figma-dark .toggleButton
+{
+    position:            absolute;
+    left:                16;
+    transform:           translateX(-50%);
+    width:               12;
+    height:              12;
+    background:          url('data:image/svg+xml;utf8,<svg width="6" height="14" viewBox="0 -2 6 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 5V3C5 1.89543 4.10457 1 3 1C1.89543 1 1 1.89543 1 3V5H0V3C0 1.34315 1.34315 0 3 0C4.65685 0 6 1.34315 6 3V5H5Z" fill="white"/><path d="M6 9H5V11C5 12.1046 4.10457 13 3 13C1.89543 13 1 12.1046 1 11V9H0V11C0 12.6569 1.34315 14 3 14C4.65685 14 6 12.6569 6 11V9Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    color:               #ddd;
+    /* box-shadow:          0 0 0 1px red inset; */
+    border-radius:       0.5px;
+}
+
+
+.figma-dark .toggleButton:hover
+{
+    box-shadow: 0 0 0 1px #777;
+}
+
+
+.figma-dark .toggleButton:active
 {
     box-shadow: 0 0 0 2px var(--figma-color-bg-brand);
 }
@@ -762,9 +788,15 @@ div
 }    
 
 
-.numberSliderName
+.figma-light .numberSliderName
 {
     color: #0006;
+}
+
+
+.figma-dark .numberSliderName
+{
+    color: #fff6;
 }
 
 
@@ -8895,7 +8927,7 @@ function rgb2hclokl(rgb, cs = sRGB)
 {
     const hcl = opp2pol(rgb2oklab(rgb, cs));
     hcl[0] /= Tau;
-    hcl[1] /= hcl[2];
+    hcl[1] /= nozero(hcl[2]);
     return hcl;
 }
 
@@ -9284,7 +9316,7 @@ function rgb_a(rgb, a)
 
 function isDark(color, threshold = 0.71)
 {
-    return rgb2hclokl(color)[2] > threshold;
+    return rgb2hclokl(color)[2] < threshold;
 }
 
 
@@ -9296,6 +9328,28 @@ function rgbDistance(col1, col2)
     const d2 = col2[2] - col1[2];
 
     return Math.sqrt(d0*d0 + d1*d1 + d2*d2);
+}
+
+
+
+function rgbaMul(rgba, v)
+{
+    return [
+        rgba[0] * v,
+        rgba[1] * v,
+        rgba[2] * v,
+        rgba[3] * v ];
+}
+
+
+
+function rgbaDiv(rgba, v)
+{
+    return [
+        rgba[0] / v,
+        rgba[1] / v,
+        rgba[2] / v,
+        rgba[3] / v ];
 }
 
 
@@ -9315,6 +9369,19 @@ function rgbEqual(rgb1, rgb2)
     return Math.abs(rgb1[0] - rgb2[0]) < Eps
         && Math.abs(rgb1[1] - rgb2[1]) < Eps
         && Math.abs(rgb1[2] - rgb2[2]) < Eps;        
+}
+
+
+
+function style2rgba(style) 
+{
+    var cnv = document.createElement('canvas');
+    var ctx = cnv.getContext('2d');
+
+    ctx.fillStyle = style;
+    ctx.fillRect(0, 0, 1, 1);
+
+    return rgbaDiv(ctx.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
@@ -13969,7 +14036,7 @@ function rgb2hclokl(rgb, cs = sRGB)
 {
     const hcl = opp2pol(rgb2oklab(rgb, cs));
     hcl[0] /= Tau;
-    hcl[1] /= hcl[2];
+    hcl[1] /= nozero(hcl[2]);
     return hcl;
 }
 
@@ -14358,7 +14425,7 @@ function rgb_a(rgb, a)
 
 function isDark(color, threshold = 0.71)
 {
-    return rgb2hclokl(color)[2] > threshold;
+    return rgb2hclokl(color)[2] < threshold;
 }
 
 
@@ -14370,6 +14437,28 @@ function rgbDistance(col1, col2)
     const d2 = col2[2] - col1[2];
 
     return Math.sqrt(d0*d0 + d1*d1 + d2*d2);
+}
+
+
+
+function rgbaMul(rgba, v)
+{
+    return [
+        rgba[0] * v,
+        rgba[1] * v,
+        rgba[2] * v,
+        rgba[3] * v ];
+}
+
+
+
+function rgbaDiv(rgba, v)
+{
+    return [
+        rgba[0] / v,
+        rgba[1] / v,
+        rgba[2] / v,
+        rgba[3] / v ];
 }
 
 
@@ -14389,6 +14478,19 @@ function rgbEqual(rgb1, rgb2)
     return Math.abs(rgb1[0] - rgb2[0]) < Eps
         && Math.abs(rgb1[1] - rgb2[1]) < Eps
         && Math.abs(rgb1[2] - rgb2[2]) < Eps;        
+}
+
+
+
+function style2rgba(style) 
+{
+    var cnv = document.createElement('canvas');
+    var ctx = cnv.getContext('2d');
+
+    ctx.fillStyle = style;
+    ctx.fillRect(0, 0, 1, 1);
+
+    return rgbaDiv(ctx.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
@@ -17762,19 +17864,25 @@ function initNumberSliderEvents(slider)
                     || containsChild(slider, slider.textbox) 
                     ? 'default'
                     : 'ew-resize';
-            
+
+                    
+            const colShadow = 
+                isDarkMode()
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
             if (slider.param)
             {
-                slider.focus.style.boxShadow = '0  1px 0 0 rgba(0, 0, 0, 0.1) inset';
+                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
 
                 if (    slider.param.node
                     &&  slider.param.node.params.includes(slider.param)
                     && !isLastInArray(slider.param.node.params, slider.param))
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset';
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
             }
             else
             {
-                slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset ';
+                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
 
 
@@ -18657,9 +18765,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.dragScale              = dragScale;
     slider.wheelScale             = wheelScale;
              
-    slider.backColor              = 'transparent';
-    slider.valueColor             = '#7772';
-    slider.textColor              = '#000';
+    slider.backColorLight         = 'transparent';
+    slider.valueColorLight        = '#7772';
+    slider.textColorLight         = '#000';
+                
+    slider.backColorDark          = 'transparent';
+    slider.valueColorDark         = '#fff4';
+    slider.textColorDark          = '#f0f0f0';
                 
     slider.fontSize               = 11;
              
@@ -18857,9 +18969,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.updateColors = function()
     {
-        slider     .style.background = slider.backColor;
-        slider.bar .style.background = slider.valueColor;
-        slider.text.style.color      = slider.textColor;
+        slider     .style.background = isDarkMode() ? slider.backColorDark  : slider.backColorLight;
+        slider.bar .style.background = isDarkMode() ? slider.valueColorDark : slider.valueColorLight;
+        slider.text.style.color      = isDarkMode() ? slider.textColorDark  : slider.textColorLight;
     };
 
 
@@ -24623,6 +24735,8 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
+        this.paramBack.style.backgroundColor = isDarkMode() ? '#555' : 'white';
+
         this.updateBorder();
         this.updateHeader();
         this.updateParamControls();
@@ -24729,6 +24843,32 @@ class Operator
                 && (paramIndex = this.params.findIndex(p => p.id == paramIds[i])) > -1)
                 this.params[paramIndex].setValue(values[i], false, true, false);
         }
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colBack = rgbFromType(this.type);
+            
+        const colText = 
+            !this.active 
+            ? [0, 0, 0] 
+            : [1, 1, 1];
+
+        const textStyle = colorStyleRgba(colText);
+
+        const colInput  = colText;
+        const colOutput = colText;
+
+
+        return {
+            back:      colBack, 
+            text:      colText,
+            darkText:  !this.active,
+            textStyle: textStyle,
+            input:     colInput,
+            output:    colOutput };
     }
 
 
@@ -26701,7 +26841,9 @@ extends Operator
         this.header.style.background = 
             this.canShowColor()//isValidDataColor(this._color)//this.canShowColor()
             ? colorStyleRgb(colors.back)
-            : '#ead8eaee';
+            : isDarkMode()
+              ? '#888088ee'
+              : '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];
@@ -26747,15 +26889,17 @@ extends Operator
             || rgb2hclokl(colBack)[2] > 0.71;
 
             
-        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.22), 0.5);
-        const wa = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.03 : 0.14), 0.5);
+        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
+        const wa = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()
             ? (darkText 
                ? [0, 0, 0, ba] 
                : [1, 1, 1, wa])
-            : [0, 0, 0, 1];
+            : (isDarkMode()
+               ? [1, 1, 1, wa]
+               : [0, 0, 0, ba ]);
 
         const textStyle = colorStyleRgba(colText);
 
@@ -26807,15 +26951,18 @@ extends Operator
     {
         return colorStyleRgba(
             isDark(colBack) 
-            ? [0, 0, 0, 0.12]  
-            : [1, 1, 1, 0.2 ]);
+            ? [1, 1, 1, 0.2 ]
+            : [0, 0, 0, 0.12]); 
     }
 
 
 
     resetWarningStyle()
     {
-        this.warningStyle = colorStyleRgba([0.5, 1, 0.5, 0.2]);        
+        this.warningStyle = 
+            isDarkMode()
+            ? colorStyleRgba([0.3, 0.55, 0.3, 0.2])
+            : colorStyleRgba([0.5, 1, 0.5, 0.2]);        
     }
 
 
@@ -27097,6 +27244,7 @@ extends OpColorBase
         
         enableElementText(this.hexbox, !this.isConnected());
 
+
         if (!hasFocus(this.hexbox))
         {
             const colBack = dataColor2rgb(this._color);
@@ -27128,7 +27276,9 @@ extends OpColorBase
         this.#colorBack.style.background = 
             this.canShowColor()
             ? colorStyleRgb(colors.back)
-            : '#ead8eaee';
+            : isDarkMode()
+              ? '#888088ee'
+              : '#ead8eaee';
 
 
         const colSpaceBar = 
@@ -27138,7 +27288,8 @@ extends OpColorBase
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColor  = colors.textStyle;
+        this.paramSpace.control.textColorLight =
+        this.paramSpace.control.textColorDark = colors.textStyle;
         this.paramSpace.input .color       = colors.input;
         this.paramSpace.output.color       = colors.output;
         this.paramSpace.updateControls();
@@ -27203,7 +27354,7 @@ extends OpColorBase
 
     canShowColor()
     {
-        return !isDataColorNaN(this._color);
+        return isValidDataColor(this._color);
     }
 
 
@@ -28929,28 +29080,28 @@ extends OpColorBase
         this.addParam(this.margin3 = new NumberParam('margin3', '', true, true, true, 0));
 
 
-        // this.margin1.addEventListener('change', () => 
-        // {
-        //     const [i1,,] = getCorrectionOrder(this.order.value);
-        //     this.corrections[i1].value = this.margin1.value;
-        //     uiSaveNodes([this.id]);
-        // });
+        this.margin1.addEventListener('change', () => 
+        {
+            const [i1,,] = getCorrectionOrder(this.order.value);
+            this.corrections[i1].value = this.margin1.value;
+            uiSaveNodes([this.id]);
+        });
 
 
-        // this.margin2.addEventListener('change', () => 
-        // {
-        //     const [, i2,] = getCorrectionOrder(this.order.value);
-        //     this.corrections[i2].value = this.margin2.value;
-        //     uiSaveNodes([this.id]);
-        // });
+        this.margin2.addEventListener('change', () => 
+        {
+            const [, i2,] = getCorrectionOrder(this.order.value);
+            this.corrections[i2].value = this.margin2.value;
+            uiSaveNodes([this.id]);
+        });
 
         
-        // this.margin3.addEventListener('change', () => 
-        // {
-        //     const [,, i3] = getCorrectionOrder(this.order.value);
-        //     this.corrections[i3].value = this.margin3.value;
-        //     uiSaveNodes([this.id]);
-        // });
+        this.margin3.addEventListener('change', () => 
+        {
+            const [,, i3] = getCorrectionOrder(this.order.value);
+            this.corrections[i3].value = this.margin3.value;
+            uiSaveNodes([this.id]);
+        });
 
 
         this.initCorrections();
@@ -29086,11 +29237,11 @@ extends OpColorBase
 
         //margin.locked = correction.locked;
         //margin.updateLock();
-
+console.log('correction.value =', correction.value);
         // if (!margin.locked)
         // {
-            margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
-            margin.setValue(correction.value, true, true, false);
+            //margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
+            //margin.setValue(correction.value, true, true, false);
         //}
     }
 
@@ -30887,10 +31038,11 @@ extends Action
     
     do()
     {
+        console.log('getActiveNodesRightInTreeFromNodeId(this.inputNodeId) =', getActiveNodesRightInTreeFromNodeId(this.inputNodeId));
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
-        
+
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
             this.inputNode. inputs [this. inputIndex],
@@ -34529,6 +34681,14 @@ function uiEndResizeWindow()
 
     btnToggleWires.style.top  = 0;
     btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
+}
+
+
+
+function isDarkMode()
+{
+    const style = window.getComputedStyle(document.body);
+    return isDark(style2rgba(style.backgroundColor));
 }
 
 

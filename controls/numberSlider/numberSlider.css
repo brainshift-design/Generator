@@ -10,9 +10,15 @@
 }    
 
 
-.numberSliderName
+.figma-light .numberSliderName
 {
     color: #0006;
+}
+
+
+.figma-dark .numberSliderName
+{
+    color: #fff6;
 }
 
 

@@ -53,3 +53,11 @@ function uiEndResizeWindow()
     btnToggleWires.style.top  = 0;
     btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
 }
+
+
+
+function isDarkMode()
+{
+    const style = window.getComputedStyle(document.body);
+    return isDark(style2rgba(style.backgroundColor));
+}

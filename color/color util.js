@@ -121,7 +121,7 @@ function rgb_a(rgb, a)
 
 function isDark(color, threshold = 0.71)
 {
-    return rgb2hclokl(color)[2] > threshold;
+    return rgb2hclokl(color)[2] < threshold;
 }
 
 
@@ -133,6 +133,28 @@ function rgbDistance(col1, col2)
     const d2 = col2[2] - col1[2];
 
     return Math.sqrt(d0*d0 + d1*d1 + d2*d2);
+}
+
+
+
+function rgbaMul(rgba, v)
+{
+    return [
+        rgba[0] * v,
+        rgba[1] * v,
+        rgba[2] * v,
+        rgba[3] * v ];
+}
+
+
+
+function rgbaDiv(rgba, v)
+{
+    return [
+        rgba[0] / v,
+        rgba[1] / v,
+        rgba[2] / v,
+        rgba[3] / v ];
 }
 
 
@@ -152,4 +174,17 @@ function rgbEqual(rgb1, rgb2)
     return Math.abs(rgb1[0] - rgb2[0]) < Eps
         && Math.abs(rgb1[1] - rgb2[1]) < Eps
         && Math.abs(rgb1[2] - rgb2[2]) < Eps;        
+}
+
+
+
+function style2rgba(style) 
+{
+    var cnv = document.createElement('canvas');
+    var ctx = cnv.getContext('2d');
+
+    ctx.fillStyle = style;
+    ctx.fillRect(0, 0, 1, 1);
+
+    return rgbaDiv(ctx.getImageData(0, 0, 1, 1).data, 0xFF);
 }

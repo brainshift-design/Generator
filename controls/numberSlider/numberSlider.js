@@ -45,9 +45,13 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.dragScale              = dragScale;
     slider.wheelScale             = wheelScale;
              
-    slider.backColor              = 'transparent';
-    slider.valueColor             = '#7772';
-    slider.textColor              = '#000';
+    slider.backColorLight         = 'transparent';
+    slider.valueColorLight        = '#7772';
+    slider.textColorLight         = '#000';
+                
+    slider.backColorDark          = 'transparent';
+    slider.valueColorDark         = '#fff4';
+    slider.textColorDark          = '#f0f0f0';
                 
     slider.fontSize               = 11;
              
@@ -245,9 +249,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 
     slider.updateColors = function()
     {
-        slider     .style.background = slider.backColor;
-        slider.bar .style.background = slider.valueColor;
-        slider.text.style.color      = slider.textColor;
+        slider     .style.background = isDarkMode() ? slider.backColorDark  : slider.backColorLight;
+        slider.bar .style.background = isDarkMode() ? slider.valueColorDark : slider.valueColorLight;
+        slider.text.style.color      = isDarkMode() ? slider.textColorDark  : slider.textColorLight;
     };
 
 

@@ -67,28 +67,28 @@ extends OpColorBase
         this.addParam(this.margin3 = new NumberParam('margin3', '', true, true, true, 0));
 
 
-        // this.margin1.addEventListener('change', () => 
-        // {
-        //     const [i1,,] = getCorrectionOrder(this.order.value);
-        //     this.corrections[i1].value = this.margin1.value;
-        //     uiSaveNodes([this.id]);
-        // });
+        this.margin1.addEventListener('change', () => 
+        {
+            const [i1,,] = getCorrectionOrder(this.order.value);
+            this.corrections[i1].value = this.margin1.value;
+            uiSaveNodes([this.id]);
+        });
 
 
-        // this.margin2.addEventListener('change', () => 
-        // {
-        //     const [, i2,] = getCorrectionOrder(this.order.value);
-        //     this.corrections[i2].value = this.margin2.value;
-        //     uiSaveNodes([this.id]);
-        // });
+        this.margin2.addEventListener('change', () => 
+        {
+            const [, i2,] = getCorrectionOrder(this.order.value);
+            this.corrections[i2].value = this.margin2.value;
+            uiSaveNodes([this.id]);
+        });
 
         
-        // this.margin3.addEventListener('change', () => 
-        // {
-        //     const [,, i3] = getCorrectionOrder(this.order.value);
-        //     this.corrections[i3].value = this.margin3.value;
-        //     uiSaveNodes([this.id]);
-        // });
+        this.margin3.addEventListener('change', () => 
+        {
+            const [,, i3] = getCorrectionOrder(this.order.value);
+            this.corrections[i3].value = this.margin3.value;
+            uiSaveNodes([this.id]);
+        });
 
 
         this.initCorrections();
@@ -224,11 +224,11 @@ extends OpColorBase
 
         //margin.locked = correction.locked;
         //margin.updateLock();
-
+console.log('correction.value =', correction.value);
         // if (!margin.locked)
         // {
-            margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
-            margin.setValue(correction.value, true, true, false);
+            //margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
+            //margin.setValue(correction.value, true, true, false);
         //}
     }
 
