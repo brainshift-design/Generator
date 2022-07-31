@@ -208,11 +208,11 @@ VECTOR      V
 */
 const settings = {
     showNodeId: false,
-    logMessages: false,
+    logMessages: true,
     logStorage: false,
     logActions: false,
-    logRequests: false,
-    logValueUpdates: false,
+    logRequests: true,
+    logValueUpdates: true,
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}

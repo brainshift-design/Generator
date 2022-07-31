@@ -8,7 +8,7 @@ function figUpdate(msg)
         && msg.objects.length > 0)
         logObjectUpdates(msg.objects);
 
-    
+
     if (   msg.updateNodeId  != ''
         && msg.updateParamId != '')
     {
