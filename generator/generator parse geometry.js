@@ -301,3 +301,42 @@ function genParseStar(parse)
     genParseNodeEnd(parse, star);
     return star;
 }
+
+
+
+function genParseColorFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GColorFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(fill, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, fill);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (GEOMETRY_TYPES.includes(parse.next))
+        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+
+
+    fill.color   = genParse(parse);
+    fill.opacity = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fill);
+    return fill;
+}

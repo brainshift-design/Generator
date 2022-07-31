@@ -318,6 +318,8 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
+const COLOR_FILL         = 'FILL';
+
 
 const GEOMETRY_TYPES =
 [
@@ -333,12 +335,11 @@ const GEOMETRY_TYPES =
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR//,
+    STAR,
     //TEXT
+
+    COLOR_FILL
 ];
-
-
-const FILL               = 'FILL';
 
 
 const GROUP              = 'GRP';   // ???? count O...

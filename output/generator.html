@@ -28,7 +28,7 @@ function rgbFromType(type, active)
             return active 
                  ? rgbActiveNumber 
                  : rgbNumber;
-        
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
@@ -43,6 +43,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
+        case COLOR_FILL: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -2797,6 +2798,8 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
+const COLOR_FILL         = 'FILL';
+
 
 const GEOMETRY_TYPES =
 [
@@ -2812,12 +2815,11 @@ const GEOMETRY_TYPES =
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR//,
+    STAR,
     //TEXT
+
+    COLOR_FILL
 ];
-
-
-const FILL               = 'FILL';
 
 
 const GROUP              = 'GRP';   // ???? count O...
@@ -4898,6 +4900,8 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
+        copyBase(rect);
+
         return rect;
     }
 
@@ -4996,6 +5000,8 @@ extends GOperator
         if (this.y     ) line.y      = this.y     .copy();
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
+
+        copyBase(line);
 
         return line;
     }
@@ -5103,6 +5109,8 @@ extends GOperator
         if (this.height) elps.height = this.height.copy();
         if (this.angle ) elps.angle  = this.angle .copy();
 
+        copyBase(elps);
+        
         return elps;
     }
 
@@ -5216,6 +5224,8 @@ extends GOperator
         if (this.angle  ) poly.angle   = this.angle  .copy();
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
+
+        copyBase(poly);
 
         return poly;
     }
@@ -5341,6 +5351,8 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
+        copyBase(star);
+
         return star;
     }
 
@@ -5430,31 +5442,31 @@ extends GOperator
 }
 
 
-class GFill
+class GColorFill
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    value = null;
+    color   = null;
+    opacity = null;
 
 
 
     constructor(nodeId, active)
     {
-        super(FILL, nodeId, active);
+        super(COLOR_FILL, nodeId, active);
     }
 
 
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GColorFill(this.nodeId, this.active);
 
-        if (this.input)  
-            fill.input = this.input.copy();
+        if (this.input) fill.input = this.input.copy();
 
-        if (this.value) 
-            fill.value = this.value.copy();
+        fill.color   = this.color  .copy();
+        fill.opacity = this.opacity.copy();
 
         return fill;
     }
@@ -6210,6 +6222,45 @@ function genParseStar(parse)
 }
 
 
+
+function genParseColorFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GColorFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(fill, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, fill);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (GEOMETRY_TYPES.includes(parse.next))
+        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+
+
+    fill.color   = genParse(parse);
+    fill.opacity = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fill);
+    return fill;
+}
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -6483,6 +6534,8 @@ function genParse(parse)
     else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);
     else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
     else if (parse.next == STAR              ) return genParseStar            (parse);
+
+    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
 
     
     parse.so++;

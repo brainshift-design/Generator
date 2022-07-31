@@ -2,20 +2,16 @@ class   ColorParam
 extends Parameter
 {
     defaultValue;
+
+    oldValue = null;
+    allowEditDecimals = true;
     
-    
-    get value()      { return this._control.value;    }
-    set value(value) { this._control.setValue(value); }
-    
-    get oldValue()   { return this._control.oldValue; }
 
 
-    
-    input;
-    output;
+    get value   () { return this._control.value; }
+    //get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
-
     get valueText() { return this.control.valueText; }
     set valueText(text) 
     {
@@ -23,97 +19,204 @@ extends Parameter
         this.control.update();
     }
 
+    
+    //get value   () { return this.control.value; }
+    get genValue() { return new GColorValue(this.control.value, this.control.displayDec); }
+
 
     
-    constructor(name, 
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
                 hasOutput,
-                value     = [0, 0, 0],
+                value     = 0, 
+                min       = Number.MIN_SAFE_INTEGER, 
+                max       = Number.MAX_SAFE_INTEGER,
+                decimals  = 0,
                 dragScale = 0.05)
     {
-        super(name, 'color');
+        super(id, name, NUMBER);
 
-        this._control = createDiv();
+        this._control       = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
-
-        this.defaultValue = value;
-
-        this.control.style.height = 20;
+   
+        this.defaultValue   = value;
 
 
-        initColorSlider(
+        initNumberSlider(
+            this,
             this.control,
-            120,       // width
-            20,        // height
+            120,        // width
+            20,         // height
+            this.id,
             this.name, 
-            value,     // default
-            dragScale, // drag scale
-            1,         // wheel step
-            0,         // decimals
-            0,         // acceleration
-            '');       // suffix
+            showName,
+            min,
+            max,
+            value,      // default
+            decimals,   // decimals
+            dragScale); // drag scale
 
-
+        this.control.successOnFocusOut = true;
 
         this.div.appendChild(this.control);
 
+       
+        if (hasInput)  this.initInput([NUMBER]);
+        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
-                       this.initInput([COLOR]);
-        if (hasOutput) this.initOutput(COLOR);
 
-
-
-        this.control.addEventListener('change', e =>
+        this.control.addEventListener('confirm', () => 
         {
-            this.node.valid = false;
-            uiSetParam(this, this.value);
+            this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
         });
 
 
-        this.control.addEventListener('confirm', e =>
-        {
-            this.node.valid = false;
-            //actionManager.do(new SetParamValueAction(this, this.value));
+        this.control.addEventListener('finishedit', e =>
+        { 
+            let   dec    = decCount(e.detail.value);
+            const oldDec = decCount(e.detail.oldValue);
+
+            
+            if (!e.detail.success)
+                return;
+
+
+            if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+                && dec >= oldDec)
+            {
+                this.setValue(new GNumberValue(e.detail.value, dec), true);
+                e.preventSetValue = true;
+            }
+            else if (this.allowEditDecimals)
+            {
+                if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+                    dec += Math.log10(this.control.valueScale);
+                else 
+                    dec = oldDec;
+
+                    this.setValue(new GNumberValue(e.detail.value, dec), true);
+                e.preventSetValue = true;
+            }
         });
+    }
+
+
+
+    setName(name, dispatchEvents = true)
+    {
+        super.setName(name, dispatchEvents);
+        this.control.setName(name);
     }
 
 
 
     isDefault()
     {
-        return this.value == this.defaultValue;
+        return this.genValue == this.defaultValue;
     }
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        //this._control.setValue(value, fireChangeEvent, confirm); 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    {
+        this.preSetValue(value, createAction, dispatchEvents);
+
+        if (updateControl)
+        {
+            this.control.setDecimals(value.decimals, value.decimals);
+            this.control.setValue(value.value, false, false, forceChange); 
+        }
+
+        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.genValue;
+    }    
+
+
+
+    valuesEqual(val1, val2)
+    {
+        return val1
+            && val2
+            && val1.value    == val2.value
+            && val1.decimals == val2.decimals;
     }
 
 
 
     toString()
     {
-        // this function exists because a parameter without an output
-        // should still provide a value
+        return this.genValue.toString();
+    }
+
+
+
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
         
-        // return this.input
-        //     && this.input.connected 
+        if (id == '')
+            id = this.id;
 
-        //     ? [ ...this.input.connectedOutput.genRequest(createGenObject()) ]
+        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+    }
 
-        //     : [ COLOR, 
-        //         this.value.toString(), 
-        //         this.control.displayDec.toString() ];
+    
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    {
+        this.preSetValue(value, createAction, dispatchEvents);
+
+        if (updateControl)
+        {
+            this.control.setDecimals(value.decimals, value.decimals);
+            this.control.setValue(value.value, false, false, forceChange); 
+        }
+
+        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.genValue;
+    }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request a value
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+
+        if (   this.input
+            && this.input.connected)
+            request.push(...pushInputOrParam(this.input, gen));
+
+        else request.push( 
+            NUMBER_VALUE, 
+            new GNumberValue(
+                this.control.value, 
+                this.control.displayDec).toString());
+
+
+        return request;
     }
 
 
 
     output_genRequest(gen)
     {
-        //return output.param.genRequest();
-        return [];
+        return this.param.genRequest(gen);
     }
 }

@@ -1390,6 +1390,8 @@ div
     <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon));          this.blur();'>POLY</button>
     <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar));             this.blur();'>STAR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(COLOR_FILL,         btnCreateColorFill));        this.blur();'>cFILL</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment));          this.blur();'></button>
     <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1657,7 +1659,7 @@ function rgbFromType(type, active)
             return active 
                  ? rgbActiveNumber 
                  : rgbNumber;
-        
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
@@ -1672,6 +1674,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
+        case COLOR_FILL: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -4426,6 +4429,8 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
+const COLOR_FILL         = 'FILL';
+
 
 const GEOMETRY_TYPES =
 [
@@ -4441,12 +4446,11 @@ const GEOMETRY_TYPES =
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR//,
+    STAR,
     //TEXT
+
+    COLOR_FILL
 ];
-
-
-const FILL               = 'FILL';
 
 
 const GROUP              = 'GRP';   // ???? count O...
@@ -6527,6 +6531,8 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
+        copyBase(rect);
+
         return rect;
     }
 
@@ -6625,6 +6631,8 @@ extends GOperator
         if (this.y     ) line.y      = this.y     .copy();
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
+
+        copyBase(line);
 
         return line;
     }
@@ -6732,6 +6740,8 @@ extends GOperator
         if (this.height) elps.height = this.height.copy();
         if (this.angle ) elps.angle  = this.angle .copy();
 
+        copyBase(elps);
+        
         return elps;
     }
 
@@ -6845,6 +6855,8 @@ extends GOperator
         if (this.angle  ) poly.angle   = this.angle  .copy();
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
+
+        copyBase(poly);
 
         return poly;
     }
@@ -6970,6 +6982,8 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
+        copyBase(star);
+
         return star;
     }
 
@@ -7059,31 +7073,31 @@ extends GOperator
 }
 
 
-class GFill
+class GColorFill
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    value = null;
+    color   = null;
+    opacity = null;
 
 
 
     constructor(nodeId, active)
     {
-        super(FILL, nodeId, active);
+        super(COLOR_FILL, nodeId, active);
     }
 
 
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GColorFill(this.nodeId, this.active);
 
-        if (this.input)  
-            fill.input = this.input.copy();
+        if (this.input) fill.input = this.input.copy();
 
-        if (this.value) 
-            fill.value = this.value.copy();
+        fill.color   = this.color  .copy();
+        fill.opacity = this.opacity.copy();
 
         return fill;
     }
@@ -7839,6 +7853,45 @@ function genParseStar(parse)
 }
 
 
+
+function genParseColorFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GColorFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(fill, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, fill);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (GEOMETRY_TYPES.includes(parse.next))
+        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+
+
+    fill.color   = genParse(parse);
+    fill.opacity = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fill);
+    return fill;
+}
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -8112,6 +8165,8 @@ function genParse(parse)
     else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);
     else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
     else if (parse.next == STAR              ) return genParseStar            (parse);
+
+    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
 
     
     parse.so++;
@@ -10991,7 +11046,7 @@ function rgbFromType(type, active)
             return active 
                  ? rgbActiveNumber 
                  : rgbNumber;
-        
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
@@ -11006,6 +11061,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
+        case COLOR_FILL: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -15187,6 +15243,8 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
+const COLOR_FILL         = 'FILL';
+
 
 const GEOMETRY_TYPES =
 [
@@ -15202,12 +15260,11 @@ const GEOMETRY_TYPES =
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR//,
+    STAR,
     //TEXT
+
+    COLOR_FILL
 ];
-
-
-const FILL               = 'FILL';
 
 
 const GROUP              = 'GRP';   // ???? count O...
@@ -17288,6 +17345,8 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
+        copyBase(rect);
+
         return rect;
     }
 
@@ -17386,6 +17445,8 @@ extends GOperator
         if (this.y     ) line.y      = this.y     .copy();
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
+
+        copyBase(line);
 
         return line;
     }
@@ -17493,6 +17554,8 @@ extends GOperator
         if (this.height) elps.height = this.height.copy();
         if (this.angle ) elps.angle  = this.angle .copy();
 
+        copyBase(elps);
+        
         return elps;
     }
 
@@ -17606,6 +17669,8 @@ extends GOperator
         if (this.angle  ) poly.angle   = this.angle  .copy();
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
+
+        copyBase(poly);
 
         return poly;
     }
@@ -17731,6 +17796,8 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
+        copyBase(star);
+
         return star;
     }
 
@@ -17820,31 +17887,31 @@ extends GOperator
 }
 
 
-class GFill
+class GColorFill
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    value = null;
+    color   = null;
+    opacity = null;
 
 
 
     constructor(nodeId, active)
     {
-        super(FILL, nodeId, active);
+        super(COLOR_FILL, nodeId, active);
     }
 
 
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GColorFill(this.nodeId, this.active);
 
-        if (this.input)  
-            fill.input = this.input.copy();
+        if (this.input) fill.input = this.input.copy();
 
-        if (this.value) 
-            fill.value = this.value.copy();
+        fill.color   = this.color  .copy();
+        fill.opacity = this.opacity.copy();
 
         return fill;
     }
@@ -22894,20 +22961,16 @@ class   ColorParam
 extends Parameter
 {
     defaultValue;
+
+    oldValue = null;
+    allowEditDecimals = true;
     
-    
-    get value()      { return this._control.value;    }
-    set value(value) { this._control.setValue(value); }
-    
-    get oldValue()   { return this._control.oldValue; }
 
 
-    
-    input;
-    output;
+    get value   () { return this._control.value; }
+    //get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
-
     get valueText() { return this.control.valueText; }
     set valueText(text) 
     {
@@ -22915,98 +22978,205 @@ extends Parameter
         this.control.update();
     }
 
+    
+    //get value   () { return this.control.value; }
+    get genValue() { return new GColorValue(this.control.value, this.control.displayDec); }
+
 
     
-    constructor(name, 
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
                 hasOutput,
-                value     = [0, 0, 0],
+                value     = 0, 
+                min       = Number.MIN_SAFE_INTEGER, 
+                max       = Number.MAX_SAFE_INTEGER,
+                decimals  = 0,
                 dragScale = 0.05)
     {
-        super(name, 'color');
+        super(id, name, NUMBER);
 
-        this._control = createDiv();
+        this._control       = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
-
-        this.defaultValue = value;
-
-        this.control.style.height = 20;
+   
+        this.defaultValue   = value;
 
 
-        initColorSlider(
+        initNumberSlider(
+            this,
             this.control,
-            120,       // width
-            20,        // height
+            120,        // width
+            20,         // height
+            this.id,
             this.name, 
-            value,     // default
-            dragScale, // drag scale
-            1,         // wheel step
-            0,         // decimals
-            0,         // acceleration
-            '');       // suffix
+            showName,
+            min,
+            max,
+            value,      // default
+            decimals,   // decimals
+            dragScale); // drag scale
 
-
+        this.control.successOnFocusOut = true;
 
         this.div.appendChild(this.control);
 
+       
+        if (hasInput)  this.initInput([NUMBER]);
+        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
 
-                       this.initInput([COLOR]);
-        if (hasOutput) this.initOutput(COLOR);
 
-
-
-        this.control.addEventListener('change', e =>
+        this.control.addEventListener('confirm', () => 
         {
-            this.node.valid = false;
-            uiSetParam(this, this.value);
+            this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
         });
 
 
-        this.control.addEventListener('confirm', e =>
-        {
-            this.node.valid = false;
-            //actionManager.do(new SetParamValueAction(this, this.value));
+        this.control.addEventListener('finishedit', e =>
+        { 
+            let   dec    = decCount(e.detail.value);
+            const oldDec = decCount(e.detail.oldValue);
+
+            
+            if (!e.detail.success)
+                return;
+
+
+            if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+                && dec >= oldDec)
+            {
+                this.setValue(new GNumberValue(e.detail.value, dec), true);
+                e.preventSetValue = true;
+            }
+            else if (this.allowEditDecimals)
+            {
+                if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+                    dec += Math.log10(this.control.valueScale);
+                else 
+                    dec = oldDec;
+
+                    this.setValue(new GNumberValue(e.detail.value, dec), true);
+                e.preventSetValue = true;
+            }
         });
+    }
+
+
+
+    setName(name, dispatchEvents = true)
+    {
+        super.setName(name, dispatchEvents);
+        this.control.setName(name);
     }
 
 
 
     isDefault()
     {
-        return this.value == this.defaultValue;
+        return this.genValue == this.defaultValue;
     }
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true) 
-    { 
-        //this._control.setValue(value, fireChangeEvent, confirm); 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    {
+        this.preSetValue(value, createAction, dispatchEvents);
+
+        if (updateControl)
+        {
+            this.control.setDecimals(value.decimals, value.decimals);
+            this.control.setValue(value.value, false, false, forceChange); 
+        }
+
+        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.genValue;
+    }    
+
+
+
+    valuesEqual(val1, val2)
+    {
+        return val1
+            && val2
+            && val1.value    == val2.value
+            && val1.decimals == val2.decimals;
     }
 
 
 
     toString()
     {
-        // this function exists because a parameter without an output
-        // should still provide a value
+        return this.genValue.toString();
+    }
+
+
+
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
         
-        // return this.input
-        //     && this.input.connected 
+        if (id == '')
+            id = this.id;
 
-        //     ? [ ...this.input.connectedOutput.genRequest(createGenObject()) ]
+        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+    }
 
-        //     : [ COLOR, 
-        //         this.value.toString(), 
-        //         this.control.displayDec.toString() ];
+    
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    {
+        this.preSetValue(value, createAction, dispatchEvents);
+
+        if (updateControl)
+        {
+            this.control.setDecimals(value.decimals, value.decimals);
+            this.control.setValue(value.value, false, false, forceChange); 
+        }
+
+        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.genValue;
+    }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request a value
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+
+        if (   this.input
+            && this.input.connected)
+            request.push(...pushInputOrParam(this.input, gen));
+
+        else request.push( 
+            NUMBER_VALUE, 
+            new GNumberValue(
+                this.control.value, 
+                this.control.displayDec).toString());
+
+
+        return request;
     }
 
 
 
     output_genRequest(gen)
     {
-        //return output.param.genRequest();
-        return [];
+        return this.param.genRequest(gen);
     }
 }
 
@@ -23328,6 +23498,8 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case ELLIPSE:            node = new OpEllipse();          break;
         case POLYGON:            node = new OpPolygon();          break;
         case STAR:               node = new OpStar();             break;
+
+        case COLOR_FILL:         node = new OpColorFill();        break;
 
         case COMMENT:            node = new OpComment();          break;
     }
@@ -31074,23 +31246,23 @@ extends OpGeometryBase
 }
 
 
-class   OpFill
+class   OpColorFill
 extends OpGeometryBase
 {
-    paramValue;
-
+    paramColor;
+    paramOpacity;
 
     
     constructor()
     {
-        super(FILL, 'rect', 90);
+        super(COLOR_FILL, 'fill', 90);
 
 
         this.addInput(new Input(GEOMETRY_TYPES));
-        this.addOutput(new Output(GEOMETRY, this.output_genRequest));
+        this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
-
-        this.addParam(this.paramValue = new ColorParam('value', '', true, true, true));
+        this.addParam(this.paramColor   = new ColorParam('color', '', false, true, true));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', '', false, true, true, 0, 0, 100));
     }
     
     
@@ -31113,123 +31285,17 @@ extends OpGeometryBase
         
         const input = this.node.inputs[0];
 
-        // const paramIds = [];
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
 
-
-        // if (input.connected)
-        // {
-        //     request.push(...pushInputOrParam(input, gen));
-
-
-        //     for (const param of this.node.params)
-        //         if (param.input && param.input.connected) 
-        //             paramIds.push(param.id);
-
-        //     request.push(paramIds.join(','));
-
-
-        //     if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-        //     if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-        //     if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-        //     if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-        //     if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-        //     if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
-        // }
-        // else
-        // {
-        //     request.push(
-        //         ...this.node.paramX     .genRequest(gen),
-        //         ...this.node.paramY     .genRequest(gen),
-        //         ...this.node.paramWidth .genRequest(gen),
-        //         ...this.node.paramHeight.genRequest(gen),
-        //         ...this.node.paramAngle .genRequest(gen),
-        //         ...this.node.paramRound .genRequest(gen));
-        // }
+        request.push(...this.node.paramColor  .genRequest(gen));
+        request.push(...this.node.paramOpacity.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateValues(updateParamId, paramIds, values)
-    {
-        const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
-
-        this.paramX     .setValue(rect.x,      false, true, false);
-        this.paramY     .setValue(rect.y,      false, true, false);
-        this.paramWidth .setValue(rect.width,  false, true, false);
-        this.paramHeight.setValue(rect.height, false, true, false);
-        this.paramAngle .setValue(rect.angle,  false, true, false);
-        this.paramRound .setValue(rect.round,  false, true, false);
-
-        super.updateValues(updateParamId, paramIds, values);
-    }
-
-
-
-    updateNode()
-    {
-        this.btnProportional.style.left = 45;
-        this.btnProportional.style.top  = 79;
-
-        super.updateNode();
-    }
-
-
-
-    updateRound()
-    {
-        const control = this.paramRound.control;
-        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
-
-        control.setMin(0);
-        control.setMax(min/2);
-
-        this.paramRound.control.update();
-    }
-
-    
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
-
-        let json = 
-               super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
-
-        if (this.btnProportional.enabled)
-        {
-            json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
-        }
-
-        return json;
-    }
-
-
-
-    loadParams(_node)
-    {
-        super.loadParams(_node);
-
-        // if (_node.proportional)
-        // {
-            this.btnProportional.enabled = isTrue(_node.proportional);
-            this.btnProportional.updateBackground(false);
-
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = parseFloat(_node.refWidth);
-                this.refHeight = parseFloat(_node.refHeight);
-            }
-        //}
     }
 }
 

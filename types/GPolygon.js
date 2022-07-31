@@ -35,6 +35,8 @@ extends GOperator
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
 
+        copyBase(poly);
+
         return poly;
     }
 

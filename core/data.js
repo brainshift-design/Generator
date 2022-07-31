@@ -14,7 +14,7 @@ function rgbFromType(type, active)
             return active 
                  ? rgbActiveNumber 
                  : rgbNumber;
-        
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
@@ -29,6 +29,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
+        case COLOR_FILL: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;

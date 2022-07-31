@@ -29,6 +29,8 @@ extends GOperator
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
 
+        copyBase(line);
+
         return line;
     }
 

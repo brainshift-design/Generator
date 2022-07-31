@@ -87,6 +87,8 @@ function genParse(parse)
     else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
     else if (parse.next == STAR              ) return genParseStar            (parse);
 
+    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
+
     
     parse.so++;
     return null;

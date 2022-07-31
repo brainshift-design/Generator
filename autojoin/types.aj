@@ -41,4 +41,4 @@
 ../types/GPolygon.js
 ../types/GStar.js
 
-../types/GFill.js
+../types/GColorFill.js

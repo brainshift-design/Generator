@@ -1,28 +1,28 @@
-class GFill
+class GColorFill
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    value = null;
+    color   = null;
+    opacity = null;
 
 
 
     constructor(nodeId, active)
     {
-        super(FILL, nodeId, active);
+        super(COLOR_FILL, nodeId, active);
     }
 
 
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GColorFill(this.nodeId, this.active);
 
-        if (this.input)  
-            fill.input = this.input.copy();
+        if (this.input) fill.input = this.input.copy();
 
-        if (this.value) 
-            fill.value = this.value.copy();
+        fill.color   = this.color  .copy();
+        fill.opacity = this.opacity.copy();
 
         return fill;
     }

@@ -54,7 +54,7 @@
 ../operators/geometry/OpPolygon.js
 ../operators/geometry/OpStar.js
 
-../operators/geometry/OpFill.js
+../operators/geometry/OpColorFill.js
 
 //../operators/geometry/OpColumn.js
 //../operators/geometry/UOpSpread.js

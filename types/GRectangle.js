@@ -33,6 +33,8 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
+        copyBase(rect);
+
         return rect;
     }
 
