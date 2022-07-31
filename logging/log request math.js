@@ -39,11 +39,3 @@ function logReqInterpolate(lerp, nValues, parse)
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nValues;
 }
-
-
-
-// function logReqRectangle(req) { logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
-// function logReqLine     (req) { logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
-// function logReqEllipse  (req) { logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
-// function logReqPolygon  (req) { logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
-// function logReqStar     (req) { logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }

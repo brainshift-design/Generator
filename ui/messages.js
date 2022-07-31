@@ -30,6 +30,9 @@ onmessage = e =>
 function uiPostMessageToFigma(msg)
 {
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
+
+    if (settings.logMessages)
+        console.log('%cFIG ◄-- '+msg.cmd+' UI', 'background: #bef; color: black;');
 }
 
 
@@ -65,19 +68,11 @@ function uiPostNextMessageToFigma()
 
 function uiEndFigMessage(msgCmd)
 {
-    if (msgCmd == 'figUpdateObjects')
+    if (msgCmd == 'figUpdate')
         uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
 
-    uiFigMessagePosted = false;
+    //uiFigMessagePosted = false;
     uiPostNextMessageToFigma();
-}
-
-
-
-function uiEndFigObjectMessage()
-{
-    uiFigMessagePosted = false;
-    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,8 +85,6 @@ function uiEndFigObjectMessage()
 generator.onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
-    //console.log('msg =', msg);
-
 
     switch (msg.cmd)
     {
@@ -107,7 +100,7 @@ generator.onmessage = function(e)
             uiPostMessageToGenerator({
                 cmd:   'genEndUiMessage',
                 msgCmd: msg.cmd }); 
-
+       
             break;
         
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
@@ -120,7 +113,9 @@ generator.onmessage = function(e)
 function uiEndGenMessage()
 {
     genMessagePosted = false;
-    uiPostNextMessageToGenerator();
+    
+    if (genMessages.length > 0)
+        uiPostNextMessageToGenerator();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +138,7 @@ function uiPostNextMessageToGenerator()
     if (    genMessages.length > 0
         && !genMessagePosted)
     {
+        //console.log('message');
         let msg = genMessages.shift();
 
         if (msg.cmd == 'genRequest')
@@ -152,7 +148,10 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
+            {
+                //console.log('skipping');
                 msg = genMessages.shift();//deepCopy(genMessages.shift());
+            }
         }
 
         uiPostMessageToGenerator(msg);
@@ -165,6 +164,9 @@ function uiPostNextMessageToGenerator()
 function uiPostMessageToGenerator(msg)
 {
     generator.postMessage(JSON.stringify(msg));
+
+    if (settings.logMessages)
+        console.log('%cUI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

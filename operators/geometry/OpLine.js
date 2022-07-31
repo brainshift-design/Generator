@@ -55,8 +55,8 @@ extends OpGeometryBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -66,24 +66,24 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
 
 
-            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
         }
         else
         {
-            req.push(
+            request.push(
                 ...this.node.paramX     .genRequest(gen),
                 ...this.node.paramY     .genRequest(gen),
                 ...this.node.paramWidth .genRequest(gen),
@@ -94,6 +94,6 @@ extends OpGeometryBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 }

@@ -33,8 +33,9 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figUpdateObjects':                figUpdateObjects(/*msg.updateId,*/ msg.objects);                             break;
-        case 'figDeleteObjects':                figDeleteObjectsFromNodeIds(msg.nodeIds);                                    break; 
+        case 'figUpdate':                       figUpdate                      (msg);                                        break;
+        
+        case 'figDeleteObjects':                figDeleteObjectsFromNodeIds    (msg.nodeIds);                                break; 
     }
 
     
@@ -53,6 +54,9 @@ figma.ui.onmessage = msg =>
 function figPostMessageToUI(msg)
 {
     figma.ui.postMessage(JSON.stringify(msg));
+
+    if (settings.logMessages)
+        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

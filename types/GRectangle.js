@@ -75,7 +75,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
 
 
-            if (this.active)
+            if (   this.active
+                && this.result.isValid())
             {
                 genPushUpdateObject(
                     parse,

@@ -54,7 +54,6 @@ extends Action
     
     do()
     {
-        console.log('getActiveNodesRightInTreeFromNodeId(this.inputNodeId) =', getActiveNodesRightInTreeFromNodeId(this.inputNodeId));
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 

@@ -25,10 +25,10 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        genRequest(msg.request);     break;
 
-        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd);           break;
-        case 'genEndFigMessage':  genEndFigMessage();                    break;
+        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd); break;
+        case 'genEndFigMessage':  genEndFigMessage();          break;
     }
 
 
@@ -61,34 +61,37 @@ function genPostNextMessageToUI(msg)
 {
     //console.log('gen.uiMessages.length = ', uiMessages.length);
 
-    if (    uiMessages.length > 0
-        && !genFigMessagePosted)
+    if (uiMessages.length > 0)
+        //&& !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
 
-        while (   uiMessages.length > 0
-               && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
-               && uiMessages[0].chunkId == 0)
-        {
-            const nextFirst = uiMessages.find(m => 
-                   m.cmd     == msg.cmd 
-                && m.chunkId == 0);
+        // while (   uiMessages.length > 0
+        //        && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
+        //        && uiMessages[0].chunkId == 0)
+        // {
+        //     const nextFirst = uiMessages.find(m => 
+        //            m.cmd     == msg.cmd 
+        //         && m.chunkId == 0);
 
-            if (nextFirst)
-            {
-                while (uiMessages.length > 0
-                    && uiMessages[0].cmd           == msg.cmd
-                    && uiMessages[0].updateNodeId  == msg.updateNodeId
-                    && uiMessages[0].updateParamId == msg.updateParamId
-                    && uiMessages[0].cmd.chunkId   >  0)
-                    msg = uiMessages.shift();
+        //     if (nextFirst)
+        //     {
+        //         while (uiMessages.length > 0
+        //             && uiMessages[0].cmd           == msg.cmd
+        //             && uiMessages[0].updateNodeId  == msg.updateNodeId
+        //             && uiMessages[0].updateParamId == msg.updateParamId
+        //             && uiMessages[0].cmd.chunkId   >  0)
+        //             msg = uiMessages.shift();
 
-                msg = uiMessages.shift();
-            }
-        }
+        //         msg = uiMessages.shift();
+        //     }
+        // }
 
         postMessage(JSON.stringify(msg));
+
+        if (settings.logMessages)
+            console.log('%cUI ◄-- '+msg.cmd+' GEN', 'background: #ca0; color: white;');
     }
 }
 

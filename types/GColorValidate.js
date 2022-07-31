@@ -52,8 +52,6 @@ extends GOperator
 
                 if (isValidRgb(rgb))
                 {
-                    console.log('valid');
-
                     // this._color = 
                     //     col
                     //     ? [...validateColor(

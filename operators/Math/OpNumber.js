@@ -40,21 +40,21 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
         
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
 
-        if (input.connected) req.push(...pushInputOrParam(input, gen));
-        else                 req.push(...this.node.paramValue.genRequest(gen));
+        if (input.connected) request.push(...pushInputOrParam(input, gen));
+        else                 request.push(...this.node.paramValue.genRequest(gen));
 
 
             
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
         
-        return req;
+        return request;
     }
 
 

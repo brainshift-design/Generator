@@ -353,7 +353,7 @@
                    └──█████████
 
                           ↓
-                                   
+
         [̅_̅_̅_̅_̅_̅_̅_]══╗             ┌──█████████
                    ╟──[̅_̅_̅_̅_̅_̅_̅_]──┘
                    │
@@ -389,7 +389,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
     let node = createNode(nodeType, creatingButton, createdId);
 
     graph.addNode(node);
-   
+
     uiSaveNodes([node.id]);
 
 
@@ -529,7 +529,7 @@ function uiConnect(output, input, inputIndex = -1)
 function uiDisconnect(input)
 {
     const node = input.node;
-        
+
     uiRemoveSavedConnection(
         input.connectedOutput.node.id,
         input.connectedOutput.index,
@@ -585,7 +585,7 @@ function uiMakeNodeActive(node)
 //         uiMakeNodeLeftPassive (node);
 //         uiMakeNodeRightPassive(node);
 //     }
-    
+
 //     for (const node of nodes)
 //     {
 //         node._active = true;
@@ -597,7 +597,7 @@ function uiMakeNodeActive(node)
 //             cmd:   'figSaveActiveNode',
 //             nodeId: node.id
 //         });
-    
+
 //         // if (node.type == 'object')
 //         //     uiGenerateObjects([node.id]);
 
@@ -822,14 +822,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
-    
-
-    uiPostMessageToFigma({ 
-        cmd:          'figUpdateObjects',
-        updateNodeId:  updateNodeId,
-        updateParamId: updateParamId,
-        objects:       [...objects]
-    });
 
 
     const nodes = [];
@@ -842,11 +834,11 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
         const node   = nodeFromId(nodeId);
 
-        
+
         if (!node) // was deleted
-        { 
-            i += count*2; 
-            continue; 
+        {
+            i += count*2;
+            continue;
         }
 
 
@@ -857,7 +849,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         {
             const _ids    = [];
             const _values = [];
-            
+
             for (let j = 0; j < count; j++)
             {
                 const id   = values[i++];
@@ -869,6 +861,10 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 {
                     case COLOR_VALUE:     _values.push(parseGColorValue    (values[i++])); break;
                     case RECTANGLE_VALUE: _values.push(parseGRectangleValue(values[i++])); break;
+                    case LINE_VALUE:      _values.push(parseGLineValue     (values[i++])); break;
+                    case ELLIPSE_VALUE:   _values.push(parseGEllipseValue  (values[i++])); break;
+                    case POLYGON_VALUE:   _values.push(parseGPolygonValue  (values[i++])); break;
+                    case STAR_VALUE:      _values.push(parseGStarValue     (values[i++])); break;
                     default:              _values.push(parseGNumberValue   (values[i++])); break;
                 }
             }
@@ -877,16 +873,26 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 updateNodeId == nodeId ? updateParamId : '',
                 _ids,
                 _values);
+
+
+            node.valid = true;
+            node.updateNode();
         }
     }
 
 
-    for (const node of nodes)
-    {
-        node.valid = true;
-        node.updateNode();
-        uiSaveNodes([node.id]);
-    }
+    const nodeJson = [];
+    nodes.forEach(n => nodeJson.push(n.toJson()));
+
+    uiPostMessageToFigma({
+        cmd:          'figUpdate',
+        updateNodeId:  updateNodeId,
+        updateParamId: updateParamId,
+        nodeIds:       nodes.map(n => n.id),
+        nodeJson:      nodeJson,
+        objects:       [...objects]
+    });
+
 
     graphView.update(nodes);
 }

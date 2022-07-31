@@ -6,7 +6,7 @@
 
 class Parse
 {
-    req;
+    request;
     
     pos; 
     so;
@@ -24,17 +24,19 @@ class Parse
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
 
+    paramNodeIds  = [];
+
     updateParams  = [];
     updateValues  = [];
     updateObjects = [];
 
-    get next() { return this.req[this.pos]; }
+    get next() { return this.request[this.pos]; }
 
 
 
-    constructor(req, updateNodeId, updateParamId, logRequests)
+    constructor(request, updateNodeId, updateParamId, logRequests)
     {
-        this.req           = req;
+        this.request       = request;
           
         this.pos           = 2; 
         this.so            = 0;
@@ -49,7 +51,7 @@ class Parse
 
     move()
     {
-        return this.req[this.pos++];
+        return this.request[this.pos++];
     }
 }
 
@@ -151,6 +153,9 @@ function genParseParam(parse)
 
     const param = new GParam(nodeId, paramId);
     
+
+    pushUnique(parse.paramNodeIds, nodeId);
+
 
     if (parse.logRequests) 
         logReqParam(param, parse);

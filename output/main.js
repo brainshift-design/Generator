@@ -25,12 +25,12 @@ const MAX_INT32 = 2147483647;
 const TAB = '    ';
 const NL = '\n';
 class RequestSettings {
-    constructor(req, pos) {
+    constructor(request, pos) {
         this.so = 0;
         this.nTab = 0;
         this.skipNewLine = false;
         this.loggedNodeIds = [];
-        this.request = req;
+        this.request = request;
         this.pos = pos;
     }
     get tab() {
@@ -208,6 +208,7 @@ VECTOR      V
 */
 const settings = {
     showNodeId: true,
+    logMessages: true,
     logStorage: false,
     logActions: false,
     logRequests: true,
@@ -215,13 +216,16 @@ const settings = {
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}
-function figUpdateObjects(/*updateId,*/ genObjects) {
+function figUpdate(msg) {
     if (settings.logObjectUpdates
-        && genObjects.length > 0)
-        logObjectUpdates(genObjects);
+        && msg.objects.length > 0)
+        logObjectUpdates(msg.objects);
+    for (let i = 0; i < msg.nodeIds.length; i++) {
+        figSetPageData(nodeNameForStorage(msg.nodeIds[i]), msg.nodeJson[i]);
+    }
     let curNodeId = '';
     let figObjects = null;
-    for (const genObj of genObjects) {
+    for (const genObj of msg.objects) {
         if (genObj.nodeId != curNodeId) {
             curNodeId = genObj.nodeId;
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
@@ -240,6 +244,7 @@ function figUpdateObjects(/*updateId,*/ genObjects) {
             figCreateObject(figObjects, genObj);
         }
     }
+    figPostMessageToUI;
 }
 function figCreateObject(objects, genObj) {
     let figObj;
@@ -411,8 +416,8 @@ figma.ui.onmessage = msg => {
         case 'figRemoveSavedConnectionsToNode':
             figRemoveSavedConnectionsToNode(msg.nodeId);
             break;
-        case 'figUpdateObjects':
-            figUpdateObjects(/*msg.updateId,*/ msg.objects);
+        case 'figUpdate':
+            figUpdate(msg);
             break;
         case 'figDeleteObjects':
             figDeleteObjectsFromNodeIds(msg.nodeIds);
@@ -428,6 +433,8 @@ figma.ui.onmessage = msg => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figPostMessageToUI(msg) {
     figma.ui.postMessage(JSON.stringify(msg));
+    if (settings.logMessages)
+        console.log('%cFIG ' + msg.cmd + ' --► UI', 'background: #08f; color: white;');
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to Generator -->

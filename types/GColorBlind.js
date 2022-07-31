@@ -56,7 +56,6 @@ extends GOperator
                 if (   isValidRgb(rgb)
                     && isValidRgb(rgbCb))
                 {
-                    console.log('valid');
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
                     const validCol = convertDataColorToSpace(

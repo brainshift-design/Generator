@@ -5,20 +5,24 @@ var lastUpdateObjects = [];
 
 
 
-function genRequest(req, settings)
+function genRequest(request)
 {
-    //console.log('req =', req);
+    //console.log('request =', request);
 
-    const updateNodeId  = req[0];
-    const updateParamId = req[1];
+    const updateNodeId  = request[0];
+    const updateParamId = request[1];
 
 
-    const parse = new Parse(req, updateNodeId, updateParamId, settings);
+    const parse = new Parse(
+        request, 
+        updateNodeId, 
+        updateParamId, 
+        settings);
 
 
     const stackOverflowProtect = 100;
 
-    while (   parse.pos < parse.req.length
+    while (   parse.pos < parse.request.length
            && parse.so  < stackOverflowProtect)
         genParse(parse);
 
@@ -27,13 +31,12 @@ function genRequest(req, settings)
         logRequest(parse);
 
 
-    const tree = parse.parsedNodes.filter(n => n.topLevel);
+    const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
+    const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
 
-    for (const node of tree)
-        node.eval(parse);
+    for (const node of    paramNodes) node.eval(parse);
+    for (const node of topLevelNodes) node.eval(parse);
 
-
-    // console.log('parse.updateValues = ', parse.updateValues);
 
     genUpdateValuesAndObjects(
         parse.updateNodeId,
@@ -53,13 +56,13 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
 
     if (!found)
     {
-        //console.log(nodeId+'.'+paramId);
-        
-        parse.updateValues.push({
+        parse.updateValues.push(
+        {
             nodeId:  nodeId,
             paramId: paramId,
             type:    value.type, // needed to correctly parse INVALID
-            value:   value});
+            value:   value
+        });
     }
 }
 
@@ -87,6 +90,8 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
+    //console.log('genUpdateValuesAndObjects()');
+
     if (   updateValues .length == 0
         && updateObjects.length == 0)
     {

@@ -47,12 +47,12 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round );
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 

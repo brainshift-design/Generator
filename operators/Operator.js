@@ -410,7 +410,7 @@ class Operator
 
     genRequestStart(gen)
     {
-        const req = [
+        const request = [
             this.type, 
             this.id];
 
@@ -418,9 +418,9 @@ class Operator
 
         if (    this.active
             && !ignore) 
-            req.push(ACTIVE);
+            request.push(ACTIVE);
 
-        return [req, ignore];
+        return [request, ignore];
     }
 
 
@@ -705,6 +705,8 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
+    //console.log('pushUpdateFromParam()');
+
     const request = 
         param
         ? [param.node.id, param.id]
@@ -741,11 +743,10 @@ function pushUpdateFromParam(nodes, param)
             request.push(...getNodeRequest(node, gen));
     }
 
-    
+
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
-        request:  request,
-        settings: settings
+        request:  request
     });
 }
 

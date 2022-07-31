@@ -12,9 +12,9 @@ class RequestSettings
     
 
 
-    constructor(req, pos)
+    constructor(request, pos)
     {
-        this.request = req;
+        this.request = request;
         this.pos     = pos;
     }
 

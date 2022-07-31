@@ -140,8 +140,8 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -151,7 +151,7 @@ extends OpColorBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
             
             paramIds.push(this.node.paramSpace.id);
@@ -160,18 +160,18 @@ extends OpColorBase
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
             
-                                                  req.push(...this.node.paramSpace.genRequest(gen));
-            if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
-            if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
-            if (this.node.param3.input.connected) req.push(...this.node.param3    .genRequest(gen));
+                                                  request.push(...this.node.paramSpace.genRequest(gen));
+            if (this.node.param1.input.connected) request.push(...this.node.param1    .genRequest(gen));
+            if (this.node.param2.input.connected) request.push(...this.node.param2    .genRequest(gen));
+            if (this.node.param3.input.connected) request.push(...this.node.param3    .genRequest(gen));
         }
         else
         {
             if (this.node.paramSpace.value == 0) // hex
             {
-                req.push(
+                request.push(
                     ...this.node.paramSpace.genRequest(gen),
                     NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
@@ -180,7 +180,7 @@ extends OpColorBase
             }
             else
             {
-                req.push(
+                request.push(
                     ...this.node.paramSpace.genRequest(gen),
                     NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     ...this.node.param1.genRequest(gen),
@@ -193,7 +193,7 @@ extends OpColorBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 

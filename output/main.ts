@@ -50,9 +50,9 @@ class RequestSettings
     
 
 
-    constructor(req, pos)
+    constructor(request, pos)
     {
-        this.request = req;
+        this.request = request;
         this.pos     = pos;
     }
 
@@ -366,6 +366,7 @@ const settings =
 {
     showNodeId:       true, // instead of name
     
+    logMessages:      true,
     logStorage:       false, 
     logActions:       false, 
     logRequests:      true, 
@@ -378,17 +379,25 @@ const figObjectArrays = []; // {nodeId, [objects]}
 
 
 
-function figUpdateObjects(/*updateId,*/ genObjects)
+function figUpdate(msg)
 {
     if (   settings.logObjectUpdates
-        && genObjects.length > 0)
-        logObjectUpdates(genObjects);
+        && msg.objects.length > 0)
+        logObjectUpdates(msg.objects);
 
         
+    for (let i = 0; i < msg.nodeIds.length; i++)
+    {
+        figSetPageData(
+            nodeNameForStorage(msg.nodeIds[i]),
+            msg.nodeJson[i]);        
+    }
+
+
     let curNodeId  = '';
     let figObjects = null;
 
-    for (const genObj of genObjects)
+    for (const genObj of msg.objects)
     {
         if (genObj.nodeId != curNodeId)
         {
@@ -414,6 +423,9 @@ function figUpdateObjects(/*updateId,*/ genObjects)
             figCreateObject(figObjects, genObj);
         }
     }
+
+
+    figPostMessageToUI
 }
 
 
@@ -598,8 +610,9 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
         case 'figRemoveSavedConnectionsToNode': figRemoveSavedConnectionsToNode(msg.nodeId);                                 break;
            
-        case 'figUpdateObjects':                figUpdateObjects(/*msg.updateId,*/ msg.objects);                             break;
-        case 'figDeleteObjects':                figDeleteObjectsFromNodeIds(msg.nodeIds);                                    break; 
+        case 'figUpdate':                       figUpdate                      (msg);                                        break;
+        
+        case 'figDeleteObjects':                figDeleteObjectsFromNodeIds    (msg.nodeIds);                                break; 
     }
 
     
@@ -618,6 +631,9 @@ figma.ui.onmessage = msg =>
 function figPostMessageToUI(msg)
 {
     figma.ui.postMessage(JSON.stringify(msg));
+
+    if (settings.logMessages)
+        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -45,15 +45,12 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
-                
+
                 if (   input0.isValid()
                     && input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
                     this.result = input1;
-
+                    
                     if (   isValidDataColor(input0.toDataColor())
                         && isValidDataColor(input1.toDataColor()))
                     {
@@ -63,7 +60,7 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                            this.value = new GNumberValue(value, 2);
                         }
                         else
                         {
@@ -71,12 +68,20 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
+                            this.value = new GNumberValue(Math.abs(value), 1);
                         }
                     }
                     else
-                        genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+                        this.value = GNumberValue.NaN;
                 }
+                else
+                {
+                    this.result = CGolorValue.NaN;
+                    this.value  = GNumberValue.NaN;
+                }
+
+
+                genPushUpdateValue(parse, this.nodeId, 'text', input0);
             }
 
             else if (this.input0) 
@@ -84,14 +89,10 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
 
                 if (input0.isValid())
-                {
                     genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
 
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
-                    this.result = GColorValue.NaN;
-                }
+                this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
             }
             else if (this.input1) 
             {
@@ -99,24 +100,26 @@ extends GOperator
 
                 if (input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                     this.result = input1;
+                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                 }
+                else
+                    this.result = GColorValue.NaN;
+    
+                this.value = GNumberValue.NaN;
             }
             else
             {
-                genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
-
-                genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                 this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
+
+                genPushUpdateValue(parse, this.nodeId, 'text',  GColorValue.NaN);
             }
             
+
+            genPushUpdateValue(parse, this.nodeId, 'back',  this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
             this.result.valid = true;
             this.valid        = true;

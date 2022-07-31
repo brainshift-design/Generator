@@ -59,8 +59,8 @@ extends OpColorBase
 
 
 
-        const [req, ignore] = this.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
 
 
         const input0 = this.inputs[0];
@@ -68,23 +68,23 @@ extends OpColorBase
 
         
         if (   input0.connected
-            && input1.connected)   req.push(2,
+            && input1.connected)   request.push(2,
                                        ...pushInputOrParam(input0, gen),
                                        ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, 0, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) req.push(1, 1, ...pushInputOrParam(input1, gen));
+        else if (input0.connected) request.push(1, 0, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, 1, ...pushInputOrParam(input1, gen));
             
-        else                       req.push(0);
+        else                       request.push(0);
 
 
-        req.push(...this.paramStandard.genRequest(gen));
+        request.push(...this.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
 
-        return req;
+        return request;
     }
 
 
@@ -195,8 +195,8 @@ extends OpColorBase
 
             else
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2)', 0.8),
-                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2)', 0.8),
+                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
+                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
                     new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
                     new NumberSliderRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2)', 0.8),
                     new NumberSliderRange(60/105,  75/105, 'rgba( 64, 255,  64, 0.2)', 0.8),

@@ -49,21 +49,21 @@ extends Parameter
             return this.output.cache;
 
 
-        const req = [];
+        const request = [];
 
 
         if (   this.input
             && this.input.connected)
-            req.push(...pushInputOrParam(this.input, gen));
+            request.push(...pushInputOrParam(this.input, gen));
 
-        else req.push( 
+        else request.push( 
             NUMBER_VALUE, 
             new GNumberValue(
                 this.control.value, 
                 this.control.displayDec).toString());
 
 
-        return req;
+        return request;
     }
 
 

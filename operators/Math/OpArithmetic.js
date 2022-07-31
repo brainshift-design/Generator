@@ -93,23 +93,23 @@ extends OperatorBase
             paramId: '' });
 
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
             
 
         const connectedInputs = this.node.inputs.filter(i => i.connected);
 
 
-        req.push(connectedInputs.length); // utility values like param count are stored as numbers
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...pushInputOrParam(input, gen)));
+            request.push(...pushInputOrParam(input, gen)));
 
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
         
-        return req;
+        return request;
     }
 
 

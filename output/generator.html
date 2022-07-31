@@ -2274,9 +2274,9 @@ class RequestSettings
     
 
 
-    constructor(req, pos)
+    constructor(request, pos)
     {
-        this.request = req;
+        this.request = request;
         this.pos     = pos;
     }
 
@@ -2524,14 +2524,6 @@ function logReqInterpolate(lerp, nValues, parse)
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nValues;
 }
-
-
-
-// function logReqRectangle(req) { logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
-// function logReqLine     (req) { logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
-// function logReqEllipse  (req) { logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
-// function logReqPolygon  (req) { logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
-// function logReqStar     (req) { logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
 
 
 function logReqColor(col, parse) 
@@ -2948,16 +2940,12 @@ extends GOperator
         if (!this.valid)
         {
             const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-            //console.log('this.nodeId = ', this.nodeId);
             console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            // if (   COLOR_TYPES   .includes(node.type)
-            //     || GEOMETRY_TYPES.includes(node.type))
-                //this.result = this.result.eval(parse).copy();
 
             this.result = node[this.paramId].eval(parse).copy();
 
-
+            
             this.result.valid = true;
             this.valid        = true;
         }
@@ -4046,15 +4034,12 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
-                
+
                 if (   input0.isValid()
                     && input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
                     this.result = input1;
-
+                    
                     if (   isValidDataColor(input0.toDataColor())
                         && isValidDataColor(input1.toDataColor()))
                     {
@@ -4064,7 +4049,7 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                            this.value = new GNumberValue(value, 2);
                         }
                         else
                         {
@@ -4072,12 +4057,20 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
+                            this.value = new GNumberValue(Math.abs(value), 1);
                         }
                     }
                     else
-                        genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+                        this.value = GNumberValue.NaN;
                 }
+                else
+                {
+                    this.result = CGolorValue.NaN;
+                    this.value  = GNumberValue.NaN;
+                }
+
+
+                genPushUpdateValue(parse, this.nodeId, 'text', input0);
             }
 
             else if (this.input0) 
@@ -4085,14 +4078,10 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
 
                 if (input0.isValid())
-                {
                     genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
 
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
-                    this.result = GColorValue.NaN;
-                }
+                this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
             }
             else if (this.input1) 
             {
@@ -4100,24 +4089,26 @@ extends GOperator
 
                 if (input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                     this.result = input1;
+                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                 }
+                else
+                    this.result = GColorValue.NaN;
+    
+                this.value = GNumberValue.NaN;
             }
             else
             {
-                genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
-
-                genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                 this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
+
+                genPushUpdateValue(parse, this.nodeId, 'text',  GColorValue.NaN);
             }
             
+
+            genPushUpdateValue(parse, this.nodeId, 'back',  this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
             this.result.valid = true;
             this.valid        = true;
@@ -4188,7 +4179,6 @@ extends GOperator
                 if (   isValidRgb(rgb)
                     && isValidRgb(rgbCb))
                 {
-                    console.log('valid');
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
                     const validCol = convertDataColorToSpace(
@@ -4282,8 +4272,6 @@ extends GOperator
 
                 if (isValidRgb(rgb))
                 {
-                    console.log('valid');
-
                     // this._color = 
                     //     col
                     //     ? [...validateColor(
@@ -4379,12 +4367,12 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round );
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
@@ -4952,7 +4940,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
 
 
-            if (this.active)
+            if (   this.active
+                && this.result.isValid())
             {
                 genPushUpdateObject(
                     parse,
@@ -5441,6 +5430,106 @@ extends GOperator
 }
 
 
+class GFill
+extends GOperator
+{
+    input = null;
+
+    value = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(FILL, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const fill = new GFill(this.nodeId, this.active);
+
+        if (this.input)  
+            fill.input = this.input.copy();
+
+        if (this.value) 
+            fill.value = this.value.copy();
+
+        return fill;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            // if (this.input)
+            // {
+            //    this.result = new GRectangleValue();
+
+                //     this.result = this.input.eval(parse).copy();
+            //     console.assert(this.result.type == RECTANGLE_VALUE);
+
+            //     if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
+            //     if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
+            //     if (this.width ) this.result.width  = this.width .eval(parse).copy();
+            //     if (this.height) this.result.height = this.height.eval(parse).copy();
+            //     if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
+            //     if (this.round ) this.result.round  = this.round .eval(parse).copy();
+            // }
+            // else
+            // {
+            //        this.result = new GGeometry();
+            // }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            if (this.active)
+            {
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    { 
+                        nodeId: this.nodeId,          
+                        type:   RECTANGLE,
+                        id:     0,
+                        x:      this.result.x     .value,
+                        y:      this.result.y     .value,
+                        width:  this.result.width .value,
+                        height: this.result.height.value,
+                        angle:  this.result.angle .value,
+                        round:  Math.max(0, this.result.round.value)
+                    });
+            }
+        }
+
+
+        return this.result;
+    }
+}
+
+
+const settings =
+{
+    showNodeId:       true, // instead of name
+    
+    logMessages:      true,
+    logStorage:       false, 
+    logActions:       false, 
+    logRequests:      true, 
+    logValueUpdates:  true, 
+    logObjectUpdates: false
+};
+
+
 var genFigMessagePosted = false;
 
 
@@ -5468,10 +5557,10 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        genRequest(msg.request);     break;
 
-        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd);           break;
-        case 'genEndFigMessage':  genEndFigMessage();                    break;
+        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd); break;
+        case 'genEndFigMessage':  genEndFigMessage();          break;
     }
 
 
@@ -5504,34 +5593,37 @@ function genPostNextMessageToUI(msg)
 {
     //console.log('gen.uiMessages.length = ', uiMessages.length);
 
-    if (    uiMessages.length > 0
-        && !genFigMessagePosted)
+    if (uiMessages.length > 0)
+        //&& !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
 
-        while (   uiMessages.length > 0
-               && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
-               && uiMessages[0].chunkId == 0)
-        {
-            const nextFirst = uiMessages.find(m => 
-                   m.cmd     == msg.cmd 
-                && m.chunkId == 0);
+        // while (   uiMessages.length > 0
+        //        && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
+        //        && uiMessages[0].chunkId == 0)
+        // {
+        //     const nextFirst = uiMessages.find(m => 
+        //            m.cmd     == msg.cmd 
+        //         && m.chunkId == 0);
 
-            if (nextFirst)
-            {
-                while (uiMessages.length > 0
-                    && uiMessages[0].cmd           == msg.cmd
-                    && uiMessages[0].updateNodeId  == msg.updateNodeId
-                    && uiMessages[0].updateParamId == msg.updateParamId
-                    && uiMessages[0].cmd.chunkId   >  0)
-                    msg = uiMessages.shift();
+        //     if (nextFirst)
+        //     {
+        //         while (uiMessages.length > 0
+        //             && uiMessages[0].cmd           == msg.cmd
+        //             && uiMessages[0].updateNodeId  == msg.updateNodeId
+        //             && uiMessages[0].updateParamId == msg.updateParamId
+        //             && uiMessages[0].cmd.chunkId   >  0)
+        //             msg = uiMessages.shift();
 
-                msg = uiMessages.shift();
-            }
-        }
+        //         msg = uiMessages.shift();
+        //     }
+        // }
 
         postMessage(JSON.stringify(msg));
+
+        if (settings.logMessages)
+            console.log('%cUI ◄-- '+msg.cmd+' GEN', 'background: #ca0; color: white;');
     }
 }
 
@@ -6311,7 +6403,7 @@ function genParseInterpolate(parse)
 
 class Parse
 {
-    req;
+    request;
     
     pos; 
     so;
@@ -6329,17 +6421,19 @@ class Parse
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
 
+    paramNodeIds  = [];
+
     updateParams  = [];
     updateValues  = [];
     updateObjects = [];
 
-    get next() { return this.req[this.pos]; }
+    get next() { return this.request[this.pos]; }
 
 
 
-    constructor(req, updateNodeId, updateParamId, logRequests)
+    constructor(request, updateNodeId, updateParamId, logRequests)
     {
-        this.req           = req;
+        this.request       = request;
           
         this.pos           = 2; 
         this.so            = 0;
@@ -6354,7 +6448,7 @@ class Parse
 
     move()
     {
-        return this.req[this.pos++];
+        return this.request[this.pos++];
     }
 }
 
@@ -6457,6 +6551,9 @@ function genParseParam(parse)
     const param = new GParam(nodeId, paramId);
     
 
+    pushUnique(parse.paramNodeIds, nodeId);
+
+
     if (parse.logRequests) 
         logReqParam(param, parse);
 
@@ -6472,20 +6569,24 @@ var lastUpdateObjects = [];
 
 
 
-function genRequest(req, settings)
+function genRequest(request)
 {
-    //console.log('req =', req);
+    //console.log('request =', request);
 
-    const updateNodeId  = req[0];
-    const updateParamId = req[1];
+    const updateNodeId  = request[0];
+    const updateParamId = request[1];
 
 
-    const parse = new Parse(req, updateNodeId, updateParamId, settings);
+    const parse = new Parse(
+        request, 
+        updateNodeId, 
+        updateParamId, 
+        settings);
 
 
     const stackOverflowProtect = 100;
 
-    while (   parse.pos < parse.req.length
+    while (   parse.pos < parse.request.length
            && parse.so  < stackOverflowProtect)
         genParse(parse);
 
@@ -6494,13 +6595,12 @@ function genRequest(req, settings)
         logRequest(parse);
 
 
-    const tree = parse.parsedNodes.filter(n => n.topLevel);
+    const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
+    const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
 
-    for (const node of tree)
-        node.eval(parse);
+    for (const node of    paramNodes) node.eval(parse);
+    for (const node of topLevelNodes) node.eval(parse);
 
-
-    // console.log('parse.updateValues = ', parse.updateValues);
 
     genUpdateValuesAndObjects(
         parse.updateNodeId,
@@ -6520,13 +6620,13 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
 
     if (!found)
     {
-        //console.log(nodeId+'.'+paramId);
-        
-        parse.updateValues.push({
+        parse.updateValues.push(
+        {
             nodeId:  nodeId,
             paramId: paramId,
             type:    value.type, // needed to correctly parse INVALID
-            value:   value});
+            value:   value
+        });
     }
 }
 
@@ -6554,6 +6654,8 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
+    //console.log('genUpdateValuesAndObjects()');
+
     if (   updateValues .length == 0
         && updateObjects.length == 0)
     {

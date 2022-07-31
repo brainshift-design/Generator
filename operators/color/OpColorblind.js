@@ -42,25 +42,25 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
 
         const input = this.node.inputs[0];
 
         if (input.connected)
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
-        req.push(...this.node.paramL.genRequest(gen));
-        req.push(...this.node.paramM.genRequest(gen));
-        req.push(...this.node.paramS.genRequest(gen));
+        request.push(...this.node.paramL.genRequest(gen));
+        request.push(...this.node.paramM.genRequest(gen));
+        request.push(...this.node.paramS.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 

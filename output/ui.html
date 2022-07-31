@@ -3903,9 +3903,9 @@ class RequestSettings
     
 
 
-    constructor(req, pos)
+    constructor(request, pos)
     {
-        this.request = req;
+        this.request = request;
         this.pos     = pos;
     }
 
@@ -4153,14 +4153,6 @@ function logReqInterpolate(lerp, nValues, parse)
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nValues;
 }
-
-
-
-// function logReqRectangle(req) { logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
-// function logReqLine     (req) { logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
-// function logReqEllipse  (req) { logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
-// function logReqPolygon  (req) { logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
-// function logReqStar     (req) { logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
 
 
 function logReqColor(col, parse) 
@@ -4577,16 +4569,12 @@ extends GOperator
         if (!this.valid)
         {
             const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-            //console.log('this.nodeId = ', this.nodeId);
             console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            // if (   COLOR_TYPES   .includes(node.type)
-            //     || GEOMETRY_TYPES.includes(node.type))
-                //this.result = this.result.eval(parse).copy();
 
             this.result = node[this.paramId].eval(parse).copy();
 
-
+            
             this.result.valid = true;
             this.valid        = true;
         }
@@ -5675,15 +5663,12 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
-                
+
                 if (   input0.isValid()
                     && input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
                     this.result = input1;
-
+                    
                     if (   isValidDataColor(input0.toDataColor())
                         && isValidDataColor(input1.toDataColor()))
                     {
@@ -5693,7 +5678,7 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                            this.value = new GNumberValue(value, 2);
                         }
                         else
                         {
@@ -5701,12 +5686,20 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
+                            this.value = new GNumberValue(Math.abs(value), 1);
                         }
                     }
                     else
-                        genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+                        this.value = GNumberValue.NaN;
                 }
+                else
+                {
+                    this.result = CGolorValue.NaN;
+                    this.value  = GNumberValue.NaN;
+                }
+
+
+                genPushUpdateValue(parse, this.nodeId, 'text', input0);
             }
 
             else if (this.input0) 
@@ -5714,14 +5707,10 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
 
                 if (input0.isValid())
-                {
                     genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
 
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
-                    this.result = GColorValue.NaN;
-                }
+                this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
             }
             else if (this.input1) 
             {
@@ -5729,24 +5718,26 @@ extends GOperator
 
                 if (input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                     this.result = input1;
+                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                 }
+                else
+                    this.result = GColorValue.NaN;
+    
+                this.value = GNumberValue.NaN;
             }
             else
             {
-                genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
-
-                genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                 this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
+
+                genPushUpdateValue(parse, this.nodeId, 'text',  GColorValue.NaN);
             }
             
+
+            genPushUpdateValue(parse, this.nodeId, 'back',  this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
             this.result.valid = true;
             this.valid        = true;
@@ -5817,7 +5808,6 @@ extends GOperator
                 if (   isValidRgb(rgb)
                     && isValidRgb(rgbCb))
                 {
-                    console.log('valid');
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
                     const validCol = convertDataColorToSpace(
@@ -5911,8 +5901,6 @@ extends GOperator
 
                 if (isValidRgb(rgb))
                 {
-                    console.log('valid');
-
                     // this._color = 
                     //     col
                     //     ? [...validateColor(
@@ -6008,12 +5996,12 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round );
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
@@ -6581,7 +6569,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
 
 
-            if (this.active)
+            if (   this.active
+                && this.result.isValid())
             {
                 genPushUpdateObject(
                     parse,
@@ -7070,6 +7059,106 @@ extends GOperator
 }
 
 
+class GFill
+extends GOperator
+{
+    input = null;
+
+    value = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(FILL, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const fill = new GFill(this.nodeId, this.active);
+
+        if (this.input)  
+            fill.input = this.input.copy();
+
+        if (this.value) 
+            fill.value = this.value.copy();
+
+        return fill;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            // if (this.input)
+            // {
+            //    this.result = new GRectangleValue();
+
+                //     this.result = this.input.eval(parse).copy();
+            //     console.assert(this.result.type == RECTANGLE_VALUE);
+
+            //     if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
+            //     if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
+            //     if (this.width ) this.result.width  = this.width .eval(parse).copy();
+            //     if (this.height) this.result.height = this.height.eval(parse).copy();
+            //     if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
+            //     if (this.round ) this.result.round  = this.round .eval(parse).copy();
+            // }
+            // else
+            // {
+            //        this.result = new GGeometry();
+            // }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            if (this.active)
+            {
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    { 
+                        nodeId: this.nodeId,          
+                        type:   RECTANGLE,
+                        id:     0,
+                        x:      this.result.x     .value,
+                        y:      this.result.y     .value,
+                        width:  this.result.width .value,
+                        height: this.result.height.value,
+                        angle:  this.result.angle .value,
+                        round:  Math.max(0, this.result.round.value)
+                    });
+            }
+        }
+
+
+        return this.result;
+    }
+}
+
+
+const settings =
+{
+    showNodeId:       true, // instead of name
+    
+    logMessages:      true,
+    logStorage:       false, 
+    logActions:       false, 
+    logRequests:      true, 
+    logValueUpdates:  true, 
+    logObjectUpdates: false
+};
+
+
 var genFigMessagePosted = false;
 
 
@@ -7097,10 +7186,10 @@ onmessage = function(e)
         
             break;
         
-        case 'genRequest':        genRequest(msg.request, msg.settings); break;
+        case 'genRequest':        genRequest(msg.request);     break;
 
-        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd);           break;
-        case 'genEndFigMessage':  genEndFigMessage();                    break;
+        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd); break;
+        case 'genEndFigMessage':  genEndFigMessage();          break;
     }
 
 
@@ -7133,34 +7222,37 @@ function genPostNextMessageToUI(msg)
 {
     //console.log('gen.uiMessages.length = ', uiMessages.length);
 
-    if (    uiMessages.length > 0
-        && !genFigMessagePosted)
+    if (uiMessages.length > 0)
+        //&& !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
 
-        while (   uiMessages.length > 0
-               && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
-               && uiMessages[0].chunkId == 0)
-        {
-            const nextFirst = uiMessages.find(m => 
-                   m.cmd     == msg.cmd 
-                && m.chunkId == 0);
+        // while (   uiMessages.length > 0
+        //        && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
+        //        && uiMessages[0].chunkId == 0)
+        // {
+        //     const nextFirst = uiMessages.find(m => 
+        //            m.cmd     == msg.cmd 
+        //         && m.chunkId == 0);
 
-            if (nextFirst)
-            {
-                while (uiMessages.length > 0
-                    && uiMessages[0].cmd           == msg.cmd
-                    && uiMessages[0].updateNodeId  == msg.updateNodeId
-                    && uiMessages[0].updateParamId == msg.updateParamId
-                    && uiMessages[0].cmd.chunkId   >  0)
-                    msg = uiMessages.shift();
+        //     if (nextFirst)
+        //     {
+        //         while (uiMessages.length > 0
+        //             && uiMessages[0].cmd           == msg.cmd
+        //             && uiMessages[0].updateNodeId  == msg.updateNodeId
+        //             && uiMessages[0].updateParamId == msg.updateParamId
+        //             && uiMessages[0].cmd.chunkId   >  0)
+        //             msg = uiMessages.shift();
 
-                msg = uiMessages.shift();
-            }
-        }
+        //         msg = uiMessages.shift();
+        //     }
+        // }
 
         postMessage(JSON.stringify(msg));
+
+        if (settings.logMessages)
+            console.log('%cUI ◄-- '+msg.cmd+' GEN', 'background: #ca0; color: white;');
     }
 }
 
@@ -7940,7 +8032,7 @@ function genParseInterpolate(parse)
 
 class Parse
 {
-    req;
+    request;
     
     pos; 
     so;
@@ -7958,17 +8050,19 @@ class Parse
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
 
+    paramNodeIds  = [];
+
     updateParams  = [];
     updateValues  = [];
     updateObjects = [];
 
-    get next() { return this.req[this.pos]; }
+    get next() { return this.request[this.pos]; }
 
 
 
-    constructor(req, updateNodeId, updateParamId, logRequests)
+    constructor(request, updateNodeId, updateParamId, logRequests)
     {
-        this.req           = req;
+        this.request       = request;
           
         this.pos           = 2; 
         this.so            = 0;
@@ -7983,7 +8077,7 @@ class Parse
 
     move()
     {
-        return this.req[this.pos++];
+        return this.request[this.pos++];
     }
 }
 
@@ -8086,6 +8180,9 @@ function genParseParam(parse)
     const param = new GParam(nodeId, paramId);
     
 
+    pushUnique(parse.paramNodeIds, nodeId);
+
+
     if (parse.logRequests) 
         logReqParam(param, parse);
 
@@ -8101,20 +8198,24 @@ var lastUpdateObjects = [];
 
 
 
-function genRequest(req, settings)
+function genRequest(request)
 {
-    //console.log('req =', req);
+    //console.log('request =', request);
 
-    const updateNodeId  = req[0];
-    const updateParamId = req[1];
+    const updateNodeId  = request[0];
+    const updateParamId = request[1];
 
 
-    const parse = new Parse(req, updateNodeId, updateParamId, settings);
+    const parse = new Parse(
+        request, 
+        updateNodeId, 
+        updateParamId, 
+        settings);
 
 
     const stackOverflowProtect = 100;
 
-    while (   parse.pos < parse.req.length
+    while (   parse.pos < parse.request.length
            && parse.so  < stackOverflowProtect)
         genParse(parse);
 
@@ -8123,13 +8224,12 @@ function genRequest(req, settings)
         logRequest(parse);
 
 
-    const tree = parse.parsedNodes.filter(n => n.topLevel);
+    const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
+    const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
 
-    for (const node of tree)
-        node.eval(parse);
+    for (const node of    paramNodes) node.eval(parse);
+    for (const node of topLevelNodes) node.eval(parse);
 
-
-    // console.log('parse.updateValues = ', parse.updateValues);
 
     genUpdateValuesAndObjects(
         parse.updateNodeId,
@@ -8149,13 +8249,13 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
 
     if (!found)
     {
-        //console.log(nodeId+'.'+paramId);
-        
-        parse.updateValues.push({
+        parse.updateValues.push(
+        {
             nodeId:  nodeId,
             paramId: paramId,
             type:    value.type, // needed to correctly parse INVALID
-            value:   value});
+            value:   value
+        });
     }
 }
 
@@ -8183,6 +8283,8 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
+    //console.log('genUpdateValuesAndObjects()');
+
     if (   updateValues .length == 0
         && updateObjects.length == 0)
     {
@@ -13126,9 +13228,9 @@ class RequestSettings
     
 
 
-    constructor(req, pos)
+    constructor(request, pos)
     {
-        this.request = req;
+        this.request = request;
         this.pos     = pos;
     }
 
@@ -13376,14 +13478,6 @@ function logReqInterpolate(lerp, nValues, parse)
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nValues;
 }
-
-
-
-// function logReqRectangle(req) { logReqNode(req, RECTANGLE, ['x', 'y', 'width', 'height', 'angle', 'round']); }
-// function logReqLine     (req) { logReqNode(req, LINE,      ['x', 'y', 'width', 'angle']); }
-// function logReqEllipse  (req) { logReqNode(req, ELLIPSE,   ['x', 'y', 'width', 'height', 'angle']); }
-// function logReqPolygon  (req) { logReqNode(req, POLYGON,   ['x', 'y', 'width', 'height', 'angle', 'round', 'corners']); }
-// function logReqStar     (req) { logReqNode(req, STAR,      ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex']); }
 
 
 function logReqColor(col, parse) 
@@ -15218,16 +15312,12 @@ extends GOperator
         if (!this.valid)
         {
             const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-            //console.log('this.nodeId = ', this.nodeId);
             console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-            // if (   COLOR_TYPES   .includes(node.type)
-            //     || GEOMETRY_TYPES.includes(node.type))
-                //this.result = this.result.eval(parse).copy();
 
             this.result = node[this.paramId].eval(parse).copy();
 
-
+            
             this.result.valid = true;
             this.valid        = true;
         }
@@ -16316,15 +16406,12 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
                 const input1 = this.input1.eval(parse).copy();
 
-                
+
                 if (   input0.isValid()
                     && input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
                     this.result = input1;
-
+                    
                     if (   isValidDataColor(input0.toDataColor())
                         && isValidDataColor(input1.toDataColor()))
                     {
@@ -16334,7 +16421,7 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(value, 2));
+                            this.value = new GNumberValue(value, 2);
                         }
                         else
                         {
@@ -16342,12 +16429,20 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            genPushUpdateValue(parse, this.nodeId, 'value', new GNumberValue(Math.abs(value), 1));
+                            this.value = new GNumberValue(Math.abs(value), 1);
                         }
                     }
                     else
-                        genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
+                        this.value = GNumberValue.NaN;
                 }
+                else
+                {
+                    this.result = CGolorValue.NaN;
+                    this.value  = GNumberValue.NaN;
+                }
+
+
+                genPushUpdateValue(parse, this.nodeId, 'text', input0);
             }
 
             else if (this.input0) 
@@ -16355,14 +16450,10 @@ extends GOperator
                 const input0 = this.input0.eval(parse).copy();
 
                 if (input0.isValid())
-                {
                     genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                    genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
 
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
-                    this.result = GColorValue.NaN;
-                }
+                this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
             }
             else if (this.input1) 
             {
@@ -16370,24 +16461,26 @@ extends GOperator
 
                 if (input1.isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'back', input1);
-
-                    genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                     this.result = input1;
+                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
                 }
+                else
+                    this.result = GColorValue.NaN;
+    
+                this.value = GNumberValue.NaN;
             }
             else
             {
-                genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', GColorValue.NaN);
-
-                genPushUpdateValue(parse, this.nodeId, 'value', GNumberValue.NaN);
-
                 this.result = GColorValue.NaN;
+                this.value  = GNumberValue.NaN;
+
+                genPushUpdateValue(parse, this.nodeId, 'text',  GColorValue.NaN);
             }
             
+
+            genPushUpdateValue(parse, this.nodeId, 'back',  this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
             this.result.valid = true;
             this.valid        = true;
@@ -16458,7 +16551,6 @@ extends GOperator
                 if (   isValidRgb(rgb)
                     && isValidRgb(rgbCb))
                 {
-                    console.log('valid');
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
                     const validCol = convertDataColorToSpace(
@@ -16552,8 +16644,6 @@ extends GOperator
 
                 if (isValidRgb(rgb))
                 {
-                    console.log('valid');
-
                     // this._color = 
                     //     col
                     //     ? [...validateColor(
@@ -16649,12 +16739,12 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round );
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
@@ -17222,7 +17312,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
 
 
-            if (this.active)
+            if (   this.active
+                && this.result.isValid())
             {
                 genPushUpdateObject(
                     parse,
@@ -17711,10 +17802,98 @@ extends GOperator
 }
 
 
+class GFill
+extends GOperator
+{
+    input = null;
+
+    value = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(FILL, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const fill = new GFill(this.nodeId, this.active);
+
+        if (this.input)  
+            fill.input = this.input.copy();
+
+        if (this.value) 
+            fill.value = this.value.copy();
+
+        return fill;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            // if (this.input)
+            // {
+            //    this.result = new GRectangleValue();
+
+                //     this.result = this.input.eval(parse).copy();
+            //     console.assert(this.result.type == RECTANGLE_VALUE);
+
+            //     if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
+            //     if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
+            //     if (this.width ) this.result.width  = this.width .eval(parse).copy();
+            //     if (this.height) this.result.height = this.height.eval(parse).copy();
+            //     if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
+            //     if (this.round ) this.result.round  = this.round .eval(parse).copy();
+            // }
+            // else
+            // {
+            //        this.result = new GGeometry();
+            // }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            if (this.active)
+            {
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    { 
+                        nodeId: this.nodeId,          
+                        type:   RECTANGLE,
+                        id:     0,
+                        x:      this.result.x     .value,
+                        y:      this.result.y     .value,
+                        width:  this.result.width .value,
+                        height: this.result.height.value,
+                        angle:  this.result.angle .value,
+                        round:  Math.max(0, this.result.round.value)
+                    });
+            }
+        }
+
+
+        return this.result;
+    }
+}
+
+
 const settings =
 {
     showNodeId:       true, // instead of name
     
+    logMessages:      true,
     logStorage:       false, 
     logActions:       false, 
     logRequests:      true, 
@@ -22382,21 +22561,21 @@ extends Parameter
             return this.output.cache;
 
 
-        const req = [];
+        const request = [];
 
 
         if (   this.input
             && this.input.connected)
-            req.push(...pushInputOrParam(this.input, gen));
+            request.push(...pushInputOrParam(this.input, gen));
 
-        else req.push( 
+        else request.push( 
             NUMBER_VALUE, 
             new GNumberValue(
                 this.control.value, 
                 this.control.displayDec).toString());
 
 
-        return req;
+        return request;
     }
 
 
@@ -24744,7 +24923,7 @@ class Operator
 
     genRequestStart(gen)
     {
-        const req = [
+        const request = [
             this.type, 
             this.id];
 
@@ -24752,9 +24931,9 @@ class Operator
 
         if (    this.active
             && !ignore) 
-            req.push(ACTIVE);
+            request.push(ACTIVE);
 
-        return [req, ignore];
+        return [request, ignore];
     }
 
 
@@ -25039,6 +25218,8 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
+    //console.log('pushUpdateFromParam()');
+
     const request = 
         param
         ? [param.node.id, param.id]
@@ -25075,11 +25256,10 @@ function pushUpdateFromParam(nodes, param)
             request.push(...getNodeRequest(node, gen));
     }
 
-    
+
     uiQueueMessageToGenerator({
         cmd:     'genRequest',
-        request:  request,
-        settings: settings
+        request:  request
     });
 }
 
@@ -26070,21 +26250,21 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
         
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
 
-        if (input.connected) req.push(...pushInputOrParam(input, gen));
-        else                 req.push(...this.node.paramValue.genRequest(gen));
+        if (input.connected) request.push(...pushInputOrParam(input, gen));
+        else                 request.push(...this.node.paramValue.genRequest(gen));
 
 
             
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
         
-        return req;
+        return request;
     }
 
 
@@ -26158,26 +26338,26 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
 
 
-        req.push(input.connected ? 1 : 0);
+        request.push(input.connected ? 1 : 0);
         
         if (input.connected)
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
-        req.push(...this.node.paramMin.genRequest(gen));
-        req.push(...this.node.paramMax.genRequest(gen));
+        request.push(...this.node.paramMin.genRequest(gen));
+        request.push(...this.node.paramMax.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -26287,23 +26467,23 @@ extends OperatorBase
             paramId: '' });
 
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
             
 
         const connectedInputs = this.node.inputs.filter(i => i.connected);
 
 
-        req.push(connectedInputs.length); // utility values like param count are stored as numbers
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...pushInputOrParam(input, gen)));
+            request.push(...pushInputOrParam(input, gen)));
 
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
         
-        return req;
+        return request;
     }
 
 
@@ -26613,20 +26793,20 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
 
-        req.push(connectedInputs.length); // utility values like param count are stored as numbers
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
-            req.push(...input.connectedOutput.genRequest(gen)));
+            request.push(...input.connectedOutput.genRequest(gen)));
 
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -26781,8 +26961,8 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input0 = this.node.inputs[0];
@@ -26790,23 +26970,23 @@ extends OperatorBase
 
         
         if (   input0.connected
-            && input1.connected)   req.push(2,
+            && input1.connected)   request.push(2,
                                        ...pushInputOrParam(input0, gen),
                                        ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
             
-        else                       req.push(0);
+        else                       request.push(0);
 
 
-        req.push(...this.node.paramAmount.genRequest(gen));
+        request.push(...this.node.paramAmount.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -27167,8 +27347,8 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -27178,7 +27358,7 @@ extends OpColorBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
             
             paramIds.push(this.node.paramSpace.id);
@@ -27187,18 +27367,18 @@ extends OpColorBase
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
             
-                                                  req.push(...this.node.paramSpace.genRequest(gen));
-            if (this.node.param1.input.connected) req.push(...this.node.param1    .genRequest(gen));
-            if (this.node.param2.input.connected) req.push(...this.node.param2    .genRequest(gen));
-            if (this.node.param3.input.connected) req.push(...this.node.param3    .genRequest(gen));
+                                                  request.push(...this.node.paramSpace.genRequest(gen));
+            if (this.node.param1.input.connected) request.push(...this.node.param1    .genRequest(gen));
+            if (this.node.param2.input.connected) request.push(...this.node.param2    .genRequest(gen));
+            if (this.node.param3.input.connected) request.push(...this.node.param3    .genRequest(gen));
         }
         else
         {
             if (this.node.paramSpace.value == 0) // hex
             {
-                req.push(
+                request.push(
                     ...this.node.paramSpace.genRequest(gen),
                     NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
@@ -27207,7 +27387,7 @@ extends OpColorBase
             }
             else
             {
-                req.push(
+                request.push(
                     ...this.node.paramSpace.genRequest(gen),
                     NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
                     ...this.node.param1.genRequest(gen),
@@ -27220,7 +27400,7 @@ extends OpColorBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -29221,26 +29401,26 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
 
         const input = this.node.inputs[0];
 
         if (input.connected)
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
-        req.push(...this.node.order  .genRequest(gen));
+        request.push(...this.node.order  .genRequest(gen));
 
-        req.push(...this.node.margin1.genRequest(gen));
-        req.push(...this.node.margin2.genRequest(gen));
-        req.push(...this.node.margin3.genRequest(gen));
+        request.push(...this.node.margin1.genRequest(gen));
+        request.push(...this.node.margin2.genRequest(gen));
+        request.push(...this.node.margin3.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -29474,8 +29654,8 @@ extends OpColorBase
 
 
 
-        const [req, ignore] = this.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
 
 
         const input0 = this.inputs[0];
@@ -29483,23 +29663,23 @@ extends OpColorBase
 
         
         if (   input0.connected
-            && input1.connected)   req.push(2,
+            && input1.connected)   request.push(2,
                                        ...pushInputOrParam(input0, gen),
                                        ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, 0, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) req.push(1, 1, ...pushInputOrParam(input1, gen));
+        else if (input0.connected) request.push(1, 0, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, 1, ...pushInputOrParam(input1, gen));
             
-        else                       req.push(0);
+        else                       request.push(0);
 
 
-        req.push(...this.paramStandard.genRequest(gen));
+        request.push(...this.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
 
-        return req;
+        return request;
     }
 
 
@@ -29610,8 +29790,8 @@ extends OpColorBase
 
             else
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2)', 0.8),
-                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2)', 0.8),
+                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
+                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
                     new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
                     new NumberSliderRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2)', 0.8),
                     new NumberSliderRange(60/105,  75/105, 'rgba( 64, 255,  64, 0.2)', 0.8),
@@ -29743,8 +29923,8 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
 
         const input0 = this.node.inputs[0];
@@ -29752,25 +29932,25 @@ extends OpColorBase
 
         
         if (   input0.connected
-            && input1.connected)   req.push(2,
+            && input1.connected)   request.push(2,
                                        ...pushInputOrParam(input0, gen),
                                        ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
             
-        else                       req.push(0);
+        else                       request.push(0);
 
 
-        req.push(...this.node.paramSpace .genRequest(gen));
-        req.push(...this.node.paramAmount.genRequest(gen));
-        req.push(...this.node.paramGamma .genRequest(gen));
+        request.push(...this.node.paramSpace .genRequest(gen));
+        request.push(...this.node.paramAmount.genRequest(gen));
+        request.push(...this.node.paramGamma .genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -29868,25 +30048,25 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
 
         const input = this.node.inputs[0];
 
         if (input.connected)
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
-        req.push(...this.node.paramL.genRequest(gen));
-        req.push(...this.node.paramM.genRequest(gen));
-        req.push(...this.node.paramS.genRequest(gen));
+        request.push(...this.node.paramL.genRequest(gen));
+        request.push(...this.node.paramM.genRequest(gen));
+        request.push(...this.node.paramS.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -30029,8 +30209,8 @@ extends OpGeometryBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -30040,26 +30220,26 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
 
 
-            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) req.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
-            if (this.node.paramRound .input.connected) req.push(...this.node.paramRound .genRequest(gen));
+            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
         }
         else
         {
-            req.push(
+            request.push(
                 ...this.node.paramX     .genRequest(gen),
                 ...this.node.paramY     .genRequest(gen),
                 ...this.node.paramWidth .genRequest(gen),
@@ -30072,7 +30252,7 @@ extends OpGeometryBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -30213,8 +30393,8 @@ extends OpGeometryBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -30224,24 +30404,24 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
 
 
-            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
         }
         else
         {
-            req.push(
+            request.push(
                 ...this.node.paramX     .genRequest(gen),
                 ...this.node.paramY     .genRequest(gen),
                 ...this.node.paramWidth .genRequest(gen),
@@ -30252,7 +30432,7 @@ extends OpGeometryBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 }
 
@@ -30344,8 +30524,8 @@ extends OpGeometryBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -30355,25 +30535,25 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
 
 
-            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) req.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
         }
         else
         {
-            req.push(
+            request.push(
                 ...this.node.paramX     .genRequest(gen),
                 ...this.node.paramY     .genRequest(gen),
                 ...this.node.paramWidth .genRequest(gen),
@@ -30385,7 +30565,7 @@ extends OpGeometryBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -30531,8 +30711,8 @@ extends OpGeometryBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -30542,27 +30722,27 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
 
 
-            if (this.node.paramX      .input.connected) req.push(...this.node.paramX      .genRequest(gen));
-            if (this.node.paramY      .input.connected) req.push(...this.node.paramY      .genRequest(gen));
-            if (this.node.paramWidth  .input.connected) req.push(...this.node.paramWidth  .genRequest(gen));
-            if (this.node.paramHeight .input.connected) req.push(...this.node.paramHeight .genRequest(gen));
-            if (this.node.paramAngle  .input.connected) req.push(...this.node.paramAngle  .genRequest(gen));
-            if (this.node.paramRound  .input.connected) req.push(...this.node.paramRound  .genRequest(gen));
-            if (this.node.paramCorners.input.connected) req.push(...this.node.paramCorners.genRequest(gen));
+            if (this.node.paramX      .input.connected) request.push(...this.node.paramX      .genRequest(gen));
+            if (this.node.paramY      .input.connected) request.push(...this.node.paramY      .genRequest(gen));
+            if (this.node.paramWidth  .input.connected) request.push(...this.node.paramWidth  .genRequest(gen));
+            if (this.node.paramHeight .input.connected) request.push(...this.node.paramHeight .genRequest(gen));
+            if (this.node.paramAngle  .input.connected) request.push(...this.node.paramAngle  .genRequest(gen));
+            if (this.node.paramRound  .input.connected) request.push(...this.node.paramRound  .genRequest(gen));
+            if (this.node.paramCorners.input.connected) request.push(...this.node.paramCorners.genRequest(gen));
         }
         else
         {
-            req.push(
+            request.push(
                 ...this.node.paramX      .genRequest(gen),
                 ...this.node.paramY      .genRequest(gen),
                 ...this.node.paramWidth  .genRequest(gen),
@@ -30576,7 +30756,7 @@ extends OpGeometryBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -30750,8 +30930,8 @@ extends OpGeometryBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -30761,28 +30941,28 @@ extends OpGeometryBase
 
         if (input.connected)
         {
-            req.push(...pushInputOrParam(input, gen));
+            request.push(...pushInputOrParam(input, gen));
 
 
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
 
-            req.push(paramIds.join(','));
+            request.push(paramIds.join(','));
 
 
-            if (this.node.paramX     .input.connected) req.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) req.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) req.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) req.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) req.push(...this.node.paramAngle .genRequest(gen));
-            if (this.node.paramRound .input.connected) req.push(...this.node.paramRound .genRequest(gen));
-            if (this.node.paramPoints.input.connected) req.push(...this.node.paramPoints.genRequest(gen));
-            if (this.node.paramConvex.input.connected) req.push(...this.node.paramConvex.genRequest(gen));
+            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
+            if (this.node.paramPoints.input.connected) request.push(...this.node.paramPoints.genRequest(gen));
+            if (this.node.paramConvex.input.connected) request.push(...this.node.paramConvex.genRequest(gen));
         }
         else
         {
-            req.push(
+            request.push(
                 ...this.node.paramX     .genRequest(gen),
                 ...this.node.paramY     .genRequest(gen),
                 ...this.node.paramWidth .genRequest(gen),
@@ -30797,7 +30977,7 @@ extends OpGeometryBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
@@ -30819,6 +30999,166 @@ extends OpGeometryBase
         if (   paramIds.includes('width')
             || paramIds.includes('height'))
             this.updateRound();
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.paramRound.control;
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        this.paramRound.control.update();
+    }
+
+    
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        let json = 
+               super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
+
+        if (this.btnProportional.enabled)
+        {
+            json +=
+                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
+                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
+        }
+
+        return json;
+    }
+
+
+
+    loadParams(_node)
+    {
+        super.loadParams(_node);
+
+        // if (_node.proportional)
+        // {
+            this.btnProportional.enabled = isTrue(_node.proportional);
+            this.btnProportional.updateBackground(false);
+
+            if (this.btnProportional.enabled)
+            {
+                this.refWidth  = parseFloat(_node.refWidth);
+                this.refHeight = parseFloat(_node.refHeight);
+            }
+        //}
+    }
+}
+
+
+class   OpFill
+extends OpGeometryBase
+{
+    paramValue;
+
+
+    
+    constructor()
+    {
+        super(FILL, 'rect', 90);
+
+
+        this.addInput(new Input(GEOMETRY_TYPES));
+        this.addOutput(new Output(GEOMETRY, this.output_genRequest));
+
+
+        this.addParam(this.paramValue = new ColorParam('value', '', true, true, true));
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+        // const paramIds = [];
+
+
+        // if (input.connected)
+        // {
+        //     request.push(...pushInputOrParam(input, gen));
+
+
+        //     for (const param of this.node.params)
+        //         if (param.input && param.input.connected) 
+        //             paramIds.push(param.id);
+
+        //     request.push(paramIds.join(','));
+
+
+        //     if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
+        //     if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
+        //     if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
+        //     if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
+        //     if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
+        //     if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
+        // }
+        // else
+        // {
+        //     request.push(
+        //         ...this.node.paramX     .genRequest(gen),
+        //         ...this.node.paramY     .genRequest(gen),
+        //         ...this.node.paramWidth .genRequest(gen),
+        //         ...this.node.paramHeight.genRequest(gen),
+        //         ...this.node.paramAngle .genRequest(gen),
+        //         ...this.node.paramRound .genRequest(gen));
+        // }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
+
+        this.paramX     .setValue(rect.x,      false, true, false);
+        this.paramY     .setValue(rect.y,      false, true, false);
+        this.paramWidth .setValue(rect.width,  false, true, false);
+        this.paramHeight.setValue(rect.height, false, true, false);
+        this.paramAngle .setValue(rect.angle,  false, true, false);
+        this.paramRound .setValue(rect.round,  false, true, false);
+
+        super.updateValues(updateParamId, paramIds, values);
+    }
+
+
+
+    updateNode()
+    {
+        this.btnProportional.style.left = 45;
+        this.btnProportional.style.top  = 79;
+
+        super.updateNode();
     }
 
 
@@ -31105,7 +31445,6 @@ extends Action
     
     do()
     {
-        console.log('getActiveNodesRightInTreeFromNodeId(this.inputNodeId) =', getActiveNodesRightInTreeFromNodeId(this.inputNodeId));
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
@@ -32911,6 +33250,9 @@ onmessage = e =>
 function uiPostMessageToFigma(msg)
 {
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
+
+    if (settings.logMessages)
+        console.log('%cFIG ◄-- '+msg.cmd+' UI', 'background: #bef; color: black;');
 }
 
 
@@ -32946,19 +33288,11 @@ function uiPostNextMessageToFigma()
 
 function uiEndFigMessage(msgCmd)
 {
-    if (msgCmd == 'figUpdateObjects')
+    if (msgCmd == 'figUpdate')
         uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
 
-    uiFigMessagePosted = false;
+    //uiFigMessagePosted = false;
     uiPostNextMessageToFigma();
-}
-
-
-
-function uiEndFigObjectMessage()
-{
-    uiFigMessagePosted = false;
-    uiPostMessageToGenerator({cmd: 'genEndUIobjectMessage'});
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32971,8 +33305,6 @@ function uiEndFigObjectMessage()
 generator.onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
-    //console.log('msg =', msg);
-
 
     switch (msg.cmd)
     {
@@ -32988,7 +33320,7 @@ generator.onmessage = function(e)
             uiPostMessageToGenerator({
                 cmd:   'genEndUiMessage',
                 msgCmd: msg.cmd }); 
-
+       
             break;
         
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
@@ -33001,7 +33333,9 @@ generator.onmessage = function(e)
 function uiEndGenMessage()
 {
     genMessagePosted = false;
-    uiPostNextMessageToGenerator();
+    
+    if (genMessages.length > 0)
+        uiPostNextMessageToGenerator();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33024,6 +33358,7 @@ function uiPostNextMessageToGenerator()
     if (    genMessages.length > 0
         && !genMessagePosted)
     {
+        //console.log('message');
         let msg = genMessages.shift();
 
         if (msg.cmd == 'genRequest')
@@ -33033,7 +33368,10 @@ function uiPostNextMessageToGenerator()
                 && genMessages[0].cmd        == msg.cmd
                 && genMessages[0].request[0] == msg.request[0]
                 && genMessages[0].request[1] == msg.request[1])
+            {
+                //console.log('skipping');
                 msg = genMessages.shift();//deepCopy(genMessages.shift());
+            }
         }
 
         uiPostMessageToGenerator(msg);
@@ -33046,6 +33384,9 @@ function uiPostNextMessageToGenerator()
 function uiPostMessageToGenerator(msg)
 {
     generator.postMessage(JSON.stringify(msg));
+
+    if (settings.logMessages)
+        console.log('%cUI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34007,7 +34348,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
                    └──█████████
 
                           ↓
-                                   
+
         [̅_̅_̅_̅_̅_̅_̅_]══╗             ┌──█████████
                    ╟──[̅_̅_̅_̅_̅_̅_̅_]──┘
                    │
@@ -34043,7 +34384,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
     let node = createNode(nodeType, creatingButton, createdId);
 
     graph.addNode(node);
-   
+
     uiSaveNodes([node.id]);
 
 
@@ -34183,7 +34524,7 @@ function uiConnect(output, input, inputIndex = -1)
 function uiDisconnect(input)
 {
     const node = input.node;
-        
+
     uiRemoveSavedConnection(
         input.connectedOutput.node.id,
         input.connectedOutput.index,
@@ -34239,7 +34580,7 @@ function uiMakeNodeActive(node)
 //         uiMakeNodeLeftPassive (node);
 //         uiMakeNodeRightPassive(node);
 //     }
-    
+
 //     for (const node of nodes)
 //     {
 //         node._active = true;
@@ -34251,7 +34592,7 @@ function uiMakeNodeActive(node)
 //             cmd:   'figSaveActiveNode',
 //             nodeId: node.id
 //         });
-    
+
 //         // if (node.type == 'object')
 //         //     uiGenerateObjects([node.id]);
 
@@ -34476,14 +34817,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
-    
-
-    uiPostMessageToFigma({ 
-        cmd:          'figUpdateObjects',
-        updateNodeId:  updateNodeId,
-        updateParamId: updateParamId,
-        objects:       [...objects]
-    });
 
 
     const nodes = [];
@@ -34496,11 +34829,11 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
         const node   = nodeFromId(nodeId);
 
-        
+
         if (!node) // was deleted
-        { 
-            i += count*2; 
-            continue; 
+        {
+            i += count*2;
+            continue;
         }
 
 
@@ -34511,7 +34844,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         {
             const _ids    = [];
             const _values = [];
-            
+
             for (let j = 0; j < count; j++)
             {
                 const id   = values[i++];
@@ -34523,6 +34856,10 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 {
                     case COLOR_VALUE:     _values.push(parseGColorValue    (values[i++])); break;
                     case RECTANGLE_VALUE: _values.push(parseGRectangleValue(values[i++])); break;
+                    case LINE_VALUE:      _values.push(parseGLineValue     (values[i++])); break;
+                    case ELLIPSE_VALUE:   _values.push(parseGEllipseValue  (values[i++])); break;
+                    case POLYGON_VALUE:   _values.push(parseGPolygonValue  (values[i++])); break;
+                    case STAR_VALUE:      _values.push(parseGStarValue     (values[i++])); break;
                     default:              _values.push(parseGNumberValue   (values[i++])); break;
                 }
             }
@@ -34531,16 +34868,26 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 updateNodeId == nodeId ? updateParamId : '',
                 _ids,
                 _values);
+
+
+            node.valid = true;
+            node.updateNode();
         }
     }
 
 
-    for (const node of nodes)
-    {
-        node.valid = true;
-        node.updateNode();
-        uiSaveNodes([node.id]);
-    }
+    const nodeJson = [];
+    nodes.forEach(n => nodeJson.push(n.toJson()));
+
+    uiPostMessageToFigma({
+        cmd:          'figUpdate',
+        updateNodeId:  updateNodeId,
+        updateParamId: updateParamId,
+        nodeIds:       nodes.map(n => n.id),
+        nodeJson:      nodeJson,
+        objects:       [...objects]
+    });
+
 
     graphView.update(nodes);
 }

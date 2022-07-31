@@ -40,8 +40,8 @@ extends OperatorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [req, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return req;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
         const input0 = this.node.inputs[0];
@@ -49,23 +49,23 @@ extends OperatorBase
 
         
         if (   input0.connected
-            && input1.connected)   req.push(2,
+            && input1.connected)   request.push(2,
                                        ...pushInputOrParam(input0, gen),
                                        ...pushInputOrParam(input1, gen));
 
-        else if (input0.connected) req.push(1, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) req.push(1, ...pushInputOrParam(input1, gen));
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
             
-        else                       req.push(0);
+        else                       request.push(0);
 
 
-        req.push(...this.node.paramAmount.genRequest(gen));
+        request.push(...this.node.paramAmount.genRequest(gen));
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return req;
+        return request;
     }
 
 
