@@ -32,7 +32,7 @@ function uiPostMessageToFigma(msg)
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 
     if (settings.logMessages)
-        console.log('%cFIG ◄-- '+msg.cmd+' UI', 'background: #bef; color: black;');
+        console.log('%c'+msg.cmd+' FIG ◄-- UI', 'background: #bef; color: black;');
 }
 
 
@@ -97,10 +97,6 @@ generator.onmessage = function(e)
                 msg.values, 
                 msg.objects);
                 
-            uiPostMessageToGenerator({
-                cmd:   'genEndUiMessage',
-                msgCmd: msg.cmd }); 
-       
             break;
         
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
@@ -166,7 +162,7 @@ function uiPostMessageToGenerator(msg)
     generator.postMessage(JSON.stringify(msg));
 
     if (settings.logMessages)
-        console.log('%cUI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;');
+        console.log('%cUI --► GEN '+msg.cmd, 'background: #ffb; color: black;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

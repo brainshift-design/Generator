@@ -6,6 +6,7 @@
     
     [../autojoin/types.aj]
     
+    ../ui/settings.js
     ../generator/*.js
 
     [../autojoin/color.aj]

@@ -91,7 +91,7 @@ function genPostNextMessageToUI(msg)
         postMessage(JSON.stringify(msg));
 
         if (settings.logMessages)
-            console.log('%cUI ◄-- '+msg.cmd+' GEN', 'background: #ca0; color: white;');
+            console.log('%c'+msg.cmd+' UI ◄-- GEN', 'background: #ca0; color: white;');
     }
 }
 

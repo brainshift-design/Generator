@@ -38,8 +38,7 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
-
-
+initColor();
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 

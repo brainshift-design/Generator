@@ -207,7 +207,7 @@ extends OpColorBase
         this.paramSpace.setValue(space, false, true, false);
         switchToSpace(this, colorSpace(space.value));
 
-
+        
         if (col.isValid())
         {
             this._color = col.toDataColor();

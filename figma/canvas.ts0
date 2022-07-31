@@ -8,13 +8,17 @@ function figUpdate(msg)
         && msg.objects.length > 0)
         logObjectUpdates(msg.objects);
 
-        
-    for (let i = 0; i < msg.nodeIds.length; i++)
+    
+    if (   msg.updateNodeId  != ''
+        && msg.updateParamId != '')
     {
-        figSetPageData(
-            nodeNameForStorage(msg.nodeIds[i]),
-            msg.nodeJson[i]);        
+        const index = msg.nodeIds.indexOf(msg.updateNodeId);
+
+        if (index > -1)
+            figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
     }
+    // else
+    //     figSaveNodes(msg.nodeIds, msg.nodeJson);
 
 
     let curNodeId  = '';
@@ -46,9 +50,6 @@ function figUpdate(msg)
             figCreateObject(figObjects, genObj);
         }
     }
-
-
-    figPostMessageToUI
 }
 
 

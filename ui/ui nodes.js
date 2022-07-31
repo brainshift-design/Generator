@@ -881,8 +881,10 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     }
 
 
+
     const nodeJson = [];
     nodes.forEach(n => nodeJson.push(n.toJson()));
+
 
     uiPostMessageToFigma({
         cmd:          'figUpdate',
@@ -892,7 +894,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         nodeJson:      nodeJson,
         objects:       [...objects]
     });
-
+        
 
     graphView.update(nodes);
 }

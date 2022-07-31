@@ -10,6 +10,18 @@ const dataColor_NaN = [
     Number.NaN ];
 
 
+var style2rgba_canvas;
+var style2rgba_context;
+    
+
+
+function initColor()
+{
+    style2rgba_canvas  = document.createElement('canvas');
+    style2rgba_context = style2rgba_canvas.getContext('2d');
+}
+
+
 
 function colorIsNaN(c)
 {
@@ -180,11 +192,8 @@ function rgbEqual(rgb1, rgb2)
 
 function style2rgba(style) 
 {
-    var cnv = document.createElement('canvas');
-    var ctx = cnv.getContext('2d');
+    style2rgba_context.fillStyle = style;
+    style2rgba_context.fillRect(0, 0, 1, 1);
 
-    ctx.fillStyle = style;
-    ctx.fillRect(0, 0, 1, 1);
-
-    return rgbaDiv(ctx.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
 }

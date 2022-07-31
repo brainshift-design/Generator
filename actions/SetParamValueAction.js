@@ -33,7 +33,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam([this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        //uiSaveNodes([this.nodeId]);
     }
 
 
@@ -43,7 +43,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam([this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        //uiSaveNodes([this.nodeId]);
     }
 
 
@@ -53,6 +53,6 @@ extends Action
         this.param.setValue(this.newValue);
         pushUpdateFromParam([this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        //uiSaveNodes([this.nodeId]);
     }
 }

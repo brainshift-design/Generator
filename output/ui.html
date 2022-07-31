@@ -7148,13 +7148,13 @@ extends GOperator
 
 const settings =
 {
-    showNodeId:       true, // instead of name
+    showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
     logStorage:       false, 
     logActions:       false, 
-    logRequests:      true, 
-    logValueUpdates:  true, 
+    logRequests:      false, 
+    logValueUpdates:  false, 
     logObjectUpdates: false
 };
 
@@ -7252,7 +7252,7 @@ function genPostNextMessageToUI(msg)
         postMessage(JSON.stringify(msg));
 
         if (settings.logMessages)
-            console.log('%cUI ◄-- '+msg.cmd+' GEN', 'background: #ca0; color: white;');
+            console.log('%c'+msg.cmd+' UI ◄-- GEN', 'background: #ca0; color: white;');
     }
 }
 
@@ -9309,6 +9309,18 @@ const dataColor_NaN = [
     Number.NaN ];
 
 
+var style2rgba_canvas;
+var style2rgba_context;
+    
+
+
+function initColor()
+{
+    style2rgba_canvas  = document.createElement('canvas');
+    style2rgba_context = style2rgba_canvas.getContext('2d');
+}
+
+
 
 function colorIsNaN(c)
 {
@@ -9479,13 +9491,10 @@ function rgbEqual(rgb1, rgb2)
 
 function style2rgba(style) 
 {
-    var cnv = document.createElement('canvas');
-    var ctx = cnv.getContext('2d');
+    style2rgba_context.fillStyle = style;
+    style2rgba_context.fillRect(0, 0, 1, 1);
 
-    ctx.fillStyle = style;
-    ctx.fillRect(0, 0, 1, 1);
-
-    return rgbaDiv(ctx.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
@@ -14410,6 +14419,18 @@ const dataColor_NaN = [
     Number.NaN ];
 
 
+var style2rgba_canvas;
+var style2rgba_context;
+    
+
+
+function initColor()
+{
+    style2rgba_canvas  = document.createElement('canvas');
+    style2rgba_context = style2rgba_canvas.getContext('2d');
+}
+
+
 
 function colorIsNaN(c)
 {
@@ -14580,13 +14601,10 @@ function rgbEqual(rgb1, rgb2)
 
 function style2rgba(style) 
 {
-    var cnv = document.createElement('canvas');
-    var ctx = cnv.getContext('2d');
+    style2rgba_context.fillStyle = style;
+    style2rgba_context.fillRect(0, 0, 1, 1);
 
-    ctx.fillStyle = style;
-    ctx.fillRect(0, 0, 1, 1);
-
-    return rgbaDiv(ctx.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
@@ -17891,13 +17909,13 @@ extends GOperator
 
 const settings =
 {
-    showNodeId:       true, // instead of name
+    showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
     logStorage:       false, 
     logActions:       false, 
-    logRequests:      true, 
-    logValueUpdates:  true, 
+    logRequests:      false, 
+    logValueUpdates:  false, 
     logObjectUpdates: false
 };
 
@@ -27414,7 +27432,7 @@ extends OpColorBase
         this.paramSpace.setValue(space, false, true, false);
         switchToSpace(this, colorSpace(space.value));
 
-
+        
         if (col.isValid())
         {
             this._color = col.toDataColor();
@@ -32709,7 +32727,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam([this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        //uiSaveNodes([this.nodeId]);
     }
 
 
@@ -32719,7 +32737,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam([this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        //uiSaveNodes([this.nodeId]);
     }
 
 
@@ -32729,7 +32747,7 @@ extends Action
         this.param.setValue(this.newValue);
         pushUpdateFromParam([this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        //uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -33012,8 +33030,7 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
-
-
+initColor();
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
@@ -33252,7 +33269,7 @@ function uiPostMessageToFigma(msg)
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 
     if (settings.logMessages)
-        console.log('%cFIG ◄-- '+msg.cmd+' UI', 'background: #bef; color: black;');
+        console.log('%c'+msg.cmd+' FIG ◄-- UI', 'background: #bef; color: black;');
 }
 
 
@@ -33317,10 +33334,6 @@ generator.onmessage = function(e)
                 msg.values, 
                 msg.objects);
                 
-            uiPostMessageToGenerator({
-                cmd:   'genEndUiMessage',
-                msgCmd: msg.cmd }); 
-       
             break;
         
         case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
@@ -33386,7 +33399,7 @@ function uiPostMessageToGenerator(msg)
     generator.postMessage(JSON.stringify(msg));
 
     if (settings.logMessages)
-        console.log('%cUI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;');
+        console.log('%cUI --► GEN '+msg.cmd, 'background: #ffb; color: black;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34876,8 +34889,10 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     }
 
 
+
     const nodeJson = [];
     nodes.forEach(n => nodeJson.push(n.toJson()));
+
 
     uiPostMessageToFigma({
         cmd:          'figUpdate',
@@ -34887,7 +34902,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         nodeJson:      nodeJson,
         objects:       [...objects]
     });
-
+        
 
     graphView.update(nodes);
 }

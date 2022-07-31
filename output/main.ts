@@ -364,13 +364,13 @@ VECTOR      V
 
 const settings =
 {
-    showNodeId:       true, // instead of name
+    showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
     logStorage:       false, 
     logActions:       false, 
-    logRequests:      true, 
-    logValueUpdates:  true, 
+    logRequests:      false, 
+    logValueUpdates:  false, 
     logObjectUpdates: false
 };
 
@@ -385,13 +385,17 @@ function figUpdate(msg)
         && msg.objects.length > 0)
         logObjectUpdates(msg.objects);
 
-        
-    for (let i = 0; i < msg.nodeIds.length; i++)
+    
+    if (   msg.updateNodeId  != ''
+        && msg.updateParamId != '')
     {
-        figSetPageData(
-            nodeNameForStorage(msg.nodeIds[i]),
-            msg.nodeJson[i]);        
+        const index = msg.nodeIds.indexOf(msg.updateNodeId);
+
+        if (index > -1)
+            figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
     }
+    // else
+    //     figSaveNodes(msg.nodeIds, msg.nodeJson);
 
 
     let curNodeId  = '';
@@ -423,9 +427,6 @@ function figUpdate(msg)
             figCreateObject(figObjects, genObj);
         }
     }
-
-
-    figPostMessageToUI
 }
 
 
@@ -633,7 +634,7 @@ function figPostMessageToUI(msg)
     figma.ui.postMessage(JSON.stringify(msg));
 
     if (settings.logMessages)
-        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
+        console.log('%cFIG --► UI '+msg.cmd, 'background: #08f; color: white;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

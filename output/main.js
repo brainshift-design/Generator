@@ -207,12 +207,12 @@ VECTOR      V
 
 */
 const settings = {
-    showNodeId: true,
-    logMessages: true,
+    showNodeId: false,
+    logMessages: false,
     logStorage: false,
     logActions: false,
-    logRequests: true,
-    logValueUpdates: true,
+    logRequests: false,
+    logValueUpdates: false,
     logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}
@@ -220,9 +220,14 @@ function figUpdate(msg) {
     if (settings.logObjectUpdates
         && msg.objects.length > 0)
         logObjectUpdates(msg.objects);
-    for (let i = 0; i < msg.nodeIds.length; i++) {
-        figSetPageData(nodeNameForStorage(msg.nodeIds[i]), msg.nodeJson[i]);
+    if (msg.updateNodeId != ''
+        && msg.updateParamId != '') {
+        const index = msg.nodeIds.indexOf(msg.updateNodeId);
+        if (index > -1)
+            figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
     }
+    // else
+    //     figSaveNodes(msg.nodeIds, msg.nodeJson);
     let curNodeId = '';
     let figObjects = null;
     for (const genObj of msg.objects) {
@@ -244,7 +249,6 @@ function figUpdate(msg) {
             figCreateObject(figObjects, genObj);
         }
     }
-    figPostMessageToUI;
 }
 function figCreateObject(objects, genObj) {
     let figObj;
@@ -434,7 +438,7 @@ figma.ui.onmessage = msg => {
 function figPostMessageToUI(msg) {
     figma.ui.postMessage(JSON.stringify(msg));
     if (settings.logMessages)
-        console.log('%cFIG ' + msg.cmd + ' --► UI', 'background: #08f; color: white;');
+        console.log('%cFIG --► UI ' + msg.cmd, 'background: #08f; color: white;');
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to Generator -->
