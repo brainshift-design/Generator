@@ -12,12 +12,7 @@ extends GGeometryBase
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color = new GColorValue(
-            new GNumberValue(1),
-            new GNumberValue(0),
-            new GNumberValue(0),
-            new GNumberValue(0));
-
+        this.color   = GColorValue.create(1, 0, 1, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -41,16 +36,18 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
                 console.assert(GEOMETRY_VALUES.includes(this.result.type));
 
-                console.log('this.color =', this.color);
                 this.result.fills.push([
                     COLOR_FILL, 
-                    this.color.toString(), 
-                    this.opacity.toString()])
+                    color  .toRgbString(), 
+                    (opacity.value / 100).toString()]);
 
                 this.result.valid = true;
             }
@@ -62,6 +59,9 @@ extends GGeometryBase
            
             
             genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
             if (   this.active

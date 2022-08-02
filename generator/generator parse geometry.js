@@ -333,7 +333,7 @@ function genParseColorFill(parse)
     fill.color   = genParse(parse);
     fill.opacity = genParse(parse);
 
-
+    
     parse.nTab--;
 
 

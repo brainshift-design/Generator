@@ -69,11 +69,11 @@ extends GOperator
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result = new GColorValue(
-                    space,
-                    new GNumberValue(col[1] * factor[0]),
-                    new GNumberValue(col[2] * factor[1]),
-                    new GNumberValue(col[3] * factor[2]));
+                this.result = GColorValue.create(
+                    space.value,
+                    col[1] * factor[0],
+                    col[2] * factor[1],
+                    col[3] * factor[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();

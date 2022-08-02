@@ -39,7 +39,7 @@ extends Parameter
     genRequest(gen)
     {
         // this function exists because a parameter without an output
-        // should still be able to generate a request a value
+        // should still be able to generate a request
         
         // 'this' is the param
 

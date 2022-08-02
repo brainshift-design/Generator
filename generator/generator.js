@@ -7,7 +7,7 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    //console.log('request =', request);
+    console.log('request =', request);
 
     const updateNodeId  = request[0];
     const updateParamId = request[1];

@@ -460,11 +460,16 @@ function figPostMessageToUI(msg) {
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateRect(obj) {
-    //console.log(obj);
+    console.log(obj);
     const rect = figma.createRectangle();
     rect.x = obj.x;
     rect.y = obj.y;
-    rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    console.log('obj.fills =', obj.fills);
+    if (obj.fills !== null
+        && obj.fills.filter(f => f[0] === COLOR_FILL).length > 0)
+        rect.fills = getObjectFills(obj.fills);
+    else
+        rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
     rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
     rect.rotation = obj.angle;
     rect.cornerRadius = obj.round;
@@ -479,6 +484,7 @@ function figUpdateRect(figRect, genRect) {
     }
     figRect.rotation = genRect.angle;
     figRect.cornerRadius = genRect.round;
+    figRect.fills = getObjectFills(genRect.fills);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateLine(obj) {
@@ -581,24 +587,46 @@ function figUpdateStar(figStar, genStar) {
 //     return frame;
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function setNodeFill(node, fill) {
-    switch (node.type) {
-        case 'RECTANGLE':
-        case 'VECTOR':
-        case 'LINE':
-        case 'ELLIPSE':
-        case 'POLYGON':
-        case 'STAR':
-        case 'TEXT':
-        case 'BOOLEAN_OPERATION':
-            {
-                let n = node;
-                let f = clone(n.fills);
-                f = fill;
-                n.fills = f;
-            }
+function getObjectFills(objFills) {
+    const fills = [];
+    for (const fill of objFills) {
+        const c = fill[1].split(' ');
+        switch (fill[0]) {
+            case COLOR_FILL:
+                fills.push({
+                    type: 'SOLID',
+                    color: {
+                        r: Math.min(Math.max(0, parseFloat(c[0])), 1),
+                        g: Math.min(Math.max(0, parseFloat(c[1])), 1),
+                        b: Math.min(Math.max(0, parseFloat(c[2])), 1)
+                    },
+                    opacity: parseFloat(fill[2])
+                });
+                break;
+        }
     }
+    return fills;
 }
+// function setNodeFill(node, fill)
+// {
+//     switch (node.type)
+//     {
+//         case 'RECTANGLE':
+//         case 'VECTOR':
+//         case 'LINE':
+//         case 'ELLIPSE':
+//         case 'POLYGON':
+//         case 'STAR':
+//         case 'TEXT':
+//         case 'BOOLEAN_OPERATION':
+//         {
+//             let n = node as typeof node;
+//             let f = clone(n.fills);
+//             f = fill;
+//             n.fills = f;
+//         }
+//     }
+// }
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);

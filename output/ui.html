@@ -863,6 +863,93 @@ div
 
 
 
+.colorSlider
+{
+    padding:          0;
+    width:            74px;
+    height:           26px;
+    overflow:         hidden;
+    background-color: var(--figma-color-bg);/*white;*/
+    text-align:       center;
+    touch-action:     none;
+}    
+
+
+.figma-light .colorSliderName
+{
+    color: #0006;
+}
+
+
+.figma-dark .colorSliderName
+{
+    color: #fff6;
+}
+
+
+.colorSliderBar
+{
+    position:       absolute;
+    pointer-events: none;
+}
+
+
+.colorSliderText
+{
+    font-family:          Inter;
+    font-size:            11;
+    font-variant-numeric: tabular-nums;
+    pointer-events:       none;
+    letter-spacing:       -0.35px;
+    position:             absolute;
+    left:                 50%;
+    transform:            translateX(-50%);
+    top:                  3px;
+    white-space:          nowrap;
+}
+
+
+.colorSliderText .hash
+{
+    font-size: 6;
+    position:  relative;
+    top:      -2px;
+}
+
+
+.colorSliderTextbox
+{
+    font-family:          Inter;
+    font-size:            11;
+    font-variant-numeric: tabular-nums;
+    position:             absolute;
+    left:                 50%;
+    transform:            translateX(-50%);
+    white-space:          nowrap;
+    background-color:     transparent;
+}
+
+
+.colorSliderFocus
+{
+    position:       absolute;
+    pointer-events: none;
+    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
+    visibility:     hidden;
+    opacity:        0;
+}
+
+
+.colorSliderRange
+{
+    display:        block;
+    position:       absolute;
+    pointer-events: none;
+    z-index:        1000;
+}
+
+
+
 
 .menuSelect
 {
@@ -4158,6 +4245,13 @@ function logReqInterpolate(lerp, nValues, parse)
 }
 
 
+function logReqColorValue(val, parse)
+{
+    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+}
+
+
+
 function logReqColor(col, parse) 
 {
     logReqNode(col, COLOR, parse); 
@@ -5252,6 +5346,17 @@ extends GType
 
 
 
+    static create(space, c1, c2, c3)
+    {
+        return new GColorValue(
+            new GNumberValue(space),
+            new GNumberValue(c1),
+            new GNumberValue(c2),
+            new GNumberValue(c3));
+    }
+
+
+
     copy()
     {
         return new GColorValue(
@@ -5300,10 +5405,24 @@ extends GType
     {
         return this.isValid()
             ?         this.space.toString()
-              + ' ' + this.c1.toString()
-              + ' ' + this.c2.toString()
-              + ' ' + this.c3.toString()
+              + ' ' + this.c1   .toString()
+              + ' ' + this.c2   .toString()
+              + ' ' + this.c3   .toString()
             : INVALID;
+    }
+
+
+
+    toRgbString()
+    {
+        if (!this.isValid())
+            return INVALID;
+
+        const rgb = dataColor2rgb(this.toDataColor());
+
+        return        rgb[0].toString()
+              + ' ' + rgb[1].toString()
+              + ' ' + rgb[2].toString();
     }
 
 
@@ -5324,11 +5443,11 @@ function parseGColorValue(str)
 
     const col = str.split(' ');
 
-    return new GColorValue(
-        new GNumberValue(parseInt(col[0])),
-        new GNumberValue(parseGNumberValue(col[1])),
-        new GNumberValue(parseGNumberValue(col[2])),
-        new GNumberValue(parseGNumberValue(col[3])));
+    return GColorValue.create(
+        parseInt(col[0]),
+        parseGNumberValue(col[1]),
+        parseGNumberValue(col[2]),
+        parseGNumberValue(col[3]));
 }
 
 
@@ -5563,11 +5682,11 @@ extends GOperator
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result = new GColorValue(
-                    space,
-                    new GNumberValue(col[1] * factor[0]),
-                    new GNumberValue(col[2] * factor[1]),
-                    new GNumberValue(col[3] * factor[2]));
+                this.result = GColorValue.create(
+                    space.value,
+                    col[1] * factor[0],
+                    col[2] * factor[1],
+                    col[3] * factor[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -5826,11 +5945,11 @@ extends GOperator
     
                     const factor = getColorSpaceFactor(validCol[0]);
     
-                    this.result = new GColorValue(
-                        new GNumberValue(input.space.value),
-                        new GNumberValue(validCol[1] * factor[0]),
-                        new GNumberValue(validCol[2] * factor[1]),
-                        new GNumberValue(validCol[3] * factor[2]));
+                    this.result = GColorValue.create(
+                        input.space.value,
+                        validCol[1] * factor[0],
+                        validCol[2] * factor[1],
+                        validCol[3] * factor[2]);
                 }
                 else
                     this.result = GColorValue.NaN;
@@ -5924,11 +6043,11 @@ extends GOperator
 
                     const factor = getColorSpaceFactor('rgb');
     
-                    this.result = new GColorValue(
-                        new GNumberValue(1),
-                        new GNumberValue(rgb[0] * factor[0]),
-                        new GNumberValue(rgb[1] * factor[1]),
-                        new GNumberValue(rgb[2] * factor[2]));
+                    this.result = GColorValue.create(
+                        1,
+                        rgb[0] * factor[0],
+                        rgb[1] * factor[1],
+                        rgb[2] * factor[2]);
                 }
                 else
                     this.result = GColorValue.NaN;
@@ -5973,6 +6092,14 @@ extends GType
         super(type);
 
         this.nodeId = nodeId;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.nodeId = base.nodeId;
+        this.fills  = [...base.fills];
     }
 
 
@@ -6031,7 +6158,7 @@ extends GGeometryValueBase
 
     copy()
     {
-        return new GRectangleValue(
+        const rect = new GRectangleValue(
             this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
@@ -6039,6 +6166,10 @@ extends GGeometryValueBase
             this.height.copy(), 
             this.angle .copy(), 
             this.round .copy());
+
+        rect.copyBase(this);
+
+        return rect;
     }
 
 
@@ -7197,12 +7328,7 @@ extends GGeometryBase
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color = new GColorValue(
-            new GNumberValue(1),
-            new GNumberValue(0),
-            new GNumberValue(0),
-            new GNumberValue(0));
-
+        this.color   = GColorValue.create(1, 0, 1, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -7226,16 +7352,18 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
                 console.assert(GEOMETRY_VALUES.includes(this.result.type));
 
-                console.log('this.color =', this.color);
                 this.result.fills.push([
                     COLOR_FILL, 
-                    this.color.toString(), 
-                    this.opacity.toString()])
+                    color  .toRgbString(), 
+                    (opacity.value / 100).toString()]);
 
                 this.result.valid = true;
             }
@@ -7247,6 +7375,9 @@ extends GGeometryBase
            
             
             genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
             if (   this.active
@@ -7397,6 +7528,20 @@ function genEndFigMessage()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function genParseColorValue(parse)
+{
+    parse.pos++; // C
+
+    const val = parse.move();
+
+    if (parse.logRequests)
+        logReqColorValue(val, parse);
+
+    return parseGColorValue(val);
+}
+
 
 
 function genParseColor(parse)
@@ -7986,7 +8131,7 @@ function genParseColorFill(parse)
     fill.color   = genParse(parse);
     fill.opacity = genParse(parse);
 
-
+    
     parse.nTab--;
 
 
@@ -8257,6 +8402,7 @@ function genParse(parse)
     else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
     else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate     (parse);
 
+    else if (parse.next == COLOR_VALUE       ) return genParseColorValue      (parse);
     else if (parse.next == COLOR             ) return genParseColor           (parse);
     else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
@@ -8358,7 +8504,7 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    //console.log('request =', request);
+    console.log('request =', request);
 
     const updateNodeId  = request[0];
     const updateParamId = request[1];
@@ -13648,6 +13794,13 @@ function logReqInterpolate(lerp, nValues, parse)
 }
 
 
+function logReqColorValue(val, parse)
+{
+    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+}
+
+
+
 function logReqColor(col, parse) 
 {
     logReqNode(col, COLOR, parse); 
@@ -16169,6 +16322,17 @@ extends GType
 
 
 
+    static create(space, c1, c2, c3)
+    {
+        return new GColorValue(
+            new GNumberValue(space),
+            new GNumberValue(c1),
+            new GNumberValue(c2),
+            new GNumberValue(c3));
+    }
+
+
+
     copy()
     {
         return new GColorValue(
@@ -16217,10 +16381,24 @@ extends GType
     {
         return this.isValid()
             ?         this.space.toString()
-              + ' ' + this.c1.toString()
-              + ' ' + this.c2.toString()
-              + ' ' + this.c3.toString()
+              + ' ' + this.c1   .toString()
+              + ' ' + this.c2   .toString()
+              + ' ' + this.c3   .toString()
             : INVALID;
+    }
+
+
+
+    toRgbString()
+    {
+        if (!this.isValid())
+            return INVALID;
+
+        const rgb = dataColor2rgb(this.toDataColor());
+
+        return        rgb[0].toString()
+              + ' ' + rgb[1].toString()
+              + ' ' + rgb[2].toString();
     }
 
 
@@ -16241,11 +16419,11 @@ function parseGColorValue(str)
 
     const col = str.split(' ');
 
-    return new GColorValue(
-        new GNumberValue(parseInt(col[0])),
-        new GNumberValue(parseGNumberValue(col[1])),
-        new GNumberValue(parseGNumberValue(col[2])),
-        new GNumberValue(parseGNumberValue(col[3])));
+    return GColorValue.create(
+        parseInt(col[0]),
+        parseGNumberValue(col[1]),
+        parseGNumberValue(col[2]),
+        parseGNumberValue(col[3]));
 }
 
 
@@ -16480,11 +16658,11 @@ extends GOperator
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result = new GColorValue(
-                    space,
-                    new GNumberValue(col[1] * factor[0]),
-                    new GNumberValue(col[2] * factor[1]),
-                    new GNumberValue(col[3] * factor[2]));
+                this.result = GColorValue.create(
+                    space.value,
+                    col[1] * factor[0],
+                    col[2] * factor[1],
+                    col[3] * factor[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -16743,11 +16921,11 @@ extends GOperator
     
                     const factor = getColorSpaceFactor(validCol[0]);
     
-                    this.result = new GColorValue(
-                        new GNumberValue(input.space.value),
-                        new GNumberValue(validCol[1] * factor[0]),
-                        new GNumberValue(validCol[2] * factor[1]),
-                        new GNumberValue(validCol[3] * factor[2]));
+                    this.result = GColorValue.create(
+                        input.space.value,
+                        validCol[1] * factor[0],
+                        validCol[2] * factor[1],
+                        validCol[3] * factor[2]);
                 }
                 else
                     this.result = GColorValue.NaN;
@@ -16841,11 +17019,11 @@ extends GOperator
 
                     const factor = getColorSpaceFactor('rgb');
     
-                    this.result = new GColorValue(
-                        new GNumberValue(1),
-                        new GNumberValue(rgb[0] * factor[0]),
-                        new GNumberValue(rgb[1] * factor[1]),
-                        new GNumberValue(rgb[2] * factor[2]));
+                    this.result = GColorValue.create(
+                        1,
+                        rgb[0] * factor[0],
+                        rgb[1] * factor[1],
+                        rgb[2] * factor[2]);
                 }
                 else
                     this.result = GColorValue.NaN;
@@ -16890,6 +17068,14 @@ extends GType
         super(type);
 
         this.nodeId = nodeId;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.nodeId = base.nodeId;
+        this.fills  = [...base.fills];
     }
 
 
@@ -16948,7 +17134,7 @@ extends GGeometryValueBase
 
     copy()
     {
-        return new GRectangleValue(
+        const rect = new GRectangleValue(
             this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
@@ -16956,6 +17142,10 @@ extends GGeometryValueBase
             this.height.copy(), 
             this.angle .copy(), 
             this.round .copy());
+
+        rect.copyBase(this);
+
+        return rect;
     }
 
 
@@ -18114,12 +18304,7 @@ extends GGeometryBase
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color = new GColorValue(
-            new GNumberValue(1),
-            new GNumberValue(0),
-            new GNumberValue(0),
-            new GNumberValue(0));
-
+        this.color   = GColorValue.create(1, 0, 1, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -18143,16 +18328,18 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
                 console.assert(GEOMETRY_VALUES.includes(this.result.type));
 
-                console.log('this.color =', this.color);
                 this.result.fills.push([
                     COLOR_FILL, 
-                    this.color.toString(), 
-                    this.opacity.toString()])
+                    color  .toRgbString(), 
+                    (opacity.value / 100).toString()]);
 
                 this.result.valid = true;
             }
@@ -18164,6 +18351,9 @@ extends GGeometryBase
            
             
             genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
             if (   this.active
@@ -19557,229 +19747,8 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 }
 
 
-function initColorSliderTextbox(slider)
+function initColorSliderEvents(slider)
 {
-    slider.textbox = createTextbox('sliderText');
-    
-    
-    slider.textbox.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'KeyC'
-            && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('copy');
-        }
-        else if (e.code == 'KeyV'
-              && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('paste');
-        }
-        
-        else if (e.code == 'Enter'
-              || e.code == 'NumpadEnter')
-            slider.textbox.finish(true);
-
-        else if (e.code == 'Escape')
-            slider.textbox.finish(false);
-
-        else if (e.code == 'Tab')
-        {
-            e.preventDefault();
-            
-            var tabs  = document.querySelectorAll('.slider, .select, .menuSelect, button, .menuButton');
-            var index = slider.tabIndex;
-
-            for (var i = 0; i < tabs.length; i++) 
-            {
-                if (   e.shiftKey && tabs[i].tabIndex == index - 1
-                    ||               tabs[i].tabIndex == index + 1) 
-                {
-                    if (tabs[i].className == 'slider')
-                        tabs[i].showTextbox();
-                    else 
-                    {
-                        document.activeElement.blur();
-                        tabs[i].focus();
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        else 
-        {
-            if (   e.key.length == 1
-                && !isDigit(e.key)
-                && e.key != '.'
-                && !(   (   e.code == 'Minus'
-                         || e.code == 'NumpadSubtract')
-                     && slider.min < 0))
-                e.preventDefault();
-
-            var t = slider.textbox;
-
-            var curVal = t.value;
-
-            curVal = 
-                  curVal.substring(0, t.selectionStart) 
-                + curVal.substring(t.selectionEnd, curVal.length);
-
-            var nextVal = parseFloat(curVal + e.key);
-
-            if (   nextVal < slider.min - 0.001
-                || nextVal > slider.max)
-                e.preventDefault();            
-        }
-    });
-
-
-
-    // slider.textbox.addEventListener('input', function()
-    // {
-    //     slider.setValue(Number(slider.textbox.value));
-    // });
-
-
-
-    slider.textbox.addEventListener('paste', function(e)
-    {
-        e.preventDefault();
-
-        var val = parseFloat(e.clipboardData.getData('text/plain'));
-        val = Math.min(Math.max(slider.min, val), slider.max);
-
-        slider.textbox.value = isNaN(val) ? '' : val;
-    });
-
-
-
-    slider.textbox.addEventListener('focusout', function()
-    {
-        slider.parentNode.removeChild(slider.textbox);
-        slider.clicked = false;
-    });
-    
-
-
-    slider.textbox.finish = function(success)
-    {
-        if (success) slider.setValue(Number(slider.textbox.value     ));
-        else         slider.setValue(Number(slider.textbox.savedValue));
-
-        slider.textbox.blur();
-
-        if (slider.inFocus)
-            slider.focus();
-    };    
-    
-    
-    
-    slider.showTextbox = function()
-    {
-        slider.inFocus = 
-               hasFocus(slider)
-            && !slider.clicked;
-    
-        slider.textbox.style.position = 'absolute';
-    
-        slider.textbox.style.left      = slider.offsetLeft   + 1;
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-        slider.textbox.style.outline   = 'none';
-    
-        slider.textbox.style.textAlign = 'center';
-    
-        slider.textbox.value      = numToString(slider.value, slider.dec);
-        slider.textbox.savedValue = slider.textbox.value;
-        
-        slider.parentNode.appendChild(slider.textbox);
-        
-        slider.textbox.focus();
-        slider.textbox.select();
-    }
-}
-
-
-function initColorSliderChildren(slider)
-{
-    slider.text  = createDiv('sliderText');
-    slider.focus = createDiv('sliderFocus');
-
-    slider.appendChild(slider.text);
-    slider.appendChild(slider.focus);
-}
-
-
-
-function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
-{
-    slider.className         = 'slider';
-
-    slider.width             = width;
-    slider.height            = height;
-        
-    slider.style.width       = width;
-    slider.style.height      = height;
-        
-    slider.value             = def;
-    slider.acc               = acc;
-               
-    slider.name              = name;
-    slider.suffix            = suffix;
-    slider.log               = log;
-
-    slider.dragScale         = dragScale;
-    slider.wheelStep         = wheelStep;
-        
-    slider.backColor         = backColor;
-    slider.valueColor        = valueColor;
-           
-    slider.fontSize          = fontSize;
-        
-    slider.style.display     = 'inline';
-        
-    slider.mouseOver         = false;
-    slider.buttonDown0       = false;
-    slider.buttonDown1       = false;
-        
-    slider.clickSize         = 4;
-    slider.moved             = false;
-    
-    slider.tabIndex          = 0;
-    slider.inFocus           = false;
-    slider.clicked           = false;
-
-    slider.oldValue;
-
-    //slider.wrapValue         = false;
-    
-    slider.enableChangeEvent = true;
-
-    slider.pointerEvents     = true;
-
-    slider.valueText         = '';
-
-
-
-    initColorSliderChildren(slider);    
-    initColorSliderTextbox(slider);
-
-    
-
-    //
-
-    slider.onchange  = new Event('change');
-    slider.onconfirm = new Event('confirm');
-
-
-
-    //
-
     slider.addEventListener('pointerdown', function(e)
     {
         if (graphView.spaceDown)
@@ -19800,46 +19769,121 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
                 ? slider.parentNode.parentNode.parentNode
                 : null;
 
-            if (   nodeDiv 
-                && nodeDiv.className == 'node') 
+            if (nodeDiv && nodeDiv.className == 'node') 
                 graphView.putNodeOnTop(nodeDiv.node);
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
-
+                
             slider.buttonDown0  = true;
             slider.buttonDown0_ = true;
             slider.moved        = false;
-            slider.clientX      = 0;
-            slider.oldValue     = slider.value;
+            slider.clientX      = e.clientX;
+            slider.movedX       = 0;
 
-            slider.prevValue    = slider.value;
-            slider.sx           = e.clientX;
 
-            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
-            
-            
+            if (!slider.readOnly)
+            {
+                slider.oldValue   = slider.value;
+                slider.startValue = slider.value;
+                slider.prevValue  = slider.value;
+                slider.sx         = e.clientX;
+
+                slider.clickTimer = setTimeout(() => 
+                {
+                    if (!document.menuHadFocus)
+                    {
+                        slider.moved = true;
+                        slider.lockPointer(e.pointerId);
+                    }
+                }, 
+                500);
+            }
+
+
+            const objCol = colorStyleRgb(rgbActiveObject);
+
+            if (   !slider.param
+                || !slider.param.node.selected)
+                slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
+
+            else
+            {
+                slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
+                    
+                if (slider.param.index < slider.param.node.params.length-1)
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
+            }
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
             document.activeElement.blur();
 
-            slider.clickTimer = setTimeout(function() 
-            {
-                onSliderClickTimer(slider); 
-            }, 500);
+
+            if (slider.param)
+                slider.param.noUpdate = true;  
         }
         else if (e.button == 1)
         {
             e.preventDefault();
             slider.buttonDown1 = true;
         }
+        else if (e.button == 2)
+        {
+            e.preventDefault();
+            slider.buttonDown2 = true;
+        }
     });
 
 
 
-    slider.addEventListener('pointermove', function(e)
+    slider.addEventListener('pointerenter', function(e)
+    {
+        if (   !graphView.spaceDown
+            && slider.pointerEvents)
+        {
+            if (graphView.tempConn)
+                slider.style.cursor = 'default';
+            
+            else
+                slider.style.cursor = 
+                       slider.readOnly 
+                    || containsChild(slider, slider.textbox) 
+                    ? 'default'
+                    : 'ew-resize';
+
+                    
+            const colShadow = 
+                isDarkMode()
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
+            if (slider.param)
+            {
+                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+
+                if (    slider.param.node
+                    &&  slider.param.node.params.includes(slider.param)
+                    && !isLastInArray(slider.param.node.params, slider.param))
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
+
+
+            slider.focus.style.visibility = 'visible';
+            slider.focus.style.opacity    = '100%';
+    
+            slider.update();
+        }
+    });
+
+
+
+    slider.addEventListener('pointermove', e =>
     {
         if (!slider.pointerEvents)
             return;
@@ -19852,51 +19896,175 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             && e.clientX <  rect.right
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
-        
+
+
         slider.clientX = e.clientX;
 
         
-        if (slider.buttonDown0)
+        if (    slider.buttonDown0
+            && !slider.readOnly)
         {
-            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-            
             if (slider.isPointerLocked())
             {
                 slider.movedX += e.movementX;
                 
-                let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                
-                // TODO: if (log) do log scaling
-                let val = slider.oldValue - dx*slider.dragScale*adaptive;
-                
-                const grain = Math.pow(10, -slider.dec);
-                val = Math.floor(val / grain) * grain;
-                
-                slider.setValue(val, true, false);
+                if (!isNaN(slider.value))
+                {
+                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
+                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                    const grain    = Math.pow(10, -slider.dec);
+                    const drag     = grain * sqr(slider.dragScale);
 
-                slider.prevValue = slider.value;
+                    const val      = slider.startValue + dx * drag * adaptive;
+
+                    
+                    // reset slider movement at the limits for better UX
+                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
+                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+
+                    slider.setValue(
+                        Math.round(val / grain) * grain, 
+                        true, 
+                        false, 
+                        false,
+                        getCtrlKey(e));
+
+
+                    if (   val <= min
+                        || val >= max)
+                    {
+                        slider.movedX     = 0;
+                        slider.startValue = slider.value;
+                        slider.sx         = e.clientX;
+                    }
+
+
+                    if (slider.value != slider.prevValue)
+                        pushUpdateFromParam([slider.param.node], slider.param);
+
+                    slider.prevValue = slider.value;
+                }
             }
             else
             {
                 if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
                 {
                     slider.moved = true;
-                    slider.lockPointer();
+                    slider.lockPointer(e.pointerId);
+
+                    slider.dispatchEvent(slider.onstartchange);
                 }
             }
         }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-        
-        // slider.update();
+        else if (graphView.tempConn
+              && slider.param)
+        {
+            let savedInput = 
+                graphView.savedConn
+                ? graphView.savedConn.input
+                : null;
+
+            if (    graphView.tempConn.output
+                &&  slider.param.input
+                &&  slider.param.input.types.includes(graphView.tempConn.output.type)
+                && !graphView.tempConn.output.node.follows(slider.param.node)
+                && (  !slider.param.input.connected // not already connected to this input
+                    || slider.param.input.connectedOutput != graphView.tempConn.output
+                    || slider.param.input == savedInput))
+            {
+                graphView.overInput = slider.param.input;
+                    
+                slider.param.input.mouseOver = true;
+                slider.param.input.updateControl();
+
+                const rect = boundingRect(slider.param.input.control);
+
+                graphView.tempConn.wire.inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
+            else if ( graphView.tempConn.input
+                  &&  slider.param.output
+                  &&  graphView.tempConn.input.types.includes(slider.param.output.type)
+                  && !slider.param.node.follows(graphView.tempConn.input.node))
+            {
+                graphView.overOutput = slider.param.output;
+                    
+                slider.param.output.mouseOver = true;
+                slider.param.output.updateControl();
+
+
+                const rect = boundingRect(slider.param.output.control);
+
+                graphView.tempConn.wire.outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+
+
+                graphView.tempConn.input.updateControl();
+            }
+        }
+        else if (slider.readOnly)
+        {
+            slider.moved = true;
+        }
     });
     
     
     
+    slider.addEventListener('pointerleave', function(e)
+    {
+        slider.style.cursor           = 'default';
+        
+        slider.focus.style.visibility = 'hidden';
+        slider.focus.style.opacity    = 0;
+
+        slider.update();
+
+
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != slider.param.node)
+            {
+                const input = graphView.overInput;
+                
+                graphView.overInput   = null;
+                
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
+                
+                graphView.tempConn.wire.inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node != slider.param.node)
+            {
+                const output = graphView.overOutput;
+                
+                graphView.overOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
+                graphView.tempConn.wire.outputPos = point_NaN;
+                graphView.tempConn.input.updateControl();
+           }
+        }
+    });
+
+
+
     slider.addEventListener('losecapture', function()
     {
         slider.buttonDown0 = false;
+        slider.buttonDown1 = false;
+        slider.buttonDown2 = false;
         slider.mouseOver   = false;
         slider.update();
     });
@@ -19907,21 +20075,45 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
     {
         clearTimeout(slider.clickTimer);
 
-        if (   slider.moved
+
+        if (graphView.tempConn)
+        {
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.node.follows(slider.param.node)
+                &&  graphView.overInput)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overInput.endConnection();
+            }
+            else if (graphView.tempConn.input
+                && !slider.param.node.follows(graphView.tempConn.input.node)
+                &&  graphView.overOutput)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overOutput.endConnection();
+            }
+        }
+        
+        else if (   slider.moved
             || document.menuHadFocus)
         {
             slider.unlockPointer(e.pointerId);
-            return;            
-        }    
 
-        if (slider.buttonDown0_)
+            if (slider.param)
+                slider.param.noUpdate = false;  
+
+            return;            
+        }
+
+        else if (slider.buttonDown0_)
         {
             slider.clicked = true;
             slider.showTextbox();
         }
-        
-        if (slider.buttonDown1)
-            slider.buttonDown1 = false;
+
+             if (e.button == 0) slider.buttonDown0 = false;
+        else if (e.button == 1) slider.buttonDown1 = false;
+        else if (e.button == 2) slider.buttonDown2 = false;
 
         slider.buttonDown0_ = false;
     });    
@@ -19938,62 +20130,119 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
             slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            if (slider.value != slider.oldValue)
-                slider.dispatchEvent(slider.onconfirm);
+            // if (    slider.value != slider.oldValue
+            //     && !slider.readOnly)
+            //     slider.dispatchEvent(slider.onconfirm);
         }
-        if (   e.button == 1
-            && slider.buttonDown1)
-        {
-            slider.buttonDown1 = false;            
-        }
+        // else if (   e.button == 1
+        //     && slider.buttonDown1)
+        // {
+        //     slider.buttonDown1 = false;            
+        // }
     });
 
 
     
-    slider.addEventListener('pointerenter', function(e)
-    {
-        if (   !graphView.spaceDown
-            && slider.pointerEvents)
-        {
-            slider.style.cursor           = 'all-scroll';
-            
-            slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-            slider.focus.style.visibility = 'visible';
-            slider.focus.style.opacity    = '100%';
-    
-            slider.update();
-        }
-    });
-
-
-
-    slider.addEventListener('pointerleave', function(e)
-    {
-        slider.style.cursor     = 'default';
-        
-        slider.focus.style.visibility = 'hidden';
-        slider.focus.style.opacity    = 0;
-
-        slider.update();
-    });
-
-
-
     slider.addEventListener('wheel', e =>
     {
+        if (!slider.pointerEvents)
+            return;
+
+
+        const isTouchpad = 
+               Math.abs(e.deltaX) < 100
+            && Math.abs(e.deltaY) < 100;
+
+
+        if (isTouchpad)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
+        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
+
+
         if (   !getCtrlKey(e)
             && !slider.buttonDown1)
         {
             e.stopPropagation();
 
-            slider.oldValue = slider.value;
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
-            // TODO conform after a delay and/or another action, same with key changes 
+            if (!slider.readOnly)
+            {
+                if (   document.activeElement
+                    && document.activeElement.tagName.toLowerCase() == 'input'
+                    && document.activeElement.slider)
+                    document.activeElement.slider.textbox.finish(true, false);
+
+                slider.oldValue = slider.value;
+
+                const dec = Math.pow(10, -slider.dec);
+
+                const val =
+                    isTouchpad
+                    ? slider.value -  dWheelX               * slider.wheelScale * dec
+                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                
+                slider.setValue(val, true, true, false, false);
+            }
         }
     });
 
 
 
+    // graphView.addEventListener('touchstart', e =>
+    // {
+    //     graphView.touches.push(e);
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchmove', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches[i] = e;
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchend', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchcancel', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
     slider.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
@@ -20013,34 +20262,477 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
             && slider.pointerEvents)
             slider.showTextbox();
     });
+}
 
 
+function initColorSliderTextbox(slider)
+{
+    slider.textbox = createTextbox('colorSliderTextbox');
+    slider.textbox.slider = slider;
     
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
+
+
+    slider.textbox.addEventListener('pointerdown', e =>
     {
-        const oldValue = slider.value;
+        e.stopPropagation();
+    });
 
-        // if (slider.wrapValue)
-        // {
-        //     while (value < slider.min) value += slider.max - slider.min;
-        //     while (value > slider.max) value -= slider.max - slider.min;
-        // }
-        // else
-        //     value = Math.min(Math.max(slider.min, value), slider.max);
+
+
+    slider.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+        slider.textbox.style.cursor = 'default';
+    });
+
+
+
+    slider.textbox.addEventListener('keydown', e =>
+    {
+        e.stopPropagation();
+
+
+        if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+        }
+
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !slider.readOnly)
+        {
+            // by doing nothing here I let the OS do its thing
+        }
         
-        if (  !confirm
-            || value != oldValue)
-            slider.value = value;
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && !slider.readOnly)
+        {
+            slider.textbox.keyBlur = true;
+            slider.textbox.finish(true);
+        }
 
+        else if (e.code == 'Escape')
+        {
+            slider.textbox.keyBlur = true;
+            slider.textbox.finish(false);
+        }
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (slider.param)
+            {
+                const params = slider.param.node.params;
+                let   index  = slider.param.index;
+
+                slider.textbox.keyBlur = true;
+                slider.textbox.finish(true, false);
+
+                if (   e.shiftKey 
+                    && index > 0)
+                {
+                    while (params[--index].control.readOnly);
+                    params[index].control.showTextbox();
+                }
+                else if (!e.shiftKey 
+                      && index < params.length-1) 
+                {
+                    while (params[++index].control.readOnly);
+                    params[index].control.showTextbox();
+                }
+            }
+
+            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let index = slider.tabIndex;
+
+            // for (let i = 0; i < tabs.length; i++) 
+            // {
+            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
+            //         ||               tabs[i].tabIndex == index + 1) 
+            //     {
+            //         if (tabs[i].className == 'slider')
+            //             tabs[i].showTextbox();
+            //         else 
+            //         {
+            //             document.activeElement.blur();
+            //             tabs[i].focus();
+            //         }
+
+            //         break;
+            //     }
+            // }
+        }
+
+        else if ((   e.key == 'ArrowUp'
+                  || e.key == 'ArrowDown')
+              && !slider.readOnly)
+        {
+            e.preventDefault();
+
+            let text = slider.textbox.value;
+
+            if (   slider.valueCanContainSuffix   
+                && text.length >= slider.suffix.length
+                && text.substring(text.length - slider.suffix.length) == slider.suffix)
+                text = text.substring(0, text.length - slider.suffix.length);
+
+
+            if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
+                slider.textbox.selectionStart =  slider.textbox.selectionEnd;
+
+            const pos = Math.min(
+                slider.textbox.selectionStart,
+                text.length);
+
+            const revPos = text.length - pos;
+
+            const val  = parseFloat(text);
+            const sign = e.key == 'ArrowUp' ? 1 : -1;
+
+            let decIndex = text.indexOf('.');
+            if (decIndex < 0) decIndex = text.indexOf(',');
+            
+            if (   text[0] != '-'
+                || pos > 0)
+            {
+                if (decIndex < 0) // integer
+                {
+                    let dec = Math.pow(10, revPos);
+
+                    if (e.shiftKey) 
+                        dec *= 10;
+
+                    slider.setValue((val + sign * dec) / slider.valueScale);
+                    slider.updateTextbox();
+                }
+                else // floating point
+                {
+                    const _edit = pos - decIndex - 1;
+
+                    let  dec  = 
+                        _edit < 0
+                        ?     Math.pow(10, -_edit - 1)
+                        : 1 / Math.pow(10,  _edit    );
+
+                    if (e.shiftKey) 
+                        dec *= 10;
+
+                    slider.displayDec = text.length-1 - decIndex;
+                    slider.setValue((val + sign * dec) / slider.valueScale);
+                    slider.updateTextbox();
+                }
+
+                slider.textbox.selectionStart =
+                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos - slider.suffix.length;
+            }
+        }
+        else 
+        {
+            let curVal = slider.textbox.value;
+
+            if (      e.key.length == 1
+                   && !isDigit(e.key)
+                   && e.key != '?'
+                   && (   !slider.valueCanContainSuffix
+                       || !slider.suffix.includes(e.key))
+                   && (   !slider.showHex 
+                       || !isHexDigit(e.key))
+                   && (   slider.showHex
+                       ||    e.key != '.'
+                          && e.key != ',')
+                   && !(   ((      e.code == 'Minus'
+                                || e.code == 'NumpadSubtract')
+                             && !curVal.includes('-'))
+                        && slider.min < 0)
+                ||     slider.readOnly
+                   && !isArrowKey(e.code))
+                e.preventDefault();
+
+            curVal =
+                curVal == INVALID
+                ? ''
+                :   curVal.substring(0, slider.textbox.selectionStart) 
+                  + curVal.substring(slider.textbox.selectionEnd, curVal.length);
+
+                  
+            const nextVal = parseFloat(curVal + e.key);
+
+            if (   nextVal < slider.min - 0.001
+                || nextVal > slider.max)
+                e.preventDefault();            
+        }
+    });
+
+
+
+    slider.textbox.addEventListener('paste', function(e)
+    {
+        e.preventDefault();
+
+        const str = e.clipboardData.getData('text/plain');
+
+        let val = 
+            slider.showHex
+            ? parseInt(str, 16)
+            : parseFloat(str);
+
+        val = Math.min(Math.max(slider.min, val), slider.max);
+
+        slider.textbox.value = isNaN(val) ? '' : val;
+    });
+
+
+
+    slider.textbox.addEventListener('focusout', function()
+    {
+        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+
+        if (!slider.textbox.keyBlur) slider.textbox.finish(true);
+        else                         slider.textbox.keyBlur = false;
+
+        if (slider.savedSuccessOnFocusOut != null)
+        {
+            slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
+            slider.savedSuccessOnFocusOut = null;
+        }
+
+        slider.parentNode.removeChild(slider.textbox);
+        slider.clicked = false;
+    });
+    
+
+
+    slider.textbox.finish = function(success, focusSlider = true)
+    {
+        let   value      = slider.textbox.value;
+        const savedValue = slider.textbox.savedValue;
+
+        value = value.replace(slider.suffix, '');
+        
+        
+        let val      = value     .indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let savedVal = savedValue.indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+
+        if (!isNaN(val))
+            val /= slider.valueScale;
+
+       
+        const e = new CustomEvent('finishedit', { 'detail': {
+            'success':         success,
+            'value':           value,
+            'oldValue':        savedValue,
+            'preventSetValue': false }});
+
+        slider.dispatchEvent(e);
+
+
+        if (!e.preventSetValue)
+        {
+            if (success) 
+            {
+                slider.setValue(
+                       value.trim() != '' 
+                    && value.trim() != '-'
+                    ? val 
+                    : savedVal);
+            }
+            else
+                slider.setValue(savedVal);
+        }
+         
+        
+        slider.textbox.blur();
+
+        slider.text.style.display = 'block';
+
+        if (   slider.inFocus
+            && focusSlider)
+            slider.focus();
+    };    
+    
+    
+
+    slider.showTextbox = function()
+    {
+        slider.text.style.display = 'none';
+
+        slider.inFocus = 
+               hasFocus(slider)
+            && !slider.clicked;
+    
+        slider.textbox.style.position  = 'absolute';
+        slider.textbox.style.left      = '50%';
+        slider.textbox.style.transform = 'translate(-50%)';
+        slider.textbox.style.top       = slider.offsetTop    + 1;
+        slider.textbox.style.width     = slider.offsetWidth  - 2;
+        slider.textbox.style.height    = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        slider.textbox.style.outline   = 'none';
+        slider.textbox.style.textAlign = 'center';
+        slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
+
+
+        const isConnected =    
+               slider.param != null
+            && slider.param.input
+            && slider.param.input.connected;
+
+        enableElementText(
+            slider.textbox, 
+               !slider.readOnly
+            && !isConnected);
+
+        slider.updateTextbox();
+        
+        slider.parentNode.appendChild(slider.textbox);
+        
+        slider.textbox.focus();
+        slider.textbox.select();
+
+        slider.textbox.style.cursor = 'default';
+    }
+
+
+
+    slider.updateTextbox = function()
+    {
+        slider.textbox.value =
+            (isNaN(slider.value)
+             ? DISPLAY_INVALID
+             : numToString(
+                   slider.value * slider.valueScale, 
+                   slider.displayDec, 
+                   slider.showHex
+               ).toUpperCase())
+            + (slider.valueCanContainSuffix ? slider.suffix : '');
+            
+        slider.textbox.savedValue = slider.textbox.value;
+    };
+}
+
+
+function initColorSliderChildren(slider)
+{
+    slider.bar   = createDiv('colorSliderBar');
+    slider.text  = createDiv('colorSliderText');
+    slider.focus = createDiv('colorSliderFocus');
+
+    slider.appendChild(slider.bar);
+    slider.appendChild(slider.text);
+    slider.appendChild(slider.focus);
+}
+
+
+function initColorSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
+{
+    slider.param                  = param;
+     
+    slider.className              = 'colorSlider';
+     
+    slider.width                  = width;
+    slider.height                 = height;
+             
+    slider.style.width            = width;
+    slider.style.height           = height;
+             
+    slider.value                  = def;
+    slider.acc                    = acc;
+     
+    slider.id                     = id;
+    slider.name                   = name;
+    slider.suffix                 = suffix;
+    slider.valueCanContainSuffix  = false;
+    slider.log                    = log;
+     
+    slider.dragReverse            = false;
+    slider.dragScale              = dragScale;
+    slider.wheelScale             = wheelScale;
+             
+    slider.backColorLight         = 'transparent';
+    slider.valueColorLight        = '#7772';
+    slider.textColorLight         = '#000';
+                
+    slider.backColorDark          = 'transparent';
+    slider.valueColorDark         = '#fff4';
+    slider.textColorDark          = '#eee';
+                
+    slider.fontSize               = 11;
+             
+    slider.style.display          = 'inline';
+             
+    slider.mouseOver              = false;
+    slider.buttonDown0            = false;
+    slider.buttonDown1            = false;
+             
+    slider.clickSize              = 4;
+    slider.moved                  = false;
+         
+    slider.tabIndex               = 0;
+    slider.inFocus                = false;
+    slider.clicked                = false;
+ 
+    slider.startValue             = 0;
+    slider.oldValue; 
+ 
+    slider.wrapValue              = false;
+     
+    slider.showName               = showName;
+    slider.showHex                = false;
+         
+    slider.enableChangeEvent      = true;
+    
+    slider.successOnFocusOut      = false;
+    slider.keyBlur                = false;
+    
+    slider.pointerEvents          = true;
+    slider.readOnly               = false;
+     
+    slider.valueText              = '';
+     
+    slider.barTop                 = 0;
+    slider.barBottom              = 1;
+     
+    slider.ranges                 = [];
+    slider.rangeDivs              = [];
+     
+    slider.options                = []; // if dec == 0, show named choices instead of a value
+ 
+     
+    slider.onstartchange          = new Event('startchange');
+    slider.onchange               = new Event('change');
+    slider.onconfirm              = new Event('confirm');
+
+
+    initColorSliderChildren(slider);    
+    initColorSliderTextbox(slider);
+    initColorSliderEvents(slider);
+
+
+
+    slider.setName = function(name)
+    {
+        slider.name = name;
+        slider.update();
+    };
+
+
+
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    {
+        const oldValue = slider.value.copy();
+
+        slider.value = value.copy();
 
         slider.update();
-
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
             && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
-
 
         if (   confirm
             && slider.enableChangeEvent
@@ -20051,74 +20743,149 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
 
 
+    slider.setSuffix = function(suffix, valueCanContainSuffix = false)
+    {
+        slider.suffix                = suffix;
+        slider.valueCanContainSuffix = valueCanContainSuffix;
+    };
+    
+
+
     slider.update = function()
     {
-        // let v  =  slider.value / (slider.max - slider.min);
-        // let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        const sx = slider.getOffsetLeft();
+        const sw = slider.getClientWidth();
+        const sh = slider.getClientHeight();
 
-        // slider.bar.style.background = slider.valueColor;
+        const cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
+        const v  =  slider.value      / (slider.displayMax - slider.displayMin);
 
-        // slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
-        // slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.updateBar(sx, cx, v, sw, sh);
+        slider.updateColors();
+        slider.updateText();
+        slider.updateFocus(sw, sh);
+        
+        updateSliderRanges(slider, sw, sh);
 
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
 
-        // if (v >= 0)
-        // {
-        //     slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
-        //     slider.bar.style.width = Math.round(v * slider.clientWidth);
-        // }
-        // else
-        // {
-        //     slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
-        //     slider.bar.style.width = -v * slider.clientWidth;
-        // }
+        slider.cachedOffsetLeft   = null;
+        slider.cachedClientWidth  = null;
+        slider.cachedClientHeight = null;
+    };
 
-        // slider.bar.style.background =
-        //     slider.value >= 0
-        //     ? slider.valueColor
-        //     : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
+
+    slider.updateBar = function(sx, cx, v, sw, sh)
+    {
+        if (slider.dragReverse)
+            v *= -1;
+
+            
+        if (isNaN(slider.value))
+            slider.bar.style.display = 'none';
+
+        else
+        {
+            slider.bar.style.display = 'block';
+
+            const x = 
+                v >= 0
+                ? sx + cx
+                : sx + cx + v * sw;
+
+            slider.bar.style.left   = Math.max(0, x);
+            slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+
+            slider.bar.style.top    = sh * slider.barTop;
+            slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
+        }
+    };
+
+
+
+    slider.updateColors = function()
+    {
+        slider     .style.background = isDarkMode() ? slider.backColorDark  : slider.backColorLight;
+        slider.bar .style.background = isDarkMode() ? slider.valueColorDark : slider.valueColorLight;
+        slider.text.style.color      = isDarkMode() ? slider.textColorDark  : slider.textColorLight;
+    };
+
+
+
+    slider.updateText = function()
+    {
         slider.text.innerHTML = '';
         
-        if (slider.name.length > 0)
-            slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
-        
-        let valueText = 
-            slider.valueText != ''
-            ? slider.valueText
-            : rgb2hex(slider.value);
+        if (   slider.name.length > 0
+            && slider.showName)
+            slider.text.innerHTML += '<span class="colorSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
 
-        slider.text.innerHTML += valueText + slider.suffix;
-
-        slider.style.backgroundColor = colorStyleRgb(slider.value);
+        slider.text.innerHTML += slider.getValueText() + slider.suffix;
     };
 
 
 
-    slider.lockPointer = function()
+    slider.updateFocus = function(sw, sh)
     {
-        slider.requestPointerLock =    
-               slider.requestPointerLock 
-            || slider.mozRequestPointerLock;
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = sw;
+        slider.focus.style.height = sh;
+    };
 
-        slider.requestPointerLock();
+
+
+    slider.getValueText = function()
+    {
+        if (   slider.options.length > 0
+            && slider.displayDec == 0)
+        {
+            if (   slider.value <  0 
+                || slider.value >= slider.options.length)
+                return DISPLAY_INVALID;
+            else
+                return slider.options[Math.round(slider.value)];
+        }
+        else if (slider.valueText != '')
+        {
+            return slider.valueText;
+        }
+        else
+        {
+            return isNaN(slider.value)
+                   ? DISPLAY_INVALID
+                   : Math.abs(slider.value * slider.valueScale) > 999999
+                     ? (slider.value * slider.valueScale).toExponential(1)
+                     : numToString(
+                           slider.value * slider.valueScale, 
+                           slider.displayDec, 
+                           slider.showHex
+                       ).toUpperCase();
+        }
+    };
+
+
+
+    slider.lockPointer = function(pointerId)
+    {
         clearTimeout(slider.clickTimer);
 
-        slider.movedX = 0;
-        slider.sx     = 0;
+        slider.requestPointerLock =    
+               slider.      requestPointerLock 
+            || slider.   mozRequestPointerLock
+            || slider.webkitRequestPointerLock;
+
+        slider.requestPointerLock();
     };
 
 
 
-    slider.unlockPointer = function()
+    slider.unlockPointer = function(pointerId)
     {
         document.exitPointerLock =    
-               document.exitPointerLock    
-            || document.mozExitPointerLock;
+               document.      exitPointerLock    
+            || document.   mozExitPointerLock
+            || document.webkitExitPointerLock;
 
         document.exitPointerLock();
     };
@@ -20127,24 +20894,20 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.isPointerLocked = function()
     {
-        return (document.pointerLockElement    === slider 
-             || document.mozPointerLockElement === slider);
+        return (document.      pointerLockElement === slider 
+             || document.   mozPointerLockElement === slider
+             || document.webkitPointerLockElement === slider);
     }
-    
+
+
+
+    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
+    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
+    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+
 
 
     slider.update();
-}
-
-
-
-function onSliderClickTimer(slider)
-{
-    if (!document.menuHadFocus)
-    {
-        slider.moved = true;
-        slider.lockPointer();
-    }
 }
 
 
@@ -22842,7 +23605,7 @@ extends Parameter
     genRequest(gen)
     {
         // this function exists because a parameter without an output
-        // should still be able to generate a request a value
+        // should still be able to generate a request
         
         // 'this' is the param
 
@@ -22941,7 +23704,7 @@ extends NumberParamBase
 
         this.control.addEventListener('finishedit', e =>
         { 
-            let   dec    = decCount(e.detail.value);
+            let   dec    = decCount(e.detail.value); 
             const oldDec = decCount(e.detail.oldValue);
 
             
@@ -23169,13 +23932,10 @@ extends Parameter
     defaultValue;
 
     oldValue = null;
-    allowEditDecimals = true;
     
 
 
-    get value   () { return this._control.value; }
-    //get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
-
+    
     
     get valueText() { return this.control.valueText; }
     set valueText(text) 
@@ -23185,9 +23945,9 @@ extends Parameter
     }
 
     
-    //get value   () { return this.control.value; }
-    get genValue() { return new GColorValue(this.control.value, this.control.displayDec); }
-
+    get value   () { return this.control.value; }
+    get genValue() { return this.value.copy(); }
+    
 
     
     constructor(id,
@@ -23195,10 +23955,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = 0, 
-                min       = Number.MIN_SAFE_INTEGER, 
-                max       = Number.MAX_SAFE_INTEGER,
-                decimals  = 0,
+                value     = GColorValue.create(1, 0, 1, 0),
                 dragScale = 0.05)
     {
         super(id, name, NUMBER);
@@ -23211,7 +23968,7 @@ extends Parameter
         this.defaultValue   = value;
 
 
-        initNumberSlider(
+        initColorSlider(
             this,
             this.control,
             120,        // width
@@ -23219,54 +23976,51 @@ extends Parameter
             this.id,
             this.name, 
             showName,
-            min,
-            max,
             value,      // default
-            decimals,   // decimals
             dragScale); // drag scale
 
-        this.control.successOnFocusOut = true;
+        // this.control.successOnFocusOut = true;
 
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
+        if (hasInput)  this.initInput(COLOR_TYPES);
+        if (hasOutput) this.initOutput(COLOR, this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => 
-        {
-            this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
-        });
+        // this.control.addEventListener('confirm', () => 
+        // {
+        //     this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
+        // });
 
 
-        this.control.addEventListener('finishedit', e =>
-        { 
-            let   dec    = decCount(e.detail.value);
-            const oldDec = decCount(e.detail.oldValue);
+        // this.control.addEventListener('finishedit', e =>
+        // { 
+        //     let   dec    = decCount(e.detail.value);
+        //     const oldDec = decCount(e.detail.oldValue);
 
             
-            if (!e.detail.success)
-                return;
+        //     if (!e.detail.success)
+        //         return;
 
 
-            if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-                && dec >= oldDec)
-            {
-                this.setValue(new GNumberValue(e.detail.value, dec), true);
-                e.preventSetValue = true;
-            }
-            else if (this.allowEditDecimals)
-            {
-                if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
-                    dec += Math.log10(this.control.valueScale);
-                else 
-                    dec = oldDec;
+        //     if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+        //         && dec >= oldDec)
+        //     {
+        //         this.setValue(new GNumberValue(e.detail.value, dec), true);
+        //         e.preventSetValue = true;
+        //     }
+        //     else if (this.allowEditDecimals)
+        //     {
+        //         if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+        //             dec += Math.log10(this.control.valueScale);
+        //         else 
+        //             dec = oldDec;
 
-                    this.setValue(new GNumberValue(e.detail.value, dec), true);
-                e.preventSetValue = true;
-            }
-        });
+        //             this.setValue(new GNumberValue(e.detail.value, dec), true);
+        //         e.preventSetValue = true;
+        //     }
+        // });
     }
 
 
@@ -23286,30 +24040,30 @@ extends Parameter
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    {
-        this.preSetValue(value, createAction, dispatchEvents);
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    // {
+    //     this.preSetValue(value, createAction, dispatchEvents);
 
-        if (updateControl)
-        {
-            this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false, forceChange); 
-        }
+    //     if (updateControl)
+    //     {
+    //         this.control.setDecimals(value.decimals, value.decimals);
+    //         this.control.setValue(value.value, false, false, forceChange); 
+    //     }
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+    //     super.setValue(value, createAction, updateControl, dispatchEvents);
 
-        this.oldValue = this.genValue;
-    }    
+    //     this.oldValue = this.genValue;
+    // }    
 
 
 
-    valuesEqual(val1, val2)
-    {
-        return val1
-            && val2
-            && val1.value    == val2.value
-            && val1.decimals == val2.decimals;
-    }
+    // valuesEqual(val1, val2)
+    // {
+    //     return val1
+    //         && val2
+    //         && val1.value    == val2.value
+    //         && val1.decimals == val2.decimals;
+    // }
 
 
 
@@ -23330,15 +24084,19 @@ extends Parameter
         return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
     }
 
+
     
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
+        console.log('value =', value);
+        console.assert(value.type && value.type == COLOR_VALUE);
+
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
         {
-            this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false, forceChange); 
+            // this.control.setDecimals(value.decimals, value.decimals);
+            this.control.setValue(value, false, false, forceChange); 
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -23351,7 +24109,7 @@ extends Parameter
     genRequest(gen)
     {
         // this function exists because a parameter without an output
-        // should still be able to generate a request a value
+        // should still be able to generate a request
         
         // 'this' is the param
 
@@ -23368,11 +24126,12 @@ extends Parameter
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
 
-        else request.push( 
-            NUMBER_VALUE, 
-            new GNumberValue(
-                this.control.value, 
-                this.control.displayDec).toString());
+        else 
+        {
+            request.push( 
+                COLOR_VALUE, 
+                this.value.toString());
+        }
 
 
         return request;
@@ -31467,9 +32226,11 @@ extends OpGeometryBase
         this.addInput(new Input(GEOMETRY_TYPES));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
-        this.addParam(this.paramColor   = new ColorParam('color', '', false, true, true));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '', false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', '', false, true, true, 100, 0, 100));
 
+        this.paramColor.setValue(GColorValue.create(1, 0, 1, 0), false, true, false);
+        
         this.paramOpacity.control.suffix = '%';
     }
     

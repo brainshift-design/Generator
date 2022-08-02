@@ -26,6 +26,17 @@ extends GType
 
 
 
+    static create(space, c1, c2, c3)
+    {
+        return new GColorValue(
+            new GNumberValue(space),
+            new GNumberValue(c1),
+            new GNumberValue(c2),
+            new GNumberValue(c3));
+    }
+
+
+
     copy()
     {
         return new GColorValue(
@@ -74,10 +85,24 @@ extends GType
     {
         return this.isValid()
             ?         this.space.toString()
-              + ' ' + this.c1.toString()
-              + ' ' + this.c2.toString()
-              + ' ' + this.c3.toString()
+              + ' ' + this.c1   .toString()
+              + ' ' + this.c2   .toString()
+              + ' ' + this.c3   .toString()
             : INVALID;
+    }
+
+
+
+    toRgbString()
+    {
+        if (!this.isValid())
+            return INVALID;
+
+        const rgb = dataColor2rgb(this.toDataColor());
+
+        return        rgb[0].toString()
+              + ' ' + rgb[1].toString()
+              + ' ' + rgb[2].toString();
     }
 
 
@@ -98,9 +123,9 @@ function parseGColorValue(str)
 
     const col = str.split(' ');
 
-    return new GColorValue(
-        new GNumberValue(parseInt(col[0])),
-        new GNumberValue(parseGNumberValue(col[1])),
-        new GNumberValue(parseGNumberValue(col[2])),
-        new GNumberValue(parseGNumberValue(col[3])));
+    return GColorValue.create(
+        parseInt(col[0]),
+        parseGNumberValue(col[1]),
+        parseGNumberValue(col[2]),
+        parseGNumberValue(col[3]));
 }

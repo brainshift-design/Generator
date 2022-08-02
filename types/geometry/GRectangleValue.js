@@ -35,7 +35,7 @@ extends GGeometryValueBase
 
     copy()
     {
-        return new GRectangleValue(
+        const rect = new GRectangleValue(
             this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
@@ -43,6 +43,10 @@ extends GGeometryValueBase
             this.height.copy(), 
             this.angle .copy(), 
             this.round .copy());
+
+        rect.copyBase(this);
+
+        return rect;
     }
 
 

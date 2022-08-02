@@ -1,3 +1,17 @@
+function genParseColorValue(parse)
+{
+    parse.pos++; // C
+
+    const val = parse.move();
+
+    if (parse.logRequests)
+        logReqColorValue(val, parse);
+
+    return parseGColorValue(val);
+}
+
+
+
 function genParseColor(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);

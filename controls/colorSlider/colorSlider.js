@@ -1,339 +1,121 @@
 function initColorSliderChildren(slider)
 {
-    slider.text  = createDiv('sliderText');
-    slider.focus = createDiv('sliderFocus');
+    slider.bar   = createDiv('colorSliderBar');
+    slider.text  = createDiv('colorSliderText');
+    slider.focus = createDiv('colorSliderFocus');
 
+    slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
 }
 
 
-
-function initColorSlider(slider, width, height, name, def, dragScale, wheelStep, acc, suffix = '', log = false, backColor = '#fff', valueColor = '#eee', fontSize = 11)
+function initColorSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
 {
-    slider.className         = 'slider';
-
-    slider.width             = width;
-    slider.height            = height;
-        
-    slider.style.width       = width;
-    slider.style.height      = height;
-        
-    slider.value             = def;
-    slider.acc               = acc;
-               
-    slider.name              = name;
-    slider.suffix            = suffix;
-    slider.log               = log;
-
-    slider.dragScale         = dragScale;
-    slider.wheelStep         = wheelStep;
-        
-    slider.backColor         = backColor;
-    slider.valueColor        = valueColor;
-           
-    slider.fontSize          = fontSize;
-        
-    slider.style.display     = 'inline';
-        
-    slider.mouseOver         = false;
-    slider.buttonDown0       = false;
-    slider.buttonDown1       = false;
-        
-    slider.clickSize         = 4;
-    slider.moved             = false;
+    slider.param                  = param;
+     
+    slider.className              = 'colorSlider';
+     
+    slider.width                  = width;
+    slider.height                 = height;
+             
+    slider.style.width            = width;
+    slider.style.height           = height;
+             
+    slider.value                  = def;
+    slider.acc                    = acc;
+     
+    slider.id                     = id;
+    slider.name                   = name;
+    slider.suffix                 = suffix;
+    slider.valueCanContainSuffix  = false;
+    slider.log                    = log;
+     
+    slider.dragReverse            = false;
+    slider.dragScale              = dragScale;
+    slider.wheelScale             = wheelScale;
+             
+    slider.backColorLight         = 'transparent';
+    slider.valueColorLight        = '#7772';
+    slider.textColorLight         = '#000';
+                
+    slider.backColorDark          = 'transparent';
+    slider.valueColorDark         = '#fff4';
+    slider.textColorDark          = '#eee';
+                
+    slider.fontSize               = 11;
+             
+    slider.style.display          = 'inline';
+             
+    slider.mouseOver              = false;
+    slider.buttonDown0            = false;
+    slider.buttonDown1            = false;
+             
+    slider.clickSize              = 4;
+    slider.moved                  = false;
+         
+    slider.tabIndex               = 0;
+    slider.inFocus                = false;
+    slider.clicked                = false;
+ 
+    slider.startValue             = 0;
+    slider.oldValue; 
+ 
+    slider.wrapValue              = false;
+     
+    slider.showName               = showName;
+    slider.showHex                = false;
+         
+    slider.enableChangeEvent      = true;
     
-    slider.tabIndex          = 0;
-    slider.inFocus           = false;
-    slider.clicked           = false;
-
-    slider.oldValue;
-
-    //slider.wrapValue         = false;
+    slider.successOnFocusOut      = false;
+    slider.keyBlur                = false;
     
-    slider.enableChangeEvent = true;
-
-    slider.pointerEvents     = true;
-
-    slider.valueText         = '';
-
+    slider.pointerEvents          = true;
+    slider.readOnly               = false;
+     
+    slider.valueText              = '';
+     
+    slider.barTop                 = 0;
+    slider.barBottom              = 1;
+     
+    slider.ranges                 = [];
+    slider.rangeDivs              = [];
+     
+    slider.options                = []; // if dec == 0, show named choices instead of a value
+ 
+     
+    slider.onstartchange          = new Event('startchange');
+    slider.onchange               = new Event('change');
+    slider.onconfirm              = new Event('confirm');
 
 
     initColorSliderChildren(slider);    
     initColorSliderTextbox(slider);
-
-    
-
-    //
-
-    slider.onchange  = new Event('change');
-    slider.onconfirm = new Event('confirm');
+    initColorSliderEvents(slider);
 
 
 
-    //
-
-    slider.addEventListener('pointerdown', function(e)
+    slider.setName = function(name)
     {
-        if (graphView.spaceDown)
-            return;
-
-        if (e.button == 0)
-        {
-            if (!slider.pointerEvents)
-            {
-                e.stopPropagation();
-                return;
-            }
-    
-            let nodeDiv = 
-                   slider.parentNode
-                && slider.parentNode.parentNode
-                && slider.parentNode.parentNode.parentNode
-                ? slider.parentNode.parentNode.parentNode
-                : null;
-
-            if (   nodeDiv 
-                && nodeDiv.className == 'node') 
-                graphView.putNodeOnTop(nodeDiv.node);
-
-
-            e.preventDefault(); // this is fine since I lock the pointer anyway
-            e.stopPropagation();
-
-            slider.buttonDown0  = true;
-            slider.buttonDown0_ = true;
-            slider.moved        = false;
-            slider.clientX      = 0;
-            slider.oldValue     = slider.value;
-
-            slider.prevValue    = slider.value;
-            slider.sx           = e.clientX;
-
-            slider.focus.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject) + ' inset';
-            
-            
-
-
-            // I don't want to focus here, but I do want to take focus away from elsewhere
-            document.activeElement.blur();
-
-            slider.clickTimer = setTimeout(function() 
-            {
-                onSliderClickTimer(slider); 
-            }, 500);
-        }
-        else if (e.button == 1)
-        {
-            e.preventDefault();
-            slider.buttonDown1 = true;
-        }
-    });
-
-
-
-    slider.addEventListener('pointermove', function(e)
-    {
-        if (!slider.pointerEvents)
-            return;
-        
-
-        let rect = boundingRect(slider);
-        
-        slider.mouseOver = 
-               e.clientX >= rect.left
-            && e.clientX <  rect.right
-            && e.clientY >= rect.top                                     
-            && e.clientY <  rect.bottom;
-        
-        slider.clientX = e.clientX;
-
-        
-        if (slider.buttonDown0)
-        {
-            //slider.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
-            
-            if (slider.isPointerLocked())
-            {
-                slider.movedX += e.movementX;
-                
-                let dx       = slider.sx - slider.movedX;             
-                let adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                
-                // TODO: if (log) do log scaling
-                let val = slider.oldValue - dx*slider.dragScale*adaptive;
-                
-                const grain = Math.pow(10, -slider.dec);
-                val = Math.floor(val / grain) * grain;
-                
-                slider.setValue(val, true, false);
-
-                slider.prevValue = slider.value;
-            }
-            else
-            {
-                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
-                {
-                    slider.moved = true;
-                    slider.lockPointer();
-                }
-            }
-        }
-        //else
-        //    slider.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-        
-        // slider.update();
-    });
-    
-    
-    
-    slider.addEventListener('losecapture', function()
-    {
-        slider.buttonDown0 = false;
-        slider.mouseOver   = false;
+        slider.name = name;
         slider.update();
-    });
+    };
 
 
 
-    slider.addEventListener('pointerup', function(e)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        clearTimeout(slider.clickTimer);
+        const oldValue = slider.value.copy();
 
-        if (   slider.moved
-            || document.menuHadFocus)
-        {
-            slider.unlockPointer(e.pointerId);
-            return;            
-        }    
-
-        if (slider.buttonDown0_)
-        {
-            slider.clicked = true;
-            slider.showTextbox();
-        }
-        
-        if (slider.buttonDown1)
-            slider.buttonDown1 = false;
-
-        slider.buttonDown0_ = false;
-    });    
-
-
-
-    document.addEventListener('pointerup', function(e)
-    {
-        if (   e.button == 0 
-            && slider.buttonDown0)
-        {
-            slider.buttonDown0 = false;
-            slider.unlockPointer(e.pointerId);
-
-            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-
-            if (slider.value != slider.oldValue)
-                slider.dispatchEvent(slider.onconfirm);
-        }
-        if (   e.button == 1
-            && slider.buttonDown1)
-        {
-            slider.buttonDown1 = false;            
-        }
-    });
-
-
-    
-    slider.addEventListener('pointerenter', function(e)
-    {
-        if (   !graphView.spaceDown
-            && slider.pointerEvents)
-        {
-            slider.style.cursor           = 'all-scroll';
-            
-            slider.focus.style.boxShadow  = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-            slider.focus.style.visibility = 'visible';
-            slider.focus.style.opacity    = '100%';
-    
-            slider.update();
-        }
-    });
-
-
-
-    slider.addEventListener('pointerleave', function(e)
-    {
-        slider.style.cursor     = 'default';
-        
-        slider.focus.style.visibility = 'hidden';
-        slider.focus.style.opacity    = 0;
+        slider.value = value.copy();
 
         slider.update();
-    });
-
-
-
-    slider.addEventListener('wheel', e =>
-    {
-        if (   !getCtrlKey(e)
-            && !slider.buttonDown1)
-        {
-            e.stopPropagation();
-
-            slider.oldValue = slider.value;
-            slider.setValue(slider.value + (e.deltaY > 0 ? -1 : 1) * slider.wheelStep);
-            // TODO conform after a delay and/or another action, same with key changes 
-        }
-    });
-
-
-
-    slider.addEventListener('keydown', e =>
-    {
-        if (   e.code == 'Enter'
-            || e.code == 'NumpadEnter')
-            slider.showTextbox();
-
-        // else if (e.code == 'Space')
-        //     setCursor(panCursor, true);
-    });
-
-
-
-    slider.addEventListener('focus', function()
-    {
-        if (   !graphView.spaceDown
-            && !slider.buttonDown1
-            && slider.pointerEvents)
-            slider.showTextbox();
-    });
-
-
-    
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true)
-    {
-        const oldValue = slider.value;
-
-        // if (slider.wrapValue)
-        // {
-        //     while (value < slider.min) value += slider.max - slider.min;
-        //     while (value > slider.max) value -= slider.max - slider.min;
-        // }
-        // else
-        //     value = Math.min(Math.max(slider.min, value), slider.max);
-        
-        if (  !confirm
-            || value != oldValue)
-            slider.value = value;
-
-
-        slider.update();
-
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
             && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
-
 
         if (   confirm
             && slider.enableChangeEvent
@@ -344,74 +126,149 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
 
 
+    slider.setSuffix = function(suffix, valueCanContainSuffix = false)
+    {
+        slider.suffix                = suffix;
+        slider.valueCanContainSuffix = valueCanContainSuffix;
+    };
+    
+
+
     slider.update = function()
     {
-        // let v  =  slider.value / (slider.max - slider.min);
-        // let cx = -slider.min / (slider.max - slider.min) * slider.clientWidth;
+        const sx = slider.getOffsetLeft();
+        const sw = slider.getClientWidth();
+        const sh = slider.getClientHeight();
 
-        // slider.bar.style.background = slider.valueColor;
+        const cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
+        const v  =  slider.value      / (slider.displayMax - slider.displayMin);
 
-        // slider.bar.style.top    = 0;//slider.mouseOver ? 1 : 0;
-        // slider.bar.style.height = slider.clientHeight;// - (slider.mouseOver ? 2 : 0);
+        slider.updateBar(sx, cx, v, sw, sh);
+        slider.updateColors();
+        slider.updateText();
+        slider.updateFocus(sw, sh);
+        
+        updateSliderRanges(slider, sw, sh);
 
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = slider.clientWidth;
-        slider.focus.style.height = slider.clientHeight;
 
-        // if (v >= 0)
-        // {
-        //     slider.bar.style.left  = slider.offsetLeft + Math.round(cx);
-        //     slider.bar.style.width = Math.round(v * slider.clientWidth);
-        // }
-        // else
-        // {
-        //     slider.bar.style.left  = slider.offsetLeft + cx + v * slider.clientWidth;
-        //     slider.bar.style.width = -v * slider.clientWidth;
-        // }
+        slider.cachedOffsetLeft   = null;
+        slider.cachedClientWidth  = null;
+        slider.cachedClientHeight = null;
+    };
 
-        // slider.bar.style.background =
-        //     slider.value >= 0
-        //     ? slider.valueColor
-        //     : 'repeating-linear-gradient(-60deg, #fff, #fff 1px, #e5e5e5 2px, #e5e5e5 3px, #fff 4px)';
 
+
+    slider.updateBar = function(sx, cx, v, sw, sh)
+    {
+        if (slider.dragReverse)
+            v *= -1;
+
+            
+        if (isNaN(slider.value))
+            slider.bar.style.display = 'none';
+
+        else
+        {
+            slider.bar.style.display = 'block';
+
+            const x = 
+                v >= 0
+                ? sx + cx
+                : sx + cx + v * sw;
+
+            slider.bar.style.left   = Math.max(0, x);
+            slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+
+            slider.bar.style.top    = sh * slider.barTop;
+            slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
+        }
+    };
+
+
+
+    slider.updateColors = function()
+    {
+        slider     .style.background = isDarkMode() ? slider.backColorDark  : slider.backColorLight;
+        slider.bar .style.background = isDarkMode() ? slider.valueColorDark : slider.valueColorLight;
+        slider.text.style.color      = isDarkMode() ? slider.textColorDark  : slider.textColorLight;
+    };
+
+
+
+    slider.updateText = function()
+    {
         slider.text.innerHTML = '';
         
-        if (slider.name.length > 0)
-            slider.text.innerHTML += '<span class="sliderName">' + slider.name + "</span>&nbsp;&nbsp;";
-        
-        let valueText = 
-            slider.valueText != ''
-            ? slider.valueText
-            : rgb2hex(slider.value);
+        if (   slider.name.length > 0
+            && slider.showName)
+            slider.text.innerHTML += '<span class="colorSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
 
-        slider.text.innerHTML += valueText + slider.suffix;
-
-        slider.style.backgroundColor = colorStyleRgb(slider.value);
+        slider.text.innerHTML += slider.getValueText() + slider.suffix;
     };
 
 
 
-    slider.lockPointer = function()
+    slider.updateFocus = function(sw, sh)
     {
-        slider.requestPointerLock =    
-               slider.requestPointerLock 
-            || slider.mozRequestPointerLock;
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = sw;
+        slider.focus.style.height = sh;
+    };
 
-        slider.requestPointerLock();
+
+
+    slider.getValueText = function()
+    {
+        if (   slider.options.length > 0
+            && slider.displayDec == 0)
+        {
+            if (   slider.value <  0 
+                || slider.value >= slider.options.length)
+                return DISPLAY_INVALID;
+            else
+                return slider.options[Math.round(slider.value)];
+        }
+        else if (slider.valueText != '')
+        {
+            return slider.valueText;
+        }
+        else
+        {
+            return isNaN(slider.value)
+                   ? DISPLAY_INVALID
+                   : Math.abs(slider.value * slider.valueScale) > 999999
+                     ? (slider.value * slider.valueScale).toExponential(1)
+                     : numToString(
+                           slider.value * slider.valueScale, 
+                           slider.displayDec, 
+                           slider.showHex
+                       ).toUpperCase();
+        }
+    };
+
+
+
+    slider.lockPointer = function(pointerId)
+    {
         clearTimeout(slider.clickTimer);
 
-        slider.movedX = 0;
-        slider.sx     = 0;
+        slider.requestPointerLock =    
+               slider.      requestPointerLock 
+            || slider.   mozRequestPointerLock
+            || slider.webkitRequestPointerLock;
+
+        slider.requestPointerLock();
     };
 
 
 
-    slider.unlockPointer = function()
+    slider.unlockPointer = function(pointerId)
     {
         document.exitPointerLock =    
-               document.exitPointerLock    
-            || document.mozExitPointerLock;
+               document.      exitPointerLock    
+            || document.   mozExitPointerLock
+            || document.webkitExitPointerLock;
 
         document.exitPointerLock();
     };
@@ -420,22 +277,18 @@ function initColorSlider(slider, width, height, name, def, dragScale, wheelStep,
 
     slider.isPointerLocked = function()
     {
-        return (document.pointerLockElement    === slider 
-             || document.mozPointerLockElement === slider);
+        return (document.      pointerLockElement === slider 
+             || document.   mozPointerLockElement === slider
+             || document.webkitPointerLockElement === slider);
     }
-    
+
+
+
+    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
+    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
+    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+
 
 
     slider.update();
-}
-
-
-
-function onSliderClickTimer(slider)
-{
-    if (!document.menuHadFocus)
-    {
-        slider.moved = true;
-        slider.lockPointer();
-    }
 }

@@ -2527,6 +2527,13 @@ function logReqInterpolate(lerp, nValues, parse)
 }
 
 
+function logReqColorValue(val, parse)
+{
+    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+}
+
+
+
 function logReqColor(col, parse) 
 {
     logReqNode(col, COLOR, parse); 
@@ -3621,6 +3628,17 @@ extends GType
 
 
 
+    static create(space, c1, c2, c3)
+    {
+        return new GColorValue(
+            new GNumberValue(space),
+            new GNumberValue(c1),
+            new GNumberValue(c2),
+            new GNumberValue(c3));
+    }
+
+
+
     copy()
     {
         return new GColorValue(
@@ -3669,10 +3687,24 @@ extends GType
     {
         return this.isValid()
             ?         this.space.toString()
-              + ' ' + this.c1.toString()
-              + ' ' + this.c2.toString()
-              + ' ' + this.c3.toString()
+              + ' ' + this.c1   .toString()
+              + ' ' + this.c2   .toString()
+              + ' ' + this.c3   .toString()
             : INVALID;
+    }
+
+
+
+    toRgbString()
+    {
+        if (!this.isValid())
+            return INVALID;
+
+        const rgb = dataColor2rgb(this.toDataColor());
+
+        return        rgb[0].toString()
+              + ' ' + rgb[1].toString()
+              + ' ' + rgb[2].toString();
     }
 
 
@@ -3693,11 +3725,11 @@ function parseGColorValue(str)
 
     const col = str.split(' ');
 
-    return new GColorValue(
-        new GNumberValue(parseInt(col[0])),
-        new GNumberValue(parseGNumberValue(col[1])),
-        new GNumberValue(parseGNumberValue(col[2])),
-        new GNumberValue(parseGNumberValue(col[3])));
+    return GColorValue.create(
+        parseInt(col[0]),
+        parseGNumberValue(col[1]),
+        parseGNumberValue(col[2]),
+        parseGNumberValue(col[3]));
 }
 
 
@@ -3932,11 +3964,11 @@ extends GOperator
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result = new GColorValue(
-                    space,
-                    new GNumberValue(col[1] * factor[0]),
-                    new GNumberValue(col[2] * factor[1]),
-                    new GNumberValue(col[3] * factor[2]));
+                this.result = GColorValue.create(
+                    space.value,
+                    col[1] * factor[0],
+                    col[2] * factor[1],
+                    col[3] * factor[2]);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
@@ -4195,11 +4227,11 @@ extends GOperator
     
                     const factor = getColorSpaceFactor(validCol[0]);
     
-                    this.result = new GColorValue(
-                        new GNumberValue(input.space.value),
-                        new GNumberValue(validCol[1] * factor[0]),
-                        new GNumberValue(validCol[2] * factor[1]),
-                        new GNumberValue(validCol[3] * factor[2]));
+                    this.result = GColorValue.create(
+                        input.space.value,
+                        validCol[1] * factor[0],
+                        validCol[2] * factor[1],
+                        validCol[3] * factor[2]);
                 }
                 else
                     this.result = GColorValue.NaN;
@@ -4293,11 +4325,11 @@ extends GOperator
 
                     const factor = getColorSpaceFactor('rgb');
     
-                    this.result = new GColorValue(
-                        new GNumberValue(1),
-                        new GNumberValue(rgb[0] * factor[0]),
-                        new GNumberValue(rgb[1] * factor[1]),
-                        new GNumberValue(rgb[2] * factor[2]));
+                    this.result = GColorValue.create(
+                        1,
+                        rgb[0] * factor[0],
+                        rgb[1] * factor[1],
+                        rgb[2] * factor[2]);
                 }
                 else
                     this.result = GColorValue.NaN;
@@ -4342,6 +4374,14 @@ extends GType
         super(type);
 
         this.nodeId = nodeId;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.nodeId = base.nodeId;
+        this.fills  = [...base.fills];
     }
 
 
@@ -4400,7 +4440,7 @@ extends GGeometryValueBase
 
     copy()
     {
-        return new GRectangleValue(
+        const rect = new GRectangleValue(
             this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
@@ -4408,6 +4448,10 @@ extends GGeometryValueBase
             this.height.copy(), 
             this.angle .copy(), 
             this.round .copy());
+
+        rect.copyBase(this);
+
+        return rect;
     }
 
 
@@ -5566,12 +5610,7 @@ extends GGeometryBase
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color = new GColorValue(
-            new GNumberValue(1),
-            new GNumberValue(0),
-            new GNumberValue(0),
-            new GNumberValue(0));
-
+        this.color   = GColorValue.create(1, 0, 1, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -5595,16 +5634,18 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
                 console.assert(GEOMETRY_VALUES.includes(this.result.type));
 
-                console.log('this.color =', this.color);
                 this.result.fills.push([
                     COLOR_FILL, 
-                    this.color.toString(), 
-                    this.opacity.toString()])
+                    color  .toRgbString(), 
+                    (opacity.value / 100).toString()]);
 
                 this.result.valid = true;
             }
@@ -5616,6 +5657,9 @@ extends GGeometryBase
            
             
             genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
             if (   this.active
@@ -5766,6 +5810,20 @@ function genEndFigMessage()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function genParseColorValue(parse)
+{
+    parse.pos++; // C
+
+    const val = parse.move();
+
+    if (parse.logRequests)
+        logReqColorValue(val, parse);
+
+    return parseGColorValue(val);
+}
+
 
 
 function genParseColor(parse)
@@ -6355,7 +6413,7 @@ function genParseColorFill(parse)
     fill.color   = genParse(parse);
     fill.opacity = genParse(parse);
 
-
+    
     parse.nTab--;
 
 
@@ -6626,6 +6684,7 @@ function genParse(parse)
     else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
     else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate     (parse);
 
+    else if (parse.next == COLOR_VALUE       ) return genParseColorValue      (parse);
     else if (parse.next == COLOR             ) return genParseColor           (parse);
     else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
@@ -6727,7 +6786,7 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    //console.log('request =', request);
+    console.log('request =', request);
 
     const updateNodeId  = request[0];
     const updateParamId = request[1];

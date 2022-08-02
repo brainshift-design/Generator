@@ -1,3 +1,10 @@
+function logReqColorValue(val, parse)
+{
+    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+}
+
+
+
 function logReqColor(col, parse) 
 {
     logReqNode(col, COLOR, parse); 

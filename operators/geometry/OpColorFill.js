@@ -13,9 +13,11 @@ extends OpGeometryBase
         this.addInput(new Input(GEOMETRY_TYPES));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
-        this.addParam(this.paramColor   = new ColorParam('color', '', false, true, true));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '', false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', '', false, true, true, 100, 0, 100));
 
+        this.paramColor.setValue(GColorValue.create(1, 0, 1, 0), false, true, false);
+        
         this.paramOpacity.control.suffix = '%';
     }
     

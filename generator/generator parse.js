@@ -75,6 +75,7 @@ function genParse(parse)
     else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
     else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate     (parse);
 
+    else if (parse.next == COLOR_VALUE       ) return genParseColorValue      (parse);
     else if (parse.next == COLOR             ) return genParseColor           (parse);
     else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);

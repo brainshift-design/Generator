@@ -61,7 +61,7 @@ extends NumberParamBase
 
         this.control.addEventListener('finishedit', e =>
         { 
-            let   dec    = decCount(e.detail.value);
+            let   dec    = decCount(e.detail.value); 
             const oldDec = decCount(e.detail.oldValue);
 
             

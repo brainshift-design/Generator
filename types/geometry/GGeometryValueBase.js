@@ -18,6 +18,14 @@ extends GType
 
 
 
+    copyBase(base)
+    {
+        this.nodeId = base.nodeId;
+        this.fills  = [...base.fills];
+    }
+
+
+
     toFigmaObject()
     {
         return {
