@@ -43,7 +43,7 @@ const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 
-const GEOMETRY           = 'GEOM';  // abstract placeholder node
+const GEOMETRY_VALUE     = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE    = 'R';
 const LINE_VALUE         = 'L';
@@ -57,18 +57,24 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'FILL';
+const COLOR_FILL         = 'CFILL';
 
 
-const GEOMETRY_TYPES =
+const GEOMETRY_VALUES =
 [
-    GEOMETRY,
+    GEOMETRY_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
-    STAR_VALUE,
+    STAR_VALUE
+];
+
+
+const GEOMETRY_TYPES =
+[
+    ...GEOMETRY_VALUES,
 
     RECTANGLE,
     LINE,

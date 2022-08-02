@@ -572,7 +572,7 @@ function uiMakeNodeActive(node)
     node.makeActive();
     node.updateNode();
 
-    //pushUpdate([node]);
+    pushUpdate([node]);
 }
 
 
@@ -857,16 +857,21 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 _ids.push(id);
 
+                let value;
+
                 switch (type)
                 {
-                    case COLOR_VALUE:     _values.push(parseGColorValue    (values[i++])); break;
-                    case RECTANGLE_VALUE: _values.push(parseGRectangleValue(values[i++])); break;
-                    case LINE_VALUE:      _values.push(parseGLineValue     (values[i++])); break;
-                    case ELLIPSE_VALUE:   _values.push(parseGEllipseValue  (values[i++])); break;
-                    case POLYGON_VALUE:   _values.push(parseGPolygonValue  (values[i++])); break;
-                    case STAR_VALUE:      _values.push(parseGStarValue     (values[i++])); break;
-                    default:              _values.push(parseGNumberValue   (values[i++])); break;
+                    case COLOR_VALUE:     value = parseGColorValue    (values[i++]); break;
+                    case RECTANGLE_VALUE: value = parseGRectangleValue(values[i++]); break;
+                    case LINE_VALUE:      value = parseGLineValue     (values[i++]); break;
+                    case ELLIPSE_VALUE:   value = parseGEllipseValue  (values[i++]); break;
+                    case POLYGON_VALUE:   value = parseGPolygonValue  (values[i++]); break;
+                    case STAR_VALUE:      value = parseGStarValue     (values[i++]); break;
+                    default:              value = parseGNumberValue   (values[i++]); break;
                 }
+
+                value.nodeId = nodeId; 
+                _values.push(value);
             }
 
             node.updateValues(

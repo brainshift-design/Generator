@@ -4415,7 +4415,7 @@ const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 
-const GEOMETRY           = 'GEOM';  // abstract placeholder node
+const GEOMETRY_VALUE     = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE    = 'R';
 const LINE_VALUE         = 'L';
@@ -4429,18 +4429,24 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'FILL';
+const COLOR_FILL         = 'CFILL';
 
 
-const GEOMETRY_TYPES =
+const GEOMETRY_VALUES =
 [
-    GEOMETRY,
+    GEOMETRY_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
-    STAR_VALUE,
+    STAR_VALUE
+];
+
+
+const GEOMETRY_TYPES =
+[
+    ...GEOMETRY_VALUES,
 
     RECTANGLE,
     LINE,
@@ -5951,8 +5957,45 @@ extends GOperator
 
 
 
-class GRectangleValue
+class GGeometryValueBase
 extends GType
+{
+    nodeId;
+
+    fills = [];
+    
+    //stroke = null;
+
+
+
+    constructor(type = GEOMETRY_VALUE, nodeId)
+    {
+        super(type);
+
+        this.nodeId = nodeId;
+    }
+
+
+
+    toFigmaObject()
+    {
+        return {
+            nodeId: this.nodeId,
+            fills:  this.fills
+        }
+    }
+
+
+
+    toString()
+    {
+        return '';
+    }
+}
+
+
+class GRectangleValue
+extends GGeometryValueBase
 {
     x;
     y;
@@ -5963,14 +6006,15 @@ extends GType
 
 
 
-    constructor(x      = new GNumberValue(0), 
+    constructor(nodeId,
+                x      = new GNumberValue(0), 
                 y      = new GNumberValue(0), 
                 width  = new GNumberValue(0), 
                 height = new GNumberValue(0), 
                 angle  = new GNumberValue(0), 
                 round  = new GNumberValue(0))
     {
-        super(RECTANGLE_VALUE);
+        super(RECTANGLE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
@@ -5988,6 +6032,7 @@ extends GType
     copy()
     {
         return new GRectangleValue(
+            this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -6017,6 +6062,23 @@ extends GType
 
 
 
+    toFigmaObject()
+    {
+        return {
+            type:   RECTANGLE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            height: this.height.value,
+            angle:  this.angle .value,
+            round:  Math.max(0, this.round.value),
+            ...super.toFigmaObject()
+        };
+    }
+
+
+
     toString()
     {
         return this.isValid()
@@ -6032,6 +6094,7 @@ extends GType
 
 
     static NaN = new GRectangleValue(
+        '',
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
@@ -6050,6 +6113,7 @@ function parseGRectangleValue(str)
     const rect = str.split(' ');
 
     return new GRectangleValue(
+        '', // set node ID elsewhere
         new GNumberValue(parseGNumberValue(rect[0])),
         new GNumberValue(parseGNumberValue(rect[1])),
         new GNumberValue(parseGNumberValue(rect[2])),
@@ -6496,6 +6560,65 @@ function parseGStarValue(str)
 
 
 
+class GGeometryBase
+extends GOperator
+{
+    objects = [];
+
+
+
+    constructor(type = GEOMETRY, nodeId = '', active = false)
+    {
+        super(type, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const geom = new GGeometryBase(this.type, this.nodeId, this.active);
+
+        geom.copyBase(this);
+
+        return geom;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.objects = [...base.objects];
+    }
+
+
+
+    addUpdateObject(parse, nodeId, objects)
+    {
+        if (this.active)
+            genPushUpdateObject(parse, nodeId, objects);
+        else 
+            this.objects.push(objects);
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GGeometryBase(this.nodeId, this.active);
+
+
+            this.result.valid = true;
+            this.valid        = true;
+        }
+
+
+        return this.result;
+    }
+}
+
+
 class GRectangle
 extends GOperator
 {
@@ -6531,7 +6654,7 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        copyBase(rect);
+        rect.copyBase(this);
 
         return rect;
     }
@@ -6542,7 +6665,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GRectangleValue();
+            this.result = new GRectangleValue(this.nodeId);
 
 
             if (this.input)
@@ -6575,24 +6698,11 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
 
 
-            if (   this.active
-                && this.result.isValid())
-            {
+            if (this.active)
                 genPushUpdateObject(
                     parse,
                     this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   RECTANGLE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value,
-                        round:  Math.max(0, this.result.round.value)
-                    });
-            }
+                    this.result.toFigmaObject());
         }
 
 
@@ -6632,7 +6742,7 @@ extends GOperator
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
 
-        copyBase(line);
+        line.copyBase(this);
 
         return line;
     }
@@ -6740,7 +6850,7 @@ extends GOperator
         if (this.height) elps.height = this.height.copy();
         if (this.angle ) elps.angle  = this.angle .copy();
 
-        copyBase(elps);
+        elps.copyBase(this);
         
         return elps;
     }
@@ -6856,7 +6966,7 @@ extends GOperator
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
 
-        copyBase(poly);
+        poly.copyBase(this);
 
         return poly;
     }
@@ -6982,7 +7092,7 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
-        copyBase(star);
+        star.copyBase(this);
 
         return star;
     }
@@ -7074,18 +7184,26 @@ extends GOperator
 
 
 class GColorFill
-extends GOperator
+extends GGeometryBase
 {
-    input   = null;
+    input = null;
 
-    color   = null;
-    opacity = null;
+    color;
+    opacity;
 
 
 
     constructor(nodeId, active)
     {
         super(COLOR_FILL, nodeId, active);
+
+        this.color = new GColorValue(
+            new GNumberValue(1),
+            new GNumberValue(0),
+            new GNumberValue(0),
+            new GNumberValue(0));
+
+        this.opacity = new GNumberValue(100);
     }
 
 
@@ -7108,50 +7226,35 @@ extends GOperator
     {
         if (!this.valid)
         {
-            // if (this.input)
-            // {
-            //    this.result = new GRectangleValue();
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(GEOMETRY_VALUES.includes(this.result.type));
 
-                //     this.result = this.input.eval(parse).copy();
-            //     console.assert(this.result.type == RECTANGLE_VALUE);
+                console.log('this.color =', this.color);
+                this.result.fills.push([
+                    COLOR_FILL, 
+                    this.color.toString(), 
+                    this.opacity.toString()])
 
-            //     if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-            //     if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-            //     if (this.width ) this.result.width  = this.width .eval(parse).copy();
-            //     if (this.height) this.result.height = this.height.eval(parse).copy();
-            //     if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-            //     if (this.round ) this.result.round  = this.round .eval(parse).copy();
-            // }
-            // else
-            // {
-            //        this.result = new GGeometry();
-            // }
+                this.result.valid = true;
+            }
+            else
+                this.result = new GGeometryValueBase();
 
-
-            this.result.valid = true;
-            this.valid        = true;
+                
+            this.valid = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
 
 
-            if (this.active)
-            {
+            if (   this.active
+                && this.result.valid)
                 genPushUpdateObject(
                     parse,
                     this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   RECTANGLE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value,
-                        round:  Math.max(0, this.result.round.value)
-                    });
-            }
+                    this.result.toFigmaObject());
         }
 
 
@@ -7164,12 +7267,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
     logStorage:       false, 
     logActions:       false, 
     logRequests:      true, 
     logValueUpdates:  true, 
-    logObjectUpdates: false
+    logObjectUpdates: true
 };
 
 
@@ -15229,7 +15332,7 @@ const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 
-const GEOMETRY           = 'GEOM';  // abstract placeholder node
+const GEOMETRY_VALUE     = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE    = 'R';
 const LINE_VALUE         = 'L';
@@ -15243,18 +15346,24 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'FILL';
+const COLOR_FILL         = 'CFILL';
 
 
-const GEOMETRY_TYPES =
+const GEOMETRY_VALUES =
 [
-    GEOMETRY,
+    GEOMETRY_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
-    STAR_VALUE,
+    STAR_VALUE
+];
+
+
+const GEOMETRY_TYPES =
+[
+    ...GEOMETRY_VALUES,
 
     RECTANGLE,
     LINE,
@@ -16765,8 +16874,45 @@ extends GOperator
 
 
 
-class GRectangleValue
+class GGeometryValueBase
 extends GType
+{
+    nodeId;
+
+    fills = [];
+    
+    //stroke = null;
+
+
+
+    constructor(type = GEOMETRY_VALUE, nodeId)
+    {
+        super(type);
+
+        this.nodeId = nodeId;
+    }
+
+
+
+    toFigmaObject()
+    {
+        return {
+            nodeId: this.nodeId,
+            fills:  this.fills
+        }
+    }
+
+
+
+    toString()
+    {
+        return '';
+    }
+}
+
+
+class GRectangleValue
+extends GGeometryValueBase
 {
     x;
     y;
@@ -16777,14 +16923,15 @@ extends GType
 
 
 
-    constructor(x      = new GNumberValue(0), 
+    constructor(nodeId,
+                x      = new GNumberValue(0), 
                 y      = new GNumberValue(0), 
                 width  = new GNumberValue(0), 
                 height = new GNumberValue(0), 
                 angle  = new GNumberValue(0), 
                 round  = new GNumberValue(0))
     {
-        super(RECTANGLE_VALUE);
+        super(RECTANGLE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
@@ -16802,6 +16949,7 @@ extends GType
     copy()
     {
         return new GRectangleValue(
+            this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -16831,6 +16979,23 @@ extends GType
 
 
 
+    toFigmaObject()
+    {
+        return {
+            type:   RECTANGLE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            height: this.height.value,
+            angle:  this.angle .value,
+            round:  Math.max(0, this.round.value),
+            ...super.toFigmaObject()
+        };
+    }
+
+
+
     toString()
     {
         return this.isValid()
@@ -16846,6 +17011,7 @@ extends GType
 
 
     static NaN = new GRectangleValue(
+        '',
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
@@ -16864,6 +17030,7 @@ function parseGRectangleValue(str)
     const rect = str.split(' ');
 
     return new GRectangleValue(
+        '', // set node ID elsewhere
         new GNumberValue(parseGNumberValue(rect[0])),
         new GNumberValue(parseGNumberValue(rect[1])),
         new GNumberValue(parseGNumberValue(rect[2])),
@@ -17310,6 +17477,65 @@ function parseGStarValue(str)
 
 
 
+class GGeometryBase
+extends GOperator
+{
+    objects = [];
+
+
+
+    constructor(type = GEOMETRY, nodeId = '', active = false)
+    {
+        super(type, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const geom = new GGeometryBase(this.type, this.nodeId, this.active);
+
+        geom.copyBase(this);
+
+        return geom;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.objects = [...base.objects];
+    }
+
+
+
+    addUpdateObject(parse, nodeId, objects)
+    {
+        if (this.active)
+            genPushUpdateObject(parse, nodeId, objects);
+        else 
+            this.objects.push(objects);
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GGeometryBase(this.nodeId, this.active);
+
+
+            this.result.valid = true;
+            this.valid        = true;
+        }
+
+
+        return this.result;
+    }
+}
+
+
 class GRectangle
 extends GOperator
 {
@@ -17345,7 +17571,7 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        copyBase(rect);
+        rect.copyBase(this);
 
         return rect;
     }
@@ -17356,7 +17582,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GRectangleValue();
+            this.result = new GRectangleValue(this.nodeId);
 
 
             if (this.input)
@@ -17389,24 +17615,11 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
 
 
-            if (   this.active
-                && this.result.isValid())
-            {
+            if (this.active)
                 genPushUpdateObject(
                     parse,
                     this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   RECTANGLE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value,
-                        round:  Math.max(0, this.result.round.value)
-                    });
-            }
+                    this.result.toFigmaObject());
         }
 
 
@@ -17446,7 +17659,7 @@ extends GOperator
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
 
-        copyBase(line);
+        line.copyBase(this);
 
         return line;
     }
@@ -17554,7 +17767,7 @@ extends GOperator
         if (this.height) elps.height = this.height.copy();
         if (this.angle ) elps.angle  = this.angle .copy();
 
-        copyBase(elps);
+        elps.copyBase(this);
         
         return elps;
     }
@@ -17670,7 +17883,7 @@ extends GOperator
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
 
-        copyBase(poly);
+        poly.copyBase(this);
 
         return poly;
     }
@@ -17796,7 +18009,7 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
-        copyBase(star);
+        star.copyBase(this);
 
         return star;
     }
@@ -17888,18 +18101,26 @@ extends GOperator
 
 
 class GColorFill
-extends GOperator
+extends GGeometryBase
 {
-    input   = null;
+    input = null;
 
-    color   = null;
-    opacity = null;
+    color;
+    opacity;
 
 
 
     constructor(nodeId, active)
     {
         super(COLOR_FILL, nodeId, active);
+
+        this.color = new GColorValue(
+            new GNumberValue(1),
+            new GNumberValue(0),
+            new GNumberValue(0),
+            new GNumberValue(0));
+
+        this.opacity = new GNumberValue(100);
     }
 
 
@@ -17922,50 +18143,35 @@ extends GOperator
     {
         if (!this.valid)
         {
-            // if (this.input)
-            // {
-            //    this.result = new GRectangleValue();
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(GEOMETRY_VALUES.includes(this.result.type));
 
-                //     this.result = this.input.eval(parse).copy();
-            //     console.assert(this.result.type == RECTANGLE_VALUE);
+                console.log('this.color =', this.color);
+                this.result.fills.push([
+                    COLOR_FILL, 
+                    this.color.toString(), 
+                    this.opacity.toString()])
 
-            //     if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-            //     if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-            //     if (this.width ) this.result.width  = this.width .eval(parse).copy();
-            //     if (this.height) this.result.height = this.height.eval(parse).copy();
-            //     if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-            //     if (this.round ) this.result.round  = this.round .eval(parse).copy();
-            // }
-            // else
-            // {
-            //        this.result = new GGeometry();
-            // }
+                this.result.valid = true;
+            }
+            else
+                this.result = new GGeometryValueBase();
 
-
-            this.result.valid = true;
-            this.valid        = true;
+                
+            this.valid = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
 
 
-            if (this.active)
-            {
+            if (   this.active
+                && this.result.valid)
                 genPushUpdateObject(
                     parse,
                     this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   RECTANGLE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value,
-                        round:  Math.max(0, this.result.round.value)
-                    });
-            }
+                    this.result.toFigmaObject());
         }
 
 
@@ -17978,12 +18184,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
     logStorage:       false, 
     logActions:       false, 
     logRequests:      true, 
     logValueUpdates:  true, 
-    logObjectUpdates: false
+    logObjectUpdates: true
 };
 
 
@@ -31262,7 +31468,9 @@ extends OpGeometryBase
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
         this.addParam(this.paramColor   = new ColorParam('color', '', false, true, true));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', '', false, true, true, 0, 0, 100));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', '', false, true, true, 100, 0, 100));
+
+        this.paramOpacity.control.suffix = '%';
     }
     
     
@@ -34646,7 +34854,7 @@ function uiMakeNodeActive(node)
     node.makeActive();
     node.updateNode();
 
-    //pushUpdate([node]);
+    pushUpdate([node]);
 }
 
 
@@ -34931,16 +35139,21 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 _ids.push(id);
 
+                let value;
+
                 switch (type)
                 {
-                    case COLOR_VALUE:     _values.push(parseGColorValue    (values[i++])); break;
-                    case RECTANGLE_VALUE: _values.push(parseGRectangleValue(values[i++])); break;
-                    case LINE_VALUE:      _values.push(parseGLineValue     (values[i++])); break;
-                    case ELLIPSE_VALUE:   _values.push(parseGEllipseValue  (values[i++])); break;
-                    case POLYGON_VALUE:   _values.push(parseGPolygonValue  (values[i++])); break;
-                    case STAR_VALUE:      _values.push(parseGStarValue     (values[i++])); break;
-                    default:              _values.push(parseGNumberValue   (values[i++])); break;
+                    case COLOR_VALUE:     value = parseGColorValue    (values[i++]); break;
+                    case RECTANGLE_VALUE: value = parseGRectangleValue(values[i++]); break;
+                    case LINE_VALUE:      value = parseGLineValue     (values[i++]); break;
+                    case ELLIPSE_VALUE:   value = parseGEllipseValue  (values[i++]); break;
+                    case POLYGON_VALUE:   value = parseGPolygonValue  (values[i++]); break;
+                    case STAR_VALUE:      value = parseGStarValue     (values[i++]); break;
+                    default:              value = parseGNumberValue   (values[i++]); break;
                 }
+
+                value.nodeId = nodeId; 
+                _values.push(value);
             }
 
             node.updateValues(

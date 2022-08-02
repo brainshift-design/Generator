@@ -304,7 +304,7 @@ const STRING_ADD         = 'SADD';  // S S
 const STRING_REPLACE     = 'SREPL'; // S S:what S:with
 
 
-const GEOMETRY           = 'GEOM';  // abstract placeholder node
+const GEOMETRY_VALUE     = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE    = 'R';
 const LINE_VALUE         = 'L';
@@ -318,18 +318,24 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'FILL';
+const COLOR_FILL         = 'CFILL';
 
 
-const GEOMETRY_TYPES =
+const GEOMETRY_VALUES =
 [
-    GEOMETRY,
+    GEOMETRY_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
-    STAR_VALUE,
+    STAR_VALUE
+];
+
+
+const GEOMETRY_TYPES =
+[
+    ...GEOMETRY_VALUES,
 
     RECTANGLE,
     LINE,
@@ -367,12 +373,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
     logStorage:       false, 
     logActions:       false, 
     logRequests:      true, 
     logValueUpdates:  true, 
-    logObjectUpdates: false
+    logObjectUpdates: true
 };
 
 
@@ -906,6 +912,33 @@ function figUpdateStar(figStar, genStar)
 
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function setNodeFill(node, fill)
+{
+    switch (node.type)
+    {
+        case 'RECTANGLE':
+        case 'VECTOR':
+        case 'LINE':
+        case 'ELLIPSE':
+        case 'POLYGON':
+        case 'STAR':
+        case 'TEXT':
+        case 'BOOLEAN_OPERATION':
+        {
+            let n = node as typeof node;
+            let f = clone(n.fills);
+            f = fill;
+            n.fills = f;
+        }
+    }
+}
+
+
+
 
 
 
@@ -1170,3 +1203,40 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false)
 
 //     return 'ERROR_TYPE';
 // }
+
+
+
+function clone(val) 
+{
+    const type = typeof val;
+    
+    if (val === null) 
+      return null;
+
+    else if (type === 'undefined' 
+          || type === 'number' 
+          || type === 'string' 
+          || type === 'boolean') 
+        return val;
+
+    else if (type === 'object') 
+    {
+        if (val instanceof Array) 
+            return val.map(x => clone(x));
+
+        else if (val instanceof Uint8Array) 
+            return new Uint8Array(val);
+
+        else 
+        {
+            let obj = {};
+
+            for (const key in val) 
+                obj[key] = clone(val[key]);
+
+            return obj;
+        }
+    }
+
+    throw 'unknown';
+}

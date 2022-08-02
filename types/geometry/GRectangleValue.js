@@ -1,5 +1,5 @@
 class GRectangleValue
-extends GType
+extends GGeometryValueBase
 {
     x;
     y;
@@ -10,14 +10,15 @@ extends GType
 
 
 
-    constructor(x      = new GNumberValue(0), 
+    constructor(nodeId,
+                x      = new GNumberValue(0), 
                 y      = new GNumberValue(0), 
                 width  = new GNumberValue(0), 
                 height = new GNumberValue(0), 
                 angle  = new GNumberValue(0), 
                 round  = new GNumberValue(0))
     {
-        super(RECTANGLE_VALUE);
+        super(RECTANGLE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
@@ -35,6 +36,7 @@ extends GType
     copy()
     {
         return new GRectangleValue(
+            this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -64,6 +66,23 @@ extends GType
 
 
 
+    toFigmaObject()
+    {
+        return {
+            type:   RECTANGLE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            height: this.height.value,
+            angle:  this.angle .value,
+            round:  Math.max(0, this.round.value),
+            ...super.toFigmaObject()
+        };
+    }
+
+
+
     toString()
     {
         return this.isValid()
@@ -79,6 +98,7 @@ extends GType
 
 
     static NaN = new GRectangleValue(
+        '',
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
@@ -97,6 +117,7 @@ function parseGRectangleValue(str)
     const rect = str.split(' ');
 
     return new GRectangleValue(
+        '', // set node ID elsewhere
         new GNumberValue(parseGNumberValue(rect[0])),
         new GNumberValue(parseGNumberValue(rect[1])),
         new GNumberValue(parseGNumberValue(rect[2])),

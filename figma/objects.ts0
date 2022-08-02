@@ -241,3 +241,30 @@ function figUpdateStar(figStar, genStar)
 
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function setNodeFill(node, fill)
+{
+    switch (node.type)
+    {
+        case 'RECTANGLE':
+        case 'VECTOR':
+        case 'LINE':
+        case 'ELLIPSE':
+        case 'POLYGON':
+        case 'STAR':
+        case 'TEXT':
+        case 'BOOLEAN_OPERATION':
+        {
+            let n = node as typeof node;
+            let f = clone(n.fills);
+            f = fill;
+            n.fills = f;
+        }
+    }
+}
+
+
+

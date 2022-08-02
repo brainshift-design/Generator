@@ -7,38 +7,42 @@
 ../types/GParam.js
 
 
-../types/GNumberValue.js
-../types/GNumber.js
+../types/math/GNumberValue.js
+../types/math/GNumber.js
 
-../types/GLimits.js
-../types/GAdd.js
-../types/GSubtract.js
-../types/GMultiply.js
-../types/GDivide.js
-../types/GModulo.js
-../types/GExponent.js
-../types/GInterpolate.js
-
-
-../types/GColorValue.js
-
-../types/GColor.js
-../types/GColorInterpolate.js
-../types/GColorContrast.js
-../types/GColorBlind.js
-../types/GColorValidate.js
+../types/math/GLimits.js
+../types/math/GAdd.js
+../types/math/GSubtract.js
+../types/math/GMultiply.js
+../types/math/GDivide.js
+../types/math/GModulo.js
+../types/math/GExponent.js
+../types/math/GInterpolate.js
 
 
-../types/GRectangleValue.js
-../types/GLineValue.js
-../types/GEllipseValue.js
-../types/GPolygonValue.js
-../types/GStarValue.js
+../types/color/GColorValue.js
 
-../types/GRectangle.js
-../types/GLine.js
-../types/GEllipse.js
-../types/GPolygon.js
-../types/GStar.js
+../types/color/GColor.js
+../types/color/GColorInterpolate.js
+../types/color/GColorContrast.js
+../types/color/GColorBlind.js
+../types/color/GColorValidate.js
 
-../types/GColorFill.js
+
+../types/geometry/GGeometryValueBase.js
+
+../types/geometry/GRectangleValue.js
+../types/geometry/GLineValue.js
+../types/geometry/GEllipseValue.js
+../types/geometry/GPolygonValue.js
+../types/geometry/GStarValue.js
+
+../types/geometry/GGeometryBase.js
+
+../types/geometry/GRectangle.js
+../types/geometry/GLine.js
+../types/geometry/GEllipse.js
+../types/geometry/GPolygon.js
+../types/geometry/GStar.js
+
+../types/geometry/GColorFill.js

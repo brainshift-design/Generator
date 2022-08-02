@@ -2,10 +2,10 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
     logStorage:       false, 
     logActions:       false, 
     logRequests:      true, 
     logValueUpdates:  true, 
-    logObjectUpdates: false
+    logObjectUpdates: true
 };

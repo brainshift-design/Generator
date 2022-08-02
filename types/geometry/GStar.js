@@ -37,7 +37,7 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
-        copyBase(star);
+        star.copyBase(this);
 
         return star;
     }
