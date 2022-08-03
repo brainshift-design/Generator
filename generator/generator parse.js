@@ -90,6 +90,8 @@ function genParse(parse)
 
     else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
 
+    else if (parse.next == COLOR_STROKE      ) return genParseColorStroke     (parse);
+
     
     parse.so++;
     return null;

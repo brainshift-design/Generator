@@ -30,6 +30,7 @@ function rgbFromType(type, active)
         case POLYGON: 
         case STAR: 
         case COLOR_FILL: 
+        case COLOR_STROKE: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;

@@ -340,3 +340,46 @@ function genParseColorFill(parse)
     genParseNodeEnd(parse, fill);
     return fill;
 }
+
+
+
+function genParseColorStroke(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const strk = new GColorStroke(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(strk, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, strk);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (GEOMETRY_TYPES.includes(parse.next))
+        strk.input = genParse(parse); // not genParseColorStroke() because genParse() handles stack overflow
+
+
+    strk.color        = genParse(parse);
+    strk.opacity      = genParse(parse);
+    strk.strokeWeight = genParse(parse);
+    strk.strokeFit    = genParse(parse);
+    strk.strokeJoin   = genParse(parse);
+    strk.strokeMiter  = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, strk);
+    return strk;
+}

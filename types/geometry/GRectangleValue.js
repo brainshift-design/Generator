@@ -53,7 +53,8 @@ extends GGeometryValueBase
 
     isValid()
     {
-        return this.x     .isValid()
+        return super.isValid()
+            && this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
@@ -96,6 +97,7 @@ extends GGeometryValueBase
               + ' ' + this.height.toString()
               + ' ' + this.angle .toString()
               + ' ' + this.round .toString()
+              + ' ' + super.toString()
             : INVALID;
     }
 

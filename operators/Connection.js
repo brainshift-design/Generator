@@ -209,7 +209,7 @@ class Connection
             this.wire. inBall.style.fill      = colorStyleRgb(color);
             this.wire.outBall.style.fill      = colorStyleRgb(color);
 
-            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
+            this.wire.curve.style.strokeWeight = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
             this.wire. inBall.style.r         = 3 * graphView.zoom;
             this.wire.outBall.style.r         = 3 * graphView.zoom;
 

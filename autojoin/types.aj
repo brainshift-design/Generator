@@ -46,3 +46,5 @@
 ../types/geometry/GStar.js
 
 ../types/geometry/GColorFill.js
+
+../types/geometry/GColorStroke.js

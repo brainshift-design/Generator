@@ -56,5 +56,7 @@
 
 ../operators/geometry/OpColorFill.js
 
+../operators/geometry/OpColorStroke.js
+
 //../operators/geometry/OpColumn.js
 //../operators/geometry/UOpSpread.js

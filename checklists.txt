@@ -8,7 +8,7 @@ NEW OPERATOR
     types.aj
     Graph.js/createNode();
     rgbFromType
-    log node request
     gen obj parse
+    log request/values
     figma obj create/update
     html

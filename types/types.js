@@ -57,7 +57,10 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'CFILL';
+const COLOR_FILL         = 'CFIL';
+const GRADIENT_FILL      = 'GFIL';
+
+const COLOR_STROKE       = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -83,7 +86,10 @@ const GEOMETRY_TYPES =
     STAR,
     //TEXT
 
-    COLOR_FILL
+    COLOR_FILL,
+    GRADIENT_FILL,
+
+    COLOR_STROKE
 ];
 
 

@@ -318,7 +318,10 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'CFILL';
+const COLOR_FILL         = 'CFIL';
+const GRADIENT_FILL      = 'GFIL';
+
+const COLOR_STROKE       = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -344,7 +347,10 @@ const GEOMETRY_TYPES =
     STAR,
     //TEXT
 
-    COLOR_FILL
+    COLOR_FILL,
+    GRADIENT_FILL,
+
+    COLOR_STROKE
 ];
 
 
@@ -374,7 +380,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawStorage:    true, 
+    logRawStorage:    false, 
     logStorage:       true, 
     logActions:       false, 
     logRawRequests:   true, 
@@ -681,7 +687,8 @@ function figCreateRect(obj)
     rect.y = obj.y;
 
     
-    setObjectFills(rect, obj);
+    setObjectFills  (rect, obj);
+    setObjectStrokes(rect, obj);
     
 
     rect.resize(
@@ -712,7 +719,9 @@ function figUpdateRect(figRect, genRect)
     figRect.rotation     = genRect.angle;
     figRect.cornerRadius = genRect.round;
 
-    setObjectFills(figRect, genRect);
+
+    setObjectFills  (figRect, genRect);
+    setObjectStrokes(figRect, genRect);
 }
 
 
@@ -922,8 +931,6 @@ function figUpdateStar(figStar, genStar)
 
 function setObjectFills(obj, src)
 {
-    console.log('obj.fills =', src.fills);
-
     if (   src.fills !== null
         && src.fills.length > 0)
         obj.fills = getObjectFills(src.fills);
@@ -959,6 +966,52 @@ function getObjectFills(objFills)
     }
 
     return fills;
+}
+
+
+
+function setObjectStrokes(obj, src)
+{
+    if (   src.strokes !== null
+        && src.strokes.length > 0)
+    {
+        obj.strokes = getObjectStrokes(src.strokes);
+
+        obj.strokeWeight     = src.strokeWeight;
+        obj.strokeAlign      = src.strokeAlign;
+        obj.strokeJoin       = src.strokeJoin;
+        obj.strokeMiterLimit = src.strokeMiterLimit;
+    }
+}
+
+
+
+function getObjectStrokes(objStrokes)
+{
+    const strokes = [];
+
+    for (const stroke of objStrokes)
+    {
+        const c = stroke[1].split(' ');
+
+        switch (stroke[0])
+        {
+            case COLOR_FILL:
+                strokes.push(
+                {
+                    type: 'SOLID', 
+                    color: {
+                        r: Math.min(Math.max(0, parseFloat(c[0])), 1), 
+                        g: Math.min(Math.max(0, parseFloat(c[1])), 1), 
+                        b: Math.min(Math.max(0, parseFloat(c[2])), 1) },
+                    opacity: parseFloat(stroke[2])
+                });
+
+                break;
+        }
+    }
+
+    return strokes;
 }
 
 

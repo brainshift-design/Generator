@@ -143,7 +143,11 @@ function uiLoadGraphView(json)
 function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
     if (settings.logRawStorage)
-        console.log('nodes json =', nodesJson);
+        console.log(
+            'nodes json =', 
+            nodesJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
 
         
     graph.clear();

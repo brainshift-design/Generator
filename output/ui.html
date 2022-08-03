@@ -1455,31 +1455,32 @@ div
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber));           this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
-    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnCreateLimits));           this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
-    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd));              this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
-    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
-    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
-    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide));           this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
-    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo));           this.blur();'><span style='font-size: 15px;'>%</span></button>
-    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent));         this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
-    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber          ));           this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
+    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnCreateLimits          ));           this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
+    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd             ));              this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
+    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract        ));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
+    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply        ));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
+    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide          ));           this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
+    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo          ));           this.blur();'><span style='font-size: 15px;'>%</span></button>
+    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent        ));         this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
+    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate     ));      this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
+    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor           ));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
     <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate)); this.blur();'></button>
-    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor));    this.blur();'></span></button>
-    <button class='menuButton' id='btnCreateColorContrast'      onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast));      this.blur();'></button>
-    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind));       this.blur();'></button>
+    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor   ));    this.blur();'></span></button>
+    <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));       this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle));        this.blur();'>RECT</button>
-    <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine));             this.blur();'>LINE</button>
-    <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse));          this.blur();'>ELPS</button>
-    <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon));          this.blur();'>POLY</button>
-    <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar));             this.blur();'>STAR</button>
+    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle       ));        this.blur();'>RECT</button>
+    <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine            ));             this.blur();'>LINE</button>
+    <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse         ));          this.blur();'>ELPS</button>
+    <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));          this.blur();'>POLY</button>
+    <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar            ));             this.blur();'>STAR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(COLOR_FILL,         btnCreateColorFill));        this.blur();'>cFILL</button>
+    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(COLOR_FILL,         btnCreateColorFill       ));        this.blur();'>CFIL</button>
+    <button class='menuButton' id='btnCreateColorStroke'      onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke     ));      this.blur();'>CSTK</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment));          this.blur();'></button>
+    <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));          this.blur();'></button>
     <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
@@ -1762,6 +1763,7 @@ function rgbFromType(type, active)
         case POLYGON: 
         case STAR: 
         case COLOR_FILL: 
+        case COLOR_STROKE: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -4523,7 +4525,10 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'CFILL';
+const COLOR_FILL         = 'CFIL';
+const GRADIENT_FILL      = 'GFIL';
+
+const COLOR_STROKE       = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -4549,7 +4554,10 @@ const GEOMETRY_TYPES =
     STAR,
     //TEXT
 
-    COLOR_FILL
+    COLOR_FILL,
+    GRADIENT_FILL,
+
+    COLOR_STROKE
 ];
 
 
@@ -6110,9 +6118,13 @@ extends GType
 {
     nodeId;
 
-    fills = [];
-    
-    //stroke = null;
+    fills   = [];
+    strokes = [];
+
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
 
 
 
@@ -6121,23 +6133,69 @@ extends GType
         super(type);
 
         this.nodeId = nodeId;
+
+        this.strokeWeight = new GNumberValue(1);
+        this.strokeFit   = new GNumberValue(0);
+        this.strokeJoin  = new GNumberValue(0);
+        this.strokeMiter = new GNumberValue(28.96);
     }
 
 
 
     copyBase(base)
     {
-        this.nodeId = base.nodeId;
-        this.fills  = [...base.fills];
+        this.nodeId  = base.nodeId;
+
+        this.fills   = [...base.fills  ];
+        this.strokes = [...base.strokes];
+
+        this.strokeWeight = base.strokeWeight.copy();
+        this.strokeFit   = base.strokeFit  .copy();
+        this.strokeJoin  = base.strokeJoin .copy();
+        this.strokeMiter = base.strokeMiter.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.strokeWeight.isValid()
+            && this.strokeFit  .isValid()
+            && this.strokeJoin .isValid()
+            && this.strokeMiter.isValid();
     }
 
 
 
     toFigmaObject()
     {
+        let strokeAlign, 
+            strokeJoin;
+
+        switch (this.strokeFit.value)
+        {
+            case 0: strokeAlign = 'INSIDE';  break;
+            case 1: strokeAlign = 'CENTER';  break;
+            case 2: strokeAlign = 'OUTSIDE'; break;
+        }
+        
+        switch (this.strokeJoin.value)
+        {
+            case 0: strokeJoin = 'MITER'; break;
+            case 1: strokeJoin = 'BEVEL'; break;
+            case 2: strokeJoin = 'ROUND'; break;
+        }
+
         return {
-            nodeId: this.nodeId,
-            fills:  this.fills
+            nodeId:           this.nodeId,
+
+            fills:            this.fills,
+            strokes:          this.strokes,
+            
+            strokeWeight:     this.strokeWeight.value,
+            strokeAlign:      strokeAlign,
+            strokeJoin:       strokeJoin,
+            strokeMiterLimit: Math.min(this.strokeMiter.value, 16)
         }
     }
 
@@ -6145,7 +6203,10 @@ extends GType
 
     toString()
     {
-        return '';
+        return         this.strokeWeight.toString()
+               + ' ' + this.strokeFit  .toString()
+               + ' ' + this.strokeJoin .toString()
+               + ' ' + this.strokeMiter.toString();
     }
 }
 
@@ -6205,7 +6266,8 @@ extends GGeometryValueBase
 
     isValid()
     {
-        return this.x     .isValid()
+        return super.isValid()
+            && this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
@@ -6248,6 +6310,7 @@ extends GGeometryValueBase
               + ' ' + this.height.toString()
               + ' ' + this.angle .toString()
               + ' ' + this.round .toString()
+              + ' ' + super.toString()
             : INVALID;
     }
 
@@ -7423,12 +7486,120 @@ extends GGeometryBase
 }
 
 
+class GColorStroke
+extends GGeometryBase
+{
+    input = null;
+
+    color;
+    opacity;
+
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_FILL, nodeId, active);
+
+        this.color        = GColorValue.create(1, 0, 0, 0);
+        this.opacity      = new GNumberValue(1);
+
+        this.strokeWeight = new GNumberValue(1);
+        this.strokeFit    = new GNumberValue(0);
+        this.strokeJoin   = new GNumberValue(0);
+        this.strokeMiter  = new GNumberValue(28.96, 2);
+    }
+
+
+
+    copy()
+    {
+        const strk = new GColorStroke(this.nodeId, this.active);
+
+        if (this.input) strk.input = this.input.copy();
+
+        strk.color        = this.color       .copy();
+        strk.opacity      = this.opacity     .copy();
+
+        strk.strokeWeight = this.strokeWeight.copy();
+        strk.strokeFit    = this.strokeFit   .copy();
+        strk.strokeJoin   = this.strokeJoin  .copy();
+        strk.strokeMiter  = this.strokeMiter .copy();
+
+        return strk;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            const color        = this.color       .eval(parse).copy();
+            const opacity      = this.opacity     .eval(parse).copy();
+            const strokeWeight = this.strokeWeight.eval(parse).copy();
+            const strokeFit    = this.strokeFit   .eval(parse).copy();
+            const strokeJoin   = this.strokeJoin  .eval(parse).copy();
+            const strokeMiter  = this.strokeMiter .eval(parse).copy();
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(GEOMETRY_VALUES.includes(this.result.type));
+
+                this.result.strokes.push([
+                    COLOR_FILL, 
+                    color.toRgbString(), 
+                    (opacity.value / 100).toString()]);
+
+                this.result.strokeWeight = strokeWeight;
+                this.result.strokeFit    = strokeFit;
+                this.result.strokeJoin   = strokeJoin;
+                this.result.strokeMiter  = strokeMiter;
+
+                this.result.valid = true;
+            }
+            else
+                this.result = new GGeometryValueBase();
+
+                
+            this.valid = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',        color       );
+            genPushUpdateValue(parse, this.nodeId, 'opacity',      opacity     );
+            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', strokeWeight);
+            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    strokeFit   );
+            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   strokeJoin  );
+            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  strokeMiter );
+
+
+            if (   this.active
+                && this.result.valid)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
+        }
+
+
+        return this.result;
+    }
+}
+
+
 const settings =
 {
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawStorage:    true, 
+    logRawStorage:    false, 
     logStorage:       true, 
     logActions:       false, 
     logRawRequests:   true, 
@@ -8171,6 +8342,49 @@ function genParseColorFill(parse)
 }
 
 
+
+function genParseColorStroke(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const strk = new GColorStroke(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqGeometry(strk, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, strk);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (GEOMETRY_TYPES.includes(parse.next))
+        strk.input = genParse(parse); // not genParseColorStroke() because genParse() handles stack overflow
+
+
+    strk.color        = genParse(parse);
+    strk.opacity      = genParse(parse);
+    strk.strokeWeight = genParse(parse);
+    strk.strokeFit    = genParse(parse);
+    strk.strokeJoin   = genParse(parse);
+    strk.strokeMiter  = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, strk);
+    return strk;
+}
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -8447,6 +8661,8 @@ function genParse(parse)
     else if (parse.next == STAR              ) return genParseStar            (parse);
 
     else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
+
+    else if (parse.next == COLOR_STROKE      ) return genParseColorStroke     (parse);
 
     
     parse.so++;
@@ -11348,6 +11564,7 @@ function rgbFromType(type, active)
         case POLYGON: 
         case STAR: 
         case COLOR_FILL: 
+        case COLOR_STROKE: 
             return active 
                  ? rgbActiveObject 
                  : rgbObject;
@@ -15536,7 +15753,10 @@ const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'CFILL';
+const COLOR_FILL         = 'CFIL';
+const GRADIENT_FILL      = 'GFIL';
+
+const COLOR_STROKE       = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -15562,7 +15782,10 @@ const GEOMETRY_TYPES =
     STAR,
     //TEXT
 
-    COLOR_FILL
+    COLOR_FILL,
+    GRADIENT_FILL,
+
+    COLOR_STROKE
 ];
 
 
@@ -17123,9 +17346,13 @@ extends GType
 {
     nodeId;
 
-    fills = [];
-    
-    //stroke = null;
+    fills   = [];
+    strokes = [];
+
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
 
 
 
@@ -17134,23 +17361,69 @@ extends GType
         super(type);
 
         this.nodeId = nodeId;
+
+        this.strokeWeight = new GNumberValue(1);
+        this.strokeFit   = new GNumberValue(0);
+        this.strokeJoin  = new GNumberValue(0);
+        this.strokeMiter = new GNumberValue(28.96);
     }
 
 
 
     copyBase(base)
     {
-        this.nodeId = base.nodeId;
-        this.fills  = [...base.fills];
+        this.nodeId  = base.nodeId;
+
+        this.fills   = [...base.fills  ];
+        this.strokes = [...base.strokes];
+
+        this.strokeWeight = base.strokeWeight.copy();
+        this.strokeFit   = base.strokeFit  .copy();
+        this.strokeJoin  = base.strokeJoin .copy();
+        this.strokeMiter = base.strokeMiter.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.strokeWeight.isValid()
+            && this.strokeFit  .isValid()
+            && this.strokeJoin .isValid()
+            && this.strokeMiter.isValid();
     }
 
 
 
     toFigmaObject()
     {
+        let strokeAlign, 
+            strokeJoin;
+
+        switch (this.strokeFit.value)
+        {
+            case 0: strokeAlign = 'INSIDE';  break;
+            case 1: strokeAlign = 'CENTER';  break;
+            case 2: strokeAlign = 'OUTSIDE'; break;
+        }
+        
+        switch (this.strokeJoin.value)
+        {
+            case 0: strokeJoin = 'MITER'; break;
+            case 1: strokeJoin = 'BEVEL'; break;
+            case 2: strokeJoin = 'ROUND'; break;
+        }
+
         return {
-            nodeId: this.nodeId,
-            fills:  this.fills
+            nodeId:           this.nodeId,
+
+            fills:            this.fills,
+            strokes:          this.strokes,
+            
+            strokeWeight:     this.strokeWeight.value,
+            strokeAlign:      strokeAlign,
+            strokeJoin:       strokeJoin,
+            strokeMiterLimit: Math.min(this.strokeMiter.value, 16)
         }
     }
 
@@ -17158,7 +17431,10 @@ extends GType
 
     toString()
     {
-        return '';
+        return         this.strokeWeight.toString()
+               + ' ' + this.strokeFit  .toString()
+               + ' ' + this.strokeJoin .toString()
+               + ' ' + this.strokeMiter.toString();
     }
 }
 
@@ -17218,7 +17494,8 @@ extends GGeometryValueBase
 
     isValid()
     {
-        return this.x     .isValid()
+        return super.isValid()
+            && this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
@@ -17261,6 +17538,7 @@ extends GGeometryValueBase
               + ' ' + this.height.toString()
               + ' ' + this.angle .toString()
               + ' ' + this.round .toString()
+              + ' ' + super.toString()
             : INVALID;
     }
 
@@ -18436,12 +18714,120 @@ extends GGeometryBase
 }
 
 
+class GColorStroke
+extends GGeometryBase
+{
+    input = null;
+
+    color;
+    opacity;
+
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_FILL, nodeId, active);
+
+        this.color        = GColorValue.create(1, 0, 0, 0);
+        this.opacity      = new GNumberValue(1);
+
+        this.strokeWeight = new GNumberValue(1);
+        this.strokeFit    = new GNumberValue(0);
+        this.strokeJoin   = new GNumberValue(0);
+        this.strokeMiter  = new GNumberValue(28.96, 2);
+    }
+
+
+
+    copy()
+    {
+        const strk = new GColorStroke(this.nodeId, this.active);
+
+        if (this.input) strk.input = this.input.copy();
+
+        strk.color        = this.color       .copy();
+        strk.opacity      = this.opacity     .copy();
+
+        strk.strokeWeight = this.strokeWeight.copy();
+        strk.strokeFit    = this.strokeFit   .copy();
+        strk.strokeJoin   = this.strokeJoin  .copy();
+        strk.strokeMiter  = this.strokeMiter .copy();
+
+        return strk;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            const color        = this.color       .eval(parse).copy();
+            const opacity      = this.opacity     .eval(parse).copy();
+            const strokeWeight = this.strokeWeight.eval(parse).copy();
+            const strokeFit    = this.strokeFit   .eval(parse).copy();
+            const strokeJoin   = this.strokeJoin  .eval(parse).copy();
+            const strokeMiter  = this.strokeMiter .eval(parse).copy();
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(GEOMETRY_VALUES.includes(this.result.type));
+
+                this.result.strokes.push([
+                    COLOR_FILL, 
+                    color.toRgbString(), 
+                    (opacity.value / 100).toString()]);
+
+                this.result.strokeWeight = strokeWeight;
+                this.result.strokeFit    = strokeFit;
+                this.result.strokeJoin   = strokeJoin;
+                this.result.strokeMiter  = strokeMiter;
+
+                this.result.valid = true;
+            }
+            else
+                this.result = new GGeometryValueBase();
+
+                
+            this.valid = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',        color       );
+            genPushUpdateValue(parse, this.nodeId, 'opacity',      opacity     );
+            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', strokeWeight);
+            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    strokeFit   );
+            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   strokeJoin  );
+            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  strokeMiter );
+
+
+            if (   this.active
+                && this.result.valid)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
+        }
+
+
+        return this.result;
+    }
+}
+
+
 const settings =
 {
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawStorage:    true, 
+    logRawStorage:    false, 
     logStorage:       true, 
     logActions:       false, 
     logRawRequests:   true, 
@@ -24418,7 +24804,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLOR:              node = new OpColor();            break;
         case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
         case COLOR_VALIDATE:     node = new OpColorValidate();    break;
-        case COLOR_CONTRAST:     node = new OpColorContrast();      break;
+        case COLOR_CONTRAST:     node = new OpColorContrast();    break;
         case COLORBLIND:         node = new OpColorBlind();       break;
         
         case RECTANGLE:          node = new OpRectangle();        break;
@@ -24428,6 +24814,8 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case STAR:               node = new OpStar();             break;
 
         case COLOR_FILL:         node = new OpColorFill();        break;
+
+        case COLOR_STROKE:       node = new OpColorStroke();      break;
 
         case COMMENT:            node = new OpComment();          break;
     }
@@ -25519,7 +25907,7 @@ class Connection
             this.wire. inBall.style.fill      = colorStyleRgb(color);
             this.wire.outBall.style.fill      = colorStyleRgb(color);
 
-            this.wire.curve.style.strokeWidth = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
+            this.wire.curve.style.strokeWeight = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
             this.wire. inBall.style.r         = 3 * graphView.zoom;
             this.wire.outBall.style.r         = 3 * graphView.zoom;
 
@@ -32188,8 +32576,8 @@ extends OpGeometryBase
         this.addInput(new Input(GEOMETRY_TYPES));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '', false, true, true));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', '', false, true, true, 100, 0, 100));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
         
@@ -32221,6 +32609,79 @@ extends OpGeometryBase
 
         request.push(...this.node.paramColor  .genRequest(gen));
         request.push(...this.node.paramOpacity.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
+class   OpColorStroke
+extends OpGeometryBase
+{
+    paramColor;
+    paramOpacity;
+
+    paramStrokeWeight;
+    paramStrokeFit;
+    paramStrokeJoin;
+    paramStrokeMiter;
+
+    
+    constructor()
+    {
+        super(COLOR_STROKE, 'stroke', 90);
+
+
+        this.addInput(new Input(GEOMETRY_TYPES));
+        this.addOutput(new Output(COLOR_STROKE, this.output_genRequest));
+
+        this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));
+        this.addParam(this.paramOpacity      = new NumberParam('opacity',      'opacity', true,  true, true, 100, 0, 100));
+
+        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    '',        false, true, true, ['Inside', 'Center', 'Outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   '',        false, true, true, ['Miter', 'Bevel', 'Round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',   false, true, true, 28.96, 0, 180, 2));
+
+        this.paramColor.setValue(GColorValue.create(1, 0, 0, 0), false, true, false);
+        
+        this.paramOpacity    .control.setSuffix('%', true);
+        this.paramStrokeMiter.control.setSuffix('°', true);
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramColor       .genRequest(gen));
+        request.push(...this.node.paramOpacity     .genRequest(gen));
+        request.push(...this.node.paramStrokeWeight.genRequest(gen));
+        request.push(...this.node.paramStrokeFit   .genRequest(gen));
+        request.push(...this.node.paramStrokeJoin  .genRequest(gen));
+        request.push(...this.node.paramStrokeMiter .genRequest(gen));
 
 
         gen.scope.pop();
@@ -34567,7 +35028,11 @@ function uiLoadGraphView(json)
 function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
     if (settings.logRawStorage)
-        console.log('nodes json =', nodesJson);
+        console.log(
+            'nodes json =', 
+            nodesJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
 
         
     graph.clear();

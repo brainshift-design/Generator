@@ -178,7 +178,9 @@ const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
 const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
 const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
-const COLOR_FILL = 'CFILL';
+const COLOR_FILL = 'CFIL';
+const GRADIENT_FILL = 'GFIL';
+const COLOR_STROKE = 'CSTK';
 const GEOMETRY_VALUES = [
     GEOMETRY_VALUE,
     RECTANGLE_VALUE,
@@ -195,7 +197,9 @@ const GEOMETRY_TYPES = [
     POLYGON,
     STAR,
     //TEXT
-    COLOR_FILL
+    COLOR_FILL,
+    GRADIENT_FILL,
+    COLOR_STROKE
 ];
 const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
@@ -213,7 +217,7 @@ VECTOR      V
 const settings = {
     showNodeId: false,
     logMessages: false,
-    logRawStorage: true,
+    logRawStorage: false,
     logStorage: true,
     logActions: false,
     logRawRequests: true,
@@ -467,6 +471,7 @@ function figCreateRect(obj) {
     rect.x = obj.x;
     rect.y = obj.y;
     setObjectFills(rect, obj);
+    setObjectStrokes(rect, obj);
     rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
     rect.rotation = obj.angle;
     rect.cornerRadius = obj.round;
@@ -482,6 +487,7 @@ function figUpdateRect(figRect, genRect) {
     figRect.rotation = genRect.angle;
     figRect.cornerRadius = genRect.round;
     setObjectFills(figRect, genRect);
+    setObjectStrokes(figRect, genRect);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateLine(obj) {
@@ -585,7 +591,6 @@ function figUpdateStar(figStar, genStar) {
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function setObjectFills(obj, src) {
-    console.log('obj.fills =', src.fills);
     if (src.fills !== null
         && src.fills.length > 0)
         obj.fills = getObjectFills(src.fills);
@@ -611,6 +616,36 @@ function getObjectFills(objFills) {
         }
     }
     return fills;
+}
+function setObjectStrokes(obj, src) {
+    if (src.strokes !== null
+        && src.strokes.length > 0) {
+        obj.strokes = getObjectStrokes(src.strokes);
+        obj.strokeWeight = src.strokeWeight;
+        obj.strokeAlign = src.strokeAlign;
+        obj.strokeJoin = src.strokeJoin;
+        obj.strokeMiterLimit = src.strokeMiterLimit;
+    }
+}
+function getObjectStrokes(objStrokes) {
+    const strokes = [];
+    for (const stroke of objStrokes) {
+        const c = stroke[1].split(' ');
+        switch (stroke[0]) {
+            case COLOR_FILL:
+                strokes.push({
+                    type: 'SOLID',
+                    color: {
+                        r: Math.min(Math.max(0, parseFloat(c[0])), 1),
+                        g: Math.min(Math.max(0, parseFloat(c[1])), 1),
+                        b: Math.min(Math.max(0, parseFloat(c[2])), 1)
+                    },
+                    opacity: parseFloat(stroke[2])
+                });
+                break;
+        }
+    }
+    return strokes;
 }
 // function setNodeFill(node, fill)
 // {

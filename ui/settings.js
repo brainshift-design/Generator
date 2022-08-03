@@ -3,7 +3,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawStorage:    true, 
+    logRawStorage:    false, 
     logStorage:       true, 
     logActions:       false, 
     logRawRequests:   true, 
