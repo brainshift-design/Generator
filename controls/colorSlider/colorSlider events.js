@@ -53,18 +53,16 @@ function initColorSliderEvents(slider)
             }
 
 
-            const objCol = colorStyleRgb(rgbActiveObject);
-
             if (   !slider.param
                 || !slider.param.node.selected)
-                slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
+                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
             else
             {
-                slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
+                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
                 if (slider.param.index < slider.param.node.params.length-1)
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
             }
 
 

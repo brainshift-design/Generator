@@ -49,7 +49,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.textColorLight         = '#000';
                 
     slider.backColorDark          = 'transparent';
-    slider.valueColorDark         = '#fff4';
+    slider.valueColorDark         = '#ffffff30';
     slider.textColorDark          = '#eee';
                 
     slider.fontSize               = 11;

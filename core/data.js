@@ -12,8 +12,8 @@ function rgbFromType(type, active)
         case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
             return active 
-                 ? rgbActiveNumber 
-                 : rgbNumber;
+                ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
+                : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR:           
         case COLOR_INTERPOLATE:
@@ -32,8 +32,8 @@ function rgbFromType(type, active)
         case COLOR_FILL: 
         case COLOR_STROKE: 
             return active 
-                 ? rgbActiveObject 
-                 : rgbObject;
+                ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
+                : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
     }
 
     return 'magenta';

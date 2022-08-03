@@ -156,6 +156,10 @@ const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE = 'CVLD'; // C
 const COLOR_CONTRAST = 'CCNT'; // C:text C:background
 const COLORBLIND = 'BLND'; // C
+const GRADIENT_VALUE = 'G';
+const GRADIENT_STOP_VALUE = 'GS';
+const GRADIENT = 'GRAD';
+const GRADIENT_STOP = 'GSTOP';
 const COLOR_TYPES = [
     COLOR_VALUE,
     COLOR,

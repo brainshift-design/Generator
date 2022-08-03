@@ -259,31 +259,38 @@ function logReqNode(node, type, parse)
 }
 
 
-const INVALID            = '?';
-const DISPLAY_INVALID    = '🤷‍♂️';
+const INVALID             = '?';
+const DISPLAY_INVALID     = '🤷‍♂️';
 
 
-const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
+const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
-const NUMBER             = 'NUM';   // N | n
-const NUMBER_LIMITS      = 'LIM';   // N:min N:max
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_EXPONENT    = 'EXP';   // count N...
-const NUMBER_MATH        = 'MATH';  // op count N...
-const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
+const NUMBER              = 'NUM';   // N | n
+const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_ADD          = 'ADD';   // count N...
+const NUMBER_SUBTRACT     = 'SUB';   // count N...
+const NUMBER_MULTIPLY     = 'MUL';   // count N...
+const NUMBER_DIVIDE       = 'DIV';   // count N...
+const NUMBER_MODULO       = 'MOD';   // count N...
+const NUMBER_EXPONENT     = 'EXP';   // count N...
+const NUMBER_MATH         = 'MATH';  // op count N...
+const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
-const COLOR_VALUE        = 'C';     // color value
+const COLOR_VALUE         = 'C';     // color value
 
-const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE     = 'CVLD';  // C
-const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
-const COLORBLIND         = 'BLND';  // C
+const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
+const COLOR_INTERPOLATE   = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE      = 'CVLD';  // C
+const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
+const COLORBLIND          = 'BLND';  // C
+
+
+const GRADIENT_VALUE      = 'G';
+const GRADIENT_STOP_VALUE = 'GS';
+
+const GRADIENT            = 'GRAD';
+const GRADIENT_STOP       = 'GSTOP';
 
 
 const COLOR_TYPES =
@@ -297,31 +304,31 @@ const COLOR_TYPES =
 ];
 
 
-const STRING_VALUE       = 'S';     // "..." (s) (escape \\ and \")
+const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 
-const STRING             = 'STR';   // S | s
-const STRING_ADD         = 'SADD';  // S S
-const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+const STRING              = 'STR';   // S | s
+const STRING_ADD          = 'SADD';  // S S
+const STRING_REPLACE      = 'SREPL'; // S S:what S:with
 
 
-const GEOMETRY_VALUE     = 'G0';    // abstract placeholder
+const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
 
-const RECTANGLE_VALUE    = 'R';
-const LINE_VALUE         = 'L';
-const ELLIPSE_VALUE      = 'E';
-const POLYGON_VALUE      = 'P';
-const STAR_VALUE         = 'ST';
+const RECTANGLE_VALUE     = 'R';
+const LINE_VALUE          = 'L';
+const ELLIPSE_VALUE       = 'E';
+const POLYGON_VALUE       = 'P';
+const STAR_VALUE          = 'ST';
 
-const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
-const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
-const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
-const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+const RECTANGLE           = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
+const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
+const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
+const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'CFIL';
-const GRADIENT_FILL      = 'GFIL';
+const COLOR_FILL          = 'CFIL';
+const GRADIENT_FILL       = 'GFIL';
 
-const COLOR_STROKE       = 'CSTK';
+const COLOR_STROKE        = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -354,14 +361,14 @@ const GEOMETRY_TYPES =
 ];
 
 
-const GROUP              = 'GRP';   // ???? count O...
+const GROUP               = 'GRP';   // ???? count O...
 
 
-const COMMENT            = 'CMNT';
+const COMMENT             = 'CMNT';
 
 
-const ACTIVE             = 'ACT';
-const PARAM              = 'PARAM'; // nodeId paramId
+const ACTIVE              = 'ACT';
+const PARAM               = 'PARAM'; // nodeId paramId
 
 
 /*

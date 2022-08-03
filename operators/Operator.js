@@ -99,34 +99,6 @@ class Operator
     get active() { return this._active; }
        
     
-    // get activeColor()
-    // {
-    //     switch (this.type)
-    //     {
-    //         case NUMBER:    return rgbNumber; //activeNumberColor;
-    //         case COLOR:     return rgbActiveColor;
-    //         case RECTANGLE: return rgbActiveObject;
-    //     }
-
-    //     return 'magenta';
-    // }
-
-
-
-    // get passiveColor()
-    // {
-    //     switch (this.type)
-    //     {
-    //         case NUMBER:    return rgbNumber;
-    //         case COLOR:     return rgbColor;
-    //         case RECTANGLE: return rgbObject;
-    //     }
-
-    //     return 'magenta';
-    // }
-
-
-
     get headerConnected()
     {
         const inputs = this.inputs.filter(i => 
@@ -255,7 +227,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
+            ? '0 0 0 2px var(--figma-color-bg-brand)'
             : 'none';
     }
     
@@ -429,7 +401,7 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
-        this.paramBack.style.backgroundColor = isDarkMode() ? '#505050' : 'white';
+        this.paramBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
 
         this.updateBorder();
         this.updateHeader();
@@ -444,7 +416,7 @@ class Operator
     {
         // this.inner.style.boxShadow = 
         //       '0 0 0 1px ' 
-        //     + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
+        //     + (this.div.over ? 'var(--figma-color-bg-brand)' : '#0001');
     }
 
 
@@ -543,12 +515,12 @@ class Operator
 
     getHeaderColors()
     {
-        const colBack = rgbFromType(this.type);
+        const colBack = rgbFromType(this.type, this.active);
             
         const colText = 
-            !this.active 
-            ? [0, 0, 0] 
-            : [1, 1, 1];
+            isDark(colBack) //!this.active 
+            ? [1, 1, 1]
+            : [0, 0, 0]; 
 
         const textStyle = colorStyleRgba(colText);
 
@@ -557,12 +529,12 @@ class Operator
 
 
         return {
-            back:      colBack, 
-            text:      colText,
+            back:       colBack, 
+            text:       colText,
             darkText:  !this.active,
-            textStyle: textStyle,
-            input:     colInput,
-            output:    colOutput };
+            textStyle:  textStyle,
+            input:      colInput,
+            output:     colOutput };
     }
 
 

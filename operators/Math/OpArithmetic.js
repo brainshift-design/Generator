@@ -70,8 +70,8 @@ extends OperatorBase
         const input = new Input([NUMBER]);
         input.isNew = true;
 
-        input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => onDisconnectInput(this, input));
+        input.addEventListener('connect',    () => { OpArithmetic_onConnectInput(this); input.isNew = false; });
+        input.addEventListener('disconnect', () => OpArithmetic_onDisconnectInput(this, input));
 
         this.addInput(input);
 
@@ -206,7 +206,7 @@ extends OperatorBase
 
 
 
-function onConnectInput(node)
+function OpArithmetic_onConnectInput(node)
 {
     node.addNewInput();
     //node.updateNode();
@@ -214,7 +214,7 @@ function onConnectInput(node)
 
 
 
-function onDisconnectInput(node, input)
+function OpArithmetic_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
     node.inputControls.removeChild(input.control);

@@ -1745,8 +1745,8 @@ function rgbFromType(type, active)
         case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
             return active 
-                 ? rgbActiveNumber 
-                 : rgbNumber;
+                ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
+                : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR:           
         case COLOR_INTERPOLATE:
@@ -1765,8 +1765,8 @@ function rgbFromType(type, active)
         case COLOR_FILL: 
         case COLOR_STROKE: 
             return active 
-                 ? rgbActiveObject 
-                 : rgbObject;
+                ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
+                : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
     }
 
     return 'magenta';
@@ -4466,31 +4466,38 @@ function normalizeSeed(x)
 }
 
 
-const INVALID            = '?';
-const DISPLAY_INVALID    = '🤷‍♂️';
+const INVALID             = '?';
+const DISPLAY_INVALID     = '🤷‍♂️';
 
 
-const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
+const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
-const NUMBER             = 'NUM';   // N | n
-const NUMBER_LIMITS      = 'LIM';   // N:min N:max
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_EXPONENT    = 'EXP';   // count N...
-const NUMBER_MATH        = 'MATH';  // op count N...
-const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
+const NUMBER              = 'NUM';   // N | n
+const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_ADD          = 'ADD';   // count N...
+const NUMBER_SUBTRACT     = 'SUB';   // count N...
+const NUMBER_MULTIPLY     = 'MUL';   // count N...
+const NUMBER_DIVIDE       = 'DIV';   // count N...
+const NUMBER_MODULO       = 'MOD';   // count N...
+const NUMBER_EXPONENT     = 'EXP';   // count N...
+const NUMBER_MATH         = 'MATH';  // op count N...
+const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
-const COLOR_VALUE        = 'C';     // color value
+const COLOR_VALUE         = 'C';     // color value
 
-const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE     = 'CVLD';  // C
-const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
-const COLORBLIND         = 'BLND';  // C
+const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
+const COLOR_INTERPOLATE   = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE      = 'CVLD';  // C
+const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
+const COLORBLIND          = 'BLND';  // C
+
+
+const GRADIENT_VALUE      = 'G';
+const GRADIENT_STOP_VALUE = 'GS';
+
+const GRADIENT            = 'GRAD';
+const GRADIENT_STOP       = 'GSTOP';
 
 
 const COLOR_TYPES =
@@ -4504,31 +4511,31 @@ const COLOR_TYPES =
 ];
 
 
-const STRING_VALUE       = 'S';     // "..." (s) (escape \\ and \")
+const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 
-const STRING             = 'STR';   // S | s
-const STRING_ADD         = 'SADD';  // S S
-const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+const STRING              = 'STR';   // S | s
+const STRING_ADD          = 'SADD';  // S S
+const STRING_REPLACE      = 'SREPL'; // S S:what S:with
 
 
-const GEOMETRY_VALUE     = 'G0';    // abstract placeholder
+const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
 
-const RECTANGLE_VALUE    = 'R';
-const LINE_VALUE         = 'L';
-const ELLIPSE_VALUE      = 'E';
-const POLYGON_VALUE      = 'P';
-const STAR_VALUE         = 'ST';
+const RECTANGLE_VALUE     = 'R';
+const LINE_VALUE          = 'L';
+const ELLIPSE_VALUE       = 'E';
+const POLYGON_VALUE       = 'P';
+const STAR_VALUE          = 'ST';
 
-const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
-const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
-const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
-const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+const RECTANGLE           = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
+const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
+const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
+const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'CFIL';
-const GRADIENT_FILL      = 'GFIL';
+const COLOR_FILL          = 'CFIL';
+const GRADIENT_FILL       = 'GFIL';
 
-const COLOR_STROKE       = 'CSTK';
+const COLOR_STROKE        = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -4561,14 +4568,14 @@ const GEOMETRY_TYPES =
 ];
 
 
-const GROUP              = 'GRP';   // ???? count O...
+const GROUP               = 'GRP';   // ???? count O...
 
 
-const COMMENT            = 'CMNT';
+const COMMENT             = 'CMNT';
 
 
-const ACTIVE             = 'ACT';
-const PARAM              = 'PARAM'; // nodeId paramId
+const ACTIVE              = 'ACT';
+const PARAM               = 'PARAM'; // nodeId paramId
 
 
 /*
@@ -11546,8 +11553,8 @@ function rgbFromType(type, active)
         case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
             return active 
-                 ? rgbActiveNumber 
-                 : rgbNumber;
+                ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
+                : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR:           
         case COLOR_INTERPOLATE:
@@ -11566,8 +11573,8 @@ function rgbFromType(type, active)
         case COLOR_FILL: 
         case COLOR_STROKE: 
             return active 
-                 ? rgbActiveObject 
-                 : rgbObject;
+                ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
+                : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
     }
 
     return 'magenta';
@@ -15694,31 +15701,38 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
-const INVALID            = '?';
-const DISPLAY_INVALID    = '🤷‍♂️';
+const INVALID             = '?';
+const DISPLAY_INVALID     = '🤷‍♂️';
 
 
-const NUMBER_VALUE       = 'N';     // value (s) (with significant decimals)
+const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
-const NUMBER             = 'NUM';   // N | n
-const NUMBER_LIMITS      = 'LIM';   // N:min N:max
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_EXPONENT    = 'EXP';   // count N...
-const NUMBER_MATH        = 'MATH';  // op count N...
-const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
+const NUMBER              = 'NUM';   // N | n
+const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_ADD          = 'ADD';   // count N...
+const NUMBER_SUBTRACT     = 'SUB';   // count N...
+const NUMBER_MULTIPLY     = 'MUL';   // count N...
+const NUMBER_DIVIDE       = 'DIV';   // count N...
+const NUMBER_MODULO       = 'MOD';   // count N...
+const NUMBER_EXPONENT     = 'EXP';   // count N...
+const NUMBER_MATH         = 'MATH';  // op count N...
+const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
-const COLOR_VALUE        = 'C';     // color value
+const COLOR_VALUE         = 'C';     // color value
 
-const COLOR              = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE  = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE     = 'CVLD';  // C
-const COLOR_CONTRAST     = 'CCNT';  // C:text C:background
-const COLORBLIND         = 'BLND';  // C
+const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
+const COLOR_INTERPOLATE   = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE      = 'CVLD';  // C
+const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
+const COLORBLIND          = 'BLND';  // C
+
+
+const GRADIENT_VALUE      = 'G';
+const GRADIENT_STOP_VALUE = 'GS';
+
+const GRADIENT            = 'GRAD';
+const GRADIENT_STOP       = 'GSTOP';
 
 
 const COLOR_TYPES =
@@ -15732,31 +15746,31 @@ const COLOR_TYPES =
 ];
 
 
-const STRING_VALUE       = 'S';     // "..." (s) (escape \\ and \")
+const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 
-const STRING             = 'STR';   // S | s
-const STRING_ADD         = 'SADD';  // S S
-const STRING_REPLACE     = 'SREPL'; // S S:what S:with
+const STRING              = 'STR';   // S | s
+const STRING_ADD          = 'SADD';  // S S
+const STRING_REPLACE      = 'SREPL'; // S S:what S:with
 
 
-const GEOMETRY_VALUE     = 'G0';    // abstract placeholder
+const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
 
-const RECTANGLE_VALUE    = 'R';
-const LINE_VALUE         = 'L';
-const ELLIPSE_VALUE      = 'E';
-const POLYGON_VALUE      = 'P';
-const STAR_VALUE         = 'ST';
+const RECTANGLE_VALUE     = 'R';
+const LINE_VALUE          = 'L';
+const ELLIPSE_VALUE       = 'E';
+const POLYGON_VALUE       = 'P';
+const STAR_VALUE          = 'ST';
 
-const RECTANGLE          = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const LINE               = 'LINE';  // N:x N:y N:width N:height N:angle
-const ELLIPSE            = 'ELPS';  // N:x N:y N:width N:height N:angle
-const POLYGON            = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
-const STAR               = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+const RECTANGLE           = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
+const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
+const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
+const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
-const COLOR_FILL         = 'CFIL';
-const GRADIENT_FILL      = 'GFIL';
+const COLOR_FILL          = 'CFIL';
+const GRADIENT_FILL       = 'GFIL';
 
-const COLOR_STROKE       = 'CSTK';
+const COLOR_STROKE        = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -15789,14 +15803,14 @@ const GEOMETRY_TYPES =
 ];
 
 
-const GROUP              = 'GRP';   // ???? count O...
+const GROUP               = 'GRP';   // ???? count O...
 
 
-const COMMENT            = 'CMNT';
+const COMMENT             = 'CMNT';
 
 
-const ACTIVE             = 'ACT';
-const PARAM              = 'PARAM'; // nodeId paramId
+const ACTIVE              = 'ACT';
+const PARAM               = 'PARAM'; // nodeId paramId
 
 
 /*
@@ -19799,7 +19813,7 @@ function initNumberSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        slider.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         slider.textbox.style.outline   = 'none';
         slider.textbox.style.textAlign = 'center';
         slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
@@ -19895,7 +19909,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.textColorLight         = '#000';
                 
     slider.backColorDark          = 'transparent';
-    slider.valueColorDark         = '#fff4';
+    slider.valueColorDark         = '#ffffff30';
     slider.textColorDark          = '#eee';
                 
     slider.fontSize               = 11;
@@ -20255,18 +20269,16 @@ function initColorSliderEvents(slider)
             }
 
 
-            const objCol = colorStyleRgb(rgbActiveObject);
-
             if (   !slider.param
                 || !slider.param.node.selected)
-                slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
+                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
             else
             {
-                slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
+                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
                 if (slider.param.index < slider.param.node.params.length-1)
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
             }
 
 
@@ -21004,7 +21016,7 @@ function initColorSliderTextbox(slider)
         slider.textbox.style.top       = slider.offsetTop    + 1;
         slider.textbox.style.width     = slider.offsetWidth  - 2;
         slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        slider.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         slider.textbox.style.outline   = 'none';
         slider.textbox.style.textAlign = 'center';
         slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
@@ -21294,7 +21306,7 @@ function initSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = 'calc(100% + 1px)';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = colorStyleRgb(rgbActiveObject);
+    select.selectBox.style.backgroundColor = 'var(--figma-color-bg-brand)';
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = -1; // -1 = border
     
@@ -21637,7 +21649,7 @@ function initMenuSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = '100%';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = colorStyleRgb(rgbActiveObject);
+    select.selectBox.style.backgroundColor = 'var(--figma-color-bg-brand)';
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = 0; // -1 = border
     
@@ -21861,7 +21873,7 @@ function initMenuSelectTextbox(select)
         select.textbox.style.top       = select.offsetTop    + 1;
         select.textbox.style.width     = select.offsetWidth  - 2;
         select.textbox.style.height    = select.offsetHeight - 2;
-        select.textbox.style.boxShadow = '0 0 0 1px ' + colorStyleRgb(rgbActiveObject);
+        select.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         select.textbox.style.outline   = 'none';
     
         select.textbox.style.textAlign = 'center';
@@ -26118,34 +26130,6 @@ class Operator
     get active() { return this._active; }
        
     
-    // get activeColor()
-    // {
-    //     switch (this.type)
-    //     {
-    //         case NUMBER:    return rgbNumber; //activeNumberColor;
-    //         case COLOR:     return rgbActiveColor;
-    //         case RECTANGLE: return rgbActiveObject;
-    //     }
-
-    //     return 'magenta';
-    // }
-
-
-
-    // get passiveColor()
-    // {
-    //     switch (this.type)
-    //     {
-    //         case NUMBER:    return rgbNumber;
-    //         case COLOR:     return rgbColor;
-    //         case RECTANGLE: return rgbObject;
-    //     }
-
-    //     return 'magenta';
-    // }
-
-
-
     get headerConnected()
     {
         const inputs = this.inputs.filter(i => 
@@ -26274,7 +26258,7 @@ class Operator
 
         this.div.style.boxShadow = 
             this._selected
-            ? '0 0 0 2px ' + colorStyleRgb(rgbActiveObject)
+            ? '0 0 0 2px var(--figma-color-bg-brand)'
             : 'none';
     }
     
@@ -26448,7 +26432,7 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
-        this.paramBack.style.backgroundColor = isDarkMode() ? '#505050' : 'white';
+        this.paramBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
 
         this.updateBorder();
         this.updateHeader();
@@ -26463,7 +26447,7 @@ class Operator
     {
         // this.inner.style.boxShadow = 
         //       '0 0 0 1px ' 
-        //     + (this.div.over ? colorStyleRgb(rgbActiveObject) : '#0001');
+        //     + (this.div.over ? 'var(--figma-color-bg-brand)' : '#0001');
     }
 
 
@@ -26562,12 +26546,12 @@ class Operator
 
     getHeaderColors()
     {
-        const colBack = rgbFromType(this.type);
+        const colBack = rgbFromType(this.type, this.active);
             
         const colText = 
-            !this.active 
-            ? [0, 0, 0] 
-            : [1, 1, 1];
+            isDark(colBack) //!this.active 
+            ? [1, 1, 1]
+            : [0, 0, 0]; 
 
         const textStyle = colorStyleRgba(colText);
 
@@ -26576,12 +26560,12 @@ class Operator
 
 
         return {
-            back:      colBack, 
-            text:      colText,
+            back:       colBack, 
+            text:       colText,
             darkText:  !this.active,
-            textStyle: textStyle,
-            input:     colInput,
-            output:    colOutput };
+            textStyle:  textStyle,
+            input:      colInput,
+            output:     colOutput };
     }
 
 
@@ -26843,22 +26827,24 @@ extends Operator
         super.updateHeader();
 
 
-        const colBack   = rgbFromType(this.type, this.active);
-        const darkText  = rgb2hclokl(colBack)[2] > 0.71;
+        const colors = this.getHeaderColors();
 
-        const colText   = darkText ? [0, 0, 0     ] : [1, 1, 1      ];
-        const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3 ];
-        const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
+        // const colBack   = rgbFromType(this.type, this.active);
+        // const darkText  = rgb2hclokl(colBack)[2] > 0.71;
+
+        // const colText   = darkText ? [0, 0, 0     ] : [1, 1, 1      ];
+        // const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3 ];
+        // const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
 
 
-        this.header.style.backgroundColor = colorStyleRgb_a(colBack, 0.95);
+        this.header.style.backgroundColor = colorStyleRgb_a(colors.back, 0.95);
 
-        this.label .style.color           = colorStyleRgb(colText);
+        this.label .style.color           = colors.textStyle;//colorStyleRgb(colors.text);
         this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
 
 
-        for (const input  of this.inputs .filter(i => !i.param)) input .color = colInput;
-        for (const output of this.outputs.filter(i => !i.param)) output.color = colOutput;
+        for (const input  of this.inputs .filter(i => !i.param)) input .color = colors.input;
+        for (const output of this.outputs.filter(i => !i.param)) output.color = colors.output;
     }
 }
 
@@ -27949,8 +27935,8 @@ extends OperatorBase
         const input = new Input([NUMBER]);
         input.isNew = true;
 
-        input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => onDisconnectInput(this, input));
+        input.addEventListener('connect',    () => { OpArithmetic_onConnectInput(this); input.isNew = false; });
+        input.addEventListener('disconnect', () => OpArithmetic_onDisconnectInput(this, input));
 
         this.addInput(input);
 
@@ -28085,7 +28071,7 @@ extends OperatorBase
 
 
 
-function onConnectInput(node)
+function OpArithmetic_onConnectInput(node)
 {
     node.addNewInput();
     //node.updateNode();
@@ -28093,7 +28079,7 @@ function onConnectInput(node)
 
 
 
-function onDisconnectInput(node, input)
+function OpArithmetic_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
     node.inputControls.removeChild(input.control);
@@ -32643,9 +32629,9 @@ extends OpGeometryBase
         this.addParam(this.paramOpacity      = new NumberParam('opacity',      'opacity', true,  true, true, 100, 0, 100));
 
         this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    '',        false, true, true, ['Inside', 'Center', 'Outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   '',        false, true, true, ['Miter', 'Bevel', 'Round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',   false, true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  false, true, true, 28.96, 0, 180, 2));
 
         this.paramColor.setValue(GColorValue.create(1, 0, 0, 0), false, true, false);
         
@@ -34273,12 +34259,22 @@ btnToggleWires.addEventListener('pointerleave', () => updateToggleShowWiresButto
 const colFigmaBlue = '#0c8ce9';
 
 
-const rgbObject       = hex2rgb('#bee0ff');
-const rgbActiveObject = hex2rgb('#18a0fb');
-const rgbNumber       = hex2rgb('#ddd');
-const rgbActiveNumber = hex2rgb('#787878');
-const rgbColor        = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
-const rgbActiveColor  = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
+const rgbObjectLight       = hex2rgb('#bee0ff');
+const rgbActiveObjectLight = hex2rgb('#18a0fb');
+
+const rgbObjectDark        = hex2rgb('#3c5882');
+const rgbActiveObjectDark  = hex2rgb('#18a0fb');
+
+
+const rgbNumberLight       = hex2rgb('#ddd');
+const rgbActiveNumberLight = hex2rgb('#787878');
+
+const rgbNumberDark        = hex2rgb('#505050');
+const rgbActiveNumberDark  = hex2rgb('#888');
+
+
+const rgbColor             = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
+const rgbActiveColor       = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
 
 
@@ -36791,7 +36787,7 @@ function setGoodProductKeyInput()
 function setDefaultProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px ' + colorStyleRgb(rgbActiveObject); 
+    productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
 }
 
 

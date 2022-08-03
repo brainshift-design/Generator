@@ -34,7 +34,7 @@ function initSelectMenu(select)
     select.selectBox.style.display         = 'inline-block';
     select.selectBox.style.width           = 'calc(100% + 1px)';
     select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = colorStyleRgb(rgbActiveObject);
+    select.selectBox.style.backgroundColor = 'var(--figma-color-bg-brand)';
     select.selectBox.style.position        = 'absolute';
     select.selectBox.style.left            = -1; // -1 = border
     
