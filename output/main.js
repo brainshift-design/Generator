@@ -624,7 +624,7 @@ function setObjectStrokes(obj, src) {
         obj.strokeWeight = src.strokeWeight;
         obj.strokeAlign = src.strokeAlign;
         obj.strokeJoin = src.strokeJoin;
-        obj.strokeMiterLimit = src.strokeMiterLimit;
+        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
     }
 }
 function getObjectStrokes(objStrokes) {
