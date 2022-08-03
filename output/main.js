@@ -213,8 +213,10 @@ VECTOR      V
 const settings = {
     showNodeId: false,
     logMessages: false,
-    logStorage: false,
+    logRawStorage: true,
+    logStorage: true,
     logActions: false,
+    logRawRequests: true,
     logRequests: true,
     logValueUpdates: true,
     logObjectUpdates: true
@@ -464,12 +466,7 @@ function figCreateRect(obj) {
     const rect = figma.createRectangle();
     rect.x = obj.x;
     rect.y = obj.y;
-    console.log('obj.fills =', obj.fills);
-    if (obj.fills !== null
-        && obj.fills.filter(f => f[0] === COLOR_FILL).length > 0)
-        rect.fills = getObjectFills(obj.fills);
-    else
-        rect.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
+    setObjectFills(rect, obj);
     rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
     rect.rotation = obj.angle;
     rect.cornerRadius = obj.round;
@@ -484,7 +481,7 @@ function figUpdateRect(figRect, genRect) {
     }
     figRect.rotation = genRect.angle;
     figRect.cornerRadius = genRect.round;
-    figRect.fills = getObjectFills(genRect.fills);
+    setObjectFills(figRect, genRect);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateLine(obj) {
@@ -587,6 +584,14 @@ function figUpdateStar(figStar, genStar) {
 //     return frame;
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+function setObjectFills(obj, src) {
+    console.log('obj.fills =', src.fills);
+    if (src.fills !== null
+        && src.fills.length > 0)
+        obj.fills = getObjectFills(src.fills);
+    else
+        obj.fills = [{ type: 'SOLID', color: { r: 0.85, g: 0.85, b: 0.85 } }];
+}
 function getObjectFills(objFills) {
     const fills = [];
     for (const fill of objFills) {

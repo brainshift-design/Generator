@@ -16,7 +16,7 @@ extends OpGeometryBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '', false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', '', false, true, true, 100, 0, 100));
 
-        this.paramColor.setValue(GColorValue.create(1, 0, 1, 0), false, true, false);
+        this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
         
         this.paramOpacity.control.suffix = '%';
     }

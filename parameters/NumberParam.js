@@ -3,11 +3,10 @@ extends NumberParamBase
 {
     allowEditDecimals = true;
     
-
     
-    //get value   () { return this.control.value; }
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
+    
     
     constructor(id,
                 name, 
@@ -135,17 +134,5 @@ extends NumberParamBase
     toString()
     {
         return this.genValue.toString();
-    }
-
-
-
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
     }
 }

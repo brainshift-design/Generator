@@ -142,6 +142,10 @@ function uiLoadGraphView(json)
 
 function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
+    if (settings.logRawStorage)
+        console.log('nodes json =', nodesJson);
+
+        
     graph.clear();
 
     const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));

@@ -662,15 +662,14 @@ class Operator
 
     loadParams(_node)
     {
-        if (_node.params)
+        if (!_node.params)
+            return;
+
+
+        for (const _param of _node.params)
         {
-            for (const _param of _node.params)
-            {
-                const index = this.params.findIndex(p => p.id == _param[0]);
-                
-                if (index >= 0) 
-                    this.params[index].setValue(parseGNumberValue(_param[1]), true, true, false);
-            }
+            const index = this.params.findIndex(p => p.id == _param[0]);
+            if (index >= 0) this.params[index].loadParam(_param[1]);
         }
     }
 }

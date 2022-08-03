@@ -37,6 +37,17 @@ extends GType
 
 
 
+    static createFromRgb(rgb)
+    {
+        return new GColorValue(
+            new GNumberValue(1),
+            new GNumberValue(rgb[0]),
+            new GNumberValue(rgb[1]),
+            new GNumberValue(rgb[2]));
+    }
+
+
+
     copy()
     {
         return new GColorValue(
@@ -54,6 +65,16 @@ extends GType
             && !isNaN(this.c1)
             && !isNaN(this.c2)
             && !isNaN(this.c3);
+    }
+
+
+
+    equals(col)
+    {
+        return this.space.equals(col.space)
+            && this.c1   .equals(col.c1   )
+            && this.c2   .equals(col.c2   )
+            && this.c3   .equals(col.c3   );
     }
 
 
@@ -100,9 +121,9 @@ extends GType
 
         const rgb = dataColor2rgb(this.toDataColor());
 
-        return        rgb[0].toString()
-              + ' ' + rgb[1].toString()
-              + ' ' + rgb[2].toString();
+        return      rgb[0].toString()
+            + ' ' + rgb[1].toString()
+            + ' ' + rgb[2].toString();
     }
 
 

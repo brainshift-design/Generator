@@ -7,7 +7,6 @@ extends Parameter
 
     
     get value   () { return this._control.value; }
-    //get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
     get valueText() { return this.control.valueText; }
@@ -71,5 +70,24 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
+        
+        if (id == '')
+            id = this.id;
+
+        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+    }
+
+
+
+    loadParam(param)
+    {
+        this.setValue(parseGNumberValue(param), true, true, false);
     }
 }

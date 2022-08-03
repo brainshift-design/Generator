@@ -3,24 +3,11 @@ extends NumberParamBase
 {
     options = [];
     
-
     
-    // get value()      { return this._control.value;    }
-    //set value(value) { this._control.setValue(value); }
-    
-    //get oldValue()   { return this._control.oldValue; }
+    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
 
 
-    // get valueText() { return this.control.valueText; }
-    // set valueText(text) 
-    // {
-    //     this.control.valueText = text;
-    //     this.control.update();
-    // }
-
-
-    
     constructor(id,
                 name,
                 showName,

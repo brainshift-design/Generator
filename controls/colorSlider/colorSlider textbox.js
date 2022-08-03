@@ -108,12 +108,6 @@ function initColorSliderTextbox(slider)
 
             let text = slider.textbox.value;
 
-            if (   slider.valueCanContainSuffix   
-                && text.length >= slider.suffix.length
-                && text.substring(text.length - slider.suffix.length) == slider.suffix)
-                text = text.substring(0, text.length - slider.suffix.length);
-
-
             if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
                 slider.textbox.selectionStart =  slider.textbox.selectionEnd;
 
@@ -160,7 +154,7 @@ function initColorSliderTextbox(slider)
                 }
 
                 slider.textbox.selectionStart =
-                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos - slider.suffix.length;
+                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
             }
         }
         else 
@@ -168,15 +162,9 @@ function initColorSliderTextbox(slider)
             let curVal = slider.textbox.value;
 
             if (      e.key.length == 1
-                   && !isDigit(e.key)
                    && e.key != '?'
-                   && (   !slider.valueCanContainSuffix
-                       || !slider.suffix.includes(e.key))
-                   && (   !slider.showHex 
-                       || !isHexDigit(e.key))
-                   && (   slider.showHex
-                       ||    e.key != '.'
-                          && e.key != ',')
+                   && !isDigit(e.key)
+                   && !isHexDigit(e.key)
                    && !(   ((      e.code == 'Minus'
                                 || e.code == 'NumpadSubtract')
                              && !curVal.includes('-'))
@@ -244,14 +232,8 @@ function initColorSliderTextbox(slider)
         let   value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
 
-        value = value.replace(slider.suffix, '');
-        
-        
-        let val      = value     .indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
-        let savedVal = savedValue.indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
-
-        if (!isNaN(val))
-            val /= slider.valueScale;
+        let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
+        let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
 
        
         const e = new CustomEvent('finishedit', { 'detail': {
@@ -268,13 +250,12 @@ function initColorSliderTextbox(slider)
             if (success) 
             {
                 slider.setValue(
-                       value.trim() != '' 
-                    && value.trim() != '-'
-                    ? val 
-                    : savedVal);
+                      value.trim() != '' 
+                    ? GColorValue.createFromRgb(rgb) 
+                    : GColorValue.createFromRgb(savedRgb));
             }
             else
-                slider.setValue(savedVal);
+                slider.setValue(savedRgb);
         }
          
         
@@ -333,16 +314,15 @@ function initColorSliderTextbox(slider)
 
     slider.updateTextbox = function()
     {
+        const rgb = dataColor2rgb(slider.value.toDataColor());
+
         slider.textbox.value =
-            (isNaN(slider.value)
-             ? DISPLAY_INVALID
-             : numToString(
-                   slider.value * slider.valueScale, 
-                   slider.displayDec, 
-                   slider.showHex
-               ).toUpperCase())
-            + (slider.valueCanContainSuffix ? slider.suffix : '');
-            
-        slider.textbox.savedValue = slider.textbox.value;
+            !slider.value.isValid()
+            ? DISPLAY_INVALID
+            : rgb2hex(rgb).toUpperCase();
+                           
+        slider.textbox.savedValue  = slider.textbox.value;
+
+        slider.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
     };
 }

@@ -217,6 +217,13 @@ extends EventTarget
 
         return pos + '["' + id  + '", "' + this.value + '"]';
     }
+
+
+
+    loadParam(param)
+    {
+        
+    }
 }
 
 

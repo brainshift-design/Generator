@@ -11,7 +11,7 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
+function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     slider.param                  = param;
      
@@ -39,7 +39,6 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.name                   = name;
     slider.suffix                 = suffix;
     slider.valueCanContainSuffix  = false;
-    slider.log                    = log;
      
     slider.dragReverse            = false;
     slider.dragScale              = dragScale;

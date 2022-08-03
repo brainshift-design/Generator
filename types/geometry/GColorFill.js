@@ -12,7 +12,7 @@ extends GGeometryBase
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color   = GColorValue.create(1, 0, 1, 0);
+        this.color   = GColorValue.create(1, 0, 0, 0);
         this.opacity = new GNumberValue(100);
     }
 

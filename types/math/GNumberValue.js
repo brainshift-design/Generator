@@ -36,6 +36,14 @@ extends GType
 
 
 
+    equals(num)
+    {
+        return this.value    == num.value
+            && this.decimals == num.decimals;
+    }
+
+
+
     eval(parse)
     {
         return this.result = this.copy();

@@ -1,16 +1,14 @@
 function initColorSliderChildren(slider)
 {
-    slider.bar   = createDiv('colorSliderBar');
     slider.text  = createDiv('colorSliderText');
     slider.focus = createDiv('colorSliderFocus');
 
-    slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
 }
 
 
-function initColorSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '', log = false)
+function initColorSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     slider.param                  = param;
      
@@ -27,9 +25,6 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
      
     slider.id                     = id;
     slider.name                   = name;
-    slider.suffix                 = suffix;
-    slider.valueCanContainSuffix  = false;
-    slider.log                    = log;
      
     slider.dragReverse            = false;
     slider.dragScale              = dragScale;
@@ -76,15 +71,6 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
      
     slider.valueText              = '';
      
-    slider.barTop                 = 0;
-    slider.barBottom              = 1;
-     
-    slider.ranges                 = [];
-    slider.rangeDivs              = [];
-     
-    slider.options                = []; // if dec == 0, show named choices instead of a value
- 
-     
     slider.onstartchange          = new Event('startchange');
     slider.onchange               = new Event('change');
     slider.onconfirm              = new Event('confirm');
@@ -126,30 +112,16 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
 
 
 
-    slider.setSuffix = function(suffix, valueCanContainSuffix = false)
-    {
-        slider.suffix                = suffix;
-        slider.valueCanContainSuffix = valueCanContainSuffix;
-    };
-    
-
-
     slider.update = function()
     {
-        const sx = slider.getOffsetLeft();
         const sw = slider.getClientWidth();
         const sh = slider.getClientHeight();
 
-        const cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
-        const v  =  slider.value      / (slider.displayMax - slider.displayMin);
 
-        slider.updateBar(sx, cx, v, sw, sh);
         slider.updateColors();
         slider.updateText();
         slider.updateFocus(sw, sh);
         
-        updateSliderRanges(slider, sw, sh);
-
 
         slider.cachedOffsetLeft   = null;
         slider.cachedClientWidth  = null;
@@ -158,39 +130,12 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
 
 
 
-    slider.updateBar = function(sx, cx, v, sw, sh)
-    {
-        if (slider.dragReverse)
-            v *= -1;
-
-            
-        if (isNaN(slider.value))
-            slider.bar.style.display = 'none';
-
-        else
-        {
-            slider.bar.style.display = 'block';
-
-            const x = 
-                v >= 0
-                ? sx + cx
-                : sx + cx + v * sw;
-
-            slider.bar.style.left   = Math.max(0, x);
-            slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
-
-            slider.bar.style.top    = sh * slider.barTop;
-            slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
-        }
-    };
-
-
-
     slider.updateColors = function()
     {
-        slider     .style.background = isDarkMode() ? slider.backColorDark  : slider.backColorLight;
-        slider.bar .style.background = isDarkMode() ? slider.valueColorDark : slider.valueColorLight;
-        slider.text.style.color      = isDarkMode() ? slider.textColorDark  : slider.textColorLight;
+        const rgb = dataColor2rgb(slider.value.toDataColor());
+
+        slider     .style.background = colorStyleRgb(rgb);
+        slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
     };
 
 
@@ -201,9 +146,9 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
         
         if (   slider.name.length > 0
             && slider.showName)
-            slider.text.innerHTML += '<span class="colorSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
+            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
-        slider.text.innerHTML += slider.getValueText() + slider.suffix;
+        slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
     };
 
 
@@ -214,37 +159,6 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
         slider.focus.style.top    = 0;
         slider.focus.style.width  = sw;
         slider.focus.style.height = sh;
-    };
-
-
-
-    slider.getValueText = function()
-    {
-        if (   slider.options.length > 0
-            && slider.displayDec == 0)
-        {
-            if (   slider.value <  0 
-                || slider.value >= slider.options.length)
-                return DISPLAY_INVALID;
-            else
-                return slider.options[Math.round(slider.value)];
-        }
-        else if (slider.valueText != '')
-        {
-            return slider.valueText;
-        }
-        else
-        {
-            return isNaN(slider.value)
-                   ? DISPLAY_INVALID
-                   : Math.abs(slider.value * slider.valueScale) > 999999
-                     ? (slider.value * slider.valueScale).toExponential(1)
-                     : numToString(
-                           slider.value * slider.valueScale, 
-                           slider.displayDec, 
-                           slider.showHex
-                       ).toUpperCase();
-        }
     };
 
 

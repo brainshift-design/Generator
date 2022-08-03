@@ -130,7 +130,7 @@ function hexboxFinish(node, success)
         node.hexbox.value = node.hexbox.savedValue;
 
         
-    var rgb = hex2rgb(node.hexbox.value);
+    const rgb = hex2rgb(node.hexbox.value);
     
     if (success) 
     {

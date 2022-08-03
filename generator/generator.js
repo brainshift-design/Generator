@@ -7,7 +7,13 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    console.log('request =', request);
+    if (settings.logRawRequests)
+        console.log(
+            '%c%s%s', 
+            'background: #60aa60; color: #cfd', 
+            'raw request = ', 
+            request.toString());
+
 
     const updateNodeId  = request[0];
     const updateParamId = request[1];

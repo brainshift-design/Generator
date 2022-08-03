@@ -27,7 +27,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = GColorValue.create(1, 0, 1, 0),
+                value     = GColorValue.create(1, 0, 0, 0),
                 dragScale = 0.05)
     {
         super(id, name, NUMBER);
@@ -66,33 +66,33 @@ extends Parameter
         // });
 
 
-        // this.control.addEventListener('finishedit', e =>
-        // { 
-        //     let   dec    = decCount(e.detail.value);
-        //     const oldDec = decCount(e.detail.oldValue);
+        this.control.addEventListener('finishedit', e =>
+        { 
+            // let   dec    = decCount(e.detail.value);
+            // const oldDec = decCount(e.detail.oldValue);
 
             
-        //     if (!e.detail.success)
-        //         return;
+            // if (!e.detail.success)
+            //     return;
 
 
-        //     if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-        //         && dec >= oldDec)
-        //     {
-        //         this.setValue(new GNumberValue(e.detail.value, dec), true);
-        //         e.preventSetValue = true;
-        //     }
-        //     else if (this.allowEditDecimals)
-        //     {
-        //         if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
-        //             dec += Math.log10(this.control.valueScale);
-        //         else 
-        //             dec = oldDec;
+            // if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+            //     && dec >= oldDec)
+            // {
+            //     this.setValue(new GNumberValue(e.detail.value, dec), true);
+            //     e.preventSetValue = true;
+            // }
+            // else if (this.allowEditDecimals)
+            // {
+            //     if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+            //         dec += Math.log10(this.control.valueScale);
+            //     else 
+            //         dec = oldDec;
 
-        //             this.setValue(new GNumberValue(e.detail.value, dec), true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
+            //         this.setValue(new GNumberValue(e.detail.value, dec), true);
+            //     e.preventSetValue = true;
+            // }
+        });
     }
 
 
@@ -139,37 +139,14 @@ extends Parameter
 
 
 
-    toString()
-    {
-        return this.genValue.toString();
-    }
-
-
-
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
-    }
-
-
-    
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.log('value =', value);
         console.assert(value.type && value.type == COLOR_VALUE);
 
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
-        {
-            // this.control.setDecimals(value.decimals, value.decimals);
             this.control.setValue(value, false, false, forceChange); 
-        }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
@@ -214,5 +191,31 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    toString()
+    {
+        return this.genValue.toString();
+    }
+
+
+
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
+        
+        if (id == '')
+            id = this.id;
+
+        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+    }
+
+
+    
+    loadParam(param)
+    {
+        this.setValue(parseGColorValue(param), true, true, false);
     }
 }
