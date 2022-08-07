@@ -228,17 +228,16 @@ class Operator
 
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
+
+        this.inner.appendChild(param.div);
     }
  
     
 
-    initParams() // must be called at the end of each final Op constructor
+    updateParamDisplay() // must be called at the end of each final Op constructor
     {
         for (const param of this.params)
-        {
-            if (param.show())
-                this.inner.appendChild(param.div);
-        }
+            param.div.style.display = param.show() ? 'inline-block' : 'none';
     }
 
 

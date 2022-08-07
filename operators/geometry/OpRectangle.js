@@ -37,6 +37,8 @@ extends OpGeometryBase
 
         this.addBaseParams();
 
+        //this.paramFill.addFill(new GColorValue(0, 0, 0, 255));
+
         
         this.inputs[0].addEventListener('connect', () =>
         {
@@ -77,7 +79,7 @@ extends OpGeometryBase
         });
 
 
-        this.initParams();
+        this.updateParamDisplay();
     }
     
     

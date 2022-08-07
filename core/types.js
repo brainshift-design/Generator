@@ -50,11 +50,11 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_TYPES =
-{
+const FILL_VALUES =
+[
     COLOR_VALUE,
     GRADIENT_VALUE
-};
+];
 
 
 const FILL_VALUE          = 'FL';

@@ -35,17 +35,13 @@
         var name = getQueryVariable('name');
 
         if (name != 'false')
-        {
             txt += createProductKey(name);
-        }    
 
         else
         {
             var rnd = new Random(1234567);    
 
             const names = [];
-
-            //var maxLen  = 0;
 
             for (var i = 0; i < 30; i++)
             {
@@ -54,7 +50,6 @@
                     +  lastNames[Math.floor(rnd.next() *  lastNames.length)];  
 
                 names.push(name);    
-                //maxLen = Math.max(maxLen, name.length);
             }    
 
 

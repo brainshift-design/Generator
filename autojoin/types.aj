@@ -27,6 +27,10 @@
 ../generator/types/color/GColorContrast.js
 ../generator/types/color/GColorBlind.js
 ../generator/types/color/GColorValidate.js
+
+
+../generator/types/color/GFillValue.js
+
 ../generator/types/color/GFill.js
 
 

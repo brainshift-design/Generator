@@ -262,3 +262,42 @@ function genParseColorValidate(parse)
     genParseNodeEnd(parse, val);
     return val;
 }
+
+
+
+function genParseFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqFill(fill, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, fill);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (parse.next == FILL)
+        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+
+
+    fill.color   = genParse(parse);
+    fill.opacity = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fill);
+    return fill;
+}

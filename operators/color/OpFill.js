@@ -10,13 +10,13 @@ extends OpColorBase
         super(FILL, 'fill', 90);
 
 
-        this.addInput(new Input(FILL_TYPES));
-        this.addOutput(new Output(FILL_VALUE, this.output_genRequest));
+        this.addInput(new Input(FILL_VALUES));
+        this.addOutput(new Output(FILL, this.output_genRequest));
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
+        this.addParam(this.paramFill    = new FillParam  ('fill',    '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+        this.paramFill.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
         
         this.paramOpacity.control.suffix = '%';
     }

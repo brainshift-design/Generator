@@ -88,11 +88,11 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_TYPES =
-{
+const FILL_VALUES =
+[
     COLOR_VALUE,
     GRADIENT_VALUE
-};
+];
 
 
 const FILL_VALUE          = 'FL';
@@ -390,7 +390,7 @@ const settings =
     
     logMessages:      false,
     logRawStorage:    false, 
-    logStorage:       true, 
+    logStorage:       false, 
     logActions:       false, 
     logRawRequests:   true, 
     logRequests:      true, 
@@ -688,7 +688,7 @@ function figPostMessageToUI(msg)
 
 function figCreateRect(obj)
 {
-    console.log(obj);
+    //console.log(obj);
 
     const rect = figma.createRectangle();
 

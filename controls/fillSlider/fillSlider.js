@@ -8,7 +8,8 @@ function initFillSliderChildren(slider)
 }
 
 
-function initFillSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+
+function initFillSlider(param, slider, width, height, id, name, showName, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     slider.param                  = param;
      
@@ -20,7 +21,8 @@ function initFillSlider(param, slider, width, height, id, name, showName, def, d
     slider.style.width            = width;
     slider.style.height           = height;
              
-    slider.value                  = def;
+    slider.fills                  = [];
+
     slider.acc                    = acc;
      
     slider.id                     = id;
@@ -90,22 +92,22 @@ function initFillSlider(param, slider, width, height, id, name, showName, def, d
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    slider.setFills = function(fills, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        const oldValue = slider.value.copy();
+        const oldFills = [...slider.fills];
 
-        slider.value = value.copy();
+        slider.fills = [...fills];
 
         slider.update();
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && value != slider.prevValue)
+            && fills != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
 
         if (   confirm
             && slider.enableChangeEvent
-            && value != oldValue)
+            && fills != oldFills)
             slider.dispatchEvent(slider.onconfirm);
     };
 
@@ -130,7 +132,10 @@ function initFillSlider(param, slider, width, height, id, name, showName, def, d
 
     slider.updateColors = function()
     {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
+        const rgb = 
+            slider.fills.length > 0
+            ? dataColor2rgb(slider.fills[0].toDataColor())
+            : [0xd9, 0xd9, 0xd9];
 
         slider     .style.background = colorStyleRgb(rgb);
         slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
@@ -146,7 +151,8 @@ function initFillSlider(param, slider, width, height, id, name, showName, def, d
             && slider.showName)
             slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
-        slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
+        if (slider.fills.length > 0)
+            slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.fills[0].toDataColor()));
     };
 
 

@@ -44,9 +44,9 @@ extends OperatorBase
                this.paramStroke.fills.length > 0
             || this.paramStroke.connected;
 
-        this.paramStrokeWeight.show = () => cond;
-        this.paramStrokeFit   .show = () => cond;
-        this.paramStrokeJoin  .show = () => cond;
-        this.paramStrokeMiter .show = () => cond && this.paramStrokeJoin.value == 0;
+        this.paramStrokeWeight.show = () => cond();
+        this.paramStrokeFit   .show = () => cond();
+        this.paramStrokeJoin  .show = () => cond();
+        this.paramStrokeMiter .show = () => cond() && this.paramStrokeJoin.value == 0;
     } 
 }

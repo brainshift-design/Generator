@@ -310,15 +310,13 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLOR_CONTRAST:     node = new OpColorContrast();    break;
         case COLORBLIND:         node = new OpColorBlind();       break;
         
+        case FILL:               node = new OpFill();             break;
+
         case RECTANGLE:          node = new OpRectangle();        break;
         case LINE:               node = new OpLine();             break;
         case ELLIPSE:            node = new OpEllipse();          break;
         case POLYGON:            node = new OpPolygon();          break;
         case STAR:               node = new OpStar();             break;
-
-        case FILL:               node = new OpFill();             break;
-
-        case COLOR_STROKE:       node = new OpColorStroke();      break;
 
         case COMMENT:            node = new OpComment();          break;
     }

@@ -1,9 +1,6 @@
 class   FillParam
 extends Parameter
 {
-    fills = [];
-
-    
     defaultValue;
 
     oldValue = null;
@@ -20,8 +17,9 @@ extends Parameter
     }
 
     
-    get value   () { return this.control.value; }
-    get genValue() { return this.value.copy(); }
+    get fills   () { return this.control.fills; }
+    get value   () { return this.control.fills; }
+    get genValue() { return new GFillValue(this.fills); }
     
 
     
@@ -30,7 +28,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = GColorValue.create(1, 0, 0, 0),
+                value,
                 dragScale = 0.05)
     {
         super(id, name, NUMBER);
@@ -59,7 +57,7 @@ extends Parameter
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(COLOR_TYPES);
+        if (hasInput)  this.initInput(FILL_VALUES);
         if (hasOutput) this.initOutput(FILL, this.output_genRequest);
 
 
@@ -115,20 +113,24 @@ extends Parameter
 
 
 
-    // setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    // {
-    //     this.preSetValue(value, createAction, dispatchEvents);
+    addFill(fill)
+    {
+        this.control.fills.push(fill);
+    }
 
-    //     if (updateControl)
-    //     {
-    //         this.control.setDecimals(value.decimals, value.decimals);
-    //         this.control.setValue(value.value, false, false, forceChange); 
-    //     }
 
-    //     super.setValue(value, createAction, updateControl, dispatchEvents);
 
-    //     this.oldValue = this.genValue;
-    // }    
+    setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    {
+        this.preSetValue(fills, createAction, dispatchEvents);
+
+        if (updateControl)
+            this.control.setFills(fills, false, false, forceChange); 
+
+        super.setValue(fills, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.genValue;
+    }    
 
 
 
@@ -142,16 +144,16 @@ extends Parameter
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.assert(value.type && value.type == COLOR_VALUE);
+        console.assert(fills.type && fills.type == COLOR_VALUE);
 
-        this.preSetValue(value, createAction, dispatchEvents);
+        this.preSetValue(fills, createAction, dispatchEvents);
 
         if (updateControl)
-            this.control.setValue(value, false, false, forceChange); 
+            this.control.setFills(fills, false, false, forceChange); 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(fills, createAction, updateControl, dispatchEvents);
 
         this.oldValue = this.genValue;
     }    

@@ -10,7 +10,7 @@ extends GOperator
     {
         super(FILL, nodeId, active);
 
-        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.fill    = GColorValue.create(1, 0, 0, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -18,7 +18,7 @@ extends GOperator
 
     copy()
     {
-        const fill = new GColorFill(this.nodeId, this.active);
+        const fill = new GFill(this.nodeId, this.active);
 
         if (this.input) fill.input = this.input.copy();
 
@@ -34,40 +34,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const color   = this.fill   .eval(parse).copy();
-            const opacity = this.opacity.eval(parse).copy();
+            const fill    = this.fill   .eval(parse).copy();
+            // const opacity = this.opacity.eval(parse).copy();
 
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
+            // if (this.input)
+            // {
+            //     this.result = this.input.eval(parse).copy();
+            //     console.assert(this.result.type == FILL);
 
-                this.result.fills.push([
-                    COLOR_FILL, 
-                    color.toRgbString(), 
-                    (opacity.value / 100).toString()]);
+            //     this.result.fill = fill;
+            //         // FILL, 
+            //         // color.toRgbString(), 
+            //         // (opacity.value / 100).toString()]);
 
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
+            //     this.result.valid = true;
+            // }
+            // else
+            //     this.result = new GFill();
 
                 
-            this.valid = true;
+            // this.valid = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+            // genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
+            // genPushUpdateValue(parse, this.nodeId, 'fill',    fill  );
+            // genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
         }
 
 

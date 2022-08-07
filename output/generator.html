@@ -2578,6 +2578,14 @@ function logReqColorValidate(val, parse)
 }
 
 
+
+function logReqFill(fill, parse)
+{
+    parse.log += parse.tab + fill.type;
+    parse.log += logReqNodeId(fill);
+}
+
+
 function logReqGeometry(node, parse)
 {
     parse.log += parse.tab + node.type;
@@ -2799,11 +2807,11 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_TYPES =
-{
+const FILL_VALUES =
+[
     COLOR_VALUE,
     GRADIENT_VALUE
-};
+];
 
 
 const FILL_VALUE          = 'FL';
@@ -4403,6 +4411,96 @@ extends GOperator
 
 
 
+class GFillValue
+extends GType
+{
+    fills;
+
+
+
+    constructor(fills = [])
+    {
+        super(FILL_VALUE);
+
+        this.fills = [...fills];
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new GFillValue(this.fills);
+    }
+
+
+
+    isValid()
+    {
+        return this.fills.length > 0;
+    }
+
+
+
+    equals(fill)
+    {
+        if (this.fills.length != fill.fills.length)
+            return false;
+
+        for (let i = 0; i < this.fills.length; i++)
+            if (!this.fills[i].equals(fill.fills[i]))
+                return false;
+
+        return true;
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        let str = this.fills.length.toString();
+
+        for (let i = 0; i < this.fills.length; i++)
+            str += ' ' + this.fills[i].toString();
+
+        return str;
+    }
+
+
+
+    static NaN = new GFillValue();
+}
+
+
+
+function parseGFillValue(str)
+{
+    // if (str == INVALID)
+    //     return GFillValue.NaN;
+
+    const _fill = str.split(' ');
+
+    const fill = new GFillValue();
+
+    const nFills = parseInt(_fill[0]);
+
+    for (let i = 1; i < nFills; i++)
+        fill.fills.push(parseGColorValue(_fills[i]));
+
+    return fill;
+}
+
+
+
 class GFill
 extends GOperator
 {
@@ -4415,7 +4513,7 @@ extends GOperator
     {
         super(FILL, nodeId, active);
 
-        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.fill    = GColorValue.create(1, 0, 0, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -4423,7 +4521,7 @@ extends GOperator
 
     copy()
     {
-        const fill = new GColorFill(this.nodeId, this.active);
+        const fill = new GFill(this.nodeId, this.active);
 
         if (this.input) fill.input = this.input.copy();
 
@@ -4439,40 +4537,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const color   = this.fill   .eval(parse).copy();
-            const opacity = this.opacity.eval(parse).copy();
+            const fill    = this.fill   .eval(parse).copy();
+            // const opacity = this.opacity.eval(parse).copy();
 
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
+            // if (this.input)
+            // {
+            //     this.result = this.input.eval(parse).copy();
+            //     console.assert(this.result.type == FILL);
 
-                this.result.fills.push([
-                    COLOR_FILL, 
-                    color.toRgbString(), 
-                    (opacity.value / 100).toString()]);
+            //     this.result.fill = fill;
+            //         // FILL, 
+            //         // color.toRgbString(), 
+            //         // (opacity.value / 100).toString()]);
 
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
+            //     this.result.valid = true;
+            // }
+            // else
+            //     this.result = new GFill();
 
                 
-            this.valid = true;
+            // this.valid = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+            // genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
+            // genPushUpdateValue(parse, this.nodeId, 'fill',    fill  );
+            // genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
         }
 
 
@@ -5780,7 +5870,7 @@ const settings =
     
     logMessages:      false,
     logRawStorage:    false, 
-    logStorage:       true, 
+    logStorage:       false, 
     logActions:       false, 
     logRawRequests:   true, 
     logRequests:      true, 
@@ -6178,6 +6268,45 @@ function genParseColorValidate(parse)
 }
 
 
+
+function genParseFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqFill(fill, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, fill);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (parse.next == FILL)
+        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+
+
+    fill.color   = genParse(parse);
+    fill.opacity = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fill);
+    return fill;
+}
+
+
 /*
     RECT 
     id
@@ -6483,88 +6612,6 @@ function genParseStar(parse)
 }
 
 
-
-function genParseColorFill(parse)
-{
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
-
-
-    const fill = new GColorFill(nodeId, active);
-
-
-    if (parse.logRequests) 
-        logReqGeometry(fill, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, fill);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (GEOMETRY_TYPES.includes(parse.next))
-        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
-
-
-    fill.color   = genParse(parse);
-    fill.opacity = genParse(parse);
-
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, fill);
-    return fill;
-}
-
-
-
-function genParseColorStroke(parse)
-{
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
-
-
-    const strk = new GColorStroke(nodeId, active);
-
-
-    if (parse.logRequests) 
-        logReqGeometry(strk, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, strk);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (GEOMETRY_TYPES.includes(parse.next))
-        strk.input = genParse(parse); // not genParseColorStroke() because genParse() handles stack overflow
-
-
-    strk.color        = genParse(parse);
-    strk.opacity      = genParse(parse);
-    strk.strokeWeight = genParse(parse);
-    strk.strokeFit    = genParse(parse);
-    strk.strokeJoin   = genParse(parse);
-    strk.strokeMiter  = genParse(parse);
-
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, strk);
-    return strk;
-}
-
-
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -6833,6 +6880,8 @@ function genParse(parse)
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) return genParseColorBlind      (parse);
     else if (parse.next == COLOR_VALIDATE    ) return genParseColorValidate   (parse);
+
+    else if (parse.next == FILL              ) return genParseFill            (parse);
 
     else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
     else if (parse.next == LINE              ) return genParseLine            (parse);

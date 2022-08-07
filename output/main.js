@@ -58,10 +58,10 @@ const COLOR_TYPES = [
     COLOR_VALIDATE,
     COLORBLIND
 ];
-const FILL_TYPES = {
+const FILL_VALUES = [
     COLOR_VALUE,
     GRADIENT_VALUE
-};
+];
 const FILL_VALUE = 'FL';
 const FILL = 'FILL';
 const GEOMETRY_VALUE = 'G0'; // abstract placeholder
@@ -222,7 +222,7 @@ const settings = {
     showNodeId: false,
     logMessages: false,
     logRawStorage: false,
-    logStorage: true,
+    logStorage: false,
     logActions: false,
     logRawRequests: true,
     logRequests: true,
@@ -470,7 +470,7 @@ function figPostMessageToUI(msg) {
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateRect(obj) {
-    console.log(obj);
+    //console.log(obj);
     const rect = figma.createRectangle();
     rect.x = obj.x;
     rect.y = obj.y;
