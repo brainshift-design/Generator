@@ -1,20 +1,21 @@
-class   OpColorFill
-extends OpGeometryBase
+class   OpColorStop
+extends OperatorBase
 {
-    paramColor;
-    paramOpacity;
+    paramFill;
+    paramPosition;
 
     
     constructor()
     {
-        super(COLOR_FILL, 'fill', 90);
+        super(COLOR_STOP, 'fill', 90);
 
 
-        this.addInput(new Input(GEOMETRY_TYPES));
-        this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
+        this.addInput(new Input([COLOR_VALUE]));
+        this.addOutput(new Output(GRADIENT_STOP, this.output_genRequest));
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
+        this.addParam(this.paramColor    = new ColorParam ('color',    '',         false, true, true));
+        this.addParam(this.paramOpacity  = new NumberParam('opacity',  'opacity',  true,  true, true, 100, 0, 100));
+        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
 
         this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
         

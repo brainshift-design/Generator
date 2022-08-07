@@ -4,7 +4,7 @@ const colFigmaBlue = '#0c8ce9';
 const rgbObjectLight       = hex2rgb('#bee0ff');
 const rgbActiveObjectLight = hex2rgb('#18a0fb');
 
-const rgbObjectDark        = hex2rgb('#3c5882');
+const rgbObjectDark        = hex2rgb('#3c5c82');
 const rgbActiveObjectDark  = hex2rgb('#18a0fb');
 
 

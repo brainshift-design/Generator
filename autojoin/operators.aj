@@ -3,8 +3,8 @@
 ../parameters/NumberParamBase.js
 ../parameters/NumberParam.js
 ../parameters/SelectParam.js
-
 ../parameters/ColorParam.js
+../parameters/FillParam.js
 
 ../graph/Graph.js
 ../graph/tree.js
@@ -36,6 +36,7 @@
 ../operators/math/OpInterpolate.js
 //../operators/math/OpRandom.js
 
+
 ../operators/color/OpColorBase.js
 ../operators/color/OpColor.js
 ../operators/color/OpColor spaces.js
@@ -47,6 +48,9 @@
 ../operators/color/OpColorInterpolate.js
 ../operators/color/OpColorblind.js
 
+../operators/color/OpFill.js
+
+
 ../operators/geometry/OpGeometryBase.js
 ../operators/geometry/OpRectangle.js
 ../operators/geometry/OpLine.js
@@ -54,7 +58,6 @@
 ../operators/geometry/OpPolygon.js
 ../operators/geometry/OpStar.js
 
-../operators/geometry/OpColorFill.js
 
 ../operators/geometry/OpColorStroke.js
 

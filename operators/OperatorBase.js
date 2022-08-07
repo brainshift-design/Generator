@@ -10,17 +10,10 @@ extends Operator
 
         const colors = this.getHeaderColors();
 
-        // const colBack   = rgbFromType(this.type, this.active);
-        // const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-
-        // const colText   = darkText ? [0, 0, 0     ] : [1, 1, 1      ];
-        // const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3 ];
-        // const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
-
 
         this.header.style.backgroundColor = colorStyleRgb_a(colors.back, 0.95);
 
-        this.label .style.color           = colors.textStyle;//colorStyleRgb(colors.text);
+        this.label .style.color           = colors.textStyle;
         this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
 
 

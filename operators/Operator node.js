@@ -55,6 +55,24 @@ function createOperatorNode(node)
     node.paramBack = createDiv('nodeParamBack');
     node.inner.appendChild(node.paramBack);
     
+    
+    //node.separator = createDiv('paramSeparator');
+    //node.inner.appendChild(node.separator);
+    
+    // node.separator.addEventListener('click', () =>
+    // {
+    //     if (node.showAllParams)
+    //     {
+    //         node.showAllParams = !node.showAllParams;
+    //         // TODO: save nodecd  here?
+    //     }
+    // });
+
+
+
+    node.hiddenParamBack = createDiv('nodeHiddenParamBack');
+    node.inner.appendChild(node.hiddenParamBack);
+    
 
     // node.div.addEventListener('pointermove', e =>
     // {

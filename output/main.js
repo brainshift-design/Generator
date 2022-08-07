@@ -24,6 +24,87 @@ const largeScrollGap = 14;
 const MAX_INT32 = 2147483647;
 const TAB = '    ';
 const NL = '\n';
+const INVALID = '?';
+const DISPLAY_INVALID = '🤷‍♂️';
+const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
+const NUMBER = 'NUM'; // N | n
+const NUMBER_LIMITS = 'LIM'; // N:min N:max
+const NUMBER_ADD = 'ADD'; // count N...
+const NUMBER_SUBTRACT = 'SUB'; // count N...
+const NUMBER_MULTIPLY = 'MUL'; // count N...
+const NUMBER_DIVIDE = 'DIV'; // count N...
+const NUMBER_MODULO = 'MOD'; // count N...
+const NUMBER_EXPONENT = 'EXP'; // count N...
+const NUMBER_MATH = 'MATH'; // op count N...
+const NUMBER_INTERPOLATE = 'LERP'; // count N... N:amount
+const STRING_VALUE = 'S'; // "..." (s) (escape \\ and \")
+const STRING = 'STR'; // S | s
+const STRING_ADD = 'SADD'; // S S
+const STRING_REPLACE = 'SREPL'; // S S:what S:with
+const COLOR_VALUE = 'C'; // color value
+const COLOR = 'COL'; // C | N:space N:c1 N:c2 N:c3
+const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE = 'CVLD'; // C
+const COLOR_CONTRAST = 'CCNT'; // C:text C:background
+const COLORBLIND = 'BLND'; // C
+const GRADIENT_VALUE = 'G';
+const GRADIENT_STOP_VALUE = 'GS';
+const GRADIENT = 'GRAD';
+const GRADIENT_STOP = 'GSTOP';
+const COLOR_TYPES = [
+    COLOR_VALUE,
+    COLOR,
+    COLOR_INTERPOLATE,
+    COLOR_VALIDATE,
+    COLORBLIND
+];
+const FILL_TYPES = {
+    COLOR_VALUE,
+    GRADIENT_VALUE
+};
+const FILL_VALUE = 'FL';
+const FILL = 'FILL';
+const GEOMETRY_VALUE = 'G0'; // abstract placeholder
+const RECTANGLE_VALUE = 'R';
+const LINE_VALUE = 'L';
+const ELLIPSE_VALUE = 'E';
+const POLYGON_VALUE = 'P';
+const STAR_VALUE = 'ST';
+const RECTANGLE = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
+const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
+const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
+const GEOMETRY_VALUES = [
+    GEOMETRY_VALUE,
+    RECTANGLE_VALUE,
+    LINE_VALUE,
+    ELLIPSE_VALUE,
+    POLYGON_VALUE,
+    STAR_VALUE
+];
+const GEOMETRY_TYPES = [
+    ...GEOMETRY_VALUES,
+    RECTANGLE,
+    LINE,
+    ELLIPSE,
+    POLYGON,
+    STAR,
+    //TEXT
+];
+const GROUP = 'GRP'; // ???? count O...
+const COMMENT = 'CMNT';
+const ACTIVE = 'ACT';
+const PARAM = 'PARAM'; // nodeId paramId
+/*
+
+FRAME       F
+IMAGE       I
+SLICE       /
+TEXT        T
+VECTOR      V
+
+*/
 class RequestSettings {
     constructor(request, pos) {
         this.so = 0;
@@ -137,87 +218,6 @@ function logReqNode(node, type, parse) {
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(node);
 }
-const INVALID = '?';
-const DISPLAY_INVALID = '🤷‍♂️';
-const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
-const NUMBER = 'NUM'; // N | n
-const NUMBER_LIMITS = 'LIM'; // N:min N:max
-const NUMBER_ADD = 'ADD'; // count N...
-const NUMBER_SUBTRACT = 'SUB'; // count N...
-const NUMBER_MULTIPLY = 'MUL'; // count N...
-const NUMBER_DIVIDE = 'DIV'; // count N...
-const NUMBER_MODULO = 'MOD'; // count N...
-const NUMBER_EXPONENT = 'EXP'; // count N...
-const NUMBER_MATH = 'MATH'; // op count N...
-const NUMBER_INTERPOLATE = 'LERP'; // count N... N:amount
-const COLOR_VALUE = 'C'; // color value
-const COLOR = 'COL'; // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE = 'CVLD'; // C
-const COLOR_CONTRAST = 'CCNT'; // C:text C:background
-const COLORBLIND = 'BLND'; // C
-const GRADIENT_VALUE = 'G';
-const GRADIENT_STOP_VALUE = 'GS';
-const GRADIENT = 'GRAD';
-const GRADIENT_STOP = 'GSTOP';
-const COLOR_TYPES = [
-    COLOR_VALUE,
-    COLOR,
-    COLOR_INTERPOLATE,
-    COLOR_VALIDATE,
-    COLORBLIND
-];
-const STRING_VALUE = 'S'; // "..." (s) (escape \\ and \")
-const STRING = 'STR'; // S | s
-const STRING_ADD = 'SADD'; // S S
-const STRING_REPLACE = 'SREPL'; // S S:what S:with
-const GEOMETRY_VALUE = 'G0'; // abstract placeholder
-const RECTANGLE_VALUE = 'R';
-const LINE_VALUE = 'L';
-const ELLIPSE_VALUE = 'E';
-const POLYGON_VALUE = 'P';
-const STAR_VALUE = 'ST';
-const RECTANGLE = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
-const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
-const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
-const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
-const COLOR_FILL = 'CFIL';
-const GRADIENT_FILL = 'GFIL';
-const COLOR_STROKE = 'CSTK';
-const GEOMETRY_VALUES = [
-    GEOMETRY_VALUE,
-    RECTANGLE_VALUE,
-    LINE_VALUE,
-    ELLIPSE_VALUE,
-    POLYGON_VALUE,
-    STAR_VALUE
-];
-const GEOMETRY_TYPES = [
-    ...GEOMETRY_VALUES,
-    RECTANGLE,
-    LINE,
-    ELLIPSE,
-    POLYGON,
-    STAR,
-    //TEXT
-    COLOR_FILL,
-    GRADIENT_FILL,
-    COLOR_STROKE
-];
-const GROUP = 'GRP'; // ???? count O...
-const COMMENT = 'CMNT';
-const ACTIVE = 'ACT';
-const PARAM = 'PARAM'; // nodeId paramId
-/*
-
-FRAME       F
-IMAGE       I
-SLICE       /
-TEXT        T
-VECTOR      V
-
-*/
 const settings = {
     showNodeId: false,
     logMessages: false,
@@ -606,7 +606,7 @@ function getObjectFills(objFills) {
     for (const fill of objFills) {
         const c = fill[1].split(' ');
         switch (fill[0]) {
-            case COLOR_FILL:
+            case COLOR:
                 fills.push({
                     type: 'SOLID',
                     color: {
@@ -625,7 +625,7 @@ function setObjectStrokes(obj, src) {
     if (src.strokes !== null
         && src.strokes.length > 0) {
         obj.strokes = getObjectStrokes(src.strokes);
-        obj.strokeWeight = src.strokeWeight;
+        obj.strokeWeight = Math.max(0, src.strokeWeight);
         obj.strokeAlign = src.strokeAlign;
         obj.strokeJoin = src.strokeJoin;
         obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
@@ -633,22 +633,24 @@ function setObjectStrokes(obj, src) {
 }
 function getObjectStrokes(objStrokes) {
     const strokes = [];
-    for (const stroke of objStrokes) {
-        const c = stroke[1].split(' ');
-        switch (stroke[0]) {
-            case COLOR_FILL:
-                strokes.push({
-                    type: 'SOLID',
-                    color: {
-                        r: Math.min(Math.max(0, parseFloat(c[0])), 1),
-                        g: Math.min(Math.max(0, parseFloat(c[1])), 1),
-                        b: Math.min(Math.max(0, parseFloat(c[2])), 1)
-                    },
-                    opacity: parseFloat(stroke[2])
-                });
-                break;
-        }
-    }
+    // for (const stroke of objStrokes)
+    // {
+    //     const c = stroke[1].split(' ');
+    //     switch (stroke[0])
+    //     {
+    //         case COLOR_FILL:
+    //             strokes.push(
+    //             {
+    //                 type: 'SOLID', 
+    //                 color: {
+    //                     r: Math.min(Math.max(0, parseFloat(c[0])), 1), 
+    //                     g: Math.min(Math.max(0, parseFloat(c[1])), 1), 
+    //                     b: Math.min(Math.max(0, parseFloat(c[2])), 1) },
+    //                 opacity: parseFloat(stroke[2])
+    //             });
+    //             break;
+    //     }
+    // }
     return strokes;
 }
 // function setNodeFill(node, fill)

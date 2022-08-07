@@ -1,50 +1,48 @@
-../types/types.js
+../core/types.js
 
 
-../types/GType.js
-../types/GOperator.js
+../generator/types/GType.js
+../generator/types/GOperator.js
 
-../types/GParam.js
-
-
-../types/math/GNumberValue.js
-../types/math/GNumber.js
-
-../types/math/GLimits.js
-../types/math/GAdd.js
-../types/math/GSubtract.js
-../types/math/GMultiply.js
-../types/math/GDivide.js
-../types/math/GModulo.js
-../types/math/GExponent.js
-../types/math/GInterpolate.js
+../generator/types/GParam.js
 
 
-../types/color/GColorValue.js
+../generator/types/math/GNumberValue.js
+../generator/types/math/GNumber.js
 
-../types/color/GColor.js
-../types/color/GColorInterpolate.js
-../types/color/GColorContrast.js
-../types/color/GColorBlind.js
-../types/color/GColorValidate.js
+../generator/types/math/GLimits.js
+../generator/types/math/GAdd.js
+../generator/types/math/GSubtract.js
+../generator/types/math/GMultiply.js
+../generator/types/math/GDivide.js
+../generator/types/math/GModulo.js
+../generator/types/math/GExponent.js
+../generator/types/math/GInterpolate.js
 
 
-../types/geometry/GGeometryValueBase.js
+../generator/types/color/GColorValue.js
 
-../types/geometry/GRectangleValue.js
-../types/geometry/GLineValue.js
-../types/geometry/GEllipseValue.js
-../types/geometry/GPolygonValue.js
-../types/geometry/GStarValue.js
+../generator/types/color/GColor.js
+../generator/types/color/GColorInterpolate.js
+../generator/types/color/GColorContrast.js
+../generator/types/color/GColorBlind.js
+../generator/types/color/GColorValidate.js
+../generator/types/color/GFill.js
 
-../types/geometry/GGeometryBase.js
 
-../types/geometry/GRectangle.js
-../types/geometry/GLine.js
-../types/geometry/GEllipse.js
-../types/geometry/GPolygon.js
-../types/geometry/GStar.js
+../generator/types/geometry/GGeometryValueBase.js
 
-../types/geometry/GColorFill.js
+../generator/types/geometry/GRectangleValue.js
+../generator/types/geometry/GLineValue.js
+../generator/types/geometry/GEllipseValue.js
+../generator/types/geometry/GPolygonValue.js
+../generator/types/geometry/GStarValue.js
 
-../types/geometry/GColorStroke.js
+
+../generator/types/geometry/GGeometryBase.js
+
+../generator/types/geometry/GRectangle.js
+../generator/types/geometry/GLine.js
+../generator/types/geometry/GEllipse.js
+../generator/types/geometry/GPolygon.js
+../generator/types/geometry/GStar.js

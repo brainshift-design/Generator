@@ -1201,11 +1201,31 @@ div
     display:    block;
     position:   absolute;
     width:      100%;
-    /* height:     20; */
     background: #fffe;
     z-index:    -1;
     /* box-shadow:    0 0 0 1px green inset; */
 }
+
+
+.nodeHiddenParamBack
+{
+    display:    block;
+    position:   absolute;
+    width:      100%;
+    background: #fffe;
+    z-index:    -1;
+    /* box-shadow:    0 0 0 1px green inset; */
+}
+
+
+/* .paramSeparator
+{
+    display:    inline-block;
+    width:      100%;
+    height:     10;
+    background: #fffe;
+    /* box-shadow:    0 0 0 1px green inset;
+} */
 
 
 .nodeLabelWrapper
@@ -1333,13 +1353,13 @@ div
 }
 
 
-.paramLock
+/* .paramLock
 {
     width:               11px;
     height:              11px;
     position:            absolute;
     display:             none;
-}
+} */
 
 
 .findColorCorrection
@@ -1477,8 +1497,8 @@ div
     <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));          this.blur();'>POLY</button>
     <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar            ));             this.blur();'>STAR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(COLOR_FILL,         btnCreateColorFill       ));        this.blur();'>CFIL</button>
-    <button class='menuButton' id='btnCreateColorStroke'      onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke     ));      this.blur();'>CSTK</button>
+    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(FILL,         btnCreateColorFill       ));        this.blur();'>CFIL</button>
+    <!-- <button class='menuButton' id='btnCreateColorStroke'      onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke     ));      this.blur();'>CSTK</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));          this.blur();'></button>
     <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
@@ -1753,6 +1773,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
+        case FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -1762,8 +1783,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
-        case COLOR_FILL: 
-        case COLOR_STROKE: 
+        //case COLOR_STROKE: 
             return active 
                 ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
                 : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
@@ -4484,6 +4504,13 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+
+const STRING              = 'STR';   // S | s
+const STRING_ADD          = 'SADD';  // S S
+const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+
 const COLOR_VALUE         = 'C';     // color value
 
 const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
@@ -4511,11 +4538,16 @@ const COLOR_TYPES =
 ];
 
 
-const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+const FILL_TYPES =
+{
+    COLOR_VALUE,
+    GRADIENT_VALUE
+};
 
-const STRING              = 'STR';   // S | s
-const STRING_ADD          = 'SADD';  // S S
-const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+const FILL_VALUE          = 'FL';
+
+const FILL                = 'FILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
@@ -4531,11 +4563,6 @@ const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
-
-const COLOR_FILL          = 'CFIL';
-const GRADIENT_FILL       = 'GFIL';
-
-const COLOR_STROKE        = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -4560,11 +4587,6 @@ const GEOMETRY_TYPES =
     POLYGON,
     STAR,
     //TEXT
-
-    COLOR_FILL,
-    GRADIENT_FILL,
-
-    COLOR_STROKE
 ];
 
 
@@ -6120,6 +6142,84 @@ extends GOperator
 
 
 
+class GFill
+extends GOperator
+{
+    fill;
+    opacity;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(FILL, nodeId, active);
+
+        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.opacity = new GNumberValue(100);
+    }
+
+
+
+    copy()
+    {
+        const fill = new GColorFill(this.nodeId, this.active);
+
+        if (this.input) fill.input = this.input.copy();
+
+        fill.fill    = this.fill  .copy();
+        fill.opacity = this.opacity.copy();
+
+        return fill;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            const color   = this.fill   .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(GEOMETRY_VALUES.includes(this.result.type));
+
+                this.result.fills.push([
+                    COLOR_FILL, 
+                    color.toRgbString(), 
+                    (opacity.value / 100).toString()]);
+
+                this.result.valid = true;
+            }
+            else
+                this.result = new GGeometryValueBase();
+
+                
+            this.valid = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+
+
+            if (   this.active
+                && this.result.valid)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
+        }
+
+
+        return this.result;
+    }
+}
+
+
 class GGeometryValueBase
 extends GType
 {
@@ -7413,194 +7513,6 @@ extends GOperator
 }
 
 
-class GColorFill
-extends GGeometryBase
-{
-    input = null;
-
-    color;
-    opacity;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_FILL, nodeId, active);
-
-        this.color   = GColorValue.create(1, 0, 0, 0);
-        this.opacity = new GNumberValue(100);
-    }
-
-
-
-    copy()
-    {
-        const fill = new GColorFill(this.nodeId, this.active);
-
-        if (this.input) fill.input = this.input.copy();
-
-        fill.color   = this.color  .copy();
-        fill.opacity = this.opacity.copy();
-
-        return fill;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const color   = this.color  .eval(parse).copy();
-            const opacity = this.opacity.eval(parse).copy();
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
-
-                this.result.fills.push([
-                    COLOR_FILL, 
-                    color  .toRgbString(), 
-                    (opacity.value / 100).toString()]);
-
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
-
-                
-            this.valid = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
-
-
-        return this.result;
-    }
-}
-
-
-class GColorStroke
-extends GGeometryBase
-{
-    input = null;
-
-    color;
-    opacity;
-
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_FILL, nodeId, active);
-
-        this.color        = GColorValue.create(1, 0, 0, 0);
-        this.opacity      = new GNumberValue(1);
-
-        this.strokeWeight = new GNumberValue(1);
-        this.strokeFit    = new GNumberValue(0);
-        this.strokeJoin   = new GNumberValue(0);
-        this.strokeMiter  = new GNumberValue(28.96, 2);
-    }
-
-
-
-    copy()
-    {
-        const strk = new GColorStroke(this.nodeId, this.active);
-
-        if (this.input) strk.input = this.input.copy();
-
-        strk.color        = this.color       .copy();
-        strk.opacity      = this.opacity     .copy();
-
-        strk.strokeWeight = this.strokeWeight.copy();
-        strk.strokeFit    = this.strokeFit   .copy();
-        strk.strokeJoin   = this.strokeJoin  .copy();
-        strk.strokeMiter  = this.strokeMiter .copy();
-
-        return strk;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const color        = this.color       .eval(parse).copy();
-            const opacity      = this.opacity     .eval(parse).copy();
-            const strokeWeight = this.strokeWeight.eval(parse).copy();
-            const strokeFit    = this.strokeFit   .eval(parse).copy();
-            const strokeJoin   = this.strokeJoin  .eval(parse).copy();
-            const strokeMiter  = this.strokeMiter .eval(parse).copy();
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
-
-                this.result.strokes.push([
-                    COLOR_FILL, 
-                    color.toRgbString(), 
-                    (opacity.value / 100).toString()]);
-
-                this.result.strokeWeight = strokeWeight;
-                this.result.strokeFit    = strokeFit;
-                this.result.strokeJoin   = strokeJoin;
-                this.result.strokeMiter  = strokeMiter;
-
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
-
-                
-            this.valid = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'color',        color       );
-            genPushUpdateValue(parse, this.nodeId, 'opacity',      opacity     );
-            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', strokeWeight);
-            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    strokeFit   );
-            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   strokeJoin  );
-            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  strokeMiter );
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
-
-
-        return this.result;
-    }
-}
-
-
 const settings =
 {
     showNodeId:       false, // instead of name
@@ -8667,9 +8579,9 @@ function genParse(parse)
     else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
     else if (parse.next == STAR              ) return genParseStar            (parse);
 
-    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
+    // else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
 
-    else if (parse.next == COLOR_STROKE      ) return genParseColorStroke     (parse);
+    // else if (parse.next == STROKE            ) return genParseColorStroke     (parse);
 
     
     parse.so++;
@@ -11561,6 +11473,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
+        case FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -11570,8 +11483,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
-        case COLOR_FILL: 
-        case COLOR_STROKE: 
+        //case COLOR_STROKE: 
             return active 
                 ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
                 : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
@@ -15719,6 +15631,13 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+
+const STRING              = 'STR';   // S | s
+const STRING_ADD          = 'SADD';  // S S
+const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+
 const COLOR_VALUE         = 'C';     // color value
 
 const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
@@ -15746,11 +15665,16 @@ const COLOR_TYPES =
 ];
 
 
-const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+const FILL_TYPES =
+{
+    COLOR_VALUE,
+    GRADIENT_VALUE
+};
 
-const STRING              = 'STR';   // S | s
-const STRING_ADD          = 'SADD';  // S S
-const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+const FILL_VALUE          = 'FL';
+
+const FILL                = 'FILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
@@ -15766,11 +15690,6 @@ const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
-
-const COLOR_FILL          = 'CFIL';
-const GRADIENT_FILL       = 'GFIL';
-
-const COLOR_STROKE        = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -15795,11 +15714,6 @@ const GEOMETRY_TYPES =
     POLYGON,
     STAR,
     //TEXT
-
-    COLOR_FILL,
-    GRADIENT_FILL,
-
-    COLOR_STROKE
 ];
 
 
@@ -17355,6 +17269,84 @@ extends GOperator
 
 
 
+class GFill
+extends GOperator
+{
+    fill;
+    opacity;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(FILL, nodeId, active);
+
+        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.opacity = new GNumberValue(100);
+    }
+
+
+
+    copy()
+    {
+        const fill = new GColorFill(this.nodeId, this.active);
+
+        if (this.input) fill.input = this.input.copy();
+
+        fill.fill    = this.fill  .copy();
+        fill.opacity = this.opacity.copy();
+
+        return fill;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            const color   = this.fill   .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(GEOMETRY_VALUES.includes(this.result.type));
+
+                this.result.fills.push([
+                    COLOR_FILL, 
+                    color.toRgbString(), 
+                    (opacity.value / 100).toString()]);
+
+                this.result.valid = true;
+            }
+            else
+                this.result = new GGeometryValueBase();
+
+                
+            this.valid = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+
+
+            if (   this.active
+                && this.result.valid)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
+        }
+
+
+        return this.result;
+    }
+}
+
+
 class GGeometryValueBase
 extends GType
 {
@@ -18648,194 +18640,6 @@ extends GOperator
 }
 
 
-class GColorFill
-extends GGeometryBase
-{
-    input = null;
-
-    color;
-    opacity;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_FILL, nodeId, active);
-
-        this.color   = GColorValue.create(1, 0, 0, 0);
-        this.opacity = new GNumberValue(100);
-    }
-
-
-
-    copy()
-    {
-        const fill = new GColorFill(this.nodeId, this.active);
-
-        if (this.input) fill.input = this.input.copy();
-
-        fill.color   = this.color  .copy();
-        fill.opacity = this.opacity.copy();
-
-        return fill;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const color   = this.color  .eval(parse).copy();
-            const opacity = this.opacity.eval(parse).copy();
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
-
-                this.result.fills.push([
-                    COLOR_FILL, 
-                    color  .toRgbString(), 
-                    (opacity.value / 100).toString()]);
-
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
-
-                
-            this.valid = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
-
-
-        return this.result;
-    }
-}
-
-
-class GColorStroke
-extends GGeometryBase
-{
-    input = null;
-
-    color;
-    opacity;
-
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_FILL, nodeId, active);
-
-        this.color        = GColorValue.create(1, 0, 0, 0);
-        this.opacity      = new GNumberValue(1);
-
-        this.strokeWeight = new GNumberValue(1);
-        this.strokeFit    = new GNumberValue(0);
-        this.strokeJoin   = new GNumberValue(0);
-        this.strokeMiter  = new GNumberValue(28.96, 2);
-    }
-
-
-
-    copy()
-    {
-        const strk = new GColorStroke(this.nodeId, this.active);
-
-        if (this.input) strk.input = this.input.copy();
-
-        strk.color        = this.color       .copy();
-        strk.opacity      = this.opacity     .copy();
-
-        strk.strokeWeight = this.strokeWeight.copy();
-        strk.strokeFit    = this.strokeFit   .copy();
-        strk.strokeJoin   = this.strokeJoin  .copy();
-        strk.strokeMiter  = this.strokeMiter .copy();
-
-        return strk;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const color        = this.color       .eval(parse).copy();
-            const opacity      = this.opacity     .eval(parse).copy();
-            const strokeWeight = this.strokeWeight.eval(parse).copy();
-            const strokeFit    = this.strokeFit   .eval(parse).copy();
-            const strokeJoin   = this.strokeJoin  .eval(parse).copy();
-            const strokeMiter  = this.strokeMiter .eval(parse).copy();
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
-
-                this.result.strokes.push([
-                    COLOR_FILL, 
-                    color.toRgbString(), 
-                    (opacity.value / 100).toString()]);
-
-                this.result.strokeWeight = strokeWeight;
-                this.result.strokeFit    = strokeFit;
-                this.result.strokeJoin   = strokeJoin;
-                this.result.strokeMiter  = strokeMiter;
-
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
-
-                
-            this.valid = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'color',        color       );
-            genPushUpdateValue(parse, this.nodeId, 'opacity',      opacity     );
-            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', strokeWeight);
-            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    strokeFit   );
-            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   strokeJoin  );
-            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  strokeMiter );
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
-
-
-        return this.result;
-    }
-}
-
-
 const settings =
 {
     showNodeId:       false, // instead of name
@@ -18919,7 +18723,8 @@ function initNumberSliderEvents(slider)
                 ? slider.parentNode.parentNode.parentNode
                 : null;
 
-            if (nodeDiv && nodeDiv.className == 'node') 
+            if (   nodeDiv 
+                && nodeDiv.className == 'node') 
                 graphView.putNodeOnTop(nodeDiv.node);
 
 
@@ -18952,18 +18757,16 @@ function initNumberSliderEvents(slider)
             }
 
 
-            const objCol = colorStyleRgb(rgbActiveObject);
-
             if (   !slider.param
                 || !slider.param.node.selected)
-                slider.focus.style.boxShadow = '0 0 0 1px ' + objCol + ' inset';
+                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
             else
             {
-                slider.focus.style.boxShadow = '0 1px 0 0 ' + objCol + ' inset';
+                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
                 if (slider.param.index < slider.param.node.params.length-1)
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + objCol + ' inset';
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
             }
 
 
@@ -20637,21 +20440,21 @@ function initColorSliderEvents(slider)
 
             if (!slider.readOnly)
             {
-                if (   document.activeElement
-                    && document.activeElement.tagName.toLowerCase() == 'input'
-                    && document.activeElement.slider)
-                    document.activeElement.slider.textbox.finish(true, false);
+                // if (   document.activeElement
+                //     && document.activeElement.tagName.toLowerCase() == 'input'
+                //     && document.activeElement.slider)
+                //     document.activeElement.slider.textbox.finish(true, false);
 
-                slider.oldValue = slider.value;
+                // slider.oldValue = slider.value;
 
-                const dec = Math.pow(10, -slider.dec);
+                // const dec = Math.pow(10, -slider.dec);
 
-                const val =
-                    isTouchpad
-                    ? slider.value -  dWheelX               * slider.wheelScale * dec
-                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                // const val =
+                //     isTouchpad
+                //     ? slider.value -  dWheelX               * slider.wheelScale * dec
+                //     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
                 
-                slider.setValue(val, true, true, false, false);
+                // slider.setValue(val, true, true, false, false);
             }
         }
     });
@@ -21209,6 +21012,1060 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
         if (   slider.name.length > 0
             && slider.showName)
             slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+
+        slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
+    };
+
+
+
+    slider.updateFocus = function(sw, sh)
+    {
+        slider.focus.style.left   = 0;
+        slider.focus.style.top    = 0;
+        slider.focus.style.width  = sw;
+        slider.focus.style.height = sh;
+    };
+
+
+
+    slider.lockPointer = function(pointerId)
+    {
+        clearTimeout(slider.clickTimer);
+
+        slider.requestPointerLock =    
+               slider.      requestPointerLock 
+            || slider.   mozRequestPointerLock
+            || slider.webkitRequestPointerLock;
+
+        slider.requestPointerLock();
+    };
+
+
+
+    slider.unlockPointer = function(pointerId)
+    {
+        document.exitPointerLock =    
+               document.      exitPointerLock    
+            || document.   mozExitPointerLock
+            || document.webkitExitPointerLock;
+
+        document.exitPointerLock();
+    };
+
+
+
+    slider.isPointerLocked = function()
+    {
+        return (document.      pointerLockElement === slider 
+             || document.   mozPointerLockElement === slider
+             || document.webkitPointerLockElement === slider);
+    }
+
+
+
+    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
+    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
+    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+
+
+
+    slider.update();
+}
+
+
+function initFillSliderEvents(slider)
+{
+    slider.addEventListener('pointerdown', function(e)
+    {
+        if (graphView.spaceDown)
+            return;
+
+        if (e.button == 0)
+        {
+            if (!slider.pointerEvents)
+            {
+                e.stopPropagation();
+                return;
+            }
+    
+            let nodeDiv = 
+                   slider.parentNode
+                && slider.parentNode.parentNode
+                && slider.parentNode.parentNode.parentNode
+                ? slider.parentNode.parentNode.parentNode
+                : null;
+
+            if (nodeDiv && nodeDiv.className == 'node') 
+                graphView.putNodeOnTop(nodeDiv.node);
+
+
+            e.preventDefault(); // this is fine since I lock the pointer anyway
+            e.stopPropagation();
+                
+            slider.buttonDown0  = true;
+            slider.buttonDown0_ = true;
+            slider.moved        = false;
+            slider.clientX      = e.clientX;
+            slider.movedX       = 0;
+
+
+            if (!slider.readOnly)
+            {
+                slider.oldValue   = slider.value;
+                slider.startValue = slider.value;
+                slider.prevValue  = slider.value;
+                slider.sx         = e.clientX;
+
+                slider.clickTimer = setTimeout(() => 
+                {
+                    if (!document.menuHadFocus)
+                    {
+                        slider.moved = true;
+                        slider.lockPointer(e.pointerId);
+                    }
+                }, 
+                500);
+            }
+
+
+            if (   !slider.param
+                || !slider.param.node.selected)
+                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+
+            else
+            {
+                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                    
+                if (slider.param.index < slider.param.node.params.length-1)
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            }
+
+
+            // I don't want to focus here, but I do want to take focus away from elsewhere
+            document.activeElement.blur();
+
+
+            if (slider.param)
+                slider.param.noUpdate = true;  
+        }
+        else if (e.button == 1)
+        {
+            e.preventDefault();
+            slider.buttonDown1 = true;
+        }
+        else if (e.button == 2)
+        {
+            e.preventDefault();
+            slider.buttonDown2 = true;
+        }
+    });
+
+
+
+    slider.addEventListener('pointerenter', function(e)
+    {
+        if (   !graphView.spaceDown
+            && slider.pointerEvents)
+        {
+            if (graphView.tempConn)
+                slider.style.cursor = 'default';
+            
+            else
+                slider.style.cursor = 
+                       slider.readOnly 
+                    || containsChild(slider, slider.textbox) 
+                    ? 'default'
+                    : 'ew-resize';
+
+                    
+            const colShadow = 
+                isDarkMode()
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
+            if (slider.param)
+            {
+                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+
+                if (    slider.param.node
+                    &&  slider.param.node.params.includes(slider.param)
+                    && !isLastInArray(slider.param.node.params, slider.param))
+                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
+
+
+            slider.focus.style.visibility = 'visible';
+            slider.focus.style.opacity    = '100%';
+    
+            slider.update();
+        }
+    });
+
+
+
+    slider.addEventListener('pointermove', e =>
+    {
+        if (!slider.pointerEvents)
+            return;
+        
+
+        let rect = boundingRect(slider);
+        
+        slider.mouseOver = 
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top                                     
+            && e.clientY <  rect.bottom;
+
+
+        slider.clientX = e.clientX;
+
+        
+        if (    slider.buttonDown0
+            && !slider.readOnly)
+        {
+            if (slider.isPointerLocked())
+            {
+                slider.movedX += e.movementX;
+                
+                if (!isNaN(slider.value))
+                {
+                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
+                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+                    const grain    = Math.pow(10, -slider.dec);
+                    const drag     = grain * sqr(slider.dragScale);
+
+                    const val      = slider.startValue + dx * drag * adaptive;
+
+                    
+                    // reset slider movement at the limits for better UX
+                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
+                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+
+                    slider.setValue(
+                        Math.round(val / grain) * grain, 
+                        true, 
+                        false, 
+                        false,
+                        getCtrlKey(e));
+
+
+                    if (   val <= min
+                        || val >= max)
+                    {
+                        slider.movedX     = 0;
+                        slider.startValue = slider.value;
+                        slider.sx         = e.clientX;
+                    }
+
+
+                    if (slider.value != slider.prevValue)
+                        pushUpdateFromParam([slider.param.node], slider.param);
+
+                    slider.prevValue = slider.value;
+                }
+            }
+            else
+            {
+                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+                {
+                    slider.moved = true;
+                    slider.lockPointer(e.pointerId);
+
+                    slider.dispatchEvent(slider.onstartchange);
+                }
+            }
+        }
+        else if (graphView.tempConn
+              && slider.param)
+        {
+            let savedInput = 
+                graphView.savedConn
+                ? graphView.savedConn.input
+                : null;
+
+            if (    graphView.tempConn.output
+                &&  slider.param.input
+                &&  slider.param.input.types.includes(graphView.tempConn.output.type)
+                && !graphView.tempConn.output.node.follows(slider.param.node)
+                && (  !slider.param.input.connected // not already connected to this input
+                    || slider.param.input.connectedOutput != graphView.tempConn.output
+                    || slider.param.input == savedInput))
+            {
+                graphView.overInput = slider.param.input;
+                    
+                slider.param.input.mouseOver = true;
+                slider.param.input.updateControl();
+
+                const rect = boundingRect(slider.param.input.control);
+
+                graphView.tempConn.wire.inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+            }
+            else if ( graphView.tempConn.input
+                  &&  slider.param.output
+                  &&  graphView.tempConn.input.types.includes(slider.param.output.type)
+                  && !slider.param.node.follows(graphView.tempConn.input.node))
+            {
+                graphView.overOutput = slider.param.output;
+                    
+                slider.param.output.mouseOver = true;
+                slider.param.output.updateControl();
+
+
+                const rect = boundingRect(slider.param.output.control);
+
+                graphView.tempConn.wire.outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - controlBar.offsetHeight);
+
+
+                graphView.tempConn.input.updateControl();
+            }
+        }
+        else if (slider.readOnly)
+        {
+            slider.moved = true;
+        }
+    });
+    
+    
+    
+    slider.addEventListener('pointerleave', function(e)
+    {
+        slider.style.cursor           = 'default';
+        
+        slider.focus.style.visibility = 'hidden';
+        slider.focus.style.opacity    = 0;
+
+        slider.update();
+
+
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != slider.param.node)
+            {
+                const input = graphView.overInput;
+                
+                graphView.overInput   = null;
+                
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
+                
+                graphView.tempConn.wire.inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node != slider.param.node)
+            {
+                const output = graphView.overOutput;
+                
+                graphView.overOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
+                graphView.tempConn.wire.outputPos = point_NaN;
+                graphView.tempConn.input.updateControl();
+           }
+        }
+    });
+
+
+
+    slider.addEventListener('losecapture', function()
+    {
+        slider.buttonDown0 = false;
+        slider.buttonDown1 = false;
+        slider.buttonDown2 = false;
+        slider.mouseOver   = false;
+        slider.update();
+    });
+
+
+
+    slider.addEventListener('pointerup', function(e)
+    {
+        clearTimeout(slider.clickTimer);
+
+
+        if (graphView.tempConn)
+        {
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.node.follows(slider.param.node)
+                &&  graphView.overInput)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overInput.endConnection();
+            }
+            else if (graphView.tempConn.input
+                && !slider.param.node.follows(graphView.tempConn.input.node)
+                &&  graphView.overOutput)
+            {
+                graphView.endConnection(e.pointerId);
+                graphView.overOutput.endConnection();
+            }
+        }
+        
+        else if (   slider.moved
+            || document.menuHadFocus)
+        {
+            slider.unlockPointer(e.pointerId);
+
+            if (slider.param)
+                slider.param.noUpdate = false;  
+
+            return;            
+        }
+
+        else if (slider.buttonDown0_)
+        {
+            slider.clicked = true;
+            slider.showTextbox();
+        }
+
+             if (e.button == 0) slider.buttonDown0 = false;
+        else if (e.button == 1) slider.buttonDown1 = false;
+        else if (e.button == 2) slider.buttonDown2 = false;
+
+        slider.buttonDown0_ = false;
+    });    
+
+
+
+    document.addEventListener('pointerup', function(e)
+    {
+        if (   e.button == 0 
+            && slider.buttonDown0)
+        {
+            slider.buttonDown0 = false;
+            slider.unlockPointer(e.pointerId);
+
+            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+
+            // if (    slider.value != slider.oldValue
+            //     && !slider.readOnly)
+            //     slider.dispatchEvent(slider.onconfirm);
+        }
+        // else if (   e.button == 1
+        //     && slider.buttonDown1)
+        // {
+        //     slider.buttonDown1 = false;            
+        // }
+    });
+
+
+    
+    slider.addEventListener('wheel', e =>
+    {
+        if (!slider.pointerEvents)
+            return;
+
+
+        const isTouchpad = 
+               Math.abs(e.deltaX) < 100
+            && Math.abs(e.deltaY) < 100;
+
+
+        if (isTouchpad)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
+        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
+
+
+        if (   !getCtrlKey(e)
+            && !slider.buttonDown1)
+        {
+            e.stopPropagation();
+
+            if (!slider.readOnly)
+            {
+                // if (   document.activeElement
+                //     && document.activeElement.tagName.toLowerCase() == 'input'
+                //     && document.activeElement.slider)
+                //     document.activeElement.slider.textbox.finish(true, false);
+
+                // slider.oldValue = slider.value;
+
+                // const dec = Math.pow(10, -slider.dec);
+
+                // const val =
+                //     isTouchpad
+                //     ? slider.value -  dWheelX               * slider.wheelScale * dec
+                //     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                
+                // slider.setValue(val, true, true, false, false);
+            }
+        }
+    });
+
+
+
+    // graphView.addEventListener('touchstart', e =>
+    // {
+    //     graphView.touches.push(e);
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchmove', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches[i] = e;
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchend', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // graphView.addEventListener('touchcancel', e =>
+    // {
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
+    //         {
+    //             graphView.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    slider.addEventListener('keydown', e =>
+    {
+        if (   e.code == 'Enter'
+            || e.code == 'NumpadEnter')
+            slider.showTextbox();
+
+        // else if (e.code == 'Space')
+        //     setCursor(panCursor, true);
+    });
+
+
+
+    slider.addEventListener('focus', function()
+    {
+        if (   !graphView.spaceDown
+            && !slider.buttonDown1
+            && slider.pointerEvents)
+            slider.showTextbox();
+    });
+}
+
+
+function initFillSliderTextbox(slider)
+{
+    slider.textbox = createTextbox('fillSliderTextbox');
+    slider.textbox.slider = slider;
+    
+
+
+    slider.textbox.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+    });
+
+
+
+    slider.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+        slider.textbox.style.cursor = 'default';
+    });
+
+
+
+    slider.textbox.addEventListener('keydown', e =>
+    {
+        e.stopPropagation();
+
+
+        if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+        }
+
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !slider.readOnly)
+        {
+            // by doing nothing here I let the OS do its thing
+        }
+        
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && !slider.readOnly)
+        {
+            slider.textbox.keyBlur = true;
+            slider.textbox.finish(true);
+        }
+
+        else if (e.code == 'Escape')
+        {
+            slider.textbox.keyBlur = true;
+            slider.textbox.finish(false);
+        }
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (slider.param)
+            {
+                const params = slider.param.node.params;
+                let   index  = slider.param.index;
+
+                slider.textbox.keyBlur = true;
+                slider.textbox.finish(true, false);
+
+                if (   e.shiftKey 
+                    && index > 0)
+                {
+                    while (params[--index].control.readOnly);
+                    params[index].control.showTextbox();
+                }
+                else if (!e.shiftKey 
+                      && index < params.length-1) 
+                {
+                    while (params[++index].control.readOnly);
+                    params[index].control.showTextbox();
+                }
+            }
+
+            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let index = slider.tabIndex;
+
+            // for (let i = 0; i < tabs.length; i++) 
+            // {
+            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
+            //         ||               tabs[i].tabIndex == index + 1) 
+            //     {
+            //         if (tabs[i].className == 'slider')
+            //             tabs[i].showTextbox();
+            //         else 
+            //         {
+            //             document.activeElement.blur();
+            //             tabs[i].focus();
+            //         }
+
+            //         break;
+            //     }
+            // }
+        }
+
+        else if ((   e.key == 'ArrowUp'
+                  || e.key == 'ArrowDown')
+              && !slider.readOnly)
+        {
+            e.preventDefault();
+
+            let text = slider.textbox.value;
+
+            if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
+                slider.textbox.selectionStart =  slider.textbox.selectionEnd;
+
+            const pos = Math.min(
+                slider.textbox.selectionStart,
+                text.length);
+
+            const revPos = text.length - pos;
+
+            const val  = parseFloat(text);
+            const sign = e.key == 'ArrowUp' ? 1 : -1;
+
+            let decIndex = text.indexOf('.');
+            if (decIndex < 0) decIndex = text.indexOf(',');
+            
+            if (   text[0] != '-'
+                || pos > 0)
+            {
+                if (decIndex < 0) // integer
+                {
+                    let dec = Math.pow(10, revPos);
+
+                    if (e.shiftKey) 
+                        dec *= 10;
+
+                    slider.setValue((val + sign * dec) / slider.valueScale);
+                    slider.updateTextbox();
+                }
+                else // floating point
+                {
+                    const _edit = pos - decIndex - 1;
+
+                    let  dec  = 
+                        _edit < 0
+                        ?     Math.pow(10, -_edit - 1)
+                        : 1 / Math.pow(10,  _edit    );
+
+                    if (e.shiftKey) 
+                        dec *= 10;
+
+                    slider.displayDec = text.length-1 - decIndex;
+                    slider.setValue((val + sign * dec) / slider.valueScale);
+                    slider.updateTextbox();
+                }
+
+                slider.textbox.selectionStart =
+                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
+            }
+        }
+        else 
+        {
+            let curVal = slider.textbox.value;
+
+            if (      e.key.length == 1
+                   && e.key != '?'
+                   && !isDigit(e.key)
+                   && !isHexDigit(e.key)
+                   && !(   ((      e.code == 'Minus'
+                                || e.code == 'NumpadSubtract')
+                             && !curVal.includes('-'))
+                        && slider.min < 0)
+                ||     slider.readOnly
+                   && !isArrowKey(e.code))
+                e.preventDefault();
+
+            curVal =
+                curVal == INVALID
+                ? ''
+                :   curVal.substring(0, slider.textbox.selectionStart) 
+                  + curVal.substring(slider.textbox.selectionEnd, curVal.length);
+
+                  
+            const nextVal = parseFloat(curVal + e.key);
+
+            if (   nextVal < slider.min - 0.001
+                || nextVal > slider.max)
+                e.preventDefault();            
+        }
+    });
+
+
+
+    slider.textbox.addEventListener('paste', function(e)
+    {
+        e.preventDefault();
+
+        const str = e.clipboardData.getData('text/plain');
+
+        let val = 
+            slider.showHex
+            ? parseInt(str, 16)
+            : parseFloat(str);
+
+        val = Math.min(Math.max(slider.min, val), slider.max);
+
+        slider.textbox.value = isNaN(val) ? '' : val;
+    });
+
+
+
+    slider.textbox.addEventListener('focusout', function()
+    {
+        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+
+        if (!slider.textbox.keyBlur) slider.textbox.finish(true);
+        else                         slider.textbox.keyBlur = false;
+
+        if (slider.savedSuccessOnFocusOut != null)
+        {
+            slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
+            slider.savedSuccessOnFocusOut = null;
+        }
+
+        slider.parentNode.removeChild(slider.textbox);
+        slider.clicked = false;
+    });
+    
+
+
+    slider.textbox.finish = function(success, focusSlider = true)
+    {
+        let   value      = slider.textbox.value;
+        const savedValue = slider.textbox.savedValue;
+
+        let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
+        let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
+
+       
+        const e = new CustomEvent('finishedit', { 'detail': {
+            'success':         success,
+            'value':           value,
+            'oldValue':        savedValue,
+            'preventSetValue': false }});
+
+        slider.dispatchEvent(e);
+
+
+        if (!e.preventSetValue)
+        {
+            if (success) 
+            {
+                slider.setValue(
+                      value.trim() != '' 
+                    ? GColorValue.createFromRgb(rgb) 
+                    : GColorValue.createFromRgb(savedRgb));
+            }
+            else
+                slider.setValue(savedRgb);
+        }
+         
+        
+        slider.textbox.blur();
+
+        slider.text.style.display = 'block';
+
+        if (   slider.inFocus
+            && focusSlider)
+            slider.focus();
+    };    
+    
+    
+
+    slider.showTextbox = function()
+    {
+        slider.text.style.display = 'none';
+
+        slider.inFocus = 
+               hasFocus(slider)
+            && !slider.clicked;
+    
+        slider.textbox.style.position  = 'absolute';
+        slider.textbox.style.left      = '50%';
+        slider.textbox.style.transform = 'translate(-50%)';
+        slider.textbox.style.top       = slider.offsetTop    + 1;
+        slider.textbox.style.width     = slider.offsetWidth  - 2;
+        slider.textbox.style.height    = slider.offsetHeight - 2;
+        slider.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+        slider.textbox.style.outline   = 'none';
+        slider.textbox.style.textAlign = 'center';
+        slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
+
+
+        const isConnected =    
+               slider.param != null
+            && slider.param.input
+            && slider.param.input.connected;
+
+        enableElementText(
+            slider.textbox, 
+               !slider.readOnly
+            && !isConnected);
+
+        slider.updateTextbox();
+        
+        slider.parentNode.appendChild(slider.textbox);
+        
+        slider.textbox.focus();
+        slider.textbox.select();
+
+        slider.textbox.style.cursor = 'default';
+    }
+
+
+
+    slider.updateTextbox = function()
+    {
+        const rgb = dataColor2rgb(slider.value.toDataColor());
+
+        slider.textbox.value =
+            !slider.value.isValid()
+            ? DISPLAY_INVALID
+            : rgb2hex(rgb).toUpperCase();
+                           
+        slider.textbox.savedValue  = slider.textbox.value;
+
+        slider.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
+    };
+}
+
+
+function initFillSliderChildren(slider)
+{
+    slider.text  = createDiv('fillSliderText');
+    slider.focus = createDiv('fillSliderFocus');
+
+    slider.appendChild(slider.text);
+    slider.appendChild(slider.focus);
+}
+
+
+function initFillSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+{
+    slider.param                  = param;
+     
+    slider.className              = 'fillSlider';
+     
+    slider.width                  = width;
+    slider.height                 = height;
+             
+    slider.style.width            = width;
+    slider.style.height           = height;
+             
+    slider.value                  = def;
+    slider.acc                    = acc;
+     
+    slider.id                     = id;
+    slider.name                   = name;
+     
+    slider.dragReverse            = false;
+    slider.dragScale              = dragScale;
+    slider.wheelScale             = wheelScale;
+             
+    slider.backColorLight         = 'transparent';
+    slider.valueColorLight        = '#7772';
+    slider.textColorLight         = '#000';
+                
+    slider.backColorDark          = 'transparent';
+    slider.valueColorDark         = '#fff4';
+    slider.textColorDark          = '#eee';
+                
+    slider.fontSize               = 11;
+             
+    slider.style.display          = 'inline';
+             
+    slider.mouseOver              = false;
+    slider.buttonDown0            = false;
+    slider.buttonDown1            = false;
+             
+    slider.clickSize              = 4;
+    slider.moved                  = false;
+         
+    slider.tabIndex               = 0;
+    slider.inFocus                = false;
+    slider.clicked                = false;
+ 
+    slider.startValue             = 0;
+    slider.oldValue; 
+ 
+    slider.wrapValue              = false;
+     
+    slider.showName               = showName;
+    slider.showHex                = false;
+         
+    slider.enableChangeEvent      = true;
+    
+    slider.successOnFocusOut      = false;
+    slider.keyBlur                = false;
+    
+    slider.pointerEvents          = true;
+    slider.readOnly               = false;
+     
+    slider.valueText              = '';
+     
+    slider.onstartchange          = new Event('startchange');
+    slider.onchange               = new Event('change');
+    slider.onconfirm              = new Event('confirm');
+
+
+    initFillSliderChildren(slider);    
+    initFillSliderTextbox (slider);
+    initFillSliderEvents  (slider);
+
+
+
+    slider.setName = function(name)
+    {
+        slider.name = name;
+        slider.update();
+    };
+
+
+
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    {
+        const oldValue = slider.value.copy();
+
+        slider.value = value.copy();
+
+        slider.update();
+
+        if (   fireChangeEvent
+            && slider.enableChangeEvent
+            && value != slider.prevValue)
+            slider.dispatchEvent(slider.onchange);
+
+        if (   confirm
+            && slider.enableChangeEvent
+            && value != oldValue)
+            slider.dispatchEvent(slider.onconfirm);
+    };
+
+
+
+
+    slider.update = function()
+    {
+        const sw = slider.getClientWidth();
+        const sh = slider.getClientHeight();
+
+        slider.updateColors();
+        slider.updateText();
+        slider.updateFocus(sw, sh);
+
+        slider.cachedOffsetLeft   = null;
+        slider.cachedClientWidth  = null;
+        slider.cachedClientHeight = null;
+    };
+
+
+
+    slider.updateColors = function()
+    {
+        const rgb = dataColor2rgb(slider.value.toDataColor());
+
+        slider     .style.background = colorStyleRgb(rgb);
+        slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+    };
+
+
+
+    slider.updateText = function()
+    {
+        slider.text.innerHTML = '';
+        
+        if (   slider.name.length > 0
+            && slider.showName)
+            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
         slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
     };
@@ -23673,12 +24530,16 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
-    locked = false;
+    //locked = false;
 
-    showParamLock = false;
-    paramLock;
+    // showParamLock = false;
+    // paramLock;
 
     noUpdate = false;
+
+
+
+    show = () => true;
 
 
 
@@ -23699,17 +24560,17 @@ extends EventTarget
         this.input  = null;
         this.output = null;
 
-        this.paramLock = createDiv('paramLock');
-        this.paramLock.param = this;
-        this.paramLock.addEventListener('pointerenter', paramLock_onpointerenter);
-        this.paramLock.addEventListener('pointerleave', paramLock_onpointerleave);
-        this.paramLock.addEventListener('pointerdown',  paramLock_onpointerdown );
-        this.paramLock.addEventListener('pointerup',    paramLock_onpointerup   );
-        this._div.appendChild(this.paramLock);
+        // this.paramLock = createDiv('paramLock');
+        // this.paramLock.param = this;
+        // this.paramLock.addEventListener('pointerenter', paramLock_onpointerenter);
+        // this.paramLock.addEventListener('pointerleave', paramLock_onpointerleave);
+        // this.paramLock.addEventListener('pointerdown',  paramLock_onpointerdown );
+        // this.paramLock.addEventListener('pointerup',    paramLock_onpointerup   );
+        //this._div.appendChild(this.paramLock);
 
         enableElementText(this.div, true);
 
-        this.updateLock();
+        //this.updateLock();
     }
 
 
@@ -23764,10 +24625,10 @@ extends EventTarget
         //     && this.input.connected)
         //     this.input.connectedOutput.node.update();
 
-        if (this.showParamLock)
-            this.paramLock.style.display = 'block';
-        else
-            this.paramLock.style.display = 'none';
+        // if (this.showParamLock)
+        //     this.paramLock.style.display = 'block';
+        // else
+        //     this.paramLock.style.display = 'none';
     }    
 
 
@@ -23786,32 +24647,32 @@ extends EventTarget
 
 
 
-    setLocked(locked)
-    {
-        this.locked = locked;
-        this.updateLock();
-    }
+    // setLocked(locked)
+    // {
+    //     this.locked = locked;
+    //     this.updateLock();
+    // }
 
 
 
-    updateLock()
-    {
-        let opacity = this.locked ? 0.5 : 0.1;
+    // updateLock()
+    // {
+    //     let opacity = this.locked ? 0.5 : 0.1;
         
-             if (this.paramLock.down0) opacity += 0.3;
-        else if (this.paramLock.over ) opacity += 0.15;
+    //          if (this.paramLock.down0) opacity += 0.3;
+    //     else if (this.paramLock.over ) opacity += 0.15;
         
-        this.paramLock.style.background = 
-            this.locked
-            ? 'url(\'data:image/svg+xml;utf8,<svg width="5" height="7" viewBox="0 0 5 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.57143 1.75V2.8H1.42857V1.75C1.42857 1.1701 1.90826 0.7 2.5 0.7C3.09174 0.7 3.57143 1.1701 3.57143 1.75ZM0.714286 2.8V1.75C0.714286 0.783503 1.51378 0 2.5 0C3.48622 0 4.28571 0.783503 4.28571 1.75V2.8H4.64286C4.8401 2.8 5 2.9567 5 3.15V6.65C5 6.8433 4.8401 7 4.64286 7H0.357143C0.159899 7 0 6.8433 0 6.65V3.15C0 2.9567 0.159899 2.8 0.357143 2.8H0.714286Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')'
-            : 'url(\'data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.30997 3.10005V3.80005H4.66913C4.86749 3.80005 5.02829 3.95675 5.02829 4.15005V7.65005C5.02829 7.84332 4.86749 8.00005 4.66913 8.00005H0.359164C0.160803 8.00005 0 7.84332 0 7.65005V4.15005C0 3.95675 0.160803 3.80005 0.359164 3.80005H3.59164V2.05005C3.59164 1.08355 4.39566 0.300049 5.38746 0.300049C6.37926 0.300049 7.18328 1.08355 7.18328 2.05005V3.10005H6.46495V2.05005C6.46495 1.47015 5.98254 1.00005 5.38746 1.00005C4.79237 1.00005 4.30997 1.47015 4.30997 2.05005V3.10005Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')';
+    //     this.paramLock.style.background = 
+    //         this.locked
+    //         ? 'url(\'data:image/svg+xml;utf8,<svg width="5" height="7" viewBox="0 0 5 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.57143 1.75V2.8H1.42857V1.75C1.42857 1.1701 1.90826 0.7 2.5 0.7C3.09174 0.7 3.57143 1.1701 3.57143 1.75ZM0.714286 2.8V1.75C0.714286 0.783503 1.51378 0 2.5 0C3.48622 0 4.28571 0.783503 4.28571 1.75V2.8H4.64286C4.8401 2.8 5 2.9567 5 3.15V6.65C5 6.8433 4.8401 7 4.64286 7H0.357143C0.159899 7 0 6.8433 0 6.65V3.15C0 2.9567 0.159899 2.8 0.357143 2.8H0.714286Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')'
+    //         : 'url(\'data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.30997 3.10005V3.80005H4.66913C4.86749 3.80005 5.02829 3.95675 5.02829 4.15005V7.65005C5.02829 7.84332 4.86749 8.00005 4.66913 8.00005H0.359164C0.160803 8.00005 0 7.84332 0 7.65005V4.15005C0 3.95675 0.160803 3.80005 0.359164 3.80005H3.59164V2.05005C3.59164 1.08355 4.39566 0.300049 5.38746 0.300049C6.37926 0.300049 7.18328 1.08355 7.18328 2.05005V3.10005H6.46495V2.05005C6.46495 1.47015 5.98254 1.00005 5.38746 1.00005C4.79237 1.00005 4.30997 1.47015 4.30997 2.05005V3.10005Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')';
 
-        this.paramLock.style.backgroundPosition = '50% 50%';
-        this.paramLock.style.backgroundRepeat   = 'no-repeat';
+    //     this.paramLock.style.backgroundPosition = '50% 50%';
+    //     this.paramLock.style.backgroundRepeat   = 'no-repeat';
 
-        this.paramLock.style.left = this.locked ? 11 : 12;
-        this.paramLock.style.top  = this.locked ?  4 :  3;
-    }
+    //     this.paramLock.style.left = this.locked ? 11 : 12;
+    //     this.paramLock.style.top  = this.locked ?  4 :  3;
+    // }
 
 
 
@@ -23879,55 +24740,55 @@ extends EventTarget
 
 
 
-function paramLock_onpointerenter(e)
-{
-    const paramLock = e.target;
+// function paramLock_onpointerenter(e)
+// {
+//     const paramLock = e.target;
 
-    paramLock.over = true;
-    paramLock.param.updateLock();
-}
-
-
-
-function paramLock_onpointerleave(e)
-{
-    const paramLock = e.target;
-
-    paramLock.over = false;
-    paramLock.param.updateLock();
-}
+//     paramLock.over = true;
+//     paramLock.param.updateLock();
+// }
 
 
 
-function paramLock_onpointerdown(e)
-{
-    const paramLock = e.target;
+// function paramLock_onpointerleave(e)
+// {
+//     const paramLock = e.target;
 
-    // e.preventDefault();
-    e.stopPropagation();
-
-    if (e.button == 0)
-    {
-        paramLock.down0 = true;
-        paramLock.param.updateLock();
-    }
-}
+//     paramLock.over = false;
+//     paramLock.param.updateLock();
+// }
 
 
 
-function paramLock_onpointerup(e)
-{
-    const paramLock = e.target;
+// function paramLock_onpointerdown(e)
+// {
+//     const paramLock = e.target;
 
-    if (e.button == 0)
-    {
-        paramLock.down0 = false;
-        paramLock.param.locked = !paramLock.param.locked;
-        paramLock.param.updateLock();
+//     // e.preventDefault();
+//     e.stopPropagation();
 
-        paramLock.param.dispatchEvent(paramLock.param.onchangelock);
-    }
-}
+//     if (e.button == 0)
+//     {
+//         paramLock.down0 = true;
+//         paramLock.param.updateLock();
+//     }
+// }
+
+
+
+// function paramLock_onpointerup(e)
+// {
+//     const paramLock = e.target;
+
+//     if (e.button == 0)
+//     {
+//         paramLock.down0 = false;
+//         paramLock.param.locked = !paramLock.param.locked;
+//         paramLock.param.updateLock();
+
+//         paramLock.param.dispatchEvent(paramLock.param.onchangelock);
+//     }
+// }
 
 
 class   NumberParamBase
@@ -24507,6 +25368,232 @@ extends Parameter
 }
 
 
+class   FillParam
+extends Parameter
+{
+    fills = [];
+
+    
+    defaultValue;
+
+    oldValue = null;
+    
+
+
+    
+    
+    get valueText() { return this.control.valueText; }
+    set valueText(text) 
+    {
+        this.control.valueText = text;
+        this.control.update();
+    }
+
+    
+    get value   () { return this.control.value; }
+    get genValue() { return this.value.copy(); }
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                value     = GColorValue.create(1, 0, 0, 0),
+                dragScale = 0.05)
+    {
+        super(id, name, NUMBER);
+
+        this._control       = createDiv();
+        
+        this.control.param  = this;
+        this.control.zIndex = 0;
+   
+        this.defaultValue   = value;
+
+
+        initFillSlider(
+            this,
+            this.control,
+            120,        // width
+            20,         // height
+            this.id,
+            this.name, 
+            showName,
+            value,      // default
+            dragScale); // drag scale
+
+        // this.control.successOnFocusOut = true;
+
+        this.div.appendChild(this.control);
+
+       
+        if (hasInput)  this.initInput(COLOR_TYPES);
+        if (hasOutput) this.initOutput(FILL, this.output_genRequest);
+
+
+        // this.control.addEventListener('confirm', () => 
+        // {
+        //     this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
+        // });
+
+
+        this.control.addEventListener('finishedit', e =>
+        { 
+            // let   dec    = decCount(e.detail.value);
+            // const oldDec = decCount(e.detail.oldValue);
+
+            
+            // if (!e.detail.success)
+            //     return;
+
+
+            // if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+            //     && dec >= oldDec)
+            // {
+            //     this.setValue(new GNumberValue(e.detail.value, dec), true);
+            //     e.preventSetValue = true;
+            // }
+            // else if (this.allowEditDecimals)
+            // {
+            //     if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+            //         dec += Math.log10(this.control.valueScale);
+            //     else 
+            //         dec = oldDec;
+
+            //         this.setValue(new GNumberValue(e.detail.value, dec), true);
+            //     e.preventSetValue = true;
+            // }
+        });
+    }
+
+
+
+    setName(name, dispatchEvents = true)
+    {
+        super.setName(name, dispatchEvents);
+        this.control.setName(name);
+    }
+
+
+
+    isDefault()
+    {
+        return this.genValue == this.defaultValue;
+    }
+
+
+
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    // {
+    //     this.preSetValue(value, createAction, dispatchEvents);
+
+    //     if (updateControl)
+    //     {
+    //         this.control.setDecimals(value.decimals, value.decimals);
+    //         this.control.setValue(value.value, false, false, forceChange); 
+    //     }
+
+    //     super.setValue(value, createAction, updateControl, dispatchEvents);
+
+    //     this.oldValue = this.genValue;
+    // }    
+
+
+
+    // valuesEqual(val1, val2)
+    // {
+    //     return val1
+    //         && val2
+    //         && val1.value    == val2.value
+    //         && val1.decimals == val2.decimals;
+    // }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    {
+        console.assert(value.type && value.type == COLOR_VALUE);
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+        if (updateControl)
+            this.control.setValue(value, false, false, forceChange); 
+
+        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        this.oldValue = this.genValue;
+    }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+
+        if (   this.input
+            && this.input.connected)
+            request.push(...pushInputOrParam(this.input, gen));
+
+        else 
+        {
+            request.push( 
+                COLOR_VALUE, 
+                this.value.toString());
+        }
+
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    toString()
+    {
+        return this.genValue.toString();
+    }
+
+
+
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
+        
+        if (id == '')
+            id = this.id;
+
+        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+    }
+
+
+    
+    loadParam(param)
+    {
+        this.setValue(parseGColorValue(param), true, true, false);
+    }
+}
+
+
 class Graph
 {
     nodes        = [];
@@ -24825,7 +25912,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case POLYGON:            node = new OpPolygon();          break;
         case STAR:               node = new OpStar();             break;
 
-        case COLOR_FILL:         node = new OpColorFill();        break;
+        case FILL:               node = new OpFill();             break;
 
         case COLOR_STROKE:       node = new OpColorStroke();      break;
 
@@ -26071,10 +27158,12 @@ class Operator
     set name(name) { this.setName(name); }
 
 
-    inputs  = [];
-    outputs = [];
-    params  = [];
-    
+    inputs        = [];
+    outputs       = [];
+
+    params        = [];
+    hiddenParams  = [];
+
     
     variableInputs       = false;
 
@@ -26098,14 +27187,19 @@ class Operator
     div;
     inner;
     header;
-    paramBack;
+    
     labelWrapper;
     label;
     textbox;
     inputControls;
     outputControls;
 
+    paramBack;
+    hiddenParamBack;
 
+    //separator;
+    //showAllParams = true;
+    
 
     valid = false;
 
@@ -26225,6 +27319,13 @@ class Operator
 
 
 
+    addBaseParams()
+    {
+
+    }
+
+
+
     addParam(param)
     {
         this.params.push(param);
@@ -26245,12 +27346,20 @@ class Operator
 
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
-
-
-        this.inner.appendChild(param.div);
     }
  
     
+
+    initParams() // must be called at the end of each final Op constructor
+    {
+        for (const param of this.params)
+        {
+            if (param.show())
+                this.inner.appendChild(param.div);
+        }
+    }
+
+
 
     setSelected(sel)
     {
@@ -26432,7 +27541,8 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
-        this.paramBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
+        this.      paramBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
+        this.hiddenParamBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
 
         this.updateBorder();
         this.updateHeader();
@@ -26462,6 +27572,9 @@ class Operator
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
+
+        this.hiddenParamBack.style.height = this.inner.offsetHeight - height;
+        this.hiddenParamBack.style.top    = height;
 
         this.updateHeaderLabel();
     }
@@ -26829,17 +27942,10 @@ extends Operator
 
         const colors = this.getHeaderColors();
 
-        // const colBack   = rgbFromType(this.type, this.active);
-        // const darkText  = rgb2hclokl(colBack)[2] > 0.71;
-
-        // const colText   = darkText ? [0, 0, 0     ] : [1, 1, 1      ];
-        // const colInput  = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.3 ];
-        // const colOutput = darkText ? [0, 0, 0, 0.1] : [1, 1, 1, 0.35];
-
 
         this.header.style.backgroundColor = colorStyleRgb_a(colors.back, 0.95);
 
-        this.label .style.color           = colors.textStyle;//colorStyleRgb(colors.text);
+        this.label .style.color           = colors.textStyle;
         this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
 
 
@@ -26905,6 +28011,24 @@ function createOperatorNode(node)
     
     node.paramBack = createDiv('nodeParamBack');
     node.inner.appendChild(node.paramBack);
+    
+    
+    //node.separator = createDiv('paramSeparator');
+    //node.inner.appendChild(node.separator);
+    
+    // node.separator.addEventListener('click', () =>
+    // {
+    //     if (node.showAllParams)
+    //     {
+    //         node.showAllParams = !node.showAllParams;
+    //         // TODO: save nodecd  here?
+    //     }
+    // });
+
+
+
+    node.hiddenParamBack = createDiv('nodeHiddenParamBack');
+    node.inner.appendChild(node.hiddenParamBack);
     
 
     // node.div.addEventListener('pointermove', e =>
@@ -31593,9 +32717,76 @@ extends OpColorBase
 }
 
 
+class OpFill
+extends OpColorBase
+{
+    paramFill;
+    paramOpacity;
+
+    
+    constructor()
+    {
+        super(FILL, 'fill', 90);
+
+
+        this.addInput(new Input(FILL_TYPES));
+        this.addOutput(new Output(FILL_VALUE, this.output_genRequest));
+
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
+
+        this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+        
+        this.paramOpacity.control.suffix = '%';
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramColor  .genRequest(gen));
+        request.push(...this.node.paramOpacity.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
 class   OpGeometryBase
 extends OperatorBase
 {
+    paramFill;
+    paramStroke;
+
+    paramStrokeWeight;
+    paramStrokeFit;
+    paramStrokeJoin;
+    paramStrokeMiter;
+
+
     btnProportional;
 
     refWidth  = Number.NaN;
@@ -31607,6 +32798,34 @@ extends OperatorBase
     {
         super(type, shortName, defWidth);
     }
+
+
+
+    addBaseParams()
+    {
+        this.addParam(this.paramFill         = new FillParam  ('fill',             'f',      true, true, true));
+        this.addParam(this.paramStroke       = new FillParam  ('stroke',           's',      true, true, true));
+
+        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight',     'weight', true, true, true, 1, 0));
+        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',        'fit',    true, true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',       'join',   true, true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiterLimit', 'limit',  true, true, true, 28.96, 0, 180, 2));
+
+        this.paramStrokeMiter.control.setSuffix('°', true);
+
+
+        //this.paramFill.fills.push(new GColorFillValue(0, 0, 0, 1));
+
+
+        const cond = () => 
+               this.paramStroke.fills.length > 0
+            || this.paramStroke.connected;
+
+        this.paramStrokeWeight.show = () => cond;
+        this.paramStrokeFit   .show = () => cond;
+        this.paramStrokeJoin  .show = () => cond;
+        this.paramStrokeMiter .show = () => cond && this.paramStrokeJoin.value == 0;
+    } 
 }
 
 
@@ -31624,7 +32843,7 @@ extends OpGeometryBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 90);
+        super(RECTANGLE, 'rect', 100);
 
 
         this.addInput(new Input([RECTANGLE, RECTANGLE_VALUE]));
@@ -31642,11 +32861,14 @@ extends OpGeometryBase
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
 
-        
+
         this.btnProportional = createToggleButton(12, 12);
         this.inner.appendChild(this.btnProportional);
 
 
+        this.addBaseParams();
+
+        
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
@@ -31684,6 +32906,9 @@ extends OpGeometryBase
             if (this.btnProportional.enabled)
                 this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
+
+
+        this.initParams();
     }
     
     
@@ -31937,6 +33162,8 @@ extends OpGeometryBase
     paramHeight;
     paramAngle;
 
+    //showAllParams = true;
+
 
     
     constructor()
@@ -32077,8 +33304,9 @@ extends OpGeometryBase
         const tab = TAB;
 
         let json = 
-               super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
+                 super.toJsonBase(nTab)
+               //+ ',\n' + pos + tab + '"showAllParams": "' + boolString(this.showAllParams) + '"'
+               + ',\n' + pos + tab + '"proportional": "'  + boolString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {
@@ -32098,6 +33326,8 @@ extends OpGeometryBase
 
         // if (_node.proportional)
         // {
+            //this.showAllParams = isTrue(_node.proportional);
+            
             this.btnProportional.enabled = isTrue(_node.proportional);
             this.btnProportional.updateBackground(false);
 
@@ -32547,135 +33777,77 @@ extends OpGeometryBase
 }
 
 
-class   OpColorFill
-extends OpGeometryBase
-{
-    paramColor;
-    paramOpacity;
+// class   OpColorStroke
+// extends OpGeometryBase
+// {
+//     paramColor;
+//     paramOpacity;
+
+//     paramStrokeWeight;
+//     paramStrokeFit;
+//     paramStrokeJoin;
+//     paramStrokeMiter;
 
     
-    constructor()
-    {
-        super(COLOR_FILL, 'fill', 90);
+//     constructor()
+//     {
+//         super(COLOR_STROKE, 'stroke', 90);
 
 
-        this.addInput(new Input(GEOMETRY_TYPES));
-        this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
+//         this.addInput(new Input(GEOMETRY_TYPES));
+//         this.addOutput(new Output(COLOR_STROKE, this.output_genRequest));
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
+//         this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));
+//         this.addParam(this.paramOpacity      = new NumberParam('opacity',      'opacity', true,  true, true, 100, 0, 100));
 
-        this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+//         this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
+//         this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
+//         this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+//         this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  false, true, true, 28.96, 0, 180, 2));
+
+//         this.paramColor.setValue(GColorValue.create(1, 0, 0, 0), false, true, false);
         
-        this.paramOpacity.control.suffix = '%';
-    }
+//         this.paramOpacity    .control.setSuffix('%', true);
+//         this.paramStrokeMiter.control.setSuffix('°', true);
+//     }
     
     
     
-    output_genRequest(gen)
-    {
-        // 'this' is the output
+//     output_genRequest(gen)
+//     {
+//         // 'this' is the output
 
-        if (!isEmpty(this.cache))
-            return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const input = this.node.inputs[0];
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramColor  .genRequest(gen));
-        request.push(...this.node.paramOpacity.genRequest(gen));
+//         if (!isEmpty(this.cache))
+//             return this.cache;
 
 
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+//         gen.scope.push({
+//             nodeId:  this.node.id, 
+//             paramId: '' });
 
-        return request;
-    }
-}
-
-
-class   OpColorStroke
-extends OpGeometryBase
-{
-    paramColor;
-    paramOpacity;
-
-    paramStrokeWeight;
-    paramStrokeFit;
-    paramStrokeJoin;
-    paramStrokeMiter;
-
-    
-    constructor()
-    {
-        super(COLOR_STROKE, 'stroke', 90);
-
-
-        this.addInput(new Input(GEOMETRY_TYPES));
-        this.addOutput(new Output(COLOR_STROKE, this.output_genRequest));
-
-        this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));
-        this.addParam(this.paramOpacity      = new NumberParam('opacity',      'opacity', true,  true, true, 100, 0, 100));
-
-        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  false, true, true, 28.96, 0, 180, 2));
-
-        this.paramColor.setValue(GColorValue.create(1, 0, 0, 0), false, true, false);
-        
-        this.paramOpacity    .control.setSuffix('%', true);
-        this.paramStrokeMiter.control.setSuffix('°', true);
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        if (!isEmpty(this.cache))
-            return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
+//         const [request, ignore] = this.node.genRequestStart(gen);
+//         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
+//         const input = this.node.inputs[0];
 
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
+//         if (input.connected)
+//             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramColor       .genRequest(gen));
-        request.push(...this.node.paramOpacity     .genRequest(gen));
-        request.push(...this.node.paramStrokeWeight.genRequest(gen));
-        request.push(...this.node.paramStrokeFit   .genRequest(gen));
-        request.push(...this.node.paramStrokeJoin  .genRequest(gen));
-        request.push(...this.node.paramStrokeMiter .genRequest(gen));
+//         request.push(...this.node.paramColor       .genRequest(gen));
+//         request.push(...this.node.paramOpacity     .genRequest(gen));
+//         request.push(...this.node.paramStrokeWeight.genRequest(gen));
+//         request.push(...this.node.paramStrokeFit   .genRequest(gen));
+//         request.push(...this.node.paramStrokeJoin  .genRequest(gen));
+//         request.push(...this.node.paramStrokeMiter .genRequest(gen));
 
 
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+//         gen.scope.pop();
+//         pushUnique(gen.passedNodes, this.node);
 
-        return request;
-    }
-}
+//         return request;
+//     }
+// }
 
 
 class Action
@@ -34077,63 +35249,63 @@ extends Action
 }
 
 
-class SetParamLockAction
-extends Action
-{
-    nodeId;
-    paramId;
+// class SetParamLockAction
+// extends Action
+// {
+//     nodeId;
+//     paramId;
 
-    get param() 
-    { 
-        return nodeFromId(this.nodeId).params
-            .find(p => p.id == this.paramId); 
-    } 
-
-
-    locked;
+//     get param() 
+//     { 
+//         return nodeFromId(this.nodeId).params
+//             .find(p => p.id == this.paramId); 
+//     } 
 
 
-
-    constructor(param, locked)
-    {
-        super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
-
-        this.nodeId  = param.node.id;
-        this.paramId = param.id;
-
-        this.locked  = locked;
-    }
+//     locked;
 
 
 
-    do()
-    {
-        //this.oldValue = this.param.oldValue;
-        pushUpdate([this.param.node]);
+//     constructor(param, locked)
+//     {
+//         super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
 
-        uiSaveNodes([this.nodeId]);
-    }
+//         this.nodeId  = param.node.id;
+//         this.paramId = param.id;
 
-
-
-    undo()
-    {
-        this.param.setLocked(!this.locked);
-        pushUpdate([this.param.node]);
-
-        uiSaveNodes([this.nodeId]);
-    }
+//         this.locked  = locked;
+//     }
 
 
 
-    redo()
-    {
-        this.param.setLocked(this.locked);
-        pushUpdate([this.param.node]);
+//     do()
+//     {
+//         //this.oldValue = this.param.oldValue;
+//         pushUpdate([this.param.node]);
 
-        uiSaveNodes([this.nodeId]);
-    }
-}
+//         uiSaveNodes([this.nodeId]);
+//     }
+
+
+
+//     undo()
+//     {
+//         this.param.setLocked(!this.locked);
+//         pushUpdate([this.param.node]);
+
+//         uiSaveNodes([this.nodeId]);
+//     }
+
+
+
+//     redo()
+//     {
+//         this.param.setLocked(this.locked);
+//         pushUpdate([this.param.node]);
+
+//         uiSaveNodes([this.nodeId]);
+//     }
+// }
 
 
 class SetParamValueAction
@@ -34262,7 +35434,7 @@ const colFigmaBlue = '#0c8ce9';
 const rgbObjectLight       = hex2rgb('#bee0ff');
 const rgbActiveObjectLight = hex2rgb('#18a0fb');
 
-const rgbObjectDark        = hex2rgb('#3c5882');
+const rgbObjectDark        = hex2rgb('#3c5c82');
 const rgbActiveObjectDark  = hex2rgb('#18a0fb');
 
 

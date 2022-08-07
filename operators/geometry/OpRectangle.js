@@ -12,7 +12,7 @@ extends OpGeometryBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 90);
+        super(RECTANGLE, 'rect', 100);
 
 
         this.addInput(new Input([RECTANGLE, RECTANGLE_VALUE]));
@@ -30,11 +30,14 @@ extends OpGeometryBase
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
 
-        
+
         this.btnProportional = createToggleButton(12, 12);
         this.inner.appendChild(this.btnProportional);
 
 
+        this.addBaseParams();
+
+        
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
@@ -72,6 +75,9 @@ extends OpGeometryBase
             if (this.btnProportional.enabled)
                 this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
         });
+
+
+        this.initParams();
     }
     
     

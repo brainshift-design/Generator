@@ -1,16 +1,14 @@
-class GColorFill
-extends GGeometryBase
+class GFill
+extends GOperator
 {
-    input = null;
-
-    color;
+    fill;
     opacity;
 
 
 
     constructor(nodeId, active)
     {
-        super(COLOR_FILL, nodeId, active);
+        super(FILL, nodeId, active);
 
         this.color   = GColorValue.create(1, 0, 0, 0);
         this.opacity = new GNumberValue(100);
@@ -24,7 +22,7 @@ extends GGeometryBase
 
         if (this.input) fill.input = this.input.copy();
 
-        fill.color   = this.color  .copy();
+        fill.fill    = this.fill  .copy();
         fill.opacity = this.opacity.copy();
 
         return fill;
@@ -36,7 +34,7 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
-            const color   = this.color  .eval(parse).copy();
+            const color   = this.fill   .eval(parse).copy();
             const opacity = this.opacity.eval(parse).copy();
 
             if (this.input)
@@ -46,7 +44,7 @@ extends GGeometryBase
 
                 this.result.fills.push([
                     COLOR_FILL, 
-                    color  .toRgbString(), 
+                    color.toRgbString(), 
                     (opacity.value / 100).toString()]);
 
                 this.result.valid = true;

@@ -34,6 +34,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
+        case FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -43,8 +44,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
-        case COLOR_FILL: 
-        case COLOR_STROKE: 
+        //case COLOR_STROKE: 
             return active 
                 ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
                 : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
@@ -2765,6 +2765,13 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+
+const STRING              = 'STR';   // S | s
+const STRING_ADD          = 'SADD';  // S S
+const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+
 const COLOR_VALUE         = 'C';     // color value
 
 const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
@@ -2792,11 +2799,16 @@ const COLOR_TYPES =
 ];
 
 
-const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+const FILL_TYPES =
+{
+    COLOR_VALUE,
+    GRADIENT_VALUE
+};
 
-const STRING              = 'STR';   // S | s
-const STRING_ADD          = 'SADD';  // S S
-const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+const FILL_VALUE          = 'FL';
+
+const FILL                = 'FILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
@@ -2812,11 +2824,6 @@ const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
-
-const COLOR_FILL          = 'CFIL';
-const GRADIENT_FILL       = 'GFIL';
-
-const COLOR_STROKE        = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -2841,11 +2848,6 @@ const GEOMETRY_TYPES =
     POLYGON,
     STAR,
     //TEXT
-
-    COLOR_FILL,
-    GRADIENT_FILL,
-
-    COLOR_STROKE
 ];
 
 
@@ -4401,6 +4403,84 @@ extends GOperator
 
 
 
+class GFill
+extends GOperator
+{
+    fill;
+    opacity;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(FILL, nodeId, active);
+
+        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.opacity = new GNumberValue(100);
+    }
+
+
+
+    copy()
+    {
+        const fill = new GColorFill(this.nodeId, this.active);
+
+        if (this.input) fill.input = this.input.copy();
+
+        fill.fill    = this.fill  .copy();
+        fill.opacity = this.opacity.copy();
+
+        return fill;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            const color   = this.fill   .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(GEOMETRY_VALUES.includes(this.result.type));
+
+                this.result.fills.push([
+                    COLOR_FILL, 
+                    color.toRgbString(), 
+                    (opacity.value / 100).toString()]);
+
+                this.result.valid = true;
+            }
+            else
+                this.result = new GGeometryValueBase();
+
+                
+            this.valid = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+
+
+            if (   this.active
+                && this.result.valid)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
+        }
+
+
+        return this.result;
+    }
+}
+
+
 class GGeometryValueBase
 extends GType
 {
@@ -5694,194 +5774,6 @@ extends GOperator
 }
 
 
-class GColorFill
-extends GGeometryBase
-{
-    input = null;
-
-    color;
-    opacity;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_FILL, nodeId, active);
-
-        this.color   = GColorValue.create(1, 0, 0, 0);
-        this.opacity = new GNumberValue(100);
-    }
-
-
-
-    copy()
-    {
-        const fill = new GColorFill(this.nodeId, this.active);
-
-        if (this.input) fill.input = this.input.copy();
-
-        fill.color   = this.color  .copy();
-        fill.opacity = this.opacity.copy();
-
-        return fill;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const color   = this.color  .eval(parse).copy();
-            const opacity = this.opacity.eval(parse).copy();
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
-
-                this.result.fills.push([
-                    COLOR_FILL, 
-                    color  .toRgbString(), 
-                    (opacity.value / 100).toString()]);
-
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
-
-                
-            this.valid = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
-
-
-        return this.result;
-    }
-}
-
-
-class GColorStroke
-extends GGeometryBase
-{
-    input = null;
-
-    color;
-    opacity;
-
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_FILL, nodeId, active);
-
-        this.color        = GColorValue.create(1, 0, 0, 0);
-        this.opacity      = new GNumberValue(1);
-
-        this.strokeWeight = new GNumberValue(1);
-        this.strokeFit    = new GNumberValue(0);
-        this.strokeJoin   = new GNumberValue(0);
-        this.strokeMiter  = new GNumberValue(28.96, 2);
-    }
-
-
-
-    copy()
-    {
-        const strk = new GColorStroke(this.nodeId, this.active);
-
-        if (this.input) strk.input = this.input.copy();
-
-        strk.color        = this.color       .copy();
-        strk.opacity      = this.opacity     .copy();
-
-        strk.strokeWeight = this.strokeWeight.copy();
-        strk.strokeFit    = this.strokeFit   .copy();
-        strk.strokeJoin   = this.strokeJoin  .copy();
-        strk.strokeMiter  = this.strokeMiter .copy();
-
-        return strk;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const color        = this.color       .eval(parse).copy();
-            const opacity      = this.opacity     .eval(parse).copy();
-            const strokeWeight = this.strokeWeight.eval(parse).copy();
-            const strokeFit    = this.strokeFit   .eval(parse).copy();
-            const strokeJoin   = this.strokeJoin  .eval(parse).copy();
-            const strokeMiter  = this.strokeMiter .eval(parse).copy();
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(GEOMETRY_VALUES.includes(this.result.type));
-
-                this.result.strokes.push([
-                    COLOR_FILL, 
-                    color.toRgbString(), 
-                    (opacity.value / 100).toString()]);
-
-                this.result.strokeWeight = strokeWeight;
-                this.result.strokeFit    = strokeFit;
-                this.result.strokeJoin   = strokeJoin;
-                this.result.strokeMiter  = strokeMiter;
-
-                this.result.valid = true;
-            }
-            else
-                this.result = new GGeometryValueBase();
-
-                
-            this.valid = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'color',        color       );
-            genPushUpdateValue(parse, this.nodeId, 'opacity',      opacity     );
-            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', strokeWeight);
-            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    strokeFit   );
-            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   strokeJoin  );
-            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  strokeMiter );
-
-
-            if (   this.active
-                && this.result.valid)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
-
-
-        return this.result;
-    }
-}
-
-
 const settings =
 {
     showNodeId:       false, // instead of name
@@ -6948,9 +6840,9 @@ function genParse(parse)
     else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
     else if (parse.next == STAR              ) return genParseStar            (parse);
 
-    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
+    // else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
 
-    else if (parse.next == COLOR_STROKE      ) return genParseColorStroke     (parse);
+    // else if (parse.next == STROKE            ) return genParseColorStroke     (parse);
 
     
     parse.so++;

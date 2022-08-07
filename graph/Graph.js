@@ -316,7 +316,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case POLYGON:            node = new OpPolygon();          break;
         case STAR:               node = new OpStar();             break;
 
-        case COLOR_FILL:         node = new OpColorFill();        break;
+        case FILL:               node = new OpFill();             break;
 
         case COLOR_STROKE:       node = new OpColorStroke();      break;
 

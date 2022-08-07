@@ -7,6 +7,8 @@ extends OpGeometryBase
     paramHeight;
     paramAngle;
 
+    //showAllParams = true;
+
 
     
     constructor()
@@ -147,8 +149,9 @@ extends OpGeometryBase
         const tab = TAB;
 
         let json = 
-               super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
+                 super.toJsonBase(nTab)
+               //+ ',\n' + pos + tab + '"showAllParams": "' + boolString(this.showAllParams) + '"'
+               + ',\n' + pos + tab + '"proportional": "'  + boolString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {
@@ -168,6 +171,8 @@ extends OpGeometryBase
 
         // if (_node.proportional)
         // {
+            //this.showAllParams = isTrue(_node.proportional);
+            
             this.btnProportional.enabled = isTrue(_node.proportional);
             this.btnProportional.updateBackground(false);
 

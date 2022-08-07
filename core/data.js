@@ -20,6 +20,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
+        case FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -29,8 +30,7 @@ function rgbFromType(type, active)
         case ELLIPSE: 
         case POLYGON: 
         case STAR: 
-        case COLOR_FILL: 
-        case COLOR_STROKE: 
+        //case COLOR_STROKE: 
             return active 
                 ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
                 : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );

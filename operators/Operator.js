@@ -40,10 +40,12 @@ class Operator
     set name(name) { this.setName(name); }
 
 
-    inputs  = [];
-    outputs = [];
-    params  = [];
-    
+    inputs        = [];
+    outputs       = [];
+
+    params        = [];
+    hiddenParams  = [];
+
     
     variableInputs       = false;
 
@@ -67,14 +69,19 @@ class Operator
     div;
     inner;
     header;
-    paramBack;
+    
     labelWrapper;
     label;
     textbox;
     inputControls;
     outputControls;
 
+    paramBack;
+    hiddenParamBack;
 
+    //separator;
+    //showAllParams = true;
+    
 
     valid = false;
 
@@ -194,6 +201,13 @@ class Operator
 
 
 
+    addBaseParams()
+    {
+
+    }
+
+
+
     addParam(param)
     {
         this.params.push(param);
@@ -214,12 +228,20 @@ class Operator
 
         param.control.style.display = 'inline-block';
         param.control.style.width   = '100%';
-
-
-        this.inner.appendChild(param.div);
     }
  
     
+
+    initParams() // must be called at the end of each final Op constructor
+    {
+        for (const param of this.params)
+        {
+            if (param.show())
+                this.inner.appendChild(param.div);
+        }
+    }
+
+
 
     setSelected(sel)
     {
@@ -401,7 +423,8 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateNode()');
 
-        this.paramBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
+        this.      paramBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
+        this.hiddenParamBack.style.backgroundColor = isDarkMode() ? '#363636' : 'white';
 
         this.updateBorder();
         this.updateHeader();
@@ -431,6 +454,9 @@ class Operator
 
         this.paramBack.style.height = this.inner.offsetHeight - height;
         this.paramBack.style.top    = height;
+
+        this.hiddenParamBack.style.height = this.inner.offsetHeight - height;
+        this.hiddenParamBack.style.top    = height;
 
         this.updateHeaderLabel();
     }

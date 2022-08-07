@@ -1,57 +1,57 @@
-class SetParamLockAction
-extends Action
-{
-    nodeId;
-    paramId;
+// class SetParamLockAction
+// extends Action
+// {
+//     nodeId;
+//     paramId;
 
-    get param() 
-    { 
-        return nodeFromId(this.nodeId).params
-            .find(p => p.id == this.paramId); 
-    } 
-
-
-    locked;
+//     get param() 
+//     { 
+//         return nodeFromId(this.nodeId).params
+//             .find(p => p.id == this.paramId); 
+//     } 
 
 
-
-    constructor(param, locked)
-    {
-        super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
-
-        this.nodeId  = param.node.id;
-        this.paramId = param.id;
-
-        this.locked  = locked;
-    }
+//     locked;
 
 
 
-    do()
-    {
-        //this.oldValue = this.param.oldValue;
-        pushUpdate([this.param.node]);
+//     constructor(param, locked)
+//     {
+//         super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
 
-        uiSaveNodes([this.nodeId]);
-    }
+//         this.nodeId  = param.node.id;
+//         this.paramId = param.id;
 
-
-
-    undo()
-    {
-        this.param.setLocked(!this.locked);
-        pushUpdate([this.param.node]);
-
-        uiSaveNodes([this.nodeId]);
-    }
+//         this.locked  = locked;
+//     }
 
 
 
-    redo()
-    {
-        this.param.setLocked(this.locked);
-        pushUpdate([this.param.node]);
+//     do()
+//     {
+//         //this.oldValue = this.param.oldValue;
+//         pushUpdate([this.param.node]);
 
-        uiSaveNodes([this.nodeId]);
-    }
-}
+//         uiSaveNodes([this.nodeId]);
+//     }
+
+
+
+//     undo()
+//     {
+//         this.param.setLocked(!this.locked);
+//         pushUpdate([this.param.node]);
+
+//         uiSaveNodes([this.nodeId]);
+//     }
+
+
+
+//     redo()
+//     {
+//         this.param.setLocked(this.locked);
+//         pushUpdate([this.param.node]);
+
+//         uiSaveNodes([this.nodeId]);
+//     }
+// }

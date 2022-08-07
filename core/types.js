@@ -16,6 +16,13 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+
+const STRING              = 'STR';   // S | s
+const STRING_ADD          = 'SADD';  // S S
+const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+
 const COLOR_VALUE         = 'C';     // color value
 
 const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
@@ -43,11 +50,16 @@ const COLOR_TYPES =
 ];
 
 
-const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
+const FILL_TYPES =
+{
+    COLOR_VALUE,
+    GRADIENT_VALUE
+};
 
-const STRING              = 'STR';   // S | s
-const STRING_ADD          = 'SADD';  // S S
-const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+const FILL_VALUE          = 'FL';
+
+const FILL                = 'FILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
@@ -63,11 +75,6 @@ const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
 const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
 const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
-
-const COLOR_FILL          = 'CFIL';
-const GRADIENT_FILL       = 'GFIL';
-
-const COLOR_STROKE        = 'CSTK';
 
 
 const GEOMETRY_VALUES =
@@ -92,11 +99,6 @@ const GEOMETRY_TYPES =
     POLYGON,
     STAR,
     //TEXT
-
-    COLOR_FILL,
-    GRADIENT_FILL,
-
-    COLOR_STROKE
 ];
 
 

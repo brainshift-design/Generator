@@ -1,10 +1,9 @@
 ../core/tags.js
 ../core/def.js
+../core/types.js
 
 ../logging/log.js
 ../logging/log request.js
-
-../types/types.js
 
 ../ui/settings.js
 
