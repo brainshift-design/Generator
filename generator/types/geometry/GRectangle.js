@@ -70,6 +70,12 @@ extends GOperator
             }
 
 
+            // this.result.fills = [
+            //     COLOR, 
+            //     color.toRgbString(), 
+            //     (opacity.value / 100).toString()];
+
+
             this.result.valid = true;
             this.valid        = true;
            

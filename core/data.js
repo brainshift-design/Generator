@@ -20,7 +20,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
-        case FILL:
+        case COLOR_FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;

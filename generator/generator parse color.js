@@ -265,16 +265,57 @@ function genParseColorValidate(parse)
 
 
 
-function genParseFill(parse)
+function genParseColorStop(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
-    const fill = new GFill(nodeId, active);
+    const stop = new GColorStop(nodeId, active);
 
 
     if (parse.logRequests) 
-        logReqFill(fill, parse);
+        logReqColorStop(stop, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, stop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (   parse.next == COLOR_STOP
+        || parse.next == COLOR_STOP_VALUE)
+        stop.input = genParse(parse);
+
+
+    stop.color    = genParse(parse);
+    stop.opacity  = genParse(parse);
+    stop.position = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, stop);
+    return stop;
+}
+
+
+
+function genParseColorFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GColorFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorFill(fill, parse);
 
 
     if (ignore)
@@ -287,8 +328,8 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (parse.next == FILL)
-        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+    if (parse.next == COLOR_FILL)
+        fill.input = genParse(parse);
 
 
     fill.color   = genParse(parse);

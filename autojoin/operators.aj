@@ -48,7 +48,12 @@
 ../operators/color/OpColorInterpolate.js
 ../operators/color/OpColorblind.js
 
-../operators/color/OpFill.js
+
+../operators/color/OpColorStop.js
+../operators/color/OpGradient.js
+
+
+../operators/color/OpColorFill.js
 
 
 ../operators/geometry/OpGeometryBase.js

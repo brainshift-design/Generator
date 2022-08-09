@@ -1,22 +1,22 @@
-class OpFill
+class OpColorFill
 extends OpColorBase
 {
-    paramFill;
+    paramColor;
     paramOpacity;
 
     
     constructor()
     {
-        super(FILL, 'fill', 90);
+        super(COLOR_FILL, 'fill', 90);
 
 
-        this.addInput(new Input(FILL_VALUES));
-        this.addOutput(new Output(FILL, this.output_genRequest));
+        this.addInput(new Input([COLOR_FILL, COLOR, COLOR_VALUE]));
+        this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
-        this.addParam(this.paramFill    = new FillParam  ('fill',    '',        false, true, true));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        this.paramFill.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+        //this.paramFill.setValue([new GColorValue(1, 217, 217, 217)], false, true, false);
         
         this.paramOpacity.control.suffix = '%';
     }

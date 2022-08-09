@@ -19,7 +19,8 @@ extends Parameter
     
     get fills   () { return this.control.fills; }
     get value   () { return this.control.fills; }
-    get genValue() { return new GFillValue(this.fills); }
+
+    get genValue() { return new GColorFillValue(this.control.fills); }
     
 
     
@@ -57,8 +58,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(FILL_VALUES);
-        if (hasOutput) this.initOutput(FILL, this.output_genRequest);
+        if (hasInput)  this.initInput (FILL_VALUES);
+        if (hasOutput) this.initOutput(COLOR_FILL, this.output_genRequest);
 
 
         // this.control.addEventListener('confirm', () => 
@@ -108,7 +109,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.genValue == this.defaultValue;
+        return this.genValue.equals(this.defaultValue);
     }
 
 
@@ -120,14 +121,14 @@ extends Parameter
 
 
 
-    setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(fill, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        this.preSetValue(fills, createAction, dispatchEvents);
+        this.preSetValue(fill, createAction, dispatchEvents);
 
         if (updateControl)
-            this.control.setFills(fills, false, false, forceChange); 
+            this.control.setFills(fill, false, false, forceChange); 
 
-        super.setValue(fills, createAction, updateControl, dispatchEvents);
+        super.setValue(fill, createAction, updateControl, dispatchEvents);
 
         this.oldValue = this.genValue;
     }    
@@ -146,6 +147,7 @@ extends Parameter
 
     setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
+        console.log('fills =', fills);
         console.assert(fills.type && fills.type == COLOR_VALUE);
 
         this.preSetValue(fills, createAction, dispatchEvents);
@@ -221,6 +223,15 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorValue(param), true, true, false);
+        console.log('param =', param);
+
+        this.control.fills = parseGFillValue(param);
+        // const parts = param.split(' ');
+
+        // for (let i = 1; i < parts.length; i++)
+        // {
+        //     this.fills.push(parseGColorValue(parts, i), true, true, false);
+        //     i += 4;
+        // }
     }
 }

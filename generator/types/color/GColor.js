@@ -65,11 +65,6 @@ extends GOperator
                         this.result.space.value),
                         OpColorSpaces.length-1);
 
-                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
-
-
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));

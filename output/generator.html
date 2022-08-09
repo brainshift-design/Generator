@@ -34,7 +34,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
-        case FILL:
+        case COLOR_FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -2579,7 +2579,15 @@ function logReqColorValidate(val, parse)
 
 
 
-function logReqFill(fill, parse)
+function logReqColorStop(fill, parse)
+{
+    parse.log += parse.tab + fill.type;
+    parse.log += logReqNodeId(fill);
+}
+
+
+
+function logReqColorFill(fill, parse)
 {
     parse.log += parse.tab + fill.type;
     parse.log += logReqNodeId(fill);
@@ -2789,11 +2797,11 @@ const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
 const COLORBLIND          = 'BLND';  // C
 
 
-const GRADIENT_VALUE      = 'G';
-const GRADIENT_STOP_VALUE = 'GS';
+const COLOR_STOP_VALUE    = 'CS';
+const COLOR_STOP          = 'CSTOP';
 
+const GRADIENT_VALUE      = 'G';
 const GRADIENT            = 'GRAD';
-const GRADIENT_STOP       = 'GSTOP';
 
 
 const COLOR_TYPES =
@@ -2814,9 +2822,8 @@ const FILL_VALUES =
 ];
 
 
-const FILL_VALUE          = 'FL';
-
-const FILL                = 'FILL';
+const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
+const COLOR_FILL          = 'CFILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
@@ -3786,7 +3793,6 @@ function parseGColorValue(str)
 }
 
 
-
 class GColor
 extends GOperator
 {
@@ -3853,11 +3859,6 @@ extends GOperator
                         0,
                         this.result.space.value),
                         OpColorSpaces.length-1);
-
-                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
-
 
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
@@ -4411,49 +4412,55 @@ extends GOperator
 
 
 
-class GFillValue
+class GColorStopValue
 extends GType
 {
-    fills;
+    color;
+    opacity;
+    position;
 
 
 
-    constructor(fills = [])
+    constructor(color    = GColorValue .NaN,
+                opacity  = GNumberValue.NaN,
+                position = GNumberValue.NaN)
     {
-        super(FILL_VALUE);
+        super(COLOR_STOP_VALUE);
 
-        this.fills = [...fills];
+        this.color    = color;
+        this.opacity  = opacity;
+        this.position = position;
 
-        this.result = this;
-        this.valid  = true;
+        this.result   = this;
+        this.valid    = true;
     }
 
 
-
+    
     copy()
     {
-        return new GFillValue(this.fills);
+        return new GColorStopValue(
+            this.color   .copy(),
+            this.opacity .copy(),
+            this.position.copy());
     }
 
 
 
     isValid()
     {
-        return this.fills.length > 0;
+        return !isNaN(this.color   )
+            && !isNaN(this.opacity )
+            && !isNaN(this.position);
     }
 
 
 
-    equals(fill)
+    equals(col)
     {
-        if (this.fills.length != fill.fills.length)
-            return false;
-
-        for (let i = 0; i < this.fills.length; i++)
-            if (!this.fills[i].equals(fill.fills[i]))
-                return false;
-
-        return true;
+        return this.color   .equals(col.color   )
+            && this.opacity .equals(col.opacity )
+            && this.position.equals(col.position);
     }
 
 
@@ -4467,53 +4474,225 @@ extends GType
 
     toString()
     {
-        let str = this.fills.length.toString();
-
-        for (let i = 0; i < this.fills.length; i++)
-            str += ' ' + this.fills[i].toString();
-
-        return str;
+        return this.isValid()
+            ?         this.color   .toString()
+              + ' ' + this.opacity .toString()
+              + ' ' + this.position.toString()
+            : INVALID;
     }
 
 
 
-    static NaN = new GFillValue();
+    static NaN = new GColorStopValue(
+        GColorValue .NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN);
 }
 
 
 
-function parseGFillValue(str)
+function parseGColorStopValue(str)
 {
-    // if (str == INVALID)
-    //     return GFillValue.NaN;
+    if (str == INVALID)
+        return GColorStopValue.NaN;
 
-    const _fill = str.split(' ');
+    const stop = str.split(' ');
 
-    const fill = new GFillValue();
-
-    const nFills = parseInt(_fill[0]);
-
-    for (let i = 1; i < nFills; i++)
-        fill.fills.push(parseGColorValue(_fills[i]));
-
-    return fill;
+    return new GColorStopValue(
+        new GColorValue(
+            parseInt(stop[0]),
+            parseGNumberValue(stop[1]),
+            parseGNumberValue(stop[2]),
+            parseGNumberValue(stop[3])),
+        parseGNumberValue(stop[4]),
+        parseGNumberValue(stop[5]));
 }
 
 
-
-class GFill
+class GColorStop
 extends GOperator
 {
-    fill;
+    input    = null;
+
+    color    = null;
+    opacity  = null;
+    position = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_STOP, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const stop = new GColorStop(this.nodeId, this.active);
+
+        if (this.input) 
+            stop.input = this.input.copy();
+
+        if (this.color   ) stop.color    = this.color   .copy();
+        if (this.opacity ) stop.opacity  = this.opacity .copy();
+        if (this.position) stop.position = this.position.copy();
+
+        return stop;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColorStopValue();
+
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                if (this.result.isValid())
+                {
+                    if (this.color   ) this.result.color    = this.color   .eval(parse).copy();
+                    if (this.opacity ) this.result.opacity  = this.opacity .eval(parse).copy();
+                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.color    = this.color   .eval(parse).copy();
+                this.result.opacity  = this.opacity .eval(parse).copy();
+                this.result.position = this.position.eval(parse).copy();
+            }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+        }
+
+
+        return this.result;
+    }
+
+
+
+    get mustNotEval()
+    {
+        return this.color   .mustNotEval
+            && this.opacity .mustNotEval
+            && this.position.mustNotEval;
+    }
+}
+
+
+class GColorFillValue
+extends GType
+{
+    color;
+    opacity;
+
+
+
+    constructor(color   = GColorValue .NaN,
+                opacity = GNumberValue.NaN)
+    {
+        super(COLOR_FILL_VALUE);
+
+        this.color   = color;
+        this.opacity = opacity;
+
+        this.result  = this;
+        this.valid   = true;
+    }
+
+
+    
+    copy()
+    {
+        return new GColorFillValue(
+            this.color  .copy(),
+            this.opacity.copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.color  )
+            && !isNaN(this.opacity);
+    }
+
+
+
+    equals(col)
+    {
+        return this.color  .equals(col.color  )
+            && this.opacity.equals(col.opacity);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.color   .toString()
+              + ' ' + this.opacity .toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new GColorFillValue(
+        GColorValue .NaN,
+        GNumberValue.NaN);
+}
+
+
+
+function parseGColorFillValue(str)
+{
+    if (str == INVALID)
+        return GColorFillValue.NaN;
+
+    const stop = str.split(' ');
+
+    return new GColorFillValue(
+        new GColorValue(
+            parseInt(stop[0]),
+            parseGNumberValue(stop[1]),
+            parseGNumberValue(stop[2]),
+            parseGNumberValue(stop[3])),
+        parseGNumberValue(stop[4]));
+}
+
+
+class GColorFill
+extends GOperator
+{
+    color;
     opacity;
 
 
 
     constructor(nodeId, active)
     {
-        super(FILL, nodeId, active);
+        super(COLOR_FILL, nodeId, active);
 
-        this.fill    = GColorValue.create(1, 0, 0, 0);
+        this.color   = GColorValue.create(1, 0, 0, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -4521,11 +4700,11 @@ extends GOperator
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GColorFill(this.nodeId, this.active);
 
         if (this.input) fill.input = this.input.copy();
 
-        fill.fill    = this.fill  .copy();
+        fill.color   = this.color  .copy();
         fill.opacity = this.opacity.copy();
 
         return fill;
@@ -4537,32 +4716,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill    = this.fill   .eval(parse).copy();
-            // const opacity = this.opacity.eval(parse).copy();
+            this.result = new GColorFillValue();
 
-            // if (this.input)
-            // {
-            //     this.result = this.input.eval(parse).copy();
-            //     console.assert(this.result.type == FILL);
 
-            //     this.result.fill = fill;
-            //         // FILL, 
-            //         // color.toRgbString(), 
-            //         // (opacity.value / 100).toString()]);
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_FILL_VALUE);
 
-            //     this.result.valid = true;
-            // }
-            // else
-            //     this.result = new GFill();
+                if (this.result.isValid())
+                {
+                    if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
+                    if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.color   = this.color  .eval(parse).copy();
+                this.result.opacity = this.opacity.eval(parse).copy();
+            }
 
-                
-            // this.valid = true;
+             
+            this.result.valid = true;
+            this.valid        = true;
            
             
-            // genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            // genPushUpdateValue(parse, this.nodeId, 'fill',    fill  );
-            // genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -4590,12 +4769,12 @@ extends GType
     {
         super(type);
 
-        this.nodeId = nodeId;
+        this.nodeId = nodeId; 
 
         this.strokeWeight = new GNumberValue(1);
-        this.strokeFit   = new GNumberValue(0);
-        this.strokeJoin  = new GNumberValue(0);
-        this.strokeMiter = new GNumberValue(28.96);
+        this.strokeFit    = new GNumberValue(0);
+        this.strokeJoin   = new GNumberValue(0);
+        this.strokeMiter  = new GNumberValue(28.96);
     }
 
 
@@ -4608,9 +4787,9 @@ extends GType
         this.strokes = [...base.strokes];
 
         this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit   = base.strokeFit  .copy();
-        this.strokeJoin  = base.strokeJoin .copy();
-        this.strokeMiter = base.strokeMiter.copy();
+        this.strokeFit    = base.strokeFit   .copy();
+        this.strokeJoin   = base.strokeJoin  .copy();
+        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
@@ -4618,9 +4797,9 @@ extends GType
     isValid()
     {
         return this.strokeWeight.isValid()
-            && this.strokeFit  .isValid()
-            && this.strokeJoin .isValid()
-            && this.strokeMiter.isValid();
+            && this.strokeFit   .isValid()
+            && this.strokeJoin  .isValid()
+            && this.strokeMiter .isValid();
     }
 
 
@@ -5370,6 +5549,12 @@ extends GOperator
                 this.result.angle  = this.angle .eval(parse).copy();
                 this.result.round  = this.round .eval(parse).copy();
             }
+
+
+            // this.result.fills = [
+            //     COLOR, 
+            //     color.toRgbString(), 
+            //     (opacity.value / 100).toString()];
 
 
             this.result.valid = true;
@@ -6269,16 +6454,57 @@ function genParseColorValidate(parse)
 
 
 
-function genParseFill(parse)
+function genParseColorStop(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
-    const fill = new GFill(nodeId, active);
+    const stop = new GColorStop(nodeId, active);
 
 
     if (parse.logRequests) 
-        logReqFill(fill, parse);
+        logReqColorStop(stop, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, stop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (   parse.next == COLOR_STOP
+        || parse.next == COLOR_STOP_VALUE)
+        stop.input = genParse(parse);
+
+
+    stop.color    = genParse(parse);
+    stop.opacity  = genParse(parse);
+    stop.position = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, stop);
+    return stop;
+}
+
+
+
+function genParseColorFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GColorFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorFill(fill, parse);
 
 
     if (ignore)
@@ -6291,8 +6517,8 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (parse.next == FILL)
-        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+    if (parse.next == COLOR_FILL)
+        fill.input = genParse(parse);
 
 
     fill.color   = genParse(parse);
@@ -6880,9 +7106,12 @@ function genParse(parse)
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) return genParseColorBlind      (parse);
     else if (parse.next == COLOR_VALIDATE    ) return genParseColorValidate   (parse);
+    
+    else if (parse.next == COLOR_STOP_VALUE  ) return genParseColorStopValue  (parse);
+    else if (parse.next == COLOR_STOP        ) return genParseColorStop       (parse);
 
-    else if (parse.next == FILL              ) return genParseFill            (parse);
-
+    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
+    
     else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
     else if (parse.next == LINE              ) return genParseLine            (parse);
     else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);

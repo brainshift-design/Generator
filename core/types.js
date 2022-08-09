@@ -32,11 +32,11 @@ const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
 const COLORBLIND          = 'BLND';  // C
 
 
-const GRADIENT_VALUE      = 'G';
-const GRADIENT_STOP_VALUE = 'GS';
+const COLOR_STOP_VALUE    = 'CS';
+const COLOR_STOP          = 'CSTOP';
 
+const GRADIENT_VALUE      = 'G';
 const GRADIENT            = 'GRAD';
-const GRADIENT_STOP       = 'GSTOP';
 
 
 const COLOR_TYPES =
@@ -57,9 +57,8 @@ const FILL_VALUES =
 ];
 
 
-const FILL_VALUE          = 'FL';
-
-const FILL                = 'FILL';
+const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
+const COLOR_FILL          = 'CFILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder

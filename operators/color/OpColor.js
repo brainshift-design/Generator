@@ -27,7 +27,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR, 'color', 80);
+        super(COLOR, 'color');
 
 
         this._color    = ['hex', 0.5, 0.5, 0.5];
@@ -210,19 +210,19 @@ extends OpColorBase
         
         if (col.isValid())
         {
-            this._color = col.toDataColor();
-
             this.param1.setValue(col.c1, false, true, false);
             this.param2.setValue(col.c2, false, true, false);
             this.param3.setValue(col.c3, false, true, false);
+
+            this._color = col.toDataColor();
         }
         else
         {
-            this._color = dataColor_NaN;
-
             this.param1.setValue(GNumberValue.NaN, false, true, false);
             this.param2.setValue(GNumberValue.NaN, false, true, false);
             this.param3.setValue(GNumberValue.NaN, false, true, false);
+            
+            this._color = dataColor_NaN;
         }
 
 

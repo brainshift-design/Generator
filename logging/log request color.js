@@ -49,7 +49,15 @@ function logReqColorValidate(val, parse)
 
 
 
-function logReqFill(fill, parse)
+function logReqColorStop(fill, parse)
+{
+    parse.log += parse.tab + fill.type;
+    parse.log += logReqNodeId(fill);
+}
+
+
+
+function logReqColorFill(fill, parse)
 {
     parse.log += parse.tab + fill.type;
     parse.log += logReqNodeId(fill);

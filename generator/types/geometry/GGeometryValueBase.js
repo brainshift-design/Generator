@@ -17,12 +17,12 @@ extends GType
     {
         super(type);
 
-        this.nodeId = nodeId;
+        this.nodeId = nodeId; 
 
         this.strokeWeight = new GNumberValue(1);
-        this.strokeFit   = new GNumberValue(0);
-        this.strokeJoin  = new GNumberValue(0);
-        this.strokeMiter = new GNumberValue(28.96);
+        this.strokeFit    = new GNumberValue(0);
+        this.strokeJoin   = new GNumberValue(0);
+        this.strokeMiter  = new GNumberValue(28.96);
     }
 
 
@@ -35,9 +35,9 @@ extends GType
         this.strokes = [...base.strokes];
 
         this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit   = base.strokeFit  .copy();
-        this.strokeJoin  = base.strokeJoin .copy();
-        this.strokeMiter = base.strokeMiter.copy();
+        this.strokeFit    = base.strokeFit   .copy();
+        this.strokeJoin   = base.strokeJoin  .copy();
+        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
@@ -45,9 +45,9 @@ extends GType
     isValid()
     {
         return this.strokeWeight.isValid()
-            && this.strokeFit  .isValid()
-            && this.strokeJoin .isValid()
-            && this.strokeMiter.isValid();
+            && this.strokeFit   .isValid()
+            && this.strokeJoin  .isValid()
+            && this.strokeMiter .isValid();
     }
 
 

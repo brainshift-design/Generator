@@ -117,7 +117,7 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = 80)
+    constructor(type, shortName, defWidth = 100)
     {
         this.#type             = type;
         this.id                = shortName;

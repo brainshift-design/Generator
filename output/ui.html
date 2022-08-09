@@ -950,6 +950,93 @@ div
 
 
 
+.fillSlider
+{
+    padding:          0;
+    width:            74px;
+    height:           26px;
+    overflow:         hidden;
+    /* background-color: var(--figma-color-bg);white; */
+    text-align:       center;
+    touch-action:     none;
+}    
+
+
+.figma-light .fillSliderName
+{
+    color: #0006;
+}
+
+
+.figma-dark .fillSliderName
+{
+    color: #fff6;
+}
+
+
+.fillSliderBar
+{
+    position:       absolute;
+    pointer-events: none;
+}
+
+
+.fillSliderText
+{
+    font-family:          Inter;
+    font-size:            11;
+    font-variant-numeric: tabular-nums;
+    pointer-events:       none;
+    letter-spacing:       -0.35px;
+    position:             absolute;
+    left:                 50%;
+    transform:            translateX(-50%);
+    top:                  3px;
+    white-space:          nowrap;
+}
+
+
+.fillSliderText .hash
+{
+    font-size: 6;
+    position:  relative;
+    top:      -2px;
+}
+
+
+.fillSliderTextbox
+{
+    font-family:          Inter;
+    font-size:            11;
+    font-variant-numeric: tabular-nums;
+    position:             absolute;
+    left:                 50%;
+    transform:            translateX(-50%);
+    white-space:          nowrap;
+    background-color:     transparent;
+}
+
+
+.fillSliderFocus
+{
+    position:       absolute;
+    pointer-events: none;
+    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
+    visibility:     hidden;
+    opacity:        0;
+}
+
+
+.fillSliderRange
+{
+    display:        block;
+    position:       absolute;
+    pointer-events: none;
+    z-index:        1000;
+}
+
+
+
 
 .menuSelect
 {
@@ -1475,33 +1562,36 @@ div
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber          ));           this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
-    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnCreateLimits          ));           this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
-    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd             ));              this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
-    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract        ));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
-    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply        ));         this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
-    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide          ));           this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
-    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo          ));           this.blur();'><span style='font-size: 15px;'>%</span></button>
-    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent        ));         this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
-    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate     ));      this.blur();'></button>
+    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber          ));  this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
+    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnCreateLimits          ));  this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
+    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd             ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
+    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
+    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
+    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide          ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
+    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo          ));  this.blur();'><span style='font-size: 15px;'>%</span></button>
+    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent        ));  this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
+    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate     ));  this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor           ));            this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
-    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate)); this.blur();'></button>
-    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor   ));    this.blur();'></span></button>
-    <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));      this.blur();'></button>
-    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));       this.blur();'></button>
+    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor           ));  this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
+    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate));  this.blur();'></button>
+    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor   ));  this.blur();'></span></button>
+    <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));  this.blur();'></button>
+    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));  this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle       ));        this.blur();'>RECT</button>
-    <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine            ));             this.blur();'>LINE</button>
-    <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse         ));          this.blur();'>ELPS</button>
-    <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));          this.blur();'>POLY</button>
-    <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar            ));             this.blur();'>STAR</button>
+    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle       ));  this.blur();'>RECT</button>
+    <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine            ));  this.blur();'>LINE</button>
+    <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse         ));  this.blur();'>ELPS</button>
+    <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));  this.blur();'>POLY</button>
+    <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar            ));  this.blur();'>STAR</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(FILL,         btnCreateColorFill       ));        this.blur();'>FILL</button>
-    <!-- <button class='menuButton' id='btnCreateColorStroke'      onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke     ));      this.blur();'>CSTK</button> -->
+    <button class='menuButton' id='btnCreateColorStop'        onclick='actionManager.do(new CreateNodeAction(COLOR_STOP,         btnCreateColorStop       ));  this.blur();'>STP</button>
+    <button class='menuButton' id='btnCreateGradient'         onclick='actionManager.do(new CreateNodeAction(GRADIENT,           btnCreateGradient        ));  this.blur();'>GRD</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));          this.blur();'></button>
-    <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow));              this.blur();'>ROW</button> -->
+    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(COLOR_FILL,         btnCreateColorFill       ));  this.blur();'>CFILL</button>
+    <!-- <button class='menuButton' id='btnCreateColorStroke' onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke));  this.blur();'>CSTK</button> -->
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));  this.blur();'></button>
+    <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow        ));  this.blur();'>ROW</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
 
@@ -1773,7 +1863,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
-        case FILL:
+        case COLOR_FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -4318,7 +4408,15 @@ function logReqColorValidate(val, parse)
 
 
 
-function logReqFill(fill, parse)
+function logReqColorStop(fill, parse)
+{
+    parse.log += parse.tab + fill.type;
+    parse.log += logReqNodeId(fill);
+}
+
+
+
+function logReqColorFill(fill, parse)
 {
     parse.log += parse.tab + fill.type;
     parse.log += logReqNodeId(fill);
@@ -4528,11 +4626,11 @@ const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
 const COLORBLIND          = 'BLND';  // C
 
 
-const GRADIENT_VALUE      = 'G';
-const GRADIENT_STOP_VALUE = 'GS';
+const COLOR_STOP_VALUE    = 'CS';
+const COLOR_STOP          = 'CSTOP';
 
+const GRADIENT_VALUE      = 'G';
 const GRADIENT            = 'GRAD';
-const GRADIENT_STOP       = 'GSTOP';
 
 
 const COLOR_TYPES =
@@ -4553,9 +4651,8 @@ const FILL_VALUES =
 ];
 
 
-const FILL_VALUE          = 'FL';
-
-const FILL                = 'FILL';
+const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
+const COLOR_FILL          = 'CFILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
@@ -5525,7 +5622,6 @@ function parseGColorValue(str)
 }
 
 
-
 class GColor
 extends GOperator
 {
@@ -5592,11 +5688,6 @@ extends GOperator
                         0,
                         this.result.space.value),
                         OpColorSpaces.length-1);
-
-                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
-
 
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
@@ -6150,49 +6241,55 @@ extends GOperator
 
 
 
-class GFillValue
+class GColorStopValue
 extends GType
 {
-    fills;
+    color;
+    opacity;
+    position;
 
 
 
-    constructor(fills = [])
+    constructor(color    = GColorValue .NaN,
+                opacity  = GNumberValue.NaN,
+                position = GNumberValue.NaN)
     {
-        super(FILL_VALUE);
+        super(COLOR_STOP_VALUE);
 
-        this.fills = [...fills];
+        this.color    = color;
+        this.opacity  = opacity;
+        this.position = position;
 
-        this.result = this;
-        this.valid  = true;
+        this.result   = this;
+        this.valid    = true;
     }
 
 
-
+    
     copy()
     {
-        return new GFillValue(this.fills);
+        return new GColorStopValue(
+            this.color   .copy(),
+            this.opacity .copy(),
+            this.position.copy());
     }
 
 
 
     isValid()
     {
-        return this.fills.length > 0;
+        return !isNaN(this.color   )
+            && !isNaN(this.opacity )
+            && !isNaN(this.position);
     }
 
 
 
-    equals(fill)
+    equals(col)
     {
-        if (this.fills.length != fill.fills.length)
-            return false;
-
-        for (let i = 0; i < this.fills.length; i++)
-            if (!this.fills[i].equals(fill.fills[i]))
-                return false;
-
-        return true;
+        return this.color   .equals(col.color   )
+            && this.opacity .equals(col.opacity )
+            && this.position.equals(col.position);
     }
 
 
@@ -6206,53 +6303,225 @@ extends GType
 
     toString()
     {
-        let str = this.fills.length.toString();
-
-        for (let i = 0; i < this.fills.length; i++)
-            str += ' ' + this.fills[i].toString();
-
-        return str;
+        return this.isValid()
+            ?         this.color   .toString()
+              + ' ' + this.opacity .toString()
+              + ' ' + this.position.toString()
+            : INVALID;
     }
 
 
 
-    static NaN = new GFillValue();
+    static NaN = new GColorStopValue(
+        GColorValue .NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN);
 }
 
 
 
-function parseGFillValue(str)
+function parseGColorStopValue(str)
 {
-    // if (str == INVALID)
-    //     return GFillValue.NaN;
+    if (str == INVALID)
+        return GColorStopValue.NaN;
 
-    const _fill = str.split(' ');
+    const stop = str.split(' ');
 
-    const fill = new GFillValue();
-
-    const nFills = parseInt(_fill[0]);
-
-    for (let i = 1; i < nFills; i++)
-        fill.fills.push(parseGColorValue(_fills[i]));
-
-    return fill;
+    return new GColorStopValue(
+        new GColorValue(
+            parseInt(stop[0]),
+            parseGNumberValue(stop[1]),
+            parseGNumberValue(stop[2]),
+            parseGNumberValue(stop[3])),
+        parseGNumberValue(stop[4]),
+        parseGNumberValue(stop[5]));
 }
 
 
-
-class GFill
+class GColorStop
 extends GOperator
 {
-    fill;
+    input    = null;
+
+    color    = null;
+    opacity  = null;
+    position = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_STOP, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const stop = new GColorStop(this.nodeId, this.active);
+
+        if (this.input) 
+            stop.input = this.input.copy();
+
+        if (this.color   ) stop.color    = this.color   .copy();
+        if (this.opacity ) stop.opacity  = this.opacity .copy();
+        if (this.position) stop.position = this.position.copy();
+
+        return stop;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColorStopValue();
+
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                if (this.result.isValid())
+                {
+                    if (this.color   ) this.result.color    = this.color   .eval(parse).copy();
+                    if (this.opacity ) this.result.opacity  = this.opacity .eval(parse).copy();
+                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.color    = this.color   .eval(parse).copy();
+                this.result.opacity  = this.opacity .eval(parse).copy();
+                this.result.position = this.position.eval(parse).copy();
+            }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+        }
+
+
+        return this.result;
+    }
+
+
+
+    get mustNotEval()
+    {
+        return this.color   .mustNotEval
+            && this.opacity .mustNotEval
+            && this.position.mustNotEval;
+    }
+}
+
+
+class GColorFillValue
+extends GType
+{
+    color;
+    opacity;
+
+
+
+    constructor(color   = GColorValue .NaN,
+                opacity = GNumberValue.NaN)
+    {
+        super(COLOR_FILL_VALUE);
+
+        this.color   = color;
+        this.opacity = opacity;
+
+        this.result  = this;
+        this.valid   = true;
+    }
+
+
+    
+    copy()
+    {
+        return new GColorFillValue(
+            this.color  .copy(),
+            this.opacity.copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.color  )
+            && !isNaN(this.opacity);
+    }
+
+
+
+    equals(col)
+    {
+        return this.color  .equals(col.color  )
+            && this.opacity.equals(col.opacity);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.color   .toString()
+              + ' ' + this.opacity .toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new GColorFillValue(
+        GColorValue .NaN,
+        GNumberValue.NaN);
+}
+
+
+
+function parseGColorFillValue(str)
+{
+    if (str == INVALID)
+        return GColorFillValue.NaN;
+
+    const stop = str.split(' ');
+
+    return new GColorFillValue(
+        new GColorValue(
+            parseInt(stop[0]),
+            parseGNumberValue(stop[1]),
+            parseGNumberValue(stop[2]),
+            parseGNumberValue(stop[3])),
+        parseGNumberValue(stop[4]));
+}
+
+
+class GColorFill
+extends GOperator
+{
+    color;
     opacity;
 
 
 
     constructor(nodeId, active)
     {
-        super(FILL, nodeId, active);
+        super(COLOR_FILL, nodeId, active);
 
-        this.fill    = GColorValue.create(1, 0, 0, 0);
+        this.color   = GColorValue.create(1, 0, 0, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -6260,11 +6529,11 @@ extends GOperator
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GColorFill(this.nodeId, this.active);
 
         if (this.input) fill.input = this.input.copy();
 
-        fill.fill    = this.fill  .copy();
+        fill.color   = this.color  .copy();
         fill.opacity = this.opacity.copy();
 
         return fill;
@@ -6276,32 +6545,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill    = this.fill   .eval(parse).copy();
-            // const opacity = this.opacity.eval(parse).copy();
+            this.result = new GColorFillValue();
 
-            // if (this.input)
-            // {
-            //     this.result = this.input.eval(parse).copy();
-            //     console.assert(this.result.type == FILL);
 
-            //     this.result.fill = fill;
-            //         // FILL, 
-            //         // color.toRgbString(), 
-            //         // (opacity.value / 100).toString()]);
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_FILL_VALUE);
 
-            //     this.result.valid = true;
-            // }
-            // else
-            //     this.result = new GFill();
+                if (this.result.isValid())
+                {
+                    if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
+                    if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.color   = this.color  .eval(parse).copy();
+                this.result.opacity = this.opacity.eval(parse).copy();
+            }
 
-                
-            // this.valid = true;
+             
+            this.result.valid = true;
+            this.valid        = true;
            
             
-            // genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            // genPushUpdateValue(parse, this.nodeId, 'fill',    fill  );
-            // genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -6329,12 +6598,12 @@ extends GType
     {
         super(type);
 
-        this.nodeId = nodeId;
+        this.nodeId = nodeId; 
 
         this.strokeWeight = new GNumberValue(1);
-        this.strokeFit   = new GNumberValue(0);
-        this.strokeJoin  = new GNumberValue(0);
-        this.strokeMiter = new GNumberValue(28.96);
+        this.strokeFit    = new GNumberValue(0);
+        this.strokeJoin   = new GNumberValue(0);
+        this.strokeMiter  = new GNumberValue(28.96);
     }
 
 
@@ -6347,9 +6616,9 @@ extends GType
         this.strokes = [...base.strokes];
 
         this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit   = base.strokeFit  .copy();
-        this.strokeJoin  = base.strokeJoin .copy();
-        this.strokeMiter = base.strokeMiter.copy();
+        this.strokeFit    = base.strokeFit   .copy();
+        this.strokeJoin   = base.strokeJoin  .copy();
+        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
@@ -6357,9 +6626,9 @@ extends GType
     isValid()
     {
         return this.strokeWeight.isValid()
-            && this.strokeFit  .isValid()
-            && this.strokeJoin .isValid()
-            && this.strokeMiter.isValid();
+            && this.strokeFit   .isValid()
+            && this.strokeJoin  .isValid()
+            && this.strokeMiter .isValid();
     }
 
 
@@ -7109,6 +7378,12 @@ extends GOperator
                 this.result.angle  = this.angle .eval(parse).copy();
                 this.result.round  = this.round .eval(parse).copy();
             }
+
+
+            // this.result.fills = [
+            //     COLOR, 
+            //     color.toRgbString(), 
+            //     (opacity.value / 100).toString()];
 
 
             this.result.valid = true;
@@ -8008,16 +8283,57 @@ function genParseColorValidate(parse)
 
 
 
-function genParseFill(parse)
+function genParseColorStop(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
-    const fill = new GFill(nodeId, active);
+    const stop = new GColorStop(nodeId, active);
 
 
     if (parse.logRequests) 
-        logReqFill(fill, parse);
+        logReqColorStop(stop, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, stop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (   parse.next == COLOR_STOP
+        || parse.next == COLOR_STOP_VALUE)
+        stop.input = genParse(parse);
+
+
+    stop.color    = genParse(parse);
+    stop.opacity  = genParse(parse);
+    stop.position = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, stop);
+    return stop;
+}
+
+
+
+function genParseColorFill(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const fill = new GColorFill(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorFill(fill, parse);
 
 
     if (ignore)
@@ -8030,8 +8346,8 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (parse.next == FILL)
-        fill.input = genParse(parse); // not genParseColorFill() because genParse() handles stack overflow
+    if (parse.next == COLOR_FILL)
+        fill.input = genParse(parse);
 
 
     fill.color   = genParse(parse);
@@ -8619,9 +8935,12 @@ function genParse(parse)
     else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) return genParseColorBlind      (parse);
     else if (parse.next == COLOR_VALIDATE    ) return genParseColorValidate   (parse);
+    
+    else if (parse.next == COLOR_STOP_VALUE  ) return genParseColorStopValue  (parse);
+    else if (parse.next == COLOR_STOP        ) return genParseColorStop       (parse);
 
-    else if (parse.next == FILL              ) return genParseFill            (parse);
-
+    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
+    
     else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
     else if (parse.next == LINE              ) return genParseLine            (parse);
     else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);
@@ -11522,7 +11841,7 @@ function rgbFromType(type, active)
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
-        case FILL:
+        case COLOR_FILL:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -14067,7 +14386,15 @@ function logReqColorValidate(val, parse)
 
 
 
-function logReqFill(fill, parse)
+function logReqColorStop(fill, parse)
+{
+    parse.log += parse.tab + fill.type;
+    parse.log += logReqNodeId(fill);
+}
+
+
+
+function logReqColorFill(fill, parse)
 {
     parse.log += parse.tab + fill.type;
     parse.log += logReqNodeId(fill);
@@ -15704,11 +16031,11 @@ const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
 const COLORBLIND          = 'BLND';  // C
 
 
-const GRADIENT_VALUE      = 'G';
-const GRADIENT_STOP_VALUE = 'GS';
+const COLOR_STOP_VALUE    = 'CS';
+const COLOR_STOP          = 'CSTOP';
 
+const GRADIENT_VALUE      = 'G';
 const GRADIENT            = 'GRAD';
-const GRADIENT_STOP       = 'GSTOP';
 
 
 const COLOR_TYPES =
@@ -15729,9 +16056,8 @@ const FILL_VALUES =
 ];
 
 
-const FILL_VALUE          = 'FL';
-
-const FILL                = 'FILL';
+const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
+const COLOR_FILL          = 'CFILL';
 
 
 const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
@@ -16701,7 +17027,6 @@ function parseGColorValue(str)
 }
 
 
-
 class GColor
 extends GOperator
 {
@@ -16768,11 +17093,6 @@ extends GOperator
                         0,
                         this.result.space.value),
                         OpColorSpaces.length-1);
-
-                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
-
 
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
@@ -17326,49 +17646,55 @@ extends GOperator
 
 
 
-class GFillValue
+class GColorStopValue
 extends GType
 {
-    fills;
+    color;
+    opacity;
+    position;
 
 
 
-    constructor(fills = [])
+    constructor(color    = GColorValue .NaN,
+                opacity  = GNumberValue.NaN,
+                position = GNumberValue.NaN)
     {
-        super(FILL_VALUE);
+        super(COLOR_STOP_VALUE);
 
-        this.fills = [...fills];
+        this.color    = color;
+        this.opacity  = opacity;
+        this.position = position;
 
-        this.result = this;
-        this.valid  = true;
+        this.result   = this;
+        this.valid    = true;
     }
 
 
-
+    
     copy()
     {
-        return new GFillValue(this.fills);
+        return new GColorStopValue(
+            this.color   .copy(),
+            this.opacity .copy(),
+            this.position.copy());
     }
 
 
 
     isValid()
     {
-        return this.fills.length > 0;
+        return !isNaN(this.color   )
+            && !isNaN(this.opacity )
+            && !isNaN(this.position);
     }
 
 
 
-    equals(fill)
+    equals(col)
     {
-        if (this.fills.length != fill.fills.length)
-            return false;
-
-        for (let i = 0; i < this.fills.length; i++)
-            if (!this.fills[i].equals(fill.fills[i]))
-                return false;
-
-        return true;
+        return this.color   .equals(col.color   )
+            && this.opacity .equals(col.opacity )
+            && this.position.equals(col.position);
     }
 
 
@@ -17382,53 +17708,225 @@ extends GType
 
     toString()
     {
-        let str = this.fills.length.toString();
-
-        for (let i = 0; i < this.fills.length; i++)
-            str += ' ' + this.fills[i].toString();
-
-        return str;
+        return this.isValid()
+            ?         this.color   .toString()
+              + ' ' + this.opacity .toString()
+              + ' ' + this.position.toString()
+            : INVALID;
     }
 
 
 
-    static NaN = new GFillValue();
+    static NaN = new GColorStopValue(
+        GColorValue .NaN,
+        GNumberValue.NaN,
+        GNumberValue.NaN);
 }
 
 
 
-function parseGFillValue(str)
+function parseGColorStopValue(str)
 {
-    // if (str == INVALID)
-    //     return GFillValue.NaN;
+    if (str == INVALID)
+        return GColorStopValue.NaN;
 
-    const _fill = str.split(' ');
+    const stop = str.split(' ');
 
-    const fill = new GFillValue();
-
-    const nFills = parseInt(_fill[0]);
-
-    for (let i = 1; i < nFills; i++)
-        fill.fills.push(parseGColorValue(_fills[i]));
-
-    return fill;
+    return new GColorStopValue(
+        new GColorValue(
+            parseInt(stop[0]),
+            parseGNumberValue(stop[1]),
+            parseGNumberValue(stop[2]),
+            parseGNumberValue(stop[3])),
+        parseGNumberValue(stop[4]),
+        parseGNumberValue(stop[5]));
 }
 
 
-
-class GFill
+class GColorStop
 extends GOperator
 {
-    fill;
+    input    = null;
+
+    color    = null;
+    opacity  = null;
+    position = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_STOP, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const stop = new GColorStop(this.nodeId, this.active);
+
+        if (this.input) 
+            stop.input = this.input.copy();
+
+        if (this.color   ) stop.color    = this.color   .copy();
+        if (this.opacity ) stop.opacity  = this.opacity .copy();
+        if (this.position) stop.position = this.position.copy();
+
+        return stop;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColorStopValue();
+
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                if (this.result.isValid())
+                {
+                    if (this.color   ) this.result.color    = this.color   .eval(parse).copy();
+                    if (this.opacity ) this.result.opacity  = this.opacity .eval(parse).copy();
+                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.color    = this.color   .eval(parse).copy();
+                this.result.opacity  = this.opacity .eval(parse).copy();
+                this.result.position = this.position.eval(parse).copy();
+            }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+        }
+
+
+        return this.result;
+    }
+
+
+
+    get mustNotEval()
+    {
+        return this.color   .mustNotEval
+            && this.opacity .mustNotEval
+            && this.position.mustNotEval;
+    }
+}
+
+
+class GColorFillValue
+extends GType
+{
+    color;
+    opacity;
+
+
+
+    constructor(color   = GColorValue .NaN,
+                opacity = GNumberValue.NaN)
+    {
+        super(COLOR_FILL_VALUE);
+
+        this.color   = color;
+        this.opacity = opacity;
+
+        this.result  = this;
+        this.valid   = true;
+    }
+
+
+    
+    copy()
+    {
+        return new GColorFillValue(
+            this.color  .copy(),
+            this.opacity.copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.color  )
+            && !isNaN(this.opacity);
+    }
+
+
+
+    equals(col)
+    {
+        return this.color  .equals(col.color  )
+            && this.opacity.equals(col.opacity);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.color   .toString()
+              + ' ' + this.opacity .toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new GColorFillValue(
+        GColorValue .NaN,
+        GNumberValue.NaN);
+}
+
+
+
+function parseGColorFillValue(str)
+{
+    if (str == INVALID)
+        return GColorFillValue.NaN;
+
+    const stop = str.split(' ');
+
+    return new GColorFillValue(
+        new GColorValue(
+            parseInt(stop[0]),
+            parseGNumberValue(stop[1]),
+            parseGNumberValue(stop[2]),
+            parseGNumberValue(stop[3])),
+        parseGNumberValue(stop[4]));
+}
+
+
+class GColorFill
+extends GOperator
+{
+    color;
     opacity;
 
 
 
     constructor(nodeId, active)
     {
-        super(FILL, nodeId, active);
+        super(COLOR_FILL, nodeId, active);
 
-        this.fill    = GColorValue.create(1, 0, 0, 0);
+        this.color   = GColorValue.create(1, 0, 0, 0);
         this.opacity = new GNumberValue(100);
     }
 
@@ -17436,11 +17934,11 @@ extends GOperator
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GColorFill(this.nodeId, this.active);
 
         if (this.input) fill.input = this.input.copy();
 
-        fill.fill    = this.fill  .copy();
+        fill.color   = this.color  .copy();
         fill.opacity = this.opacity.copy();
 
         return fill;
@@ -17452,32 +17950,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill    = this.fill   .eval(parse).copy();
-            // const opacity = this.opacity.eval(parse).copy();
+            this.result = new GColorFillValue();
 
-            // if (this.input)
-            // {
-            //     this.result = this.input.eval(parse).copy();
-            //     console.assert(this.result.type == FILL);
 
-            //     this.result.fill = fill;
-            //         // FILL, 
-            //         // color.toRgbString(), 
-            //         // (opacity.value / 100).toString()]);
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_FILL_VALUE);
 
-            //     this.result.valid = true;
-            // }
-            // else
-            //     this.result = new GFill();
+                if (this.result.isValid())
+                {
+                    if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
+                    if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.color   = this.color  .eval(parse).copy();
+                this.result.opacity = this.opacity.eval(parse).copy();
+            }
 
-                
-            // this.valid = true;
+             
+            this.result.valid = true;
+            this.valid        = true;
            
             
-            // genPushUpdateValue(parse, this.nodeId, this.result.type, this.result);
-
-            // genPushUpdateValue(parse, this.nodeId, 'fill',    fill  );
-            // genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
@@ -17505,12 +18003,12 @@ extends GType
     {
         super(type);
 
-        this.nodeId = nodeId;
+        this.nodeId = nodeId; 
 
         this.strokeWeight = new GNumberValue(1);
-        this.strokeFit   = new GNumberValue(0);
-        this.strokeJoin  = new GNumberValue(0);
-        this.strokeMiter = new GNumberValue(28.96);
+        this.strokeFit    = new GNumberValue(0);
+        this.strokeJoin   = new GNumberValue(0);
+        this.strokeMiter  = new GNumberValue(28.96);
     }
 
 
@@ -17523,9 +18021,9 @@ extends GType
         this.strokes = [...base.strokes];
 
         this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit   = base.strokeFit  .copy();
-        this.strokeJoin  = base.strokeJoin .copy();
-        this.strokeMiter = base.strokeMiter.copy();
+        this.strokeFit    = base.strokeFit   .copy();
+        this.strokeJoin   = base.strokeJoin  .copy();
+        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
@@ -17533,9 +18031,9 @@ extends GType
     isValid()
     {
         return this.strokeWeight.isValid()
-            && this.strokeFit  .isValid()
-            && this.strokeJoin .isValid()
-            && this.strokeMiter.isValid();
+            && this.strokeFit   .isValid()
+            && this.strokeJoin  .isValid()
+            && this.strokeMiter .isValid();
     }
 
 
@@ -18285,6 +18783,12 @@ extends GOperator
                 this.result.angle  = this.angle .eval(parse).copy();
                 this.result.round  = this.round .eval(parse).copy();
             }
+
+
+            // this.result.fills = [
+            //     COLOR, 
+            //     color.toRgbString(), 
+            //     (opacity.value / 100).toString()];
 
 
             this.result.valid = true;
@@ -25534,7 +26038,8 @@ extends Parameter
     
     get fills   () { return this.control.fills; }
     get value   () { return this.control.fills; }
-    get genValue() { return new GFillValue(this.fills); }
+
+    get genValue() { return new GColorFillValue(this.control.fills); }
     
 
     
@@ -25572,8 +26077,8 @@ extends Parameter
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(FILL_VALUES);
-        if (hasOutput) this.initOutput(FILL, this.output_genRequest);
+        if (hasInput)  this.initInput (FILL_VALUES);
+        if (hasOutput) this.initOutput(COLOR_FILL, this.output_genRequest);
 
 
         // this.control.addEventListener('confirm', () => 
@@ -25623,7 +26128,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.genValue == this.defaultValue;
+        return this.genValue.equals(this.defaultValue);
     }
 
 
@@ -25635,14 +26140,14 @@ extends Parameter
 
 
 
-    setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(fill, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        this.preSetValue(fills, createAction, dispatchEvents);
+        this.preSetValue(fill, createAction, dispatchEvents);
 
         if (updateControl)
-            this.control.setFills(fills, false, false, forceChange); 
+            this.control.setFills(fill, false, false, forceChange); 
 
-        super.setValue(fills, createAction, updateControl, dispatchEvents);
+        super.setValue(fill, createAction, updateControl, dispatchEvents);
 
         this.oldValue = this.genValue;
     }    
@@ -25661,6 +26166,7 @@ extends Parameter
 
     setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
+        console.log('fills =', fills);
         console.assert(fills.type && fills.type == COLOR_VALUE);
 
         this.preSetValue(fills, createAction, dispatchEvents);
@@ -25736,7 +26242,16 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorValue(param), true, true, false);
+        console.log('param =', param);
+
+        this.control.fills = parseGFillValue(param);
+        // const parts = param.split(' ');
+
+        // for (let i = 1; i < parts.length; i++)
+        // {
+        //     this.fills.push(parseGColorValue(parts, i), true, true, false);
+        //     i += 4;
+        // }
     }
 }
 
@@ -26053,7 +26568,10 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLOR_CONTRAST:     node = new OpColorContrast();    break;
         case COLORBLIND:         node = new OpColorBlind();       break;
         
-        case FILL:               node = new OpFill();             break;
+        case COLOR_STOP:         node = new OpColorStop();        break;
+        case GRADIENT:           node = new OpGradient();         break;
+
+        case COLOR_FILL:         node = new OpColorFill();        break;
 
         case RECTANGLE:          node = new OpRectangle();        break;
         case LINE:               node = new OpLine();             break;
@@ -26062,6 +26580,8 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case STAR:               node = new OpStar();             break;
 
         case COMMENT:            node = new OpComment();          break;
+
+        default:                 console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
     }
     
     node._creatingButton = creatingButton;
@@ -27380,7 +27900,7 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = 80)
+    constructor(type, shortName, defWidth = 100)
     {
         this.#type             = type;
         this.id                = shortName;
@@ -29993,7 +30513,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR, 'color', 80);
+        super(COLOR, 'color');
 
 
         this._color    = ['hex', 0.5, 0.5, 0.5];
@@ -30176,19 +30696,19 @@ extends OpColorBase
         
         if (col.isValid())
         {
-            this._color = col.toDataColor();
-
             this.param1.setValue(col.c1, false, true, false);
             this.param2.setValue(col.c2, false, true, false);
             this.param3.setValue(col.c3, false, true, false);
+
+            this._color = col.toDataColor();
         }
         else
         {
-            this._color = dataColor_NaN;
-
             this.param1.setValue(GNumberValue.NaN, false, true, false);
             this.param2.setValue(GNumberValue.NaN, false, true, false);
             this.param3.setValue(GNumberValue.NaN, false, true, false);
+            
+            this._color = dataColor_NaN;
         }
 
 
@@ -32861,25 +33381,232 @@ extends OpColorBase
 }
 
 
-class OpFill
+class   OpColorStop
 extends OpColorBase
 {
     paramFill;
+    paramPosition;
+
+    
+    constructor()
+    {
+        super(COLOR_STOP, 'stop');
+
+
+        this.addInput(new Input([COLOR_STOP]));
+        this.addOutput(new Output(COLOR_STOP, this.output_genRequest));
+
+        this.addParam(this.paramColor    = new ColorParam ('color',    '',         false, true, true));
+        this.addParam(this.paramOpacity  = new NumberParam('opacity',  'opacity',  true,  true, true, 100, 0, 100));
+        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
+
+        this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+        
+        this.paramOpacity .control.suffix = '%';
+        this.paramPosition.control.suffix = '%';
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramColor   .genRequest(gen));
+        request.push(...this.node.paramOpacity .genRequest(gen));
+        request.push(...this.node.paramPosition.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        const stop = values[paramIds.findIndex(id => id == 'value')];
+
+        
+        if (stop.isValid())
+        {
+            this.color   .setValue(stop.color,    false, true, false);
+            this.opacity .setValue(stop.opacity,  false, true, false);
+            this.position.setValue(stop.position, false, true, false);
+
+            this._color = stop.color.toDataColor();
+        }
+        else
+        {
+            this.color   .setValue(GColorValue .NaN, false, true, false);
+            this.opacity .setValue(GNumberValue.NaN, false, true, false);
+            this.position.setValue(GNumberValue.NaN, false, true, false);
+            
+            this._color = dataColor_NaN;
+        }
+
+
+        super.updateValues(updateParamId, paramIds, values);
+    }
+}
+
+
+class   OpGradient
+extends OperatorBase
+{
+    paramType;
+
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+
+
+    constructor()
+    {
+        super(GRADIENT, 'grad', 90);
+
+        this.variableInputs = true;
+
+
+        this.addNewInput();
+        this.addOutput(new Output(GRADIENT, this.output_genRequest));
+        
+
+        this.addParam(this.paramType   = new SelectParam('type', '', false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
+
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true, 0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true, 0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 1));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 1));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true, 0));
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const input = new Input([COLOR_TYPES]);
+        input.isNew = true;
+
+        input.addEventListener('connect',    () => { OpGradient_onConnectInput(this); input.isNew = false; });
+        input.addEventListener('disconnect', () => OpGradient_onDisconnectInput(this, input));
+
+        this.addInput(input);
+
+        return input;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        if (!isEmpty(this.cache))
+            return this.cache;
+
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+            
+aram``
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
+
+            
+        request.push(
+            ...this.node.paramX     .genRequest(gen),
+            ...this.node.paramY     .genRequest(gen),
+            ...this.node.paramWidth .genRequest(gen),
+            ...this.node.paramHeight.genRequest(gen),
+            ...this.node.paramAngle .genRequest(gen));
+
+            
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+        
+        return request;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        super.updateValues(updateParamId, paramIds, values);
+
+        if (paramIds.includes('value'))
+            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+    }
+}
+
+
+
+function OpGradient_onConnectInput(node)
+{
+    node.addNewInput();
+    //node.updateNode();
+}
+
+
+
+function OpGradient_onDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.control);
+    //node.updateNode();
+}
+
+
+class OpColorFill
+extends OpColorBase
+{
+    paramColor;
     paramOpacity;
 
     
     constructor()
     {
-        super(FILL, 'fill', 90);
+        super(COLOR_FILL, 'fill', 90);
 
 
-        this.addInput(new Input(FILL_VALUES));
-        this.addOutput(new Output(FILL, this.output_genRequest));
+        this.addInput(new Input([COLOR_FILL, COLOR, COLOR_VALUE]));
+        this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
-        this.addParam(this.paramFill    = new FillParam  ('fill',    '',        false, true, true));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        this.paramFill.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+        //this.paramFill.setValue([new GColorValue(1, 217, 217, 217)], false, true, false);
         
         this.paramOpacity.control.suffix = '%';
     }
@@ -37649,13 +38376,14 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
-                    case COLOR_VALUE:     value = parseGColorValue    (values[i++]); break;
-                    case RECTANGLE_VALUE: value = parseGRectangleValue(values[i++]); break;
-                    case LINE_VALUE:      value = parseGLineValue     (values[i++]); break;
-                    case ELLIPSE_VALUE:   value = parseGEllipseValue  (values[i++]); break;
-                    case POLYGON_VALUE:   value = parseGPolygonValue  (values[i++]); break;
-                    case STAR_VALUE:      value = parseGStarValue     (values[i++]); break;
-                    default:              value = parseGNumberValue   (values[i++]); break;
+                    case COLOR_VALUE:      value = parseGColorValue    (values[i++]); break;
+                    case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++]); break;
+                    case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++]); break;
+                    case LINE_VALUE:       value = parseGLineValue     (values[i++]); break;
+                    case ELLIPSE_VALUE:    value = parseGEllipseValue  (values[i++]); break;
+                    case POLYGON_VALUE:    value = parseGPolygonValue  (values[i++]); break;
+                    case STAR_VALUE:       value = parseGStarValue     (values[i++]); break;
+                    default:               value = parseGNumberValue   (values[i++]); break;
                 }
 
                 value.nodeId = nodeId; 

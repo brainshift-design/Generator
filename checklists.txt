@@ -7,6 +7,7 @@ NEW OPERATOR
     GType
     types.aj
     Graph.js/createNode();
+    ui nodes.js/uiUpdateValuesAndObjects(), _VALUE types
     rgbFromType
     gen obj parse
     log request/values
