@@ -4129,7 +4129,7 @@ class RequestSettings
 function logFunction(funcName)
 {
     console.log(
-        '%c ' + funcName + '() ', 
+        '%c ' + funcName + ' ', 
         'background: #09f; color: white;');
 }
 
@@ -4644,13 +4644,6 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUES =
-[
-    COLOR_VALUE,
-    GRADIENT_VALUE
-];
-
-
 const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
 const COLOR_FILL          = 'CFILL';
 
@@ -4690,7 +4683,7 @@ const GEOMETRY_TYPES =
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR,
+    STAR//,
     //TEXT
 ];
 
@@ -5740,7 +5733,6 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-            genPushUpdateValue(parse, this.nodeId, 'space', space);
         }
 
 
@@ -6278,9 +6270,9 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.color   )
-            && !isNaN(this.opacity )
-            && !isNaN(this.position);
+        return this.color   .isValid()
+            && this.opacity .isValid()
+            && this.position.isValid();
     }
 
 
@@ -6329,7 +6321,7 @@ function parseGColorStopValue(str)
 
     return new GColorStopValue(
         new GColorValue(
-            parseInt(stop[0]),
+            parseGNumberValue(stop[0]),
             parseGNumberValue(stop[1]),
             parseGNumberValue(stop[2]),
             parseGNumberValue(stop[3])),
@@ -6454,8 +6446,8 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.color  )
-            && !isNaN(this.opacity);
+        return this.color  .isValid()
+            && this.opacity.isValid();
     }
 
 
@@ -6478,8 +6470,8 @@ extends GType
     toString()
     {
         return this.isValid()
-            ?         this.color   .toString()
-              + ' ' + this.opacity .toString()
+            ?         this.color  .toString()
+              + ' ' + this.opacity.toString()
             : INVALID;
     }
 
@@ -6497,15 +6489,15 @@ function parseGColorFillValue(str)
     if (str == INVALID)
         return GColorFillValue.NaN;
 
-    const stop = str.split(' ');
+    const fill = str.split(' ');
 
     return new GColorFillValue(
         new GColorValue(
-            parseInt(stop[0]),
-            parseGNumberValue(stop[1]),
-            parseGNumberValue(stop[2]),
-            parseGNumberValue(stop[3])),
-        parseGNumberValue(stop[4]));
+            parseGNumberValue(fill[0]),
+            parseGNumberValue(fill[1]),
+            parseGNumberValue(fill[2]),
+            parseGNumberValue(fill[3])),
+        parseGNumberValue(fill[4]));
 }
 
 
@@ -14107,7 +14099,7 @@ class RequestSettings
 function logFunction(funcName)
 {
     console.log(
-        '%c ' + funcName + '() ', 
+        '%c ' + funcName + ' ', 
         'background: #09f; color: white;');
 }
 
@@ -16049,13 +16041,6 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUES =
-[
-    COLOR_VALUE,
-    GRADIENT_VALUE
-];
-
-
 const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
 const COLOR_FILL          = 'CFILL';
 
@@ -16095,7 +16080,7 @@ const GEOMETRY_TYPES =
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR,
+    STAR//,
     //TEXT
 ];
 
@@ -17145,7 +17130,6 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-            genPushUpdateValue(parse, this.nodeId, 'space', space);
         }
 
 
@@ -17683,9 +17667,9 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.color   )
-            && !isNaN(this.opacity )
-            && !isNaN(this.position);
+        return this.color   .isValid()
+            && this.opacity .isValid()
+            && this.position.isValid();
     }
 
 
@@ -17734,7 +17718,7 @@ function parseGColorStopValue(str)
 
     return new GColorStopValue(
         new GColorValue(
-            parseInt(stop[0]),
+            parseGNumberValue(stop[0]),
             parseGNumberValue(stop[1]),
             parseGNumberValue(stop[2]),
             parseGNumberValue(stop[3])),
@@ -17859,8 +17843,8 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.color  )
-            && !isNaN(this.opacity);
+        return this.color  .isValid()
+            && this.opacity.isValid();
     }
 
 
@@ -17883,8 +17867,8 @@ extends GType
     toString()
     {
         return this.isValid()
-            ?         this.color   .toString()
-              + ' ' + this.opacity .toString()
+            ?         this.color  .toString()
+              + ' ' + this.opacity.toString()
             : INVALID;
     }
 
@@ -17902,15 +17886,15 @@ function parseGColorFillValue(str)
     if (str == INVALID)
         return GColorFillValue.NaN;
 
-    const stop = str.split(' ');
+    const fill = str.split(' ');
 
     return new GColorFillValue(
         new GColorValue(
-            parseInt(stop[0]),
-            parseGNumberValue(stop[1]),
-            parseGNumberValue(stop[2]),
-            parseGNumberValue(stop[3])),
-        parseGNumberValue(stop[4]));
+            parseGNumberValue(fill[0]),
+            parseGNumberValue(fill[1]),
+            parseGNumberValue(fill[2]),
+            parseGNumberValue(fill[3])),
+        parseGNumberValue(fill[4]));
 }
 
 
@@ -20754,15 +20738,15 @@ function initColorSliderEvents(slider)
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            if (graphView.tempConn)
-                slider.style.cursor = 'default';
+            // if (graphView.tempConn)
+            //     slider.style.cursor = 'default';
             
-            else
-                slider.style.cursor = 
-                       slider.readOnly 
-                    || containsChild(slider, slider.textbox) 
-                    ? 'default'
-                    : 'ew-resize';
+            // else
+            //     slider.style.cursor = 
+            //            slider.readOnly 
+            //         || containsChild(slider, slider.textbox) 
+            //         ? 'default'
+            //         : 'ew-resize';
 
                     
             const colShadow = 
@@ -28311,6 +28295,8 @@ class Operator
 
     updateValues(updateParamId, paramIds, values) // virtual
     {
+        //logFunction('Operator.updateValues()');
+
         for (let i = 0, paramIndex; i < paramIds.length; i++)
         {
             if (    paramIds[i] != updateParamId
@@ -30311,6 +30297,8 @@ extends Operator
 
     updateValues(updateParamId, paramIds, values)
     {
+        //logFunction('OpColorBase.updateValues()');
+
         super.updateValues(updateParamId, paramIds, values);
         
         this.updateHeader();
@@ -30686,12 +30674,12 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col   = values[paramIds.findIndex(id => id == 'value')];
-        const space = values[paramIds.findIndex(id => id == 'space')];
-        
+        const col = values[paramIds.findIndex(id => id == 'value')];
+        console.assert(col.type == COLOR_VALUE);
 
-        this.paramSpace.setValue(space, false, true, false);
-        switchToSpace(this, colorSpace(space.value));
+
+        this.paramSpace.setValue(col.space, false, true, false);
+        switchToSpace(this, colorSpace(col.space.value));
 
         
         if (col.isValid())
@@ -30712,7 +30700,7 @@ extends OpColorBase
         }
 
 
-        this.prevSpace = colorSpace(space.value);
+        this.prevSpace = colorSpace(col.space.value);
 
 
         super.updateValues(updateParamId, paramIds, values);
@@ -33449,17 +33437,17 @@ extends OpColorBase
         
         if (stop.isValid())
         {
-            this.color   .setValue(stop.color,    false, true, false);
-            this.opacity .setValue(stop.opacity,  false, true, false);
-            this.position.setValue(stop.position, false, true, false);
+            this.paramColor   .setValue(stop.color,    false, true, false);
+            this.paramOpacity .setValue(stop.opacity,  false, true, false);
+            this.paramPosition.setValue(stop.position, false, true, false);
 
             this._color = stop.color.toDataColor();
         }
         else
         {
-            this.color   .setValue(GColorValue .NaN, false, true, false);
-            this.opacity .setValue(GNumberValue.NaN, false, true, false);
-            this.position.setValue(GNumberValue.NaN, false, true, false);
+            this.paramColor   .setValue(GColorValue .NaN, false, true, false);
+            this.paramOpacity .setValue(GNumberValue.NaN, false, true, false);
+            this.paramPosition.setValue(GNumberValue.NaN, false, true, false);
             
             this._color = dataColor_NaN;
         }
@@ -33597,10 +33585,10 @@ extends OpColorBase
     
     constructor()
     {
-        super(COLOR_FILL, 'fill', 90);
+        super(COLOR_FILL, 'fill');
 
 
-        this.addInput(new Input([COLOR_FILL, COLOR, COLOR_VALUE]));
+        this.addInput (new Input([COLOR_FILL]));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
@@ -33642,6 +33630,35 @@ extends OpColorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        const fill = values[paramIds.findIndex(id => id == 'value')];
+
+        console.log('fill =', fill);
+        if (fill.isValid())
+        {
+            this.paramColor  .setValue(fill.color,    false, true, false);
+            this.paramOpacity.setValue(fill.opacity,  false, true, false);
+
+            this._color = fill.color.toDataColor();
+        }
+        else
+        {
+            console.log('1');
+            this.paramColor  .setValue(GColorValue .NaN, false, true, false);
+            console.log('2');
+            this.paramOpacity.setValue(GNumberValue.NaN, false, true, false);
+            console.log('3');
+            
+            this._color = dataColor_NaN;
+        }
+
+
+        super.updateValues(updateParamId, paramIds, values);
     }
 }
 
@@ -34955,6 +34972,9 @@ extends Action
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
+        // const activeNodesRight = getActiveNodesRightInTreeFromNodeId(this.inputNodeId);
+        // console.log('activeNodesRight =', activeNodesRight);
+        // this.oldInputActiveNodeIds = activeNodesRight.map(n => n.id);
 
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
@@ -38377,6 +38397,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 switch (type)
                 {
                     case COLOR_VALUE:      value = parseGColorValue    (values[i++]); break;
+                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++]); break;
                     case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++]); break;
                     case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++]); break;
                     case LINE_VALUE:       value = parseGLineValue     (values[i++]); break;

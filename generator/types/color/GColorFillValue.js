@@ -31,8 +31,8 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.color  )
-            && !isNaN(this.opacity);
+        return this.color  .isValid()
+            && this.opacity.isValid();
     }
 
 
@@ -55,8 +55,8 @@ extends GType
     toString()
     {
         return this.isValid()
-            ?         this.color   .toString()
-              + ' ' + this.opacity .toString()
+            ?         this.color  .toString()
+              + ' ' + this.opacity.toString()
             : INVALID;
     }
 
@@ -74,13 +74,13 @@ function parseGColorFillValue(str)
     if (str == INVALID)
         return GColorFillValue.NaN;
 
-    const stop = str.split(' ');
+    const fill = str.split(' ');
 
     return new GColorFillValue(
         new GColorValue(
-            parseInt(stop[0]),
-            parseGNumberValue(stop[1]),
-            parseGNumberValue(stop[2]),
-            parseGNumberValue(stop[3])),
-        parseGNumberValue(stop[4]));
+            parseGNumberValue(fill[0]),
+            parseGNumberValue(fill[1]),
+            parseGNumberValue(fill[2]),
+            parseGNumberValue(fill[3])),
+        parseGNumberValue(fill[4]));
 }

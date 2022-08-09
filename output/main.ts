@@ -88,13 +88,6 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUES =
-[
-    COLOR_VALUE,
-    GRADIENT_VALUE
-];
-
-
 const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
 const COLOR_FILL          = 'CFILL';
 
@@ -134,7 +127,7 @@ const GEOMETRY_TYPES =
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR,
+    STAR//,
     //TEXT
 ];
 
@@ -198,7 +191,7 @@ class RequestSettings
 function logFunction(funcName)
 {
     console.log(
-        '%c ' + funcName + '() ', 
+        '%c ' + funcName + ' ', 
         'background: #09f; color: white;');
 }
 

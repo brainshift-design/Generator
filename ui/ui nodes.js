@@ -862,6 +862,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 switch (type)
                 {
                     case COLOR_VALUE:      value = parseGColorValue    (values[i++]); break;
+                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++]); break;
                     case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++]); break;
                     case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++]); break;
                     case LINE_VALUE:       value = parseGLineValue     (values[i++]); break;

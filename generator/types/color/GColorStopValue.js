@@ -35,9 +35,9 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.color   )
-            && !isNaN(this.opacity )
-            && !isNaN(this.position);
+        return this.color   .isValid()
+            && this.opacity .isValid()
+            && this.position.isValid();
     }
 
 
@@ -86,7 +86,7 @@ function parseGColorStopValue(str)
 
     return new GColorStopValue(
         new GColorValue(
-            parseInt(stop[0]),
+            parseGNumberValue(stop[0]),
             parseGNumberValue(stop[1]),
             parseGNumberValue(stop[2]),
             parseGNumberValue(stop[3])),

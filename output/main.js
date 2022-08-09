@@ -58,10 +58,6 @@ const COLOR_TYPES = [
     COLOR_VALIDATE,
     COLORBLIND
 ];
-const FILL_VALUES = [
-    COLOR_VALUE,
-    GRADIENT_VALUE
-];
 const COLOR_FILL_VALUE = 'CF'; // ???????? remove?
 const COLOR_FILL = 'CFILL';
 const GEOMETRY_VALUE = 'G0'; // abstract placeholder
@@ -89,7 +85,7 @@ const GEOMETRY_TYPES = [
     LINE,
     ELLIPSE,
     POLYGON,
-    STAR,
+    STAR //,
     //TEXT
 ];
 const GROUP = 'GRP'; // ???? count O...
@@ -124,7 +120,7 @@ class RequestSettings {
     }
 }
 function logFunction(funcName) {
-    console.log('%c ' + funcName + '() ', 'background: #09f; color: white;');
+    console.log('%c ' + funcName + ' ', 'background: #09f; color: white;');
 }
 function logSavedNode(nodeKey) {
     let txt = figGetPageData(nodeKey, false)

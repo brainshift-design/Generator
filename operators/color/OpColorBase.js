@@ -29,6 +29,8 @@ extends Operator
 
     updateValues(updateParamId, paramIds, values)
     {
+        //logFunction('OpColorBase.updateValues()');
+
         super.updateValues(updateParamId, paramIds, values);
         
         this.updateHeader();

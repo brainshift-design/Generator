@@ -36,7 +36,7 @@ class RequestSettings
 function logFunction(funcName)
 {
     console.log(
-        '%c ' + funcName + '() ', 
+        '%c ' + funcName + ' ', 
         'background: #09f; color: white;');
 }
 

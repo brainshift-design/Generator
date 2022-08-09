@@ -200,12 +200,12 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col   = values[paramIds.findIndex(id => id == 'value')];
-        const space = values[paramIds.findIndex(id => id == 'space')];
-        
+        const col = values[paramIds.findIndex(id => id == 'value')];
+        console.assert(col.type == COLOR_VALUE);
 
-        this.paramSpace.setValue(space, false, true, false);
-        switchToSpace(this, colorSpace(space.value));
+
+        this.paramSpace.setValue(col.space, false, true, false);
+        switchToSpace(this, colorSpace(col.space.value));
 
         
         if (col.isValid())
@@ -226,7 +226,7 @@ extends OpColorBase
         }
 
 
-        this.prevSpace = colorSpace(space.value);
+        this.prevSpace = colorSpace(col.space.value);
 
 
         super.updateValues(updateParamId, paramIds, values);

@@ -66,17 +66,17 @@ extends OpColorBase
         
         if (stop.isValid())
         {
-            this.color   .setValue(stop.color,    false, true, false);
-            this.opacity .setValue(stop.opacity,  false, true, false);
-            this.position.setValue(stop.position, false, true, false);
+            this.paramColor   .setValue(stop.color,    false, true, false);
+            this.paramOpacity .setValue(stop.opacity,  false, true, false);
+            this.paramPosition.setValue(stop.position, false, true, false);
 
             this._color = stop.color.toDataColor();
         }
         else
         {
-            this.color   .setValue(GColorValue .NaN, false, true, false);
-            this.opacity .setValue(GNumberValue.NaN, false, true, false);
-            this.position.setValue(GNumberValue.NaN, false, true, false);
+            this.paramColor   .setValue(GColorValue .NaN, false, true, false);
+            this.paramOpacity .setValue(GNumberValue.NaN, false, true, false);
+            this.paramPosition.setValue(GNumberValue.NaN, false, true, false);
             
             this._color = dataColor_NaN;
         }
