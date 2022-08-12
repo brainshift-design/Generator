@@ -10,16 +10,14 @@ extends OpColorBase
         super(COLOR_STOP, 'stop');
 
 
-        this.addInput(new Input([COLOR_STOP]));
+        this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));
         this.addOutput(new Output(COLOR_STOP, this.output_genRequest));
 
-        this.addParam(this.paramColor    = new ColorParam ('color',    '',         false, true, true));
-        this.addParam(this.paramOpacity  = new NumberParam('opacity',  'opacity',  true,  true, true, 100, 0, 100));
+        this.addParam(this.paramFill     = new ColorParam ('fill',     '',         false, true, true));
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
 
-        this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+        //this.paramFill.setValue([GColorFillValue.default], false, true, false);
         
-        this.paramOpacity .control.suffix = '%';
         this.paramPosition.control.suffix = '%';
     }
     
@@ -46,8 +44,7 @@ extends OpColorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramColor   .genRequest(gen));
-        request.push(...this.node.paramOpacity .genRequest(gen));
+        request.push(...this.node.paramFill    .genRequest(gen));
         request.push(...this.node.paramPosition.genRequest(gen));
 
 
@@ -66,17 +63,15 @@ extends OpColorBase
         
         if (stop.isValid())
         {
-            this.paramColor   .setValue(stop.color,    false, true, false);
-            this.paramOpacity .setValue(stop.opacity,  false, true, false);
+            this.paramFill    .setValue([stop.fill],   false, true, false);
             this.paramPosition.setValue(stop.position, false, true, false);
 
-            this._color = stop.color.toDataColor();
+            // this._color = stop.color.toDataColor();
         }
         else
         {
-            this.paramColor   .setValue(GColorValue .NaN, false, true, false);
-            this.paramOpacity .setValue(GNumberValue.NaN, false, true, false);
-            this.paramPosition.setValue(GNumberValue.NaN, false, true, false);
+            this.paramFill    .setValue([GColorFillValue.NaN], false, true, false);
+            this.paramPosition.setValue( GNumberValue   .NaN,  false, true, false);
             
             this._color = dataColor_NaN;
         }

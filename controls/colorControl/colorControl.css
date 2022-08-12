@@ -1,35 +1,35 @@
-.fillSlider
+.colorControl
 {
     padding:          0;
     width:            74px;
     height:           26px;
     overflow:         hidden;
-    /* background-color: var(--figma-color-bg);white; */
+    background-color: var(--figma-color-bg);/*white;*/
     text-align:       center;
     touch-action:     none;
 }    
 
 
-.figma-light .fillSliderName
+.figma-light .colorControlName
 {
     color: #0006;
 }
 
 
-.figma-dark .fillSliderName
+.figma-dark .colorControlName
 {
     color: #fff6;
 }
 
 
-.fillSliderBar
+.colorControlBar
 {
     position:       absolute;
     pointer-events: none;
 }
 
 
-.fillSliderText
+.colorControlText
 {
     font-family:          Inter;
     font-size:            11;
@@ -44,7 +44,7 @@
 }
 
 
-.fillSliderText .hash
+.colorControlText .hash
 {
     font-size: 6;
     position:  relative;
@@ -52,7 +52,7 @@
 }
 
 
-.fillSliderTextbox
+.colorControlTextbox
 {
     font-family:          Inter;
     font-size:            11;
@@ -65,7 +65,7 @@
 }
 
 
-.fillSliderFocus
+.colorControlFocus
 {
     position:       absolute;
     pointer-events: none;
@@ -75,7 +75,7 @@
 }
 
 
-.fillSliderRange
+.colorControlRange
 {
     display:        block;
     position:       absolute;

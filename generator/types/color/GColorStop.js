@@ -3,8 +3,7 @@ extends GOperator
 {
     input    = null;
 
-    color    = null;
-    opacity  = null;
+    fill     = null;
     position = null;
 
 
@@ -23,8 +22,7 @@ extends GOperator
         if (this.input) 
             stop.input = this.input.copy();
 
-        if (this.color   ) stop.color    = this.color   .copy();
-        if (this.opacity ) stop.opacity  = this.opacity .copy();
+        if (this.fill    ) stop.fill     = this.fill    .copy();
         if (this.position) stop.position = this.position.copy();
 
         return stop;
@@ -46,15 +44,13 @@ extends GOperator
 
                 if (this.result.isValid())
                 {
-                    if (this.color   ) this.result.color    = this.color   .eval(parse).copy();
-                    if (this.opacity ) this.result.opacity  = this.opacity .eval(parse).copy();
+                    if (this.fill    ) this.result.fill     = this.fill    .eval(parse).copy();
                     if (this.position) this.result.position = this.position.eval(parse).copy();
                 }
             }
             else
             {
-                this.result.color    = this.color   .eval(parse).copy();
-                this.result.opacity  = this.opacity .eval(parse).copy();
+                this.result.fill     = this.fill    .eval(parse).copy();
                 this.result.position = this.position.eval(parse).copy();
             }
 
@@ -74,8 +70,7 @@ extends GOperator
 
     get mustNotEval()
     {
-        return this.color   .mustNotEval
-            && this.opacity .mustNotEval
+        return this.fill    .mustNotEval
             && this.position.mustNotEval;
     }
 }

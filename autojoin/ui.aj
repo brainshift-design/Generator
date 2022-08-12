@@ -5,9 +5,9 @@
 
     ../controls/graphView/*.css
     ../controls/toggleButton/*.css
-    ../controls/numberSlider/*.css
-    ../controls/colorSlider/*.css
-    ../controls/fillSlider/*.css
+    ../controls/numberControl/*.css
+    ../controls/colorControl/*.css
+    ../controls/fillControl/*.css
     ../controls/menuSelect/*.css
     ../controls/select/*.css
 

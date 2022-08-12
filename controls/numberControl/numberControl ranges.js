@@ -1,4 +1,4 @@
-class NumberSliderRange
+class NumberControlRange
 {
     start;
     end;
@@ -44,7 +44,7 @@ function updateSliderRanges(slider, sliderWidth, sliderHeight)
         {
             const range = slider.ranges[i];
 
-            const div = createDiv('numberSliderRange');
+            const div = createDiv('numberControlRange');
             div.style.zIndex = 0;
             slider.rangeDivs.push(div);
             slider.appendChild(div);

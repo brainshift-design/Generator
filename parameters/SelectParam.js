@@ -3,6 +3,9 @@ extends NumberParamBase
 {
     options = [];
     
+
+    control;
+
     
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
@@ -16,9 +19,9 @@ extends NumberParamBase
                 options,
                 value = 0)
     {
-        super(id, name, NUMBER);
+        super(NUMBER, id, name);
 
-        this._control       = createDiv();
+        this.control       = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
@@ -28,7 +31,7 @@ extends NumberParamBase
         this.defaultValue   = value;
 
 
-        initNumberSlider(
+        initNumberControl(
             this,
             this.control,
             120,       // width

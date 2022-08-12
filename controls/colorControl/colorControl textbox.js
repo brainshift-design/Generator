@@ -1,6 +1,6 @@
-function initColorSliderTextbox(slider)
+function initColorControlTextbox(slider)
 {
-    slider.textbox = createTextbox('colorSliderTextbox');
+    slider.textbox = createTextbox('colorControlTextbox');
     slider.textbox.slider = slider;
     
 
@@ -79,7 +79,7 @@ function initColorSliderTextbox(slider)
                 }
             }
 
-            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
             // let index = slider.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 

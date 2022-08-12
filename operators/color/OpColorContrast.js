@@ -188,39 +188,39 @@ extends OpColorBase
         {
             if (this.paramStandard.value == 0)
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
-                    new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
-                    new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
-                    new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
+                    new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
+                    new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
+                    new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
+                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
 
             else
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
-                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
-                    new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
-                    new NumberSliderRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2)', 0.8),
-                    new NumberSliderRange(60/105,  75/105, 'rgba( 64, 255,  64, 0.2)', 0.8),
-                    new NumberSliderRange(75/105,  90/105, 'rgba(110, 128, 255, 0.4)', 0.8),
-                    new NumberSliderRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
+                    new NumberControlRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
+                    new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
+                    new NumberControlRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2)', 0.8),
+                    new NumberControlRange(60/105,  75/105, 'rgba( 64, 255,  64, 0.2)', 0.8),
+                    new NumberControlRange(75/105,  90/105, 'rgba(110, 128, 255, 0.4)', 0.8),
+                    new NumberControlRange(90/105, 105/105, 'transparent') ];
         }
         else
         {
             if (this.paramStandard.value == 0)
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
-                    new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
-                    new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
-                    new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
+                    new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
+                    new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
+                    new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
+                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
 
             else
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
-                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
-                    new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
-                    new NumberSliderRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2 )', 0.8),
-                    new NumberSliderRange(60/105,  75/105, 'rgba(64,  255,  64, 0.2 )', 0.8),
-                    new NumberSliderRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
-                    new NumberSliderRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
+                    new NumberControlRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
+                    new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
+                    new NumberControlRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2 )', 0.8),
+                    new NumberControlRange(60/105,  75/105, 'rgba(64,  255,  64, 0.2 )', 0.8),
+                    new NumberControlRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
+                    new NumberControlRange(90/105, 105/105, 'transparent') ];
         }
 
         this.paramValue.control.update();

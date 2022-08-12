@@ -1,4 +1,4 @@
-function initNumberSliderEvents(slider)
+function initColorControlEvents(slider)
 {
     slider.addEventListener('pointerdown', function(e)
     {
@@ -20,8 +20,7 @@ function initNumberSliderEvents(slider)
                 ? slider.parentNode.parentNode.parentNode
                 : null;
 
-            if (   nodeDiv 
-                && nodeDiv.className == 'node') 
+            if (nodeDiv && nodeDiv.className == 'node') 
                 graphView.putNodeOnTop(nodeDiv.node);
 
 
@@ -93,15 +92,15 @@ function initNumberSliderEvents(slider)
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            if (graphView.tempConn)
-                slider.style.cursor = 'default';
+            // if (graphView.tempConn)
+            //     slider.style.cursor = 'default';
             
-            else
-                slider.style.cursor = 
-                       slider.readOnly 
-                    || containsChild(slider, slider.textbox) 
-                    ? 'default'
-                    : 'ew-resize';
+            // else
+            //     slider.style.cursor = 
+            //            slider.readOnly 
+            //         || containsChild(slider, slider.textbox) 
+            //         ? 'default'
+            //         : 'ew-resize';
 
                     
             const colShadow = 
@@ -422,21 +421,21 @@ function initNumberSliderEvents(slider)
 
             if (!slider.readOnly)
             {
-                if (   document.activeElement
-                    && document.activeElement.tagName.toLowerCase() == 'input'
-                    && document.activeElement.slider)
-                    document.activeElement.slider.textbox.finish(true, false);
+                // if (   document.activeElement
+                //     && document.activeElement.tagName.toLowerCase() == 'input'
+                //     && document.activeElement.slider)
+                //     document.activeElement.slider.textbox.finish(true, false);
 
-                slider.oldValue = slider.value;
+                // slider.oldValue = slider.value;
 
-                const dec = Math.pow(10, -slider.dec);
+                // const dec = Math.pow(10, -slider.dec);
 
-                const val =
-                    isTouchpad
-                    ? slider.value -  dWheelX               * slider.wheelScale * dec
-                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                // const val =
+                //     isTouchpad
+                //     ? slider.value -  dWheelX               * slider.wheelScale * dec
+                //     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
                 
-                slider.setValue(val, true, true, false, false);
+                // slider.setValue(val, true, true, false, false);
             }
         }
     });

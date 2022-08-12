@@ -1,20 +1,17 @@
 class GColorStopValue
 extends GType
 {
-    color;
-    opacity;
+    fill;
     position;
 
 
 
-    constructor(color    = GColorValue .NaN,
-                opacity  = GNumberValue.NaN,
-                position = GNumberValue.NaN)
+    constructor(fill     = GColorValue.NaN,
+                position = GNumberValue   .NaN)
     {
         super(COLOR_STOP_VALUE);
 
-        this.color    = color;
-        this.opacity  = opacity;
+        this.fill     = fill;
         this.position = position;
 
         this.result   = this;
@@ -26,8 +23,7 @@ extends GType
     copy()
     {
         return new GColorStopValue(
-            this.color   .copy(),
-            this.opacity .copy(),
+            this.fill    .copy(),
             this.position.copy());
     }
 
@@ -35,8 +31,7 @@ extends GType
 
     isValid()
     {
-        return this.color   .isValid()
-            && this.opacity .isValid()
+        return this.fill    .isValid()
             && this.position.isValid();
     }
 
@@ -44,8 +39,7 @@ extends GType
 
     equals(col)
     {
-        return this.color   .equals(col.color   )
-            && this.opacity .equals(col.opacity )
+        return this.fill    .equals(col.color   )
             && this.position.equals(col.position);
     }
 
@@ -61,8 +55,7 @@ extends GType
     toString()
     {
         return this.isValid()
-            ?         this.color   .toString()
-              + ' ' + this.opacity .toString()
+            ?         this.fill    .toString()
               + ' ' + this.position.toString()
             : INVALID;
     }
@@ -70,9 +63,8 @@ extends GType
 
 
     static NaN = new GColorStopValue(
-        GColorValue .NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
+        GColorFillValue.NaN,
+        GNumberValue   .NaN);
 }
 
 
@@ -85,11 +77,6 @@ function parseGColorStopValue(str)
     const stop = str.split(' ');
 
     return new GColorStopValue(
-        new GColorValue(
-            parseGNumberValue(stop[0]),
-            parseGNumberValue(stop[1]),
-            parseGNumberValue(stop[2]),
-            parseGNumberValue(stop[3])),
-        parseGNumberValue(stop[4]),
+        parseGColorFillValue(str),
         parseGNumberValue(stop[5]));
 }

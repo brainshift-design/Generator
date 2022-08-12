@@ -1,18 +1,19 @@
-function initColorSliderChildren(slider)
+function initFillControlChildren(slider)
 {
-    slider.text  = createDiv('colorSliderText');
-    slider.focus = createDiv('colorSliderFocus');
+    slider.text  = createDiv('fillControlText');
+    slider.focus = createDiv('fillControlFocus');
 
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
 }
 
 
-function initColorSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+
+function initFillControl(param, slider, width, height, id, name, showName, defValue, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     slider.param                  = param;
      
-    slider.className              = 'colorSlider';
+    slider.className              = 'fillControl';
      
     slider.width                  = width;
     slider.height                 = height;
@@ -20,7 +21,8 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
     slider.style.width            = width;
     slider.style.height           = height;
              
-    slider.value                  = def;
+    slider.value                  = defValue; // COLOR_FILL
+
     slider.acc                    = acc;
      
     slider.id                     = id;
@@ -76,9 +78,9 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
     slider.onconfirm              = new Event('confirm');
 
 
-    initColorSliderChildren(slider);    
-    initColorSliderTextbox(slider);
-    initColorSliderEvents(slider);
+    initFillControlChildren(slider);    
+    initFillControlTextbox (slider);
+    initFillControlEvents  (slider);
 
 
 
@@ -90,22 +92,22 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    slider.setFills = function(fills, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        const oldValue = slider.value.copy();
+        const oldFills = [...slider.fills];
 
-        slider.value = value.copy();
+        slider.fills = [...fills];
 
         slider.update();
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && value != slider.prevValue)
+            && fills != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
 
         if (   confirm
             && slider.enableChangeEvent
-            && value != oldValue)
+            && fills != oldFills)
             slider.dispatchEvent(slider.onconfirm);
     };
 
@@ -117,11 +119,9 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
         const sw = slider.getClientWidth();
         const sh = slider.getClientHeight();
 
-
         slider.updateColors();
         slider.updateText();
         slider.updateFocus(sw, sh);
-        
 
         slider.cachedOffsetLeft   = null;
         slider.cachedClientWidth  = null;
@@ -132,23 +132,27 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
 
     slider.updateColors = function()
     {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
+        // const rgb = 
+        //     slider.fills.length > 0
+        //     ? dataColor2rgb(slider.fills[0].toDataColor())
+        //     : [0xd9, 0xd9, 0xd9];
 
-        slider     .style.background = colorStyleRgb(rgb);
-        slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        // slider     .style.background = colorStyleRgb(rgb);
+        // slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
     };
 
 
 
     slider.updateText = function()
     {
-        slider.text.innerHTML = '';
+        // slider.text.innerHTML = '';
         
-        if (   slider.name.length > 0
-            && slider.showName)
-            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+        // if (   slider.name.length > 0
+        //     && slider.showName)
+        //     slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
-        slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
+        // if (slider.fills.length > 0)
+        //     slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.fills[0].toDataColor()));
     };
 
 

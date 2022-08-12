@@ -20,6 +20,15 @@ extends GType
 
 
     
+    static create(space, c1, c2, c3, opacity)
+    {
+        return new GColorFillValue(
+            GColorValue.create(space, c1, c2, c3),
+            new GNumberValue(opacity));
+    }
+
+
+
     copy()
     {
         return new GColorFillValue(
@@ -65,6 +74,10 @@ extends GType
     static NaN = new GColorFillValue(
         GColorValue .NaN,
         GNumberValue.NaN);
+
+
+
+    static default = GColorFillValue.create(1, 217, 217, 217, 100);
 }
 
 
@@ -77,10 +90,6 @@ function parseGColorFillValue(str)
     const fill = str.split(' ');
 
     return new GColorFillValue(
-        new GColorValue(
-            parseGNumberValue(fill[0]),
-            parseGNumberValue(fill[1]),
-            parseGNumberValue(fill[2]),
-            parseGNumberValue(fill[3])),
+        parseGColorValue(str),
         parseGNumberValue(fill[4]));
 }

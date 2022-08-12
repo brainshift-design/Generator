@@ -1,13 +1,13 @@
 function genParseColorValue(parse)
 {
-    parse.pos++; // C
+    parse.pos++; // COLOR_VALUE
 
-    const val = parse.move();
+    const col = parse.move();
 
     if (parse.logRequests)
-        logReqColorValue(val, parse);
+        logReqColorValue(col, parse);
 
-    return parseGColorValue(val);
+    return parseGColorValue(col);
 }
 
 
@@ -265,43 +265,16 @@ function genParseColorValidate(parse)
 
 
 
-function genParseColorStop(parse)
+function genParseColorFillValue(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    parse.pos++; // COLOR_FILL_VALUE
 
+    const fill = parse.move();
 
-    const stop = new GColorStop(nodeId, active);
+    if (parse.logRequests)
+        logReqColorFillValue(fill, parse);
 
-
-    if (parse.logRequests) 
-        logReqColorStop(stop, parse);
-
-
-    if (ignore)
-    {
-        genParseNodeEnd(parse, stop);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (   parse.next == COLOR_STOP
-        || parse.next == COLOR_STOP_VALUE)
-        stop.input = genParse(parse);
-
-
-    stop.color    = genParse(parse);
-    stop.opacity  = genParse(parse);
-    stop.position = genParse(parse);
-
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, stop);
-    return stop;
+    return parseGColorFillValue(fill);
 }
 
 
@@ -341,4 +314,58 @@ function genParseColorFill(parse)
 
     genParseNodeEnd(parse, fill);
     return fill;
+}
+
+
+
+function genParseColorStopValue(parse)
+{
+    parse.pos++; // COLOR_STOP_VALUE
+
+    const stop = parse.move();
+
+    if (parse.logRequests)
+        logReqColorStopValue(stop, parse);
+
+    return parseGColorStopValue(stop);
+}
+
+
+
+function genParseColorStop(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const stop = new GColorStop(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorStop(stop, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, stop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (   parse.next == COLOR_STOP
+        || parse.next == COLOR_STOP_VALUE)
+        stop.input = genParse(parse);
+
+
+    stop.fill     = genParse(parse);
+    stop.position = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, stop);
+    return stop;
 }

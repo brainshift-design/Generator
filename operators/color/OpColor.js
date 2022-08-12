@@ -389,18 +389,18 @@ extends OpColorBase
             && !isValidDataColor(this._color)) // RGB warning ranges
         {
             const rangesR = [];
-            if (this._color[1] < 0) rangesR.push(new NumberSliderRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
-            if (this._color[1] > 1) rangesR.push(new NumberSliderRange(2-Math.min(this._color[1], 2), 1, warnLineStyle, 0.8));
+            if (this._color[1] < 0) rangesR.push(new NumberControlRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
+            if (this._color[1] > 1) rangesR.push(new NumberControlRange(2-Math.min(this._color[1], 2), 1, warnLineStyle, 0.8));
             this.param1.control.ranges = rangesR;
 
             const rangesG = [];
-            if (this._color[2] < 0) rangesG.push(new NumberSliderRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
-            if (this._color[2] > 1) rangesG.push(new NumberSliderRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
+            if (this._color[2] < 0) rangesG.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
+            if (this._color[2] > 1) rangesG.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
             this.param2.control.ranges = rangesG;
             
             const rangesB = [];
-            if (this._color[3] < 0) rangesB.push(new NumberSliderRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
-            if (this._color[3] > 1) rangesB.push(new NumberSliderRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
+            if (this._color[3] < 0) rangesB.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
+            if (this._color[3] > 1) rangesB.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesB;
         }
         else if ((   this.paramSpace.value == 2  // HSV
@@ -408,13 +408,13 @@ extends OpColorBase
               && !isValidDataColor(this._color))
         {
             const rangesS = [];
-            if (this._color[2] < 0) rangesS.push(new NumberSliderRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
-            if (this._color[2] > 1) rangesS.push(new NumberSliderRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
+            if (this._color[2] < 0) rangesS.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
+            if (this._color[2] > 1) rangesS.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
             this.param2.control.ranges = rangesS;
             
             const rangesVL = [];
-            if (this._color[3] < 0) rangesVL.push(new NumberSliderRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
-            if (this._color[3] > 1) rangesVL.push(new NumberSliderRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
+            if (this._color[3] < 0) rangesVL.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
+            if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesVL;
         }
         else if (this.paramSpace.value > 3) // HCL
@@ -465,7 +465,7 @@ extends OpColorBase
 
             if (!open && !isValidRgb(rgb))
             {
-                ranges.push(new NumberSliderRange(f, f, warnLineStyle, 0.8));
+                ranges.push(new NumberControlRange(f, f, warnLineStyle, 0.8));
                 open = true;
             }
             else if (open && isValidRgb(rgb)) 

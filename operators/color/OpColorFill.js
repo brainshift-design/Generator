@@ -10,13 +10,13 @@ extends OpColorBase
         super(COLOR_FILL, 'fill');
 
 
-        this.addInput (new Input([COLOR_FILL]));
+        this.addInput (new Input([COLOR_FILL, COLOR_FILL_VALUE]));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        //this.paramFill.setValue([new GColorValue(1, 217, 217, 217)], false, true, false);
+        //this.paramFill.setValue([GColorFill.default], false, true, false);
         
         this.paramOpacity.control.suffix = '%';
     }
@@ -60,7 +60,7 @@ extends OpColorBase
     {
         const fill = values[paramIds.findIndex(id => id == 'value')];
 
-        console.log('fill =', fill);
+
         if (fill.isValid())
         {
             this.paramColor  .setValue(fill.color,    false, true, false);
@@ -70,11 +70,8 @@ extends OpColorBase
         }
         else
         {
-            console.log('1');
             this.paramColor  .setValue(GColorValue .NaN, false, true, false);
-            console.log('2');
             this.paramOpacity.setValue(GNumberValue.NaN, false, true, false);
-            console.log('3');
             
             this._color = dataColor_NaN;
         }

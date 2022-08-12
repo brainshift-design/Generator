@@ -1,4 +1,4 @@
-.numberSlider
+.numberControl
 {
     padding:          0;
     width:            74px;
@@ -10,26 +10,26 @@
 }    
 
 
-.figma-light .numberSliderName
+.figma-light .numberControlName
 {
     color: #0006;
 }
 
 
-.figma-dark .numberSliderName
+.figma-dark .numberControlName
 {
     color: #fff6;
 }
 
 
-.numberSliderBar
+.numberControlBar
 {
     position:       absolute;
     pointer-events: none;
 }
 
 
-.numberSliderText
+.numberControlText
 {
     font-family:          Inter;
     font-size:            11;
@@ -44,7 +44,7 @@
 }
 
 
-.numberSliderText .hash
+.numberControlText .hash
 {
     font-size: 6;
     position:  relative;
@@ -52,7 +52,7 @@
 }
 
 
-.numberSliderTextbox
+.numberControlTextbox
 {
     font-family:          Inter;
     font-size:            11;
@@ -65,7 +65,7 @@
 }
 
 
-.numberSliderFocus
+.numberControlFocus
 {
     position:       absolute;
     pointer-events: none;
@@ -75,7 +75,7 @@
 }
 
 
-.numberSliderRange
+.numberControlRange
 {
     display:        block;
     position:       absolute;

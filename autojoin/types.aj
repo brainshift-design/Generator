@@ -27,12 +27,12 @@
 ../generator/types/color/GColorValidate.js
 
 
-../generator/types/color/GColorStopValue.js
-../generator/types/color/GColorStop.js
-
-
 ../generator/types/color/GColorFillValue.js
 ../generator/types/color/GColorFill.js
+
+
+../generator/types/color/GColorStopValue.js
+../generator/types/color/GColorStop.js
 
 
 ../generator/types/geometry/GGeometryValueBase.js

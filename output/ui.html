@@ -776,7 +776,7 @@ div
 }
 
 
-.numberSlider
+.numberControl
 {
     padding:          0;
     width:            74px;
@@ -788,26 +788,26 @@ div
 }    
 
 
-.figma-light .numberSliderName
+.figma-light .numberControlName
 {
     color: #0006;
 }
 
 
-.figma-dark .numberSliderName
+.figma-dark .numberControlName
 {
     color: #fff6;
 }
 
 
-.numberSliderBar
+.numberControlBar
 {
     position:       absolute;
     pointer-events: none;
 }
 
 
-.numberSliderText
+.numberControlText
 {
     font-family:          Inter;
     font-size:            11;
@@ -822,7 +822,7 @@ div
 }
 
 
-.numberSliderText .hash
+.numberControlText .hash
 {
     font-size: 6;
     position:  relative;
@@ -830,7 +830,7 @@ div
 }
 
 
-.numberSliderTextbox
+.numberControlTextbox
 {
     font-family:          Inter;
     font-size:            11;
@@ -843,7 +843,7 @@ div
 }
 
 
-.numberSliderFocus
+.numberControlFocus
 {
     position:       absolute;
     pointer-events: none;
@@ -853,7 +853,7 @@ div
 }
 
 
-.numberSliderRange
+.numberControlRange
 {
     display:        block;
     position:       absolute;
@@ -863,7 +863,7 @@ div
 
 
 
-.colorSlider
+.colorControl
 {
     padding:          0;
     width:            74px;
@@ -875,26 +875,26 @@ div
 }    
 
 
-.figma-light .colorSliderName
+.figma-light .colorControlName
 {
     color: #0006;
 }
 
 
-.figma-dark .colorSliderName
+.figma-dark .colorControlName
 {
     color: #fff6;
 }
 
 
-.colorSliderBar
+.colorControlBar
 {
     position:       absolute;
     pointer-events: none;
 }
 
 
-.colorSliderText
+.colorControlText
 {
     font-family:          Inter;
     font-size:            11;
@@ -909,7 +909,7 @@ div
 }
 
 
-.colorSliderText .hash
+.colorControlText .hash
 {
     font-size: 6;
     position:  relative;
@@ -917,7 +917,7 @@ div
 }
 
 
-.colorSliderTextbox
+.colorControlTextbox
 {
     font-family:          Inter;
     font-size:            11;
@@ -930,7 +930,7 @@ div
 }
 
 
-.colorSliderFocus
+.colorControlFocus
 {
     position:       absolute;
     pointer-events: none;
@@ -940,7 +940,7 @@ div
 }
 
 
-.colorSliderRange
+.colorControlRange
 {
     display:        block;
     position:       absolute;
@@ -950,7 +950,7 @@ div
 
 
 
-.fillSlider
+.fillControl
 {
     padding:          0;
     width:            74px;
@@ -962,26 +962,26 @@ div
 }    
 
 
-.figma-light .fillSliderName
+.figma-light .fillControlName
 {
     color: #0006;
 }
 
 
-.figma-dark .fillSliderName
+.figma-dark .fillControlName
 {
     color: #fff6;
 }
 
 
-.fillSliderBar
+.fillControlBar
 {
     position:       absolute;
     pointer-events: none;
 }
 
 
-.fillSliderText
+.fillControlText
 {
     font-family:          Inter;
     font-size:            11;
@@ -996,7 +996,7 @@ div
 }
 
 
-.fillSliderText .hash
+.fillControlText .hash
 {
     font-size: 6;
     position:  relative;
@@ -1004,7 +1004,7 @@ div
 }
 
 
-.fillSliderTextbox
+.fillControlTextbox
 {
     font-family:          Inter;
     font-size:            11;
@@ -1017,7 +1017,7 @@ div
 }
 
 
-.fillSliderFocus
+.fillControlFocus
 {
     position:       absolute;
     pointer-events: none;
@@ -1027,7 +1027,7 @@ div
 }
 
 
-.fillSliderRange
+.fillControlRange
 {
     display:        block;
     position:       absolute;
@@ -4408,10 +4408,9 @@ function logReqColorValidate(val, parse)
 
 
 
-function logReqColorStop(fill, parse)
+function logReqColorFillValue(fill, parse)
 {
-    parse.log += parse.tab + fill.type;
-    parse.log += logReqNodeId(fill);
+    parse.log += parse.tab + COLOR_FILL_VALUE + ' ' + fill;
 }
 
 
@@ -4420,6 +4419,21 @@ function logReqColorFill(fill, parse)
 {
     parse.log += parse.tab + fill.type;
     parse.log += logReqNodeId(fill);
+}
+
+
+
+function logReqColorStopValue(stop, parse)
+{
+    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + stop;
+}
+
+
+
+function logReqColorStop(stop, parse)
+{
+    parse.log += parse.tab + stop.type;
+    parse.log += logReqNodeId(stop);
 }
 
 
@@ -5502,11 +5516,7 @@ extends GType
 
     static createFromRgb(rgb)
     {
-        return new GColorValue(
-            new GNumberValue(1),
-            new GNumberValue(rgb[0]),
-            new GNumberValue(rgb[1]),
-            new GNumberValue(rgb[2]));
+        return GColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
 
 
@@ -6233,186 +6243,6 @@ extends GOperator
 
 
 
-class GColorStopValue
-extends GType
-{
-    color;
-    opacity;
-    position;
-
-
-
-    constructor(color    = GColorValue .NaN,
-                opacity  = GNumberValue.NaN,
-                position = GNumberValue.NaN)
-    {
-        super(COLOR_STOP_VALUE);
-
-        this.color    = color;
-        this.opacity  = opacity;
-        this.position = position;
-
-        this.result   = this;
-        this.valid    = true;
-    }
-
-
-    
-    copy()
-    {
-        return new GColorStopValue(
-            this.color   .copy(),
-            this.opacity .copy(),
-            this.position.copy());
-    }
-
-
-
-    isValid()
-    {
-        return this.color   .isValid()
-            && this.opacity .isValid()
-            && this.position.isValid();
-    }
-
-
-
-    equals(col)
-    {
-        return this.color   .equals(col.color   )
-            && this.opacity .equals(col.opacity )
-            && this.position.equals(col.position);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.color   .toString()
-              + ' ' + this.opacity .toString()
-              + ' ' + this.position.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GColorStopValue(
-        GColorValue .NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGColorStopValue(str)
-{
-    if (str == INVALID)
-        return GColorStopValue.NaN;
-
-    const stop = str.split(' ');
-
-    return new GColorStopValue(
-        new GColorValue(
-            parseGNumberValue(stop[0]),
-            parseGNumberValue(stop[1]),
-            parseGNumberValue(stop[2]),
-            parseGNumberValue(stop[3])),
-        parseGNumberValue(stop[4]),
-        parseGNumberValue(stop[5]));
-}
-
-
-class GColorStop
-extends GOperator
-{
-    input    = null;
-
-    color    = null;
-    opacity  = null;
-    position = null;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_STOP, nodeId, active);
-    }
-
-
-    
-    copy()
-    {
-        const stop = new GColorStop(this.nodeId, this.active);
-
-        if (this.input) 
-            stop.input = this.input.copy();
-
-        if (this.color   ) stop.color    = this.color   .copy();
-        if (this.opacity ) stop.opacity  = this.opacity .copy();
-        if (this.position) stop.position = this.position.copy();
-
-        return stop;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            this.result = new GColorStopValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_STOP_VALUE);
-
-                if (this.result.isValid())
-                {
-                    if (this.color   ) this.result.color    = this.color   .eval(parse).copy();
-                    if (this.opacity ) this.result.opacity  = this.opacity .eval(parse).copy();
-                    if (this.position) this.result.position = this.position.eval(parse).copy();
-                }
-            }
-            else
-            {
-                this.result.color    = this.color   .eval(parse).copy();
-                this.result.opacity  = this.opacity .eval(parse).copy();
-                this.result.position = this.position.eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-        }
-
-
-        return this.result;
-    }
-
-
-
-    get mustNotEval()
-    {
-        return this.color   .mustNotEval
-            && this.opacity .mustNotEval
-            && this.position.mustNotEval;
-    }
-}
-
-
 class GColorFillValue
 extends GType
 {
@@ -6435,6 +6265,15 @@ extends GType
 
 
     
+    static create(space, c1, c2, c3, opacity)
+    {
+        return new GColorFillValue(
+            GColorValue.create(space, c1, c2, c3),
+            new GNumberValue(opacity));
+    }
+
+
+
     copy()
     {
         return new GColorFillValue(
@@ -6480,6 +6319,10 @@ extends GType
     static NaN = new GColorFillValue(
         GColorValue .NaN,
         GNumberValue.NaN);
+
+
+
+    static default = GColorFillValue.create(1, 217, 217, 217, 100);
 }
 
 
@@ -6492,11 +6335,7 @@ function parseGColorFillValue(str)
     const fill = str.split(' ');
 
     return new GColorFillValue(
-        new GColorValue(
-            parseGNumberValue(fill[0]),
-            parseGNumberValue(fill[1]),
-            parseGNumberValue(fill[2]),
-            parseGNumberValue(fill[3])),
+        parseGColorValue(str),
         parseGNumberValue(fill[4]));
 }
 
@@ -6567,6 +6406,168 @@ extends GOperator
 
 
         return this.result;
+    }
+}
+
+
+class GColorStopValue
+extends GType
+{
+    fill;
+    position;
+
+
+
+    constructor(fill     = GColorValue.NaN,
+                position = GNumberValue   .NaN)
+    {
+        super(COLOR_STOP_VALUE);
+
+        this.fill     = fill;
+        this.position = position;
+
+        this.result   = this;
+        this.valid    = true;
+    }
+
+
+    
+    copy()
+    {
+        return new GColorStopValue(
+            this.fill    .copy(),
+            this.position.copy());
+    }
+
+
+
+    isValid()
+    {
+        return this.fill    .isValid()
+            && this.position.isValid();
+    }
+
+
+
+    equals(col)
+    {
+        return this.fill    .equals(col.color   )
+            && this.position.equals(col.position);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.fill    .toString()
+              + ' ' + this.position.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new GColorStopValue(
+        GColorFillValue.NaN,
+        GNumberValue   .NaN);
+}
+
+
+
+function parseGColorStopValue(str)
+{
+    if (str == INVALID)
+        return GColorStopValue.NaN;
+
+    const stop = str.split(' ');
+
+    return new GColorStopValue(
+        parseGColorFillValue(str),
+        parseGNumberValue(stop[5]));
+}
+
+
+class GColorStop
+extends GOperator
+{
+    input    = null;
+
+    fill     = null;
+    position = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_STOP, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const stop = new GColorStop(this.nodeId, this.active);
+
+        if (this.input) 
+            stop.input = this.input.copy();
+
+        if (this.fill    ) stop.fill     = this.fill    .copy();
+        if (this.position) stop.position = this.position.copy();
+
+        return stop;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColorStopValue();
+
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                if (this.result.isValid())
+                {
+                    if (this.fill    ) this.result.fill     = this.fill    .eval(parse).copy();
+                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.fill     = this.fill    .eval(parse).copy();
+                this.result.position = this.position.eval(parse).copy();
+            }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+        }
+
+
+        return this.result;
+    }
+
+
+
+    get mustNotEval()
+    {
+        return this.fill    .mustNotEval
+            && this.position.mustNotEval;
     }
 }
 
@@ -8010,14 +8011,14 @@ function genEndFigMessage()
 
 function genParseColorValue(parse)
 {
-    parse.pos++; // C
+    parse.pos++; // COLOR_VALUE
 
-    const val = parse.move();
+    const col = parse.move();
 
     if (parse.logRequests)
-        logReqColorValue(val, parse);
+        logReqColorValue(col, parse);
 
-    return parseGColorValue(val);
+    return parseGColorValue(col);
 }
 
 
@@ -8275,43 +8276,16 @@ function genParseColorValidate(parse)
 
 
 
-function genParseColorStop(parse)
+function genParseColorFillValue(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    parse.pos++; // COLOR_FILL_VALUE
 
+    const fill = parse.move();
 
-    const stop = new GColorStop(nodeId, active);
+    if (parse.logRequests)
+        logReqColorFillValue(fill, parse);
 
-
-    if (parse.logRequests) 
-        logReqColorStop(stop, parse);
-
-
-    if (ignore)
-    {
-        genParseNodeEnd(parse, stop);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (   parse.next == COLOR_STOP
-        || parse.next == COLOR_STOP_VALUE)
-        stop.input = genParse(parse);
-
-
-    stop.color    = genParse(parse);
-    stop.opacity  = genParse(parse);
-    stop.position = genParse(parse);
-
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, stop);
-    return stop;
+    return parseGColorFillValue(fill);
 }
 
 
@@ -8351,6 +8325,60 @@ function genParseColorFill(parse)
 
     genParseNodeEnd(parse, fill);
     return fill;
+}
+
+
+
+function genParseColorStopValue(parse)
+{
+    parse.pos++; // COLOR_STOP_VALUE
+
+    const stop = parse.move();
+
+    if (parse.logRequests)
+        logReqColorStopValue(stop, parse);
+
+    return parseGColorStopValue(stop);
+}
+
+
+
+function genParseColorStop(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const stop = new GColorStop(nodeId, active);
+
+
+    if (parse.logRequests) 
+        logReqColorStop(stop, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, stop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (   parse.next == COLOR_STOP
+        || parse.next == COLOR_STOP_VALUE)
+        stop.input = genParse(parse);
+
+
+    stop.fill     = genParse(parse);
+    stop.position = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, stop);
+    return stop;
 }
 
 
@@ -8928,11 +8956,12 @@ function genParse(parse)
     else if (parse.next == COLORBLIND        ) return genParseColorBlind      (parse);
     else if (parse.next == COLOR_VALIDATE    ) return genParseColorValidate   (parse);
     
+    else if (parse.next == COLOR_FILL_VALUE  ) return genParseColorFillValue  (parse);
+    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
+    
     else if (parse.next == COLOR_STOP_VALUE  ) return genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP        ) return genParseColorStop       (parse);
 
-    else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
-    
     else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
     else if (parse.next == LINE              ) return genParseLine            (parse);
     else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);
@@ -14378,10 +14407,9 @@ function logReqColorValidate(val, parse)
 
 
 
-function logReqColorStop(fill, parse)
+function logReqColorFillValue(fill, parse)
 {
-    parse.log += parse.tab + fill.type;
-    parse.log += logReqNodeId(fill);
+    parse.log += parse.tab + COLOR_FILL_VALUE + ' ' + fill;
 }
 
 
@@ -14390,6 +14418,21 @@ function logReqColorFill(fill, parse)
 {
     parse.log += parse.tab + fill.type;
     parse.log += logReqNodeId(fill);
+}
+
+
+
+function logReqColorStopValue(stop, parse)
+{
+    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + stop;
+}
+
+
+
+function logReqColorStop(stop, parse)
+{
+    parse.log += parse.tab + stop.type;
+    parse.log += logReqNodeId(stop);
 }
 
 
@@ -16899,11 +16942,7 @@ extends GType
 
     static createFromRgb(rgb)
     {
-        return new GColorValue(
-            new GNumberValue(1),
-            new GNumberValue(rgb[0]),
-            new GNumberValue(rgb[1]),
-            new GNumberValue(rgb[2]));
+        return GColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
 
 
@@ -17630,186 +17669,6 @@ extends GOperator
 
 
 
-class GColorStopValue
-extends GType
-{
-    color;
-    opacity;
-    position;
-
-
-
-    constructor(color    = GColorValue .NaN,
-                opacity  = GNumberValue.NaN,
-                position = GNumberValue.NaN)
-    {
-        super(COLOR_STOP_VALUE);
-
-        this.color    = color;
-        this.opacity  = opacity;
-        this.position = position;
-
-        this.result   = this;
-        this.valid    = true;
-    }
-
-
-    
-    copy()
-    {
-        return new GColorStopValue(
-            this.color   .copy(),
-            this.opacity .copy(),
-            this.position.copy());
-    }
-
-
-
-    isValid()
-    {
-        return this.color   .isValid()
-            && this.opacity .isValid()
-            && this.position.isValid();
-    }
-
-
-
-    equals(col)
-    {
-        return this.color   .equals(col.color   )
-            && this.opacity .equals(col.opacity )
-            && this.position.equals(col.position);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.color   .toString()
-              + ' ' + this.opacity .toString()
-              + ' ' + this.position.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GColorStopValue(
-        GColorValue .NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGColorStopValue(str)
-{
-    if (str == INVALID)
-        return GColorStopValue.NaN;
-
-    const stop = str.split(' ');
-
-    return new GColorStopValue(
-        new GColorValue(
-            parseGNumberValue(stop[0]),
-            parseGNumberValue(stop[1]),
-            parseGNumberValue(stop[2]),
-            parseGNumberValue(stop[3])),
-        parseGNumberValue(stop[4]),
-        parseGNumberValue(stop[5]));
-}
-
-
-class GColorStop
-extends GOperator
-{
-    input    = null;
-
-    color    = null;
-    opacity  = null;
-    position = null;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(COLOR_STOP, nodeId, active);
-    }
-
-
-    
-    copy()
-    {
-        const stop = new GColorStop(this.nodeId, this.active);
-
-        if (this.input) 
-            stop.input = this.input.copy();
-
-        if (this.color   ) stop.color    = this.color   .copy();
-        if (this.opacity ) stop.opacity  = this.opacity .copy();
-        if (this.position) stop.position = this.position.copy();
-
-        return stop;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            this.result = new GColorStopValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_STOP_VALUE);
-
-                if (this.result.isValid())
-                {
-                    if (this.color   ) this.result.color    = this.color   .eval(parse).copy();
-                    if (this.opacity ) this.result.opacity  = this.opacity .eval(parse).copy();
-                    if (this.position) this.result.position = this.position.eval(parse).copy();
-                }
-            }
-            else
-            {
-                this.result.color    = this.color   .eval(parse).copy();
-                this.result.opacity  = this.opacity .eval(parse).copy();
-                this.result.position = this.position.eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-        }
-
-
-        return this.result;
-    }
-
-
-
-    get mustNotEval()
-    {
-        return this.color   .mustNotEval
-            && this.opacity .mustNotEval
-            && this.position.mustNotEval;
-    }
-}
-
-
 class GColorFillValue
 extends GType
 {
@@ -17832,6 +17691,15 @@ extends GType
 
 
     
+    static create(space, c1, c2, c3, opacity)
+    {
+        return new GColorFillValue(
+            GColorValue.create(space, c1, c2, c3),
+            new GNumberValue(opacity));
+    }
+
+
+
     copy()
     {
         return new GColorFillValue(
@@ -17877,6 +17745,10 @@ extends GType
     static NaN = new GColorFillValue(
         GColorValue .NaN,
         GNumberValue.NaN);
+
+
+
+    static default = GColorFillValue.create(1, 217, 217, 217, 100);
 }
 
 
@@ -17889,11 +17761,7 @@ function parseGColorFillValue(str)
     const fill = str.split(' ');
 
     return new GColorFillValue(
-        new GColorValue(
-            parseGNumberValue(fill[0]),
-            parseGNumberValue(fill[1]),
-            parseGNumberValue(fill[2]),
-            parseGNumberValue(fill[3])),
+        parseGColorValue(str),
         parseGNumberValue(fill[4]));
 }
 
@@ -17964,6 +17832,168 @@ extends GOperator
 
 
         return this.result;
+    }
+}
+
+
+class GColorStopValue
+extends GType
+{
+    fill;
+    position;
+
+
+
+    constructor(fill     = GColorValue.NaN,
+                position = GNumberValue   .NaN)
+    {
+        super(COLOR_STOP_VALUE);
+
+        this.fill     = fill;
+        this.position = position;
+
+        this.result   = this;
+        this.valid    = true;
+    }
+
+
+    
+    copy()
+    {
+        return new GColorStopValue(
+            this.fill    .copy(),
+            this.position.copy());
+    }
+
+
+
+    isValid()
+    {
+        return this.fill    .isValid()
+            && this.position.isValid();
+    }
+
+
+
+    equals(col)
+    {
+        return this.fill    .equals(col.color   )
+            && this.position.equals(col.position);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.fill    .toString()
+              + ' ' + this.position.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new GColorStopValue(
+        GColorFillValue.NaN,
+        GNumberValue   .NaN);
+}
+
+
+
+function parseGColorStopValue(str)
+{
+    if (str == INVALID)
+        return GColorStopValue.NaN;
+
+    const stop = str.split(' ');
+
+    return new GColorStopValue(
+        parseGColorFillValue(str),
+        parseGNumberValue(stop[5]));
+}
+
+
+class GColorStop
+extends GOperator
+{
+    input    = null;
+
+    fill     = null;
+    position = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(COLOR_STOP, nodeId, active);
+    }
+
+
+    
+    copy()
+    {
+        const stop = new GColorStop(this.nodeId, this.active);
+
+        if (this.input) 
+            stop.input = this.input.copy();
+
+        if (this.fill    ) stop.fill     = this.fill    .copy();
+        if (this.position) stop.position = this.position.copy();
+
+        return stop;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.result = new GColorStopValue();
+
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                if (this.result.isValid())
+                {
+                    if (this.fill    ) this.result.fill     = this.fill    .eval(parse).copy();
+                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                }
+            }
+            else
+            {
+                this.result.fill     = this.fill    .eval(parse).copy();
+                this.result.position = this.position.eval(parse).copy();
+            }
+
+
+            this.result.valid = true;
+            this.valid        = true;
+
+
+            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+        }
+
+
+        return this.result;
+    }
+
+
+
+    get mustNotEval()
+    {
+        return this.fill    .mustNotEval
+            && this.position.mustNotEval;
     }
 }
 
@@ -19328,7 +19358,7 @@ function createToggleButton(width, height)
 }
 
 
-function initNumberSliderEvents(slider)
+function initNumberControlEvents(slider)
 {
     slider.addEventListener('pointerdown', function(e)
     {
@@ -19845,7 +19875,7 @@ function initNumberSliderEvents(slider)
 }
 
 
-class NumberSliderRange
+class NumberControlRange
 {
     start;
     end;
@@ -19891,7 +19921,7 @@ function updateSliderRanges(slider, sliderWidth, sliderHeight)
         {
             const range = slider.ranges[i];
 
-            const div = createDiv('numberSliderRange');
+            const div = createDiv('numberControlRange');
             div.style.zIndex = 0;
             slider.rangeDivs.push(div);
             slider.appendChild(div);
@@ -19938,9 +19968,9 @@ function resetSliderRangeDivs(slider)
 }
 
 
-function initNumberSliderTextbox(slider)
+function initNumberControlTextbox(slider)
 {
-    slider.textbox = createTextbox('numberSliderTextbox');
+    slider.textbox = createTextbox('numberControlTextbox');
     slider.textbox.slider = slider;
     
 
@@ -20019,7 +20049,7 @@ function initNumberSliderTextbox(slider)
                 }
             }
 
-            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let tabs  = document.querySelectorAll('.numberControl, .selectSlider, .select, .menuSelect, button, .menuButton');
             // let index = slider.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
@@ -20288,11 +20318,11 @@ function initNumberSliderTextbox(slider)
 }
 
 
-function initNumberSliderChildren(slider)
+function initNumberControlChildren(slider)
 {
-    slider.bar   = createDiv('numberSliderBar');
-    slider.text  = createDiv('numberSliderText');
-    slider.focus = createDiv('numberSliderFocus');
+    slider.bar   = createDiv('numberControlBar');
+    slider.text  = createDiv('numberControlText');
+    slider.focus = createDiv('numberControlFocus');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -20301,11 +20331,11 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, slider, width, height, id, name, showName, min, max, defValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     slider.param                  = param;
      
-    slider.className              = 'numberSlider';
+    slider.className              = 'numberControl';
      
     slider.width                  = width;
     slider.height                 = height;
@@ -20315,7 +20345,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
              
     slider.min                    = min;
     slider.max                    = max;
-    slider.value                  = def;
+    slider.value                  = defValue;
     slider.acc                    = acc;
      
     slider.dec                    =
@@ -20389,9 +20419,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.onconfirm              = new Event('confirm');
 
 
-    initNumberSliderChildren(slider);    
-    initNumberSliderTextbox(slider);
-    initNumberSliderEvents(slider);
+    initNumberControlChildren(slider);    
+    initNumberControlTextbox(slider);
+    initNumberControlEvents(slider);
 
 
 
@@ -20551,7 +20581,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         
         if (   slider.name.length > 0
             && slider.showName)
-            slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
+            slider.text.innerHTML += '<span class="numberControlName">' + slider.name + "</span>&nbsp;&nbsp;";
 
         slider.text.innerHTML += slider.getValueText() + slider.suffix;
     };
@@ -20644,7 +20674,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
 }
 
 
-function initColorSliderEvents(slider)
+function initColorControlEvents(slider)
 {
     slider.addEventListener('pointerdown', function(e)
     {
@@ -21160,9 +21190,9 @@ function initColorSliderEvents(slider)
 }
 
 
-function initColorSliderTextbox(slider)
+function initColorControlTextbox(slider)
 {
-    slider.textbox = createTextbox('colorSliderTextbox');
+    slider.textbox = createTextbox('colorControlTextbox');
     slider.textbox.slider = slider;
     
 
@@ -21241,7 +21271,7 @@ function initColorSliderTextbox(slider)
                 }
             }
 
-            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
             // let index = slider.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
@@ -21490,21 +21520,21 @@ function initColorSliderTextbox(slider)
 }
 
 
-function initColorSliderChildren(slider)
+function initColorControlChildren(slider)
 {
-    slider.text  = createDiv('colorSliderText');
-    slider.focus = createDiv('colorSliderFocus');
+    slider.text  = createDiv('colorControlText');
+    slider.focus = createDiv('colorControlFocus');
 
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
 }
 
 
-function initColorSlider(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+function initColorControl(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     slider.param                  = param;
      
-    slider.className              = 'colorSlider';
+    slider.className              = 'colorControl';
      
     slider.width                  = width;
     slider.height                 = height;
@@ -21568,9 +21598,9 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
     slider.onconfirm              = new Event('confirm');
 
 
-    initColorSliderChildren(slider);    
-    initColorSliderTextbox(slider);
-    initColorSliderEvents(slider);
+    initColorControlChildren(slider);    
+    initColorControlTextbox(slider);
+    initColorControlEvents(slider);
 
 
 
@@ -21638,7 +21668,7 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
         
         if (   slider.name.length > 0
             && slider.showName)
-            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
         slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
     };
@@ -21700,7 +21730,7 @@ function initColorSlider(param, slider, width, height, id, name, showName, def, 
 }
 
 
-function initFillSliderEvents(slider)
+function initFillControlEvents(slider)
 {
     slider.addEventListener('pointerdown', function(e)
     {
@@ -22216,9 +22246,9 @@ function initFillSliderEvents(slider)
 }
 
 
-function initFillSliderTextbox(slider)
+function initFillControlTextbox(slider)
 {
-    slider.textbox = createTextbox('fillSliderTextbox');
+    slider.textbox = createTextbox('fillControlTextbox');
     slider.textbox.slider = slider;
     
 
@@ -22297,7 +22327,7 @@ function initFillSliderTextbox(slider)
                 }
             }
 
-            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
             // let index = slider.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
@@ -22546,10 +22576,10 @@ function initFillSliderTextbox(slider)
 }
 
 
-function initFillSliderChildren(slider)
+function initFillControlChildren(slider)
 {
-    slider.text  = createDiv('fillSliderText');
-    slider.focus = createDiv('fillSliderFocus');
+    slider.text  = createDiv('fillControlText');
+    slider.focus = createDiv('fillControlFocus');
 
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
@@ -22557,11 +22587,11 @@ function initFillSliderChildren(slider)
 
 
 
-function initFillSlider(param, slider, width, height, id, name, showName, dragScale = 0.05, wheelScale = 1, acc = 0)
+function initFillControl(param, slider, width, height, id, name, showName, defValue, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     slider.param                  = param;
      
-    slider.className              = 'fillSlider';
+    slider.className              = 'fillControl';
      
     slider.width                  = width;
     slider.height                 = height;
@@ -22569,7 +22599,7 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
     slider.style.width            = width;
     slider.style.height           = height;
              
-    slider.fills                  = [];
+    slider.value                  = defValue; // COLOR_FILL
 
     slider.acc                    = acc;
      
@@ -22626,9 +22656,9 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
     slider.onconfirm              = new Event('confirm');
 
 
-    initFillSliderChildren(slider);    
-    initFillSliderTextbox (slider);
-    initFillSliderEvents  (slider);
+    initFillControlChildren(slider);    
+    initFillControlTextbox (slider);
+    initFillControlEvents  (slider);
 
 
 
@@ -22680,27 +22710,27 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
 
     slider.updateColors = function()
     {
-        const rgb = 
-            slider.fills.length > 0
-            ? dataColor2rgb(slider.fills[0].toDataColor())
-            : [0xd9, 0xd9, 0xd9];
+        // const rgb = 
+        //     slider.fills.length > 0
+        //     ? dataColor2rgb(slider.fills[0].toDataColor())
+        //     : [0xd9, 0xd9, 0xd9];
 
-        slider     .style.background = colorStyleRgb(rgb);
-        slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        // slider     .style.background = colorStyleRgb(rgb);
+        // slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
     };
 
 
 
     slider.updateText = function()
     {
-        slider.text.innerHTML = '';
+        // slider.text.innerHTML = '';
         
-        if (   slider.name.length > 0
-            && slider.showName)
-            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+        // if (   slider.name.length > 0
+        //     && slider.showName)
+        //     slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
-        if (slider.fills.length > 0)
-            slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.fills[0].toDataColor()));
+        // if (slider.fills.length > 0)
+        //     slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.fills[0].toDataColor()));
     };
 
 
@@ -25146,7 +25176,6 @@ extends EventTarget
     #id;       get id()      { return this.#id;      }
     #name;     get name()    { return this.#name;    }
     _node;     get node()    { return this._node;    }
-    _control;  get control() { return this._control; }
     _div;      get div()     { return this._div;     }
 
 
@@ -25176,7 +25205,7 @@ extends EventTarget
 
 
 
-    constructor(id, name, type)
+    constructor(type, id, name)
     {
         super();
 
@@ -25525,6 +25554,9 @@ extends NumberParamBase
     allowEditDecimals = true;
     
     
+    control;
+
+
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
     
@@ -25540,9 +25572,9 @@ extends NumberParamBase
                 decimals  = 0,
                 dragScale = 0.05)
     {
-        super(id, name, NUMBER);
+        super(NUMBER, id, name);
 
-        this._control       = createDiv();
+        this.control       = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
@@ -25550,7 +25582,7 @@ extends NumberParamBase
         this.defaultValue   = value;
 
 
-        initNumberSlider(
+        initNumberControl(
             this,
             this.control,
             120,        // width
@@ -25664,6 +25696,9 @@ extends NumberParamBase
 {
     options = [];
     
+
+    control;
+
     
     get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
@@ -25677,9 +25712,9 @@ extends NumberParamBase
                 options,
                 value = 0)
     {
-        super(id, name, NUMBER);
+        super(NUMBER, id, name);
 
-        this._control       = createDiv();
+        this.control       = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
@@ -25689,7 +25724,7 @@ extends NumberParamBase
         this.defaultValue   = value;
 
 
-        initNumberSlider(
+        initNumberControl(
             this,
             this.control,
             120,       // width
@@ -25786,7 +25821,7 @@ extends Parameter
     oldValue = null;
     
 
-
+    control;
     
     
     get valueText() { return this.control.valueText; }
@@ -25798,7 +25833,7 @@ extends Parameter
 
     
     get value   () { return this.control.value; }
-    get genValue() { return this.value.copy(); }
+    get genValue() { return this.value.copy();  }
     
 
     
@@ -25807,29 +25842,29 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = GColorValue.create(1, 0, 0, 0),
-                dragScale = 0.05)
+                defaultValue = GColorValue.create(1, 0, 0, 0),
+                dragScale    = 0.05)
     {
-        super(id, name, NUMBER);
+        super(COLOR, id, name);
 
-        this._control       = createDiv();
+        this.control        = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = value;
+        this.defaultValue   = defaultValue;
 
 
-        initColorSlider(
+        initColorControl(
             this,
             this.control,
-            120,        // width
-            20,         // height
+            120, // width
+            20,  // height
             this.id,
             this.name, 
             showName,
-            value,      // default
-            dragScale); // drag scale
+            defaultValue,   
+            dragScale); 
 
         // this.control.successOnFocusOut = true;
 
@@ -26009,21 +26044,20 @@ extends Parameter
     oldValue = null;
     
 
-
+    colorControl;
+    opacityControl;
     
     
-    get valueText() { return this.control.valueText; }
+    get valueText() { return this.colorControl.valueText; }
     set valueText(text) 
     {
-        this.control.valueText = text;
-        this.control.update();
+        this.colorControl.valueText = text;
+        this.colorControl.update();
     }
 
     
-    get fills   () { return this.control.fills; }
-    get value   () { return this.control.fills; }
-
-    get genValue() { return new GColorFillValue(this.control.fills); }
+    get value   () { return this.colorControl.value; }
+    get genValue() { return this.colorControl.value; }
     
 
     
@@ -26032,36 +26066,40 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value,
+                defaultValue = GColorFillValue.create(1, 217, 217, 217, 100, 0),
                 dragScale = 0.05)
     {
-        super(id, name, NUMBER);
+        super(COLOR_FILL, id, name);
 
-        this._control       = createDiv();
+        this.colorControl          = createDiv();
+        this.opacityControl        = createDiv();
+          
+        this.colorControl.param    = this;
+        this.opacityControl.param  = this;
         
-        this.control.param  = this;
-        this.control.zIndex = 0;
+        this.colorControl.zIndex   = 0;
+        this.opacityControl.zIndex = 1;
    
-        this.defaultValue   = value;
+        this.defaultValue          = defaultValue;
 
 
-        initFillSlider(
+        initFillControl(
             this,
-            this.control,
-            120,        // width
-            20,         // height
+            this.colorControl,
+            120, // width
+            20,  // height
             this.id,
             this.name, 
             showName,
-            value,      // default
-            dragScale); // drag scale
+            defaultValue,
+            dragScale);
 
         // this.control.successOnFocusOut = true;
 
-        this.div.appendChild(this.control);
+        this.div.appendChild(this.colorControl);
 
        
-        if (hasInput)  this.initInput (FILL_VALUES);
+        if (hasInput)  this.initInput ([COLOR_FILL, COLOR_FILL_VALUE, COLOR, COLOR_VALUE]);
         if (hasOutput) this.initOutput(COLOR_FILL, this.output_genRequest);
 
 
@@ -26071,7 +26109,7 @@ extends Parameter
         // });
 
 
-        this.control.addEventListener('finishedit', e =>
+        this.colorControl.addEventListener('finishedit', e =>
         { 
             // let   dec    = decCount(e.detail.value);
             // const oldDec = decCount(e.detail.oldValue);
@@ -26105,36 +26143,37 @@ extends Parameter
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.control.setName(name);
+        this.colorControl.setName(name);
     }
 
 
 
     isDefault()
     {
-        return this.genValue.equals(this.defaultValue);
+        return  this.genValue.length != 1
+            || !this.genValue[0].equals(GColorFillValue.default);
     }
 
 
 
     addFill(fill)
     {
-        this.control.fills.push(fill);
+        this.colorControl.fills.push(fill);
     }
 
 
 
-    setValue(fill, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    {
-        this.preSetValue(fill, createAction, dispatchEvents);
+    // setValue(fill, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    // {
+    //     this.preSetValue(fill, createAction, dispatchEvents);
 
-        if (updateControl)
-            this.control.setFills(fill, false, false, forceChange); 
+    //     if (updateControl)
+    //         this.control.setFills(fill, false, false, forceChange); 
 
-        super.setValue(fill, createAction, updateControl, dispatchEvents);
+    //     super.setValue(fill, createAction, updateControl, dispatchEvents);
 
-        this.oldValue = this.genValue;
-    }    
+    //     this.oldValue = this.genValue;
+    // }    
 
 
 
@@ -26150,13 +26189,13 @@ extends Parameter
 
     setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.log('fills =', fills);
-        console.assert(fills.type && fills.type == COLOR_VALUE);
+        // console.log('fills =', fills);
+        // console.assert(fills.type && fills.type == COLOR_VALUE);
 
         this.preSetValue(fills, createAction, dispatchEvents);
 
         if (updateControl)
-            this.control.setFills(fills, false, false, forceChange); 
+            this.colorControl.setFills(fills, false, false, forceChange); 
 
         super.setValue(fills, createAction, updateControl, dispatchEvents);
 
@@ -26188,7 +26227,7 @@ extends Parameter
         else 
         {
             request.push( 
-                COLOR_VALUE, 
+                COLOR_FILL_VALUE, 
                 this.value.toString());
         }
 
@@ -26226,16 +26265,7 @@ extends Parameter
     
     loadParam(param)
     {
-        console.log('param =', param);
-
-        this.control.fills = parseGFillValue(param);
-        // const parts = param.split(' ');
-
-        // for (let i = 1; i < parts.length; i++)
-        // {
-        //     this.fills.push(parseGColorValue(parts, i), true, true, false);
-        //     i += 4;
-        // }
+        this.colorControl.fills = parseGColorFillValue(param);
     }
 }
 
@@ -30863,18 +30893,18 @@ extends OpColorBase
             && !isValidDataColor(this._color)) // RGB warning ranges
         {
             const rangesR = [];
-            if (this._color[1] < 0) rangesR.push(new NumberSliderRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
-            if (this._color[1] > 1) rangesR.push(new NumberSliderRange(2-Math.min(this._color[1], 2), 1, warnLineStyle, 0.8));
+            if (this._color[1] < 0) rangesR.push(new NumberControlRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
+            if (this._color[1] > 1) rangesR.push(new NumberControlRange(2-Math.min(this._color[1], 2), 1, warnLineStyle, 0.8));
             this.param1.control.ranges = rangesR;
 
             const rangesG = [];
-            if (this._color[2] < 0) rangesG.push(new NumberSliderRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
-            if (this._color[2] > 1) rangesG.push(new NumberSliderRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
+            if (this._color[2] < 0) rangesG.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
+            if (this._color[2] > 1) rangesG.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
             this.param2.control.ranges = rangesG;
             
             const rangesB = [];
-            if (this._color[3] < 0) rangesB.push(new NumberSliderRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
-            if (this._color[3] > 1) rangesB.push(new NumberSliderRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
+            if (this._color[3] < 0) rangesB.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
+            if (this._color[3] > 1) rangesB.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesB;
         }
         else if ((   this.paramSpace.value == 2  // HSV
@@ -30882,13 +30912,13 @@ extends OpColorBase
               && !isValidDataColor(this._color))
         {
             const rangesS = [];
-            if (this._color[2] < 0) rangesS.push(new NumberSliderRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
-            if (this._color[2] > 1) rangesS.push(new NumberSliderRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
+            if (this._color[2] < 0) rangesS.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
+            if (this._color[2] > 1) rangesS.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
             this.param2.control.ranges = rangesS;
             
             const rangesVL = [];
-            if (this._color[3] < 0) rangesVL.push(new NumberSliderRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
-            if (this._color[3] > 1) rangesVL.push(new NumberSliderRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
+            if (this._color[3] < 0) rangesVL.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
+            if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesVL;
         }
         else if (this.paramSpace.value > 3) // HCL
@@ -30939,7 +30969,7 @@ extends OpColorBase
 
             if (!open && !isValidRgb(rgb))
             {
-                ranges.push(new NumberSliderRange(f, f, warnLineStyle, 0.8));
+                ranges.push(new NumberControlRange(f, f, warnLineStyle, 0.8));
                 open = true;
             }
             else if (open && isValidRgb(rgb)) 
@@ -33050,39 +33080,39 @@ extends OpColorBase
         {
             if (this.paramStandard.value == 0)
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
-                    new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
-                    new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
-                    new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
+                    new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
+                    new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
+                    new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
+                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
 
             else
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
-                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
-                    new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
-                    new NumberSliderRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2)', 0.8),
-                    new NumberSliderRange(60/105,  75/105, 'rgba( 64, 255,  64, 0.2)', 0.8),
-                    new NumberSliderRange(75/105,  90/105, 'rgba(110, 128, 255, 0.4)', 0.8),
-                    new NumberSliderRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
+                    new NumberControlRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
+                    new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
+                    new NumberControlRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2)', 0.8),
+                    new NumberControlRange(60/105,  75/105, 'rgba( 64, 255,  64, 0.2)', 0.8),
+                    new NumberControlRange(75/105,  90/105, 'rgba(110, 128, 255, 0.4)', 0.8),
+                    new NumberControlRange(90/105, 105/105, 'transparent') ];
         }
         else
         {
             if (this.paramStandard.value == 0)
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
-                    new NumberSliderRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
-                    new NumberSliderRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
-                    new NumberSliderRange(7  /21, 21  /21, 'transparent') ];
+                    new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
+                    new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
+                    new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
+                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
 
             else
                 this.paramValue.control.ranges = [
-                    new NumberSliderRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
-                    new NumberSliderRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
-                    new NumberSliderRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
-                    new NumberSliderRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2 )', 0.8),
-                    new NumberSliderRange(60/105,  75/105, 'rgba(64,  255,  64, 0.2 )', 0.8),
-                    new NumberSliderRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
-                    new NumberSliderRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
+                    new NumberControlRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
+                    new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
+                    new NumberControlRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2 )', 0.8),
+                    new NumberControlRange(60/105,  75/105, 'rgba(64,  255,  64, 0.2 )', 0.8),
+                    new NumberControlRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
+                    new NumberControlRange(90/105, 105/105, 'transparent') ];
         }
 
         this.paramValue.control.update();
@@ -33381,16 +33411,14 @@ extends OpColorBase
         super(COLOR_STOP, 'stop');
 
 
-        this.addInput(new Input([COLOR_STOP]));
+        this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));
         this.addOutput(new Output(COLOR_STOP, this.output_genRequest));
 
-        this.addParam(this.paramColor    = new ColorParam ('color',    '',         false, true, true));
-        this.addParam(this.paramOpacity  = new NumberParam('opacity',  'opacity',  true,  true, true, 100, 0, 100));
+        this.addParam(this.paramFill     = new ColorParam ('fill',     '',         false, true, true));
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
 
-        this.paramColor.setValue(GColorValue.create(1, 217, 217, 217), false, true, false);
+        //this.paramFill.setValue([GColorFillValue.default], false, true, false);
         
-        this.paramOpacity .control.suffix = '%';
         this.paramPosition.control.suffix = '%';
     }
     
@@ -33417,8 +33445,7 @@ extends OpColorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramColor   .genRequest(gen));
-        request.push(...this.node.paramOpacity .genRequest(gen));
+        request.push(...this.node.paramFill    .genRequest(gen));
         request.push(...this.node.paramPosition.genRequest(gen));
 
 
@@ -33437,17 +33464,15 @@ extends OpColorBase
         
         if (stop.isValid())
         {
-            this.paramColor   .setValue(stop.color,    false, true, false);
-            this.paramOpacity .setValue(stop.opacity,  false, true, false);
+            this.paramFill    .setValue([stop.fill],   false, true, false);
             this.paramPosition.setValue(stop.position, false, true, false);
 
-            this._color = stop.color.toDataColor();
+            // this._color = stop.color.toDataColor();
         }
         else
         {
-            this.paramColor   .setValue(GColorValue .NaN, false, true, false);
-            this.paramOpacity .setValue(GNumberValue.NaN, false, true, false);
-            this.paramPosition.setValue(GNumberValue.NaN, false, true, false);
+            this.paramFill    .setValue([GColorFillValue.NaN], false, true, false);
+            this.paramPosition.setValue( GNumberValue   .NaN,  false, true, false);
             
             this._color = dataColor_NaN;
         }
@@ -33588,13 +33613,13 @@ extends OpColorBase
         super(COLOR_FILL, 'fill');
 
 
-        this.addInput (new Input([COLOR_FILL]));
+        this.addInput (new Input([COLOR_FILL, COLOR_FILL_VALUE]));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        //this.paramFill.setValue([new GColorValue(1, 217, 217, 217)], false, true, false);
+        //this.paramFill.setValue([GColorFill.default], false, true, false);
         
         this.paramOpacity.control.suffix = '%';
     }
@@ -33638,7 +33663,7 @@ extends OpColorBase
     {
         const fill = values[paramIds.findIndex(id => id == 'value')];
 
-        console.log('fill =', fill);
+
         if (fill.isValid())
         {
             this.paramColor  .setValue(fill.color,    false, true, false);
@@ -33648,11 +33673,8 @@ extends OpColorBase
         }
         else
         {
-            console.log('1');
             this.paramColor  .setValue(GColorValue .NaN, false, true, false);
-            console.log('2');
             this.paramOpacity.setValue(GNumberValue.NaN, false, true, false);
-            console.log('3');
             
             this._color = dataColor_NaN;
         }
@@ -37733,7 +37755,7 @@ btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 
         █████████─────[̅_̅_̅_̅_̅_̅_̅_]──╳──[̅_̅_̅_̅_̅_̅_̅_]
-√                  ↓
+√                         ↓
         █████████─────[̅_̅_̅_̅_̅_̅_̅_]     █████████
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙

@@ -1,6 +1,6 @@
-function initFillSliderTextbox(slider)
+function initNumberControlTextbox(slider)
 {
-    slider.textbox = createTextbox('fillSliderTextbox');
+    slider.textbox = createTextbox('numberControlTextbox');
     slider.textbox.slider = slider;
     
 
@@ -79,7 +79,7 @@ function initFillSliderTextbox(slider)
                 }
             }
 
-            // let tabs  = document.querySelectorAll('.numberSlider, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let tabs  = document.querySelectorAll('.numberControl, .selectSlider, .select, .menuSelect, button, .menuButton');
             // let index = slider.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
@@ -107,6 +107,12 @@ function initFillSliderTextbox(slider)
             e.preventDefault();
 
             let text = slider.textbox.value;
+
+            if (   slider.valueCanContainSuffix   
+                && text.length >= slider.suffix.length
+                && text.substring(text.length - slider.suffix.length) == slider.suffix)
+                text = text.substring(0, text.length - slider.suffix.length);
+
 
             if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
                 slider.textbox.selectionStart =  slider.textbox.selectionEnd;
@@ -154,7 +160,7 @@ function initFillSliderTextbox(slider)
                 }
 
                 slider.textbox.selectionStart =
-                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
+                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos - slider.suffix.length;
             }
         }
         else 
@@ -162,9 +168,15 @@ function initFillSliderTextbox(slider)
             let curVal = slider.textbox.value;
 
             if (      e.key.length == 1
-                   && e.key != '?'
                    && !isDigit(e.key)
-                   && !isHexDigit(e.key)
+                   && e.key != '?'
+                   && (   !slider.valueCanContainSuffix
+                       || !slider.suffix.includes(e.key))
+                   && (   !slider.showHex 
+                       || !isHexDigit(e.key))
+                   && (   slider.showHex
+                       ||    e.key != '.'
+                          && e.key != ',')
                    && !(   ((      e.code == 'Minus'
                                 || e.code == 'NumpadSubtract')
                              && !curVal.includes('-'))
@@ -232,8 +244,14 @@ function initFillSliderTextbox(slider)
         let   value      = slider.textbox.value;
         const savedValue = slider.textbox.savedValue;
 
-        let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
-        let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
+        value = value.replace(slider.suffix, '');
+        
+        
+        let val      = value     .indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let savedVal = savedValue.indexOf(INVALID) > -1 ? Number.NaN : (slider.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+
+        if (!isNaN(val))
+            val /= slider.valueScale;
 
        
         const e = new CustomEvent('finishedit', { 'detail': {
@@ -250,12 +268,13 @@ function initFillSliderTextbox(slider)
             if (success) 
             {
                 slider.setValue(
-                      value.trim() != '' 
-                    ? GColorValue.createFromRgb(rgb) 
-                    : GColorValue.createFromRgb(savedRgb));
+                       value.trim() != '' 
+                    && value.trim() != '-'
+                    ? val 
+                    : savedVal);
             }
             else
-                slider.setValue(savedRgb);
+                slider.setValue(savedVal);
         }
          
         
@@ -314,15 +333,16 @@ function initFillSliderTextbox(slider)
 
     slider.updateTextbox = function()
     {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
-
         slider.textbox.value =
-            !slider.value.isValid()
-            ? DISPLAY_INVALID
-            : rgb2hex(rgb).toUpperCase();
-                           
-        slider.textbox.savedValue  = slider.textbox.value;
-
-        slider.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
+            (isNaN(slider.value)
+             ? DISPLAY_INVALID
+             : numToString(
+                   slider.value * slider.valueScale, 
+                   slider.displayDec, 
+                   slider.showHex
+               ).toUpperCase())
+            + (slider.valueCanContainSuffix ? slider.suffix : '');
+            
+        slider.textbox.savedValue = slider.textbox.value;
     };
 }

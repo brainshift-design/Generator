@@ -39,11 +39,7 @@ extends GType
 
     static createFromRgb(rgb)
     {
-        return new GColorValue(
-            new GNumberValue(1),
-            new GNumberValue(rgb[0]),
-            new GNumberValue(rgb[1]),
-            new GNumberValue(rgb[2]));
+        return GColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
 
 

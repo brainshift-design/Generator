@@ -6,21 +6,20 @@ extends Parameter
     oldValue = null;
     
 
-
+    colorControl;
+    opacityControl;
     
     
-    get valueText() { return this.control.valueText; }
+    get valueText() { return this.colorControl.valueText; }
     set valueText(text) 
     {
-        this.control.valueText = text;
-        this.control.update();
+        this.colorControl.valueText = text;
+        this.colorControl.update();
     }
 
     
-    get fills   () { return this.control.fills; }
-    get value   () { return this.control.fills; }
-
-    get genValue() { return new GColorFillValue(this.control.fills); }
+    get value   () { return this.colorControl.value; }
+    get genValue() { return this.colorControl.value; }
     
 
     
@@ -29,36 +28,40 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value,
+                defaultValue = GColorFillValue.create(1, 217, 217, 217, 100, 0),
                 dragScale = 0.05)
     {
-        super(id, name, NUMBER);
+        super(COLOR_FILL, id, name);
 
-        this._control       = createDiv();
+        this.colorControl          = createDiv();
+        this.opacityControl        = createDiv();
+          
+        this.colorControl.param    = this;
+        this.opacityControl.param  = this;
         
-        this.control.param  = this;
-        this.control.zIndex = 0;
+        this.colorControl.zIndex   = 0;
+        this.opacityControl.zIndex = 1;
    
-        this.defaultValue   = value;
+        this.defaultValue          = defaultValue;
 
 
-        initFillSlider(
+        initFillControl(
             this,
-            this.control,
-            120,        // width
-            20,         // height
+            this.colorControl,
+            120, // width
+            20,  // height
             this.id,
             this.name, 
             showName,
-            value,      // default
-            dragScale); // drag scale
+            defaultValue,
+            dragScale);
 
         // this.control.successOnFocusOut = true;
 
-        this.div.appendChild(this.control);
+        this.div.appendChild(this.colorControl);
 
        
-        if (hasInput)  this.initInput (FILL_VALUES);
+        if (hasInput)  this.initInput ([COLOR_FILL, COLOR_FILL_VALUE, COLOR, COLOR_VALUE]);
         if (hasOutput) this.initOutput(COLOR_FILL, this.output_genRequest);
 
 
@@ -68,7 +71,7 @@ extends Parameter
         // });
 
 
-        this.control.addEventListener('finishedit', e =>
+        this.colorControl.addEventListener('finishedit', e =>
         { 
             // let   dec    = decCount(e.detail.value);
             // const oldDec = decCount(e.detail.oldValue);
@@ -102,36 +105,37 @@ extends Parameter
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.control.setName(name);
+        this.colorControl.setName(name);
     }
 
 
 
     isDefault()
     {
-        return this.genValue.equals(this.defaultValue);
+        return  this.genValue.length != 1
+            || !this.genValue[0].equals(GColorFillValue.default);
     }
 
 
 
     addFill(fill)
     {
-        this.control.fills.push(fill);
+        this.colorControl.fills.push(fill);
     }
 
 
 
-    setValue(fill, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    {
-        this.preSetValue(fill, createAction, dispatchEvents);
+    // setValue(fill, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    // {
+    //     this.preSetValue(fill, createAction, dispatchEvents);
 
-        if (updateControl)
-            this.control.setFills(fill, false, false, forceChange); 
+    //     if (updateControl)
+    //         this.control.setFills(fill, false, false, forceChange); 
 
-        super.setValue(fill, createAction, updateControl, dispatchEvents);
+    //     super.setValue(fill, createAction, updateControl, dispatchEvents);
 
-        this.oldValue = this.genValue;
-    }    
+    //     this.oldValue = this.genValue;
+    // }    
 
 
 
@@ -147,13 +151,13 @@ extends Parameter
 
     setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.log('fills =', fills);
-        console.assert(fills.type && fills.type == COLOR_VALUE);
+        // console.log('fills =', fills);
+        // console.assert(fills.type && fills.type == COLOR_VALUE);
 
         this.preSetValue(fills, createAction, dispatchEvents);
 
         if (updateControl)
-            this.control.setFills(fills, false, false, forceChange); 
+            this.colorControl.setFills(fills, false, false, forceChange); 
 
         super.setValue(fills, createAction, updateControl, dispatchEvents);
 
@@ -185,7 +189,7 @@ extends Parameter
         else 
         {
             request.push( 
-                COLOR_VALUE, 
+                COLOR_FILL_VALUE, 
                 this.value.toString());
         }
 
@@ -223,15 +227,6 @@ extends Parameter
     
     loadParam(param)
     {
-        console.log('param =', param);
-
-        this.control.fills = parseGFillValue(param);
-        // const parts = param.split(' ');
-
-        // for (let i = 1; i < parts.length; i++)
-        // {
-        //     this.fills.push(parseGColorValue(parts, i), true, true, false);
-        //     i += 4;
-        // }
+        this.colorControl.fills = parseGColorFillValue(param);
     }
 }

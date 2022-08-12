@@ -6,7 +6,7 @@ extends Parameter
     oldValue = null;
     
 
-
+    control;
     
     
     get valueText() { return this.control.valueText; }
@@ -18,7 +18,7 @@ extends Parameter
 
     
     get value   () { return this.control.value; }
-    get genValue() { return this.value.copy(); }
+    get genValue() { return this.value.copy();  }
     
 
     
@@ -27,29 +27,29 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                value     = GColorValue.create(1, 0, 0, 0),
-                dragScale = 0.05)
+                defaultValue = GColorValue.create(1, 0, 0, 0),
+                dragScale    = 0.05)
     {
-        super(id, name, NUMBER);
+        super(COLOR, id, name);
 
-        this._control       = createDiv();
+        this.control        = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = value;
+        this.defaultValue   = defaultValue;
 
 
-        initColorSlider(
+        initColorControl(
             this,
             this.control,
-            120,        // width
-            20,         // height
+            120, // width
+            20,  // height
             this.id,
             this.name, 
             showName,
-            value,      // default
-            dragScale); // drag scale
+            defaultValue,   
+            dragScale); 
 
         // this.control.successOnFocusOut = true;
 

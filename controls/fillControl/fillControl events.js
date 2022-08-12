@@ -1,4 +1,4 @@
-function initColorSliderEvents(slider)
+function initFillControlEvents(slider)
 {
     slider.addEventListener('pointerdown', function(e)
     {
@@ -92,15 +92,15 @@ function initColorSliderEvents(slider)
         if (   !graphView.spaceDown
             && slider.pointerEvents)
         {
-            // if (graphView.tempConn)
-            //     slider.style.cursor = 'default';
+            if (graphView.tempConn)
+                slider.style.cursor = 'default';
             
-            // else
-            //     slider.style.cursor = 
-            //            slider.readOnly 
-            //         || containsChild(slider, slider.textbox) 
-            //         ? 'default'
-            //         : 'ew-resize';
+            else
+                slider.style.cursor = 
+                       slider.readOnly 
+                    || containsChild(slider, slider.textbox) 
+                    ? 'default'
+                    : 'ew-resize';
 
                     
             const colShadow = 

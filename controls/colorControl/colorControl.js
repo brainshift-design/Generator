@@ -1,19 +1,18 @@
-function initFillSliderChildren(slider)
+function initColorControlChildren(slider)
 {
-    slider.text  = createDiv('fillSliderText');
-    slider.focus = createDiv('fillSliderFocus');
+    slider.text  = createDiv('colorControlText');
+    slider.focus = createDiv('colorControlFocus');
 
     slider.appendChild(slider.text);
     slider.appendChild(slider.focus);
 }
 
 
-
-function initFillSlider(param, slider, width, height, id, name, showName, dragScale = 0.05, wheelScale = 1, acc = 0)
+function initColorControl(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     slider.param                  = param;
      
-    slider.className              = 'fillSlider';
+    slider.className              = 'colorControl';
      
     slider.width                  = width;
     slider.height                 = height;
@@ -21,8 +20,7 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
     slider.style.width            = width;
     slider.style.height           = height;
              
-    slider.fills                  = [];
-
+    slider.value                  = def;
     slider.acc                    = acc;
      
     slider.id                     = id;
@@ -78,9 +76,9 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
     slider.onconfirm              = new Event('confirm');
 
 
-    initFillSliderChildren(slider);    
-    initFillSliderTextbox (slider);
-    initFillSliderEvents  (slider);
+    initColorControlChildren(slider);    
+    initColorControlTextbox(slider);
+    initColorControlEvents(slider);
 
 
 
@@ -92,22 +90,22 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
 
 
 
-    slider.setFills = function(fills, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        const oldFills = [...slider.fills];
+        const oldValue = slider.value.copy();
 
-        slider.fills = [...fills];
+        slider.value = value.copy();
 
         slider.update();
 
         if (   fireChangeEvent
             && slider.enableChangeEvent
-            && fills != slider.prevValue)
+            && value != slider.prevValue)
             slider.dispatchEvent(slider.onchange);
 
         if (   confirm
             && slider.enableChangeEvent
-            && fills != oldFills)
+            && value != oldValue)
             slider.dispatchEvent(slider.onconfirm);
     };
 
@@ -119,9 +117,11 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
         const sw = slider.getClientWidth();
         const sh = slider.getClientHeight();
 
+
         slider.updateColors();
         slider.updateText();
         slider.updateFocus(sw, sh);
+        
 
         slider.cachedOffsetLeft   = null;
         slider.cachedClientWidth  = null;
@@ -132,10 +132,7 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
 
     slider.updateColors = function()
     {
-        const rgb = 
-            slider.fills.length > 0
-            ? dataColor2rgb(slider.fills[0].toDataColor())
-            : [0xd9, 0xd9, 0xd9];
+        const rgb = dataColor2rgb(slider.value.toDataColor());
 
         slider     .style.background = colorStyleRgb(rgb);
         slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
@@ -149,10 +146,9 @@ function initFillSlider(param, slider, width, height, id, name, showName, dragSc
         
         if (   slider.name.length > 0
             && slider.showName)
-            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillSliderName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
-        if (slider.fills.length > 0)
-            slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.fills[0].toDataColor()));
+        slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
     };
 
 

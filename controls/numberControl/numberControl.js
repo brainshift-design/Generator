@@ -1,8 +1,8 @@
-function initNumberSliderChildren(slider)
+function initNumberControlChildren(slider)
 {
-    slider.bar   = createDiv('numberSliderBar');
-    slider.text  = createDiv('numberSliderText');
-    slider.focus = createDiv('numberSliderFocus');
+    slider.bar   = createDiv('numberControlBar');
+    slider.text  = createDiv('numberControlText');
+    slider.focus = createDiv('numberControlFocus');
 
     slider.appendChild(slider.bar);
     slider.appendChild(slider.text);
@@ -11,11 +11,11 @@ function initNumberSliderChildren(slider)
 
 
 
-function initNumberSlider(param, slider, width, height, id, name, showName, min, max, def, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, slider, width, height, id, name, showName, min, max, defValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     slider.param                  = param;
      
-    slider.className              = 'numberSlider';
+    slider.className              = 'numberControl';
      
     slider.width                  = width;
     slider.height                 = height;
@@ -25,7 +25,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
              
     slider.min                    = min;
     slider.max                    = max;
-    slider.value                  = def;
+    slider.value                  = defValue;
     slider.acc                    = acc;
      
     slider.dec                    =
@@ -99,9 +99,9 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
     slider.onconfirm              = new Event('confirm');
 
 
-    initNumberSliderChildren(slider);    
-    initNumberSliderTextbox(slider);
-    initNumberSliderEvents(slider);
+    initNumberControlChildren(slider);    
+    initNumberControlTextbox(slider);
+    initNumberControlEvents(slider);
 
 
 
@@ -261,7 +261,7 @@ function initNumberSlider(param, slider, width, height, id, name, showName, min,
         
         if (   slider.name.length > 0
             && slider.showName)
-            slider.text.innerHTML += '<span class="numberSliderName">' + slider.name + "</span>&nbsp;&nbsp;";
+            slider.text.innerHTML += '<span class="numberControlName">' + slider.name + "</span>&nbsp;&nbsp;";
 
         slider.text.innerHTML += slider.getValueText() + slider.suffix;
     };
