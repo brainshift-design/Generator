@@ -36,7 +36,9 @@ function genParseColor(parse)
     
     let paramIds;
 
-    if (COLOR_TYPES.includes(parse.next))
+    if (   COLOR_TYPES.includes(parse.next)
+        ||    parse.next == PARAM
+           && COLOR_TYPES.includes(parse.afterNext))
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');
@@ -301,12 +303,26 @@ function genParseColorFill(parse)
     parse.nTab++;
 
 
-    if (parse.next == COLOR_FILL)
+    let paramIds;
+
+    if (   parse.next == COLOR_FILL
+        || parse.next == COLOR_FILL_VALUE)
+    {
         fill.input = genParse(parse);
+        paramIds   = parse.move().split(',');
+    }
+    else
+        paramIds = ['color', 'opacity'];
 
-
-    fill.color   = genParse(parse);
-    fill.opacity = genParse(parse);
+    
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'color':   fill.color   = genParse(parse); break;
+        case 'opacity': fill.opacity = genParse(parse); break;
+        }
+    }
 
     
     parse.nTab--;

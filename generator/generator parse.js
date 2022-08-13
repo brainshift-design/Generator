@@ -32,6 +32,13 @@ class Parse
 
     get next() { return this.request[this.pos]; }
 
+    get afterNext() 
+    { 
+        return this.pos+1 < this.request.length 
+             ? this.request[this.pos+1]
+             : null;
+    }
+
 
 
     constructor(request, updateNodeId, updateParamId, logRequests)
@@ -155,7 +162,8 @@ function genParseParam(parse)
     if (parse.next != PARAM) 
         return null;
         
-    parse.move();
+    parse.move(); // PARAM
+    parse.move(); // type
 
     
     const nodeId  = parse.move();

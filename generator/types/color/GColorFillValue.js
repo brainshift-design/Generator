@@ -16,6 +16,8 @@ extends GType
 
         this.result  = this;
         this.valid   = true;
+
+        console.log('this.color =', this.color);
     }
 
 
@@ -31,6 +33,15 @@ extends GType
 
     copy()
     {
+        // const color   = this.color  .copy();
+        // const opacity = this.opacity.copy();
+        
+        // console.log('color =',   color);
+        // console.log('opacity =', opacity);
+
+        // const fill = new GColorFillValue(color, opacity);
+        // console.log('fill =', fill);
+        // return fill;
         return new GColorFillValue(
             this.color  .copy(),
             this.opacity.copy());

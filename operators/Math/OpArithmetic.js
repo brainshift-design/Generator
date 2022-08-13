@@ -22,7 +22,7 @@ extends OperatorBase
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');

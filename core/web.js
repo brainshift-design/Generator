@@ -52,7 +52,7 @@ function createTextbox(className = '')
 
 
 
-function enableSliderText(slider, enable)
+function enableControlText(slider, enable)
 {
     enableElementText(slider, enable);
     slider.readOnly = !enable;

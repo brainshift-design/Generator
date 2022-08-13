@@ -135,8 +135,16 @@ function initColorControl(param, control, width, height, id, name, showName, def
     {
         const rgb = dataColor2rgb(control.value.toDataColor());
 
-        control     .style.background = colorStyleRgb(rgb);
-        control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        if (isValidRgb(rgb))
+        {
+            control     .style.background = colorStyleRgb(rgb);
+            control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        }
+        else
+        {
+            control     .style.background = 'transparent';
+            control.text.style.color      = '#fff8';
+        }
     };
 
 
@@ -149,7 +157,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
             && control.showName)
             control.text.innerHTML += (control.name.trim() != '' ? '<span class="colorControlName">' + control.name + '</span>&nbsp;&nbsp;' : '');
 
-        control.text.innerHTML += rgb2hex(dataColor2rgb(control.value.toDataColor()));
+        control.text.innerHTML += 
+               control.value.isValid()
+            && isValidRgb(dataColor2rgb(control.value.toDataColor()))
+            ? rgb2hex(dataColor2rgb(control.value.toDataColor()))
+            : DISPLAY_INVALID;
     };
 
 

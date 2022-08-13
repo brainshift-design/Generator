@@ -44,9 +44,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
-
-
             const space = this.space.eval(parse).copy();
 
 
@@ -78,10 +75,12 @@ extends GOperator
             }
             else
             {
+                this.result = new GColorValue();
+
                 this.result.space = space;
-                this.result.c1    = this.c1   .eval(parse).copy();
-                this.result.c2    = this.c2   .eval(parse).copy();
-                this.result.c3    = this.c3   .eval(parse).copy();
+                this.result.c1    = this.c1.eval(parse).copy();
+                this.result.c2    = this.c2.eval(parse).copy();
+                this.result.c3    = this.c3.eval(parse).copy();
 
 
                 const toSpaceIndex = Math.min(Math.max(

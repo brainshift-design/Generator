@@ -18,7 +18,7 @@ extends OperatorBase
         this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
 
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
         this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation

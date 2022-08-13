@@ -50,6 +50,9 @@ function onHexboxFocus(e)
 {
     const hexbox = e.target;
     hexbox.style.cursor = 'default';
+
+    if (hexbox.value == DISPLAY_INVALID)
+        hexbox.value = INVALID;
 }
 
 

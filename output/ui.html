@@ -3982,7 +3982,7 @@ function createTextbox(className = '')
 
 
 
-function enableSliderText(slider, enable)
+function enableControlText(slider, enable)
 {
     enableElementText(slider, enable);
     slider.readOnly = !enable;
@@ -5685,9 +5685,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
-
-
             const space = this.space.eval(parse).copy();
 
 
@@ -5719,10 +5716,12 @@ extends GOperator
             }
             else
             {
+                this.result = new GColorValue();
+
                 this.result.space = space;
-                this.result.c1    = this.c1   .eval(parse).copy();
-                this.result.c2    = this.c2   .eval(parse).copy();
-                this.result.c3    = this.c3   .eval(parse).copy();
+                this.result.c1    = this.c1.eval(parse).copy();
+                this.result.c2    = this.c2.eval(parse).copy();
+                this.result.c3    = this.c3.eval(parse).copy();
 
 
                 const toSpaceIndex = Math.min(Math.max(
@@ -6275,6 +6274,8 @@ extends GType
 
         this.result  = this;
         this.valid   = true;
+
+        console.log('this.color =', this.color);
     }
 
 
@@ -6290,6 +6291,15 @@ extends GType
 
     copy()
     {
+        // const color   = this.color  .copy();
+        // const opacity = this.opacity.copy();
+        
+        // console.log('color =',   color);
+        // console.log('opacity =', opacity);
+
+        // const fill = new GColorFillValue(color, opacity);
+        // console.log('fill =', fill);
+        // return fill;
         return new GColorFillValue(
             this.color  .copy(),
             this.opacity.copy());
@@ -6366,7 +6376,7 @@ extends GOperator
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.color   = GColorValue.NaN;
         this.opacity = new GNumberValue(100);
     }
 
@@ -6376,10 +6386,11 @@ extends GOperator
     {
         const fill = new GColorFill(this.nodeId, this.active);
 
-        if (this.input) fill.input = this.input.copy();
+        if (this.input) 
+            fill.input = this.input.copy();
 
-        fill.color   = this.color  .copy();
-        fill.opacity = this.opacity.copy();
+        if (this.color  ) fill.color   = this.color  .copy();
+        if (this.opacity) fill.opacity = this.opacity.copy();
 
         return fill;
     }
@@ -6390,32 +6401,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorFillValue();
-
-
             if (this.input)
             {
-                this.result = this.input.eval(parse).copy();
+                const input = this.input.eval(parse);
+
+                this.result = input.copy();
                 console.assert(this.result.type == COLOR_FILL_VALUE);
 
-                if (this.result.isValid())
-                {
-                    if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
-                    if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
-                }
+                if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
+                if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
             }
             else
             {
+                this.result = new GColorFillValue();
+
                 this.result.color   = this.color  .eval(parse).copy();
                 this.result.opacity = this.opacity.eval(parse).copy();
             }
+            
 
-             
             this.result.valid = true;
             this.valid        = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -8061,7 +8072,9 @@ function genParseColor(parse)
     
     let paramIds;
 
-    if (COLOR_TYPES.includes(parse.next))
+    if (   COLOR_TYPES.includes(parse.next)
+        ||    parse.next == PARAM
+           && COLOR_TYPES.includes(parse.afterNext))
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');
@@ -8326,12 +8339,26 @@ function genParseColorFill(parse)
     parse.nTab++;
 
 
-    if (parse.next == COLOR_FILL)
+    let paramIds;
+
+    if (   parse.next == COLOR_FILL
+        || parse.next == COLOR_FILL_VALUE)
+    {
         fill.input = genParse(parse);
+        paramIds   = parse.move().split(',');
+    }
+    else
+        paramIds = ['color', 'opacity'];
 
-
-    fill.color   = genParse(parse);
-    fill.opacity = genParse(parse);
+    
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'color':   fill.color   = genParse(parse); break;
+        case 'opacity': fill.opacity = genParse(parse); break;
+        }
+    }
 
     
     parse.nTab--;
@@ -8920,6 +8947,13 @@ class Parse
 
     get next() { return this.request[this.pos]; }
 
+    get afterNext() 
+    { 
+        return this.pos+1 < this.request.length 
+             ? this.request[this.pos+1]
+             : null;
+    }
+
 
 
     constructor(request, updateNodeId, updateParamId, logRequests)
@@ -9043,7 +9077,8 @@ function genParseParam(parse)
     if (parse.next != PARAM) 
         return null;
         
-    parse.move();
+    parse.move(); // PARAM
+    parse.move(); // type
 
     
     const nodeId  = parse.move();
@@ -14017,7 +14052,7 @@ function createTextbox(className = '')
 
 
 
-function enableSliderText(slider, enable)
+function enableControlText(slider, enable)
 {
     enableElementText(slider, enable);
     slider.readOnly = !enable;
@@ -17156,9 +17191,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
-
-
             const space = this.space.eval(parse).copy();
 
 
@@ -17190,10 +17222,12 @@ extends GOperator
             }
             else
             {
+                this.result = new GColorValue();
+
                 this.result.space = space;
-                this.result.c1    = this.c1   .eval(parse).copy();
-                this.result.c2    = this.c2   .eval(parse).copy();
-                this.result.c3    = this.c3   .eval(parse).copy();
+                this.result.c1    = this.c1.eval(parse).copy();
+                this.result.c2    = this.c2.eval(parse).copy();
+                this.result.c3    = this.c3.eval(parse).copy();
 
 
                 const toSpaceIndex = Math.min(Math.max(
@@ -17746,6 +17780,8 @@ extends GType
 
         this.result  = this;
         this.valid   = true;
+
+        console.log('this.color =', this.color);
     }
 
 
@@ -17761,6 +17797,15 @@ extends GType
 
     copy()
     {
+        // const color   = this.color  .copy();
+        // const opacity = this.opacity.copy();
+        
+        // console.log('color =',   color);
+        // console.log('opacity =', opacity);
+
+        // const fill = new GColorFillValue(color, opacity);
+        // console.log('fill =', fill);
+        // return fill;
         return new GColorFillValue(
             this.color  .copy(),
             this.opacity.copy());
@@ -17837,7 +17882,7 @@ extends GOperator
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.color   = GColorValue.NaN;
         this.opacity = new GNumberValue(100);
     }
 
@@ -17847,10 +17892,11 @@ extends GOperator
     {
         const fill = new GColorFill(this.nodeId, this.active);
 
-        if (this.input) fill.input = this.input.copy();
+        if (this.input) 
+            fill.input = this.input.copy();
 
-        fill.color   = this.color  .copy();
-        fill.opacity = this.opacity.copy();
+        if (this.color  ) fill.color   = this.color  .copy();
+        if (this.opacity) fill.opacity = this.opacity.copy();
 
         return fill;
     }
@@ -17861,32 +17907,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorFillValue();
-
-
             if (this.input)
             {
-                this.result = this.input.eval(parse).copy();
+                const input = this.input.eval(parse);
+
+                this.result = input.copy();
                 console.assert(this.result.type == COLOR_FILL_VALUE);
 
-                if (this.result.isValid())
-                {
-                    if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
-                    if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
-                }
+                if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
+                if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
             }
             else
             {
+                this.result = new GColorFillValue();
+
                 this.result.color   = this.color  .eval(parse).copy();
                 this.result.opacity = this.opacity.eval(parse).copy();
             }
+            
 
-             
             this.result.valid = true;
             this.valid        = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -21269,6 +21315,14 @@ function initColorControlTextbox(control)
 
 
 
+    control.textbox.addEventListener('focus', e =>
+    {
+        if (control.textbox.value == DISPLAY_INVALID)
+            control.textbox.value = INVALID;
+    });
+
+
+
     control.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
@@ -21327,26 +21381,6 @@ function initColorControlTextbox(control)
                     params[index].control.showTextbox();
                 }
             }
-
-            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = slider.tabIndex;
-
-            // for (let i = 0; i < tabs.length; i++) 
-            // {
-            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
-            //         ||               tabs[i].tabIndex == index + 1) 
-            //     {
-            //         if (tabs[i].className == 'slider')
-            //             tabs[i].showTextbox();
-            //         else 
-            //         {
-            //             document.activeElement.blur();
-            //             tabs[i].focus();
-            //         }
-
-            //         break;
-            //     }
-            // }
         }
 
         else if ((   e.key == 'ArrowUp'
@@ -21462,7 +21496,7 @@ function initColorControlTextbox(control)
         //console.log('control.successOnFocusOut', control.successOnFocusOut);
 
         if (!control.textbox.keyBlur) control.textbox.finish(true);
-        else                         control.textbox.keyBlur = false;
+        else                          control.textbox.keyBlur = false;
 
         if (control.savedSuccessOnFocusOut != null)
         {
@@ -21715,8 +21749,16 @@ function initColorControl(param, control, width, height, id, name, showName, def
     {
         const rgb = dataColor2rgb(control.value.toDataColor());
 
-        control     .style.background = colorStyleRgb(rgb);
-        control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        if (isValidRgb(rgb))
+        {
+            control     .style.background = colorStyleRgb(rgb);
+            control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        }
+        else
+        {
+            control     .style.background = 'transparent';
+            control.text.style.color      = '#fff8';
+        }
     };
 
 
@@ -21729,7 +21771,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
             && control.showName)
             control.text.innerHTML += (control.name.trim() != '' ? '<span class="colorControlName">' + control.name + '</span>&nbsp;&nbsp;' : '');
 
-        control.text.innerHTML += rgb2hex(dataColor2rgb(control.value.toDataColor()));
+        control.text.innerHTML += 
+               control.value.isValid()
+            && isValidRgb(dataColor2rgb(control.value.toDataColor()))
+            ? rgb2hex(dataColor2rgb(control.value.toDataColor()))
+            : DISPLAY_INVALID;
     };
 
 
@@ -25315,8 +25361,8 @@ extends EventTarget
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.input.addEventListener('connect',    () => enableSliderText(this.control, false));
-        this.input.addEventListener('disconnect', () => enableSliderText(this.control, true ));
+        this.input.addEventListener('connect',    () => enableControlText(this.control, false));
+        this.input.addEventListener('disconnect', () => enableControlText(this.control, true ));
     }
 
 
@@ -25342,14 +25388,7 @@ extends EventTarget
     
     update(dispatchEvents)
     {
-        // if (   this.input
-        //     && this.input.connected)
-        //     this.input.connectedOutput.node.update();
 
-        // if (this.showParamLock)
-        //     this.paramLock.style.display = 'block';
-        // else
-        //     this.paramLock.style.display = 'none';
     }    
 
 
@@ -25361,39 +25400,6 @@ extends EventTarget
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
     }
-
-
-
-    setOutputData() { }
-
-
-
-    // setLocked(locked)
-    // {
-    //     this.locked = locked;
-    //     this.updateLock();
-    // }
-
-
-
-    // updateLock()
-    // {
-    //     let opacity = this.locked ? 0.5 : 0.1;
-        
-    //          if (this.paramLock.down0) opacity += 0.3;
-    //     else if (this.paramLock.over ) opacity += 0.15;
-        
-    //     this.paramLock.style.background = 
-    //         this.locked
-    //         ? 'url(\'data:image/svg+xml;utf8,<svg width="5" height="7" viewBox="0 0 5 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.57143 1.75V2.8H1.42857V1.75C1.42857 1.1701 1.90826 0.7 2.5 0.7C3.09174 0.7 3.57143 1.1701 3.57143 1.75ZM0.714286 2.8V1.75C0.714286 0.783503 1.51378 0 2.5 0C3.48622 0 4.28571 0.783503 4.28571 1.75V2.8H4.64286C4.8401 2.8 5 2.9567 5 3.15V6.65C5 6.8433 4.8401 7 4.64286 7H0.357143C0.159899 7 0 6.8433 0 6.65V3.15C0 2.9567 0.159899 2.8 0.357143 2.8H0.714286Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')'
-    //         : 'url(\'data:image/svg+xml;utf8,<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.30997 3.10005V3.80005H4.66913C4.86749 3.80005 5.02829 3.95675 5.02829 4.15005V7.65005C5.02829 7.84332 4.86749 8.00005 4.66913 8.00005H0.359164C0.160803 8.00005 0 7.84332 0 7.65005V4.15005C0 3.95675 0.160803 3.80005 0.359164 3.80005H3.59164V2.05005C3.59164 1.08355 4.39566 0.300049 5.38746 0.300049C6.37926 0.300049 7.18328 1.08355 7.18328 2.05005V3.10005H6.46495V2.05005C6.46495 1.47015 5.98254 1.00005 5.38746 1.00005C4.79237 1.00005 4.30997 1.47015 4.30997 2.05005V3.10005Z" fill="black" fill-opacity="'+opacity+'" /></svg>\')';
-
-    //     this.paramLock.style.backgroundPosition = '50% 50%';
-    //     this.paramLock.style.backgroundRepeat   = 'no-repeat';
-
-    //     this.paramLock.style.left = this.locked ? 11 : 12;
-    //     this.paramLock.style.top  = this.locked ?  4 :  3;
-    // }
 
 
 
@@ -25883,7 +25889,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = GColorValue.create(1, 0, 0, 0),
+                defaultValue = GColorValue.NaN,
                 dragScale    = 0.05)
     {
         super(COLOR, id, name);
@@ -25973,6 +25979,33 @@ extends Parameter
 
 
 
+    updateControls()
+    {
+        const rgb = dataColor2rgb(this.value.toDataColor());
+
+        const col = 
+            isValidRgb(rgb)
+            ? (isDark(rgb)
+               ? [1, 1, 1]
+               : [0, 0, 0])
+            : (isDarkMode()
+               ? [1, 1, 1]
+               : [0, 0, 0]);
+
+        this.input.wireColor  = col;
+        this.input.colorLight = 
+        this.input.colorDark  = rgb_a(col, 0.12);
+
+        this.output.wireColor  = col;
+        this.output.colorLight =
+        this.output.colorDark  = rgb_a(col, 0.12);
+
+
+        super.updateControls();
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -25993,12 +26026,9 @@ extends Parameter
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
 
-        else 
-        {
-            request.push( 
-                COLOR_VALUE, 
-                this.value.toString());
-        }
+        else request.push( 
+            COLOR_VALUE, 
+            this.value.toString());
 
 
         return request;
@@ -28013,6 +28043,28 @@ class Operator
 
 
 
+    initContentInput(input, firstParam)
+    {
+        input.addEventListener('connect', () =>
+        {
+            for (let i = firstParam; i < this.params.length; i++)
+                enableControlText(this.params[i].control, false);
+        });
+    
+        input.addEventListener('disconnect', () =>
+        {
+            for (let i = firstParam; i < this.params.length; i++)
+            {
+                if (!this.params[i].input.connected) 
+                    enableControlText(this.params[i].control, true);
+            }
+
+            this.updateNode();
+        });
+    }
+
+
+
     addBaseParams()
     {
 
@@ -28569,6 +28621,7 @@ function pushInputOrParam(input, gen)
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 
         return[ PARAM,
+                input.connectedOutput.type,
                 input.connectedOutput.node.id,
                 input.connectedOutput.param.id ];
     }
@@ -29625,7 +29678,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
        
         this.addParam(this.paramMin   = new NumberParam('min', 'min', true, true, true, 0));
         this.addParam(this.paramMax   = new NumberParam('max', 'max', true, true, true));
@@ -29703,7 +29756,7 @@ extends OperatorBase
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -30028,7 +30081,7 @@ extends OperatorBase
         this.addParam(this.paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
 
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -30246,7 +30299,7 @@ extends OperatorBase
         this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
 
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
         this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
@@ -30557,23 +30610,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
-
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (let i = 1; i < this.params.length; i++)
-                enableSliderText(this.params[i].control, false);
-        });
-    
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (let i = 1; i < this.params.length; i++)
-            {
-                if (!this.params[i].input.connected) 
-                    enableSliderText(this.params[i].control, true);
-            }
-
-            this.updateNode();
-        });
+        this.initContentInput(this.inputs[0], 1);
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true, true, OpColorSpaces.map(s => s[1]), 0));
@@ -30601,7 +30638,7 @@ extends OpColorBase
 
 
         for (let i = 1; i < this.params.length; i++)
-            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].connected); });
+            this.params[i].input.addEventListener('disconnect', () => { enableControlText(this.params[i].control, !this.inputs[0].connected); });
     }
 
 
@@ -30668,7 +30705,6 @@ extends OpColorBase
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
-
             
             paramIds.push(this.node.paramSpace.id);
 
@@ -30837,14 +30873,14 @@ extends OpColorBase
                colorSpaceIndex(this._color[0]) > 3
             || isValidRgb(colors.back);
 
-        this.updateSlider(this.param1.control, isValid);
-        this.updateSlider(this.param2.control, isValid);
-        this.updateSlider(this.param3.control, isValid);
+        this.updateControl(this.param1.control, isValid);
+        this.updateControl(this.param2.control, isValid);
+        this.updateControl(this.param3.control, isValid);
     }
 
 
 
-    updateSlider(slider, isValid)
+    updateControl(control, isValid)
     {
         // slider.valueText = 
         //        this.inputs[0].connected 
@@ -30857,9 +30893,9 @@ extends OpColorBase
         //     && !isValid)
         //     slider.setValue(Number.NaN, true, false, false);
 
-        enableElementText(slider.textbox, !this.inputs[0].connected);
+        enableElementText(control.textbox, !this.inputs[0].connected);
 
-        slider.update();
+        control.update();
     }
 
 
@@ -31719,6 +31755,9 @@ function onHexboxFocus(e)
 {
     const hexbox = e.target;
     hexbox.style.cursor = 'default';
+
+    if (hexbox.value == DISPLAY_INVALID)
+        hexbox.value = INVALID;
 }
 
 
@@ -32951,7 +32990,7 @@ extends OpColorBase
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
 
 
         createTooltip(ttWcag2);
@@ -33647,16 +33686,22 @@ extends OpColorBase
     paramOpacity;
 
     checkers;
+    colorBack;
 
 
-    
     constructor()
     {
         super(COLOR_FILL, 'fill');
 
 
+        this.colorBack = createDiv('colorBack');
+        this.inner.appendChild(this.colorBack);
+
         this.addInput (new Input([COLOR_FILL, COLOR_FILL_VALUE]));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
+
+        this.initContentInput(this.inputs[0], 0);
+
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
@@ -33690,11 +33735,27 @@ extends OpColorBase
         
         const input = this.node.inputs[0];
 
+        const paramIds = [];
+
         if (input.connected)
+        {
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramColor  .genRequest(gen));
-        request.push(...this.node.paramOpacity.genRequest(gen));
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    paramIds.push(param.id);
+
+            request.push(paramIds.join(','));
+
+            if (this.node.paramColor  .input.connected) request.push(...this.node.paramColor  .genRequest(gen));
+            if (this.node.paramOpacity.input.connected) request.push(...this.node.paramOpacity.genRequest(gen));
+        }
+        else
+        {
+            request.push(
+                ...this.node.paramColor  .genRequest(gen),
+                ...this.node.paramOpacity.genRequest(gen));
+        }
 
 
         gen.scope.pop();
@@ -33707,20 +33768,22 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const fill = values[paramIds.findIndex(id => id == 'value')];
+        const fill    = values[paramIds.findIndex(id => id == 'value')];
+        const color   = values[paramIds.findIndex(id => id == 'color')];
+        const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
 
         if (fill.isValid())
         {
-            this.paramColor  .setValue(fill.color,    false, true, false);
-            this.paramOpacity.setValue(fill.opacity,  false, true, false);
+            this.paramColor  .setValue(color,    false, true, false);
+            this.paramOpacity.setValue(opacity,  false, true, false);
 
             this._color = fill.color.toDataColor();
         }
         else
         {
-            this.paramColor  .setValue(GColorValue .NaN, false, true, false);
-            this.paramOpacity.setValue(GNumberValue.NaN, false, true, false);
+            this.paramColor  .setValue(color,   false, true, false);
+            this.paramOpacity.setValue(opacity, false, true, false);
             
             this._color = dataColor_NaN;
         }
@@ -33736,13 +33799,20 @@ extends OpColorBase
         //console.log(this.id + '.OpColorFill.updateHeader()');
 
 
-        if (dataColorIsNaN(this._color))
-            return;
+        // if (dataColorIsNaN(this._color))
+        //     return;
 
 
         const colors = this.getHeaderColors();
 
-        
+        this.colorBack.style.background = 
+            this.canShowColor()
+            ? colorStyleRgb(colors.back)
+            : isDarkMode()
+              ? '#888088ee'
+              : '#ead8eaee';
+
+              
         this.checkers.style.height = this.header.offsetHeight;
 
         this.checkers.style.background =
@@ -33751,7 +33821,8 @@ extends OpColorBase
               + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-              
+
+        this.checkers.style.display         = this.canShowColor() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '26px 26px';
@@ -33769,23 +33840,17 @@ extends OpColorBase
 
         const noColor = [0.7, 0.7, 0.7];
 
-        for (const input of this.inputs.filter(i => i.index <= 1))
-        {
-            input.wireColor  = this.canShowColor() ? colors.back : noColor;
-            input.colorLight = 
-            input.colorDark  = rgb_a(colors.input, 0.12);
-        }
+        this.inputs[0] .wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.inputs[0] .colorLight = 
+        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.12);
 
-
-        for (const output of this.outputs.filter(i => i.index <= 1))
-        {
-            output.wireColor  = this.canShowColor() ? colors.back : noColor;
-            output.colorLight
-            output.colorDark  = rgb_a(colors.output, 0.12);
-        }
+        this.outputs[0].wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.outputs[0].colorLight =
+        this.outputs[0].colorDark  = rgb_a(colors.output, 0.12);
 
 
         this.updateWarningOverlay();
+        this.updateWarningOverlayStyle(colors.back, 45);
 
 
         Operator.prototype.updateHeader.call(this);
@@ -33932,7 +33997,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableSliderText(param.control, false);
+                enableControlText(param.control, false);
         });
 
 
@@ -33940,7 +34005,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableSliderText(param.control, true);
+                    enableControlText(param.control, true);
         });
 
 
@@ -34143,7 +34208,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableSliderText(param.control, false);
+                enableControlText(param.control, false);
         });
 
 
@@ -34151,7 +34216,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableSliderText(param.control, true);
+                    enableControlText(param.control, true);
         });
     }
     
@@ -34252,7 +34317,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableSliderText(param.control, false);
+                enableControlText(param.control, false);
         });
 
 
@@ -34260,7 +34325,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableSliderText(param.control, true);
+                    enableControlText(param.control, true);
         });
 
 
@@ -34442,7 +34507,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableSliderText(param.control, false);
+                enableControlText(param.control, false);
         });
 
 
@@ -34450,7 +34515,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableSliderText(param.control, true);
+                    enableControlText(param.control, true);
         });
 
 
@@ -34661,7 +34726,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableSliderText(param.control, false);
+                enableControlText(param.control, false);
         });
 
 
@@ -34669,7 +34734,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableSliderText(param.control, true);
+                    enableControlText(param.control, true);
         });
 
 

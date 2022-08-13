@@ -41,23 +41,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
-
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (let i = 1; i < this.params.length; i++)
-                enableSliderText(this.params[i].control, false);
-        });
-    
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (let i = 1; i < this.params.length; i++)
-            {
-                if (!this.params[i].input.connected) 
-                    enableSliderText(this.params[i].control, true);
-            }
-
-            this.updateNode();
-        });
+        this.initContentInput(this.inputs[0], 1);
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true, true, OpColorSpaces.map(s => s[1]), 0));
@@ -85,7 +69,7 @@ extends OpColorBase
 
 
         for (let i = 1; i < this.params.length; i++)
-            this.params[i].input.addEventListener('disconnect', () => { enableSliderText(this.params[i].control, !this.inputs[0].connected); });
+            this.params[i].input.addEventListener('disconnect', () => { enableControlText(this.params[i].control, !this.inputs[0].connected); });
     }
 
 
@@ -152,7 +136,6 @@ extends OpColorBase
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
-
             
             paramIds.push(this.node.paramSpace.id);
 
@@ -321,14 +304,14 @@ extends OpColorBase
                colorSpaceIndex(this._color[0]) > 3
             || isValidRgb(colors.back);
 
-        this.updateSlider(this.param1.control, isValid);
-        this.updateSlider(this.param2.control, isValid);
-        this.updateSlider(this.param3.control, isValid);
+        this.updateControl(this.param1.control, isValid);
+        this.updateControl(this.param2.control, isValid);
+        this.updateControl(this.param3.control, isValid);
     }
 
 
 
-    updateSlider(slider, isValid)
+    updateControl(control, isValid)
     {
         // slider.valueText = 
         //        this.inputs[0].connected 
@@ -341,9 +324,9 @@ extends OpColorBase
         //     && !isValid)
         //     slider.setValue(Number.NaN, true, false, false);
 
-        enableElementText(slider.textbox, !this.inputs[0].connected);
+        enableElementText(control.textbox, !this.inputs[0].connected);
 
-        slider.update();
+        control.update();
     }
 
 

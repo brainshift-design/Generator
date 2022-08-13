@@ -31,7 +31,7 @@ extends OperatorBase
         this.addParam(this.paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
 
-        enableSliderText(this.paramValue.control, false);
+        enableControlText(this.paramValue.control, false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');

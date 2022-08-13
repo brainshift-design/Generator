@@ -20,6 +20,14 @@ function initColorControlTextbox(control)
 
 
 
+    control.textbox.addEventListener('focus', e =>
+    {
+        if (control.textbox.value == DISPLAY_INVALID)
+            control.textbox.value = INVALID;
+    });
+
+
+
     control.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
@@ -78,26 +86,6 @@ function initColorControlTextbox(control)
                     params[index].control.showTextbox();
                 }
             }
-
-            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = slider.tabIndex;
-
-            // for (let i = 0; i < tabs.length; i++) 
-            // {
-            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
-            //         ||               tabs[i].tabIndex == index + 1) 
-            //     {
-            //         if (tabs[i].className == 'slider')
-            //             tabs[i].showTextbox();
-            //         else 
-            //         {
-            //             document.activeElement.blur();
-            //             tabs[i].focus();
-            //         }
-
-            //         break;
-            //     }
-            // }
         }
 
         else if ((   e.key == 'ArrowUp'
@@ -213,7 +201,7 @@ function initColorControlTextbox(control)
         //console.log('control.successOnFocusOut', control.successOnFocusOut);
 
         if (!control.textbox.keyBlur) control.textbox.finish(true);
-        else                         control.textbox.keyBlur = false;
+        else                          control.textbox.keyBlur = false;
 
         if (control.savedSuccessOnFocusOut != null)
         {

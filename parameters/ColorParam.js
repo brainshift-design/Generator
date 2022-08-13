@@ -27,7 +27,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = GColorValue.create(1, 0, 0, 0),
+                defaultValue = GColorValue.NaN,
                 dragScale    = 0.05)
     {
         super(COLOR, id, name);
@@ -117,6 +117,33 @@ extends Parameter
 
 
 
+    updateControls()
+    {
+        const rgb = dataColor2rgb(this.value.toDataColor());
+
+        const col = 
+            isValidRgb(rgb)
+            ? (isDark(rgb)
+               ? [1, 1, 1]
+               : [0, 0, 0])
+            : (isDarkMode()
+               ? [1, 1, 1]
+               : [0, 0, 0]);
+
+        this.input.wireColor  = col;
+        this.input.colorLight = 
+        this.input.colorDark  = rgb_a(col, 0.12);
+
+        this.output.wireColor  = col;
+        this.output.colorLight =
+        this.output.colorDark  = rgb_a(col, 0.12);
+
+
+        super.updateControls();
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -137,12 +164,9 @@ extends Parameter
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
 
-        else 
-        {
-            request.push( 
-                COLOR_VALUE, 
-                this.value.toString());
-        }
+        else request.push( 
+            COLOR_VALUE, 
+            this.value.toString());
 
 
         return request;

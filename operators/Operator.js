@@ -201,6 +201,28 @@ class Operator
 
 
 
+    initContentInput(input, firstParam)
+    {
+        input.addEventListener('connect', () =>
+        {
+            for (let i = firstParam; i < this.params.length; i++)
+                enableControlText(this.params[i].control, false);
+        });
+    
+        input.addEventListener('disconnect', () =>
+        {
+            for (let i = firstParam; i < this.params.length; i++)
+            {
+                if (!this.params[i].input.connected) 
+                    enableControlText(this.params[i].control, true);
+            }
+
+            this.updateNode();
+        });
+    }
+
+
+
     addBaseParams()
     {
 
@@ -757,6 +779,7 @@ function pushInputOrParam(input, gen)
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 
         return[ PARAM,
+                input.connectedOutput.type,
                 input.connectedOutput.node.id,
                 input.connectedOutput.param.id ];
     }

@@ -2139,7 +2139,7 @@ function createTextbox(className = '')
 
 
 
-function enableSliderText(slider, enable)
+function enableControlText(slider, enable)
 {
     enableElementText(slider, enable);
     slider.readOnly = !enable;
@@ -3842,9 +3842,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
-
-
             const space = this.space.eval(parse).copy();
 
 
@@ -3876,10 +3873,12 @@ extends GOperator
             }
             else
             {
+                this.result = new GColorValue();
+
                 this.result.space = space;
-                this.result.c1    = this.c1   .eval(parse).copy();
-                this.result.c2    = this.c2   .eval(parse).copy();
-                this.result.c3    = this.c3   .eval(parse).copy();
+                this.result.c1    = this.c1.eval(parse).copy();
+                this.result.c2    = this.c2.eval(parse).copy();
+                this.result.c3    = this.c3.eval(parse).copy();
 
 
                 const toSpaceIndex = Math.min(Math.max(
@@ -4432,6 +4431,8 @@ extends GType
 
         this.result  = this;
         this.valid   = true;
+
+        console.log('this.color =', this.color);
     }
 
 
@@ -4447,6 +4448,15 @@ extends GType
 
     copy()
     {
+        // const color   = this.color  .copy();
+        // const opacity = this.opacity.copy();
+        
+        // console.log('color =',   color);
+        // console.log('opacity =', opacity);
+
+        // const fill = new GColorFillValue(color, opacity);
+        // console.log('fill =', fill);
+        // return fill;
         return new GColorFillValue(
             this.color  .copy(),
             this.opacity.copy());
@@ -4523,7 +4533,7 @@ extends GOperator
     {
         super(COLOR_FILL, nodeId, active);
 
-        this.color   = GColorValue.create(1, 0, 0, 0);
+        this.color   = GColorValue.NaN;
         this.opacity = new GNumberValue(100);
     }
 
@@ -4533,10 +4543,11 @@ extends GOperator
     {
         const fill = new GColorFill(this.nodeId, this.active);
 
-        if (this.input) fill.input = this.input.copy();
+        if (this.input) 
+            fill.input = this.input.copy();
 
-        fill.color   = this.color  .copy();
-        fill.opacity = this.opacity.copy();
+        if (this.color  ) fill.color   = this.color  .copy();
+        if (this.opacity) fill.opacity = this.opacity.copy();
 
         return fill;
     }
@@ -4547,32 +4558,32 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorFillValue();
-
-
             if (this.input)
             {
-                this.result = this.input.eval(parse).copy();
+                const input = this.input.eval(parse);
+
+                this.result = input.copy();
                 console.assert(this.result.type == COLOR_FILL_VALUE);
 
-                if (this.result.isValid())
-                {
-                    if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
-                    if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
-                }
+                if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
+                if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
             }
             else
             {
+                this.result = new GColorFillValue();
+
                 this.result.color   = this.color  .eval(parse).copy();
                 this.result.opacity = this.opacity.eval(parse).copy();
             }
+            
 
-             
             this.result.valid = true;
             this.valid        = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -6218,7 +6229,9 @@ function genParseColor(parse)
     
     let paramIds;
 
-    if (COLOR_TYPES.includes(parse.next))
+    if (   COLOR_TYPES.includes(parse.next)
+        ||    parse.next == PARAM
+           && COLOR_TYPES.includes(parse.afterNext))
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');
@@ -6483,12 +6496,26 @@ function genParseColorFill(parse)
     parse.nTab++;
 
 
-    if (parse.next == COLOR_FILL)
+    let paramIds;
+
+    if (   parse.next == COLOR_FILL
+        || parse.next == COLOR_FILL_VALUE)
+    {
         fill.input = genParse(parse);
+        paramIds   = parse.move().split(',');
+    }
+    else
+        paramIds = ['color', 'opacity'];
 
-
-    fill.color   = genParse(parse);
-    fill.opacity = genParse(parse);
+    
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'color':   fill.color   = genParse(parse); break;
+        case 'opacity': fill.opacity = genParse(parse); break;
+        }
+    }
 
     
     parse.nTab--;
@@ -7077,6 +7104,13 @@ class Parse
 
     get next() { return this.request[this.pos]; }
 
+    get afterNext() 
+    { 
+        return this.pos+1 < this.request.length 
+             ? this.request[this.pos+1]
+             : null;
+    }
+
 
 
     constructor(request, updateNodeId, updateParamId, logRequests)
@@ -7200,7 +7234,8 @@ function genParseParam(parse)
     if (parse.next != PARAM) 
         return null;
         
-    parse.move();
+    parse.move(); // PARAM
+    parse.move(); // type
 
     
     const nodeId  = parse.move();
